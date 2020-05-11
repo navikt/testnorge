@@ -1,8 +1,10 @@
 package no.nav.dolly.bestilling.udistub.domain;
 
-import java.time.LocalDate;
-import java.util.List;
+import static java.util.Objects.isNull;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -36,6 +38,13 @@ public class UdiPerson {
     private UdiOppholdStatus oppholdStatus;
     private UdiHarType soeknadOmBeskyttelseUnderBehandling;
     private LocalDate soknadDato;
+
+    public List<UdiAvgjorelse> getAvgjoerelser() {
+        if (isNull(avgjoerelser)) {
+            avgjoerelser = new ArrayList<>();
+        }
+        return avgjoerelser;
+    }
 
     @AllArgsConstructor
     @NoArgsConstructor

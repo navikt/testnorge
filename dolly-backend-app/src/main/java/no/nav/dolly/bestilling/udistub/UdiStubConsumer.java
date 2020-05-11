@@ -27,8 +27,7 @@ public class UdiStubConsumer {
 
     private static final String CONSUMER = "Dolly";
     private static final String NAV_PERSON_IDENT = "Nav-Personident";
-    private static final String UDI_STUB_PERSON = "/api/v1/person";
-    private static final String IDENT_QUERY = UDI_STUB_PERSON + "?ident=";
+    private static final String UDISTUB_PERSON = "/api/v1/person";
 
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
@@ -39,7 +38,7 @@ public class UdiStubConsumer {
 
         try {
             ResponseEntity<UdiPersonResponse> response = restTemplate.exchange(RequestEntity.get(
-                    URI.create(format("%s%s%s", providersProps.getUdiStub().getUrl(), IDENT_QUERY, ident)))
+                    URI.create(format("%s%s/%s/", providersProps.getUdiStub().getUrl(), UDISTUB_PERSON, ident)))
                             .header(HEADER_NAV_CALL_ID, getNavCallId())
                             .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                             .build(),
@@ -54,7 +53,7 @@ public class UdiStubConsumer {
     @Timed(name = "providers", tags = { "operation", "udi_createPerson" })
     public ResponseEntity<UdiPersonResponse> createUdiPerson(UdiPerson udiPerson) {
 
-        return restTemplate.exchange(RequestEntity.post(URI.create(providersProps.getUdiStub().getUrl() + UDI_STUB_PERSON))
+        return restTemplate.exchange(RequestEntity.post(URI.create(providersProps.getUdiStub().getUrl() + UDISTUB_PERSON))
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
@@ -65,7 +64,7 @@ public class UdiStubConsumer {
     @Timed(name = "providers", tags = { "operation", "udi_updatePerson" })
     public ResponseEntity<UdiPersonResponse> updateUdiPerson(UdiPerson udiPerson) {
 
-        return restTemplate.exchange(RequestEntity.put(URI.create(providersProps.getUdiStub().getUrl() + UDI_STUB_PERSON))
+        return restTemplate.exchange(RequestEntity.put(URI.create(providersProps.getUdiStub().getUrl() + UDISTUB_PERSON))
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
@@ -77,7 +76,7 @@ public class UdiStubConsumer {
     public void deleteUdiPerson(String ident) {
 
         try {
-            restTemplate.exchange(RequestEntity.delete(URI.create(providersProps.getUdiStub().getUrl() + UDI_STUB_PERSON))
+            restTemplate.exchange(RequestEntity.delete(URI.create(providersProps.getUdiStub().getUrl() + UDISTUB_PERSON))
                     .header(HEADER_NAV_CALL_ID, getNavCallId())
                     .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                     .header(NAV_PERSON_IDENT, ident)
