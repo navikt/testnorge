@@ -47,7 +47,7 @@ public class UdiMergeService {
                 .noneMatch(eksisterendeAvgjoerelse -> eksisterendeAvgjoerelse.equals(nyAvgjoerelse)))
                 .collect(Collectors.toList()));
 
-        return appendAttributes(udiPerson, nyUdiPerson.getAliaser(), isLeggTil ? Status.NEW : Status.UPDATE, tpsPerson);
+        return appendAttributes(udiPerson, isLeggTil ? nyUdiPerson.getAliaser() : null, Status.UPDATE, tpsPerson);
     }
 
     public List<UdiAlias> getAliaser(RsAliasRequest request, List<String> environments) {
@@ -68,8 +68,7 @@ public class UdiMergeService {
         return UdiPersonWrapper.builder()
                 .udiPerson(udiPerson)
                 .status(status)
-                .aliasRequest(Status.NEW == status && !aliaser.isEmpty() ?
-                        RsAliasRequest.builder()
+                .aliasRequest(!aliaser.isEmpty() ? RsAliasRequest.builder()
                                 .ident(tpsPerson.getHovedperson())
                                 .aliaser(mapperFacade.mapAsList(aliaser, RsAliasRequest.AliasSpesification.class))
                                 .build() : null)
