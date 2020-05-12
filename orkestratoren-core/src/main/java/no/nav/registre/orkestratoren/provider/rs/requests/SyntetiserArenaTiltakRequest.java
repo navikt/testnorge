@@ -12,12 +12,20 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SyntetiserArenaRequest {
+public class SyntetiserArenaTiltakRequest {
 
     @JsonProperty("avspillergruppeId")
     private Long avspillergruppeId;
+
     @JsonProperty("miljoe")
     private String miljoe;
-    @JsonProperty("antallNyeIdenter")
-    private Integer antallNyeIdenter;
+
+    @JsonProperty("antallTiltaksdeltakelse")
+    private Integer antallTiltaksdeltakelse;
+
+    @JsonProperty("antallTiltakspenger")
+    private Integer antallTiltakspenger;
+
+    @JsonProperty("antallBarnetillegg")
+    private Integer antallBarnetillegg;
 }

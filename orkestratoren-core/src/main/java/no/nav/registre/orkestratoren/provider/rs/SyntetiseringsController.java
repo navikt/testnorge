@@ -18,7 +18,12 @@ import java.util.Map;
 
 import no.nav.registre.orkestratoren.consumer.rs.response.RsPureXmlMessageResponse;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaAapRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaTilleggstoenadArbeidssoekereRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaTilleggstoenadRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaTiltakRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaVedtakshistorikkRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserElsamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
@@ -161,6 +166,46 @@ public class SyntetiseringsController {
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
         return tesnorgeArenaService.opprettArbeidssokereIArena(syntetiserArenaRequest);
+    }
+
+    @PostMapping(value = "/arena/vedtakshistorikk/generer")
+    public ResponseEntity opprettVedtakshistorikkIArena(
+            @RequestBody SyntetiserArenaVedtakshistorikkRequest vedtakshistorikkRequest
+    ) {
+        tesnorgeArenaService.opprettArenaVedtakshistorikk(vedtakshistorikkRequest);
+        return ResponseEntity.ok().body("Opprettelsesrequest sendt til arena. Se logg til testnorge-arena for mer info.");
+    }
+
+    @PostMapping(value = "/arena/aap/generer")
+    public ResponseEntity opprettAapIArena(
+            @RequestBody SyntetiserArenaAapRequest aapRequest
+    ) {
+        tesnorgeArenaService.opprettArenaAap(aapRequest);
+        return ResponseEntity.ok().body("Opprettelsesrequest sendt til arena. Se logg til testnorge-arena for mer info.");
+    }
+
+    @PostMapping(value = "/arena/tiltak/generer")
+    public ResponseEntity opprettTiltakIArena(
+            @RequestBody SyntetiserArenaTiltakRequest tiltakRequest
+    ) {
+        tesnorgeArenaService.opprettArenaTiltak(tiltakRequest);
+        return ResponseEntity.ok().body("Opprettelsesrequest sendt til arena. Se logg til testnorge-arena for mer info.");
+    }
+
+    @PostMapping(value = "/arena/tilleggstoenad/generer")
+    public ResponseEntity opprettTilleggstoenadIArena(
+            @RequestBody SyntetiserArenaTilleggstoenadRequest tilleggstoenadRequest
+    ) {
+        tesnorgeArenaService.opprettArenaTilleggstoenad(tilleggstoenadRequest);
+        return ResponseEntity.ok().body("Opprettelsesrequest sendt til arena. Se logg til testnorge-arena for mer info.");
+    }
+
+    @PostMapping(value = "/arena/tilleggstoenadArbeidssoeker/generer")
+    public ResponseEntity opprettTilleggstoenadArbeidssoekerIArena(
+            @RequestBody SyntetiserArenaTilleggstoenadArbeidssoekereRequest tilleggstoenadArbeidssoekereRequest
+    ) {
+        tesnorgeArenaService.opprettArenaTilleggstoenadArbeidssoekere(tilleggstoenadArbeidssoekereRequest);
+        return ResponseEntity.ok().body("Opprettelsesrequest sendt til arena. Se logg til testnorge-arena for mer info.");
     }
 
     @PostMapping(value = "/medl/medlemskap/generer")
