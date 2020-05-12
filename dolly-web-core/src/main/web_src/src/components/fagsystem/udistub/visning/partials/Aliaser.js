@@ -8,7 +8,7 @@ export const Aliaser = ({ aliaser }) => {
 	return (
 		<div>
 			<h4>Aliaser</h4>
-			<DollyFieldArray data={aliaser}>
+			<DollyFieldArray data={aliaser} nested>
 				{(alias, idx) => (
 					<div key={idx} className="person-visning_content">
 						<TitleValue title="FNR/DNR" value={alias.fnr} />
