@@ -57,7 +57,9 @@ public class UdiMergeService {
         if (nonNull(request)) {
             request.setEnvironments(environments);
             ResponseEntity<RsAliasResponse> response = tpsfService.createAliases(request);
-            return response.hasBody() ? mapperFacade.mapAsList(tpsfService.createAliases(request).getBody().getAliaser(), UdiAlias.class) : null;
+            return response.hasBody() ?
+                    mapperFacade.mapAsList(tpsfService.createAliases(request).getBody().getAliaser(), UdiAlias.class) :
+                    emptyList();
         } else {
             return emptyList();
         }
