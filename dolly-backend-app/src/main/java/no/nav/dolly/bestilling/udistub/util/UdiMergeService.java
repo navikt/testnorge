@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.udistub.util;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,7 +45,7 @@ public class UdiMergeService {
 
         udiPerson.setAvgjoerelser(udiPerson.getAvgjoerelser().stream()
                 .filter(nyAvgjoerelse -> eksisterendeUdiPerson.getPerson().getAvgjoerelser().stream()
-                .noneMatch(eksisterendeAvgjoerelse -> eksisterendeAvgjoerelse.equals(nyAvgjoerelse)))
+                        .noneMatch(eksisterendeAvgjoerelse -> eksisterendeAvgjoerelse.equals(nyAvgjoerelse)))
                 .collect(Collectors.toList()));
 
         return appendAttributes(udiPerson, isLeggTil ? nyUdiPerson.getAliaser() : null, Status.UPDATE, tpsPerson);
@@ -52,9 +53,13 @@ public class UdiMergeService {
 
     public List<UdiAlias> getAliaser(RsAliasRequest request, List<String> environments) {
 
-        request.setEnvironments(environments);
-        ResponseEntity<RsAliasResponse> response = tpsfService.createAliases(request);
-        return response.hasBody() ? mapperFacade.mapAsList(tpsfService.createAliases(request).getBody().getAliaser(), UdiAlias.class) : null;
+        if (nonNull(request)) {
+            request.setEnvironments(environments);
+            ResponseEntity<RsAliasResponse> response = tpsfService.createAliases(request);
+            return response.hasBody() ? mapperFacade.mapAsList(tpsfService.createAliases(request).getBody().getAliaser(), UdiAlias.class) : null;
+        } else {
+            return null;
+        }
     }
 
     private UdiPersonWrapper appendAttributes(UdiPerson udiPerson, List<RsUdiAlias> aliaser, Status status, TpsPerson tpsPerson) {
@@ -69,9 +74,9 @@ public class UdiMergeService {
                 .udiPerson(udiPerson)
                 .status(status)
                 .aliasRequest(!aliaser.isEmpty() ? RsAliasRequest.builder()
-                                .ident(tpsPerson.getHovedperson())
-                                .aliaser(mapperFacade.mapAsList(aliaser, RsAliasRequest.AliasSpesification.class))
-                                .build() : null)
+                        .ident(tpsPerson.getHovedperson())
+                        .aliaser(mapperFacade.mapAsList(aliaser, RsAliasRequest.AliasSpesification.class))
+                        .build() : null)
                 .build();
     }
 }

@@ -38,15 +38,9 @@ public class UdiStubClient implements ClientRegister {
                 UdiPersonWrapper wrapper = udiMergeService.merge(bestilling.getUdistub(), eksisterendeUdiPerson,
                         isOpprettEndre, tpsPerson);
 
-                if (nonNull(wrapper.getAliasRequest())) {
-                    wrapper.getUdiPerson().setAliaser(udiMergeService.getAliaser(wrapper.getAliasRequest(), bestilling.getEnvironments()));
-                }
+                wrapper.getUdiPerson().setAliaser(udiMergeService.getAliaser(wrapper.getAliasRequest(), bestilling.getEnvironments()));
 
-                if (Status.NEW == wrapper.getStatus()) {
-                    udiStubConsumer.createUdiPerson(wrapper.getUdiPerson());
-                } else {
-                    udiStubConsumer.updateUdiPerson(wrapper.getUdiPerson());
-                }
+                sendUdiPerson(wrapper);
                 status.append("OK");
 
             } catch (RuntimeException e) {
@@ -62,5 +56,14 @@ public class UdiStubClient implements ClientRegister {
     public void release(List<String> identer) {
 
         identer.forEach(udiStubConsumer::deleteUdiPerson);
+    }
+
+    private void sendUdiPerson(UdiPersonWrapper wrapper) {
+
+        if (Status.NEW == wrapper.getStatus()) {
+            udiStubConsumer.createUdiPerson(wrapper.getUdiPerson());
+        } else {
+            udiStubConsumer.updateUdiPerson(wrapper.getUdiPerson());
+        }
     }
 }
