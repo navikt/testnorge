@@ -5,7 +5,7 @@ export const SortKodeverkArray = data => {
 		const spesKoder = ['ES', 'EN', 'NN', 'NB']
 
 		spesKoder.forEach(value => {
-			for (var i = 0; i < kodeverk.length - 1; i++) {
+			for (let i = 0; i < kodeverk.length - 1; i++) {
 				const temp = kodeverk[i]
 				if (value == temp.value) {
 					if (value == 'NB') temp.label = 'Norwegian, Bokmål'

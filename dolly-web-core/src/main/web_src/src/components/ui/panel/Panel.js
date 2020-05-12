@@ -44,9 +44,7 @@ export default function Panel({
 				<h2>{heading}</h2>
 
 				{informasjonstekst && (
-					<Hjelpetekst hjelpetekstFor={heading}>
-						{informasjonstekst}
-					</Hjelpetekst>
+					<Hjelpetekst hjelpetekstFor={heading}>{informasjonstekst}</Hjelpetekst>
 				)}
 				{hasErrors && (
 					<div className="panel-heading_error">

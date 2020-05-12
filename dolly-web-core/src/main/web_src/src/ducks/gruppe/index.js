@@ -97,7 +97,7 @@ export const selectIdentById = (state, ident) => state.gruppe.ident[ident]
 
 export const sokSelectorGruppeOversikt = state => {
 	const { search, gruppe } = state
-	let items = Object.values(gruppe.byId)
+	const items = Object.values(gruppe.byId)
 
 	if (!items) return null
 	if (!search) return items

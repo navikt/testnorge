@@ -1,5 +1,5 @@
 export type VersjonInfo = {
-	underversjoner: Array<Number>
+	underversjoner: Array<number>
 	path: string
 	gjeldendeInntektMedHistorikk: boolean
 }

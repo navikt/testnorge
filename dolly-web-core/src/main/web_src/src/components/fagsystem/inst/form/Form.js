@@ -48,10 +48,18 @@ export const InstForm = ({ formikBag }) => {
 								options={Options('institusjonstype')}
 								isClearable={false}
 							/>
-							<FormikDatepicker name={`${path}.startdato`} label="Startdato" excludeDates={excludeDates}
-																maxDate={maxDate}/>
-							<FormikDatepicker name={`${path}.faktiskSluttdato`} label="Sluttdato" excludeDates={excludeDates}
-																maxDate={maxDate}/>
+							<FormikDatepicker
+								name={`${path}.startdato`}
+								label="Startdato"
+								excludeDates={excludeDates}
+								maxDate={maxDate}
+							/>
+							<FormikDatepicker
+								name={`${path}.faktiskSluttdato`}
+								label="Sluttdato"
+								excludeDates={excludeDates}
+								maxDate={maxDate}
+							/>
 						</React.Fragment>
 					)}
 				</FormikDollyFieldArray>

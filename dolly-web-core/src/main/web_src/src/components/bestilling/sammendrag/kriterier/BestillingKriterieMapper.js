@@ -295,7 +295,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 	if (sigrunStubKriterier) {
 		// Flatter ut sigrunKriterier for å gjøre det lettere å mappe
-		let flatSigrunStubKriterier = []
+		const flatSigrunStubKriterier = []
 		sigrunStubKriterier.forEach(inntekt => {
 			const inntektObj = { inntektsaar: inntekt.inntektsaar, tjeneste: inntekt.tjeneste }
 			inntekt.grunnlag &&
@@ -576,7 +576,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	if (instKriterier) {
 		// Flater ut instKriterier for å gjøre det lettere å mappe
 
-		let flatInstKriterier = []
+		const flatInstKriterier = []
 		instKriterier.forEach(i => {
 			flatInstKriterier.push({
 				institusjonstype: i.institusjonstype,
@@ -631,7 +631,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		const oppholdsrett = Boolean(currentOppholdsrettType)
 		const tredjelandsborger = Boolean(currentTredjelandsborgereStatus)
 
-		let aliaserListe = []
+		const aliaserListe = []
 		udiStubKriterier.aliaser &&
 			udiStubKriterier.aliaser.forEach((alias, i) => {
 				if (alias.nyIdent === false) {

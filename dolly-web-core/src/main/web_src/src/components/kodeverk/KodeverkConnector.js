@@ -9,7 +9,4 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = { fetchKodeverk }
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(KodeverkWrapper)
+export default connect(mapStateToProps, mapDispatchToProps)(KodeverkWrapper)

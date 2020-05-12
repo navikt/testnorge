@@ -30,12 +30,12 @@ export default class RedigerGruppe extends PureComponent {
 			return <Loading label="oppdaterer gruppe" />
 		}
 
-		let initialValues = {
+		const initialValues = {
 			navn: getIn(gruppe, 'navn', ''),
 			hensikt: getIn(gruppe, 'hensikt', '')
 		}
 
-		let buttons = (
+		const buttons = (
 			<Fragment>
 				<NavButton onClick={() => this.onCancel()}>Avbryt</NavButton>
 				<NavButton type="hoved" htmlType="submit">
@@ -71,7 +71,7 @@ export default class RedigerGruppe extends PureComponent {
 	onHandleSubmit = async (values, actions) => {
 		const { createGruppe, updateGruppe, gruppe, error } = this.props
 
-		let groupValues = {
+		const groupValues = {
 			hensikt: values.hensikt,
 			navn: values.navn
 		}

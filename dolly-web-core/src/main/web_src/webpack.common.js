@@ -59,9 +59,7 @@ module.exports = {
 				test: /\.js|.ts(x?)$/,
 				include: path.resolve(__dirname, 'src'),
 				exclude: /node_modules/,
-				use: {
-					loader: 'babel-loader'
-				}
+				use: ['babel-loader', "eslint-loader"]
 			},
 			{
 				test: /\.svg$/,
