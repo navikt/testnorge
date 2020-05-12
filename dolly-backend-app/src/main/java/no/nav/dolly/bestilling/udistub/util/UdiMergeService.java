@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.udistub.util;
 
+import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -48,7 +49,7 @@ public class UdiMergeService {
                         .noneMatch(eksisterendeAvgjoerelse -> eksisterendeAvgjoerelse.equals(nyAvgjoerelse)))
                 .collect(Collectors.toList()));
 
-        return appendAttributes(udiPerson, isLeggTil ? nyUdiPerson.getAliaser() : null, Status.UPDATE, tpsPerson);
+        return appendAttributes(udiPerson, isLeggTil ? nyUdiPerson.getAliaser() : emptyList(), Status.UPDATE, tpsPerson);
     }
 
     public List<UdiAlias> getAliaser(RsAliasRequest request, List<String> environments) {
