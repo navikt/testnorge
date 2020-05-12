@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.udistub;
 import static java.util.Objects.nonNull;
 
 import java.util.List;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -43,9 +42,11 @@ public class UdiStubClient implements ClientRegister {
                     wrapper.getUdiPerson().setAliaser(udiMergeService.getAliaser(wrapper.getAliasRequest(), bestilling.getEnvironments()));
                 }
 
-                ResponseEntity<UdiPersonResponse> response = Status.NEW == wrapper.getStatus() ?
-                        udiStubConsumer.createUdiPerson(wrapper.getUdiPerson()) :
-                        udiStubConsumer.updateUdiPerson(wrapper.getUdiPerson());
+                if (Status.NEW == wrapper.getStatus()) {
+                    udiStubConsumer.createUdiPerson(wrapper.getUdiPerson());
+                } else {
+                    udiStubConsumer.updateUdiPerson(wrapper.getUdiPerson());
+                }
                 status.append("OK");
 
             } catch (RuntimeException e) {
