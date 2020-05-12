@@ -8,7 +8,8 @@ const loadingSelector = createLoadingSelector(actions.getTpsf)
 const mapStateToProps = (state, ownProps) => ({
 	searchActive: Boolean(state.search),
 	personListe: sokSelector(selectPersonListe(state), state.search),
-	isFetching: loadingSelector(state)
+	isFetching: loadingSelector(state),
+	iLaastGruppe: ownProps.erLaast
 })
 
 const mapDispatchToProps = { fetchTpsfPersoner }

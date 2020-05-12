@@ -22,6 +22,8 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}`
 	}
 
+	// TODO: Ta inn endpoint for å låse gruppe
+
 	static gruppeByUser(userId) {
 		return `${groupBase}?brukerId=${userId}`
 	}

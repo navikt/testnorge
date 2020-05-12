@@ -53,6 +53,9 @@ export default function Gruppe({
 		return new Set(iterable).size
 	}
 
+	// const erLaast = gruppe.erLaast
+	const erLaast = gruppe.id === 702 // Later som om denne gruppen er låst for testing
+
 	return (
 		<div className="gruppe-container">
 			<GruppeHeader
@@ -65,9 +68,16 @@ export default function Gruppe({
 			<StatusListeConnector gruppeId={gruppe.id} />
 
 			<div className="toolbar">
-				<NavButton type="hoved" onClick={visStartBestilling}>
+				{erLaast ? (
+					<div />
+				) : (
+					<NavButton type="hoved" onClick={visStartBestilling}>
+						Opprett personer
+					</NavButton>
+				)}
+				{/* <NavButton type="hoved" onClick={visStartBestilling} disabled={erLaast}>
 					Opprett personer
-				</NavButton>
+				</NavButton> */}
 
 				<ToggleGruppe onChange={byttVisning} name="toggler">
 					<ToggleKnapp value={VISNING_PERSONER} checked={visning === VISNING_PERSONER}>
@@ -94,7 +104,7 @@ export default function Gruppe({
 				/>
 			)}
 
-			{visning === VISNING_PERSONER && <PersonListeConnector />}
+			{visning === VISNING_PERSONER && <PersonListeConnector erLaast={erLaast} />}
 			{visning === VISNING_BESTILLING && <BestillingListeConnector />}
 		</div>
 	)

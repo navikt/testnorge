@@ -19,7 +19,13 @@ const ikonTypeMap = {
 	Stoppet: 'report-problem-triangle'
 }
 
-export default function PersonListe({ isFetching, personListe, searchActive, fetchTpsfPersoner }) {
+export default function PersonListe({
+	isFetching,
+	personListe,
+	searchActive,
+	iLaastGruppe,
+	fetchTpsfPersoner
+}) {
 	useMount(fetchTpsfPersoner)
 
 	if (isFetching) return <Loading label="laster personer" panel />
@@ -106,7 +112,9 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 			text: 'Brukt',
 			width: '10',
 			dataField: 'ibruk',
-			formatter: (cell, row) => <PersonIBrukButtonConnector ident={row.ident} />
+			formatter: (cell, row) => (
+				<PersonIBrukButtonConnector ident={row.ident} iLaastGruppe={iLaastGruppe} />
+			)
 		}
 	]
 
@@ -122,6 +130,7 @@ export default function PersonListe({ isFetching, personListe, searchActive, fet
 					bestillingId={bruker.ident.bestillingId[0]}
 					bestillingsIdListe={bruker.ident.bestillingId}
 					gruppeId={bruker.ident.gruppeId}
+					iLaastGruppe={iLaastGruppe}
 				/>
 			)}
 		/>

@@ -16,6 +16,7 @@ export const actions = createActions(
 		getByUserId: DollyApi.getGruppeByUserId,
 		create: DollyApi.createGruppe,
 		update: DollyApi.updateGruppe,
+		laas: DollyApi.laasGruppe,
 		remove: [
 			DollyApi.deleteGruppe,
 			gruppeId => ({
@@ -63,6 +64,9 @@ export default handleActions(
 		[onSuccess(actions.update)](state, action) {
 			state.byId[action.payload.data.id] = action.payload.data
 		},
+		// [onSuccess(actions.laas)](state, action) {
+		// TODO: Lag denne
+		// },
 		[onSuccess(actions.updateIdentIbruk)](state, action) {
 			const { ident, ibruk } = action.payload.data
 			state.ident[ident].ibruk = ibruk
