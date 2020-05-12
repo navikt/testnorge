@@ -153,12 +153,6 @@ public class JobControllerTest {
     }
 
     @Test
-    public void shouldStartArenaBatch() {
-        jobController.arenaSyntBatch();
-        verify(tesnorgeArenaService).opprettArbeidssokereIArena(any());
-    }
-
-    @Test
     public void shouldStartMedlBatch() {
         jobController.medlSyntBatch();
         verify(testnorgeMedlService).genererMedlemskap(any());
