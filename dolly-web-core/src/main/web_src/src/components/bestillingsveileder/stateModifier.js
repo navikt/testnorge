@@ -3,7 +3,7 @@ import _set from 'lodash/fp/set'
 import _omit from 'lodash/omit'
 import _isEmpty from 'lodash/isEmpty'
 
-export const stateModifierFns = (initial, setInitial, options=null) => {
+export const stateModifierFns = (initial, setInitial, options = null) => {
 	const opts = options
 	const set = (path, value) => setInitial(_set(path, value, initial))
 	const has = path => _has(initial, path)
