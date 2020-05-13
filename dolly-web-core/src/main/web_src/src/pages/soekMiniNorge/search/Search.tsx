@@ -32,6 +32,7 @@ export const Search = () => {
 								</div>
 								<div className="search-field__resultat">
 									<SearchResult
+										key={soekNummer}
 										soekOptions={soekOptions}
 										searchActive={isSearchActive}
 										soekNummer={soekNummer}
