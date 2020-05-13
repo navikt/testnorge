@@ -35,7 +35,7 @@ export const initialValues: Inntektsinformasjon = {
 const inntektstubAttributt = 'inntektstub'
 const inntektstubPath = 'inntektstub.inntektsinformasjon'
 
-const infotekst: string =
+const infotekst =
 	'For å generere samme inntektsinformasjon for flere måneder - fyll inn siste måned/år, samt antall måneder bakover inntektsinformasjonen skal genereres for.'
 
 export const InntektstubForm = ({ formikBag }: InntektstubForm) => (
