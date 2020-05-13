@@ -14,7 +14,9 @@ import org.springframework.web.client.RestTemplate;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.domain.resultset.udistub.model.UdiPerson;
+import no.nav.dolly.bestilling.udistub.domain.UdiPerson;
+import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.properties.ProvidersProps;
 
@@ -25,32 +27,64 @@ public class UdiStubConsumer {
 
     private static final String CONSUMER = "Dolly";
     private static final String NAV_PERSON_IDENT = "Nav-Personident";
-    private static final String NAV_CALL_ID = "Nav-Call-Id";
-    private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
-    private static final String UDI_STUB_PERSON = "/api/v1/person";
+    private static final String UDISTUB_PERSON = "/api/v1/person";
 
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
+    private final ErrorStatusDecoder errorStatusDecoder;
 
     @Timed(name = "providers", tags = { "operation", "udi_createPerson" })
-    public ResponseEntity<UdiPersonControllerResponse> createUdiPerson(UdiPerson udiPerson) {
+    public UdiPersonResponse getUdiPerson(String ident) {
 
-            return restTemplate.exchange(RequestEntity.post(URI.create(providersProps.getUdiStub().getUrl() + UDI_STUB_PERSON))
-                            .contentType(MediaType.APPLICATION_JSON)
+        try {
+            ResponseEntity<UdiPersonResponse> response = restTemplate.exchange(RequestEntity.get(
+                    URI.create(format("%s%s/%s/", providersProps.getUdiStub().getUrl(), UDISTUB_PERSON, ident)))
                             .header(HEADER_NAV_CALL_ID, getNavCallId())
                             .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                            .body(udiPerson),
-                    UdiPersonControllerResponse.class);
+                            .build(),
+                    UdiPersonResponse.class);
+            return response.hasBody() ? response.getBody() : null;
+
+        } catch (RuntimeException e) {
+            return null;
+        }
+    }
+
+    @Timed(name = "providers", tags = { "operation", "udi_createPerson" })
+    public ResponseEntity<UdiPersonResponse> createUdiPerson(UdiPerson udiPerson) {
+
+        return restTemplate.exchange(RequestEntity.post(URI.create(providersProps.getUdiStub().getUrl() + UDISTUB_PERSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HEADER_NAV_CALL_ID, getNavCallId())
+                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                        .body(udiPerson),
+                UdiPersonResponse.class);
+    }
+
+    @Timed(name = "providers", tags = { "operation", "udi_updatePerson" })
+    public ResponseEntity<UdiPersonResponse> updateUdiPerson(UdiPerson udiPerson) {
+
+        return restTemplate.exchange(RequestEntity.put(URI.create(providersProps.getUdiStub().getUrl() + UDISTUB_PERSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HEADER_NAV_CALL_ID, getNavCallId())
+                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                        .body(udiPerson),
+                UdiPersonResponse.class);
     }
 
     @Timed(name = "providers", tags = { "operation", "udi_deletePerson" })
-    public ResponseEntity<Object> deleteUdiPerson(String ident) {
+    public void deleteUdiPerson(String ident) {
 
-            return restTemplate.exchange(RequestEntity.delete(URI.create(providersProps.getUdiStub().getUrl() + UDI_STUB_PERSON))
-                            .header(HEADER_NAV_CALL_ID, getNavCallId())
-                            .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                            .header(NAV_PERSON_IDENT, ident)
-                            .build(), Object.class);
+        try {
+            restTemplate.exchange(RequestEntity.delete(URI.create(providersProps.getUdiStub().getUrl() + UDISTUB_PERSON))
+                    .header(HEADER_NAV_CALL_ID, getNavCallId())
+                    .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                    .header(NAV_PERSON_IDENT, ident)
+                    .build(), Object.class);
+
+        } catch (RuntimeException e) {
+            errorStatusDecoder.decodeRuntimeException(e);
+        }
     }
 
     private static String getNavCallId() {
