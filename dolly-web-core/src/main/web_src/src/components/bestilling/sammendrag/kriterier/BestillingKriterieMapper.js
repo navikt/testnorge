@@ -28,7 +28,7 @@ const _getTpsfBestillingData = data => {
 		obj('Født etter', Formatters.formatDate(data.foedtEtter)),
 		obj('Født før', Formatters.formatDate(data.foedtFoer)),
 		obj('Alder', data.alder),
-		obj('Dødsdato', Formatters.formatDate(data.doedsdato)),
+		obj('Dødsdato', data.doedsdato === null ? 'Ingen' : Formatters.formatDate(data.doedsdato)),
 		obj('Statsborgerskap', data.statsborgerskap, AdresseKodeverk.StatsborgerskapLand),
 		obj('Statsborgerskap fra', Formatters.formatDate(data.statsborgerskapRegdato)),
 		obj('Kjønn', Formatters.kjonn(data.kjonn, data.alder)),
