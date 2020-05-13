@@ -367,7 +367,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				obj('Generer antall måneder', inntektsinfo.antallMaaneder),
 				obj('Opplysningspliktig (orgnr/id)', inntektsinfo.opplysningspliktig),
 				obj('Virksomhet (orgnr/id)', inntektsinfo.virksomhet),
-				obj('Versjon', inntektsinfo.versjon),
 				obj(
 					'Antall registrerte inntekter',
 					inntektsinfo.inntektsliste && inntektsinfo.inntektsliste.length
@@ -383,6 +382,10 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				obj(
 					'Antall registrerte arbeidsforhold',
 					inntektsinfo.arbeidsforholdsliste && inntektsinfo.arbeidsforholdsliste.length
+				),
+				obj(
+					'Antall registrerte inntektsendringer (historikk)',
+					inntektsinfo.historikk && inntektsinfo.historikk.length
 				)
 			])
 		})

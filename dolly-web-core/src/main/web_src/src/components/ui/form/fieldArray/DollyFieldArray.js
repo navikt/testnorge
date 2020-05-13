@@ -3,7 +3,7 @@ import { FieldArray } from 'formik'
 import _get from 'lodash/get'
 import Button from '~/components/ui/button/Button'
 import Hjelpetekst from '~/components/hjelpetekst'
-import ExpandableBlokk from './ExpandableBlokk.tsx'
+import ExpandableBlokk from './ExpandableBlokk'
 
 import './dollyFieldArray.less'
 
@@ -33,7 +33,6 @@ const DeleteButton = ({ onClick }) => {
 }
 
 const Numbering = ({ idx }) => <span className="dfa-blokk-number">{idx + 1}</span>
-const NumberingWithText = ({ idx }) => <span className="dfa-blokk-number">{idx}</span>
 
 export const DollyFieldArrayWrapper = ({
 	header = null,
@@ -55,7 +54,7 @@ export const DollyFieldArrayWrapper = ({
 export const DollyFaBlokk = ({ header, idx, handleRemove, hjelpetekst, children }) => (
 	<div className="dfa-blokk">
 		<div className="dfa-blokk_header">
-			{typeof idx === 'number' ? <Numbering idx={idx} /> : <NumberingWithText idx={idx} />}
+			<Numbering idx={idx} />
 			<h2>{header}</h2>
 			{hjelpetekst && <Hjelpetekst hjelpetekstFor={header}>{hjelpetekst}</Hjelpetekst>}
 			<DeleteButton onClick={handleRemove} />
