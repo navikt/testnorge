@@ -2,6 +2,8 @@ package no.nav.registre.orkestratoren.provider.rs;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -185,27 +187,24 @@ public class SyntetiseringsController {
     }
 
     @PostMapping(value = "/arena/tiltak/generer")
-    public ResponseEntity opprettTiltakIArena(
+    public List<NyttVedtakTiltak> opprettTiltakIArena(
             @RequestBody SyntetiserArenaTiltakRequest tiltakRequest
     ) {
-        tesnorgeArenaService.opprettArenaTiltak(tiltakRequest);
-        return ResponseEntity.ok().body("Opprettelsesrequest sendt til arena. Se logg til testnorge-arena for mer info.");
+        return tesnorgeArenaService.opprettArenaTiltak(tiltakRequest);
     }
 
     @PostMapping(value = "/arena/tilleggstoenad/generer")
-    public ResponseEntity opprettTilleggstoenadIArena(
+    public List<NyttVedtakTillegg> opprettTilleggstoenadIArena(
             @RequestBody SyntetiserArenaTilleggstoenadRequest tilleggstoenadRequest
     ) {
-        tesnorgeArenaService.opprettArenaTilleggstoenad(tilleggstoenadRequest);
-        return ResponseEntity.ok().body("Opprettelsesrequest sendt til arena. Se logg til testnorge-arena for mer info.");
+        return tesnorgeArenaService.opprettArenaTilleggstoenad(tilleggstoenadRequest);
     }
 
     @PostMapping(value = "/arena/tilleggstoenadArbeidssoeker/generer")
-    public ResponseEntity opprettTilleggstoenadArbeidssoekerIArena(
+    public List<NyttVedtakTillegg> opprettTilleggstoenadArbeidssoekerIArena(
             @RequestBody SyntetiserArenaTilleggstoenadArbeidssoekereRequest tilleggstoenadArbeidssoekereRequest
     ) {
-        tesnorgeArenaService.opprettArenaTilleggstoenadArbeidssoekere(tilleggstoenadArbeidssoekereRequest);
-        return ResponseEntity.ok().body("Opprettelsesrequest sendt til arena. Se logg til testnorge-arena for mer info.");
+        return tesnorgeArenaService.opprettArenaTilleggstoenadArbeidssoekere(tilleggstoenadArbeidssoekereRequest);
     }
 
     @PostMapping(value = "/medl/medlemskap/generer")

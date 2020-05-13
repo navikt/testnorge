@@ -1,6 +1,7 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -8,6 +9,8 @@ import org.springframework.web.util.UriTemplate;
 
 import no.nav.registre.orkestratoren.consumer.utils.ArenaConsumerUtils;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
+
+import java.util.List;
 
 @Component
 public class TestnorgeArenaTilleggstoenadConsumer {
@@ -62,121 +65,121 @@ public class TestnorgeArenaTilleggstoenadConsumer {
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public void opprettBoutgifter(
+    public List<NyttVedtakResponse> opprettBoutgifter(
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        consumerUtils.sendRequest(arenaOpprettBoutgifterUrl, syntetiserArenaRequest, "boutgifter");
+        return consumerUtils.sendRequest(arenaOpprettBoutgifterUrl, syntetiserArenaRequest, "boutgifter");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public void opprettDagligReise(
+    public List<NyttVedtakResponse> opprettDagligReise(
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        consumerUtils.sendRequest(arenaOpprettDagligReiseUrl, syntetiserArenaRequest, "daglig-reise");
+        return consumerUtils.sendRequest(arenaOpprettDagligReiseUrl, syntetiserArenaRequest, "daglig-reise");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public void opprettFlytting(
+    public List<NyttVedtakResponse> opprettFlytting(
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        consumerUtils.sendRequest(arenaOpprettFlyttingUrl, syntetiserArenaRequest, "flytting");
+        return consumerUtils.sendRequest(arenaOpprettFlyttingUrl, syntetiserArenaRequest, "flytting");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public void opprettLaeremidler(
+    public List<NyttVedtakResponse> opprettLaeremidler(
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        consumerUtils.sendRequest(arenaOpprettLaeremidlerUrl, syntetiserArenaRequest, "læremidler");
+        return consumerUtils.sendRequest(arenaOpprettLaeremidlerUrl, syntetiserArenaRequest, "læremidler");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public void opprettHjemreise(
+    public List<NyttVedtakResponse> opprettHjemreise(
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        consumerUtils.sendRequest(arenaOpprettHjemreiseUrl, syntetiserArenaRequest, "hjemreise");
+        return consumerUtils.sendRequest(arenaOpprettHjemreiseUrl, syntetiserArenaRequest, "hjemreise");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public void opprettReiseObligatoriskSamling(
+    public List<NyttVedtakResponse> opprettReiseObligatoriskSamling(
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        consumerUtils.sendRequest(arenaOpprettReiseObligatoriskSamlingUrl, syntetiserArenaRequest, "reise-obligatorisk-samling");
+        return consumerUtils.sendRequest(arenaOpprettReiseObligatoriskSamlingUrl, syntetiserArenaRequest, "reise-obligatorisk-samling");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public void opprettTilsynBarn(
+    public List<NyttVedtakResponse> opprettTilsynBarn(
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        consumerUtils.sendRequest(arenaOpprettTilsynBarnUrl, syntetiserArenaRequest, "tilsyn-barn");
+        return consumerUtils.sendRequest(arenaOpprettTilsynBarnUrl, syntetiserArenaRequest, "tilsyn-barn");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public void opprettTilsynFamiliemedlemmer(
+    public List<NyttVedtakResponse> opprettTilsynFamiliemedlemmer(
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        consumerUtils.sendRequest(arenaOpprettTilsynFamiliemedlemmerUrl, syntetiserArenaRequest, "tilsyn-familiemedlemmer");
+        return consumerUtils.sendRequest(arenaOpprettTilsynFamiliemedlemmerUrl, syntetiserArenaRequest, "tilsyn-familiemedlemmer");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public void opprettTilsynBarnArbeidssoekere(
+    public List<NyttVedtakResponse> opprettTilsynBarnArbeidssoekere(
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        consumerUtils.sendRequest(arenaOpprettTilsynBarnArbeidssoekereUrl, syntetiserArenaRequest, "tilsyn-barn-arbeidssøkere");
+        return consumerUtils.sendRequest(arenaOpprettTilsynBarnArbeidssoekereUrl, syntetiserArenaRequest, "tilsyn-barn-arbeidssøkere");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public void opprettTilsynFamiliemedlemmerArbeidssoekere(
+    public List<NyttVedtakResponse> opprettTilsynFamiliemedlemmerArbeidssoekere(
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        consumerUtils.sendRequest(arenaOpprettTilsynFamiliemedlemmerArbeidssoekereUrl, syntetiserArenaRequest, "tilsyn-familiemedlemmer-arbeidssøkere");
+        return consumerUtils.sendRequest(arenaOpprettTilsynFamiliemedlemmerArbeidssoekereUrl, syntetiserArenaRequest, "tilsyn-familiemedlemmer-arbeidssøkere");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public void opprettBoutgifterArbeidssoekere(
+    public List<NyttVedtakResponse> opprettBoutgifterArbeidssoekere(
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        consumerUtils.sendRequest(arenaOpprettBoutgifterArbeidssoekereUrl, syntetiserArenaRequest, "boutgifter-arbeidssøkere");
+        return consumerUtils.sendRequest(arenaOpprettBoutgifterArbeidssoekereUrl, syntetiserArenaRequest, "boutgifter-arbeidssøkere");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public void opprettDagligReiseArbeidssoekere(
+    public List<NyttVedtakResponse> opprettDagligReiseArbeidssoekere(
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        consumerUtils.sendRequest(arenaOpprettDagligReiseArbeidssoekereUrl, syntetiserArenaRequest, "daglig-reise-arbeidssøkere");
+        return consumerUtils.sendRequest(arenaOpprettDagligReiseArbeidssoekereUrl, syntetiserArenaRequest, "daglig-reise-arbeidssøkere");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public void opprettFlyttingArbeidssoekere(
+    public List<NyttVedtakResponse> opprettFlyttingArbeidssoekere(
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        consumerUtils.sendRequest(arenaOpprettFlyttingArbeidssoekereUrl, syntetiserArenaRequest, "flytting-arbeidssøkere");
+        return consumerUtils.sendRequest(arenaOpprettFlyttingArbeidssoekereUrl, syntetiserArenaRequest, "flytting-arbeidssøkere");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public void opprettLaeremidlerArbeidssoekere(
+    public List<NyttVedtakResponse> opprettLaeremidlerArbeidssoekere(
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        consumerUtils.sendRequest(arenaOpprettLaeremidlerArbeidssoekereUrl, syntetiserArenaRequest, "læremidler-arbeidssøkere");
+        return consumerUtils.sendRequest(arenaOpprettLaeremidlerArbeidssoekereUrl, syntetiserArenaRequest, "læremidler-arbeidssøkere");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public void opprettHjemreiseArbeidssoekere(
+    public List<NyttVedtakResponse> opprettHjemreiseArbeidssoekere(
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        consumerUtils.sendRequest(arenaOpprettHjemreiseArbeidssoekereUrl, syntetiserArenaRequest, "hjemreise-arbeidssøkere");
+        return consumerUtils.sendRequest(arenaOpprettHjemreiseArbeidssoekereUrl, syntetiserArenaRequest, "hjemreise-arbeidssøkere");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public void opprettReiseObligatoriskSamlingArbeidssoekere(
+    public List<NyttVedtakResponse> opprettReiseObligatoriskSamlingArbeidssoekere(
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        consumerUtils.sendRequest(arenaOpprettReiseObligatoriskSamlingArbeidssoekereUrl, syntetiserArenaRequest, "reise-obligatorisk-samling-arbeidssøkere");
+        return consumerUtils.sendRequest(arenaOpprettReiseObligatoriskSamlingArbeidssoekereUrl, syntetiserArenaRequest, "reise-obligatorisk-samling-arbeidssøkere");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public void opprettReisestoenadArbeidssoekere(
+    public List<NyttVedtakResponse> opprettReisestoenadArbeidssoekere(
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        consumerUtils.sendRequest(arenaOpprettReisestoenadArbeidssoekereUrl, syntetiserArenaRequest, "reisestønad-arbeidssøkere");
+        return consumerUtils.sendRequest(arenaOpprettReisestoenadArbeidssoekereUrl, syntetiserArenaRequest, "reisestønad-arbeidssøkere");
     }
 }

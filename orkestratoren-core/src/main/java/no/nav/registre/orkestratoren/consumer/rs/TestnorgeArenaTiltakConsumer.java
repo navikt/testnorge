@@ -1,6 +1,7 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -8,6 +9,8 @@ import org.springframework.web.util.UriTemplate;
 
 import no.nav.registre.orkestratoren.consumer.utils.ArenaConsumerUtils;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
+
+import java.util.List;
 
 @Component
 public class TestnorgeArenaTiltakConsumer {
@@ -29,23 +32,23 @@ public class TestnorgeArenaTiltakConsumer {
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public void opprettTiltaksdeltakelse(
+    public List<NyttVedtakResponse> opprettTiltaksdeltakelse(
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        consumerUtils.sendRequest(arenaOpprettTiltaksdeltakelseUrl, syntetiserArenaRequest, "tiltaksdeltakelse");
+        return consumerUtils.sendRequest(arenaOpprettTiltaksdeltakelseUrl, syntetiserArenaRequest, "tiltaksdeltakelse");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public void opprettTiltakspenger(
+    public List<NyttVedtakResponse> opprettTiltakspenger(
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        consumerUtils.sendRequest(arenaOpprettTiltakspengerUrl, syntetiserArenaRequest, "tiltakspenger");
+        return consumerUtils.sendRequest(arenaOpprettTiltakspengerUrl, syntetiserArenaRequest, "tiltakspenger");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public void opprettBarnetillegg(
+    public List<NyttVedtakResponse> opprettBarnetillegg(
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        consumerUtils.sendRequest(arenaOpprettBarnetilleggUrl, syntetiserArenaRequest, "barnetillegg");
+        return consumerUtils.sendRequest(arenaOpprettBarnetilleggUrl, syntetiserArenaRequest, "barnetillegg");
     }
 }
