@@ -14,6 +14,7 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereRes
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -51,6 +52,7 @@ public class BrukereArenaForvalterConsumer {
             List<NyBruker> nyeBrukere
     ) {
         var postRequest = RequestEntity.post(postBrukere.expand())
+                .contentType(MediaType.APPLICATION_JSON)
                 .header(CALL_ID, NAV_CALL_ID)
                 .header(CONSUMER_ID, NAV_CONSUMER_ID)
                 .body(Collections.singletonMap("nyeBrukere", nyeBrukere));
