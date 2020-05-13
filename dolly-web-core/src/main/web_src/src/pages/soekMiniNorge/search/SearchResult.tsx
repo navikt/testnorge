@@ -27,9 +27,6 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 
 	const [showFeedback, setShowFeedback] = useState(props.searchActive)
 
-	console.log(showFeedback)
-	console.log(props.searchActive)
-
 	const columns = [
 		{
 			text: 'Ident',
@@ -90,17 +87,23 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 								<ResultatVisningConnecter personId={bruker.personIdent.id} data={bruker} />
 							)}
 						/>
-						{showFeedback && <div className="feedback-container">
-							<div className="feedback-container__close-button">
-								<Button kind="remove-circle" onClick={() =>
-									// @ts-ignore
-									setShowFeedback(false)} />
+						{showFeedback && (
+							<div className="feedback-container">
+								<div className="feedback-container__close-button">
+									<Button
+										kind="remove-circle"
+										onClick={() =>
+											// @ts-ignore
+											setShowFeedback(false)
+										}
+									/>
+								</div>
+								<Feedback
+									label="Hvordan var din opplevelse med bruk av Søk i Mini-Norge?"
+									feedbackFor="Bruk av Søk i Mini Norge"
+								/>
 							</div>
-							<Feedback
-								label="Hvordan var din opplevelse med bruk av Søk i Mini-Norge?"
-								feedbackFor="Bruk av Søk i Mini Norge"
-							/>
-						</div>}
+						)}
 					</div>
 				)
 			}}
