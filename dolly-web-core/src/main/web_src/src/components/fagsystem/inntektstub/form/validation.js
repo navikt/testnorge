@@ -11,7 +11,6 @@ const unikOrgMndTest = validation => {
 
 		const values = this.options.context
 		const path = this.options.path
-		console.log('this.options :>> ', this.options)
 		const currInntektsinformasjonPath = path.split('.', 2).join('.')
 		const inntektsinformasjonPath = currInntektsinformasjonPath.split('[')[0]
 
