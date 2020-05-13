@@ -37,15 +37,13 @@
         </dependency>
 
         <dependency>
-            <groupId>no.nav.registre.arena</groupId>
-            <artifactId>arena-domain</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
+            <groupId>no.nav.registre</groupId>
+            <artifactId>testnorge-consumers</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>no.nav.registre</groupId>
-            <artifactId>testnorge-consumers</artifactId>
+            <groupId>no.nav.registre.testnorge</groupId>
+            <artifactId>testnorge-domain</artifactId>
         </dependency>
 
         <!-- TEST -->

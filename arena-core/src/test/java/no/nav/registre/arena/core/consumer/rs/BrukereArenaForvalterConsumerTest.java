@@ -11,6 +11,11 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyBruker;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.UtenServicebehov;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +32,6 @@ import java.util.Collections;
 import java.util.List;
 
 import no.nav.registre.arena.core.config.AppConfig;
-import no.nav.registre.arena.domain.vedtak.NyeBrukereResponse;
-import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
-import no.nav.registre.arena.domain.brukere.Kvalifiseringsgrupper;
-import no.nav.registre.arena.domain.brukere.NyBruker;
-import no.nav.registre.arena.domain.brukere.UtenServicebehov;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

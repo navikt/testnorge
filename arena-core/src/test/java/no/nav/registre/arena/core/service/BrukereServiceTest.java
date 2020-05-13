@@ -7,6 +7,8 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,8 +23,6 @@ import java.util.List;
 import java.util.Random;
 
 import no.nav.registre.arena.core.consumer.rs.BrukereArenaForvalterConsumer;
-import no.nav.registre.arena.domain.vedtak.NyeBrukereResponse;
-import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @RunWith(MockitoJUnitRunner.class)

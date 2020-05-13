@@ -1,6 +1,7 @@
 package no.nav.registre.arena.core.provider.rs;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,7 +11,6 @@ import java.util.List;
 
 import no.nav.registre.arena.core.provider.rs.request.SyntetiserArenaRequest;
 import no.nav.registre.arena.core.service.VedtakshistorikkService;
-import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
 
 @RestController
 @RequestMapping("api/v1/syntetisering")

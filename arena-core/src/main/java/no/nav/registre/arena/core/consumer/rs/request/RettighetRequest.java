@@ -7,13 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 
 import java.io.Serializable;
 import java.util.List;
-
-import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
-import no.nav.registre.arena.domain.vedtak.NyttVedtakTillegg;
-import no.nav.registre.arena.domain.vedtak.NyttVedtakTiltak;
 
 @JsonSubTypes({
         @JsonSubTypes.Type(value = RettighetAapRequest.class, name = "aap"),

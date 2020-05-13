@@ -8,6 +8,9 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,9 +34,6 @@ import no.nav.registre.arena.core.pensjon.response.PensjonTestdataResponse;
 import no.nav.registre.arena.core.pensjon.response.PensjonTestdataResponseDetails;
 import no.nav.registre.arena.core.pensjon.response.PensjonTestdataStatus;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
-import no.nav.registre.arena.domain.aap.gensaksopplysninger.Saksopplysning;
-import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
-import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 
 @RunWith(MockitoJUnitRunner.class)

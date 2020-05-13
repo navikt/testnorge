@@ -5,6 +5,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,8 +21,6 @@ import java.util.List;
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.TilleggSyntConsumer;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
-import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
-import no.nav.registre.arena.domain.vedtak.NyttVedtakTillegg;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RettighetTilleggServiceTest {

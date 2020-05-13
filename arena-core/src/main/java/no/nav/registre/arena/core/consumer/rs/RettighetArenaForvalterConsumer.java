@@ -6,6 +6,7 @@ import static no.nav.registre.arena.core.consumer.rs.util.Headers.NAV_CALL_ID;
 import static no.nav.registre.arena.core.consumer.rs.util.Headers.NAV_CONSUMER_ID;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.RequestEntity;
@@ -18,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
-import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
 
 @Slf4j
 @Component

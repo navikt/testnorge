@@ -1,9 +1,9 @@
 package no.nav.registre.arena.core.provider.rs;
 
-import no.nav.registre.arena.domain.vedtak.NyeBrukereResponse;
-import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
 import no.nav.registre.arena.core.provider.rs.request.SyntetiserArenaRequest;
 import no.nav.registre.arena.core.service.BrukereService;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -2,6 +2,7 @@ package no.nav.registre.arena.core.provider.rs;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.registre.arena.domain.vedtak.NyeBrukereResponse;
 import no.nav.registre.arena.core.provider.rs.request.SyntetiserArenaRequest;
 import no.nav.registre.arena.core.service.BrukereService;
 

@@ -8,6 +8,9 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.GensakKoder;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.GensakOvKoder;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +26,6 @@ import org.springframework.test.web.client.MockRestServiceServer;
 
 import no.nav.registre.arena.core.config.AppConfig;
 import no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils;
-import no.nav.registre.arena.domain.aap.gensaksopplysninger.GensakKoder;
-import no.nav.registre.arena.domain.aap.gensaksopplysninger.GensakOvKoder;
-import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureWireMock(port = 0)

@@ -4,6 +4,10 @@ import static java.lang.Math.floor;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyBruker;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,10 +17,6 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.BrukereArenaForvalterConsumer;
-import no.nav.registre.arena.domain.vedtak.NyeBrukereResponse;
-import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
-import no.nav.registre.arena.domain.brukere.Kvalifiseringsgrupper;
-import no.nav.registre.arena.domain.brukere.NyBruker;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Service

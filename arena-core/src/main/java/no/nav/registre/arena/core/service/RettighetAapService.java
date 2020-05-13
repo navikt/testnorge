@@ -9,6 +9,8 @@ import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_UNG
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,8 +31,6 @@ import no.nav.registre.arena.core.pensjon.consumer.rs.PensjonTestdataFacadeConsu
 import no.nav.registre.arena.core.pensjon.request.PensjonTestdataInntekt;
 import no.nav.registre.arena.core.pensjon.request.PensjonTestdataPerson;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
-import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
-import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
 
 @Slf4j
 @Service

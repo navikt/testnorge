@@ -4,6 +4,8 @@ import static no.nav.registre.arena.core.service.util.ServiceUtils.BEGRUNNELSE;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,8 +17,6 @@ import no.nav.registre.arena.core.consumer.rs.TilleggSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggRequest;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
-import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
-import no.nav.registre.arena.domain.vedtak.NyttVedtakTillegg;
 
 @Slf4j
 @Service

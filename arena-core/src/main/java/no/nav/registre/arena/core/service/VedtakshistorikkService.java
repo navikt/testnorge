@@ -10,6 +10,10 @@ import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_UNG
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.GensakKoder;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -27,10 +31,6 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
-import no.nav.registre.arena.domain.aap.gensaksopplysninger.GensakKoder;
-import no.nav.registre.arena.domain.historikk.Vedtakshistorikk;
-import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
-import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 
 @Slf4j

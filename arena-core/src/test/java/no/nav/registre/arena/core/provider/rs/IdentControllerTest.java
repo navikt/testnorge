@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +18,6 @@ import java.util.Collections;
 import java.util.List;
 
 import no.nav.registre.arena.core.service.IdentService;
-import no.nav.registre.arena.domain.brukere.Arbeidsoeker;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IdentControllerTest {

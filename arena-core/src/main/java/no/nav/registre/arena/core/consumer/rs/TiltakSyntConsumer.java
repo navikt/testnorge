@@ -1,5 +1,6 @@
 package no.nav.registre.arena.core.consumer.rs;
 
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
@@ -11,7 +12,6 @@ import org.springframework.web.util.UriTemplate;
 import java.util.List;
 
 import no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils;
-import no.nav.registre.arena.domain.vedtak.NyttVedtakTiltak;
 
 @Component
 public class TiltakSyntConsumer {

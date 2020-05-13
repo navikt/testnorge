@@ -2,6 +2,10 @@ package no.nav.registre.arena.core.service.util;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Adresse;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Forvalter;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Konto;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,10 +16,6 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.service.BrukereService;
-import no.nav.registre.arena.domain.brukere.Kvalifiseringsgrupper;
-import no.nav.registre.arena.domain.vedtak.forvalter.Adresse;
-import no.nav.registre.arena.domain.vedtak.forvalter.Forvalter;
-import no.nav.registre.arena.domain.vedtak.forvalter.Konto;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.RelasjonsResponse;

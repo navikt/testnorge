@@ -10,6 +10,10 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,10 +30,6 @@ import java.util.List;
 import no.nav.registre.arena.core.consumer.rs.AapSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
-import no.nav.registre.arena.domain.aap.gensaksopplysninger.Saksopplysning;
-import no.nav.registre.arena.domain.historikk.Vedtakshistorikk;
-import no.nav.registre.arena.domain.vedtak.NyttVedtakAap;
-import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 
 @RunWith(MockitoJUnitRunner.class)

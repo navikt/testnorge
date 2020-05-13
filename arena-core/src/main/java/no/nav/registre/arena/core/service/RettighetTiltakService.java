@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -28,8 +30,6 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksdeltakelse
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequest;
 import no.nav.registre.arena.core.service.util.AktivitetskodeMedSannsynlighet;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
-import no.nav.registre.arena.domain.vedtak.NyttVedtakResponse;
-import no.nav.registre.arena.domain.vedtak.NyttVedtakTiltak;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 
 @Slf4j
