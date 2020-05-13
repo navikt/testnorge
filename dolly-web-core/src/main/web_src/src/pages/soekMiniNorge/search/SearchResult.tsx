@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
@@ -6,7 +6,9 @@ import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { HodejegerenApi } from '~/service/Api'
 import { ManIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
 import ResultatVisningConnecter from '~/pages/soekMiniNorge/search/ResultatVisning/ResultatVisningConnecter'
-import { Innhold} from '../hodejegeren/types'
+import { Feedback } from '~/components/feedback'
+import { Innhold } from '../hodejegeren/types'
+import Button from '~/components/ui/button/Button'
 
 interface SearchResultVisningProps {
 	soekOptions: string
@@ -22,6 +24,8 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 	if (props.soekOptions === '' && props.searchActive) {
 		return <ContentContainer>Vennligst fyll inn en eller flere verdier å søke på.</ContentContainer>
 	}
+
+	const [showFeedback, setShowFeedback] = useState(props.searchActive)
 
 	const columns = [
 		{
@@ -64,25 +68,43 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 
 	return (
 		<LoadableComponent
-			key={props.soekNummer}
-			onFetch={() =>
-				HodejegerenApi.soek(props.soekOptions, props.antallResultat)
-			}
+			onFetch={() => HodejegerenApi.soek(props.soekOptions, props.antallResultat)}
 			render={(data: Array<Innhold>) => {
 				if (!data) {
 					return <ContentContainer>Søket gav ingen resultater.</ContentContainer>
 				}
+
 				return (
-					<DollyTable
-						data={data}
-						columns={columns}
-						pagination
-						iconItem={(bruker: Innhold) => (bruker.personInfo.kjoenn === 'M' ? <ManIconItem /> : <WomanIconItem />)}
-						onExpand={(bruker: Innhold) => <ResultatVisningConnecter
-							personId={bruker.personIdent.id}
-							data={bruker}
-						/>}
-					/>
+					<div>
+						<DollyTable
+							data={data}
+							columns={columns}
+							pagination
+							iconItem={(bruker: Innhold) =>
+								bruker.personInfo.kjoenn === 'M' ? <ManIconItem /> : <WomanIconItem />
+							}
+							onExpand={(bruker: Innhold) => (
+								<ResultatVisningConnecter personId={bruker.personIdent.id} data={bruker} />
+							)}
+						/>
+						{showFeedback && (
+							<div className="feedback-container">
+								<div className="feedback-container__close-button">
+									<Button
+										kind="remove-circle"
+										onClick={() =>
+											// @ts-ignore
+											setShowFeedback(false)
+										}
+									/>
+								</div>
+								<Feedback
+									label="Hvordan var din opplevelse med bruk av Søk i Mini-Norge?"
+									feedbackFor="Bruk av Søk i Mini Norge"
+								/>
+							</div>
+						)}
+					</div>
 				)
 			}}
 		/>
