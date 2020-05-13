@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 import no.nav.registre.frikort.service.SyntetiseringService;
 
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -18,9 +19,9 @@ public class SyntetiseringController {
 
     private final SyntetiseringService syntetiseringService;
 
-    @PostMapping(value = "/frikort")
+    @PostMapping(value = "/generer")
     @ApiOperation(value = "Generer syntetiske frikort.")
-    public HashMap<String, SyntFrikortResponse[]> genererFrikort(@RequestBody HashMap<String, Integer> request){
+    public Map<String, List<SyntFrikortResponse>> genererFrikort(@RequestBody Map<String, Integer> request) {
         return syntetiseringService.hentSyntetiskeFrikort(request);
     }
 
