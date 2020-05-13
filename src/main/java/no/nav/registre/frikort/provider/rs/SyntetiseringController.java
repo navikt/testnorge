@@ -3,9 +3,13 @@ package no.nav.registre.frikort.provider.rs;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import no.nav.registre.frikort.consumer.rs.response.SyntFrikortResponse;
 import org.springframework.web.bind.annotation.*;
 
+import no.nav.registre.frikort.service.SyntetiseringService;
+
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -13,13 +17,12 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class SyntetiseringController {
 
-    @Value("${test.string}")
-    private String testString;
+    private final SyntetiseringService syntetiseringService;
 
-    @GetMapping(value = "/frikort")
+    @PostMapping(value = "/generer")
     @ApiOperation(value = "Generer syntetiske frikort.")
-    public String genererFrikort(){
-        return testString;
+    public Map<String, List<SyntFrikortResponse>> genererFrikort(@RequestBody Map<String, Integer> request) {
+        return syntetiseringService.hentSyntetiskeFrikort(request);
     }
 
 }
