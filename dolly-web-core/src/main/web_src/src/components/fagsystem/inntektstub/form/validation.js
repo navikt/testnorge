@@ -118,7 +118,7 @@ const fradragsliste = Yup.array().of(
 const forskuddstrekksliste = Yup.array().of(
 	Yup.object({
 		beloep: requiredNumber.typeError(messages.required),
-		beskrivelse: Yup.string()
+		beskrivelse: Yup.string().nullable()
 	})
 )
 
