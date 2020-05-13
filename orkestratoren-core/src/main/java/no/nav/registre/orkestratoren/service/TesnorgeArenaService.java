@@ -54,7 +54,9 @@ public class TesnorgeArenaService {
                 .build());
 
         for (var vedtak : nyeVedtakAap) {
-            log.info("Opprettet {} vedtak (aap). Antall feilede vedtak (aap): {}", vedtak.getNyeRettigheterAap().size(), vedtak.getFeiledeRettigheter().size());
+            log.info("Opprettet {} vedtak (aap). Antall feilede vedtak (aap): {}",
+                    vedtak.getNyeRettigheterAap() != null ? vedtak.getNyeRettigheterAap().size() : 0,
+                    vedtak.getFeiledeRettigheter() != null ? vedtak.getFeiledeRettigheter().size() : 0);
             arenaRespons.addAll(vedtak.getNyeRettigheterAap());
         }
 
@@ -65,7 +67,9 @@ public class TesnorgeArenaService {
                 .build());
 
         for (var vedtak : nyeVedtakUngUfoer) {
-            log.info("Opprettet {} vedtak (ung-ufør). Antall feilede vedtak (ung-ufør): {}", vedtak.getNyeRettigheterAap().size(), vedtak.getFeiledeRettigheter().size());
+            log.info("Opprettet {} vedtak (ung-ufør). Antall feilede vedtak (ung-ufør): {}",
+                    vedtak.getNyeRettigheterAap() != null ? vedtak.getNyeRettigheterAap().size() : 0,
+                    vedtak.getFeiledeRettigheter() != null ? vedtak.getFeiledeRettigheter().size() : 0);
             arenaRespons.addAll(vedtak.getNyeRettigheterAap());
         }
 
@@ -76,7 +80,9 @@ public class TesnorgeArenaService {
                 .build());
 
         for (var vedtak : nyeVedtakTvungenForvaltning) {
-            log.info("Opprettet {} vedtak (tvungen forvaltning). Antall feilede vedtak (tvungen forvaltning): {}", vedtak.getNyeRettigheterAap().size(), vedtak.getFeiledeRettigheter().size());
+            log.info("Opprettet {} vedtak (tvungen forvaltning). Antall feilede vedtak (tvungen forvaltning): {}",
+                    vedtak.getNyeRettigheterAap() != null ? vedtak.getNyeRettigheterAap().size() : 0,
+                    vedtak.getFeiledeRettigheter() != null ? vedtak.getFeiledeRettigheter().size() : 0);
             arenaRespons.addAll(vedtak.getNyeRettigheterAap());
         }
 
@@ -87,7 +93,9 @@ public class TesnorgeArenaService {
                 .build());
 
         for (var vedtak : nyeVedtakFritakMeldekort) {
-            log.info("Opprettet {} vedtak (fritak meldekort). Antall feilede vedtak (fritak meldekort): {}", vedtak.getNyeRettigheterAap().size(), vedtak.getFeiledeRettigheter().size());
+            log.info("Opprettet {} vedtak (fritak meldekort). Antall feilede vedtak (fritak meldekort): {}",
+                    vedtak.getNyeRettigheterAap() != null ? vedtak.getNyeRettigheterAap().size() : 0,
+                    vedtak.getFeiledeRettigheter() != null ? vedtak.getFeiledeRettigheter().size() : 0);
             arenaRespons.addAll(vedtak.getNyeRettigheterAap());
         }
 
