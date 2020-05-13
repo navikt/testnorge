@@ -1,8 +1,12 @@
 package no.nav.registre.orkestratoren.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeArenaAapConsumer;
@@ -17,6 +21,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaTillegg
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaTiltakRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaVedtakshistorikkRequest;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TesnorgeArenaService {
@@ -39,30 +44,54 @@ public class TesnorgeArenaService {
                 .build());
     }
 
-    public void opprettArenaAap(SyntetiserArenaAapRequest aapRequest) {
-        aapConsumer.opprettRettighetAap(SyntetiserArenaRequest.builder()
+    public List<NyttVedtakAap> opprettArenaAap(SyntetiserArenaAapRequest aapRequest) {
+        List<NyttVedtakAap> arenaRespons = new ArrayList<>();
+
+        var nyeVedtakAap = aapConsumer.opprettRettighetAap(SyntetiserArenaRequest.builder()
                 .avspillergruppeId(aapRequest.getAvspillergruppeId())
                 .miljoe(aapRequest.getMiljoe())
                 .antallNyeIdenter(aapRequest.getAntallAap())
                 .build());
 
-        aapConsumer.opprettRettighetAapUngUfoer(SyntetiserArenaRequest.builder()
+        for (var vedtak : nyeVedtakAap) {
+            log.info("Opprettet {} vedtak (aap). Antall feilede vedtak (aap): {}", vedtak.getNyeRettigheterAap().size(), vedtak.getFeiledeRettigheter().size());
+            arenaRespons.addAll(vedtak.getNyeRettigheterAap());
+        }
+
+        var nyeVedtakUngUfoer = aapConsumer.opprettRettighetAapUngUfoer(SyntetiserArenaRequest.builder()
                 .avspillergruppeId(aapRequest.getAvspillergruppeId())
                 .miljoe(aapRequest.getMiljoe())
                 .antallNyeIdenter(aapRequest.getAntallUngUfoer())
                 .build());
 
-        aapConsumer.opprettRettighetAapTvungenForvaltning(SyntetiserArenaRequest.builder()
+        for (var vedtak : nyeVedtakUngUfoer) {
+            log.info("Opprettet {} vedtak (ung-ufør). Antall feilede vedtak (ung-ufør): {}", vedtak.getNyeRettigheterAap().size(), vedtak.getFeiledeRettigheter().size());
+            arenaRespons.addAll(vedtak.getNyeRettigheterAap());
+        }
+
+        var nyeVedtakTvungenForvaltning = aapConsumer.opprettRettighetAapTvungenForvaltning(SyntetiserArenaRequest.builder()
                 .avspillergruppeId(aapRequest.getAvspillergruppeId())
                 .miljoe(aapRequest.getMiljoe())
                 .antallNyeIdenter(aapRequest.getAntallTvungenForvaltning())
                 .build());
 
-        aapConsumer.opprettRettighetAapFritakMeldekort(SyntetiserArenaRequest.builder()
+        for (var vedtak : nyeVedtakTvungenForvaltning) {
+            log.info("Opprettet {} vedtak (tvungen forvaltning). Antall feilede vedtak (tvungen forvaltning): {}", vedtak.getNyeRettigheterAap().size(), vedtak.getFeiledeRettigheter().size());
+            arenaRespons.addAll(vedtak.getNyeRettigheterAap());
+        }
+
+        var nyeVedtakFritakMeldekort = aapConsumer.opprettRettighetAapFritakMeldekort(SyntetiserArenaRequest.builder()
                 .avspillergruppeId(aapRequest.getAvspillergruppeId())
                 .miljoe(aapRequest.getMiljoe())
                 .antallNyeIdenter(aapRequest.getAntallFritakMeldekort())
                 .build());
+
+        for (var vedtak : nyeVedtakFritakMeldekort) {
+            log.info("Opprettet {} vedtak (fritak meldekort). Antall feilede vedtak (fritak meldekort): {}", vedtak.getNyeRettigheterAap().size(), vedtak.getFeiledeRettigheter().size());
+            arenaRespons.addAll(vedtak.getNyeRettigheterAap());
+        }
+
+        return arenaRespons;
     }
 
     public void opprettArenaTiltak(SyntetiserArenaTiltakRequest tiltakRequest) {

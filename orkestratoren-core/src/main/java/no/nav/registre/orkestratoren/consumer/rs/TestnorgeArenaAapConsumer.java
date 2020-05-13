@@ -1,18 +1,21 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriTemplate;
 
-import no.nav.registre.orkestratoren.consumer.utils.ConsumerUtils;
+import no.nav.registre.orkestratoren.consumer.utils.ArenaConsumerUtils;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
+
+import java.util.List;
 
 @Component
 public class TestnorgeArenaAapConsumer {
 
-    private final ConsumerUtils consumerUtils;
+    private final ArenaConsumerUtils consumerUtils;
 
     private UriTemplate arenaOpprettAapUrl;
     private UriTemplate arenaOpprettAapUngUfoerUrl;
@@ -20,7 +23,7 @@ public class TestnorgeArenaAapConsumer {
     private UriTemplate arenaOpprettAapFritakMeldekortUrl;
 
     public TestnorgeArenaAapConsumer(
-            @Autowired ConsumerUtils consumerUtils,
+            @Autowired ArenaConsumerUtils consumerUtils,
             @Value("${testnorge-arena.rest.api.url}") String arenaServerUrl
     ) {
         this.consumerUtils = consumerUtils;
@@ -31,30 +34,30 @@ public class TestnorgeArenaAapConsumer {
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public void opprettRettighetAap(
+    public List<NyttVedtakResponse> opprettRettighetAap(
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        consumerUtils.sendRequest(arenaOpprettAapUrl, syntetiserArenaRequest, "aap");
+        return consumerUtils.sendRequest(arenaOpprettAapUrl, syntetiserArenaRequest, "aap");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public void opprettRettighetAapUngUfoer(
+    public List<NyttVedtakResponse> opprettRettighetAapUngUfoer(
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        consumerUtils.sendRequest(arenaOpprettAapUngUfoerUrl, syntetiserArenaRequest, "ung-ufør");
+        return consumerUtils.sendRequest(arenaOpprettAapUngUfoerUrl, syntetiserArenaRequest, "ung-ufør");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public void opprettRettighetAapTvungenForvaltning(
+    public List<NyttVedtakResponse> opprettRettighetAapTvungenForvaltning(
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        consumerUtils.sendRequest(arenaOpprettAapTvungenForvaltningUrl, syntetiserArenaRequest, "tvungen forvaltning");
+        return consumerUtils.sendRequest(arenaOpprettAapTvungenForvaltningUrl, syntetiserArenaRequest, "tvungen forvaltning");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public void opprettRettighetAapFritakMeldekort(
+    public List<NyttVedtakResponse> opprettRettighetAapFritakMeldekort(
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        consumerUtils.sendRequest(arenaOpprettAapFritakMeldekortUrl, syntetiserArenaRequest, "fritak-meldekort");
+        return consumerUtils.sendRequest(arenaOpprettAapFritakMeldekortUrl, syntetiserArenaRequest, "fritak-meldekort");
     }
 }

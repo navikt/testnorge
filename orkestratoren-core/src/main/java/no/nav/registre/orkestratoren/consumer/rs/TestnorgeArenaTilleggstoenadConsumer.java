@@ -6,13 +6,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriTemplate;
 
-import no.nav.registre.orkestratoren.consumer.utils.ConsumerUtils;
+import no.nav.registre.orkestratoren.consumer.utils.ArenaConsumerUtils;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 
 @Component
 public class TestnorgeArenaTilleggstoenadConsumer {
 
-    private final ConsumerUtils consumerUtils;
+    private final ArenaConsumerUtils consumerUtils;
 
     private UriTemplate arenaOpprettBoutgifterUrl;
     private UriTemplate arenaOpprettDagligReiseUrl;
@@ -35,7 +35,7 @@ public class TestnorgeArenaTilleggstoenadConsumer {
     private UriTemplate arenaOpprettReisestoenadArbeidssoekereUrl;
 
     public TestnorgeArenaTilleggstoenadConsumer(
-            @Autowired ConsumerUtils consumerUtils,
+            @Autowired ArenaConsumerUtils consumerUtils,
             @Value("${testnorge-arena.rest.api.url}") String arenaServerUrl
     ) {
         this.consumerUtils = consumerUtils;

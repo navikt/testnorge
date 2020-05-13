@@ -1,6 +1,7 @@
 package no.nav.registre.orkestratoren.provider.rs;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -177,11 +178,10 @@ public class SyntetiseringsController {
     }
 
     @PostMapping(value = "/arena/aap/generer")
-    public ResponseEntity opprettAapIArena(
+    public List<NyttVedtakAap> opprettAapIArena(
             @RequestBody SyntetiserArenaAapRequest aapRequest
     ) {
-        tesnorgeArenaService.opprettArenaAap(aapRequest);
-        return ResponseEntity.ok().body("Opprettelsesrequest sendt til arena. Se logg til testnorge-arena for mer info.");
+        return tesnorgeArenaService.opprettArenaAap(aapRequest);
     }
 
     @PostMapping(value = "/arena/tiltak/generer")

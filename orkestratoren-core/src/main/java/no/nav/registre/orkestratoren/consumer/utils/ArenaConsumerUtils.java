@@ -2,6 +2,8 @@ package no.nav.registre.orkestratoren.consumer.utils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
@@ -11,14 +13,17 @@ import org.springframework.web.util.UriTemplate;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ConsumerUtils {
+public class ArenaConsumerUtils {
 
     private final RestTemplate restTemplate;
 
-    public void sendRequest(
+    public List<NyttVedtakResponse> sendRequest(
             UriTemplate url,
             SyntetiserArenaRequest request,
             String info
@@ -27,10 +32,13 @@ public class ConsumerUtils {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request);
 
+        List<NyttVedtakResponse> response = new ArrayList<>();
         try {
-            restTemplate.exchange(postRequest, Object.class).getBody();
+            response = restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakResponse>>() {
+            }).getBody();
         } catch (HttpStatusCodeException e) {
             log.error("Feil under syntetisering av '{}'", info, e);
         }
+        return response;
     }
 }
