@@ -25,7 +25,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 	cancelBestilling: bestillingId => dispatch(cancelBestilling(bestillingId))
 })
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(StatusListe)
+export default connect(mapStateToProps, mapDispatchToProps)(StatusListe)

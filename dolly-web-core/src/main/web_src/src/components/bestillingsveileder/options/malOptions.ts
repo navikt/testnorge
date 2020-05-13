@@ -2,7 +2,7 @@ import { initialValues } from './utils'
 import _ from 'lodash'
 
 export const initialValuesBasedOnMal = (mal: any) => {
-	let initialValuesMal = Object.assign({}, mal.bestilling)
+	const initialValuesMal = Object.assign({}, mal.bestilling)
 
 	if (initialValuesMal.aareg) {
 		initialValuesMal.aareg = getUpdatedAaregData(initialValuesMal.aareg)
@@ -32,7 +32,7 @@ export const initialValuesBasedOnMal = (mal: any) => {
 }
 
 const getUpdatedInntektstubData = (inntektstubData: any) => {
-	let newInntektstubData = Object.assign({}, inntektstubData)
+	const newInntektstubData = Object.assign({}, inntektstubData)
 	newInntektstubData.inntektsinformasjon = newInntektstubData.inntektsinformasjon.map(
 		(inntekt: any) => updateData(inntekt, initialValues.inntektstub)
 	)
@@ -66,7 +66,7 @@ const getUpdatedPdlfData = (pdlfData: any) => {
 }
 
 const getUpdatedTpsfData = (tpsfData: any) => {
-	var newTpsfData = Object.assign({}, tpsfData)
+	let newTpsfData = Object.assign({}, tpsfData)
 	if (tpsfData.statsborgerskap) {
 		newTpsfData = updateData(newTpsfData, initialValues.statborgerskap)
 	}
@@ -132,9 +132,9 @@ const getUpdatedUdistubData = (udistubData: any) => {
 }
 
 const updateData = (data: any, initalValues: any) => {
-	var newData = Object.assign({}, data)
+	let newData = Object.assign({}, data)
 	newData = _.extend({}, initalValues, newData)
-	for (let key in initalValues) {
+	for (const key in initalValues) {
 		if (Array.isArray(initalValues[key])) {
 			for (let i = 0; i < newData[key].length; i++) {
 				newData[key][i] = updateData(newData[key][i], initalValues[key][0])

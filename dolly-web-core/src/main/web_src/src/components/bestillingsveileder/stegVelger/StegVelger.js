@@ -50,7 +50,7 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 	return (
 		<Formik initialValues={initialValues} validate={_validate} onSubmit={_handleSubmit}>
 			{formikBag => {
-				const stateModifier = stateModifierFns(formikBag.values, formikBag.setValues)
+				const stateModifier = stateModifierFns(formikBag.values, formikBag.setValues, opts)
 				return (
 					<Fragment>
 						<Stegindikator aktivtSteg={step} steg={labels} visLabel kompakt />

@@ -53,7 +53,7 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 		if (values.inntektstype !== currentInntektstype) {
 			formikBag.setFieldValue(inntektPath, nullstiltInntekt)
 		} else {
-			for (var [key, value] of Object.entries(values)) {
+			for (const [key, value] of Object.entries(values)) {
 				if (key === 'tilleggsinformasjonstype') {
 					if (value !== currentTilleggsinformasjonstype) {
 						formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjon`, {})
@@ -86,7 +86,7 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 					resetForm({ values: { inntektstype: values.inntektstype } })
 					values = { inntektstype: values.inntektstype }
 				}
-				for (var [key, value] of Object.entries(values)) {
+				for (const [key, value] of Object.entries(values)) {
 					if (value === '') {
 						values[key] = null
 					}
