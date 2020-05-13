@@ -1,16 +1,11 @@
 import React from 'react'
-import { FormikProps, FieldArray } from 'formik'
+import { FormikProps } from 'formik'
 import _get from 'lodash/get'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError, erForste } from '~/components/ui/form/formUtils'
 import { validation } from './validation'
-import {
-	FormikDollyFieldArray,
-	DollyFieldArrayWrapper,
-	DollyFaBlokk,
-	FieldArrayAddButton
-} from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import InntektsinformasjonForm from './partials/inntektsinformasjonForm'
 import { Inntektsinformasjon } from './partials/inntektstubTypes'
 
@@ -58,6 +53,7 @@ export const InntektstubForm = ({ formikBag }: InntektstubForm) => (
 					name={inntektstubPath}
 					header="Inntektsinformasjon"
 					newEntry={initialValues}
+					hjelpetekst={infotekst}
 				>
 					{(path: string) => <InntektsinformasjonForm path={path} formikBag={formikBag} />}
 				</FormikDollyFieldArray>

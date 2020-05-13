@@ -6,7 +6,6 @@ import {
 	DollyFieldArrayWrapper,
 	FieldArrayAddButton
 } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import ExpandableBlokk from '~/components/ui/form/fieldArray/ExpandableBlokk'
 import { Inntekt, Fradrag, Forskudd, Arbeidsforhold } from './inntektstubTypes'
 import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinformasjonLister'
 
