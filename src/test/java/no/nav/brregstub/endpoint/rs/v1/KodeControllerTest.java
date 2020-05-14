@@ -1,8 +1,8 @@
-package no.nav.brregstub.endpoint.rs;
+package no.nav.brregstub.endpoint.rs.v1;
 
 import no.nav.brregstub.ApplicationConfig;
-import no.nav.brregstub.api.RolleKode;
-import no.nav.brregstub.api.UnderstatusKode;
+import no.nav.brregstub.api.common.RolleKode;
+import no.nav.brregstub.api.common.UnderstatusKode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;

@@ -1,4 +1,4 @@
-package no.nav.brregstub.api;
+package no.nav.brregstub.api.common;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

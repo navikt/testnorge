@@ -1,14 +1,14 @@
-package no.nav.brregstub.api;
-
+package no.nav.brregstub.api.common;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 
 @Data
 @NoArgsConstructor
-public class AdresseTo {
+public class RsAdresse {
 
     @ApiModelProperty(example = "Dollyveien 1", required = true)
     @NotBlank private String adresse1;

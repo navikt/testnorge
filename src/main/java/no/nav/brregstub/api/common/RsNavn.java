@@ -1,4 +1,4 @@
-package no.nav.brregstub.api;
+package no.nav.brregstub.api.common;
 
 
 import io.swagger.annotations.ApiModelProperty;
@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NavnTo {
+public class RsNavn {
 
     @ApiModelProperty(example = "Navn", required = true)
     @NotBlank

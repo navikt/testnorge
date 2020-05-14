@@ -1,8 +1,11 @@
-package no.nav.brregstub.api;
-
+package no.nav.brregstub.api.common;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -10,9 +13,14 @@ import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 
-@Data
+import no.nav.brregstub.api.common.RsSamendring;
+
+@Getter
+@Setter
 @NoArgsConstructor
-public class OrganisasjonTo {
+@AllArgsConstructor
+@Builder
+public class RsOrganisasjon {
 
     @ApiModelProperty(example = "998877665", required = true)
     @NotNull
@@ -23,9 +31,9 @@ public class OrganisasjonTo {
     @ApiModelProperty(dataType = "java.lang.String", example = "1976-01-01", required = true)
     @NotNull
     private LocalDate registreringsdato;
-    @Valid private SamendringTo kontaktperson;
-    @Valid private SamendringTo sameier;
-    @Valid private SamendringTo styre;
-    @Valid private SamendringTo komplementar;
-    @Valid private SamendringTo deltakere;
+    @Valid private RsSamendring kontaktperson;
+    @Valid private RsSamendring sameier;
+    @Valid private RsSamendring styre;
+    @Valid private RsSamendring komplementar;
+    @Valid private RsSamendring deltakere;
 }

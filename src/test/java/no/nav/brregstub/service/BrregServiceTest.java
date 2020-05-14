@@ -2,7 +2,7 @@ package no.nav.brregstub.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
-import no.nav.brregstub.api.RolleKode;
+import no.nav.brregstub.api.common.RolleKode;
 import no.nav.brregstub.config.JacksonConfig;
 import no.nav.brregstub.database.domene.HentRolle;
 import no.nav.brregstub.database.domene.Rolleoversikt;

@@ -1,4 +1,4 @@
-package no.nav.brregstub.api;
+package no.nav.brregstub.api.common;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

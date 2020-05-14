@@ -1,12 +1,7 @@
-package no.nav.brregstub.endpoint.rs;
+package no.nav.brregstub.endpoint.rs.v1;
 
-import no.nav.brregstub.ApplicationConfig;
-import no.nav.brregstub.api.AdresseTo;
-import no.nav.brregstub.api.NavnTo;
-import no.nav.brregstub.api.RolleTo;
-import no.nav.brregstub.api.RolleoversiktTo;
-import no.nav.brregstub.database.domene.Rolleoversikt;
-import no.nav.brregstub.database.repository.RolleoversiktRepository;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -24,10 +19,16 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.time.LocalDate;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import no.nav.brregstub.ApplicationConfig;
+import no.nav.brregstub.api.common.RsAdresse;
+import no.nav.brregstub.api.common.RsNavn;
+import no.nav.brregstub.api.v1.RolleTo;
+import no.nav.brregstub.api.v1.RolleoversiktTo;
+import no.nav.brregstub.database.domene.Rolleoversikt;
+import no.nav.brregstub.database.repository.RolleoversiktRepository;
 
 @ActiveProfiles("local")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {ApplicationConfig.class})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = { ApplicationConfig.class })
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class HentRolleoversiktControllerTest {
@@ -43,9 +44,9 @@ public class HentRolleoversiktControllerTest {
     @DisplayName("GET rolleoversikt returnerer 404 hvis ikke eksisterer")
     public void skalKasteNotFoundHvisRolleIkkeEksister() {
         var response = restTemplate.exchange(API_V_1_ROLLEUTSKRIFT,
-                                             HttpMethod.GET,
-                                             createHttpEntity("eksister ikke", null),
-                                             String.class);
+                HttpMethod.GET,
+                createHttpEntity("eksister ikke", null),
+                String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
@@ -53,7 +54,7 @@ public class HentRolleoversiktControllerTest {
     @DisplayName("GET rolleoversikt returnerer 400 hvis input mangler")
     public void skalKasteBadRequestHvisInputMangler() {
         var response = restTemplate.getForEntity(API_V_1_ROLLEUTSKRIFT,
-                                                 Map.class);
+                Map.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody().get("message").toString()).contains("Missing request header 'Nav-Personident'");
     }
@@ -67,13 +68,12 @@ public class HentRolleoversiktControllerTest {
         repository.save(nyRolle);
 
         var response = restTemplate.exchange(API_V_1_ROLLEUTSKRIFT,
-                                             HttpMethod.GET,
-                                             createHttpEntity("ident", null),
-                                             RolleoversiktTo.class);
+                HttpMethod.GET,
+                createHttpEntity("ident", null),
+                RolleoversiktTo.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getFnr()).isEqualTo("ident");
     }
-
 
     @Test
     @DisplayName("DELETE rolleoversikt skal slette rolleoversikt")
@@ -99,7 +99,6 @@ public class HentRolleoversiktControllerTest {
         assertThat(responseDelete.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(responseDelete.getBody().get("message").toString()).contains("Missing request header 'Nav-Personident'");
     }
-
 
     @Test
     @DisplayName("POST rolleoversikt skal opprette ny rolleoversikt")
@@ -128,10 +127,10 @@ public class HentRolleoversiktControllerTest {
         var to = new RolleoversiktTo();
         to.setFnr("ny");
         to.setHovedstatus(1);
-        var navntTo = new NavnTo();
+        var navntTo = new RsNavn();
         navntTo.setNavn1("Navn");
         to.setNavn(navntTo);
-        var adresseTo = new AdresseTo();
+        var adresseTo = new RsAdresse();
         adresseTo.setAdresse1("Adresse 1");
         adresseTo.setLandKode("NO");
         to.setAdresse(adresseTo);
@@ -143,7 +142,10 @@ public class HentRolleoversiktControllerTest {
         return to;
     }
 
-    private HttpEntity createHttpEntity(String ident, RolleoversiktTo body) {
+    private HttpEntity createHttpEntity(
+            String ident,
+            RolleoversiktTo body
+    ) {
         var headers = new HttpHeaders();
         headers.add("Nav-Personident", ident);
         return new HttpEntity(body, headers);

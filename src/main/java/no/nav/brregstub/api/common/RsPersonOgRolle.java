@@ -1,8 +1,8 @@
-package no.nav.brregstub.api;
-
+package no.nav.brregstub.api.common;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,12 +13,12 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PersonOgRolleTo {
+@Builder
+public class RsPersonOgRolle {
 
     @ApiModelProperty(dataType = "java.lang.String", example = "010176100000", required = true)
     @NotBlank
     private String fodselsnr;
-
 
     @ApiModelProperty(dataType = "java.lang.String", example = "DAGL", required = true)
     @NotBlank

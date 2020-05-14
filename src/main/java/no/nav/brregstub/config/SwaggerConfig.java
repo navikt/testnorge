@@ -31,10 +31,27 @@ public class SwaggerConfig implements WebMvcConfigurer {
     public Docket api() {
         Set<String> contentTypeJson = new HashSet<>(Collections.singletonList("application/json"));
         return new Docket(DocumentationType.SWAGGER_2)
+                .groupName("API versjon 1")
                 .ignoredParameterTypes(ApiIgnore.class)
                 .select()
                 .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.ant("/api/**"))
+                .paths(PathSelectors.ant("/api/v1/**"))
+                .build()
+                .apiInfo(apiInfo())
+                .produces(contentTypeJson)
+                .consumes(contentTypeJson)
+                .useDefaultResponseMessages(false);
+    }
+
+    @Bean
+    public Docket apiV2() {
+        Set<String> contentTypeJson = new HashSet<>(Collections.singletonList("application/json"));
+        return new Docket(DocumentationType.SWAGGER_2)
+                .groupName("API versjon 2")
+                .ignoredParameterTypes(ApiIgnore.class)
+                .select()
+                .apis(RequestHandlerSelectors.any())
+                .paths(PathSelectors.ant("/api/v2/**"))
                 .build()
                 .apiInfo(apiInfo())
                 .produces(contentTypeJson)

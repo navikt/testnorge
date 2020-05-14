@@ -3,7 +3,7 @@ package no.nav.brregstub.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
-import no.nav.brregstub.api.OrganisasjonTo;
+import no.nav.brregstub.api.common.RsOrganisasjon;
 import no.nav.brregstub.database.domene.HentRolle;
 import no.nav.brregstub.database.repository.HentRolleRepository;
 import no.nav.brregstub.mapper.HentRolleMapper;
@@ -20,7 +20,7 @@ public class HentRolleService {
     private final ObjectMapper objectMapper;
 
     @SneakyThrows
-    public Optional<OrganisasjonTo> lagreEllerOppdaterDataForHentRolle(OrganisasjonTo request) {
+    public Optional<RsOrganisasjon> lagreEllerOppdaterDataForHentRolle(RsOrganisasjon request) {
         HentRolleMapper.map(request); //sjekker om input kan mappes før lagring
 
         var rollutskrift = hentRolleRepository.findByOrgnr(request.getOrgnr())
@@ -37,11 +37,11 @@ public class HentRolleService {
     }
 
     @SneakyThrows
-    public Optional<OrganisasjonTo> hentRolle(Integer ident) {
+    public Optional<RsOrganisasjon> hentRolle(Integer ident) {
         var hentRolle = hentRolleRepository.findByOrgnr(ident);
 
         if (hentRolle.isPresent()) {
-            var to = objectMapper.readValue(hentRolle.get().getJson(), OrganisasjonTo.class);
+            var to = objectMapper.readValue(hentRolle.get().getJson(), RsOrganisasjon.class);
             return Optional.of(to);
         }
         return Optional.empty();

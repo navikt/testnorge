@@ -1,4 +1,4 @@
-package no.nav.brregstub.api;
+package no.nav.brregstub.api.common;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SamendringTo {
+public class RsSamendring {
 
     @ApiModelProperty(dataType = "java.lang.String", example = "2004-01-01", required = true)
     @NotNull
@@ -25,6 +25,6 @@ public class SamendringTo {
 
     @NotEmpty
     @Valid
-    private List<PersonOgRolleTo> roller = new LinkedList<>();
+    private List<RsPersonOgRolle> roller = new LinkedList<>();
 
 }

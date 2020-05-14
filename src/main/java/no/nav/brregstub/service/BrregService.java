@@ -3,8 +3,8 @@ package no.nav.brregstub.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
-import no.nav.brregstub.api.OrganisasjonTo;
-import no.nav.brregstub.api.RolleoversiktTo;
+import no.nav.brregstub.api.common.RsOrganisasjon;
+import no.nav.brregstub.api.v1.RolleoversiktTo;
 import no.nav.brregstub.database.repository.HentRolleRepository;
 import no.nav.brregstub.database.repository.RolleoversiktRepository;
 import no.nav.brregstub.mapper.HentRolleMapper;
@@ -31,11 +31,11 @@ public class BrregService {
         var orgNr = Integer.parseInt(orgnummer);
         var hentRolle = hentRolleRepository.findByOrgnr(orgNr);
         if (hentRolle.isPresent()) {
-            var fromDb = objectMapper.readValue(hentRolle.get().getJson(), OrganisasjonTo.class);
+            var fromDb = objectMapper.readValue(hentRolle.get().getJson(), RsOrganisasjon.class);
             return HentRolleMapper.map(fromDb);
         }
 
-        var organisasjonIkkeFunnet = new OrganisasjonTo();
+        var organisasjonIkkeFunnet = new RsOrganisasjon();
         organisasjonIkkeFunnet.setOrgnr(orgNr);
         organisasjonIkkeFunnet.setHovedstatus(1);
         organisasjonIkkeFunnet.getUnderstatuser().add(ENHET_IKKE_FUNNET);

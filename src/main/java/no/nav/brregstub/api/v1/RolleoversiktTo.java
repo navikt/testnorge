@@ -1,5 +1,4 @@
-package no.nav.brregstub.api;
-
+package no.nav.brregstub.api.v1;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -15,6 +14,9 @@ import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 
+import no.nav.brregstub.api.common.RsAdresse;
+import no.nav.brregstub.api.common.RsNavn;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -29,11 +31,11 @@ public class RolleoversiktTo {
 
     @NotNull
     @Valid
-    private NavnTo navn;
+    private RsNavn navn;
 
     @NotNull
     @Valid
-    private AdresseTo adresse;
+    private RsAdresse adresse;
 
     @Valid
     @NotEmpty
@@ -43,4 +45,11 @@ public class RolleoversiktTo {
     private Integer hovedstatus = 0;
 
     private List<Integer> understatuser = new LinkedList<>();
+
+    public List<Integer> getUnderstatuser() {
+        if (understatuser == null) {
+            understatuser = new LinkedList<>();
+        }
+        return understatuser;
+    }
 }

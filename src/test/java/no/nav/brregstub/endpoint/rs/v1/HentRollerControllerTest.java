@@ -1,7 +1,7 @@
-package no.nav.brregstub.endpoint.rs;
+package no.nav.brregstub.endpoint.rs.v1;
 
 import no.nav.brregstub.ApplicationConfig;
-import no.nav.brregstub.api.OrganisasjonTo;
+import no.nav.brregstub.api.common.RsOrganisasjon;
 import no.nav.brregstub.database.domene.HentRolle;
 import no.nav.brregstub.database.repository.HentRolleRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -52,7 +52,7 @@ public class HentRollerControllerTest {
         repository.save(nyRolle);
 
         var response = restTemplate.getForEntity(API_V_1_ROLLER + nyRolle.getOrgnr(),
-                                                 OrganisasjonTo.class);
+                                                 RsOrganisasjon.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getOrgnr()).isEqualTo(nyRolle.getOrgnr());
     }
@@ -78,7 +78,7 @@ public class HentRollerControllerTest {
     @Test
     @DisplayName("POST rolle skal opprette ny databaseinnslag")
     public void skalLagreRequestIDatabase() {
-        var to = new OrganisasjonTo();
+        var to = new RsOrganisasjon();
         to.setOrgnr(4);
         to.setRegistreringsdato(LocalDate.now());
 
@@ -93,7 +93,7 @@ public class HentRollerControllerTest {
     @Test
     @DisplayName("POST rolle returnere bad request ved manglende feilt")
     public void skalReturnereBadRequestVedValideringsFeil() {
-        var to = new OrganisasjonTo();
+        var to = new RsOrganisasjon();
 
         var response =
                 restTemplate.exchange(API_V_1_ROLLER, HttpMethod.POST, new HttpEntity<>(to), Map.class);
