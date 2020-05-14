@@ -6,13 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
-import java.util.Dictionary;
-import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -24,10 +23,10 @@ public class FrikortSyntetisererenConsumer {
     @Value("${synthdata.frikort.url}")
     private String syntServerUrl;
 
-    public HashMap<String, SyntFrikortResponse[]> hentFrikortFromSyntRest(HashMap<String, Integer> request) {
+    public Map<String, List<SyntFrikortResponse>> hentSyntetiskeEgenandelerFraSyntRest(Map<String, Integer> request) {
 
         var postRequest = RequestEntity.post(URI.create(syntServerUrl + "/api/v1/generate")).body(request);
-        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<HashMap<String, SyntFrikortResponse[]>>(){}).getBody();
+        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<Map<String, List<SyntFrikortResponse>>>(){}).getBody();
 
     }
 }
