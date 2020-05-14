@@ -1,6 +1,9 @@
 export type Bestillingsdata = {
 	antall: number
 	environments: Array<String>
-	tpsf?: any
+	tpsf?: {
+		egenAnsattDatoFom?: string
+		spesreg?: string
+	}
 	// TODO: Lage types for alle fagsystemer
 }
