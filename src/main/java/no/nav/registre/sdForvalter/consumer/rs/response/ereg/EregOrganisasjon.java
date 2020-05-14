@@ -45,6 +45,7 @@ public class EregOrganisasjon {
                         ? parents.get(0).getOrganisasjonsnummer()
                         : null
                 )
+                .redigertnavn(navn.getRedigertnavn())
                 .enhetType(detaljer.getEnhetstype());
 
         if (organisasjonDetaljer != null && organisasjonDetaljer.getPostadresser() != null && !organisasjonDetaljer.getPostadresser().isEmpty()) {

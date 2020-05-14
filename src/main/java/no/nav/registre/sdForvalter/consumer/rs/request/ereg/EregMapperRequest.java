@@ -44,7 +44,11 @@ public class EregMapperRequest {
         epost = model.getEpost();
         internetAdresse = model.getInternetAdresse();
         if (Strings.isNotBlank(model.getNavn())) {
-            navn = Navn.builder().navneListe(Collections.singletonList(model.getNavn())).build();
+            navn = Navn
+                    .builder()
+                    .redNavn(model.getNavn())
+                    .navneListe(Collections.singletonList(model.getNavn()))
+                    .build();
         }
         endringsType = update ? "E" : "N";
         orgnr = model.getOrgnr();
