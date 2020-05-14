@@ -155,7 +155,7 @@ export default handleActions(
 		},
 		[onSuccess(actions.getSigrunSekvensnr)](state, action) {
 			const inntektData = state.sigrunstub[action.meta.ident]
-			if(inntektData){
+			if (inntektData) {
 				state.sigrunstub[action.meta.ident] = inntektData.map(i => {
 					const sekvens = action.payload.data.find(s => s.gjelderPeriode === i.inntektsaar)
 					const sekvensnummer = sekvens && sekvens.sekvensnummer.toString()
@@ -265,23 +265,20 @@ export const fetchDataFraFagsystemer = personId => (dispatch, getState) => {
 	})
 }
 
-export const fetchDataFraFagsystemerForSoek = personId => (dispatch) => {
-
+export const fetchDataFraFagsystemerForSoek = personId => dispatch => {
 	// Liste over systemer
-	const systemer = {
-		KRRSTUB:'',
-		SIGRUNSTUB:'',
-		INNTK: '',
-		ARENA: '',
-		PDL: '',
-		INST2: '',
-		PEN_INNTEKT: '',
-		AAREG: '',
-		UDISTUB: '',
-		BREGSTUB: ''
-	}
+	const systemer = [
+		'KRRSTUB',
+		'SIGRUNSTUB',
+		'INNTK',
+		'ARENA',
+		'PDL',
+		'INST2',
+		'PEN_INNTEKT',
+		'AAREG'
+	]
 
-	Object.keys(systemer).forEach(system => {
+	systemer.forEach(system => {
 		switch (system) {
 			case 'KRRSTUB':
 				return dispatch(actions.getKrr(personId))
@@ -295,21 +292,14 @@ export const fetchDataFraFagsystemerForSoek = personId => (dispatch) => {
 			case 'PDL':
 				return dispatch(actions.getPDL(personId))
 			case 'INST2':
-				return dispatch(actions.getInst(personId, "q2"))
+				return dispatch(actions.getInst(personId, 'q2'))
 			case 'PEN_INNTEKT':
-				return dispatch(actions.getPensjon(personId, "q2"))
+				return dispatch(actions.getPensjon(personId, 'q2'))
 			case 'AAREG':
-				return dispatch(actions.getAareg(personId, "q2"))
-			//TODO: hente data fra disse fagsystemene
-			// case 'UDISTUB':
-			// 	return dispatch(actions.getUdi(personId))
-			// case 'BREGSTUB':
-			// 	return dispatch(actions.getBrreg(personId))
+				return dispatch(actions.getAareg(personId, 'q2'))
 		}
 	})
 }
-
-
 
 // Selectors
 export const sokSelector = (items, searchStr) => {
