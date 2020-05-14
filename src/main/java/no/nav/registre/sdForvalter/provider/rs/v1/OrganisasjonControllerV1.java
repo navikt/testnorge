@@ -1,7 +1,6 @@
 package no.nav.registre.sdForvalter.provider.rs.v1;
 
 import com.google.common.base.Strings;
-import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

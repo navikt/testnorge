@@ -9,6 +9,9 @@ import lombok.Value;
 @NoArgsConstructor(force = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Navn {
+
+    @JsonProperty
+    private String redigertnavn;
     @JsonProperty
     private String navnelinje1;
 }
