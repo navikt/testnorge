@@ -16,13 +16,13 @@ export type Inntektsinformasjon = {
 	arbeidsforholdsliste: Array<Arbeidsforhold>
 }
 
-type Inntekt = {
+export type Inntekt = {
 	beloep: string
 	startOpptjeningsperiode: string
 	sluttOpptjeningsperiode: string
 	inntektstype: string
 }
 
-type Fradrag = {}
-type Forskudd = {}
-type Arbeidsforhold = {}
+export type Fradrag = {}
+export type Forskudd = {}
+export type Arbeidsforhold = {}
