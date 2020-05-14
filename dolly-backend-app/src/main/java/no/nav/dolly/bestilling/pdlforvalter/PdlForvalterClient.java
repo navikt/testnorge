@@ -3,7 +3,8 @@ package no.nav.dolly.bestilling.pdlforvalter;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Lists.reverse;
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.StausResponse.DONE;
+import static no.nav.dolly.domain.CommonKeys.CONSUMER;
+import static no.nav.dolly.domain.CommonKeys.SYNTH_ENV;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 import java.util.Iterator;
@@ -51,8 +52,6 @@ public class PdlForvalterClient implements ClientRegister {
 
     public enum StausResponse {DONE, PENDING, DELETING}
 
-    public static final String KILDE = "Dolly";
-    public static final String SYNTH_ENV = "q2";
     public static final String KONTAKTINFORMASJON_DOEDSBO = "KontaktinformasjonForDoedsbo";
     public static final String UTENLANDS_IDENTIFIKASJONSNUMMER = "UtenlandskIdentifikasjonsnummer";
     public static final String FALSK_IDENTITET = "FalskIdentitet";
@@ -60,8 +59,6 @@ public class PdlForvalterClient implements ClientRegister {
 
     private static final String UKJENT = "U";
     private static final String HENDELSE_ID = "hendelseId";
-    private static final int MAX_COUNT = 100;
-    private static final int TIMEOUT = 100;
 
     private final PdlForvalterConsumer pdlForvalterConsumer;
     private final TpsfPersonCache tpsfPersonCache;
@@ -162,7 +159,6 @@ public class PdlForvalterClient implements ClientRegister {
         try {
             tpsPerson.getPersondetaljer().forEach(person -> {
                 sendOpprettPerson(person);
-                syncMotPdl(person.getIdent());
                 sendFoedselsmelding(person);
                 sendNavn(person);
                 sendKjoenn(person, isOpprettEndre, tpsPerson.getNyePartnereOgBarn());
@@ -178,26 +174,6 @@ public class PdlForvalterClient implements ClientRegister {
         } catch (DollyFunctionalException e) {
 
             status.append('&').append(e.getMessage().replaceAll(",", ";"));
-        }
-    }
-
-    private void syncMotPdl(String ident) {
-
-        int count = 0;
-        try {
-            while (count++ < MAX_COUNT && !DONE.name().equals(pdlForvalterConsumer.getPersonstatus(ident).getBody().get("status").asText())) {
-                Thread.sleep(TIMEOUT);
-            }
-        } catch (InterruptedException e) {
-            log.error("Sync mot PDL-forvalter ble avbrutt.");
-        } catch (RuntimeException e) {
-            log.error("Feilet å lese personstatus for ident {} fra PDL-forvalter.", ident, e);
-        }
-
-        if (count < MAX_COUNT) {
-            log.info("Synkronisering mot PDL-forvalter tok {} ms.", count * TIMEOUT);
-        } else {
-            log.warn("Synkronisering mot PDL-forvalter gitt opp etter {} ms.", MAX_COUNT * TIMEOUT);
         }
     }
 
@@ -280,7 +256,7 @@ public class PdlForvalterClient implements ClientRegister {
 
                 List<PdlUtenlandskIdentifikasjonsnummer> utenlandskId = pdldata.getUtenlandskIdentifikasjonsnummer();
                 utenlandskId.forEach(id -> {
-                    id.setKilde(nullcheckSetDefaultValue(id.getKilde(), KILDE));
+                    id.setKilde(nullcheckSetDefaultValue(id.getKilde(), CONSUMER));
 
                     ResponseEntity<JsonNode> response =
                             pdlForvalterConsumer.postUtenlandskIdentifikasjonsnummer(id, ident);

@@ -21,7 +21,7 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 
 @Slf4j
-@Order(2)
+@Order(3)
 @Service
 @RequiredArgsConstructor
 public class AaregClient implements ClientRegister {

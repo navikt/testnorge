@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
 import static java.time.LocalDate.now;
+import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 import static no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo.Adressat;
 import static no.nav.dolly.util.NullcheckUtil.blankcheckSetDefaultValue;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Component;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlAdvokat;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktpersonMedIdNummer;
@@ -29,7 +29,7 @@ public class PdlDoedsboMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<RsPdlKontaktinformasjonForDoedsbo, PdlKontaktinformasjonForDoedsbo>() {
                     @Override
                     public void mapAtoB(RsPdlKontaktinformasjonForDoedsbo rsPdlKontaktinformasjonForDoedsbo,
-                                        PdlKontaktinformasjonForDoedsbo kontaktinformasjonForDoedsbo, MappingContext context) {
+                            PdlKontaktinformasjonForDoedsbo kontaktinformasjonForDoedsbo, MappingContext context) {
 
                         if (rsPdlKontaktinformasjonForDoedsbo.getAdressat() instanceof PdlOrganisasjon) {
                             kontaktinformasjonForDoedsbo.setAdressat(Adressat.builder()
@@ -58,7 +58,7 @@ public class PdlDoedsboMappingStrategy implements MappingStrategy {
                         kontaktinformasjonForDoedsbo.setUtstedtDato(nullcheckSetDefaultValue(kontaktinformasjonForDoedsbo.getUtstedtDato(), now()));
                         kontaktinformasjonForDoedsbo.setLandkode(blankcheckSetDefaultValue(kontaktinformasjonForDoedsbo.getLandkode(), "NOR"));
 
-                        kontaktinformasjonForDoedsbo.setKilde(PdlForvalterClient.KILDE);
+                        kontaktinformasjonForDoedsbo.setKilde(CONSUMER);
                     }
                 })
                 .byDefault()

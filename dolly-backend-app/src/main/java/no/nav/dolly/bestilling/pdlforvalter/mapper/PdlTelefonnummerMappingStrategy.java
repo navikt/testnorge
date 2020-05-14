@@ -1,6 +1,6 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
-import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.KILDE;
+import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import org.springframework.stereotype.Component;
@@ -25,7 +25,7 @@ public class PdlTelefonnummerMappingStrategy implements MappingStrategy {
 
                         if (isNotBlank(person.getTelefonnummer_1())) {
                             telefonnummer.getTelfonnumre().add(PdlTelefonnummer.Entry.builder()
-                                    .kilde(KILDE)
+                                    .kilde(CONSUMER)
                                     .prioritet(1)
                                     .landskode(person.getTelefonLandskode_1())
                                     .nummer(person.getTelefonnummer_1())
@@ -33,7 +33,7 @@ public class PdlTelefonnummerMappingStrategy implements MappingStrategy {
                         }
                         if (isNotBlank(person.getTelefonnummer_2())) {
                             telefonnummer.getTelfonnumre().add(PdlTelefonnummer.Entry.builder()
-                                    .kilde(KILDE)
+                                    .kilde(CONSUMER)
                                     .prioritet(2)
                                     .landskode(person.getTelefonLandskode_2())
                                     .nummer(person.getTelefonnummer_2())

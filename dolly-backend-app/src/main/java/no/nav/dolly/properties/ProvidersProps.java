@@ -33,6 +33,7 @@ public class ProvidersProps {
     private Inntektsmelding inntektsmelding = new Inntektsmelding();
     private IdentPool identPool = new IdentPool();
     private Brregstub brregstub = new Brregstub();
+    private Aktoerregister aktoerregister = new Aktoerregister();
 
     @Getter
     @Setter
@@ -209,6 +210,16 @@ public class ProvidersProps {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Brregstub {
+
+        private String url;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Aktoerregister {
 
         private String url;
     }
