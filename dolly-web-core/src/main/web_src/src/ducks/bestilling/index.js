@@ -38,7 +38,10 @@ export const sendBestilling = (values, opts, gruppeId) => async (dispatch, getSt
 	let bestillingAction = null
 
 	if (opts.is.leggTil) {
-		bestillingAction = actions.postBestillingLeggTilPaaPerson(opts.personFoerLeggTil.tpsf.ident, values)
+		bestillingAction = actions.postBestillingLeggTilPaaPerson(
+			opts.personFoerLeggTil.tpsf.ident,
+			values
+		)
 	} else if (opts.is.opprettFraIdenter) {
 		values = _set('opprettFraIdenter', opts.opprettFraIdenter, values)
 		bestillingAction = actions.postBestillingFraEksisterendeIdenter(gruppeId, values)
