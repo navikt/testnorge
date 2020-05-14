@@ -37,7 +37,11 @@ public class AktoerregisterClient implements ClientRegister {
                     Thread.sleep(TIMEOUT);
                 }
 
-            } catch (InterruptedException | RuntimeException e) {
+            } catch (InterruptedException e) {
+                log.error("Sync mot Aktørregister ble avbrutt.", e);
+                Thread.currentThread().interrupt();
+
+            } catch (RuntimeException e) {
                 log.error("Feilet å lese id fra AKtørregister for ident {}.", tpsPerson.getHovedperson(), e);
             }
 
