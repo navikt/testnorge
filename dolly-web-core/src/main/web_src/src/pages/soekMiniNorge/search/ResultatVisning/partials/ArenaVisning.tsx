@@ -10,7 +10,7 @@ type ArenaResponse = {
 }
 
 type VisningData = {
-	brukertype?: string
+	brukertype: string
 }
 
 interface ArenaVisningProps {
@@ -20,20 +20,15 @@ interface ArenaVisningProps {
 
 export const ArenaVisning = ({ data, loading }: ArenaVisningProps) => {
 	if (loading) return <Loading label="Laster arena-data" />
-	if (!data) return false
 
 	const sortedData = Array.isArray(data.arbeidsokerList)
 		? data.arbeidsokerList.slice().reverse()
 		: data.arbeidsokerList
 
-	let visningData: VisningData[]
-	visningData = []
-
-	sortedData.forEach((info, idx) => {
-		visningData.push({
+	const visningData: VisningData[] = sortedData.map(info => ({
 			brukertype: info.servicebehov ? 'Med servicebehov' : 'Uten servicebehov'
 		})
-	})
+	);
 
 	return (
 		<div>{
