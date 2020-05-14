@@ -142,15 +142,4 @@ public class PdlForvalterConsumerTest {
 
         pdlForvalterConsumer.postNavn(PdlNavn.builder().build(), IDENT, "LeggTIlNavn");
     }
-
-    @Test
-    public void getPersonstatus() {
-
-        server.expect(requestTo("http://pdl.nav.no/api/v1/personstatus"))
-                .andExpect(method(HttpMethod.GET))
-                .andExpect(header(HEADER_NAV_PERSON_IDENT, IDENT))
-                .andRespond(withSuccess());
-
-        pdlForvalterConsumer.getPersonstatus(IDENT);
-    }
 }

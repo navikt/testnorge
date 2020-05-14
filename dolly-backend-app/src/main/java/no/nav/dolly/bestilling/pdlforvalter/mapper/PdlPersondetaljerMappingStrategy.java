@@ -1,9 +1,9 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
-import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.KILDE;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.FORTROLIG;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.UGRADERT;
+import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import org.springframework.stereotype.Component;
@@ -44,7 +44,7 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Person person, PdlFoedsel pdlFoedsel, MappingContext context) {
 
-                        pdlFoedsel.setKilde(KILDE);
+                        pdlFoedsel.setKilde(CONSUMER);
                     }
                 })
                 .byDefault()
@@ -55,7 +55,7 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Person person, PdlNavn pdlNavn, MappingContext context) {
 
-                        pdlNavn.setKilde(KILDE);
+                        pdlNavn.setKilde(CONSUMER);
                     }
                 })
                 .byDefault()
@@ -67,7 +67,7 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Person person, PdlKjoenn pdlKjoenn, MappingContext context) {
 
                         pdlKjoenn.setKjoenn(Kjoenn.decode(person.getKjonn()));
-                        pdlKjoenn.setKilde(KILDE);
+                        pdlKjoenn.setKilde(CONSUMER);
                     }
                 })
                 .register();
@@ -79,7 +79,7 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
 
                         pdlStatsborgerskap.setLandkode(isNotBlank(statsborgerskap.getStatsborgerskap()) ?
                                 statsborgerskap.getStatsborgerskap() : "NOR");
-                        pdlStatsborgerskap.setKilde(KILDE);
+                        pdlStatsborgerskap.setKilde(CONSUMER);
                     }
                 })
                 .register();
@@ -99,7 +99,7 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                             adressebeskyttelse.setGradering(UGRADERT);
                         }
 
-                        adressebeskyttelse.setKilde(KILDE);
+                        adressebeskyttelse.setKilde(CONSUMER);
                     }
                 })
                 .register();
@@ -109,7 +109,7 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Person person, PdlDoedsfall pdlDoedsfall, MappingContext context) {
 
-                        pdlDoedsfall.setKilde(KILDE);
+                        pdlDoedsfall.setKilde(CONSUMER);
                     }
                 })
                 .byDefault()

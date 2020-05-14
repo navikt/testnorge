@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
 import static java.util.Objects.isNull;
-import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.KILDE;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon.*;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand.ENKE_ELLER_ENKEMANN;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand.GIFT;
@@ -13,6 +12,7 @@ import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilsta
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand.SKILT_PARTNER;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand.UGIFT;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand.UOPPGITT;
+import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 
 import java.time.LocalDate;
 import org.springframework.stereotype.Component;
@@ -46,7 +46,7 @@ public class PdlRelasjonerMappingStrategy implements MappingStrategy {
                                 familierelasjon.setMinRolleForPerson(decode(relasjon1.getRelasjonTypeNavn()));
                             }
                         });
-                        familierelasjon.setKilde(KILDE);
+                        familierelasjon.setKilde(CONSUMER);
                     }
                 })
                 .register();
@@ -64,7 +64,7 @@ public class PdlRelasjonerMappingStrategy implements MappingStrategy {
                                 .filter(Person::isSivilstandGift)
                                 .map(Person::getIdent)
                                 .findFirst().orElse(null));
-                        sivilstand.setKilde(KILDE);
+                        sivilstand.setKilde(CONSUMER);
                     }
 
                     private Sivilstand mapSivilstand(Sivilstatus sivilstatus) {

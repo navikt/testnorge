@@ -53,7 +53,6 @@ public class PdlForvalterConsumer {
     private static final String PDL_BESTILLING_TELEFONUMMER_URL = PDL_BESTILLING_URL + "/telefonnummer";
     private static final String PDL_BESTILLING_SIVILSTAND_URL = PDL_BESTILLING_URL + "/sivilstand";
     private static final String PDL_BESTILLING_SLETTING_URL = "/api/v1/personident";
-    private static final String PDL_PERSONSTATUS = "/api/v1/personstatus";
     private static final String PREPROD_ENV = "q";
 
     private static final String SEND_ERROR = "Feilet å sende %s: %s";
@@ -67,15 +66,6 @@ public class PdlForvalterConsumer {
     public ResponseEntity deleteIdent(String ident) {
         return restTemplate.exchange(RequestEntity.delete(
                 URI.create(providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_SLETTING_URL))
-                .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
-                .header(HEADER_NAV_PERSON_IDENT, ident)
-                .build(), JsonNode.class);
-    }
-
-    @Timed(name = "providers", tags = { "operation", "pdl_personStatus" })
-    public ResponseEntity<JsonNode> getPersonstatus(String ident) {
-        return restTemplate.exchange(RequestEntity.get(
-                URI.create(providersProps.getPdlForvalter().getUrl() + PDL_PERSONSTATUS))
                 .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .build(), JsonNode.class);

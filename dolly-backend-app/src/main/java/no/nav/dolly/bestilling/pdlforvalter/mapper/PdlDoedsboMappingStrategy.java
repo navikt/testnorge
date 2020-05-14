@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
 import static java.time.LocalDate.now;
+import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 import static no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo.Adressat;
 import static no.nav.dolly.util.NullcheckUtil.blankcheckSetDefaultValue;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
@@ -58,7 +59,7 @@ public class PdlDoedsboMappingStrategy implements MappingStrategy {
                         kontaktinformasjonForDoedsbo.setUtstedtDato(nullcheckSetDefaultValue(kontaktinformasjonForDoedsbo.getUtstedtDato(), now()));
                         kontaktinformasjonForDoedsbo.setLandkode(blankcheckSetDefaultValue(kontaktinformasjonForDoedsbo.getLandkode(), "NOR"));
 
-                        kontaktinformasjonForDoedsbo.setKilde(PdlForvalterClient.KILDE);
+                        kontaktinformasjonForDoedsbo.setKilde(CONSUMER);
                     }
                 })
                 .byDefault()
