@@ -4,7 +4,6 @@ import static java.util.Objects.isNull;
 import static no.nav.dolly.domain.CommonKeys.SYNTH_ENV;
 
 import java.util.List;
-import java.util.Map;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
@@ -30,13 +29,16 @@ public class AktoerregisterClient implements ClientRegister {
 
         if (bestilling.getEnvironments().contains(SYNTH_ENV)) {
             int count = 0;
+
             try {
-                while (count++ < MAX_COUNT && isNull(((Map) aktoerregisterConsumer.getAktoerId(tpsPerson.getHovedperson())
-                        .getBody().get(tpsPerson.getHovedperson())).get("identer"))) {
+                while (count++ < MAX_COUNT &&
+                        isNull(aktoerregisterConsumer.getAktoerId(tpsPerson.getHovedperson())
+                                .get(tpsPerson.getHovedperson()).get("identer"))) {
                     Thread.sleep(TIMEOUT);
                 }
+
             } catch (InterruptedException e) {
-                log.error("Sync mot Aktørregister ble avbrutt.");
+                log.error("Sync mot Aktørregister ble avbrutt.", e);
             } catch (RuntimeException e) {
                 log.error("Feilet å lese id fra AKtørregister for ident {}.", tpsPerson.getHovedperson(), e);
             }

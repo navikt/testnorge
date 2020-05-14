@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.aktoerregister;
 
 import static java.lang.String.format;
+import static java.util.Collections.emptyMap;
 import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
@@ -32,14 +33,16 @@ public class AktoerregisterConsumer {
     private final StsOidcService stsOidcService;
 
     @Timed(name = "providers", tags = { "operation", "aktoerregister_getId" })
-    public ResponseEntity<Map> getAktoerId(String ident) {
-        return restTemplate.exchange(RequestEntity.get(
+    public Map<String, Map> getAktoerId(String ident) {
+
+        ResponseEntity<Map> response = restTemplate.exchange(RequestEntity.get(
                 URI.create(providersProps.getAktoerregister().getUrl() + AKTOER_URL))
                 .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
                 .header(HEADER_NAV_CALL_ID, getNavCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(HEADER_NAV_PERSON_IDENTER, ident)
                 .build(), Map.class);
+        return response.hasBody() ? response.getBody() : emptyMap();
     }
 
     private static String getNavCallId() {
