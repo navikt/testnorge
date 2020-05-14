@@ -3,6 +3,7 @@ package no.nav.registre.orkestratoren.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakFeil;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
@@ -240,32 +241,44 @@ public class TesnorgeArenaService {
     }
 
     private void byggAapResponse(String type, List<NyttVedtakResponse> nyeVedtakAap, List<NyttVedtakAap> arenaRespons) {
+        List<NyttVedtakAap> nyeRettigheter = new ArrayList<>();
+        List<NyttVedtakFeil> feiledeRettigheter = new ArrayList<>();
         for (var vedtak : nyeVedtakAap) {
-            log.info("{}: Opprettet {} vedtak. Antall feilede vedtak: {}",
-                    type,
-                    vedtak.getNyeRettigheterAap() != null ? vedtak.getNyeRettigheterAap().size() : 0,
-                    vedtak.getFeiledeRettigheter() != null ? vedtak.getFeiledeRettigheter().size() : 0);
-            arenaRespons.addAll(vedtak.getNyeRettigheterAap() != null ? vedtak.getNyeRettigheterAap() : new ArrayList<>());
+            nyeRettigheter.addAll(vedtak.getNyeRettigheterAap() != null ? vedtak.getNyeRettigheterAap() : new ArrayList<>());
+            feiledeRettigheter.addAll(vedtak.getFeiledeRettigheter() != null ? vedtak.getFeiledeRettigheter() : new ArrayList<>());
         }
+        log.info("{}: Opprettet {} vedtak. Antall feilede vedtak: {}",
+                type,
+                nyeRettigheter.size(),
+                feiledeRettigheter.size());
+        arenaRespons.addAll(nyeRettigheter);
     }
 
     private void byggTiltakResponse(String type, List<NyttVedtakResponse> nyeVedtakTiltak, List<NyttVedtakTiltak> arenaRespons) {
+        List<NyttVedtakTiltak> nyeRettigheter = new ArrayList<>();
+        List<NyttVedtakFeil> feiledeRettigheter = new ArrayList<>();
         for (var vedtak : nyeVedtakTiltak) {
-            log.info("{}: Opprettet {} tiltak. Antall feilede tiltak: {}",
-                    type,
-                    vedtak.getNyeRettigheterTiltak() != null ? vedtak.getNyeRettigheterTiltak().size() : 0,
-                    vedtak.getFeiledeRettigheter() != null ? vedtak.getFeiledeRettigheter().size() : 0);
-            arenaRespons.addAll(vedtak.getNyeRettigheterTiltak() != null ? vedtak.getNyeRettigheterTiltak() : new ArrayList<>());
+            nyeRettigheter.addAll(vedtak.getNyeRettigheterTiltak() != null ? vedtak.getNyeRettigheterTiltak() : new ArrayList<>());
+            feiledeRettigheter.addAll(vedtak.getFeiledeRettigheter() != null ? vedtak.getFeiledeRettigheter() : new ArrayList<>());
         }
+        log.info("{}: Opprettet {} tiltak. Antall feilede tiltak: {}",
+                type,
+                nyeRettigheter.size(),
+                feiledeRettigheter.size());
+        arenaRespons.addAll(nyeRettigheter);
     }
 
     private void byggTilleggstoenadResponse(String type, List<NyttVedtakResponse> nyeVedtakTilleggstoenad, List<NyttVedtakTillegg> arenaRespons) {
+        List<NyttVedtakTillegg> nyeRettigheter = new ArrayList<>();
+        List<NyttVedtakFeil> feiledeRettigheter = new ArrayList<>();
         for (var vedtak : nyeVedtakTilleggstoenad) {
-            log.info("{}: Opprettet {} tilleggstønader. Antall feilede tilleggstønader: {}",
-                    type,
-                    vedtak.getNyeRettigheterTillegg() != null ? vedtak.getNyeRettigheterTillegg().size() : 0,
-                    vedtak.getFeiledeRettigheter() != null ? vedtak.getFeiledeRettigheter().size() : 0);
-            arenaRespons.addAll(vedtak.getNyeRettigheterTillegg() != null ? vedtak.getNyeRettigheterTillegg() : new ArrayList<>());
+            nyeRettigheter.addAll(vedtak.getNyeRettigheterTillegg() != null ? vedtak.getNyeRettigheterTillegg() : new ArrayList<>());
+            feiledeRettigheter.addAll(vedtak.getFeiledeRettigheter() != null ? vedtak.getFeiledeRettigheter() : new ArrayList<>());
         }
+        log.info("{}: Opprettet {} tilleggstønader. Antall feilede tilleggstønader: {}",
+                type,
+                nyeRettigheter.size(),
+                feiledeRettigheter.size());
+        arenaRespons.addAll(nyeRettigheter);
     }
 }
