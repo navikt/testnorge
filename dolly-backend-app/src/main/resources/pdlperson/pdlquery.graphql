@@ -19,6 +19,54 @@ fragment metadataDetails on Metadata {
     opplysningsId
 }
 
+fragment koordinaterDetails on Koordinater {
+    x
+    y
+    z
+    kvalitet
+}
+
+fragment vegadresseDetails on Vegadresse {
+    matrikkelId
+    husbokstav
+    husnummer
+    adressenavn
+    bruksenhetsnummer
+    tilleggsnavn
+    postnummer
+    kommunenummer
+    koordinater {
+        ...koordinaterDetails
+    }
+}
+
+fragment matrikkeladresseDetails on Matrikkeladresse{
+    matrikkelId
+    bruksenhetsnummer
+    tilleggsnavn
+    postnummer
+    kommunenummer
+    koordinater {
+        ...koordinaterDetails
+    }
+}
+
+fragment utenlandskAdresseDetails on UtenlandskAdresse {
+    adressenavnNummer
+    bygningEtasjeLeilighet
+    postboksNummerNavn
+    postkode
+    bySted
+    regionDistriktOmraade
+    landkode
+}
+
+fragment personnavnDetails on Personnavn {
+    fornavn,
+    mellomnavn,
+    etternavn
+},
+
 query($ident: ID!, $historikk: Boolean!) {
     hentPerson(ident: $ident) {
         falskIdentitet {
@@ -27,9 +75,7 @@ query($ident: ID!, $historikk: Boolean!) {
             rettIdentitetVedIdentifikasjonsnummer,
             rettIdentitetVedOpplysninger {
                 personnavn {
-                    fornavn,
-                    mellomnavn,
-                    etternavn
+                    ...personnavnDetails
                 }
                 foedselsdato,
                 statsborgerskap,
@@ -43,33 +89,10 @@ query($ident: ID!, $historikk: Boolean!) {
             angittFlyttedato,
             coAdressenavn,
             vegadresse {
-                matrikkelId,
-                husbokstav,
-                husnummer,
-                adressenavn,
-                bruksenhetsnummer,
-                tilleggsnavn,
-                postnummer,
-                kommunenummer,
-                koordinater {
-                    x,
-                    y,
-                    z
-                    kvalitet
-                }
+                ...vegadresseDetails
             },
             matrikkeladresse {
-                matrikkelId,
-                bruksenhetsnummer,
-                tilleggsnavn,
-                postnummer,
-                kommunenummer,
-                koordinater {
-                    x,
-                    y,
-                    z
-                    kvalitet
-                }
+                ...matrikkeladresseDetails
             },
             ukjentBosted {
                 bostedskommune
@@ -83,42 +106,13 @@ query($ident: ID!, $historikk: Boolean!) {
         },
         oppholdsadresse(historikk: $historikk) {
             utenlandskAdresse {
-                adressenavnNummer,
-                bygningEtasjeLeilighet,
-                postboksNummerNavn,
-                postkode,
-                bySted,
-                regionDistriktOmraade,
-                landkode
+                ...utenlandskAdresseDetails
             },
             vegadresse {
-                matrikkelId,
-                husbokstav,
-                husnummer,
-                adressenavn,
-                bruksenhetsnummer,
-                tilleggsnavn,
-                postnummer,
-                kommunenummer,
-                koordinater {
-                    x,
-                    y,
-                    z
-                    kvalitet
-                }
+                ...vegadresseDetails
             },
             matrikkeladresse {
-                matrikkelId,
-                bruksenhetsnummer,
-                tilleggsnavn,
-                postnummer,
-                kommunenummer,
-                koordinater {
-                    x,
-                    y,
-                    z
-                    kvalitet
-                }
+                ...matrikkeladresseDetails
             },
             oppholdsadressedato,
             oppholdAnnetSted,
@@ -139,30 +133,10 @@ query($ident: ID!, $historikk: Boolean!) {
             },
             coAdressenavn,
             vegadresse {
-                matrikkelId,
-                bruksenhetsnummer,
-                tilleggsnavn,
-                postnummer,
-                kommunenummer,
-                koordinater {
-                    x,
-                    y,
-                    z
-                    kvalitet
-                }
+                ...vegadresseDetails
             },
             matrikkeladresse {
-                matrikkelId,
-                bruksenhetsnummer,
-                tilleggsnavn,
-                postnummer,
-                kommunenummer,
-                koordinater {
-                    x,
-                    y,
-                    z
-                    kvalitet
-                }
+                ...matrikkeladresseDetails
             },
             ukjentBosted {
                 bostedskommune
@@ -195,21 +169,8 @@ query($ident: ID!, $historikk: Boolean!) {
                 postboks,
                 postnummer
             },
-            vegadresseForPost {
-                matrikkelId,
-                husbokstav,
-                husnummer,
-                adressenavn,
-                bruksenhetsnummer,
-                tilleggsnavn,
-                postnummer,
-                kommunenummer,
-                koordinater {
-                    x,
-                    y,
-                    z
-                    kvalitet
-                }
+            vegadresse {
+                ...vegadresseDetails
             },
             postadresseIFrittFormat {
                 adresselinje1,
@@ -218,13 +179,7 @@ query($ident: ID!, $historikk: Boolean!) {
                 postnummer
             },
             utenlandskAdresse {
-                adressenavnNummer,
-                bygningEtasjeLeilighet,
-                postboksNummerNavn,
-                postkode,
-                bySted,
-                regionDistriktOmraade,
-                landkode
+                ...utenlandskAdresseDetails
             },
             utenlandskAdresseIFrittFormat {
                 adresselinje1,
@@ -254,26 +209,20 @@ query($ident: ID!, $historikk: Boolean!) {
             personSomKontakt {
                 foedselsdato,
                 personnavn {
-                    fornavn,
-                    mellomnavn,
-                    etternavn
+                    ...personnavnDetails
                 },
                 identifikasjonsnummer
             },
             advokatSomKontakt {
                 personnavn {
-                    fornavn,
-                    mellomnavn,
-                    etternavn
+                    ...personnavnDetails
                 },
                 organisasjonsnavn,
                 organisasjonsnummer
             },
             organisasjonSomKontakt {
                 kontaktperson {
-                    fornavn,
-                    mellomnavn,
-                    etternavn
+                    ...personnavnDetails
                 },
                 organisasjonsnavn,
                 organisasjonsnummer
@@ -509,6 +458,15 @@ query($ident: ID!, $historikk: Boolean!) {
                 statsborgerskap,
                 kjoenn
             },
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            },
+            metadata {
+                ...metadataDetails
+            }
+        },
+        doedfoedtBarn {
+            dato,
             folkeregistermetadata {
                 ...folkeregistermetadataDetails
             },
