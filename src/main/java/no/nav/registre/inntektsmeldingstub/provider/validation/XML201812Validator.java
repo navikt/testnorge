@@ -1,11 +1,10 @@
 package no.nav.registre.inntektsmeldingstub.provider.validation;
 
-import no.nav.registre.inntektsmeldingstub.service.rs.RsInntektsmelding;
+import no.nav.registre.inntektsmeldingstub.provider.rs.RsInntektsmelding;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class XML201812Validator {

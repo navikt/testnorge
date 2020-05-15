@@ -1,21 +1,21 @@
 package no.nav.registre.inntektsmeldingstub.util;
 
-import no.nav.registre.inntektsmeldingstub.provider.Medling;
-import no.nav.registre.inntektsmeldingstub.service.rs.RsArbeidsforhold;
-import no.nav.registre.inntektsmeldingstub.service.rs.RsArbeidsgiver;
-import no.nav.registre.inntektsmeldingstub.service.rs.RsArbeidsgiverPrivat;
-import no.nav.registre.inntektsmeldingstub.service.rs.RsAvsendersystem;
-import no.nav.registre.inntektsmeldingstub.service.rs.RsDelvisFravaer;
-import no.nav.registre.inntektsmeldingstub.service.rs.RsEndringIRefusjon;
-import no.nav.registre.inntektsmeldingstub.service.rs.RsGraderingIForeldrepenger;
-import no.nav.registre.inntektsmeldingstub.service.rs.RsInntekt;
-import no.nav.registre.inntektsmeldingstub.service.rs.RsInntektsmelding;
-import no.nav.registre.inntektsmeldingstub.service.rs.RsNaturaYtelseDetaljer;
-import no.nav.registre.inntektsmeldingstub.service.rs.RsOmsorgspenger;
-import no.nav.registre.inntektsmeldingstub.service.rs.RsPeriode;
-import no.nav.registre.inntektsmeldingstub.service.rs.RsRefusjon;
-import no.nav.registre.inntektsmeldingstub.service.rs.RsSykepengerIArbeidsgiverperioden;
-import no.nav.registre.inntektsmeldingstub.service.rs.RsUtsettelseAvForeldrepenger;
+import no.nav.registre.inntektsmeldingstub.provider.Melding;
+import no.nav.registre.inntektsmeldingstub.provider.rs.RsArbeidsforhold;
+import no.nav.registre.inntektsmeldingstub.provider.rs.RsArbeidsgiver;
+import no.nav.registre.inntektsmeldingstub.provider.rs.RsArbeidsgiverPrivat;
+import no.nav.registre.inntektsmeldingstub.provider.rs.RsAvsendersystem;
+import no.nav.registre.inntektsmeldingstub.provider.rs.RsDelvisFravaer;
+import no.nav.registre.inntektsmeldingstub.provider.rs.RsEndringIRefusjon;
+import no.nav.registre.inntektsmeldingstub.provider.rs.RsGraderingIForeldrepenger;
+import no.nav.registre.inntektsmeldingstub.provider.rs.RsInntekt;
+import no.nav.registre.inntektsmeldingstub.provider.rs.RsInntektsmelding;
+import no.nav.registre.inntektsmeldingstub.provider.rs.RsNaturaYtelseDetaljer;
+import no.nav.registre.inntektsmeldingstub.provider.rs.RsOmsorgspenger;
+import no.nav.registre.inntektsmeldingstub.provider.rs.RsPeriode;
+import no.nav.registre.inntektsmeldingstub.provider.rs.RsRefusjon;
+import no.nav.registre.inntektsmeldingstub.provider.rs.RsSykepengerIArbeidsgiverperioden;
+import no.nav.registre.inntektsmeldingstub.provider.rs.RsUtsettelseAvForeldrepenger;
 
 import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLArbeidsforhold;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLArbeidsgiver;
@@ -32,7 +32,6 @@ import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLGjenopptakelseNaturalytel
 import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLGraderingIForeldrepenger;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLGraderingIForeldrepengerListe;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLInntekt;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLInntektsmeldingM;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLKontaktinformasjon;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLNaturalytelseDetaljer;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLOmsorgspenger;
@@ -60,8 +59,8 @@ public class XmlInntektsmelding201812 {
 
     private static final String NAMESPACE_URI = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211";
 
-    public static Medling createInntektsmelding(RsInntektsmelding melding) {
-        return new Medling(new XMLSkjemainnhold(
+    public static Melding createInntektsmelding(RsInntektsmelding melding) {
+        return new Melding(new XMLSkjemainnhold(
                 melding.getYtelse(),
                 melding.getAarsakTilInnsending(),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsgiver"),
