@@ -13,6 +13,7 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.elsam.consumer.rs.response.synt.ElsamSyntResponse;
 
@@ -36,6 +37,8 @@ public class ElsamSyntConsumer {
 
     @Timed(value = "elsam.resource.latency", extraTags = { "operation", "elsam-syntetisering" })
     public Map<String, ElsamSyntResponse> syntetiserSykemeldinger(List<Map<String, String>> sykemeldingRequest) {
+        log.info("Oppretter syntentisert sykemelding for {}", sykemeldingRequest.stream().map(value -> String.join(", ", value.keySet())).collect(Collectors.joining(", ")));
+
         RequestEntity postRequest = RequestEntity.post(genererSykemeldingerUrl.expand()).body(sykemeldingRequest);
         ResponseEntity<Map<String, ElsamSyntResponse>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
 

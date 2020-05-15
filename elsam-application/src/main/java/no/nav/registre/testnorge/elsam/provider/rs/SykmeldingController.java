@@ -13,7 +13,7 @@ import java.io.IOException;
 
 import no.nav.registre.elsam.domain.SykmeldingRequest;
 import no.nav.registre.testnorge.elsam.exception.InvalidEnvironmentException;
-import no.nav.registre.testnorge.elsam.service.MqService;
+import no.nav.registre.testnorge.elsam.service.SyfoMqService;
 import no.nav.registre.testnorge.elsam.service.SykmeldingService;
 
 @RestController
@@ -25,17 +25,17 @@ public class SykmeldingController {
     private SykmeldingService sykmeldingService;
 
     @Autowired
-    private MqService mqService;
+    private SyfoMqService syfoMqService;
 
     @PostMapping
     public ResponseEntity<String> opprettSykmelding(
             @RequestParam String miljoe,
             @RequestBody SykmeldingRequest sykmeldingRequest
     ) throws IOException {
-        var xml = sykmeldingService.opprettSykmelding(sykmeldingRequest);
+        var sykemelding = sykmeldingService.opprettSykmelding(sykmeldingRequest);
         try {
-            mqService.opprettSykmeldingNyttMottak(miljoe, xml);
-            return ResponseEntity.ok().body(xml);
+            syfoMqService.opprettSykmeldingNyttMottak(miljoe, sykemelding.toXml());
+            return ResponseEntity.ok().body(sykemelding.toXml());
         } catch (InvalidEnvironmentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

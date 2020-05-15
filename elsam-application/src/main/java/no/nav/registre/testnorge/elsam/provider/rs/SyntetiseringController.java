@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import no.nav.registre.testnorge.elsam.domain.Sykemelding;
 import no.nav.registre.testnorge.elsam.exception.InvalidEnvironmentException;
 import no.nav.registre.testnorge.elsam.provider.rs.requests.SyntetiserElsamRequest;
-import no.nav.registre.testnorge.elsam.service.MqService;
+import no.nav.registre.testnorge.elsam.service.SyfoMqService;
 import no.nav.registre.testnorge.elsam.service.SyntetiseringService;
 
 @RestController
@@ -21,7 +23,7 @@ import no.nav.registre.testnorge.elsam.service.SyntetiseringService;
 public class SyntetiseringController {
 
     private final SyntetiseringService syntetiseringService;
-    private final MqService mqService;
+    private final SyfoMqService syfoMqService;
 
     @PostMapping(value = "/generer")
     public List<String> genererSykemeldinger(@RequestBody SyntetiserElsamRequest syntElsamRequest) throws InvalidEnvironmentException {
@@ -31,16 +33,15 @@ public class SyntetiseringController {
                 syntElsamRequest.getMiljoe(),
                 syntElsamRequest.getAntallIdenter());
 
-        log.info("{} sykemeldinger ble opprettet.", syntetiserteSykmeldinger.size());
 
         // TODO: finn køNavn basert på miljø
 
-        for (String syntetisertSykemelding : syntetiserteSykmeldinger) {
-            mqService.opprettSykmeldingNyttMottak(syntElsamRequest.getMiljoe(), syntetisertSykemelding);
+        for (Sykemelding syntetisertSykemelding : syntetiserteSykmeldinger) {
+            syfoMqService.opprettSykmeldingNyttMottak(syntElsamRequest.getMiljoe(), syntetisertSykemelding.toXml());
         }
 
-        return syntetiserteSykmeldinger;
+        log.info("{} sykemeldinger ble opprettet.", syntetiserteSykmeldinger.size());
 
-        // returner en List<String> av de opprettede identene til orkestratoren
+        return syntetiserteSykmeldinger.stream().map(Sykemelding::toXml).collect(Collectors.toList());
     }
 }

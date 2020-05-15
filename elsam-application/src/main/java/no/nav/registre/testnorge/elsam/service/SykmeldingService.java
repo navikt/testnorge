@@ -17,6 +17,7 @@ import java.util.UUID;
 import no.nav.registre.elsam.domain.Ident;
 import no.nav.registre.elsam.domain.Organisasjon;
 import no.nav.registre.elsam.domain.SykmeldingRequest;
+import no.nav.registre.testnorge.elsam.domain.Sykemelding;
 import no.nav.registre.testnorge.elsam.utils.ElsamXmlUtil;
 import no.nav.registre.testnorge.elsam.utils.JAXB;
 
@@ -26,7 +27,7 @@ public class SykmeldingService {
 
     private static final String SMTYPE = "SM2013";
 
-    public String opprettSykmelding(
+    public Sykemelding opprettSykmelding(
             SykmeldingRequest sykmeldingRequest
     ) throws IOException {
         var resource = SykmeldingService.class.getResource("/fellesformat/sykmelding.xml");
@@ -118,7 +119,7 @@ public class SykmeldingService {
 
         log.info("Opprettet sykmelding med eid {} og msgId {}", eid, msgid);
 
-        return JAXB.marshallFellesformat(fellesformat);
+        return new Sykemelding(fellesformat);
     }
 
     private void opprettPasient(

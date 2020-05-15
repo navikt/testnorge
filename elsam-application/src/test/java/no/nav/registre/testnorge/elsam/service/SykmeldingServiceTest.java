@@ -35,7 +35,7 @@ public class SykmeldingServiceTest {
 
     @Test
     public void shouldOppretteSykmelding() throws IOException {
-        String response = sykmeldingService.opprettSykmelding(sykmeldingRequest);
+        String response = sykmeldingService.opprettSykmelding(sykmeldingRequest).toXml();
 
         XMLMsgHead responseXml = getXmlFromString(response);
 

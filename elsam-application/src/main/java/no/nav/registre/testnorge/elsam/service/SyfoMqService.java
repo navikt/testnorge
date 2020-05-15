@@ -12,7 +12,7 @@ import no.nav.registre.testnorge.elsam.consumer.rs.response.SykemeldingResponse;
 import no.nav.registre.testnorge.elsam.exception.InvalidEnvironmentException;
 
 @Service
-public class MqService {
+public class SyfoMqService {
 
     @Autowired
     private JmsTemplate jmsTemplate;

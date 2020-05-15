@@ -47,6 +47,7 @@ import no.nav.registre.testnorge.elsam.consumer.rs.response.ereg.Forretningsadre
 import no.nav.registre.testnorge.elsam.consumer.rs.response.synt.ElsamSyntResponse;
 import no.nav.registre.testnorge.elsam.consumer.rs.response.synt.SyntSykmeldingResponse;
 import no.nav.registre.testnorge.elsam.consumer.rs.response.tss.TssResponse;
+import no.nav.registre.testnorge.elsam.domain.Sykemelding;
 import no.nav.registre.testnorge.elsam.utils.DatoUtil;
 
 @Service
@@ -79,7 +80,7 @@ public class SyntetiseringService {
     @Value("#{${lege.miljoe.avspillergruppeId}}")
     private Map<String, Long> miljoerMedLegeavspillergruppe;
 
-    public List<String> syntetiserSykemeldinger(
+    public List<Sykemelding> syntetiserSykemeldinger(
             Long avspillergruppeId,
             String miljoe,
             int antallIdenter
@@ -98,7 +99,7 @@ public class SyntetiseringService {
         }
 
         var elsamSyntResponse = elsamSyntConsumer.syntetiserSykemeldinger(syntRequest);
-        List<String> sykmeldinger = new ArrayList<>();
+        List<Sykemelding> sykmeldinger = new ArrayList<>();
         List<IdentMedData> elsamData = new ArrayList<>();
 
         for (Map.Entry<String, ElsamSyntResponse> entry : elsamSyntResponse.entrySet()) {

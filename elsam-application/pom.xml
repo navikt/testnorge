@@ -60,6 +60,11 @@
         <!--SYKMELDINGER-->
         <dependency>
             <groupId>no.nav.helse.xml</groupId>
+            <artifactId>arenaSykmelding-1</artifactId>
+            <version>1.5d21db9</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.helse.xml</groupId>
             <artifactId>kith-hodemelding</artifactId>
             <version>1.9daf0fa</version>
         </dependency>
@@ -118,6 +123,34 @@
         </dependency>
     </dependencies>
 
+    <repositories>
+        <!-- Det generelle interne Nexus-repoet til NAV (brukes kun internt) -->
+        <repository>
+            <id>nexus-internal-release</id>
+            <url>https://repo.adeo.no/repository/maven-release</url>
+        </repository>
+        <!-- Mirror foran Maven Central NAV (brukes kun internt) -->
+        <repository>
+            <id>nexus-internal-mirror</id>
+            <url>https://repo.adeo.no/repository/maven-public</url>
+        </repository>
+        <!-- Skal brukes hvis bygget kjører internt (f.eks. Jenkins, fra utviklerimage, eller via ScaleFT) -->
+        <repository>
+            <id>internal-mirror-github-navikt</id>
+            <url>https://repo.adeo.no/repository/github-package-registry-navikt/</url>
+        </repository>
+        <!-- Skal brukes hvis bygget kjøres fra en Github Action -->
+        <repository>
+            <id>github-package-registry-navikt</id>
+            <url>https://maven.pkg.github.com/navikt/maven-release</url>
+        </repository>
+        <!-- Skal brukes hvis bygget kjører utenfor NAV (f.eks. en ekstern maskin, eller Circle CI) -->
+        <repository>
+            <id>external-mirror-github-navikt</id>
+            <url>https://github-package-registry-mirror.gc.nav.no/cached/maven-release</url>
+        </repository>
+    </repositories>
+
     <build>
         <finalName>testnorge-elsam</finalName>
         <plugins>
@@ -141,22 +174,6 @@
                     <forkMode>once</forkMode>
                     <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>${maven-pmd-plugin.version}</version>
-                <configuration>
-                    <failOnViolation>true</failOnViolation>
-                    <printFailingErrors>true</printFailingErrors>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
