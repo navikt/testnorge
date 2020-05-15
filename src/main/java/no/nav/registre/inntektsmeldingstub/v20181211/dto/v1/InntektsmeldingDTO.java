@@ -17,6 +17,7 @@ import java.util.List;
 @Value
 @NoArgsConstructor(force = true)
 public class InntektsmeldingDTO implements ToXmlElement<XMLInntektsmeldingM> {
+
     @JsonProperty(required = true)
     private String ytelse;
     @JsonProperty(required = true)
@@ -29,6 +30,8 @@ public class InntektsmeldingDTO implements ToXmlElement<XMLInntektsmeldingM> {
     private AvsendersystemDTO avsendersystem;
     @JsonProperty
     private ArbeidsgiverDTO arbeidsgiver;
+    @JsonProperty
+    private ArbeidsgiverPrivatDTO arbeidsgiverPrivat;
     @JsonProperty(required = true)
     private ArbeidsforholdDTO arbeidsforhold;
     @JsonProperty
@@ -58,7 +61,6 @@ public class InntektsmeldingDTO implements ToXmlElement<XMLInntektsmeldingM> {
             xmlSkjemainnhold.setPleiepengerPerioder(factory.createXMLSkjemainnholdPleiepengerPerioder(xmlPleiepengerPeriodeListe));
         }
 
-
         if (opphoerAvNaturalytelseListe != null) {
             XMLOpphoerAvNaturalytelseListe xmlOpphoerAvNaturalytelseListe = factory.createXMLOpphoerAvNaturalytelseListe();
             xmlOpphoerAvNaturalytelseListe.withOpphoerAvNaturalytelse(NaturaYtelseDetaljerDTO.covert(opphoerAvNaturalytelseListe));
@@ -67,7 +69,7 @@ public class InntektsmeldingDTO implements ToXmlElement<XMLInntektsmeldingM> {
             );
         }
 
-        if(gjenopptakelseNaturalytelseListe != null){
+        if (gjenopptakelseNaturalytelseListe != null) {
             XMLGjenopptakelseNaturalytelseListe xmlGjenopptakelseNaturalytelseListe = factory.createXMLGjenopptakelseNaturalytelseListe();
             xmlGjenopptakelseNaturalytelseListe.withNaturalytelseDetaljer(NaturaYtelseDetaljerDTO.covert(gjenopptakelseNaturalytelseListe));
             xmlSkjemainnhold.setGjenopptakelseNaturalytelseListe(
@@ -79,6 +81,7 @@ public class InntektsmeldingDTO implements ToXmlElement<XMLInntektsmeldingM> {
         xmlSkjemainnhold.setAarsakTilInnsending(aarsakTilInnsending);
         xmlSkjemainnhold.setArbeidstakerFnr(arbeidstakerFnr);
         xmlSkjemainnhold.setNaerRelasjon(naerRelasjon);
+
         if (avsendersystem != null) {
             xmlSkjemainnhold.setAvsendersystem(avsendersystem.toXmlElement());
         }
@@ -89,9 +92,6 @@ public class InntektsmeldingDTO implements ToXmlElement<XMLInntektsmeldingM> {
             ));
         }
 
-
-
-
         if (refusjon != null) {
             xmlSkjemainnhold.setRefusjon(factory.createXMLSkjemainnholdRefusjon(refusjon.toXmlElement()));
         }
@@ -100,14 +100,17 @@ public class InntektsmeldingDTO implements ToXmlElement<XMLInntektsmeldingM> {
             xmlSkjemainnhold.setArbeidsgiver(factory.createXMLSkjemainnholdArbeidsgiver(arbeidsgiver.toXmlElement()));
         }
 
+        if (arbeidsgiverPrivat != null) {
+            xmlSkjemainnhold.setArbeidsgiverPrivat(factory.createXMLSkjemainnholdArbeidsgiverPrivat(arbeidsgiverPrivat.toXmlElement()));
+        }
 
         xmlSkjemainnhold.setStartdatoForeldrepengeperiode(factory.createXMLSkjemainnholdStartdatoForeldrepengeperiode(
                 startdatoForeldrepengeperiode
         ));
+
         if (omsorgspenger != null) {
             xmlSkjemainnhold.setOmsorgspenger(factory.createXMLSkjemainnholdOmsorgspenger(omsorgspenger.toXmlElement()));
         }
-
 
         if (sykepengerIArbeidsgiverperioden != null) {
             xmlSkjemainnhold.setSykepengerIArbeidsgiverperioden(factory.createXMLSkjemainnholdSykepengerIArbeidsgiverperioden(
