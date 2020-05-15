@@ -1,6 +1,5 @@
 package no.nav.registre.inntektsmeldingstub.v20181211.provider.v2;
 
-import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLInntektsmeldingM;
