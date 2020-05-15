@@ -8,9 +8,30 @@ type BestillingInfoboks = {
 
 export const BestillingInfoboks = ({ bestillingsdata }: BestillingInfoboks) => {
 	const tpsfInfo = bestillingsdata.tpsf
-	if (!tpsfInfo) return null
-	if (tpsfInfo.egenAnsattDatoFom || tpsfInfo.spesreg === 'SPFO' || tpsfInfo.spesreg === 'SPSF') {
+	const checkRelasjoner = () => {
+		let harAdressebeskyttelse = false
+		if (tpsfInfo.relasjoner) {
+			Object.entries(tpsfInfo.relasjoner).map(relasjon => {
+				relasjon[1].map(person => {
+					if (person.spesreg === 'SPFO' || person.spesreg === 'SPSF') {
+						harAdressebeskyttelse = true
+					}
+				})
+			})
+		}
+		return harAdressebeskyttelse
+	}
+	const harRelasjonMedAdressebeskyttelse = checkRelasjoner()
+
+	if (
+		tpsfInfo &&
+		(tpsfInfo.egenAnsattDatoFom ||
+			tpsfInfo.spesreg === 'SPFO' ||
+			tpsfInfo.spesreg === 'SPSF' ||
+			harRelasjonMedAdressebeskyttelse === true)
+	) {
 		return (
+			// @ts-ignore
 			<AlertStripeInfo style={{ marginTop: 20 }}>
 				Tilgangsstyring basert på diskresjonskode og egenansatt har nattlig oppdatering, slik at
 				riktig tilgang mot miljø kan verifiseres først dagen etter. Ta kontakt med team Dolly i
