@@ -13,6 +13,7 @@ import java.net.URI;
 import java.util.Map;
 import java.util.List;
 
+
 @Component
 @Slf4j
 public class FrikortSyntetisererenConsumer {
@@ -26,7 +27,7 @@ public class FrikortSyntetisererenConsumer {
     public Map<String, List<SyntFrikortResponse>> hentSyntetiskeEgenandelerFraSyntRest(Map<String, Integer> request) {
 
         var postRequest = RequestEntity.post(URI.create(syntServerUrl + "/api/v1/generate")).body(request);
-        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<Map<String, List<SyntFrikortResponse>>>(){}).getBody();
-
+        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<Map<String, List<SyntFrikortResponse>>>() {
+        }).getBody();
     }
 }
