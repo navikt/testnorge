@@ -3,10 +3,12 @@ package no.nav.dolly.bestilling.pdlforvalter.domain;
 import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class PdlOppholdsadresse {
@@ -31,7 +33,8 @@ public class PdlOppholdsadresse {
     private UtenlandskAdresse utenlandskAdresse;
     private Matrikkeladresse matrikkeladresse;
 
-    @Data
+    @Getter
+    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Vegadresse {
@@ -47,7 +50,8 @@ public class PdlOppholdsadresse {
         private String postnummer;
     }
 
-    @Data
+    @Getter
+    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UtenlandskAdresse {
@@ -66,7 +70,8 @@ public class PdlOppholdsadresse {
         private String regionDistriktOmraade;
     }
 
-    @Data
+    @Getter
+    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Matrikkeladresse {
