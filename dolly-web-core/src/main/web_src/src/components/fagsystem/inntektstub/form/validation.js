@@ -103,8 +103,8 @@ const finnesOverlappendeDato = (tidsrom, index) => {
 const inntektsliste = Yup.array().of(
 	Yup.object({
 		beloep: requiredNumber.typeError(messages.required),
-		startOpptjeningsperiode: Yup.string(),
-		sluttOpptjeningsperiode: Yup.string()
+		startOpptjeningsperiode: Yup.string().nullable(),
+		sluttOpptjeningsperiode: Yup.string().nullable()
 	})
 )
 
@@ -153,7 +153,7 @@ export const validation = {
 					.integer('Kan ikke være et desimaltall')
 					.transform((i, j) => (j === '' ? null : i))
 					.nullable(),
-				virksomhet: unikOrgMndTest(requiredString.typeError(messages.required)),
+				virksomhet: unikOrgMndTest(requiredString.typeError(messages.required)).nullable(),
 				// virksomhet: requiredString.typeError(messages.required),
 				opplysningspliktig: requiredString,
 				inntektsliste: inntektsliste,
