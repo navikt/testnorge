@@ -62,20 +62,26 @@ public class EnvironmentInitializationService {
 
     public void updateEregByOrgnr(String environment, String orgnr) {
         log.info("Oppdater {} i {} Ereg...", orgnr, environment);
-        eregMapperConsumer.update(eregAdapter.fetchByOrgnr(orgnr), environment);
-        log.info("Oppdatering er ferdig.");
+        OrganisasjonStatusMap status = eregStatusService.getStatusByOrgnr(environment, orgnr, false);
+        if(status.getMap().isEmpty()){
+            log.info("Fant ingen endringer i for {} for {} Ereg", orgnr, environment);
+        } else {
+            eregMapperConsumer.update(eregAdapter.fetchByOrgnr(orgnr), environment);
+            log.info("Oppdatering er ferdig.");
+        }
     }
 
     public void updateEregByGruppe(String environment, String gruppe) {
         log.info("Oppdater {} gruppen i {} Ereg...", gruppe, environment);
-        OrganisasjonStatusMap status = eregStatusService.getStatus(environment, gruppe, false);
+        OrganisasjonStatusMap status = eregStatusService.getStatusByGruppe(environment, gruppe, false);
         if (status.getMap().isEmpty()) {
             log.info("Fant ingen endringer i gruppen {} for {} Ereg", gruppe, environment);
         } else {
             log.info("Oppdaterer {} organisasjoner.", status.getMap().size());
             eregMapperConsumer.update(eregAdapter.fetchByIds(status.getMap().keySet()), environment);
+            log.info("Oppdatering er ferdig.");
         }
-        log.info("Oppdatering er ferdig.");
+
     }
 
     public void initializeKrr(String gruppe) {
