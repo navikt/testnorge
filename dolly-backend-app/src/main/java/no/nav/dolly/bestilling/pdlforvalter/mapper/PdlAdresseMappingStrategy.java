@@ -2,12 +2,14 @@ package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse.Bruksenhetstype;
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse.Master;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse.Matrikkeladresse;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse.UtenlandskAdresse;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse.Vegadresse;
 import static no.nav.dolly.domain.CommonKeys.CONSUMER;
+import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
+
+import org.springframework.stereotype.Component;
 
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
@@ -20,6 +22,7 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.RsMatrikkeladresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 import no.nav.dolly.mapper.MappingStrategy;
 
+@Component
 public class PdlAdresseMappingStrategy implements MappingStrategy {
 
     @Override
@@ -31,7 +34,6 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Person person, PdlOppholdsadresse oppholdsadresse, MappingContext context) {
 
                         oppholdsadresse.setKilde(CONSUMER);
-                        oppholdsadresse.setMaster(Master.PDL);
                         oppholdsadresse.setOppholdAnnetSted(mapSpesReg(person.getSpesreg()));
 
                         if (!person.getBoadresse().isEmpty()) {
@@ -76,7 +78,7 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(RsMatrikkeladresse rsMatrikkeladresse, Matrikkeladresse matrikkeladresse, MappingContext context) {
 
-                        matrikkeladresse.setAdressetillegsnavn(rsMatrikkeladresse.getMellomnavn());
+                        matrikkeladresse.setAdressetilleggsnavn(rsMatrikkeladresse.getMellomnavn());
                         matrikkeladresse.setBruksenhetstype(Bruksenhetstype.BOLIG);
                         matrikkeladresse.setBruksnummer(Integer.valueOf(rsMatrikkeladresse.getBruksnr()));
                         matrikkeladresse.setFestenummer(Integer.valueOf(rsMatrikkeladresse.getFestenr()));
@@ -110,6 +112,10 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
     }
 
     private static OppholdAnnetSted mapSpesReg(String spesregCode) {
+
+        if (isBlank(spesregCode)) {
+            return null;
+        }
         switch (spesregCode) {
         case "MILI":
             return OppholdAnnetSted.MILITAER;

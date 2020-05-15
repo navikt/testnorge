@@ -71,7 +71,7 @@ public class PdlOppholdsadresse {
     @AllArgsConstructor
     public static class Matrikkeladresse {
 
-        private String adressetillegsnavn;
+        private String adressetilleggsnavn;
         private String bruksenhetsnummer;
         private Bruksenhetstype bruksenhetstype;
         private Integer bruksnummer;
