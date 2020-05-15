@@ -26,10 +26,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 		>
 			<AttributtKategori title="Alder">
 				<Attributt attr={sm.attrs.alder} vis={!opprettFraEksisterende && !leggTil} />
-				<Attributt
-					attr={sm.attrs.doedsdato}
-					vis={!_get(opts, 'personFoerLeggTil.tpsf.doedsdato')}
-				/>
+				<Attributt attr={sm.attrs.doedsdato} />
 			</AttributtKategori>
 
 			<AttributtKategori title="Nasjonalitet">
