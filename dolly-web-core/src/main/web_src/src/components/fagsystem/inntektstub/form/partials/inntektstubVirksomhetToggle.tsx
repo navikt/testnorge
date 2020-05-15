@@ -10,7 +10,10 @@ type InntektstubVirksomhetToggle = {
 	path: string
 }
 
-const inputValg = { organisasjon: 'velg', enkeltmannsforetak: 'skriv' }
+enum ToggleValg {
+	ORGANISASJON = 'ORGANISASJON',
+	ENKELTMANNSFORETAK = 'ENKELTMANNSFORETAK'
+}
 
 export const InntektstubVirksomhetToggle = ({ formikBag, path }: InntektstubVirksomhetToggle) => {
 	const virksomhetPath = `${path}.virksomhet`
@@ -20,49 +23,43 @@ export const InntektstubVirksomhetToggle = ({ formikBag, path }: InntektstubVirk
 	const [inputType, setInputType] = useState(
 		_get(formikBag.values, virksomhetPath)
 			? _get(formikBag.values, virksomhetPath).length === orgnummerLength
-				? inputValg.organisasjon
-				: inputValg.enkeltmannsforetak
-			: inputValg.organisasjon
+				? ToggleValg.ORGANISASJON
+				: ToggleValg.ENKELTMANNSFORETAK
+			: ToggleValg.ORGANISASJON
 	)
 
-	const handleToggleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	const handleToggleChange = (event: React.ChangeEvent<any>) => {
 		setInputType(event.target.value)
 		formikBag.setFieldValue(virksomhetPath, '')
 		formikBag.setFieldValue(opplysningspliktigPath, '')
-	}
-
-	const setOpplysningspliktig = () => {
-		formikBag.setFieldValue(opplysningspliktigPath, _get(formikBag.values, virksomhetPath))
 	}
 
 	return (
 		<div className="toggle--wrapper">
 			<ToggleGruppe onChange={handleToggleChange} name={path}>
 				<ToggleKnapp
-					key={inputValg.organisasjon}
-					value={inputValg.organisasjon}
-					checked={inputType === inputValg.organisasjon}
+					key={ToggleValg.ORGANISASJON}
+					value={ToggleValg.ORGANISASJON}
+					checked={inputType === ToggleValg.ORGANISASJON}
 				>
 					Organisasjon
 				</ToggleKnapp>
 				<ToggleKnapp
-					key={inputValg.enkeltmannsforetak}
-					value={inputValg.enkeltmannsforetak}
-					checked={inputType === inputValg.enkeltmannsforetak}
+					key={ToggleValg.ENKELTMANNSFORETAK}
+					value={ToggleValg.ENKELTMANNSFORETAK}
+					checked={inputType === ToggleValg.ENKELTMANNSFORETAK}
 				>
 					Enkeltmannsforetak
 				</ToggleKnapp>
 			</ToggleGruppe>
 
-			{inputType === inputValg.organisasjon ? (
+			{inputType === ToggleValg.ORGANISASJON ? (
 				<InntektstubOrgnummerSelect path={path} formikBag={formikBag} />
 			) : (
-				<FormikTextInput
-					name={virksomhetPath}
-					label="Virksomhet (personident)"
-					size="xlarge"
-					onBlur={setOpplysningspliktig}
-				/>
+				<div className="flexbox--flex-wrap">
+					<FormikTextInput name={virksomhetPath} label="Virksomhet (personident)" size="medium" />
+					<FormikTextInput name={opplysningspliktigPath} label="Opplysningspliktig" size="medium" />
+				</div>
 			)}
 		</div>
 	)
