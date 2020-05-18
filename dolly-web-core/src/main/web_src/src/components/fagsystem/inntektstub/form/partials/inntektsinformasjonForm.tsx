@@ -2,7 +2,7 @@ import React from 'react'
 import _get from 'lodash/get'
 import { FormikProps } from 'formik'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { InntektstubOrgnummerSelect } from './inntektstubOrgnummerSelect'
+import { InntektstubVirksomhetToggle } from './inntektstubVirksomhetToggle'
 import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinformasjonLister'
 import InntektsendringForm from './inntektsendringForm'
 
@@ -20,8 +20,8 @@ export default ({ path, formikBag }: InntektsinformasjonForm) => (
 				label="Generer antall måneder"
 				type="number"
 			/>
-			<InntektstubOrgnummerSelect path={path} formikBag={formikBag} />
 		</div>
+		<InntektstubVirksomhetToggle path={path} formikBag={formikBag} />
 		<InntektsinformasjonLister formikBag={formikBag} path={path} />
 		<InntektsendringForm formikBag={formikBag} path={path} />
 	</div>

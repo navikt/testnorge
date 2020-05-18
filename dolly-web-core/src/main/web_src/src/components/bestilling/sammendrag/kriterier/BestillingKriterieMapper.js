@@ -365,8 +365,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				{ numberHeader: `Inntektsinformasjon ${i + 1}` },
 				obj('Måned/år', inntektsinfo.sisteAarMaaned),
 				obj('Generer antall måneder', inntektsinfo.antallMaaneder),
-				obj('Opplysningspliktig (orgnr/id)', inntektsinfo.opplysningspliktig),
 				obj('Virksomhet (orgnr/id)', inntektsinfo.virksomhet),
+				obj('Opplysningspliktig (orgnr/id)', inntektsinfo.opplysningspliktig),
 				obj(
 					'Antall registrerte inntekter',
 					inntektsinfo.inntektsliste && inntektsinfo.inntektsliste.length

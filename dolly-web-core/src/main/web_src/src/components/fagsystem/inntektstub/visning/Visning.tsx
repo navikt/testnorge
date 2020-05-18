@@ -47,11 +47,11 @@ export const InntektstubVisning = ({ liste, loading }: InntekstubVisning) => {
 					<React.Fragment>
 						<div className="person-visning_content">
 							<TitleValue title="År/måned" value={inntektsinformasjon.aarMaaned} />
+							<TitleValue title="Virksomhet (orgnr/id)" value={inntektsinformasjon.virksomhet} />
 							<TitleValue
 								title="Opplysningspliktig (orgnr/id)"
 								value={inntektsinformasjon.opplysningspliktig}
 							/>
-							<TitleValue title="Virksomhet (orgnr/id)" value={inntektsinformasjon.virksomhet} />
 						</div>
 						<InntektVisning data={inntektsinformasjon.inntektsliste} />
 						<FradragVisning data={inntektsinformasjon.fradragsliste} />

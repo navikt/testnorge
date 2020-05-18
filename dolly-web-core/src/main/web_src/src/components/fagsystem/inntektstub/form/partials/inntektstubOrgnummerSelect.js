@@ -25,7 +25,7 @@ export const InntektstubOrgnummerSelect = ({ path, formikBag }) => {
 			render={data => (
 				<DollySelect
 					name={`${path}.virksomhet`}
-					label="Virksomhet (orgnr/id)"
+					label="Virksomhet (orgnummer)"
 					options={data}
 					size="xlarge"
 					onChange={setOrgnummer}
