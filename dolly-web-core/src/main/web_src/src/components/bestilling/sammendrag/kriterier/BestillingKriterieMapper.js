@@ -53,7 +53,7 @@ const _getTpsfBestillingData = data => {
 			'Telefonnummer 2',
 			data.telefonnummer_2 && `${data.telefonLandskode_2} ${data.telefonnummer_2}`
 		),
-		obj('Egenansatt', Formatters.oversettBoolean(data.egenansattDatoFom))
+		obj('Egenansatt fra', Formatters.formatDate(data.egenAnsattDatoFom))
 	]
 }
 
