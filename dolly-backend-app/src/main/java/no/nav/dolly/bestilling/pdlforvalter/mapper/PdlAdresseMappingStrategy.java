@@ -46,9 +46,8 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
                                 oppholdsadresse.setMatrikkeladresse(mapperFacade.map(
                                         person.getBoadresse().get(0), Matrikkeladresse.class));
                             }
-                        }
 
-                        if (!person.getPostadresse().isEmpty() &&
+                        } else if (!person.getPostadresse().isEmpty() &&
                                 !"NOR".equals(person.getPostadresse().get(0).getPostLand()) &&
                                 nonNull(person.getPostadresse().get(0).getPostLand())) {
                             oppholdsadresse.setUtenlandskAdresse(mapperFacade.map(
