@@ -1,5 +1,8 @@
 package no.nav.registre.inntekt.service;
 
+import static no.nav.registre.inntekt.utils.CommonConstants.TYPE_ORGANISASJON;
+import static no.nav.registre.inntekt.utils.CommonConstants.TYPE_PERSON;
+
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Organisasjon;
@@ -34,9 +37,6 @@ import no.nav.registre.inntekt.utils.ValidationException;
 @Slf4j
 @Service
 public class AltinnInntektService {
-
-    private static final String TYPE_ORGANISASJON = "Organisasjon";
-    private static final String TYPE_PERSON = "Person";
 
     private final AaregService aaregService;
     private final AltinnInntektConsumer altinnInntektConsumer;
@@ -89,14 +89,14 @@ public class AltinnInntektService {
         }
 
         inntekterAaOpprette.forEach(inntekt -> {
-            var virksomhetsnummer = inntekt.getArbeidsgiver().getVirksomhetsnummer();
-            var kontaktinformasjon = hentKontaktinformasjon(virksomhetsnummer, miljoe);
+            var arbeidsgiverId = inntekt.getArbeidsgiver().getArbeidsgiverId();
+            var kontaktinformasjon = hentKontaktinformasjon(arbeidsgiverId, miljoe);
             Arbeidsforhold nyesteArbeidsforhold = null;
 
             try {
-                nyesteArbeidsforhold = AaregService.finnNyesteArbeidsforholdIOrganisasjon(ident, virksomhetsnummer, arbeidsforholdListe);
+                nyesteArbeidsforhold = AaregService.finnNyesteArbeidsforholdIOrganisasjon(ident, arbeidsgiverId, arbeidsforholdListe);
             } catch (ValidationException e) {
-                log.error("Fant ikke nyeste arbeidsforhold for {}", virksomhetsnummer, e);
+                log.error("Fant ikke nyeste arbeidsforhold for {}", arbeidsgiverId, e);
                 return;
             }
 
@@ -109,7 +109,7 @@ public class AltinnInntektService {
                             .metadata(metadata)
                             .datoMottatt(Date.from(inntekt.getAvsendersystem().getInnsendingstidspunkt().atZone(ZoneId.systemDefault()).toInstant()))
                             .virksomhetsnavn(inntekt.getArbeidsgiver().getKontaktinformasjon().getKontaktinformasjonNavn())
-                            .virksomhetsnummer(inntekt.getArbeidsgiver().getVirksomhetsnummer())
+                            .virksomhetsnummer(inntekt.getArbeidsgiver().getArbeidsgiverId())
                             .xml(response)
                             .build()
             );
@@ -139,7 +139,7 @@ public class AltinnInntektService {
                         .metadata(metadata)
                         .datoMottatt(Date.from(rsInntektsmelding.getAvsendersystem().getInnsendingstidspunkt().atZone(ZoneId.systemDefault()).toInstant()))
                         .virksomhetsnavn(inntekt.getArbeidsgiver().getKontaktinformasjon().getKontaktinformasjonNavn())
-                        .virksomhetsnummer(inntekt.getArbeidsgiver().getVirksomhetsnummer())
+                        .virksomhetsnummer(inntekt.getArbeidsgiver().getArbeidsgiverId())
                         .xml(respons)
                         .build());
             } catch (ValidationException ignore) {
@@ -161,14 +161,13 @@ public class AltinnInntektService {
             throw new ValidationException("Må legge ved kontaktinformasjon for arbeidsgiver.");
         }
         var arbeidsgiver = inntektInfo.getArbeidsgiver();
-        // TODO: Dette er en quick fix som bare sjekker lengde for å gi svar på Privat/Offentlig arbeidsgiver.
-        if (inntektInfo.getArbeidsgiver().getVirksomhetsnummer().length() >= 9) {
+        if (inntektInfo.getArbeidsgiver() instanceof RsArbeidsgiver) {
             tmp.arbeidsgiver(RsArbeidsgiver.builder()
                     .kontaktinformasjon(RsKontaktinformasjon.builder()
                             .telefonnummer(arbeidsgiver.getKontaktinformasjon().getTelefonnummer())
                             .kontaktinformasjonNavn(arbeidsgiver.getKontaktinformasjon().getKontaktinformasjonNavn())
                             .build())
-                    .virksomhetsnummer(arbeidsgiver.getVirksomhetsnummer())
+                    .virksomhetsnummer(arbeidsgiver.getArbeidsgiverId())
                     .build());
         } else {
             tmp.arbeidsgiverPrivat(RsArbeidsgiverPrivat.builder()
@@ -176,7 +175,7 @@ public class AltinnInntektService {
                             .telefonnummer(arbeidsgiver.getKontaktinformasjon().getTelefonnummer())
                             .kontaktinformasjonNavn(arbeidsgiver.getKontaktinformasjon().getKontaktinformasjonNavn())
                             .build())
-                    .arbeidsgiverFnr(arbeidsgiver.getVirksomhetsnummer())
+                    .arbeidsgiverFnr(arbeidsgiver.getArbeidsgiverId())
                     .build());
         }
         return tmp.build();

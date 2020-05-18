@@ -44,7 +44,7 @@ public class AltinnInntektController {
         try {
             var altinnInntektResponse = new AltinnInntektResponse(
                     dollyRequest.getArbeidstakerFnr(),
-                    altinnInntektService.lagAltinnMeldinger(dollyRequest, continueOnError,valider),
+                    altinnInntektService.lagAltinnMeldinger(dollyRequest, continueOnError, valider),
                     includeXml != null && includeXml
             );
             return ResponseEntity.ok(altinnInntektResponse);
