@@ -25,6 +25,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
@@ -165,6 +166,7 @@ public class PdlForvalterClient implements ClientRegister {
                 sendKjoenn(person, isOpprettEndre, tpsPerson.getNyePartnereOgBarn());
                 sendAdressebeskyttelse(person);
                 sendOppholdsadresse(person);
+                sendKontaktadresse(person);
                 sendStatsborgerskap(person);
                 sendFamilierelasjoner(person);
                 sendSivilstand(person);
@@ -250,6 +252,11 @@ public class PdlForvalterClient implements ClientRegister {
     private void sendOppholdsadresse(Person person) {
 
         pdlForvalterConsumer.postOppholdsadresse(mapperFacade.map(person, PdlOppholdsadresse.class), person.getIdent());
+    }
+
+    private void sendKontaktadresse(Person person) {
+
+        pdlForvalterConsumer.postKontaktadresse(mapperFacade.map(person, PdlKontaktadresse.class), person.getIdent());
     }
 
     private void sendUtenlandsid(Pdldata pdldata, String ident, StringBuilder status) {

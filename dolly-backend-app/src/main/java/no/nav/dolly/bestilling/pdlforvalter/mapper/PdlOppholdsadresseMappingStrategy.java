@@ -23,7 +23,7 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 import no.nav.dolly.mapper.MappingStrategy;
 
 @Component
-public class PdlAdresseMappingStrategy implements MappingStrategy {
+public class PdlOppholdsadresseMappingStrategy implements MappingStrategy {
 
     @Override
     public void register(MapperFactory factory) {
@@ -64,6 +64,7 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
 
                         vegadresse.setAdressekode(gateadresse.getGatekode());
                         vegadresse.setAdressenavn(gateadresse.getGateadresse());
+                        vegadresse.setHusnummer(gateadresse.getHusnummer());
                         vegadresse.setBruksenhetstype(Bruksenhetstype.BOLIG);
                         vegadresse.setKommunenummer(gateadresse.getKommunenr());
                         vegadresse.setPostnummer(gateadresse.getPostnr());
