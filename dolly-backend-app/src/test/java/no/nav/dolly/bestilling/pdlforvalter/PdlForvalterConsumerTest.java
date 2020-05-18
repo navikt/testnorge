@@ -126,7 +126,7 @@ public class PdlForvalterConsumerTest {
                 .andExpect(header(HEADER_NAV_PERSON_IDENT, IDENT))
                 .andRespond(withSuccess());
 
-        pdlForvalterConsumer.postOpprettPerson(PdlOpprettPerson.builder().opprettetIdent(IDENT).build(), IDENT, "OpprettPerson");
+        pdlForvalterConsumer.postOpprettPerson(PdlOpprettPerson.builder().opprettetIdent(IDENT).build(), IDENT);
 
         verify(providersProps).getPdlForvalter();
         verify(stsOidcService).getIdToken(anyString());
@@ -140,6 +140,6 @@ public class PdlForvalterConsumerTest {
                 .andExpect(header(HEADER_NAV_PERSON_IDENT, IDENT))
                 .andRespond(withSuccess());
 
-        pdlForvalterConsumer.postNavn(PdlNavn.builder().build(), IDENT, "LeggTIlNavn");
+        pdlForvalterConsumer.postNavn(PdlNavn.builder().build(), IDENT);
     }
 }

@@ -31,6 +31,7 @@ type Person {
     adressebeskyttelse(historikk: Boolean = false): [Adressebeskyttelse!]!
     bostedsadresse(historikk: Boolean = false): [Bostedsadresse!]!
     deltBosted(historikk: Boolean = false): [DeltBosted!]!
+    doedfoedtBarn: [DoedfoedtBarn!]!
     doedsfall: [Doedsfall!]!
     falskIdentitet: FalskIdentitet
     familierelasjoner: [Familierelasjon!]!
@@ -104,7 +105,7 @@ type Kontaktadresse {
 
     coAdressenavn: String
     postboksadresse: Postboksadresse
-    vegadresseForPost: Vegadresse
+    vegadresse: Vegadresse
     postadresseIFrittFormat: PostadresseIFrittFormat
     utenlandskAdresse: UtenlandskAdresse
     utenlandskAdresseIFrittFormat: UtenlandskAdresseIFrittFormat
@@ -253,11 +254,12 @@ type UtenlandskIdentifikasjonsnummer {
 
 type Adressebeskyttelse {
     gradering: AdressebeskyttelseGradering!
-    folkeregistermetadata: Folkeregistermetadata!
+    folkeregistermetadata: Folkeregistermetadata
     metadata: Metadata!
 }
 
 enum AdressebeskyttelseGradering {
+    STRENGT_FORTROLIG_UTLAND,
     STRENGT_FORTROLIG,
     FORTROLIG,
     UGRADERT
@@ -289,6 +291,12 @@ type Familierelasjon {
     minRolleForPerson: Familierelasjonsrolle
 
     folkeregistermetadata: Folkeregistermetadata
+    metadata: Metadata!
+}
+
+type DoedfoedtBarn {
+    dato: Date
+    folkeregistermetadata: Folkeregistermetadata!
     metadata: Metadata!
 }
 

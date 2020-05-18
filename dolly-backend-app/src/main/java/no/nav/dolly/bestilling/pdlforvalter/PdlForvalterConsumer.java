@@ -20,6 +20,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
@@ -52,6 +53,7 @@ public class PdlForvalterConsumer {
     private static final String PDL_BESTILLING_STATSBORGERSKAP_URL = PDL_BESTILLING_URL + "/statsborgerskap";
     private static final String PDL_BESTILLING_TELEFONUMMER_URL = PDL_BESTILLING_URL + "/telefonnummer";
     private static final String PDL_BESTILLING_SIVILSTAND_URL = PDL_BESTILLING_URL + "/sivilstand";
+    private static final String PDL_BESTILLING_OPPHOLDSADRESSE_URL = PDL_BESTILLING_URL + "/oppholdsadresse";
     private static final String PDL_BESTILLING_SLETTING_URL = "/api/v1/personident";
     private static final String PREPROD_ENV = "q";
 
@@ -72,27 +74,27 @@ public class PdlForvalterConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_opprettPerson" })
-    public ResponseEntity postOpprettPerson(PdlOpprettPerson pdlNavn, String ident, String beskrivelse) {
+    public ResponseEntity postOpprettPerson(PdlOpprettPerson pdlNavn, String ident) {
 
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_OPPRETT_PERSON,
-                pdlNavn, ident, beskrivelse);
+                pdlNavn, ident, "opprett person");
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_navn" })
-    public ResponseEntity postNavn(PdlNavn pdlNavn, String ident, String beskrivelse) {
+    public ResponseEntity postNavn(PdlNavn pdlNavn, String ident) {
 
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_NAVN_URL,
-                pdlNavn, ident, beskrivelse);
+                pdlNavn, ident, "navn");
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_kjoenn" })
-    public ResponseEntity postKjoenn(PdlKjoenn pdlNavn, String ident, String beskrivelse) {
+    public ResponseEntity postKjoenn(PdlKjoenn pdlNavn, String ident) {
 
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_KJOENN_URL,
-                pdlNavn, ident, beskrivelse);
+                pdlNavn, ident,  "kjønn");
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_kontaktinfoDoedsbo" })
@@ -119,67 +121,77 @@ public class PdlForvalterConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_statsborgerskap" })
-    public ResponseEntity postStatsborgerskap(PdlStatsborgerskap pdlStatsborgerskap, String ident, String beskrivelse) {
+    public ResponseEntity postStatsborgerskap(PdlStatsborgerskap pdlStatsborgerskap, String ident) {
 
         return postRequest(
-                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_STATSBORGERSKAP_URL, pdlStatsborgerskap, ident, beskrivelse);
+                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_STATSBORGERSKAP_URL,
+                pdlStatsborgerskap, ident, "statsborgerskap");
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_doedsfall" })
-    public ResponseEntity postDoedsfall(PdlDoedsfall pdlDoedsfall, String ident, String beskrivelse) {
+    public ResponseEntity postDoedsfall(PdlDoedsfall pdlDoedsfall, String ident) {
 
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_DOEDSFALL_URL,
-                pdlDoedsfall, ident, beskrivelse);
+                pdlDoedsfall, ident, "dødsmelding");
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_foedsel" })
-    public ResponseEntity postFoedsel(PdlFoedsel pdlFoedsel, String ident, String beskrivelse) {
+    public ResponseEntity postFoedsel(PdlFoedsel pdlFoedsel, String ident) {
 
         return postRequest(
-                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_FOEDSEL_URL, pdlFoedsel, ident, beskrivelse);
+                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_FOEDSEL_URL,
+                pdlFoedsel, ident, "fødselsmelding");
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_adressebeskyttelse" })
-    public ResponseEntity postAdressebeskyttelse(PdlAdressebeskyttelse pdlAdressebeskyttelse, String ident, String beskrivelse) {
+    public ResponseEntity postAdressebeskyttelse(PdlAdressebeskyttelse pdlAdressebeskyttelse, String ident) {
 
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_ADRESSEBESKYTTELSE_URL,
-                pdlAdressebeskyttelse, ident, beskrivelse);
+                pdlAdressebeskyttelse, ident, "adressebeskyttelse");
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_familierelasjon" })
-    public ResponseEntity postFamilierelasjon(PdlFamilierelasjon familierelasjonn, String ident, String beskrivelse) {
+    public ResponseEntity postFamilierelasjon(PdlFamilierelasjon familierelasjonn, String ident) {
 
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_FAMILIERELASJON,
-                familierelasjonn, ident, beskrivelse);
+                familierelasjonn, ident, "familierelasjon");
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_telefonnummer" })
-    public ResponseEntity postTelefonnummer(PdlTelefonnummer.Entry telefonnummer, String ident, String beskrivelse) {
+    public ResponseEntity postTelefonnummer(PdlTelefonnummer.Entry telefonnummer, String ident) {
 
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_TELEFONUMMER_URL,
-                telefonnummer, ident, beskrivelse);
+                telefonnummer, ident, "telefonnummer");
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_sivilstand" })
-    public ResponseEntity postSivilstand(PdlSivilstand sivilstand, String ident, String beskrivelse) {
+    public ResponseEntity postSivilstand(PdlSivilstand sivilstand, String ident) {
 
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_SIVILSTAND_URL,
-                sivilstand, ident, beskrivelse);
+                sivilstand, ident, "sivilstand");
+    }
+
+    @Timed(name = "providers", tags = { "operation", "pdl_oppholdsadresse" })
+    public ResponseEntity postOppholdsadresse(PdlOppholdsadresse oppholdsadresse, String ident) {
+
+        return postRequest(
+                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_OPPHOLDSADRESSE_URL,
+                oppholdsadresse, ident, "oppholdsadresse");
     }
 
     private ResponseEntity postRequest(String url, Object body, String ident, String beskrivelse) {
 
         try {
-        return restTemplate.exchange(RequestEntity.post(URI.create(url))
-                .contentType(APPLICATION_JSON)
-                .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
-                .header(HEADER_NAV_PERSON_IDENT, ident)
-                .body(body), JsonNode.class);
+            return restTemplate.exchange(RequestEntity.post(URI.create(url))
+                    .contentType(APPLICATION_JSON)
+                    .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
+                    .header(HEADER_NAV_PERSON_IDENT, ident)
+                    .body(body), JsonNode.class);
 
         } catch (RuntimeException e) {
 

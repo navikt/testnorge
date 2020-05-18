@@ -26,6 +26,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
@@ -163,6 +164,7 @@ public class PdlForvalterClient implements ClientRegister {
                 sendNavn(person);
                 sendKjoenn(person, isOpprettEndre, tpsPerson.getNyePartnereOgBarn());
                 sendAdressebeskyttelse(person);
+                sendOppholdsadresse(person);
                 sendStatsborgerskap(person);
                 sendFamilierelasjoner(person);
                 sendSivilstand(person);
@@ -179,25 +181,24 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void sendOpprettPerson(Person person) {
 
-        pdlForvalterConsumer.postOpprettPerson(mapperFacade.map(person, PdlOpprettPerson.class),
-                person.getIdent(), "opprett person");
+        pdlForvalterConsumer.postOpprettPerson(mapperFacade.map(person, PdlOpprettPerson.class), person.getIdent());
     }
 
     private void sendNavn(Person person) {
 
-        pdlForvalterConsumer.postNavn(mapperFacade.map(person, PdlNavn.class), person.getIdent(), "navn");
+        pdlForvalterConsumer.postNavn(mapperFacade.map(person, PdlNavn.class), person.getIdent());
     }
 
     private void sendKjoenn(Person person, boolean isOpprettEndre, List<String> nyePartnereOgBarn) {
         if (!isOpprettEndre || nyePartnereOgBarn.contains(person.getIdent())) {
-            pdlForvalterConsumer.postKjoenn(mapperFacade.map(person, PdlKjoenn.class), person.getIdent(), "kjønn");
+            pdlForvalterConsumer.postKjoenn(mapperFacade.map(person, PdlKjoenn.class), person.getIdent());
         }
     }
 
     private void sendAdressebeskyttelse(Person person) {
 
         pdlForvalterConsumer.postAdressebeskyttelse(mapperFacade.map(person, PdlAdressebeskyttelse.class),
-                person.getIdent(), "adressebeskyttelse");
+                person.getIdent());
     }
 
     private void sendFamilierelasjoner(Person person) {
@@ -205,7 +206,7 @@ public class PdlForvalterClient implements ClientRegister {
         person.getRelasjoner().forEach(relasjon -> {
             if (!relasjon.isPartner()) {
                 pdlForvalterConsumer.postFamilierelasjon(mapperFacade.map(relasjon, PdlFamilierelasjon.class),
-                        person.getIdent(), "familierelasjon");
+                        person.getIdent());
             }
         });
     }
@@ -213,8 +214,7 @@ public class PdlForvalterClient implements ClientRegister {
     private void sendSivilstand(Person person) {
 
         if (person.isMyndig()) {
-            pdlForvalterConsumer.postSivilstand(mapperFacade.map(person, PdlSivilstand.class),
-                    person.getIdent(), "sivilstand");
+            pdlForvalterConsumer.postSivilstand(mapperFacade.map(person, PdlSivilstand.class), person.getIdent());
         }
     }
 
@@ -222,7 +222,7 @@ public class PdlForvalterClient implements ClientRegister {
 
         if (nonNull(person.getDoedsdato())) {
             pdlForvalterConsumer.postDoedsfall(mapperFacade.map(person, PdlDoedsfall.class),
-                    person.getIdent(), "dødsmelding");
+                    person.getIdent());
         }
     }
 
@@ -230,22 +230,26 @@ public class PdlForvalterClient implements ClientRegister {
 
         person.getStatsborgerskap().forEach(statsborgerskap ->
                 pdlForvalterConsumer.postStatsborgerskap(mapperFacade.map(statsborgerskap, PdlStatsborgerskap.class),
-                        person.getIdent(), "statsborgerskap")
+                        person.getIdent())
         );
     }
 
     private void sendFoedselsmelding(Person person) {
 
-        pdlForvalterConsumer.postFoedsel(mapperFacade.map(person, PdlFoedsel.class),
-                person.getIdent(), "fødselsmelding");
+        pdlForvalterConsumer.postFoedsel(mapperFacade.map(person, PdlFoedsel.class), person.getIdent());
     }
 
     private void sendTelefonnummer(Person person) {
 
         PdlTelefonnummer telefonnumre = mapperFacade.map(person, PdlTelefonnummer.class);
         telefonnumre.getTelfonnumre().forEach(telefonnummer ->
-                pdlForvalterConsumer.postTelefonnummer(telefonnummer, person.getIdent(), "telefonnummer")
+                pdlForvalterConsumer.postTelefonnummer(telefonnummer, person.getIdent())
         );
+    }
+
+    private void sendOppholdsadresse(Person person) {
+
+        pdlForvalterConsumer.postOppholdsadresse(mapperFacade.map(person, PdlOppholdsadresse.class), person.getIdent());
     }
 
     private void sendUtenlandsid(Pdldata pdldata, String ident, StringBuilder status) {
