@@ -1,5 +1,8 @@
 package no.nav.dolly.domain.resultset.tpsf.adresse;
 
+import static java.util.Objects.isNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -40,4 +43,8 @@ public class RsPostadresse {
     )
     private String postLand;
 
+    @JsonIgnore
+    public boolean isNorsk() {
+        return isNull(postLand) || "NOR".equals(postLand);
+    }
 }

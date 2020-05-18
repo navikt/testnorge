@@ -1,10 +1,7 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
-import static java.util.Objects.isNull;
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse.Bruksenhetstype;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse.PostadresseIFrittFormat;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse.UtenlandskAdresseIFrittFormat;
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse.Vegadresse;
 import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
@@ -14,6 +11,7 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse.VegadresseForPost;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsGateadresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
@@ -35,37 +33,33 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                         if (!person.getBoadresse().isEmpty()) {
                             kontaktadresse.setGyldigFraOgMed(
                                     person.getBoadresse().get(0).getFlyttedato().toLocalDate());
-                            if (person.getBoadresse().get(0) instanceof RsGateadresse) {
-                                kontaktadresse.setVegadresse(mapperFacade.map(
-                                        person.getBoadresse().get(0), Vegadresse.class));
+
+                            if ("GATE".equals(person.getBoadresse().get(0).getAdressetype())) {
+                                kontaktadresse.setVegadresseForPost(mapperFacade.map(
+                                        person.getBoadresse().get(0), VegadresseForPost.class));
                             }
 
-                        } else if (!person.getPostadresse().isEmpty()) {
+                        } else if (!person.getPostadresse().isEmpty() && person.getPostadresse().get(0).isNorsk()) {
+                            kontaktadresse.setPostadresseIFrittFormat(mapperFacade.map(
+                                    person.getPostadresse().get(0), PostadresseIFrittFormat.class));
+                        }
 
-                            if ("NOR".equals(person.getPostadresse().get(0).getPostLand()) ||
-                                    isNull(person.getPostadresse().get(0).getPostLand())) {
-
-                                kontaktadresse.setPostadresseIFrittFormat(mapperFacade.map(
-                                        person.getPostadresse().get(0), PostadresseIFrittFormat.class));
-                            } else {
-                                kontaktadresse.setUtenlandskAdresseIFrittFormat(mapperFacade.map(
-                                        person.getPostadresse().get(0), UtenlandskAdresseIFrittFormat.class));
-                            }
+                        if (!person.getPostadresse().isEmpty() && !person.getPostadresse().get(0).isNorsk()) {
+                            kontaktadresse.setUtenlandskAdresseIFrittFormat(mapperFacade.map(
+                                    person.getPostadresse().get(0), UtenlandskAdresseIFrittFormat.class));
                         }
                     }
                 })
                 .register();
 
-        factory.classMap(RsGateadresse.class, Vegadresse.class)
-                .customize(new CustomMapper<RsGateadresse, Vegadresse>() {
+        factory.classMap(RsGateadresse.class, VegadresseForPost.class)
+                .customize(new CustomMapper<RsGateadresse, VegadresseForPost>() {
                     @Override
-                    public void mapAtoB(RsGateadresse gateadresse, Vegadresse vegadresse, MappingContext context) {
+                    public void mapAtoB(RsGateadresse gateadresse, VegadresseForPost vegadresse, MappingContext context) {
 
                         vegadresse.setAdressekode(gateadresse.getGatekode());
                         vegadresse.setAdressenavn(gateadresse.getGateadresse());
                         vegadresse.setHusnummer(gateadresse.getHusnummer());
-                        vegadresse.setBruksenhetstype(Bruksenhetstype.BOLIG);
-                        vegadresse.setKommunenummer(gateadresse.getKommunenr());
                         vegadresse.setPostnummer(gateadresse.getPostnr());
                     }
                 })

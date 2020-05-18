@@ -251,7 +251,9 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void sendOppholdsadresse(Person person) {
 
-        pdlForvalterConsumer.postOppholdsadresse(mapperFacade.map(person, PdlOppholdsadresse.class), person.getIdent());
+        if (person.hasOppholdsadresse()) {
+            pdlForvalterConsumer.postOppholdsadresse(mapperFacade.map(person, PdlOppholdsadresse.class), person.getIdent());
+        }
     }
 
     private void sendKontaktadresse(Person person) {

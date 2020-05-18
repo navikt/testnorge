@@ -93,6 +93,13 @@ public class PdlKontaktadresse {
         private String byEllerStedsnavn;
         private String landkode;
         private String postkode;
+
+        public List<String> getAdresselinjer() {
+            if (isNull(adresselinjer)) {
+                adresselinjer = new ArrayList<>();
+            }
+            return adresselinjer;
+        }
     }
 
     @Getter

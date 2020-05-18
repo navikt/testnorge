@@ -1,6 +1,7 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -108,5 +109,13 @@ public class Person {
 
     public boolean isMyndig() {
         return getAlder() >= MYNDIGHET_ALDER;
+    }
+
+    public boolean hasOppholdsadresse(){
+
+        return !getBoadresse().isEmpty() ||
+                !getPostadresse().isEmpty() &&
+                        nonNull(getPostadresse().get(0).getPostLand()) &&
+                        !"NOR".equals(getPostadresse().get(0).getPostLand());
     }
 }
