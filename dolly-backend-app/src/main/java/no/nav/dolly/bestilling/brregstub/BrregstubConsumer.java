@@ -1,5 +1,7 @@
 package no.nav.dolly.bestilling.brregstub;
 
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_PERSON_IDENT;
+
 import java.net.URI;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -18,7 +20,6 @@ import no.nav.dolly.properties.ProvidersProps;
 @RequiredArgsConstructor
 public class BrregstubConsumer {
 
-    private static final String NAV_PERSON_IDENT = "Nav-Personident";
     private static final String ROLLEOVERSIKT_URL = "/api/v2/rolleoversikt";
 
     private final ProvidersProps providersProps;
@@ -29,7 +30,7 @@ public class BrregstubConsumer {
         try {
             return restTemplate.exchange(RequestEntity.get(
                     URI.create(providersProps.getBrregstub().getUrl() + ROLLEOVERSIKT_URL))
-                    .header(NAV_PERSON_IDENT, ident)
+                    .header(HEADER_NAV_PERSON_IDENT, ident)
                     .build(), RolleoversiktTo.class);
 
         } catch (HttpClientErrorException e) {
@@ -56,7 +57,7 @@ public class BrregstubConsumer {
         try {
             restTemplate.exchange(RequestEntity.delete(
                     URI.create(providersProps.getBrregstub().getUrl() + ROLLEOVERSIKT_URL))
-                    .header(NAV_PERSON_IDENT, ident)
+                    .header(HEADER_NAV_PERSON_IDENT, ident)
                     .build(), String.class);
 
         } catch (RuntimeException e) {
