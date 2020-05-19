@@ -1,7 +1,6 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -116,15 +115,11 @@ public class Person {
     }
 
     public boolean hasUtenlandskAdresse() {
-        return !getPostadresse().isEmpty() &&
-                nonNull(getPostadresse().get(0).getPostLand()) &&
-                !"NOR".equals(getPostadresse().get(0).getPostLand());
+        return !getPostadresse().isEmpty() && !getPostadresse().get(0).isNorsk();
     }
 
     public boolean hasNorskAdresse() {
         return !getBoadresse().isEmpty() ||
-                (!getPostadresse().isEmpty() &&
-                        (isNull(getPostadresse().get(0).getPostLand()) ||
-                                "NOR".equals(getPostadresse().get(0).getPostLand())));
+                (!getPostadresse().isEmpty() && getPostadresse().get(0).isNorsk());
     }
 }
