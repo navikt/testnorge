@@ -2,6 +2,8 @@ package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse.PostadresseIFrittFormat;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse.UtenlandskAdresseIFrittFormat;
+import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.NORSK;
+import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.UTENLANDSK;
 import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
@@ -12,7 +14,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse.VegadresseForPost;
-import no.nav.dolly.domain.resultset.tpsf.Person;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsGateadresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 import no.nav.dolly.mapper.MappingStrategy;
@@ -23,30 +25,32 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(Person.class, PdlKontaktadresse.class)
-                .customize(new CustomMapper<Person, PdlKontaktadresse>() {
+        factory.classMap(PdlPersonAdresseWrapper.class, PdlKontaktadresse.class)
+                .customize(new CustomMapper<PdlPersonAdresseWrapper, PdlKontaktadresse>() {
                     @Override
-                    public void mapAtoB(Person person, PdlKontaktadresse kontaktadresse, MappingContext context) {
+                    public void mapAtoB(PdlPersonAdresseWrapper wrapper, PdlKontaktadresse kontaktadresse, MappingContext context) {
 
                         kontaktadresse.setKilde(CONSUMER);
 
-                        if (!person.getBoadresse().isEmpty()) {
-                            kontaktadresse.setGyldigFraOgMed(
-                                    person.getBoadresse().get(0).getFlyttedato().toLocalDate());
+                        if (NORSK == wrapper.getAdressetype()) {
+                            if (!wrapper.getPerson().getBoadresse().isEmpty()) {
+                                kontaktadresse.setGyldigFraOgMed(
+                                        wrapper.getPerson().getBoadresse().get(0).getFlyttedato().toLocalDate());
 
-                            if ("GATE".equals(person.getBoadresse().get(0).getAdressetype())) {
-                                kontaktadresse.setVegadresseForPost(mapperFacade.map(
-                                        person.getBoadresse().get(0), VegadresseForPost.class));
+                                if ("GATE".equals(wrapper.getPerson().getBoadresse().get(0).getAdressetype())) {
+                                    kontaktadresse.setVegadresseForPost(mapperFacade.map(
+                                            wrapper.getPerson().getBoadresse().get(0), VegadresseForPost.class));
+                                }
+
+                            } else if (!wrapper.getPerson().getPostadresse().isEmpty()) {
+                                kontaktadresse.setPostadresseIFrittFormat(mapperFacade.map(
+                                        wrapper.getPerson().getPostadresse().get(0), PostadresseIFrittFormat.class));
                             }
-
-                        } else if (!person.getPostadresse().isEmpty() && person.getPostadresse().get(0).isNorsk()) {
-                            kontaktadresse.setPostadresseIFrittFormat(mapperFacade.map(
-                                    person.getPostadresse().get(0), PostadresseIFrittFormat.class));
                         }
 
-                        if (!person.getPostadresse().isEmpty() && !person.getPostadresse().get(0).isNorsk()) {
+                        if (UTENLANDSK == wrapper.getAdressetype()) {
                             kontaktadresse.setUtenlandskAdresseIFrittFormat(mapperFacade.map(
-                                    person.getPostadresse().get(0), UtenlandskAdresseIFrittFormat.class));
+                                    wrapper.getPerson().getPostadresse().get(0), UtenlandskAdresseIFrittFormat.class));
                         }
                     }
                 })

@@ -111,11 +111,20 @@ public class Person {
         return getAlder() >= MYNDIGHET_ALDER;
     }
 
-    public boolean hasOppholdsadresse(){
+    public boolean hasOppholdsadresse() {
+        return !getBoadresse().isEmpty() || hasUtenlandskAdresse();
+    }
 
+    public boolean hasUtenlandskAdresse() {
+        return !getPostadresse().isEmpty() &&
+                nonNull(getPostadresse().get(0).getPostLand()) &&
+                !"NOR".equals(getPostadresse().get(0).getPostLand());
+    }
+
+    public boolean hasNorskAdresse() {
         return !getBoadresse().isEmpty() ||
-                !getPostadresse().isEmpty() &&
-                        nonNull(getPostadresse().get(0).getPostLand()) &&
-                        !"NOR".equals(getPostadresse().get(0).getPostLand());
+                (!getPostadresse().isEmpty() &&
+                        (isNull(getPostadresse().get(0).getPostLand()) ||
+                                "NOR".equals(getPostadresse().get(0).getPostLand())));
     }
 }

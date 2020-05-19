@@ -3,6 +3,8 @@ package no.nav.dolly.bestilling.pdlforvalter;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Lists.reverse;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.NORSK;
+import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.UTENLANDSK;
 import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 import static no.nav.dolly.domain.CommonKeys.SYNTH_ENV;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
@@ -29,6 +31,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlTelefonnummer;
@@ -258,7 +261,16 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void sendKontaktadresse(Person person) {
 
-        pdlForvalterConsumer.postKontaktadresse(mapperFacade.map(person, PdlKontaktadresse.class), person.getIdent());
+        if (person.hasNorskAdresse()) {
+            pdlForvalterConsumer.postKontaktadresse(mapperFacade.map(
+                    PdlPersonAdresseWrapper.builder().person(person).adressetype(NORSK).build(),
+                    PdlKontaktadresse.class), person.getIdent());
+        }
+        if (person.hasUtenlandskAdresse()) {
+            pdlForvalterConsumer.postKontaktadresse(mapperFacade.map(
+                    PdlPersonAdresseWrapper.builder().person(person).adressetype(UTENLANDSK).build(),
+                    PdlKontaktadresse.class), person.getIdent());
+        }
     }
 
     private void sendUtenlandsid(Pdldata pdldata, String ident, StringBuilder status) {
