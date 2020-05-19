@@ -90,13 +90,6 @@ public class RsBregdata {
                 position = 7
         )
         private List<PersonRolle> personroller;
-
-        public List<PersonRolle> getPersonroller() {
-            if (isNull(personroller)) {
-                personroller = new ArrayList<>();
-            }
-            return personroller;
-        }
     }
 
     @Getter
@@ -116,12 +109,6 @@ public class RsBregdata {
                 notes = "Default false"
         )
         private Boolean fratraadt;
-
-        @ApiModelProperty(
-                position = 3,
-                notes = "Default hentes dato fra nivå over"
-        )
-        private LocalDateTime registringsDato;
     }
 
     @Getter
