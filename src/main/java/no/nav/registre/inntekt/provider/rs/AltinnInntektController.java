@@ -40,8 +40,9 @@ public class AltinnInntektController {
             @RequestParam(value = "valider", required = false, defaultValue = "false") Boolean valider,
             @RequestParam(value = "includeXml", required = false) Boolean includeXml,
             @RequestParam(value = "continueOnError", defaultValue = "false") Boolean continueOnError
-    ) throws ValidationException {
+    ) {
         try {
+            validerInntektsmelding(dollyRequest);
             var altinnInntektResponse = new AltinnInntektResponse(
                     dollyRequest.getArbeidstakerFnr(),
                     altinnInntektService.lagAltinnMeldinger(dollyRequest, continueOnError, valider),
@@ -54,6 +55,20 @@ public class AltinnInntektController {
         } catch (Exception e) {
             log.error("Feil ved opprettelse av enkeltindent", e);
             return new ResponseEntity<>(e.getStackTrace(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private void validerInntektsmelding(AltinnDollyRequest dollyRequest) throws ValidationException {
+        for (var inntekt : dollyRequest.getInntekter()) {
+            var arbeidsgiver = inntekt.getArbeidsgiver();
+            var arbeidsgiverPrivat = inntekt.getArbeidsgiverPrivat();
+
+            if (arbeidsgiver != null && arbeidsgiverPrivat != null) {
+                throw new ValidationException("Arbeidsgiver og privatarbeidsgiver kan ikke begge være utfylt");
+            }
+            if (arbeidsgiver == null && arbeidsgiverPrivat == null) {
+                throw new ValidationException("En av arbeidsgiver eller privat arbeidsgiver må være utfylt");
+            }
         }
     }
 }

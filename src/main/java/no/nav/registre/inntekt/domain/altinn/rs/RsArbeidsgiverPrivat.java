@@ -5,29 +5,24 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Value;
 
 import javax.validation.constraints.Size;
 
 @ApiModel
-@Getter
-@Setter
-@NoArgsConstructor
+@Value
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
 @Builder
-public class RsArbeidsgiverPrivat extends RsAktoer {
+public class RsArbeidsgiverPrivat {
+
     @JsonProperty
     @Size(min = 11, max = 11)
     @ApiModelProperty(value = "Arbeidsgivers fødselsnummer", required = true)
     private String arbeidsgiverFnr;
+
     @JsonProperty
     @ApiModelProperty(required = true)
     private RsKontaktinformasjon kontaktinformasjon;
-
-    @Override
-    public String getArbeidsgiverId() {
-        return arbeidsgiverFnr;
-    }
 }
