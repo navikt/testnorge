@@ -109,4 +109,17 @@ public class Person {
     public boolean isMyndig() {
         return getAlder() >= MYNDIGHET_ALDER;
     }
+
+    public boolean hasOppholdsadresse() {
+        return !getBoadresse().isEmpty() || hasUtenlandskAdresse();
+    }
+
+    public boolean hasUtenlandskAdresse() {
+        return !getPostadresse().isEmpty() && !getPostadresse().get(0).isNorsk();
+    }
+
+    public boolean hasNorskAdresse() {
+        return !getBoadresse().isEmpty() ||
+                (!getPostadresse().isEmpty() && getPostadresse().get(0).isNorsk());
+    }
 }

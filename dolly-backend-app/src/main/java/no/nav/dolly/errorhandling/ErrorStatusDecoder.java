@@ -90,7 +90,7 @@ public class ErrorStatusDecoder {
         return toBeEncoded
                 .replace("[\"", "")
                 .replace("\"]", "")
-                .replaceAll(",", "&")
+                .replaceAll(",", ";")
                 .replaceAll(":", "=");
     }
 }

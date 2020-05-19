@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse.Bruksenhetstype;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse.Matrikkeladresse;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse.UtenlandskAdresse;
@@ -23,7 +22,7 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 import no.nav.dolly.mapper.MappingStrategy;
 
 @Component
-public class PdlAdresseMappingStrategy implements MappingStrategy {
+public class PdlOppholdsadresseMappingStrategy implements MappingStrategy {
 
     @Override
     public void register(MapperFactory factory) {
@@ -39,7 +38,7 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
                         if (!person.getBoadresse().isEmpty()) {
                             oppholdsadresse.setOppholdsadressedato(
                                     person.getBoadresse().get(0).getFlyttedato().toLocalDate());
-                            if (person.getBoadresse().get(0) instanceof RsGateadresse) {
+                            if ("GATE".equals(person.getBoadresse().get(0).getAdressetype())) {
                                 oppholdsadresse.setVegadresse(mapperFacade.map(
                                         person.getBoadresse().get(0), Vegadresse.class));
                             } else {
@@ -48,8 +47,7 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
                             }
 
                         } else if (!person.getPostadresse().isEmpty() &&
-                                !"NOR".equals(person.getPostadresse().get(0).getPostLand()) &&
-                                nonNull(person.getPostadresse().get(0).getPostLand())) {
+                                !person.getPostadresse().get(0).isNorsk()) {
                             oppholdsadresse.setUtenlandskAdresse(mapperFacade.map(
                                     person.getPostadresse().get(0), UtenlandskAdresse.class));
                         }
@@ -64,6 +62,7 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
 
                         vegadresse.setAdressekode(gateadresse.getGatekode());
                         vegadresse.setAdressenavn(gateadresse.getGateadresse());
+                        vegadresse.setHusnummer(gateadresse.getHusnummer());
                         vegadresse.setBruksenhetstype(Bruksenhetstype.BOLIG);
                         vegadresse.setKommunenummer(gateadresse.getKommunenr());
                         vegadresse.setPostnummer(gateadresse.getPostnr());
