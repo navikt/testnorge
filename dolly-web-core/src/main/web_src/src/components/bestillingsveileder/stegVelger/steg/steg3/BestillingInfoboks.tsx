@@ -8,7 +8,8 @@ type BestillingInfoboks = {
 
 export const BestillingInfoboks = ({ bestillingsdata }: BestillingInfoboks) => {
 	const tpsfInfo = bestillingsdata.tpsf
-	const checkRelasjoner = () => {
+
+	const harRelasjonMedAdressebeskyttelse = () => {
 		let harAdressebeskyttelse = false
 		if (tpsfInfo.relasjoner) {
 			Object.entries(tpsfInfo.relasjoner).map(relasjon => {
@@ -21,14 +22,13 @@ export const BestillingInfoboks = ({ bestillingsdata }: BestillingInfoboks) => {
 		}
 		return harAdressebeskyttelse
 	}
-	const harRelasjonMedAdressebeskyttelse = checkRelasjoner()
 
 	if (
 		tpsfInfo &&
 		(tpsfInfo.egenAnsattDatoFom ||
 			tpsfInfo.spesreg === 'SPFO' ||
 			tpsfInfo.spesreg === 'SPSF' ||
-			harRelasjonMedAdressebeskyttelse === true)
+			harRelasjonMedAdressebeskyttelse() === true)
 	) {
 		return (
 			// @ts-ignore
