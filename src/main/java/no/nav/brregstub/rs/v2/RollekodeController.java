@@ -20,7 +20,7 @@ import no.nav.brregstub.api.common.UnderstatusKode;
 @RestController
 @RequestMapping("/api/v2/kode")
 @AllArgsConstructor
-public class KodeController {
+public class RollekodeController {
 
     @GetMapping("/roller")
     public ResponseEntity<EnumMap<RolleKode, String>> hentRollekoder() {
