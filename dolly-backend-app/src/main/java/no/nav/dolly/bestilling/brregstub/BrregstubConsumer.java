@@ -1,8 +1,6 @@
 package no.nav.dolly.bestilling.brregstub;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +10,6 @@ import org.springframework.web.client.RestTemplate;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.brregstub.domain.OrganisasjonTo;
 import no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo;
 import no.nav.dolly.properties.ProvidersProps;
 
@@ -22,9 +19,7 @@ import no.nav.dolly.properties.ProvidersProps;
 public class BrregstubConsumer {
 
     private static final String NAV_PERSON_IDENT = "Nav-Personident";
-    private static final String ROLLEOVERSIKT_URL = "/api/v1/rolleoversikt";
-    private static final String ROLLE_URL = "/api/v1/hentrolle";
-    private static final String KODE_ROLLER_URL = "/api/v1/kode/roller";
+    private static final String ROLLEOVERSIKT_URL = "/api/v2/rolleoversikt";
 
     private final ProvidersProps providersProps;
     private final RestTemplate restTemplate;
@@ -49,32 +44,11 @@ public class BrregstubConsumer {
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<Map> getKodeRoller() {
-
-        try {
-            return restTemplate.exchange(RequestEntity.get(
-                    URI.create(providersProps.getBrregstub().getUrl() + KODE_ROLLER_URL))
-                    .build(), Map.class);
-
-        } catch (RuntimeException e) {
-            log.error("Feilet å lese koderoller fra BRREGSTUB", e);
-        }
-
-        return ResponseEntity.ok(new HashMap());
-    }
-
     public ResponseEntity postRolleoversikt(RolleoversiktTo rolleoversiktTo) {
 
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(providersProps.getBrregstub().getUrl() + ROLLEOVERSIKT_URL))
                 .body(rolleoversiktTo), RolleoversiktTo.class);
-    }
-
-    public ResponseEntity postOrganisasjon(OrganisasjonTo organisasjonTo) {
-
-        return restTemplate.exchange(RequestEntity.post(
-                URI.create(providersProps.getBrregstub().getUrl() + ROLLE_URL))
-                .body(organisasjonTo), OrganisasjonTo.class);
     }
 
     public void deleteRolleoversikt(String ident) {
