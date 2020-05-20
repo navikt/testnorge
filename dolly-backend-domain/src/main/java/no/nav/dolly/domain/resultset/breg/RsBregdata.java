@@ -90,6 +90,13 @@ public class RsBregdata {
                 position = 7
         )
         private List<PersonRolle> personroller;
+
+        public List<PersonRolle> getPersonroller() {
+            if (isNull(personroller)) {
+                personroller = new ArrayList<>();
+            }
+            return personroller;
+        }
     }
 
     @Getter

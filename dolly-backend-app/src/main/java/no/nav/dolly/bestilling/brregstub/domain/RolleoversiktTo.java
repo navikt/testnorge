@@ -72,7 +72,7 @@ public class RolleoversiktTo {
         @EqualsAndHashCode.Exclude
         private LocalDate registreringsdato;
 
-        private String rollebeskrivelse;
+        private String rolle;
     }
 
     @Getter

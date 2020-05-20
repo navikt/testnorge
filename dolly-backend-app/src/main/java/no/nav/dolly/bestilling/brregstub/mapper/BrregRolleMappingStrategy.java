@@ -11,6 +11,7 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo;
+import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsGateadresse;
@@ -39,6 +40,17 @@ public class BrregRolleMappingStrategy implements MappingStrategy {
                         rolleoversiktTo.setUnderstatuser(bregPerson.getBregdata().getUnderstatuser());
                     }
                 })
+                .register();
+
+        factory.classMap(RsBregdata.RolleTo.class, RolleTo.class)
+                .customize(new CustomMapper<RsBregdata.RolleTo, RolleTo>() {
+                    @Override
+                    public void mapAtoB(RsBregdata.RolleTo rsRolleTo, RolleTo rolleTo, MappingContext context) {
+
+                        rolleTo.setPersonRolle(mapperFacade.mapAsList(rsRolleTo.getPersonroller(), RolleoversiktTo.RolleStatus.class));
+                    }
+                })
+                .byDefault()
                 .register();
 
         factory.classMap(Person.class, AdresseTo.class)
