@@ -38,7 +38,7 @@ export default function FagsystemStatus({ statusrapport }) {
 								</div>
 							</div>
 						</td>
-						<td>{status.miljo || <i>(N/A)</i>}</td>
+						<td>{status.miljo || <i>Ikke relevant</i>}</td>
 						<td>
 							<ul>
 								{status.identer.map((ident, idx) => (
