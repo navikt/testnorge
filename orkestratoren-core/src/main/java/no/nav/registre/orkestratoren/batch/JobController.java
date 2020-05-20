@@ -210,11 +210,13 @@ public class JobController {
     @Scheduled(cron = "0 0 0 * * *")
     public void arenaSyntBatch() {
         for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            testnorgeArenaService.opprettArenaVedtakshistorikk(SyntetiserArenaVedtakshistorikkRequest.builder()
-                    .avspillergruppeId(entry.getKey())
-                    .miljoe(entry.getValue())
-                    .antallVedtakshistorikker(arenaAntallNyeIdenter)
-                    .build());
+            for (int i = 0; i < arenaAntallNyeIdenter; i++) {
+                testnorgeArenaService.opprettArenaVedtakshistorikk(SyntetiserArenaVedtakshistorikkRequest.builder()
+                        .avspillergruppeId(entry.getKey())
+                        .miljoe(entry.getValue())
+                        .antallVedtakshistorikker(1)
+                        .build());
+            }
 
             testnorgeArenaService.opprettArenaAap(SyntetiserArenaAapRequest.builder()
                     .avspillergruppeId(entry.getKey())
