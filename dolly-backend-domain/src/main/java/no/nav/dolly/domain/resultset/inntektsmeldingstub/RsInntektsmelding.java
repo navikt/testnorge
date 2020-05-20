@@ -52,6 +52,7 @@ public class RsInntektsmelding {
         private AarsakTilInnsendingType aarsakTilInnsending;
         private RsArbeidsforhold arbeidsforhold;
         private RsArbeidsgiver arbeidsgiver;
+        private RsArbeidsgiverPrivat arbeidsgiverPrivat;
         private RsAvsendersystem avsendersystem;
         private List<RsNaturalYtelseDetaljer> gjenopptakelseNaturalytelseListe;
         private Boolean naerRelasjon;
@@ -155,6 +156,17 @@ public class RsInntektsmelding {
 
         private RsKontaktinformasjon kontaktinformasjon;
         private String virksomhetsnummer;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class RsArbeidsgiverPrivat {
+
+        private RsKontaktinformasjon kontaktinformasjon;
+        private String arbeidsgiverFnr;
     }
 
     @Getter

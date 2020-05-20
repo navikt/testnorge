@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.inntektsmelding.mapper;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest.Avsendersystem;
 import static no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest.Inntektsmelding;
 import static no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest.Kontaktinformasjon;
@@ -31,12 +32,15 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                         inntektsmelding.setAarsakTilInnsending(
                                 nullcheckSetDefaultValue(rsInntektsmelding.getAarsakTilInnsending(), AarsakTilInnsendingType.NY));
 
-                        if (isNull(inntektsmelding.getArbeidsgiver().getKontaktinformasjon())) {
+                        if (nonNull(inntektsmelding.getArbeidsgiver()) &&
+                                isNull(inntektsmelding.getArbeidsgiver().getKontaktinformasjon())) {
                             inntektsmelding.getArbeidsgiver().setKontaktinformasjon(
-                                    Kontaktinformasjon.builder()
-                                            .kontaktinformasjonNavn("Dolly Dollesen")
-                                            .telefonnummer("99999999")
-                                            .build());
+                                    getFiktivKontaktinformasjon());
+                        }
+                        if (nonNull(inntektsmelding.getArbeidsgiverPrivat()) &&
+                                isNull(inntektsmelding.getArbeidsgiverPrivat().getKontaktinformasjon())) {
+                            inntektsmelding.getArbeidsgiverPrivat().setKontaktinformasjon(
+                                    getFiktivKontaktinformasjon());
                         }
                         if (isNull(inntektsmelding.getAvsendersystem())) {
                             inntektsmelding.setAvsendersystem(Avsendersystem.builder()
@@ -49,5 +53,13 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                 })
                 .byDefault()
                 .register();
+    }
+
+    private static Kontaktinformasjon getFiktivKontaktinformasjon() {
+
+        return Kontaktinformasjon.builder()
+                .kontaktinformasjonNavn("Dolly Dollesen")
+                .telefonnummer("99999999")
+                .build();
     }
 }

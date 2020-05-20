@@ -60,6 +60,7 @@ public class InntektsmeldingRequest {
         private AarsakTilInnsendingType aarsakTilInnsending;
         private Arbeidsforhold arbeidsforhold;
         private Arbeidsgiver arbeidsgiver;
+        private ArbeidsgiverPrivat arbeidsgiverPrivat;
         private Avsendersystem avsendersystem;
         private List<NaturalYtelseDetaljer> gjenopptakelseNaturalytelseListe;
         private Boolean naerRelasjon;
@@ -164,6 +165,17 @@ public class InntektsmeldingRequest {
 
         private Kontaktinformasjon kontaktinformasjon;
         private String virksomhetsnummer;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class ArbeidsgiverPrivat {
+
+        private Kontaktinformasjon kontaktinformasjon;
+        private String arbeidsgiverFnr;
     }
 
     @Getter
