@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
@@ -170,6 +171,7 @@ public class PdlForvalterClient implements ClientRegister {
                 sendAdressebeskyttelse(person);
                 sendOppholdsadresse(person);
                 sendKontaktadresse(person);
+                sendBostedadresse(person);
                 sendStatsborgerskap(person);
                 sendFamilierelasjoner(person);
                 sendSivilstand(person);
@@ -256,6 +258,13 @@ public class PdlForvalterClient implements ClientRegister {
 
         if (person.hasOppholdsadresse()) {
             pdlForvalterConsumer.postOppholdsadresse(mapperFacade.map(person, PdlOppholdsadresse.class), person.getIdent());
+        }
+    }
+
+    private void sendBostedadresse(Person person) {
+
+        if (!person.getBoadresse().isEmpty()) {
+            pdlForvalterConsumer.postBostedadresse(mapperFacade.map(person, PdlBostedadresse.class), person.getIdent());
         }
     }
 

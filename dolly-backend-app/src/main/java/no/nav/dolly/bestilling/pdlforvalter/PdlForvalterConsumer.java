@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
@@ -56,6 +57,7 @@ public class PdlForvalterConsumer {
     private static final String PDL_BESTILLING_SIVILSTAND_URL = PDL_BESTILLING_URL + "/sivilstand";
     private static final String PDL_BESTILLING_OPPHOLDSADRESSE_URL = PDL_BESTILLING_URL + "/oppholdsadresse";
     private static final String PDL_BESTILLING_KONTAKTADRESSE_URL = PDL_BESTILLING_URL + "/kontaktadresse";
+    private static final String PDL_BESTILLING_BOSTEDADRESSE_URL = PDL_BESTILLING_URL + "/bostedsadresse";
     private static final String PDL_BESTILLING_SLETTING_URL = "/api/v1/personident";
     private static final String PREPROD_ENV = "q";
 
@@ -192,6 +194,14 @@ public class PdlForvalterConsumer {
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_KONTAKTADRESSE_URL,
                 kontaktadresse, ident, "kontaktadresse");
+    }
+
+    @Timed(name = "providers", tags = { "operation", "pdl_kontaktadresse" })
+    public ResponseEntity postBostedadresse(PdlBostedadresse bostedadresse, String ident) {
+
+        return postRequest(
+                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_BOSTEDADRESSE_URL,
+                bostedadresse, ident, "bostedadresse");
     }
 
     private ResponseEntity postRequest(String url, Object body, String ident, String beskrivelse) {
