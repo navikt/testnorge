@@ -1,9 +1,8 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse.Bruksenhetstype;
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse.Matrikkeladresse;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse.UtenlandskAdresse;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse.Vegadresse;
+import static no.nav.dolly.bestilling.pdlforvalter.mapper.PdlAdresseMappingStrategy.getDato;
 import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
@@ -13,11 +12,10 @@ import org.springframework.stereotype.Component;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdresse.OppholdAnnetSted;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlMatrikkeladresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse.OppholdAnnetSted;
 import no.nav.dolly.domain.resultset.tpsf.Person;
-import no.nav.dolly.domain.resultset.tpsf.adresse.RsGateadresse;
-import no.nav.dolly.domain.resultset.tpsf.adresse.RsMatrikkeladresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 import no.nav.dolly.mapper.MappingStrategy;
 
@@ -37,53 +35,20 @@ public class PdlOppholdsadresseMappingStrategy implements MappingStrategy {
 
                         if (!person.getBoadresse().isEmpty()) {
                             oppholdsadresse.setOppholdsadressedato(
-                                    person.getBoadresse().get(0).getFlyttedato().toLocalDate());
+                                    getDato(person.getBoadresse().get(0).getFlyttedato()));
+
                             if ("GATE".equals(person.getBoadresse().get(0).getAdressetype())) {
                                 oppholdsadresse.setVegadresse(mapperFacade.map(
                                         person.getBoadresse().get(0), Vegadresse.class));
                             } else {
                                 oppholdsadresse.setMatrikkeladresse(mapperFacade.map(
-                                        person.getBoadresse().get(0), Matrikkeladresse.class));
+                                        person.getBoadresse().get(0), PdlMatrikkeladresse.class));
                             }
-
                         } else if (!person.getPostadresse().isEmpty() &&
                                 !person.getPostadresse().get(0).isNorsk()) {
                             oppholdsadresse.setUtenlandskAdresse(mapperFacade.map(
                                     person.getPostadresse().get(0), UtenlandskAdresse.class));
                         }
-                    }
-                })
-                .register();
-
-        factory.classMap(RsGateadresse.class, Vegadresse.class)
-                .customize(new CustomMapper<RsGateadresse, Vegadresse>() {
-                    @Override
-                    public void mapAtoB(RsGateadresse gateadresse, Vegadresse vegadresse, MappingContext context) {
-
-                        vegadresse.setAdressekode(gateadresse.getGatekode());
-                        vegadresse.setAdressenavn(gateadresse.getGateadresse());
-                        vegadresse.setHusnummer(gateadresse.getHusnummer());
-                        vegadresse.setBruksenhetstype(Bruksenhetstype.BOLIG);
-                        vegadresse.setKommunenummer(gateadresse.getKommunenr());
-                        vegadresse.setPostnummer(gateadresse.getPostnr());
-                    }
-                })
-                .byDefault()
-                .register();
-
-        factory.classMap(RsMatrikkeladresse.class, Matrikkeladresse.class)
-                .customize(new CustomMapper<RsMatrikkeladresse, Matrikkeladresse>() {
-                    @Override
-                    public void mapAtoB(RsMatrikkeladresse rsMatrikkeladresse, Matrikkeladresse matrikkeladresse, MappingContext context) {
-
-                        matrikkeladresse.setAdressetilleggsnavn(rsMatrikkeladresse.getMellomnavn());
-                        matrikkeladresse.setBruksenhetstype(Bruksenhetstype.BOLIG);
-                        matrikkeladresse.setBruksnummer(Integer.valueOf(rsMatrikkeladresse.getBruksnr()));
-                        matrikkeladresse.setFestenummer(Integer.valueOf(rsMatrikkeladresse.getFestenr()));
-                        matrikkeladresse.setGaardsnummer(Integer.valueOf(rsMatrikkeladresse.getGardsnr()));
-                        matrikkeladresse.setKommunenummer(rsMatrikkeladresse.getKommunenr());
-                        matrikkeladresse.setPostnummer(rsMatrikkeladresse.getPostnr());
-                        matrikkeladresse.setUndernummer(Integer.valueOf(rsMatrikkeladresse.getUndernr()));
                     }
                 })
                 .register();

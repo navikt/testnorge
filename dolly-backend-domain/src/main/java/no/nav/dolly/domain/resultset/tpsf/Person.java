@@ -1,6 +1,7 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
 import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ public class Person {
     private String telefonnummer_1;
     private String telefonLandskode_2;
     private String telefonnummer_2;
+    private Boolean utenFastBopel;
 
     public List<Relasjon> getRelasjoner() {
 
@@ -111,7 +113,7 @@ public class Person {
     }
 
     public boolean hasOppholdsadresse() {
-        return !getBoadresse().isEmpty() || hasUtenlandskAdresse();
+        return !getBoadresse().isEmpty() && !isUtenFastBopel() || hasUtenlandskAdresse();
     }
 
     public boolean hasUtenlandskAdresse() {
@@ -119,7 +121,11 @@ public class Person {
     }
 
     public boolean hasNorskAdresse() {
-        return !getBoadresse().isEmpty() ||
+        return !getBoadresse().isEmpty() && !isUtenFastBopel() ||
                 (!getPostadresse().isEmpty() && getPostadresse().get(0).isNorsk());
+    }
+
+    public boolean isUtenFastBopel() {
+        return isTrue(utenFastBopel) || "UFB".equals(getSpesreg());
     }
 }

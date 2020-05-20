@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +17,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PdlKontaktadresse extends PdlAdresse {
 
     private LocalDate gyldigFraOgMed;
@@ -74,6 +77,7 @@ public class PdlKontaktadresse extends PdlAdresse {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class UtenlandskAdresseIFrittFormat {
 
         private List<String> adresselinjer;
@@ -93,6 +97,7 @@ public class PdlKontaktadresse extends PdlAdresse {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class VegadresseForPost {
 
         private String adressekode;

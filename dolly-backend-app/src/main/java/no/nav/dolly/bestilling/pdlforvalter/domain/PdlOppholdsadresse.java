@@ -16,7 +16,7 @@ public class PdlOppholdsadresse extends PdlAdresse {
     private OppholdAnnetSted oppholdAnnetSted;
     private LocalDate oppholdsadressedato;
     private UtenlandskAdresse utenlandskAdresse;
-    private Matrikkeladresse matrikkeladresse;
+    private PdlMatrikkeladresse matrikkeladresse;
 
     @Getter
     @Setter
@@ -36,22 +36,5 @@ public class PdlOppholdsadresse extends PdlAdresse {
         private String postkode;
         private String region;
         private String regionDistriktOmraade;
-    }
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Matrikkeladresse {
-
-        private String adressetilleggsnavn;
-        private String bruksenhetsnummer;
-        private Bruksenhetstype bruksenhetstype;
-        private Integer bruksnummer;
-        private Integer festenummer;
-        private Integer gaardsnummer;
-        private String kommunenummer;
-        private String postnummer;
-        private Integer undernummer;
     }
 }
