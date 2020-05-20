@@ -5,7 +5,9 @@ import java.util.Optional;
 abstract class Flatfil {
 
     String trimAndEmptyToNull(String value) {
-        if (value.trim().length() == 0) return null;
+        if (value.trim().length() == 0) {
+            return null;
+        }
         return value.trim();
     }
 

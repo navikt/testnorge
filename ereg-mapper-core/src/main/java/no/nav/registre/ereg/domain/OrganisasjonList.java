@@ -15,11 +15,11 @@ public class OrganisasjonList {
 
     private final List<Organisasjon> list = new ArrayList<>();
 
-    public OrganisasjonList( String flatfil){
+    public OrganisasjonList(String flatfil) {
         String[] array = flatfil.split(UNIX_NEW_LINE);
         String flatfilOnlyRecords = String.join(UNIX_NEW_LINE, Arrays.asList(array).subList(1, array.length - 1));
-        if(Strings.isNotBlank(flatfilOnlyRecords) ) {
-            for (String record : flatfilOnlyRecords.split("(?=" + RECORD_START_TAG+")")) {
+        if (Strings.isNotBlank(flatfilOnlyRecords)) {
+            for (String record : flatfilOnlyRecords.split("(?=" + RECORD_START_TAG + ")")) {
                 list.add(new Organisasjon(record));
             }
         }

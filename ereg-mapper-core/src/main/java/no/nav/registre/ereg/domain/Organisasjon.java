@@ -21,9 +21,9 @@ public class Organisasjon extends Flatfil {
 
     private final List<String> records;
     private final Navn navn;
-    private Adresse forretningsadr;
-    private Adresse postadr;
-    private KnytningList knytninger;
+    private final Adresse forretningsadr;
+    private final Adresse postadr;
+    private final KnytningList knytninger;
 
 
     public Organisasjon(String records) {

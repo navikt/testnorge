@@ -14,8 +14,6 @@ public class KnytningList extends Flatfil {
     }
 
     public List<KnytningRs> toListOfKnytningRs() {
-
-
         return records.stream()
                 .map(this::getKnytning)
                 .collect(Collectors.toList());
