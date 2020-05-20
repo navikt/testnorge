@@ -15,27 +15,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlKontaktadresse {
+public class PdlKontaktadresse extends PdlAdresse {
 
-    public enum Adressegradering {UGRADERT, KLIENTADRESSE, FORTROLIG, STRENGT_FORTROLIG}
-
-    public enum Master {FREG, PDL}
-
-    public enum Bruksenhetstype {BOLIG, ANNET_ENN_BOLIG, FRITIDSBOLIG, IKKE_GODKJENT_BOLIG, UNUMMERERT_BRUKSENHET}
-
-    private String adresseIdentifikatorFraMatrikkelen;
-    private Adressegradering adressegradering;
-    private String coAdressenavn;
     private LocalDate gyldigFraOgMed;
     private LocalDate gyldigTilOgMed;
-    private String kilde;
-    private Master master;
-    private String naerAdresseIdentifikatorFraMatrikkelen;
     private PostadresseIFrittFormat postadresseIFrittFormat;
     private Postboksadresse postboksadresse;
     private UtenlandskAdresseIFrittFormat utenlandskAdresseIFrittFormat;
     private VegadresseForPost vegadresseForPost;
-    private Vegadresse vegadresse;
 
     @Getter
     @Setter
@@ -114,23 +101,6 @@ public class PdlKontaktadresse {
         private String bruksenhetsnummer;
         private String husbokstav;
         private String husnummer;
-        private String postnummer;
-    }
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Vegadresse {
-
-        private String adressekode;
-        private String adressenavn;
-        private String adressetilleggsnavn;
-        private String bruksenhetsnummer;
-        private Bruksenhetstype bruksenhetstype;
-        private String husbokstav;
-        private String husnummer;
-        private String kommunenummer;
         private String postnummer;
     }
 }
