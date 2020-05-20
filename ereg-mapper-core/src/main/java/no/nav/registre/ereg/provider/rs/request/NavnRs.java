@@ -1,10 +1,7 @@
 package no.nav.registre.ereg.provider.rs.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
 
 import java.util.List;
 
@@ -12,8 +9,11 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Getter
+@ToString
 @Setter
-public class Navn {
+@EqualsAndHashCode
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class NavnRs {
 
     private List<String> navneListe;
 

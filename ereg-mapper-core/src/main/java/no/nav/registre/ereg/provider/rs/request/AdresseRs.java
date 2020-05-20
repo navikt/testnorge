@@ -1,11 +1,8 @@
 package no.nav.registre.ereg.provider.rs.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @NoArgsConstructor
@@ -13,12 +10,13 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
-public class Adresse {
+@ToString
+@EqualsAndHashCode
+public class AdresseRs {
 
     private List<String> adresser;
     private String postnr;
     private String kommunenr;
     private String landkode;
     private String poststed;
-
 }

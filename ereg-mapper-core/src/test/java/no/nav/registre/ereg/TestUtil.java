@@ -5,12 +5,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import no.nav.registre.ereg.provider.rs.request.Adresse;
+import no.nav.registre.ereg.provider.rs.request.AdresseRs;
 import no.nav.registre.ereg.provider.rs.request.EregDataRequest;
 import no.nav.registre.ereg.provider.rs.request.Kapital;
 import no.nav.registre.ereg.provider.rs.request.Maalform;
 import no.nav.registre.ereg.provider.rs.request.Naeringskode;
-import no.nav.registre.ereg.provider.rs.request.Navn;
+import no.nav.registre.ereg.provider.rs.request.NavnRs;
 import no.nav.registre.ereg.provider.rs.request.Telefon;
 import no.nav.registre.ereg.provider.rs.request.UnderlagtHjemland;
 import no.nav.registre.ereg.provider.rs.request.UtenlandsRegister;
@@ -30,20 +30,20 @@ public class TestUtil {
 
         return EregDataRequest.builder()
                 .orgnr("123")
-                .navn(Navn.builder()
+                .navn(NavnRs.builder()
                         .navneListe(navneListe)
                         .redNavn("Tull")
                         .build())
                 .enhetstype("BEDR")
                 .endringsType("N")
-                .adresse(Adresse.builder()
+                .adresse(AdresseRs.builder()
                         .adresser(adresser)
                         .kommunenr("1")
                         .landkode("NOR")
                         .postnr("0175")
                         .poststed("OSLO")
                         .build())
-                .forretningsAdresse(Adresse.builder()
+                .forretningsAdresse(AdresseRs.builder()
                         .adresser(adresser)
                         .kommunenr("1")
                         .landkode("NOR")
@@ -70,7 +70,7 @@ public class TestUtil {
                 .heleidINorge(true)
                 .fravalgAvRevisjonen(false)
                 .utenlandsRegister(UtenlandsRegister.builder()
-                        .adresse(Adresse.builder()
+                        .adresse(AdresseRs.builder()
                                 .adresser(adresser)
                                 .kommunenr("1")
                                 .landkode("NOR")
