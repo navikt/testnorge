@@ -9,6 +9,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.util.List;
 
 import no.nav.registre.ereg.consumer.rs.JenkinsConsumer;
+import no.nav.registre.ereg.domain.OrganisasjonList;
 import no.nav.registre.ereg.mapper.EregMapper;
 import no.nav.registre.ereg.provider.rs.request.EregDataRequest;
 
@@ -28,7 +29,7 @@ public class FlatfileService {
         log.info(eregData);
         if (sendToEreg) {
 
-            if ("" .equals(env)) {
+            if ("".equals(env)) {
                 throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Manglende miljoe variabel");
             }
 
@@ -44,4 +45,7 @@ public class FlatfileService {
         return jenkinsConsumer.send(flatFil, env);
     }
 
+    public OrganisasjonList mapFlatfil(String flatfil) {
+        return new OrganisasjonList(flatfil);
+    }
 }

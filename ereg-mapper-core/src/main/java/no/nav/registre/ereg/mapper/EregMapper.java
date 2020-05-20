@@ -1,5 +1,6 @@
 package no.nav.registre.ereg.mapper;
 
+import com.google.common.base.Strings;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,16 +17,7 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.ereg.consumer.rs.EregConsumer;
 import no.nav.registre.ereg.csv.NaeringskodeRecord;
-import no.nav.registre.ereg.provider.rs.request.Adresse;
-import no.nav.registre.ereg.provider.rs.request.EregDataRequest;
-import no.nav.registre.ereg.provider.rs.request.Kapital;
-import no.nav.registre.ereg.provider.rs.request.Knytning;
-import no.nav.registre.ereg.provider.rs.request.Maalform;
-import no.nav.registre.ereg.provider.rs.request.Naeringskode;
-import no.nav.registre.ereg.provider.rs.request.Navn;
-import no.nav.registre.ereg.provider.rs.request.Telefon;
-import no.nav.registre.ereg.provider.rs.request.UnderlagtHjemland;
-import no.nav.registre.ereg.provider.rs.request.UtenlandsRegister;
+import no.nav.registre.ereg.provider.rs.request.*;
 import no.nav.registre.ereg.service.NameService;
 
 @Slf4j
@@ -88,7 +80,7 @@ public class EregMapper {
                             List<String> fullNames = nameService.getFullNames(naeringskoder, enhetstype);
                             for (int i = 0; i < requests.size(); i++) {
                                 requests.get(i).setNavn(
-                                        Navn.builder()
+                                        NavnRs.builder()
                                                 .navneListe(Collections.singletonList(fullNames.get(i)))
                                                 .build()
                                 );
@@ -124,7 +116,7 @@ public class EregMapper {
     private RecordsAndCount createUnit(EregDataRequest data) {
         int numRecords = 0;
         StringBuilder file;
-        if ("E" .equals(data.getEndringsType())) {
+        if ("E".equals(data.getEndringsType())) {
             file = new StringBuilder(createENH(data.getOrgnr(), data.getEnhetstype(), "E"));
         } else {
             file = new StringBuilder(createENH(data.getOrgnr(), data.getEnhetstype(), "N"));
@@ -132,18 +124,18 @@ public class EregMapper {
         String endringsType = "N";
         numRecords++;
 
-        Navn navn = data.getNavn();
+        NavnRs navn = data.getNavn();
         assert (navn != null);
         file.append(createNavn(navn.getNavneListe(), navn.getRedNavn() == null ? "" : navn.getRedNavn(), endringsType));
         numRecords++;
 
-        Adresse adresse = data.getAdresse();
+        AdresseRs adresse = data.getAdresse();
         if (adresse != null) {
             file.append(createAdresse("PADR", endringsType, adresse.getAdresser(), adresse.getPostnr(), adresse.getLandkode(), adresse.getKommunenr(), adresse.getPoststed()));
             numRecords++;
         }
 
-        Adresse forretningsAdresse = data.getForretningsAdresse();
+        AdresseRs forretningsAdresse = data.getForretningsAdresse();
         if (forretningsAdresse != null) {
             file.append(createAdresse("FADR", endringsType, forretningsAdresse.getAdresser(), forretningsAdresse.getPostnr(), forretningsAdresse.getLandkode(), forretningsAdresse.getKommunenr(),
                     forretningsAdresse.getPoststed()));
@@ -322,7 +314,7 @@ public class EregMapper {
             }
         }
 
-        List<Knytning> knytninger = data.getKnytninger();
+        List<KnytningRs> knytninger = data.getKnytninger();
         if (knytninger != null) {
             List<String> collect = knytninger.stream().map(k -> createKnyntningsRecord(
                     k.getType(),
@@ -352,7 +344,7 @@ public class EregMapper {
 
         String undersakstype = endringsType.equals("E") ? "EN" : "NY";
 
-        stringBuilder.replace(0, "ENH" .length(), "ENH")
+        stringBuilder.replace(0, "ENH".length(), "ENH")
                 .replace(4, 4 + orgId.length(), orgId)
                 .replace(13, 13 + unitType.length(), unitType)
                 .replace(17, 18, endringsType)
@@ -415,8 +407,8 @@ public class EregMapper {
         StringBuilder stringBuilder = createBaseStringbuilder(185, type, endringsType);
         stringBuilder.replace(8, 8 + postNr.length(), postNr)
                 .replace(17, 17 + landCode.length(), landCode)
-                .replace(20, 20 + kommuneNr.length(), kommuneNr)
-                .replace(30, 30 + postSted.length(), postSted);
+                .replace(20, 20 + getStringLength(kommuneNr), Strings.nullToEmpty(kommuneNr))
+                .replace(30, 30 + getStringLength(postSted), Strings.nullToEmpty(postSted));
         if (addresses.size() > 3) {
             log.warn("Antall addresser er for mange, bruker de 3 første");
         }
@@ -557,7 +549,7 @@ public class EregMapper {
     private String createHjemlandsRegister(
             List<String> navn,
             String registerNr,
-            Adresse adresse,
+            AdresseRs adresse,
             String endringsType
     ) {
 
@@ -589,13 +581,17 @@ public class EregMapper {
                 .replace(0, 8, type)
                 .replace(8, 9, "K")
                 .replace(9, 10, "D")
-                .replace(10, 10 + ansvarsandel.length(), ansvarsandel)
-                .replace(40, 41, fratreden)
-                .replace(41, 41 + orgNr.length(), orgNr)
-                .replace(50, 50 + valgtAv.length(), valgtAv)
-                .replace(57, 57 + korrektOrgNr.length(), korrektOrgNr)
+                .replace(10, 10 + getStringLength(ansvarsandel), Strings.nullToEmpty(ansvarsandel))
+                .replace(40, 41, Strings.nullToEmpty(fratreden))
+                .replace(41, 41 + getStringLength(orgNr), Strings.nullToEmpty(orgNr))
+                .replace(50, 50 + getStringLength(valgtAv), Strings.nullToEmpty(valgtAv))
+                .replace(57, 57 + getStringLength(korrektOrgNr), Strings.nullToEmpty(korrektOrgNr))
                 .append("\n");
         return stringBuilder.toString();
+    }
+
+    private int getStringLength(String value) {
+        return value == null ? 0 : value.length();
     }
 
     @AllArgsConstructor

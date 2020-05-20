@@ -1,10 +1,7 @@
 package no.nav.registre.ereg.provider.rs.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.apache.commons.lang3.builder.HashCodeExclude;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +11,11 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
+@EqualsAndHashCode
 public class UtenlandsRegister {
 
     private List<String> navn = new ArrayList<>(3);
     private String registerNr;
-    private Adresse adresse;
+    private AdresseRs adresse;
 
 }

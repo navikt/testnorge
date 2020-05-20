@@ -1,0 +1,13 @@
+[
+  {
+    "orgnr": "999999999",
+    "navn": {
+      "navneListe": [
+        "DOLLY TEST BEDR"
+      ]
+    },
+    "enhetstype": "BEDR",
+    "endringsType": "N",
+    "knytninger": []
+  }
+]
