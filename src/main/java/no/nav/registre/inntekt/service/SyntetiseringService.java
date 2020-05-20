@@ -1,5 +1,7 @@
 package no.nav.registre.inntekt.service;
 
+import static no.nav.registre.inntekt.utils.CommonConstants.TYPE_ORGANISASJON;
+import static no.nav.registre.inntekt.utils.CommonConstants.TYPE_PERSON;
 import static no.nav.registre.inntekt.utils.DatoParser.finnSenesteInntekter;
 import static no.nav.registre.inntekt.utils.DatoParser.hentMaanedsnavnFraMaanedsnummer;
 
@@ -40,9 +42,6 @@ public class SyntetiseringService {
     private static final int MINIMUM_ALDER = 13;
     private static final String INNTEKT_NAME = "inntekt";
     private static final int PAGE_SIZE = 100;
-
-    private static final String TYPE_ORGANISASJON = "Organisasjon";
-    private static final String TYPE_PERSON = "Person";
 
     @Value("${andelNyeIdenter}")
     private int andelNyeIdenter;

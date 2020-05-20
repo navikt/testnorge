@@ -1,5 +1,8 @@
 package no.nav.registre.inntekt.service;
 
+import static no.nav.registre.inntekt.utils.CommonConstants.TYPE_ORGANISASJON;
+import static no.nav.registre.inntekt.utils.CommonConstants.TYPE_PERSON;
+
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Organisasjon;
@@ -18,9 +21,6 @@ import no.nav.registre.inntekt.utils.ValidationException;
 public class AaregService {
 
     private final TestnorgeAaregConsumer testnorgeAaregConsumer;
-
-    private static final String TYPE_ORGANISASJON = "Organisasjon";
-    private static final String TYPE_PERSON = "Person";
 
     public List<Arbeidsforhold> hentArbeidsforhold(
             String ident,
