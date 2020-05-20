@@ -25,13 +25,13 @@ public class BrregstubConsumer {
     private final ProvidersProps providersProps;
     private final RestTemplate restTemplate;
 
-    public ResponseEntity<RolleoversiktTo> getRolleoversikt(String ident) {
+    public RolleoversiktTo getRolleoversikt(String ident) {
 
         try {
             return restTemplate.exchange(RequestEntity.get(
                     URI.create(providersProps.getBrregstub().getUrl() + ROLLEOVERSIKT_URL))
                     .header(HEADER_NAV_PERSON_IDENT, ident)
-                    .build(), RolleoversiktTo.class);
+                    .build(), RolleoversiktTo.class).getBody();
 
         } catch (HttpClientErrorException e) {
             if (HttpStatus.NOT_FOUND != e.getStatusCode()) {
@@ -42,7 +42,7 @@ public class BrregstubConsumer {
             log.error("Feilet å lese fra BRREGSTUB", e);
         }
 
-        return ResponseEntity.ok().build();
+        return null;
     }
 
     public ResponseEntity postRolleoversikt(RolleoversiktTo rolleoversiktTo) {

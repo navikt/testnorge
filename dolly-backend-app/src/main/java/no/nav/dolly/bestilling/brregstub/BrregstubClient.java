@@ -32,9 +32,10 @@ public class BrregstubClient implements ClientRegister {
 
         if (nonNull(bestilling.getBrregstub())) {
 
-            RolleoversiktTo rolleoversiktTo = rolleUtskriftMapper.map(bestilling.getBrregstub(), tpsPerson);
+            RolleoversiktTo nyRolleovesikt = rolleUtskriftMapper.map(bestilling.getBrregstub(), tpsPerson);
 
-            RolleoversiktTo mergetRolleoversikt = prepareRequest(rolleoversiktTo, tpsPerson.getHovedperson());
+            RolleoversiktTo eksisterendeRoller = brregstubConsumer.getRolleoversikt(tpsPerson.getHovedperson());
+            RolleoversiktTo mergetRolleoversikt = BrregstubMergeUtil.merge(nyRolleovesikt, eksisterendeRoller);
 
             progress.setBrregstubStatus(postRolleutskrift(mergetRolleoversikt));
         }
@@ -44,13 +45,6 @@ public class BrregstubClient implements ClientRegister {
     public void release(List<String> identer) {
 
         identer.forEach(brregstubConsumer::deleteRolleoversikt);
-    }
-
-    private RolleoversiktTo prepareRequest(RolleoversiktTo nyRolleovesikt, String ident) {
-
-        RolleoversiktTo eksisterendeRoller = brregstubConsumer.getRolleoversikt(ident).getBody();
-
-        return BrregstubMergeUtil.merge(nyRolleovesikt, eksisterendeRoller);
     }
 
     private String postRolleutskrift(RolleoversiktTo rolleoversiktTo) {
