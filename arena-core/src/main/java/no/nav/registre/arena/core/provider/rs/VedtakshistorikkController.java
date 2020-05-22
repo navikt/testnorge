@@ -2,6 +2,9 @@ package no.nav.registre.arena.core.provider.rs;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,9 +24,12 @@ public class VedtakshistorikkController {
     private final VedtakshistorikkService vedtakshistorikkService;
 
     @PostMapping("generer/vedtakshistorikk")
-    public Map<String, List<NyttVedtakResponse>> genererVedtakshistorikk(
+    public ResponseEntity<Map<String, List<NyttVedtakResponse>>> genererVedtakshistorikk(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        return vedtakshistorikkService.genererVedtakshistorikk(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(vedtakshistorikkService.genererVedtakshistorikk(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter()));
     }
 }

@@ -29,43 +29,60 @@ public class AapController {
     public ResponseEntity<Map<String, List<NyttVedtakResponse>>> genererRettighetAap(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        Map<String, List<NyttVedtakResponse>> arenaResponse = rettighetAapService.genererAapMedTilhoerende115(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(arenaResponse);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(rettighetAapService.genererAapMedTilhoerende115(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter()));
     }
 
     @PostMapping("generer/rettighet/aap/ident/{ident}")
-    public Map<String, List<NyttVedtakResponse>> genererRettighetAapPaaIdent(
+    public ResponseEntity<Map<String, List<NyttVedtakResponse>>> genererRettighetAapPaaIdent(
             @PathVariable String ident,
             @RequestParam String miljoe
     ) {
-        return rettighetAapService.genererAapMedTilhoerende115(ident, miljoe);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(rettighetAapService.genererAapMedTilhoerende115(ident, miljoe));
     }
 
     @PostMapping("generer/rettighet/aap_115")
-    public Map<String, List<NyttVedtakResponse>> genererRettighetAap115(
+    public ResponseEntity<Map<String, List<NyttVedtakResponse>>> genererRettighetAap115(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        return rettighetAapService.genererAap115(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(rettighetAapService.genererAap115(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter()));
     }
 
     @PostMapping("generer/rettighet/ungUfoer")
-    public Map<String, List<NyttVedtakResponse>> genererRettighetUngUfoer(
+    public ResponseEntity<Map<String, List<NyttVedtakResponse>>> genererRettighetUngUfoer(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        return rettighetAapService.genererUngUfoer(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(rettighetAapService.genererUngUfoer(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter()));
     }
 
     @PostMapping("generer/rettighet/tvungenForvaltning")
-    public Map<String, List<NyttVedtakResponse>> genererRettighetTvungenForvaltning(
+    public ResponseEntity<Map<String, List<NyttVedtakResponse>>> genererRettighetTvungenForvaltning(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        return rettighetAapService.genererTvungenForvaltning(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(rettighetAapService.genererTvungenForvaltning(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter()));
     }
 
     @PostMapping("generer/rettighet/fritakMeldekort")
-    public Map<String, List<NyttVedtakResponse>> genererRettighetFritakMeldekort(
+    public ResponseEntity<Map<String, List<NyttVedtakResponse>>> genererRettighetFritakMeldekort(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        return rettighetAapService.genererFritakMeldekort(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(rettighetAapService.genererFritakMeldekort(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter()));
     }
 }

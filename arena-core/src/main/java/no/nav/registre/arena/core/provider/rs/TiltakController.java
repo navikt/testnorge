@@ -2,6 +2,9 @@ package no.nav.registre.arena.core.provider.rs;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,23 +24,32 @@ public class TiltakController {
     private final RettighetTiltakService rettighetTiltakService;
 
     @PostMapping("generer/tiltaksdeltakelse")
-    public Map<String, List<NyttVedtakResponse>> genererTiltaksdeltakelse(
+    public ResponseEntity<Map<String, List<NyttVedtakResponse>>> genererTiltaksdeltakelse(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        return rettighetTiltakService.opprettTiltaksdeltakelse(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(rettighetTiltakService.opprettTiltaksdeltakelse(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter()));
     }
 
     @PostMapping("generer/tiltakspenger")
-    public Map<String, List<NyttVedtakResponse>> genererTiltakspenger(
+    public ResponseEntity<Map<String, List<NyttVedtakResponse>>> genererTiltakspenger(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        return rettighetTiltakService.opprettTiltakspenger(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(rettighetTiltakService.opprettTiltakspenger(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter()));
     }
 
     @PostMapping("generer/barnetillegg")
-    public Map<String, List<NyttVedtakResponse>> genererBarnetillegg(
+    public ResponseEntity<Map<String, List<NyttVedtakResponse>>> genererBarnetillegg(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        return rettighetTiltakService.opprettBarnetillegg(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(rettighetTiltakService.opprettBarnetillegg(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter()));
     }
 }
