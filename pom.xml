@@ -32,12 +32,11 @@
     </properties>
 
     <scm>
-        <developerConnection>scm:git:git@github.com:navikt/testnorge-common.git</developerConnection>
-        <connection>scm:git:git@github.com:navikt/testnorge-common.git</connection>
-        <url>https://github.com/navikt/testnorge-common</url>
-        <tag>HEAD</tag>
+        <connection>scm:git:https://github.com/navikt/testnorge-common.git</connection>
+        <developerConnection>scm:git:https://github.com/navikt/testnorge-common.git</developerConnection>
+        <url>https://github.com/navikt/testnorge-common/</url>
     </scm>
-
+         
     <build>
         <finalName>testnorge-common</finalName>
         <plugins>
