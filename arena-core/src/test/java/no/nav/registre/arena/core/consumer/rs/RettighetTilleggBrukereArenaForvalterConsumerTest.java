@@ -43,11 +43,14 @@ public class RettighetTilleggBrukereArenaForvalterConsumerTest {
     private String serverUrl;
 
     private List<RettighetRequest> rettigheter;
+    private String fnr = "270699494213";
 
     @Before
     public void setUp() {
+        RettighetTilleggRequest tilleggRequest = new RettighetTilleggRequest();
+        tilleggRequest.setPersonident(fnr);
         rettigheter = new ArrayList<>(Collections.singletonList(
-                new RettighetTilleggRequest()
+                tilleggRequest
         ));
     }
 
@@ -59,7 +62,7 @@ public class RettighetTilleggBrukereArenaForvalterConsumerTest {
 
         server.verify();
 
-        assertThat(response.get(0).getNyeRettigheterTillegg().size(), equalTo(1));
+        assertThat(response.get(fnr).get(0).getNyeRettigheterTillegg().size(), equalTo(1));
     }
 
     private void stubArenaForvalterOpprettRettighetTilleggLaeremidler(String expectedUri) {

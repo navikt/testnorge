@@ -26,7 +26,7 @@
         <springfox.version>2.9.2</springfox.version>
         <springframework.cloud.version>2.1.2.RELEASE</springframework.cloud.version>
         <fasterxml.jackson.version>2.9.9</fasterxml.jackson.version>
-        <testnorge-consumers.version>1.10.9-RELEASE</testnorge-consumers.version>
+        <testnorge-consumers.version>1.12.0-RELEASE</testnorge-consumers.version>
         <jacoco.version>0.8.3</jacoco.version>
         <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
         <testnorge-domain.version>1.2020.05.13-11.58-d4f7a985b287</testnorge-domain.version>

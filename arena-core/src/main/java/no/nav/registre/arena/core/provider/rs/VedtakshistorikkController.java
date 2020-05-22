@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 import no.nav.registre.arena.core.provider.rs.request.SyntetiserArenaRequest;
 import no.nav.registre.arena.core.service.VedtakshistorikkService;
@@ -20,7 +21,7 @@ public class VedtakshistorikkController {
     private final VedtakshistorikkService vedtakshistorikkService;
 
     @PostMapping("generer/vedtakshistorikk")
-    public List<NyttVedtakResponse> genererVedtakshistorikk(
+    public Map<String, List<NyttVedtakResponse>> genererVedtakshistorikk(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
         return vedtakshistorikkService.genererVedtakshistorikk(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());

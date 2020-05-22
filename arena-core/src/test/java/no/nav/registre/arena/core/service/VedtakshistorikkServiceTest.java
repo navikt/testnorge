@@ -25,7 +25,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import no.nav.registre.arena.core.consumer.rs.AapSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
@@ -53,6 +55,7 @@ public class VedtakshistorikkServiceTest {
     private Long avspillergruppeId = 123L;
     private String miljoe = "t1";
     private int antallIdenter = 1;
+    private String fnr1 = "270699494213";
     private List<String> identer;
     private List<Vedtakshistorikk> vedtakshistorikkListe;
     private List<NyttVedtakAap> aapRettigheter;
@@ -62,7 +65,6 @@ public class VedtakshistorikkServiceTest {
 
     @Before
     public void setUp() {
-        var fnr1 = "270699494213";
         identer = new ArrayList<>(Collections.singletonList(fnr1));
 
         Saksopplysning saksopplysning = new Saksopplysning();
@@ -130,8 +132,10 @@ public class VedtakshistorikkServiceTest {
                         nyRettighetTvungenForvaltningResponse,
                         nyRettighetFritakMeldekortResponse
                 ));
+        Map<String, List<NyttVedtakResponse>> responseAsMap = new HashMap<>();
+        responseAsMap.put(fnr1, expectedResponsesFromArenaForvalter);
 
-        when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(expectedResponsesFromArenaForvalter);
+        when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(responseAsMap);
 
         var response = vedtakshistorikkService.genererVedtakshistorikk(avspillergruppeId, miljoe, antallIdenter);
 
@@ -140,24 +144,24 @@ public class VedtakshistorikkServiceTest {
         verify(rettighetAapService).opprettPersonOgInntektIPopp(anyString(), anyString(), any(NyttVedtakAap.class));
         verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
 
-        assertThat(response.size(), equalTo(4));
+        assertThat(response.get(fnr1).size(), equalTo(4));
 
-        assertThat(response.get(0).getNyeRettigheterAap().size(), equalTo(1));
-        assertThat(response.get(0).getNyeRettigheterAap().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
-        assertThat(response.get(0).getFeiledeRettigheter().size(), equalTo(0));
+        assertThat(response.get(fnr1).get(0).getNyeRettigheterAap().size(), equalTo(1));
+        assertThat(response.get(fnr1).get(0).getNyeRettigheterAap().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
+        assertThat(response.get(fnr1).get(0).getFeiledeRettigheter().size(), equalTo(0));
 
-        assertThat(response.get(1).getNyeRettigheterAap().size(), equalTo(1));
-        assertThat(response.get(1).getNyeRettigheterAap().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
-        assertThat(response.get(1).getFeiledeRettigheter().size(), equalTo(0));
+        assertThat(response.get(fnr1).get(1).getNyeRettigheterAap().size(), equalTo(1));
+        assertThat(response.get(fnr1).get(1).getNyeRettigheterAap().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
+        assertThat(response.get(fnr1).get(1).getFeiledeRettigheter().size(), equalTo(0));
 
-        assertThat(response.get(2).getNyeRettigheterAap().size(), equalTo(1));
-        assertThat(response.get(2).getNyeRettigheterAap().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
-        assertThat(response.get(2).getNyeRettigheterAap().get(0).getForvalter().getGjeldendeKontonr().getKontonr(), equalTo(kontonummer));
-        assertThat(response.get(2).getNyeRettigheterAap().get(0).getForvalter().getUtbetalingsadresse().getFodselsnr(), equalTo(forvalterFnr));
-        assertThat(response.get(2).getFeiledeRettigheter().size(), equalTo(0));
+        assertThat(response.get(fnr1).get(2).getNyeRettigheterAap().size(), equalTo(1));
+        assertThat(response.get(fnr1).get(2).getNyeRettigheterAap().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
+        assertThat(response.get(fnr1).get(2).getNyeRettigheterAap().get(0).getForvalter().getGjeldendeKontonr().getKontonr(), equalTo(kontonummer));
+        assertThat(response.get(fnr1).get(2).getNyeRettigheterAap().get(0).getForvalter().getUtbetalingsadresse().getFodselsnr(), equalTo(forvalterFnr));
+        assertThat(response.get(fnr1).get(2).getFeiledeRettigheter().size(), equalTo(0));
 
-        assertThat(response.get(3).getNyeRettigheterAap().size(), equalTo(1));
-        assertThat(response.get(3).getNyeRettigheterAap().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
-        assertThat(response.get(3).getFeiledeRettigheter().size(), equalTo(0));
+        assertThat(response.get(fnr1).get(3).getNyeRettigheterAap().size(), equalTo(1));
+        assertThat(response.get(fnr1).get(3).getNyeRettigheterAap().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
+        assertThat(response.get(fnr1).get(3).getFeiledeRettigheter().size(), equalTo(0));
     }
 }

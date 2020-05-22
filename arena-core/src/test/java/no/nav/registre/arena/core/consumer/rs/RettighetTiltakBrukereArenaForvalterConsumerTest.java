@@ -44,12 +44,18 @@ public class RettighetTiltakBrukereArenaForvalterConsumerTest {
     private String serverUrl;
 
     private List<RettighetRequest> rettigheter;
+    private String fnr1 = "270699494213";
 
     @Before
     public void setUp() {
+        RettighetTiltaksdeltakelseRequest tiltaksdeltakelseRequest = new RettighetTiltaksdeltakelseRequest();
+        tiltaksdeltakelseRequest.setPersonident(fnr1);
+        RettighetTiltakspengerRequest tiltakspengerRequest = new RettighetTiltakspengerRequest();
+        tiltakspengerRequest.setPersonident(fnr1);
+
         rettigheter = new ArrayList<>(Arrays.asList(
-                new RettighetTiltaksdeltakelseRequest(),
-                new RettighetTiltakspengerRequest()
+                tiltaksdeltakelseRequest,
+                tiltakspengerRequest
         ));
     }
 
@@ -62,8 +68,8 @@ public class RettighetTiltakBrukereArenaForvalterConsumerTest {
 
         server.verify();
 
-        assertThat(response.get(0).getFeiledeRettigheter().size(), equalTo(0));
-        assertThat(response.get(1).getNyeRettigheterTiltak().size(), equalTo(1));
+        assertThat(response.get(fnr1).get(0).getFeiledeRettigheter().size(), equalTo(0));
+        assertThat(response.get(fnr1).get(1).getNyeRettigheterTiltak().size(), equalTo(1));
     }
 
     private void stubArenaForvalterOpprettRettighetTiltaksdeltakelse(String expectedUri) {

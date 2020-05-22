@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import no.nav.registre.arena.core.consumer.rs.AapSyntConsumer;
@@ -44,7 +45,7 @@ public class RettighetAapService {
     private final PensjonTestdataFacadeConsumer pensjonTestdataFacadeConsumer;
     private final Random rand;
 
-    public List<NyttVedtakResponse> genererAapMedTilhoerende115(
+    public Map<String, List<NyttVedtakResponse>> genererAapMedTilhoerende115(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -75,10 +76,14 @@ public class RettighetAapService {
         }
 
         rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(aap115Rettigheter, miljoe));
-        return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
+        var identerMedOpprettedeRettigheter = rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
+
+        serviceUtils.lagreAapIHodejegeren(identerMedOpprettedeRettigheter);
+
+        return identerMedOpprettedeRettigheter;
     }
 
-    public List<NyttVedtakResponse> genererAapMedTilhoerende115(
+    public Map<String, List<NyttVedtakResponse>> genererAapMedTilhoerende115(
             String ident,
             String miljoe
     ) {
@@ -101,7 +106,7 @@ public class RettighetAapService {
         return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(new ArrayList<>(Collections.singletonList(rettighetRequest)), miljoe));
     }
 
-    public List<NyttVedtakResponse> genererAap115(
+    public Map<String, List<NyttVedtakResponse>> genererAap115(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -122,7 +127,7 @@ public class RettighetAapService {
         return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
     }
 
-    public List<NyttVedtakResponse> genererUngUfoer(
+    public Map<String, List<NyttVedtakResponse>> genererUngUfoer(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -143,7 +148,7 @@ public class RettighetAapService {
         return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
     }
 
-    public List<NyttVedtakResponse> genererTvungenForvaltning(
+    public Map<String, List<NyttVedtakResponse>> genererTvungenForvaltning(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -166,7 +171,7 @@ public class RettighetAapService {
         return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
     }
 
-    public List<NyttVedtakResponse> genererFritakMeldekort(
+    public Map<String, List<NyttVedtakResponse>> genererFritakMeldekort(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter

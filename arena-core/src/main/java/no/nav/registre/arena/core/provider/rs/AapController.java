@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 import no.nav.registre.arena.core.provider.rs.request.SyntetiserArenaRequest;
 import no.nav.registre.arena.core.service.RettighetAapService;
@@ -22,14 +23,14 @@ public class AapController {
     private final RettighetAapService rettighetAapService;
 
     @PostMapping("generer/rettighet/aap")
-    public List<NyttVedtakResponse> genererRettighetAap(
+    public Map<String, List<NyttVedtakResponse>> genererRettighetAap(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
         return rettighetAapService.genererAapMedTilhoerende115(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
     }
 
     @PostMapping("generer/rettighet/aap/ident/{ident}")
-    public List<NyttVedtakResponse> genererRettighetAapPaaIdent(
+    public Map<String, List<NyttVedtakResponse>> genererRettighetAapPaaIdent(
             @PathVariable String ident,
             @RequestParam String miljoe
     ) {
@@ -37,28 +38,28 @@ public class AapController {
     }
 
     @PostMapping("generer/rettighet/aap_115")
-    public List<NyttVedtakResponse> genererRettighetAap115(
+    public Map<String, List<NyttVedtakResponse>> genererRettighetAap115(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
         return rettighetAapService.genererAap115(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
     }
 
     @PostMapping("generer/rettighet/ungUfoer")
-    public List<NyttVedtakResponse> genererRettighetUngUfoer(
+    public Map<String, List<NyttVedtakResponse>> genererRettighetUngUfoer(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
         return rettighetAapService.genererUngUfoer(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
     }
 
     @PostMapping("generer/rettighet/tvungenForvaltning")
-    public List<NyttVedtakResponse> genererRettighetTvungenForvaltning(
+    public Map<String, List<NyttVedtakResponse>> genererRettighetTvungenForvaltning(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
         return rettighetAapService.genererTvungenForvaltning(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());
     }
 
     @PostMapping("generer/rettighet/fritakMeldekort")
-    public List<NyttVedtakResponse> genererRettighetFritakMeldekort(
+    public Map<String, List<NyttVedtakResponse>> genererRettighetFritakMeldekort(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
         return rettighetAapService.genererFritakMeldekort(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter());

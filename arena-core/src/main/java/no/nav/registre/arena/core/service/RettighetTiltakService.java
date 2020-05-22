@@ -60,7 +60,7 @@ public class RettighetTiltakService {
         }
     }
 
-    public List<NyttVedtakResponse> opprettTiltaksdeltakelse(
+    public Map<String, List<NyttVedtakResponse>> opprettTiltaksdeltakelse(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -69,7 +69,7 @@ public class RettighetTiltakService {
         return aktiverTiltaksdeltakelse(utvalgteIdenter, miljoe);
     }
 
-    public List<NyttVedtakResponse> opprettTiltakspenger(
+    public Map<String, List<NyttVedtakResponse>> opprettTiltakspenger(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -101,7 +101,7 @@ public class RettighetTiltakService {
         return rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
     }
 
-    public List<NyttVedtakResponse> opprettBarnetillegg(
+    public Map<String, List<NyttVedtakResponse>> opprettBarnetillegg(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -124,7 +124,7 @@ public class RettighetTiltakService {
         return rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
     }
 
-    private List<NyttVedtakResponse> aktiverTiltaksdeltakelse(
+    private Map<String, List<NyttVedtakResponse>> aktiverTiltaksdeltakelse(
             List<String> identer,
             String miljoe
     ) {
@@ -143,15 +143,17 @@ public class RettighetTiltakService {
         }
 
         var responses = rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe));
-        for (var response : responses) {
-            if (!response.getFeiledeRettigheter().isEmpty()) {
-                log.error("Kunne ikke opprette deltakelse for alle identer");
+        for (var response : responses.values()) {
+            for (var nyttVedtakResponse : response) {
+                if (!nyttVedtakResponse.getFeiledeRettigheter().isEmpty()) {
+                    log.error("Kunne ikke opprette deltakelse for alle identer");
+                }
             }
         }
         return responses;
     }
 
-    List<NyttVedtakResponse> opprettTiltaksaktiviteter(List<RettighetRequest> rettigheter) {
+    Map<String, List<NyttVedtakResponse>> opprettTiltaksaktiviteter(List<RettighetRequest> rettigheter) {
         List<RettighetRequest> tiltaksaktiviteter = new ArrayList<>(rettigheter.size());
         for (var rettighet : rettigheter) {
             if (!(rettighet instanceof RettighetTilleggRequest)) {

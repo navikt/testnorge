@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.TilleggSyntConsumer;
@@ -28,7 +29,7 @@ public class RettighetTilleggService {
     private final RettighetTiltakService rettighetTiltakService;
     private final ServiceUtils serviceUtils;
 
-    public List<NyttVedtakResponse> opprettTilleggsstoenadBoutgifter(
+    public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadBoutgifter(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -36,7 +37,7 @@ public class RettighetTilleggService {
         return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettBoutgifter(antallNyeIdenter));
     }
 
-    public List<NyttVedtakResponse> opprettTilleggsstoenadDagligReise(
+    public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadDagligReise(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -44,7 +45,7 @@ public class RettighetTilleggService {
         return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettDagligReise(antallNyeIdenter));
     }
 
-    public List<NyttVedtakResponse> opprettTilleggsstoenadFlytting(
+    public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadFlytting(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -52,7 +53,7 @@ public class RettighetTilleggService {
         return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettFlytting(antallNyeIdenter));
     }
 
-    public List<NyttVedtakResponse> opprettTilleggsstoenadLaeremidler(
+    public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadLaeremidler(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -60,7 +61,7 @@ public class RettighetTilleggService {
         return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettLaeremidler(antallNyeIdenter));
     }
 
-    public List<NyttVedtakResponse> opprettTilleggsstoenadHjemreise(
+    public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadHjemreise(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -68,7 +69,7 @@ public class RettighetTilleggService {
         return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettHjemreise(antallNyeIdenter));
     }
 
-    public List<NyttVedtakResponse> opprettTilleggsstoenadReiseObligatoriskSamling(
+    public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadReiseObligatoriskSamling(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -76,7 +77,7 @@ public class RettighetTilleggService {
         return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettReiseObligatoriskSamling(antallNyeIdenter));
     }
 
-    public List<NyttVedtakResponse> opprettTilleggsstoenadTilsynBarn(
+    public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadTilsynBarn(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -84,7 +85,7 @@ public class RettighetTilleggService {
         return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettTilsynBarn(antallNyeIdenter));
     }
 
-    public List<NyttVedtakResponse> opprettTilleggsstoenadTilsynFamiliemedlemmer(
+    public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadTilsynFamiliemedlemmer(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -92,7 +93,7 @@ public class RettighetTilleggService {
         return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettTilsynFamiliemedlemmer(antallNyeIdenter));
     }
 
-    public List<NyttVedtakResponse> opprettTilleggsstoenadTilsynBarnArbeidssoekere(
+    public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadTilsynBarnArbeidssoekere(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -100,7 +101,7 @@ public class RettighetTilleggService {
         return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettTilsynBarnArbeidssoekere(antallNyeIdenter));
     }
 
-    public List<NyttVedtakResponse> opprettTilleggsstoenadTilsynFamiliemedlemmerArbeidssoekere(
+    public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadTilsynFamiliemedlemmerArbeidssoekere(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -108,7 +109,7 @@ public class RettighetTilleggService {
         return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettTilsynFamiliemedlemmerArbeidssoekere(antallNyeIdenter));
     }
 
-    public List<NyttVedtakResponse> opprettTilleggsstoenadBoutgifterArbeidssoekere(
+    public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadBoutgifterArbeidssoekere(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -116,7 +117,7 @@ public class RettighetTilleggService {
         return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettBoutgifterArbeidssoekere(antallNyeIdenter));
     }
 
-    public List<NyttVedtakResponse> opprettTilleggsstoenadDagligReiseArbeidssoekere(
+    public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadDagligReiseArbeidssoekere(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -124,7 +125,7 @@ public class RettighetTilleggService {
         return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettDagligReiseArbeidssoekere(antallNyeIdenter));
     }
 
-    public List<NyttVedtakResponse> opprettTilleggsstoenadFlyttingArbeidssoekere(
+    public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadFlyttingArbeidssoekere(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -132,7 +133,7 @@ public class RettighetTilleggService {
         return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettFlyttingArbeidssoekere(antallNyeIdenter));
     }
 
-    public List<NyttVedtakResponse> opprettTilleggsstoenadLaeremidlerArbeidssoekere(
+    public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadLaeremidlerArbeidssoekere(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -140,7 +141,7 @@ public class RettighetTilleggService {
         return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettLaeremidlerArbeidssoekere(antallNyeIdenter));
     }
 
-    public List<NyttVedtakResponse> opprettTilleggsstoenadHjemreiseArbeidssoekere(
+    public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadHjemreiseArbeidssoekere(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -148,7 +149,7 @@ public class RettighetTilleggService {
         return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettHjemreiseArbeidssoekere(antallNyeIdenter));
     }
 
-    public List<NyttVedtakResponse> opprettTilleggsstoenadReiseObligatoriskSamlingArbeidssoekere(
+    public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadReiseObligatoriskSamlingArbeidssoekere(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -156,7 +157,7 @@ public class RettighetTilleggService {
         return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettReiseObligatoriskSamlingArbeidssoekere(antallNyeIdenter));
     }
 
-    public List<NyttVedtakResponse> opprettTilleggsstoenadReisestoenadArbeidssoekere(
+    public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadReisestoenadArbeidssoekere(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
@@ -164,7 +165,7 @@ public class RettighetTilleggService {
         return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettReisestoenadArbeidssoekere(antallNyeIdenter));
     }
 
-    private List<NyttVedtakResponse> opprettTilleggsstoenad(
+    private Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenad(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter,
@@ -187,9 +188,11 @@ public class RettighetTilleggService {
         serviceUtils.opprettArbeidssoekerTillegg(rettigheter, miljoe);
 
         var aktivitetResponse = rettighetTiltakService.opprettTiltaksaktiviteter(rettigheter);
-        for (var response : aktivitetResponse) {
-            if (response.getFeiledeRettigheter() != null && !response.getFeiledeRettigheter().isEmpty()) {
-                log.error("Kunne ikke opprette aktivitet på ident {}", response.getFeiledeRettigheter().get(0).getPersonident());
+        for (var response : aktivitetResponse.values()) {
+            for (var vedtakResponse : response) {
+                if (vedtakResponse.getFeiledeRettigheter() != null && !vedtakResponse.getFeiledeRettigheter().isEmpty()) {
+                    log.error("Kunne ikke opprette aktivitet på ident {}", vedtakResponse.getFeiledeRettigheter().get(0).getPersonident());
+                }
             }
         }
 

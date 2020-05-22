@@ -20,7 +20,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import no.nav.registre.arena.core.consumer.rs.AapSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
@@ -43,13 +45,13 @@ public class VedtakshistorikkService {
     private final ServiceUtils serviceUtils;
     private final RettighetAapService rettighetAapService;
 
-    public List<NyttVedtakResponse> genererVedtakshistorikk(
+    public Map<String, List<NyttVedtakResponse>> genererVedtakshistorikk(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
     ) {
         var vedtakshistorikk = aapSyntConsumer.syntetiserVedtakshistorikk(antallNyeIdenter);
-        List<NyttVedtakResponse> responses = new ArrayList<>();
+        Map<String, List<NyttVedtakResponse>> responses = new HashMap<>();
         for (var vedtakshistorikken : vedtakshistorikk) {
             var aap = vedtakshistorikken.getAap();
 
@@ -65,13 +67,13 @@ public class VedtakshistorikkService {
                     maksimumAlder = MAX_ALDER_AAP;
                 }
                 var ident = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder).get(0);
-                responses.addAll(opprettHistorikkOgSendTilArena(avspillergruppeId, ident, miljoe, vedtakshistorikken));
+                responses.putAll(opprettHistorikkOgSendTilArena(avspillergruppeId, ident, miljoe, vedtakshistorikken));
             }
         }
         return responses;
     }
 
-    private List<NyttVedtakResponse> opprettHistorikkOgSendTilArena(
+    private Map<String, List<NyttVedtakResponse>> opprettHistorikkOgSendTilArena(
             Long avspillergruppeId,
             String personident,
             String miljoe,

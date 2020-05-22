@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
@@ -21,7 +22,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import no.nav.registre.arena.core.consumer.rs.AapSyntConsumer;
@@ -62,6 +65,7 @@ public class RettighetAapServiceTest {
 
     private Long avspillergruppeId = 123L;
     private String miljoe = "t1";
+    private String fnr1 = "270699494213";
     private int antallIdenter = 1;
     private List<String> identer;
     private NyttVedtakAap aap115Rettighet;
@@ -72,7 +76,6 @@ public class RettighetAapServiceTest {
 
     @Before
     public void setUp() {
-        var fnr1 = "270699494213";
         identer = new ArrayList<>(Collections.singletonList(fnr1));
 
         aap115Rettighet = NyttVedtakAap.builder()
@@ -107,7 +110,8 @@ public class RettighetAapServiceTest {
                 .nyeRettigheterAap(aapRettigheter)
                 .feiledeRettigheter(new ArrayList<>())
                 .build();
-        var expectedResponsesFromArenaForvalter = new ArrayList<>(Collections.singletonList(nyRettighetAapResponse));
+        Map<String, List<NyttVedtakResponse>> expectedResponsesFromArenaForvalter = new HashMap<>();
+        expectedResponsesFromArenaForvalter.put(fnr1, new ArrayList<>(Collections.singletonList(nyRettighetAapResponse)));
 
         when(aapSyntConsumer.syntetiserRettighetAap115(any(LocalDate.class), any(LocalDate.class))).thenReturn(new ArrayList<>(Collections.singletonList(aap115Rettighet)));
         when(aapSyntConsumer.syntetiserRettighetAap(antallIdenter)).thenReturn(aapRettigheter);
@@ -137,9 +141,11 @@ public class RettighetAapServiceTest {
 
         var response = rettighetAapService.genererAapMedTilhoerende115(avspillergruppeId, miljoe, antallIdenter);
 
-        assertThat(response.get(0).getNyeRettigheterAap().size(), equalTo(1));
-        assertThat(response.get(0).getNyeRettigheterAap().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
-        assertThat(response.get(0).getFeiledeRettigheter().size(), equalTo(0));
+        assertThat(response.get(fnr1).get(0).getNyeRettigheterAap().size(), equalTo(1));
+        assertThat(response.get(fnr1).get(0).getNyeRettigheterAap().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
+        assertThat(response.get(fnr1).get(0).getFeiledeRettigheter().size(), equalTo(0));
+
+        verify(serviceUtils).lagreAapIHodejegeren(any());
     }
 
     @Test
@@ -148,7 +154,8 @@ public class RettighetAapServiceTest {
                 .nyeRettigheterAap(ungUfoerRettigheter)
                 .feiledeRettigheter(new ArrayList<>())
                 .build();
-        var expectedResponsesFromArenaForvalter = new ArrayList<>(Collections.singletonList(nyRettighetungUfoerResponse));
+        Map<String, List<NyttVedtakResponse>> expectedResponsesFromArenaForvalter = new HashMap<>();
+        expectedResponsesFromArenaForvalter.put(fnr1, new ArrayList<>(Collections.singletonList(nyRettighetungUfoerResponse)));
 
         when(serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallIdenter, 18, 35)).thenReturn(identer);
         when(aapSyntConsumer.syntetiserRettighetUngUfoer(antallIdenter)).thenReturn(ungUfoerRettigheter);
@@ -156,9 +163,9 @@ public class RettighetAapServiceTest {
 
         var response = rettighetAapService.genererUngUfoer(avspillergruppeId, miljoe, antallIdenter);
 
-        assertThat(response.get(0).getNyeRettigheterAap().size(), equalTo(1));
-        assertThat(response.get(0).getNyeRettigheterAap().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
-        assertThat(response.get(0).getFeiledeRettigheter().size(), equalTo(0));
+        assertThat(response.get(fnr1).get(0).getNyeRettigheterAap().size(), equalTo(1));
+        assertThat(response.get(fnr1).get(0).getNyeRettigheterAap().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
+        assertThat(response.get(fnr1).get(0).getFeiledeRettigheter().size(), equalTo(0));
     }
 
     @Test
@@ -175,18 +182,19 @@ public class RettighetAapServiceTest {
                 .nyeRettigheterAap(tvungenForvaltningRettigheter)
                 .feiledeRettigheter(new ArrayList<>())
                 .build();
-        var expectedResponsesFromArenaForvalter = new ArrayList<>(Collections.singletonList(nyRettighetTvungenForvaltningResponse));
+        Map<String, List<NyttVedtakResponse>> expectedResponsesFromArenaForvalter = new HashMap<>();
+        expectedResponsesFromArenaForvalter.put(fnr1, new ArrayList<>(Collections.singletonList(nyRettighetTvungenForvaltningResponse)));
 
         when(aapSyntConsumer.syntetiserRettighetTvungenForvaltning(antallIdenter)).thenReturn(tvungenForvaltningRettigheter);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(expectedResponsesFromArenaForvalter);
 
         var response = rettighetAapService.genererTvungenForvaltning(avspillergruppeId, miljoe, antallIdenter);
 
-        assertThat(response.get(0).getNyeRettigheterAap().size(), equalTo(1));
-        assertThat(response.get(0).getNyeRettigheterAap().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
-        assertThat(response.get(0).getNyeRettigheterAap().get(0).getForvalter().getGjeldendeKontonr().getKontonr(), equalTo(kontonummer));
-        assertThat(response.get(0).getNyeRettigheterAap().get(0).getForvalter().getUtbetalingsadresse().getFodselsnr(), equalTo(forvalterFnr));
-        assertThat(response.get(0).getFeiledeRettigheter().size(), equalTo(0));
+        assertThat(response.get(fnr1).get(0).getNyeRettigheterAap().size(), equalTo(1));
+        assertThat(response.get(fnr1).get(0).getNyeRettigheterAap().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
+        assertThat(response.get(fnr1).get(0).getNyeRettigheterAap().get(0).getForvalter().getGjeldendeKontonr().getKontonr(), equalTo(kontonummer));
+        assertThat(response.get(fnr1).get(0).getNyeRettigheterAap().get(0).getForvalter().getUtbetalingsadresse().getFodselsnr(), equalTo(forvalterFnr));
+        assertThat(response.get(fnr1).get(0).getFeiledeRettigheter().size(), equalTo(0));
     }
 
     @Test
@@ -195,7 +203,8 @@ public class RettighetAapServiceTest {
                 .nyeRettigheterAap(fritakMeldekortRettigheter)
                 .feiledeRettigheter(new ArrayList<>())
                 .build();
-        var expectedResponsesFromArenaForvalter = new ArrayList<>(Collections.singletonList(nyRettighetFritakMeldekortResponse));
+        Map<String, List<NyttVedtakResponse>> expectedResponsesFromArenaForvalter = new HashMap<>();
+        expectedResponsesFromArenaForvalter.put(fnr1, new ArrayList<>(Collections.singletonList(nyRettighetFritakMeldekortResponse)));
 
         when(brukereService.hentEksisterendeArbeidsoekerIdenter()).thenReturn(identer);
         when(serviceUtils.getLevende(avspillergruppeId)).thenReturn(identer);
@@ -204,8 +213,8 @@ public class RettighetAapServiceTest {
 
         var response = rettighetAapService.genererFritakMeldekort(avspillergruppeId, miljoe, antallIdenter);
 
-        assertThat(response.get(0).getNyeRettigheterAap().size(), equalTo(1));
-        assertThat(response.get(0).getNyeRettigheterAap().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
-        assertThat(response.get(0).getFeiledeRettigheter().size(), equalTo(0));
+        assertThat(response.get(fnr1).get(0).getNyeRettigheterAap().size(), equalTo(1));
+        assertThat(response.get(fnr1).get(0).getNyeRettigheterAap().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
+        assertThat(response.get(fnr1).get(0).getFeiledeRettigheter().size(), equalTo(0));
     }
 }

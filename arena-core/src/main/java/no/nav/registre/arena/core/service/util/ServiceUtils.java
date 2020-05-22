@@ -2,7 +2,10 @@ package no.nav.registre.arena.core.service.util;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.consumers.hodejegeren.response.internal.DataRequest;
+import no.nav.registre.testnorge.consumers.hodejegeren.response.internal.HistorikkRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Adresse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Forvalter;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Konto;
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -30,6 +34,7 @@ public class ServiceUtils {
     public static final int MAX_ALDER_AAP = 67;
     public static final int MIN_ALDER_UNG_UFOER = 18;
     public static final int MAX_ALDER_UNG_UFOER = 36;
+    private static final String KILDE_ARENA = "arena";
 
     private final HodejegerenConsumer hodejegerenConsumer;
     private final BrukereService brukereService;
@@ -162,5 +167,21 @@ public class ServiceUtils {
         }
 
         return aktivitetskoder.get(Math.max(0, i - 1));
+    }
+
+    public void lagreAapIHodejegeren(Map<String, List<NyttVedtakResponse>> identerMedOpprettedeRettigheter) {
+        List<DataRequest> identMedData = new ArrayList<>();
+        for (var identMedRettigheter : identerMedOpprettedeRettigheter.entrySet()) {
+            var rettigheterSomObject = new ArrayList<>();
+            identMedRettigheter.getValue().stream().map(NyttVedtakResponse::getNyeRettigheterAap).forEach(rettigheterSomObject::addAll);
+            var dataRequest = new DataRequest();
+            dataRequest.setId(identMedRettigheter.getKey());
+            dataRequest.setData(rettigheterSomObject);
+            identMedData.add(dataRequest);
+        }
+        var historikkRequest = new HistorikkRequest();
+        historikkRequest.setKilde(KILDE_ARENA);
+        historikkRequest.setIdentMedData(identMedData);
+        hodejegerenConsumer.saveHistory(historikkRequest);
     }
 }

@@ -47,15 +47,27 @@ public class RettighetAapBrukereArenaForvalterConsumerTest {
     private String serverUrl;
 
     private List<RettighetRequest> rettigheter;
+    private String fnr = "270699494213";
 
     @Before
     public void setUp() {
+        RettighetAapRequest aapRequest = new RettighetAapRequest();
+        aapRequest.setPersonident(fnr);
+        RettighetAap115Request aap115Request = new RettighetAap115Request();
+        aap115Request.setPersonident(fnr);
+        RettighetUngUfoerRequest ungUfoerRequest = new RettighetUngUfoerRequest();
+        ungUfoerRequest.setPersonident(fnr);
+        RettighetTvungenForvaltningRequest tvungenForvaltningRequest = new RettighetTvungenForvaltningRequest();
+        tvungenForvaltningRequest.setPersonident(fnr);
+        RettighetFritakMeldekortRequest fritakMeldekortRequest = new RettighetFritakMeldekortRequest();
+        fritakMeldekortRequest.setPersonident(fnr);
+
         rettigheter = new ArrayList<>(Arrays.asList(
-                new RettighetAapRequest(),
-                new RettighetAap115Request(),
-                new RettighetUngUfoerRequest(),
-                new RettighetTvungenForvaltningRequest(),
-                new RettighetFritakMeldekortRequest()
+                aapRequest,
+                aap115Request,
+                ungUfoerRequest,
+                tvungenForvaltningRequest,
+                fritakMeldekortRequest
         ));
     }
 
@@ -71,11 +83,11 @@ public class RettighetAapBrukereArenaForvalterConsumerTest {
 
         server.verify();
 
-        assertThat(response.get(0).getNyeRettigheterAap().size(), equalTo(1));
-        assertThat(response.get(1).getNyeRettigheterAap().size(), equalTo(1));
-        assertThat(response.get(2).getNyeRettigheterAap().size(), equalTo(1));
-        assertThat(response.get(3).getNyeRettigheterAap().size(), equalTo(1));
-        assertThat(response.get(4).getFeiledeRettigheter().size(), equalTo(1));
+        assertThat(response.get(fnr).get(0).getNyeRettigheterAap().size(), equalTo(1));
+        assertThat(response.get(fnr).get(1).getNyeRettigheterAap().size(), equalTo(1));
+        assertThat(response.get(fnr).get(2).getNyeRettigheterAap().size(), equalTo(1));
+        assertThat(response.get(fnr).get(3).getNyeRettigheterAap().size(), equalTo(1));
+        assertThat(response.get(fnr).get(4).getFeiledeRettigheter().size(), equalTo(1));
     }
 
     private void stubArenaForvalterOpprettRettighetAapArena(String expectedUri) {

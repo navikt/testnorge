@@ -16,7 +16,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 
@@ -36,11 +39,10 @@ public class RettighetArenaForvalterConsumer {
         this.arenaForvalterServerUrl = arenaForvalterServerUrl;
     }
 
-    public List<NyttVedtakResponse> opprettRettighet(List<RettighetRequest> rettigheter) {
-        List<NyttVedtakResponse> responses = new ArrayList<>(rettigheter.size());
+    public Map<String, List<NyttVedtakResponse>> opprettRettighet(List<RettighetRequest> rettigheter) {
+        Map<String, List<NyttVedtakResponse>> responses = new HashMap<>();
         for (var rettighet : rettigheter) {
-
-            UriTemplate url = new UriTemplate(arenaForvalterServerUrl + rettighet.getArenaForvalterUrlPath());
+            var url = new UriTemplate(arenaForvalterServerUrl + rettighet.getArenaForvalterUrlPath());
 
             var postRequest = RequestEntity.post(url.expand())
                     .header(CALL_ID, NAV_CALL_ID)
@@ -53,7 +55,11 @@ public class RettighetArenaForvalterConsumer {
                 log.error("Kunne ikke opprette rettighet i arena-forvalteren.", e);
             }
             if (response != null) {
-                responses.add(response);
+                if (responses.containsKey(rettighet.getPersonident())) {
+                    responses.get(rettighet.getPersonident()).add(response);
+                } else {
+                    responses.put(rettighet.getPersonident(), new ArrayList<>(Collections.singletonList(response)));
+                }
             }
         }
         return responses;
