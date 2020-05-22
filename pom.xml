@@ -22,6 +22,7 @@
         <spring.boot.maven.plugin.version>2.1.8.RELEASE</spring.boot.maven.plugin.version>
         <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
         <commons-csv.version>1.8</commons-csv.version>
+        <testnorge-common.version>1.2020.05.22-17.20-83af9f992b4a</testnorge-common.version>
     </properties>
 
     <dependencies>
@@ -37,6 +38,12 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
             <version>${commons-csv.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>no.nav.registre.testnorge.common</groupId>
+            <artifactId>testnorge-common</artifactId>
+            <version>${testnorge-common.version}</version>
         </dependency>
 
         <!-- LOMBOK -->
