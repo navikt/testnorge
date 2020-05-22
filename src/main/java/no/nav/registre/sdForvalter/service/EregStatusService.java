@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.sdForvalter.adapter.EregAdapter;
@@ -20,20 +21,30 @@ public class EregStatusService {
     private final EregAdapter adapter;
     private final EregConsumer consumer;
 
-    public OrganisasjonStatusMap getStatus(String miljo, String gruppe, Boolean equal) {
-        EregListe eregListe = adapter.fetchBy(gruppe);
+    public OrganisasjonStatusMap getStatusByOrgnr(String miljo, String gruppe, Boolean equal) {
+        return getStatus(miljo, adapter.fetchByIds(Set.of(gruppe)), equal);
+    }
+
+
+    public OrganisasjonStatusMap getStatusByGruppe(String miljo, String gruppe, Boolean equal) {
+        return getStatus(miljo, adapter.fetchBy(gruppe), equal);
+    }
+
+
+    private OrganisasjonStatusMap getStatus(String miljo, EregListe liste, Boolean equal) {
         Map<String, Organisasjon> organisasjoner = consumer.getOrganisasjoner(
-                eregListe.getListe().stream().map(Ereg::getOrgnr).collect(Collectors.toList()),
+                liste.getListe().stream().map(Ereg::getOrgnr).collect(Collectors.toList()),
                 miljo
         );
         return new OrganisasjonStatusMap(
                 miljo,
-                eregListe
+                liste
                         .getListe()
                         .stream()
                         .map(item -> new OrganisasjonStatus(item.getOrgnr(), item, organisasjoner.get(item.getOrgnr())))
                         .filter(item -> equal == null || item.isEqual() == equal)
                         .collect(Collectors.toList())
-                );
+        );
     }
+
 }

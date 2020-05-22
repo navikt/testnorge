@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +17,7 @@ import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import no.nav.registre.sdForvalter.adapter.EregAdapter;
 import no.nav.registre.sdForvalter.consumer.rs.EregMapperConsumer;
@@ -33,29 +33,47 @@ import no.nav.registre.sdForvalter.service.EregStatusService;
 @RequestMapping("/api/v1/organisasjons")
 public class OrganisasjonControllerV1 {
 
+    private static final String ORGNR_REGEX = "^(8|9)\\d{8}$";
+
     private final EregMapperConsumer eregMapperConsumer;
     private final EregAdapter eregAdapter;
     private final EregStatusService eregStatusService;
 
     @GetMapping(value = "/flatfile", produces = "text/ISO-8859-1")
-    public void export(
+    public void exportByGruppe(
             @RequestParam(name = "gruppe") String gruppe,
             @RequestParam(name = "update") Boolean update,
             HttpServletResponse response
     ) throws IOException {
-        response.setContentType("text/" + StandardCharsets.ISO_8859_1);
-        response.setHeader("Content-Disposition", "attachment; filename=ereg-" + Strings.nullToEmpty(gruppe) + "-" + LocalDateTime.now().toString() + ".txt");
-        String flatfil = eregMapperConsumer.generateFlatfil(eregAdapter.fetchBy(gruppe), update);
-        response.getOutputStream().write(flatfil.getBytes(StandardCharsets.ISO_8859_1));
+        writeExport(response, eregAdapter.fetchBy(gruppe), gruppe, update);
+    }
+
+    @GetMapping(value = "/flatfile/{orgnr}", produces = "text/ISO-8859-1")
+    public void exportByOrgnr(
+            @PathParam("orgnr") String orgnr,
+            @RequestParam(name = "update") Boolean update,
+            HttpServletResponse response
+    ) throws IOException {
+        writeExport(response, eregAdapter.fetchByIds(Set.of(orgnr)), orgnr, update);
     }
 
     @GetMapping("/status")
-    public ResponseEntity<OrganisasjonStatusMap> status(
+    public ResponseEntity<OrganisasjonStatusMap> statusByGruppe(
             @RequestParam("miljo") String miljo,
             @RequestParam(value = "equal", required = false) Boolean equal,
             @RequestParam(value = "gruppe", required = false) String gruppe
     ) {
-        return ResponseEntity.ok(eregStatusService.getStatus(miljo, gruppe, equal));
+        return ResponseEntity.ok(eregStatusService.getStatusByGruppe(miljo, gruppe, equal));
+    }
+
+    @Validated
+    @GetMapping("/status/{orgnr}")
+    public ResponseEntity<OrganisasjonStatusMap> statusByOrgnr(
+            @RequestParam("miljo") String miljo,
+            @RequestParam(value = "equal", required = false) Boolean equal,
+            @PathParam("orgnr") @Pattern(regexp = ORGNR_REGEX) String orgnr
+    ) {
+        return ResponseEntity.ok(eregStatusService.getStatusByOrgnr(miljo, orgnr, equal));
     }
 
     @GetMapping
@@ -66,9 +84,8 @@ public class OrganisasjonControllerV1 {
 
     @Validated
     @GetMapping("/{orgnr}")
-    public ResponseEntity<OrganisasjonDTO> getOrganisasjon(@PathParam("orgnr") @Pattern(regexp = "^(8|9)\\d{8}$") String orgnr){
+    public ResponseEntity<OrganisasjonDTO> getOrganisasjon(@PathParam("orgnr") @Pattern(regexp = ORGNR_REGEX) String orgnr) {
         Ereg ereg = eregAdapter.fetchByOrgnr(orgnr);
-
         return ResponseEntity.ok(ereg.toDTO());
     }
 
@@ -79,4 +96,12 @@ public class OrganisasjonControllerV1 {
         return ResponseEntity.ok(dto);
     }
 
+
+    private void writeExport(HttpServletResponse response, EregListe liste, String identifier, Boolean update) throws IOException {
+        response.setContentType("text/" + StandardCharsets.ISO_8859_1);
+        String filename = "filename=ereg-" + Strings.nullToEmpty(identifier) + "-" + LocalDateTime.now().toString() + ".txt";
+        response.setHeader("Content-Disposition", "attachment; " + filename);
+        String flatfil = eregMapperConsumer.generateFlatfil(liste, update);
+        response.getOutputStream().write(flatfil.getBytes(StandardCharsets.ISO_8859_1));
+    }
 }
