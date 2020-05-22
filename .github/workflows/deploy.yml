@@ -6,7 +6,7 @@ on:
     branches: master
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/testnorge-statisk-data-forvalter:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/testnorge-ereg-mapper:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -14,24 +14,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Cache Dependencies
-        uses: actions/cache@v1
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-maven-
       - uses: actions/setup-java@v1
         with:
           java-version: '11.x'
+          githubUser: x-access-token
+          githubPassword: ${{ secrets.GITHUB_TOKEN }}
       - name: Compile
         env:
-          GITHUB_USERNAME: token
-          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: mvn --settings maven-settings.xml compile
+          githubUser: x-access-token
+          githubPassword: ${{ secrets.GITHUB_TOKEN }}
+        run: mvn compile
       - name: Test
-        run: mvn --settings maven-settings.xml test
+        run: mvn test
       - name: Package
-        run: mvn --settings maven-settings.xml package -Dmaven.test.skip
+        run: mvn package -Dmaven.test.skip
 
       - name: Build and publish Docker image
         env:
