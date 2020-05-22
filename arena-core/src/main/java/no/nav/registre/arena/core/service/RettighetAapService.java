@@ -124,7 +124,11 @@ public class RettighetAapService {
             rettigheter.add(rettighetRequest);
         }
 
-        return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
+        var identerMedOpprettedeRettigheter = rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
+
+        serviceUtils.lagreAapIHodejegeren(identerMedOpprettedeRettigheter);
+
+        return identerMedOpprettedeRettigheter;
     }
 
     public Map<String, List<NyttVedtakResponse>> genererUngUfoer(
@@ -145,7 +149,11 @@ public class RettighetAapService {
             rettigheter.add(rettighetRequest);
         }
 
-        return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
+        var identerMedOpprettedeRettigheter = rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
+
+        serviceUtils.lagreAapIHodejegeren(identerMedOpprettedeRettigheter);
+
+        return identerMedOpprettedeRettigheter;
     }
 
     public Map<String, List<NyttVedtakResponse>> genererTvungenForvaltning(
@@ -168,7 +176,11 @@ public class RettighetAapService {
             rettigheter.add(rettighetRequest);
         }
 
-        return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
+        var identerMedOpprettedeRettigheter = rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
+
+        serviceUtils.lagreAapIHodejegeren(identerMedOpprettedeRettigheter);
+
+        return identerMedOpprettedeRettigheter;
     }
 
     public Map<String, List<NyttVedtakResponse>> genererFritakMeldekort(
@@ -193,7 +205,11 @@ public class RettighetAapService {
             rettigheter.add(rettighetRequest);
         }
 
-        return rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
+        var identerMedOpprettedeRettigheter = rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
+
+        serviceUtils.lagreAapIHodejegeren(identerMedOpprettedeRettigheter);
+
+        return identerMedOpprettedeRettigheter;
     }
 
     void opprettPersonOgInntektIPopp(

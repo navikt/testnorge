@@ -66,7 +66,12 @@ public class RettighetTiltakService {
             int antallNyeIdenter
     ) {
         var utvalgteIdenter = serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter);
-        return aktiverTiltaksdeltakelse(utvalgteIdenter, miljoe);
+
+        var identerMedOpprettedeTiltak = aktiverTiltaksdeltakelse(utvalgteIdenter, miljoe);
+
+        serviceUtils.lagreAapIHodejegeren(identerMedOpprettedeTiltak);
+
+        return identerMedOpprettedeTiltak;
     }
 
     public Map<String, List<NyttVedtakResponse>> opprettTiltakspenger(
@@ -98,7 +103,11 @@ public class RettighetTiltakService {
             rettigheter.add(rettighetRequest);
         }
 
-        return rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
+        var identerMedOpprettedeTiltak = rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
+
+        serviceUtils.lagreAapIHodejegeren(identerMedOpprettedeTiltak);
+
+        return identerMedOpprettedeTiltak;
     }
 
     public Map<String, List<NyttVedtakResponse>> opprettBarnetillegg(
@@ -121,7 +130,11 @@ public class RettighetTiltakService {
             rettigheter.add(rettighetRequest);
         }
 
-        return rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
+        var identerMedOpprettedeTiltak = rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
+
+        serviceUtils.lagreAapIHodejegeren(identerMedOpprettedeTiltak);
+
+        return identerMedOpprettedeTiltak;
     }
 
     private Map<String, List<NyttVedtakResponse>> aktiverTiltaksdeltakelse(
