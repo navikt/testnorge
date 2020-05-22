@@ -10,7 +10,7 @@ jobs:
             - m2-{{ .Branch }}-{{ checksum "pom.xml" }}
       - run:
           name: Build jar
-          command: mvn clean install
+          command: mvn clean install -DsocksProxyHost=127.0.0.1 -DsocksProxyPort=14122 -DsocksNonProxyHosts="127.0.0.1|dl.bintray.com|repo.maven.apache.org|maven.adeo.no|packages.confluent.io|confluent.io|maven.xwiki.org|maven.repository.redhat.com"mvn clean install -DsocksProxyHost=127.0.0.1 -DsocksProxyPort=14122 -DsocksNonProxyHosts="127.0.0.1|dl.bintray.com|repo.maven.apache.org|maven.adeo.no|packages.confluent.io|confluent.io|maven.xwiki.org|maven.repository.redhat.com"
       - save_cache:
           paths:
             - ~/.m2
