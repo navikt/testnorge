@@ -13,4 +13,4 @@ jobs:
         with:
           java-version: 1.11
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
+        run: mvn clean install -DsocksProxyHost=127.0.0.1 -DsocksProxyPort=14122 -DsocksNonProxyHosts="127.0.0.1|dl.bintray.com|repo.maven.apache.org|maven.adeo.no|packages.confluent.io|confluent.io|maven.xwiki.org|maven.repository.redhat.com"
