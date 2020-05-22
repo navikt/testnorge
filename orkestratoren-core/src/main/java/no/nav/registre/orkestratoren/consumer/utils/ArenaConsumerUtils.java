@@ -14,7 +14,9 @@ import org.springframework.web.util.UriTemplate;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -32,13 +34,18 @@ public class ArenaConsumerUtils {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request);
 
-        List<NyttVedtakResponse> response = new ArrayList<>();
+        Map<String, List<NyttVedtakResponse>> response = new HashMap<>();
         try {
-            response = restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakResponse>>() {
+            response = restTemplate.exchange(postRequest, new ParameterizedTypeReference<Map<String, List<NyttVedtakResponse>>>() {
             }).getBody();
         } catch (HttpStatusCodeException e) {
             log.error("Feil under syntetisering av '{}'", info, e);
         }
-        return response;
+
+        List<NyttVedtakResponse> alleOpprettedeRettigheter = new ArrayList<>();
+        if (response != null) {
+            response.values().forEach(alleOpprettedeRettigheter::addAll);
+        }
+        return alleOpprettedeRettigheter;
     }
 }
