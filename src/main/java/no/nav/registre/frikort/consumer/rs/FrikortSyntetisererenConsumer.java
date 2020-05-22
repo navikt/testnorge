@@ -18,16 +18,27 @@ import java.util.List;
 @Slf4j
 public class FrikortSyntetisererenConsumer {
 
-    @Autowired
     private RestTemplate restTemplate;
-
-    @Value("${synthdata.frikort.url}")
     private String syntServerUrl;
+
+    public FrikortSyntetisererenConsumer(
+            @Value("${synthdata.frikort.url}") String syntServerUrl,
+            RestTemplate restTemplate
+    ) {
+        this.syntServerUrl = syntServerUrl;
+        this.restTemplate = restTemplate;
+    }
 
     public Map<String, List<SyntFrikortResponse>> hentSyntetiskeEgenandelerFraSyntRest(Map<String, Integer> request) {
 
         var postRequest = RequestEntity.post(URI.create(syntServerUrl + "/api/v1/generate")).body(request);
-        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<Map<String, List<SyntFrikortResponse>>>() {
-        }).getBody();
+
+        try {
+            return restTemplate.exchange(postRequest, new ParameterizedTypeReference<Map<String, List<SyntFrikortResponse>>>() {
+            }).getBody();
+        } catch (Exception e) {
+            log.error("Uventet feil ved henting av syntetiske egenandeler fra synt-frikort.", e);
+            throw e;
+        }
     }
 }

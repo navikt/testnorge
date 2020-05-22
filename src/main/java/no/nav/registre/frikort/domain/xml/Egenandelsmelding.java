@@ -4,38 +4,40 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import java.time.LocalDateTime;
 
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
 @Builder
-@XmlRootElement(name=("egenandelsmelding"))
+@XmlRootElement(name = ("egenandelsmelding"))
 public class Egenandelsmelding {
 
-    private final String xmlns="http://nav.no/frikort/common/domain/schema";
-    private String avsender;
-    private LocalDateTime datoSendt;
-    private SamhandlerListe listeAvSamhandlere;
+    private final String xmlns = "http://nav.no/frikort/common/domain/schema";
+    private final String avsender;
+    private final LocalDateTime datoSendt;
+    private final SamhandlerListe listeAvSamhandlere;
 
     @XmlAttribute
-    public String getXmlns(){
+    public String getXmlns() {
         return xmlns;
     }
 
     @XmlAttribute
-    public String getAvsender(){
+    public String getAvsender() {
         return avsender;
     }
 
     @XmlAttribute
-    public String getDatoSendt(){
-        return datoSendt.withNano(0).toString();
+    public String getDatoSendt() {
+        return datoSendt == null ? "" : datoSendt.withNano(0).toString();
     }
 
     @XmlElement
-    public SamhandlerListe getListeAvSamhandlere(){
-         return listeAvSamhandlere;
+    public SamhandlerListe getListeAvSamhandlere() {
+        return listeAvSamhandlere;
     }
 
 }

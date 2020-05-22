@@ -21,8 +21,7 @@ public class SyntetiseringController {
     private final SyntetiseringService syntetiseringService;
 
     @PostMapping(value = "/generer")
-
-    @ApiOperation(value = "Generer syntetiske egenandeler.")
+    @ApiOperation(value = "Generer syntetiske egenandeler som XML string.")
     public List<String> genererFrikort(@RequestBody Map<String, Integer> request) throws JAXBException {
         return syntetiseringService.hentSyntetiskeEgenandeler(request);
     }

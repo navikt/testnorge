@@ -6,12 +6,12 @@ import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlElement;
 
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
 @Builder
 public class Borger {
 
-    private long borgerid;
+    private final long borgerid;
 
     @XmlElement
     public long getBorgerid() {

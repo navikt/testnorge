@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.List;
 
-@NoArgsConstructor
+@NoArgsConstructor(force=true)
 @AllArgsConstructor
 @Builder
 public class SamhandlerListe {
 
-    private List<Samhandler> samhandlerListe;
+    private final List<Samhandler> samhandlerListe;
 
     @XmlElement(name="samhandler")
     public List<Samhandler> getSamhandlerListeListe() {

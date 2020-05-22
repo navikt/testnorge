@@ -5,24 +5,23 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlElement;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
 @Builder
 public class Egenandel {
 
-    private String egenandelskode;
+    private final String egenandelskode;
     private final long enkeltregningsid = 1234567890;
-    private String enkeltregningsstatus;
+    private final String enkeltregningsstatus;
     private final int enkeltregningsnr = 22396;
-    private double egenandelsats;
-    private double egenandelsbelop;
-    private LocalDateTime datoTjeneste;
-    private LocalDateTime datoMottatt;
-    private boolean betaltEgenandel;
-    private Borger borger;
+    private final double egenandelsats;
+    private final double egenandelsbelop;
+    private final LocalDateTime datoTjeneste;
+    private final LocalDateTime datoMottatt;
+    private final boolean betaltEgenandel;
+    private final Borger borger;
 
 
     @XmlElement
@@ -57,12 +56,12 @@ public class Egenandel {
 
     @XmlElement
     public String getDatoMottatt() {
-        return datoMottatt.toString();
+        return datoMottatt == null ? "" : datoMottatt.toString();
     }
 
     @XmlElement
     public String getDatoTjeneste() {
-        return datoTjeneste.toString();
+        return datoTjeneste == null ? "" : datoTjeneste.toString();
     }
 
     @XmlElement
