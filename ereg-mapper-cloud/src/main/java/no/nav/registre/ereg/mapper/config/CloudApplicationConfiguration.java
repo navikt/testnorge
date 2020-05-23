@@ -6,8 +6,10 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.servlet.Filter;
 
+import no.nav.registre.testnorge.common.filter.TransactionFilter;
+
 @Configuration
-public class TransactionFilter {
+public class CloudApplicationConfiguration {
 
     @Bean
     public FilterRegistrationBean transactionFilterRegistration() {
@@ -20,6 +22,6 @@ public class TransactionFilter {
 
     @Bean
     public Filter transactionFilter() {
-        return new no.nav.registre.testnorge.common.filter.TransactionFilter();
+        return new TransactionFilter();
     }
 }
