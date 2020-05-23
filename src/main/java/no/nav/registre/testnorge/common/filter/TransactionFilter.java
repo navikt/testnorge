@@ -25,8 +25,8 @@ public class TransactionFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-        ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper((HttpServletRequest) request);
-        ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper((HttpServletResponse) response);
+        var requestWrapper = new ContentCachingRequestWrapper((HttpServletRequest) request);
+        var responseWrapper = new ContentCachingResponseWrapper((HttpServletResponse) response);
 
         RequestLogger requestLogger = new RequestLogger(requestWrapper);
         ResponseLogger responseLogger = new ResponseLogger(responseWrapper);

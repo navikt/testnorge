@@ -22,7 +22,9 @@ public class ResponseLogger {
     }
 
     private String getBody() throws IOException {
-        return new String(response.getContentAsByteArray(), response.getCharacterEncoding());
+        String body = new String(response.getContentAsByteArray(), response.getCharacterEncoding());
+        response.copyBodyToResponse();
+        return body;
     }
 
     public void log() {
