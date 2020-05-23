@@ -38,7 +38,7 @@ public class ResponseLogger {
 
     private Map<String, String> toPropertyMap() {
         Map<String, String> properties = new HashMap<>();
-        properties.put("Type", "RESPONSE");
+        properties.put("Transaction-Type", "response");
         properties.put("Status-Code", String.valueOf(response.getStatusCode()));
         if (response.getContentType() != null) {
             properties.put("Content-Type", response.getContentType());

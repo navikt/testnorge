@@ -28,14 +28,14 @@ public class TransactionFilter implements Filter {
         ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper((HttpServletRequest) request);
         ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper((HttpServletResponse) response);
 
-        RequestLogger requestLog = new RequestLogger(requestWrapper);
-        ResponseLogger responseLog = new ResponseLogger(responseWrapper);
+        RequestLogger requestLogger = new RequestLogger(requestWrapper);
+        ResponseLogger responseLogger = new ResponseLogger(responseWrapper);
 
         try {
             chain.doFilter(requestWrapper, responseWrapper);
         } finally {
-            requestLog.log();
-            responseLog.log();
+            requestLogger.log();
+            responseLogger.log();
         }
     }
 

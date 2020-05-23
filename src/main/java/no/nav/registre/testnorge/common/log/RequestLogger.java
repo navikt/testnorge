@@ -38,7 +38,7 @@ public class RequestLogger {
 
     private Map<String, String> toPropertyMap() {
         Map<String, String> properties = new HashMap<>();
-        properties.put("Type", "REQUEST");
+        properties.put("Transaction-Type", "request");
         properties.put("Method", String.valueOf(request.getMethod()));
         properties.put("Url", String.valueOf(request.getRequestURI()));
         properties.put("Content-Type", request.getContentType());
