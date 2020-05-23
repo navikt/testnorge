@@ -12,12 +12,12 @@ import java.util.Map;
 import no.nav.registre.testnorge.common.headers.NavHeaders;
 
 @Slf4j
-public class RequestLog {
+public class RequestLogger {
 
 
     private final ContentCachingRequestWrapper request;
 
-    public RequestLog(ContentCachingRequestWrapper request) {
+    public RequestLogger(ContentCachingRequestWrapper request) {
         this.request = request;
     }
 
@@ -32,7 +32,7 @@ public class RequestLog {
             log.trace(getBody());
             MDC.clear();
         } catch (Exception e) {
-            log.error("Klarer ikke aa lese fra requsten", e);
+            log.error("Klarer ikke aa lese fra request", e);
         }
     }
 

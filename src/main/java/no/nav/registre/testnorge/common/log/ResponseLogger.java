@@ -13,11 +13,11 @@ import java.util.Map;
 import no.nav.registre.testnorge.common.headers.NavHeaders;
 
 @Slf4j
-public class ResponseLog {
+public class ResponseLogger {
 
     private final ContentCachingResponseWrapper response;
 
-    public ResponseLog(ContentCachingResponseWrapper response) {
+    public ResponseLogger(ContentCachingResponseWrapper response) {
         this.response = response;
     }
 
@@ -32,7 +32,7 @@ public class ResponseLog {
             log.trace(getBody());
             MDC.clear();
         } catch (IOException e) {
-            log.error("Klarer ikke aa lese body fra response");
+            log.error("Klarer ikke aa lese fra response", e);
         }
     }
 
