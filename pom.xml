@@ -142,6 +142,13 @@
         </dependency>
     </dependencies>
 
+    <repositories>
+        <repository>
+            <id>github-package-registry-navikt</id>
+            <url>https://maven.pkg.github.com/navikt/maven-release</url>
+        </repository>
+    </repositories>
+
     <build>
         <finalName>testnorge-statisk-data-forvalter</finalName>
         <plugins>
