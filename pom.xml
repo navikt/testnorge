@@ -26,7 +26,7 @@
         <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
         <springfox.version>2.4.0</springfox.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
-        <testnorge-common.version>1.2020.05.22-17.20-83af9f992b4a</testnorge-common.version>
+        <testnorge-common.version>1.2020.05.23-15.03-d96bc662bb21</testnorge-common.version>
     </properties>
 
     <dependencyManagement>
