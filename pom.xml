@@ -26,10 +26,17 @@
         <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
         <springfox.version>2.4.0</springfox.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
+        <testnorge-common.version>1.2020.05.22-17.20-83af9f992b4a</testnorge-common.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>no.nav.registre.testnorge.common</groupId>
+                <artifactId>testnorge-common</artifactId>
+                <version>${testnorge-common.version}</version>
+            </dependency>
+
             <!--LOGGING-->
             <dependency>
                 <groupId>net.logstash.logback</groupId>
@@ -77,6 +84,13 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>github-package-registry-navikt</id>
+            <url>https://maven.pkg.github.com/navikt/maven-release</url>
+        </repository>
+    </repositories>
 
     <build>
         <pluginManagement>

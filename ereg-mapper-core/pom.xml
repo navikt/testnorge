@@ -12,6 +12,12 @@
     <artifactId>ereg-mapper-core</artifactId>
 
     <dependencies>
+
+        <dependency>
+            <groupId>no.nav.registre.testnorge.common</groupId>
+            <artifactId>testnorge-common</artifactId>
+            <version>${testnorge-common.version}</version>
+        </dependency>
         <!--Utility-->
         <dependency>
             <groupId>org.projectlombok</groupId>
