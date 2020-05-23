@@ -18,10 +18,6 @@
             <artifactId>ereg-mapper-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>no.nav.registre.testnorge.common</groupId>
-            <artifactId>testnorge-common</artifactId>
-        </dependency>
 
         <!--Metrics-->
         <dependency>
