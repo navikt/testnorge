@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.frikort.consumer.rs.response.SyntFrikortResponse;
 import no.nav.registre.frikort.domain.xml.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBException;
@@ -22,14 +21,14 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class KonverteringService {
 
-    @Autowired
-    private Marshaller marshaller;
+    private final Marshaller marshaller;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH.mm.ss,SSSSSS");
 
-    public List<String> konverterFrikortTilXmlString(Map<String, List<SyntFrikortResponse>> egenandeler) throws JAXBException {
+    public List<String> konverterEgenandelerTilXmlString(Map<String, List<SyntFrikortResponse>> egenandeler) throws JAXBException {
         try {
-            List<Egenandelsmelding> egenandelsmeldingListe = lagEgenandelsmeldingListe(egenandeler);
+            var egenandelsmeldingListe = lagEgenandelsmeldingListe(egenandeler);
 
-            List<String> xmlMeldinger = new ArrayList<>();
+            var xmlMeldinger = new ArrayList<String>(egenandelsmeldingListe.size());
             for (Egenandelsmelding melding : egenandelsmeldingListe){
                 xmlMeldinger.add(konverterEgenandelsmeldingTilXMLString(melding));
             }
@@ -42,13 +41,12 @@ public class KonverteringService {
     }
 
     private List<Egenandelsmelding> lagEgenandelsmeldingListe(Map<String, List<SyntFrikortResponse>> egenandeler){
-        List<Egenandelsmelding> egenandelsmeldingListe = new ArrayList<>();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH.mm.ss,SSSSSS");
+        var egenandelsmeldingListe = new ArrayList<Egenandelsmelding>();
 
         egenandeler.forEach((id, infoListe) -> {
             for (SyntFrikortResponse res : infoListe) {
 
-                EgenandelListe listeAvEgenandeler = lagEgenandelsListe(res, id, formatter);
+                EgenandelListe listeAvEgenandeler = lagEgenandelsListe(res, id);
                 SamhandlerListe listeAvSamhandlere = lagSamhandlerListe(res, listeAvEgenandeler);
 
                 Egenandelsmelding egenandelsmelding = Egenandelsmelding.builder()
@@ -64,8 +62,8 @@ public class KonverteringService {
         return egenandelsmeldingListe;
     }
 
-    private EgenandelListe lagEgenandelsListe(SyntFrikortResponse res, String id, DateTimeFormatter formatter){
-        List<Egenandel> egenandelListe = new ArrayList<>();
+    private EgenandelListe lagEgenandelsListe(SyntFrikortResponse res, String id){
+        var egenandelListe = new ArrayList<Egenandel>();
 
         long borgerid = Long.parseLong(id);
         Borger borger = Borger.builder().borgerid(borgerid).build();
@@ -89,6 +87,7 @@ public class KonverteringService {
     private SamhandlerListe lagSamhandlerListe(SyntFrikortResponse res, EgenandelListe listeAvEgenandeler){
         List<Samhandler> samhandlerListe = new ArrayList<>();
 
+        // TODO: sett innsendingstype til innsendt verdi når det er sjekket at mulige verdier fra synt-frikort stemmer
         Samhandler samhandler = Samhandler.builder()
                 .type(res.getSamhandlertypekode())
                 .listeAvEgenandeler(listeAvEgenandeler)
