@@ -3,10 +3,11 @@ import Request from '~/service/services/Request'
 import { HodejegerenResponse, ResponseData } from '~/pages/soekMiniNorge/hodejegeren/types'
 
 const getHodejegerenUrl = () => `${config.services.proxyBackend}/hodejegeren`
+const MIN_SEARCH_RESULTS = 20
 
 export default {
 	soek(soekOptions: string, antallResultat: number): Promise<any[]> {
-		if (!antallResultat) antallResultat = 20
+		if (!antallResultat) antallResultat = MIN_SEARCH_RESULTS
 		const endpoint = `${getHodejegerenUrl()}/historikk/soek/${soekOptions}?kilder=skd&pageNumber=0&pageSize=${antallResultat}`
 
 		return Request.get(endpoint).then((response: HodejegerenResponse) => {
