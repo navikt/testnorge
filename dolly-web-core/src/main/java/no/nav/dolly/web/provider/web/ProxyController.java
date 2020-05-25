@@ -202,7 +202,7 @@ public class ProxyController {
             HttpMethod method,
             HttpServletRequest request) throws UnsupportedEncodingException {
 
-        String requestURL = createURL(request, brregstubUrl + API_URI, PROXY_URI + "/brregstub");
+        String requestURL = createURL(request, brregstubUrl + "/api/v2", PROXY_URI + "/brregstub");
         HttpHeaders headers = proxyService.copyHeaders(request);
 
         return proxyService.proxyRequest(body, method, headers, requestURL);

@@ -6,16 +6,9 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
 
-export const BrregVisning = ({ data, bestillinger, loading }) => {
+export const BrregVisning = ({ data, loading }) => {
 	if (loading) return <Loading label="laster brreg-data" />
 	if (!data) return false
-
-	const brregBestillinger = bestillinger.filter(bestilling =>
-		bestilling.hasOwnProperty('brregstub')
-	)
-	const getPersonroller = idx => {
-		return _get(brregBestillinger[0], `brregstub.enheter[${idx}].personroller`)
-	}
 
 	return (
 		<div>
@@ -35,16 +28,11 @@ export const BrregVisning = ({ data, bestillinger, loading }) => {
 							/>
 							<TitleValue title="Organisasjonsnummer" value={enhet.orgNr} />
 							<TitleValue title="Foretaksnavn" value={enhet.foretaksNavn.navn1} />
-							{/* Vi kan foreløpig ikke lese tilbake personroller pr. person, viser derfor bestillingsinfo */}
-							{brregBestillinger.length === 1 && getPersonroller(idx).length > 0 && (
-								<DollyFieldArray data={getPersonroller(idx)} header="Personroller" nested>
+							{enhet.personRolle && enhet.personRolle.length > 0 && (
+								<DollyFieldArray data={enhet.personRolle} header="Personroller" nested>
 									{(personrolle, idx) => (
 										<div className="person-visning_content" key={idx}>
 											<TitleValue title="Egenskap" value={personrolle.egenskap} />
-											<TitleValue
-												title="Registreringsdato"
-												value={Formatters.formatDate(personrolle.registringsDato)}
-											/>
 											<TitleValue
 												title="Har fratrådt"
 												value={Formatters.oversettBoolean(personrolle.fratraadt)}

@@ -2,14 +2,12 @@ import React from 'react'
 import _get from 'lodash/get'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 
 const initialValues = {
 	egenskap: '',
-	fratraadt: false,
-	registringsDato: ''
+	fratraadt: false
 }
 
 export const PersonrollerForm = ({ formikBag, path }) => {
@@ -67,7 +65,6 @@ export const PersonrollerForm = ({ formikBag, path }) => {
 							}
 							styles={_get(formikBag.values, egenskap) ? colorStyles : null}
 						/>
-						<FormikDatepicker name={`${path}.registringsDato`} label="Registreringsdato" />
 						<FormikCheckbox name={`${path}.fratraadt`} label="Har fratrådt" checkboxMargin />
 					</>
 				)
