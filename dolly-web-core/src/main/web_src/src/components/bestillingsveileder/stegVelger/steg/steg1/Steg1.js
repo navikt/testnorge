@@ -15,6 +15,7 @@ import { BrregPanel } from './paneler/Brreg'
 
 export const Steg1 = ({ stateModifier }) => {
 	const opts = useContext(BestillingsveilederContext)
+	const leggTil = opts.is.leggTil
 
 	const checked = [
 		PersoninformasjonPanel,
@@ -37,10 +38,7 @@ export const Steg1 = ({ stateModifier }) => {
 
 	return (
 		<AttributtVelger checked={checked}>
-			<PersoninformasjonPanel
-				stateModifier={stateModifier}
-				personFoerLeggTil={opts.personFoerLeggTil}
-			/>
+			<PersoninformasjonPanel stateModifier={stateModifier} />
 			<AdressePanel stateModifier={stateModifier} />
 			<FamilierelasjonPanel stateModifier={stateModifier} />
 			<ArbeidInntektPanel stateModifier={stateModifier} />

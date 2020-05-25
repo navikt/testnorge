@@ -51,8 +51,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 	leggTilPaaPerson: data =>
 		dispatch(
 			push(`/gruppe/${ownProps.match.params.gruppeId}/bestilling/${ownProps.personId}`, {
-				leggTilPaaFnr: ownProps.personId,
-				data: data
+				personFoerLeggTil: data
 			})
 		)
 })

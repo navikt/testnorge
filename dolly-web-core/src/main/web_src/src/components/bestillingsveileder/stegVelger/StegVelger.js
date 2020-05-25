@@ -19,7 +19,7 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 	const [step, setStep] = useState(0)
 
 	const opts = useContext(BestillingsveilederContext)
-	const { data } = opts
+	const { personFoerLeggTil } = opts
 
 	const isLastStep = () => step === STEPS.length - 1
 	const handleNext = () => setStep(step + 1)
@@ -43,7 +43,7 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 	const CurrentStepComponent = STEPS[step]
 
 	const _validate = values =>
-		validate({ ...values, personFoerLeggTil: data }, CurrentStepComponent.validation)
+		validate({ ...values, personFoerLeggTil: personFoerLeggTil }, CurrentStepComponent.validation)
 
 	const labels = STEPS.map(v => ({ label: v.label }))
 
@@ -59,7 +59,7 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 
 						<CurrentStepComponent formikBag={formikBag} stateModifier={stateModifier} />
 
-						{/* <DisplayFormikState {...formikBag} /> */}
+						{/*<DisplayFormikState {...formikBag} />*/}
 
 						<Navigation
 							showPrevious={step > 0}

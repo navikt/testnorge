@@ -11,7 +11,6 @@ import { validation } from '~/components/fagsystem/inst/form/validation'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { getExcludedDatesAndMaxDate } from './utils'
 import { addYears } from 'date-fns'
-import _isNil from 'lodash/isNil'
 
 export const initialValues = {
 	institusjonstype: '',
@@ -22,12 +21,12 @@ const instAttributt = 'instdata'
 
 export const InstForm = ({ formikBag }) => {
 	const opts = useContext(BestillingsveilederContext)
-	const { data } = opts
+	const { personFoerLeggTil } = opts
 
 	let excludeDates = []
 	let maxDate = addYears(new Date(), 5)
-	if (opts.is.leggTil && data.instdata !== undefined) {
-		const dateInfo = getExcludedDatesAndMaxDate(data)
+	if (opts.is.leggTil && personFoerLeggTil.instdata !== undefined) {
+		const dateInfo = getExcludedDatesAndMaxDate(personFoerLeggTil)
 		excludeDates = dateInfo[0]
 		maxDate = dateInfo[1]
 	}

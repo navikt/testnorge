@@ -6,13 +6,14 @@ import Formatters from '~/utils/DataFormatter'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
 const innvandret = personFoerLeggTil =>
-	_get(personFoerLeggTil, 'innvandretUtvandret[0].innutvandret') === 'INNVANDRET'
+	_get(personFoerLeggTil, 'tpsf.innvandretUtvandret[0].innutvandret') === 'INNVANDRET'
 
-export const PersoninformasjonPanel = ({ stateModifier, personFoerLeggTil }) => {
+export const PersoninformasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
 	const opprettFraEksisterende = opts.is.opprettFraIdenter
 	const leggTil = opts.is.leggTil
+	const { personFoerLeggTil } = opts
 	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
 
 	return (

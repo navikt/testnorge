@@ -1,5 +1,4 @@
 import React, { useContext } from 'react'
-import _get from 'lodash/get'
 import Panel from '~/components/ui/panel/Panel'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { panelError } from '~/components/ui/form/formUtils'
@@ -27,7 +26,7 @@ export const Familierelasjoner = ({ formikBag }) => {
 				startOpen={() => erForste(formikBag.values, [relasjonerAttributt])}
 			>
 				<Kategori title="Partnere" vis="tpsf.relasjoner.partnere">
-					<Partnere formikBag={formikBag} personFoerLeggTil={opts.data} />
+					<Partnere formikBag={formikBag} personFoerLeggTil={opts.personFoerLeggTil} />
 				</Kategori>
 				<Kategori title="Barn" vis="tpsf.relasjoner.barn">
 					<Barn formikBag={formikBag} />
