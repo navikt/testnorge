@@ -20,10 +20,13 @@
     </modules>
 
     <properties>
+        <sonar.projectKey>navikt_testnorge</sonar.projectKey>
+        <sonar.projectName>testnorge</sonar.projectName>
         <sonar.organization>navit</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <!--suppress UnresolvedMavenProperty Ligger som secret i github-->
         <sonar.login>${SONAR_LOGIN}</sonar.login>
+        <sonar.moduleKey>${artifactId}</sonar.moduleKey>
     </properties>
 
     <repositories>
@@ -34,21 +37,11 @@
     </repositories>
 
 
-    <dependencyManagement>
-
-    </dependencyManagement>
-
-
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.sonarsource.scanner.maven</groupId>
-                    <artifactId>sonar-maven-plugin</artifactId>
-                    <version>3.7.0.1746</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
+    <scm>
+        <developerConnection>scm:git:git@github.com:navikt/testnorge.git</developerConnection>
+        <connection>scm:git:git@github.com:navikt/testnorge.git</connection>
+        <url>https://github.com/navikt/testnorge</url>
+        <tag>HEAD</tag>
+    </scm>
 
 </project>
