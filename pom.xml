@@ -19,6 +19,13 @@
         <module>libs</module>
     </modules>
 
+    <properties>
+        <sonar.organization>navit</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <!--suppress UnresolvedMavenProperty Ligger som secret i github-->
+        <sonar.login>${SONAR_LOGIN}</sonar.login>
+    </properties>
+
     <repositories>
         <repository>
             <id>github-package-registry-navikt</id>
@@ -30,5 +37,18 @@
     <dependencyManagement>
 
     </dependencyManagement>
+
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.sonarsource.scanner.maven</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>3.7.0.1746</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 </project>
