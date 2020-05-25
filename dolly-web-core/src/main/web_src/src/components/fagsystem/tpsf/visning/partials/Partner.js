@@ -20,7 +20,11 @@ export const Partner = ({ data }) => {
 				<TitleValue title="Etternavn" value={data.etternavn} />
 				<TitleValue title="Kjønn" value={Formatters.kjonn(data.kjonn, data.alder)} />
 				<TitleValue title="Alder" value={Formatters.formatAlder(data.alder, data.doedsdato)} />
-				<TitleValue title="Diskresjonskode" value={Formatters.showLabel(data.spesreg)} />
+				<TitleValue
+					title="Diskresjonskode"
+					kodeverk={PersoninformasjonKodeverk.Diskresjonskoder}
+					value={data.spesreg}
+				/>
 				<TitleValue title="Uten fast bopel" value={data.utenFastBopel && 'Ja'} />
 				{data.boadresse.length > 0 && (
 					<Historikk component={Adressevisning} propName="boadresse" data={data.boadresse} />
