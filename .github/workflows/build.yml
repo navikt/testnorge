@@ -23,3 +23,9 @@ jobs:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
         run: mvn --settings maven-settings.xml -B package --file pom.xml
+      - name: SonarCloud
+        env:
+          GITHUB_USERNAME: x-access-token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_LOGIN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn verify sonar:sonar --settings maven-settings.xml --file pom.xml
