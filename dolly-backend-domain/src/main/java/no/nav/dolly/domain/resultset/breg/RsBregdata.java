@@ -116,12 +116,6 @@ public class RsBregdata {
                 notes = "Default false"
         )
         private Boolean fratraadt;
-
-        @ApiModelProperty(
-                position = 3,
-                notes = "Default hentes dato fra nivå over"
-        )
-        private LocalDateTime registringsDato;
     }
 
     @Getter

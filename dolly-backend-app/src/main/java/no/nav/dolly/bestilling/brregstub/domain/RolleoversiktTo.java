@@ -23,6 +23,8 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RolleoversiktTo {
 
+    public enum Egenskap {Deltager, Komplementar, Kontaktperson, Sameier, Styre}
+
     private AdresseTo adresse;
     private List<RolleTo> enheter;
     private String fnr;
@@ -62,13 +64,15 @@ public class RolleoversiktTo {
 
         private Integer orgNr;
 
+        private List<RolleStatus> personRolle;
+
         @EqualsAndHashCode.Exclude
         private AdresseTo postAdresse;
 
         @EqualsAndHashCode.Exclude
         private LocalDate registreringsdato;
 
-        private String rollebeskrivelse;
+        private String rolle;
     }
 
     @Getter
@@ -98,5 +102,17 @@ public class RolleoversiktTo {
         private String landKode;
         private String postnr;
         private String poststed;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class RolleStatus {
+
+        private Egenskap egenskap;
+        private Boolean fratraadt;
     }
 }
