@@ -56,9 +56,10 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /\.js$/,
+				test: /\.js|.ts(x?)$/,
+				include: path.resolve(__dirname, 'src'),
 				exclude: /node_modules/,
-				use: ['babel-loader']
+				use: ['babel-loader', "eslint-loader"]
 			},
 			{
 				test: /\.svg$/,
@@ -68,10 +69,6 @@ module.exports = {
 				// images
 				test: /\.(ico|jpe?g|png|gif|woff|woff2|eot|otf|ttf)$/,
 				use: ['file-loader']
-			},
-			{
-				test: /\.ts(x?)$/,
-				use: ['babel-loader']
 			}
 		]
 	}

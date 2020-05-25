@@ -5,6 +5,7 @@ import { TpsfApi } from '~/service/Api'
 import { Adressevisning } from './Boadresse'
 import { PostadresseVisning } from './Postadresse'
 import { Historikk } from '~/components/ui/historikk/Historikk'
+import { PersoninformasjonKodeverk } from '~/config/kodeverk'
 
 export const Barn = ({ data, type }) => {
 	if (!data) return null
@@ -30,12 +31,19 @@ export const Barn = ({ data, type }) => {
 				<TitleValue title="Etternavn" value={data.etternavn} />
 				<TitleValue title="Kjønn" value={Formatters.kjonn(data.kjonn, data.alder)} />
 				<TitleValue title="Alder" value={Formatters.formatAlder(data.alder, data.doedsdato)} />
-				<TitleValue title="Diskresjonskode" value={Formatters.showLabel(data.spesreg)} />
+				<TitleValue
+					title="Diskresjonskode"
+					kodeverk={PersoninformasjonKodeverk.Diskresjonskoder}
+					value={data.spesreg}
+				/>
 				<TitleValue title="Uten fast bopel" value={data.utenFastBopel && 'Ja'} />
 				{barnInfo && !isLoading && barnInfo.length > 0 && (
 					<TitleValue title="Foreldre" value={finnForeldre(barnInfo[0].relasjoner).join(', ')} />
 				)}
-				<TitleValue title="Er adoptert" value={data.adoptert? data.adoptert : Formatters.oversettBoolean(type === 'BARN')} />
+				<TitleValue
+					title="Er adoptert"
+					value={data.adoptert ? data.adoptert : Formatters.oversettBoolean(type === 'BARN')}
+				/>
 			</div>
 			{data.boadresse.length > 0 && (
 				<Historikk component={Adressevisning} propName="boadresse" data={data.boadresse} />

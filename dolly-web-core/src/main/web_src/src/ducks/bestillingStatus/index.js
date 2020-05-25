@@ -61,7 +61,7 @@ export const getBestillingById = (state, id) => state.bestillingStatuser.byId[id
 
 // Henter alle bestillinger som er gjort på en ident
 export const getBestillingsListe = (state, IDer) => {
-	var bestillingsListe = []
+	const bestillingsListe = []
 	for (let i = 0; i < IDer.length; i++) {
 		const bestilling = state.bestillingStatuser.byId[IDer[i]].bestilling
 		const suksessMiloer = successMiljoSelector(state.bestillingStatuser.byId[IDer[i]].status)

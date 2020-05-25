@@ -38,7 +38,7 @@ export const MiniNorgeVisning = ({ data }: MiniNorgeVisningProps) => {
 			}
 			{
 				// @ts-ignore
-				<Relasjoner relasjoner={relasjoner.length > 0 ? relasjoner: null} />
+				<Relasjoner relasjoner={relasjoner.length > 0 ? relasjoner : null} />
 			}
 			<Oppholdstillatelse data={data.oppholdstillatelse} />
 		</div>

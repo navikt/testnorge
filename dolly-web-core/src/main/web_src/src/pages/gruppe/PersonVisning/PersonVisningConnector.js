@@ -18,6 +18,7 @@ const loadingSelectorInst = createLoadingSelector(actions.getInst)
 const loadingSelectorUdi = createLoadingSelector(actions.getUdi)
 const loadingSelectorSlettPerson = createLoadingSelector(actions.slettPerson)
 const loadingSelectorPensjon = createLoadingSelector(actions.getPensjon)
+const loadingSelectorBrregstub = createLoadingSelector(actions.getBrreg)
 
 const loadingSelector = createSelector(
 	state => state.loading,
@@ -32,7 +33,8 @@ const loadingSelector = createSelector(
 			instdata: loadingSelectorInst({ loading }),
 			udistub: loadingSelectorUdi({ loading }),
 			slettPerson: loadingSelectorSlettPerson({ loading }),
-			pensjonforvalter: loadingSelectorPensjon({ loading })
+			pensjonforvalter: loadingSelectorPensjon({ loading }),
+			brregstub: loadingSelectorBrregstub({ loading })
 		}
 	}
 )
@@ -51,8 +53,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 	leggTilPaaPerson: data =>
 		dispatch(
 			push(`/gruppe/${ownProps.match.params.gruppeId}/bestilling/${ownProps.personId}`, {
-				leggTilPaaFnr: ownProps.personId,
-				data: data
+				personFoerLeggTil: data
 			})
 		)
 })

@@ -15,7 +15,7 @@ export const Oppholdstillatelse = ({ data }: OppholdstillatelseProps) => {
 	return (
 		<>
 			<SubOverskrift label="Oppholdstillatelse" iconKind="udi" />
-			<div className="resultat-visning__content">
+			<div className="person-visning_content">
 				<TitleValue
 					title="Status"
 					kodeverk={OppholdstillatelseKodeverk.Oppholdstillatelser}

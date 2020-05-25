@@ -1,4 +1,3 @@
-
 export const getSoekOptions = (values: any) => {
 	let newSoekOptions = ''
 	for (let key in values) {

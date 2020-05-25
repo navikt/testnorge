@@ -67,9 +67,9 @@ export const getPersonInfo = (data: Innhold) => {
 		bankkontonrRegdato: data.giro.fraDato
 	}
 
-	if(!personInfo.telefonLandskode_1) personInfo.telefonLandskode_1=''
-	if(!personInfo.telefonLandskode_2) personInfo.telefonLandskode_2=''
-	if(personInfo.sivilstand==="NULL") personInfo.sivilstand=''
+	if (!personInfo.telefonLandskode_1) personInfo.telefonLandskode_1 = ''
+	if (!personInfo.telefonLandskode_2) personInfo.telefonLandskode_2 = ''
+	if (personInfo.sivilstand === 'NULL') personInfo.sivilstand = ''
 	return personInfo
 }
 
@@ -90,7 +90,7 @@ export const getRelasjoner = (data: Innhold) => {
 	let dollyRelasjoner = []
 	for (let i = 0; i < data.relasjoner.length; i++) {
 		const type = getRelasjonsType(data.relasjoner[i].rolle)
-		if(type === Relasjon.MOR || type === Relasjon.FAR) continue
+		if (type === Relasjon.MOR || type === Relasjon.FAR) continue
 		dollyRelasjoner.push({
 			relasjonTypeNavn: type,
 			personRelasjonMed: {

@@ -5,7 +5,7 @@ const getInntektstubUrl = () => `${config.services.proxyBackend}/inntektstub`
 
 export default {
 	getInntektsinformasjon(ident) {
-		const endpoint = `${getInntektstubUrl()}/inntektsinformasjon?norske-identer=${ident}`
+		const endpoint = `${getInntektstubUrl()}/inntektsinformasjon?historikk=true&norske-identer=${ident}`
 		return Request.get(endpoint)
 	}
 }

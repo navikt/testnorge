@@ -26,19 +26,18 @@ export const ArenaVisning = ({ data, loading }: ArenaVisningProps) => {
 		: data.arbeidsokerList
 
 	const visningData: VisningData[] = sortedData.map(info => ({
-			brukertype: info.servicebehov ? 'Med servicebehov' : 'Uten servicebehov'
-		})
-	);
+		brukertype: info.servicebehov ? 'Med servicebehov' : 'Uten servicebehov'
+	}))
 
 	return (
-		<div>{
-			//@ts-ignore
-			<SubOverskrift label="Arena" />}
+		<div>
+			{
+				//@ts-ignore
+				<SubOverskrift label="Arena" />
+			}
 			<div className="person-visning_content">
 				<DollyFieldArray data={visningData} nested>
-					{(id: VisningData ) => (
-						<TitleValue title="Brukertype" value={id.brukertype} />
-					)}
+					{(id: VisningData) => <TitleValue title="Brukertype" value={id.brukertype} />}
 				</DollyFieldArray>
 			</div>
 		</div>

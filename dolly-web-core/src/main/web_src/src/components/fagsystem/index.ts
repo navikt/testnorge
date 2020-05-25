@@ -11,7 +11,6 @@ import { PensjonVisning } from '~/components/fagsystem/pensjon/visning/PensjonVi
 import { BrregVisning } from '~/components/fagsystem/brregstub/visning/BrregVisning'
 import { TpsfVisning } from '~/components/fagsystem/tpsf/visning/Visning'
 
-
 export {
 	TpsfVisning,
 	KrrVisning,

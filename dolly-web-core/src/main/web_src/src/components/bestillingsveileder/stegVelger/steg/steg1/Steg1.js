@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import { AttributtVelger } from './attributtVelger/AttributtVelger'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
-import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { PersoninformasjonPanel } from './paneler/Personinformasjon'
 import { AdressePanel } from './paneler/Adresse'
 import { IdentifikasjonPanel } from './paneler/Identifikasjon'
@@ -16,6 +15,7 @@ import { BrregPanel } from './paneler/Brreg'
 
 export const Steg1 = ({ stateModifier }) => {
 	const opts = useContext(BestillingsveilederContext)
+	const leggTil = opts.is.leggTil
 
 	const checked = [
 		PersoninformasjonPanel,
@@ -35,12 +35,10 @@ export const Steg1 = ({ stateModifier }) => {
 			values: stateModifier(panel.initialValues).checked
 		}))
 		.filter(v => v.values.length)
+
 	return (
 		<AttributtVelger checked={checked}>
-			<PersoninformasjonPanel
-				stateModifier={stateModifier}
-				personFoerLeggTil={opts.personFoerLeggTil}
-			/>
+			<PersoninformasjonPanel stateModifier={stateModifier} />
 			<AdressePanel stateModifier={stateModifier} />
 			<FamilierelasjonPanel stateModifier={stateModifier} />
 			<ArbeidInntektPanel stateModifier={stateModifier} />
@@ -50,31 +48,7 @@ export const Steg1 = ({ stateModifier }) => {
 			<InstitusjonsoppholdPanel stateModifier={stateModifier} />
 			<KontaktReservasjonsPanel stateModifier={stateModifier} />
 			<ArenaPanel stateModifier={stateModifier} />
-			{/* Vi kan foreløpig kun legge til UDI-attributter på personer som ikke har noen fra før */}
-			{!opts.is.leggTil || !opts.data.udistub ? (
-				<UdiPanel stateModifier={stateModifier} />
-			) : (
-				<>
-					<AlertStripeInfo>
-						<b>UDI</b>
-						<p>
-							Det er foreløpig ikke mulig å legge til UDI-attributter på personer som allerede har
-							dette.
-						</p>
-					</AlertStripeInfo>
-					<p />
-				</>
-			)}
-
-			{opts.is.leggTil && (
-				<AlertStripeInfo>
-					<b>Funksjonen er under utvikling</b>
-					<p>
-						Det er foreløpig redusert støtte for å legge til attributter på person. Flere
-						attributter vil bli lagt til fortløpende.
-					</p>
-				</AlertStripeInfo>
-			)}
+			<UdiPanel stateModifier={stateModifier} />
 		</AttributtVelger>
 	)
 }

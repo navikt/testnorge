@@ -26,7 +26,8 @@ export default {
 	},
 
 	getKontaktInformasjon(fnr, env) {
-		const endpoint = getKontaktinfoUrl() + '/tps/kontaktinformasjon?fnr=' + fnr + '&environment=' + env
+		const endpoint =
+			getKontaktinfoUrl() + '/tps/kontaktinformasjon?fnr=' + fnr + '&environment=' + env
 		return Request.get(endpoint)
 	},
 

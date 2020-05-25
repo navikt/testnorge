@@ -46,7 +46,7 @@ export default class SendFoedselsmelding extends PureComponent {
 		})
 
 	_onSubmit = (values, { resetForm }) => {
-		var success_envs = []
+		let success_envs = []
 
 		this.setState(
 			{
@@ -90,7 +90,7 @@ export default class SendFoedselsmelding extends PureComponent {
 	}
 
 	_renderNyttBarn = person => {
-		var suksessMiljoer = ''
+		let suksessMiljoer = ''
 		if (this.state.response_success.length > 0)
 			suksessMiljoer = this.state.response_success.join(', ')
 
@@ -107,7 +107,7 @@ export default class SendFoedselsmelding extends PureComponent {
 	}
 
 	_handleOnBlurInput = e => {
-		let fnr = e.target.value.replace(/\s+/g, '')
+		const fnr = e.target.value.replace(/\s+/g, '')
 
 		if (fnr.length === 11 && !isNaN(fnr)) {
 			this.setState(
@@ -125,7 +125,7 @@ export default class SendFoedselsmelding extends PureComponent {
 						const getMiljoerByFnrRes = await TpsfApi.getMiljoerByFnr(fnr)
 						const res_environments = getMiljoerByFnrRes.data.statusPaaIdenter[0].env
 
-						let miljoer = []
+						const miljoer = []
 
 						if (res_environments.length < 1) {
 							return this.setState({
@@ -158,7 +158,7 @@ export default class SendFoedselsmelding extends PureComponent {
 	render() {
 		const { environments, foundIdentMor, miljoer, currentFnrMor } = this.state
 
-		let initialValues = {
+		const initialValues = {
 			identMor: currentFnrMor,
 			identFar: '',
 			identtype: 'FNR',

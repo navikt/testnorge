@@ -11,7 +11,10 @@ import {
 } from '~/components/fagsystem'
 import Panel from '~/components/ui/panel/Panel'
 
-import { MiniNorgeVisning, ArenaVisning } from '~/pages/soekMiniNorge/search/ResultatVisning/partials'
+import {
+	MiniNorgeVisning,
+	ArenaVisning
+} from '~/pages/soekMiniNorge/search/ResultatVisning/partials'
 import { Innhold } from '~/pages/soekMiniNorge/hodejegeren/types'
 
 type Loading = {
@@ -68,7 +71,7 @@ export const ResultatVisning = ({
 				//@ts-ignore
 				<InstVisning data={data.instdata} loading={loading.instdata} />
 			)}
-			{data.arenaforvalteren && data.arenaforvalteren.arbeidsokerList.length>0 && (
+			{data.arenaforvalteren && data.arenaforvalteren.arbeidsokerList.length > 0 && (
 				//@ts-ignore
 				<ArenaVisning data={data.arenaforvalteren} loading={loading.arenaforvalteren} />
 			)}

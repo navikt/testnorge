@@ -59,7 +59,7 @@ export default class BestillingProgresjon extends PureComponent {
 	updateStatus = data => {
 		// Setter alltid status til IKKE FERDIG, sånn at vi kan vise
 		// en kort melding som sier at prosessen er ferdig
-		let newState = {
+		const newState = {
 			ferdig: false,
 			antallLevert: data.antallLevert,
 			sistOppdatert: data.sistOppdatert

@@ -11,7 +11,7 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 interface SearchOptionsProps {
 	formikBag: FormikProps<{}>
-	onSubmit: (x:unknown) => void
+	onSubmit: (x: unknown) => void
 }
 
 export const SearchOptions = (props: SearchOptionsProps) => {
@@ -25,11 +25,7 @@ export const SearchOptions = (props: SearchOptionsProps) => {
 				/>
 				<h2>Personinformasjon</h2>
 				<h3>Ident</h3>
-				<FormikSelect
-					name="personIdent.type"
-					label="Type"
-					options={Options('identtype')}
-				/>
+				<FormikSelect name="personIdent.type" label="Type" options={Options('identtype')} />
 				<h3>Navn</h3>
 				<FormikTextInput name="navn.fornavn" label="Fornavn" />
 				<FormikTextInput name="navn.mellomnavn" label="Mellomnavn" />

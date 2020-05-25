@@ -4,6 +4,7 @@ import { harAvhukedeAttributter } from '~/components/bestillingsveileder/utils'
 import Bestillingskriterier from '~/components/bestilling/sammendrag/kriterier/Kriterier'
 import { MiljoVelger } from '~/components/miljoVelger/MiljoVelger'
 import { MalForm } from './MalForm'
+import { BestillingInfoboks } from './BestillingInfoboks'
 
 export const Steg3 = ({ formikBag }) => {
 	return (
@@ -11,6 +12,7 @@ export const Steg3 = ({ formikBag }) => {
 			{harAvhukedeAttributter(formikBag.values) && (
 				<div className="oppsummering">
 					<Bestillingskriterier bestilling={formikBag.values} />
+					<BestillingInfoboks bestillingsdata={formikBag.values} />
 				</div>
 			)}
 			<MiljoVelger

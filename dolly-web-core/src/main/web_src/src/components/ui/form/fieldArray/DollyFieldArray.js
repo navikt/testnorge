@@ -3,11 +3,16 @@ import { FieldArray } from 'formik'
 import _get from 'lodash/get'
 import Button from '~/components/ui/button/Button'
 import Hjelpetekst from '~/components/hjelpetekst'
-import ExpandableBlokk from './ExpandableBlokk.tsx'
+import ExpandableBlokk from './ExpandableBlokk'
 
 import './dollyFieldArray.less'
 
-export const FieldArrayAddButton = ({ hoverText, addEntryButtonText, onClick, disabled }) => (
+export const FieldArrayAddButton = ({
+	hoverText = null,
+	addEntryButtonText,
+	onClick,
+	disabled = false
+}) => (
 	<Button
 		kind="add-circle"
 		onClick={onClick}
@@ -29,7 +34,12 @@ const DeleteButton = ({ onClick }) => {
 
 const Numbering = ({ idx }) => <span className="dfa-blokk-number">{idx + 1}</span>
 
-export const DollyFieldArrayWrapper = ({ header, hjelpetekst, nested, children }) => (
+export const DollyFieldArrayWrapper = ({
+	header = null,
+	hjelpetekst = null,
+	nested = false,
+	children
+}) => (
 	<div className="dfa">
 		{nested && header && (
 			<div className="dfa-blokk-nested_title">
@@ -105,7 +115,8 @@ export const FormikDollyFieldArray = ({
 	newEntry,
 	hjelpetekst = null,
 	nested = false,
-	children
+	children,
+	isFull = false
 }) => (
 	<FieldArray name={name}>
 		{arrayHelpers => {
@@ -136,6 +147,7 @@ export const FormikDollyFieldArray = ({
 						hoverText={title}
 						addEntryButtonText={header}
 						onClick={addNewEntry}
+						disabled={isFull}
 					/>
 				</DollyFieldArrayWrapper>
 			)

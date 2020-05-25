@@ -28,7 +28,7 @@ const _getTpsfBestillingData = data => {
 		obj('Født etter', Formatters.formatDate(data.foedtEtter)),
 		obj('Født før', Formatters.formatDate(data.foedtFoer)),
 		obj('Alder', data.alder),
-		obj('Dødsdato', Formatters.formatDate(data.doedsdato)),
+		obj('Dødsdato', data.doedsdato === null ? 'Ingen' : Formatters.formatDate(data.doedsdato)),
 		obj('Statsborgerskap', data.statsborgerskap, AdresseKodeverk.StatsborgerskapLand),
 		obj('Statsborgerskap fra', Formatters.formatDate(data.statsborgerskapRegdato)),
 		obj('Kjønn', Formatters.kjonn(data.kjonn, data.alder)),
@@ -53,7 +53,7 @@ const _getTpsfBestillingData = data => {
 			'Telefonnummer 2',
 			data.telefonnummer_2 && `${data.telefonLandskode_2} ${data.telefonnummer_2}`
 		),
-		obj('Egenansatt', Formatters.oversettBoolean(data.egenansattDatoFom))
+		obj('Egenansatt fra', Formatters.formatDate(data.egenAnsattDatoFom))
 	]
 }
 
@@ -295,7 +295,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 	if (sigrunStubKriterier) {
 		// Flatter ut sigrunKriterier for å gjøre det lettere å mappe
-		let flatSigrunStubKriterier = []
+		const flatSigrunStubKriterier = []
 		sigrunStubKriterier.forEach(inntekt => {
 			const inntektObj = { inntektsaar: inntekt.inntektsaar, tjeneste: inntekt.tjeneste }
 			inntekt.grunnlag &&
@@ -365,8 +365,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				{ numberHeader: `Inntektsinformasjon ${i + 1}` },
 				obj('Måned/år', inntektsinfo.sisteAarMaaned),
 				obj('Generer antall måneder', inntektsinfo.antallMaaneder),
-				obj('Opplysningspliktig (orgnr/id)', inntektsinfo.opplysningspliktig),
 				obj('Virksomhet (orgnr/id)', inntektsinfo.virksomhet),
+				obj('Opplysningspliktig (orgnr/id)', inntektsinfo.opplysningspliktig),
 				obj(
 					'Antall registrerte inntekter',
 					inntektsinfo.inntektsliste && inntektsinfo.inntektsliste.length
@@ -382,6 +382,10 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				obj(
 					'Antall registrerte arbeidsforhold',
 					inntektsinfo.arbeidsforholdsliste && inntektsinfo.arbeidsforholdsliste.length
+				),
+				obj(
+					'Antall registrerte inntektsendringer (historikk)',
+					inntektsinfo.historikk && inntektsinfo.historikk.length
 				)
 			])
 		})
@@ -389,7 +393,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		data.push(inntektStub)
 	}
 
-	const brregstubKriterier = bestillingData.bregstub
+	const brregstubKriterier = bestillingData.brregstub
 
 	if (brregstubKriterier) {
 		const brregstub = {
@@ -400,10 +404,11 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		brregstubKriterier.enheter.forEach((enhet, i) => {
 			brregstub.itemRows.push([
 				{ numberHeader: `Enhet ${i + 1}` },
-				obj('Rollebeskrivelse', enhet.rollebeskrivelse),
+				obj('Rolle', enhet.rolle),
 				obj('Registreringsdato', Formatters.formatDate(enhet.registreringsdato)),
 				obj('Organisasjonsnummer', enhet.orgNr),
-				obj('Foretaksnavn', enhet.foretaksNavn.navn1)
+				obj('Foretaksnavn', enhet.foretaksNavn.navn1),
+				obj('Antall registrerte personroller', enhet.personroller && enhet.personroller.length)
 			])
 		})
 
@@ -574,7 +579,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	if (instKriterier) {
 		// Flater ut instKriterier for å gjøre det lettere å mappe
 
-		let flatInstKriterier = []
+		const flatInstKriterier = []
 		instKriterier.forEach(i => {
 			flatInstKriterier.push({
 				institusjonstype: i.institusjonstype,
@@ -629,7 +634,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		const oppholdsrett = Boolean(currentOppholdsrettType)
 		const tredjelandsborger = Boolean(currentTredjelandsborgereStatus)
 
-		let aliaserListe = []
+		const aliaserListe = []
 		udiStubKriterier.aliaser &&
 			udiStubKriterier.aliaser.forEach((alias, i) => {
 				if (alias.nyIdent === false) {

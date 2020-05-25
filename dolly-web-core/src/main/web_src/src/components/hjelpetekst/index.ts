@@ -1,3 +1,3 @@
-import { Hjelpetekst } from "./Hjelpetekst";
+import { Hjelpetekst } from './Hjelpetekst'
 
 export default Hjelpetekst

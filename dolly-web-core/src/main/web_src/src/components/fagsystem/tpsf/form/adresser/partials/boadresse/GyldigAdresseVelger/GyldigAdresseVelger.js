@@ -31,7 +31,7 @@ export const GyldigAdresseVelger = ({ settBoadresse, formikBag }) => {
 
 	return (
 		<div className="gyldigAdresse">
-			<SokAdresseForm onSearch={fetch} formikBag={formikBag}/>
+			<SokAdresseForm onSearch={fetch} formikBag={formikBag} />
 			{state.loading && <Loading label="henter gyldige adresser" />}
 			{!feilmelding && adresser && (
 				<VelgAdresseForm adresser={adresser} velgAdresse={settBoadresse} />
