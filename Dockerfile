@@ -1,7 +1,7 @@
 FROM navikt/java:11
 LABEL maintainer="Team Registre"
 
-COPY "app.jar" app.jar
+COPY "target/testnorge-statisk-data-forvalter.jar" app.jar
 
 ENV JAVA_OPTS="-Dspring.profiles.active=prod"
 
