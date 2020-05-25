@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.brregstub.domain.BrregRequestWrapper;
-import no.nav.dolly.bestilling.brregstub.domain.OrganisasjonTo;
 import no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo;
 import no.nav.dolly.bestilling.brregstub.mapper.RolleUtskriftMapper;
 import no.nav.dolly.bestilling.brregstub.util.BrregstubMergeUtil;
@@ -34,12 +32,12 @@ public class BrregstubClient implements ClientRegister {
 
         if (nonNull(bestilling.getBrregstub())) {
 
-            BrregRequestWrapper wrapper = rolleUtskriftMapper.map(bestilling.getBrregstub(), tpsPerson);
+            RolleoversiktTo nyRolleovesikt = rolleUtskriftMapper.map(bestilling.getBrregstub(), tpsPerson);
 
-            RolleoversiktTo mergetRolleoversikt = prepareRequest(wrapper.getRolleoversiktTo(), tpsPerson.getHovedperson());
-            String status = postRolleutskrift(mergetRolleoversikt);
+            RolleoversiktTo eksisterendeRoller = brregstubConsumer.getRolleoversikt(tpsPerson.getHovedperson());
+            RolleoversiktTo mergetRolleoversikt = BrregstubMergeUtil.merge(nyRolleovesikt, eksisterendeRoller);
 
-            progress.setBrregstubStatus(OK_STATUS.equals(status) ? postOrganisasjon(wrapper.getOrganisasjonTo()) : status);
+            progress.setBrregstubStatus(postRolleutskrift(mergetRolleoversikt));
         }
     }
 
@@ -47,13 +45,6 @@ public class BrregstubClient implements ClientRegister {
     public void release(List<String> identer) {
 
         identer.forEach(brregstubConsumer::deleteRolleoversikt);
-    }
-
-    private RolleoversiktTo prepareRequest(RolleoversiktTo nyRolleovesikt, String ident) {
-
-        RolleoversiktTo eksisterendeRoller = brregstubConsumer.getRolleoversikt(ident).getBody();
-
-        return BrregstubMergeUtil.merge(nyRolleovesikt, eksisterendeRoller);
     }
 
     private String postRolleutskrift(RolleoversiktTo rolleoversiktTo) {
@@ -69,17 +60,5 @@ public class BrregstubClient implements ClientRegister {
         }
 
         return "Uspesifisert feil";
-    }
-
-    private String postOrganisasjon(List<OrganisasjonTo> organisasjonTo) {
-
-        try {
-            organisasjonTo.forEach(brregstubConsumer::postOrganisasjon);
-            return OK_STATUS;
-
-        } catch (RuntimeException e) {
-
-            return errorStatusDecoder.decodeRuntimeException(e);
-        }
     }
 }
