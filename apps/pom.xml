@@ -11,5 +11,8 @@
 
     <artifactId>apps</artifactId>
 
+    <modules>
+        <module>testnorge-ereg-mapper</module>
+    </modules>
 
 </project>
