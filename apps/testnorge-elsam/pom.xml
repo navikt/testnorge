@@ -74,6 +74,7 @@
                 <version>${springfox.version}</version>
             </dependency>
 
+
             <!--LOGGING-->
             <dependency>
                 <groupId>net.logstash.logback</groupId>

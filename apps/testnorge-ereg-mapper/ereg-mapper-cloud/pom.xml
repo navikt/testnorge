@@ -16,7 +16,6 @@
             <artifactId>ereg-mapper-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <!--Metrics-->
         <dependency>
             <groupId>org.aspectj</groupId>
@@ -36,6 +35,7 @@
         </dependency>
     </dependencies>
 
+
     <build>
         <finalName>testnorge-ereg-mapper</finalName>
         <plugins>
@@ -53,5 +53,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
