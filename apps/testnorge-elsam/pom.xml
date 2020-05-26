@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.6.RELEASE</version>
+    </parent>
+
+    <groupId>no.nav.registre</groupId>
+    <artifactId>testnorge-elsam</artifactId>
+    <version>0.2.1</version>
+    <packaging>pom</packaging>
+
+    <name>testnorge-elsam</name>
+    <description>Forvalter for syntetisering av sykemeldinger</description>
+
+    <modules>
+        <module>elsam-domain</module>
+        <module>elsam-application</module>
+    </modules>
+
+    <distributionManagement>
+        <repository>
+            <id>m2internal</id>
+            <name>NAV Maven2 Internal Repository</name>
+            <url>http://maven.adeo.no/nexus/content/repositories/m2internal</url>
+        </repository>
+        <snapshotRepository>
+            <id>m2snapshot</id>
+            <name>NAV Maven2 Snapshot Repository</name>
+            <url>http://maven.adeo.no/nexus/content/repositories/m2snapshot</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <properties>
+        <java.version>11</java.version>
+        <jacoco.version>0.8.4</jacoco.version>
+        <application.version>${project.version}</application.version>
+        <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
+        <springfox.version>2.9.2</springfox.version>
+        <javax.activation.version>1.2.0</javax.activation.version>
+        <jaxb.api.version>2.3.0</jaxb.api.version>
+        <maven-pmd-plugin.version>3.13.0</maven-pmd-plugin.version>
+        <tjenestespesifikasjon.version>1.2020.04.27-15.39-c32c8960a220</tjenestespesifikasjon.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- HODEJEGEREN -->
+            <dependency>
+                <groupId>no.nav.registre</groupId>
+                <artifactId>testnorge-consumers</artifactId>
+                <version>1.10.6-RELEASE</version>
+            </dependency>
+
+            <!-- TEST -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-contract-wiremock</artifactId>
+                <version>2.1.2.RELEASE</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.ibm.mq</groupId>
+                <artifactId>mq-jms-spring-boot-starter</artifactId>
+                <version>2.0.0</version>
+            </dependency>
+
+            <!--DOCUMENTATION-->
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>${springfox.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.javassist</groupId>
+                        <artifactId>javassist</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${springfox.version}</version>
+            </dependency>
+
+            <!--LOGGING-->
+            <dependency>
+                <groupId>net.logstash.logback</groupId>
+                <artifactId>logstash-logback-encoder</artifactId>
+                <version>${logstash.logback.encoder.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>no.nav.registre</groupId>
+                <artifactId>elsam-domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>github-package-registry-navikt</id>
+            <url>https://maven.pkg.github.com/navikt/maven-release</url>
+        </repository>
+    </repositories>
+</project>

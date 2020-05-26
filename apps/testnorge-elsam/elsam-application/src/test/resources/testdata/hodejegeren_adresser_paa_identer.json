@@ -1,0 +1,124 @@
+{
+  "30073245199": {
+    "personnavn": {
+      "gjeldendePersonnavn": "BLOMSTERPLANTE TOÅRIG",
+      "allePersonnavn": {
+        "kortnavn": "BLOMSTERPLANTE TOÅRIG",
+        "navnTidspunkt": "2019-05-09",
+        "mellomnavn": "",
+        "etternavn": "BLOMSTERPLANTE",
+        "navnSaksbehandler": "AJOURHD",
+        "fornavn": "TOÅRIG",
+        "navnSystem": "SKD"
+      }
+    },
+    "bostedsAdresse": {
+      "boAdresse2": "",
+      "boPoststed": "RÅDAL",
+      "boAdresse1": "RÅDALSLIEN 27",
+      "boPostnr": 5239,
+      "fullBostedsAdresse": {
+        "adresseType": "OFFA",
+        "offAdresse": {
+          "bokstav": "",
+          "husnr": 27,
+          "gateNavn": "RÅDALSLIEN"
+        },
+        "kommunenr": 1201,
+        "landKode": "NOR",
+        "adrTidspunktReg": "2019-08-27",
+        "datoFom": "2015-08-04",
+        "kommuneNavn": "Bergen",
+        "adresse1": "RÅDALSLIEN 27",
+        "tilleggsAdresseSKD": "",
+        "adresse2": "",
+        "tknr": 1202,
+        "poststed": "RÅDAL",
+        "bolignr": "H0201",
+        "beskrAdrType": "Offisiell adresse",
+        "adrSaksbehandler": "AJOURHD",
+        "datoTom": "",
+        "matrAdresse": {
+          "undernr": "",
+          "gardsnr": "",
+          "festenr": "",
+          "mellomAdresse": "",
+          "bruksnr": ""
+        },
+        "postnr": 5239,
+        "adrSystem": "SKD",
+        "tkNavn": "FANA",
+        "land": "NORGE"
+      }
+    },
+    "NAVenhetDetalj": {
+      "kodeNAVenhetBeskr": "FANA",
+      "NAVenhetSaksbehandler": "AJOURHD",
+      "datoNAVenhet": "2015-08-04",
+      "NAVenhetTidspunkt": "2019-05-09",
+      "NAVenhetSystem": "SKD",
+      "kodeNAVenhet": 1202
+    }
+  },
+  "02128516002": {
+    "personnavn": {
+      "gjeldendePersonnavn": "FRITID UBESTIKKELIG",
+      "allePersonnavn": {
+        "kortnavn": "FRITID UBESTIKKELIG",
+        "navnTidspunkt": "2019-01-29",
+        "mellomnavn": "",
+        "etternavn": "FRITID",
+        "navnSaksbehandler": "AJOURHD",
+        "fornavn": "UBESTIKKELIG",
+        "navnSystem": "SKD"
+      }
+    },
+    "bostedsAdresse": {
+      "boAdresse2": "",
+      "boPoststed": "MELSOMVIK",
+      "boAdresse1": "BRUNSTADVEIEN 77",
+      "boPostnr": 3159,
+      "fullBostedsAdresse": {
+        "adresseType": "OFFA",
+        "offAdresse": {
+          "bokstav": "",
+          "husnr": 77,
+          "gateNavn": "BRUNSTADVEIEN"
+        },
+        "kommunenr": "0710",
+        "landKode": "NOR",
+        "adrTidspunktReg": "2019-01-29",
+        "datoFom": "2016-09-22",
+        "kommuneNavn": "Sandefjord",
+        "adresse1": "BRUNSTADVEIEN 77",
+        "tilleggsAdresseSKD": "",
+        "adresse2": "",
+        "tknr": "0710",
+        "poststed": "MELSOMVIK",
+        "bolignr": "",
+        "beskrAdrType": "Offisiell adresse",
+        "adrSaksbehandler": "AJOURHD",
+        "datoTom": "",
+        "matrAdresse": {
+          "undernr": "",
+          "gardsnr": "",
+          "festenr": "",
+          "mellomAdresse": "",
+          "bruksnr": ""
+        },
+        "postnr": 3159,
+        "adrSystem": "SKD",
+        "tkNavn": "Sandefjord",
+        "land": "NORGE"
+      }
+    },
+    "NAVenhetDetalj": {
+      "kodeNAVenhetBeskr": "Sandefjord",
+      "NAVenhetSaksbehandler": "AJOURHD",
+      "datoNAVenhet": "2016-03-19",
+      "NAVenhetTidspunkt": "2019-01-29",
+      "NAVenhetSystem": "SKD",
+      "kodeNAVenhet": "0710"
+    }
+  }
+}

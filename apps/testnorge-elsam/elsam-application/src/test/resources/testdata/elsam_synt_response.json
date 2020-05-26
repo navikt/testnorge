@@ -1,0 +1,102 @@
+{
+  "02128516002": {
+    "endringshistorikk": "CIII",
+    "sykmeldinger": [
+      {
+        "arbeidsforEtterEndtPeriode": false,
+        "biDiagnoser": null,
+        "hovedDiagnose": {
+          "dn": "Stress IKA",
+          "s": "2.16.578.1.12.4.1.1.7170",
+          "v": "P29"
+        },
+        "kontaktMedPasient": "2018-01-01",
+        "meldingTilNav": false,
+        "reisetilskudd": null,
+        "sluttPeriode": "2018-01-12",
+        "startPeriode": "2018-01-01",
+        "sykmeldingsprosent": 100
+      },
+      {
+        "arbeidsforEtterEndtPeriode": false,
+        "biDiagnoser": null,
+        "hovedDiagnose": {
+          "dn": "Stress IKA",
+          "s": "2.16.578.1.12.4.1.1.7170",
+          "v": "P29"
+        },
+        "kontaktMedPasient": "2018-01-01",
+        "meldingTilNav": false,
+        "reisetilskudd": null,
+        "sluttPeriode": "2018-01-23",
+        "startPeriode": "2018-01-12",
+        "sykmeldingsprosent": 100
+      },
+      {
+        "arbeidsforEtterEndtPeriode": false,
+        "biDiagnoser": null,
+        "hovedDiagnose": {
+          "dn": "Stress IKA",
+          "s": "2.16.578.1.12.4.1.1.7170",
+          "v": "P29"
+        },
+        "kontaktMedPasient": "2018-01-01",
+        "meldingTilNav": false,
+        "reisetilskudd": null,
+        "sluttPeriode": "2018-02-03",
+        "startPeriode": "2018-01-23",
+        "sykmeldingsprosent": 100
+      },
+      {
+        "arbeidsforEtterEndtPeriode": false,
+        "biDiagnoser": null,
+        "hovedDiagnose": {
+          "dn": "Stress IKA",
+          "s": "2.16.578.1.12.4.1.1.7170",
+          "v": "P29"
+        },
+        "kontaktMedPasient": "2018-01-01",
+        "meldingTilNav": false,
+        "reisetilskudd": null,
+        "sluttPeriode": "2018-02-14",
+        "startPeriode": "2018-02-03",
+        "sykmeldingsprosent": 100
+      }
+    ]
+  },
+  "30073245199": {
+    "endringshistorikk": "CD",
+    "sykmeldinger": [
+      {
+        "arbeidsforEtterEndtPeriode": false,
+        "biDiagnoser": null,
+        "hovedDiagnose": {
+          "dn": "Hudkløe",
+          "s": "2.16.578.1.12.4.1.1.7170",
+          "v": "S02"
+        },
+        "kontaktMedPasient": "2019-01-30",
+        "meldingTilNav": false,
+        "reisetilskudd": false,
+        "sluttPeriode": "2019-02-26",
+        "startPeriode": "2019-01-30",
+        "sykmeldingsprosent": 100
+      },
+      {
+        "arbeidsforEtterEndtPeriode": false,
+        "biDiagnoser": null,
+        "hovedDiagnose": {
+          "dn": "Hudkløe",
+          "s": "2.16.578.1.12.4.1.1.7170",
+          "v": "S02"
+        },
+        "kontaktMedPasient": "2019-01-30",
+        "meldingTilNav": false,
+        "reisetilskudd": false,
+        "sluttPeriode": "2019-03-30",
+        "startPeriode": "2019-02-26",
+        "sykmeldingsprosent": 50
+      }
+    ]
+  }
+}

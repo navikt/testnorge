@@ -1,0 +1,57 @@
+{
+  "organisasjonsnummer": "880756053",
+  "type": "Virksomhet",
+  "navn": {
+    "navnelinje1": "Mini-Norge Legekontor",
+    "bruksperiode": {
+      "fom": "2019-10-04T10:28:25.875"
+    },
+    "gyldighetsperiode": {
+      "fom": "2019-10-04"
+    }
+  },
+  "organisasjonDetaljer": {
+    "registreringsdato": "2019-10-04T00:00:00",
+    "enhetstyper": [
+      {
+        "enhetstype": "BEDR",
+        "bruksperiode": {
+          "fom": "2019-10-04T10:28:25.865"
+        },
+        "gyldighetsperiode": {
+          "fom": "2019-10-04"
+        }
+      }
+    ],
+    "navn": [
+      {
+        "navnelinje1": "Mini-Norge Legekontor",
+        "bruksperiode": {
+          "fom": "2019-10-04T10:28:25.875"
+        },
+        "gyldighetsperiode": {
+          "fom": "2019-10-04"
+        }
+      }
+    ],
+    "forretningsadresser": [
+      {
+        "adresselinje1": "Sannergata 2",
+        "postnummer": "0557",
+        "poststed": "OSLO",
+        "landkode": "NO",
+        "kommunenummer": "0301",
+        "bruksperiode": {
+          "fom": "2019-10-04T10:28:25.875"
+        },
+        "gyldighetsperiode": {
+          "fom": "2019-10-04"
+        }
+      }
+    ],
+    "sistEndret": "2019-10-04"
+  },
+  "virksomhetDetaljer": {
+    "enhetstype": "BEDR"
+  }
+}
