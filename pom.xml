@@ -29,7 +29,6 @@
         <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
     </properties>
 
-
     <repositories>
         <!-- Skal brukes hvis bygget kjører utenfor NAV (f.eks. en ekstern maskin, eller Circle CI) -->
         <repository>
