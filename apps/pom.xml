@@ -13,6 +13,7 @@
 
     <modules>
         <module>testnorge-ereg-mapper</module>
+        <module>testnorge-elsam</module>
     </modules>
 
 </project>
