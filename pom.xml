@@ -53,14 +53,12 @@
         </repository>
     </repositories>
 
-
     <scm>
         <developerConnection>scm:git:git@github.com:navikt/testnorge.git</developerConnection>
         <connection>scm:git:git@github.com:navikt/testnorge.git</connection>
         <url>https://github.com/navikt/testnorge</url>
         <tag>HEAD</tag>
     </scm>
-
 
     <build>
         <pluginManagement>

@@ -80,7 +80,6 @@
                 <artifactId>logstash-logback-encoder</artifactId>
                 <version>${logstash.logback.encoder.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>no.nav.registre.testnorge</groupId>
                 <artifactId>elsam-domain</artifactId>
