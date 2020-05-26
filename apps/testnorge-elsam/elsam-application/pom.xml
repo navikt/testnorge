@@ -40,7 +40,6 @@
             <groupId>no.nav.registre</groupId>
             <artifactId>testnorge-consumers</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.ibm.mq</groupId>
             <artifactId>mq-jms-spring-boot-starter</artifactId>
