@@ -244,6 +244,7 @@ public class AltinnInntektService {
                         .collect(Collectors.toList()))
                 .pleiepengerPerioder(inntekt.getPleiepengerPerioder())
                 .arbeidsforhold(RsArbeidsforhold.builder()
+                        .arbeidsforholdId(inntekt.getArbeidsforhold().getArbeidsforholdId())
                         .beregnetInntekt(RsInntekt.builder()
                                 .beloep(inntekt.getArbeidsforhold().getBeregnetInntekt().getBeloep())
                                 .aarsakVedEndring(getValueFromEnumIfSet(inntekt.getArbeidsforhold().getBeregnetInntekt().getAarsakVedEndring()))
