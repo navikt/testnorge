@@ -5,14 +5,14 @@ export const getSoekOptions = (values: any) => {
 		if (Object.prototype.toString.call(values[key]) === '[object Object]') {
 			for (let innerKey in values[key]) {
 				const value = (values[key][innerKey] + '').toUpperCase()
-				if (value !== '') {
+				if (value !== '' && value !== 'NULL') {
 					if (newSoekOptions === '') newSoekOptions = key + '.' + innerKey + '=' + value
 					else newSoekOptions = newSoekOptions + '&' + key + '.' + innerKey + '=' + value
 				}
 			}
 		} else {
 			const value = (values[key] + '').toUpperCase()
-			if (value !== '') {
+			if (value !== '' && value !== 'NULL') {
 				if (newSoekOptions === '') newSoekOptions = key + '=' + value
 				else newSoekOptions = newSoekOptions + '&' + key + '=' + value
 				newSoekOptions = newSoekOptions + '&' + key + '=' + value
