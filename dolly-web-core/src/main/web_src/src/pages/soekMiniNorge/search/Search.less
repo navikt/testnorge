@@ -1,0 +1,54 @@
+@import (reference) '~lessVars';
+
+.search-content {
+  padding: 20px;
+  background-color: transparent;
+  margin-bottom: 40px;
+}
+.alertstripe {
+  &--info {
+    margin-Bottom: 20px;
+  }
+  .alertstripe__tekst {
+    max-width: 51.5rem;
+    white-space: pre-wrap;
+  }
+}
+
+.search-field{
+
+  &__options-container{
+    padding: 20px;
+    width: 30%;
+    border-right: solid black 1px;
+    &__fields{
+      overflow-y: scroll;
+      height: 700px
+    }
+  }
+  &__resultat{
+    padding: 20px;
+    width: 70%;
+    &__feedback-close-button{
+
+    }
+  }
+}
+
+.feedback-container{
+  margin: 20px 0 20px 0;
+  padding: 20px 20px;
+  background-color: white;
+  border: solid 1px @color-nav-fokus-oransje;
+  &__close-button{
+    padding: 0px;
+    float: right;
+
+    svg .st0 {
+      stroke: @color-lightblue;
+    }
+  }
+}
+.search-button{
+  margin-top: 20px;
+}
