@@ -26,6 +26,7 @@ import java.util.List;
 
 import no.nav.identpool.ajourhold.BatchService;
 import no.nav.identpool.domain.Ident;
+import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.exception.IdentAlleredeIBrukException;
 import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;
@@ -62,6 +63,9 @@ public class IdentpoolController {
         validateDatesInRequest(hentIdenterRequest);
         if (hentIdenterRequest.getFoedtFoer() == null) {
             hentIdenterRequest.setFoedtFoer(hentIdenterRequest.getFoedtEtter().plusDays(1));
+        }
+        if (Identtype.FDAT == hentIdenterRequest.getIdenttype()) {
+            hentIdenterRequest.setKjoenn(null); // ident-pool ignorerer kjønn hos FDAT-identer
         }
         if (finnNaermesteLedigeDato) {
             try {
