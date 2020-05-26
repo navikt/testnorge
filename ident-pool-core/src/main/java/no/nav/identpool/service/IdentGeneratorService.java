@@ -33,7 +33,11 @@ public class IdentGeneratorService {
 
     private static SecureRandom random = new SecureRandom();
 
-    public Map<LocalDate, List<String>> genererIdenterMap(LocalDate foedtEtter, LocalDate foedtFoer, Identtype type) {
+    public Map<LocalDate, List<String>> genererIdenterMap(
+            LocalDate foedtEtter,
+            LocalDate foedtFoer,
+            Identtype type
+    ) {
         validateDates(foedtEtter, foedtFoer);
         int days = toIntExact(ChronoUnit.DAYS.between(foedtEtter, foedtFoer));
         Function<LocalDate, List<String>> numberGenerator = generatorMap.get(type);
@@ -44,7 +48,45 @@ public class IdentGeneratorService {
                         numberGenerator));
     }
 
-    public List<String> genererIdenter(HentIdenterRequest request, List<String> identerIIdentPool) {
+    public List<String> genererIdenterFdat(
+            HentIdenterRequest request,
+            List<String> identerIIdentPool
+    ) {
+        Assert.notNull(request.getFoedtEtter(), "FOM dato ikke oppgitt");
+
+        validateDates(request.getFoedtEtter(), request.getFoedtFoer());
+        if (request.getFoedtFoer().isEqual(request.getFoedtEtter())) {
+            request.setFoedtFoer(request.getFoedtEtter().plusDays(1));
+        }
+
+        Set<String> identer = new HashSet<>(identerIIdentPool);
+        int antall = request.getAntall() + identer.size();
+        int numberOfDates = toIntExact(ChronoUnit.DAYS.between(request.getFoedtEtter(), request.getFoedtFoer()));
+
+        Function<LocalDate, String> numberFormat =
+                numberFormatter.getOrDefault(Identtype.FDAT, IdentGeneratorUtil::randomFormat);
+
+        while (identer.size() < antall) {
+            LocalDate birthdate = request.getFoedtEtter().plusDays(random.nextInt(numberOfDates));
+            String format = numberFormat.apply(birthdate);
+
+            int originalSize = identer.size();
+
+            for (int i = 1; i <= 9; i++) {
+                identer.add(String.format(format, i));
+            }
+
+            if (identer.size() == originalSize) {
+                throw new IllegalArgumentException("Kan ikke finne ønsket antall fødselsnummer med angitte kriterier");
+            }
+        }
+        return new ArrayList<>(identer);
+    }
+
+    public List<String> genererIdenter(
+            HentIdenterRequest request,
+            List<String> identerIIdentPool
+    ) {
         Assert.notNull(request.getFoedtEtter(), "FOM dato ikke oppgitt");
 
         validateDates(request.getFoedtEtter(), request.getFoedtFoer());
@@ -93,7 +135,10 @@ public class IdentGeneratorService {
         return new ArrayList<>(identer);
     }
 
-    private void validateDates(LocalDate foedtEtter, LocalDate foedtFoer) {
+    private void validateDates(
+            LocalDate foedtEtter,
+            LocalDate foedtFoer
+    ) {
         if (foedtEtter.isAfter(foedtFoer)) {
             throw new IllegalArgumentException(String.format("Til dato (%s) kan ikke være etter før dato (%s)", foedtEtter, foedtFoer));
         }

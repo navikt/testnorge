@@ -30,13 +30,15 @@ public final class IdentGeneratorUtil {
             ImmutableMap.of(
                     Identtype.FNR, IdentGeneratorUtil::generateFNumbers,
                     Identtype.DNR, IdentGeneratorUtil::generateDNumbers,
-                    Identtype.BOST, IdentGeneratorUtil::generateBNumbers);
+                    Identtype.BOST, IdentGeneratorUtil::generateBNumbers,
+                    Identtype.FDAT, IdentGeneratorUtil::generateFdatNumbers);
 
     public static final Map<Identtype, Function<LocalDate, String>> numberFormatter =
             ImmutableMap.of(
                     Identtype.FNR, IdentGeneratorUtil::getFnrFormat,
                     Identtype.DNR, IdentGeneratorUtil::getDnrFormat,
-                    Identtype.BOST, IdentGeneratorUtil::getBnrFormat);
+                    Identtype.BOST, IdentGeneratorUtil::getBnrFormat,
+                    Identtype.FDAT, IdentGeneratorUtil::getFdatFormat);
 
     private IdentGeneratorUtil() {}
 
@@ -94,6 +96,8 @@ public final class IdentGeneratorUtil {
 
     private static List<String> generateBNumbers(LocalDate birthdate) { return generateNumbers(birthdate, getBnrFormat(birthdate)); }
 
+    private static List<String> generateFdatNumbers(LocalDate birthdate) { return generateNumbers(birthdate, getFdatFormat(birthdate)); }
+
     private static List<String> generateNumbers(LocalDate date, String numberFormat) {
         return getCategoryNumberStreamReverse(date)
                 .mapToObj(number -> generateFnr(String.format(numberFormat, number)))
@@ -113,6 +117,10 @@ public final class IdentGeneratorUtil {
     private static String getBnrFormat(LocalDate birthdate) {
         String format = getFnrFormat(birthdate);
         return format.substring(0, 2) + (getNumericValue(format.charAt(2)) + 2) + format.substring(3);
+    }
+
+    private static String getFdatFormat(LocalDate birthdate) {
+        return formatter.format(birthdate) + "0000%01d";
     }
 
     private static IntStream getCategoryNumberStreamReverse(LocalDate birthDate) {

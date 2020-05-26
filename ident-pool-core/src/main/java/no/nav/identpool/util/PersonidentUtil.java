@@ -4,6 +4,7 @@ import static java.lang.Character.getNumericValue;
 import static java.lang.Integer.parseInt;
 import static no.nav.identpool.domain.Identtype.BOST;
 import static no.nav.identpool.domain.Identtype.DNR;
+import static no.nav.identpool.domain.Identtype.FDAT;
 import static org.springframework.util.Assert.notNull;
 
 import java.time.LocalDate;
@@ -53,6 +54,8 @@ public final class PersonidentUtil {
             return DNR;
         } else if (parseInt(ident.substring(2, 3)) > 1) {
             return BOST;
+        } else if ("0000".equals(ident.substring(6, 10))) {
+            return FDAT;
         }
         return Identtype.FNR;
     }
