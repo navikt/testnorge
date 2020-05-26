@@ -66,23 +66,21 @@ public class HistorikkService {
             int pageSize,
             List<String> keywordList
     ) {
-        List<SyntHistorikk> results = new ArrayList<>();
+        var query = new Query();
         for (var keyword : keywordList) {
             var keyValue = keyword.split("=");
-            var query = new Query();
             // query.addCriteria(Criteria.where("kilder.data.innhold." + keyValue[0]).is(Pattern.compile(keyValue[1], Pattern.CASE_INSENSITIVE))); // finner også substrings. Sikkerhet?
             query.addCriteria(Criteria.where("kilder.data.innhold." + keyValue[0]).is(keyValue[1]));
-            query.limit(pageSize);
-            query.skip(pageNumber * pageSize);
-
-            var result = mongoTemplate.find(query, SyntHistorikk.class);
             logService.log(new LogEvent(LogEventDTO.builder()
                     .level(Level.INFO)
-                    .message("testnorge-hodejegeren-search - search for key: " + keyValue[0] + ". Number of results: " + result.size() + ". Limit: " + pageSize)
+                    .message("testnorge-hodejegeren-search - search for key: " + keyValue[0])
                     .key(keyValue[0])
                     .build()));
-            results.addAll(result);
+
         }
+        query.limit(pageSize);
+        query.skip(pageNumber * pageSize);
+        List<SyntHistorikk> results = new ArrayList<>(mongoTemplate.find(query, SyntHistorikk.class));
 
         results.forEach(historikk -> historikk.getKilder().removeIf(kilde -> !kilder.contains(kilde.getNavn())));
 
