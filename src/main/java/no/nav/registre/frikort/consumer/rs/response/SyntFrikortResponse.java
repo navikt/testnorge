@@ -14,6 +14,7 @@ public class SyntFrikortResponse {
     String datotjeneste;
     String datotjenestestart;
     double egenandelsats;
+    String egenandelskode;
     String enkeltregningsstatuskode;
     String innsendingstypekode;
     String kildesystemkode;

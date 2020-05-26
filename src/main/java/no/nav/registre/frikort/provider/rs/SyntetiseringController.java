@@ -3,10 +3,11 @@ package no.nav.registre.frikort.provider.rs;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.frikort.consumer.rs.response.SyntFrikortResponse;
 import org.springframework.web.bind.annotation.*;
 
 import no.nav.registre.frikort.service.SyntetiseringService;
+
+import javax.xml.bind.JAXBException;
 
 import java.util.List;
 import java.util.Map;
@@ -20,9 +21,9 @@ public class SyntetiseringController {
     private final SyntetiseringService syntetiseringService;
 
     @PostMapping(value = "/generer")
-    @ApiOperation(value = "Generer syntetiske frikort.")
-    public Map<String, List<SyntFrikortResponse>> genererFrikort(@RequestBody Map<String, Integer> request) {
-        return syntetiseringService.hentSyntetiskeFrikort(request);
+    @ApiOperation(value = "Generer syntetiske egenandeler som XML string.")
+    public List<String> genererFrikort(@RequestBody Map<String, Integer> request) throws JAXBException {
+        return syntetiseringService.hentSyntetiskeEgenandeler(request);
     }
 
 }
