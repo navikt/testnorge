@@ -6,3 +6,4 @@
 
 ![Deploy testnorge-ereg-mapper](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-ereg-mapper/badge.svg)
 ![Deploy testnorge-elsam](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-elsam/badge.svg)
+![Deploy testnorge-medl](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-medl/badge.svg)
