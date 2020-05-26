@@ -26,10 +26,6 @@ export const SearchOptions = (props: SearchOptionsProps) => {
 				<h2>Personinformasjon</h2>
 				<h3>Ident</h3>
 				<FormikSelect name="personIdent.type" label="Type" options={Options('identtype')} />
-				<h3>Navn</h3>
-				<FormikTextInput name="navn.fornavn" label="Fornavn" />
-				<FormikTextInput name="navn.mellomnavn" label="Mellomnavn" />
-				<FormikTextInput name="navn.slektsnavn" label="Etternavn" />
 				<h3>Nasjonalitet</h3>
 				<FormikSelect
 					name="statsborger.land"
@@ -60,7 +56,6 @@ export const SearchOptions = (props: SearchOptionsProps) => {
 					label="Sivilstand"
 					kodeverk={PersoninformasjonKodeverk.Sivilstander}
 				/>
-				<FormikDatepicker name="personInfo.datoFoedt" label="Dato født" />
 			</div>
 			<div className="search-button">
 				<NavButton onClick={() => props.onSubmit(props.formikBag.values)}>Søk</NavButton>

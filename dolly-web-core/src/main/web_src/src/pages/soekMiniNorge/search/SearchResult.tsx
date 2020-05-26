@@ -70,23 +70,23 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 		<LoadableComponent
 			onFetch={() => HodejegerenApi.soek(props.soekOptions, props.antallResultat)}
 			render={(data: Array<Innhold>) => {
-				if (!data) {
-					return <ContentContainer>Søket gav ingen resultater.</ContentContainer>
-				}
-
 				return (
 					<div>
-						<DollyTable
-							data={data}
-							columns={columns}
-							pagination
-							iconItem={(bruker: Innhold) =>
-								bruker.personInfo.kjoenn === 'M' ? <ManIconItem /> : <WomanIconItem />
-							}
-							onExpand={(bruker: Innhold) => (
-								<ResultatVisningConnecter personId={bruker.personIdent.id} data={bruker} />
-							)}
-						/>
+						{!data ? (
+							<ContentContainer>Søket gav ingen resultater.</ContentContainer>
+						) : (
+							<DollyTable
+								data={data}
+								columns={columns}
+								pagination
+								iconItem={(bruker: Innhold) =>
+									bruker.personInfo.kjoenn === 'M' ? <ManIconItem /> : <WomanIconItem />
+								}
+								onExpand={(bruker: Innhold) => (
+									<ResultatVisningConnecter personId={bruker.personIdent.id} data={bruker} />
+								)}
+							/>
+						)}
 						{showFeedback && (
 							<div className="feedback-container">
 								<div className="feedback-container__close-button">
