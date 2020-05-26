@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>no.nav.registre</groupId>
+        <groupId>no.nav.registre.testnorge</groupId>
         <artifactId>testnorge-elsam</artifactId>
-        <version>0.2.1</version>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>elsam-domain</artifactId>
