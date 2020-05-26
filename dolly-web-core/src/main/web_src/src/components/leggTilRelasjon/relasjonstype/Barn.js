@@ -56,7 +56,8 @@ export const Barn = ({ formikBag, lagOptions, identInfo, hovedIdent }) => {
 }
 
 const muligeForeldre = props => {
-	return props.values.tpsf.relasjoner.partner.map((partner, idx) => {
+	const partnere = _get(props, 'values.tpsf.relasjoner.partnere', [])
+	return partnere.map((partner, idx) => {
 		return { value: partner.ident, label: `Partner ${idx + 1}` }
 	})
 }

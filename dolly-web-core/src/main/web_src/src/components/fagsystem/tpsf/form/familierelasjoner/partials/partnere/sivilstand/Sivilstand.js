@@ -9,6 +9,7 @@ import {
 import { nesteGyldigStatuser, tomSisteSivilstand } from './SivilstandOptions'
 import SivilstandForm from './sivilstandForm'
 
+const isSivilstandNy = sivilstand => sivilstand.ny || !sivilstand.hasOwnProperty('ny')
 const initialValues = { sivilstand: '', sivilstandRegdato: '' }
 
 export const Sivilstand = ({
@@ -21,7 +22,9 @@ export const Sivilstand = ({
 }) => (
 	<FieldArray name={basePath}>
 		{arrayHelpers => {
-			const antallTidligereSivilstander = sivilstander.filter(sivilstand => !sivilstand.ny).length
+			const antallTidligereSivilstander = sivilstander.filter(
+				sivilstand => !isSivilstandNy(sivilstand)
+			).length
 
 			// Sjekk forrige (nest siste) sivilstandstatus, for å sette
 			// gyldige options for current sivilstandstatus
@@ -37,9 +40,10 @@ export const Sivilstand = ({
 						const formikIdx = idx - antallTidligereSivilstander
 						const formikPath = `${basePath}[${formikIdx}]`
 						const isLast = idx === sivilstander.length - 1
+						const ny = isSivilstandNy(sivilstand)
 
 						// Det er kun mulig å slette siste forhold
-						const showRemove = idx > 0 && isLast && !locked && sivilstand.ny
+						const showRemove = idx > 0 && isLast && !locked && ny
 						const clickRemove = () => {
 							arrayHelpers.remove(formikIdx)
 							if (formikIdx === 0) vurderFjernePartner()
@@ -56,8 +60,8 @@ export const Sivilstand = ({
 									sivilstand={sivilstand}
 									formikBag={formikBag}
 									options={options}
-									tidligereSivilstand={!sivilstand.ny}
-									readOnly={!isLast || !sivilstand.ny || locked}
+									tidligereSivilstand={!ny}
+									readOnly={!isLast || !ny || locked}
 									minimumDato={minDatoSivilstand}
 								/>
 							</DollyFaBlokk>
