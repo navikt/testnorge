@@ -49,10 +49,10 @@ public class SwaggerConfig implements WebMvcConfigurer {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("testnorge-elsam")
-                .description("Applikasjon som håndterer integrasjon mellom syfo og resten av synt/dolly-stacken.")
+                .description("Applikasjon som håndterer integrasjon mellom syfo og resten av dolly.")
                 .version(appVersion)
                 .termsOfServiceUrl("https://nav.no")
-                .contact(new Contact("Fellesregistrene på NAV", "http://stash.devillo.no/projects/FEL/repos/testnorge-elsam/browse", null))
+                .contact(new Contact("Team Dolly", "https://confluence.adeo.no/display/FEL/Veiledninger+og+retningslinjer+for+bruk+av+testdata", "dolly@nav.no"))
                 .license("Super Strict Licence")
                 .licenseUrl("https://opensource.org/licenses/super-strict-license")
                 .build();

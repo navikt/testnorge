@@ -46,11 +46,11 @@ public class SwaggerConfig implements WebMvcConfigurer {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Testnorge-Medl")
+                .title("testnorge-Medl")
                 .description("Testnorge-Medl er en applikasjon som er integrert mot Medl databasen for å legge medlemskap direkte inn. Dette er kun ment for syntetiske data i q og t miljøer.")
                 .version(appVersion)
                 .termsOfServiceUrl("https://nav.no")
-                .contact(new Contact("Fellesregistrene på NAV", "https://github.com/navikt/testnorge-medl", null))
+                .contact(new Contact("Team Dolly", "https://confluence.adeo.no/display/FEL/Veiledninger+og+retningslinjer+for+bruk+av+testdata", "dolly@nav.no"))
                 .license("Super Strict Licence")
                 .licenseUrl("https://opensource.org/licenses/super-strict-license")
                 .build();

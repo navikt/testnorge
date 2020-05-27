@@ -9,10 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class CloudApplicationStarter {
 
     public static void main(String[] args) {
-
-        log.info("App starting...");
         SpringApplication.run(CloudApplicationStarter.class, args);
-        log.info("App started");
     }
 
 }
