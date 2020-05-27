@@ -4,7 +4,7 @@
 
 # testnorge
 
-# Kjør lokalt
+## Kjør lokalt
 
 `mvn --settings maven-settings.xml -DNAV_TOKEN=xxx clean install`
 
