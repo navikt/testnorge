@@ -16,5 +16,6 @@
         <module>testnorge-elsam</module>
         <module>testnorge-medl</module>
         <module>testnorge-arena</module>
+        <module>testnorge-skd</module>
     </modules>
 </project>
