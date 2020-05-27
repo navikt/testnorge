@@ -7,7 +7,7 @@ on:
       - apps/testnorge-elsam/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/testnorge-elsam:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/elsam:${{ github.sha }}
 
 jobs:
   build_and_deploy:

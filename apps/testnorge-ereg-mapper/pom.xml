@@ -51,7 +51,6 @@
                 <artifactId>springfox-swagger-ui</artifactId>
                 <version>${springfox.version}</version>
             </dependency>
-
             <!--TEST-->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>

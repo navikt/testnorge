@@ -13,9 +13,9 @@
     <artifactId>testnorge-medl</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-
     <name>testnorge-medl</name>
     <description>Forvalter for syntetisering av medl data</description>
+
     <modules>
         <module>medl-core</module>
         <module>medl-local</module>
