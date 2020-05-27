@@ -20,7 +20,7 @@ public class MqService {
         try {
             jmsTemplate.send(koeNavn, session -> session.createTextMessage(xmlMelding));
         } catch (Exception e) {
-            log.error("Kunne ikke legge melding på kø.");
+            log.error("Kunne ikke legge melding på kø.", e);
             throw e;
         }
     }
