@@ -193,7 +193,9 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void sendNavn(Person person) {
 
-        pdlForvalterConsumer.postNavn(mapperFacade.map(person, PdlNavn.class), person.getIdent());
+        if (!person.isDoedFoedt()) {
+            pdlForvalterConsumer.postNavn(mapperFacade.map(person, PdlNavn.class), person.getIdent());
+        }
     }
 
     private void sendKjoenn(Person person, boolean isOpprettEndre, List<String> nyePartnereOgBarn) {
