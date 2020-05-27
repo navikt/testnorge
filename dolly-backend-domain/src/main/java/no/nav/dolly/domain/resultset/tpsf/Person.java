@@ -128,4 +128,8 @@ public class Person {
     public boolean isUtenFastBopel() {
         return isTrue(utenFastBopel) || "UFB".equals(getSpesreg());
     }
+
+    public boolean isDoedFoedt() {
+        return "FDAT".equals(getIdenttype());
+    }
 }

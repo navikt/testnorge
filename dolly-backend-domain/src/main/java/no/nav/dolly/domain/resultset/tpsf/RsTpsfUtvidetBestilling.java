@@ -20,7 +20,7 @@ public class RsTpsfUtvidetBestilling extends RsTpsfBasisMedSivilstandBestilling 
 
     @ApiModelProperty(
             position = 1,
-            value = "Identtype FNR/DNR/BOST, default er FNR"
+            value = "Identtype FNR/DNR/BOST/FDAT, default er FNR, og FDAT gjelder barn kun."
     )
     private String identtype;
 
