@@ -20,7 +20,6 @@
     </modules>
 
     <properties>
-        <application.version>${project.version}</application.version>
         <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
         <springfox.version>2.4.0</springfox.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>

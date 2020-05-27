@@ -20,6 +20,7 @@
     </modules>
 
     <properties>
+        <application.version>${project.version} - ${maven.build.timestamp}</application.version>
         <sonar.projectKey>navikt_testnorge</sonar.projectKey>
         <sonar.projectName>testnorge</sonar.projectName>
         <sonar.organization>navit</sonar.organization>
@@ -70,5 +71,4 @@
             </plugins>
         </pluginManagement>
     </build>
-
 </project>
