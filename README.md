@@ -15,4 +15,4 @@ NAV_TOKEN må lages i din github konto. (Dette er noe som vi jobber med å fjern
 ![Deploy testnorge-ereg-mapper](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-ereg-mapper/badge.svg)
 ![Deploy testnorge-elsam](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-elsam/badge.svg)
 ![Deploy testnorge-medl](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-medl/badge.svg)
-
+![Deploy testnorge-arena](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-arena/badge.svg)
