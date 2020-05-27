@@ -19,6 +19,16 @@
         <module>libs</module>
     </modules>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson-bom.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <properties>
         <application.version>${project.version} - ${maven.build.timestamp}</application.version>
         <sonar.projectKey>navikt_testnorge</sonar.projectKey>

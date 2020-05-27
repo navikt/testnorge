@@ -5,14 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.6.RELEASE</version>
+        <artifactId>apps</artifactId>
+        <groupId>no.nav.registre.testnorge</groupId>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>no.nav.registre.arena</groupId>
     <artifactId>testnorge-arena</artifactId>
-    <version>1.5.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -22,20 +20,18 @@
 
     <properties>
         <java.version>11</java.version>
-        <application.version>${project.version}</application.version>
         <springfox.version>2.9.2</springfox.version>
         <springframework.cloud.version>2.1.2.RELEASE</springframework.cloud.version>
-        <fasterxml.jackson.version>2.9.9</fasterxml.jackson.version>
         <testnorge-consumers.version>1.12.0-RELEASE</testnorge-consumers.version>
         <jacoco.version>0.8.3</jacoco.version>
         <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
         <testnorge-domain.version>1.2020.05.13-11.58-d4f7a985b287</testnorge-domain.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
-        <maven-pmd-plugin.version>3.13.0</maven-pmd-plugin.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+
             <dependency>
                 <groupId>no.nav.registre</groupId>
                 <artifactId>testnorge-consumers</artifactId>
@@ -46,18 +42,6 @@
                 <groupId>no.nav.registre.testnorge</groupId>
                 <artifactId>testnorge-domain</artifactId>
                 <version>${testnorge-domain.version}</version>
-            </dependency>
-
-            <!-- UTILITY -->
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${fasterxml.jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${fasterxml.jackson.version}</version>
             </dependency>
 
             <!-- TEST -->
@@ -80,11 +64,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <repositories>
-        <repository>
-            <id>github-package-registry-navikt</id>
-            <url>https://maven.pkg.github.com/navikt/maven-release</url>
-        </repository>
-    </repositories>
 </project>

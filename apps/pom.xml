@@ -15,5 +15,6 @@
         <module>testnorge-ereg-mapper</module>
         <module>testnorge-elsam</module>
         <module>testnorge-medl</module>
+        <module>testnorge-arena</module>
     </modules>
 </project>
