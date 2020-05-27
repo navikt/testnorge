@@ -20,7 +20,6 @@
 
     <properties>
         <java.version>11</java.version>
-        <springfox.version>2.9.2</springfox.version>
         <springframework.cloud.version>2.1.2.RELEASE</springframework.cloud.version>
         <testnorge-consumers.version>1.12.0-RELEASE</testnorge-consumers.version>
         <jacoco.version>0.8.3</jacoco.version>
@@ -48,18 +47,6 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-contract-wiremock</artifactId>
                 <version>${springframework.cloud.version}</version>
-            </dependency>
-
-            <!--DOCUMENTATION-->
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger2</artifactId>
-                <version>${springfox.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger-ui</artifactId>
-                <version>${springfox.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

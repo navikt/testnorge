@@ -19,15 +19,6 @@
         <module>libs</module>
     </modules>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.fasterxml.jackson</groupId>
-                <artifactId>jackson-bom</artifactId>
-                <version>${jackson-bom.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <properties>
         <application.version>${project.version} - ${maven.build.timestamp}</application.version>
@@ -38,7 +29,30 @@
         <!--suppress UnresolvedMavenProperty Ligger som secret i github-->
         <sonar.login>${SONAR_LOGIN}</sonar.login>
         <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
+        <springfox.version>2.9.2</springfox.version>
     </properties>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson-bom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>${springfox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${springfox.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 
     <repositories>
         <!-- Skal brukes hvis bygget kjører utenfor NAV (f.eks. en ekstern maskin, eller Circle CI) -->

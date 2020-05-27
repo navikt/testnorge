@@ -21,7 +21,6 @@
 
     <properties>
         <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
-        <springfox.version>2.4.0</springfox.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
         <testnorge-common.version>1.2020.05.23-15.56-e68c00984947</testnorge-common.version>
     </properties>
@@ -38,18 +37,6 @@
                 <groupId>net.logstash.logback</groupId>
                 <artifactId>logstash-logback-encoder</artifactId>
                 <version>${logstash.logback.encoder.version}</version>
-            </dependency>
-
-            <!--DOCUMENTATION-->
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger2</artifactId>
-                <version>${springfox.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger-ui</artifactId>
-                <version>${springfox.version}</version>
             </dependency>
             <!--TEST-->
             <dependency>
