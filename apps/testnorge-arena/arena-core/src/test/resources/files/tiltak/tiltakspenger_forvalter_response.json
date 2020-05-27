@@ -1,0 +1,89 @@
+{
+  "nyeTiltakspenger": [
+    {
+      "avbruddKode": "",
+      "begrunnelse": "Syntetisert rettighet",
+      "datoMottatt": "2019-07-21",
+      "fraDato": "2019-07-21",
+      "utfall": "JA",
+      "vilkaar": [
+        {
+          "kode": "BASISKOST",
+          "status": "J"
+        },
+        {
+          "kode": "BASISLIV",
+          "status": "J"
+        },
+        {
+          "kode": "UTESTENGT",
+          "status": "J"
+        },
+        {
+          "kode": "BASISTIL",
+          "status": "J"
+        },
+        {
+          "kode": "BASISLON",
+          "status": "J"
+        }
+      ],
+      "vedtaktype": "O",
+      "andreOkonomYtelser": [
+        {
+          "kode": "MDAGP",
+          "verdi": ""
+        },
+        {
+          "kode": "MUFOR",
+          "verdi": ""
+        },
+        {
+          "kode": "MOFFP",
+          "verdi": ""
+        },
+        {
+          "kode": "MATTF",
+          "verdi": ""
+        },
+        {
+          "kode": "MSYKE",
+          "verdi": ""
+        },
+        {
+          "kode": "MOVER",
+          "verdi": ""
+        },
+        {
+          "kode": "MUTDA",
+          "verdi": ""
+        },
+        {
+          "kode": "MPRIV",
+          "verdi": ""
+        },
+        {
+          "kode": "MLONN",
+          "verdi": ""
+        },
+        {
+          "kode": "INSTI",
+          "verdi": ""
+        },
+        {
+          "kode": "FKOST",
+          "verdi": ""
+        },
+        {
+          "kode": "LAND",
+          "verdi": ""
+        },
+        {
+          "kode": "MHVIL",
+          "verdi": null
+        }
+      ]
+    }
+  ],
+  "nyeTiltakspengerFeilList": []
+}

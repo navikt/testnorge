@@ -1,0 +1,38 @@
+[
+  {
+    "AVBRUDDSKODE": "",
+    "DATO_MOTTATT": "2008-03-22",
+    "UTFALL": "JA",
+    "VEDTAKTYPE": "O",
+    "VILKAAR": [
+      {
+        "KODE": "FRI_MAAI",
+        "STATUS": "J"
+      },
+      {
+        "KODE": "FRI_MABH",
+        "STATUS": "J"
+      },
+      {
+        "KODE": "FRI_MAPL",
+        "STATUS": "J"
+      },
+      {
+        "KODE": "FRI_MARY",
+        "STATUS": "J"
+      },
+      {
+        "KODE": "FRI_MATI",
+        "STATUS": "J"
+      },
+      {
+        "KODE": "FRI_MAVI",
+        "STATUS": "V"
+      },
+      {
+        "KODE": "FRI_MAVU",
+        "STATUS": "J"
+      }
+    ]
+  }
+]

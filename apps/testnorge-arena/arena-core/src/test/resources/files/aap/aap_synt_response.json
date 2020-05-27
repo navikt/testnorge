@@ -1,0 +1,328 @@
+[
+  {
+    "AKTFASEKODE": "UA",
+    "ANDRE_OKONOM_YTELSER": [
+      {
+        "ANNEN_OKONOM_YTELSE": [
+          {
+            "KODE": "TYPE",
+            "VERDI": ""
+          },
+          {
+            "KODE": "FDATO",
+            "VERDI": ""
+          },
+          {
+            "KODE": "TDATO",
+            "VERDI": ""
+          },
+          {
+            "KODE": "GRAD",
+            "VERDI": ""
+          },
+          {
+            "KODE": "BELOP",
+            "VERDI": "0"
+          },
+          {
+            "KODE": "BELPR",
+            "VERDI": ""
+          }
+        ]
+      }
+    ],
+    "AVBRUDDSKODE": "",
+    "DATO_MOTTATT": "2008-03-22",
+    "FRA_DATO": "2008-04-12",
+    "GEN_SAKSOPPLYSNINGER": [
+      {
+        "KODE": "KDATO",
+        "OVERORDNET": null,
+        "VERDI": "23-02-2008"
+      },
+      {
+        "KODE": "BTID",
+        "OVERORDNET": null,
+        "VERDI": "21-07-2007"
+      },
+      {
+        "KODE": "TUUIN",
+        "OVERORDNET": null,
+        "VERDI": ""
+      },
+      {
+        "KODE": "UUFOR",
+        "OVERORDNET": null,
+        "VERDI": ""
+      },
+      {
+        "KODE": "STUBE",
+        "OVERORDNET": null,
+        "VERDI": ""
+      },
+      {
+        "KODE": "OTILF",
+        "OVERORDNET": null,
+        "VERDI": ""
+      },
+      {
+        "KODE": "OTSEK",
+        "OVERORDNET": null,
+        "VERDI": ""
+      },
+      {
+        "KODE": "OOPPL",
+        "OVERORDNET": null,
+        "VERDI": null
+      },
+      {
+        "KODE": "BDSAT",
+        "OVERORDNET": "OOPPL",
+        "VERDI": ""
+      },
+      {
+        "KODE": "UFTID",
+        "OVERORDNET": "OOPPL",
+        "VERDI": ""
+      },
+      {
+        "KODE": "BDSRP",
+        "OVERORDNET": "OOPPL",
+        "VERDI": ""
+      },
+      {
+        "KODE": "GRDRP",
+        "OVERORDNET": "OOPPL",
+        "VERDI": ""
+      },
+      {
+        "KODE": "GRDTU",
+        "OVERORDNET": "OOPPL",
+        "VERDI": ""
+      },
+      {
+        "KODE": "BDSTU",
+        "OVERORDNET": "OOPPL",
+        "VERDI": ""
+      },
+      {
+        "KODE": "GGRAD",
+        "OVERORDNET": "OOPPL",
+        "VERDI": ""
+      },
+      {
+        "KODE": "ORIGG",
+        "OVERORDNET": "OOPPL",
+        "VERDI": ""
+      },
+      {
+        "KODE": "YDATO",
+        "OVERORDNET": null,
+        "VERDI": ""
+      },
+      {
+        "KODE": "YINNT",
+        "OVERORDNET": null,
+        "VERDI": ""
+      },
+      {
+        "KODE": "YGRAD",
+        "OVERORDNET": null,
+        "VERDI": ""
+      },
+      {
+        "KODE": "TLONN",
+        "OVERORDNET": null,
+        "VERDI": null
+      },
+      {
+        "KODE": "SPROS",
+        "OVERORDNET": "TLONN",
+        "VERDI": ""
+      },
+      {
+        "KODE": "NORIN",
+        "OVERORDNET": "TLONN",
+        "VERDI": ""
+      },
+      {
+        "KODE": "FAKIN",
+        "OVERORDNET": "TLONN",
+        "VERDI": ""
+      },
+      {
+        "KODE": "EOS",
+        "OVERORDNET": null,
+        "VERDI": ""
+      },
+      {
+        "KODE": "LAND",
+        "OVERORDNET": null,
+        "VERDI": ""
+      }
+    ],
+    "INSTITUSJONSOPPHOLD": [
+      {
+        "KODE": "STRFG",
+        "OVERORDNET": null,
+        "VERDI": ""
+      },
+      {
+        "KODE": "INSTA",
+        "OVERORDNET": null,
+        "VERDI": ""
+      },
+      {
+        "KODE": "FRIKL",
+        "OVERORDNET": null,
+        "VERDI": ""
+      },
+      {
+        "KODE": "INPER",
+        "OVERORDNET": null,
+        "VERDI": null
+      },
+      {
+        "KODE": "INFRA",
+        "OVERORDNET": "INPER",
+        "VERDI": ""
+      },
+      {
+        "KODE": "INTIL",
+        "OVERORDNET": "INPER",
+        "VERDI": ""
+      },
+      {
+        "KODE": "REDPR",
+        "OVERORDNET": null,
+        "VERDI": ""
+      },
+      {
+        "KODE": "INSUD",
+        "OVERORDNET": null,
+        "VERDI": ""
+      }
+    ],
+    "JUSTERT_FRA": "2008-02-23",
+    "MEDLEM_FOLKETRYGDEN": {
+      "KODE": "MEDL1",
+      "VERDI": "JA"
+    },
+    "NYTTKRAV2": "",
+    "PERIODE": {
+      "ENDRING_PERIODE": "",
+      "ENDRING_PERIODE_BEGRUNNELSE": "",
+      "ENDRING_UNNTAK": "",
+      "ENDRING_UNNTAK_BEGRUNNELSE": "",
+      "NULLSTILL": "",
+      "PERIODE_KODE": "3.0"
+    },
+    "TIL_DATO": "2009-02-21",
+    "UTFALL": "JA",
+    "VEDTAKSVARIANT": "",
+    "VEDTAKTYPE": "O",
+    "VEDTAK_DATO": "2008-03-22",
+    "VILKAAR": [
+      {
+        "KODE": "18-67AAR2",
+        "STATUS": "J"
+      },
+      {
+        "KODE": "MEDLSKAP12",
+        "STATUS": "J"
+      },
+      {
+        "KODE": "AOINORGE2",
+        "STATUS": "V"
+      },
+      {
+        "KODE": "INTKTBFAL2",
+        "STATUS": "V"
+      },
+      {
+        "KODE": "A11-52",
+        "STATUS": "J"
+      },
+      {
+        "KODE": "YTELARBGI2",
+        "STATUS": "J"
+      },
+      {
+        "KODE": "IVLGANNEN2",
+        "STATUS": "J"
+      },
+      {
+        "KODE": "AIANNEN2",
+        "STATUS": "V"
+      },
+      {
+        "KODE": "STRAFFGJF2",
+        "STATUS": "V"
+      },
+      {
+        "KODE": "AAFAARBIS2",
+        "STATUS": "J"
+      },
+      {
+        "KODE": "ABIDRARAK2",
+        "STATUS": "J"
+      },
+      {
+        "KODE": "AAIUBEGRF2",
+        "STATUS": "V"
+      },
+      {
+        "KODE": "AAMEDVPLA2",
+        "STATUS": "V"
+      },
+      {
+        "KODE": "AABEHGSTUD",
+        "STATUS": "V"
+      },
+      {
+        "KODE": "AALANGUTRE",
+        "STATUS": "V"
+      },
+      {
+        "KODE": "AASYKDOSKA",
+        "STATUS": "V"
+      },
+      {
+        "KODE": "AAOPPLTILT",
+        "STATUS": "V"
+      },
+      {
+        "KODE": "AASYKSKADE",
+        "STATUS": "V"
+      },
+      {
+        "KODE": "AAANNENSYK",
+        "STATUS": ""
+      },
+      {
+        "KODE": "AAFERD2",
+        "STATUS": ""
+      },
+      {
+        "KODE": "AAFOPTILUO",
+        "STATUS": ""
+      },
+      {
+        "KODE": "AASAMMESYK",
+        "STATUS": ""
+      },
+      {
+        "KODE": "AASYKFORUO",
+        "STATUS": ""
+      },
+      {
+        "KODE": "AASYKTILUO",
+        "STATUS": ""
+      },
+      {
+        "KODE": "UVUT2",
+        "STATUS": ""
+      }
+    ]
+  }
+]
