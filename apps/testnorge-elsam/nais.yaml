@@ -28,6 +28,6 @@ spec:
     limits:
       cpu: 500m
       memory: 2048Mi
-  image: testnorge-elsam
+  image: testnorge-elsam:latest
   ingresses:
     - "https://testnorge-elsam.nais.preprod.local"
