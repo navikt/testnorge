@@ -76,6 +76,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 							virksomhetsnummer: ''
 						},
 						arbeidsforhold: {
+							arbeidsforholdId: '',
 							beregnetInntekt: {
 								beloep: ''
 							},

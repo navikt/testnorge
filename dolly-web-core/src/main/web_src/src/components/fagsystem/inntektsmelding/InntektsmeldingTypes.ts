@@ -44,6 +44,7 @@ export type Inntekter = {
 }
 
 export type Arbeidsforhold = {
+	arbeidsforholdId: string
 	beregnetInntekt: BeregnetInntekt
 	avtaltFerieListe?: Array<AvtaltFerie>
 	foersteFravaersdag?: string

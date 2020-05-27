@@ -18,6 +18,7 @@ export default ({ data }: ArbeidsforholdVisning) => {
 		<>
 			<h4>Arbeidsforhold</h4>
 			<div className="person-visning_content">
+				<TitleValue title="Arbeidsforhold-ID" value={data.arbeidsforholdId} />
 				<TitleValue title="Beløp" value={data.beregnetInntekt.beloep} />
 				<TitleValue
 					title="Årsak ved endring"

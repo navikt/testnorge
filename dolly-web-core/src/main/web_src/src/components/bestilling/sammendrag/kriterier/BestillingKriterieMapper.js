@@ -773,7 +773,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			),
 
 			obj('Virksomhet', inntekt.arbeidsgiver.orgnummer),
-
+			obj('Arbeidsforhold-ID', inntekt.arbeidsforhold.arbeidsforholdId),
 			obj('Beløp', inntekt.arbeidsforhold.beregnetInntekt.beloep),
 			obj(
 				'Årsak ved endring',

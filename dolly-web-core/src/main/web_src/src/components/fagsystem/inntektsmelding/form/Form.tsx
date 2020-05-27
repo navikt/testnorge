@@ -34,6 +34,7 @@ export const initialValues = {
 		virksomhetsnummer: ''
 	},
 	arbeidsforhold: {
+		arbeidsforholdId: '',
 		beregnetInntekt: {
 			beloep: ''
 		},
