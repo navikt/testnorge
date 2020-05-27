@@ -18,8 +18,9 @@ public class SyntetiseringService {
     private final FrikortSyntetisererenConsumer frikortSyntetisererenConsumer;
     private final KonverteringService konverteringService;
 
-    public List<String> hentSyntetiskeEgenandeler(Map<String, Integer> request) throws JAXBException {
+    public List<String> hentSyntetiskeEgenandelerSomXML(Map<String, Integer> request) throws JAXBException {
         var egenandeler = frikortSyntetisererenConsumer.hentSyntetiskeEgenandelerFraSyntRest(request);
+
         return konverteringService.konverterEgenandelerTilXmlString(egenandeler);
     }
 

@@ -1,5 +1,6 @@
 package no.nav.registre.frikort.config;
 
+import no.nav.registre.frikort.provider.rs.SyntetiseringController;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,7 +48,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("Testnorge-frikort")
-                .description("Testnorge-frikort tilbyr endepunkt for å lage syntetiske frikort....")
+                .description("Testnorge-frikort tilbyr endepunkt for å lage syntetiske egenandelsmeldinger.")
                 .version(appVersion)
                 .termsOfServiceUrl("https://nav.no")
                 .contact(new Contact("Fellesregistrene på NAV", "https://github.com/navikt/testnorge-frikort", null))
@@ -55,7 +56,6 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .licenseUrl("https://opensource.org/licenses/super-strict-license")
                 .build();
     }
-
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
