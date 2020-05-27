@@ -16,7 +16,6 @@
 
     <name>testnorge-medl</name>
     <description>Forvalter for syntetisering av medl data</description>
-
     <modules>
         <module>medl-core</module>
         <module>medl-local</module>

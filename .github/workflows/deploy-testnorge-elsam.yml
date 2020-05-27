@@ -7,7 +7,7 @@ on:
       - apps/testnorge-elsam/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/testnorge:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/testnorge-elsam:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -38,9 +38,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker build --tag testnorge-elsam . -f ./apps/testnorge-elsam/Dockerfile
+          docker build --tag ${VERSION} . -f ./apps/testnorge-elsam/Dockerfile
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
-          docker push testnorge-elsam
+          docker push ${VERSION}
       - name: Deploy to nais
         uses: nais/deploy/actions/deploy@v1
         env:

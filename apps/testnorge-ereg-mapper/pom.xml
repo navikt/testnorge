@@ -33,7 +33,6 @@
                 <artifactId>testnorge-common</artifactId>
                 <version>${testnorge-common.version}</version>
             </dependency>
-
             <!--LOGGING-->
             <dependency>
                 <groupId>net.logstash.logback</groupId>
