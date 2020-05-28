@@ -56,14 +56,10 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                         }
                     }
                 })
-                .
-
-                        register();
+                .register();
 
         factory.classMap(RsGateadresse.class, VegadresseForPost.class)
-                .
-
-                        customize(new CustomMapper<RsGateadresse, VegadresseForPost>() {
+                .customize(new CustomMapper<RsGateadresse, VegadresseForPost>() {
                             @Override
                             public void mapAtoB(RsGateadresse gateadresse, VegadresseForPost vegadresse, MappingContext context) {
 
@@ -73,17 +69,11 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                                 vegadresse.setPostnummer(gateadresse.getPostnr());
                             }
                         })
-                .
-
-                        byDefault()
-                .
-
-                        register();
+                .byDefault()
+                .register();
 
         factory.classMap(RsPostadresse.class, PostadresseIFrittFormat.class)
-                .
-
-                        customize(new CustomMapper<RsPostadresse, PostadresseIFrittFormat>() {
+                .customize(new CustomMapper<RsPostadresse, PostadresseIFrittFormat>() {
                             @Override
                             public void mapAtoB(RsPostadresse postadresse, PostadresseIFrittFormat postadresseIFrittFormat, MappingContext context) {
 
@@ -96,14 +86,10 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                                 }
                             }
                         })
-                .
-
-                        register();
+                .register();
 
         factory.classMap(RsPostadresse.class, UtenlandskAdresseIFrittFormat.class)
-                .
-
-                        customize(new CustomMapper<RsPostadresse, UtenlandskAdresseIFrittFormat>() {
+                .customize(new CustomMapper<RsPostadresse, UtenlandskAdresseIFrittFormat>() {
                             @Override
                             public void mapAtoB(RsPostadresse postadresse, UtenlandskAdresseIFrittFormat utenlandskAdresse, MappingContext context) {
 
@@ -117,8 +103,6 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                                 utenlandskAdresse.setLandkode(postadresse.getPostLand());
                             }
                         })
-                .
-
-                        register();
+                .register();
     }
 }
