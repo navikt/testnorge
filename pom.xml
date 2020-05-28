@@ -22,6 +22,7 @@
         <jaxb-impl.version>2.3.1</jaxb-impl.version>
         <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
+        <mq-jms-spring-boot-starter.version>2.0.0</mq-jms-spring-boot-starter.version>
         <springfox.version>2.9.2</springfox.version>
         <spring.boot.maven.plugin.version>2.1.8.RELEASE</spring.boot.maven.plugin.version>
         <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
@@ -126,6 +127,13 @@
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
             <version>${jaxb-impl.version}</version>
+        </dependency>
+
+        <!--MQ-->
+        <dependency>
+            <groupId>com.ibm.mq</groupId>
+            <artifactId>mq-jms-spring-boot-starter</artifactId>
+            <version>${mq-jms-spring-boot-starter.version}</version>
         </dependency>
 
     </dependencies>

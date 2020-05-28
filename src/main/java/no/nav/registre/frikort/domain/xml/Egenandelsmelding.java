@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
 @Builder
-@XmlRootElement(name = ("egenandelsmelding"))
+@XmlRootElement(name = ("Egenandelsmelding"))
 public class Egenandelsmelding {
 
     private final String xmlns = "http://nav.no/frikort/common/domain/schema";
