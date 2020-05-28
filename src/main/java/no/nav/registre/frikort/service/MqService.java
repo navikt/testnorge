@@ -1,17 +1,19 @@
 package no.nav.registre.frikort.service;
 
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.jms.core.JmsTemplate;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
+@NoArgsConstructor(force=true)
 public class MqService {
 
-    @Autowired
-    private JmsTemplate jmsTemplate;
+    private final JmsTemplate jmsTemplate;
 
     @Value("${mq.q2.queue.name}")
     private String koeNavn;
