@@ -26,5 +26,6 @@ Migrering av andre repoer inn i monorepo.
 git remote add -f $REPO_NAVN https://github.com/navikt/$REPO_NAVN.git
 git merge -s ours --no-commit $REPO_NAVN/master --allow-unrelated-histories
 git read-tree --prefix=apps/$REPO_NAVN/ -u $REPO_NAVN/master
-git commit -m 'Migering av $REPO_NAVN inn i testnorge'
+git commit -m "Migering av $REPO_NAVN inn i testnorge"
+git push
 ```
