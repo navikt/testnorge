@@ -1,6 +1,8 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
 import static java.util.Objects.isNull;
+import static no.nav.dolly.domain.resultset.tpsf.InnvandretUtvandret.InnUtvandret.INNVANDRET;
+import static no.nav.dolly.domain.resultset.tpsf.InnvandretUtvandret.InnUtvandret.UTVANDRET;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 import java.time.LocalDateTime;
@@ -52,6 +54,14 @@ public class Person {
     private String telefonnummer_2;
     private Boolean utenFastBopel;
     private String personStatus;
+    private List<InnvandretUtvandret> innvandretUtvandret;
+
+    public List<InnvandretUtvandret> getIdentHistorikk() {
+        if (isNull(innvandretUtvandret)) {
+            innvandretUtvandret = new ArrayList<>();
+        }
+        return innvandretUtvandret;
+    }
 
     public List<Relasjon> getRelasjoner() {
 
@@ -132,5 +142,13 @@ public class Person {
 
     public boolean isDoedFoedt() {
         return "FDAT".equals(getIdenttype());
+    }
+
+    public boolean isInnvandret() {
+        return !getInnvandretUtvandret().isEmpty() && INNVANDRET == getInnvandretUtvandret().get(0).getInnutvandret();
+    }
+
+    public boolean isUtvandret() {
+        return !getInnvandretUtvandret().isEmpty() && UTVANDRET == getInnvandretUtvandret().get(0).getInnutvandret();
     }
 }

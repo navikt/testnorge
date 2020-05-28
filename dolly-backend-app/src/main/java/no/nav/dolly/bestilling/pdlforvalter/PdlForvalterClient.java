@@ -27,6 +27,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlInnflytting;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlForeldreansvar;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFolkeregisterpersonstatus;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
@@ -38,6 +39,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlTelefonnummer;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlUtflytting;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
@@ -174,6 +176,8 @@ public class PdlForvalterClient implements ClientRegister {
                 sendOppholdsadresse(person);
                 sendKontaktadresse(person);
                 sendBostedadresse(person);
+                sendInnflytting(person);
+                sendUtflytting(person);
                 sendFolkeregisterpersonstatus(person);
                 sendStatsborgerskap(person);
                 sendFamilierelasjoner(person);
@@ -305,6 +309,20 @@ public class PdlForvalterClient implements ClientRegister {
             pdlForvalterConsumer.postKontaktadresse(mapperFacade.map(
                     PdlPersonAdresseWrapper.builder().person(person).adressetype(UTENLANDSK).build(),
                     PdlKontaktadresse.class), person.getIdent());
+        }
+    }
+
+    private void sendInnflytting(Person person) {
+
+        if (person.isInnvandret()) {
+            pdlForvalterConsumer.postInnflytting(mapperFacade.map(person, PdlInnflytting.class), person.getIdent());
+        }
+    }
+
+    private void sendUtflytting(Person person) {
+
+        if (person.isUtvandret()) {
+            pdlForvalterConsumer.postUtflytting(mapperFacade.map(person, PdlUtflytting.class), person.getIdent());
         }
     }
 
