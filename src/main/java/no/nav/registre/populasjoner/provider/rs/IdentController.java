@@ -1,6 +1,7 @@
 package no.nav.registre.populasjoner.provider.rs;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,35 +24,51 @@ public class IdentController {
     private final IdentService identService;
 
     @GetMapping("{fnr}")
-    public Ident findByFnr(
+    public ResponseEntity<Ident> findByFnr(
             @PathVariable String fnr
     ) {
-        return identService.findIdentByFnr(fnr);
+        var ident = identService.findIdentByFnr(fnr);
+        if (ident != null) {
+            return ResponseEntity.ok(ident);
+        }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping
     public ResponseEntity<List<Ident>> findAllIdents() {
-        return ResponseEntity.ok(identService.findAllIdents());
+        var idents = identService.findAllIdents();
+        if (idents != null && !idents.isEmpty()) {
+            return ResponseEntity.ok(identService.findAllIdents());
+        }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(idents);
     }
 
     @PostMapping("{fnr}")
-    public Ident save(
+    public ResponseEntity<Ident> save(
             @PathVariable String fnr
     ) {
-        return identService.saveIdentWithFnr(fnr);
+        return ResponseEntity.status(HttpStatus.CREATED).body(identService.saveIdentWithFnr(fnr));
     }
 
     @PutMapping("{fnr}")
-    public Ident updateByFnr(
+    public ResponseEntity<Ident> updateByFnr(
             @PathVariable String fnr
     ) {
-        return identService.updateIdentWithFnr(fnr);
+        var ident = identService.updateIdentWithFnr(fnr);
+        if (ident != null) {
+            return ResponseEntity.ok(ident);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("{fnr}")
-    public Ident deleteByFnr(
+    public ResponseEntity<Ident> deleteByFnr(
             @PathVariable String fnr
     ) {
-        return identService.deleteIdentWithFnr(fnr);
+        var ident = identService.deleteIdentWithFnr(fnr);
+        if (ident != null) {
+            return ResponseEntity.ok(ident);
+        }
+        return ResponseEntity.notFound().build();
     }
 }
