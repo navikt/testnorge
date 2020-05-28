@@ -27,6 +27,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlForeldreansvar;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
@@ -174,6 +175,7 @@ public class PdlForvalterClient implements ClientRegister {
                 sendBostedadresse(person);
                 sendStatsborgerskap(person);
                 sendFamilierelasjoner(person);
+                sendForeldreansvar(person);
                 sendSivilstand(person);
                 sendTelefonnummer(person);
                 sendDoedsfall(person);
@@ -218,6 +220,20 @@ public class PdlForvalterClient implements ClientRegister {
                         person.getIdent());
             }
         });
+    }
+
+    private void sendForeldreansvar(Person person) {
+
+        if (!person.isMyndig()) {
+            boolean fellesAnsvar = person.getRelasjoner().stream().filter(Relasjon::isForeldre).count() == 2;
+            person.getRelasjoner().forEach(relasjon -> {
+                if (relasjon.isForeldre()) {
+                    relasjon.setFellesAnsvar(fellesAnsvar);
+                    pdlForvalterConsumer.postForeldreansvar(
+                            mapperFacade.map(relasjon, PdlForeldreansvar.class), person.getIdent());
+                }
+            });
+        }
     }
 
     private void sendSivilstand(Person person) {

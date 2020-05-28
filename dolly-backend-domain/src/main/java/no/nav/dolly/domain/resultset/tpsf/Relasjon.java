@@ -2,7 +2,9 @@ package no.nav.dolly.domain.resultset.tpsf;
 
 import static no.nav.dolly.domain.resultset.tpsf.Relasjon.ROLLE.BARN;
 import static no.nav.dolly.domain.resultset.tpsf.Relasjon.ROLLE.EKTEFELLE;
+import static no.nav.dolly.domain.resultset.tpsf.Relasjon.ROLLE.FAR;
 import static no.nav.dolly.domain.resultset.tpsf.Relasjon.ROLLE.FOEDSEL;
+import static no.nav.dolly.domain.resultset.tpsf.Relasjon.ROLLE.MOR;
 import static no.nav.dolly.domain.resultset.tpsf.Relasjon.ROLLE.PARTNER;
 
 import lombok.Getter;
@@ -19,6 +21,7 @@ public class Relasjon {
     private Person personRelasjonMed;
     private ROLLE relasjonTypeNavn;
     private Person personRelasjonTil;
+    private Boolean fellesAnsvar;
 
     public boolean isPartner() {
         return PARTNER == getRelasjonTypeNavn() || EKTEFELLE == getRelasjonTypeNavn();
@@ -26,5 +29,9 @@ public class Relasjon {
 
     public boolean isBarn() {
         return FOEDSEL == getRelasjonTypeNavn() || BARN == getRelasjonTypeNavn();
+    }
+
+    public boolean isForeldre() {
+        return MOR == getRelasjonTypeNavn() || FAR == getRelasjonTypeNavn();
     }
 }
