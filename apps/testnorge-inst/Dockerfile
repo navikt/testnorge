@@ -1,6 +1,8 @@
 FROM navikt/java:11
-LABEL maintainer="Team Registre"
+LABEL maintainer="Team Dolly"
 
-ADD "inst-core/target/testnorge-inst-app.jar" /app/app.jar
+ENV JAVA_OPTS="-Dspring.profiles.active=prod"
+
+ADD apps/testnorge-inst/inst-core/target/testnorge-inst-app.jar /app/app.jar
 
 EXPOSE 8080
