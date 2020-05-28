@@ -34,14 +34,16 @@ export const InntektstubVisning = ({ liste, loading }: InntekstubVisning) => {
 	if (loading) return <Loading label="Laster Inntektstub-data" />
 	if (!liste) return null
 
+	const sortedData = Array.isArray(liste) ? liste.slice().reverse() : liste
+
 	return (
 		<div>
 			<SubOverskrift label="A-ordningen (Inntektskomponenten)" iconKind="inntektstub" />
 			<DollyFieldArray
 				header="Inntektsinformasjon"
 				getHeader={getHeader}
-				data={liste}
-				expandable={liste.length > 1}
+				data={sortedData}
+				expandable={sortedData.length > 1}
 			>
 				{(inntektsinformasjon: Inntektsinformasjon) => (
 					<React.Fragment>
