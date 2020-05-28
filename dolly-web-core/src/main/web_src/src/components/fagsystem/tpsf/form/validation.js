@@ -2,7 +2,13 @@ import * as Yup from 'yup'
 import _get from 'lodash/get'
 import { isAfter, addDays } from 'date-fns'
 import Dataformatter from '~/utils/DataFormatter'
-import { requiredString, ifPresent, ifKeyHasValue, messages } from '~/utils/YupValidations'
+import {
+	requiredString,
+	ifPresent,
+	ifKeyHasValue,
+	messages,
+	requiredDate
+} from '~/utils/YupValidations'
 
 const boadresse = Yup.object({
 	gateadresse: ifKeyHasValue(
@@ -201,7 +207,10 @@ const barn = Yup.array()
 			kjonn: Yup.string().nullable(),
 			barnType: requiredString,
 			partnerNr: Yup.number().nullable(),
-			borHos: requiredString,
+			borHos: Yup.mixed().when('doedsdato', {
+				is: val => val === undefined,
+				then: requiredString
+			}),
 			erAdoptert: Yup.boolean(),
 			alder: Yup.number()
 				.transform(num => (isNaN(num) ? undefined : num))
@@ -222,7 +231,12 @@ const barn = Yup.array()
 			utenFastBopel: Yup.boolean(),
 			boadresse: Yup.object({
 				kommunenr: Yup.string().nullable()
-			})
+			}),
+			foedselsdato: Yup.mixed().when('borHos', {
+				is: val => val === undefined,
+				then: requiredDate
+			}),
+			doedsdato: Yup.date()
 		})
 	)
 	.nullable()

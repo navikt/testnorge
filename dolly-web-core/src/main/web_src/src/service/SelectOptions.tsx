@@ -8,6 +8,12 @@ const selectOptions: SelectOptions = {
 		{ value: 'DNR', label: 'DNR' },
 		{ value: 'BOST', label: 'BOST' }
 	],
+	identtypeBarn: [
+		{ value: 'FNR', label: 'FNR' },
+		{ value: 'DNR', label: 'DNR' },
+		{ value: 'BOST', label: 'BOST' },
+		{ value: 'FDAT', label: 'FDAT' }
+	],
 	// kjonn: [{ value: 'K', label: 'Kvinne' }, { value: 'M', label: 'Mann' }],
 	kjonnBarn: [
 		{ value: 'K', label: 'Jente' },
