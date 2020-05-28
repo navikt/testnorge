@@ -1,0 +1,1 @@
+create table ereg_backup as (select * from ereg);

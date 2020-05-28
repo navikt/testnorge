@@ -1,0 +1,1 @@
+create table tps_identer as (select * from tps);
