@@ -18,6 +18,7 @@ NAV_TOKEN må lages i din github konto. (Dette er noe som vi jobber med å fjern
 ![Deploy testnorge-medl](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-medl/badge.svg)
 ![Deploy testnorge-arena](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-arena/badge.svg)
 ![Deploy testnorge-skd](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-skd/badge.svg)
+![Deploy testnorge-inst](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-inst/badge.svg)
 
 ## Migrering inn i monorepo
 
