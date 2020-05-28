@@ -53,6 +53,7 @@ public class Person {
     private String telefonLandskode_2;
     private String telefonnummer_2;
     private Boolean utenFastBopel;
+    private String personStatus;
     private List<InnvandretUtvandret> innvandretUtvandret;
 
     public List<InnvandretUtvandret> getIdentHistorikk() {
