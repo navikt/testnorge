@@ -51,6 +51,7 @@ public class Person {
     private String telefonLandskode_2;
     private String telefonnummer_2;
     private Boolean utenFastBopel;
+    private String personStatus;
 
     public List<Relasjon> getRelasjoner() {
 
