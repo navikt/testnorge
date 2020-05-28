@@ -34,7 +34,7 @@ import java.util.Map;
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
 @TestPropertySource(
-        locations = {"classpath:application-test.properties"}
+        locations = {"classpath:application-test.properties" }
 )
 public class SyntetiseringControllerSyntFrikortIntegrationTest {
 
@@ -58,7 +58,7 @@ public class SyntetiseringControllerSyntFrikortIntegrationTest {
 
         JsonTestHelper.stubPost(sendTilSyntFrikortUrlPattern, request, response, objectMapper);
 
-        mvc.perform(post("/api/v1/syntetisering/generer")
+        mvc.perform(post("/api/v1/syntetisering/generer?leggPaaKoe=false")
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
