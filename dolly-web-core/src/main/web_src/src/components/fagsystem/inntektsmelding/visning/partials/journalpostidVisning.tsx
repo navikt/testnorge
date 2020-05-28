@@ -29,12 +29,16 @@ export default ({ ident }: JournalpostId) => (
 		render={(data: Array<Response>) =>
 			data.length > 0 && (
 				<DollyFieldArray data={data} header="Journalpost-Id" nested>
-					{(id: Response, idx: number) => (
-						<div key={idx} className="person-visning_content">
-							<TitleValue title="Miljø" value={id.miljoe} />
-							<TitleValue title="Journalpost-id" value={id.transaksjonId} />
-						</div>
-					)}
+					{(id: Response, idx: number) => {
+						const transaksjonId = JSON.parse(id.transaksjonId)
+						return (
+							<div key={idx} className="person-visning_content">
+								<TitleValue title="Miljø" value={id.miljoe} />
+								<TitleValue title="Journalpost-id" value={transaksjonId.journalpostId} />
+								<TitleValue title="Dokumentinfo-id" value={transaksjonId.dokumentInfoId} />
+							</div>
+						)
+					}}
 				</DollyFieldArray>
 			)
 		}

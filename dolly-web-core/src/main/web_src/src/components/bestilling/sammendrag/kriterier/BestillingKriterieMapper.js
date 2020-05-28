@@ -772,7 +772,11 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				Formatters.formatDate(inntekt.avsendersystem.innsendingstidspunkt)
 			),
 
-			obj('Virksomhet', inntekt.arbeidsgiver.orgnummer),
+			obj('Arbeidsgiver (orgnr)', inntekt.arbeidsgiver && inntekt.arbeidsgiver.virksomhetsnummer),
+			obj(
+				'Arbeidsgiver (fnr/dnr/bost)',
+				inntekt.arbeidsgiverPrivat && inntekt.arbeidsgiverPrivat.arbeidsgiverFnr
+			),
 			obj('Arbeidsforhold-ID', inntekt.arbeidsforhold.arbeidsforholdId),
 			obj('Beløp', inntekt.arbeidsforhold.beregnetInntekt.beloep),
 			obj(

@@ -33,7 +33,8 @@ export type Inntekter = {
 	startdatoForeldrepengeperiode: string
 	ytelse: string //enum?
 	arbeidsforhold: Arbeidsforhold
-	arbeidsgiver: Arbeidsgiver
+	arbeidsgiver?: Arbeidsgiver
+	arbeidsgiverPrivat?: ArbeidsgiverPrivat
 	avsendersystem?: Avsendersystem
 	gjenopptakelseNaturalytelseListe?: Array<Naturalytelse>
 	opphoerAvNaturalytelseListe?: Array<Naturalytelse>
@@ -64,6 +65,11 @@ export type Arbeidsgiver = {
 	kontaktinformasjon: { kontaktinformasjonNavn: string; telefonnummer: string }
 	virksomhetsnummer: string
 	orgnummer?: string
+}
+
+export type ArbeidsgiverPrivat = {
+	arbeidsgiverFnr: string
+	kontaktinformasjon: { kontaktinformasjonNavn: string; telefonnummer: string }
 }
 
 export type Avsendersystem = {
