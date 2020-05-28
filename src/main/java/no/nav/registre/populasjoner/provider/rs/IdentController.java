@@ -40,7 +40,7 @@ public class IdentController {
         return identService.updateIdentWithId(id);
     }
 
-    @DeleteMapping("{id}€")
+    @DeleteMapping("{id}")
     public Ident delete(
             @PathVariable Long id
     ) {
