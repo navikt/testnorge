@@ -30,6 +30,7 @@
         <sonar.login>${SONAR_LOGIN}</sonar.login>
         <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
         <springfox.version>2.9.2</springfox.version>
+        <hibernate-validator.verison>6.1.5.Final</hibernate-validator.verison>
     </properties>
 
 
@@ -49,6 +50,12 @@
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger-ui</artifactId>
                 <version>${springfox.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate-validator.verison}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
