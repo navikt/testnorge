@@ -5,23 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.8.RELEASE</version>
+        <artifactId>apps</artifactId>
+        <groupId>no.nav.registre.testnorge</groupId>
+        <version>1.0-SNAPSHOT</version>
     </parent>
-
-    <groupId>no.nav.registre</groupId>
     <artifactId>testnorge-statisk-data-forvalter</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
 
     <properties>
-        <application.version>${project.version}</application.version>
         <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
-        <springfox.version>2.4.0</springfox.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
-        <spring.boot.maven.plugin.version>2.1.8.RELEASE</spring.boot.maven.plugin.version>
         <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
-        <maven-pmd-plugin.version>3.13.0</maven-pmd-plugin.version>
         <commons-csv.version>1.8</commons-csv.version>
         <testnorge-common.version>1.2020.05.23-15.56-e68c00984947</testnorge-common.version>
     </properties>
@@ -103,6 +96,16 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>6.1.5.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>2.0.0.Final</version>
+        </dependency>
 
         <!--NETWORK-->
         <dependency>
@@ -134,30 +137,12 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>${springfox.version}</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
-            <version>${springfox.version}</version>
-        </dependency>
-
-        <!--CODE ANALYSIS-->
-        <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-pmd-plugin</artifactId>
-            <version>${maven-pmd-plugin.version}</version>
-            <type>maven-plugin</type>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>github-package-registry-navikt</id>
-            <url>https://maven.pkg.github.com/navikt/maven-release</url>
-        </repository>
-    </repositories>
-
     <build>
         <finalName>testnorge-statisk-data-forvalter</finalName>
         <plugins>
@@ -170,26 +155,11 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler-plugin.version}</version>
                 <configuration>
+                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
                     <source>1.11</source>
                     <target>1.11</target>
                     <release>11</release>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>${maven-pmd-plugin.version}</version>
-                <configuration>
-                    <failOnViolation>false</failOnViolation>
-                    <printFailingErrors>true</printFailingErrors>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
