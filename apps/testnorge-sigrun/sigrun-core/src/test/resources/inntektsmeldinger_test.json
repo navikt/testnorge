@@ -1,0 +1,50 @@
+[
+  {
+    "grunnlag": [
+      {
+        "tekniskNavn": "personinntektLoenn",
+        "verdi": "269573"
+      }
+    ],
+    "inntektsaar": "2018",
+    "personidentifikator": "12345678901",
+    "testdataEier": "synt_test",
+    "tjeneste": "Beregnet skatt"
+  },
+  {
+    "grunnlag": [
+      {
+        "tekniskNavn": "personinntektLoenn",
+        "verdi": "24002"
+      }
+    ],
+    "inntektsaar": "2018",
+    "personidentifikator": "12345678901",
+    "testdataEier": "synt_test",
+    "tjeneste": "Beregnet skatt"
+  },
+  {
+    "grunnlag": [
+      {
+        "tekniskNavn": "personinntektNaering",
+        "verdi": "3087"
+      }
+    ],
+    "inntektsaar": "2018",
+    "personidentifikator": "12345678901",
+    "testdataEier": "synt_test",
+    "tjeneste": "Beregnet skatt"
+  },
+  {
+    "grunnlag": [
+      {
+        "tekniskNavn": "personinntektFiskeFangstFamiliebarnehage",
+        "verdi": "5809"
+      }
+    ],
+    "inntektsaar": "2018",
+    "personidentifikator": "12345678901",
+    "testdataEier": "synt_test",
+    "tjeneste": "Beregnet skatt"
+  }
+]
