@@ -8,7 +8,7 @@ import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFiel
 import { Alder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/alder/Alder'
 import { Diskresjonskoder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/diskresjonskoder/Diskresjonskoder'
 import Formatters from '~/utils/DataFormatter'
-import useBoolean from '~/utils/hooks/useBoolean'
+import _get from 'lodash/get'
 
 const initialValues = {
 	identtype: 'FNR',
@@ -24,7 +24,7 @@ const initialValues = {
 	statsborgerskapRegdato: ''
 }
 
-const initialValuesDoedfoedt = {
+export const initialValuesDoedfoedt = {
 	identtype: 'FDAT',
 	kjonn: '',
 	barnType: '',
@@ -34,7 +34,20 @@ const initialValuesDoedfoedt = {
 }
 
 export const Barn = ({ formikBag }) => {
-	const [isDoedfoedt, setDoedfoedtTrue, setDoedfoedtFalse] = useBoolean(false)
+	const handleIdenttypeChange = (path, ident) => {
+		if (ident.value === 'FDAT') {
+			formikBag.setFieldValue(`${path}`, initialValuesDoedfoedt)
+		} else {
+			formikBag.setFieldValue(`${path}`, initialValues)
+			formikBag.setFieldValue(`${path}.identtype`, ident.value)
+		}
+	}
+
+	const handleFoedselsdatoChange = (path, dato) => {
+		formikBag.setFieldValue(`${path}.foedselsdato`, dato)
+		formikBag.setFieldValue(`${path}.doedsdato`, dato)
+	}
+
 	const getOptionsPartnerNr = () => {
 		const partnere = formikBag.values.tpsf.relasjoner.partnere
 		const options = []
@@ -49,88 +62,78 @@ export const Barn = ({ formikBag }) => {
 
 	initialValues.alder = Formatters.randomIntInRange(0, 17)
 
-	const handleIdenttypeChange = (path, ident) => {
-		if (ident.value === 'FDAT') {
-			setDoedfoedtTrue()
-			formikBag.setFieldValue(`${path}`, initialValuesDoedfoedt)
-		} else {
-			setDoedfoedtFalse()
-			formikBag.setFieldValue(`${path}`, initialValues)
-			formikBag.setFieldValue(`${path}.identtype`, ident.value)
-		}
-	}
-
-	const handleFoedselsdatoChange = (path, dato) => {
-		formikBag.setFieldValue(`${path}.foedselsdato`, dato)
-		formikBag.setFieldValue(`${path}.doedsdato`, dato)
-	}
-
 	return (
 		<FormikDollyFieldArray name="tpsf.relasjoner.barn" header="Barn" newEntry={initialValues}>
-			{(path, idx) => (
-				<React.Fragment key={idx}>
-					<FormikSelect
-						name={`${path}.identtype`}
-						label="Identtype"
-						options={Options('identtypeBarn')}
-						onChange={ident => handleIdenttypeChange(path, ident)}
-						isClearable={false}
-					/>
-					<FormikSelect name={`${path}.kjonn`} label="Kjønn" options={Options('kjonnBarn')} />
-					<FormikSelect
-						name={`${path}.barnType`}
-						label="Foreldre"
-						options={Options('barnType')}
-						isClearable={false}
-					/>
-					{formikBag.values.tpsf.relasjoner.barn[idx].barnType === 'DITT' &&
-						formikBag.values.tpsf.relasjoner.partnere && (
-							<FormikSelect
-								name={`${path}.partnerNr`}
-								label="Forelder"
-								options={optionsPartnerNr}
-							/>
-						)}
-					{formikBag.values.tpsf.relasjoner.barn[idx].barnType === 'FELLES' &&
-						formikBag.values.tpsf.relasjoner.partnere && (
-							<FormikSelect
-								name={`${path}.partnerNr`}
-								label="Forelder 2"
-								options={optionsPartnerNr}
-							/>
-						)}
-					{!isDoedfoedt && (
+			{(path, idx) => {
+				const isDoedfoedt = _get(formikBag.values, `${path}.identtype`) === 'FDAT'
+				return (
+					<React.Fragment key={idx}>
 						<FormikSelect
-							name={`${path}.borHos`}
-							label="Bor hos"
-							options={Options('barnBorHos')}
+							name={`${path}.identtype`}
+							label="Identtype"
+							options={Options('identtypeBarn')}
+							onChange={ident => handleIdenttypeChange(path, ident)}
 							isClearable={false}
 						/>
-					)}
-					{!isDoedfoedt && (
-						<FormikCheckbox name={`${path}.erAdoptert`} label="Er adoptert" checkboxMargin />
-					)}
-					{!isDoedfoedt && (
+						<FormikSelect name={`${path}.kjonn`} label="Kjønn" options={Options('kjonnBarn')} />
 						<FormikSelect
-							name={`${path}.statsborgerskap`}
-							label="Statsborgerskap"
-							kodeverk={AdresseKodeverk.StatsborgerskapLand}
+							name={`${path}.barnType`}
+							label="Foreldre"
+							options={Options('barnType')}
+							isClearable={false}
 						/>
-					)}
-					{!isDoedfoedt && (
-						<FormikDatepicker name={`${path}.statsborgerskapRegdato`} label="Statsborgerskap fra" />
-					)}
-					{!isDoedfoedt && <Diskresjonskoder basePath={path} formikBag={formikBag} />}
-					{!isDoedfoedt && <Alder basePath={path} formikBag={formikBag} title="Alder" />}
-					{isDoedfoedt && (
-						<FormikDatepicker
-							name={`${path}.foedselsdato`}
-							label="Dato født"
-							onChange={dato => handleFoedselsdatoChange(path, dato)}
-						/>
-					)}
-				</React.Fragment>
-			)}
+						{formikBag.values.tpsf.relasjoner.barn[idx].barnType === 'DITT' &&
+							formikBag.values.tpsf.relasjoner.partnere && (
+								<FormikSelect
+									name={`${path}.partnerNr`}
+									label="Forelder"
+									options={optionsPartnerNr}
+								/>
+							)}
+						{formikBag.values.tpsf.relasjoner.barn[idx].barnType === 'FELLES' &&
+							formikBag.values.tpsf.relasjoner.partnere && (
+								<FormikSelect
+									name={`${path}.partnerNr`}
+									label="Forelder 2"
+									options={optionsPartnerNr}
+								/>
+							)}
+						{!isDoedfoedt && (
+							<FormikSelect
+								name={`${path}.borHos`}
+								label="Bor hos"
+								options={Options('barnBorHos')}
+								isClearable={false}
+							/>
+						)}
+						{!isDoedfoedt && (
+							<FormikCheckbox name={`${path}.erAdoptert`} label="Er adoptert" checkboxMargin />
+						)}
+						{!isDoedfoedt && (
+							<FormikSelect
+								name={`${path}.statsborgerskap`}
+								label="Statsborgerskap"
+								kodeverk={AdresseKodeverk.StatsborgerskapLand}
+							/>
+						)}
+						{!isDoedfoedt && (
+							<FormikDatepicker
+								name={`${path}.statsborgerskapRegdato`}
+								label="Statsborgerskap fra"
+							/>
+						)}
+						{!isDoedfoedt && <Diskresjonskoder basePath={path} formikBag={formikBag} />}
+						{!isDoedfoedt && <Alder basePath={path} formikBag={formikBag} title="Alder" />}
+						{isDoedfoedt && (
+							<FormikDatepicker
+								name={`${path}.foedselsdato`}
+								label="Dato født"
+								onChange={dato => handleFoedselsdatoChange(path, dato)}
+							/>
+						)}
+					</React.Fragment>
+				)
+			}}
 		</FormikDollyFieldArray>
 	)
 }

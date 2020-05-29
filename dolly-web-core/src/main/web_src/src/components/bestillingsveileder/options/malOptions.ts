@@ -83,9 +83,15 @@ const getUpdatedTpsfData = (tpsfData: any) => {
 			)
 		}
 		if (tpsfData.relasjoner.barn) {
-			newTpsfData.relasjoner.barn = newTpsfData.relasjoner.barn.map((barn: any) =>
-				updateData(barn, initialValues.barn)
-			)
+			newTpsfData.relasjoner.barn = newTpsfData.relasjoner.barn.map((barn: any) => {
+				if (barn.identtype === 'FDAT') {
+					const newData = updateData(barn, initialValues.barnDoedfoedt)
+					newData.foedselsdato = newData.doedsdato
+					return newData
+				} else {
+					return updateData(barn, initialValues.barn)
+				}
+			})
 		}
 	}
 	if (tpsfData.boadresse) {
