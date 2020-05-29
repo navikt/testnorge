@@ -20,5 +20,6 @@
         <module>testnorge-inst</module>
         <module>testnorge-statisk-data-forvalter</module>
         <module>testnorge-tp</module>
+        <module>testnorge-hodejegeren</module>
     </modules>
 </project>

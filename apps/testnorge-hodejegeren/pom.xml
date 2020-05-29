@@ -5,14 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.6.RELEASE</version>
+        <artifactId>apps</artifactId>
+        <groupId>no.nav.registre.testnorge</groupId>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>no.nav.registre</groupId>
     <artifactId>testnorge-hodejegeren</artifactId>
-    <version>2.17.1</version>
     <packaging>pom</packaging>
 
     <name>testnorge-hodejegeren</name>
@@ -24,12 +22,10 @@
     </modules>
 
     <properties>
-        <application.version>${project.version}</application.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
         <spring-boot-admin.version>2.0.2</spring-boot-admin.version>
-        <swagger.version>2.9.2</swagger.version>
         <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
         <person-tps-avstemming-v1.version>1.0.2</person-tps-avstemming-v1.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
@@ -53,11 +49,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <repositories>
-        <repository>
-            <id>github-package-registry-navikt</id>
-            <url>https://maven.pkg.github.com/navikt/maven-release</url>
-        </repository>
-    </repositories>
 </project>

@@ -5,16 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>no.nav.registre</groupId>
         <artifactId>testnorge-hodejegeren</artifactId>
-        <version>2.17.1</version>
+        <groupId>no.nav.registre.testnorge</groupId>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>hodejegeren-local</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>no.nav.registre</groupId>
+            <groupId>no.nav.registre.testnorge</groupId>
             <artifactId>hodejegeren-core</artifactId>
             <version>${project.version}</version>
         </dependency>

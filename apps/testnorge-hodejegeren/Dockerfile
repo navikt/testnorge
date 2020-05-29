@@ -1,6 +1,8 @@
 FROM navikt/java:11
-LABEL maintainer="Team Registre"
+LABEL maintainer="Team Dolly"
 
-ADD "hodejegeren-core/target/testnorge-hodejegeren-app.jar" /app/app.jar
+ADD apps/testnorge-hodejegeren/hodejegeren-core/target/testnorge-hodejegeren-app.jar /app/app.jar
+
+ENV JAVA_OPTS="-Dspring.profiles.active=prod"
 
 EXPOSE 8080
