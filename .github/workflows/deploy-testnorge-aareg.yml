@@ -46,28 +46,31 @@ jobs:
     needs: build-jar
     runs-on: ubuntu-latest
     steps:
-      uses: nais/deploy/actions/deploy@v1
-      env:
-        APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-        CLUSTER: dev-fss
-        RESOURCE: apps/testnorge-aareg/nais.yaml
+      - uses: actions/checkout@v1
+      - uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-fss
+          RESOURCE: apps/testnorge-aareg/nais.yaml
   deploy-t6:
     name: "Deploy t6"
     needs: build-jar
     runs-on: ubuntu-latest
     steps:
-      uses: nais/deploy/actions/deploy@v1
-      env:
-        APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-        CLUSTER: dev-fss
-        RESOURCE: apps/testnorge-aareg/nais_t6.yaml
+      - uses: actions/checkout@v1
+      - uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-fss
+          RESOURCE: apps/testnorge-aareg/nais_t6.yaml
   deploy-u2:
     name: "Deploy u2"
     needs: build-jar
     runs-on: ubuntu-latest
     steps:
-      uses: nais/deploy/actions/deploy@v1
-      env:
-        APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-        CLUSTER: dev-fss
-        RESOURCE: apps/testnorge-aareg/nais_u2.yaml
+      - uses: actions/checkout@v1
+      - uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-fss
+          RESOURCE: apps/testnorge-aareg/nais_u2.yaml
