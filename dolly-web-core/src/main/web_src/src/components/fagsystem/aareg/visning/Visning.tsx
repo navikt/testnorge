@@ -53,7 +53,7 @@ export const AaregVisning = ({ liste, loading }: AaregVisning) => {
 	if (loading) return <Loading label="Laster Aareg-data" />
 	if (!liste) return null
 
-	const sortedData = Array.isArray(liste) ? liste.slice().reverse() : liste
+	const sortedData = liste.slice().reverse()
 
 	return (
 		<div>
