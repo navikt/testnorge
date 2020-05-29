@@ -2,7 +2,7 @@
 kind: "Application"
 metadata:
   name: testnorge-spion
-  namespace: q2
+  namespace: default
   labels:
     team: orkestrator
 spec:
