@@ -6,7 +6,7 @@ metadata:
   labels:
     team: orkestrator
 spec:
-  image: "docker.pkg.github.com/navikt/testnorge-spion/testnorge-spion:26b80f0a7d"
+  image: {{ image }}
   port: 8080
   liveness:
     path: /internal/isAlive

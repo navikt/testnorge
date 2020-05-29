@@ -1,7 +1,7 @@
 FROM navikt/java:11
-LABEL maintainer="Team Registre"
+LABEL maintainer="Team Dolly"
 
-ADD "target/testnorge-spion-app.jar" app.jar
+ADD apps/testnorge-spion/target/testnorge-spion-app.jar app/app.jar
 
 ENV JAVA_OPTS="-Xmx1024m \
                -Djava.security.egd=file:/dev/./urandom \

@@ -21,5 +21,6 @@
         <module>testnorge-statisk-data-forvalter</module>
         <module>testnorge-tp</module>
         <module>testnorge-hodejegeren</module>
+        <module>testnorge-spion</module>
     </modules>
 </project>
