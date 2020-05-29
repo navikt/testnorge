@@ -15,6 +15,7 @@ const initialPeriode = { fom: '', tom: '' }
 
 export default ({ path, ytelse }: ArbeidsforholdForm) => (
 	<div className="flexbox--flex-wrap">
+		<FormikTextInput name={`${path}.arbeidsforholdId`} label="Arbeidsforhold-ID" type="number" />
 		<FormikTextInput name={`${path}.beregnetInntekt.beloep`} label="Beløp" type="number" />
 		<InntektsmeldingSelect
 			path={`${path}.beregnetInntekt.aarsakVedEndring`}

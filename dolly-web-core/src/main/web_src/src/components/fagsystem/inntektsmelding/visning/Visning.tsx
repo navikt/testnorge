@@ -27,7 +27,12 @@ type EnkelInntektsmelding = {
 }
 
 const getHeader = (data: Inntekter) => {
-	return `Inntekt (${data.arbeidsgiver.virksomhetsnummer})`
+	const arbeidsgiver = data.arbeidsgiver
+		? data.arbeidsgiver.virksomhetsnummer
+		: data.arbeidsgiverPrivat
+		? data.arbeidsgiverPrivat.arbeidsgiverFnr
+		: ''
+	return `Inntekt (${arbeidsgiver})`
 }
 
 export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisning) => {
@@ -60,14 +65,21 @@ const EnkelInntektsmeldingVisning = ({ data, ident }: EnkelInntektsmelding) => (
 						value={Formatters.codeToNorskLabel(inntekt.aarsakTilInnsending)}
 					/>
 					<TitleValue title="Ytelse" value={Formatters.codeToNorskLabel(inntekt.ytelse)} />
-					<TitleValue title="Virksomhet" value={inntekt.arbeidsgiver.orgnummer} />
+					<TitleValue
+						title="Virksomhet (orgnr)"
+						value={inntekt.arbeidsgiver && inntekt.arbeidsgiver.orgnummer}
+					/>
 					<TitleValue
 						title="Opplysningspliktig virksomhet"
-						value={inntekt.arbeidsgiver.virksomhetsnummer}
+						value={inntekt.arbeidsgiver && inntekt.arbeidsgiver.virksomhetsnummer}
 					/>
 					<TitleValue
 						title="Innsendingstidspunkt"
 						value={Formatters.formatDate(inntekt.avsendersystem.innsendingstidspunkt)}
+					/>
+					<TitleValue
+						title="Privat arbeidsgiver"
+						value={inntekt.arbeidsgiverPrivat && inntekt.arbeidsgiverPrivat.arbeidsgiverFnr}
 					/>
 					<TitleValue title="Har nær relasjon" value={inntekt.naerRelasjon} />
 					<TitleValue
