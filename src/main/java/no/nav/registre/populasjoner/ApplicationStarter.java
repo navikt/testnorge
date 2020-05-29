@@ -11,6 +11,8 @@ import no.nav.registre.populasjoner.vault.VaultUtil;
 public class ApplicationStarter {
 
     public static void main(String[] args) {
+        System.setProperty("app.name", "testnorge-populasjoner");
+        System.setProperty("nais.namespace", "default");
         if ("prod".equals(System.getProperty("spring.profiles.active"))) {
             VaultUtil.initCloudVaultToken();
         } else {

@@ -16,3 +16,34 @@ spring.cloud.vault:
     backend: postgresql/preprod-fss
     username-property: spring.datasource.username
     password-property: spring.datasource.password
+
+app.kafka:
+  username: ${SRV_USER}
+  password: ${SRV_PASS}
+  group-id-prefix: ${app.name}-${nais.namespace}
+
+spring.kafka:
+  client-id: ${app.name}
+  properties:
+    security.protocol: SASL_SSL
+    sasl:
+      mechanism: PLAIN
+      jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required username="${app.kafka.username}" password="${app.kafka.password}";
+    ssl:
+      truststore.location: ${javax.net.ssl.trustStore:}
+      truststore.password: ${javax.net.ssl.trustStorePassword:}
+    schema.registry.url: ${pdl.utils.urls.schema-registry.base-url}
+  listener:
+    concurrency: 1
+    poll-timeout: 1000
+    ack-mode: batch
+    type: batch
+  consumer:
+    properties:
+      isolation.level: read_committed
+      specific.avro.reader: true
+#    key-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+#    value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+    max-poll-records: 100
+    auto-offset-reset: earliest
+    enable-auto-commit: false

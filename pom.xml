@@ -83,6 +83,18 @@
             <version>${postgresql.version}</version>
         </dependency>
 
+        <!-- KAFKA -->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+            <version>2.3.5.RELEASE</version>
+        </dependency>
+
         <!-- TEST -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
