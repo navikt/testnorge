@@ -14,6 +14,13 @@ Formatters.formatAlder = (alder, dodsdato) => {
 	return `${alder.toString()}${dodsdato ? ' (død)' : ''}`
 }
 
+Formatters.formatAlderBarn = (alder, doedsdato, doedfoedt) => {
+	if (_isNil(alder)) return ''
+	return doedfoedt
+		? `${alder.toString()} (dødfødt)`
+		: `${alder.toString()}${doedsdato ? ' (død)' : ''}`
+}
+
 // Format date to readable string format (AAAA-MM-DDTxx:xx:xx to DD.MM.AAAA?)
 // Date ---> String
 Formatters.formatDate = date => {
