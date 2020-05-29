@@ -15,7 +15,6 @@
     <properties>
         <commons-math3.version>3.6.1</commons-math3.version>
         <kafka-clients.version>2.4.0</kafka-clients.version>
-        <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
         <spring.boot.maven.plugin.version>2.1.8.RELEASE</spring.boot.maven.plugin.version>
         <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
@@ -74,7 +73,6 @@
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
-            <version>${logstash.logback.encoder.version}</version>
         </dependency>
 
         <!--NETWORK-->

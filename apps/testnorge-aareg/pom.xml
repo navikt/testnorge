@@ -35,7 +35,6 @@
         <tjenestespesifikasjoner.version>1.2020.04.30-11.45-a45e1248c063</tjenestespesifikasjoner.version>
         <testnorge-domain.version>1.2020.05.07-08.54-6fb2dc16a8f2</testnorge-domain.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
-        <maven-pmd-plugin.version>3.13.0</maven-pmd-plugin.version>
     </properties>
 
     <dependencyManagement>

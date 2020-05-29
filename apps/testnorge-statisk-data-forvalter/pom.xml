@@ -12,7 +12,6 @@
     <artifactId>testnorge-statisk-data-forvalter</artifactId>
 
     <properties>
-        <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
         <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
         <commons-csv.version>1.8</commons-csv.version>
@@ -60,7 +59,6 @@
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
-            <version>${logstash.logback.encoder.version}</version>
         </dependency>
 
         <!--DATABASE-->

@@ -26,10 +26,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
         <spring-boot-admin.version>2.0.2</spring-boot-admin.version>
-        <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
         <person-tps-avstemming-v1.version>1.0.2</person-tps-avstemming-v1.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
-        <maven-pmd-plugin.version>3.13.0</maven-pmd-plugin.version>
         <testnorge-consumers.version>1.11.11-RELEASE</testnorge-consumers.version>
         <testnorge-domain.version>1.2020.05.07-08.54-6fb2dc16a8f2</testnorge-domain.version>
     </properties>

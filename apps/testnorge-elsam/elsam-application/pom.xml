@@ -113,14 +113,6 @@
             <artifactId>spring-cloud-contract-wiremock</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <!--CODE ANALYSIS-->
-        <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-pmd-plugin</artifactId>
-            <version>${maven-pmd-plugin.version}</version>
-            <type>maven-plugin</type>
-        </dependency>
     </dependencies>
 
     <build>

@@ -20,7 +20,6 @@
     </modules>
 
     <properties>
-        <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
         <testnorge-common.version>1.2020.05.23-15.56-e68c00984947</testnorge-common.version>
     </properties>
@@ -31,12 +30,6 @@
                 <groupId>no.nav.registre.testnorge.common</groupId>
                 <artifactId>testnorge-common</artifactId>
                 <version>${testnorge-common.version}</version>
-            </dependency>
-            <!--LOGGING-->
-            <dependency>
-                <groupId>net.logstash.logback</groupId>
-                <artifactId>logstash-logback-encoder</artifactId>
-                <version>${logstash.logback.encoder.version}</version>
             </dependency>
             <!--TEST-->
             <dependency>

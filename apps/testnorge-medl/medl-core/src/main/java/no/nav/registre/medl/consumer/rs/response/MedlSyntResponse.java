@@ -14,7 +14,6 @@ import java.lang.reflect.Field;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@SuppressWarnings("pmd:TooManyFields")
 public class MedlSyntResponse {
 
     @JsonProperty("dato_registrert")
