@@ -23,6 +23,7 @@ NAV_TOKEN må lages i din github konto. (Dette er noe som vi jobber med å fjern
 ![Deploy testnorge-tp](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-tp/badge.svg)
 ![Deploy testnorge-hodejegeren](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-hodejegeren/badge.svg)
 ![Deploy testnorge-spion](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-spion/badge.svg)
+![Deploy testnorge-aareg](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-aareg/badge.svg)
 
 ## Migrering inn i monorepo
 
@@ -34,3 +35,9 @@ git read-tree --prefix=apps/$REPO_NAVN/ -u $REPO_NAVN/master
 git commit -m "Migrering av $REPO_NAVN inn i testnorge"
 git push
 ```
+
+Eller kjør:
+```
+/bin/bash  ./tools/migrate.sh $REPO_NAVN
+```
+
