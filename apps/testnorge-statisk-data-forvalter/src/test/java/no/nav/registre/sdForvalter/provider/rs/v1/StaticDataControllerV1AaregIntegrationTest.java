@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +68,6 @@ public class StaticDataControllerV1AaregIntegrationTest {
 
     @After
     public void cleanUp() {
-        reset();
         repository.deleteAll();
     }
 
