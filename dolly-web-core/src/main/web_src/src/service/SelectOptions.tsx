@@ -12,7 +12,7 @@ const selectOptions: SelectOptions = {
 		{ value: 'FNR', label: 'FNR' },
 		{ value: 'DNR', label: 'DNR' },
 		{ value: 'BOST', label: 'BOST' },
-		{ value: 'FDAT', label: 'FDAT' }
+		{ value: 'FDAT', label: 'FDAT (dødfødt)' }
 	],
 	// kjonn: [{ value: 'K', label: 'Kvinne' }, { value: 'M', label: 'Mann' }],
 	kjonnBarn: [
