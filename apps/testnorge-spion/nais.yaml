@@ -32,3 +32,4 @@ spec:
       memory: 5000Mi
   ingresses:
     - "https://testnorge-spion.nais.preprod.local"
+    - "https://testnorge-spion.dev-fss.nais.io"

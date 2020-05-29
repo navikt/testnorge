@@ -32,3 +32,4 @@ spec:
   webproxy: true
   ingresses:
     - "https://testnorge-statisk-data-forvalter.nais.preprod.local"
+    - "https://testnorge-statisk-data-forvalter.dev-fss.nais.io"

@@ -32,3 +32,4 @@ spec:
   image: {{ image }}
   ingresses:
     - "https://testnorge-arena.nais.preprod.local"
+    - "https://testnorge-arena.dev-fss.nais.io"

@@ -31,3 +31,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnorge-ereg-mapper.nais.preprod.local"
+    - "https://testnorge-ereg-mapper.dev-fss.nais.io"
