@@ -5,6 +5,7 @@ import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static no.nav.dolly.config.CachingConfig.CACHE_TEAM;
 
 import java.util.List;
+
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
@@ -53,7 +54,16 @@ public class TestgruppeController {
         return mapperFacade.map(gruppe, RsTestgruppeMedBestillingId.class);
     }
 
-    @CacheEvict(value = { CACHE_GRUPPE, CACHE_TEAM }, allEntries = true)
+    @PutMapping(value = "/{gruppeId}/laas")
+    @Transactional
+    public RsTestgruppe oppdaterTestgruppeLaas(@PathVariable("gruppeId") Long gruppeId,
+                                               Boolean erLaast,
+                                               String laastBeskrivelse) {
+        Testgruppe gruppe = testgruppeService.oppdaterTestgruppeMedLaas(gruppeId, erLaast, laastBeskrivelse);
+        return mapperFacade.map(gruppe, RsTestgruppe.class);
+    }
+
+    @CacheEvict(value = {CACHE_GRUPPE, CACHE_TEAM}, allEntries = true)
     @PostMapping
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)
@@ -84,7 +94,7 @@ public class TestgruppeController {
     }
 
     @ApiOperation(value = "Opprett berikede testpersoner basert på fødselsdato, kjønn og identtype")
-    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling")
     public RsBestillingStatus opprettIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingRequest request) {
@@ -95,7 +105,7 @@ public class TestgruppeController {
     }
 
     @ApiOperation(value = "Opprett berikede testpersoner basert på eskisterende identer")
-    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling/fraidenter")
     public RsBestillingStatus opprettIdentBestillingFraIdenter(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingFraIdenterRequest request) {

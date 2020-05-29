@@ -2,14 +2,15 @@ package no.nav.dolly.service;
 
 import static java.lang.String.format;
 import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
@@ -116,5 +117,20 @@ public class TestgruppeService {
     public List<Testgruppe> getTestgruppeByBrukerId(String brukerId) {
 
         return isBlank(brukerId) ? testgruppeRepository.findAllByOrderByNavn() : fetchTestgrupperByBrukerId(brukerId);
+    }
+
+    public Testgruppe oppdaterTestgruppeMedLaas(Long gruppeId, Boolean erLaast, String laastBeskrivelse) {
+
+        Testgruppe testgruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke testgruppe med id = " + gruppeId));
+        if (isTrue(erLaast)) {
+            testgruppe.setErLaast(true);
+            testgruppe.setLaastBeskrivelse(laastBeskrivelse);
+
+        } else {
+            testgruppe.setErLaast(false);
+            testgruppe.setLaastBeskrivelse(null);
+        }
+
+        return testgruppe;
     }
 }
