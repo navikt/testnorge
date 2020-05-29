@@ -2,7 +2,6 @@ package no.nav.dolly.provider.api;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
-import static no.nav.dolly.config.CachingConfig.CACHE_TEAM;
 
 import java.util.List;
 
@@ -54,8 +53,9 @@ public class TestgruppeController {
         return mapperFacade.map(gruppe, RsTestgruppeMedBestillingId.class);
     }
 
-    @PutMapping(value = "/{gruppeId}/laas")
+    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @Transactional
+    @PutMapping(value = "/{gruppeId}/laas")
     public RsTestgruppe oppdaterTestgruppeLaas(@PathVariable("gruppeId") Long gruppeId,
                                                Boolean erLaast,
                                                String laastBeskrivelse) {
@@ -63,7 +63,7 @@ public class TestgruppeController {
         return mapperFacade.map(gruppe, RsTestgruppe.class);
     }
 
-    @CacheEvict(value = {CACHE_GRUPPE, CACHE_TEAM}, allEntries = true)
+    @CacheEvict(value = {CACHE_GRUPPE}, allEntries = true)
     @PostMapping
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)

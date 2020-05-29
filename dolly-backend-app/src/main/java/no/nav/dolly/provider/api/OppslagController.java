@@ -2,7 +2,6 @@ package no.nav.dolly.provider.api;
 
 import static java.util.Arrays.asList;
 import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
-import static no.nav.dolly.config.CachingConfig.CACHE_NORG2;
 
 import java.util.List;
 import java.util.Set;
@@ -30,8 +29,6 @@ import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
 import no.nav.dolly.consumer.identpool.IdentpoolConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
-import no.nav.dolly.consumer.norg2.Norg2Consumer;
-import no.nav.dolly.consumer.norg2.Norg2EnhetResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.SystemTyper;
@@ -47,7 +44,6 @@ public class OppslagController {
 
     private final KodeverkMapper kodeverkMapper;
     private final KodeverkConsumer kodeverkConsumer;
-    private final Norg2Consumer norg2Consumer;
     private final AaregConsumer aaregConsumer;
     private final PdlPersonConsumer pdlPersonConsumer;
     private final InntektstubConsumer inntektstubConsumer;
@@ -63,13 +59,6 @@ public class OppslagController {
     public KodeverkAdjusted fetchKodeverkByName(@PathVariable("kodeverkNavn") String kodeverkNavn) {
         GetKodeverkKoderBetydningerResponse response = kodeverkConsumer.fetchKodeverkByName(kodeverkNavn);
         return kodeverkMapper.mapBetydningToAdjustedKodeverk(kodeverkNavn, response.getBetydninger());
-    }
-
-    @Cacheable(CACHE_NORG2)
-    @GetMapping("/norg2/enhet/{tknr}")
-    @ApiOperation("Hent enhet tilhørende Tknr fra NORG")
-    public Norg2EnhetResponse fetchEnhetByTknr(@PathVariable("tknr") String tknr) {
-        return norg2Consumer.fetchEnhetByEnhetNr(tknr);
     }
 
     @GetMapping("/pdlperson/ident/{ident}")
