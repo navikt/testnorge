@@ -14,7 +14,6 @@
 
     <properties>
         <commons-math3.version>3.6.1</commons-math3.version>
-        <kafka-clients.version>2.4.0</kafka-clients.version>
         <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
         <spring.boot.maven.plugin.version>2.1.8.RELEASE</spring.boot.maven.plugin.version>
@@ -119,18 +118,15 @@
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
-            <version>${spring-kafka.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
-            <version>${kafka-clients.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka-test</artifactId>
-            <version>${spring-kafka.version}</version>
             <scope>test</scope>
         </dependency>
 
