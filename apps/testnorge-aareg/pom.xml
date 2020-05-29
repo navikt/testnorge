@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.6.RELEASE</version>
+    </parent>
+
+    <groupId>no.nav.registre</groupId>
+    <artifactId>testnorge-aareg</artifactId>
+    <version>1.8.2</version>
+    <packaging>pom</packaging>
+
+    <name>testnorge-aareg</name>
+
+    <modules>
+        <module>aareg-core</module>
+        <module>aareg-local</module>
+        <module>aareg-domain</module>
+    </modules>
+
+    <distributionManagement>
+        <repository>
+            <id>m2internal</id>
+            <name>NAV Maven2 Internal Repository</name>
+            <url>http://maven.adeo.no/nexus/content/repositories/m2internal</url>
+        </repository>
+        <snapshotRepository>
+            <id>m2snapshot</id>
+            <name>NAV Maven2 Snapshot Repository</name>
+            <url>http://maven.adeo.no/nexus/content/repositories/m2snapshot</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <properties>
+        <application.version>${project.version}</application.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>11</java.version>
+        <spring-boot-admin.version>2.0.2</spring-boot-admin.version>
+        <swagger.version>2.9.2</swagger.version>
+        <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
+        <behandle.arbeidsforhold.version>1.2.1</behandle.arbeidsforhold.version>
+        <neethi.version>3.1.1</neethi.version>
+        <cxf.version>3.3.3</cxf.version>
+        <freg-security-oidc.version>e603e2b2</freg-security-oidc.version>
+        <tjenestespesifikasjoner.version>1.2020.04.30-11.45-a45e1248c063</tjenestespesifikasjoner.version>
+        <testnorge-domain.version>1.2020.05.07-08.54-6fb2dc16a8f2</testnorge-domain.version>
+        <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
+        <maven-pmd-plugin.version>3.13.0</maven-pmd-plugin.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-contract-wiremock</artifactId>
+                <version>2.0.2.RELEASE</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.registre</groupId>
+                <artifactId>testnorge-consumers</artifactId>
+                <version>1.11.11-RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.registre.testnorge</groupId>
+                <artifactId>testnorge-domain</artifactId>
+                <version>${testnorge-domain.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>github-package-registry-navikt</id>
+            <url>https://maven.pkg.github.com/navikt/maven-release</url>
+        </repository>
+    </repositories>
+</project>
