@@ -1,6 +1,6 @@
 FROM navikt/java:11
-LABEL maintainer="Team Registre"
+LABEL maintainer="Team Dolly"
 
-ADD "sam-core/target/testnorge-sam-app.jar" /app/app.jar
+ADD apps/testnorge-sam/sam-core/target/testnorge-sam-app.jar /app/app.jar
 
 EXPOSE 8080

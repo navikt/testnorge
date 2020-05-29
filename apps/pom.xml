@@ -24,5 +24,6 @@
         <module>testnorge-spion</module>
         <module>testnorge-aareg</module>
         <module>testnorge-sigrun</module>
+        <module>testnorge-sam</module>
     </modules>
 </project>
