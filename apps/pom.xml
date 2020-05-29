@@ -19,5 +19,6 @@
         <module>testnorge-skd</module>
         <module>testnorge-inst</module>
         <module>testnorge-statisk-data-forvalter</module>
+        <module>testnorge-tp</module>
     </modules>
 </project>

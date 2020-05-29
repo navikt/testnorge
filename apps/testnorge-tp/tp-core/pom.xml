@@ -6,8 +6,8 @@
 
     <parent>
         <artifactId>testnorge-tp</artifactId>
-        <groupId>no.nav.registre</groupId>
-        <version>1.4.0-SNAPSHOT</version>
+        <groupId>no.nav.registre.testnorge</groupId>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>tp-core</artifactId>
@@ -18,6 +18,11 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
         </dependency>
 
         <!--Monitoring-->
@@ -68,7 +73,7 @@
 
         <!--NAV-->
         <dependency>
-            <groupId>no.nav.registre</groupId>
+            <groupId>no.nav.registre.testnorge</groupId>
             <artifactId>tp-domain</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -89,12 +94,10 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>${swagger.version}</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
-            <version>${swagger.version}</version>
         </dependency>
 
         <!--HODEJEGEREN-->
@@ -104,13 +107,6 @@
             <version>1.8.0-RELEASE</version>
         </dependency>
 
-        <!--CODE ANALYSIS-->
-        <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-pmd-plugin</artifactId>
-            <version>${maven-pmd-plugin.version}</version>
-            <type>maven-plugin</type>
-        </dependency>
     </dependencies>
 
     <build>
@@ -129,22 +125,6 @@
                     <target>1.11</target>
                     <release>11</release>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>${maven-pmd-plugin.version}</version>
-                <configuration>
-                    <failOnViolation>true</failOnViolation>
-                    <printFailingErrors>true</printFailingErrors>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
