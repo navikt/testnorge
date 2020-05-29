@@ -34,13 +34,13 @@ export const initialValuesDoedfoedt = {
 }
 
 export const Barn = ({ formikBag }) => {
-	const handleIdenttypeChange = (path, ident) => {
+	const handleIdenttypeChange = (path, ident, isDoedfoedt) => {
 		if (ident.value === 'FDAT') {
 			formikBag.setFieldValue(`${path}`, initialValuesDoedfoedt)
-		} else {
+		} else if (isDoedfoedt) {
 			formikBag.setFieldValue(`${path}`, initialValues)
-			formikBag.setFieldValue(`${path}.identtype`, ident.value)
 		}
+		formikBag.setFieldValue(`${path}.identtype`, ident.value)
 	}
 
 	const handleFoedselsdatoChange = (path, dato) => {
@@ -72,7 +72,7 @@ export const Barn = ({ formikBag }) => {
 							name={`${path}.identtype`}
 							label="Identtype"
 							options={Options('identtypeBarn')}
-							onChange={ident => handleIdenttypeChange(path, ident)}
+							onChange={ident => handleIdenttypeChange(path, ident, isDoedfoedt)}
 							isClearable={false}
 						/>
 						<FormikSelect name={`${path}.kjonn`} label="Kjønn" options={Options('kjonnBarn')} />
