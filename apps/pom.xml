@@ -22,5 +22,6 @@
         <module>testnorge-tp</module>
         <module>testnorge-hodejegeren</module>
         <module>testnorge-spion</module>
+        <module>testnorge-aareg</module>
     </modules>
 </project>

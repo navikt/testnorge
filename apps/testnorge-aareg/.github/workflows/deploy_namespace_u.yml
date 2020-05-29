@@ -47,4 +47,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-fss
-          RESOURCE: nais_u2_namespace.yaml
+          RESOURCE: nais_u2.yaml

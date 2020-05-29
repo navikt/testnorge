@@ -1,0 +1,73 @@
+name: Deploy testnorge-aareg
+
+on:
+  push:
+    branches: master
+    paths:
+      - apps/testnorge-aareg/**
+
+env:
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/aareg:${{ github.sha }}
+
+jobs:
+  build-jar:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Cache Dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '11.x'
+      - name: Compile
+        env:
+          GITHUB_USERNAME: token
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+        run: mvn --projects :aareg-core --also-make --settings maven-settings.xml compile
+      - name: Test
+        run: mvn --projects :aareg-core --also-make --settings maven-settings.xml test
+      - name: Package
+        run: mvn --projects :aareg-core --also-make --settings maven-settings.xml package -Dmaven.test.skip
+
+      - name: Build and publish Docker image
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          docker build --tag ${IMAGE} . -f ./apps/testnorge-aareg/Dockerfile
+          docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
+          docker push ${IMAGE}
+  deploy-default:
+    name: "Deploy default"
+    needs: build-jar
+    runs-on: ubuntu-latest
+    steps:
+      uses: nais/deploy/actions/deploy@v1
+      env:
+        APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+        CLUSTER: dev-fss
+        RESOURCE: apps/testnorge-aareg/nais.yaml
+  deploy-t6:
+    name: "Deploy t6"
+    needs: build-jar
+    runs-on: ubuntu-latest
+    steps:
+      uses: nais/deploy/actions/deploy@v1
+      env:
+        APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+        CLUSTER: dev-fss
+        RESOURCE: apps/testnorge-aareg/nais_t6.yaml
+  deploy-u2:
+    name: "Deploy u2"
+    needs: build-jar
+    runs-on: ubuntu-latest
+    steps:
+      uses: nais/deploy/actions/deploy@v1
+      env:
+        APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+        CLUSTER: dev-fss
+        RESOURCE: apps/testnorge-aareg/nais_u2.yaml

@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>no.nav.registre</groupId>
         <artifactId>testnorge-aareg</artifactId>
-        <version>1.8.2</version>
+        <groupId>no.nav.registre.testnorge</groupId>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>aareg-core</artifactId>
@@ -59,7 +59,6 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>${swagger.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.javassist</groupId>
@@ -70,7 +69,6 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
-            <version>${swagger.version}</version>
         </dependency>
 
         <!-- JSON -->
@@ -88,9 +86,9 @@
 
         <!-- DOMAIN -->
         <dependency>
-            <groupId>no.nav.registre</groupId>
+            <groupId>no.nav.registre.testnorge</groupId>
             <artifactId>aareg-domain</artifactId>
-            <version>1.8.2</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
 

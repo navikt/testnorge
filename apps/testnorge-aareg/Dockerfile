@@ -1,7 +1,7 @@
 FROM navikt/java:11
-LABEL maintainer="Team Registre"
+LABEL maintainer="Team Dolly"
 
-ADD "aareg-core/target/testnorge-aareg-app.jar" /app/app.jar
+ADD apps/testnorge-aareg/aareg-core/target/testnorge-aareg-app.jar /app/app.jar
 
 ENV JAVA_OPTS="-Dspring.profiles.active=prod"
 

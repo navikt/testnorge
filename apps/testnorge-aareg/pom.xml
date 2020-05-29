@@ -5,14 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.6.RELEASE</version>
+        <artifactId>apps</artifactId>
+        <groupId>no.nav.registre.testnorge</groupId>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>no.nav.registre</groupId>
+
     <artifactId>testnorge-aareg</artifactId>
-    <version>1.8.2</version>
     <packaging>pom</packaging>
 
     <name>testnorge-aareg</name>
