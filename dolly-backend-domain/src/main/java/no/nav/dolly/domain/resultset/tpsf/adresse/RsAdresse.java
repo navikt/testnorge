@@ -23,8 +23,10 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class RsAdresse {
 
+    public enum TilleggType {CO_NAVN, LEILIGHET_NR, SEKSJON_NR, BOLIG_NR }
+
     @ApiModelProperty(
-            position = 0,
+            position = 1,
             required = true,
             value = "Angir adressetype, GATE eller MATR.\n" +
                     "For gateadresse, inkluder: \n" +
@@ -41,24 +43,45 @@ public abstract class RsAdresse {
     private String adressetype;
 
     @ApiModelProperty(
-            position = 1,
+            position = 2,
             value = "Postnummer på adresse"
     )
     private String postnr;
 
     @ApiModelProperty(
-            position = 1,
+            position = 3,
             required = true,
             value = "Kommunenummer for adresse"
     )
     private String kommunenr;
 
     @ApiModelProperty(
-            position = 1,
+            position = 4,
             dataType = "LocalDateTime",
             value = "Flyttedato for adresse. Hvis tomt blir flyttedato identisk med fødselsdato"
     )
     private LocalDateTime flyttedato;
 
+    private TilleggAdressetype tilleggsadresse;
+
     public abstract String getAdressetype();
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TilleggAdressetype {
+
+        @ApiModelProperty(
+                position = 1,
+                value = "Tilleggstype, ved CO_NAVN benyttes ikke \"nummer\" feltet"
+        )
+        private TilleggType tilleggType;
+
+        @ApiModelProperty(
+                position = 2,
+                value = "Nummer for leilighet/seksjon/bolig"
+        )
+        private Integer nummer;
+    }
 }
