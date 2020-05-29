@@ -32,3 +32,4 @@ spec:
   image: {{ image }}
   ingresses:
     - "https://orkestratoren.nais.preprod.local"
+    - "https://orkestratoren.dev-fss.nais.io"
