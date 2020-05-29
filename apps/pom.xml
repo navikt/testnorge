@@ -23,5 +23,6 @@
         <module>testnorge-hodejegeren</module>
         <module>testnorge-spion</module>
         <module>testnorge-aareg</module>
+        <module>testnorge-sigrun</module>
     </modules>
 </project>
