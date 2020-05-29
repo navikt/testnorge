@@ -23,6 +23,8 @@ import no.nav.dolly.domain.resultset.inntektsmeldingstub.NaturalytelseType;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class InntektsmeldingRequest {
 
+    public enum Avsendertype {ORGNR, FNR}
+
     private String miljoe;
     private String arbeidstakerFnr;
     private List<Inntektsmelding> inntekter;
@@ -35,7 +37,7 @@ public class InntektsmeldingRequest {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class JoarkMetadata {
 
-        private String avsenderMottakerIdType;
+        private Avsendertype avsenderMottakerIdType;
         private String brevkategori;
         private String brevkode;
         private String brukerIdType;
@@ -60,6 +62,7 @@ public class InntektsmeldingRequest {
         private AarsakTilInnsendingType aarsakTilInnsending;
         private Arbeidsforhold arbeidsforhold;
         private Arbeidsgiver arbeidsgiver;
+        private ArbeidsgiverPrivat arbeidsgiverPrivat;
         private Avsendersystem avsendersystem;
         private List<NaturalYtelseDetaljer> gjenopptakelseNaturalytelseListe;
         private Boolean naerRelasjon;
@@ -164,6 +167,17 @@ public class InntektsmeldingRequest {
 
         private Kontaktinformasjon kontaktinformasjon;
         private String virksomhetsnummer;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class ArbeidsgiverPrivat {
+
+        private Kontaktinformasjon kontaktinformasjon;
+        private String arbeidsgiverFnr;
     }
 
     @Getter

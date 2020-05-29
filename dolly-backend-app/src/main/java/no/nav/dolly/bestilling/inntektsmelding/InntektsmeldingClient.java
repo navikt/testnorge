@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +33,7 @@ public class InntektsmeldingClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
     private final TransaksjonMappingService transaksjonMappingService;
+    private final ObjectMapper objectMapper;
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -70,7 +73,7 @@ public class InntektsmeldingClient implements ClientRegister {
                                     .map(dokument ->
                                             TransaksjonMapping.builder()
                                                     .ident(inntektsmeldingRequest.getArbeidstakerFnr())
-                                                    .transaksjonId(dokument.getJournalpostId())
+                                                    .transaksjonId(toJson(dokument))
                                                     .datoEndret(LocalDateTime.now())
                                                     .miljoe(inntektsmeldingRequest.getMiljoe())
                                                     .system(INNTKMELD.name())
@@ -94,5 +97,15 @@ public class InntektsmeldingClient implements ClientRegister {
             log.error("Feilet å legge inn person: {} til Inntektsmelding miljø: {}",
                     inntektsmeldingRequest.getArbeidstakerFnr(), inntektsmeldingRequest.getMiljoe(), re);
         }
+    }
+
+    private String toJson(Object object) {
+
+        try {
+            return objectMapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            log.error("Feilet å konvertere domument fra inntektsmelding", e);
+        }
+        return null;
     }
 }

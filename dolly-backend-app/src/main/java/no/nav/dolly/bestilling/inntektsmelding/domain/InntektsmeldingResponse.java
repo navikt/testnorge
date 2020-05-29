@@ -37,5 +37,6 @@ public class InntektsmeldingResponse {
     public static class Dokument {
 
         private String journalpostId;
+        private String dokumentInfoId;
     }
 }
