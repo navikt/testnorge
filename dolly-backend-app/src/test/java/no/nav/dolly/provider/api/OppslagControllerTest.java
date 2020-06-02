@@ -18,8 +18,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
-import no.nav.dolly.consumer.norg2.Norg2Consumer;
-import no.nav.dolly.consumer.norg2.Norg2EnhetResponse;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import no.nav.tjenester.kodeverk.api.v1.Betydning;
 import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
@@ -28,17 +26,12 @@ import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
 public class OppslagControllerTest {
 
     private static final String STANDARD_KODEVERK_NAME = "name";
-    private static final String TKNR = "0123";
-    private static final String ENHET_NAVN = "Nav Sagene";
 
     @Mock
     private KodeverkConsumer kodeverkConsumer;
 
     @Mock
     private KodeverkMapper kodeverkMapper;
-
-    @Mock
-    private Norg2Consumer norg2Consumer;
 
     @InjectMocks
     private OppslagController oppslagController;
@@ -64,22 +57,5 @@ public class OppslagControllerTest {
         KodeverkAdjusted kodeverkResponse = oppslagController.fetchKodeverkByName(STANDARD_KODEVERK_NAME);
 
         assertThat(kodeverkResponse, is(kodeverkAdjusted));
-    }
-
-    @Test
-    public void fetchNorg2Enhet_happyPath() {
-
-        when(norg2Consumer.fetchEnhetByEnhetNr(TKNR)).thenReturn(
-                Norg2EnhetResponse.builder()
-                        .enhetNr(TKNR)
-                        .navn(ENHET_NAVN)
-                        .build()
-        );
-
-        Norg2EnhetResponse target = oppslagController.fetchEnhetByTknr(TKNR);
-
-        assertThat(target.getEnhetNr(), is(equalTo(TKNR)));
-        assertThat(target.getNavn(), is(equalTo(ENHET_NAVN)));
-        verify(norg2Consumer).fetchEnhetByEnhetNr(TKNR);
     }
 }

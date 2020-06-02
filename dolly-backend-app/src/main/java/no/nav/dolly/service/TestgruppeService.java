@@ -1,19 +1,11 @@
 package no.nav.dolly.service;
 
-import static java.lang.String.format;
-import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.NonTransientDataAccessException;
-import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -23,6 +15,14 @@ import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.NonTransientDataAccessException;
+import org.springframework.stereotype.Service;
+
+import static java.lang.String.format;
+import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 @RequiredArgsConstructor
@@ -116,5 +116,20 @@ public class TestgruppeService {
     public List<Testgruppe> getTestgruppeByBrukerId(String brukerId) {
 
         return isBlank(brukerId) ? testgruppeRepository.findAllByOrderByNavn() : fetchTestgrupperByBrukerId(brukerId);
+    }
+
+    public Testgruppe oppdaterTestgruppeMedLaas(Long gruppeId, Boolean erLaast, String laastBeskrivelse) {
+
+        Testgruppe testgruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke testgruppe med id = " + gruppeId));
+        if (isTrue(erLaast)) {
+            testgruppe.setErLaast(true);
+            testgruppe.setLaastBeskrivelse(laastBeskrivelse);
+
+        } else {
+            testgruppe.setErLaast(false);
+            testgruppe.setLaastBeskrivelse(null);
+        }
+
+        return testgruppe;
     }
 }
