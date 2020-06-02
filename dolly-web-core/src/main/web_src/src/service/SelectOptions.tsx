@@ -226,6 +226,13 @@ const selectOptions: SelectOptions = {
 		{ value: 'Kontaktperson', label: 'Kontaktperson' },
 		{ value: 'Sameier', label: 'Sameier' },
 		{ value: 'Styre', label: 'Styre' }
+	],
+
+	tilleggstype: [
+		{ value: 'CO_NAVN', label: 'CO Navn' },
+		{ value: 'LEILIGHET_NR', label: 'Leilighet nummer' },
+		{ value: 'SEKSJON_NR', label: 'Seksjon nummer' },
+		{ value: 'BOLIG_NR', label: 'Bolig nummer' }
 	]
 }
 

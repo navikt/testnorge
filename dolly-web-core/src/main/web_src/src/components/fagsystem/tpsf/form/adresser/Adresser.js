@@ -11,6 +11,7 @@ import { Boadresse } from './partials/boadresse/Boadresse'
 import { Postadresser } from './Postadresser'
 import { MatrikkelAdresse } from './partials/MatrikkelAdresse'
 import { AdresseNr } from './partials/AdresseNr'
+import { Tilleggsadresse } from '~/components/fagsystem/tpsf/form/adresser/partials/Tilleggsadresse/Tilleggsadresse'
 
 const paths = ['tpsf.boadresse', 'tpsf.postadresse']
 /* Fordi UFB også bruker boadresse kan vi ikke bare sjekke den. 
@@ -128,6 +129,7 @@ export const Adresser = ({ formikBag }) => {
 						{boType === 'gate' && <Boadresse formikBag={formikBag} />}
 						{boType === 'matrikkel' && <MatrikkelAdresse formikBag={formikBag} />}
 						<FormikDatepicker name="tpsf.boadresse.flyttedato" label="Flyttedato" />
+						<Tilleggsadresse formikBag={formikBag} />
 					</Vis>
 
 					<Vis attributt="tpsf.postadresse">
