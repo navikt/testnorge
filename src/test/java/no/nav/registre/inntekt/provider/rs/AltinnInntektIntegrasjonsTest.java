@@ -34,6 +34,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.status;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(properties = "wiremock.server.port=8080")
@@ -45,6 +47,8 @@ public class AltinnInntektIntegrasjonsTest {
     private String satisfactoryJsonPath;
     @Value("${path.altinninntekt.failing.json}")
     private String failingJsonPath;
+    @Value("${path.altininntektconsumer.satisfactory.json}")
+    private String satisfactoryAltinnInntektJsonPath;
 
     @Autowired(required = false)
     protected WebApplicationContext context;
@@ -58,10 +62,12 @@ public class AltinnInntektIntegrasjonsTest {
 
     @Autowired
     private MockMvc mockMvc;
-    private ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper;
 
     private String emptyRequestJson;
     private String satisfactoryJson;
+    private String satisfactoryAltinnInntektConsumerJson;
     private String failingJson;
 
     private String loadResourceAsString(String fileName) throws IOException {
@@ -76,6 +82,7 @@ public class AltinnInntektIntegrasjonsTest {
         try {
             satisfactoryJson = loadResourceAsString(satisfactoryJsonPath);
             failingJson = loadResourceAsString(failingJsonPath);
+            satisfactoryAltinnInntektConsumerJson = loadResourceAsString(satisfactoryAltinnInntektJsonPath);
         } catch (IOException e) {
             System.err.println("Problemer med lasting av testressurser.");
             e.printStackTrace();
@@ -107,7 +114,7 @@ public class AltinnInntektIntegrasjonsTest {
                 .content(satisfactoryJson)
                 .contentType(MediaType.APPLICATION_JSON)).andReturn();
 
-
+        mockServer.expect(ExpectedCount.once(), requestTo("http://localhost:8080/api/v2/inntektsmelding/2018/12/11")).andExpect(content().json(satisfactoryAltinnInntektConsumerJson));
 
         System.out.println(tmp);
     }
