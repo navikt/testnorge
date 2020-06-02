@@ -38,6 +38,7 @@ export const Partner = ({ lagOptions, identInfo, hovedIdent, formikBag }) => {
 
 						<FormikCheckbox name={`${path}.harFellesAdresse`} label="Bor sammen" checkboxMargin />
 						<Sivilstand
+							sivilstander={_get(formikBag.values, `${path}.sivilstander`)}
 							basePath={`${path}.sivilstander`}
 							formikBag={formikBag}
 							erSistePartner={formikBag.values.tpsf.relasjoner.partnere.length === idx + 1}

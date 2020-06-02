@@ -1,13 +1,5 @@
-<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
  <g>
-  <title>background</title>
-  <rect fill="none" id="canvas_background" height="26" width="26" y="-1" x="-1"/>
-  <g display="none" overflow="visible" y="0" x="0" height="100%" width="100%" id="canvasGrid">
-   <rect fill="url(#gridpattern)" stroke-width="0" y="0" x="0" height="100%" width="100%"/>
-  </g>
- </g>
- <g>
-  <title>Layer 1</title>
   <rect id="svg_2" height="2.062486" width="5.999959" y="3.062562" x="1.093824" stroke-width="0" stroke="#000" fill="#000000"/>
   <rect id="svg_3" height="2.062486" width="5.999959" y="3.062562" x="9.102553" stroke-width="0" stroke="#000" fill="#000000"/>
   <rect id="svg_4" height="2.062486" width="5.999959" y="3.062562" x="16.910661" stroke-width="0" stroke="#000" fill="#000000"/>

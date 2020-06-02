@@ -16,6 +16,7 @@ type Relasjon = {
 
 type Person = {
 	ident: string
+	identtype: string
 }
 
 enum RelasjonType {
@@ -28,7 +29,15 @@ enum RelasjonType {
 }
 
 const getHeader = (navn: string) => {
-	return (relasjon: Relasjon) => `${navn} (${relasjon.personRelasjonMed.ident})`
+	return (relasjon: Relasjon) => {
+		if (
+			navn.toUpperCase() === RelasjonType.BARN &&
+			relasjon.personRelasjonMed.identtype === 'FDAT'
+		) {
+			return `${navn} - Dødfødt (${relasjon.personRelasjonMed.ident})`
+		}
+		return `${navn} (${relasjon.personRelasjonMed.ident})`
+	}
 }
 
 export const Relasjoner = ({ relasjoner }: RelasjonerProps) => {

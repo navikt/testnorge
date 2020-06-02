@@ -64,7 +64,7 @@ const mapAdresserToOptions = (adresse, idx) => ({
 // Lage liste over husnr
 const husnummerListe = adresse => {
 	const liste = []
-	for (var i = adresse.husnrfra; i <= adresse.husnrtil; i++) {
+	for (let i = adresse.husnrfra; i <= adresse.husnrtil; i++) {
 		liste.push({
 			label: String(parseInt(i)),
 			value: parseInt(i)

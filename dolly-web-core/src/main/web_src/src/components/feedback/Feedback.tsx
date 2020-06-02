@@ -35,7 +35,7 @@ export const Feedback = ({ label, feedbackFor }: FeedbackProps) => {
 					<Textarea
 						value={text}
 						label=""
-						placeholder={label}
+						placeholder={'(Valgfritt) ' + label}
 						maxLength={MAX_LENGTH}
 						onChange={event => setText(event.target.value)}
 						feil={

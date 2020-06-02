@@ -2,7 +2,13 @@ import * as Yup from 'yup'
 import _get from 'lodash/get'
 import { isAfter, addDays } from 'date-fns'
 import Dataformatter from '~/utils/DataFormatter'
-import { requiredString, ifPresent, ifKeyHasValue, messages } from '~/utils/YupValidations'
+import {
+	requiredString,
+	ifPresent,
+	ifKeyHasValue,
+	messages,
+	requiredDate
+} from '~/utils/YupValidations'
 
 const boadresse = Yup.object({
 	gateadresse: ifKeyHasValue(
@@ -141,7 +147,7 @@ const foedtFoerOgEtterTest = (validation, validerFoedtFoer) => {
 			const values = this.options.context
 			const path = this.path.substring(0, this.path.lastIndexOf('.'))
 
-			let selectedDato = new Date(new Date(val).toDateString())
+			const selectedDato = new Date(new Date(val).toDateString())
 			const foedtEtterValue = _get(values, `${path}.foedtEtter`)
 			const foedtFoerValue = _get(values, `${path}.foedtFoer`)
 
@@ -153,7 +159,7 @@ const foedtFoerOgEtterTest = (validation, validerFoedtFoer) => {
 				}
 			} else {
 				if (foedtFoerValue !== '' && foedtFoerValue !== undefined) {
-					let foedtFoerDato = new Date(foedtFoerValue)
+					const foedtFoerDato = new Date(foedtFoerValue)
 					foedtFoerDato.setDate(foedtFoerDato.getDate() - 1)
 					if (selectedDato >= new Date(foedtFoerDato.toDateString())) return false
 				}
@@ -201,7 +207,10 @@ const barn = Yup.array()
 			kjonn: Yup.string().nullable(),
 			barnType: requiredString,
 			partnerNr: Yup.number().nullable(),
-			borHos: requiredString,
+			borHos: Yup.mixed().when('doedsdato', {
+				is: val => val === undefined,
+				then: requiredString
+			}),
 			erAdoptert: Yup.boolean(),
 			alder: Yup.number()
 				.transform(num => (isNaN(num) ? undefined : num))
@@ -222,7 +231,12 @@ const barn = Yup.array()
 			utenFastBopel: Yup.boolean(),
 			boadresse: Yup.object({
 				kommunenr: Yup.string().nullable()
-			})
+			}),
+			foedselsdato: Yup.mixed().when('borHos', {
+				is: val => val === undefined,
+				then: requiredDate
+			}),
+			doedsdato: Yup.date()
 		})
 	)
 	.nullable()

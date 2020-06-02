@@ -11,7 +11,4 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = { updateBeskrivelse: actions.updateBeskrivelse }
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Beskrivelse)
+export default connect(mapStateToProps, mapDispatchToProps)(Beskrivelse)

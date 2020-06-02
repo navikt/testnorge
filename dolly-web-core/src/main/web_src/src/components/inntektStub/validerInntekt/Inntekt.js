@@ -65,8 +65,8 @@ const fieldReslover = (field, options = [], handleChange, values, path, index) =
 			/>
 		)
 	} else if (
-		(options.length == 2 && options.includes('<TOM>') && options.includes('<UTFYLT>')) ||
-		(options.length == 1 && options[0] === '<UTFYLT>')
+		(options.length === 2 && options.includes('<TOM>') && options.includes('<UTFYLT>')) ||
+		(options.length === 1 && options[0] === '<UTFYLT>')
 	) {
 		return (
 			<FormikTextInput

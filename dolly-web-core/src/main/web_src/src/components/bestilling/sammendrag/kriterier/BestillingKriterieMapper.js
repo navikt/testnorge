@@ -28,7 +28,7 @@ const _getTpsfBestillingData = data => {
 		obj('Født etter', Formatters.formatDate(data.foedtEtter)),
 		obj('Født før', Formatters.formatDate(data.foedtFoer)),
 		obj('Alder', data.alder),
-		obj('Dødsdato', Formatters.formatDate(data.doedsdato)),
+		obj('Dødsdato', data.doedsdato === null ? 'Ingen' : Formatters.formatDate(data.doedsdato)),
 		obj('Statsborgerskap', data.statsborgerskap, AdresseKodeverk.StatsborgerskapLand),
 		obj('Statsborgerskap fra', Formatters.formatDate(data.statsborgerskapRegdato)),
 		obj('Kjønn', Formatters.kjonn(data.kjonn, data.alder)),
@@ -53,7 +53,7 @@ const _getTpsfBestillingData = data => {
 			'Telefonnummer 2',
 			data.telefonnummer_2 && `${data.telefonLandskode_2} ${data.telefonnummer_2}`
 		),
-		obj('Egenansatt', Formatters.oversettBoolean(data.egenansattDatoFom))
+		obj('Egenansatt fra', Formatters.formatDate(data.egenAnsattDatoFom))
 	]
 }
 
@@ -228,7 +228,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Forelder 2', item.partnerIdent),
 						obj('Foreldre', Formatters.showLabel('barnType', item.barnType)), //Bruke samme funksjon som i bestillingsveileder
 						obj('Bor hos', Formatters.showLabel('barnBorHos', item.borHos)),
-						obj('Er adoptert', Formatters.oversettBoolean(item.erAdoptert))
+						obj('Er adoptert', Formatters.oversettBoolean(item.erAdoptert)),
+						obj('Fødselsdato', Formatters.formatDate(item.foedselsdato))
 					])
 				})
 
@@ -295,7 +296,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 	if (sigrunStubKriterier) {
 		// Flatter ut sigrunKriterier for å gjøre det lettere å mappe
-		let flatSigrunStubKriterier = []
+		const flatSigrunStubKriterier = []
 		sigrunStubKriterier.forEach(inntekt => {
 			const inntektObj = { inntektsaar: inntekt.inntektsaar, tjeneste: inntekt.tjeneste }
 			inntekt.grunnlag &&
@@ -365,9 +366,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				{ numberHeader: `Inntektsinformasjon ${i + 1}` },
 				obj('Måned/år', inntektsinfo.sisteAarMaaned),
 				obj('Generer antall måneder', inntektsinfo.antallMaaneder),
-				obj('Opplysningspliktig (orgnr/id)', inntektsinfo.opplysningspliktig),
 				obj('Virksomhet (orgnr/id)', inntektsinfo.virksomhet),
-				obj('Versjon', inntektsinfo.versjon),
+				obj('Opplysningspliktig (orgnr/id)', inntektsinfo.opplysningspliktig),
 				obj(
 					'Antall registrerte inntekter',
 					inntektsinfo.inntektsliste && inntektsinfo.inntektsliste.length
@@ -383,6 +383,10 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				obj(
 					'Antall registrerte arbeidsforhold',
 					inntektsinfo.arbeidsforholdsliste && inntektsinfo.arbeidsforholdsliste.length
+				),
+				obj(
+					'Antall registrerte inntektsendringer (historikk)',
+					inntektsinfo.historikk && inntektsinfo.historikk.length
 				)
 			])
 		})
@@ -576,7 +580,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	if (instKriterier) {
 		// Flater ut instKriterier for å gjøre det lettere å mappe
 
-		let flatInstKriterier = []
+		const flatInstKriterier = []
 		instKriterier.forEach(i => {
 			flatInstKriterier.push({
 				institusjonstype: i.institusjonstype,
@@ -631,7 +635,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		const oppholdsrett = Boolean(currentOppholdsrettType)
 		const tredjelandsborger = Boolean(currentTredjelandsborgereStatus)
 
-		let aliaserListe = []
+		const aliaserListe = []
 		udiStubKriterier.aliaser &&
 			udiStubKriterier.aliaser.forEach((alias, i) => {
 				if (alias.nyIdent === false) {
@@ -769,8 +773,12 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				Formatters.formatDate(inntekt.avsendersystem.innsendingstidspunkt)
 			),
 
-			obj('Virksomhet', inntekt.arbeidsgiver.orgnummer),
-
+			obj('Arbeidsgiver (orgnr)', inntekt.arbeidsgiver && inntekt.arbeidsgiver.virksomhetsnummer),
+			obj(
+				'Arbeidsgiver (fnr/dnr/bost)',
+				inntekt.arbeidsgiverPrivat && inntekt.arbeidsgiverPrivat.arbeidsgiverFnr
+			),
+			obj('Arbeidsforhold-ID', inntekt.arbeidsforhold.arbeidsforholdId),
 			obj('Beløp', inntekt.arbeidsforhold.beregnetInntekt.beloep),
 			obj(
 				'Årsak ved endring',

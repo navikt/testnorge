@@ -8,6 +8,8 @@ const BestillingsveilederConnector = lazy(() =>
 )
 const MinSide = lazy(() => import('./pages/minSide/MinSideConnector'))
 const UI = lazy(() => import('./pages/ui/index'))
+const SoekMiniNorge = lazy(() => import('./pages/soekMiniNorge/SoekMiniNorge'))
+
 const GruppeBreadcrumb = props => <span>Gruppe #{props.match.params.gruppeId}</span>
 
 const routes = [
@@ -27,7 +29,8 @@ const routes = [
 	},
 	{ path: '/tpsendring', exact: true, breadcrumb: 'TPSEndring', component: TPSEndring },
 	{ path: '/minside', exact: true, breadcrumb: 'Min side', component: MinSide },
-	{ path: '/ui', exact: true, breadcrumb: 'UI demo', component: UI }
+	{ path: '/ui', exact: true, breadcrumb: 'UI demo', component: UI },
+	{ path: '/soek', exact: true, breadcrumb: 'Søk i Mini-Norge', component: SoekMiniNorge }
 ]
 
 export default routes

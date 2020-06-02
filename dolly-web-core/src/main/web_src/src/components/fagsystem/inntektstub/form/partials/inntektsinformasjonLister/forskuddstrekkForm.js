@@ -6,7 +6,7 @@ import { InntektstubKodeverk } from '~/config/kodeverk'
 
 const initialValues = {
 	beloep: '',
-	beskrivelse: ''
+	beskrivelse: null
 }
 
 export const ForskuddstrekkForm = ({ formikBag, inntektsinformasjonPath }) => {

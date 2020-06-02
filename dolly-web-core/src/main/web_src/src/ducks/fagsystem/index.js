@@ -155,11 +155,13 @@ export default handleActions(
 		},
 		[onSuccess(actions.getSigrunSekvensnr)](state, action) {
 			const inntektData = state.sigrunstub[action.meta.ident]
-			state.sigrunstub[action.meta.ident] = inntektData.map(i => {
-				const sekvens = action.payload.data.find(s => s.gjelderPeriode === i.inntektsaar)
-				const sekvensnummer = sekvens && sekvens.sekvensnummer.toString()
-				return { ...i, sekvensnummer }
-			})
+			if (inntektData) {
+				state.sigrunstub[action.meta.ident] = inntektData.map(i => {
+					const sekvens = action.payload.data.find(s => s.gjelderPeriode === i.inntektsaar)
+					const sekvensnummer = sekvens && sekvens.sekvensnummer.toString()
+					return { ...i, sekvensnummer }
+				})
+			}
 		},
 		[onSuccess(actions.getInntektstub)](state, action) {
 			state.inntektstub[action.meta.ident] = action.payload.data
@@ -259,6 +261,42 @@ export const fetchDataFraFagsystemer = personId => (dispatch, getState) => {
 				return dispatch(actions.getPensjon(personId, success[system][0]))
 			case 'BRREGSTUB':
 				return dispatch(actions.getBrreg(personId))
+		}
+	})
+}
+
+export const fetchDataFraFagsystemerForSoek = personId => dispatch => {
+	// Liste over systemer
+	const systemer = [
+		'KRRSTUB',
+		'SIGRUNSTUB',
+		'INNTK',
+		'ARENA',
+		'PDL',
+		'INST2',
+		'PEN_INNTEKT',
+		'AAREG'
+	]
+
+	systemer.forEach(system => {
+		switch (system) {
+			case 'KRRSTUB':
+				return dispatch(actions.getKrr(personId))
+			case 'SIGRUNSTUB':
+				dispatch(actions.getSigrun(personId))
+				return dispatch(actions.getSigrunSekvensnr(personId))
+			case 'INNTK':
+				return dispatch(actions.getInntektstub(personId))
+			case 'ARENA':
+				return dispatch(actions.getArena(personId))
+			case 'PDL':
+				return dispatch(actions.getPDL(personId))
+			case 'INST2':
+				return dispatch(actions.getInst(personId, 'q2'))
+			case 'PEN_INNTEKT':
+				return dispatch(actions.getPensjon(personId, 'q2'))
+			case 'AAREG':
+				return dispatch(actions.getAareg(personId, 'q2'))
 		}
 	})
 }
