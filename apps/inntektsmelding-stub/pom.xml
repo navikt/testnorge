@@ -14,8 +14,6 @@
     <packaging>jar</packaging>
 
     <properties>
-        <application.version>${project.version}</application.version>
-        <springfox.version>2.9.2</springfox.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
     </properties>
@@ -63,6 +61,14 @@
         </dependency>
 
         <!--DOCUMENTATION-->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+        </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-bean-validators</artifactId>
