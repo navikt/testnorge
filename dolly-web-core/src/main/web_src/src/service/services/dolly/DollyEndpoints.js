@@ -22,8 +22,6 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}`
 	}
 
-	// TODO: Ta inn endpoint for å låse gruppe
-
 	static gruppeByUser(userId) {
 		return `${groupBase}?brukerId=${userId}`
 	}
@@ -34,6 +32,10 @@ export default class DollyEndpoints {
 
 	static gruppeBestillingFraEksisterendeIdenter(gruppeId) {
 		return `${groupBase}/${gruppeId}/bestilling/fraidenter`
+	}
+
+	static laasGruppe(gruppeId) {
+		return `${groupBase}/${gruppeId}/laas?erLaast=true`
 	}
 
 	static gruppeBestillingStatus(gruppeId) {

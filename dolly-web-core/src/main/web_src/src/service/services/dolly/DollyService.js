@@ -23,11 +23,6 @@ export default {
 		return Request.put(Endpoints.gruppeById(gruppeId), data)
 	},
 
-	// TODO: Skriv funksjon for å låse gruppe
-	// laasGruppe(gruppeId) {
-	// 	return Request.post()
-	// },
-
 	deleteGruppe(gruppeId) {
 		return Request.delete(Endpoints.gruppeById(gruppeId))
 	},
@@ -38,6 +33,10 @@ export default {
 
 	createBestillingFraEksisterendeIdenter(gruppeId, data) {
 		return Request.post(Endpoints.gruppeBestillingFraEksisterendeIdenter(gruppeId), data)
+	},
+
+	updateGruppeLaas(gruppeId) {
+		return Request.put(Endpoints.laasGruppe(gruppeId))
 	},
 
 	//* Ident

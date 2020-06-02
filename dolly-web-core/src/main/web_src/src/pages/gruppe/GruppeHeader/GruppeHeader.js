@@ -12,11 +12,17 @@ import Formatters from '~/utils/DataFormatter'
 
 import './GruppeHeader.less'
 
-export default function GruppeHeader({ gruppe, identArray, isDeletingGruppe, deleteGruppe }) {
+export default function GruppeHeader({
+	gruppe,
+	identArray,
+	isDeletingGruppe,
+	deleteGruppe,
+	laasGruppe,
+	isLockingGruppe
+}) {
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
 
-	// const erLaast = gruppe.erLaast
-	const erLaast = gruppe.id === 702 // Later som om denne gruppen er låst for testing
+	const erLaast = gruppe.erLaast
 
 	const headerClass = erLaast ? 'gruppe-header-laast' : 'gruppe-header'
 	const gruppeNavn = erLaast ? `${gruppe.navn} (låst)` : gruppe.navn
@@ -55,7 +61,7 @@ export default function GruppeHeader({ gruppe, identArray, isDeletingGruppe, del
 					)}
 					{!erLaast && (
 						// TODO: Send inn action og loading for laasGruppe
-						<LaasButton action={deleteGruppe} loading={isDeletingGruppe}>
+						<LaasButton action={laasGruppe} loading={isLockingGruppe}>
 							Er du sikker på at du vil låse denne gruppen? <br />
 							Når gruppen er låst må du kontakte team Dolly <br />
 							dersom du ønsker å gjøre endringer.

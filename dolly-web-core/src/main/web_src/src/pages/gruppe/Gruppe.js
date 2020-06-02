@@ -18,12 +18,14 @@ const VISNING_BESTILLING = 'bestilling'
 export default function Gruppe({
 	getGruppe,
 	deleteGruppe,
+	laasGruppe,
 	getBestillinger,
 	gruppe,
 	identer,
 	zBruker,
 	isFetching,
 	isDeletingGruppe,
+	isLockingGruppe,
 	match,
 	history
 }) {
@@ -53,8 +55,7 @@ export default function Gruppe({
 		return new Set(iterable).size
 	}
 
-	// const erLaast = gruppe.erLaast
-	const erLaast = gruppe.id === 702 // Later som om denne gruppen er låst for testing
+	const erLaast = gruppe.erLaast
 
 	return (
 		<div className="gruppe-container">
@@ -63,6 +64,8 @@ export default function Gruppe({
 				identArray={identArray}
 				deleteGruppe={deleteGruppe}
 				isDeletingGruppe={isDeletingGruppe}
+				laasGruppe={laasGruppe}
+				isLockingGruppe={isLockingGruppe}
 			/>
 
 			<StatusListeConnector gruppeId={gruppe.id} />
