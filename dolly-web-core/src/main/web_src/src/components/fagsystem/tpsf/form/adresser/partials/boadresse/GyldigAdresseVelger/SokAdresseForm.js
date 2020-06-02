@@ -37,7 +37,7 @@ export const SokAdresseForm = ({ onSearch, formikBag }) => {
 				<DollySelect
 					name="postnummer"
 					label="Postnummer"
-					kodeverk={AdresseKodeverk.Postnummer}
+					kodeverk={AdresseKodeverk.PostnummerUtenPostboks}
 					size="grow"
 					value={postnummer}
 					onChange={v => setPostnummer((v && v.value) || '')}
