@@ -15,7 +15,6 @@
 
     <properties>
         <application.version>${project.version}</application.version>
-        <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
         <springfox.version>2.9.2</springfox.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
@@ -61,20 +60,9 @@
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
-            <version>${logstash.logback.encoder.version}</version>
         </dependency>
 
         <!--DOCUMENTATION-->
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${springfox.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${springfox.version}</version>
-        </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-bean-validators</artifactId>
