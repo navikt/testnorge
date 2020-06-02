@@ -23,6 +23,7 @@
         <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
         <maven-pmd-plugin.version>3.13.0</maven-pmd-plugin.version>
+        <maven-jxr.version>4.0.0</maven-jxr.version>
         <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
         <springfox.version>2.9.2</springfox.version>
         <springframework.cloud.version>2.1.2.RELEASE</springframework.cloud.version>
@@ -37,9 +38,14 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.commons</groupId>
+            <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${commons-io.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
 
         <!-- SPRING -->
@@ -134,6 +140,7 @@
                 <configuration>
                     <failOnViolation>false</failOnViolation>
                     <printFailingErrors>true</printFailingErrors>
+                    <linkXRef>false</linkXRef>
                 </configuration>
                 <executions>
                     <execution>

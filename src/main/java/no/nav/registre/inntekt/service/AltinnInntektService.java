@@ -1,15 +1,6 @@
 package no.nav.registre.inntekt.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 import no.nav.registre.inntekt.consumer.rs.AltinnInntektConsumer;
 import no.nav.registre.inntekt.consumer.rs.dokmot.DokmotConsumer;
 import no.nav.registre.inntekt.domain.altinn.RsAltinnInntektInfo;
@@ -30,6 +21,14 @@ import no.nav.registre.inntekt.utils.ValidationException;
 import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsforhold;
 import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Organisasjon;
 import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Person;
+import org.springframework.stereotype.Service;
+
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
