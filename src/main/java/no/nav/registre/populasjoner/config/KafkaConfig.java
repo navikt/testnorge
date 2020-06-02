@@ -1,7 +1,7 @@
 package no.nav.registre.populasjoner.config;
 
-import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,8 +32,8 @@ public class KafkaConfig {
 
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, brokers);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaGroup);
-        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
-        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         config.put("schema.registry.url", schemaUrl);
 
         return new DefaultKafkaConsumerFactory<>(config);
