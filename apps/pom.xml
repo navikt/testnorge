@@ -27,5 +27,6 @@
         <module>testnorge-sam</module>
         <module>orkestratoren</module>
         <module>inntektsmelding-stub</module>
+        <module>testnorge-frikort</module>
     </modules>
 </project>

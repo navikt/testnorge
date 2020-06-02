@@ -5,25 +5,20 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.4.RELEASE</version>
+        <artifactId>apps</artifactId>
+        <groupId>no.nav.registre.testnorge</groupId>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>no.nav.registre</groupId>
     <artifactId>testnorge-frikort</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
 
     <properties>
-        <application.version>${project.version}</application.version>
         <commons-math3.version>3.6.1</commons-math3.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <jaxb-core.version>2.3.0.1</jaxb-core.version>
         <jaxb-impl.version>2.3.1</jaxb-impl.version>
-        <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
         <mq-jms-spring-boot-starter.version>2.0.0</mq-jms-spring-boot-starter.version>
-        <springfox.version>2.9.2</springfox.version>
         <spring.boot.maven.plugin.version>2.1.8.RELEASE</spring.boot.maven.plugin.version>
         <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
     </properties>
@@ -63,7 +58,6 @@
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
-            <version>${logstash.logback.encoder.version}</version>
         </dependency>
 
         <!--NETWORK-->
@@ -97,12 +91,10 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>${springfox.version}</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
-            <version>${springfox.version}</version>
         </dependency>
 
         <!--VAULT-->
