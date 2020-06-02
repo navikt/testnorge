@@ -1,7 +1,7 @@
 FROM navikt/java:11
-LABEL maintainer="Team Registre"
+LABEL maintainer="Team Dolly"
 
-COPY "app.jar" app.jar
+COPY apps/inntektsmelding-stub/inntektsmelding-stub.jar /app/app.jar
 
 ENV JAVA_OPTS="-Dspring.profiles.active=prod"
 

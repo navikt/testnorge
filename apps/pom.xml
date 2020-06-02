@@ -26,5 +26,6 @@
         <module>testnorge-sigrun</module>
         <module>testnorge-sam</module>
         <module>orkestratoren</module>
+        <module>inntektsmelding-stub</module>
     </modules>
 </project>
