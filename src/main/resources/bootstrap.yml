@@ -25,6 +25,7 @@ app.kafka:
 spring.kafka:
   client-id: ${app.name}
   properties:
+    bootstrap-servers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
     security.protocol: SASL_SSL
     sasl:
       mechanism: PLAIN
@@ -32,7 +33,7 @@ spring.kafka:
     ssl:
       truststore.location: ${javax.net.ssl.trustStore:}
       truststore.password: ${javax.net.ssl.trustStorePassword:}
-    schema.registry.url: ${pdl.utils.urls.schema-registry.base-url}
+    schema.registry.url: http://kafka-schema-registry.tpa.svc.nais.local:8081
   listener:
     concurrency: 1
     poll-timeout: 1000
