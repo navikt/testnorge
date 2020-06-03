@@ -9,9 +9,13 @@ import lombok.ToString;
 import lombok.Value;
 import org.apache.logging.log4j.util.Strings;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import no.nav.registre.sdForvalter.consumer.rs.request.ereg.EregMapperRequest;
 import no.nav.registre.sdForvalter.database.model.EregModel;
-import no.nav.registre.sdForvalter.domain.Adresse;
-import no.nav.registre.sdForvalter.domain.FasteData;
 import no.nav.registre.sdForvalter.dto.organisasjon.v1.OrganisasjonDTO;
 
 
@@ -72,7 +76,7 @@ public class Ereg extends FasteData {
         postadresse = model.getPostadresse() != null ? new Adresse(model.getPostadresse()) : null;
     }
 
-    public Ereg(OrganisasjonDTO dto){
+    public Ereg(OrganisasjonDTO dto) {
         super(dto.getGruppe(), dto.getOpprinnelse());
         orgnr = dto.getOrgnr();
         enhetstype = dto.getEnhetstype();
@@ -85,6 +89,37 @@ public class Ereg extends FasteData {
         postadresse = new Adresse(dto.getPostadresse());
     }
 
+    public Ereg(EregMapperRequest eregMapperRequest) {
+        super("WIP", "Brreg");
+
+        orgnr = eregMapperRequest.getOrgnr();
+        enhetstype = eregMapperRequest.getEnhetstype();
+        if (eregMapperRequest.getNavn() != null && eregMapperRequest.getNavn().getNavneListe() != null) {
+            navn = String.join(" ", eregMapperRequest.getNavn().getNavneListe());
+        } else {
+            navn = null;
+        }
+        epost = eregMapperRequest.getEpost();
+        internetAdresse = eregMapperRequest.getInternetAdresse();
+
+        forretningsAdresse = eregMapperRequest.getForretningsAdresse() != null
+                ? new Adresse(eregMapperRequest.getForretningsAdresse())
+                : null;
+        postadresse = eregMapperRequest.getAdresse() != null ? new Adresse(eregMapperRequest.getAdresse()) : null;
+
+        naeringskode = null;
+
+        List<Map<String, String>> eregMapperRequestKnytninger = eregMapperRequest.getKnytninger();
+        List<String> knytninger = new ArrayList<>();
+        if (eregMapperRequestKnytninger != null) {
+            knytninger = eregMapperRequestKnytninger
+                    .stream()
+                    .map(stringStringMap -> stringStringMap.get("orgnr"))
+                    .collect(Collectors.toList());
+        }
+        juridiskEnhet = knytninger.size() > 0 ? knytninger.get(0) : null; //håndtere hvis det er flere knytninger?
+    }
+
     public OrganisasjonDTO toDTO() {
         return OrganisasjonDTO
                 .builder()
@@ -92,7 +127,7 @@ public class Ereg extends FasteData {
                 .enhetstype(enhetstype)
                 .navn(navn)
                 .epost(epost)
-                .forretningsAdresse(forretningsAdresse != null ? forretningsAdresse.toDTO(): null)
+                .forretningsAdresse(forretningsAdresse != null ? forretningsAdresse.toDTO() : null)
                 .postadresse(postadresse != null ? postadresse.toDTO() : null)
                 .internetAdresse(internetAdresse)
                 .juridiskEnhet(juridiskEnhet)

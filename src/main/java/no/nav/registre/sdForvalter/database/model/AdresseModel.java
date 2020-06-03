@@ -26,6 +26,14 @@ public class AdresseModel {
     private String poststed;
 
     public AdresseModel(Adresse adresse) {
+        setAdresse(adresse);
+    }
+
+    public AdresseModel(no.nav.registre.sdForvalter.consumer.rs.request.ereg.Adresse adresse) {
+        setAdresse(new Adresse(adresse));
+    }
+
+    private void setAdresse(Adresse adresse) {
         this.adresse = adresse.getAdresse();
         this.postnr = adresse.getPostnr();
         this.kommunenr = adresse.getKommunenr();
