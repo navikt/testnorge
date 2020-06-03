@@ -1,5 +1,6 @@
 package no.nav.registre.sdForvalter.database.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +26,7 @@ import no.nav.registre.sdForvalter.domain.Ereg;
 @Setter
 @Slf4j
 @Table(name = "EREG")
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class EregModel extends FasteDataModel<Ereg> {
 

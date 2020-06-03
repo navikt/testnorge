@@ -2,6 +2,7 @@ package no.nav.registre.sdForvalter.database.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +18,7 @@ import no.nav.registre.sdForvalter.domain.Adresse;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 @Embeddable
 public class AdresseModel {
     private String adresse;

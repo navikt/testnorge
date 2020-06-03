@@ -89,11 +89,10 @@ public class EregMapperConsumer {
                     uriTemplate.expand());
             ResponseEntity<List<EregMapperRequest>> responseEntity = restTemplate.exchange(requestEntity, RESPONSE_TYPE);
 
-            EregListe eregListe = new EregListe(responseEntity.getBody()
+            return new EregListe(responseEntity.getBody()
                     .stream()
                     .map(Ereg::new)
                     .collect(Collectors.toList()));
-            return eregListe;
         } catch (Exception e) {
             log.error("Klarte ikke å hente organisasjoner fra flatfil", e);
             throw e;

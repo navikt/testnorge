@@ -110,14 +110,15 @@ public class Ereg extends FasteData {
         naeringskode = null;
 
         List<Map<String, String>> eregMapperRequestKnytninger = eregMapperRequest.getKnytninger();
-        List<String> knytninger = new ArrayList<>();
         if (eregMapperRequestKnytninger != null) {
-            knytninger = eregMapperRequestKnytninger
+            juridiskEnhet = eregMapperRequestKnytninger
                     .stream()
                     .map(stringStringMap -> stringStringMap.get("orgnr"))
-                    .collect(Collectors.toList());
+                    .findFirst()
+                    .orElse(null);
+        } else {
+            juridiskEnhet = null;
         }
-        juridiskEnhet = knytninger.size() > 0 ? knytninger.get(0) : null; //håndtere hvis det er flere knytninger?
     }
 
     public OrganisasjonDTO toDTO() {
