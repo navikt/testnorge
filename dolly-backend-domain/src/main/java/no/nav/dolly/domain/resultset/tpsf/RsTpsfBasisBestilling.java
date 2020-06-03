@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.tpsf.adresse.AdresseNrInfo;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsAdresse;
+import no.nav.dolly.domain.resultset.tpsf.adresse.RsMidlertidigAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 
 @Getter
@@ -203,51 +204,4 @@ public class RsTpsfBasisBestilling {
             value = "Telefonnummer 2, maxs 20 sifre"
     )
     private String telefonnummer_2;
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class RsMidlertidigAdresse {
-
-        public enum Adressetype {GATE, MATR, UTAD}
-
-        @ApiModelProperty(
-                position = 1,
-                value = "Midlertidig adresse gyldig fra-og-med. Default er dagens dato"
-        )
-        private LocalDateTime gyldigFom;
-
-        @ApiModelProperty(
-                position = 2,
-                value = "Midlertidig adresse gyldig til-og-med. Default er et år frem i tid"
-        )
-        private LocalDateTime gyldigTom;
-
-        @ApiModelProperty(
-                position = 3,
-                value = "Adressetype GATE (default), samt MATR og PBOX innebærer midlertidig norsk adresse, "
-                        + "UTAD er utenlandsk tilleggsadresse"
-        )
-        private Adressetype adressetype;
-
-        @ApiModelProperty(
-                position = 4,
-                value = "Benyttes ved GATE. Backendgenerert adresse basert på postnummer eller kommunenr"
-        )
-        private AdresseNrInfo gateadresseNrInfo;
-
-        @ApiModelProperty(
-                position = 5,
-                value = "Benyttes når midlertidig adresse enten er gateadresse (GATE) eller matrikkeladresse (MATR). "
-                + "Flyttedato benyttes ikke."
-        )
-        private RsAdresse norskAdresse;
-
-        @ApiModelProperty(
-                position = 6,
-                value = "Benyttes ved UTAD. Postland må være annet enn \"NOR\""
-        )
-        private RsPostadresse utenlandskAdresse;
-    }
 }

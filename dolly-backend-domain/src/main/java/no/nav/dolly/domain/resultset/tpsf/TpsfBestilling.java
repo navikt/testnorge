@@ -12,6 +12,7 @@ import lombok.Setter;
 import no.nav.dolly.domain.resultset.IdentType;
 import no.nav.dolly.domain.resultset.tpsf.adresse.AdresseNrInfo;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsAdresse;
+import no.nav.dolly.domain.resultset.tpsf.adresse.RsMidlertidigAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 
 @Getter
@@ -41,6 +42,8 @@ public class TpsfBestilling {
     private RsAdresse boadresse;
 
     private List<RsPostadresse> postadresse;
+
+    private RsMidlertidigAdresse midlertidigAdresse;
 
     private String kjonn;
 
