@@ -20,8 +20,6 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RsTpsfBasisBestilling {
 
-    public enum Adressetype {TIAD, UTAD}
-
     @ApiModelProperty(
             position = 10,
             dataType = "LocalDateTime",
@@ -212,6 +210,8 @@ public class RsTpsfBasisBestilling {
     @AllArgsConstructor
     public static class RsMidlertidigAdresse {
 
+        public enum Adressetype {GATE, MATR, UTAD}
+
         @ApiModelProperty(
                 position = 1,
                 value = "Midlertidig adresse gyldig fra-og-med. Default er dagens dato"
@@ -226,20 +226,20 @@ public class RsTpsfBasisBestilling {
 
         @ApiModelProperty(
                 position = 3,
-                value = "Adressetype TIAD (default) innebærer midlertidig norsk adresse, "
+                value = "Adressetype GATE (default), samt MATR og PBOX innebærer midlertidig norsk adresse, "
                         + "UTAD er utenlandsk tilleggsadresse"
         )
         private Adressetype adressetype;
 
         @ApiModelProperty(
                 position = 4,
-                value = "Benyttes ved TIAD. Backendgenerert adresse basert på postnummer eller kommunenr"
+                value = "Benyttes ved GATE. Backendgenerert adresse basert på postnummer eller kommunenr"
         )
         private AdresseNrInfo gateadresseNrInfo;
 
         @ApiModelProperty(
                 position = 5,
-                value = "Benyttes ved TIAD. Midlertidig adresse er enten gateadresse (GATE) eller matrikkeladresse (MATR). "
+                value = "Benyttes når midlertidig adresse enten er gateadresse (GATE) eller matrikkeladresse (MATR). "
                 + "Flyttedato benyttes ikke."
         )
         private RsAdresse norskAdresse;
