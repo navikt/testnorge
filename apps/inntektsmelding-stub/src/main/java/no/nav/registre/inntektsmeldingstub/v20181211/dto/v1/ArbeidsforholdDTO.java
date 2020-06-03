@@ -59,7 +59,11 @@ public class ArbeidsforholdDTO implements ToXmlElement<XMLArbeidsforhold> {
         if (beregnetInntekt != null) {
             xmlArbeidsforhold.setBeregnetInntekt(factory.createXMLArbeidsforholdBeregnetInntekt(beregnetInntekt.toXmlElement()));
         }
-        xmlArbeidsforhold.setArbeidsforholdId(factory.createXMLArbeidsforholdArbeidsforholdId(arbeidsforholdId));
+
+        if (arbeidsforholdId != null) {
+            xmlArbeidsforhold.setArbeidsforholdId(factory.createXMLArbeidsforholdArbeidsforholdId(arbeidsforholdId));
+        }
+
         xmlArbeidsforhold.setFoersteFravaersdag(factory.createXMLArbeidsforholdFoersteFravaersdag(foersteFravaersdag));
 
         return xmlArbeidsforhold;
