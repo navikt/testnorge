@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.0.RELEASE</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>no.nav.registre</groupId>
+    <artifactId>testnorge-token-provider</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+	<name>testnorge-token-provider</name>
+    <description>Tilbyr tokens til testnorge-applikasjoner</description>
+
+    <properties>
+        <application.name>testnorge-token-provider</application.name>
+        <application.version>${project.version}</application.version>
+        <java.version>1.8</java.version>
+        <logstash.logback.encoder.version>5.2</logstash.logback.encoder.version>
+        <freg.security.oidc.utility.version>3.0.3</freg.security.oidc.utility.version>
+        <cxf.version>3.2.2</cxf.version>
+        <swagger.version>2.9.2</swagger.version>
+        <maven-pmd-plugin.version>3.13.0</maven-pmd-plugin.version>
+    </properties>
+
+    <modules>
+        <module>token-provider-core</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
