@@ -179,14 +179,20 @@ public class ServiceUtils {
                     rettigheterSomObject.addAll(nyeRettigheterAap);
                 }
             }
-            var dataRequest = new DataRequest();
-            dataRequest.setId(identMedRettigheter.getKey());
-            dataRequest.setData(rettigheterSomObject);
-            identMedData.add(dataRequest);
+            if (!rettigheterSomObject.isEmpty()) {
+                var dataRequest = new DataRequest();
+                dataRequest.setId(identMedRettigheter.getKey());
+                dataRequest.setData(rettigheterSomObject);
+                identMedData.add(dataRequest);
+            } else {
+                log.warn("Kunne ikke opprette historikk i hodejegeren på ident {}", identMedRettigheter.getKey());
+            }
         }
-        var historikkRequest = new HistorikkRequest();
-        historikkRequest.setKilde(KILDE_ARENA);
-        historikkRequest.setIdentMedData(identMedData);
-        hodejegerenConsumer.saveHistory(historikkRequest);
+        if (!identMedData.isEmpty()) {
+            var historikkRequest = new HistorikkRequest();
+            historikkRequest.setKilde(KILDE_ARENA);
+            historikkRequest.setIdentMedData(identMedData);
+            hodejegerenConsumer.saveHistory(historikkRequest);
+        }
     }
 }
