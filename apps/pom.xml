@@ -40,5 +40,6 @@
         <module>testnorge-frikort</module>
         <module>testnorge-aaregstub</module>
         <module>testnorge-tss</module>
+        <module>testnorge-nav-endringsmeldinger</module>
     </modules>
 </project>
