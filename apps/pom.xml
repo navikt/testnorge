@@ -38,5 +38,6 @@
         <module>orkestratoren</module>
         <module>inntektsmelding-stub</module>
         <module>testnorge-frikort</module>
+        <module>testnorge-aaregstub</module>
     </modules>
 </project>

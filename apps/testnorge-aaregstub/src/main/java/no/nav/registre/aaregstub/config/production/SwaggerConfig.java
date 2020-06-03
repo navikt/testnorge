@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.annotations.ApiIgnore;
+import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -46,14 +47,15 @@ public class SwaggerConfig implements WebMvcConfigurer {
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfo(
-                "Testnorge-aaregstub",
-                "Testnorge-aaregstub lagrer syntetiserte arbeidsforhold som har blitt sendt/kan sendes til aareg.",
-                "" + appVersion,
-                "https://nav.no",
-                new Contact("Fellesregistrene på NAV", "http://stash.devillo.no/projects/FEL/repos/orkestratoren/browse", null),
-                "Super Strict Licence",
-                "https://opensource.org/licenses/super-strict-license");
+        return new ApiInfoBuilder()
+                .title("testnorge-aaregstub")
+                .description("Testnorge-aaregstub lagrer syntetiserte arbeidsforhold som har blitt sendt/kan sendes til aareg.")
+                .version(appVersion)
+                .termsOfServiceUrl("https://nav.no")
+                .contact(new Contact("Team Dolly", "https://confluence.adeo.no/display/FEL/Veiledninger+og+retningslinjer+for+bruk+av+testdata", "dolly@nav.no"))
+                .license("Super Strict Licence")
+                .licenseUrl("https://opensource.org/licenses/super-strict-license")
+                .build();
     }
 
     @Override
