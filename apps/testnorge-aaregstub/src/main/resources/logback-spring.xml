@@ -22,7 +22,7 @@
                 <charset>utf8</charset>
             </encoder>
         </appender>
-        <root level="DEBUG">
+        <root level="INFO">
             <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>
