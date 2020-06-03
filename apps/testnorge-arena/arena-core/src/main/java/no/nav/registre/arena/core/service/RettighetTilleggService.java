@@ -197,7 +197,7 @@ public class RettighetTilleggService {
         }
 
         var identerMedOpprettedeTillegg = rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
-        serviceUtils.lagreAapIHodejegeren(identerMedOpprettedeTillegg);
+        serviceUtils.lagreIHodejegeren(identerMedOpprettedeTillegg);
         return identerMedOpprettedeTillegg;
     }
 }
