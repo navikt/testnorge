@@ -39,5 +39,6 @@
         <module>inntektsmelding-stub</module>
         <module>testnorge-frikort</module>
         <module>testnorge-aaregstub</module>
+        <module>testnorge-tss</module>
     </modules>
 </project>
