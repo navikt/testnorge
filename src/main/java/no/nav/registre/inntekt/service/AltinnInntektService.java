@@ -5,6 +5,7 @@ import static no.nav.registre.inntekt.utils.CommonConstants.TYPE_PERSON;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.ZoneId;
@@ -244,7 +245,7 @@ public class AltinnInntektService {
                         .collect(Collectors.toList()))
                 .pleiepengerPerioder(inntekt.getPleiepengerPerioder())
                 .arbeidsforhold(RsArbeidsforhold.builder()
-                        .arbeidsforholdId(inntekt.getArbeidsforhold().getArbeidsforholdId())
+                        .arbeidsforholdId(StringUtils.isNotBlank(inntekt.getArbeidsforhold().getArbeidsforholdId()) ? inntekt.getArbeidsforhold().getArbeidsforholdId() : null)
                         .beregnetInntekt(RsInntekt.builder()
                                 .beloep(inntekt.getArbeidsforhold().getBeregnetInntekt().getBeloep())
                                 .aarsakVedEndring(getValueFromEnumIfSet(inntekt.getArbeidsforhold().getBeregnetInntekt().getAarsakVedEndring()))
