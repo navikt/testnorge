@@ -69,7 +69,7 @@ public class RettighetTiltakService {
 
         var identerMedOpprettedeTiltak = aktiverTiltaksdeltakelse(utvalgteIdenter, miljoe);
 
-        serviceUtils.lagreAapIHodejegeren(identerMedOpprettedeTiltak);
+        serviceUtils.lagreIHodejegeren(identerMedOpprettedeTiltak);
 
         return identerMedOpprettedeTiltak;
     }
@@ -105,7 +105,7 @@ public class RettighetTiltakService {
 
         var identerMedOpprettedeTiltak = rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
 
-        serviceUtils.lagreAapIHodejegeren(identerMedOpprettedeTiltak);
+        serviceUtils.lagreIHodejegeren(identerMedOpprettedeTiltak);
 
         return identerMedOpprettedeTiltak;
     }
@@ -132,7 +132,7 @@ public class RettighetTiltakService {
 
         var identerMedOpprettedeTiltak = rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
 
-        serviceUtils.lagreAapIHodejegeren(identerMedOpprettedeTiltak);
+        serviceUtils.lagreIHodejegeren(identerMedOpprettedeTiltak);
 
         return identerMedOpprettedeTiltak;
     }
