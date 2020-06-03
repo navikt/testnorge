@@ -145,7 +145,7 @@ public class RettighetAapServiceTest {
         assertThat(response.get(fnr1).get(0).getNyeRettigheterAap().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
         assertThat(response.get(fnr1).get(0).getFeiledeRettigheter().size(), equalTo(0));
 
-        verify(serviceUtils).lagreAapIHodejegeren(any());
+        verify(serviceUtils).lagreIHodejegeren(any());
     }
 
     @Test

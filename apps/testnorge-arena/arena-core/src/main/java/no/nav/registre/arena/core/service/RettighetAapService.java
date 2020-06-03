@@ -78,7 +78,7 @@ public class RettighetAapService {
         rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(aap115Rettigheter, miljoe));
         var identerMedOpprettedeRettigheter = rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
 
-        serviceUtils.lagreAapIHodejegeren(identerMedOpprettedeRettigheter);
+        serviceUtils.lagreIHodejegeren(identerMedOpprettedeRettigheter);
 
         return identerMedOpprettedeRettigheter;
     }
@@ -126,7 +126,7 @@ public class RettighetAapService {
 
         var identerMedOpprettedeRettigheter = rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
 
-        serviceUtils.lagreAapIHodejegeren(identerMedOpprettedeRettigheter);
+        serviceUtils.lagreIHodejegeren(identerMedOpprettedeRettigheter);
 
         return identerMedOpprettedeRettigheter;
     }
@@ -151,7 +151,7 @@ public class RettighetAapService {
 
         var identerMedOpprettedeRettigheter = rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
 
-        serviceUtils.lagreAapIHodejegeren(identerMedOpprettedeRettigheter);
+        serviceUtils.lagreIHodejegeren(identerMedOpprettedeRettigheter);
 
         return identerMedOpprettedeRettigheter;
     }
@@ -178,7 +178,7 @@ public class RettighetAapService {
 
         var identerMedOpprettedeRettigheter = rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
 
-        serviceUtils.lagreAapIHodejegeren(identerMedOpprettedeRettigheter);
+        serviceUtils.lagreIHodejegeren(identerMedOpprettedeRettigheter);
 
         return identerMedOpprettedeRettigheter;
     }
@@ -207,7 +207,7 @@ public class RettighetAapService {
 
         var identerMedOpprettedeRettigheter = rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
 
-        serviceUtils.lagreAapIHodejegeren(identerMedOpprettedeRettigheter);
+        serviceUtils.lagreIHodejegeren(identerMedOpprettedeRettigheter);
 
         return identerMedOpprettedeRettigheter;
     }
