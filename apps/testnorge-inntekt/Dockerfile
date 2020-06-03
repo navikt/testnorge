@@ -1,7 +1,7 @@
 FROM navikt/java:11
-LABEL maintainer="Team Registre"
+LABEL maintainer="Team Dolly"
 
-ADD "target/testnorge-inntekt.jar" app.jar
+ADD apps/testnorge-inntekt/target/testnorge-inntekt.jar app/app.jar
 
 ENV JAVA_OPTS="-Dspring.profiles.active=prod"
 
