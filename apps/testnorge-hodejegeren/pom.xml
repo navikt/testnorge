@@ -29,7 +29,6 @@
         <person-tps-avstemming-v1.version>1.0.2</person-tps-avstemming-v1.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
         <testnorge-consumers.version>1.11.11-RELEASE</testnorge-consumers.version>
-        <testnorge-domain.version>1.2020.05.07-08.54-6fb2dc16a8f2</testnorge-domain.version>
     </properties>
 
     <dependencyManagement>
@@ -39,11 +38,6 @@
                 <artifactId>spring-cloud-contract-wiremock</artifactId>
                 <version>2.0.2.RELEASE</version>
                 <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>no.nav.registre.testnorge</groupId>
-                <artifactId>testnorge-domain</artifactId>
-                <version>${testnorge-domain.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -23,7 +23,6 @@
         <springframework.cloud.version>2.1.2.RELEASE</springframework.cloud.version>
         <testnorge-consumers.version>1.12.0-RELEASE</testnorge-consumers.version>
         <jacoco.version>0.8.3</jacoco.version>
-        <testnorge-domain.version>1.2020.05.13-11.58-d4f7a985b287</testnorge-domain.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
     </properties>
 
@@ -34,13 +33,6 @@
                 <artifactId>testnorge-consumers</artifactId>
                 <version>${testnorge-consumers.version}</version>
             </dependency>
-
-            <dependency>
-                <groupId>no.nav.registre.testnorge</groupId>
-                <artifactId>testnorge-domain</artifactId>
-                <version>${testnorge-domain.version}</version>
-            </dependency>
-
             <!-- TEST -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>

@@ -11,6 +11,16 @@
     <packaging>pom</packaging>
     <artifactId>apps</artifactId>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <artifactId>testnorge-domain</artifactId>
+                <groupId>no.nav.registre.testnorge</groupId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <modules>
         <module>testnorge-ereg-mapper</module>
         <module>testnorge-elsam</module>
