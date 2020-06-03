@@ -1,6 +1,6 @@
 FROM navikt/java:8
-LABEL maintainer="Team Registre"
+LABEL maintainer="Team Dolly"
 
-ADD "token-provider-core/target/testnorge-token-provider-app.jar" /app/app.jar
+ADD apps/testnorge-token-provider/token-provider-core/target/testnorge-token-provider-app.jar /app/app.jar
 
 EXPOSE 8080
