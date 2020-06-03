@@ -13,13 +13,15 @@ import javax.validation.constraints.Size;
 @ApiModel
 @Value
 @NoArgsConstructor(force = true)
-@Builder
 @AllArgsConstructor
+@Builder
 public class RsArbeidsgiverPrivat {
+
     @JsonProperty
     @Size(min = 11, max = 11)
     @ApiModelProperty(value = "Arbeidsgivers fødselsnummer", required = true)
     private String arbeidsgiverFnr;
+
     @JsonProperty
     @ApiModelProperty(required = true)
     private RsKontaktinformasjon kontaktinformasjon;

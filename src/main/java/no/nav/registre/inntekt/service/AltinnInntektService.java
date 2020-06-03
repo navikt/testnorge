@@ -1,5 +1,9 @@
 package no.nav.registre.inntekt.service;
 
+import static no.nav.registre.inntekt.utils.CommonConstants.TYPE_ORGANISASJON;
+import static no.nav.registre.inntekt.utils.CommonConstants.TYPE_PERSON;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inntekt.consumer.rs.AltinnInntektConsumer;
 import no.nav.registre.inntekt.consumer.rs.dokmot.DokmotConsumer;
@@ -18,6 +22,9 @@ import no.nav.registre.inntekt.domain.dokmot.ProsessertInntektDokument;
 import no.nav.registre.inntekt.domain.dokmot.RsJoarkMetadata;
 import no.nav.registre.inntekt.provider.rs.requests.AltinnDollyRequest;
 import no.nav.registre.inntekt.utils.ValidationException;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Organisasjon;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Person;
 import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsforhold;
 import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Organisasjon;
 import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Person;
@@ -32,24 +39,12 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class AltinnInntektService {
-
-    private static final String TYPE_ORGANISASJON = "Organisasjon";
-    private static final String TYPE_PERSON = "Person";
 
     private final AaregService aaregService;
     private final AltinnInntektConsumer altinnInntektConsumer;
     private final DokmotConsumer dokmotConsumer;
-
-    public AltinnInntektService(
-            AaregService aaregService,
-            AltinnInntektConsumer altinnInntektConsumer,
-            DokmotConsumer dokmotConsumer
-    ) {
-        this.aaregService = aaregService;
-        this.altinnInntektConsumer = altinnInntektConsumer;
-        this.dokmotConsumer = dokmotConsumer;
-    }
 
     private static String getValueFromEnumIfSet(AltinnEnum altinnEnum) {
         return Objects.isNull(altinnEnum) ? null : altinnEnum.getValue();
@@ -88,14 +83,21 @@ public class AltinnInntektService {
         }
 
         inntekterAaOpprette.forEach(inntekt -> {
-            var virksomhetsnummer = inntekt.getArbeidsgiver().getVirksomhetsnummer();
-            var kontaktinformasjon = hentKontaktinformasjon(virksomhetsnummer, miljoe);
-            Arbeidsforhold nyesteArbeidsforhold = null;
+            String arbeidsgiverId;
+            if (inntekt.getArbeidsgiver() != null) {
+                arbeidsgiverId = inntekt.getArbeidsgiver().getVirksomhetsnummer();
+            } else if (inntekt.getArbeidsgiverPrivat() != null) {
+                arbeidsgiverId = inntekt.getArbeidsgiverPrivat().getArbeidsgiverFnr();
+            } else {
+                throw new RuntimeException("Må legge ved arbeidsgiver for å kunne opprette inntekt.");
+            }
+            var kontaktinformasjon = hentKontaktinformasjonFraEreg(arbeidsgiverId, miljoe);
+            Arbeidsforhold nyesteArbeidsforhold;
 
             try {
-                nyesteArbeidsforhold = AaregService.finnNyesteArbeidsforholdIOrganisasjon(ident, virksomhetsnummer, arbeidsforholdListe);
+                nyesteArbeidsforhold = AaregService.finnNyesteArbeidsforholdIOrganisasjon(ident, arbeidsgiverId, arbeidsforholdListe);
             } catch (ValidationException e) {
-                log.error("Fant ikke nyeste arbeidsforhold for {}", virksomhetsnummer, e);
+                log.error("Fant ikke nyeste arbeidsforhold for {}", arbeidsgiverId, e);
                 return;
             }
 
@@ -108,7 +110,7 @@ public class AltinnInntektService {
                             .metadata(metadata)
                             .datoMottatt(Date.from(inntekt.getAvsendersystem().getInnsendingstidspunkt().atZone(ZoneId.systemDefault()).toInstant()))
                             .virksomhetsnavn(inntekt.getArbeidsgiver().getKontaktinformasjon().getKontaktinformasjonNavn())
-                            .virksomhetsnummer(inntekt.getArbeidsgiver().getVirksomhetsnummer())
+                            .virksomhetsnummer(arbeidsgiverId)
                             .xml(response)
                             .build()
             );
@@ -133,12 +135,15 @@ public class AltinnInntektService {
                 var rsInntektsmelding = lagAltinnInntektRequest(inntekt, ident);
                 var respons = altinnInntektConsumer.getInntektsmeldingXml201812(rsInntektsmelding, true);
 
+                var arbeidsgiverId = getArbeidsgiverId(inntekt);
+                var kontaktinformasjon = getKontaktinformasjon(inntekt);
+
                 inntektDokumenter.add(InntektDokument.builder()
                         .arbeidstakerFnr(rsInntektsmelding.getArbeidstakerFnr())
                         .metadata(metadata)
                         .datoMottatt(Date.from(rsInntektsmelding.getAvsendersystem().getInnsendingstidspunkt().atZone(ZoneId.systemDefault()).toInstant()))
-                        .virksomhetsnavn(inntekt.getArbeidsgiver().getKontaktinformasjon().getKontaktinformasjonNavn())
-                        .virksomhetsnummer(inntekt.getArbeidsgiver().getVirksomhetsnummer())
+                        .virksomhetsnavn(kontaktinformasjon.getKontaktinformasjonNavn())
+                        .virksomhetsnummer(arbeidsgiverId)
                         .xml(respons)
                         .build());
             } catch (ValidationException ignore) {
@@ -149,33 +154,33 @@ public class AltinnInntektService {
     }
 
     private RsInntektsmelding lagAltinnInntektRequest(
-            RsAltinnInntektInfo inntektInfo,
+            RsAltinnInntektInfo inntekt,
             String ident
     ) throws ValidationException {
-        var tmp = mapAltinnInntektInfoTilRsInntektsmelding(ident, inntektInfo);
-        if (inntektInfo.getArbeidsgiver() == null) {
-            throw new ValidationException("Må legge ved arbeidsgiver for å kunne opprette inntekt.");
-        }
-        if (inntektInfo.getArbeidsgiver().getKontaktinformasjon() == null) {
+        var tmp = mapAltinnInntektInfoTilRsInntektsmelding(ident, inntekt);
+
+        var arbeidsgiverId = getArbeidsgiverId(inntekt);
+        var kontaktinformasjon = getKontaktinformasjon(inntekt);
+
+        if (kontaktinformasjon == null) {
             throw new ValidationException("Må legge ved kontaktinformasjon for arbeidsgiver.");
         }
-        var arbeidsgiver = inntektInfo.getArbeidsgiver();
-        // TODO: Dette er en quick fix som bare sjekker lengde for å gi svar på Privat/Offentlig arbeidsgiver.
-        if (inntektInfo.getArbeidsgiver().getVirksomhetsnummer().length() > 9) {
+
+        if (inntekt.getArbeidsgiver() != null) {
             tmp.arbeidsgiver(RsArbeidsgiver.builder()
                     .kontaktinformasjon(RsKontaktinformasjon.builder()
-                            .telefonnummer(arbeidsgiver.getKontaktinformasjon().getTelefonnummer())
-                            .kontaktinformasjonNavn(arbeidsgiver.getKontaktinformasjon().getKontaktinformasjonNavn())
+                            .telefonnummer(kontaktinformasjon.getTelefonnummer())
+                            .kontaktinformasjonNavn(kontaktinformasjon.getKontaktinformasjonNavn())
                             .build())
-                    .virksomhetsnummer(arbeidsgiver.getVirksomhetsnummer())
+                    .virksomhetsnummer(arbeidsgiverId)
                     .build());
         } else {
             tmp.arbeidsgiverPrivat(RsArbeidsgiverPrivat.builder()
                     .kontaktinformasjon(RsKontaktinformasjon.builder()
-                            .telefonnummer(arbeidsgiver.getKontaktinformasjon().getTelefonnummer())
-                            .kontaktinformasjonNavn(arbeidsgiver.getKontaktinformasjon().getKontaktinformasjonNavn())
+                            .telefonnummer(kontaktinformasjon.getTelefonnummer())
+                            .kontaktinformasjonNavn(kontaktinformasjon.getKontaktinformasjonNavn())
                             .build())
-                    .arbeidsgiverFnr(arbeidsgiver.getVirksomhetsnummer())
+                    .arbeidsgiverFnr(arbeidsgiverId)
                     .build());
         }
         return tmp.build();
@@ -187,7 +192,7 @@ public class AltinnInntektService {
             RsKontaktinformasjon kontaktinformasjon,
             String ident
     ) {
-        String virksomhetsnummer = "";
+        var virksomhetsnummer = "";
         if (nyesteArbeidsforhold.getArbeidsgiver().getType().equals(TYPE_ORGANISASJON)) {
             virksomhetsnummer = ((Organisasjon) nyesteArbeidsforhold.getArbeidsgiver()).getOrganisasjonsnummer();
         } else if (nyesteArbeidsforhold.getArbeidsgiver().getType().equals(TYPE_PERSON)) {
@@ -241,6 +246,7 @@ public class AltinnInntektService {
                         .collect(Collectors.toList()))
                 .pleiepengerPerioder(inntekt.getPleiepengerPerioder())
                 .arbeidsforhold(RsArbeidsforhold.builder()
+                        .arbeidsforholdId(inntekt.getArbeidsforhold().getArbeidsforholdId())
                         .beregnetInntekt(RsInntekt.builder()
                                 .beloep(inntekt.getArbeidsforhold().getBeregnetInntekt().getBeloep())
                                 .aarsakVedEndring(getValueFromEnumIfSet(inntekt.getArbeidsforhold().getBeregnetInntekt().getAarsakVedEndring()))
@@ -255,7 +261,27 @@ public class AltinnInntektService {
                         .build());
     }
 
-    private RsKontaktinformasjon hentKontaktinformasjon(
+    private String getArbeidsgiverId(RsAltinnInntektInfo inntekt) throws ValidationException {
+        if (inntekt.getArbeidsgiver() != null) {
+            return inntekt.getArbeidsgiver().getVirksomhetsnummer();
+        } else if (inntekt.getArbeidsgiverPrivat() != null) {
+            return inntekt.getArbeidsgiverPrivat().getArbeidsgiverFnr();
+        } else {
+            throw new ValidationException("Må legge ved arbeidsgiver for å kunne opprette inntekt.");
+        }
+    }
+
+    private RsKontaktinformasjon getKontaktinformasjon(RsAltinnInntektInfo inntekt) throws ValidationException {
+        if (inntekt.getArbeidsgiver() != null) {
+            return inntekt.getArbeidsgiver().getKontaktinformasjon();
+        } else if (inntekt.getArbeidsgiverPrivat() != null) {
+            return inntekt.getArbeidsgiverPrivat().getKontaktinformasjon();
+        } else {
+            throw new ValidationException("Må legge ved arbeidsgiver for å kunne opprette inntekt.");
+        }
+    }
+
+    private RsKontaktinformasjon hentKontaktinformasjonFraEreg(
             String virksomhetsnummer,
             String miljoe
     ) {

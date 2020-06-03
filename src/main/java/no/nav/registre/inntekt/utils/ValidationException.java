@@ -10,8 +10,14 @@ import java.util.List;
 @Getter
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class ValidationException extends Exception {
+
     private final List<String> errors;
 
-    public ValidationException(List<String> errors) { this.errors = errors; }
-    public ValidationException(String error) { this.errors = Collections.singletonList(error); }
+    public ValidationException(List<String> errors) {
+        this.errors = errors;
+    }
+
+    public ValidationException(String error) {
+        this.errors = Collections.singletonList(error);
+    }
 }

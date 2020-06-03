@@ -1,10 +1,15 @@
 package no.nav.registre.inntekt.service;
 
+import static no.nav.registre.inntekt.utils.CommonConstants.TYPE_ORGANISASJON;
+import static no.nav.registre.inntekt.utils.CommonConstants.TYPE_PERSON;
 import static no.nav.registre.inntekt.utils.DatoParser.finnSenesteInntekter;
 import static no.nav.registre.inntekt.utils.DatoParser.hentMaanedsnavnFraMaanedsnummer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Organisasjon;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Person;
+import no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -27,9 +32,6 @@ import no.nav.registre.inntekt.domain.InntektSaveInHodejegerenRequest;
 import no.nav.registre.inntekt.domain.RsInntekt;
 import no.nav.registre.inntekt.domain.RsInntektsinformasjonsType;
 import no.nav.registre.inntekt.provider.rs.requests.SyntetiseringsRequest;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Organisasjon;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Person;
-import no.nav.registre.testnorge.consumers.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Slf4j
@@ -40,9 +42,6 @@ public class SyntetiseringService {
     private static final int MINIMUM_ALDER = 13;
     private static final String INNTEKT_NAME = "inntekt";
     private static final int PAGE_SIZE = 100;
-
-    private static final String TYPE_ORGANISASJON = "Organisasjon";
-    private static final String TYPE_PERSON = "Person";
 
     @Value("${andelNyeIdenter}")
     private int andelNyeIdenter;
