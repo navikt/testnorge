@@ -21,14 +21,11 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import no.nav.registre.sdForvalter.consumer.rs.request.ereg.Adresse;
 import no.nav.registre.sdForvalter.consumer.rs.request.ereg.EregMapperRequest;
@@ -40,7 +37,6 @@ import no.nav.registre.sdForvalter.database.model.OpprinnelseModel;
 import no.nav.registre.sdForvalter.database.repository.EregRepository;
 import no.nav.registre.sdForvalter.database.repository.GruppeRepository;
 import no.nav.registre.sdForvalter.database.repository.OpprinnelseRepository;
-import no.nav.registre.sdForvalter.domain.Ereg;
 import no.nav.registre.sdForvalter.util.JsonTestHelper;
 
 @RunWith(SpringRunner.class)
@@ -92,6 +88,18 @@ public class StaticDataControllerV1OrganisasjonIntegrationTest {
     }
 
     @Test
+    public void should_save_response_with_redigertnavn_from_ereg_mapper_in_database() throws Exception {
+        List<EregMapperRequest> eregMapperRequestList = Collections.singletonList(
+                createEregMapperRequest("999999999", "BEDR", "N", "DOLLY TEST BEDR", null, "ET ANNET NAVN")
+        );
+        List<EregModel> expected = Collections.singletonList(
+                createEregModel("999999999", "BEDR", "DOLLY TEST BEDR", null, wip, brreg, "ET ANNET NAVN")
+        );
+
+        assertResponseIsSavedInDatabase(eregMapperRequestList, expected);
+    }
+
+    @Test
     public void should_save_response_with_addresses_from_ereg_mapper_in_database() throws Exception {
         Adresse adresse = Adresse.builder()
                 .adresser(Arrays.asList("Adresseveien 1", "Andre etasje"))
@@ -108,7 +116,7 @@ public class StaticDataControllerV1OrganisasjonIntegrationTest {
                 .landkode("NOR")
                 .build();
 
-        List<EregMapperRequest> eregMapperRequestList = Collections.singletonList( createEregMapperRequest(
+        List<EregMapperRequest> eregMapperRequestList = Collections.singletonList(createEregMapperRequest(
                 "999999992",
                 "BEDR",
                 "N",
@@ -118,7 +126,7 @@ public class StaticDataControllerV1OrganisasjonIntegrationTest {
                 adresse,
                 forretningsadresse));
 
-        List<EregModel> expected = Collections.singletonList(createEregModel("999999992", "BEDR", "DOLLY TEST BEDR", null,
+        List<EregModel> expected = Collections.singletonList(createEregModel("999999992", "BEDR", "DOLLY TEST BEDR", null, null,
                 wip, brreg, "dolly@dollys.com", "www.dolly.no", adresse, forretningsadresse)
         );
 
@@ -131,13 +139,12 @@ public class StaticDataControllerV1OrganisasjonIntegrationTest {
         List<Map<String, String>> knytninger = createKnytning("888888888", "ORGLNSSY");
         EregMapperRequest orgMedKnytning = createEregMapperRequest("999999999", "BEDR", "N", "DOLLY TEST BEDR", knytninger);
 
-        List<EregMapperRequest> eregMapperRequestList =Arrays.asList(
+        List<EregMapperRequest> eregMapperRequestList = Arrays.asList(
                 juridiskEnhet,
                 orgMedKnytning
         );
-
         List<EregModel> expected = Collections.singletonList(
-                createEregModel("999999999", "BEDR", "DOLLY TEST BEDR", createEregModel("888888888", "AS", "DOLLY JURIDISK ENHET", null , wip, brreg), wip, brreg)
+                createEregModel("999999999", "BEDR", "DOLLY TEST BEDR", createEregModel("888888888", "AS", "DOLLY JURIDISK ENHET", wip, brreg), wip, brreg)
         );
 
         assertResponseIsSavedInDatabase(eregMapperRequestList, expected);
@@ -145,12 +152,10 @@ public class StaticDataControllerV1OrganisasjonIntegrationTest {
 
     @Test
     public void should_save_response_with_multiple_org_from_ereg_mapper_in_database() throws Exception {
-        List<EregMapperRequest> eregMapperRequestList =Arrays.asList(
+        List<EregMapperRequest> eregMapperRequestList = Arrays.asList(
                 createEregMapperRequest("999999999", "BEDR", "N", "DOLLY TEST BEDR", null),
                 createEregMapperRequest("222222222", "BEDR", "N", "DOLLY TEST 2", null)
         );
-
-
 
         List<EregModel> expected = Arrays.asList(
                 createEregModel("999999999", "BEDR", "DOLLY TEST BEDR", null, wip, brreg),
@@ -180,13 +185,13 @@ public class StaticDataControllerV1OrganisasjonIntegrationTest {
     }
 
 
-    private EregMapperRequest createEregMapperRequest(String orgnr, String enhetstype, String endringsType, String navn, String epost, String internettAdresse, Adresse adresse, Adresse forretningsAdresse, List<Map<String, String>> knytninger) {
+    private EregMapperRequest createEregMapperRequest(String orgnr, String enhetstype, String endringsType, String navn, String redigertNavn, String epost, String internettAdresse, Adresse adresse, Adresse forretningsAdresse, List<Map<String, String>> knytninger) {
         return EregMapperRequest
                 .builder()
                 .orgnr(orgnr)
                 .enhetstype(enhetstype)
                 .endringsType(endringsType)
-                .navn(Navn.builder().navneListe(Collections.singletonList(navn)).build())
+                .navn(Navn.builder().navneListe(Collections.singletonList(navn)).redNavn(redigertNavn).build())
                 .knytninger(knytninger)
                 .internetAdresse(internettAdresse)
                 .epost(epost)
@@ -196,16 +201,21 @@ public class StaticDataControllerV1OrganisasjonIntegrationTest {
     }
 
     private EregMapperRequest createEregMapperRequest(String orgnr, String enhetstype, String endringsType, String navn, String epost, String internettAdresse, Adresse adresse, Adresse forretningsAdresse) {
-        return createEregMapperRequest(orgnr, enhetstype, endringsType, navn, epost, internettAdresse, adresse, forretningsAdresse, null);
+        return createEregMapperRequest(orgnr, enhetstype, endringsType, navn, null, epost, internettAdresse, adresse, forretningsAdresse, null);
+    }
+
+    private EregMapperRequest createEregMapperRequest(String orgnr, String enhetstype, String endringsType, String navn, List<Map<String, String>> knytninger, String redigertNavn) {
+        return createEregMapperRequest(orgnr, enhetstype, endringsType, navn, redigertNavn, null, null, null, null, knytninger);
     }
 
     private EregMapperRequest createEregMapperRequest(String orgnr, String enhetstype, String endringsType, String navn, List<Map<String, String>> knytninger) {
-        return createEregMapperRequest(orgnr, enhetstype, endringsType, navn, null, null, null, null, knytninger);
+        return createEregMapperRequest(orgnr, enhetstype, endringsType, navn, knytninger, null);
     }
 
     private EregMapperRequest createEregMapperRequest(String orgnr, String enhetstype, String endringsType, String navn) {
         return createEregMapperRequest(orgnr, enhetstype, endringsType, navn, null);
     }
+
 
     private List<Map<String, String>> createKnytning(String orgnr, String type) {
         HashMap<String, String> map = new HashMap<>() {{
@@ -215,13 +225,14 @@ public class StaticDataControllerV1OrganisasjonIntegrationTest {
         return Collections.singletonList(map);
     }
 
-    private EregModel createEregModel(String orgnr, String enhetstype, String navn, EregModel parent, GruppeModel gruppeModel, OpprinnelseModel opprinnelseModel, String epost, String internettAdresse, Adresse adresse, Adresse forretningsadresse) {
+    private EregModel createEregModel(String orgnr, String enhetstype, String navn, String redigertNavn, EregModel parent, GruppeModel gruppeModel, OpprinnelseModel opprinnelseModel, String epost, String internettAdresse, Adresse adresse, Adresse forretningsadresse) {
         EregModel eregModel = new EregModel();
         eregModel.setOrgnr(orgnr);
         eregModel.setEnhetstype(enhetstype);
         eregModel.setGruppeModel(gruppeModel);
         eregModel.setOpprinnelseModel(opprinnelseModel);
         eregModel.setNavn(navn);
+        eregModel.setRedigertNavn(redigertNavn);
         eregModel.setEpost(epost);
         eregModel.setInternetAdresse(internettAdresse);
         if (forretningsadresse != null) {
@@ -235,8 +246,16 @@ public class StaticDataControllerV1OrganisasjonIntegrationTest {
         return eregModel;
     }
 
+    private EregModel createEregModel(String orgnr, String enhetstype, String navn, EregModel parent, GruppeModel gruppeModel, OpprinnelseModel opprinnelseModel, String redigertNavn) {
+        return createEregModel(orgnr, enhetstype, navn, redigertNavn, parent, gruppeModel, opprinnelseModel, null, null, null, null);
+    }
+
     private EregModel createEregModel(String orgnr, String enhetstype, String navn, EregModel parent, GruppeModel gruppeModel, OpprinnelseModel opprinnelseModel) {
-        return createEregModel(orgnr, enhetstype, navn, parent, gruppeModel, opprinnelseModel, null, null, null, null);
+        return createEregModel(orgnr, enhetstype, navn, parent, gruppeModel, opprinnelseModel, null);
+    }
+
+    private EregModel createEregModel(String orgnr, String enhetstype, String navn, GruppeModel gruppeModel, OpprinnelseModel opprinnelseModel) {
+        return createEregModel(orgnr, enhetstype, navn, null, gruppeModel, opprinnelseModel);
     }
 
     @After
