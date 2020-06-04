@@ -22,6 +22,8 @@ public class OrganisasjonDTO {
     @JsonProperty
     private final String navn;
     @JsonProperty
+    private final String redigertNavn;
+    @JsonProperty
     private final String epost;
     @JsonProperty
     private final String internetAdresse;
