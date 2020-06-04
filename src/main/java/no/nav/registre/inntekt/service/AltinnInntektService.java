@@ -25,9 +25,6 @@ import no.nav.registre.inntekt.utils.ValidationException;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Organisasjon;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Person;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Arbeidsforhold;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Organisasjon;
-import no.nav.registre.testnorge.consumers.aordningen.arbeidsforhold.Person;
 import org.springframework.stereotype.Service;
 
 import java.time.ZoneId;

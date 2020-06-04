@@ -11,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.ExpectedCount;
@@ -30,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.status;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
@@ -38,8 +41,9 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(properties = "wiremock.server.port=8080")
+@SpringBootTest
 @ActiveProfiles("test")
+@AutoConfigureWireMock
 @AutoConfigureMockMvc
 public class AltinnInntektIntegrasjonsTest {
 
@@ -50,6 +54,9 @@ public class AltinnInntektIntegrasjonsTest {
     @Value("${path.altininntektconsumer.satisfactory.json}")
     private String satisfactoryAltinnInntektJsonPath;
 
+    @Value("${altinnInntekt.rest.api.url}")
+    private String altinnInntektUrl;
+
     @Autowired(required = false)
     protected WebApplicationContext context;
 
@@ -58,7 +65,7 @@ public class AltinnInntektIntegrasjonsTest {
 
     @Autowired
     private RestTemplate restTemplate;
-    private MockRestServiceServer mockServer;
+    /*private MockRestServiceServer mockServer;*/
 
     @Autowired
     private MockMvc mockMvc;
@@ -87,36 +94,39 @@ public class AltinnInntektIntegrasjonsTest {
             System.err.println("Problemer med lasting av testressurser.");
             e.printStackTrace();
         }
-        mockServer = MockRestServiceServer.createServer(restTemplate);
+        /*mockServer = MockRestServiceServer.createServer(restTemplate);*/
     }
 
     @Test
+    @DirtiesContext
     public void passingCall() throws Exception {
-//      mockServer.expect(ExpectedCount.manyTimes(), RequestMatcher)
         System.out.println(satisfactoryJson);
 
-//         stubFor(post(urlEqualTo("/statuses/update.json"))
-//            .willReturn(aResponse()
-//                .withStatus(200)
-//                .withHeader("Content-Type", "application/json")
-//                .withBody()));
+         stubFor(post(urlEqualTo(altinnInntektUrl + "/v2/inntektsmelding/2018/12/11"))
+                 // .withRequestBody(equalToJson(satisfactoryAltinnInntektConsumerJson))
+                 .willReturn(aResponse()
+                         .withStatus(200)
+                         .withHeader("Content-Type", "text/xml")
+                         .withBody("<dummyXml><title>My Dummy</title><content>This is a dummy xml object.</content></dummyXml>")));
 
-//        AltinnDollyRequest innkommendeBody = objectMapper.readValue(satisfactoryJson, AltinnDollyRequest.class);
-//        Boolean continueOnError = null;
-//        Boolean includeXml = null;
-//        Boolean validate = null;
+        AltinnDollyRequest innkommendeBody = objectMapper.readValue(satisfactoryJson, AltinnDollyRequest.class);
+        Boolean continueOnError = null;
+        Boolean includeXml = null;
+        Boolean validate = null;
 //
 //        ResponseEntity<?> response;
 //        response = kontroller.genererMeldingForIdent(innkommendeBody, validate, includeXml, continueOnError);
 //
 //        AltinnInntektResponse body = (AltinnInntektResponse) response.getBody();
+
         var tmp = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/altinnInntekt/enkeltident")
                 .content(satisfactoryJson)
                 .contentType(MediaType.APPLICATION_JSON)).andReturn();
 
-        mockServer.expect(ExpectedCount.once(), requestTo("http://localhost:8080/api/v2/inntektsmelding/2018/12/11")).andExpect(content().json(satisfactoryAltinnInntektConsumerJson));
+        /*mockServer.expect(ExpectedCount.manyTimes(),
+                requestTo(altinnInntektUrl + "/v2/inntektsmelding/2018/12/11"))
+                .andExpect(content().json(satisfactoryAltinnInntektConsumerJson));*/
 
-        System.out.println(tmp);
     }
 
 }
