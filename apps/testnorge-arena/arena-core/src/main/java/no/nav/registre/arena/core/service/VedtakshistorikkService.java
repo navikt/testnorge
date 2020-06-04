@@ -10,10 +10,6 @@ import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_UNG
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.GensakKoder;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -30,10 +26,15 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetAap115Request;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetAapRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetFritakMeldekortRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.GensakKoder;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 
 @Slf4j
 @Service
@@ -92,6 +93,7 @@ public class VedtakshistorikkService {
         opprettVedtakUngUfoer(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakTvungenForvaltning(vedtakshistorikk, personident, miljoe, rettigheter, identerMedKontonummer);
         opprettVedtakFritakMeldekort(vedtakshistorikk, personident, miljoe, rettigheter);
+        opprettVedtakTiltakspenger(vedtakshistorikk, personident, miljoe, rettigheter);
 
         return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
     }
@@ -221,6 +223,22 @@ public class VedtakshistorikkService {
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
             rettighetRequest.getNyeFritak().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
+            rettigheter.add(rettighetRequest);
+        }
+    }
+
+    private void opprettVedtakTiltakspenger(
+            Vedtakshistorikk vedtak,
+            String personident,
+            String miljoe,
+            List<RettighetRequest> rettigheter
+    ) {
+        var tiltakspenger = vedtak.getTiltakspenger();
+        if (tiltakspenger != null && !tiltakspenger.isEmpty()) {
+            var rettighetRequest = new RettighetTiltakspengerRequest(tiltakspenger);
+            rettighetRequest.setPersonident(personident);
+            rettighetRequest.setMiljoe(miljoe);
+            rettighetRequest.getNyeTiltakspenger().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
             rettigheter.add(rettighetRequest);
         }
     }
