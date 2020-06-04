@@ -221,45 +221,7 @@ public class JobController {
             testnorgeArenaService.opprettArenaAap(SyntetiserArenaAapRequest.builder()
                     .avspillergruppeId(entry.getKey())
                     .miljoe(entry.getValue())
-                    .antallAap(arenaAntallNyeIdenter * 5) // fler for aap
-                    .antallUngUfoer(arenaAntallNyeIdenter)
-                    .antallTvungenForvaltning(arenaAntallNyeIdenter)
-                    .antallFritakMeldekort(arenaAntallNyeIdenter)
-                    .build());
-
-            testnorgeArenaService.opprettArenaTiltak(SyntetiserArenaTiltakRequest.builder()
-                    .avspillergruppeId(entry.getKey())
-                    .miljoe(entry.getValue())
-                    .antallTiltaksdeltakelse(arenaAntallNyeIdenter)
-                    .antallTiltakspenger(arenaAntallNyeIdenter)
-                    .antallBarnetillegg(arenaAntallNyeIdenter)
-                    .build());
-
-            testnorgeArenaService.opprettArenaTilleggstoenad(SyntetiserArenaTilleggstoenadRequest.builder()
-                    .avspillergruppeId(entry.getKey())
-                    .miljoe(entry.getValue())
-                    .antallBoutgifter(arenaAntallNyeIdenter)
-                    .antallDagligReise(arenaAntallNyeIdenter)
-                    .antallFlytting(arenaAntallNyeIdenter)
-                    .antallHjemreise(arenaAntallNyeIdenter)
-                    .antallLaeremidler(arenaAntallNyeIdenter)
-                    .antallReiseObligatoriskSamling(arenaAntallNyeIdenter)
-                    .antallTilsynBarn(arenaAntallNyeIdenter)
-                    .antallTilsynFamiliemedlemmer(arenaAntallNyeIdenter)
-                    .build());
-
-            testnorgeArenaService.opprettArenaTilleggstoenadArbeidssoekere(SyntetiserArenaTilleggstoenadArbeidssoekereRequest.builder()
-                    .avspillergruppeId(entry.getKey())
-                    .miljoe(entry.getValue())
-                    .antallTilsynBarnArbeidssoekere(arenaAntallNyeIdenter)
-                    .antallTilsynFamiliemedlemmerArbeidssoekere(arenaAntallNyeIdenter)
-                    .antallBoutgifterArbeidssoekere(arenaAntallNyeIdenter)
-                    .antallDagligReiseArbeidssoekere(arenaAntallNyeIdenter)
-                    .antallFlyttingArbeidssoekere(arenaAntallNyeIdenter)
-                    .antallHjemreiseArbeidssoekere(arenaAntallNyeIdenter)
-                    .antallLaeremidlerArbeidssoekere(arenaAntallNyeIdenter)
-                    .antallReiseObligatoriskSamlingArbeidssoekere(arenaAntallNyeIdenter)
-                    .antallReisestoenadArbeidssoekere(arenaAntallNyeIdenter)
+                    .antallAap(arenaAntallNyeIdenter)
                     .build());
         }
     }
