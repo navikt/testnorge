@@ -41,13 +41,13 @@ export const Boadresse = ({ formikBag }) => {
 		return `${gateadresse} ${parseInt(husnummer)}, ${postnr} ${poststed}`
 	}
 
-	const feilmelding = () => {
+	const feilmelding = feil => {
 		if (
 			!_get(formikBag.values, 'tpsf.boadresse.gateadresse') &&
 			_has(formikBag.touched, 'tpsf.boadresse.gateadresse')
 		) {
 			return { feilmelding: _get(formikBag.errors, 'tpsf.boadresse.gateadresse') }
-		}
+		} else return feil
 	}
 
 	return (
@@ -56,7 +56,7 @@ export const Boadresse = ({ formikBag }) => {
 				<GyldigAdresseVelger settBoadresse={settBoadresse} formikBag={formikBag} />
 				<LoadableComponent
 					onFetch={() => DollyApi.getKodeverkByNavn(AdresseKodeverk.Postnummer)}
-					render={data => {
+					render={(data, feil) => {
 						return (
 							<DollyTextInput
 								name="boadresse"
@@ -66,7 +66,7 @@ export const Boadresse = ({ formikBag }) => {
 								readOnly
 								placeholder="Ingen valgt adresse"
 								title="Endre adressen i adressevelgeren over"
-								feil={feilmelding()}
+								feil={feilmelding(feil)}
 							/>
 						)
 					}}
