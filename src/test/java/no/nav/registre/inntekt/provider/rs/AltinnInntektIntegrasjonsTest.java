@@ -3,6 +3,13 @@ package no.nav.registre.inntekt.provider.rs;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.registre.inntekt.ApplicationStarter;
 import no.nav.registre.inntekt.config.AppConfig;
+import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsforhold;
+import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsgiver;
+import no.nav.registre.inntekt.domain.altinn.rs.RsAvsendersystem;
+import no.nav.registre.inntekt.domain.altinn.rs.RsInntekt;
+import no.nav.registre.inntekt.domain.altinn.rs.RsInntektsmelding;
+import no.nav.registre.inntekt.domain.altinn.rs.RsKontaktinformasjon;
+import no.nav.registre.inntekt.domain.altinn.rs.RsNaturalytelseDetaljer;
 import no.nav.registre.inntekt.provider.rs.requests.AltinnDollyRequest;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,8 +37,13 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.status;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -84,8 +96,6 @@ public class AltinnInntektIntegrasjonsTest {
 
     @Before
     public void setup() {
-        System.out.println(satisfactoryJsonPath);
-
         try {
             satisfactoryJson = loadResourceAsString(satisfactoryJsonPath);
             failingJson = loadResourceAsString(failingJsonPath);
@@ -100,10 +110,56 @@ public class AltinnInntektIntegrasjonsTest {
     @Test
     @DirtiesContext
     public void passingCall() throws Exception {
-        System.out.println(satisfactoryJson);
 
-         stubFor(post(urlEqualTo(altinnInntektUrl + "/v2/inntektsmelding/2018/12/11"))
-                 // .withRequestBody(equalToJson(satisfactoryAltinnInntektConsumerJson))
+        RsInntektsmelding melding = RsInntektsmelding.builder()
+                .ytelse("Opplaeringspenger")
+                .aarsakTilInnsending("Ny")
+                .arbeidstakerFnr("12345678910")
+                .naerRelasjon(false)
+                .avsendersystem(RsAvsendersystem.builder()
+                        .systemnavn("ORKESTRATOREN")
+                        .systemversjon("1")
+                        .innsendingstidspunkt(LocalDateTime.parse("2020-06-04T13:10:54.412443"))
+                        .build())
+                .arbeidsgiver(RsArbeidsgiver.builder()
+                        .virksomhetsnummer("123456789")
+                        .kontaktinformasjon(RsKontaktinformasjon.builder()
+                                .kontaktinformasjonNavn("GREI BLEIE")
+                                .telefonnummer("81549300")
+                                .build()).build())
+                .arbeidsgiverPrivat(null)
+                .arbeidsforhold(RsArbeidsforhold.builder()
+                        .arbeidsforholdId("912a41#9$apEA1n")
+                        .foersteFravaersdag(null)
+                        .beregnetInntekt(RsInntekt.builder()
+                                .beloep(50783.0)
+                                .aarsakVedEndring(null)
+                                .build())
+                        .avtaltFerieListe(Collections.emptyList())
+                        .utsettelseAvForeldrepengerListe(Collections.emptyList())
+                        .graderingIForeldrepengerListe(Collections.emptyList())
+                        .build())
+                .refusjon(null)
+                .omsorgspenger(null)
+                .sykepengerIArbeidsgiverperioden(null)
+                .startdatoForeldrepengeperiode(null)
+                .opphoerAvNaturalytelseListe(Arrays.asList(
+                        RsNaturalytelseDetaljer.builder()
+                                .naturalytelseType("elektroniskKommunikasjon")
+                                .fom(LocalDate.parse("1776-08-09"))
+                                .beloepPrMnd(6.02214076)
+                                .build(),
+                        RsNaturalytelseDetaljer.builder()
+                                .naturalytelseType("aksjerGrunnfondsbevisTilUnderkurs")
+                                .fom(LocalDate.parse("2020-12-25"))
+                                .beloepPrMnd(-3.14159265359)
+                                .build()))
+                .gjenopptakelseNaturalytelseListe(Collections.emptyList())
+                .pleiepengerPerioder(Collections.emptyList())
+                .build();
+
+         stubFor(post(urlEqualTo("/api/v2/inntektsmelding/2018/12/11"))
+                 .withRequestBody(equalToJson(objectMapper.writeValueAsString(melding)))
                  .willReturn(aResponse()
                          .withStatus(200)
                          .withHeader("Content-Type", "text/xml")
@@ -113,18 +169,13 @@ public class AltinnInntektIntegrasjonsTest {
         Boolean continueOnError = null;
         Boolean includeXml = null;
         Boolean validate = null;
-//
-//        ResponseEntity<?> response;
-//        response = kontroller.genererMeldingForIdent(innkommendeBody, validate, includeXml, continueOnError);
-//
-//        AltinnInntektResponse body = (AltinnInntektResponse) response.getBody();
 
         var tmp = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/altinnInntekt/enkeltident")
                 .content(satisfactoryJson)
                 .contentType(MediaType.APPLICATION_JSON)).andReturn();
 
         /*mockServer.expect(ExpectedCount.manyTimes(),
-                requestTo(altinnInntektUrl + "/v2/inntektsmelding/2018/12/11"))
+                requestTo("/api/v2/inntektsmelding/2018/12/11"))
                 .andExpect(content().json(satisfactoryAltinnInntektConsumerJson));*/
 
     }

@@ -21,10 +21,10 @@ public class RsAltinnNaturalytelseDetaljer {
     @ApiModelProperty
     private NaturalytelseKodeListe naturalytelseType;
     @JsonProperty
-    @ApiModelProperty(value = "Startdato for naturaytelse", example = "YYYY-MM-DD")
+    @ApiModelProperty(value = "Startdato for naturalytelse", example = "YYYY-MM-DD")
     private LocalDate fom;
     @JsonProperty
-    @ApiModelProperty("Samlet månedlig beløp for naturaytelsen")
+    @ApiModelProperty("Samlet månedlig beløp for naturalytelsen")
     private Double beloepPrMnd;
 
 }
