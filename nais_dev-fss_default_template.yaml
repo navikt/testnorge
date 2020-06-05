@@ -4,7 +4,7 @@ metadata:
   name: testnorge-bisys
   namespace: default
   labels:
-    team: registre
+    team: orkestrator
 spec:
   port: 8080
   liveness:
