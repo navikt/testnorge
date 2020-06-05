@@ -7,7 +7,7 @@ import SendOpenAmConnector from '~/components/bestilling/sendOpenAm/SendOpenAmCo
 
 import './Detaljer.less'
 
-export default function BestillingDetaljer({ bestilling }) {
+export default function BestillingDetaljer({ bestilling, iLaastGruppe }) {
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
 	const [isOpenAmModalOpen, openOpenAmModal, closeOpenAmModal] = useBoolean(false)
 
@@ -27,9 +27,11 @@ export default function BestillingDetaljer({ bestilling }) {
 						</Button>
 					)}
 
-					<Button onClick={openGjenopprettModal} kind="synchronize">
-						GJENOPPRETT
-					</Button>
+					{!iLaastGruppe && (
+						<Button onClick={openGjenopprettModal} kind="synchronize">
+							GJENOPPRETT
+						</Button>
+					)}
 				</div>
 			)}
 

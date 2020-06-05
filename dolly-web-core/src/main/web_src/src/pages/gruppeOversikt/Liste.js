@@ -4,6 +4,7 @@ import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import FavoriteButtonConnector from '~/components/ui/button/FavoriteButton/FavoriteButtonConnector'
 import { GruppeIconItem } from '~/components/ui/icon/IconItem'
+import Icon from '~/components/ui/icon/Icon'
 
 export default function Liste({ items, history, searchActive, isFetching }) {
 	if (isFetching) return <Loading label="laster grupper" panel />
@@ -28,7 +29,7 @@ export default function Liste({ items, history, searchActive, isFetching }) {
 			</ContentContainer>
 		)
 	}
-
+	console.log('items :>> ', items)
 	const columns = [
 		{
 			text: 'ID',
@@ -58,10 +59,16 @@ export default function Liste({ items, history, searchActive, isFetching }) {
 		},
 		{
 			text: 'Favoritt',
-			width: '10',
+			width: '15',
 			dataField: 'id',
 			formatter: (cell, row) =>
 				!row.erEierAvGruppe && <FavoriteButtonConnector hideLabel={true} groupId={row.id} />
+		},
+		{
+			text: 'Låst',
+			width: '10',
+			dataField: 'erLaast',
+			formatter: (cell, row) => row.erLaast && <Icon kind={'lock'} />
 		}
 	]
 	return (

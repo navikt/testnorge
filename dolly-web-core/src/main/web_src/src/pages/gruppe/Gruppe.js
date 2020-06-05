@@ -71,16 +71,14 @@ export default function Gruppe({
 			<StatusListeConnector gruppeId={gruppe.id} />
 
 			<div className="toolbar">
-				{erLaast ? (
-					<div />
-				) : (
-					<NavButton type="hoved" onClick={visStartBestilling}>
-						Opprett personer
-					</NavButton>
-				)}
-				{/* <NavButton type="hoved" onClick={visStartBestilling} disabled={erLaast}>
+				<NavButton
+					type="hoved"
+					onClick={visStartBestilling}
+					disabled={erLaast}
+					title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
+				>
 					Opprett personer
-				</NavButton> */}
+				</NavButton>
 
 				<ToggleGruppe onChange={byttVisning} name="toggler">
 					<ToggleKnapp value={VISNING_PERSONER} checked={visning === VISNING_PERSONER}>
@@ -107,8 +105,8 @@ export default function Gruppe({
 				/>
 			)}
 
-			{visning === VISNING_PERSONER && <PersonListeConnector erLaast={erLaast} />}
-			{visning === VISNING_BESTILLING && <BestillingListeConnector />}
+			{visning === VISNING_PERSONER && <PersonListeConnector iLaastGruppe={erLaast} />}
+			{visning === VISNING_BESTILLING && <BestillingListeConnector iLaastGruppe={erLaast} />}
 		</div>
 	)
 }
