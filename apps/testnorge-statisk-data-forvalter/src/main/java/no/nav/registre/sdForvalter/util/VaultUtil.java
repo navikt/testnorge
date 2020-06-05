@@ -11,6 +11,10 @@ import java.nio.file.Paths;
 @Slf4j
 public final class VaultUtil {
 
+    private VaultUtil() {
+        throw new IllegalStateException("Utility klasse");
+    }
+
     private static final String VAULT_TOKEN_PROPERTY = "VAULT_TOKEN";
 
     private static String getVaultToken() {

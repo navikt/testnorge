@@ -48,6 +48,10 @@ import no.nav.registre.testnorge.domain.dto.namespacetps.TpsPersonDokumentType;
 
 public class PersonDokumentUtility {
 
+    private PersonDokumentUtility() {
+        throw new IllegalStateException("Utility klasse");
+    }
+
     public static PersonDokumentWrapper convertToPersonDokumentWrapper(TpsPersonDokumentType tpsPersonDokumentType) {
         List<Foreldreansvar> foreldreansvar = new ArrayList<>();
         List<Relasjon> relasjoner = new ArrayList<>();

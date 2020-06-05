@@ -2,6 +2,10 @@ package no.nav.registre.spion.utils;
 
 public class SwaggerUtils {
 
+    private SwaggerUtils() {
+        throw new IllegalStateException("Utility klasse");
+    }
+
     public static final String ANTALL_PERIODER_DESCRIPTION =  "- **antallPerioder**: antall perioder det skal " +
             "syntetiseres vedtak for. Hvis satt gjelder det for alle personer/identer. Default: for hver person det " +
             "skal syntetiseres vedtak for blir et tilfeldig tall mellom 1 og 15 valgt.\n\n ";
