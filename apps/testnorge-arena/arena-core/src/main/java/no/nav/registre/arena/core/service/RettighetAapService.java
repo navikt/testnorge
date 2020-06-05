@@ -236,7 +236,7 @@ public class RettighetAapService {
         }
 
         var opprettInntektStatus = pensjonTestdataFacadeConsumer.opprettInntekt(PensjonTestdataInntekt.builder()
-                .belop(rand.nextInt(650_000) + 350_000)
+                .belop(rand.nextInt(650_000) + 450_000)
                 .fnr(ident)
                 .fomAar(syntetisertRettighet.getFraDato().minusYears(4).getYear())
                 .miljoer(Collections.singletonList(miljoe))
