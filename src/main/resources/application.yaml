@@ -26,13 +26,13 @@ SYNTBISYS_USERNAME: z991656
 SYNTBISYS_PASSWORD: Sjalabais8
 USE_HISTORICAL_MOTTATTDATO: 0
 
-syntrest.rest.api.url: http://localhost:${wiremock.server.port}/synthdata-bisys/api
-testnorge-hodejegeren.rest-api.url: http://localhost:${wiremock.server.port}/hodejegeren/api
+SYNTREST_REST_API: http://localhost:${wiremock.server.port}/synthdata-bisys/api
+HODEJEGEREN_REST_API: http://localhost:${wiremock.server.port}/hodejegeren/api
 
 ---
 spring:
   profiles: local-integration-test
   
-syntrest.rest.api.url: https://syntrest.nais.preprod.local/api
-testnorge-hodejegeren.rest-api.url: https://testnorge-hodejegeren.nais.preprod.local/api
+SYNTREST_REST_API: https://syntrest.nais.preprod.local/api
+HODEJEGEREN_REST_API: https://testnorge-hodejegeren.nais.preprod.local/api
 

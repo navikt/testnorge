@@ -72,10 +72,10 @@ public class AppConfig {
     @Value("${SKATTEKLASSE:1}")
     private int skatteklasse;
 
-    @Value("${syntrest.rest.api.url}")
+    @Value("${SYNTREST_REST_API}")
     private String syntrestServerUrl;
 
-    @Value("${testnorge-hodejegeren.rest-api.url}")
+    @Value("${HODEJEGEREN_REST_API}")
     private String hodejegerenUrl;
 
     @Bean
