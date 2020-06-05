@@ -17,9 +17,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import no.nav.registre.sdForvalter.adapter.EregAdapter;
+import no.nav.registre.sdForvalter.adapter.TpsIdenterAdapter;
 import no.nav.registre.sdForvalter.converter.csv.EregCsvConverter;
+import no.nav.registre.sdForvalter.converter.csv.TpsIdentCsvConverter;
 import no.nav.registre.sdForvalter.domain.Ereg;
 import no.nav.registre.sdForvalter.domain.EregListe;
+import no.nav.registre.sdForvalter.domain.TpsIdent;
+import no.nav.registre.sdForvalter.domain.TpsIdentListe;
 
 @RestController
 @RequestMapping("/api/v1/faste-data/file")
@@ -27,6 +31,7 @@ import no.nav.registre.sdForvalter.domain.EregListe;
 public class FileController {
 
     private final EregAdapter eregAdapter;
+    private final TpsIdenterAdapter tpsIdenterAdapter;
 
     @GetMapping("/ereg")
     public void exportEreg(@RequestParam(name = "gruppe", required = false) String gruppe, HttpServletResponse response) throws IOException {
@@ -44,4 +49,19 @@ public class FileController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/tpsIdenter")
+    public void exportTpsIdenter(@RequestParam(name = "gruppe", required = false) String gruppe, HttpServletResponse response) throws IOException {
+        response.setContentType("text/csv");
+        response.setHeader("Content-Disposition", "attachment; filename=tpsIdent-" + LocalDateTime.now().toString() + ".csv");
+
+        TpsIdentListe tpsIdentListe = tpsIdenterAdapter.fetchBy(gruppe);
+        TpsIdentCsvConverter.inst().write(response.getWriter(), tpsIdentListe.getListe());
+    }
+
+    @PostMapping("/tpsIdenter")
+    public ResponseEntity<?> importTpsIdenter(@RequestParam("file") MultipartFile file) throws IOException {
+        List<TpsIdent> list = TpsIdentCsvConverter.inst().read(new InputStreamReader(file.getInputStream(), StandardCharsets.ISO_8859_1));
+        tpsIdenterAdapter.save(new TpsIdentListe(list));
+        return ResponseEntity.ok().build();
+    }
 }
