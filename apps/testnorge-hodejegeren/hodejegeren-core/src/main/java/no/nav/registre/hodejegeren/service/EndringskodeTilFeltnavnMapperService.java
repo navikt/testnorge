@@ -53,7 +53,7 @@ public class EndringskodeTilFeltnavnMapperService {
         case FLYTTING_INNEN_KOMMUNEN:
         case FOEDSELSMELDING:
         case UREGISTRERT_PERSON:
-            feltnavn = Arrays.asList("datoDo", "statsborger");
+            feltnavn = Arrays.asList(DATO_DO, STATSBORGER);
             personStatusQuo.putAll(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, feltnavn, environment, fnr));
             break;
         case VIGSEL:
@@ -61,14 +61,14 @@ public class EndringskodeTilFeltnavnMapperService {
         case SKILSMISSE:
         case KORREKSJON_FAMILIEOPPLYSNINGER:
         case DOEDSMELDING:
-            feltnavn = Arrays.asList("datoDo", "statsborger", "sivilstand", "datoSivilstand");
+            feltnavn = Arrays.asList(DATO_DO, STATSBORGER, "sivilstand", "datoSivilstand");
             personStatusQuo.putAll(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, feltnavn, environment, fnr));
-            feltnavn = Collections.singletonList("$..relasjon[?(@.typeRelasjon=='EKTE')].fnrRelasjon");
+            feltnavn = Collections.singletonList(FNR_RELASJON);
             personStatusQuo.putAll(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSRELA, feltnavn, environment, fnr));
             break;
         case ANNULERING_FLYTTING_ADRESSEENDRING:
         case INNFLYTTING_ANNEN_KOMMUNE:
-            feltnavn = Arrays.asList("datoDo", "statsborger", "kommunenr", "datoFlyttet");
+            feltnavn = Arrays.asList(DATO_DO, STATSBORGER, "kommunenr", "datoFlyttet");
             personStatusQuo.putAll(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, feltnavn, environment, fnr));
             break;
         case INNVANDRING:
