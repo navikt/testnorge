@@ -12,6 +12,10 @@ import java.time.LocalDateTime;
 
 @Slf4j final class AaregResponseHandler {
 
+    private AaregResponseHandler() {
+        throw new IllegalStateException("Utility klasse");
+    }
+
     public static String extractError(Exception exception) {
         var feilbeskrivelse = "";
         try {

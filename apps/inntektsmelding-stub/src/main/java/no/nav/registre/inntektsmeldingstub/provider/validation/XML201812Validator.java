@@ -9,6 +9,10 @@ import java.util.stream.Collectors;
 
 public class XML201812Validator {
 
+    private XML201812Validator() {
+        throw new IllegalStateException("Utility klasse");
+    }
+
     public static void validate(RsInntektsmelding inntektsmelding) throws ValidationException {
 
         Map<String, Boolean> rules = new HashMap<>();

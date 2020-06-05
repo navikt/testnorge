@@ -29,6 +29,10 @@ import no.nav.registre.elsam.domain.SykmeldingPeriode;
 
 public class ElsamXmlUtil {
 
+    private ElsamXmlUtil() {
+        throw new IllegalStateException("Utility klasse");
+    }
+
     private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public static XMLHelseOpplysningerArbeidsuforhet lagHelseopplysninger(
