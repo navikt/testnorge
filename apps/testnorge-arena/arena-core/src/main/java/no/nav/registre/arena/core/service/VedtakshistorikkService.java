@@ -48,6 +48,7 @@ public class VedtakshistorikkService {
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final ServiceUtils serviceUtils;
     private final RettighetAapService rettighetAapService;
+    private final RettighetTilleggService rettighetTilleggService;
 
     public Map<String, List<NyttVedtakResponse>> genererVedtakshistorikk(
             Long avspillergruppeId,
@@ -70,8 +71,18 @@ public class VedtakshistorikkService {
                 if (maksimumAlder > MAX_ALDER_AAP) {
                     maksimumAlder = MAX_ALDER_AAP;
                 }
-                var ident = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder).get(0);
-                responses.putAll(opprettHistorikkOgSendTilArena(avspillergruppeId, ident, miljoe, vedtakshistorikken));
+
+                var ungUfoer = vedtakshistorikken.getUngUfoer();
+                if (ungUfoer != null && !ungUfoer.isEmpty()) {
+                    maksimumAlder = MAX_ALDER_UNG_UFOER;
+                }
+
+                if (minimumAlder > maksimumAlder) {
+                    log.error("Kunne ikke finne ident i riktig aldersgruppe");
+                } else {
+                    var ident = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder).get(0);
+                    responses.putAll(opprettHistorikkOgSendTilArena(avspillergruppeId, ident, miljoe, vedtakshistorikken));
+                }
             }
         }
         return responses;
@@ -287,6 +298,7 @@ public class VedtakshistorikkService {
             List<RettighetRequest> rettigheter
     ) {
         if (vedtak != null && !vedtak.isEmpty()) {
+            rettighetTilleggService.opprettTiltaksaktiviteter(rettigheter);
             var rettighetRequest = new RettighetTilleggRequest(vedtak);
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);

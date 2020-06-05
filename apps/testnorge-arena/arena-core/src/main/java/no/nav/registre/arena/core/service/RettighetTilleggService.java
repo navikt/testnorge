@@ -4,8 +4,6 @@ import static no.nav.registre.arena.core.service.util.ServiceUtils.BEGRUNNELSE;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,6 +16,8 @@ import no.nav.registre.arena.core.consumer.rs.TilleggSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggRequest;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 
 @Slf4j
 @Service
@@ -165,6 +165,17 @@ public class RettighetTilleggService {
         return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettReisestoenadArbeidssoekere(antallNyeIdenter));
     }
 
+    public void opprettTiltaksaktiviteter(List<RettighetRequest> rettigheter) {
+        var aktivitetResponse = rettighetTiltakService.opprettTiltaksaktiviteter(rettigheter);
+        for (var response : aktivitetResponse.values()) {
+            for (var vedtakResponse : response) {
+                if (vedtakResponse.getFeiledeRettigheter() != null && !vedtakResponse.getFeiledeRettigheter().isEmpty()) {
+                    log.error("Kunne ikke opprette aktivitet på ident {}", vedtakResponse.getFeiledeRettigheter().get(0).getPersonident());
+                }
+            }
+        }
+    }
+
     private Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenad(
             Long avspillergruppeId,
             String miljoe,
@@ -187,17 +198,11 @@ public class RettighetTilleggService {
 
         serviceUtils.opprettArbeidssoekerTillegg(rettigheter, miljoe);
 
-        var aktivitetResponse = rettighetTiltakService.opprettTiltaksaktiviteter(rettigheter);
-        for (var response : aktivitetResponse.values()) {
-            for (var vedtakResponse : response) {
-                if (vedtakResponse.getFeiledeRettigheter() != null && !vedtakResponse.getFeiledeRettigheter().isEmpty()) {
-                    log.error("Kunne ikke opprette aktivitet på ident {}", vedtakResponse.getFeiledeRettigheter().get(0).getPersonident());
-                }
-            }
-        }
+        opprettTiltaksaktiviteter(rettigheter);
 
         var identerMedOpprettedeTillegg = rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
         serviceUtils.lagreIHodejegeren(identerMedOpprettedeTillegg);
+
         return identerMedOpprettedeTillegg;
     }
 }
