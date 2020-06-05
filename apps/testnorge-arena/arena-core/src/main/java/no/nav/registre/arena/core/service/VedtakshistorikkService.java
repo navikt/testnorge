@@ -26,6 +26,8 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetAap115Request;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetAapRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetFritakMeldekortRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggsytelseRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
@@ -35,6 +37,7 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysnin
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 
 @Slf4j
 @Service
@@ -94,6 +97,24 @@ public class VedtakshistorikkService {
         opprettVedtakTvungenForvaltning(vedtakshistorikk, personident, miljoe, rettigheter, identerMedKontonummer);
         opprettVedtakFritakMeldekort(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakTiltakspenger(vedtakshistorikk, personident, miljoe, rettigheter);
+        opprettVedtakBarnetillegg(vedtakshistorikk, personident, miljoe, rettigheter);
+        opprettVedtakTillegg(vedtakshistorikk.getBoutgifter(), personident, miljoe, rettigheter);
+        opprettVedtakTillegg(vedtakshistorikk.getDagligReise(), personident, miljoe, rettigheter);
+        opprettVedtakTillegg(vedtakshistorikk.getFlytting(), personident, miljoe, rettigheter);
+        opprettVedtakTillegg(vedtakshistorikk.getLaeremidler(), personident, miljoe, rettigheter);
+        opprettVedtakTillegg(vedtakshistorikk.getHjemreise(), personident, miljoe, rettigheter);
+        opprettVedtakTillegg(vedtakshistorikk.getReiseObligatoriskSamling(), personident, miljoe, rettigheter);
+        opprettVedtakTillegg(vedtakshistorikk.getTilsynBarn(), personident, miljoe, rettigheter);
+        opprettVedtakTillegg(vedtakshistorikk.getTilsynFamiliemedlemmer(), personident, miljoe, rettigheter);
+        opprettVedtakTillegg(vedtakshistorikk.getBoutgifterArbeidssoekere(), personident, miljoe, rettigheter);
+        opprettVedtakTillegg(vedtakshistorikk.getDagligReiseArbeidssoekere(), personident, miljoe, rettigheter);
+        opprettVedtakTillegg(vedtakshistorikk.getFlyttingArbeidssoekere(), personident, miljoe, rettigheter);
+        opprettVedtakTillegg(vedtakshistorikk.getLaeremidlerArbeidssoekere(), personident, miljoe, rettigheter);
+        opprettVedtakTillegg(vedtakshistorikk.getHjemreiseArbeidssoekere(), personident, miljoe, rettigheter);
+        opprettVedtakTillegg(vedtakshistorikk.getReisestoenadArbeidssoekere(), personident, miljoe, rettigheter);
+        opprettVedtakTillegg(vedtakshistorikk.getReiseObligatoriskSamlingArbeidssoekere(), personident, miljoe, rettigheter);
+        opprettVedtakTillegg(vedtakshistorikk.getTilsynBarnArbeidssoekere(), personident, miljoe, rettigheter);
+        opprettVedtakTillegg(vedtakshistorikk.getTilsynFamiliemedlemmerArbeidssoekere(), personident, miljoe, rettigheter);
 
         return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
     }
@@ -239,6 +260,37 @@ public class VedtakshistorikkService {
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
             rettighetRequest.getNyeTiltakspenger().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
+            rettigheter.add(rettighetRequest);
+        }
+    }
+
+    private void opprettVedtakBarnetillegg(
+            Vedtakshistorikk vedtak,
+            String personident,
+            String miljoe,
+            List<RettighetRequest> rettigheter
+    ) {
+        var barnetillegg = vedtak.getBarnetillegg();
+        if (barnetillegg != null && !barnetillegg.isEmpty()) {
+            var rettighetRequest = new RettighetTilleggsytelseRequest(barnetillegg);
+            rettighetRequest.setPersonident(personident);
+            rettighetRequest.setMiljoe(miljoe);
+            rettighetRequest.getNyeTilleggsytelser().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
+            rettigheter.add(rettighetRequest);
+        }
+    }
+
+    private void opprettVedtakTillegg(
+            List<NyttVedtakTillegg> vedtak,
+            String personident,
+            String miljoe,
+            List<RettighetRequest> rettigheter
+    ) {
+        if (vedtak != null && !vedtak.isEmpty()) {
+            var rettighetRequest = new RettighetTilleggRequest(vedtak);
+            rettighetRequest.setPersonident(personident);
+            rettighetRequest.setMiljoe(miljoe);
+            rettighetRequest.getNyeTilleggsstonad().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
             rettigheter.add(rettighetRequest);
         }
     }
