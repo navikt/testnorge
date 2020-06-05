@@ -29,7 +29,7 @@ export default function Liste({ items, history, searchActive, isFetching }) {
 			</ContentContainer>
 		)
 	}
-	console.log('items :>> ', items)
+
 	const columns = [
 		{
 			text: 'ID',

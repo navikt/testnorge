@@ -60,7 +60,6 @@ export default function GruppeHeader({
 						</Button>
 					)}
 					{!erLaast && (
-						// TODO: Send inn action og loading for laasGruppe
 						<LaasButton action={laasGruppe} loading={isLockingGruppe}>
 							Er du sikker på at du vil låse denne gruppen? <br />
 							Når gruppen er låst må du kontakte team Dolly <br />
