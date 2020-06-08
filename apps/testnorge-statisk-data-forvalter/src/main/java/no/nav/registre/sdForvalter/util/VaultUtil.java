@@ -12,7 +12,6 @@ import java.nio.file.Paths;
 public final class VaultUtil {
 
     private VaultUtil() {
-        throw new IllegalStateException("Utility klasse");
     }
 
     private static final String VAULT_TOKEN_PROPERTY = "VAULT_TOKEN";

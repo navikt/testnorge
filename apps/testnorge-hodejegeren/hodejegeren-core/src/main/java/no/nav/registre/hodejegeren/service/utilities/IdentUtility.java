@@ -9,7 +9,6 @@ import java.time.LocalDate;
 public class IdentUtility {
 
     private IdentUtility() {
-        throw new IllegalStateException("Utility klasse");
     }
 
     public static LocalDate getFoedselsdatoFraFnr(String ident) {

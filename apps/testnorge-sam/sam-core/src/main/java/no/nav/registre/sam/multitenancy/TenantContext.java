@@ -3,7 +3,6 @@ package no.nav.registre.sam.multitenancy;
 public class TenantContext {
 
     private TenantContext() {
-        throw new IllegalStateException("Utility klasse");
     }
 
     private static ThreadLocal<String> tenant = new ThreadLocal<>();

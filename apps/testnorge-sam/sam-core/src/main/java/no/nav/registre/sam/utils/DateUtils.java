@@ -8,7 +8,6 @@ import java.text.SimpleDateFormat;
 public class DateUtils {
 
     private DateUtils() {
-        throw new IllegalStateException("Utility klasse");
     }
 
     public static Timestamp formatTimestamp(String dateString) throws ParseException {

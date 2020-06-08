@@ -20,7 +20,6 @@ import java.io.StringWriter;
 public final class JAXB {
 
     private JAXB() {
-        throw new IllegalStateException("Utility klasse");
     }
 
     private static final JAXBContext SYKMELDING;

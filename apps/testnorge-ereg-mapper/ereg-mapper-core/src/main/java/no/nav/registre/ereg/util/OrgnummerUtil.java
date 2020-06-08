@@ -12,7 +12,6 @@ import java.util.concurrent.ThreadLocalRandom;
 public class OrgnummerUtil {
 
     private OrgnummerUtil() {
-        throw new IllegalStateException("Utility klasse");
     }
 
     public static String generate(RestTemplate restTemplate) {

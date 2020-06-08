@@ -10,7 +10,6 @@ import no.nav.registre.testnorge.elsam.consumer.rs.response.tss.TssResponse;
 public class TssUtil {
 
     private TssUtil() {
-        throw new IllegalStateException("Utility klasse");
     }
 
     public static Lege buildLegeFromTssResponse(TssResponse tssResponse) {

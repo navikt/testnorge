@@ -18,7 +18,6 @@ import java.io.StringWriter;
 public class XmlUtil {
 
     private XmlUtil() {
-        throw new IllegalStateException("Utility klasse");
     }
 
     public static final JAXBContext SYKMELDING_CONTEXT;

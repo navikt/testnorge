@@ -49,7 +49,6 @@ import no.nav.registre.testnorge.domain.dto.namespacetps.TpsPersonDokumentType;
 public class PersonDokumentUtility {
 
     private PersonDokumentUtility() {
-        throw new IllegalStateException("Utility klasse");
     }
 
     public static PersonDokumentWrapper convertToPersonDokumentWrapper(TpsPersonDokumentType tpsPersonDokumentType) {

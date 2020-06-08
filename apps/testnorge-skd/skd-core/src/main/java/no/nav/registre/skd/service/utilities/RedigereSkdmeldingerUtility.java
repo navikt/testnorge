@@ -6,7 +6,6 @@ import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 public class RedigereSkdmeldingerUtility {
 
     private RedigereSkdmeldingerUtility() {
-        throw new IllegalStateException("Utility klasse");
     }
 
     private static final String STATSBORGER_KODE_NORGE = "000";

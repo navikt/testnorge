@@ -3,7 +3,6 @@ package no.nav.registre.spion.utils;
 public class SwaggerUtils {
 
     private SwaggerUtils() {
-        throw new IllegalStateException("Utility klasse");
     }
 
     public static final String ANTALL_PERIODER_DESCRIPTION =  "- **antallPerioder**: antall perioder det skal " +
