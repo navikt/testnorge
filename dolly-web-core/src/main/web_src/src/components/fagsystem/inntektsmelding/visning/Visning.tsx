@@ -1,5 +1,6 @@
 import React from 'react'
 import _set from 'lodash/set'
+import _isEmpty from 'lodash/isEmpty'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
@@ -115,5 +116,13 @@ InntektsmeldingVisning.filterValues = (bestillinger: Array<Bestilling>) => {
 
 	return bestillinger
 		.map((bestilling: any) => bestilling.inntektsmelding)
-		.filter((inntektsmelding: Inntektsmelding) => inntektsmelding)
+		.filter(
+			(inntektsmelding: Inntektsmelding) =>
+				inntektsmelding && !tomBestilling(inntektsmelding.inntekter)
+		)
+}
+
+const tomBestilling = (inntekter: Array<Inntekter>) => {
+	const inntekterMedInnhold = inntekter.filter(inntekt => !_isEmpty(inntekt))
+	return inntekterMedInnhold.length < 1
 }
