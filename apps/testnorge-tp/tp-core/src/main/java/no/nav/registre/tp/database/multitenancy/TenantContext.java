@@ -2,6 +2,9 @@ package no.nav.registre.tp.database.multitenancy;
 
 public class TenantContext {
 
+    private TenantContext() {
+    }
+
     private static ThreadLocal<String> tenant = new ThreadLocal<>();
 
     public static String getTenant() {

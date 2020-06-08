@@ -7,6 +7,9 @@ import java.text.SimpleDateFormat;
 
 public class DateUtils {
 
+    private DateUtils() {
+    }
+
     public static Timestamp formatTimestamp(String dateString) throws ParseException {
         if (dateString == null) {
             return null;

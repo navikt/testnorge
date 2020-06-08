@@ -4,6 +4,9 @@ import java.util.Random;
 
 public class RandomUtils {
 
+    private RandomUtils() {
+    }
+
     private static final Random RAND = new Random();
 
     public static int getRandomBoundedNumber(int min , int max){

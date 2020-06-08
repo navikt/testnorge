@@ -11,6 +11,9 @@ import java.util.concurrent.ThreadLocalRandom;
 @Slf4j
 public class OrgnummerUtil {
 
+    private OrgnummerUtil() {
+    }
+
     public static String generate(RestTemplate restTemplate) {
         String weights = "32765432";
         int random = ThreadLocalRandom.current().nextInt(80000000, 99999999);

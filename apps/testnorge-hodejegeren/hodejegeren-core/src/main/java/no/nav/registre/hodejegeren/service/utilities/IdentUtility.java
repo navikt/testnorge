@@ -8,6 +8,9 @@ import java.time.LocalDate;
 
 public class IdentUtility {
 
+    private IdentUtility() {
+    }
+
     public static LocalDate getFoedselsdatoFraFnr(String ident) {
         var year = getFullYear(ident);
         var month = parseInt(ident.substring(2, 4));
