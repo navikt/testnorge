@@ -68,7 +68,7 @@ public class RettighetTiltakService {
         serviceUtils.lagreIHodejegeren(identerMedOpprettedeTiltak);
 
         // sender inn endredeltakerstatus
-        if(rand.nextDouble()<1){
+        if(rand.nextDouble()<0.5){
             var identerMedOpprettedeEndreDeltakerstatus = endreDeltakerstatus(
                     identerMedOpprettedeTiltak,
                     miljoe);
@@ -98,7 +98,7 @@ public class RettighetTiltakService {
                 rettighetRequest.setPersonident(ident);
                 rettighetRequest.setMiljoe(miljoe);
 
-                rettighetRequest.getNyeEndreDeltakerstatus().get(0).setTiltakskode(null);
+                rettighetRequest.getNyeEndreDeltakerstatus().get(0).setTiltakskode("");
                 rettighetRequest.getNyeEndreDeltakerstatus().get(0).setTiltakskarakteristikk(tiltaksdeltakelse.getTiltakskarakteristikk());
                 rettighetRequest.getNyeEndreDeltakerstatus().get(0).setDato(tiltaksdeltakelse.getFraDato());
 
