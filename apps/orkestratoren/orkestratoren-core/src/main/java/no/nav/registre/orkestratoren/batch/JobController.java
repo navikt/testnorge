@@ -14,9 +14,6 @@ import java.util.Map;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaAapRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaTilleggstoenadArbeidssoekereRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaTilleggstoenadRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaTiltakRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaVedtakshistorikkRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserElsamRequest;
@@ -27,7 +24,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldinger
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
-import no.nav.registre.orkestratoren.service.TesnorgeArenaService;
+import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.TestnorgeBisysService;
 import no.nav.registre.orkestratoren.service.TestnorgeElsamService;
@@ -109,7 +106,7 @@ public class JobController {
     private TestnorgeSamService testnorgeSamService;
 
     @Autowired
-    private TesnorgeArenaService testnorgeArenaService;
+    private TestnorgeArenaService testnorgeArenaService;
 
     @Autowired
     private TestnorgeMedlService testnorgeMedlService;

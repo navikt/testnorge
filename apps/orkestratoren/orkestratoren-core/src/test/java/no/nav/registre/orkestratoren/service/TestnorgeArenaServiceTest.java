@@ -19,13 +19,13 @@ import no.nav.registre.orkestratoren.consumer.rs.TestnorgeArenaConsumer;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TesnorgeArenaServiceTest {
+public class TestnorgeArenaServiceTest {
 
     @Mock
     private TestnorgeArenaConsumer testnorgeArenaConsumer;
 
     @InjectMocks
-    private TesnorgeArenaService tesnorgeArenaService;
+    private TestnorgeArenaService testnorgeArenaService;
 
     private Long avspillergruppeId = 123L;
     private String miljoe = "t1";
@@ -40,7 +40,7 @@ public class TesnorgeArenaServiceTest {
 
         when(testnorgeArenaConsumer.opprettArbeidsoekere(syntetiserArenaRequest)).thenReturn(expectedIdenter);
 
-        var response = tesnorgeArenaService.opprettArbeidssokereIArena(syntetiserArenaRequest);
+        var response = testnorgeArenaService.opprettArbeidssokereIArena(syntetiserArenaRequest);
 
         assertThat(response, IsIterableContainingInOrder.contains(fnr1, fnr2));
         verify(testnorgeArenaConsumer).opprettArbeidsoekere(syntetiserArenaRequest);
