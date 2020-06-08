@@ -12,8 +12,8 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdresse.Bruksenhetstype;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdresse.Vegadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlMatrikkeladresse;
-import no.nav.dolly.domain.resultset.tpsf.adresse.RsGateadresse;
-import no.nav.dolly.domain.resultset.tpsf.adresse.RsMatrikkeladresse;
+import no.nav.dolly.domain.resultset.tpsf.adresse.BoGateadresse;
+import no.nav.dolly.domain.resultset.tpsf.adresse.BoMatrikkeladresse;
 import no.nav.dolly.mapper.MappingStrategy;
 
 @Component
@@ -22,10 +22,10 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(RsGateadresse.class, Vegadresse.class)
-                .customize(new CustomMapper<RsGateadresse, Vegadresse>() {
+        factory.classMap(BoGateadresse.class, Vegadresse.class)
+                .customize(new CustomMapper<BoGateadresse, Vegadresse>() {
                     @Override
-                    public void mapAtoB(RsGateadresse gateadresse, Vegadresse vegadresse, MappingContext context) {
+                    public void mapAtoB(BoGateadresse gateadresse, Vegadresse vegadresse, MappingContext context) {
 
                         vegadresse.setAdressekode(gateadresse.getGatekode());
                         vegadresse.setAdressenavn(gateadresse.getGateadresse());
@@ -38,10 +38,10 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
                 .byDefault()
                 .register();
 
-        factory.classMap(RsMatrikkeladresse.class, PdlMatrikkeladresse.class)
-                .customize(new CustomMapper<RsMatrikkeladresse, PdlMatrikkeladresse>() {
+        factory.classMap(BoMatrikkeladresse.class, PdlMatrikkeladresse.class)
+                .customize(new CustomMapper<BoMatrikkeladresse, PdlMatrikkeladresse>() {
                     @Override
-                    public void mapAtoB(RsMatrikkeladresse rsMatrikkeladresse, PdlMatrikkeladresse matrikkeladresse, MappingContext context) {
+                    public void mapAtoB(BoMatrikkeladresse rsMatrikkeladresse, PdlMatrikkeladresse matrikkeladresse, MappingContext context) {
 
                         matrikkeladresse.setAdressetilleggsnavn(rsMatrikkeladresse.getMellomnavn());
                         matrikkeladresse.setBruksenhetstype(Bruksenhetstype.BOLIG);
