@@ -1,14 +1,18 @@
 package no.nav.registre.arena.core.service.util;
 
+import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.EIER;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
@@ -40,28 +44,32 @@ public class ServiceUtils {
     private final BrukereService brukereService;
     private final Random rand;
 
-    public List<String> getLevende(Long avspillergruppeId) {
-        return hodejegerenConsumer.getLevende(avspillergruppeId);
+    public List<String> getLevende(
+            Long avspillergruppeId,
+            String miljoe
+    ) {
+        var levendeIdenterAsSet = new HashSet<>(hodejegerenConsumer.getLevende(avspillergruppeId));
+        return filtrerEksisterendeBrukereIArena(levendeIdenterAsSet, miljoe);
     }
 
     public List<String> getUtvalgteIdenter(
             Long avspillergruppeId,
-            int antallNyeIdenter
+            int antallNyeIdenter,
+            String miljoe
     ) {
-        var levendeIdenter = hodejegerenConsumer.getLevende(avspillergruppeId);
-        Collections.shuffle(levendeIdenter);
-        return levendeIdenter.subList(0, antallNyeIdenter);
+        var levendeIdenterAsSet = new HashSet<>(hodejegerenConsumer.getLevende(avspillergruppeId));
+        return filtrerEksisterendeBrukereIArena(levendeIdenterAsSet, miljoe).subList(0, antallNyeIdenter);
     }
 
     public List<String> getUtvalgteIdenterIAldersgruppe(
             Long avspillergruppeId,
             int antallNyeIdenter,
             int minimumAlder,
-            int maksimumAlder
+            int maksimumAlder,
+            String miljoe
     ) {
-        var levendeIdenterIAldersgruppe = hodejegerenConsumer.getLevende(avspillergruppeId, minimumAlder, maksimumAlder);
-        Collections.shuffle(levendeIdenterIAldersgruppe);
-        return levendeIdenterIAldersgruppe.subList(0, antallNyeIdenter);
+        var levendeIdenterIAldersgruppeAsSet = new HashSet<>(hodejegerenConsumer.getLevende(avspillergruppeId, minimumAlder, maksimumAlder));
+        return filtrerEksisterendeBrukereIArena(levendeIdenterIAldersgruppeAsSet, miljoe).subList(0, antallNyeIdenter);
     }
 
     public List<KontoinfoResponse> getIdenterMedKontoinformasjon(
@@ -97,6 +105,17 @@ public class ServiceUtils {
     ) {
         //TODO: Finn ut hvilke kvalifiseringsgrupper som er vanligst her
         return opprettArbeidssoeker(rettigheter, miljoe, rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM);
+    }
+
+    private List<String> filtrerEksisterendeBrukereIArena(
+            Set<String> identerAsSet,
+            String miljoe
+    ) {
+        var eksisterendeBrukereAsSet = new HashSet<>(brukereService.hentEksisterendeArbeidsoekerIdenter(EIER, miljoe));
+        identerAsSet.removeAll(eksisterendeBrukereAsSet);
+        var identer = new ArrayList<>(identerAsSet);
+        Collections.shuffle(identer);
+        return identer;
     }
 
     private List<RettighetRequest> opprettArbeidssoeker(

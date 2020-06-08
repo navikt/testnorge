@@ -1,6 +1,7 @@
 package no.nav.registre.arena.core.consumer.rs;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.EIER;
 import static no.nav.registre.arena.core.consumer.rs.util.Headers.CALL_ID;
 import static no.nav.registre.arena.core.consumer.rs.util.Headers.CONSUMER_ID;
 import static no.nav.registre.arena.core.consumer.rs.util.Headers.NAV_CALL_ID;
@@ -8,9 +9,6 @@ import static no.nav.registre.arena.core.consumer.rs.util.Headers.NAV_CONSUMER_I
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyBruker;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -26,11 +24,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyBruker;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+
 @Component
 @Slf4j
 public class BrukereArenaForvalterConsumer {
-
-    private static final String EIER = "ORKESTRATOREN";
 
     @Autowired
     private RestTemplate restTemplate;
