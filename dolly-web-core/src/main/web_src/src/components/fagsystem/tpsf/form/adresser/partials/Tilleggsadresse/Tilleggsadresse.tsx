@@ -8,7 +8,18 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 import _get from 'lodash/get'
 
 interface TilleggsadresseProps {
-	formikBag: FormikProps<{}>
+	formikBag: FormikProps<{ tpsf: BoadresseValues }>
+}
+
+interface BoadresseValues {
+	boadresse: TilleggsadresseValues
+}
+
+interface TilleggsadresseValues {
+	tilleggsadresse?: {
+		tilleggType: string
+		nummer?: number
+	}
 }
 
 enum TilleggsTyper {
@@ -21,38 +32,35 @@ enum TilleggsTyper {
 const initialValues = { tilleggType: '', nummer: '' }
 
 export const Tilleggsadresse = ({ formikBag }: TilleggsadresseProps) => {
-	const [showTilleggsadresse, setShowTilleggsadresse] = useState(false)
-	const [tilfeldigErValgt, setTilfeldigErValgt] = useState(false)
+	const tilleggsadressePath = 'tpsf.boadresse.tilleggsadresse'
+
+	const [showTilleggsadresse, setShowTilleggsadresse] = useState(
+		formikBag.values.tpsf.boadresse.hasOwnProperty('tilleggsadresse') ? true : false
+	)
 
 	const handleChangeTilleggsadresse = () => {
 		if (!showTilleggsadresse) {
-			formikBag.setFieldValue('tpsf.tilleggsadresse', initialValues)
+			formikBag.setFieldValue(tilleggsadressePath, initialValues)
 		} else {
-			formikBag.setFieldValue('tpsf.tilleggsadresse', {})
+			formikBag.setFieldValue(tilleggsadressePath, undefined)
 		}
 		setShowTilleggsadresse(!showTilleggsadresse)
 	}
 
 	const handleChangeTilleggstype = (type: { value: string; label: string }) => {
-		formikBag.setFieldValue('tpsf.tilleggsadresse.tilleggType', type.value)
+		formikBag.setFieldValue(`${tilleggsadressePath}.tilleggType`, type.value)
 		if (type.value === TilleggsTyper.CoNavn) {
-			formikBag.setFieldValue('tpsf.tilleggsadresse.nummer', '')
+			formikBag.setFieldValue(`${tilleggsadressePath}.nummer`, '')
 		}
 	}
 
-	const handleVelgTilfeldigAdresse = () => {
-		setTilfeldigErValgt(!tilfeldigErValgt)
-		formikBag.setFieldValue('tpsf.tilleggsadresse', initialValues)
-	}
-
 	const showNummer = () => {
-		const tilleggstype = _get(formikBag.values, 'tpsf.tilleggsadresse.tilleggType')
-		console.log(tilleggstype)
+		const tilleggstype = _get(formikBag.values, `${tilleggsadressePath}.tilleggType`)
 		return tilleggstype !== TilleggsTyper.CoNavn && tilleggstype !== ''
 	}
 
 	return (
-		<div className="tilleggsadresse-form">
+		<>
 			<div className="tilleggsadresse-form__switch">
 				<h3>Legg til tilleggsadresse </h3>
 				{
@@ -61,31 +69,25 @@ export const Tilleggsadresse = ({ formikBag }: TilleggsadresseProps) => {
 						name="aktiver-tilleggsadresse"
 						onChange={handleChangeTilleggsadresse}
 						label="Legg til tilleggsadresse"
+						checked={showTilleggsadresse}
 						isSwitch
 					/>
 				}
 			</div>
 			{showTilleggsadresse && (
-				// @ts-ignore
-				<DollyCheckbox
-					name="tilfeldig-tilleggsadresse"
-					onChange={handleVelgTilfeldigAdresse}
-					label={'Tilfeldig adresse'}
-				/>
-			)}
-			{showTilleggsadresse && !tilfeldigErValgt && (
-				<div className="tilleggsadresse-form__options">
+				<div className="flexbox--flex-wrap">
 					<FormikSelect
-						name="tpsf.tilleggsadresse.tilleggType"
+						name={`${tilleggsadressePath}.tilleggType`}
 						label="Tilleggstype"
 						options={Options('tilleggstype')}
 						onChange={handleChangeTilleggstype}
+						isClearable={false}
 					/>
 					{showNummer() && (
-						<FormikTextInput name="tpsf.tilleggsadresse.nummer" label="Nummer" type="number" />
+						<FormikTextInput name={`${tilleggsadressePath}.nummer`} label="Nummer" type="number" />
 					)}
 				</div>
 			)}
-		</div>
+		</>
 	)
 }

@@ -137,6 +137,20 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				}
 				data.push(adresse)
 			}
+			if (boadresse.tilleggsadresse) {
+				const tilleggsadresse = {
+					header: 'Tilleggsadresse',
+					items: [
+						obj('Tilfeldig adresse', boadresse.tilleggsadresse === {} && 'Ja'),
+						obj(
+							'Tilleggstype',
+							Formatters.showLabel('tilleggstype', boadresse.tilleggsadresse.tilleggType)
+						),
+						obj('Nummer', boadresse.tilleggsadresse.nummer)
+					]
+				}
+				data.push(tilleggsadresse)
+			}
 		}
 
 		if (postadresse) {

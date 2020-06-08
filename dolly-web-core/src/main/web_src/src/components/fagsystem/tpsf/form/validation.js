@@ -2,7 +2,14 @@ import * as Yup from 'yup'
 import _get from 'lodash/get'
 import { isAfter, addDays } from 'date-fns'
 import Dataformatter from '~/utils/DataFormatter'
-import { requiredString, ifPresent, ifKeyHasValue, messages } from '~/utils/YupValidations'
+import {
+	requiredString,
+	requiredNumber,
+	ifPresent,
+	ifKeyHasValue,
+	messages
+} from '~/utils/YupValidations'
+import { Tilleggsadresse } from './adresser/partials/Tilleggsadresse/Tilleggsadresse'
 
 const boadresse = Yup.object({
 	gateadresse: ifKeyHasValue(
@@ -38,7 +45,15 @@ const boadresse = Yup.object({
 	postnr: Yup.string().when('adressetype', { is: 'MATR', then: requiredString }),
 	kommunenr: Yup.string()
 		.when('adressetype', { is: 'MATR', then: requiredString })
-		.nullable()
+		.nullable(),
+	tilleggsadresse: Yup.object({
+		tilleggType: ifPresent('$tpsf.boadresse.tilleggsadresse', requiredString),
+		nummer: ifKeyHasValue(
+			'$tpsf.boadresse.tilleggsadresse.tilleggType',
+			['LEILIGHET_NR', 'SEKSJON_NR', 'BOLIG_NR'],
+			requiredNumber.transform(num => (isNaN(num) ? undefined : num))
+		)
+	})
 })
 
 const adresseNrInfo = Yup.object({

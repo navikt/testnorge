@@ -16,7 +16,8 @@ export const Adressevisning = ({ boadresse }) => {
 		festenr,
 		undernr,
 		postnr,
-		flyttedato
+		flyttedato,
+		tilleggsadresse
 	} = boadresse
 
 	const gate = <div>{`${gateadresse} ${husnummer}`}</div>
@@ -51,6 +52,7 @@ export const Adressevisning = ({ boadresse }) => {
 				)}
 			</TitleValue>
 			<TitleValue title="Flyttedato" value={Formatters.formatDate(flyttedato)} />
+			<TitleValue title="Tilleggsadresse" value={tilleggsadresse} />
 		</>
 	)
 }
