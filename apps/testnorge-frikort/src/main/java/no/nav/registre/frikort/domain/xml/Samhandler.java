@@ -28,15 +28,15 @@ public class Samhandler {
         return type;
     }
     @XmlElement
-    public long getSAMHANDLERID(){
+    public long getSamhandlerid(){
         return SAMHANDLERID;
     }
     @XmlElement
-    public long getINNSENDINGID(){
+    public long getInnsendingid(){
         return INNSENDINGID;
     }
     @XmlElement
-    public String getINNSENDINGSTYPE(){
+    public String getInnsendingstype(){
         return INNSENDINGSTYPE;
     }
     @XmlElement
@@ -48,7 +48,7 @@ public class Samhandler {
         return datoGenerert == null ? "" : datoGenerert.toString();
     }
     @XmlElement
-    public String getFORNAVN(){
+    public String getFornavn(){
         return FORNAVN;
     }
     @XmlElement

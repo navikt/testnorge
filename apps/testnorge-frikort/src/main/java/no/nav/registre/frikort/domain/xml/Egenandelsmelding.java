@@ -21,7 +21,7 @@ public class Egenandelsmelding {
     private final SamhandlerListe listeAvSamhandlere;
 
     @XmlAttribute
-    public String getXMLNS() {
+    public String getXmlns() {
         return XMLNS;
     }
 

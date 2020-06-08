@@ -35,7 +35,7 @@ public class Egenandel {
     }
 
     @XmlElement
-    public long getENKELTREGNINGSID() {
+    public long getEnkeltregningsid() {
         return ENKELTREGNINGSID;
     }
 
@@ -45,7 +45,7 @@ public class Egenandel {
     }
 
     @XmlElement
-    public int getENKELTREGNINGSNR() {
+    public int getEnkeltregningsnr() {
         return ENKELTREGNINGSNR;
     }
 
