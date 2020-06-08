@@ -13,9 +13,9 @@ import java.time.LocalDateTime;
 public class Egenandel {
 
     private final String egenandelskode;
-    private final long enkeltregningsid = 1234567890;
+    private static final long enkeltregningsid = 1234567890;
     private final String enkeltregningsstatus;
-    private final int enkeltregningsnr = 22396;
+    private static final int enkeltregningsnr = 22396;
     private final double egenandelsats;
     private final double egenandelsbelop;
     private final LocalDateTime datoTjeneste;

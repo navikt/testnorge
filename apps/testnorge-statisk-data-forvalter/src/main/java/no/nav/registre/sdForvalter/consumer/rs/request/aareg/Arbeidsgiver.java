@@ -13,7 +13,7 @@ import static no.nav.registre.sdForvalter.consumer.rs.request.aareg.AktoerType.O
 public class Arbeidsgiver {
 
     @JsonProperty("aktoertype")
-    private final AktoerType aktoertype = ORG;
+    private static final AktoerType aktoertype = ORG;
 
     @JsonProperty("orgnummer")
     private String orgnummer;

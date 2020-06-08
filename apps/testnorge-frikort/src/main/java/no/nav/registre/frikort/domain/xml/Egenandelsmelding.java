@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @XmlRootElement(name = ("Egenandelsmelding"))
 public class Egenandelsmelding {
 
-    private final String xmlns = "http://nav.no/frikort/common/domain/schema";
+    private static final String xmlns = "http://nav.no/frikort/common/domain/schema";
     private final String avsender;
     private final LocalDateTime datoSendt;
     private final SamhandlerListe listeAvSamhandlere;

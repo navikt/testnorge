@@ -15,12 +15,12 @@ import java.time.Month;
 public class Samhandler {
 
     private final String type;
-    private final long samhandlerid = 0L;
-    private final long innsendingid = 0L;
-    private final String innsendingstype = "LOM";
+    private static final long samhandlerid = 0L;
+    private static final long innsendingid = 0L;
+    private static final String innsendingstype = "LOM";
     private final LocalDateTime datoMottattEkstern = LocalDateTime.of(2018, Month.JANUARY, 01, 00, 00, 00);
     private final LocalDateTime datoGenerert = LocalDateTime.of(2018, Month.JANUARY, 01, 00, 00, 00);
-    private final String fornavn = "Ikke Satt";
+    private static final String fornavn = "Ikke Satt";
     private final EgenandelListe listeAvEgenandeler;
 
     @XmlAttribute

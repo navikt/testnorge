@@ -20,7 +20,7 @@ public class Vedtak {
     private final String virksomhetsnummer;
     private final LocalDate fom;
     private final LocalDate tom;
-    private final String ytelse = "SP";
+    private static final String ytelse = "SP";
     private final String status;
     private final int sykemeldingsgrad;
     private final double refusjonsbeloep;
