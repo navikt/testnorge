@@ -36,7 +36,7 @@ public class TestnorgeSkdConsumer {
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "skd" })
-    public ResponseEntity startSyntetisering(
+    public ResponseEntity<SkdMeldingerTilTpsRespons> startSyntetisering(
             SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest
     ) {
         var postRequest = RequestEntity.post(startSyntetiseringUrl.expand()).contentType(MediaType.APPLICATION_JSON).body(syntetiserSkdmeldingerRequest);

@@ -64,7 +64,7 @@ public class SyntetiseringService {
     private final KodeverkConsumer kodeverkConsumer;
     private final Random rand;
 
-    public ResponseEntity opprettArbeidshistorikkOgSendTilAaregstub(
+    public ResponseEntity<List<RsAaregResponse>> opprettArbeidshistorikkOgSendTilAaregstub(
             SyntetiserAaregRequest syntetiserAaregRequest,
             Boolean sendAlleEksisterende
     ) {
