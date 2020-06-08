@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.arena.core.consumer.rs.BrukereArenaForvalterConsumer;
+import no.nav.registre.arena.core.consumer.rs.request.*;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import org.springframework.stereotype.Service;
@@ -22,12 +24,6 @@ import java.util.Random;
 
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.TiltakSyntConsumer;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggRequest;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggsytelseRequest;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksaktivitetRequest;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksdeltakelseRequest;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequest;
 import no.nav.registre.arena.core.service.util.AktivitetskodeMedSannsynlighet;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
@@ -71,7 +67,61 @@ public class RettighetTiltakService {
 
         serviceUtils.lagreIHodejegeren(identerMedOpprettedeTiltak);
 
+        // sender inn endredeltakerstatus
+        if(rand.nextDouble()<1){
+            var identerMedOpprettedeEndreDeltakerstatus = endreDeltakerstatus(
+                    identerMedOpprettedeTiltak,
+                    miljoe);
+            identerMedOpprettedeTiltak.putAll(identerMedOpprettedeEndreDeltakerstatus);
+        }
+
         return identerMedOpprettedeTiltak;
+    }
+
+    public Map<String, List<NyttVedtakResponse>> endreDeltakerstatus(
+            Map<String, List<NyttVedtakResponse>> identerMedOpprettedeTiltakdeltakelse,
+            String miljoe
+    ) {
+
+        List<RettighetRequest> rettigheter = new ArrayList<>(identerMedOpprettedeTiltakdeltakelse.size());
+        for (String ident : identerMedOpprettedeTiltakdeltakelse.keySet()) {
+            var nyeRettigheterTiltak = identerMedOpprettedeTiltakdeltakelse.get(ident).get(0).getNyeRettigheterTiltak();
+
+            if (!nyeRettigheterTiltak.isEmpty()) {
+
+                var tiltaksdeltakelse = nyeRettigheterTiltak.get(0);
+
+                var syntetisertRettighet = tiltakSyntConsumer.opprettDeltakerstatus(1).get(0);
+
+                var rettighetRequest = new RettighetEndreDeltakerstatusRequest(Collections.singletonList(syntetisertRettighet));
+
+                rettighetRequest.setPersonident(ident);
+                rettighetRequest.setMiljoe(miljoe);
+
+                rettighetRequest.getNyeEndreDeltakerstatus().get(0).setTiltakskode(null);
+                rettighetRequest.getNyeEndreDeltakerstatus().get(0).setTiltakskarakteristikk(tiltaksdeltakelse.getTiltakskarakteristikk());
+                rettighetRequest.getNyeEndreDeltakerstatus().get(0).setDato(tiltaksdeltakelse.getFraDato());
+
+                rettigheter.add(rettighetRequest);
+            }
+        }
+
+        if(!rettigheter.isEmpty()){
+            var responses = rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
+
+            for (var response : responses.values()) {
+                for (var nyttVedtakResponse : response) {
+                    if (!nyttVedtakResponse.getFeiledeRettigheter().isEmpty()) {
+                        log.error("Kunne ikke endre deltakerstatus for alle identer");
+                    }
+                }
+            }
+//            serviceUtils.lagreIHodejegeren(responses);
+            return responses;
+        }else{
+            log.info("Fant ingen tiltaksdeltakelser å endre.");
+            return new HashMap<>();
+        }
     }
 
     public Map<String, List<NyttVedtakResponse>> opprettTiltakspenger(
@@ -136,6 +186,7 @@ public class RettighetTiltakService {
 
         return identerMedOpprettedeTiltak;
     }
+
 
     private Map<String, List<NyttVedtakResponse>> aktiverTiltaksdeltakelse(
             List<String> identer,
