@@ -109,7 +109,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					items: [
 						obj(
 							`${Formatters.showLabel('adresseNrType', adresseNrInfo.nummertype)}`,
-							adresseNrInfo.nummer
+							adresseNrInfo.nummer ? adresseNrInfo.nummer : 'Tilfeldig'
 						),
 						obj('Flyttedato', Formatters.formatDate(boadresse.flyttedato))
 					]
