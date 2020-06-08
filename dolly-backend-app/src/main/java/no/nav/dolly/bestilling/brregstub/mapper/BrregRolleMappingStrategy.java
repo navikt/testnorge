@@ -13,9 +13,9 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.tpsf.Person;
-import no.nav.dolly.domain.resultset.tpsf.adresse.RsAdresse;
-import no.nav.dolly.domain.resultset.tpsf.adresse.RsGateadresse;
-import no.nav.dolly.domain.resultset.tpsf.adresse.RsMatrikkeladresse;
+import no.nav.dolly.domain.resultset.tpsf.adresse.BoAdresse;
+import no.nav.dolly.domain.resultset.tpsf.adresse.BoGateadresse;
+import no.nav.dolly.domain.resultset.tpsf.adresse.BoMatrikkeladresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 import no.nav.dolly.mapper.MappingStrategy;
 
@@ -59,16 +59,16 @@ public class BrregRolleMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Person person, AdresseTo adresseTo, MappingContext context) {
 
                         if (!person.getBoadresse().isEmpty()) {
-                            RsAdresse adresse = person.getBoadresse().get(0);
-                            if (adresse instanceof RsGateadresse) {
-                                adresseTo.setAdresse1(format("%s %s", ((RsGateadresse) adresse).getGateadresse(),
-                                        ((RsGateadresse) adresse).getHusnummer()));
+                            BoAdresse adresse = person.getBoadresse().get(0);
+                            if (adresse instanceof BoGateadresse) {
+                                adresseTo.setAdresse1(format("%s %s", ((BoGateadresse) adresse).getGateadresse(),
+                                        ((BoGateadresse) adresse).getHusnummer()));
 
                             } else {
-                                adresseTo.setAdresse1(((RsMatrikkeladresse) adresse).getMellomnavn());
+                                adresseTo.setAdresse1(((BoMatrikkeladresse) adresse).getMellomnavn());
                                 adresseTo.setAdresse2(format("gårdsnummer: %s, bruksnr: %s",
-                                        ((RsMatrikkeladresse) adresse).getGardsnr(),
-                                        ((RsMatrikkeladresse) adresse).getBruksnr()));
+                                        ((BoMatrikkeladresse) adresse).getGardsnr(),
+                                        ((BoMatrikkeladresse) adresse).getBruksnr()));
                             }
                             adresseTo.setKommunenr(adresse.getKommunenr());
                             adresseTo.setPostnr(adresse.getPostnr());
