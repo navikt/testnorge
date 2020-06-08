@@ -41,6 +41,9 @@ public class EregModel extends FasteDataModel<Ereg> {
     private String internetAdresse;
     private String naeringskode;
 
+    @Column(name = "redigert_navn")
+    private String redigertNavn;
+
     @OneToOne
     @JoinColumn(name = "parent")
     private EregModel parent;
@@ -64,6 +67,7 @@ public class EregModel extends FasteDataModel<Ereg> {
         this.orgnr = ereg.getOrgnr();
         this.enhetstype = ereg.getEnhetstype();
         this.navn = ereg.getNavn();
+        this.redigertNavn = ereg.getRedigertNavn();
         this.epost = ereg.getEpost();
         this.internetAdresse = ereg.getInternetAdresse();
         this.parent = parent;
