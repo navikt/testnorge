@@ -13,9 +13,9 @@ import static no.nav.registre.sdForvalter.consumer.rs.request.aareg.AktoerType.P
 public class Arbeidstaker {
 
     @JsonProperty("aktoertype")
-    private static final AktoerType aktoertype = PERS;
+    private static final AktoerType AKTOERTYPE = PERS;
     @JsonProperty("identtype")
-    private static final String identtype = "FNR";
+    private static final String IDENTTYPE = "FNR";
     @JsonProperty("ident")
     private String ident;
 }

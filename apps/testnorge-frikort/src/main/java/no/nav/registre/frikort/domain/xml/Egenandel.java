@@ -13,9 +13,9 @@ import java.time.LocalDateTime;
 public class Egenandel {
 
     private final String egenandelskode;
-    private static final long enkeltregningsid = 1234567890;
+    private static final long ENKELTREGNINGSID = 1234567890;
     private final String enkeltregningsstatus;
-    private static final int enkeltregningsnr = 22396;
+    private static final int ENKELTREGNINGSNR = 22396;
     private final double egenandelsats;
     private final double egenandelsbelop;
     private final LocalDateTime datoTjeneste;
@@ -35,8 +35,8 @@ public class Egenandel {
     }
 
     @XmlElement
-    public long getEnkeltregningsid() {
-        return enkeltregningsid;
+    public long getENKELTREGNINGSID() {
+        return ENKELTREGNINGSID;
     }
 
     @XmlElement
@@ -45,8 +45,8 @@ public class Egenandel {
     }
 
     @XmlElement
-    public int getEnkeltregningsnr() {
-        return enkeltregningsnr;
+    public int getENKELTREGNINGSNR() {
+        return ENKELTREGNINGSNR;
     }
 
     @XmlElement

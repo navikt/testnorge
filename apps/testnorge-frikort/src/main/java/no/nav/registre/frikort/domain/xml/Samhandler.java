@@ -15,12 +15,12 @@ import java.time.Month;
 public class Samhandler {
 
     private final String type;
-    private static final long samhandlerid = 0L;
-    private static final long innsendingid = 0L;
-    private static final String innsendingstype = "LOM";
+    private static final long SAMHANDLERID = 0L;
+    private static final long INNSENDINGID = 0L;
+    private static final String INNSENDINGSTYPE = "LOM";
     private final LocalDateTime datoMottattEkstern = LocalDateTime.of(2018, Month.JANUARY, 01, 00, 00, 00);
     private final LocalDateTime datoGenerert = LocalDateTime.of(2018, Month.JANUARY, 01, 00, 00, 00);
-    private static final String fornavn = "Ikke Satt";
+    private static final String FORNAVN = "Ikke Satt";
     private final EgenandelListe listeAvEgenandeler;
 
     @XmlAttribute
@@ -28,16 +28,16 @@ public class Samhandler {
         return type;
     }
     @XmlElement
-    public long getSamhandlerid(){
-        return samhandlerid;
+    public long getSAMHANDLERID(){
+        return SAMHANDLERID;
     }
     @XmlElement
-    public long getInnsendingid(){
-        return innsendingid;
+    public long getINNSENDINGID(){
+        return INNSENDINGID;
     }
     @XmlElement
-    public String getInnsendingstype(){
-        return innsendingstype;
+    public String getINNSENDINGSTYPE(){
+        return INNSENDINGSTYPE;
     }
     @XmlElement
     public String getDatoMottattEkstern(){
@@ -48,8 +48,8 @@ public class Samhandler {
         return datoGenerert == null ? "" : datoGenerert.toString();
     }
     @XmlElement
-    public String getFornavn(){
-        return fornavn;
+    public String getFORNAVN(){
+        return FORNAVN;
     }
     @XmlElement
     public EgenandelListe getListeAvEgenandeler(){
