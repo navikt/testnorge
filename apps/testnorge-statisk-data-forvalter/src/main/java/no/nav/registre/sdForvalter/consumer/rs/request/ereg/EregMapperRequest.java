@@ -46,7 +46,7 @@ public class EregMapperRequest {
         if (Strings.isNotBlank(model.getNavn())) {
             navn = Navn
                     .builder()
-                    .redNavn(model.getNavn())
+                    .redNavn(model.getRedigertNavn())
                     .navneListe(Collections.singletonList(model.getNavn()))
                     .build();
         }

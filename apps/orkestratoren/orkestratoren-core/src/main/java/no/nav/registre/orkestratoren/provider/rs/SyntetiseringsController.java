@@ -37,7 +37,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
-import no.nav.registre.orkestratoren.service.TesnorgeArenaService;
+import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.TestnorgeBisysService;
 import no.nav.registre.orkestratoren.service.TestnorgeElsamService;
@@ -82,7 +82,7 @@ public class SyntetiseringsController {
     private TestnorgeSamService testnorgeSamService;
 
     @Autowired
-    private TesnorgeArenaService tesnorgeArenaService;
+    private TestnorgeArenaService testnorgeArenaService;
 
     @Autowired
     private TestnorgeMedlService testnorgeMedlService;
@@ -168,14 +168,14 @@ public class SyntetiseringsController {
     public List<String> opprettArbeidssoekereIArena(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        return tesnorgeArenaService.opprettArbeidssokereIArena(syntetiserArenaRequest);
+        return testnorgeArenaService.opprettArbeidssokereIArena(syntetiserArenaRequest);
     }
 
     @PostMapping(value = "/arena/vedtakshistorikk/generer")
     public ResponseEntity opprettVedtakshistorikkIArena(
             @RequestBody SyntetiserArenaVedtakshistorikkRequest vedtakshistorikkRequest
     ) {
-        tesnorgeArenaService.opprettArenaVedtakshistorikk(vedtakshistorikkRequest);
+        testnorgeArenaService.opprettArenaVedtakshistorikk(vedtakshistorikkRequest);
         return ResponseEntity.ok().body("Opprettelsesrequest sendt til arena. Se logg til testnorge-arena for mer info.");
     }
 
@@ -183,28 +183,28 @@ public class SyntetiseringsController {
     public List<NyttVedtakAap> opprettAapIArena(
             @RequestBody SyntetiserArenaAapRequest aapRequest
     ) {
-        return tesnorgeArenaService.opprettArenaAap(aapRequest);
+        return testnorgeArenaService.opprettArenaAap(aapRequest);
     }
 
     @PostMapping(value = "/arena/tiltak/generer")
     public List<NyttVedtakTiltak> opprettTiltakIArena(
             @RequestBody SyntetiserArenaTiltakRequest tiltakRequest
     ) {
-        return tesnorgeArenaService.opprettArenaTiltak(tiltakRequest);
+        return testnorgeArenaService.opprettArenaTiltak(tiltakRequest);
     }
 
     @PostMapping(value = "/arena/tilleggstoenad/generer")
     public List<NyttVedtakTillegg> opprettTilleggstoenadIArena(
             @RequestBody SyntetiserArenaTilleggstoenadRequest tilleggstoenadRequest
     ) {
-        return tesnorgeArenaService.opprettArenaTilleggstoenad(tilleggstoenadRequest);
+        return testnorgeArenaService.opprettArenaTilleggstoenad(tilleggstoenadRequest);
     }
 
     @PostMapping(value = "/arena/tilleggstoenadArbeidssoeker/generer")
     public List<NyttVedtakTillegg> opprettTilleggstoenadArbeidssoekerIArena(
             @RequestBody SyntetiserArenaTilleggstoenadArbeidssoekereRequest tilleggstoenadArbeidssoekereRequest
     ) {
-        return tesnorgeArenaService.opprettArenaTilleggstoenadArbeidssoekere(tilleggstoenadArbeidssoekereRequest);
+        return testnorgeArenaService.opprettArenaTilleggstoenadArbeidssoekere(tilleggstoenadArbeidssoekereRequest);
     }
 
     @PostMapping(value = "/medl/medlemskap/generer")

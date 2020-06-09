@@ -1,5 +1,6 @@
 package no.nav.registre.sdForvalter.database.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +26,7 @@ import no.nav.registre.sdForvalter.domain.Ereg;
 @Setter
 @Slf4j
 @Table(name = "EREG")
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class EregModel extends FasteDataModel<Ereg> {
 
@@ -38,6 +40,9 @@ public class EregModel extends FasteDataModel<Ereg> {
     private String epost;
     private String internetAdresse;
     private String naeringskode;
+
+    @Column(name = "redigert_navn")
+    private String redigertNavn;
 
     @OneToOne
     @JoinColumn(name = "parent")
@@ -62,6 +67,7 @@ public class EregModel extends FasteDataModel<Ereg> {
         this.orgnr = ereg.getOrgnr();
         this.enhetstype = ereg.getEnhetstype();
         this.navn = ereg.getNavn();
+        this.redigertNavn = ereg.getRedigertNavn();
         this.epost = ereg.getEpost();
         this.internetAdresse = ereg.getInternetAdresse();
         this.parent = parent;

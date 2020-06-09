@@ -48,7 +48,7 @@ public class RettighetTiltakService {
         URL resource = Resources.getResource("vedtak_til_aktivitetkode.json");
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            Map<String, List<AktivitetskodeMedSannsynlighet>> map = objectMapper.readValue(resource, new TypeReference<Map<String, List<AktivitetskodeMedSannsynlighet>>>() {
+            Map<String, List<AktivitetskodeMedSannsynlighet>> map = objectMapper.readValue(resource, new TypeReference<>() {
             });
             vedtakMedAktitivetskode.putAll(map);
         } catch (IOException e) {
@@ -61,7 +61,7 @@ public class RettighetTiltakService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        var utvalgteIdenter = serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter);
+        var utvalgteIdenter = serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
 
         var identerMedOpprettedeTiltak = aktiverTiltaksdeltakelse(utvalgteIdenter, miljoe);
 
@@ -132,7 +132,7 @@ public class RettighetTiltakService {
         if (rand.nextBoolean()) {
             identerMedKontonummer = serviceUtils.getIdenterMedKontoinformasjon(avspillergruppeId, miljoe, antallNyeIdenter);
         }
-        var utvalgteIdenter = serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter);
+        var utvalgteIdenter = serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         var syntetiserteRettigheter = tiltakSyntConsumer.opprettTiltakspenger(antallNyeIdenter);
         aktiverTiltaksdeltakelse(utvalgteIdenter, miljoe);
 

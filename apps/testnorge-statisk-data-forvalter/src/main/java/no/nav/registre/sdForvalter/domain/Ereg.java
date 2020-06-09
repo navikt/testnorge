@@ -9,9 +9,13 @@ import lombok.ToString;
 import lombok.Value;
 import org.apache.logging.log4j.util.Strings;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import no.nav.registre.sdForvalter.consumer.rs.request.ereg.EregMapperRequest;
 import no.nav.registre.sdForvalter.database.model.EregModel;
-import no.nav.registre.sdForvalter.domain.Adresse;
-import no.nav.registre.sdForvalter.domain.FasteData;
 import no.nav.registre.sdForvalter.dto.organisasjon.v1.OrganisasjonDTO;
 
 
@@ -27,6 +31,8 @@ public class Ereg extends FasteData {
     private final String enhetstype;
     @JsonProperty
     private final String navn;
+    @JsonProperty
+    private final String redigertNavn;
     @JsonProperty
     private final String epost;
     @JsonProperty
@@ -46,11 +52,12 @@ public class Ereg extends FasteData {
     }
 
     @Builder
-    public Ereg(String gruppe, String opprinnelse, String orgnr, String enhetstype, String navn, String epost, String internetAdresse, String naeringskode, String juridiskEnhet, Adresse forretningsAdresse, Adresse postadresse) {
+    public Ereg(String gruppe, String opprinnelse, String orgnr, String enhetstype, String navn, String redigertNavn, String epost, String internetAdresse, String naeringskode, String juridiskEnhet, Adresse forretningsAdresse, Adresse postadresse) {
         super(gruppe, opprinnelse);
         this.orgnr = orgnr;
         this.enhetstype = enhetstype;
         this.navn = navn;
+        this.redigertNavn = redigertNavn;
         this.epost = epost;
         this.internetAdresse = internetAdresse;
         this.naeringskode = naeringskode;
@@ -64,6 +71,7 @@ public class Ereg extends FasteData {
         orgnr = model.getOrgnr();
         enhetstype = model.getEnhetstype();
         navn = model.getNavn();
+        redigertNavn = model.getRedigertNavn();
         epost = model.getEpost();
         internetAdresse = model.getInternetAdresse();
         naeringskode = model.getNaeringskode();
@@ -72,11 +80,12 @@ public class Ereg extends FasteData {
         postadresse = model.getPostadresse() != null ? new Adresse(model.getPostadresse()) : null;
     }
 
-    public Ereg(OrganisasjonDTO dto){
+    public Ereg(OrganisasjonDTO dto) {
         super(dto.getGruppe(), dto.getOpprinnelse());
         orgnr = dto.getOrgnr();
         enhetstype = dto.getEnhetstype();
         navn = dto.getNavn();
+        redigertNavn = dto.getRedigertNavn();
         epost = dto.getEpost();
         internetAdresse = dto.getInternetAdresse();
         naeringskode = dto.getNaeringskode();
@@ -85,14 +94,52 @@ public class Ereg extends FasteData {
         postadresse = new Adresse(dto.getPostadresse());
     }
 
+    public Ereg(EregMapperRequest eregMapperRequest) {
+        super("WIP", "Brreg");
+
+        orgnr = eregMapperRequest.getOrgnr();
+        enhetstype = eregMapperRequest.getEnhetstype();
+        if (eregMapperRequest.getNavn() != null){
+            navn = eregMapperRequest.getNavn().getNavneListe() != null
+                    ? String.join(" ", eregMapperRequest.getNavn().getNavneListe())
+                    : null;
+            redigertNavn = eregMapperRequest.getNavn().getRedNavn();
+        } else {
+            navn = null;
+            redigertNavn = null;
+        }
+
+        epost = eregMapperRequest.getEpost();
+        internetAdresse = eregMapperRequest.getInternetAdresse();
+
+        forretningsAdresse = eregMapperRequest.getForretningsAdresse() != null
+                ? new Adresse(eregMapperRequest.getForretningsAdresse())
+                : null;
+        postadresse = eregMapperRequest.getAdresse() != null ? new Adresse(eregMapperRequest.getAdresse()) : null;
+
+        naeringskode = null;
+
+        List<Map<String, String>> eregMapperRequestKnytninger = eregMapperRequest.getKnytninger();
+        if (eregMapperRequestKnytninger != null) {
+            juridiskEnhet = eregMapperRequestKnytninger
+                    .stream()
+                    .map(stringStringMap -> stringStringMap.get("orgnr"))
+                    .findFirst()
+                    .orElse(null);
+        } else {
+            juridiskEnhet = null;
+        }
+    }
+
     public OrganisasjonDTO toDTO() {
         return OrganisasjonDTO
                 .builder()
                 .orgnr(orgnr)
                 .enhetstype(enhetstype)
                 .navn(navn)
+                .redigertNavn(redigertNavn)
                 .epost(epost)
-                .forretningsAdresse(forretningsAdresse != null ? forretningsAdresse.toDTO(): null)
+                .forretningsAdresse(forretningsAdresse != null ? forretningsAdresse.toDTO() : null)
                 .postadresse(postadresse != null ? postadresse.toDTO() : null)
                 .internetAdresse(internetAdresse)
                 .juridiskEnhet(juridiskEnhet)

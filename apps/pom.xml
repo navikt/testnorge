@@ -38,5 +38,10 @@
         <module>orkestratoren</module>
         <module>inntektsmelding-stub</module>
         <module>testnorge-frikort</module>
+        <module>testnorge-aaregstub</module>
+        <module>testnorge-tss</module>
+        <module>testnorge-nav-endringsmeldinger</module>
+        <module>testnorge-token-provider</module>
+        <module>testnorge-inntekt</module>
     </modules>
 </project>

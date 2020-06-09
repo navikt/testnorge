@@ -19,6 +19,9 @@ import java.io.StringWriter;
 
 public final class JAXB {
 
+    private JAXB() {
+    }
+
     private static final JAXBContext SYKMELDING;
 
     static {
