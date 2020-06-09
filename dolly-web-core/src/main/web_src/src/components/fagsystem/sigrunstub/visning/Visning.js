@@ -12,19 +12,14 @@ export const SigrunstubVisning = ({ data, loading, visTittel = true }) => {
 	const grunnlag = data[0].grunnlag.length > 0
 	const svalbardGrunnlag = data[0].svalbardGrunnlag.length > 0
 
-	const sortedGrunnlagData = Array.isArray(data[0].grunnlag)
-		? data[0].grunnlag.slice().reverse()
-		: data[0].grunnlag
-	const sortedSvalbardGrunnlagData = Array.isArray(data[0].svalbardGrunnlag)
-		? data[0].svalbardGrunnlag.slice().reverse()
-		: data[0].svalbardGrunnlag
+	const sortedData = data => (Array.isArray(data) ? data.slice().reverse() : data)
 
 	return (
 		<div>
 			{visTittel && <SubOverskrift label="Skatteoppgjør (Sigrun)" iconKind="sigrun" />}
 			<div className="person-visning_content">
 				{grunnlag && (
-					<DollyFieldArray header="Fastlands-Norge" data={sortedGrunnlagData} nested>
+					<DollyFieldArray header="Fastlands-Norge" data={sortedData(data[0].grunnlag)} nested>
 						{(inntekt, idx) => (
 							<React.Fragment key={idx}>
 								<TitleValue title="Inntektsår" value={inntekt.inntektsaar} />
@@ -40,7 +35,7 @@ export const SigrunstubVisning = ({ data, loading, visTittel = true }) => {
 					</DollyFieldArray>
 				)}
 				{svalbardGrunnlag && (
-					<DollyFieldArray header="Svalbard" data={sortedSvalbardGrunnlagData} nested>
+					<DollyFieldArray header="Svalbard" data={sortedData(data[0].svalbardGrunnlag)} nested>
 						{(inntekt, idx) => (
 							<React.Fragment key={idx}>
 								<TitleValue title="Inntektsår" value={inntekt.inntektsaar} />
