@@ -21,11 +21,12 @@ export default function TilgjengeligeMiljoer({ endepunkt, dollyEnvironments }) {
 	return <span>{message}</span>
 }
 
-const filterMiljoe = (dollyMiljoe, fagsystemMiljoe) => {
+export const filterMiljoe = (dollyMiljoe, utvalgteMiljoer) => {
 	const dollyMiljoeArray = flatDollyMiljoe(dollyMiljoe)
 
-	//Filtrerer bort de miljøene som er tilgjengelige for fagsystemene, men ikke Dolly
-	return fagsystemMiljoe.filter(miljoe => dollyMiljoeArray.includes(miljoe))
+	//Filtrerer bort de miljøene som er tilgjengelige for fagsystemene eller en mal,
+	//men ikke Dolly per dags dato
+	return utvalgteMiljoer.filter(miljoe => dollyMiljoeArray.includes(miljoe))
 }
 
 const flatDollyMiljoe = dollymiljoe => {

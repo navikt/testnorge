@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react'
+import { useSelector } from 'react-redux'
 import * as yup from 'yup'
 import { Formik } from 'formik'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
@@ -6,9 +7,11 @@ import DollyModal from '~/components/ui/modal/DollyModal'
 import { MiljoVelger } from '~/components/miljoVelger/MiljoVelger'
 import Formatters from '~/utils/DataFormatter'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
+import { filterMiljoe } from '~/components/miljoVelger/MiljoeInfo/TilgjengeligeMiljoer'
 
 export default function GjenopprettBestilling(props) {
 	const { bestilling, closeModal } = props
+	const tilgjengeligeEnvironments = useSelector(state => state.environments.data)
 
 	const submitFormik = async values => {
 		const envsQuery = Formatters.arrayToString(values.environments)
@@ -34,7 +37,7 @@ export default function GjenopprettBestilling(props) {
 			</div>
 			<Formik
 				initialValues={{
-					environments
+					environments: filterMiljoe(tilgjengeligeEnvironments, environments)
 				}}
 				onSubmit={submitFormik}
 				validationSchema={schemaValidation}
