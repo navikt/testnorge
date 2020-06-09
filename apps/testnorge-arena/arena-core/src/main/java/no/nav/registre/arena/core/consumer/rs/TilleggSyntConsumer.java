@@ -39,7 +39,7 @@ public class TilleggSyntConsumer {
     private UriTemplate arenaTilleggReiseObligatoriskSamlingArbeidssoekereUrl;
     private UriTemplate arenaTilleggReisestoenadArbeidssoekereUrl;
 
-    private LocalDate arenaTilleggTilsynFamiliemedlemmerDateLimit = LocalDate.of(2020, 02, 29);
+    private static final LocalDate arenaTilleggTilsynFamiliemedlemmerDateLimit = LocalDate.of(2020, 02, 29);
 
     public TilleggSyntConsumer(
             RestTemplateBuilder restTemplateBuilder,

@@ -33,14 +33,7 @@ public class ConsumerUtils {
         List<RettighetSyntRequest> requester = new ArrayList<>(antallMeldinger);
         for (int i = 0; i < antallMeldinger; i++) {
             LocalDate startDato = LocalDate.now().minusMonths(rand.nextInt(12));
-            LocalDate sluttDato = startDato.plusDays(rand.nextInt(365 / 2) + (365 / (long) 2));
-            requester.add(RettighetSyntRequest.builder()
-                    .fraDato(startDato)
-                    .tilDato(sluttDato)
-                    .utfall(UTFALL_JA)
-                    .vedtakTypeKode(VEDTAK_TYPE_KODE_O)
-                    .vedtakDato(startDato)
-                    .build());
+            opprettRequest(startDato, requester);
         }
         return RequestEntity
                 .post(uri.expand())
@@ -55,19 +48,25 @@ public class ConsumerUtils {
         List<RettighetSyntRequest> requester = new ArrayList<>(antallMeldinger);
         for (int i = 0; i < antallMeldinger; i++) {
             LocalDate startDato = startDatoLimit.minusMonths(rand.nextInt(12));
-            LocalDate sluttDato = startDato.plusDays(rand.nextInt(365 / 2) + (365 / (long) 2));
-            requester.add(RettighetSyntRequest.builder()
-                    .fraDato(startDato)
-                    .tilDato(sluttDato)
-                    .utfall(UTFALL_JA)
-                    .vedtakTypeKode(VEDTAK_TYPE_KODE_O)
-                    .vedtakDato(startDato)
-                    .build());
+            opprettRequest(startDato, requester);
         }
+
         return RequestEntity
                 .post(uri.expand())
                 .body(requester);
     }
+
+    private void opprettRequest(LocalDate startDato, List<RettighetSyntRequest> requester) {
+        LocalDate sluttDato = startDato.plusDays(rand.nextInt(365 / 2) + (365 / (long) 2));
+        requester.add(RettighetSyntRequest.builder()
+                .fraDato(startDato)
+                .tilDato(sluttDato)
+                .utfall(UTFALL_JA)
+                .vedtakTypeKode(VEDTAK_TYPE_KODE_O)
+                .vedtakDato(startDato)
+                .build());
+    }
+
 
     public static LocalDate getFoedselsdatoFraFnr(String ident) {
         var year = getFullYear(ident);
