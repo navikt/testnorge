@@ -80,7 +80,7 @@ public class VedtakshistorikkService {
                 if (minimumAlder > maksimumAlder) {
                     log.error("Kunne ikke finne ident i riktig aldersgruppe");
                 } else {
-                    var ident = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder).get(0);
+                    var ident = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe).get(0);
                     responses.putAll(opprettHistorikkOgSendTilArena(avspillergruppeId, ident, miljoe, vedtakshistorikken));
                 }
             }

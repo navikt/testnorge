@@ -1,16 +1,24 @@
 package no.nav.registre.arena.core.service.util;
 
+import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.EIER;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import no.nav.registre.arena.core.consumer.rs.AktoerRegisteretConsumer;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.service.BrukereService;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
@@ -35,33 +43,39 @@ public class ServiceUtils {
     public static final int MIN_ALDER_UNG_UFOER = 18;
     public static final int MAX_ALDER_UNG_UFOER = 36;
     private static final String KILDE_ARENA = "arena";
+    private static final int PAGE_SIZE = 10;
 
     private final HodejegerenConsumer hodejegerenConsumer;
     private final BrukereService brukereService;
+    private final AktoerRegisteretConsumer aktoerRegisteretConsumer;
     private final Random rand;
 
-    public List<String> getLevende(Long avspillergruppeId) {
-        return hodejegerenConsumer.getLevende(avspillergruppeId);
+    public List<String> getLevende(
+            Long avspillergruppeId,
+            String miljoe
+    ) {
+        var levendeIdenterAsSet = new HashSet<>(hodejegerenConsumer.getLevende(avspillergruppeId));
+        return filtrerEksisterendeBrukereIArena(levendeIdenterAsSet, miljoe);
     }
 
     public List<String> getUtvalgteIdenter(
             Long avspillergruppeId,
-            int antallNyeIdenter
+            int antallNyeIdenter,
+            String miljoe
     ) {
-        var levendeIdenter = hodejegerenConsumer.getLevende(avspillergruppeId);
-        Collections.shuffle(levendeIdenter);
-        return levendeIdenter.subList(0, antallNyeIdenter);
+        var levendeIdenter = new HashSet<>(hodejegerenConsumer.getLevende(avspillergruppeId));
+        return filtrerIdenterUtenAktoerId(levendeIdenter, miljoe, antallNyeIdenter);
     }
 
     public List<String> getUtvalgteIdenterIAldersgruppe(
             Long avspillergruppeId,
             int antallNyeIdenter,
             int minimumAlder,
-            int maksimumAlder
+            int maksimumAlder,
+            String miljoe
     ) {
-        var levendeIdenterIAldersgruppe = hodejegerenConsumer.getLevende(avspillergruppeId, minimumAlder, maksimumAlder);
-        Collections.shuffle(levendeIdenterIAldersgruppe);
-        return levendeIdenterIAldersgruppe.subList(0, antallNyeIdenter);
+        var levendeIdenterIAldersgruppe = new HashSet<>(hodejegerenConsumer.getLevende(avspillergruppeId, minimumAlder, maksimumAlder));
+        return filtrerIdenterUtenAktoerId(levendeIdenterIAldersgruppe, miljoe, antallNyeIdenter);
     }
 
     public List<KontoinfoResponse> getIdenterMedKontoinformasjon(
@@ -97,6 +111,34 @@ public class ServiceUtils {
     ) {
         //TODO: Finn ut hvilke kvalifiseringsgrupper som er vanligst her
         return opprettArbeidssoeker(rettigheter, miljoe, rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM);
+    }
+
+    private List<String> filtrerIdenterUtenAktoerId(
+            Set<String> identer,
+            String miljoe,
+            int antallNyeIdenter
+    ) {
+        var identerUtenArenabruker = filtrerEksisterendeBrukereIArena(identer, miljoe);
+        var identerPartisjonert = partisjonerListe(identerUtenArenabruker, PAGE_SIZE);
+        Map<String, String> identerMedAktoerId = new HashMap<>();
+        for (var partisjon : identerPartisjonert) {
+            identerMedAktoerId.putAll(aktoerRegisteretConsumer.hentAktoerIderTilIdenter(partisjon, miljoe));
+            if (identerMedAktoerId.size() >= antallNyeIdenter) {
+                break;
+            }
+        }
+        return new ArrayList<>(identerMedAktoerId.keySet()).subList(0, antallNyeIdenter);
+    }
+
+    private List<String> filtrerEksisterendeBrukereIArena(
+            Set<String> identerAsSet,
+            String miljoe
+    ) {
+        var eksisterendeBrukere = new HashSet<>(brukereService.hentEksisterendeArbeidsoekerIdenter(EIER, miljoe));
+        identerAsSet.removeAll(eksisterendeBrukere);
+        var identer = new ArrayList<>(identerAsSet);
+        Collections.shuffle(identer);
+        return identer;
     }
 
     private List<RettighetRequest> opprettArbeidssoeker(
@@ -194,5 +236,16 @@ public class ServiceUtils {
             historikkRequest.setIdentMedData(identMedData);
             hodejegerenConsumer.saveHistory(historikkRequest);
         }
+    }
+
+    private <T> Collection<List<T>> partisjonerListe(
+            List<T> list,
+            long partitionSize
+    ) {
+        AtomicInteger counter = new AtomicInteger(0);
+        return list
+                .stream()
+                .collect(Collectors.groupingBy(it -> counter.getAndIncrement() / partitionSize))
+                .values();
     }
 }
