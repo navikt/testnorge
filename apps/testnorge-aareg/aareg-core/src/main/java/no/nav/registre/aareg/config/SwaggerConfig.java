@@ -1,10 +1,5 @@
 package no.nav.registre.aareg.config;
 
-import static java.util.Arrays.asList;
-import static no.nav.registre.aareg.domain.CommonKeys.HEADER_NAV_CALL_ID;
-import static no.nav.registre.aareg.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +28,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static java.util.Arrays.asList;
+import static no.nav.registre.aareg.domain.CommonKeys.HEADER_NAV_CALL_ID;
+import static no.nav.registre.aareg.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 
 /**

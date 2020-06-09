@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class InternalController {
 
     @GetMapping("/isAlive")
-    public ResponseEntity<HttpStatus> isAlive() {
+    public ResponseEntity isAlive() {
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/isReady")
-    public ResponseEntity<HttpStatus> isReady() {
+    public ResponseEntity isReady() {
         return ResponseEntity.ok().build();
     }
 
