@@ -165,8 +165,8 @@ public class ServiceUtils {
         return rettigheter;
     }
 
-    public List<String> getIdenterMedFoedselsmelding(Long avspillergruppeId) {
-        return hodejegerenConsumer.getFoedte(avspillergruppeId, null, null);
+    public List<String> getIdenterMedFoedselsmelding(Long avspillergruppeId, int maxAlder) {
+        return hodejegerenConsumer.getFoedte(avspillergruppeId, null, maxAlder);
     }
 
     public RelasjonsResponse getRelasjonerTilIdent(
