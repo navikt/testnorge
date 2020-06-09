@@ -78,7 +78,6 @@ public class AktoerRegisteretConsumer {
             for (var entry : response.getBody().entrySet()) {
                 var aktoerId = "";
                 if (entry.getValue().getIdenter() == null) {
-                    log.warn("{} Ident: {}", entry.getValue().getFeilmelding(), entry.getKey());
                     continue;
                 }
                 for (var aktoer : entry.getValue().getIdenter()) {
