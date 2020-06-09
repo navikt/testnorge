@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils;
@@ -37,6 +38,8 @@ public class TilleggSyntConsumer {
     private UriTemplate arenaTilleggHjemreiseArbeidssoekereUrl;
     private UriTemplate arenaTilleggReiseObligatoriskSamlingArbeidssoekereUrl;
     private UriTemplate arenaTilleggReisestoenadArbeidssoekereUrl;
+
+    private LocalDate arenaTilleggTilsynFamiliemedlemmerDateLimit = LocalDate.of(2020, 02, 29);
 
     public TilleggSyntConsumer(
             RestTemplateBuilder restTemplateBuilder,
@@ -95,7 +98,7 @@ public class TilleggSyntConsumer {
     }
 
     public List<NyttVedtakTillegg> opprettTilsynFamiliemedlemmer(int antallMeldinger) {
-        return opprettTilleggstoenad(antallMeldinger, arenaTilleggTilsynFamiliemedlemmerUrl);
+        return opprettTilleggstoenad(antallMeldinger, arenaTilleggTilsynFamiliemedlemmerUrl, arenaTilleggTilsynFamiliemedlemmerDateLimit);
     }
 
     public List<NyttVedtakTillegg> opprettTilsynBarnArbeidssoekere(int antallMeldinger) {
@@ -139,6 +142,16 @@ public class TilleggSyntConsumer {
             UriTemplate uri
     ) {
         var postRequest = consumerUtils.createPostRequest(uri, antallMeldinger);
+        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakTillegg>>() {
+        }).getBody();
+    }
+
+    private List<NyttVedtakTillegg> opprettTilleggstoenad(
+            int antallMeldinger,
+            UriTemplate uri,
+            LocalDate startDatoLimit
+    ) {
+        var postRequest = consumerUtils.createPostRequest(uri, antallMeldinger, startDatoLimit);
         return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakTillegg>>() {
         }).getBody();
     }

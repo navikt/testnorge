@@ -47,6 +47,28 @@ public class ConsumerUtils {
                 .body(requester);
     }
 
+    public RequestEntity createPostRequest(
+            UriTemplate uri,
+            int antallMeldinger,
+            LocalDate startDatoLimit
+    ) {
+        List<RettighetSyntRequest> requester = new ArrayList<>(antallMeldinger);
+        for (int i = 0; i < antallMeldinger; i++) {
+            LocalDate startDato = startDatoLimit.minusMonths(rand.nextInt(12));
+            LocalDate sluttDato = startDato.plusDays(rand.nextInt(365 / 2) + (365 / (long) 2));
+            requester.add(RettighetSyntRequest.builder()
+                    .fraDato(startDato)
+                    .tilDato(sluttDato)
+                    .utfall(UTFALL_JA)
+                    .vedtakTypeKode(VEDTAK_TYPE_KODE_O)
+                    .vedtakDato(startDato)
+                    .build());
+        }
+        return RequestEntity
+                .post(uri.expand())
+                .body(requester);
+    }
+
     public static LocalDate getFoedselsdatoFraFnr(String ident) {
         var year = getFullYear(ident);
         var month = parseInt(ident.substring(2, 4));
