@@ -192,7 +192,7 @@ public class RettighetTiltakService {
             String miljoe,
             int antallIdenter
     ) {
-        var foedteIdenter = serviceUtils.getIdenterMedFoedselsmelding(avspillergruppeId);
+        var foedteIdenter = serviceUtils.getIdenterMedFoedselsmelding(avspillergruppeId, 17);
         Collections.shuffle(foedteIdenter);
         List<String> utvalgteIdenter = new ArrayList<>(antallIdenter);
 
