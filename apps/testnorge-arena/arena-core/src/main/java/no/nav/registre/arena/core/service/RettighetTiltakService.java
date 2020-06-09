@@ -68,7 +68,7 @@ public class RettighetTiltakService {
         serviceUtils.lagreIHodejegeren(identerMedOpprettedeTiltak);
 
         // sender inn endredeltakerstatus
-        if(rand.nextDouble()<0.5){
+        if (rand.nextDouble() < 1) {
             var identerMedOpprettedeEndreDeltakerstatus = endreDeltakerstatus(
                     identerMedOpprettedeTiltak,
                     miljoe);
@@ -87,8 +87,7 @@ public class RettighetTiltakService {
         for (String ident : identerMedOpprettedeTiltakdeltakelse.keySet()) {
             var nyeRettigheterTiltak = identerMedOpprettedeTiltakdeltakelse.get(ident).get(0).getNyeRettigheterTiltak();
 
-            if (!nyeRettigheterTiltak.isEmpty()) {
-
+            if (nyeRettigheterTiltak != null && nyeRettigheterTiltak.size() != 0) {
                 var tiltaksdeltakelse = nyeRettigheterTiltak.get(0);
 
                 var syntetisertRettighet = tiltakSyntConsumer.opprettDeltakerstatus(1).get(0);
@@ -106,7 +105,7 @@ public class RettighetTiltakService {
             }
         }
 
-        if(!rettigheter.isEmpty()){
+        if (!rettigheter.isEmpty()) {
             var responses = rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
 
             for (var response : responses.values()) {
@@ -116,9 +115,9 @@ public class RettighetTiltakService {
                     }
                 }
             }
-//            serviceUtils.lagreIHodejegeren(responses);
+            serviceUtils.lagreIHodejegeren(responses);
             return responses;
-        }else{
+        } else {
             log.info("Fant ingen tiltaksdeltakelser å endre.");
             return new HashMap<>();
         }
