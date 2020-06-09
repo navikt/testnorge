@@ -4,10 +4,12 @@ import { v4 as uuid } from 'uuid'
 import NavHjelpeTekst from 'nav-frontend-hjelpetekst'
 import Logger from '../../logger'
 import { ThumbsRating } from '../rating'
+import { PopoverOrientering } from 'nav-frontend-popover'
 
 interface Props {
 	hjelpetekstFor: string
 	children: React.ReactNode
+	type?: PopoverOrientering
 }
 
 export class Hjelpetekst extends React.Component<Props> {
@@ -19,7 +21,7 @@ export class Hjelpetekst extends React.Component<Props> {
 	}
 
 	render() {
-		const { children, hjelpetekstFor } = this.props
+		const { children, hjelpetekstFor, type } = this.props
 		const onClick = (e: React.MouseEvent<HTMLDivElement>): void => {
 			e.stopPropagation()
 			Logger.log({
@@ -30,7 +32,7 @@ export class Hjelpetekst extends React.Component<Props> {
 
 		return (
 			<div onClick={onClick}>
-				<NavHjelpeTekst>
+				<NavHjelpeTekst type={type}>
 					{children}
 					<ThumbsRating
 						ratingFor={`Hjelpetekst for ${hjelpetekstFor}`}

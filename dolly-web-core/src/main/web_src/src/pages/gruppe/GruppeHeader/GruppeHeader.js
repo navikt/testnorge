@@ -33,9 +33,10 @@ export default function GruppeHeader({
 			<div className="page-header flexbox--align-center">
 				<h1>{gruppeNavn}</h1>
 				{erLaast && (
-					<Hjelpetekst hjelpetekstFor="Låst gruppe">
-						Denne gruppen er låst og kan derfor ikke endres. Kontakt team Dolly dersom du ønsker å
-						låse opp gruppen.
+					<Hjelpetekst hjelpetekstFor="Låst gruppe" type="under">
+						Denne gruppen er låst. Låste grupper er velegnet for å dele med eksterne samhandlere
+						fordi de ikke kan endres, og blir heller ikke påvirket av prodlast i samhandlermiljøet
+						(Q1). Kontakt team Dolly dersom du ønsker å låse opp gruppen.
 					</Hjelpetekst>
 				)}
 			</div>
@@ -62,8 +63,10 @@ export default function GruppeHeader({
 					{!erLaast && (
 						<LaasButton action={laasGruppe} loading={isLockingGruppe}>
 							Er du sikker på at du vil låse denne gruppen? <br />
+							En gruppe som er låst kan ikke endres, og blir heller ikke <br />
+							påvirket av prodlast i samhandlermiljøet (Q1). <br />
 							Når gruppen er låst må du kontakte team Dolly <br />
-							dersom du ønsker å gjøre endringer.
+							dersom du ønsker å låse den opp igjen.
 						</LaasButton>
 					)}
 					{!erLaast && (

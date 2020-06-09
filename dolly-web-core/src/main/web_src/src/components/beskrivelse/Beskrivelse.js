@@ -11,7 +11,9 @@ export const Beskrivelse = ({ ident, updateBeskrivelse, isUpdatingBeskrivelse, i
 
 	return (
 		<React.Fragment>
-			<SubOverskrift label="Kommentarer" iconKind="kommentar" />
+			{(!iLaastGruppe || ident.beskrivelse) && (
+				<SubOverskrift label="Kommentarer" iconKind="kommentar" />
+			)}
 
 			{iLaastGruppe ? (
 				<p>{ident.beskrivelse}</p>
