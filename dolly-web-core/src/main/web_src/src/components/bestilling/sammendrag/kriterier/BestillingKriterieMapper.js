@@ -242,7 +242,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Forelder 2', item.partnerIdent),
 						obj('Foreldre', Formatters.showLabel('barnType', item.barnType)), //Bruke samme funksjon som i bestillingsveileder
 						obj('Bor hos', Formatters.showLabel('barnBorHos', item.borHos)),
-						obj('Er adoptert', Formatters.oversettBoolean(item.erAdoptert))
+						obj('Er adoptert', Formatters.oversettBoolean(item.erAdoptert)),
+						obj('Fødselsdato', Formatters.formatDate(item.foedselsdato))
 					])
 				})
 
@@ -786,8 +787,12 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				Formatters.formatDate(inntekt.avsendersystem.innsendingstidspunkt)
 			),
 
-			obj('Virksomhet', inntekt.arbeidsgiver.orgnummer),
-
+			obj('Arbeidsgiver (orgnr)', inntekt.arbeidsgiver && inntekt.arbeidsgiver.virksomhetsnummer),
+			obj(
+				'Arbeidsgiver (fnr/dnr/bost)',
+				inntekt.arbeidsgiverPrivat && inntekt.arbeidsgiverPrivat.arbeidsgiverFnr
+			),
+			obj('Arbeidsforhold-ID', inntekt.arbeidsforhold.arbeidsforholdId),
 			obj('Beløp', inntekt.arbeidsforhold.beregnetInntekt.beloep),
 			obj(
 				'Årsak ved endring',

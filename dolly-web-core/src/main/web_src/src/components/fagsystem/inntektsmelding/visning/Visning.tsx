@@ -27,24 +27,46 @@ type EnkelInntektsmelding = {
 }
 
 const getHeader = (data: Inntekter) => {
-	return `Inntekt (${data.arbeidsgiver.virksomhetsnummer})`
+	const arbeidsgiver = data.arbeidsgiver
+		? data.arbeidsgiver.virksomhetsnummer
+		: data.arbeidsgiverPrivat
+		? data.arbeidsgiverPrivat.arbeidsgiverFnr
+		: ''
+	return `Inntekt (${arbeidsgiver})`
+}
+
+const getSortedListe = (liste: Inntektsmelding[]) => {
+	const sortedListe = []
+	for (let i = 0; i < liste.length; i++) {
+		sortedListe.push(
+			liste[i].inntekter.slice().sort(function(a: Inntekter, b: Inntekter) {
+				const datoA = new Date(a.avsendersystem.innsendingstidspunkt)
+				const datoB = new Date(b.avsendersystem.innsendingstidspunkt)
+
+				return datoA < datoB ? 1 : datoA > datoB ? -1 : 0
+			})
+		)
+	}
+	return sortedListe
 }
 
 export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisning) => {
 	//Viser data fra bestillingen
 	if (!liste || liste.length < 1) return null
 
+	const sortedListe = getSortedListe(liste)
+
 	return (
 		<div>
 			<SubOverskrift label="Inntektsmelding (fra Altinn)" iconKind="inntektsmelding" />
 			{liste.length > 1 ? (
-				<DollyFieldArray header="Inntektsmeldinger" data={liste} nested>
-					{(inntektsmelding: Inntektsmelding) => (
-						<EnkelInntektsmeldingVisning data={inntektsmelding.inntekter} ident={ident} />
+				<DollyFieldArray header="Inntektsmeldinger" data={sortedListe} nested>
+					{(inntekter: Inntekter[]) => (
+						<EnkelInntektsmeldingVisning data={inntekter} ident={ident} />
 					)}
 				</DollyFieldArray>
 			) : (
-				<EnkelInntektsmeldingVisning data={liste[0].inntekter} ident={ident} />
+				<EnkelInntektsmeldingVisning data={sortedListe[0]} ident={ident} />
 			)}
 		</div>
 	)
@@ -60,14 +82,21 @@ const EnkelInntektsmeldingVisning = ({ data, ident }: EnkelInntektsmelding) => (
 						value={Formatters.codeToNorskLabel(inntekt.aarsakTilInnsending)}
 					/>
 					<TitleValue title="Ytelse" value={Formatters.codeToNorskLabel(inntekt.ytelse)} />
-					<TitleValue title="Virksomhet" value={inntekt.arbeidsgiver.orgnummer} />
+					<TitleValue
+						title="Virksomhet (orgnr)"
+						value={inntekt.arbeidsgiver && inntekt.arbeidsgiver.orgnummer}
+					/>
 					<TitleValue
 						title="Opplysningspliktig virksomhet"
-						value={inntekt.arbeidsgiver.virksomhetsnummer}
+						value={inntekt.arbeidsgiver && inntekt.arbeidsgiver.virksomhetsnummer}
 					/>
 					<TitleValue
 						title="Innsendingstidspunkt"
 						value={Formatters.formatDate(inntekt.avsendersystem.innsendingstidspunkt)}
+					/>
+					<TitleValue
+						title="Privat arbeidsgiver"
+						value={inntekt.arbeidsgiverPrivat && inntekt.arbeidsgiverPrivat.arbeidsgiverFnr}
 					/>
 					<TitleValue title="Har nær relasjon" value={inntekt.naerRelasjon} />
 					<TitleValue

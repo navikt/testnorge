@@ -12,6 +12,8 @@ export const Barn = ({ data, type }) => {
 	const [barnInfo, setBarnInfo] = useState(null)
 	const [isLoading, setIsLoading] = useState(false)
 
+	const erDoedfoedt = data.identtype === 'FDAT'
+
 	useEffect(() => {
 		const fetchData = async () => {
 			setIsLoading(true)
@@ -30,7 +32,10 @@ export const Barn = ({ data, type }) => {
 				<TitleValue title="Mellomnavn" value={data.mellomnavn} />
 				<TitleValue title="Etternavn" value={data.etternavn} />
 				<TitleValue title="Kjønn" value={Formatters.kjonn(data.kjonn, data.alder)} />
-				<TitleValue title="Alder" value={Formatters.formatAlder(data.alder, data.doedsdato)} />
+				<TitleValue
+					title="Alder"
+					value={Formatters.formatAlderBarn(data.alder, data.doedsdato, erDoedfoedt)}
+				/>
 				<TitleValue
 					title="Diskresjonskode"
 					kodeverk={PersoninformasjonKodeverk.Diskresjonskoder}
@@ -40,10 +45,12 @@ export const Barn = ({ data, type }) => {
 				{barnInfo && !isLoading && barnInfo.length > 0 && (
 					<TitleValue title="Foreldre" value={finnForeldre(barnInfo[0].relasjoner).join(', ')} />
 				)}
-				<TitleValue
-					title="Er adoptert"
-					value={data.adoptert ? data.adoptert : Formatters.oversettBoolean(type === 'BARN')}
-				/>
+				{!erDoedfoedt && (
+					<TitleValue
+						title="Er adoptert"
+						value={data.adoptert ? data.adoptert : Formatters.oversettBoolean(type === 'BARN')}
+					/>
+				)}
 			</div>
 			{data.boadresse.length > 0 && (
 				<Historikk component={Adressevisning} propName="boadresse" data={data.boadresse} />
