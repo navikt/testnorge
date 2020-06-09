@@ -761,108 +761,80 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 	const mapInntektsmeldingKriterier = meldinger => ({
 		header: 'Inntektsmelding (fra Altinn)',
-		itemRows: meldinger.map((inntekt, i) => {
-			return _isEmpty(inntekt)
-				? [obj('Inntektsmelding', 'Tom bestilling')]
-				: [
-						{
-							numberHeader: `Inntekt ${i + 1}`
-						},
-						obj('Årsak til innsending', Formatters.codeToNorskLabel(inntekt.aarsakTilInnsending)),
-						obj('Ytelse', Formatters.codeToNorskLabel(inntekt.ytelse)),
-						obj('Nær relasjon', Formatters.oversettBoolean(inntekt.naerRelasjon)),
-						obj(
-							'Innsendingstidspunkt',
-							Formatters.formatDate(inntekt.avsendersystem.innsendingstidspunkt)
-						),
+		itemRows: meldinger.map((inntekt, i) => [
+			{
+				numberHeader: `Inntekt ${i + 1}`
+			},
+			obj('Årsak til innsending', Formatters.codeToNorskLabel(inntekt.aarsakTilInnsending)),
+			obj('Ytelse', Formatters.codeToNorskLabel(inntekt.ytelse)),
+			obj('Nær relasjon', Formatters.oversettBoolean(inntekt.naerRelasjon)),
+			obj(
+				'Innsendingstidspunkt',
+				Formatters.formatDate(inntekt.avsendersystem.innsendingstidspunkt)
+			),
 
-						obj(
-							'Arbeidsgiver (orgnr)',
-							inntekt.arbeidsgiver && inntekt.arbeidsgiver.virksomhetsnummer
-						),
-						obj(
-							'Arbeidsgiver (fnr/dnr/bost)',
-							inntekt.arbeidsgiverPrivat && inntekt.arbeidsgiverPrivat.arbeidsgiverFnr
-						),
-						obj('Arbeidsforhold-ID', inntekt.arbeidsforhold.arbeidsforholdId),
-						obj('Beløp', inntekt.arbeidsforhold.beregnetInntekt.beloep),
-						obj(
-							'Årsak ved endring',
-							Formatters.codeToNorskLabel(inntekt.arbeidsforhold.aarsakVedEndring)
-						),
-						obj(
-							'Første fraværsdag',
-							Formatters.formatDate(inntekt.arbeidsforhold.foersteFravaersdag)
-						),
-						obj(
-							'Avtalte ferier',
-							inntekt.arbeidsforhold.avtaltFerieListe &&
-								inntekt.arbeidsforhold.avtaltFerieListe.length
-						),
-						//Refusjon
-						obj('Refusjonsbeløp per måned', inntekt.refusjon.refusjonsbeloepPrMnd),
-						obj(
-							'Opphørsdato refusjon',
-							Formatters.formatDate(inntekt.refusjon.refusjonsopphoersdato)
-						),
-						obj(
-							'Endring i refusjon',
-							_has(inntekt, 'refusjon.endringIRefusjonListe') &&
-								inntekt.refusjon.endringIRefusjonListe
-						),
-						//Omsorg
-						obj(
-							'Har utbetalt pliktige dager',
-							_get(inntekt, 'omsorgspenger.harUtbetaltPliktigeDager')
-						),
-						obj(
-							'Fraværsperioder',
-							_has(inntekt, 'omsorgspenger.fravaersPerioder') &&
-								inntekt.omsorgspenger.fravaersPerioder.length
-						),
-						obj(
-							'Delvis fravær',
-							_has(inntekt, 'omsorgspenger.delvisFravaersListe') &&
-								inntekt.omsorgspenger.delvisFravaersListe.length
-						),
-						//Sykepenger
-						obj('Brutto utbetalt', _get(inntekt, 'sykepengerIArbeidsgiverperioden.bruttoUtbetalt')),
-						obj(
-							'Begrunnelse for reduksjon eller ikke utbetalt',
-							Formatters.codeToNorskLabel(
-								_get(
-									inntekt,
-									'sykepengerIArbeidsgiverperioden.begrunnelseForReduksjonEllerIkkeUtbetalt'
-								)
-							)
-						),
-						obj(
-							'Arbeidsgiverperioder',
-							_has(inntekt, 'sykepengerIArbeidsgiverperioden.arbeidsgiverperiodeListe') &&
-								inntekt.sykepengerIArbeidsgiverperioden.arbeidsgiverperiodeListe.length
-						),
-						//Foreldrepenger
-						obj(
-							'Startdato foreldrepenger',
-							Formatters.formatDate(inntekt.startdatoForeldrepengeperiode)
-						),
-						//Pleiepenger
-						obj(
-							'Pleiepengerperioder',
-							inntekt.pleiepengerPerioder && inntekt.pleiepengerPerioder.length
-						),
-						//Naturalytelse
-						obj(
-							'Gjenopptagelse Naturalytelse',
-							inntekt.gjenopptakelseNaturalytelseListe &&
-								inntekt.gjenopptakelseNaturalytelseListe.length
-						),
-						obj(
-							'Opphør av Naturalytelse',
-							inntekt.opphoerAvNaturalytelseListe && inntekt.opphoerAvNaturalytelseListe.length
-						)
-				  ]
-		})
+			obj('Arbeidsgiver (orgnr)', inntekt.arbeidsgiver && inntekt.arbeidsgiver.virksomhetsnummer),
+			obj(
+				'Arbeidsgiver (fnr/dnr/bost)',
+				inntekt.arbeidsgiverPrivat && inntekt.arbeidsgiverPrivat.arbeidsgiverFnr
+			),
+			obj('Arbeidsforhold-ID', inntekt.arbeidsforhold.arbeidsforholdId),
+			obj('Beløp', inntekt.arbeidsforhold.beregnetInntekt.beloep),
+			obj(
+				'Årsak ved endring',
+				Formatters.codeToNorskLabel(inntekt.arbeidsforhold.aarsakVedEndring)
+			),
+			obj('Første fraværsdag', Formatters.formatDate(inntekt.arbeidsforhold.foersteFravaersdag)),
+			obj(
+				'Avtalte ferier',
+				inntekt.arbeidsforhold.avtaltFerieListe && inntekt.arbeidsforhold.avtaltFerieListe.length
+			),
+			//Refusjon
+			obj('Refusjonsbeløp per måned', inntekt.refusjon.refusjonsbeloepPrMnd),
+			obj('Opphørsdato refusjon', Formatters.formatDate(inntekt.refusjon.refusjonsopphoersdato)),
+			obj(
+				'Endring i refusjon',
+				_has(inntekt, 'refusjon.endringIRefusjonListe') && inntekt.refusjon.endringIRefusjonListe
+			),
+			//Omsorg
+			obj('Har utbetalt pliktige dager', _get(inntekt, 'omsorgspenger.harUtbetaltPliktigeDager')),
+			obj(
+				'Fraværsperioder',
+				_has(inntekt, 'omsorgspenger.fravaersPerioder') &&
+					inntekt.omsorgspenger.fravaersPerioder.length
+			),
+			obj(
+				'Delvis fravær',
+				_has(inntekt, 'omsorgspenger.delvisFravaersListe') &&
+					inntekt.omsorgspenger.delvisFravaersListe.length
+			),
+			//Sykepenger
+			obj('Brutto utbetalt', _get(inntekt, 'sykepengerIArbeidsgiverperioden.bruttoUtbetalt')),
+			obj(
+				'Begrunnelse for reduksjon eller ikke utbetalt',
+				Formatters.codeToNorskLabel(
+					_get(inntekt, 'sykepengerIArbeidsgiverperioden.begrunnelseForReduksjonEllerIkkeUtbetalt')
+				)
+			),
+			obj(
+				'Arbeidsgiverperioder',
+				_has(inntekt, 'sykepengerIArbeidsgiverperioden.arbeidsgiverperiodeListe') &&
+					inntekt.sykepengerIArbeidsgiverperioden.arbeidsgiverperiodeListe.length
+			),
+			//Foreldrepenger
+			obj('Startdato foreldrepenger', Formatters.formatDate(inntekt.startdatoForeldrepengeperiode)),
+			//Pleiepenger
+			obj('Pleiepengerperioder', inntekt.pleiepengerPerioder && inntekt.pleiepengerPerioder.length),
+			//Naturalytelse
+			obj(
+				'Gjenopptagelse Naturalytelse',
+				inntekt.gjenopptakelseNaturalytelseListe && inntekt.gjenopptakelseNaturalytelseListe.length
+			),
+			obj(
+				'Opphør av Naturalytelse',
+				inntekt.opphoerAvNaturalytelseListe && inntekt.opphoerAvNaturalytelseListe.length
+			)
+		])
 	})
 
 	if (inntektsmeldingKriterier)
