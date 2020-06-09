@@ -15,7 +15,7 @@ export const MatrikkelAdresse = ({ formikBag }) => {
 			<FormikSelect
 				name="tpsf.boadresse.postnr"
 				label="Postnummer"
-				kodeverk={AdresseKodeverk.Postnummer}
+				kodeverk={AdresseKodeverk.PostnummerUtenPostboks}
 				size="large"
 				isClearable={false}
 			/>
