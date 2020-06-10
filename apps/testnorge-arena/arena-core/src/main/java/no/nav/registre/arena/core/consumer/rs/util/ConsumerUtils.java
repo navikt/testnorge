@@ -26,7 +26,7 @@ public class ConsumerUtils {
     public static final String VEDTAK_TYPE_KODE_O = "O";
     public static final String UTFALL_JA = "JA";
 
-    public RequestEntity createPostRequest(
+    public RequestEntity<List<RettighetSyntRequest>> createPostRequest(
             UriTemplate uri,
             int antallMeldinger
     ) {
@@ -40,7 +40,7 @@ public class ConsumerUtils {
                 .body(requester);
     }
 
-    public RequestEntity createPostRequest(
+    public RequestEntity<List<RettighetSyntRequest>> createPostRequest(
             UriTemplate uri,
             int antallMeldinger,
             LocalDate startDatoLimit
