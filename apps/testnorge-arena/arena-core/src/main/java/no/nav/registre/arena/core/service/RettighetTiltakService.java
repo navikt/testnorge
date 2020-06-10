@@ -8,18 +8,14 @@ import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.arena.core.consumer.rs.request.*;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakEndreDeltakerstatus;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.TiltakSyntConsumer;
@@ -41,8 +37,14 @@ public class RettighetTiltakService {
     private final Random rand;
 
     private static final Map<String, List<AktivitetskodeMedSannsynlighet>> vedtakMedAktitivetskode;
+    private static final Map<String, List<String>> deltakerstatuskoderMedAarsakkoder ;
 
     static {
+        deltakerstatuskoderMedAarsakkoder = new HashMap<>();
+        deltakerstatuskoderMedAarsakkoder.put("NEITAKK", Arrays.asList("ANN", "BEGA", "FRISM", "FTOAT", "HENLU", "SYK", "UTV"));
+        deltakerstatuskoderMedAarsakkoder.put("IKKEM", Arrays.asList("ANN", "BEGA", "SYK"));
+        deltakerstatuskoderMedAarsakkoder.put("DELAVB", Arrays.asList("ANN", "BEGA", "FTOAT", "SYK"));
+
         vedtakMedAktitivetskode = new HashMap<>();
         URL resource = Resources.getResource("vedtak_til_aktivitetkode.json");
         ObjectMapper objectMapper = new ObjectMapper();
@@ -66,60 +68,7 @@ public class RettighetTiltakService {
 
         serviceUtils.lagreIHodejegeren(identerMedOpprettedeTiltak);
 
-        // sender inn endredeltakerstatus
-        if (rand.nextDouble() < 1) {
-            var identerMedOpprettedeEndreDeltakerstatus = endreDeltakerstatus(
-                    identerMedOpprettedeTiltak,
-                    miljoe);
-            identerMedOpprettedeTiltak.putAll(identerMedOpprettedeEndreDeltakerstatus);
-        }
-
         return identerMedOpprettedeTiltak;
-    }
-
-    public Map<String, List<NyttVedtakResponse>> endreDeltakerstatus(
-            Map<String, List<NyttVedtakResponse>> identerMedOpprettedeTiltakdeltakelse,
-            String miljoe
-    ) {
-
-        List<RettighetRequest> rettigheter = new ArrayList<>(identerMedOpprettedeTiltakdeltakelse.size());
-        for (String ident : identerMedOpprettedeTiltakdeltakelse.keySet()) {
-            var nyeRettigheterTiltak = identerMedOpprettedeTiltakdeltakelse.get(ident).get(0).getNyeRettigheterTiltak();
-
-            if (nyeRettigheterTiltak != null && nyeRettigheterTiltak.size() != 0) {
-                var tiltaksdeltakelse = nyeRettigheterTiltak.get(0);
-
-                var syntetisertRettighet = tiltakSyntConsumer.opprettDeltakerstatus(1).get(0);
-
-                var rettighetRequest = new RettighetEndreDeltakerstatusRequest(Collections.singletonList(syntetisertRettighet));
-
-                rettighetRequest.setPersonident(ident);
-                rettighetRequest.setMiljoe(miljoe);
-
-                rettighetRequest.getNyeEndreDeltakerstatus().get(0).setTiltakskode("");
-                rettighetRequest.getNyeEndreDeltakerstatus().get(0).setTiltakskarakteristikk(tiltaksdeltakelse.getTiltakskarakteristikk());
-                rettighetRequest.getNyeEndreDeltakerstatus().get(0).setDato(tiltaksdeltakelse.getFraDato());
-
-                rettigheter.add(rettighetRequest);
-            }
-        }
-
-        if (!rettigheter.isEmpty()) {
-            var responses = rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
-
-            for (var response : responses.values()) {
-                for (var nyttVedtakResponse : response) {
-                    if (!nyttVedtakResponse.getFeiledeRettigheter().isEmpty()) {
-                        log.error("Kunne ikke endre deltakerstatus for alle identer");
-                    }
-                }
-            }
-            serviceUtils.lagreIHodejegeren(responses);
-            return responses;
-        } else {
-            log.info("Fant ingen tiltaksdeltakelser å endre.");
-            return new HashMap<>();
-        }
     }
 
     public Map<String, List<NyttVedtakResponse>> opprettTiltakspenger(
@@ -212,7 +161,86 @@ public class RettighetTiltakService {
                 }
             }
         }
+
+        var identerMedOpprettedeEndreDeltakerstatus = endreDeltakerstatus(
+                responses,
+                rettigheter,
+                miljoe);
+
+        for (String ident : responses.keySet()) {
+            responses.get(ident).addAll(identerMedOpprettedeEndreDeltakerstatus.get(ident));
+        }
+
         return responses;
+    }
+
+    public Map<String, List<NyttVedtakResponse>> endreDeltakerstatus(
+            Map<String, List<NyttVedtakResponse>> identerMedOpprettedeTiltakdeltakelse,
+            List<RettighetRequest> rettigheterTiltaksdeltakelse,
+            String miljoe
+    ) {
+
+        List<RettighetRequest> rettigheter = new ArrayList<>(identerMedOpprettedeTiltakdeltakelse.size());
+        for (String ident : identerMedOpprettedeTiltakdeltakelse.keySet()) {
+            var feiledeRettigheter = identerMedOpprettedeTiltakdeltakelse.get(ident).get(0).getFeiledeRettigheter();
+
+            if (feiledeRettigheter != null && feiledeRettigheter.size() == 0) {
+                NyttVedtakTiltak tiltaksdeltakelse = rettigheterTiltaksdeltakelse.stream().
+                        filter(request -> request.getPersonident().equals(ident)).
+                        findFirst().get().getVedtakTiltak().get(0);
+
+                var syntetisertRettighet = tiltakSyntConsumer.opprettDeltakerstatus(1).get(0);
+
+                //TODO: sjekk at ny deltakerstatuskode ikke matcher nåværende aktivitetskode
+                if(!syntetisertRettighet.getDeltakerstatusKode().equals("FULLF")){
+                    var rettighetRequest = opprettRettighetEndreDeltakerstatusRequest(ident, miljoe,
+                            tiltaksdeltakelse, syntetisertRettighet.getDeltakerstatusKode());
+
+                    rettigheter.add(rettighetRequest);
+                }
+            }
+        }
+
+        if (!rettigheter.isEmpty()) {
+            var responses = rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
+
+            for (var response : responses.values()) {
+                for (var nyttVedtakResponse : response) {
+                    if (!nyttVedtakResponse.getFeiledeRettigheter().isEmpty()) {
+                        log.error("Kunne ikke endre deltakerstatus for alle identer");
+                    }
+                }
+            }
+            serviceUtils.lagreIHodejegeren(responses);
+            return responses;
+        } else {
+            log.info("Endret ingen tiltaksdeltakelser.");
+            return new HashMap<>();
+        }
+    }
+
+    private RettighetEndreDeltakerstatusRequest opprettRettighetEndreDeltakerstatusRequest(
+            String ident,
+            String miljoe,
+            NyttVedtakTiltak tiltaksdeltakelse,
+            String deltakerstatuskode) {
+
+        NyttVedtakEndreDeltakerstatus nyttVedtakEndreDeltakerstatus = new NyttVedtakEndreDeltakerstatus();
+        nyttVedtakEndreDeltakerstatus.setTiltakskarakteristikk(tiltaksdeltakelse.getTiltakskarakteristikk());
+        nyttVedtakEndreDeltakerstatus.setDato(tiltaksdeltakelse.getFraDato());
+        nyttVedtakEndreDeltakerstatus.setDeltakerstatusKode(deltakerstatuskode);
+
+        if (deltakerstatuskoderMedAarsakkoder.containsKey(deltakerstatuskode)) {
+            List<String> aarsakkoder = deltakerstatuskoderMedAarsakkoder.get(deltakerstatuskode);
+            String aarsakkode = aarsakkoder.get(rand.nextInt(aarsakkoder.size()));
+            nyttVedtakEndreDeltakerstatus.setAarsakKode(aarsakkode);
+        }
+
+        var rettighetRequest = new RettighetEndreDeltakerstatusRequest(Collections.singletonList(nyttVedtakEndreDeltakerstatus));
+
+        rettighetRequest.setPersonident(ident);
+        rettighetRequest.setMiljoe(miljoe);
+        return rettighetRequest;
     }
 
     Map<String, List<NyttVedtakResponse>> opprettTiltaksaktiviteter(List<RettighetRequest> rettigheter) {
@@ -239,8 +267,7 @@ public class RettighetTiltakService {
     private List<String> finnIdenterMedBarn(
             Long avspillergruppeId,
             String miljoe,
-            int antallIdenter
-    ) {
+            int antallIdenter) {
         var foedteIdenter = serviceUtils.getIdenterMedFoedselsmelding(avspillergruppeId);
         Collections.shuffle(foedteIdenter);
         List<String> utvalgteIdenter = new ArrayList<>(antallIdenter);
