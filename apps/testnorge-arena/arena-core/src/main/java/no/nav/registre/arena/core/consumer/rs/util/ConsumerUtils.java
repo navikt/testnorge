@@ -25,6 +25,7 @@ public class ConsumerUtils {
 
     public static final String VEDTAK_TYPE_KODE_O = "O";
     public static final String UTFALL_JA = "JA";
+    public static final String EIER = "ORKESTRATOREN";
 
     public RequestEntity<List<RettighetSyntRequest>> createPostRequest(
             UriTemplate uri,
