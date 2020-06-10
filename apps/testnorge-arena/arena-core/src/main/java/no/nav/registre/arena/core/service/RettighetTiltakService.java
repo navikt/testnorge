@@ -167,8 +167,10 @@ public class RettighetTiltakService {
                 rettigheter,
                 miljoe);
 
-        for (String ident : responses.keySet()) {
-            responses.get(ident).addAll(identerMedOpprettedeEndreDeltakerstatus.get(ident));
+        if(!identerMedOpprettedeEndreDeltakerstatus.isEmpty()){
+            for (String ident : responses.keySet()) {
+                responses.get(ident).addAll(identerMedOpprettedeEndreDeltakerstatus.get(ident));
+            }
         }
 
         return responses;
