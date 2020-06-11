@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.tpsf.adresse.AdresseNrInfo;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsAdresse;
+import no.nav.dolly.domain.resultset.tpsf.adresse.RsMidlertidigAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 
 @Getter
@@ -52,147 +53,153 @@ public class RsTpsfBasisBestilling {
 
     @ApiModelProperty(
             position = 15,
+            value = "Merknad: Foreløbig benyttes kun første postadresse i tabell"
+    )
+    private RsMidlertidigAdresse midlertidigAdresse;
+
+    @ApiModelProperty(
+            position = 16,
             value = "Når satt vil personen ikke få boadresse. Må kompletteres med kommunenummer i boadresse.\n"
                     + "Feltet benyttes kun når UFB kommer i tillegg til annen diskresjonskode (spesreg)"
     )
     private Boolean utenFastBopel;
 
     @ApiModelProperty(
-            position = 16,
+            position = 17,
             value = "Diskresjonskoder i hht. kodeverk 'Diskresjonskoder'"
     )
     private String spesreg;
 
     @ApiModelProperty(
-            position = 17,
+            position = 18,
             dataType = "LocalDateTime",
             value = "Diskresjonsdato, hvis blankt settes verdi lik fødselsdato"
     )
     private LocalDateTime spesregDato;
 
     @ApiModelProperty(
-            position = 18,
+            position = 19,
             value = "Når satt får personstatus verdien FOSV (forsvunnet/savnet)"
     )
     private Boolean erForsvunnet;
 
     @ApiModelProperty(
-            position = 19,
+            position = 20,
             dataType = "LocalDateTime",
             value = "Forsvunnet dato, hvis blankt settes verdi lik fødselsdato"
     )
     private LocalDateTime forsvunnetDato;
 
     @ApiModelProperty(
-            position = 20,
+            position = 21,
             dataType = "LocalDateTime",
             value = "Egenansatt dato fra"
     )
     private LocalDateTime egenAnsattDatoFom;
 
     @ApiModelProperty(
-            position = 21,
+            position = 22,
             dataType = "LocalDateTime",
             value = "Egenansatt dato til. Hvis tomt og egeneansatt-dato-fra er satt indikerer dette et nåværende NAV-ansatt forhold"
     )
     private LocalDateTime egenAnsattDatoTom;
 
     @ApiModelProperty(
-            position = 22,
+            position = 23,
             value = "Statsborgerskap. Hvis blankt velges Norge for FNR person og et tilfeldig annet land for DNR/BOST-person"
     )
     private String statsborgerskap;
 
     @ApiModelProperty(
-            position = 23,
+            position = 24,
             dataType = "LocalDateTime",
             value = "Statsborgerskap registeringsdato. Hvis blankt settes dato lik fødselsdato"
     )
     private LocalDateTime statsborgerskapRegdato;
 
     @ApiModelProperty(
-            position = 24,
+            position = 25,
             value = "Målform og språk i hht kodevek 'Språk'. Hvis blankt settes Norsk bokmål til FNR-person og tilfeldig språk for DNR-person"
     )
     private String sprakKode;
 
     @ApiModelProperty(
-            position = 25,
+            position = 26,
             dataType = "LocalDateTime",
             value = "Dato språk. Hvis tomt settes dato lik fødselsdato"
     )
     private LocalDateTime datoSprak;
 
     @ApiModelProperty(
-            position = 28,
+            position = 27,
             value = "Innvandret fra land i hht kodeverk 'Landkoder'. Hvis tomt settes et tilfeldig land"
     )
     private String innvandretFraLand;
 
     @ApiModelProperty(
-            position = 29,
+            position = 28,
             dataType = "LocalDateTime",
             value = "Innvandret fra land flyttedato. Hvis blankt settes dato lik fødselsdato"
     )
     private LocalDateTime innvandretFraLandFlyttedato;
 
     @ApiModelProperty(
-            position = 30,
+            position = 29,
             value = "Utvandret til land i hht kodeverk 'Landkoder'"
     )
     private String utvandretTilLand;
 
     @ApiModelProperty(
-            position = 31,
+            position = 30,
             dataType = "LocalDateTime",
             value = "Utvandret til land flyttedato. Hvis blankt og utvandret til land er satt benyttes dagens dato"
     )
     private LocalDateTime utvandretTilLandFlyttedato;
 
     @ApiModelProperty(
-            position = 32,
+            position = 31,
             dataType = "LocalDateTime",
             value = "Sette dødsdato på person"
     )
     private LocalDateTime doedsdato;
 
     @ApiModelProperty(
-            position = 33,
+            position = 32,
             dataType = "Boolean",
             value = "Når satt genereres et gyldig bankkontonummer som legges til på person-egenskaper"
     )
     private Boolean harBankkontonr;
 
     @ApiModelProperty(
-            position = 34,
+            position = 33,
             dataType = "LocalDateTime",
             value = "Dato for opprettet bankkontonummer"
     )
     private LocalDateTime bankkontonrRegdato;
 
     @ApiModelProperty(
-            position = 35,
+            position = 34,
             dataType = "String",
             value = "Landskode 1 fra kodeverk 'Retningsnumre'"
     )
     private String telefonLandskode_1;
 
     @ApiModelProperty(
-            position = 36,
+            position = 35,
             dataType = "String",
             value = "Telefonnummer 1, maxs 20 sifre"
     )
     private String telefonnummer_1;
 
     @ApiModelProperty(
-            position = 37,
+            position = 36,
             dataType = "String",
             value = "Landskode 2 fra kodeverk 'Retningsnumre'"
     )
     private String telefonLandskode_2;
 
     @ApiModelProperty(
-            position = 38,
+            position = 37,
             dataType = "String",
             value = "Telefonnummer 2, maxs 20 sifre"
     )
