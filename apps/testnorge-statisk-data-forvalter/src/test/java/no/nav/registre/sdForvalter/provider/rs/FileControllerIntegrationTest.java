@@ -66,7 +66,7 @@ public class FileControllerIntegrationTest {
 
     @Test
     public void should_save_one_ident_from_csv_to_tps_ident_database() throws Exception {
-        String csvInnhold = "FNR;Fornavn;Etternavn;Adresse;Postnummer;Poststed;Gruppe;Opprinnelse\n" +
+        String csvInnhold = "FNR*;Fornavn;Etternavn;Adresse;Postnummer;Poststed;Gruppe;Opprinnelse\n" +
                 "12345678912;Dolly;Dollesen;Dollygata 2;9999;Dollyville;Gruppen;Test";
 
         TpsIdent expectedTpsPerson = TpsIdent.builder()
@@ -89,7 +89,7 @@ public class FileControllerIntegrationTest {
 
     @Test
     public void should_save_two_idents_from_csv_to_tps_ident_database() throws Exception {
-        String csvInnhold = "FNR;Fornavn;Etternavn;Adresse;Postnummer;Poststed;Gruppe;Opprinnelse\n" +
+        String csvInnhold = "FNR*;Fornavn;Etternavn;Adresse;Postnummer;Poststed;Gruppe;Opprinnelse\n" +
                 "12345678910;Dolly;Dollesen;Dollygata 2;9999;Dollyville;Gruppen;Test\n" +
                 "12345678911;Donald;Dollesen;Dollygata 3;2222;Dollyby;Gruppen;Test";
 
