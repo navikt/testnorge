@@ -16,9 +16,12 @@ public class RsMidlertidigAdresse {
 
     public enum Adressetype {PBOX, GATE, STED, UTAD}
 
+    public enum TilleggType {CO_NAVN, BOLIG_NR}
+
     @ApiModelProperty(
             position = 2,
-            value = "Midlertidig adresse gyldig til-og-med. Default er et år frem i tid"
+            value = "Midlertidig adresse gyldig til-og-med. Default er et år frem i tid. "
+                    + "Dato kan ikke velges før dagens dato, ei heller lengre frem i tid enn et år fra dagens dato"
     )
     private LocalDateTime gyldigTom;
 
@@ -57,7 +60,7 @@ public class RsMidlertidigAdresse {
                 position = 1,
                 value = "Benyttes sammen med GATE eller STED-adresse"
         )
-        private RsAdresse.TilleggAdressetype tilleggsadresse;
+        private MidlertidigTilleggAdresse tilleggsadresse;
 
         @ApiModelProperty(
                 position = 3,
@@ -103,5 +106,24 @@ public class RsMidlertidigAdresse {
                 value = "Relevant for PBOX-adresse"
         )
         private String postboksAnlegg;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MidlertidigTilleggAdresse {
+
+        @ApiModelProperty(
+                position = 1,
+                value = "Tilleggstype, ved CO_NAVN benyttes ikke \"nummer\" feltet"
+        )
+        private TilleggType tilleggType;
+
+        @ApiModelProperty(
+                position = 2,
+                value = "Nummer for bolig"
+        )
+        private Integer nummer;
     }
 }
