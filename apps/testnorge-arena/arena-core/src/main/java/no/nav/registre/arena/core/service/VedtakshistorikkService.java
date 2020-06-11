@@ -61,11 +61,14 @@ public class VedtakshistorikkService {
         for (var vedtakshistorikken : vedtakshistorikk) {
             var tidligsteDato = LocalDate.now();
             var aap = finnUtfyltAap(vedtakshistorikken);
+            var aapType = finnUtfyltAapType(vedtakshistorikken);
             var tiltak = finnUtfyltTiltak(vedtakshistorikken);
             var tillegg = finnUtfyltTillegg(vedtakshistorikken);
 
             if (aap != null && !aap.isEmpty()) {
                 tidligsteDato = finnTidligsteDatoAap(aap);
+            } else if (aapType != null && !aapType.isEmpty()) {
+                tidligsteDato = finnTidligsteDatoAapType(aapType);
             } else if (tiltak != null && !tiltak.isEmpty()) {
                 tidligsteDato = finnTidligsteDatoTiltak(tiltak);
             } else if (tillegg != null && !tillegg.isEmpty()) {
@@ -157,6 +160,14 @@ public class VedtakshistorikkService {
                     }
                 }
             }
+        }
+        return tidligsteDato;
+    }
+
+    private LocalDate finnTidligsteDatoAapType(List<NyttVedtakAap> vedtak) {
+        var tidligsteDato = LocalDate.now();
+        for (var vedtaket : vedtak) {
+            tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, vedtaket.getFraDato());
         }
         return tidligsteDato;
     }
@@ -338,14 +349,20 @@ public class VedtakshistorikkService {
 
     private List<NyttVedtakAap> finnUtfyltAap(Vedtakshistorikk vedtakshistorikk) {
         var aap = vedtakshistorikk.getAap();
+
+        if (aap != null && !aap.isEmpty()) {
+            return aap;
+        }
+
+        return null;
+    }
+
+    private List<NyttVedtakAap> finnUtfyltAapType(Vedtakshistorikk vedtakshistorikk) {
         var aap115 = vedtakshistorikk.getAap115();
         var ungUfoer = vedtakshistorikk.getUngUfoer();
         var tvungenForvaltning = vedtakshistorikk.getTvungenForvaltning();
         var fritakMeldekort = vedtakshistorikk.getFritakMeldekort();
 
-        if (aap != null && !aap.isEmpty()) {
-            return aap;
-        }
         if (aap115 != null && !aap115.isEmpty()) {
             return aap115;
         }
