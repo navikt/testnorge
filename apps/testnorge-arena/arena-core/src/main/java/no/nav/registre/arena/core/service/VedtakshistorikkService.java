@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,14 +62,17 @@ public class VedtakshistorikkService {
         for (var vedtakshistorikken : vedtakshistorikk) {
             var tidligsteDato = LocalDate.now();
             var aap = finnUtfyltAap(vedtakshistorikken);
+            var aapType = finnUtfyltAapType(vedtakshistorikken);
             var tiltak = finnUtfyltTiltak(vedtakshistorikken);
             var tillegg = finnUtfyltTillegg(vedtakshistorikken);
 
-            if (aap != null && !aap.isEmpty()) {
+            if (!aap.isEmpty()) {
                 tidligsteDato = finnTidligsteDatoAap(aap);
-            } else if (tiltak != null && !tiltak.isEmpty()) {
+            } else if (!aapType.isEmpty()) {
+                tidligsteDato = finnTidligsteDatoAapType(aapType);
+            } else if (!tiltak.isEmpty()) {
                 tidligsteDato = finnTidligsteDatoTiltak(tiltak);
-            } else if (tillegg != null && !tillegg.isEmpty()) {
+            } else if (!tillegg.isEmpty()) {
                 tidligsteDato = finnTidligsteDatoTillegg(tillegg);
             } else {
                 continue;
@@ -157,6 +161,14 @@ public class VedtakshistorikkService {
                     }
                 }
             }
+        }
+        return tidligsteDato;
+    }
+
+    private LocalDate finnTidligsteDatoAapType(List<NyttVedtakAap> vedtak) {
+        var tidligsteDato = LocalDate.now();
+        for (var vedtaket : vedtak) {
+            tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, vedtaket.getFraDato());
         }
         return tidligsteDato;
     }
@@ -338,14 +350,20 @@ public class VedtakshistorikkService {
 
     private List<NyttVedtakAap> finnUtfyltAap(Vedtakshistorikk vedtakshistorikk) {
         var aap = vedtakshistorikk.getAap();
+
+        if (aap != null && !aap.isEmpty()) {
+            return aap;
+        }
+
+        return Collections.emptyList();
+    }
+
+    private List<NyttVedtakAap> finnUtfyltAapType(Vedtakshistorikk vedtakshistorikk) {
         var aap115 = vedtakshistorikk.getAap115();
         var ungUfoer = vedtakshistorikk.getUngUfoer();
         var tvungenForvaltning = vedtakshistorikk.getTvungenForvaltning();
         var fritakMeldekort = vedtakshistorikk.getFritakMeldekort();
 
-        if (aap != null && !aap.isEmpty()) {
-            return aap;
-        }
         if (aap115 != null && !aap115.isEmpty()) {
             return aap115;
         }
@@ -359,7 +377,7 @@ public class VedtakshistorikkService {
             return fritakMeldekort;
         }
 
-        return null;
+        return Collections.emptyList();
     }
 
     private List<NyttVedtakTiltak> finnUtfyltTiltak(Vedtakshistorikk vedtakshistorikk) {
@@ -374,7 +392,7 @@ public class VedtakshistorikkService {
             return barnetillegg;
         }
 
-        return null;
+        return Collections.emptyList();
     }
 
     private List<NyttVedtakTillegg> finnUtfyltTillegg(Vedtakshistorikk vedtakshistorikk) {
@@ -449,6 +467,6 @@ public class VedtakshistorikkService {
             return tilsynFamiliemedlemmerArbeidssoekere;
         }
 
-        return null;
+        return Collections.emptyList();
     }
 }
