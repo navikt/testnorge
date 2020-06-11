@@ -90,7 +90,7 @@ public class AktoerRegisteretConsumerTest {
                 .withHeader("Nav-Call-Id", equalTo("Synt"))
                 .withHeader("Authorization",
                         equalTo("Bearer abcToken"))
-                .withHeader("Nav-Personidenter", equalTo("List " + fnrs.toString()))
+                .withHeader("Nav-Personidenter", equalTo(fnrs.get(0) + ", " + fnrs.get(1)))
                 .willReturn(created())
         );
     }
@@ -101,7 +101,7 @@ public class AktoerRegisteretConsumerTest {
                 .withHeader("Nav-Call-Id", equalTo("Synt"))
                 .withHeader("Authorization",
                         equalTo("Bearer abcToken"))
-                .withHeader("Nav-Personidenter", equalTo("List " + fnrs.toString()))
+                .withHeader("Nav-Personidenter", equalTo(fnrs.get(0) + ", " + fnrs.get(1)))
                 .willReturn(okJson("{\n"
                         + "    \"01010101010\": {\n"
                         + "        \"identer\": [\n"
@@ -127,7 +127,7 @@ public class AktoerRegisteretConsumerTest {
                 .withHeader("Nav-Call-Id", equalTo("Synt"))
                 .withHeader("Authorization",
                         equalTo("Bearer abcToken"))
-                .withHeader("Nav-Personidenter", equalTo("List " + fnrs.toString()))
+                .withHeader("Nav-Personidenter", equalTo(fnrs.get(0) + ", " + fnrs.get(1)))
                 .willReturn(okJson("{\n"
                         + "    \"01010101010\": {\n"
                         + "        \"identer\": [\n"
