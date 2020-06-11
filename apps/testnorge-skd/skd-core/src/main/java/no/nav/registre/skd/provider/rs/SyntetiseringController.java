@@ -42,7 +42,7 @@ public class SyntetiseringController {
             "\tVed bestilling av endringskode 4310, genereres tilhørende endringsmelding 8510 på en eventuell partner.")
     @ApiResponses(value = { @ApiResponse(code = 201, message = "De opprettede skdmeldingene ble lagret på disse id-ene i TPSF") })
     @PostMapping(value = "/generer")
-    public ResponseEntity genererSkdMeldinger(@RequestBody GenereringsOrdreRequest genereringsOrdreRequest) {
+    public ResponseEntity<SkdMeldingerTilTpsRespons> genererSkdMeldinger(@RequestBody GenereringsOrdreRequest genereringsOrdreRequest) {
         return syntetiseringService.puttIdenterIMeldingerOgLagre(genereringsOrdreRequest);
     }
 

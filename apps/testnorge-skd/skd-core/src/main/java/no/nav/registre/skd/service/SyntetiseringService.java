@@ -74,7 +74,7 @@ public class SyntetiseringService {
 
     private List<String> feiledeEndringskoder;
 
-    public ResponseEntity puttIdenterIMeldingerOgLagre(
+    public ResponseEntity<SkdMeldingerTilTpsRespons> puttIdenterIMeldingerOgLagre(
             GenereringsOrdreRequest genereringsOrdreRequest
     ) {
         final var antallMeldingerPerEndringskode = genereringsOrdreRequest.getAntallMeldingerPerEndringskode();
