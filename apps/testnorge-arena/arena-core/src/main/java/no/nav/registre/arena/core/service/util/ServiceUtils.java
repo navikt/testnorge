@@ -6,15 +6,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -44,6 +38,7 @@ public class ServiceUtils {
     public static final int MAX_ALDER_UNG_UFOER = 36;
     private static final String KILDE_ARENA = "arena";
     private static final int PAGE_SIZE = 10;
+    private static final String RELASJON_BARN = "BARN";
 
     private final HodejegerenConsumer hodejegerenConsumer;
     private final BrukereService brukereService;
@@ -78,6 +73,17 @@ public class ServiceUtils {
         return filtrerIdenterUtenAktoerId(levendeIdenterIAldersgruppe, miljoe, antallNyeIdenter);
     }
 
+    public List<String> getUtvalgteIdenterIAldersgruppeMedBarnUnder18(
+            Long avspillergruppeId,
+            int antallNyeIdenter,
+            int minimumAlder,
+            int maksimumAlder,
+            String miljoe
+    ) {
+        var levendeIdenterIAldersgruppe = new HashSet<>(hodejegerenConsumer.getLevende(avspillergruppeId, minimumAlder, maksimumAlder));
+        return filtrerIdenterUtenAktoerIdOgBarnUnder18(levendeIdenterIAldersgruppe, miljoe, antallNyeIdenter);
+    }
+
     public List<KontoinfoResponse> getIdenterMedKontoinformasjon(
             Long avspillergruppeId,
             String miljoe,
@@ -87,7 +93,6 @@ public class ServiceUtils {
             return new ArrayList<>();
         }
         var identerMedKontonummer = hodejegerenConsumer.getIdenterMedKontonummer(avspillergruppeId, miljoe, antallNyeIdenter, null, null);
-        Collections.shuffle(identerMedKontonummer);
         return identerMedKontonummer;
     }
 
@@ -128,6 +133,54 @@ public class ServiceUtils {
             }
         }
         return new ArrayList<>(identerMedAktoerId.keySet()).subList(0, antallNyeIdenter);
+    }
+
+    private List<String> filtrerIdenterUtenAktoerIdOgBarnUnder18(
+            Set<String> identer,
+            String miljoe,
+            int antallNyeIdenter
+    ){
+        var identerUtenArenabruker = filtrerEksisterendeBrukereIArena(identer, miljoe);
+
+        var identerPartisjonert = partisjonerListe(identerUtenArenabruker, PAGE_SIZE);
+
+        List<String> utvalgteIdenter = new ArrayList<>(antallNyeIdenter);
+
+        for (var partisjon : identerPartisjonert) {
+            Map<String, String> identerMedAktoerId = aktoerRegisteretConsumer.hentAktoerIderTilIdenter(partisjon, miljoe);
+
+            for (var ident : identerMedAktoerId.keySet()) {
+                var relasjonsResponse = getRelasjonerTilIdent(ident, miljoe);
+
+                for (var relasjon : relasjonsResponse.getRelasjoner()) {
+                    if (RELASJON_BARN.equals(relasjon.getTypeRelasjon())) {
+                        var doedsdato = relasjon.getDatoDo();
+                        if(doedsdato != null && !doedsdato.equals("")){
+                            continue;
+                        }
+
+                        var barnFnr = relasjon.getFnrRelasjon();
+                        var aar = Integer.parseInt(barnFnr.substring(4,6));
+                        var dag = Integer.parseInt(barnFnr.substring(0,2));
+                        var maaned = Integer.parseInt(barnFnr.substring(2,4));
+
+                        LocalDate dagensdato = LocalDate.now();
+                        aar = (aar <= (dagensdato.getYear() - 2000))? aar + 2000 : aar + 1900;
+
+                        LocalDate dob = LocalDate.of(aar, maaned, dag);
+                        int alder = Math.toIntExact(ChronoUnit.YEARS.between(dob, dagensdato));
+                        if (alder < 18){
+                            utvalgteIdenter.add(ident);
+                            if (utvalgteIdenter.size() >= antallNyeIdenter) {
+                                return utvalgteIdenter;
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+        return utvalgteIdenter;
     }
 
     private List<String> filtrerEksisterendeBrukereIArena(

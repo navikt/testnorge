@@ -80,8 +80,23 @@ public class VedtakshistorikkService {
                 if (minimumAlder > maksimumAlder) {
                     log.error("Kunne ikke finne ident i riktig aldersgruppe");
                 } else {
-                    var ident = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe).get(0);
-                    responses.putAll(opprettHistorikkOgSendTilArena(avspillergruppeId, ident, miljoe, vedtakshistorikken));
+                    var barnetillegg = vedtakshistorikken.getBarnetillegg();
+
+                    List<String> identer;
+                    if(barnetillegg != null && !barnetillegg.isEmpty()){
+                        log.info("barnetillegg");
+                        identer = serviceUtils.getUtvalgteIdenterIAldersgruppeMedBarnUnder18(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe);
+                    }else{
+                        log.info("vanlig");
+                        identer = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe);
+                    }
+
+                    if(identer == null || identer.isEmpty()){
+                        log.error("Kunne ikke finne ønsket ident.");
+                    }else{
+                        log.info("send til arena: " + identer.get(0));
+//                        responses.putAll(opprettHistorikkOgSendTilArena(avspillergruppeId, identer.get(0), miljoe, vedtakshistorikken));
+                    }
                 }
             }
         }
