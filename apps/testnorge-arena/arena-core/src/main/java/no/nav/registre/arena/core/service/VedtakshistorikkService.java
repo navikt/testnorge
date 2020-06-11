@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,13 +66,13 @@ public class VedtakshistorikkService {
             var tiltak = finnUtfyltTiltak(vedtakshistorikken);
             var tillegg = finnUtfyltTillegg(vedtakshistorikken);
 
-            if (aap != null && !aap.isEmpty()) {
+            if (!aap.isEmpty()) {
                 tidligsteDato = finnTidligsteDatoAap(aap);
-            } else if (aapType != null && !aapType.isEmpty()) {
+            } else if (!aapType.isEmpty()) {
                 tidligsteDato = finnTidligsteDatoAapType(aapType);
-            } else if (tiltak != null && !tiltak.isEmpty()) {
+            } else if (!tiltak.isEmpty()) {
                 tidligsteDato = finnTidligsteDatoTiltak(tiltak);
-            } else if (tillegg != null && !tillegg.isEmpty()) {
+            } else if (!tillegg.isEmpty()) {
                 tidligsteDato = finnTidligsteDatoTillegg(tillegg);
             } else {
                 continue;
@@ -354,7 +355,7 @@ public class VedtakshistorikkService {
             return aap;
         }
 
-        return null;
+        return Collections.emptyList();
     }
 
     private List<NyttVedtakAap> finnUtfyltAapType(Vedtakshistorikk vedtakshistorikk) {
@@ -376,7 +377,7 @@ public class VedtakshistorikkService {
             return fritakMeldekort;
         }
 
-        return null;
+        return Collections.emptyList();
     }
 
     private List<NyttVedtakTiltak> finnUtfyltTiltak(Vedtakshistorikk vedtakshistorikk) {
@@ -391,7 +392,7 @@ public class VedtakshistorikkService {
             return barnetillegg;
         }
 
-        return null;
+        return Collections.emptyList();
     }
 
     private List<NyttVedtakTillegg> finnUtfyltTillegg(Vedtakshistorikk vedtakshistorikk) {
@@ -466,6 +467,6 @@ public class VedtakshistorikkService {
             return tilsynFamiliemedlemmerArbeidssoekere;
         }
 
-        return null;
+        return Collections.emptyList();
     }
 }
