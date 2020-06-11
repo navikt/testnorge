@@ -1,12 +1,13 @@
 import React from 'react'
 import _set from 'lodash/set'
+import _isEmpty from 'lodash/isEmpty'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import {
 	Inntektsmelding,
-	Inntekter
+	Inntekt
 } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import ArbeidsforholdVisning from './partials/arbeidsforholdVisning'
 import OmsorgspengerVisning from './partials/omsorgspengerVisning'
@@ -22,11 +23,11 @@ interface InntektsmeldingVisning {
 }
 
 type EnkelInntektsmelding = {
-	data: Array<Inntekter>
+	data: Array<Inntekt>
 	ident: string
 }
 
-const getHeader = (data: Inntekter) => {
+const getHeader = (data: Inntekt) => {
 	const arbeidsgiver = data.arbeidsgiver
 		? data.arbeidsgiver.virksomhetsnummer
 		: data.arbeidsgiverPrivat
@@ -74,7 +75,7 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisning)
 
 const EnkelInntektsmeldingVisning = ({ data, ident }: EnkelInntektsmelding) => (
 	<DollyFieldArray header="Inntekt" getHeader={getHeader} data={data} expandable={data.length > 1}>
-		{(inntekt: Inntekter, idx: number) => (
+		{(inntekt: Inntekt, idx: number) => (
 			<>
 				<div className="person-visning_content" key={idx}>
 					<TitleValue
@@ -132,5 +133,13 @@ InntektsmeldingVisning.filterValues = (bestillinger: Array<Bestilling>) => {
 
 	return bestillinger
 		.map((bestilling: any) => bestilling.inntektsmelding)
-		.filter((inntektsmelding: Inntektsmelding) => inntektsmelding)
+		.filter(
+			(inntektsmelding: Inntektsmelding) =>
+				inntektsmelding && !tomBestilling(inntektsmelding.inntekter)
+		)
+}
+
+const tomBestilling = (inntekter: Array<Inntekt>) => {
+	const inntekterMedInnhold = inntekter.filter(inntekt => !_isEmpty(inntekt))
+	return inntekterMedInnhold.length < 1
 }
