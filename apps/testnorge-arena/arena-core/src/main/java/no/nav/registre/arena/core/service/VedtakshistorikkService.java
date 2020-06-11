@@ -65,6 +65,8 @@ public class VedtakshistorikkService {
             var aapType = finnUtfyltAapType(vedtakshistorikken);
             var tiltak = finnUtfyltTiltak(vedtakshistorikken);
             var tillegg = finnUtfyltTillegg(vedtakshistorikken);
+            var barnetillegg = vedtakshistorikken.getBarnetillegg();
+            LocalDate tidligsteDatoBarnetillegg = null;
 
             if (!aap.isEmpty()) {
                 tidligsteDato = finnTidligsteDatoAap(aap);
@@ -76,6 +78,10 @@ public class VedtakshistorikkService {
                 tidligsteDato = finnTidligsteDatoTillegg(tillegg);
             } else {
                 continue;
+            }
+
+            if (barnetillegg != null && !barnetillegg.isEmpty()) {
+                tidligsteDatoBarnetillegg = finnTidligsteDatoTiltak(barnetillegg);
             }
 
             var minimumAlder = Math.toIntExact(ChronoUnit.YEARS.between(tidligsteDato.minusYears(MIN_ALDER_AAP), LocalDate.now()));
@@ -95,9 +101,25 @@ public class VedtakshistorikkService {
 
             if (minimumAlder > maksimumAlder) {
                 log.error("Kunne ikke finne ident i riktig aldersgruppe");
+                continue;
             } else {
-                var ident = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe).get(0);
-                responses.putAll(opprettHistorikkOgSendTilArena(avspillergruppeId, ident, miljoe, vedtakshistorikken));
+                List<String> identer;
+                if (tidligsteDatoBarnetillegg != null) {
+                    log.info("barnetillegg");
+                    identer = serviceUtils.getUtvalgteIdenterIAldersgruppeMedBarnUnder18(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe, tidligsteDatoBarnetillegg);
+                } else {
+                    log.info("vanlig");
+                    identer = null;
+//                    identer = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe);
+                }
+
+                if (identer == null || identer.isEmpty()) {
+                    log.error("Kunne ikke finne ønsket ident.");
+                    continue;
+                } else {
+                    log.info("send til arena: " + identer.get(0));
+//                        responses.putAll(opprettHistorikkOgSendTilArena(avspillergruppeId, identer.get(0), miljoe, vedtakshistorikken));
+                }
             }
         }
         return responses;

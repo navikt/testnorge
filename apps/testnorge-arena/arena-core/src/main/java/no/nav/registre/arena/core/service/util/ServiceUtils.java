@@ -78,10 +78,11 @@ public class ServiceUtils {
             int antallNyeIdenter,
             int minimumAlder,
             int maksimumAlder,
-            String miljoe
+            String miljoe,
+            LocalDate tidligsteDato
     ) {
         var levendeIdenterIAldersgruppe = new HashSet<>(hodejegerenConsumer.getLevende(avspillergruppeId, minimumAlder, maksimumAlder));
-        return filtrerIdenterUtenAktoerIdOgBarnUnder18(levendeIdenterIAldersgruppe, miljoe, antallNyeIdenter);
+        return filtrerIdenterUtenAktoerIdOgBarnUnder18(levendeIdenterIAldersgruppe, miljoe, antallNyeIdenter, tidligsteDato);
     }
 
     public List<KontoinfoResponse> getIdenterMedKontoinformasjon(
@@ -138,7 +139,8 @@ public class ServiceUtils {
     private List<String> filtrerIdenterUtenAktoerIdOgBarnUnder18(
             Set<String> identer,
             String miljoe,
-            int antallNyeIdenter
+            int antallNyeIdenter,
+            LocalDate tidligsteDato
     ){
         var identerUtenArenabruker = filtrerEksisterendeBrukereIArena(identer, miljoe);
 
@@ -160,16 +162,9 @@ public class ServiceUtils {
                         }
 
                         var barnFnr = relasjon.getFnrRelasjon();
-                        var aar = Integer.parseInt(barnFnr.substring(4,6));
-                        var dag = Integer.parseInt(barnFnr.substring(0,2));
-                        var maaned = Integer.parseInt(barnFnr.substring(2,4));
+                        int alder = getAlderFraFnrPaaDato(barnFnr, tidligsteDato);
 
-                        LocalDate dagensdato = LocalDate.now();
-                        aar = (aar <= (dagensdato.getYear() - 2000))? aar + 2000 : aar + 1900;
-
-                        LocalDate dob = LocalDate.of(aar, maaned, dag);
-                        int alder = Math.toIntExact(ChronoUnit.YEARS.between(dob, dagensdato));
-                        if (alder < 18){
+                        if ( alder > -1 && alder < 18){
                             utvalgteIdenter.add(ident);
                             if (utvalgteIdenter.size() >= antallNyeIdenter) {
                                 return utvalgteIdenter;
@@ -181,6 +176,23 @@ public class ServiceUtils {
             }
         }
         return utvalgteIdenter;
+    }
+
+    private int getAlderFraFnrPaaDato(String fnr, LocalDate dato ){
+        var aar = Integer.parseInt(fnr.substring(4,6));
+        var dag = Integer.parseInt(fnr.substring(0,2));
+        var maaned = Integer.parseInt(fnr.substring(2,4));
+
+        LocalDate dagensdato = LocalDate.now();
+        aar = (aar <= (dagensdato.getYear() - 2000))? aar + 2000 : aar + 1900;
+
+        LocalDate foedselsdato = LocalDate.of(aar, maaned, dag);
+
+        int alder = Math.toIntExact(ChronoUnit.YEARS.between(foedselsdato, dato));
+        if (dato.isBefore(foedselsdato)){
+            alder = -alder;
+        }
+        return alder;
     }
 
     private List<String> filtrerEksisterendeBrukereIArena(
