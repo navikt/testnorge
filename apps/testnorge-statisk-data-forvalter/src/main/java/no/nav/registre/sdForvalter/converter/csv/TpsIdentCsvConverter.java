@@ -21,7 +21,7 @@ public class TpsIdentCsvConverter extends CsvConverter<TpsIdent> {
     }
 
     private enum Headers implements CsvHeader {
-        FNR("FNR"),
+        FNR("FNR*"),
         FIRST_NAME("Fornavn"),
         LAST_NAME("Etternavn"),
         ADDRESS("Adresse"),
