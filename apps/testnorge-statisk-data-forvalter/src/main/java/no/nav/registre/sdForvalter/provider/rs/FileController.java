@@ -36,6 +36,7 @@ public class FileController {
     @GetMapping("/ereg")
     public void exportEreg(@RequestParam(name = "gruppe", required = false) String gruppe, HttpServletResponse response) throws IOException {
         response.setContentType("text/csv");
+        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setHeader("Content-Disposition", "attachment; filename=ereg-" + LocalDateTime.now().toString() + ".csv");
         EregListe eregListe = eregAdapter.fetchBy(gruppe);
 
@@ -52,6 +53,7 @@ public class FileController {
     @GetMapping("/tpsIdenter")
     public void exportTpsIdenter(@RequestParam(name = "gruppe", required = false) String gruppe, HttpServletResponse response) throws IOException {
         response.setContentType("text/csv");
+        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setHeader("Content-Disposition", "attachment; filename=tpsIdent-" + LocalDateTime.now().toString() + ".csv");
 
         TpsIdentListe tpsIdentListe = tpsIdenterAdapter.fetchBy(gruppe);
@@ -60,7 +62,7 @@ public class FileController {
 
     @PostMapping("/tpsIdenter")
     public ResponseEntity<?> importTpsIdenter(@RequestParam("file") MultipartFile file) throws IOException {
-        List<TpsIdent> list = TpsIdentCsvConverter.inst().read(new InputStreamReader(file.getInputStream(), StandardCharsets.ISO_8859_1));
+        List<TpsIdent> list = TpsIdentCsvConverter.inst().read(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
         tpsIdenterAdapter.save(new TpsIdentListe(list));
         return ResponseEntity.ok().build();
     }

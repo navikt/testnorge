@@ -22,6 +22,7 @@ public class GruppeModel extends AuditModel {
 
     @Id
     @GeneratedValue
+    @EqualsAndHashCode.Exclude
     private Long id;
     @NotNull
     @Column(unique = true)
