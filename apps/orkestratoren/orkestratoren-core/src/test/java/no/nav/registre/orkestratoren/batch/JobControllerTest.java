@@ -17,13 +17,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.orkestratoren.service.TesnorgeArenaService;
+import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.TestnorgeBisysService;
 import no.nav.registre.orkestratoren.service.TestnorgeElsamService;
@@ -66,7 +65,7 @@ public class JobControllerTest {
     private TestnorgeSamService testnorgeSamService;
 
     @Mock
-    private TesnorgeArenaService tesnorgeArenaService;
+    private TestnorgeArenaService testnorgeArenaService;
 
     @Mock
     private TestnorgeMedlService testnorgeMedlService;

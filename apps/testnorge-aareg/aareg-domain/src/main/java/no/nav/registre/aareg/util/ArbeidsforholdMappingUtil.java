@@ -35,6 +35,9 @@ import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Utenlandso
 
 public class ArbeidsforholdMappingUtil {
 
+    private ArbeidsforholdMappingUtil() {
+    }
+
     public static Arbeidsforhold mapToArbeidsforhold(JsonNode arbeidsforholdNode) {
         return Arbeidsforhold.builder()
                 .navArbeidsforholdId(findLongNullSafe(arbeidsforholdNode, "navArbeidsforholdId"))

@@ -75,8 +75,11 @@ public class NameService {
 
     public List<String> getFullNames(List<String> naeringsKoder, String type) {
         List<String> companyNames = new ArrayList<>();
-        List<String> fakeNames = identPoolConsumer.getFakeNames(naeringsKoder.size());
         if ("AS".equals(type)) {
+            if (naeringsKoder.isEmpty()) {
+                return companyNames;
+            }
+            List<String> fakeNames = identPoolConsumer.getFakeNames(naeringsKoder.size());
             if (fakeNames.size() != naeringsKoder.size()) {
                 log.warn("Kunne ikke hente riktig antall navn fra ident-pool");
             }

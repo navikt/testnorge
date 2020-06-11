@@ -57,6 +57,9 @@ import java.util.stream.Collectors;
 
 public class XmlInntektsmelding201812 {
 
+    private XmlInntektsmelding201812() {
+    }
+
     private static final String NAMESPACE_URI = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211";
 
     public static Melding createInntektsmelding(RsInntektsmelding melding) {

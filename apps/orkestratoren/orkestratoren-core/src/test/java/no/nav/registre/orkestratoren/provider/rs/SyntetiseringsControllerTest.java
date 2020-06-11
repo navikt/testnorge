@@ -22,7 +22,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldinger
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
-import no.nav.registre.orkestratoren.service.TesnorgeArenaService;
+import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.TestnorgeBisysService;
 import no.nav.registre.orkestratoren.service.TestnorgeElsamService;
@@ -61,7 +61,7 @@ public class SyntetiseringsControllerTest {
     private TestnorgeTpService testnorgeTpService;
 
     @Mock
-    private TesnorgeArenaService tesnorgeArenaService;
+    private TestnorgeArenaService testnorgeArenaService;
 
     @Mock
     private TestnorgeMedlService testnorgeMedlService;
@@ -213,7 +213,7 @@ public class SyntetiseringsControllerTest {
         var syntetiserArenaRequest = new SyntetiserArenaRequest(avspillergruppeId, miljoe, 2);
         syntetiseringsController.opprettArbeidssoekereIArena(syntetiserArenaRequest);
 
-        verify(tesnorgeArenaService).opprettArbeidssokereIArena(syntetiserArenaRequest);
+        verify(testnorgeArenaService).opprettArbeidssokereIArena(syntetiserArenaRequest);
     }
 
     @Test

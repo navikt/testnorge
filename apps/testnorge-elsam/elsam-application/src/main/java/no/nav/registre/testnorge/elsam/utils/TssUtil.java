@@ -9,6 +9,9 @@ import no.nav.registre.testnorge.elsam.consumer.rs.response.tss.TssResponse;
 
 public class TssUtil {
 
+    private TssUtil() {
+    }
+
     public static Lege buildLegeFromTssResponse(TssResponse tssResponse) {
         LegeBuilder legeBuilder = Lege.builder();
 

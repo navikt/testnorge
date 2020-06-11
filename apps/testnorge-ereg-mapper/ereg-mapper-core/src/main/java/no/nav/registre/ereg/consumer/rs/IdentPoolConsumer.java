@@ -34,11 +34,8 @@ public class IdentPoolConsumer {
     public List<String> getFakeNames(Integer count) {
         try {
             ResponseEntity<List<NameResponse>> response = restTemplate.exchange(nameServiceTemplate.expand(count), HttpMethod.GET, null, RESPONSE_TYPE);
-            if (!response.getStatusCode().is2xxSuccessful()) {
-                return null;
-            }
-            if (response.getBody() == null) {
-                return null;
+            if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+                throw new RuntimeException("Klarte ikke hente ut fake names fra IdentPool (Respons statuskode: " + response.getStatusCodeValue() + ")");
             }
             return response.getBody().stream().map(NameResponse::toString).collect(Collectors.toList());
         } catch (HttpClientErrorException e) {

@@ -17,6 +17,9 @@ import java.io.StringWriter;
 
 public class XmlUtil {
 
+    private XmlUtil() {
+    }
+
     public static final JAXBContext SYKMELDING_CONTEXT;
 
     static {

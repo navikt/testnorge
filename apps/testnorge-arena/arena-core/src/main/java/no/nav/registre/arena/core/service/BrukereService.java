@@ -82,6 +82,11 @@ public class BrukereService {
         return hentIdentListe(arbeidsoekere);
     }
 
+    public List<String> hentEksisterendeArbeidsoekerIdenter(String eier, String miljoe) {
+        var arbeidsoekere = brukereArenaForvalterConsumer.hentArbeidsoekere(null, eier, miljoe);
+        return hentIdentListe(arbeidsoekere);
+    }
+
     public NyeBrukereResponse sendArbeidssoekereTilArenaForvalter(
             List<String> identer,
             String miljoe,

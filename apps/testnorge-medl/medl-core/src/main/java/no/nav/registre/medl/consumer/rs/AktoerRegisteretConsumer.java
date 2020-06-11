@@ -62,7 +62,7 @@ public class AktoerRegisteretConsumer {
         var headers = new HttpHeaders();
         headers.add("Nav-Consumer-Id", "Synt");
         headers.add("Nav-Call-Id", "Synt");
-        headers.add("Nav-Personidenter", "List " + fnrs);
+        headers.add("Nav-Personidenter", fnrs.toString().substring(1, fnrs.toString().length() - 1));
         var authToken = getAuthToken(environment, username, password);
         if ("".equals(authToken)) {
             log.error("Fikk ikke et token fra IDA, sjekk Z-bruker");
