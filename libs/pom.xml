@@ -12,8 +12,9 @@
     <artifactId>libs</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>domain</module>
         <module>testnorge-domain</module>
+        <module>testnorge-data-transfer-objects</module>
+        <module>testnorge-testing</module>
     </modules>
 
 
