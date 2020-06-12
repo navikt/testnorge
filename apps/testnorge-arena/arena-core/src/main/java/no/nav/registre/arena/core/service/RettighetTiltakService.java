@@ -182,8 +182,12 @@ public class RettighetTiltakService {
 
         if(!identerMedOpprettedeEndreDeltakerstatus.isEmpty()){
             for (String ident : responses.keySet()) {
-                responses.get(ident).get(0).getFeiledeRettigheter().addAll(
-                        identerMedOpprettedeEndreDeltakerstatus.get(ident).get(0).getFeiledeRettigheter());
+                if(identerMedOpprettedeEndreDeltakerstatus.get(ident) != null) {
+                    for (var status : identerMedOpprettedeEndreDeltakerstatus.get(ident)) {
+                        responses.get(ident).get(0).getFeiledeRettigheter().addAll(
+                                status.getFeiledeRettigheter());
+                    }
+                }
             }
         }
 
@@ -268,20 +272,15 @@ public class RettighetTiltakService {
         List<String> endringer = new ArrayList<>();
 
         if(tiltakskarakteristikk.equals("AMO")){
+            endringer.add("TILBUD");
             endringer.add("JATAKK");
         }
-
-        switch (deltakerstatuskode){
-            case "GJENN":
-                endringer.add(deltakerstatuskode);
-                break;
-            default:
-                endringer.add("GJENN");
-                endringer.add(deltakerstatuskode);
-                break;
+        if (!deltakerstatuskode.equals("GJENN")) {
+            endringer.add("GJENN");
         }
-        return endringer;
+        endringer.add(deltakerstatuskode);
 
+        return endringer;
     }
 
     Map<String, List<NyttVedtakResponse>> opprettTiltaksaktiviteter(List<RettighetRequest> rettigheter) {
