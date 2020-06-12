@@ -17,7 +17,7 @@ public class GetPersondataCommand implements Callable<PersondataDTO> {
     private final RestTemplate restTemplate;
 
     public GetPersondataCommand(String url, String ident, String miljoe, RestTemplate restTemplate) {
-        this.uriTemplate = new UriTemplate(url + "/v1/persondata?ident={idnet}&miljoe={miljoe}");
+        this.uriTemplate = new UriTemplate(url + "/v1/persondata?ident={ident}&miljoe={miljoe}");
         this.miljoe = miljoe;
         this.ident = ident;
         this.restTemplate = restTemplate;

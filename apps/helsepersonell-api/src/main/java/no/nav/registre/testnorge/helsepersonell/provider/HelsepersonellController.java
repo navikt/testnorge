@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.helsepersonell.produser;
+package no.nav.registre.testnorge.helsepersonell.provider;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.CacheControl;
@@ -11,11 +11,10 @@ import java.util.concurrent.TimeUnit;
 
 import no.nav.registre.testnorge.dto.helsepersonell.v1.LegeListeDTO;
 import no.nav.registre.testnorge.helsepersonell.adapter.HelsepersonellAdapter;
-import no.nav.registre.testnorge.helsepersonell.domain.LegeListe;
 
 
 @RestController
-@RequestMapping("/api/v1/helepersonell")
+@RequestMapping("/api/v1/helsepersonell")
 public class HelsepersonellController {
 
     private final HelsepersonellAdapter adapter;
@@ -32,13 +31,11 @@ public class HelsepersonellController {
 
     @GetMapping("/leger")
     public ResponseEntity<LegeListeDTO> getLeger() {
-
-        CacheControl cacheControl
+        var cacheControl
                 = CacheControl.maxAge(legerCacheHours, TimeUnit.HOURS)
                 .noTransform()
                 .mustRevalidate();
-
-        LegeListe leger = adapter.getLeger();
+        var leger = adapter.getLeger();
         return ResponseEntity
                 .ok()
                 .cacheControl(cacheControl)

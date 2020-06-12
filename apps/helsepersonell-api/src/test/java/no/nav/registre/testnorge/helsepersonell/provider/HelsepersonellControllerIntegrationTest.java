@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.helsepersonell.produser;
+package no.nav.registre.testnorge.helsepersonell.provider;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -93,15 +93,15 @@ class HelsepersonellControllerIntegrationTest {
         );
 
 
-        String json = mvc.perform(get("/api/v1/helepersonell/leger")
+        String json = mvc.perform(get("/api/v1/helsepersonell/leger")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
-        LegeListeDTO acual = objectMapper.readValue(json, LegeListeDTO.class);
+        LegeListeDTO actual = objectMapper.readValue(json, LegeListeDTO.class);
 
-        assertThat(acual.getLeger()).containsOnly(
+        assertThat(actual.getLeger()).containsOnly(
                 LegeDTO.builder().fornavn("Hans").etternavn("Hansen").fnr(firstPersonIdent).hprId("54321").build(),
                 LegeDTO.builder().fornavn("Berg").mellomnavn("Skog").etternavn("Fjell").fnr(secondPersonIdent).hprId("12345").build()
         );

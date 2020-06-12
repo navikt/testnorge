@@ -1,16 +1,15 @@
 package no.nav.registre.testnorge.helsepersonell.domain;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.Optional;
 
 import no.nav.registre.testnorge.dto.samhandlerregisteret.v1.IdentDTO;
 import no.nav.registre.testnorge.dto.samhandlerregisteret.v1.SamhandlerDTO;
 
+@RequiredArgsConstructor
 public class Samhandler {
     private final SamhandlerDTO dto;
-
-    public Samhandler(SamhandlerDTO dto) {
-        this.dto = dto;
-    }
 
     public String getHprId() {
         if (dto.getIdenter() == null) {

@@ -1,14 +1,12 @@
 package no.nav.registre.testnorge.helsepersonell.domain;
 
+import lombok.RequiredArgsConstructor;
+
 import no.nav.registre.testnorge.dto.hodejegeren.v1.PersondataDTO;
 
+@RequiredArgsConstructor
 public class Persondata {
     private final PersondataDTO dto;
-
-    public Persondata(PersondataDTO dto) {
-        this.dto = dto;
-    }
-
 
     public String getFnr(){
         return dto.getFnr();

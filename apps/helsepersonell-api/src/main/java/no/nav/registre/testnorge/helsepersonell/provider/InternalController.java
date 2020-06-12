@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.helsepersonell.produser;
+package no.nav.registre.testnorge.helsepersonell.provider;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
