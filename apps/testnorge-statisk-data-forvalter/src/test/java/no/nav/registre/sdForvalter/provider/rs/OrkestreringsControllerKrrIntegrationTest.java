@@ -23,7 +23,7 @@ import no.nav.registre.sdForvalter.consumer.rs.request.KrrRequest;
 import no.nav.registre.sdForvalter.database.model.KrrModel;
 import no.nav.registre.sdForvalter.database.repository.KrrRepository;
 import no.nav.registre.sdForvalter.domain.Krr;
-import no.nav.registre.sdForvalter.util.JsonTestHelper;
+import no.nav.registre.testnorge.test.JsonWiremockHelper;
 
 
 @RunWith(SpringRunner.class)
@@ -48,9 +48,12 @@ public class OrkestreringsControllerKrrIntegrationTest {
     public void shouldInitiateKrrFromDatabase() throws Exception {
         KrrModel model = createKrr("01010112365");
         repository.save(model);
-        UrlPathPattern kontaktinformasjon = urlPathMatching("(.*)/v1/kontaktinformasjon");
 
-        JsonTestHelper.stubPost(kontaktinformasjon);
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/v1/kontaktinformasjon")
+                .stubPost();
+
 
         mvc.perform(post("/api/v1/orkestrering/krr/")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -58,7 +61,11 @@ public class OrkestreringsControllerKrrIntegrationTest {
 
         KrrRequest request = createKrrRequest(model);
 
-        JsonTestHelper.verifyPost(kontaktinformasjon, request, objectMapper, "gyldigFra");
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/v1/kontaktinformasjon")
+                .withRequestBody(request, "gyldigFra")
+                .verifyPost();
     }
 
     private KrrModel createKrr(String fnr) {

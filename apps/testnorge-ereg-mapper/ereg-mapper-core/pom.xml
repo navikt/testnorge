@@ -73,6 +73,12 @@
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
         </dependency>
+
+        <dependency>
+            <artifactId>testnorge-testing</artifactId>
+            <groupId>no.nav.registre.testnorge</groupId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
