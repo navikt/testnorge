@@ -12,6 +12,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 public class JsonTestHelper {
 
@@ -24,7 +26,7 @@ public class JsonTestHelper {
         verify(postRequestedFor(urlPathPattern).withRequestBody(equalToJson(requestJsonBody)));
     }
 
-    public static <T> void verifyPost(UrlPathPattern urlPathPattern) {
+    public static void verifyPost(UrlPathPattern urlPathPattern) {
         verify(postRequestedFor(urlPathPattern));
     }
 
@@ -34,7 +36,7 @@ public class JsonTestHelper {
         stubFor(post(urlPathPattern)
                 .withRequestBody(equalToJson(requestJsonBody))
                 .willReturn(aResponse()
-                        .withHeader("Content-Type", "application/json")
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                         .withBody(responseJsonBody)
                 )
         );
@@ -44,13 +46,13 @@ public class JsonTestHelper {
         final String responseJsonBody = objectMapper.writeValueAsString(responseBody);
         stubFor(post(urlPathPattern)
                 .willReturn(aResponse()
-                        .withHeader("Content-Type", "application/json")
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                         .withBody(responseJsonBody)
                 )
         );
     }
 
-    public static <T> void stubPost(UrlPathPattern urlPathPattern) {
+    public static void stubPost(UrlPathPattern urlPathPattern) {
         stubFor(post(urlPathPattern));
     }
 
@@ -64,10 +66,9 @@ public class JsonTestHelper {
         final String responseJsonBody = objectMapper.writeValueAsString(responseBody);
         stubFor(mappingBuilder
                 .willReturn(aResponse()
-                        .withHeader("Content-Type", "application/json")
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                         .withBody(responseJsonBody)
                 )
         );
     }
-
 }

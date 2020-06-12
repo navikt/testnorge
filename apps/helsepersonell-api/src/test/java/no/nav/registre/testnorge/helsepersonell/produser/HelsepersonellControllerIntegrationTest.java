@@ -37,7 +37,6 @@ import no.nav.registre.testnorge.test.JsonTestHelper;
 @TestPropertySource(locations = "classpath:application-test.properties")
 class HelsepersonellControllerIntegrationTest {
 
-
     @Value("${avspillingsgruppe.leger.id}")
     private Integer legerAvspillergruppeId;
 
@@ -47,9 +46,8 @@ class HelsepersonellControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-
     @Test
-    public void should_get_leger_with_hpr_id() throws Exception {
+    void should_get_leger_with_hpr_id() throws Exception {
 
         String firstPersonIdent = "12125678903";
         String secondPersonIdent = "09126543211";
