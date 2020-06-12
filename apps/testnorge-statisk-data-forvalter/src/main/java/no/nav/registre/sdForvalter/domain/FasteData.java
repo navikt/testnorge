@@ -16,7 +16,7 @@ public abstract class FasteData {
     @JsonProperty
     private final String opprinnelse;
 
-    public FasteData(FasteDataModel model) {
+    public FasteData(FasteDataModel<? extends FasteData> model) {
         gruppe = model.getGruppeModel() != null ? model.getGruppeModel().getKode() : null;
         opprinnelse = model.getOpprinnelseModel() != null ? model.getOpprinnelseModel().getNavn() : null;
     }

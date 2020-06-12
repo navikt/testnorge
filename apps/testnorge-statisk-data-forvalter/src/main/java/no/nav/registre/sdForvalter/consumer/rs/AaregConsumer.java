@@ -41,7 +41,7 @@ public class AaregConsumer {
     }
 
     private List getArbeidsforhold(String ident, String miljoe) {
-        RequestEntity getRequest = RequestEntity.get(getArbeidsforholdFraAaregUrl.expand(ident, miljoe))
+        RequestEntity<?> getRequest = RequestEntity.get(getArbeidsforholdFraAaregUrl.expand(ident, miljoe))
                 .header("Nav-Call-Id", CALL_ID)
                 .header("Nav-Consumer-Id", CONSUMER_ID)
                 .build();
