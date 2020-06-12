@@ -1,11 +1,13 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.NORSK;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.UTENLANDSK;
 import static no.nav.dolly.bestilling.pdlforvalter.mapper.PdlAdresseMappingStrategy.getDato;
 import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
+import java.util.List;
 import org.springframework.stereotype.Component;
 
 import ma.glasnost.orika.CustomMapper;
@@ -60,49 +62,53 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
 
         factory.classMap(RsGateadresse.class, VegadresseForPost.class)
                 .customize(new CustomMapper<RsGateadresse, VegadresseForPost>() {
-                            @Override
-                            public void mapAtoB(RsGateadresse gateadresse, VegadresseForPost vegadresse, MappingContext context) {
+                    @Override
+                    public void mapAtoB(RsGateadresse gateadresse, VegadresseForPost vegadresse, MappingContext context) {
 
-                                vegadresse.setAdressekode(gateadresse.getGatekode());
-                                vegadresse.setAdressenavn(gateadresse.getGateadresse());
-                                vegadresse.setHusnummer(gateadresse.getHusnummer());
-                                vegadresse.setPostnummer(gateadresse.getPostnr());
-                            }
-                        })
+                        vegadresse.setAdressekode(gateadresse.getGatekode());
+                        vegadresse.setAdressenavn(gateadresse.getGateadresse());
+                        vegadresse.setHusnummer(gateadresse.getHusnummer());
+                        vegadresse.setPostnummer(gateadresse.getPostnr());
+                    }
+                })
                 .byDefault()
                 .register();
 
         factory.classMap(RsPostadresse.class, PostadresseIFrittFormat.class)
                 .customize(new CustomMapper<RsPostadresse, PostadresseIFrittFormat>() {
-                            @Override
-                            public void mapAtoB(RsPostadresse postadresse, PostadresseIFrittFormat postadresseIFrittFormat, MappingContext context) {
+                    @Override
+                    public void mapAtoB(RsPostadresse postadresse, PostadresseIFrittFormat postadresseIFrittFormat, MappingContext context) {
 
-                                postadresseIFrittFormat.getAdresselinjer().add(postadresse.getPostLinje1());
-                                if (isNotBlank(postadresse.getPostLinje2())) {
-                                    postadresseIFrittFormat.getAdresselinjer().add(postadresse.getPostLinje2());
-                                }
-                                if (isNotBlank(postadresse.getPostLinje3())) {
-                                    postadresseIFrittFormat.getAdresselinjer().add(postadresse.getPostLinje3());
-                                }
-                            }
-                        })
+                        List<String> adresselinjer = newArrayList(postadresse.getPostLinje1());
+                        if (isNotBlank(postadresse.getPostLinje2())) {
+                            adresselinjer.add(postadresse.getPostLinje2());
+                        }
+                        if (isNotBlank(postadresse.getPostLinje3())) {
+                            adresselinjer.add(postadresse.getPostLinje3());
+                        }
+                        postadresseIFrittFormat.setPostnummer(
+                                adresselinjer.stream().reduce((first, second) -> second).get().split(" ")[0]);
+                        adresselinjer.remove(adresselinjer.size() - 1);
+                        postadresseIFrittFormat.setAdresselinjer(adresselinjer);
+                    }
+                })
                 .register();
 
         factory.classMap(RsPostadresse.class, UtenlandskAdresseIFrittFormat.class)
                 .customize(new CustomMapper<RsPostadresse, UtenlandskAdresseIFrittFormat>() {
-                            @Override
-                            public void mapAtoB(RsPostadresse postadresse, UtenlandskAdresseIFrittFormat utenlandskAdresse, MappingContext context) {
+                    @Override
+                    public void mapAtoB(RsPostadresse postadresse, UtenlandskAdresseIFrittFormat utenlandskAdresse, MappingContext context) {
 
-                                utenlandskAdresse.getAdresselinjer().add(postadresse.getPostLinje1());
-                                if (isNotBlank(postadresse.getPostLinje2())) {
-                                    utenlandskAdresse.getAdresselinjer().add(postadresse.getPostLinje2());
-                                }
-                                if (isNotBlank(postadresse.getPostLinje3())) {
-                                    utenlandskAdresse.getAdresselinjer().add(postadresse.getPostLinje3());
-                                }
-                                utenlandskAdresse.setLandkode(postadresse.getPostLand());
-                            }
-                        })
+                        utenlandskAdresse.getAdresselinjer().add(postadresse.getPostLinje1());
+                        if (isNotBlank(postadresse.getPostLinje2())) {
+                            utenlandskAdresse.getAdresselinjer().add(postadresse.getPostLinje2());
+                        }
+                        if (isNotBlank(postadresse.getPostLinje3())) {
+                            utenlandskAdresse.getAdresselinjer().add(postadresse.getPostLinje3());
+                        }
+                        utenlandskAdresse.setLandkode(postadresse.getPostLand());
+                    }
+                })
                 .register();
     }
 }
