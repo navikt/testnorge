@@ -269,8 +269,10 @@ public class RettighetTiltakService {
     private List<String> finnIdenterMedBarn(
             Long avspillergruppeId,
             String miljoe,
-            int antallIdenter) {
-        var foedteIdenter = serviceUtils.getIdenterMedFoedselsmelding(avspillergruppeId);
+            int antallIdenter
+    ) {
+        var foedteIdenter = serviceUtils.getIdenterMedFoedselsmelding(avspillergruppeId, 17);
+
         Collections.shuffle(foedteIdenter);
         List<String> utvalgteIdenter = new ArrayList<>(antallIdenter);
 

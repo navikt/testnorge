@@ -63,7 +63,7 @@ public class AktoerRegisteretConsumer {
         var headers = new HttpHeaders();
         headers.add(CALL_ID, NAV_CALL_ID);
         headers.add(CONSUMER_ID, NAV_CONSUMER_ID);
-        headers.add("Nav-Personidenter", "List " + identer);
+        headers.add("Nav-Personidenter", identer.toString().substring(1, identer.toString().length() - 1));
         headers.add(AUTHORIZATION, tokenService.getIdToken());
 
         var request = new RequestEntity(headers, HttpMethod.GET, uriTemplate.expand());
@@ -78,7 +78,6 @@ public class AktoerRegisteretConsumer {
             for (var entry : response.getBody().entrySet()) {
                 var aktoerId = "";
                 if (entry.getValue().getIdenter() == null) {
-                    log.warn("{} Ident: {}", entry.getValue().getFeilmelding(), entry.getKey());
                     continue;
                 }
                 for (var aktoer : entry.getValue().getIdenter()) {
