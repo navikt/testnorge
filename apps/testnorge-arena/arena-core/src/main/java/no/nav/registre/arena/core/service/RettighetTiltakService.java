@@ -30,6 +30,7 @@ public class RettighetTiltakService {
 
     private static final String RELASJON_MOR = "MORA";
     private static final String RELASJON_FAR = "FARA";
+    private static final List<String> IGNORED_DELTAKERSTATUSKODER = Arrays.asList("TILBUD", "AKTUELL", "VENTELISTE");
 
     private final TiltakSyntConsumer tiltakSyntConsumer;
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
@@ -169,7 +170,8 @@ public class RettighetTiltakService {
 
         if(!identerMedOpprettedeEndreDeltakerstatus.isEmpty()){
             for (String ident : responses.keySet()) {
-                responses.get(ident).addAll(identerMedOpprettedeEndreDeltakerstatus.get(ident));
+                responses.get(ident).get(0).getFeiledeRettigheter().addAll(
+                        identerMedOpprettedeEndreDeltakerstatus.get(ident).get(0).getFeiledeRettigheter());
             }
         }
 
@@ -193,12 +195,17 @@ public class RettighetTiltakService {
 
                 var syntetisertRettighet = tiltakSyntConsumer.opprettDeltakerstatus(1).get(0);
 
-                //TODO: sjekk at ny deltakerstatuskode ikke matcher nåværende aktivitetskode
-                if(!syntetisertRettighet.getDeltakerstatusKode().equals("FULLF")){
-                    var rettighetRequest = opprettRettighetEndreDeltakerstatusRequest(ident, miljoe,
-                            tiltaksdeltakelse, syntetisertRettighet.getDeltakerstatusKode());
+                var deltakerstatuskode = syntetisertRettighet.getDeltakerstatusKode();
+                if(!IGNORED_DELTAKERSTATUSKODER.contains(deltakerstatuskode)){
 
-                    rettigheter.add(rettighetRequest);
+                    List<String> endringer = getEndringerMedGyldigRekkefoelge(deltakerstatuskode, tiltaksdeltakelse.getTiltakskarakteristikk());
+
+                    for(var endring: endringer){
+                        var rettighetRequest = opprettRettighetEndreDeltakerstatusRequest(ident, miljoe,
+                                tiltaksdeltakelse, endring);
+
+                        rettigheter.add(rettighetRequest);
+                    }
                 }
             }
         }
@@ -243,6 +250,26 @@ public class RettighetTiltakService {
         rettighetRequest.setPersonident(ident);
         rettighetRequest.setMiljoe(miljoe);
         return rettighetRequest;
+    }
+
+    private List<String> getEndringerMedGyldigRekkefoelge(String deltakerstatuskode, String tiltakskarakteristikk){
+        List<String> endringer = new ArrayList<>();
+
+        if(tiltakskarakteristikk.equals("AMO")){
+            endringer.add("JATAKK");
+        }
+
+        switch (deltakerstatuskode){
+            case "GJENN":
+                endringer.add(deltakerstatuskode);
+                break;
+            default:
+                endringer.add("GJENN");
+                endringer.add(deltakerstatuskode);
+                break;
+        }
+        return endringer;
+
     }
 
     Map<String, List<NyttVedtakResponse>> opprettTiltaksaktiviteter(List<RettighetRequest> rettigheter) {
