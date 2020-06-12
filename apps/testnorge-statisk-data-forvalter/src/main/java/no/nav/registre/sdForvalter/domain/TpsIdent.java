@@ -12,7 +12,6 @@ import lombok.Value;
 import no.nav.registre.sdForvalter.database.model.TpsIdentModel;
 
 @Value
-//@Builder
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)

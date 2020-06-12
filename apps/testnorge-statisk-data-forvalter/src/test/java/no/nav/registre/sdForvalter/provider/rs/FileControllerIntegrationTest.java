@@ -43,20 +43,14 @@ public class FileControllerIntegrationTest {
     private MockMvc mvc;
 
     @Autowired
-    WebApplicationContext webApplicationContext;
-
+    private TpsIdenterRepository tpsIdenterRepository;
     @Autowired
-    TpsIdenterRepository tpsIdenterRepository;
+    private GruppeRepository gruppeRepository;
     @Autowired
-    GruppeRepository gruppeRepository;
-    @Autowired
-    OpprinnelseRepository opprinnelseRepository;
+    private OpprinnelseRepository opprinnelseRepository;
 
     @Before
     public void setup() {
-        this.mvc = MockMvcBuilders
-                .webAppContextSetup(this.webApplicationContext)
-                .build();
         GruppeModel gruppeModel = new GruppeModel(null, "Gruppen", "Gruppenbeskrivelse");
         gruppeRepository.save(gruppeModel);
 
