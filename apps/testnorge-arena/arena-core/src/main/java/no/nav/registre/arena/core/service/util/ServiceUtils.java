@@ -4,6 +4,7 @@ import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.EIER;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.consumers.hodejegeren.response.Relasjon;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -164,27 +165,31 @@ public class ServiceUtils {
                 var relasjonsResponse = getRelasjonerTilIdent(ident, miljoe);
 
                 for (var relasjon : relasjonsResponse.getRelasjoner()) {
-                    if (RELASJON_BARN.equals(relasjon.getTypeRelasjon())) {
-                        var doedsdato = relasjon.getDatoDo();
-                        if(doedsdato != null && !doedsdato.equals("")){
-                            continue;
+                    if(erRelasjonEtBarnUnder18VedTidspunkt(relasjon, tidligsteDato)){
+                        utvalgteIdenter.add(ident);
+                        if (utvalgteIdenter.size() >= antallNyeIdenter) {
+                            return utvalgteIdenter;
                         }
-
-                        var barnFnr = relasjon.getFnrRelasjon();
-                        int alder = getAlderFraFnrPaaDato(barnFnr, tidligsteDato);
-
-                        if ( alder > -1 && alder < 18){
-                            utvalgteIdenter.add(ident);
-                            if (utvalgteIdenter.size() >= antallNyeIdenter) {
-                                return utvalgteIdenter;
-                            }
-                        }
-
                     }
                 }
             }
         }
         return utvalgteIdenter;
+    }
+
+    private boolean erRelasjonEtBarnUnder18VedTidspunkt(Relasjon relasjon, LocalDate tidspunkt){
+        if (RELASJON_BARN.equals(relasjon.getTypeRelasjon())) {
+            var doedsdato = relasjon.getDatoDo();
+            if(doedsdato != null && !doedsdato.equals("")){
+                return false;
+            }
+
+            var barnFnr = relasjon.getFnrRelasjon();
+            int alder = getAlderFraFnrPaaDato(barnFnr, tidspunkt);
+
+            return alder > -1 && alder < 18;
+        }
+        return false;
     }
 
     private int getAlderFraFnrPaaDato(String fnr, LocalDate dato ){
