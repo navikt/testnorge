@@ -97,8 +97,17 @@ public class VedtakshistorikkService {
             if (minimumAlder > maksimumAlder) {
                 log.error("Kunne ikke finne ident i riktig aldersgruppe");
             } else {
-                var ident = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe).get(0);
-                responses.putAll(opprettHistorikkOgSendTilArena(avspillergruppeId, ident, miljoe, vedtakshistorikken));
+                List<String> identerIAldersgruppe = Collections.emptyList();
+
+                try {
+                    identerIAldersgruppe = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe);
+                } catch (RuntimeException e) {
+                    log.error("Kunne ikke hente ident fra hodejegeren");
+                }
+
+                if (!identerIAldersgruppe.isEmpty()) {
+                    responses.putAll(opprettHistorikkOgSendTilArena(avspillergruppeId, identerIAldersgruppe.get(0), miljoe, vedtakshistorikken));
+                }
             }
         }
         return responses;
