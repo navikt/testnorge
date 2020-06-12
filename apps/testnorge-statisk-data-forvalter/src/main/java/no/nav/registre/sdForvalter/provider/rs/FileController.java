@@ -44,7 +44,7 @@ public class FileController {
     }
 
     @PostMapping("/ereg")
-    public ResponseEntity<?> importEreg(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity importEreg(@RequestParam("file") MultipartFile file) throws IOException {
         List<Ereg> list = EregCsvConverter.inst().read(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
         eregAdapter.save(new EregListe(list));
         return ResponseEntity.ok().build();
@@ -61,7 +61,7 @@ public class FileController {
     }
 
     @PostMapping("/tpsIdenter")
-    public ResponseEntity<?> importTpsIdenter(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity importTpsIdenter(@RequestParam("file") MultipartFile file) throws IOException {
         List<TpsIdent> list = TpsIdentCsvConverter.inst().read(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
         tpsIdenterAdapter.save(new TpsIdentListe(list));
         return ResponseEntity.ok().build();
