@@ -101,7 +101,6 @@ public class VedtakshistorikkService {
 
             if (minimumAlder > maksimumAlder) {
                 log.error("Kunne ikke finne ident i riktig aldersgruppe");
-                continue;
             } else {
                 List<String> identer;
                 if (tidligsteDatoBarnetillegg != null) {
@@ -112,7 +111,6 @@ public class VedtakshistorikkService {
 
                 if (identer == null || identer.isEmpty()) {
                     log.error("Kunne ikke finne ønsket ident.");
-                    continue;
                 } else {
                     responses.putAll(opprettHistorikkOgSendTilArena(avspillergruppeId, identer.get(0), miljoe, vedtakshistorikken));
                 }
