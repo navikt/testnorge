@@ -1,0 +1,18 @@
+{
+  "antall": 1,
+  "environments": [
+    "q2"
+  ],
+  "tpsf": {
+    "midlertidigAdresse": {
+      "adressetype": "UTAD",
+      "gyldigTom": "2020-06-03T13:10:11.718Z",
+      "utenlandskAdresse": {
+        "postLand": "POL",
+        "postLinje1": "Hmt hof 34",
+        "postLinje2": "Warshava",
+        "postLinje3": "0035 POL"
+      }
+    }
+  }
+}
