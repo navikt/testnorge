@@ -23,7 +23,10 @@ export const Arbeidsavtaler = ({ data }) => {
 							title="stillingsprosent siste endringsdato"
 							value={Formatters.formatStringDates(id.sistStillingsendring)}
 						/>
-						<TitleValue title="Stillingsprosent" value={id.stillingsprosent} />
+						<TitleValue
+							title="Stillingsprosent"
+							value={id.stillingsprosent === 0 ? '0' : id.stillingsprosent}
+						/>
 						<TitleValue title="Yrke" value={id.yrke} kodeverk={ArbeidKodeverk.Yrker} />
 					</div>
 				)}

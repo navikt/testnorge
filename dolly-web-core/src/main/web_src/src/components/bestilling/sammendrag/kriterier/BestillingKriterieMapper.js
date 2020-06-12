@@ -281,7 +281,12 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					width: 'xlarge',
 					showKodeverkValue: true
 				},
-				obj('Stillingprosent', arbeidsforhold.arbeidsavtale.stillingsprosent),
+				obj(
+					'Stillingprosent',
+					arbeidsforhold.arbeidsavtale.stillingsprosent === 0
+						? '0'
+						: arbeidsforhold.arbeidsavtale.stillingsprosent
+				),
 				obj(
 					'Endringsdato stillingprosent',
 					Formatters.formatDate(arbeidsforhold.arbeidsavtale.endringsdatoStillingsprosent)
