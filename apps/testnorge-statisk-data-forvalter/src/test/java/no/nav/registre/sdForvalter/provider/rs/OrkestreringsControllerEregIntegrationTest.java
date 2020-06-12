@@ -3,8 +3,6 @@ package no.nav.registre.sdForvalter.provider.rs;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static no.nav.registre.sdForvalter.util.JsonTestHelper.stubPost;
-import static no.nav.registre.sdForvalter.util.JsonTestHelper.verifyPost;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -28,6 +26,7 @@ import no.nav.registre.sdForvalter.consumer.rs.request.ereg.EregMapperRequest;
 import no.nav.registre.sdForvalter.database.model.EregModel;
 import no.nav.registre.sdForvalter.database.repository.EregRepository;
 import no.nav.registre.sdForvalter.domain.Ereg;
+import no.nav.registre.testnorge.test.JsonWiremockHelper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -55,16 +54,22 @@ public class OrkestreringsControllerEregIntegrationTest {
         EregModel model = createEregModel("12345678903", "BEDF");
         eregRepository.save(model);
 
-        stubPost(CREATE_IN_EREG_URL_PATTERN);
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/v1/orkestrering/opprett")
+                .stubPost();
+
+
         mvc.perform(post("/api/v1/orkestrering/ereg/" + ENVIRONMENT)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verifyPost(
-                CREATE_IN_EREG_URL_PATTERN,
-                Collections.singletonList(new EregMapperRequest(new Ereg(model), false)),
-                objectMapper
-        );
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/v1/orkestrering/opprett")
+                .withRequestBody(Collections.singletonList(new EregMapperRequest(new Ereg(model), false)))
+                .stubPost();
     }
 
     private EregModel createEregModel(String orgId, String enhetstype) {

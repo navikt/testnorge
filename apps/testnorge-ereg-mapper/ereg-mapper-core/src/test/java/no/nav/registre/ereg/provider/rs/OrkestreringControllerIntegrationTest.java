@@ -26,7 +26,6 @@ import org.springframework.util.FileCopyUtils;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -36,7 +35,7 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.ereg.config.TestConfig;
 import no.nav.registre.ereg.consumer.rs.request.JenkinsCrumbRequest;
-import no.nav.registre.ereg.util.JsonTestHelper;
+import no.nav.registre.testnorge.test.JsonWiremockHelper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestConfig.class)
@@ -59,10 +58,17 @@ public class OrkestreringControllerIntegrationTest {
     @Before
     public void setup() throws Exception {
         JenkinsCrumbRequest crumbRequest = JenkinsCrumbRequest.builder().crumb("test").build();
-        JsonTestHelper.stubGet(urlPathMatching("(.*)/crumbIssuer/api/json"), crumbRequest, mapper);
-        JsonTestHelper.stubPost(urlPathMatching(BEREG007_PATTERN), "", mapper);
-    }
 
+        JsonWiremockHelper.builder(mapper)
+                .withUrlPathMatching("(.*)/crumbIssuer/api/json")
+                .withResponseBody(crumbRequest)
+                .stubGet();
+
+        JsonWiremockHelper.builder(mapper)
+                .withUrlPathMatching(BEREG007_PATTERN)
+                .withResponseBody("")
+                .stubPost();
+    }
 
 
     @Test
