@@ -1,15 +1,14 @@
 package no.nav.registre.arena.core.service.util;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 
 import static java.lang.Integer.parseInt;
 
-@Service
-@RequiredArgsConstructor
 public class IdentUtils {
+
+    private IdentUtils() {
+        throw new IllegalStateException("Utility class");
+    }
 
     private static final String DNR = "DNR";
     private static final String BOST = "BOST";
@@ -37,7 +36,7 @@ public class IdentUtils {
      * INDIVID(POS 7-9) 900-999 OG ÅR > 39 => ÅRHUNDRE = 1900
      * INDIVID(POS 7-9) 500-999 OG ÅR < 40 => ÅRHUNDRE = 2000
      */
-    private static int getFullYear(String ident) {
+    public static int getFullYear(String ident) {
         int aar = parseInt(ident.substring(4, 6));
         int individ = parseInt(ident.substring(6, 9));
 
