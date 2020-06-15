@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.TiltakSyntConsumer;
@@ -221,9 +222,10 @@ public class RettighetTiltakService {
             var feiledeRettigheter = identerMedOpprettedeTiltakdeltakelse.get(ident).get(0).getFeiledeRettigheter();
 
             if (feiledeRettigheter != null && feiledeRettigheter.isEmpty()) {
-                NyttVedtakTiltak tiltaksdeltakelse = rettigheterTiltaksdeltakelse.stream().
-                        filter(request -> request.getPersonident().equals(ident)).
-                        findFirst().get().getVedtakTiltak().get(0);
+                List<RettighetRequest> filterteRettigheter = rettigheterTiltaksdeltakelse.stream().
+                        filter(request -> request.getPersonident().equals(ident)).collect(Collectors.toList());
+
+                NyttVedtakTiltak tiltaksdeltakelse = filterteRettigheter.get(0).getVedtakTiltak().get(0);
 
                 var syntetisertRettighet = tiltakSyntConsumer.opprettDeltakerstatus(1).get(0);
 
