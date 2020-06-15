@@ -1,5 +1,6 @@
 package no.nav.registre.arena.core.consumer.rs.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,7 +8,6 @@ import lombok.Setter;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakEndreDeltakerstatus;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class RettighetEndreDeltakerstatusRequest extends RettighetRequest {
 
-    private List<NyttVedtakEndreDeltakerstatus> nyeEndreDeltakerstatus;
+    private List<NyttVedtakTiltak> nyeEndreDeltakerstatus;
 
     @Override public String getArenaForvalterUrlPath() {
         return "/v1/endreDeltakerstatus";
@@ -28,12 +28,12 @@ public class RettighetEndreDeltakerstatusRequest extends RettighetRequest {
         return Collections.emptyList();
     }
 
+    @JsonProperty("nyeEndreDeltakerstatus")
     @Override public List<NyttVedtakTiltak> getVedtakTiltak() {
-        return Collections.emptyList();
+        return nyeEndreDeltakerstatus;
     }
 
     @Override public List<NyttVedtakTillegg> getVedtakTillegg() {
         return Collections.emptyList();
     }
-
 }

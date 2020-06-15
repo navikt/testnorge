@@ -1,6 +1,5 @@
 package no.nav.registre.arena.core.consumer.rs;
 
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakEndreDeltakerstatus;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -56,9 +55,9 @@ public class TiltakSyntConsumer {
         }).getBody();
     }
 
-    public List<NyttVedtakEndreDeltakerstatus> opprettDeltakerstatus(int antallMeldinger) {
+    public List<NyttVedtakTiltak> opprettDeltakerstatus(int antallMeldinger) {
         var postRequest = consumerUtils.createPostRequest(arenaDeltakerstatusUrl, antallMeldinger);
-        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakEndreDeltakerstatus>>() {
+        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakTiltak>>() {
         }).getBody();
     }
 }

@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakEndreDeltakerstatus;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import org.springframework.stereotype.Service;
@@ -251,18 +250,18 @@ public class RettighetTiltakService {
             NyttVedtakTiltak tiltaksdeltakelse,
             String deltakerstatuskode) {
 
-        NyttVedtakEndreDeltakerstatus nyttVedtakEndreDeltakerstatus = new NyttVedtakEndreDeltakerstatus();
-        nyttVedtakEndreDeltakerstatus.setTiltakskarakteristikk(tiltaksdeltakelse.getTiltakskarakteristikk());
-        nyttVedtakEndreDeltakerstatus.setDato(tiltaksdeltakelse.getFraDato());
-        nyttVedtakEndreDeltakerstatus.setDeltakerstatusKode(deltakerstatuskode);
+        NyttVedtakTiltak vedtak = new NyttVedtakTiltak();
+        vedtak.setTiltakskarakteristikk(tiltaksdeltakelse.getTiltakskarakteristikk());
+        vedtak.setDato(tiltaksdeltakelse.getFraDato());
+        vedtak.setDeltakerstatusKode(deltakerstatuskode);
 
         if (deltakerstatuskoderMedAarsakkoder.containsKey(deltakerstatuskode)) {
             List<String> aarsakkoder = deltakerstatuskoderMedAarsakkoder.get(deltakerstatuskode);
             String aarsakkode = aarsakkoder.get(rand.nextInt(aarsakkoder.size()));
-            nyttVedtakEndreDeltakerstatus.setAarsakKode(aarsakkode);
+            vedtak.setAarsakKode(aarsakkode);
         }
 
-        var rettighetRequest = new RettighetEndreDeltakerstatusRequest(Collections.singletonList(nyttVedtakEndreDeltakerstatus));
+        var rettighetRequest = new RettighetEndreDeltakerstatusRequest(Collections.singletonList(vedtak));
 
         rettighetRequest.setPersonident(ident);
         rettighetRequest.setMiljoe(miljoe);
