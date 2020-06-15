@@ -35,6 +35,8 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Adr
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Forvalter;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Konto;
 
+import static no.nav.registre.arena.core.service.util.IdentUtils.hentFoedseldato;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -185,28 +187,17 @@ public class ServiceUtils {
             }
 
             var barnFnr = relasjon.getFnrRelasjon();
-            int alder = getAlderFraFnrPaaDato(barnFnr, tidspunkt);
+
+            var foedselsdato = hentFoedseldato(barnFnr);
+
+            int alder = Math.toIntExact(ChronoUnit.YEARS.between(foedselsdato, tidspunkt));
+            if (tidspunkt.isBefore(foedselsdato)){
+                alder = -alder;
+            }
 
             return alder > -1 && alder < 18;
         }
         return false;
-    }
-
-    private int getAlderFraFnrPaaDato(String fnr, LocalDate dato ){
-        var aar = Integer.parseInt(fnr.substring(4,6));
-        var dag = Integer.parseInt(fnr.substring(0,2));
-        var maaned = Integer.parseInt(fnr.substring(2,4));
-
-        LocalDate dagensdato = LocalDate.now();
-        aar = (aar <= (dagensdato.getYear() - 2000))? aar + 2000 : aar + 1900;
-
-        LocalDate foedselsdato = LocalDate.of(aar, maaned, dag);
-
-        int alder = Math.toIntExact(ChronoUnit.YEARS.between(foedselsdato, dato));
-        if (dato.isBefore(foedselsdato)){
-            alder = -alder;
-        }
-        return alder;
     }
 
     private List<String> filtrerEksisterendeBrukereIArena(
