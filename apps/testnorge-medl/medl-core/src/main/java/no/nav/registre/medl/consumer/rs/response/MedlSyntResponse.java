@@ -74,7 +74,7 @@ public class MedlSyntResponse {
     public void oppdaterMeldingFraAnnenMelding(MedlSyntResponse annenMedlData) {
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field f : fields) {
-            Class dataType = f.getType();
+            Class<?> dataType = f.getType();
             Object fieldValue;
             try {
                 f.setAccessible(true);

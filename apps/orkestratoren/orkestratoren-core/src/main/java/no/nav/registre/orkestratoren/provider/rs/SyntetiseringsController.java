@@ -1,6 +1,7 @@
 package no.nav.registre.orkestratoren.provider.rs;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
@@ -88,7 +89,7 @@ public class SyntetiseringsController {
     private TestnorgeMedlService testnorgeMedlService;
 
     @PostMapping(value = "/tps/skdmeldinger/generer")
-    public ResponseEntity opprettSkdmeldingerITPS(
+    public ResponseEntity<SkdMeldingerTilTpsRespons> opprettSkdmeldingerITPS(
             @RequestBody SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest
     ) {
         return testnorgeSkdService.genererSkdmeldinger(syntetiserSkdmeldingerRequest.getAvspillergruppeId(),
@@ -121,7 +122,7 @@ public class SyntetiseringsController {
     }
 
     @PostMapping(value = "/popp/skattegrunnlag/generer")
-    public ResponseEntity opprettSkattegrunnlagISigrun(
+    public ResponseEntity<List<Integer>> opprettSkattegrunnlagISigrun(
             @RequestHeader(value = "testdataEier", defaultValue = "", required = false) String testdataEier,
             @RequestBody SyntetiserPoppRequest syntetiserPoppRequest
     ) {
@@ -129,7 +130,7 @@ public class SyntetiseringsController {
     }
 
     @PostMapping(value = "/aareg/arbeidsforhold/generer")
-    public ResponseEntity opprettArbeidsforholdIAareg(
+    public ResponseEntity<List<Object>> opprettArbeidsforholdIAareg(
             @RequestParam boolean sendAlleEksisterende,
             @RequestBody SyntetiserAaregRequest syntetiserAaregRequest
     ) {
@@ -151,14 +152,14 @@ public class SyntetiseringsController {
     }
 
     @PostMapping(value = "/tp/ytelser/generer")
-    public ResponseEntity opprettYtelserITp(
+    public ResponseEntity<String> opprettYtelserITp(
             @RequestBody SyntetiserTpRequest request
     ) {
         return testnorgeTpService.genererTp(request);
     }
 
     @PostMapping(value = "/sam/samordningsmeldinger/generer")
-    public ResponseEntity opprettSamordningsmeldingerISam(
+    public ResponseEntity<List<Object>> opprettSamordningsmeldingerISam(
             @RequestBody SyntetiserSamRequest syntetiserSamRequest
     ) {
         return testnorgeSamService.genererSamordningsmeldinger(syntetiserSamRequest);
@@ -172,7 +173,7 @@ public class SyntetiseringsController {
     }
 
     @PostMapping(value = "/arena/vedtakshistorikk/generer")
-    public ResponseEntity opprettVedtakshistorikkIArena(
+    public ResponseEntity<String> opprettVedtakshistorikkIArena(
             @RequestBody SyntetiserArenaVedtakshistorikkRequest vedtakshistorikkRequest
     ) {
         testnorgeArenaService.opprettArenaVedtakshistorikk(vedtakshistorikkRequest);
@@ -211,6 +212,7 @@ public class SyntetiseringsController {
     public Object opprettMedlemskapIMedl(
             @RequestBody SyntetiserMedlRequest syntetiserMedlRequest
     ) {
+
         return testnorgeMedlService.genererMedlemskap(syntetiserMedlRequest);
     }
 }

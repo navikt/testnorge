@@ -90,7 +90,7 @@ public class TokenService {
         } else {
             url = tokenProviderUrlT;
         }
-        RequestEntity getRequest = RequestEntity
+        RequestEntity<?> getRequest = RequestEntity
                 .get(URI.create(url))
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
                 .header("username", username)

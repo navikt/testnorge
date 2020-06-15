@@ -107,13 +107,13 @@ public class HistorikkController {
 
     @ApiOperation(value = "Slett historikk med en gitt id fra databasen.")
     @DeleteMapping(value = "{id}")
-    public ResponseEntity slettHistorikk(@PathVariable String id) {
+    public ResponseEntity<String> slettHistorikk(@PathVariable String id) {
         return historikkService.slettHistorikk(id);
     }
 
     @ApiOperation(value = "Slett historikk på en gitt kilde på en gitt id fra databasen.")
     @DeleteMapping(value = "kilde/{id}")
-    public ResponseEntity slettKilde(
+    public ResponseEntity<String> slettKilde(
             @PathVariable String id,
             @RequestParam String navnPaaKilde
     ) {

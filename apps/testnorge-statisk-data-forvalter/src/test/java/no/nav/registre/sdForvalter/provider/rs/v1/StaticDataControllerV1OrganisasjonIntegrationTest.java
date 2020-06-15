@@ -1,13 +1,11 @@
 package no.nav.registre.sdForvalter.provider.rs.v1;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +35,7 @@ import no.nav.registre.sdForvalter.database.model.OpprinnelseModel;
 import no.nav.registre.sdForvalter.database.repository.EregRepository;
 import no.nav.registre.sdForvalter.database.repository.GruppeRepository;
 import no.nav.registre.sdForvalter.database.repository.OpprinnelseRepository;
-import no.nav.registre.sdForvalter.util.JsonTestHelper;
+import no.nav.registre.testnorge.test.JsonWiremockHelper;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureWireMock(port = 0)
@@ -64,13 +62,11 @@ public class StaticDataControllerV1OrganisasjonIntegrationTest {
     @Autowired
     private OpprinnelseRepository opprinnelseRepository;
 
-    private UrlPathPattern eregMapperUrlPattern;
     private GruppeModel wip;
     private OpprinnelseModel brreg;
 
     @Before
     public void setup() {
-        eregMapperUrlPattern = urlPathMatching("(.*)/v1/organisasjoner");
         wip = gruppeRepository.save(new GruppeModel(null, "WIP", "Testest"));
         brreg = opprinnelseRepository.save(new OpprinnelseModel(null, "Brreg"));
     }
@@ -169,7 +165,12 @@ public class StaticDataControllerV1OrganisasjonIntegrationTest {
         // innholdet i flatfilen påvirker ikke testen.
         String flatfil = "HEADER 2020010100000AA A\nENH 999999999BEDRNNY  2020010120200101J\nNAVNN   DOLLY TEST BEDR\nTRAIER 0000001000000004\n";
 
-        JsonTestHelper.stubPost(eregMapperUrlPattern, eregMapperRequests, objectMapper);
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/v1/organisasjoner")
+                .withResponseBody(eregMapperRequests)
+                .stubPost();
+
         mvc.perform(post(EREG_API)
                 .content(flatfil)
                 .contentType(MediaType.APPLICATION_JSON))

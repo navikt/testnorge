@@ -33,7 +33,7 @@ public class AltinnInntektConsumer {
             RsInntektsmelding inntektsmelding,
             Boolean continueOnError
     ) {
-        RequestEntity postRequest = RequestEntity.post(urlMapper201812.expand())
+        RequestEntity<RsInntektsmelding> postRequest = RequestEntity.post(urlMapper201812.expand())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(inntektsmelding);
         try {

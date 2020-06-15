@@ -28,7 +28,7 @@ import no.nav.registre.testnorge.dto.helsepersonell.v1.LegeListeDTO;
 import no.nav.registre.testnorge.dto.hodejegeren.v1.PersondataDTO;
 import no.nav.registre.testnorge.dto.samhandlerregisteret.v1.IdentDTO;
 import no.nav.registre.testnorge.dto.samhandlerregisteret.v1.SamhandlerDTO;
-import no.nav.registre.testnorge.test.JsonTestHelper;
+import no.nav.registre.testnorge.test.JsonWiremockHelper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -52,45 +52,72 @@ class HelsepersonellControllerIntegrationTest {
         String firstPersonIdent = "12125678903";
         String secondPersonIdent = "09126543211";
         List<String> leger = Arrays.asList(firstPersonIdent, secondPersonIdent);
-        JsonTestHelper.stubGet(
-                urlPathMatching("(.*)/v1/alle-identer/" + legerAvspillergruppeId),
-                leger,
-                objectMapper
-        );
 
-        JsonTestHelper.stubGet(
-                WireMock.get(urlPathMatching("(.*)/v1/persondata"))
-                        .withQueryParam("ident", WireMock.equalTo(firstPersonIdent)),
-                PersondataDTO.builder().fnr(firstPersonIdent).fornavn("Hans").etternavn("Hansen").build(),
-                objectMapper
-        );
 
-        JsonTestHelper.stubGet(
-                WireMock.get(urlPathMatching("(.*)/v1/persondata"))
-                        .withQueryParam("ident", WireMock.equalTo(secondPersonIdent)),
-                PersondataDTO.builder().fnr(secondPersonIdent).fornavn("Berg").mellomnavn("Skog").etternavn("Fjell").build(),
-                objectMapper
-        );
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/v1/alle-identer/" + legerAvspillergruppeId)
+                .withResponseBody(leger)
+                .stubGet();
 
-        JsonTestHelper.stubGet(
-                WireMock.get(urlPathMatching("(.*)/rest/sar/samh"))
-                        .withQueryParam("ident", WireMock.equalTo(firstPersonIdent)),
-                Collections.singletonList(SamhandlerDTO
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/v1/persondata")
+                .withQueryParam("ident", firstPersonIdent)
+                .withResponseBody(PersondataDTO
                         .builder()
-                        .identer(Collections.singletonList(IdentDTO.builder().identTypeKode("HPR").ident("54321").build()))
-                        .build()),
-                objectMapper
-        );
+                        .fnr(firstPersonIdent)
+                        .fornavn("Hans")
+                        .etternavn("Hansen")
+                        .build())
+                .stubGet();
 
-        JsonTestHelper.stubGet(
-                WireMock.get(urlPathMatching("(.*)/rest/sar/samh"))
-                        .withQueryParam("ident", WireMock.equalTo(secondPersonIdent)),
-                Collections.singletonList(SamhandlerDTO
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/v1/persondata")
+                .withQueryParam("ident", secondPersonIdent)
+                .withResponseBody(PersondataDTO
                         .builder()
-                        .identer(Collections.singletonList(IdentDTO.builder().identTypeKode("HPR").ident("12345").build()))
-                        .build()),
-                objectMapper
-        );
+                        .fnr(secondPersonIdent)
+                        .fornavn("Berg")
+                        .mellomnavn("Skog")
+                        .etternavn("Fjell")
+                        .build())
+                .stubGet();
+
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/rest/sar/samh")
+                .withQueryParam("ident", firstPersonIdent)
+                .withResponseBody(
+                        Collections.singletonList(SamhandlerDTO
+                                .builder()
+                                .identer(Collections.singletonList(IdentDTO
+                                        .builder()
+                                        .identTypeKode("HPR")
+                                        .ident("54321")
+                                        .build()))
+                                .build()
+                        ))
+                .stubGet();
+
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/rest/sar/samh")
+                .withQueryParam("ident", secondPersonIdent)
+                .withResponseBody(
+                        Collections.singletonList(SamhandlerDTO
+                                .builder()
+                                .identer(Collections.singletonList(IdentDTO
+                                        .builder()
+                                        .identTypeKode("HPR")
+                                        .ident("12345")
+                                        .build()))
+                                .build()
+                        ))
+                .stubGet();
 
 
         String json = mvc.perform(get("/api/v1/helsepersonell/leger")

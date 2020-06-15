@@ -1,5 +1,7 @@
 package no.nav.registre.tss.consumer.rs;
 
+import no.nav.registre.tss.consumer.rs.response.TssMessage;
+import no.nav.registre.tss.domain.Samhandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
@@ -10,9 +12,6 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.List;
 import java.util.Map;
-
-import no.nav.registre.tss.consumer.rs.response.TssMessage;
-import no.nav.registre.tss.domain.Samhandler;
 
 @Component
 public class TssSyntetisererenConsumer {
@@ -29,7 +28,7 @@ public class TssSyntetisererenConsumer {
     }
 
     public Map<String, List<TssMessage>> hentSyntetiskeTssRutiner(List<Samhandler> samhandlere) {
-        RequestEntity postRequest = RequestEntity.post(url.expand()).body(samhandlere);
+        RequestEntity<?> postRequest = RequestEntity.post(url.expand()).body(samhandlere);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
 }

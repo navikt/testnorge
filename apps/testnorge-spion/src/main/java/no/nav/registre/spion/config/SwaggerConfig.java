@@ -3,7 +3,6 @@ package no.nav.registre.spion.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.annotations.ApiIgnore;
@@ -16,8 +15,9 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Configure automated swagger API documentation
@@ -32,7 +32,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
 
     @Bean
     public Docket api() {
-        HashSet contentTypeJson = new HashSet(Arrays.asList("application/json"));
+        Set<String> contentTypeJson = new HashSet<>(Collections.singletonList("application/json"));
         return new Docket(DocumentationType.SWAGGER_2)
                 .ignoredParameterTypes(ApiIgnore.class)
                 .select()

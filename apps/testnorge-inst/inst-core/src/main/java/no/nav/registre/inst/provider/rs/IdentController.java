@@ -72,7 +72,7 @@ public class IdentController {
 
     @PutMapping("/ident/{oppholdId}")
     @ApiOperation(value = "Her kan man oppdatere et institusjonsopphold med angitt oppholdId i inst2.")
-    public ResponseEntity oppdaterInstitusjonsopphold(
+    public ResponseEntity<Object> oppdaterInstitusjonsopphold(
             @PathVariable Long oppholdId,
             @RequestHeader(HEADER_NAV_CALL_ID) @NotBlank String navCallId,
             @RequestHeader(HEADER_NAV_CONSUMER_ID) @NotBlank String navConsumerId,
@@ -84,14 +84,14 @@ public class IdentController {
 
     @DeleteMapping("/ident")
     @ApiOperation(value = "Her kan man slette alle institusjonsoppholdene med de angitte oppholdId-ene fra inst2.")
-    public Map<Long, ResponseEntity> slettInstitusjonsopphold(
+    public Map<Long, ResponseEntity<Object>> slettInstitusjonsopphold(
             @RequestHeader(HEADER_NAV_CALL_ID) @NotBlank String navCallId,
             @RequestHeader(HEADER_NAV_CONSUMER_ID) @NotBlank String navConsumerId,
             @RequestParam String miljoe,
             @RequestParam List<Long> oppholdIder
     ) {
         var bearerToken = identService.hentTokenTilInst2(miljoe);
-        Map<Long, ResponseEntity> status = Maps.newHashMapWithExpectedSize(oppholdIder.size());
+        Map<Long, ResponseEntity<Object>> status = Maps.newHashMapWithExpectedSize(oppholdIder.size());
         for (var oppholdId : oppholdIder) {
             status.put(oppholdId, identService.slettOppholdMedId(bearerToken, navCallId, navConsumerId, miljoe, oppholdId));
         }
