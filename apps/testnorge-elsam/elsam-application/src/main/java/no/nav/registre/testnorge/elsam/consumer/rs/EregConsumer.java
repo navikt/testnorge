@@ -24,7 +24,7 @@ public class EregConsumer {
     }
 
     public EregResponse hentEregdataFraOrgnummer(String orgnummer) {
-        RequestEntity getRequest = RequestEntity.get(eregUrl.expand(orgnummer))
+        RequestEntity<?> getRequest = RequestEntity.get(eregUrl.expand(orgnummer))
                 .header("Nav-Call-Id", "orkestratoren")
                 .header("Nav-Consumer-Id", "orkestratoren")
                 .build();

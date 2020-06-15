@@ -100,7 +100,7 @@ public class TpsfConsumer {
     }
 
     @Timed
-    public ResponseEntity slettIdenterFraTps(
+    public ResponseEntity<Object> slettIdenterFraTps(
             List<String> miljoer,
             List<String> identer
     ) {

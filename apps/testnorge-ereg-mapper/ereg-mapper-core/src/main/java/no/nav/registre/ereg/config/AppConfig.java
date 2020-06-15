@@ -21,7 +21,7 @@ public class AppConfig {
     }
 
     @Bean
-    public FilterRegistrationBean transactionFilterRegistration() {
+    public FilterRegistrationBean<Filter> transactionFilterRegistration() {
         FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
         registration.setFilter(transactionFilter());
         registration.addUrlPatterns("/api/*");

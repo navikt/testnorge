@@ -30,7 +30,7 @@ public class TestnorgeSkdService {
     @Autowired
     private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
 
-    public ResponseEntity genererSkdmeldinger(
+    public ResponseEntity<SkdMeldingerTilTpsRespons> genererSkdmeldinger(
             Long avspillergruppeId,
             String miljoe,
             Map<String, Integer> antallMeldingerPerEndringskode

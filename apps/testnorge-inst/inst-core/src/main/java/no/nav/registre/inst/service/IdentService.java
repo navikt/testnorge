@@ -89,7 +89,7 @@ public class IdentService {
         return sletteOppholdResponses;
     }
 
-    public ResponseEntity oppdaterInstitusjonsopphold(
+    public ResponseEntity<Object> oppdaterInstitusjonsopphold(
             String callId,
             String consumerId,
             String miljoe,
@@ -100,7 +100,7 @@ public class IdentService {
         return inst2Consumer.oppdaterInstitusjonsoppholdIInst2(bearerToken, callId, consumerId, miljoe, oppholdId, institusjonsopphold);
     }
 
-    public ResponseEntity slettOppholdMedId(
+    public ResponseEntity<Object> slettOppholdMedId(
             String bearerToken,
             String callId,
             String consumerId,

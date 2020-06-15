@@ -226,7 +226,7 @@ public class ServiceUtils {
             List<String> feiledeIdenter = new ArrayList<>();
             if (!nyeBrukereResponse.getNyBrukerFeilList().isEmpty()) {
                 nyeBrukereResponse.getNyBrukerFeilList().forEach(nyBrukerFeil -> {
-                    log.error("Kunne ikke opprette ny bruker i arena: {}", nyBrukerFeil.getMelding());
+                    log.error("Kunne ikke opprette ny bruker med fnr {} i arena: {}", nyBrukerFeil.getPersonident(), nyBrukerFeil.getMelding());
                     feiledeIdenter.add(nyBrukerFeil.getPersonident());
                 });
             }
