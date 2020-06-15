@@ -152,10 +152,12 @@ public class VedtakshistorikkService {
     }
 
     private List<NyttVedtakTillegg> fjernTilsynFamiliemedlemmerVedtakMedUgyldigeDatoer(List<NyttVedtakTillegg> tilsynFamiliemedlemmer) {
-        if (tilsynFamiliemedlemmer == null) return null;
-        var nyTilsynFamiliemedlemmer = tilsynFamiliemedlemmer.stream().filter(vedtak ->
-                !vedtak.getFraDato().isAfter(AVVIKLET_DATO_TSOTILFAM))
-                .collect(Collectors.toList());
+        List<NyttVedtakTillegg> nyTilsynFamiliemedlemmer = new ArrayList<>();
+        if (tilsynFamiliemedlemmer != null){
+            nyTilsynFamiliemedlemmer = tilsynFamiliemedlemmer.stream().filter(vedtak ->
+                    !vedtak.getFraDato().isAfter(AVVIKLET_DATO_TSOTILFAM))
+                    .collect(Collectors.toList());
+        }
 
         return nyTilsynFamiliemedlemmer.isEmpty() ? null : nyTilsynFamiliemedlemmer;
     }
