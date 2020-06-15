@@ -43,6 +43,13 @@ const selectOptions: SelectOptions = {
 		{ value: 'KOMMUNENR', label: 'kommunenummer' }
 	],
 
+	adresseType: [
+		{ value: 'GATE', label: 'Norsk gateadresse' },
+		{ value: 'STED', label: 'Norsk stedsadresse' },
+		{ value: 'PBOX', label: 'Norsk postboksadresse' },
+		{ value: 'UTAD', label: 'Utenlandsk adresse' }
+	],
+
 	// SIGRUN
 	tjeneste: [
 		{ value: 'BEREGNET_SKATT', label: 'Beregnet skatt' },

@@ -38,6 +38,7 @@ export const erForste = (values, attributt) => {
 		'tpsf.identHistorikk',
 		'tpsf.boadresse',
 		'tpsf.postadresse',
+		'tpsf.midlertidigAdresse',
 		'tpsf.relasjoner',
 		'aareg',
 		'sigrunstub',

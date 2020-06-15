@@ -9,10 +9,11 @@ import { panelError } from '~/components/ui/form/formUtils'
 import { erForste } from '~/components/ui/form/formUtils'
 import { Boadresse } from './partials/boadresse/Boadresse'
 import { Postadresser } from './Postadresser'
+import { MidlertidigAdresse } from './MidlertidigAdresse'
 import { MatrikkelAdresse } from './partials/MatrikkelAdresse'
 import { AdresseNr } from './partials/AdresseNr'
 
-const paths = ['tpsf.boadresse', 'tpsf.postadresse']
+const paths = ['tpsf.boadresse', 'tpsf.postadresse', 'tpsf.midlertidigAdresse']
 /* Fordi UFB også bruker boadresse kan vi ikke bare sjekke den. 
 Flyttedato er for nye bestillinger. Postnr (detaljert gateadr og matr) og adresseNrInfo er for maler
 */
@@ -35,7 +36,9 @@ export const Adresser = ({ formikBag }) => {
 	const [boType, setBoType] = useState(initialBoType(formikBag))
 
 	// Sjekker om adresse er valgt på steg 1, da panelet ikke skal vises dersom bare diskresjonskoder (med UFB og kommunenummer) er valgt
-	const erValgt = [...boadressePaths, 'tpsf.postadresse'].some(path => _has(formikBag.values, path))
+	const erValgt = [...boadressePaths, 'tpsf.postadresse', 'tpsf.midlertidigAdresse'].some(path =>
+		_has(formikBag.values, path)
+	)
 
 	const handleRadioChange = e => {
 		const nyType = e.target.value
@@ -132,6 +135,9 @@ export const Adresser = ({ formikBag }) => {
 
 					<Vis attributt="tpsf.postadresse">
 						<Postadresser formikBag={formikBag} />
+					</Vis>
+					<Vis attributt="tpsf.midlertidigAdresse">
+						<MidlertidigAdresse formikBag={formikBag} />
 					</Vis>
 				</Panel>
 			</Vis>

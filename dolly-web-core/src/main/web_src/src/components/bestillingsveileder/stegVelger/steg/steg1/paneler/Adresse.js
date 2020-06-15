@@ -20,6 +20,10 @@ export const AdressePanel = ({ stateModifier }) => {
 			<AttributtKategori title="Postadresse">
 				<Attributt attr={sm.attrs.postadresse} />
 			</AttributtKategori>
+
+			<AttributtKategori title="Midlertidig adresse">
+				<Attributt attr={sm.attrs.midlertidigAdresse} />
+			</AttributtKategori>
 		</Panel>
 	)
 }
@@ -50,5 +54,15 @@ AdressePanel.initialValues = ({ set, setMulti, del, has }) => ({
 				}
 			]),
 		remove: () => del('tpsf.postadresse')
+	},
+	midlertidigAdresse: {
+		label: 'Har midlertidig adresse',
+		checked: has('tpsf.midlertidigAdresse'),
+		add: () =>
+			set('tpsf.midlertidigAdresse', {
+				adressetype: 'GATE',
+				gyldigTom: ''
+			}),
+		remove: () => del('tpsf.midlertidigAdresse')
 	}
 })
