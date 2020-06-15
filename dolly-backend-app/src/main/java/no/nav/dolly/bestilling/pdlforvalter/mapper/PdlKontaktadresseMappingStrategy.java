@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.NORSK;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.UTENLANDSK;
 import static no.nav.dolly.bestilling.pdlforvalter.mapper.PdlAdresseMappingStrategy.getDato;
@@ -9,7 +8,6 @@ import static no.nav.dolly.domain.resultset.tpsf.adresse.MidlertidigAdresse.Midl
 import static no.nav.dolly.domain.resultset.tpsf.adresse.MidlertidigAdresse.MidlertidigAdressetype.PBOX;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
-import java.util.List;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -25,7 +23,6 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse.UtenlandskA
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse.VegadresseForPost;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper;
 import no.nav.dolly.domain.resultset.tpsf.Person;
-import no.nav.dolly.domain.resultset.tpsf.adresse.BoGateadresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.MidlertidigAdresse.MidlertidigGateAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.MidlertidigAdresse.MidlertidigPboxAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.MidlertidigAdresse.MidlertidigUtadAdresse;
@@ -38,8 +35,6 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
 
     private static final String CO_NAME = "C/O";
 
-    private final MapperFacade mapperFacade;
-
     @Override
     public void register(MapperFactory factory) {
 
@@ -51,7 +46,7 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                         if (NORSK == wrapper.getAdressetype()) {
 
                             kontaktadresse.setCoAdressenavn(getCoAdresse(wrapper.getPerson()));
-                            mapNorskAdresse(wrapper, kontaktadresse);
+                            mapNorskAdresse(mapperFacade, wrapper, kontaktadresse);
 
                         } else if (UTENLANDSK == wrapper.getAdressetype()) {
 
@@ -91,22 +86,6 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                 })
                 .register();
 
-        factory.classMap(BoGateadresse.class, VegadresseForPost.class)
-                .customize(new CustomMapper<BoGateadresse, VegadresseForPost>() {
-                    @Override
-                    public void mapAtoB(BoGateadresse gateadresse, VegadresseForPost vegadresse, MappingContext context) {
-
-                        vegadresse.setAdressekode(gateadresse.getGatekode());
-                        vegadresse.setAdressenavn(gateadresse.getGateadresse());
-                        vegadresse.setHusnummer(gateadresse.getHusnummer());
-                        vegadresse.setPostnummer(gateadresse.getPostnr());
-                        vegadresse.setAdressetillegsnavn(isNotBlank(gateadresse.getTilleggsadresse()) &&
-                                !gateadresse.getTilleggsadresse().contains(CO_NAME) ?
-                                gateadresse.getTilleggsadresse() : null);
-                    }
-                })
-                .register();
-
         factory.classMap(MidlertidigPboxAdresse.class, Postboksadresse.class)
                 .customize(new CustomMapper<MidlertidigPboxAdresse, Postboksadresse>() {
                     @Override
@@ -115,26 +94,6 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                         postboksadresse.setPostboks(midlertidigAdresse.getPostboksnr());
                         postboksadresse.setPostbokseier(midlertidigAdresse.getPostboksAnlegg());
                         postboksadresse.setPostnummer(midlertidigAdresse.getPostnr());
-                    }
-                })
-                .register();
-
-        factory.classMap(RsPostadresse.class, PostadresseIFrittFormat.class)
-                .customize(new CustomMapper<RsPostadresse, PostadresseIFrittFormat>() {
-                    @Override
-                    public void mapAtoB(RsPostadresse postadresse, PostadresseIFrittFormat postadresseIFrittFormat, MappingContext context) {
-
-                        List<String> adresselinjer = newArrayList(postadresse.getPostLinje1());
-                        if (isNotBlank(postadresse.getPostLinje2())) {
-                            adresselinjer.add(postadresse.getPostLinje2());
-                        }
-                        if (isNotBlank(postadresse.getPostLinje3())) {
-                            adresselinjer.add(postadresse.getPostLinje3());
-                        }
-                        postadresseIFrittFormat.setPostnummer(
-                                adresselinjer.stream().reduce((first, second) -> second).get().split(" ")[0]);
-                        adresselinjer.remove(adresselinjer.size() - 1);
-                        postadresseIFrittFormat.setAdresselinjer(adresselinjer);
                     }
                 })
                 .register();
@@ -174,7 +133,7 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                 .register();
     }
 
-    private void mapNorskAdresse(PdlPersonAdresseWrapper wrapper, PdlKontaktadresse kontaktadresse) {
+    private void mapNorskAdresse(MapperFacade mapperFacade, PdlPersonAdresseWrapper wrapper, PdlKontaktadresse kontaktadresse) {
         if (!wrapper.getPerson().getMidlertidigAdresse().isEmpty() &&
                 GATE == wrapper.getPerson().getMidlertidigAdresse().get(0).getAdressetype()) {
 
