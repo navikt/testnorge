@@ -31,6 +31,7 @@ import RemoveCircle from '~/assets/icons/nav-ikoner/line/SVG/19-interface/remove
 import CheckCircle2 from '~/assets/icons/nav-ikoner/line/SVG/20-status/check-circle-2.svg'
 import Wrench from '~/assets/icons/nav-ikoner/line/SVG/21-settings/wrench.svg'
 import Calendar from '~/assets/icons/nav-ikoner/line/SVG/22-time/calendar-3.svg'
+import Hourglass from '~/assets/icons/nav-ikoner/line/SVG/22-time/hourglass-1.svg'
 import InformationCircle from '~/assets/icons/nav-ikoner/line/SVG/23-alerts-informations/information-circle.svg'
 import BankNote from '~/assets/icons/nav-ikoner/line/SVG/24-business-finance/bank-notes-3.svg'
 import MoneyBag from '~/assets/icons/nav-ikoner/line/SVG/24-business-finance/money-bag-dollar.svg'
@@ -110,6 +111,7 @@ export const icons = {
 	identifikasjon: Group1,
 	adresse: House,
 	postadresse: EmailText,
+	midlertidigAdresse: Hourglass,
 	doedsbo: Skull,
 	krr: Envelope,
 	arena: CheckCircle2,

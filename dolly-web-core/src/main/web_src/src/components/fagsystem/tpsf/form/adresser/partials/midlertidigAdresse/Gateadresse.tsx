@@ -19,7 +19,7 @@ export const Gateadresse = ({ formikBag }: Gateadresse) => {
 	const handleRadioChange = (v: any) => {
 		const type = v.target.value
 		setGateAdresseType(type)
-		console.log('type :>> ', type)
+
 		switch (type) {
 			case 'TILFELDIG':
 				formikBag.setFieldValue('tpsf.midlertidigAdresse.norskAdresse', undefined)

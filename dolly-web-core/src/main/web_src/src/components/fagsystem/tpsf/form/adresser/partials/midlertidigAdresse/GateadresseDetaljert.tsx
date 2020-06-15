@@ -24,7 +24,6 @@ interface Adresse {
 
 export const GateadresseDetaljert = ({ formikBag }: GateadresseDetaljert) => {
 	const settAdresse = (adresse: Adresse) => {
-		console.log('adresse :>> ', adresse)
 		formikBag.setFieldValue('tpsf.midlertidigAdresse.norskAdresse.postnr', adresse.postnr)
 		formikBag.setFieldValue('tpsf.midlertidigAdresse.norskAdresse.poststed', adresse.poststed)
 		formikBag.setFieldValue('tpsf.midlertidigAdresse.norskAdresse.gatenavn', adresse.gateadresse)
@@ -54,7 +53,6 @@ export const GateadresseDetaljert = ({ formikBag }: GateadresseDetaljert) => {
 				<LoadableComponent
 					onFetch={() => DollyApi.getKodeverkByNavn(AdresseKodeverk.PostnummerUtenPostboks)}
 					render={(data: any) => {
-						console.log('data :>> ', data)
 						return (
 							<DollyTextInput
 								name="boadresse"

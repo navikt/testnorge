@@ -4,5 +4,14 @@ import { Boadresse } from './Boadresse'
 import { Postadresse } from './Postadresse'
 import { Identhistorikk } from './Identhistorikk'
 import { Relasjoner } from './Relasjoner'
+import { MidlertidigAdresse } from './MidlertidigAdresse'
 
-export { Personinfo, Nasjonalitet, Boadresse, Postadresse, Identhistorikk, Relasjoner }
+export {
+	Personinfo,
+	Nasjonalitet,
+	Boadresse,
+	Postadresse,
+	MidlertidigAdresse,
+	Identhistorikk,
+	Relasjoner
+}

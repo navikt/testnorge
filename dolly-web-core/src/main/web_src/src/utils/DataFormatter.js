@@ -61,7 +61,21 @@ Formatters.kjonnToString = (kjonn = '', barn = false) => {
 }
 
 Formatters.adressetypeToString = adressetype => {
-	return adressetype === 'MATR' ? 'Matrikkeladresse' : adressetype === 'GATE' ? 'Gateadresse' : null
+	if (!adressetype) return null
+	switch (adressetype) {
+		case 'MATR':
+			return 'Matrikkeladresse'
+		case 'GATE':
+			return 'Gateadresse'
+		case 'STED':
+			return 'Stedsadresse'
+		case 'PBOX':
+			return 'Postboksadresse'
+		case 'UTAD':
+			return 'Utenlandsadresse'
+		default:
+			return null
+	}
 }
 
 Formatters.arrayToString = (array, separator = ',') => {

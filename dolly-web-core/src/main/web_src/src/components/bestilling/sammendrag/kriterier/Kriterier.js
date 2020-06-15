@@ -7,7 +7,7 @@ import { mapBestillingData } from './BestillingKriterieMapper'
 const _renderBestillingsDetaljer = data => {
 	return data.map((kategori, j) => {
 		const bottomBorder = j != data.length - 1
-		const cssClass = cn('flexbox--align-center info-text', {
+		const cssClass = cn('flexbox--align-start info-text', {
 			'bottom-border': bottomBorder
 		})
 		if (kategori.header) {

@@ -5,6 +5,7 @@ import {
 	Nasjonalitet,
 	Boadresse,
 	Postadresse,
+	MidlertidigAdresse,
 	Identhistorikk,
 	Relasjoner
 } from './partials'
@@ -18,6 +19,7 @@ export const TpsfVisning = ({ data }) => {
 			<Nasjonalitet data={data} />
 			<Boadresse boadresse={data.boadresse} />
 			<Postadresse postadresse={data.postadresse} />
+			<MidlertidigAdresse midlertidigAdresse={data.midlertidigAdresse} />
 			<Identhistorikk identhistorikk={data.identHistorikk} />
 			<Relasjoner relasjoner={data.relasjoner} />
 		</div>
