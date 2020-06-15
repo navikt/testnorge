@@ -5,6 +5,8 @@ import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static no.nav.dolly.security.sts.StsOidcService.getUserPrinciple;
 
 import java.util.List;
+
+import io.swagger.annotations.Authorization;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
@@ -36,14 +38,14 @@ public class BrukerController {
 
     @Cacheable(CACHE_BRUKER)
     @GetMapping("/{brukerId}")
-    @ApiOperation("Hent Bruker med brukerId")
+    @ApiOperation(value = "Hent Bruker med brukerId", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public RsBrukerAndGruppeId getBrukerBybrukerId(@PathVariable("brukerId") String brukerId) {
         Bruker bruker = brukerService.fetchBruker(brukerId);
         return mapperFacade.map(bruker, RsBrukerAndGruppeId.class);
     }
 
     @GetMapping("/current")
-    @ApiOperation("Hent pålogget Bruker")
+    @ApiOperation(value = "Hent pålogget Bruker", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public RsBruker getCurrentBruker() {
         Bruker bruker = brukerService.fetchOrCreateBruker(getUserPrinciple());
         return mapperFacade.map(bruker, RsBruker.class);
@@ -51,21 +53,21 @@ public class BrukerController {
 
     @Cacheable(CACHE_BRUKER)
     @GetMapping
-    @ApiOperation("Hent alle Brukerne")
+    @ApiOperation(value = "Hent alle Brukerne", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public List<RsBrukerAndGruppeId> getAllBrukere() {
         return mapperFacade.mapAsList(brukerService.fetchBrukere(), RsBrukerAndGruppeId.class);
     }
 
     @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
     @PutMapping("/leggTilFavoritt")
-    @ApiOperation("Legg til Favoritt-testgruppe til pålogget Bruker")
+    @ApiOperation(value = "Legg til Favoritt-testgruppe til pålogget Bruker", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public RsBruker leggTilFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
         return mapperFacade.map(brukerService.leggTilFavoritt(request.getGruppeId()), RsBruker.class);
     }
 
     @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
     @PutMapping("/fjernFavoritt")
-    @ApiOperation("Fjern Favoritt-testgruppe fra pålogget Bruker")
+    @ApiOperation(value = "Fjern Favoritt-testgruppe fra pålogget Bruker", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public RsBruker fjernFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
         return mapperFacade.map(brukerService.fjernFavoritt(request.getGruppeId()), RsBruker.class);
     }

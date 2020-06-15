@@ -1,5 +1,6 @@
 package no.nav.dolly.provider.api;
 
+import io.swagger.annotations.Authorization;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,7 @@ public class EnvironmentPropsController {
     private final ProvidersProps providersProps;
 
     @GetMapping
-    @ApiOperation("Hent URL til applikasjonene er integrert mot")
+    @ApiOperation(value = "Hent URL til applikasjonene er integrert mot", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public RsDollyProps getEnvironmentProps() {
         return RsDollyProps.builder()
                 .tpsfUrl(providersProps.getTpsf().getUrl())

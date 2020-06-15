@@ -6,6 +6,8 @@ import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import io.swagger.annotations.Authorization;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -55,32 +57,32 @@ public class OppslagController {
 
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
-    @ApiOperation("Hent kodeverk etter kodeverkNavn")
+    @ApiOperation(value = "Hent kodeverk etter kodeverkNavn", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public KodeverkAdjusted fetchKodeverkByName(@PathVariable("kodeverkNavn") String kodeverkNavn) {
         GetKodeverkKoderBetydningerResponse response = kodeverkConsumer.fetchKodeverkByName(kodeverkNavn);
         return kodeverkMapper.mapBetydningToAdjustedKodeverk(kodeverkNavn, response.getBetydninger());
     }
 
     @GetMapping("/pdlperson/ident/{ident}")
-    @ApiOperation("Hent person tilhørende ident fra pdlperson")
+    @ApiOperation(value = "Hent person tilhørende ident fra pdlperson", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public ResponseEntity pdlPerson(@PathVariable("ident") String ident) {
         return pdlPersonConsumer.getPdlPerson(ident);
     }
 
     @GetMapping("/inntektstub/{ident}")
-    @ApiOperation("Hent inntekter tilhørende ident fra Inntektstub")
+    @ApiOperation(value = "Hent inntekter tilhørende ident fra Inntektstub", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public ResponseEntity inntektstub(@PathVariable String ident) {
         return inntektstubConsumer.getInntekter(ident);
     }
 
     @PostMapping("/inntektstub")
-    @ApiOperation("Valider inntekt mot Inntektstub")
+    @ApiOperation(value = "Valider inntekt mot Inntektstub", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public ResponseEntity inntektstub(@RequestBody ValiderInntekt validerInntekt) {
         return inntektstubConsumer.validerInntekter(validerInntekt);
     }
 
     @GetMapping("/systemer")
-    @ApiOperation("Hent liste med systemer og deres beskrivelser")
+    @ApiOperation(value = "Hent liste med systemer og deres beskrivelser", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public List<SystemTyper.SystemBeskrivelse> getSystemTyper() {
         return asList(SystemTyper.values()).stream()
                 .map(type -> SystemTyper.SystemBeskrivelse.builder().system(type.name()).beskrivelse(type.getBeskrivelse()).build())
@@ -88,56 +90,56 @@ public class OppslagController {
     }
 
     @GetMapping("/fastedatasett/{datasettype}")
-    @ApiOperation("Hent faste datasett med beskrivelser")
+    @ApiOperation(value = "Hent faste datasett med beskrivelser", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public ResponseEntity getFasteDatasett(@PathVariable DatasettType datasettype) {
         return fasteDatasettConsumer.hentDatasett(datasettype);
     }
 
     @GetMapping("/fastedatasett/tps/{gruppe}")
-    @ApiOperation("Hent faste datasett gruppe med beskrivelser")
+    @ApiOperation(value = "Hent faste datasett gruppe med beskrivelser", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public ResponseEntity getFasteDatasettGruppe(@PathVariable String gruppe) {
         return fasteDatasettConsumer.hentDatasettGruppe(gruppe);
     }
 
     @GetMapping("/aareg/arbeidsforhold")
-    @ApiOperation("Hent arbeidsforhold fra aareg")
+    @ApiOperation(value = "Hent arbeidsforhold fra aareg", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public List<ArbeidsforholdResponse> getArbeidsforhold(@RequestParam String ident, @RequestParam String miljoe) {
         return aaregConsumer.hentArbeidsforhold(ident, miljoe);
     }
 
     @GetMapping("/orgnummer")
-    @ApiOperation("Hent faste orgnummer")
+    @ApiOperation(value = "Hent faste orgnummer", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public ResponseEntity getOrgnummer() {
         return fasteDatasettConsumer.hentOrgnummer();
     }
 
     @GetMapping("/popp/inntekt/{ident}/{miljoe}")
-    @ApiOperation("Hent inntekter fra POPP-register")
+    @ApiOperation(value = "Hent inntekter fra POPP-register", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public ResponseEntity getPoppInntekter(@PathVariable String ident, @PathVariable String miljoe) {
         return pensjonforvalterConsumer.getInntekter(ident, miljoe);
     }
 
     @GetMapping("/popp/miljoe")
-    @ApiOperation("Hent tilgjengelige miljøer for POPP-register")
+    @ApiOperation(value = "Hent tilgjengelige miljøer for POPP-register", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public Set<String> getPoppMiljoer() {
         return pensjonforvalterConsumer.getMiljoer();
     }
 
     @GetMapping("/personnavn")
-    @ApiOperation("Henter 10 syntetiske personnavn")
+    @ApiOperation(value = "Henter 10 syntetiske personnavn", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public ResponseEntity getPersonnavn() {
         return identpoolConsumer.getPersonnavn();
     }
 
     @GetMapping("/inntektsmelding/{enumtype}")
-    @ApiOperation("Henter enumtyper for inntektsmelding")
+    @ApiOperation(value = "Henter enumtyper for inntektsmelding", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public List<String> getInntektsmeldingeTyper(@PathVariable InntektsmeldingEnumService.EnumTypes enumtype) {
 
         return inntektsmeldingEnumService.getEnumType(enumtype);
     }
 
     @GetMapping("/transaksjonid/{system}/{ident}")
-    @ApiOperation("Henter transaksjon IDer for ident")
+    @ApiOperation(value = "Henter transaksjon IDer for ident", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public List<TransaksjonMapping> getTransaksjonIder(@PathVariable SystemTyper system, @PathVariable String ident) {
 
         return transaksjonMappingService.getTransaksjonMapping(system, ident);

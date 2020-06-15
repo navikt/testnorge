@@ -6,6 +6,8 @@ import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import io.swagger.annotations.Authorization;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +36,7 @@ public class OpenAmController {
     @CacheEvict(value = CACHE_BESTILLING, allEntries = true)
     @PostMapping("/bestilling/{bestillingId}")
     @Transactional
-    @ApiOperation("Opprett identer i miljøer for identer tilhørende en Bestillings Testgruppe")
+    @ApiOperation(value = "Opprett identer i miljøer for identer tilhørende en Bestillings Testgruppe", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public List<RsOpenAmResponse> sendBestillingTilOpenAm(@RequestParam Long bestillingId) {
         Optional<Bestilling> bestillingOpt = bestillingRepository.findById(bestillingId);
         if (bestillingOpt.isPresent()) {
