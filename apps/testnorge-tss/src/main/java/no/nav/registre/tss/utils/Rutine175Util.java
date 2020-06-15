@@ -5,6 +5,10 @@ import no.nav.registre.tss.consumer.rs.response.TssMessage;
 
 public class Rutine175Util {
 
+    private Rutine175Util() {
+
+    }
+
     public static String opprett175Rutine(TssMessage message) {
         StringBuilder rutine = new StringBuilder(MELDINGSLENGDE);
         for (int i = 0; i < MELDINGSLENGDE; i++) {

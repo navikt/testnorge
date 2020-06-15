@@ -36,6 +36,10 @@ import java.util.List;
 
 public class ArbeidsforholdMappingUtil {
 
+    private ArbeidsforholdMappingUtil() {
+
+    }
+
     public static Arbeidsforhold mapToArbeidsforhold(JsonNode arbeidsforholdNode) {
         return Arbeidsforhold.builder()
                 .navArbeidsforholdId(findLongNullSafe(arbeidsforholdNode, "navArbeidsforholdId"))
