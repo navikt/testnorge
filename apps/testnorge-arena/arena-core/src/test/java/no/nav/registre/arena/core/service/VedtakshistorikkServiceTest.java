@@ -23,7 +23,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -62,7 +61,6 @@ public class VedtakshistorikkServiceTest {
     private List<Vedtakshistorikk> vedtakshistorikkListe;
     private List<NyttVedtakAap> aapRettigheter;
     private List<NyttVedtakAap> ungUfoerRettigheter;
-    private List<NyttVedtakAap> ungUfoerRettigheterUgyldig;
     private List<NyttVedtakAap> tvungenForvaltningRettigheter;
     private List<NyttVedtakAap> fritakMeldekortRettigheter;
 
@@ -84,13 +82,8 @@ public class VedtakshistorikkServiceTest {
         var nyRettighetFritakMeldekort = NyttVedtakAap.builder()
                 .build();
 
-        var nyRettighetUngUfoerUgyldig = NyttVedtakAap.builder()
-                .build();
-        nyRettighetUngUfoerUgyldig.setFraDato(LocalDate.now().minusDays(7));
-
         aapRettigheter = new ArrayList<>(Collections.singletonList(nyRettighetAap));
         ungUfoerRettigheter = new ArrayList<>(Collections.singletonList(nyRettighetUngUfoer));
-        ungUfoerRettigheterUgyldig = new ArrayList<>(Collections.singletonList(nyRettighetUngUfoerUgyldig));
         tvungenForvaltningRettigheter = new ArrayList<>(Collections.singletonList(nyRettighetTvungenForvaltning));
         fritakMeldekortRettigheter = new ArrayList<>(Collections.singletonList(nyRettighetFritakMeldekort));
 
@@ -171,43 +164,5 @@ public class VedtakshistorikkServiceTest {
         assertThat(response.get(fnr1).get(3).getNyeRettigheterAap().size(), equalTo(1));
         assertThat(response.get(fnr1).get(3).getNyeRettigheterAap().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
         assertThat(response.get(fnr1).get(3).getFeiledeRettigheter().size(), equalTo(0));
-    }
-
-    @Test
-    public void shouldGenerereVedtakshistorikkOgFjerneUgyldigUngUfoer() {
-        var kontonummer = "12131843564";
-        var forvalterFnr = "02020202020";
-        when(serviceUtils.getIdenterMedKontoinformasjon(avspillergruppeId, miljoe, antallIdenter))
-                .thenReturn(new ArrayList<>(Collections.singletonList(KontoinfoResponse.builder()
-                        .fnr(forvalterFnr)
-                        .kontonummer(kontonummer)
-                        .build())));
-        when(aapSyntConsumer.syntetiserVedtakshistorikk(antallIdenter)).thenReturn(vedtakshistorikkListe);
-
-        var nyRettighetAapResponse = NyttVedtakResponse.builder()
-                .nyeRettigheterAap(aapRettigheter)
-                .feiledeRettigheter(new ArrayList<>())
-                .build();
-        var expectedResponsesFromArenaForvalter = new ArrayList<>(
-                Arrays.asList(
-                        nyRettighetAapResponse
-                ));
-        Map<String, List<NyttVedtakResponse>> responseAsMap = new HashMap<>();
-        responseAsMap.put(fnr1, expectedResponsesFromArenaForvalter);
-
-        when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(responseAsMap);
-
-        var response = vedtakshistorikkService.genererVedtakshistorikk(avspillergruppeId, miljoe, antallIdenter);
-
-        verify(serviceUtils).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(1), anyInt(), anyInt(), eq(miljoe));
-        verify(aapSyntConsumer).syntetiserVedtakshistorikk(antallIdenter);
-        verify(rettighetAapService).opprettPersonOgInntektIPopp(anyString(), anyString(), any(NyttVedtakAap.class));
-        verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
-
-        assertThat(response.get(fnr1).size(), equalTo(1));
-
-        assertThat(response.get(fnr1).get(0).getNyeRettigheterAap().size(), equalTo(1));
-        assertThat(response.get(fnr1).get(0).getNyeRettigheterAap().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
-        assertThat(response.get(fnr1).get(0).getFeiledeRettigheter().size(), equalTo(0));
     }
 }
