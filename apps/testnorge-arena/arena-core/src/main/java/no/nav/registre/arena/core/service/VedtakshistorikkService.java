@@ -7,6 +7,8 @@ import static no.nav.registre.arena.core.service.util.ServiceUtils.MAX_ALDER_AAP
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MAX_ALDER_UNG_UFOER;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_AAP;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_UNG_UFOER;
+import static no.nav.registre.arena.core.consumer.rs.AapSyntConsumer.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
+import static no.nav.registre.arena.core.consumer.rs.TilleggSyntConsumer.ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +44,7 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakRes
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -53,8 +56,6 @@ public class VedtakshistorikkService {
     private final RettighetAapService rettighetAapService;
     private final RettighetTilleggService rettighetTilleggService;
 
-    private static final LocalDate AVVIKLET_DATO_TSOTILFAM = LocalDate.of(2020, 02, 29);
-
     public Map<String, List<NyttVedtakResponse>> genererVedtakshistorikk(
             Long avspillergruppeId,
             String miljoe,
@@ -64,6 +65,7 @@ public class VedtakshistorikkService {
         Map<String, List<NyttVedtakResponse>> responses = new HashMap<>();
         for (var vedtakshistorikken : vedtakshistorikk) {
             vedtakshistorikken.setTilsynFamiliemedlemmer(fjernTilsynFamiliemedlemmerVedtakMedUgyldigeDatoer(vedtakshistorikken.getTilsynFamiliemedlemmer()));
+            vedtakshistorikken.setUngUfoer(fjernAapUngUfoerMedUgyldigeDatoer(vedtakshistorikken.getUngUfoer()));
 
             var tidligsteDato = LocalDate.now();
             var aap = finnUtfyltAap(vedtakshistorikken);
@@ -173,11 +175,22 @@ public class VedtakshistorikkService {
         List<NyttVedtakTillegg> nyTilsynFamiliemedlemmer = new ArrayList<>();
         if (tilsynFamiliemedlemmer != null){
             nyTilsynFamiliemedlemmer = tilsynFamiliemedlemmer.stream().filter(vedtak ->
-                    !vedtak.getFraDato().isAfter(AVVIKLET_DATO_TSOTILFAM))
+                    !vedtak.getFraDato().isAfter(ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT))
                     .collect(Collectors.toList());
         }
 
         return nyTilsynFamiliemedlemmer.isEmpty() ? null : nyTilsynFamiliemedlemmer;
+    }
+
+    private List<NyttVedtakAap> fjernAapUngUfoerMedUgyldigeDatoer(List<NyttVedtakAap> ungUfoer){
+        List<NyttVedtakAap> nyUngUfoer = new ArrayList<>();
+        if (ungUfoer != null){
+            nyUngUfoer = ungUfoer.stream().filter(vedtak ->
+                    !vedtak.getFraDato().isAfter(ARENA_AAP_UNG_UFOER_DATE_LIMIT))
+                    .collect(Collectors.toList());
+        }
+
+        return nyUngUfoer.isEmpty() ? null : nyUngUfoer;
     }
 
     private LocalDate finnTidligsteDatoAap(List<NyttVedtakAap> vedtak) {
