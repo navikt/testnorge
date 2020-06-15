@@ -207,7 +207,7 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                     person.getMidlertidigAdresse().get(0).getTilleggsadresse() : null;
 
         } else if (!person.getBoadresse().isEmpty()) {
-            return !isNotBlank(person.getBoadresse().get(0).getTilleggsadresse()) &&
+            return isNotBlank(person.getBoadresse().get(0).getTilleggsadresse()) &&
                     person.getBoadresse().get(0).getTilleggsadresse().contains(CO_NAME) ?
                     person.getBoadresse().get(0).getTilleggsadresse() : null;
 

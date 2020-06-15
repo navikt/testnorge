@@ -141,10 +141,11 @@ public class Person {
                 (!getMidlertidigAdresse().isEmpty() && midlertidigAdresse.get(0).isUtenlandsk());
     }
 
-    public boolean hasNorskAdresse() {
-        return !getBoadresse().isEmpty() && !isUtenFastBopel() ||
+    public boolean hasNorskKontaktadresse() {
+        return !getBoadresse().isEmpty() && !isUtenFastBopel() && getBoadresse().get(0).isGateadresse() ||
                 (!getPostadresse().isEmpty() && getPostadresse().get(0).isNorsk()) ||
-                (!getMidlertidigAdresse().isEmpty() && midlertidigAdresse.get(0).isNorsk());
+                (!getMidlertidigAdresse().isEmpty() && midlertidigAdresse.get(0).isNorsk() &&
+                        !midlertidigAdresse.get(0).isStedadresse());
     }
 
     public boolean isUtenFastBopel() {

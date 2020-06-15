@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,12 +13,15 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdresse.Bruksenhetstype;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdresse.Vegadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlMatrikkeladresse;
+import no.nav.dolly.domain.resultset.tpsf.adresse.BoAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.BoGateadresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.BoMatrikkeladresse;
 import no.nav.dolly.mapper.MappingStrategy;
 
 @Component
 public class PdlAdresseMappingStrategy implements MappingStrategy {
+
+    private static final String CO_NAME = "C/O";
 
     @Override
     public void register(MapperFactory factory) {
@@ -33,6 +37,7 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
                         vegadresse.setBruksenhetstype(Bruksenhetstype.BOLIG);
                         vegadresse.setKommunenummer(gateadresse.getKommunenr());
                         vegadresse.setPostnummer(gateadresse.getPostnr());
+                        vegadresse.setAdressetillegsnavn(getTilleggsnavn(gateadresse));
                     }
                 })
                 .byDefault()
@@ -51,9 +56,24 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
                         matrikkeladresse.setKommunenummer(rsMatrikkeladresse.getKommunenr());
                         matrikkeladresse.setPostnummer(rsMatrikkeladresse.getPostnr());
                         matrikkeladresse.setUndernummer(Integer.valueOf(rsMatrikkeladresse.getUndernr()));
+                        matrikkeladresse.setAdressetilleggsnavn(getTilleggsnavn(rsMatrikkeladresse));
                     }
                 })
                 .register();
+    }
+
+    public static String getCoadresse(BoAdresse boAdresse) {
+
+        return isNotBlank(boAdresse.getTilleggsadresse()) &&
+                boAdresse.getTilleggsadresse().contains(CO_NAME) ?
+                boAdresse.getTilleggsadresse() : null;
+    }
+
+    public static String getTilleggsnavn(BoAdresse boAdresse) {
+
+        return isNotBlank(boAdresse.getTilleggsadresse()) &&
+                !boAdresse.getTilleggsadresse().contains(CO_NAME) ?
+                boAdresse.getTilleggsadresse() : null;
     }
 
     public static LocalDate getDato(LocalDateTime dateTime) {

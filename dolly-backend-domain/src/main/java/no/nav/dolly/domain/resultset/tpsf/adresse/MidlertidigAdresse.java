@@ -45,6 +45,10 @@ public abstract class MidlertidigAdresse {
         return !isUtenlandsk();
     }
 
+    public boolean isStedadresse() {
+        return MidlertidigAdressetype.STED == getAdressetype();
+    }
+
     public abstract MidlertidigAdressetype getAdressetype();
 
     @Getter
