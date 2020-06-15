@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse.UtenlandskAdresse;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse.Vegadresse;
+import static no.nav.dolly.bestilling.pdlforvalter.mapper.PdlAdresseMappingStrategy.getCoadresse;
 import static no.nav.dolly.bestilling.pdlforvalter.mapper.PdlAdresseMappingStrategy.getDato;
 import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 import static org.apache.logging.log4j.util.Strings.isBlank;
@@ -40,9 +41,11 @@ public class PdlOppholdsadresseMappingStrategy implements MappingStrategy {
                             if ("GATE".equals(person.getBoadresse().get(0).getAdressetype())) {
                                 oppholdsadresse.setVegadresse(mapperFacade.map(
                                         person.getBoadresse().get(0), Vegadresse.class));
+                                oppholdsadresse.setCoAdressenavn(getCoadresse(person.getBoadresse().get(0)));
                             } else {
                                 oppholdsadresse.setMatrikkeladresse(mapperFacade.map(
                                         person.getBoadresse().get(0), PdlMatrikkeladresse.class));
+                                oppholdsadresse.setCoAdressenavn(getCoadresse(person.getBoadresse().get(0)));
                             }
                         } else if (!person.getPostadresse().isEmpty() &&
                                 !person.getPostadresse().get(0).isNorsk()) {

@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.tpsf.adresse.BoAdresse;
+import no.nav.dolly.domain.resultset.tpsf.adresse.MidlertidigAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 
 @Getter
@@ -55,6 +56,14 @@ public class Person {
     private Boolean utenFastBopel;
     private String personStatus;
     private List<InnvandretUtvandret> innvandretUtvandret;
+    private List<MidlertidigAdresse> midlertidigAdresse;
+
+    public List<MidlertidigAdresse> getMidlertidigAdresse() {
+        if (isNull(midlertidigAdresse)) {
+            midlertidigAdresse = new ArrayList<>();
+        }
+        return midlertidigAdresse;
+    }
 
     public List<InnvandretUtvandret> getIdentHistorikk() {
         if (isNull(innvandretUtvandret)) {
@@ -128,12 +137,15 @@ public class Person {
     }
 
     public boolean hasUtenlandskAdresse() {
-        return !getPostadresse().isEmpty() && !getPostadresse().get(0).isNorsk();
+        return !getPostadresse().isEmpty() && getPostadresse().get(0).isUtenlandsk() ||
+                (!getMidlertidigAdresse().isEmpty() && midlertidigAdresse.get(0).isUtenlandsk());
     }
 
-    public boolean hasNorskAdresse() {
-        return !getBoadresse().isEmpty() && !isUtenFastBopel() ||
-                (!getPostadresse().isEmpty() && getPostadresse().get(0).isNorsk());
+    public boolean hasNorskKontaktadresse() {
+        return !getBoadresse().isEmpty() && !isUtenFastBopel() && getBoadresse().get(0).isGateadresse() ||
+                (!getPostadresse().isEmpty() && getPostadresse().get(0).isNorsk()) ||
+                (!getMidlertidigAdresse().isEmpty() && midlertidigAdresse.get(0).isNorsk() &&
+                        !midlertidigAdresse.get(0).isStedadresse());
     }
 
     public boolean isUtenFastBopel() {

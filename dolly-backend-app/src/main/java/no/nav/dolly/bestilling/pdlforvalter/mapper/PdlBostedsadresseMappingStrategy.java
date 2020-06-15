@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
+import static no.nav.dolly.bestilling.pdlforvalter.mapper.PdlAdresseMappingStrategy.getCoadresse;
 import static no.nav.dolly.bestilling.pdlforvalter.mapper.PdlAdresseMappingStrategy.getDato;
 import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 
@@ -42,6 +43,7 @@ public class PdlBostedsadresseMappingStrategy implements MappingStrategy {
                                     bostedadresse.setMatrikkeladresse(mapperFacade.map(
                                             person.getBoadresse().get(0), PdlMatrikkeladresse.class));
                                 }
+                                bostedadresse.setCoAdressenavn(getCoadresse(person.getBoadresse().get(0)));
                             }
                         }
                     }

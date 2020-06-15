@@ -33,4 +33,8 @@ public abstract class BoAdresse {
     private String tilleggsadresse;
 
     public abstract String getAdressetype();
+
+    public boolean isGateadresse() {
+        return "GATE".equals(getAdressetype());
+    }
 }

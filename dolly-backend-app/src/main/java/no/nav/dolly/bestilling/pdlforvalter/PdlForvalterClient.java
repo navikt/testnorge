@@ -300,7 +300,7 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void sendKontaktadresse(Person person) {
 
-        if (person.hasNorskAdresse()) {
+        if (person.hasNorskKontaktadresse()) {
             pdlForvalterConsumer.postKontaktadresse(mapperFacade.map(
                     PdlPersonAdresseWrapper.builder().person(person).adressetype(NORSK).build(),
                     PdlKontaktadresse.class), person.getIdent());
