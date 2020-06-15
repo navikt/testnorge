@@ -152,9 +152,11 @@ public class VedtakshistorikkService {
     }
 
     private List<NyttVedtakTillegg> fjernTilsynFamiliemedlemmerVedtakMedUgyldigeDatoer(List<NyttVedtakTillegg> tilsynFamiliemedlemmer) {
-        return tilsynFamiliemedlemmer.stream().filter(vedtak ->
+        var nyTilsynFamiliemedlemmer = tilsynFamiliemedlemmer.stream().filter(vedtak ->
                 !vedtak.getFraDato().isAfter(AVVIKLET_DATO_TSOTILFAM))
                 .collect(Collectors.toList());
+
+        return nyTilsynFamiliemedlemmer.isEmpty() ? null : nyTilsynFamiliemedlemmer;
     }
 
     private LocalDate finnTidligsteDatoAap(List<NyttVedtakAap> vedtak) {
