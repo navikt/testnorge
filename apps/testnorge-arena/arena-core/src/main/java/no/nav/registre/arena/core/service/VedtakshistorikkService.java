@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.AapSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
@@ -52,6 +53,8 @@ public class VedtakshistorikkService {
     private final RettighetAapService rettighetAapService;
     private final RettighetTilleggService rettighetTilleggService;
 
+    private static final LocalDate AVVIKLET_DATO_TSOTILFAM = LocalDate.of(2020, 02, 29);
+
     public Map<String, List<NyttVedtakResponse>> genererVedtakshistorikk(
             Long avspillergruppeId,
             String miljoe,
@@ -60,6 +63,8 @@ public class VedtakshistorikkService {
         var vedtakshistorikk = aapSyntConsumer.syntetiserVedtakshistorikk(antallNyeIdenter);
         Map<String, List<NyttVedtakResponse>> responses = new HashMap<>();
         for (var vedtakshistorikken : vedtakshistorikk) {
+            vedtakshistorikken.setTilsynFamiliemedlemmer(fjernTilsynFamiliemedlemmerVedtakMedUgyldigeDatoer(vedtakshistorikken.getTilsynFamiliemedlemmer()));
+
             var tidligsteDato = LocalDate.now();
             var aap = finnUtfyltAap(vedtakshistorikken);
             var aapType = finnUtfyltAapType(vedtakshistorikken);
@@ -153,6 +158,17 @@ public class VedtakshistorikkService {
         opprettVedtakTillegg(vedtakshistorikk.getTilsynFamiliemedlemmerArbeidssoekere(), personident, miljoe, rettigheter);
 
         return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
+    }
+
+    private List<NyttVedtakTillegg> fjernTilsynFamiliemedlemmerVedtakMedUgyldigeDatoer(List<NyttVedtakTillegg> tilsynFamiliemedlemmer) {
+        List<NyttVedtakTillegg> nyTilsynFamiliemedlemmer = new ArrayList<>();
+        if (tilsynFamiliemedlemmer != null){
+            nyTilsynFamiliemedlemmer = tilsynFamiliemedlemmer.stream().filter(vedtak ->
+                    !vedtak.getFraDato().isAfter(AVVIKLET_DATO_TSOTILFAM))
+                    .collect(Collectors.toList());
+        }
+
+        return nyTilsynFamiliemedlemmer.isEmpty() ? null : nyTilsynFamiliemedlemmer;
     }
 
     private LocalDate finnTidligsteDatoAap(List<NyttVedtakAap> vedtak) {
