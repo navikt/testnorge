@@ -18,8 +18,6 @@ import no.nav.dolly.mapper.MappingStrategy;
 @Component
 public class PdlBostedsadresseMappingStrategy implements MappingStrategy {
 
-    private static final String CO_NAME = "C/O";
-
     @Override
     public void register(MapperFactory factory) {
 

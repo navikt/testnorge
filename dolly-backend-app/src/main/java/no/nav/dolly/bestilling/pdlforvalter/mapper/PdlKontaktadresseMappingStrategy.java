@@ -12,7 +12,9 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
+import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.CustomMapper;
+import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdresse.Adressegradering;
@@ -31,9 +33,12 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 import no.nav.dolly.mapper.MappingStrategy;
 
 @Component
+@RequiredArgsConstructor
 public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
 
     private static final String CO_NAME = "C/O";
+
+    private final MapperFacade mapperFacade;
 
     @Override
     public void register(MapperFactory factory) {
@@ -46,37 +51,7 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                         if (NORSK == wrapper.getAdressetype()) {
 
                             kontaktadresse.setCoAdressenavn(getCoAdresse(wrapper.getPerson()));
-                            if (!wrapper.getPerson().getMidlertidigAdresse().isEmpty() &&
-                                    GATE == wrapper.getPerson().getMidlertidigAdresse().get(0).getAdressetype()) {
-
-                                kontaktadresse.setGyldigTilOgMed(
-                                        wrapper.getPerson().getMidlertidigAdresse().get(0).getGyldigTom().toLocalDate());
-                                kontaktadresse.setVegadresseForPost(
-                                        mapperFacade.map(wrapper.getPerson().getMidlertidigAdresse().get(0), VegadresseForPost.class));
-
-                            } else if (!wrapper.getPerson().getMidlertidigAdresse().isEmpty() &&
-                                    PBOX == wrapper.getPerson().getMidlertidigAdresse().get(0).getAdressetype()) {
-
-                                kontaktadresse.setGyldigTilOgMed(
-                                        wrapper.getPerson().getMidlertidigAdresse().get(0).getGyldigTom().toLocalDate());
-                                kontaktadresse.setPostboksadresse(mapperFacade.map(
-                                        wrapper.getPerson().getMidlertidigAdresse().get(0), Postboksadresse.class));
-
-                            } else if (!wrapper.getPerson().getBoadresse().isEmpty() &&
-                                    !wrapper.getPerson().isUtenFastBopel() &&
-                                    "GATE".equals(wrapper.getPerson().getBoadresse().get(0).getAdressetype())) {
-
-                                kontaktadresse.setGyldigFraOgMed(
-                                        getDato(wrapper.getPerson().getBoadresse().get(0).getFlyttedato()));
-
-                                kontaktadresse.setVegadresseForPost(mapperFacade.map(
-                                        wrapper.getPerson().getBoadresse().get(0), VegadresseForPost.class));
-
-                            } else if (!wrapper.getPerson().getPostadresse().isEmpty()) {
-
-                                kontaktadresse.setPostadresseIFrittFormat(mapperFacade.map(
-                                        wrapper.getPerson().getPostadresse().get(0), PostadresseIFrittFormat.class));
-                            }
+                            mapNorskAdresse(wrapper, kontaktadresse);
 
                         } else if (UTENLANDSK == wrapper.getAdressetype()) {
 
@@ -197,6 +172,40 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                     }
                 })
                 .register();
+    }
+
+    private void mapNorskAdresse(PdlPersonAdresseWrapper wrapper, PdlKontaktadresse kontaktadresse) {
+        if (!wrapper.getPerson().getMidlertidigAdresse().isEmpty() &&
+                GATE == wrapper.getPerson().getMidlertidigAdresse().get(0).getAdressetype()) {
+
+            kontaktadresse.setGyldigTilOgMed(
+                    wrapper.getPerson().getMidlertidigAdresse().get(0).getGyldigTom().toLocalDate());
+            kontaktadresse.setVegadresseForPost(
+                    mapperFacade.map(wrapper.getPerson().getMidlertidigAdresse().get(0), VegadresseForPost.class));
+
+        } else if (!wrapper.getPerson().getMidlertidigAdresse().isEmpty() &&
+                PBOX == wrapper.getPerson().getMidlertidigAdresse().get(0).getAdressetype()) {
+
+            kontaktadresse.setGyldigTilOgMed(
+                    wrapper.getPerson().getMidlertidigAdresse().get(0).getGyldigTom().toLocalDate());
+            kontaktadresse.setPostboksadresse(mapperFacade.map(
+                    wrapper.getPerson().getMidlertidigAdresse().get(0), Postboksadresse.class));
+
+        } else if (!wrapper.getPerson().getBoadresse().isEmpty() &&
+                !wrapper.getPerson().isUtenFastBopel() &&
+                "GATE".equals(wrapper.getPerson().getBoadresse().get(0).getAdressetype())) {
+
+            kontaktadresse.setGyldigFraOgMed(
+                    getDato(wrapper.getPerson().getBoadresse().get(0).getFlyttedato()));
+
+            kontaktadresse.setVegadresseForPost(mapperFacade.map(
+                    wrapper.getPerson().getBoadresse().get(0), VegadresseForPost.class));
+
+        } else if (!wrapper.getPerson().getPostadresse().isEmpty()) {
+
+            kontaktadresse.setPostadresseIFrittFormat(mapperFacade.map(
+                    wrapper.getPerson().getPostadresse().get(0), PostadresseIFrittFormat.class));
+        }
     }
 
     private static String getCoAdresse(Person person) {
