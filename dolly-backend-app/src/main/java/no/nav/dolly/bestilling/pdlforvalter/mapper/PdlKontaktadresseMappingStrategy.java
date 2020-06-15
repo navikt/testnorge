@@ -50,23 +50,13 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
 
                         } else if (UTENLANDSK == wrapper.getAdressetype()) {
 
-                            if (!wrapper.getPerson().getMidlertidigAdresse().isEmpty() &&
-                                    wrapper.getPerson().getMidlertidigAdresse().get(0).isUtenlandsk()) {
-
-                                kontaktadresse.setUtenlandskAdresseIFrittFormat(mapperFacade.map(
-                                        wrapper.getPerson().getMidlertidigAdresse().get(0), UtenlandskAdresseIFrittFormat.class));
-
-                            } else if (!wrapper.getPerson().getPostadresse().isEmpty() &&
-                               wrapper.getPerson().getPostadresse().get(0).isUtenlandsk()) {
-
-                                kontaktadresse.setUtenlandskAdresseIFrittFormat(mapperFacade.map(
-                                        wrapper.getPerson().getPostadresse().get(0), UtenlandskAdresseIFrittFormat.class));
-                            }
+                            mapUtenlandskAdresse(mapperFacade, wrapper, kontaktadresse);
                         }
 
                         kontaktadresse.setAdressegradering(Adressegradering.UGRADERT);
                         kontaktadresse.setKilde(CONSUMER);
                     }
+
                 })
                 .register();
 
@@ -164,6 +154,21 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
 
             kontaktadresse.setPostadresseIFrittFormat(mapperFacade.map(
                     wrapper.getPerson().getPostadresse().get(0), PostadresseIFrittFormat.class));
+        }
+    }
+
+    private void mapUtenlandskAdresse(MapperFacade mapperFacade, PdlPersonAdresseWrapper wrapper, PdlKontaktadresse kontaktadresse) {
+        if (!wrapper.getPerson().getMidlertidigAdresse().isEmpty() &&
+                wrapper.getPerson().getMidlertidigAdresse().get(0).isUtenlandsk()) {
+
+            kontaktadresse.setUtenlandskAdresseIFrittFormat(mapperFacade.map(
+                    wrapper.getPerson().getMidlertidigAdresse().get(0), UtenlandskAdresseIFrittFormat.class));
+
+        } else if (!wrapper.getPerson().getPostadresse().isEmpty() &&
+                wrapper.getPerson().getPostadresse().get(0).isUtenlandsk()) {
+
+            kontaktadresse.setUtenlandskAdresseIFrittFormat(mapperFacade.map(
+                    wrapper.getPerson().getPostadresse().get(0), UtenlandskAdresseIFrittFormat.class));
         }
     }
 
