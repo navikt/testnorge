@@ -4,8 +4,11 @@ import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.EIER;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.consumers.hodejegeren.response.Relasjon;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,6 +35,8 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Adr
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Forvalter;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Konto;
 
+import static no.nav.registre.arena.core.service.util.IdentUtils.hentFoedseldato;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -44,6 +49,7 @@ public class ServiceUtils {
     public static final int MAX_ALDER_UNG_UFOER = 36;
     private static final String KILDE_ARENA = "arena";
     private static final int PAGE_SIZE = 10;
+    private static final String RELASJON_BARN = "BARN";
 
     private final HodejegerenConsumer hodejegerenConsumer;
     private final BrukereService brukereService;
@@ -76,6 +82,18 @@ public class ServiceUtils {
     ) {
         var levendeIdenterIAldersgruppe = new HashSet<>(hodejegerenConsumer.getLevende(avspillergruppeId, minimumAlder, maksimumAlder));
         return filtrerIdenterUtenAktoerId(levendeIdenterIAldersgruppe, miljoe, antallNyeIdenter);
+    }
+
+    public List<String> getUtvalgteIdenterIAldersgruppeMedBarnUnder18(
+            Long avspillergruppeId,
+            int antallNyeIdenter,
+            int minimumAlder,
+            int maksimumAlder,
+            String miljoe,
+            LocalDate tidligsteDato
+    ) {
+        var levendeIdenterIAldersgruppe = new HashSet<>(hodejegerenConsumer.getLevende(avspillergruppeId, minimumAlder, maksimumAlder));
+        return filtrerIdenterUtenAktoerIdOgBarnUnder18(levendeIdenterIAldersgruppe, miljoe, antallNyeIdenter, tidligsteDato);
     }
 
     public List<KontoinfoResponse> getIdenterMedKontoinformasjon(
@@ -128,6 +146,53 @@ public class ServiceUtils {
             }
         }
         return new ArrayList<>(identerMedAktoerId.keySet()).subList(0, antallNyeIdenter);
+    }
+
+    private List<String> filtrerIdenterUtenAktoerIdOgBarnUnder18(
+            Set<String> identer,
+            String miljoe,
+            int antallNyeIdenter,
+            LocalDate tidligsteDato
+    ){
+        var identerUtenArenabruker = filtrerEksisterendeBrukereIArena(identer, miljoe);
+
+        var identerPartisjonert = partisjonerListe(identerUtenArenabruker, PAGE_SIZE);
+
+        List<String> utvalgteIdenter = new ArrayList<>(antallNyeIdenter);
+
+        for (var partisjon : identerPartisjonert) {
+            Map<String, String> identerMedAktoerId = aktoerRegisteretConsumer.hentAktoerIderTilIdenter(partisjon, miljoe);
+
+            for (var ident : identerMedAktoerId.keySet()) {
+                var relasjonsResponse = getRelasjonerTilIdent(ident, miljoe);
+
+                for (var relasjon : relasjonsResponse.getRelasjoner()) {
+                    if(erRelasjonEtBarnUnder18VedTidspunkt(relasjon, tidligsteDato)){
+                        utvalgteIdenter.add(ident);
+                        if (utvalgteIdenter.size() >= antallNyeIdenter) {
+                            return utvalgteIdenter;
+                        }
+                    }
+                }
+            }
+        }
+        return utvalgteIdenter;
+    }
+
+    private boolean erRelasjonEtBarnUnder18VedTidspunkt(Relasjon relasjon, LocalDate tidspunkt){
+        if (RELASJON_BARN.equals(relasjon.getTypeRelasjon())) {
+            var doedsdato = relasjon.getDatoDo();
+            if(doedsdato != null && !doedsdato.equals("")){
+                return false;
+            }
+
+            var barnFnr = relasjon.getFnrRelasjon();
+
+            int alder = Math.toIntExact(ChronoUnit.YEARS.between(hentFoedseldato(barnFnr), tidspunkt));
+
+            return alder > -1 && alder < 18;
+        }
+        return false;
     }
 
     private List<String> filtrerEksisterendeBrukereIArena(

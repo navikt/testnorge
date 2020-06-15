@@ -70,6 +70,8 @@ public class VedtakshistorikkService {
             var aapType = finnUtfyltAapType(vedtakshistorikken);
             var tiltak = finnUtfyltTiltak(vedtakshistorikken);
             var tillegg = finnUtfyltTillegg(vedtakshistorikken);
+            var barnetillegg = vedtakshistorikken.getBarnetillegg();
+            LocalDate tidligsteDatoBarnetillegg = null;
 
             if (!aap.isEmpty()) {
                 tidligsteDato = finnTidligsteDatoAap(aap);
@@ -83,12 +85,15 @@ public class VedtakshistorikkService {
                 continue;
             }
 
+            if (barnetillegg != null && !barnetillegg.isEmpty()) {
+                tidligsteDatoBarnetillegg = finnTidligsteDatoTiltak(barnetillegg);
+            }
+
             var minimumAlder = Math.toIntExact(ChronoUnit.YEARS.between(tidligsteDato.minusYears(MIN_ALDER_AAP), LocalDate.now()));
             if (minimumAlder > MAX_ALDER_AAP) {
                 log.error("Kunne ikke opprette vedtakshistorikk på ident med minimum alder {}", minimumAlder);
                 continue;
             }
-
             var maksimumAlder = minimumAlder + 50;
             if (maksimumAlder > MAX_ALDER_AAP) {
                 maksimumAlder = MAX_ALDER_AAP;
@@ -105,7 +110,11 @@ public class VedtakshistorikkService {
                 List<String> identerIAldersgruppe = Collections.emptyList();
 
                 try {
+                  if (tidligsteDatoBarnetillegg != null) {
+                    identerIAldersgruppe = serviceUtils.getUtvalgteIdenterIAldersgruppeMedBarnUnder18(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe, tidligsteDatoBarnetillegg);
+                  } else {
                     identerIAldersgruppe = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe);
+                  }
                 } catch (RuntimeException e) {
                     log.error("Kunne ikke hente ident fra hodejegeren");
                 }
