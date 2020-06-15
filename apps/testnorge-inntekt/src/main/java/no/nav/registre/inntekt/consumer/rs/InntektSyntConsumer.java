@@ -33,7 +33,7 @@ public class InntektSyntConsumer {
     }
 
     public SortedMap<String, List<RsInntekt>> hentSyntetiserteInntektsmeldinger(Map<String, List<RsInntekt>> identerMedInntekt) {
-        RequestEntity postRequest = RequestEntity.post(url.expand()).body(identerMedInntekt);
+        RequestEntity<Map<String, List<RsInntekt>>> postRequest = RequestEntity.post(url.expand()).body(identerMedInntekt);
         try {
             return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
         } catch (HttpStatusCodeException e) {

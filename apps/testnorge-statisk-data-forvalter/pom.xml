@@ -134,6 +134,11 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
         </dependency>
+        <dependency>
+            <artifactId>testnorge-testing</artifactId>
+            <groupId>no.nav.registre.testnorge</groupId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <finalName>testnorge-statisk-data-forvalter</finalName>

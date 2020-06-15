@@ -3,8 +3,6 @@ package no.nav.registre.arena.core.consumer.rs;
 import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.UTFALL_JA;
 import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.VEDTAK_TYPE_KODE_O;
 
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
@@ -22,6 +20,8 @@ import java.util.Random;
 
 import no.nav.registre.arena.core.consumer.rs.request.RettighetSyntRequest;
 import no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 
 @Component
 public class AapSyntConsumer {

@@ -35,7 +35,7 @@ public class MultitenantConfiguration {
     public DataSource dataSource() {
         Map<Object, Object> resolvedDataSources = Maps.newHashMapWithExpectedSize(databaseEnvironments.size());
         for (String env : databaseEnvironments) {
-            DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create(Thread.currentThread().getContextClassLoader());
+            DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create(Thread.currentThread().getContextClassLoader());
             // Assumption: The tenant database uses the same driver class
             // as the default database that you configure.
             String envPrefix = String.format("medl.db.%s.", env);
@@ -72,7 +72,7 @@ public class MultitenantConfiguration {
      * @return the default datasource
      */
     private DataSource defaultDataSource() {
-        DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create(Thread.currentThread().getContextClassLoader())
+        DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create(Thread.currentThread().getContextClassLoader())
                 .driverClassName(properties.getDriverClassName())
                 .url(properties.getUrl())
                 .username(properties.getUsername())

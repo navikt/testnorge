@@ -70,7 +70,7 @@ public class AktoerRegisteretConsumer {
         }
         headers.add("Authorization", authToken);
 
-        var request = new RequestEntity(headers, HttpMethod.GET, uriTemplate.expand());
+        var request = new RequestEntity<Map<String, String>>(headers, HttpMethod.GET, uriTemplate.expand());
         var response = restTemplate.exchange(request, RESPONSE_TYPE);
         if (response.getStatusCode() != HttpStatus.OK) {
             log.warn("Kunne ikke hente aktør id for identer: {}", fnrs.toString().replaceAll("[\r\n]", ""));
@@ -104,7 +104,7 @@ public class AktoerRegisteretConsumer {
     ) {
         var envShort = environment.substring(0, 1).toUpperCase();
         var uriTemplate = new UriTemplate(tokenProviderUrl + "/oidctoken_full?ident={user}&passord={pw}&stack={envShort}");
-        var request = new RequestEntity(HttpMethod.GET, uriTemplate.expand(username, password, envShort));
+        var request = new RequestEntity<String>(HttpMethod.GET, uriTemplate.expand(username, password, envShort));
 
         var response = restTemplate.exchange(request, IdaResponse.class);
 

@@ -34,6 +34,8 @@
         <ojdbc8.version>12.2.0.1</ojdbc8.version>
         <ojdbc7.version>12.1.0.2</ojdbc7.version>
         <logstash-logback-encoder.version>6.3</logstash-logback-encoder.version>
+        <spring-cloud-contract-wiremock.version>2.2.3.RELEASE</spring-cloud-contract-wiremock.version>
+        <assertj.version>3.16.1</assertj.version>
     </properties>
 
 
@@ -78,16 +80,29 @@
                 <artifactId>logstash-logback-encoder</artifactId>
                 <version>${logstash-logback-encoder.version}</version>
             </dependency>
+
+            <!--Test-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-contract-wiremock</artifactId>
+                <version>${spring-cloud-contract-wiremock.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
 
     <repositories>
-        <repository>
-            <id>github-package-registry-navikt</id>
-            <url>https://maven.pkg.github.com/navikt/maven-release</url>
-        </repository>
-    </repositories>
+    <repository>
+        <id>github-package-registry-navikt</id>
+        <url>https://maven.pkg.github.com/navikt/maven-release</url>
+    </repository>
+</repositories>
 
     <scm>
         <developerConnection>scm:git:git@github.com:navikt/testnorge.git</developerConnection>

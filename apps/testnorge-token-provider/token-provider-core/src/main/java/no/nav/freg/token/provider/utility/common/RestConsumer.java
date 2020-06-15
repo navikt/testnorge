@@ -23,7 +23,7 @@ public class RestConsumer {
 
     public <T> T post(
             String url,
-            HttpEntity request,
+            HttpEntity<?> request,
             Class<T> responseType
     ) {
         return rest.postForObject(url, request, responseType);

@@ -105,7 +105,7 @@ public class Inst2Consumer {
         }
     }
 
-    public ResponseEntity oppdaterInstitusjonsoppholdIInst2(
+    public ResponseEntity<Object> oppdaterInstitusjonsoppholdIInst2(
             String bearerToken,
             String callId,
             String consumerId,
@@ -128,7 +128,7 @@ public class Inst2Consumer {
         }
     }
 
-    public ResponseEntity slettInstitusjonsoppholdFraInst2(
+    public ResponseEntity<Object> slettInstitusjonsoppholdFraInst2(
             String bearerToken,
             String callId,
             String consumerId,

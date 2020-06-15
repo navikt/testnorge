@@ -45,7 +45,7 @@ public class SigrunStubConsumer {
             String testdataEier
     ) {
         UriTemplate hentFnrUrl;
-        RequestEntity getRequest;
+        RequestEntity<Void> getRequest;
         if (testdataEier != null) {
             hentFnrUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/hentPersonidentifikatorer?testdataEier={testdataEier}");
             getRequest = RequestEntity.get(hentFnrUrl.expand(testdataEier))

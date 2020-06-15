@@ -1,12 +1,10 @@
 package no.nav.registre.sdForvalter.provider.rs;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +25,7 @@ import no.nav.registre.sdForvalter.consumer.rs.request.aareg.Arbeidsforhold;
 import no.nav.registre.sdForvalter.database.model.AaregModel;
 import no.nav.registre.sdForvalter.database.repository.AaregRepository;
 import no.nav.registre.sdForvalter.domain.Aareg;
-import no.nav.registre.sdForvalter.util.JsonTestHelper;
+import no.nav.registre.testnorge.test.JsonWiremockHelper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -52,21 +50,29 @@ public class OrkestreringsControllerAaregIntegrationTest {
     @Test
     public void shouldInitiateAaregFromDatabase() throws Exception {
         final AaregModel aaregModel = createAaregModel("09876543213", "987654321");
-        final UrlPathPattern sendTilAaregUrlPattern = urlPathMatching("(.*)/v1/syntetisering/sendTilAareg");
         aaregRepository.save(aaregModel);
 
         List<AaregRequest> aaregRequestList = Collections.singletonList(
                 new AaregRequest(new Arbeidsforhold(new Aareg(aaregModel)), ENVIRONMENT)
         );
 
-        JsonTestHelper.stubPost(sendTilAaregUrlPattern, aaregRequestList, Collections.EMPTY_LIST, objectMapper);
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/v1/syntetisering/sendTilAareg")
+                .withRequestBody(aaregRequestList)
+                .withResponseBody(Collections.EMPTY_LIST)
+                .stubPost();
 
         mvc.perform(post("/api/v1/orkestrering/aareg/" + ENVIRONMENT)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-
-        JsonTestHelper.verifyPost(sendTilAaregUrlPattern, aaregRequestList, objectMapper);
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/v1/syntetisering/sendTilAareg")
+                .withRequestBody(aaregRequestList)
+                .verifyPost();
     }
 
     private AaregModel createAaregModel(String fnr, String orgId) {

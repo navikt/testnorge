@@ -39,7 +39,7 @@ public class ElsamSyntConsumer {
     public Map<String, ElsamSyntResponse> syntetiserSykemeldinger(List<Map<String, String>> sykemeldingRequest) {
         log.info("Oppretter syntentisert sykemelding for {}", sykemeldingRequest.stream().map(value -> String.join(", ", value.keySet())).collect(Collectors.joining(", ")));
 
-        RequestEntity postRequest = RequestEntity.post(genererSykemeldingerUrl.expand()).body(sykemeldingRequest);
+        RequestEntity<List<Map<String,String>>> postRequest = RequestEntity.post(genererSykemeldingerUrl.expand()).body(sykemeldingRequest);
         ResponseEntity<Map<String, ElsamSyntResponse>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
 
         return response.getBody();

@@ -63,7 +63,7 @@ public class TokenService {
 
     private void updateToken() {
         String url = tokenProviderUrl;
-        RequestEntity getRequest = RequestEntity
+        RequestEntity<?> getRequest = RequestEntity
                 .get(URI.create(url))
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
                 .header("username", username)
