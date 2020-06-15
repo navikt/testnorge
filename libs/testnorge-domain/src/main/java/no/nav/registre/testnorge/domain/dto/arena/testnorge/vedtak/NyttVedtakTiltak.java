@@ -10,6 +10,7 @@ import lombok.Setter;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.andreokonomytelser.AnnenOkonomYtelseTiltak;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Forvalter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -49,4 +50,25 @@ public class NyttVedtakTiltak extends NyttVedtak {
 
     @JsonAlias({ "ANT_DAGER_UTBETALING", "antDagerUtbetaling" })
     private Integer antDagerUtbetaling;
+
+    @JsonAlias({"AARSAK_KODE", "aarsakKode"})
+    private String aarsakKode;
+
+    @JsonAlias({"AVBRUDD_KODE", "avbruddKode"})
+    private String avbruddKode;
+
+    @JsonAlias({ "DATO", "dato" })
+    private LocalDate dato;
+
+    @JsonAlias({"DELTAKERSTATUSKODE", "deltakerstatusKode"})
+    private String deltakerstatusKode;
+
+    @JsonAlias({"KOMMENTAR","kommentar"})
+    private String kommentar;
+
+    @JsonAlias({"SAKSBEHANDLER", "saksbehandler"})
+    private String saksbehandler;
+
+    @JsonAlias({ "TILTAKSKODE", "tiltakskode" })
+    private String tiltakskode;
 }

@@ -248,4 +248,18 @@ public class ServiceUtils {
                 .collect(Collectors.groupingBy(it -> counter.getAndIncrement() / partitionSize))
                 .values();
     }
+
+    public Map<String, List<NyttVedtakResponse>> combineNyttVedtakResponseLists(
+            Map<String, List<NyttVedtakResponse>> firstResponses,
+            Map<String, List<NyttVedtakResponse>> secondResponses) {
+        if (!secondResponses.isEmpty()) {
+            for (var entry : firstResponses.entrySet()) {
+                String ident = entry.getKey();
+                if (secondResponses.get(ident) != null) {
+                    entry.getValue().addAll(secondResponses.get(ident));
+                }
+            }
+        }
+        return firstResponses;
+    }
 }
