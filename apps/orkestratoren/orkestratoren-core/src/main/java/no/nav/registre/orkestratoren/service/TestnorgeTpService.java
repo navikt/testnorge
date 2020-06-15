@@ -15,7 +15,7 @@ public class TestnorgeTpService {
     @Autowired
     TestnorgeTpConsumer testnorgeTpConsumer;
 
-    public ResponseEntity genererTp(SyntetiserTpRequest request) {
+    public ResponseEntity<String> genererTp(SyntetiserTpRequest request) {
         return testnorgeTpConsumer.startSyntetisering(request);
     }
 

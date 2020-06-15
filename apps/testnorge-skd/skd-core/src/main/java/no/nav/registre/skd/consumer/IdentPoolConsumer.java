@@ -49,7 +49,7 @@ public class IdentPoolConsumer {
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "identpool" })
     public List<String> hentNyeIdenter(HentIdenterRequest hentIdenterRequest) {
-        RequestEntity postRequest = null;
+        RequestEntity<HentIdenterRequest> postRequest = null;
         try {
             postRequest = RequestEntity.post(new URI(this.baseUrl + "/v1/identifikator?finnNaermesteLedigeDato=false")).body(hentIdenterRequest);
         } catch (URISyntaxException e) {
@@ -59,7 +59,7 @@ public class IdentPoolConsumer {
     }
 
     public Navn hentNavn() {
-        RequestEntity request = null;
+        RequestEntity<?> request = null;
         try {
             request = RequestEntity.get(new URI(this.baseUrl + "/v1/fiktive-navn/tilfeldig?antall=1")).build();
         } catch (URISyntaxException e) {
@@ -77,7 +77,7 @@ public class IdentPoolConsumer {
     }
 
     public List<String> frigjoerLedigeIdenter(List<String> identer) {
-        RequestEntity postRequest = RequestEntity.post(new UriTemplate(this.baseUrl + "/v1/identifikator/frigjoerLedige").expand())
+        RequestEntity<List<String>> postRequest = RequestEntity.post(new UriTemplate(this.baseUrl + "/v1/identifikator/frigjoerLedige").expand())
                 .body(identer);
         return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<String>>() {
         }).getBody();

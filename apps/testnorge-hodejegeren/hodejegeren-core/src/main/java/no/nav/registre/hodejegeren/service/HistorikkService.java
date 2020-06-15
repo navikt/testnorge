@@ -188,7 +188,7 @@ public class HistorikkService {
         }
     }
 
-    public ResponseEntity slettHistorikk(String id) {
+    public ResponseEntity<String> slettHistorikk(String id) {
         var historikk = syntHistorikkRepository.findById(id).orElse(null);
         if (historikk != null) {
             syntHistorikkRepository.deleteById(id);
@@ -198,7 +198,7 @@ public class HistorikkService {
         }
     }
 
-    public ResponseEntity slettKilde(
+    public ResponseEntity<String> slettKilde(
             String id,
             String navnPaaKilde
     ) {

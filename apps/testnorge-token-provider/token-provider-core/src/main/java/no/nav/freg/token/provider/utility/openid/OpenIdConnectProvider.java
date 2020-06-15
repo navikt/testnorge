@@ -40,7 +40,7 @@ public class OpenIdConnectProvider {
 
     private String requestAuthorizationCode() {
         try {
-            ResponseEntity response = rest.get(authorizationUrl(), authorizationRequest(), String.class);
+            ResponseEntity<String> response = rest.get(authorizationUrl(), authorizationRequest(), String.class);
             String location = response.getHeaders().getFirst("Location");
 
             if (location != null) {
@@ -52,10 +52,10 @@ public class OpenIdConnectProvider {
         throw new OpenIdConnectException("Feil ved authorisering mot OpenAm");
     }
 
-    private HttpEntity authorizationRequest() {
+    private HttpEntity<Object> authorizationRequest() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(APPLICATION_JSON);
-        return new HttpEntity(headers);
+        return new HttpEntity<>(headers);
     }
 
     private URI authorizationUrl() {

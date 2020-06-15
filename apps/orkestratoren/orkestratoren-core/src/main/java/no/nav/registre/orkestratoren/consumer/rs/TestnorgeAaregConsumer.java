@@ -42,7 +42,7 @@ public class TestnorgeAaregConsumer {
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "aareg" })
-    public ResponseEntity startSyntetisering(
+    public ResponseEntity<List<Object>> startSyntetisering(
             SyntetiserAaregRequest syntetiserAaregRequest,
             boolean sendAlleEksisterende
     ) {
