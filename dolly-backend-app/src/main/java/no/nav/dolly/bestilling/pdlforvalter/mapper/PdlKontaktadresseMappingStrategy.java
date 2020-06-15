@@ -16,7 +16,6 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdresse.Adressegradering;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdresse.Vegadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse.PostadresseIFrittFormat;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse.Postboksadresse;
@@ -52,8 +51,8 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
 
                                 kontaktadresse.setGyldigTilOgMed(
                                         wrapper.getPerson().getMidlertidigAdresse().get(0).getGyldigTom().toLocalDate());
-                                kontaktadresse.setVegadresse(
-                                        mapperFacade.map(wrapper.getPerson().getMidlertidigAdresse().get(0), Vegadresse.class));
+                                kontaktadresse.setVegadresseForPost(
+                                        mapperFacade.map(wrapper.getPerson().getMidlertidigAdresse().get(0), VegadresseForPost.class));
 
                             } else if (!wrapper.getPerson().getMidlertidigAdresse().isEmpty() &&
                                     PBOX == wrapper.getPerson().getMidlertidigAdresse().get(0).getAdressetype()) {
@@ -61,7 +60,7 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                                 kontaktadresse.setGyldigTilOgMed(
                                         wrapper.getPerson().getMidlertidigAdresse().get(0).getGyldigTom().toLocalDate());
                                 kontaktadresse.setPostboksadresse(mapperFacade.map(
-                                        wrapper.getPerson().getMidlertidigAdresse(), Postboksadresse.class));
+                                        wrapper.getPerson().getMidlertidigAdresse().get(0), Postboksadresse.class));
 
                             } else if (!wrapper.getPerson().getBoadresse().isEmpty() &&
                                     !wrapper.getPerson().isUtenFastBopel() &&
