@@ -188,12 +188,7 @@ public class ServiceUtils {
 
             var barnFnr = relasjon.getFnrRelasjon();
 
-            var foedselsdato = hentFoedseldato(barnFnr);
-
-            int alder = Math.toIntExact(ChronoUnit.YEARS.between(foedselsdato, tidspunkt));
-            if (tidspunkt.isBefore(foedselsdato)){
-                alder = -alder;
-            }
+            int alder = Math.toIntExact(ChronoUnit.YEARS.between(hentFoedseldato(barnFnr), tidspunkt));
 
             return alder > -1 && alder < 18;
         }
