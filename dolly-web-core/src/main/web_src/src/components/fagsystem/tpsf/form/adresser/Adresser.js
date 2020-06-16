@@ -12,6 +12,7 @@ import { Postadresser } from './Postadresser'
 import { MidlertidigAdresse } from './MidlertidigAdresse'
 import { MatrikkelAdresse } from './partials/MatrikkelAdresse'
 import { AdresseNr } from './partials/AdresseNr'
+import { Tilleggsadresse } from '~/components/fagsystem/tpsf/form/adresser/partials/Tilleggsadresse/Tilleggsadresse'
 
 const paths = ['tpsf.boadresse', 'tpsf.postadresse', 'tpsf.midlertidigAdresse']
 /* Fordi UFB også bruker boadresse kan vi ikke bare sjekke den. 
@@ -47,6 +48,7 @@ export const Adresser = ({ formikBag }) => {
 		formikBag.setFieldValue('tpsf.adresseNrInfo', null)
 		formikBag.setFieldValue('tpsf.boadresse', {
 			flyttedato: _get(formikBag.values.tpsf.boadresse, 'flyttedato') || '',
+			tilleggsadresse: _get(formikBag.values.tpsf.boadresse, 'tilleggsadresse') || undefined,
 			adressetype: 'GATE'
 		})
 
@@ -73,7 +75,8 @@ export const Adresser = ({ formikBag }) => {
 					kommunenr: '',
 					gatekode: '',
 					husnummer: '',
-					flyttedato: formikBag.values.tpsf.boadresse.flyttedato
+					flyttedato: formikBag.values.tpsf.boadresse.flyttedato,
+					tilleggsadresse: formikBag.values.tpsf.boadresse.tilleggsadresse
 				})
 				break
 			case 'matrikkel':
@@ -86,7 +89,8 @@ export const Adresser = ({ formikBag }) => {
 					undernr: '',
 					postnr: '',
 					kommunenr: '',
-					flyttedato: formikBag.values.tpsf.boadresse.flyttedato
+					flyttedato: formikBag.values.tpsf.boadresse.flyttedato,
+					tilleggsadresse: formikBag.values.tpsf.boadresse.tilleggsadresse
 				})
 				break
 			default:
@@ -131,6 +135,7 @@ export const Adresser = ({ formikBag }) => {
 						{boType === 'gate' && <Boadresse formikBag={formikBag} />}
 						{boType === 'matrikkel' && <MatrikkelAdresse formikBag={formikBag} />}
 						<FormikDatepicker name="tpsf.boadresse.flyttedato" label="Flyttedato" />
+						<Tilleggsadresse formikBag={formikBag} />
 					</Vis>
 
 					<Vis attributt="tpsf.postadresse">
