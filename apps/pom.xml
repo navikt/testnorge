@@ -14,6 +14,11 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <artifactId>testnorge-core</artifactId>
+                <groupId>no.nav.registre.testnorge</groupId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <artifactId>testnorge-domain</artifactId>
                 <groupId>no.nav.registre.testnorge</groupId>
                 <version>${project.version}</version>

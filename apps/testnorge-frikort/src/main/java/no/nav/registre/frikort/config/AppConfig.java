@@ -1,10 +1,12 @@
 package no.nav.registre.frikort.config;
 
+import no.nav.registere.testnorge.core.ApplicationCoreConfig;
 import no.nav.registre.frikort.domain.xml.Egenandelsmelding;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.web.client.RestTemplate;
 
 import javax.xml.bind.JAXBContext;
@@ -15,6 +17,7 @@ import javax.xml.bind.Marshaller;
 @Configuration
 @ComponentScan
 @EnableAutoConfiguration
+@Import(ApplicationCoreConfig.class)
 public class AppConfig {
 
     @Bean
