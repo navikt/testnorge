@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,5 +29,12 @@ public class IdentController {
             @RequestBody List<String> identer
     ) {
         return identService.slettIdenterFraAvspillergruppe(avspillergruppeId, miljoer, identer);
+    }
+
+    @PostMapping("oppdaterKommunenummer/{avspillergruppeId}")
+    public List<Long> oppdaterKommunenummerIAvspillergruppe(
+            @PathVariable Long avspillergruppeId
+    ) {
+        return identService.oppdaterKommunenummerIAvspillergruppe(avspillergruppeId);
     }
 }

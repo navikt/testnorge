@@ -23,6 +23,10 @@ public abstract class RsMeldingstype {
 
     private String meldingsnrHosTpsSynt;
 
+    private Long id;
+
+    private String beskrivelse;
+
     @Size(max = 1)
     private String transtype;
     @Size(max = 8)
