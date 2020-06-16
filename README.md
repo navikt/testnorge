@@ -5,6 +5,10 @@
 
 # testnorge
 
+## Avhenighetsanalyse
+
+https://testnorge-avhengighetsanalyse-frontend.nais.preprod.local/
+
 ## Kjør lokalt
 
 `mvn --settings maven-settings.xml -DNAV_TOKEN=xxx clean install`
@@ -35,6 +39,7 @@ NAV_TOKEN må lages i din github konto. (Dette er noe som vi jobber med å fjern
 ![Deploy testnorge-token-provider](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-token-provider/badge.svg)
 ![Deploy testnorge-inntekt](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-inntekt/badge.svg)
 ![Deploy helsepersonell-api](https://github.com/navikt/testnorge/workflows/Deploy%20helsepersonell-api/badge.svg)
+![Deploy avhengighetsanalyse-frontend](https://github.com/navikt/testnorge/workflows/Deploy%20avhengighetsanalyse-frontend/badge.svg)
 
 ## Migrering inn i monorepo
 

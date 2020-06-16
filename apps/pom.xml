@@ -60,5 +60,6 @@
         <module>testnorge-token-provider</module>
         <module>testnorge-inntekt</module>
         <module>helsepersonell-api</module>
+        <module>avhengighetsanalyse-frontend</module>
     </modules>
 </project>
