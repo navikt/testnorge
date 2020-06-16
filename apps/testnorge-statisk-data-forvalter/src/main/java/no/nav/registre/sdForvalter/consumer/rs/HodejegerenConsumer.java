@@ -13,8 +13,11 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.Set;
 
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+
 @Slf4j
 @Component
+@DependencyOn("testnorge-hodejegeren")
 public class HodejegerenConsumer {
 
     private final RestTemplate restTemplate;

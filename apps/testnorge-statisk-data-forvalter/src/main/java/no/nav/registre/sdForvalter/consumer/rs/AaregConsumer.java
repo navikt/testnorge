@@ -17,9 +17,11 @@ import no.nav.registre.sdForvalter.consumer.rs.request.aareg.AaregRequest;
 import no.nav.registre.sdForvalter.consumer.rs.request.aareg.Arbeidsforhold;
 import no.nav.registre.sdForvalter.consumer.rs.response.AaregResponse;
 import no.nav.registre.sdForvalter.domain.AaregListe;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component
+@DependencyOn("testnorge-aareg")
 public class AaregConsumer {
 
     private static final ParameterizedTypeReference<List<AaregResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<List<AaregResponse>>() {

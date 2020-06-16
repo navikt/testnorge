@@ -14,8 +14,11 @@ import org.springframework.web.util.UriTemplate;
 import java.util.Collections;
 import java.util.Set;
 
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+
 @Slf4j
 @Component
+@DependencyOn("testnorge-tp")
 public class TpConsumer {
 
     private final RestTemplate restTemplate;

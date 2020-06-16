@@ -17,7 +17,7 @@ public class DependenciesController {
 
     public DependenciesController(
             @Value("${application.name:unknown}") String applicationName,
-            @Value("${application.basepackage:no.nav.registre.testnorge}") String basePackage
+            @Value("${application.basepackage:no.nav.registre}") String basePackage
     ) {
         dependencyAnalysis = new DependencyAnalysis(applicationName, basePackage);
     }
