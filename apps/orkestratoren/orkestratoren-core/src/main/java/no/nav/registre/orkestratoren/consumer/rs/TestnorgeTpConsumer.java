@@ -12,9 +12,11 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
+@DependencyOn("testnorge-tp")
 public class TestnorgeTpConsumer {
 
     private RestTemplate restTemplate;

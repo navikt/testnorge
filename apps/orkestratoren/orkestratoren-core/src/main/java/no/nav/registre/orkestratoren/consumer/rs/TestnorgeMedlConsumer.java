@@ -9,8 +9,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserMedlRequest;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
+@DependencyOn("testnorge-medl")
 public class TestnorgeMedlConsumer {
 
     private RestTemplate restTemplate;
