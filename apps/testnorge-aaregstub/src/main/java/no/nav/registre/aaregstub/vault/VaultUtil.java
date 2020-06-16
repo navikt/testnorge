@@ -9,6 +9,10 @@ import java.nio.file.Paths;
 
 public final class VaultUtil {
 
+    private VaultUtil() {
+
+    }
+
     private static final String VAULT_TOKEN_PROPERTY = "VAULT_TOKEN";
 
     private static String getVaultToken() {

@@ -5,6 +5,10 @@ import java.util.stream.IntStream;
 
 public class Rutine990Util {
 
+    private Rutine990Util() {
+
+    }
+
     private static final String FORMAT = "COB";
     private static final int MMEL_LENGTH = 228;
     private static final int LENGDE_PAA_990_MELDING = 15;

@@ -8,6 +8,10 @@ import java.time.LocalDate;
 
 public class NyttKontonummerUtil {
 
+    private NyttKontonummerUtil() {
+
+    }
+
     private static final String KILDE = "TPSF";
     private static final String BRUKER_ID = "ORK";
 
