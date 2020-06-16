@@ -19,7 +19,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
-@@DependencyOn("testnorge-sigrun")
+@DependencyOn("testnorge-sigrun")
 public class TestnorgeSigrunConsumer {
 
     private static final ParameterizedTypeReference<List<Integer>> RESPONSE_TYPE_START_SYNT = new ParameterizedTypeReference<>() {
