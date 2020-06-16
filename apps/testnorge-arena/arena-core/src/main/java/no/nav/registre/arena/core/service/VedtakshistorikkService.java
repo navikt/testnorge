@@ -10,7 +10,6 @@ import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_UNG
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.arena.core.consumer.rs.request.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -25,6 +24,16 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.AapSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetAap115Request;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetAapRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetFritakMeldekortRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggsytelseRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksdeltakelseRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.GensakKoder;
