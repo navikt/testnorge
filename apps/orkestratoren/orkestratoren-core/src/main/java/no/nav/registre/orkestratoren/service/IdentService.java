@@ -13,8 +13,10 @@ import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSkdConsumer;
 import no.nav.registre.orkestratoren.provider.rs.responses.SletteFraAvspillerguppeResponse;
 import no.nav.registre.orkestratoren.provider.rs.responses.SlettedeIdenterResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Service
+@DependencyOn("testnorge-hodejegeren")
 public class IdentService {
 
     private static final String TESTDATAEIER = "orkestratoren";

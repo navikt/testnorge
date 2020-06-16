@@ -21,10 +21,12 @@ import no.nav.registre.skd.consumer.TpsfConsumer;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@DependencyOn("testnorge-hodejegeren")
 public class IdentService {
 
     private static final Map<String, String> gamleTilNyeKommunenummer;

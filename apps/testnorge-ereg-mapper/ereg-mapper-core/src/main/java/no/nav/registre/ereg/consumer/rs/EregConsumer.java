@@ -16,7 +16,7 @@ import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@DependencyOn("testnorge-ereg")
+@DependencyOn(value = "ereg", external = true)
 public class EregConsumer {
 
     private final RestTemplate restTemplate;

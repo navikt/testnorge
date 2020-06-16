@@ -36,6 +36,7 @@ import no.nav.registre.elsam.domain.SykmeldingRequest;
 import no.nav.registre.elsam.domain.SykmeldingsType;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.PersondataResponse;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.elsam.consumer.rs.AaregstubConsumer;
 import no.nav.registre.testnorge.elsam.consumer.rs.ElsamSyntConsumer;
 import no.nav.registre.testnorge.elsam.consumer.rs.EregConsumer;
@@ -53,6 +54,7 @@ import no.nav.registre.testnorge.elsam.utils.DatoUtil;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@DependencyOn("testnorge-hodejegeren")
 public class SyntetiseringService {
 
     private static final String ELSAM_NAVN = "elsam";
