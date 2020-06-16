@@ -27,7 +27,7 @@ import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component
-@DependencyOn(value = "idnet-pool", external = true)
+@DependencyOn(value = "ident-pool", external = true)
 public class IdentPoolConsumer {
 
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
