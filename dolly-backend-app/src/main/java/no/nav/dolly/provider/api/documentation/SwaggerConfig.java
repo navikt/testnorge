@@ -1,14 +1,25 @@
 package no.nav.dolly.provider.api.documentation;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
+import static springfox.documentation.builders.PathSelectors.ant;
+import static springfox.documentation.builders.RequestHandlerSelectors.any;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import com.fasterxml.classmate.TypeResolver;
 import com.google.common.collect.Lists;
+
 import no.nav.dolly.domain.resultset.aareg.RsAktoer;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlSomAdressat;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.RsPdlRettIdentitet;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsAdresse;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.schema.ModelRef;
@@ -24,15 +35,6 @@ import springfox.documentation.swagger.web.DocExpansion;
 import springfox.documentation.swagger.web.UiConfiguration;
 import springfox.documentation.swagger.web.UiConfigurationBuilder;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
-import java.util.List;
-
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
-import static springfox.documentation.builders.PathSelectors.ant;
-import static springfox.documentation.builders.RequestHandlerSelectors.any;
 
 /**
  * Configure automated swagger API documentation
