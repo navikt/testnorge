@@ -11,7 +11,10 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.List;
 
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+
 @Component
+@DependencyOn("testnorge-tp")
 public class TpConsumer {
 
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

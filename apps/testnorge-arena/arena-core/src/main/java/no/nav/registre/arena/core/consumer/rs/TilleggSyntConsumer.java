@@ -1,5 +1,6 @@
 package no.nav.registre.arena.core.consumer.rs;
 
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -14,6 +15,7 @@ import java.util.List;
 import no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils;
 
 @Component
+@DependencyOn(value = "nais-synthdata-arena-tilleggsstonad", external = true)
 public class TilleggSyntConsumer {
 
     private RestTemplate restTemplate;

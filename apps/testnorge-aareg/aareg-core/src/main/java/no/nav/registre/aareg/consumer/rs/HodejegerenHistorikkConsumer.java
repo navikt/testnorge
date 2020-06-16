@@ -14,9 +14,11 @@ import org.springframework.web.util.UriTemplate;
 import java.util.List;
 
 import no.nav.registre.aareg.AaregSaveInHodejegerenRequest;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
+@DependencyOn("testnorge-hodejegeren")
 public class HodejegerenHistorikkConsumer {
 
     private final RestTemplate restTemplate;

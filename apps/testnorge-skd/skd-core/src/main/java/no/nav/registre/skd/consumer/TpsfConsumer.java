@@ -22,9 +22,11 @@ import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
 import no.nav.registre.skd.consumer.requests.SlettSkdmeldingerRequest;
 import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
+@DependencyOn(value = "tps-forvalteren", external = true)
 public class TpsfConsumer {
 
     private static final ParameterizedTypeReference<List<Long>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

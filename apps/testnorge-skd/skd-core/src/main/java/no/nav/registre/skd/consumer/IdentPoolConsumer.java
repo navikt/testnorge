@@ -23,9 +23,11 @@ import java.util.Objects;
 
 import no.nav.registre.skd.consumer.requests.HentIdenterRequest;
 import no.nav.registre.skd.consumer.response.Navn;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component
+@DependencyOn(value = "idnet-pool", external = true)
 public class IdentPoolConsumer {
 
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

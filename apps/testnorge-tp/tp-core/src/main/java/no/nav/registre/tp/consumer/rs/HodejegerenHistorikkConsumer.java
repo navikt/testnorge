@@ -16,7 +16,7 @@ import no.nav.registre.tp.TpSaveInHodejegerenRequest;
 
 @Component
 @Slf4j
-@DependencyOn(value = "testnorge-hodejegeren")
+@DependencyOn("testnorge-hodejegeren")
 public class HodejegerenHistorikkConsumer {
 
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

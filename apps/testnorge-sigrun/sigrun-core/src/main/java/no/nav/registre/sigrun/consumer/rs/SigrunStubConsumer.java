@@ -16,9 +16,11 @@ import java.util.List;
 
 import no.nav.registre.sigrun.PoppSyntetisererenResponse;
 import no.nav.registre.sigrun.consumer.rs.responses.SigrunSkattegrunnlagResponse;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
+@DependencyOn(value = "sigrun-skd-stub", external = true)
 public class SigrunStubConsumer {
 
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

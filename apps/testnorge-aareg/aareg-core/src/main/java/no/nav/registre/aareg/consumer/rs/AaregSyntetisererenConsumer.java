@@ -16,9 +16,11 @@ import java.util.List;
 
 import no.nav.registre.aareg.exception.SyntetiseringException;
 import no.nav.registre.aareg.syntetisering.RsAaregSyntetiseringsRequest;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
+@DependencyOn(value = "syntrest", external = true)
 public class AaregSyntetisererenConsumer {
 
     @Value("${aareg.pageSize}")

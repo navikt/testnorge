@@ -20,10 +20,16 @@ import java.util.Random;
 
 import no.nav.registre.arena.core.consumer.rs.request.RettighetSyntRequest;
 import no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils;
+import no.nav.registre.testnorge.dependencyanalysis.DependenciesOn;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 
 @Component
+@DependenciesOn(value = {
+        @DependencyOn(value = "nais-synthdata-arena-aap", external = true),
+        @DependencyOn(value = "nais-synthdata-arena-vedtakshistorikk", external = true)
+})
 public class AapSyntConsumer {
 
     private static final LocalDate MINIMUM_DATE = LocalDate.of(2010, 10, 1); // krav i arena

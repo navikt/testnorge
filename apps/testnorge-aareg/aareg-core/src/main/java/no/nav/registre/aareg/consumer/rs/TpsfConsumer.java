@@ -9,9 +9,11 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 
 import no.nav.registre.aareg.consumer.rs.response.MiljoerResponse;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
 @RequiredArgsConstructor
+@DependencyOn(value = "tps-forvalteren", external = true)
 public class TpsfConsumer {
 
     private static final String TPSF_GET_ENVIRONMENTS = "/v1/environments";

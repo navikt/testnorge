@@ -18,8 +18,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+
 @Component
 @Slf4j
+@DependencyOn(value = "tps-forvalteren", external = true)
 public class TpsfConsumer {
 
     private static final ParameterizedTypeReference<Set<String>> RESPONSE_TYPE_SET = new ParameterizedTypeReference<>() {
@@ -43,7 +46,7 @@ public class TpsfConsumer {
         this.statusPaaIdenter = new UriTemplate(serverUrl + "/v1/serviceroutine/FS03-FDLISTER-DISKNAVN-M?aksjonsKode={aksjonskode}&antallFnr={antallIdenter}&environment={miljoe}&nFnr={identer}");
     }
 
-    @Timed(value = "hodejegeren.resource.latency", extraTags = { "operation", "tpsf" })
+    @Timed(value = "hodejegeren.resource.latency", extraTags = {"operation", "tpsf"})
     public Set<String> getIdenterFiltrertPaaAarsakskode(
             Long avspillergruppeId,
             List<String> aarsakskode,
@@ -53,7 +56,7 @@ public class TpsfConsumer {
         return restTemplate.exchange(getRequest, RESPONSE_TYPE_SET).getBody();
     }
 
-    @Timed(value = "hodejegeren.resource.latency", extraTags = { "operation", "tpsf" })
+    @Timed(value = "hodejegeren.resource.latency", extraTags = {"operation", "tpsf"})
     public JsonNode getTpsServiceRoutine(
             String routineName,
             String aksjonsKode,
@@ -65,7 +68,7 @@ public class TpsfConsumer {
         return new ObjectMapper().readTree(response.getBody());
     }
 
-    @Timed(value = "hodejegeren.resource.latency", extraTags = { "operation", "tpsf" })
+    @Timed(value = "hodejegeren.resource.latency", extraTags = {"operation", "tpsf"})
     public JsonNode hentTpsStatusPaaIdenter(
             String aksjonskode,
             String miljoe,

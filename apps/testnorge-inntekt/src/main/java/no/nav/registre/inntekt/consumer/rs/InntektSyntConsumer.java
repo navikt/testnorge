@@ -15,9 +15,11 @@ import java.util.Map;
 import java.util.SortedMap;
 
 import no.nav.registre.inntekt.domain.RsInntekt;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component
+@DependencyOn(value = "syntrest", external = true)
 public class InntektSyntConsumer {
 
     private static final ParameterizedTypeReference<SortedMap<String, List<RsInntekt>>> RESPONSE_TYPE = new ParameterizedTypeReference<SortedMap<String, List<RsInntekt>>>() {

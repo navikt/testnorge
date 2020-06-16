@@ -21,9 +21,15 @@ import java.util.Map;
 
 import no.nav.registre.medl.consumer.rs.response.AktoerResponse;
 import no.nav.registre.medl.consumer.rs.response.IdaResponse;
+import no.nav.registre.testnorge.dependencyanalysis.DependenciesOn;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
+@DependenciesOn(value = {
+        @DependencyOn(value = "aktoerregister", external = true),
+        @DependencyOn(value = "ida-api", external = true)
+})
 public class AktoerRegisteretConsumer {
 
     private static final ParameterizedTypeReference<Map<String, AktoerResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
