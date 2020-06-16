@@ -17,7 +17,7 @@ import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
-@DependencyOn("syntrest")
+@DependencyOn(value = "syntrest",  external = true)
 public class TpsSyntetisererenConsumer {
 
     private static final ParameterizedTypeReference<List<RsMeldingstype>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
