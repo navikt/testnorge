@@ -31,11 +31,10 @@ public class IdentController {
         return identService.slettIdenterFraAvspillergruppe(avspillergruppeId, miljoer, identer);
     }
 
-    @PostMapping("oppdaterAdresser/{avspillergruppeId}/{miljoe}")
-    public List<String> oppdaterAdresser(
-            @PathVariable Long avspillergruppeId,
-            @PathVariable String miljoe
-    ){
-        return identService.oppdaterAdresseinformasjon(avspillergruppeId, miljoe);
+    @PostMapping("oppdaterKommunenummer/{avspillergruppeId}")
+    public List<Long> oppdaterKommunenummerIAvspillergruppe(
+            @PathVariable Long avspillergruppeId
+    ) {
+        return identService.oppdaterKommunenummerIAvspillergruppe(avspillergruppeId);
     }
 }

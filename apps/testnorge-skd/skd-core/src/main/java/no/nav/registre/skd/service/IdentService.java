@@ -2,6 +2,7 @@ package no.nav.registre.skd.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,21 +14,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import no.nav.registre.skd.consumer.IdentPoolConsumer;
 import no.nav.registre.skd.consumer.TpsfConsumer;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class IdentService {
 
+    private static final Map<String, String> gamleTilNyeKommunenummer;
+    private static final int PARTITION_SIZE_GET_MELDING_IDER = 100;
+    private static final int PARTITION_SIZE_OPPDATER_MELDINGER = 50;
+
     private final TpsfConsumer tpsfConsumer;
     private final IdentPoolConsumer identPoolConsumer;
-
-    private static final Map<String, String> gamleTilNyeKommunenummer;
+    private final HodejegerenConsumer hodejegerenConsumer;
 
     static {
         gamleTilNyeKommunenummer = new HashMap<>();
@@ -60,29 +66,40 @@ public class IdentService {
         }
     }
 
-    public List<String> oppdaterAdresseinformasjon(
-            Long avspillergruppeId,
-            String miljoe
+    public List<Long> oppdaterKommunenummerIAvspillergruppe(
+            Long avspillergruppeId
     ) {
-        int pageNumber = 0;
-        List<RsMeldingstype> meldinger;
-        List<String> oppdaterteIdenter = new ArrayList<>();
-        do {
-            meldinger = tpsfConsumer.getGruppePaginert(avspillergruppeId, pageNumber++);
-            if (!meldinger.isEmpty()) {
-                for (var melding : meldinger) {
-                    String kommunenummer = ((RsMeldingstype1Felter) melding).getKommunenummer();
+        List<RsMeldingstype> meldingerSomSkalOppdateres = new ArrayList<>();
+        var identerIAvspillergruppe = hodejegerenConsumer.get(avspillergruppeId);
+        int antallIderSjekket = 0;
+        int antallIdenterSjekket = 0;
+        for (var partisjonerteIdenter : Lists.partition(identerIAvspillergruppe, PARTITION_SIZE_GET_MELDING_IDER)) {
+            var meldingIderTilhoerendeIdenter = tpsfConsumer.getMeldingIderTilhoerendeIdenter(avspillergruppeId, partisjonerteIdenter);
+
+            for (var meldingId : meldingIderTilhoerendeIdenter) {
+                var melding = tpsfConsumer.getMeldingMedId(meldingId);
+                if (melding != null) {
+                    if (melding.getId() == null) {
+                        melding.setId(meldingId);
+                    }
+                    var kommunenummer = ((RsMeldingstype1Felter) melding).getKommunenummer();
                     if (gamleTilNyeKommunenummer.containsKey(kommunenummer)) {
-                        String fodselsdato = ((RsMeldingstype1Felter) melding).getFodselsdato();
-                        String personnummer = ((RsMeldingstype1Felter) melding).getPersonnummer();
-                        String fnr = fodselsdato + personnummer;
-                        oppdaterteIdenter.add(fnr);
+                        ((RsMeldingstype1Felter) melding).setKommunenummer(gamleTilNyeKommunenummer.get(kommunenummer));
+                        meldingerSomSkalOppdateres.add(melding);
                     }
                 }
+                antallIderSjekket++;
             }
-            if (pageNumber >= 3)
-                break;
-        } while (!meldinger.isEmpty());
-        return oppdaterteIdenter;
+            antallIdenterSjekket += partisjonerteIdenter.size();
+        }
+
+        for (var partisjonerteMeldinger : Lists.partition(meldingerSomSkalOppdateres, PARTITION_SIZE_OPPDATER_MELDINGER)) {
+            var meldingerSomIkkeKunneOppdateres = tpsfConsumer.oppdaterSkdMeldinger(partisjonerteMeldinger);
+            meldingerSomSkalOppdateres.removeAll(meldingerSomIkkeKunneOppdateres);
+        }
+
+        log.info("Antall identer kontrollert: {}. Antall meldinger kontrollert: {}. Antall meldinger oppdatert: {}.", antallIdenterSjekket, antallIderSjekket, meldingerSomSkalOppdateres.size());
+
+        return meldingerSomSkalOppdateres.stream().map(RsMeldingstype::getId).collect(Collectors.toList());
     }
 }
