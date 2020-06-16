@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
@@ -48,6 +49,7 @@ public class TestgruppeController {
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @Transactional
     @PutMapping(value = "/{gruppeId}")
+    @ApiOperation(value = "Oppdater testgruppe", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public RsTestgruppeMedBestillingId oppdaterTestgruppe(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsOpprettEndreTestgruppe testgruppe) {
         Testgruppe gruppe = testgruppeService.oppdaterTestgruppe(gruppeId, testgruppe);
         return mapperFacade.map(gruppe, RsTestgruppeMedBestillingId.class);
@@ -56,6 +58,7 @@ public class TestgruppeController {
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @Transactional
     @PutMapping(value = "/{gruppeId}/laas")
+    @ApiOperation(value = "Oppdater testgruppe Laas", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public RsTestgruppe oppdaterTestgruppeLaas(@PathVariable("gruppeId") Long gruppeId,
                                                Boolean erLaast,
                                                String laastBeskrivelse) {
@@ -67,6 +70,7 @@ public class TestgruppeController {
     @PostMapping
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(value = "Opprett testgruppe", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public RsTestgruppeMedBestillingId opprettTestgruppe(@RequestBody RsOpprettEndreTestgruppe createTestgruppeRequest) {
         Testgruppe gruppe = testgruppeService.opprettTestgruppe(createTestgruppeRequest);
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppe.getId()), RsTestgruppeMedBestillingId.class);
@@ -74,12 +78,14 @@ public class TestgruppeController {
 
     @Cacheable(CACHE_GRUPPE)
     @GetMapping("/{gruppeId}")
+    @ApiOperation(value = "Hent testgruppe", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public RsTestgruppeMedBestillingId getTestgruppe(@PathVariable("gruppeId") Long gruppeId) {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppeMedBestillingId.class);
     }
 
     @Cacheable(CACHE_GRUPPE)
     @GetMapping
+    @ApiOperation(value = "Hent testgrupper", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public List<RsTestgruppe> getTestgrupper(
             @RequestParam(name = "brukerId", required = false) String brukerId) {
         return mapperFacade.mapAsList(testgruppeService.getTestgruppeByBrukerId(brukerId), RsTestgruppe.class);
@@ -88,15 +94,16 @@ public class TestgruppeController {
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @Transactional
     @DeleteMapping("/{gruppeId}")
+    @ApiOperation(value = "Slett gruppe", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public void slettgruppe(@PathVariable("gruppeId") Long gruppeId) {
 
         testgruppeService.deleteGruppeById(gruppeId);
     }
 
-    @ApiOperation(value = "Opprett berikede testpersoner basert på fødselsdato, kjønn og identtype")
     @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling")
+    @ApiOperation(value = "Opprett berikede testpersoner basert på fødselsdato, kjønn og identtype", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public RsBestillingStatus opprettIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingRequest request) {
         Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request, request.getTpsf(), request.getAntall(), null);
 
@@ -104,7 +111,7 @@ public class TestgruppeController {
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
-    @ApiOperation(value = "Opprett berikede testpersoner basert på eskisterende identer")
+    @ApiOperation(value = "Opprett berikede testpersoner basert på eskisterende identer", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling/fraidenter")

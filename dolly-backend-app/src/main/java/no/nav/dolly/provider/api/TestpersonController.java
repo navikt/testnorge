@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
@@ -44,7 +45,7 @@ public class TestpersonController {
     private final IdentService identService;
     private final PersonService personService;
 
-    @ApiOperation(value = "Legge til egenskaper på person/endre person i TPS og øvrige systemer")
+    @ApiOperation(value = "Legge til egenskaper på person/endre person i TPS og øvrige systemer", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     @PutMapping("/{ident}/leggtilpaaperson")
     @ResponseStatus(HttpStatus.OK)
     public RsBestillingStatus endrePerson(@PathVariable String ident, @RequestBody RsDollyUpdateRequest request) {
@@ -56,7 +57,7 @@ public class TestpersonController {
     }
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
-    @ApiOperation(value = "Endre status beskrivelse på testperson")
+    @ApiOperation(value = "Endre status beskrivelse på testperson", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     @PutMapping("/{ident}/beskrivelse")
     @ResponseStatus(HttpStatus.OK)
     public IdentAttributesResponse oppdaterTestidentBeskrivelse(@PathVariable String ident, @RequestBody RsIdentBeskrivelse beskrivelse) {
@@ -65,7 +66,7 @@ public class TestpersonController {
     }
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
-    @ApiOperation(value = "Endre status \"i-bruk\" på testperson")
+    @ApiOperation(value = "Endre status \"i-bruk\" på testperson", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     @PutMapping("/{ident}/ibruk")
     @ResponseStatus(HttpStatus.OK)
     public IdentAttributesResponse oppdaterTestidentIbruk(@PathVariable String ident, @RequestParam boolean iBruk) {
@@ -73,7 +74,7 @@ public class TestpersonController {
         return mapperFacade.map(identService.save(ident, iBruk), IdentAttributesResponse.class);
     }
 
-    @ApiOperation(value = "Koble eksisterende personer i Dolly ")
+    @ApiOperation(value = "Koble eksisterende personer i Dolly ", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     @PutMapping("/{ident}/relasjon")
     @ResponseStatus(HttpStatus.OK)
     public RsBestillingStatus koblePerson(@ApiParam(value = "Ident for hovedperson", required = true)
@@ -86,6 +87,7 @@ public class TestpersonController {
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
+    @ApiOperation(value = "Slett test ident", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @Transactional
     @DeleteMapping("/{ident}")
