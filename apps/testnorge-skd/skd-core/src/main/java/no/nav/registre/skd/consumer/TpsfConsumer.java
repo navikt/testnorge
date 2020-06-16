@@ -14,7 +14,9 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
 import no.nav.registre.skd.consumer.requests.SlettSkdmeldingerRequest;
@@ -38,8 +40,10 @@ public class TpsfConsumer {
     private final UriTemplate uriTemplateSaveToTps;
     private final UriTemplate uriTemplateGetMeldingIder;
     private final UriTemplate urlGetMeldingIder;
-    private final UriTemplate urlSlettMeldinger;
-    private final UriTemplate urlSlettIdenterFraTps;
+    private final UriTemplate uriSlettMeldinger;
+    private final UriTemplate uriSlettIdenterFraTps;
+    private final UriTemplate uriGetMeldingMedId;
+    private final UriTemplate uriOppdaterSkdmelding;
 
     public TpsfConsumer(
             RestTemplateBuilder restTemplateBuilder,
@@ -53,8 +57,10 @@ public class TpsfConsumer {
         this.uriTemplateSaveToTps = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/send/{gruppeId}");
         this.uriTemplateGetMeldingIder = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/meldinger/{gruppeId}");
         this.urlGetMeldingIder = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/meldinger/{avspillergruppeId}");
-        this.urlSlettMeldinger = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/deletemeldinger");
-        this.urlSlettIdenterFraTps = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/deleteFromTps?miljoer={miljoer}&identer={identer}");
+        this.uriSlettMeldinger = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/deletemeldinger");
+        this.uriSlettIdenterFraTps = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/deleteFromTps?miljoer={miljoer}&identer={identer}");
+        this.uriGetMeldingMedId = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/melding/{id}");
+        this.uriOppdaterSkdmelding = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/updatemeldinger");
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
@@ -95,7 +101,7 @@ public class TpsfConsumer {
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
     public ResponseEntity slettMeldingerFraTpsf(List<Long> meldingIder) {
-        var postRequest = RequestEntity.post(urlSlettMeldinger.expand()).body(SlettSkdmeldingerRequest.builder().ids(meldingIder).build());
+        var postRequest = RequestEntity.post(uriSlettMeldinger.expand()).body(SlettSkdmeldingerRequest.builder().ids(meldingIder).build());
         return restTemplate.exchange(postRequest, ResponseEntity.class);
     }
 
@@ -110,7 +116,7 @@ public class TpsfConsumer {
         List<List<String>> identerPartisjonert = Lists.partition(identer, PAGE_SIZE);
         for (var partisjon : identerPartisjonert) {
             var identerSomString = String.join(",", partisjon);
-            var deleteRequest = RequestEntity.delete(urlSlettIdenterFraTps.expand(miljoerSomString, identerSomString)).build();
+            var deleteRequest = RequestEntity.delete(uriSlettIdenterFraTps.expand(miljoerSomString, identerSomString)).build();
             try {
                 restTemplate.exchange(deleteRequest, ResponseEntity.class);
             } catch (HttpClientErrorException e) {
@@ -118,5 +124,21 @@ public class TpsfConsumer {
             }
         }
         return response;
+    }
+
+    public RsMeldingstype getMeldingMedId(Long id) {
+        var getRequest = RequestEntity.get(uriGetMeldingMedId.expand(id)).build();
+        return restTemplate.exchange(getRequest, RsMeldingstype.class).getBody();
+    }
+
+    public List<RsMeldingstype> oppdaterSkdMeldinger(List<RsMeldingstype> meldinger) {
+        var postRequest = RequestEntity.post(uriOppdaterSkdmelding.expand()).body(meldinger);
+        var response = restTemplate.exchange(postRequest, Void.class);
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            log.error("Kunne ikke oppdatere meldinger med id-er: {}", meldinger.stream().map(RsMeldingstype::getId).collect(Collectors.toList()));
+            return meldinger;
+        }
+        log.info("Oppdaterte meldinger med id-er: {}", meldinger.stream().map(RsMeldingstype::getId).collect(Collectors.toList()));
+        return Collections.emptyList();
     }
 }
