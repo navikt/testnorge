@@ -212,7 +212,7 @@ public class RettighetTiltakService {
         }
     }
 
-    private List<RettighetRequest> getRettigheterForEndreDeltakerstatus(
+    public List<RettighetRequest> getRettigheterForEndreDeltakerstatus(
             Map<String, List<NyttVedtakResponse>> identerMedOpprettedeTiltakdeltakelse,
             List<RettighetRequest> rettigheterTiltaksdeltakelse, String miljoe){
 
