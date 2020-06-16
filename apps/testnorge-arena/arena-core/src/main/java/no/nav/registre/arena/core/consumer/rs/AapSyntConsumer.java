@@ -27,6 +27,7 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap
 public class AapSyntConsumer {
 
     private static final LocalDate MINIMUM_DATE = LocalDate.of(2010, 10, 1); // krav i arena
+    public static final LocalDate ARENA_AAP_UNG_UFOER_DATE_LIMIT = LocalDate.of(2020, 1, 31);
 
     private RestTemplate restTemplate;
     private ConsumerUtils consumerUtils;
@@ -101,7 +102,7 @@ public class AapSyntConsumer {
     }
 
     public List<NyttVedtakAap> syntetiserRettighetUngUfoer(int antallMeldinger) {
-        var postRequest = consumerUtils.createPostRequest(arenaAapUngUfoerUrl, antallMeldinger);
+        var postRequest = consumerUtils.createPostRequest(arenaAapUngUfoerUrl, antallMeldinger, ARENA_AAP_UNG_UFOER_DATE_LIMIT);
         return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakAap>>() {
         }).getBody();
     }

@@ -19,6 +19,10 @@ import no.nav.registre.endringsmeldinger.provider.rs.responses.StatusFraFeiledeM
 @Slf4j
 public final class StatusFraTpsUtil {
 
+    private StatusFraTpsUtil() {
+
+    }
+
     public static StatusFraFeiledeMeldingerTpsResponse trekkUtStatusFraTps(
             List<RsPureXmlMessageResponse> responses
     ) throws ParserConfigurationException {

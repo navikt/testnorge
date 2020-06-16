@@ -10,6 +10,10 @@ import no.nav.registre.tss.consumer.rs.response.Response910;
 
 public class Response910Util {
 
+    private Response910Util() {
+
+    }
+
     private static final int POS_AFTER_HEADER = 531;
 
     public static Response910 parseResponse(String response) {

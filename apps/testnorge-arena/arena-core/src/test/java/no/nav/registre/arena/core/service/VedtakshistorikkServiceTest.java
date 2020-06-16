@@ -10,6 +10,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import static no.nav.registre.arena.core.consumer.rs.AapSyntConsumer.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
+
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
@@ -21,7 +23,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -70,12 +71,12 @@ public class VedtakshistorikkServiceTest {
         Saksopplysning saksopplysning = new Saksopplysning();
         var nyRettighetAap = NyttVedtakAap.builder()
                 .build();
-        nyRettighetAap.setFraDato(LocalDate.now().minusDays(7));
-        nyRettighetAap.setTilDato(LocalDate.now());
+        nyRettighetAap.setFraDato(ARENA_AAP_UNG_UFOER_DATE_LIMIT.minusDays(7));
+        nyRettighetAap.setTilDato(ARENA_AAP_UNG_UFOER_DATE_LIMIT);
         nyRettighetAap.setGenSaksopplysninger(Collections.singletonList(saksopplysning));
         var nyRettighetUngUfoer = NyttVedtakAap.builder()
                 .build();
-        nyRettighetUngUfoer.setFraDato(LocalDate.now().minusDays(7));
+        nyRettighetUngUfoer.setFraDato(ARENA_AAP_UNG_UFOER_DATE_LIMIT.minusDays(7));
         var nyRettighetTvungenForvaltning = NyttVedtakAap.builder()
                 .build();
         var nyRettighetFritakMeldekort = NyttVedtakAap.builder()

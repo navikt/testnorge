@@ -25,6 +25,10 @@ import java.util.Map;
 @Service
 public class ConsumerUtils {
 
+    private ConsumerUtils() {
+
+    }
+
     public static final String CALL_ID_NAME = "Nav-Call-Id";
     public static final String CONSUMER_ID_NAME = "Nav-Consumer-Id";
     public static final String NAV_CALL_ID = "ORKESTRATOREN";

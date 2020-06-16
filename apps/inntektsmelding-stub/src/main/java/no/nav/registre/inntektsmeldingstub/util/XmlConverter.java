@@ -1,6 +1,5 @@
 package no.nav.registre.inntektsmeldingstub.util;
 
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.xml.bind.JAXBContext;
@@ -12,8 +11,11 @@ import java.io.StringReader;
 import java.io.StringWriter;
 
 @Slf4j
-@NoArgsConstructor
 public class XmlConverter {
+
+    private XmlConverter() {
+
+    }
 
     public static <T> String toXml(JAXBElement<T> value, Class<T> clazz) {
         try {

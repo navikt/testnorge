@@ -39,7 +39,7 @@ public class TilleggSyntConsumer {
     private UriTemplate arenaTilleggReiseObligatoriskSamlingArbeidssoekereUrl;
     private UriTemplate arenaTilleggReisestoenadArbeidssoekereUrl;
 
-    private static final LocalDate arenaTilleggTilsynFamiliemedlemmerDateLimit = LocalDate.of(2020, 02, 29);
+    public static final LocalDate ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT = LocalDate.of(2020, 02, 29);
 
     public TilleggSyntConsumer(
             RestTemplateBuilder restTemplateBuilder,
@@ -98,7 +98,7 @@ public class TilleggSyntConsumer {
     }
 
     public List<NyttVedtakTillegg> opprettTilsynFamiliemedlemmer(int antallMeldinger) {
-        return opprettTilleggstoenad(antallMeldinger, arenaTilleggTilsynFamiliemedlemmerUrl, arenaTilleggTilsynFamiliemedlemmerDateLimit);
+        return opprettTilleggstoenad(antallMeldinger, arenaTilleggTilsynFamiliemedlemmerUrl, ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT);
     }
 
     public List<NyttVedtakTillegg> opprettTilsynBarnArbeidssoekere(int antallMeldinger) {

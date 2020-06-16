@@ -5,6 +5,7 @@ on:
     branches: master
     paths:
       - apps/inntektsmelding-stub/**
+      - libs/testnorge-core/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/inntektsmelding:${{ github.sha }}

@@ -6,6 +6,10 @@ import no.nav.registre.tss.consumer.rs.response.TssMessage;
 
 public class RutineUtil {
 
+    private RutineUtil() {
+
+    }
+
     public static final int MELDINGSLENGDE = 203;
 
     public static String opprettFlatfil(List<TssMessage> rutiner) {
