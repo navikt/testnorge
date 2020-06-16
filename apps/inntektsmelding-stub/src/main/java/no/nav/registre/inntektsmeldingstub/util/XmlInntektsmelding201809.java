@@ -1,5 +1,20 @@
 package no.nav.registre.inntektsmeldingstub.util;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 import no.nav.registre.inntektsmeldingstub.provider.rs.RsArbeidsforhold;
 import no.nav.registre.inntektsmeldingstub.provider.rs.RsArbeidsgiver;
 import no.nav.registre.inntektsmeldingstub.provider.rs.RsAvsendersystem;
@@ -14,7 +29,6 @@ import no.nav.registre.inntektsmeldingstub.provider.rs.RsPeriode;
 import no.nav.registre.inntektsmeldingstub.provider.rs.RsRefusjon;
 import no.nav.registre.inntektsmeldingstub.provider.rs.RsSykepengerIArbeidsgiverperioden;
 import no.nav.registre.inntektsmeldingstub.provider.rs.RsUtsettelseAvForeldrepenger;
-
 import no.seres.xsd.nav.inntektsmelding_m._20180924.XMLArbeidsforhold;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.XMLArbeidsgiver;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.XMLArbeidsgiverperiodeListe;
@@ -41,19 +55,6 @@ import no.seres.xsd.nav.inntektsmelding_m._20180924.XMLSkjemainnhold;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.XMLSykepengerIArbeidsgiverperioden;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.XMLUtsettelseAvForeldrepenger;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.XMLUtsettelseAvForeldrepengerListe;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
-
-import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class XmlInntektsmelding201809 {
 
@@ -94,10 +95,6 @@ public class XmlInntektsmelding201809 {
                         XMLOmsorgspenger.class,
                         createOmsorgspenger(melding.getOmsorgspenger().orElse(null)))),
                 Collections.emptyMap());
-    }
-
-    private static void badRequest(String grunn) {
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, grunn);
     }
 
     private static XMLOmsorgspenger createOmsorgspenger(RsOmsorgspenger omsorgspenger) {
