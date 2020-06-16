@@ -16,6 +16,7 @@
         <module>testnorge-data-transfer-objects</module>
         <module>testnorge-testing</module>
         <module>testnorge-core</module>
+        <module>testnorge-dependency-analysis</module>
     </modules>
 
 

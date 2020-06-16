@@ -17,6 +17,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <dependency>
+            <artifactId>testnorge-dependency-analysis</artifactId>
+            <groupId>no.nav.registre.testnorge</groupId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
