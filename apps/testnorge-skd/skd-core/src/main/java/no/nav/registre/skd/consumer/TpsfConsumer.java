@@ -40,6 +40,7 @@ public class TpsfConsumer {
     private final UriTemplate urlGetMeldingIder;
     private final UriTemplate urlSlettMeldinger;
     private final UriTemplate urlSlettIdenterFraTps;
+    private final UriTemplate urlGetGruppePaginert;
 
     public TpsfConsumer(
             RestTemplateBuilder restTemplateBuilder,
@@ -55,6 +56,7 @@ public class TpsfConsumer {
         this.urlGetMeldingIder = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/meldinger/{avspillergruppeId}");
         this.urlSlettMeldinger = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/deletemeldinger");
         this.urlSlettIdenterFraTps = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/deleteFromTps?miljoer={miljoer}&identer={identer}");
+        this.urlGetGruppePaginert = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/gruppe/meldinger/{avspillergruppeId}/{pageNumber}");
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
@@ -118,5 +120,11 @@ public class TpsfConsumer {
             }
         }
         return response;
+    }
+
+    public List<RsMeldingstype> getGruppePaginert(Long avspillergruppeId, int pageNumber) {
+        RequestEntity getRequest = RequestEntity.get(urlGetGruppePaginert.expand(avspillergruppeId, pageNumber)).build();
+        return restTemplate.exchange(getRequest, new ParameterizedTypeReference<List<RsMeldingstype>>() {
+        }).getBody();
     }
 }
