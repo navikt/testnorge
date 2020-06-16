@@ -3,14 +3,17 @@ package no.nav.registre.testnorge.elsam.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Import;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Random;
 
+import no.nav.registere.testnorge.core.ApplicationCoreConfig;
 import no.nav.registre.testnorge.consumers.ConsumerFactory;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Configuration
+@Import(ApplicationCoreConfig.class)
 public class AppConfig {
 
     @Bean

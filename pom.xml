@@ -98,11 +98,11 @@
 
 
     <repositories>
-    <repository>
-        <id>github-package-registry-navikt</id>
-        <url>https://maven.pkg.github.com/navikt/maven-release</url>
-    </repository>
-</repositories>
+        <repository>
+            <id>github-package-registry-navikt</id>
+            <url>https://maven.pkg.github.com/navikt/maven-release</url>
+        </repository>
+    </repositories>
 
     <scm>
         <developerConnection>scm:git:git@github.com:navikt/testnorge.git</developerConnection>
