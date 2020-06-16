@@ -23,4 +23,10 @@ public class Samhandler {
         this.type = type;
     }
 
+    private Samhandler(String ident, String navn, Integer alder, TssType type) {
+        this.ident = ident;
+        this.navn = navn;
+        this.alder = alder;
+        this.type = type;
+    }
 }
