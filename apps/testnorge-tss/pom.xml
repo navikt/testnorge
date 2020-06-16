@@ -19,6 +19,10 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <artifactId>testnorge-core</artifactId>
+            <groupId>no.nav.registre.testnorge</groupId>
+        </dependency>
         <!--LOGGING-->
         <dependency>
             <groupId>net.logstash.logback</groupId>
