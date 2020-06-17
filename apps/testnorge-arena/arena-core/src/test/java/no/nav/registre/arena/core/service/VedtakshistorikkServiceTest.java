@@ -1,7 +1,5 @@
 package no.nav.registre.arena.core.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -10,6 +8,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import static no.nav.registre.arena.core.consumer.rs.AapSyntConsumer.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
 
@@ -141,13 +140,12 @@ public class VedtakshistorikkServiceTest {
                 .nyeRettigheterAap(fritakMeldekortRettigheter)
                 .feiledeRettigheter(new ArrayList<>())
                 .build();
-        var expectedResponsesFromArenaForvalter = new ArrayList<>(
-                Arrays.asList(
+        var expectedResponsesFromArenaForvalter = Arrays.asList(
                         nyRettighetAapResponse,
                         nyRettighetUngUfoerResponse,
                         nyRettighetTvungenForvaltningResponse,
                         nyRettighetFritakMeldekortResponse
-                ));
+                );
         Map<String, List<NyttVedtakResponse>> responseAsMap = new HashMap<>();
         responseAsMap.put(fnr1, expectedResponsesFromArenaForvalter);
 
@@ -160,25 +158,25 @@ public class VedtakshistorikkServiceTest {
         verify(rettighetAapService).opprettPersonOgInntektIPopp(anyString(), anyString(), any(NyttVedtakAap.class));
         verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
 
-        assertThat(response.get(fnr1).size(), equalTo(4));
+        assertThat(response.get(fnr1)).hasSize(4);
 
-        assertThat(response.get(fnr1).get(0).getNyeRettigheterAap().size(), equalTo(1));
-        assertThat(response.get(fnr1).get(0).getNyeRettigheterAap().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
-        assertThat(response.get(fnr1).get(0).getFeiledeRettigheter().size(), equalTo(0));
+        assertThat(response.get(fnr1).get(0).getNyeRettigheterAap()).hasSize(1);
+        assertThat(response.get(fnr1).get(0).getNyeRettigheterAap().get(0).getBegrunnelse()).isEqualTo("Syntetisert rettighet");
+        assertThat(response.get(fnr1).get(0).getFeiledeRettigheter()).hasSize(0);
 
-        assertThat(response.get(fnr1).get(1).getNyeRettigheterAap().size(), equalTo(1));
-        assertThat(response.get(fnr1).get(1).getNyeRettigheterAap().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
-        assertThat(response.get(fnr1).get(1).getFeiledeRettigheter().size(), equalTo(0));
+        assertThat(response.get(fnr1).get(1).getNyeRettigheterAap()).hasSize(1);
+        assertThat(response.get(fnr1).get(1).getNyeRettigheterAap().get(0).getBegrunnelse()).isEqualTo("Syntetisert rettighet");
+        assertThat(response.get(fnr1).get(1).getFeiledeRettigheter()).hasSize(0);
 
-        assertThat(response.get(fnr1).get(2).getNyeRettigheterAap().size(), equalTo(1));
-        assertThat(response.get(fnr1).get(2).getNyeRettigheterAap().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
-        assertThat(response.get(fnr1).get(2).getNyeRettigheterAap().get(0).getForvalter().getGjeldendeKontonr().getKontonr(), equalTo(kontonummer));
-        assertThat(response.get(fnr1).get(2).getNyeRettigheterAap().get(0).getForvalter().getUtbetalingsadresse().getFodselsnr(), equalTo(forvalterFnr));
-        assertThat(response.get(fnr1).get(2).getFeiledeRettigheter().size(), equalTo(0));
+        assertThat(response.get(fnr1).get(2).getNyeRettigheterAap().size()).isEqualTo(1);
+        assertThat(response.get(fnr1).get(2).getNyeRettigheterAap().get(0).getBegrunnelse()).isEqualTo("Syntetisert rettighet");
+        assertThat(response.get(fnr1).get(2).getNyeRettigheterAap().get(0).getForvalter().getGjeldendeKontonr().getKontonr()).isEqualTo(kontonummer);
+        assertThat(response.get(fnr1).get(2).getNyeRettigheterAap().get(0).getForvalter().getUtbetalingsadresse().getFodselsnr()).isEqualTo(forvalterFnr);
+        assertThat(response.get(fnr1).get(2).getFeiledeRettigheter()).hasSize(0);
 
-        assertThat(response.get(fnr1).get(3).getNyeRettigheterAap().size(), equalTo(1));
-        assertThat(response.get(fnr1).get(3).getNyeRettigheterAap().get(0).getBegrunnelse(), equalTo("Syntetisert rettighet"));
-        assertThat(response.get(fnr1).get(3).getFeiledeRettigheter().size(), equalTo(0));
+        assertThat(response.get(fnr1).get(3).getNyeRettigheterAap()).hasSize(1);
+        assertThat(response.get(fnr1).get(3).getNyeRettigheterAap().get(0).getBegrunnelse()).isEqualTo("Syntetisert rettighet");
+        assertThat(response.get(fnr1).get(3).getFeiledeRettigheter()).hasSize(0);
     }
 
     @Test
@@ -192,11 +190,10 @@ public class VedtakshistorikkServiceTest {
                 .feiledeRettigheter(new ArrayList<>())
                 .build();
 
-        var expectedResponsesFromArenaForvalter = new ArrayList<>(
-                Arrays.asList(
-                        nyRettighetTiltakdeltakelseResponse,
-                        nyRettighetEndreDeltakelseResponse
-                ));
+        var expectedResponsesFromArenaForvalter = Arrays.asList(
+                nyRettighetTiltakdeltakelseResponse,
+                nyRettighetEndreDeltakelseResponse
+        );
         Map<String, List<NyttVedtakResponse>> responseAsMap = new HashMap<>();
         responseAsMap.put(fnr1, expectedResponsesFromArenaForvalter);
 
@@ -212,10 +209,10 @@ public class VedtakshistorikkServiceTest {
         verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
         verify(rettighetTiltakService).getRettigheterForEndreDeltakerstatus(anyMap(), anyList(), anyString());
 
-        assertThat(response.get(fnr1).size(), equalTo(2));
+        assertThat(response.get(fnr1)).hasSize(2);
 
-        assertThat(response.get(fnr1).get(0).getFeiledeRettigheter().size(), equalTo(0));
-        assertThat(response.get(fnr1).get(1).getFeiledeRettigheter().size(), equalTo(0));
+        assertThat(response.get(fnr1).get(0).getFeiledeRettigheter()).hasSize(0);
+        assertThat(response.get(fnr1).get(1).getFeiledeRettigheter()).hasSize(0);
 
     }
 }
