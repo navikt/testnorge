@@ -90,7 +90,7 @@ public class StsOidcTokenService {
             return;
         }
         expiry = LocalDateTime.now().plusSeconds(((JsonNode) responseEntity.getBody()).get("expires_in").asLong());
-        idToken = "Bearer " + ((JsonNode) responseEntity.getBody()).get("access_token").asText();
+        idToken = ((JsonNode) responseEntity.getBody()).get("access_token").asText();
     }
 
 }
