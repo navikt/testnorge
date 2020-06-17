@@ -34,6 +34,7 @@ public class ProvidersProps {
     private IdentPool identPool = new IdentPool();
     private Brregstub brregstub = new Brregstub();
     private Aktoerregister aktoerregister = new Aktoerregister();
+    private Dokarkiv dokarkiv = new Dokarkiv();
 
     @Getter
     @Setter
@@ -223,4 +224,15 @@ public class ProvidersProps {
 
         private String url;
     }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Dokarkiv {
+
+        private String url;
+    }
+
 }
