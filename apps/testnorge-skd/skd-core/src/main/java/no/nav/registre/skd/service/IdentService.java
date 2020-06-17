@@ -98,7 +98,6 @@ public class IdentService {
             oppdaterteIder.removeAll(meldingIdsSomIkkeKunneOppdateres);
             oppdaterteIdenterCache.addToCache(new HashSet<>(partisjonerteIdenter));
             log.info("Antall identer kontrollert: {}. Antall meldinger kontrollert: {}. Antall meldinger oppdatert: {}.", antallIdenterSjekket, antallIderSjekket, oppdaterteIder.size());
-            break;
         }
 
         return oppdaterteIder;
