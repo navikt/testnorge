@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.skd.consumer.IdentPoolConsumer;
 import no.nav.registre.skd.consumer.TpsfConsumer;
+import no.nav.registre.skd.service.utilities.IdenterCache;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
@@ -36,6 +38,7 @@ public class IdentService {
     private final TpsfConsumer tpsfConsumer;
     private final IdentPoolConsumer identPoolConsumer;
     private final HodejegerenConsumer hodejegerenConsumer;
+    private final IdenterCache oppdaterteIdenterCache;
 
     static {
         gamleTilNyeKommunenummer = new HashMap<>();
@@ -77,7 +80,8 @@ public class IdentService {
         int antallIdenterSjekket = 0;
         for (var partisjonerteIdenter : Lists.partition(identerIAvspillergruppe, PARTITION_SIZE_GET_MELDING_IDER)) {
             List<RsMeldingstype> meldingerSomSkalOppdateres = new ArrayList<>();
-            var meldingIderTilhoerendeIdenter = tpsfConsumer.getMeldingIderTilhoerendeIdenter(avspillergruppeId, partisjonerteIdenter);
+            var ikkeCachedeIdenter = getIdenterSomIkkeErCachet(partisjonerteIdenter);
+            var meldingIderTilhoerendeIdenter = tpsfConsumer.getMeldingIderTilhoerendeIdenter(avspillergruppeId, ikkeCachedeIdenter);
 
             List<RsMeldingstype> meldinger = tpsfConsumer.getMeldingerMedIds(meldingIderTilhoerendeIdenter.stream().map(Objects::toString).collect(Collectors.toList()));
             for (var melding : meldinger) {
@@ -92,9 +96,22 @@ public class IdentService {
             antallIdenterSjekket += partisjonerteIdenter.size();
             var meldingIdsSomIkkeKunneOppdateres = tpsfConsumer.oppdaterSkdMeldinger(meldingerSomSkalOppdateres);
             oppdaterteIder.removeAll(meldingIdsSomIkkeKunneOppdateres);
+            oppdaterteIdenterCache.addToCache(new HashSet<>(partisjonerteIdenter));
             log.info("Antall identer kontrollert: {}. Antall meldinger kontrollert: {}. Antall meldinger oppdatert: {}.", antallIdenterSjekket, antallIderSjekket, oppdaterteIder.size());
+            break;
         }
 
         return oppdaterteIder;
+    }
+
+    private List<String> getIdenterSomIkkeErCachet(List<String> identer) {
+        var alleredeOppdaterteIdenter = oppdaterteIdenterCache.getIdenterCache();
+        List<String> ikkeCachedeIdenter = new ArrayList<>();
+        for (var ident : identer) {
+            if (!alleredeOppdaterteIdenter.contains(ident)) {
+                ikkeCachedeIdenter.add(ident);
+            }
+        }
+        return ikkeCachedeIdenter;
     }
 }
