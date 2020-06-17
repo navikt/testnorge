@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import no.nav.registre.skd.consumer.IdentPoolConsumer;
@@ -29,7 +30,6 @@ public class IdentService {
 
     private static final Map<String, String> gamleTilNyeKommunenummer;
     private static final int PARTITION_SIZE_GET_MELDING_IDER = 100;
-    private static final int PARTITION_SIZE_OPPDATER_MELDINGER = 50;
 
     private final TpsfConsumer tpsfConsumer;
     private final IdentPoolConsumer identPoolConsumer;
@@ -69,37 +69,31 @@ public class IdentService {
     public List<Long> oppdaterKommunenummerIAvspillergruppe(
             Long avspillergruppeId
     ) {
-        List<RsMeldingstype> meldingerSomSkalOppdateres = new ArrayList<>();
+        List<Long> oppdaterteIder = new ArrayList<>();
         var identerIAvspillergruppe = hodejegerenConsumer.get(avspillergruppeId);
         int antallIderSjekket = 0;
         int antallIdenterSjekket = 0;
         for (var partisjonerteIdenter : Lists.partition(identerIAvspillergruppe, PARTITION_SIZE_GET_MELDING_IDER)) {
+            List<RsMeldingstype> meldingerSomSkalOppdateres = new ArrayList<>();
             var meldingIderTilhoerendeIdenter = tpsfConsumer.getMeldingIderTilhoerendeIdenter(avspillergruppeId, partisjonerteIdenter);
 
-            for (var meldingId : meldingIderTilhoerendeIdenter) {
-                var melding = tpsfConsumer.getMeldingMedId(meldingId);
-                if (melding != null) {
-                    if (melding.getId() == null) {
-                        melding.setId(meldingId);
-                    }
-                    var kommunenummer = ((RsMeldingstype1Felter) melding).getKommunenummer();
-                    if (gamleTilNyeKommunenummer.containsKey(kommunenummer)) {
-                        ((RsMeldingstype1Felter) melding).setKommunenummer(gamleTilNyeKommunenummer.get(kommunenummer));
-                        meldingerSomSkalOppdateres.add(melding);
-                    }
+            List<RsMeldingstype> meldinger = tpsfConsumer.getMeldingerMedIds(meldingIderTilhoerendeIdenter.stream().map(Objects::toString).collect(Collectors.toList()));
+            for (var melding : meldinger) {
+                var kommunenummer = ((RsMeldingstype1Felter) melding).getKommunenummer();
+                if (gamleTilNyeKommunenummer.containsKey(kommunenummer)) {
+                    ((RsMeldingstype1Felter) melding).setKommunenummer(gamleTilNyeKommunenummer.get(kommunenummer));
+                    meldingerSomSkalOppdateres.add(melding);
+                    oppdaterteIder.add(melding.getId());
                 }
                 antallIderSjekket++;
             }
             antallIdenterSjekket += partisjonerteIdenter.size();
+            var meldingIdsSomIkkeKunneOppdateres = tpsfConsumer.oppdaterSkdMeldinger(meldingerSomSkalOppdateres);
+            oppdaterteIder.removeAll(meldingIdsSomIkkeKunneOppdateres);
         }
 
-        for (var partisjonerteMeldinger : Lists.partition(meldingerSomSkalOppdateres, PARTITION_SIZE_OPPDATER_MELDINGER)) {
-            var meldingerSomIkkeKunneOppdateres = tpsfConsumer.oppdaterSkdMeldinger(partisjonerteMeldinger);
-            meldingerSomSkalOppdateres.removeAll(meldingerSomIkkeKunneOppdateres);
-        }
+        log.info("Antall identer kontrollert: {}. Antall meldinger kontrollert: {}. Antall meldinger oppdatert: {}.", antallIdenterSjekket, antallIderSjekket, oppdaterteIder.size());
 
-        log.info("Antall identer kontrollert: {}. Antall meldinger kontrollert: {}. Antall meldinger oppdatert: {}.", antallIdenterSjekket, antallIderSjekket, meldingerSomSkalOppdateres.size());
-
-        return meldingerSomSkalOppdateres.stream().map(RsMeldingstype::getId).collect(Collectors.toList());
+        return oppdaterteIder;
     }
 }
