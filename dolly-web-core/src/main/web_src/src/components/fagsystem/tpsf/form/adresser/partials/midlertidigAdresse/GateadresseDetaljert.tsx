@@ -1,4 +1,6 @@
 import React from 'react'
+import _get from 'lodash/get'
+import _has from 'lodash/has'
 import { FormikProps } from 'formik'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
@@ -20,7 +22,6 @@ interface Adresse {
 	postnr: string
 	poststed: string
 }
-//TODO: Enum for type?
 
 export const GateadresseDetaljert = ({ formikBag }: GateadresseDetaljert) => {
 	const settAdresse = (adresse: Adresse) => {
@@ -32,19 +33,24 @@ export const GateadresseDetaljert = ({ formikBag }: GateadresseDetaljert) => {
 	}
 
 	const renderGateadresse = () => {
-		const {
-			gatenavn,
-			husnr,
-			postnr,
-			poststed
-		} = formikBag.values.tpsf.midlertidigAdresse.norskAdresse
-		// TODO: _get?
+		const { gatenavn, husnr, postnr, poststed } = _get(
+			formikBag.values,
+			'tpsf.midlertidigAdresse.norskAdresse'
+		)
 		if (!gatenavn) return ''
-		// TODO: Fiks poststed?
 		return `${gatenavn} ${parseInt(husnr)}, ${postnr} ${poststed}`
 	}
 
-	// TODO: Fiks feilmelding?
+	const feilmelding = () => {
+		if (
+			!_get(formikBag.values, 'tpsf.midlertidigAdresse.norskAdresse.gatenavn') &&
+			_has(formikBag.touched, 'tpsf.midlertidigAdresse.norskAdresse.gatenavn')
+		) {
+			return {
+				feilmelding: _get(formikBag.errors, 'tpsf.midlertidigAdresse.norskAdresse.gatenavn')
+			}
+		}
+	}
 
 	return (
 		<Kategori title="Midlertidig gateadresse">
@@ -57,13 +63,12 @@ export const GateadresseDetaljert = ({ formikBag }: GateadresseDetaljert) => {
 							<DollyTextInput
 								name="boadresse"
 								size="grow"
-								// value={renderAdresse(data.data)}
 								value={renderGateadresse()}
 								label="Boadresse"
 								readOnly
 								placeholder="Ingen valgt adresse"
 								title="Endre adressen i adressevelgeren over"
-								// feil={feilmelding()}
+								feil={feilmelding()}
 							/>
 						)
 					}}

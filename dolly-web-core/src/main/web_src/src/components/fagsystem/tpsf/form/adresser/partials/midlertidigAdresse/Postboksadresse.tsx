@@ -23,7 +23,6 @@ export const Postboksadresse = () => {
 				size="large"
 				isClearable={false}
 			/>
-			{/* // TODO: Bør kun vise postboksadresser */}
 		</div>
 	)
 }

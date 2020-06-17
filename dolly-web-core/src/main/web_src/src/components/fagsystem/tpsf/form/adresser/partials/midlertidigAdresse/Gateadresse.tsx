@@ -11,18 +11,30 @@ interface Gateadresse {
 	formikBag: FormikProps<{}>
 }
 
-//TODO: Enum for type?
+enum GateadresseTyper {
+	TILFELDIG = 'TILFELDIG',
+	POSTNR = 'POSTNR',
+	KOMMUNENR = 'KOMMUNENR',
+	GATE = 'GATE'
+}
 
 export const Gateadresse = ({ formikBag }: Gateadresse) => {
-	const [gateAdresseType, setGateAdresseType] = useState('TILFELDIG')
-	// TODO: Hent state fra formikBag
+	const getState = () => {
+		if (_get(formikBag.values, 'tpsf.midlertidigAdresse.gateadresseNrInfo')) {
+			return _get(formikBag.values, 'tpsf.midlertidigAdresse.gateadresseNrInfo.nummertype')
+		} else if (_get(formikBag.values, 'tpsf.midlertidigAdresse.norskAdresse.gatenavn')) {
+			return GateadresseTyper.GATE
+		} else return GateadresseTyper.TILFELDIG
+	}
+
+	const [gateAdresseType, setGateAdresseType] = useState(getState())
 
 	const handleRadioChange = (v: any) => {
 		const type = v.target.value
 		setGateAdresseType(type)
 
 		switch (type) {
-			case 'TILFELDIG':
+			case GateadresseTyper.TILFELDIG:
 				formikBag.setFieldValue('tpsf.midlertidigAdresse.norskAdresse', {
 					tilleggsadresse: _get(
 						formikBag.values,
@@ -31,7 +43,7 @@ export const Gateadresse = ({ formikBag }: Gateadresse) => {
 				})
 				formikBag.setFieldValue('tpsf.midlertidigAdresse.gateadresseNrInfo', undefined)
 				break
-			case 'POSTNR':
+			case GateadresseTyper.POSTNR:
 				formikBag.setFieldValue('tpsf.midlertidigAdresse.norskAdresse', {
 					tilleggsadresse: _get(
 						formikBag.values,
@@ -39,11 +51,11 @@ export const Gateadresse = ({ formikBag }: Gateadresse) => {
 					)
 				})
 				formikBag.setFieldValue('tpsf.midlertidigAdresse.gateadresseNrInfo', {
-					nummertype: 'POSTNR',
+					nummertype: GateadresseTyper.POSTNR,
 					nummer: ''
 				})
 				break
-			case 'KOMMUNENR':
+			case GateadresseTyper.KOMMUNENR:
 				formikBag.setFieldValue('tpsf.midlertidigAdresse.norskAdresse', {
 					tilleggsadresse: _get(
 						formikBag.values,
@@ -51,11 +63,11 @@ export const Gateadresse = ({ formikBag }: Gateadresse) => {
 					)
 				})
 				formikBag.setFieldValue('tpsf.midlertidigAdresse.gateadresseNrInfo', {
-					nummertype: 'KOMMUNENR',
+					nummertype: GateadresseTyper.KOMMUNENR,
 					nummer: ''
 				})
 				break
-			case 'GATE':
+			case GateadresseTyper.GATE:
 				formikBag.setFieldValue('tpsf.midlertidigAdresse.norskAdresse', {
 					postnr: '',
 					gatenavn: '',
@@ -80,25 +92,33 @@ export const Gateadresse = ({ formikBag }: Gateadresse) => {
 				name="gateAdresseType"
 				legend="Hva slags midlertidig gateadresse vil du opprette?"
 				radios={[
-					{ label: 'Tilfeldig gateadresse', value: 'TILFELDIG', id: 'TILFELDIG' },
+					{
+						label: 'Tilfeldig gateadresse',
+						value: GateadresseTyper.TILFELDIG,
+						id: GateadresseTyper.TILFELDIG
+					},
 					{
 						label: 'Tilfeldig gateadresse basert på postnummer ...',
-						value: 'POSTNR',
-						id: 'POSTNR'
+						value: GateadresseTyper.POSTNR,
+						id: GateadresseTyper.POSTNR
 					},
 					{
 						label: 'Tilfeldig gateadresse basert på kommunenummer ...',
-						value: 'KOMMUNENR',
-						id: 'KOMMUNENR'
+						value: GateadresseTyper.KOMMUNENR,
+						id: GateadresseTyper.KOMMUNENR
 					},
-					{ label: 'Gateadresse detaljert ...', value: 'GATE', id: 'GATE' }
+					{
+						label: 'Gateadresse detaljert ...',
+						value: GateadresseTyper.GATE,
+						id: GateadresseTyper.GATE
+					}
 				]}
 				checked={gateAdresseType}
 				onChange={handleRadioChange}
 			/>
-			{['POSTNR', 'KOMMUNENR'].includes(gateAdresseType) && (
+			{[GateadresseTyper.POSTNR, GateadresseTyper.KOMMUNENR].includes(gateAdresseType) && (
 				<Kategori title="Generer midlertidig adresse ...">
-					{gateAdresseType === 'POSTNR' && (
+					{gateAdresseType === GateadresseTyper.POSTNR && (
 						<FormikSelect
 							name="tpsf.midlertidigAdresse.gateadresseNrInfo.nummer"
 							label="Postnummer"
@@ -107,7 +127,7 @@ export const Gateadresse = ({ formikBag }: Gateadresse) => {
 							isClearable={false}
 						/>
 					)}
-					{gateAdresseType === 'KOMMUNENR' && (
+					{gateAdresseType === GateadresseTyper.KOMMUNENR && (
 						<FormikSelect
 							name="tpsf.midlertidigAdresse.gateadresseNrInfo.nummer"
 							label="Kommunenummer"
@@ -118,7 +138,7 @@ export const Gateadresse = ({ formikBag }: Gateadresse) => {
 					)}
 				</Kategori>
 			)}
-			{gateAdresseType === 'GATE' && <GateadresseDetaljert formikBag={formikBag} />}
+			{gateAdresseType === GateadresseTyper.GATE && <GateadresseDetaljert formikBag={formikBag} />}
 		</div>
 	)
 }

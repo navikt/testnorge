@@ -15,13 +15,12 @@ interface MidlertidigAdresse {
 	formikBag: FormikProps<{}>
 }
 
-//TODO: Enum for type?
-// enum AdresseTyper {
-// 	CoNavn = 'CO_NAVN',
-// 	LeilighetsNr = 'LEILIGHET_NR',
-// 	SeksjonsNr = 'SEKSJON_NR',
-// 	BoligNr = 'BOLIG_NR'
-// }
+enum AdresseTyper {
+	GATE = 'GATE',
+	STED = 'STED',
+	PBOX = 'PBOX',
+	UTAD = 'UTAD'
+}
 
 export const MidlertidigAdresse = ({ formikBag }: MidlertidigAdresse) => {
 	const [adressetype, setAdressetype] = useState(
@@ -32,7 +31,7 @@ export const MidlertidigAdresse = ({ formikBag }: MidlertidigAdresse) => {
 		const type = v.value
 		setAdressetype(type)
 		switch (type) {
-			case 'GATE':
+			case AdresseTyper.GATE:
 				formikBag.setFieldValue('tpsf.midlertidigAdresse', {
 					adressetype: type,
 					gyldigTom: _get(formikBag.values, 'tpsf.midlertidigAdresse.gyldigTom'),
@@ -44,7 +43,7 @@ export const MidlertidigAdresse = ({ formikBag }: MidlertidigAdresse) => {
 					}
 				})
 				break
-			case 'STED':
+			case AdresseTyper.STED:
 				formikBag.setFieldValue('tpsf.midlertidigAdresse', {
 					adressetype: type,
 					gyldigTom: _get(formikBag.values, 'tpsf.midlertidigAdresse.gyldigTom'),
@@ -58,7 +57,7 @@ export const MidlertidigAdresse = ({ formikBag }: MidlertidigAdresse) => {
 					}
 				})
 				break
-			case 'PBOX':
+			case AdresseTyper.PBOX:
 				formikBag.setFieldValue('tpsf.midlertidigAdresse', {
 					adressetype: type,
 					gyldigTom: _get(formikBag.values, 'tpsf.midlertidigAdresse.gyldigTom'),
@@ -69,7 +68,7 @@ export const MidlertidigAdresse = ({ formikBag }: MidlertidigAdresse) => {
 					}
 				})
 				break
-			case 'UTAD':
+			case AdresseTyper.UTAD:
 				formikBag.setFieldValue('tpsf.midlertidigAdresse', {
 					adressetype: type,
 					gyldigTom: _get(formikBag.values, 'tpsf.midlertidigAdresse.gyldigTom'),
@@ -98,11 +97,11 @@ export const MidlertidigAdresse = ({ formikBag }: MidlertidigAdresse) => {
 				onChange={handleAdressetypeChange}
 			/>
 			<FormikDatepicker name="tpsf.midlertidigAdresse.gyldigTom" label="Gyldig t.o.m." />
-			{adressetype === 'GATE' && <Gateadresse formikBag={formikBag} />}
-			{adressetype === 'STED' && <Stedsadresse />}
-			{adressetype === 'PBOX' && <Postboksadresse />}
-			{adressetype === 'UTAD' && <UtenlandskAdresse />}
-			{(adressetype === 'GATE' || adressetype === 'STED') && (
+			{adressetype === AdresseTyper.GATE && <Gateadresse formikBag={formikBag} />}
+			{adressetype === AdresseTyper.STED && <Stedsadresse />}
+			{adressetype === AdresseTyper.PBOX && <Postboksadresse />}
+			{adressetype === AdresseTyper.UTAD && <UtenlandskAdresse />}
+			{(adressetype === AdresseTyper.GATE || adressetype === AdresseTyper.STED) && (
 				<Tilleggsadresse
 					formikBag={formikBag}
 					tilleggsadressePath="tpsf.midlertidigAdresse.norskAdresse.tilleggsadresse"
