@@ -1,8 +1,6 @@
 package no.nav.registre.inntekt.provider.rs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.registre.inntekt.ApplicationStarter;
-import no.nav.registre.inntekt.config.AppConfig;
 import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsforhold;
 import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsgiver;
 import no.nav.registre.inntekt.domain.altinn.rs.RsAvsendersystem;
@@ -10,7 +8,8 @@ import no.nav.registre.inntekt.domain.altinn.rs.RsInntekt;
 import no.nav.registre.inntekt.domain.altinn.rs.RsInntektsmelding;
 import no.nav.registre.inntekt.domain.altinn.rs.RsKontaktinformasjon;
 import no.nav.registre.inntekt.domain.altinn.rs.RsNaturalytelseDetaljer;
-import no.nav.registre.inntekt.provider.rs.requests.AltinnDollyRequest;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,16 +19,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.client.ExpectedCount;
-import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.test.web.client.RequestMatcher;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.client.RestTemplate;
@@ -43,14 +35,15 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.status;
+import static com.github.tomakehurst.wiremock.client.WireMock.containing;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.reset;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -81,6 +74,7 @@ public class AltinnInntektIntegrasjonsTest {
 
     @Autowired
     private MockMvc mockMvc;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -107,11 +101,105 @@ public class AltinnInntektIntegrasjonsTest {
         /*mockServer = MockRestServiceServer.createServer(restTemplate);*/
     }
 
-    @Test
-    @DirtiesContext
-    public void passingCall() throws Exception {
+    @After
+    public void cleanup(){
+        reset();
+    }
 
-        RsInntektsmelding melding = RsInntektsmelding.builder()
+    @Test
+    public void passingCall() throws Exception {
+        stubForInntektsmelding();
+        stubForAuthorization();
+        stubForJournalpost();
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/altinnInntekt/enkeltident?includeXml=true")
+                .content(satisfactoryJson)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json("{\"fnr\":\"12345678910\",\"dokumenter\":[{\"journalpostId\":\"1\",\"dokumentInfoId\":\"2\",\"xml\":\"<dummyXml><title>My Dummy</title><content>This is a dummy xml object.</content></dummyXml>\"}]}"));
+    }
+
+    @Test
+    public void passingCallNoXml() throws Exception {
+        stubForInntektsmelding();
+        stubForAuthorization();
+        stubForJournalpost();
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/altinnInntekt/enkeltident")
+                .content(satisfactoryJson)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json("{\"fnr\":\"12345678910\",\"dokumenter\":[{\"journalpostId\":\"1\",\"dokumentInfoId\":\"2\"}]}"));
+    }
+
+    @Test
+    public void noResponseDokmotContinueOnError() throws Exception {
+        stubForInntektsmelding();
+        stubForAuthorization();
+        stubForJournalpost();
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/altinnInntekt/enkeltident?continueOnError=true")
+                .content(satisfactoryJson)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json("{\"fnr\":\"12345678910\",\"dokumenter\":[{\"journalpostId\":\"1\",\"dokumentInfoId\":\"2\"}]}"));
+    }
+
+    @Test
+    public void noResponseDokmotFailOnError() {
+
+    }
+
+    @Test
+    public void responseWhenBadRequest() {
+
+    }
+
+    @Test
+    public void validerArbeidsforhold() {
+
+    }
+
+    private void stubForInntektsmelding() {
+        stubFor(post(urlEqualTo("/api/v2/inntektsmelding/2018/12/11"))
+                 .willReturn(aResponse()
+                         .withStatus(200)
+                         .withHeader("Content-Type", "text/xml")
+                         .withBody("<dummyXml><title>My Dummy</title><content>This is a dummy xml object.</content></dummyXml>")));
+    }
+    private void stubForAuthorization() {
+        stubFor(get(urlEqualTo("/?grant_type=client_credentials&scope=openid"))
+                 .withHeader(AUTHORIZATION, containing("Basic "))
+                 .willReturn(aResponse()
+                         .withStatus(200)));
+    }
+    private void stubForJournalpost() {
+         stubFor(post(urlEqualTo("/rest/journalpostapi/v1/journalpost"))
+                 .withHeader(AUTHORIZATION, containing("Bearer "))
+                 .willReturn(aResponse()
+                         .withStatus(200)
+                         .withHeader("Content-Type", "application/json")
+                         .withBody("{\"journalpostId\": \"1\",\"journalstatus\":\"Ikke relevant\",\"melding\":\"Dokumentene er postet!\",\"journalpostferdigstilt\":true,\"dokumenter\":[{\"brevkode\":\"TEST BREVKODE\",\"dokumentInfoId\":\"2\",\"tittel\":\"TEST TITTEL\"}]}")));
+
+    }
+    private void stubForJournalpostToMeldinger() {
+        stubFor(post(urlEqualTo("/rest/journalpostapi/v1/journalpost"))
+                 .withHeader(AUTHORIZATION, containing("Bearer "))
+                 .willReturn(aResponse()
+                         .withStatus(200)
+                         .withHeader("Content-Type", "application/json")
+                         .withBody("{\"journalpostId\": \"1\",\"journalstatus\":\"Ikke relevant\",\"melding\":\"Dokumentene er postet!\",\"journalpostferdigstilt\":true,\"dokumenter\":[{\"brevkode\":\"TEST BREVKODE\",\"dokumentInfoId\":\"2\",\"tittel\":\"TEST TITTEL\"}, {\"brevkode\":\"Brevkode2\",\"dokumentInfoId\":\"3\",\"tittel\":\"Det andre dokumentet\"}]}")));
+    }
+    private void stubForJournalpostFeilet() {
+        stubFor(post(urlEqualTo("/rest/journalpostapi/v1/journalpost"))
+                 .withHeader(AUTHORIZATION, containing("Bearer "))
+                 .willReturn(aResponse()
+                         .withStatus(200)
+                         .withHeader("Content-Type", "application/json")));
+    }
+
+    private RsInntektsmelding getPassingMelding() {
+        return RsInntektsmelding.builder()
                 .ytelse("Opplaeringspenger")
                 .aarsakTilInnsending("Ny")
                 .arbeidstakerFnr("12345678910")
@@ -119,7 +207,7 @@ public class AltinnInntektIntegrasjonsTest {
                 .avsendersystem(RsAvsendersystem.builder()
                         .systemnavn("ORKESTRATOREN")
                         .systemversjon("1")
-                        .innsendingstidspunkt(LocalDateTime.parse("2020-06-04T13:10:54.412443"))
+                        .innsendingstidspunkt(LocalDateTime.parse("2020-06-04T13:10:54.412443")) // OBS! 'get' can be LocalDateTime.now() if not set.
                         .build())
                 .arbeidsgiver(RsArbeidsgiver.builder()
                         .virksomhetsnummer("123456789")
@@ -157,27 +245,6 @@ public class AltinnInntektIntegrasjonsTest {
                 .gjenopptakelseNaturalytelseListe(Collections.emptyList())
                 .pleiepengerPerioder(Collections.emptyList())
                 .build();
-
-         stubFor(post(urlEqualTo("/api/v2/inntektsmelding/2018/12/11"))
-                 .withRequestBody(equalToJson(objectMapper.writeValueAsString(melding)))
-                 .willReturn(aResponse()
-                         .withStatus(200)
-                         .withHeader("Content-Type", "text/xml")
-                         .withBody("<dummyXml><title>My Dummy</title><content>This is a dummy xml object.</content></dummyXml>")));
-
-        AltinnDollyRequest innkommendeBody = objectMapper.readValue(satisfactoryJson, AltinnDollyRequest.class);
-        Boolean continueOnError = null;
-        Boolean includeXml = null;
-        Boolean validate = null;
-
-        var tmp = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/altinnInntekt/enkeltident")
-                .content(satisfactoryJson)
-                .contentType(MediaType.APPLICATION_JSON)).andReturn();
-
-        /*mockServer.expect(ExpectedCount.manyTimes(),
-                requestTo("/api/v2/inntektsmelding/2018/12/11"))
-                .andExpect(content().json(satisfactoryAltinnInntektConsumerJson));*/
-
     }
 
 }
