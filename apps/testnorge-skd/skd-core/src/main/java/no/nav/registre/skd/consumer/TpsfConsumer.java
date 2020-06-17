@@ -11,9 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,7 +46,7 @@ public class TpsfConsumer {
     private final UriTemplate urlGetMeldingIder;
     private final UriTemplate uriSlettMeldinger;
     private final UriTemplate uriSlettIdenterFraTps;
-    private final UriTemplate uriGetMeldingMedId;
+    private final UriTemplate uriGetMeldingerMedIds;
     private final UriTemplate uriOppdaterSkdmelding;
 
     public TpsfConsumer(
@@ -61,7 +63,7 @@ public class TpsfConsumer {
         this.urlGetMeldingIder = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/meldinger/{avspillergruppeId}");
         this.uriSlettMeldinger = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/deletemeldinger");
         this.uriSlettIdenterFraTps = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/deleteFromTps?miljoer={miljoer}&identer={identer}");
-        this.uriGetMeldingMedId = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/melding/{id}");
+        this.uriGetMeldingerMedIds = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/meldinger?ids={ids}");
         this.uriOppdaterSkdmelding = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/updatemeldinger");
     }
 
@@ -128,19 +130,34 @@ public class TpsfConsumer {
         return response;
     }
 
-    public RsMeldingstype getMeldingMedId(Long id) {
-        var getRequest = RequestEntity.get(uriGetMeldingMedId.expand(id)).build();
-        return restTemplate.exchange(getRequest, RsMeldingstype.class).getBody();
+    public List<RsMeldingstype> getMeldingerMedIds(List<String> ids) {
+        List<RsMeldingstype> response = new ArrayList<>();
+        for (var partisjonerteIder : Lists.partition(ids, 80)) {
+            var getRequest = RequestEntity.get(uriGetMeldingerMedIds.expand(String.join(",", partisjonerteIder))).build();
+            try {
+                var body = restTemplate.exchange(getRequest, new ParameterizedTypeReference<List<RsMeldingstype>>() {
+                }).getBody();
+                if (body != null) {
+                    response.addAll(body);
+                }
+            } catch (HttpStatusCodeException e) {
+                log.error("Kunne ikke hente meldinger med ider {}", partisjonerteIder, e);
+            }
+        }
+        return response;
     }
 
-    public List<RsMeldingstype> oppdaterSkdMeldinger(List<RsMeldingstype> meldinger) {
-        var postRequest = RequestEntity.post(uriOppdaterSkdmelding.expand()).body(meldinger);
-        var response = restTemplate.exchange(postRequest, Void.class);
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            log.error("Kunne ikke oppdatere meldinger med id-er: {}", meldinger.stream().map(RsMeldingstype::getId).collect(Collectors.toList()));
-            return meldinger;
+    public List<Long> oppdaterSkdMeldinger(List<RsMeldingstype> meldinger) {
+        if (!meldinger.isEmpty()) {
+            var postRequest = RequestEntity.post(uriOppdaterSkdmelding.expand()).body(meldinger);
+            var response = restTemplate.exchange(postRequest, Void.class);
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                List<Long> meldingIdsSomIkkeKunneOppdateres = meldinger.stream().map(RsMeldingstype::getId).collect(Collectors.toList());
+                log.error("Kunne ikke oppdatere meldinger med id-er: {}", meldingIdsSomIkkeKunneOppdateres);
+                return meldingIdsSomIkkeKunneOppdateres;
+            }
+            log.info("Oppdaterte meldinger med id-er: {}", meldinger.stream().map(RsMeldingstype::getId).collect(Collectors.toList()));
         }
-        log.info("Oppdaterte meldinger med id-er: {}", meldinger.stream().map(RsMeldingstype::getId).collect(Collectors.toList()));
         return Collections.emptyList();
     }
 }
