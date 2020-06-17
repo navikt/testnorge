@@ -21,6 +21,7 @@ type MidlertidigAdresse = {
 	postLinje2?: string
 	postLinje3?: string
 	postLand?: string
+	tilleggsadresse: string
 }
 
 export const MidlertidigAdresse = ({ midlertidigAdresse }: MidlertidigeAdresser) => {
@@ -38,7 +39,8 @@ export const MidlertidigAdresse = ({ midlertidigAdresse }: MidlertidigeAdresser)
 		postLinje1,
 		postLinje2,
 		postLinje3,
-		postLand
+		postLand,
+		tilleggsadresse
 	} = midlertidigAdresse[0]
 
 	const gate = <div>{`${gatenavn} ${husnr}`}</div>
@@ -72,6 +74,7 @@ export const MidlertidigAdresse = ({ midlertidigAdresse }: MidlertidigeAdresser)
 					)}
 				</TitleValue>
 				<TitleValue title="Gyldig t.o.m." value={Formatters.formatDate(gyldigTom)} />
+				<TitleValue title="Tilleggsadresse" value={tilleggsadresse} />
 			</div>
 		</>
 	)

@@ -246,6 +246,11 @@ const selectOptions: SelectOptions = {
 		{ value: 'LEILIGHET_NR', label: 'Leilighet nummer' },
 		{ value: 'SEKSJON_NR', label: 'Seksjon nummer' },
 		{ value: 'BOLIG_NR', label: 'Bolig nummer' }
+	],
+
+	tilleggstypeMidlertidig: [
+		{ value: 'CO_NAVN', label: 'CO Navn' },
+		{ value: 'BOLIG_NR', label: 'Bolig nummer' }
 	]
 }
 

@@ -135,7 +135,11 @@ export const Adresser = ({ formikBag }) => {
 						{boType === 'gate' && <Boadresse formikBag={formikBag} />}
 						{boType === 'matrikkel' && <MatrikkelAdresse formikBag={formikBag} />}
 						<FormikDatepicker name="tpsf.boadresse.flyttedato" label="Flyttedato" />
-						<Tilleggsadresse formikBag={formikBag} />
+						<Tilleggsadresse
+							formikBag={formikBag}
+							tilleggsadressePath="tpsf.boadresse.tilleggsadresse"
+							options="tilleggstype"
+						/>
 					</Vis>
 
 					<Vis attributt="tpsf.postadresse">

@@ -176,7 +176,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						'adresseNrType',
 						midlertidigAdresse.gateadresseNrInfo.nummertype
 					)}`
-				} else if (midlertidigAdresse.norskAdresse) {
+				} else if (midlertidigAdresse.norskAdresse && midlertidigAdresse.norskAdresse.gatenavn) {
 					typeGateadresse = 'Detaljert'
 				} else {
 					typeGateadresse = 'Tilfeldig'
@@ -241,6 +241,23 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				]
 			}
 			data.push(midlertidigAdresseObj)
+
+			if (midlertidigAdresse.norskAdresse && midlertidigAdresse.norskAdresse.tilleggsadresse) {
+				const midlertidigTilleggsadresseObj = {
+					header: 'Midlertidig tilleggsadresse',
+					items: [
+						obj(
+							'Tilleggstype',
+							Formatters.showLabel(
+								'tilleggstypeMidlertidig',
+								midlertidigAdresse.norskAdresse.tilleggsadresse.tilleggType
+							)
+						),
+						obj('Nummer', midlertidigAdresse.norskAdresse.tilleggsadresse.nummer)
+					]
+				}
+				data.push(midlertidigTilleggsadresseObj)
+			}
 		}
 
 		if (identHistorikk) {

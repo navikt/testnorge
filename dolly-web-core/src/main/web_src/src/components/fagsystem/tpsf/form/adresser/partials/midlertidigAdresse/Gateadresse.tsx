@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import _get from 'lodash/get'
 import { FormikProps } from 'formik'
 import { RadioPanelGruppe } from 'nav-frontend-skjema'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
@@ -22,19 +23,33 @@ export const Gateadresse = ({ formikBag }: Gateadresse) => {
 
 		switch (type) {
 			case 'TILFELDIG':
-				formikBag.setFieldValue('tpsf.midlertidigAdresse.norskAdresse', undefined)
+				formikBag.setFieldValue('tpsf.midlertidigAdresse.norskAdresse', {
+					tilleggsadresse: _get(
+						formikBag.values,
+						'tpsf.midlertidigAdresse.norskAdresse.tilleggsadresse'
+					)
+				})
 				formikBag.setFieldValue('tpsf.midlertidigAdresse.gateadresseNrInfo', undefined)
-				// Eller objekt med tomme stringer????
 				break
 			case 'POSTNR':
-				formikBag.setFieldValue('tpsf.midlertidigAdresse.norskAdresse', undefined)
+				formikBag.setFieldValue('tpsf.midlertidigAdresse.norskAdresse', {
+					tilleggsadresse: _get(
+						formikBag.values,
+						'tpsf.midlertidigAdresse.norskAdresse.tilleggsadresse'
+					)
+				})
 				formikBag.setFieldValue('tpsf.midlertidigAdresse.gateadresseNrInfo', {
 					nummertype: 'POSTNR',
 					nummer: ''
 				})
 				break
 			case 'KOMMUNENR':
-				formikBag.setFieldValue('tpsf.midlertidigAdresse.norskAdresse', undefined)
+				formikBag.setFieldValue('tpsf.midlertidigAdresse.norskAdresse', {
+					tilleggsadresse: _get(
+						formikBag.values,
+						'tpsf.midlertidigAdresse.norskAdresse.tilleggsadresse'
+					)
+				})
 				formikBag.setFieldValue('tpsf.midlertidigAdresse.gateadresseNrInfo', {
 					nummertype: 'KOMMUNENR',
 					nummer: ''
@@ -45,7 +60,11 @@ export const Gateadresse = ({ formikBag }: Gateadresse) => {
 					postnr: '',
 					gatenavn: '',
 					gatekode: '',
-					husnr: ''
+					husnr: '',
+					tilleggsadresse: _get(
+						formikBag.values,
+						'tpsf.midlertidigAdresse.norskAdresse.tilleggsadresse'
+					)
 				})
 				formikBag.setFieldValue('tpsf.midlertidigAdresse.gateadresseNrInfo', undefined)
 			default:

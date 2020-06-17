@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
+import _get from 'lodash/get'
 import { FormikProps } from 'formik'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import './tilleggsadresse.less'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import _get from 'lodash/get'
 
 interface TilleggsadresseProps {
 	formikBag: FormikProps<{ tpsf: BoadresseValues }>
+	tilleggsadressePath: string
+	options: string
+	type?: string
 }
 
 interface BoadresseValues {
@@ -31,11 +34,14 @@ enum TilleggsTyper {
 
 const initialValues = { tilleggType: '', nummer: '' }
 
-export const Tilleggsadresse = ({ formikBag }: TilleggsadresseProps) => {
-	const tilleggsadressePath = 'tpsf.boadresse.tilleggsadresse'
-
+export const Tilleggsadresse = ({
+	formikBag,
+	tilleggsadressePath,
+	options,
+	type
+}: TilleggsadresseProps) => {
 	const [showTilleggsadresse, setShowTilleggsadresse] = useState(
-		formikBag.values.tpsf.boadresse.hasOwnProperty('tilleggsadresse') ? true : false
+		_get(formikBag.values, tilleggsadressePath) ? true : false
 	)
 
 	const handleChangeTilleggsadresse = () => {
@@ -62,13 +68,13 @@ export const Tilleggsadresse = ({ formikBag }: TilleggsadresseProps) => {
 	return (
 		<>
 			<div className="tilleggsadresse-form__switch">
-				<h3>Legg til tilleggsadresse </h3>
+				<h3>Legg til {type}tilleggsadresse </h3>
 				{
 					// @ts-ignore
 					<DollyCheckbox
 						name="aktiver-tilleggsadresse"
 						onChange={handleChangeTilleggsadresse}
-						label="Legg til tilleggsadresse"
+						label={`Legg til ${type}tilleggsadresse`}
 						checked={showTilleggsadresse}
 						isSwitch
 					/>
@@ -79,7 +85,7 @@ export const Tilleggsadresse = ({ formikBag }: TilleggsadresseProps) => {
 					<FormikSelect
 						name={`${tilleggsadressePath}.tilleggType`}
 						label="Tilleggstype"
-						options={Options('tilleggstype')}
+						options={Options(options)}
 						onChange={handleChangeTilleggstype}
 						isClearable={false}
 					/>
