@@ -92,9 +92,8 @@ public class IdentService {
             antallIdenterSjekket += partisjonerteIdenter.size();
             var meldingIdsSomIkkeKunneOppdateres = tpsfConsumer.oppdaterSkdMeldinger(meldingerSomSkalOppdateres);
             oppdaterteIder.removeAll(meldingIdsSomIkkeKunneOppdateres);
+            log.info("Antall identer kontrollert: {}. Antall meldinger kontrollert: {}. Antall meldinger oppdatert: {}.", antallIdenterSjekket, antallIderSjekket, oppdaterteIder.size());
         }
-
-        log.info("Antall identer kontrollert: {}. Antall meldinger kontrollert: {}. Antall meldinger oppdatert: {}.", antallIdenterSjekket, antallIderSjekket, oppdaterteIder.size());
 
         return oppdaterteIder;
     }
