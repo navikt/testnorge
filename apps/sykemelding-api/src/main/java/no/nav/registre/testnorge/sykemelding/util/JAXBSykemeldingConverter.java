@@ -58,7 +58,7 @@ public class JAXBSykemeldingConverter {
             marshaller.marshal(element, new StreamResult(writer));
             return writer.toString();
         } catch (JAXBException e) {
-            throw new RuntimeException("Klarer ikke å kovertere sykemelding til xml", e);
+            throw new RuntimeException("Klarer ikke å konvertere sykemelding til xml", e);
         }
     }
 }

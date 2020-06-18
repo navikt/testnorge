@@ -32,7 +32,7 @@ class Periode {
             case AVVENTENDE:
                 xmlPeriode.withAvventendeSykmelding(
                         new XMLHelseOpplysningerArbeidsuforhet.Aktivitet.Periode.AvventendeSykmelding()
-                                .withInnspillTilArbeidsgiver("Godt inspill")
+                                .withInnspillTilArbeidsgiver("Godt inFnspill")
                 );
                 break;
             case BEHANDLINGSDAGER:

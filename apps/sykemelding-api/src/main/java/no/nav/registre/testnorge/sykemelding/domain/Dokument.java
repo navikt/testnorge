@@ -14,13 +14,13 @@ class Dokument {
 
     Dokument(SykemeldingDTO dto, ApplicationInfo applicationInfo) {
 
-        LocalDate fom = findFom(dto.getPerioder());
-        Pasient pasient = new Pasient(dto.getPasient(), dto.getLege());
-        Arbeidsgiver arbeidsgiver = new Arbeidsgiver(dto.getArbeidsgiver());
-        MedisinskVurdering medisinskVurdering = new MedisinskVurdering(fom, dto.getHovedDiagnose(), dto.getBiDiagnoser());
-        Aktivitet aktivitet = new Aktivitet(dto.getPerioder(), dto.getManglendeTilretteleggingPaaArbeidsplassen());
-        Prognose prognose = new Prognose(fom, dto.getDetaljer());
-        Lege lege = new Lege(dto.getLege());
+        var fom = findFom(dto.getPerioder());
+        var pasient = new Pasient(dto.getPasient(), dto.getLege());
+        var arbeidsgiver = new Arbeidsgiver(dto.getArbeidsgiver());
+        var medisinskVurdering = new MedisinskVurdering(fom, dto.getHovedDiagnose(), dto.getBiDiagnoser());
+        var aktivitet = new Aktivitet(dto.getPerioder(), dto.getManglendeTilretteleggingPaaArbeidsplassen());
+        var prognose = new Prognose(fom, dto.getDetaljer());
+        var lege = new Lege(dto.getLege());
 
         xmlHelseOpplysningerArbeidsuforhet = new XMLHelseOpplysningerArbeidsuforhet()
                 .withSyketilfelleStartDato(dto.getStartDato())
