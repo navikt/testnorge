@@ -282,7 +282,10 @@ public class VedtakshistorikkService {
             var rettighetRequest = new RettighetAapRequest(aap);
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
-            rettighetRequest.getNyeAap().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
+            rettighetRequest.getNyeAap().forEach(rettighet -> {
+                rettighet.setBegrunnelse(BEGRUNNELSE);
+
+            });
             rettigheter.add(rettighetRequest);
         }
     }

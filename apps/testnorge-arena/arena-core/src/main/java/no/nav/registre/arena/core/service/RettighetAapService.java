@@ -45,6 +45,8 @@ public class RettighetAapService {
     private final PensjonTestdataFacadeConsumer pensjonTestdataFacadeConsumer;
     private final Random rand;
 
+    private final static String SYKEPENGEERSTATNING = "SPE";
+
     public Map<String, List<NyttVedtakResponse>> genererAapMedTilhoerende115(
             Long avspillergruppeId,
             String miljoe,
@@ -72,6 +74,12 @@ public class RettighetAapService {
             rettighetRequest.setPersonident(ident);
             rettighetRequest.setMiljoe(miljoe);
 
+            rettighetRequest.getNyeAap().forEach(rettighet -> {
+                if(rettighet.getAktivitetsfase().equals(SYKEPENGEERSTATNING)){
+
+                }
+            });
+
             rettigheter.add(rettighetRequest);
         }
 
@@ -81,6 +89,10 @@ public class RettighetAapService {
         serviceUtils.lagreIHodejegeren(identerMedOpprettedeRettigheter);
 
         return identerMedOpprettedeRettigheter;
+    }
+
+    public RettighetRequest sjekkDatoOgOppdater(RettighetRequest rettighetRequest){
+
     }
 
     public Map<String, List<NyttVedtakResponse>> genererAapMedTilhoerende115(
