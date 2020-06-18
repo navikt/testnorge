@@ -25,6 +25,8 @@ public class Person {
         return dto.getEtternavn();
     }
 
-    public Adresse getAdresse() { return new Adresse(dto.getAdresse());}
+    public Adresse getAdresse() {
+        return new Adresse(dto.getAdresse());
+    }
 
 }

@@ -13,9 +13,9 @@ import no.nav.registre.testnorge.person.domain.Person;
 @NoArgsConstructor(force = true)
 public class AdresseDTO {
 
-String kilde;
-String master;
-VegadresseDTO vegadresse;
+    String kilde;
+    String master;
+    VegadresseDTO vegadresse;
 
 
     public AdresseDTO(Person person) {

@@ -12,13 +12,14 @@ import no.nav.registre.testnorge.person.domain.Person;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class OriginaltNavnDTO {
+
+    String fornavn;
+    String mellomnavn;
+    String etternavn;
+
     public OriginaltNavnDTO(Person person) {
         fornavn = person.getFornavn();
         etternavn = person.getEtternavn();
         mellomnavn = person.getMellomnavn();
     }
-
-    String fornavn;
-    String mellomnavn;
-    String etternavn;
 }
