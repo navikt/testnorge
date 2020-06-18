@@ -1,0 +1,65 @@
+name: Deploy avhengighetsanalyse-frontend
+
+on:
+  push:
+    breach: master
+    paths:
+      - apps/avhengighetsanalyse-frontend/**
+      - libs/testnorge-core/**
+
+env:
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/avhengighetsanalyse-frontend:${{ github.sha }}
+
+jobs:
+  build_and_deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Cache Dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '11.x'
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+      - name: Install js libs
+        run: |
+          npm ci
+        working-directory: ./apps/avhengighetsanalyse-frontend/src/frontend
+      - name: Build js
+        run: |
+          npm run build
+        working-directory: ./apps/avhengighetsanalyse-frontend/src/frontend
+      - name: Move js build
+        run: |
+          mv build ../main/resources/static
+        working-directory: ./apps/avhengighetsanalyse-frontend/src/frontend
+      - name: Compile
+        env:
+          GITHUB_USERNAME: token
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+        run: mvn --projects :avhengighetsanalyse-frontend --also-make --settings maven-settings.xml compile
+      - name: Test
+        run: mvn --projects :avhengighetsanalyse-frontend --also-make --settings maven-settings.xml test
+      - name: Package
+        run: mvn --projects :avhengighetsanalyse-frontend --also-make --settings maven-settings.xml package -Dmaven.test.skip
+      - name: Build and publish Docker image
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          docker build --tag ${IMAGE} . -f ./apps/avhengighetsanalyse-frontend/Dockerfile
+          docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
+          docker push ${IMAGE}
+        timeout-minutes: 5
+      - name: Deploy to nais
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+          CLUSTER: dev-fss
+          RESOURCE: apps/avhengighetsanalyse-frontend/nais.yaml
