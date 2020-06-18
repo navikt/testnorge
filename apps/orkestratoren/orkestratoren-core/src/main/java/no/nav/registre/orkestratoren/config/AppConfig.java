@@ -11,13 +11,13 @@ import org.springframework.context.annotation.Import;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.web.client.RestTemplate;
 
+import no.nav.registere.testnorge.core.ApplicationCoreConfig;
 import no.nav.registre.orkestratoren.batch.JobController;
-import no.nav.registre.orkestratoren.provider.rs.InternalController;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Configuration
 @EnableJms
-@Import({ InternalController.class, JobController.class })
+@Import({ApplicationCoreConfig.class, JobController.class})
 public class AppConfig {
 
     @Value("${testnorge-hodejegeren.rest.api.url}")

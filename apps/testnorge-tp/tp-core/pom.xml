@@ -13,6 +13,10 @@
     <artifactId>tp-core</artifactId>
 
     <dependencies>
+        <dependency>
+            <artifactId>testnorge-core</artifactId>
+            <groupId>no.nav.registre.testnorge</groupId>
+        </dependency>
         <!--Utility-->
         <dependency>
             <groupId>org.projectlombok</groupId>

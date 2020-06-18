@@ -28,9 +28,11 @@ import no.nav.registre.sam.domain.database.TSamMelding;
 import no.nav.registre.sam.domain.database.TSamVedtak;
 import no.nav.registre.sam.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Service
 @Slf4j
+@DependencyOn("testnorge-hodejegeren")
 public class SyntetiseringService {
 
     private static final String SAM_NAME = "sam";

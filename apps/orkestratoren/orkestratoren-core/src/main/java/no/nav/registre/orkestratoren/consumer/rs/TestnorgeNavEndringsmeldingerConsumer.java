@@ -15,8 +15,10 @@ import java.util.List;
 
 import no.nav.registre.orkestratoren.consumer.rs.response.RsPureXmlMessageResponse;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldingerRequest;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
+@DependencyOn("testnorge-nav-endringsmeldinger")
 public class TestnorgeNavEndringsmeldingerConsumer {
 
     private static final ParameterizedTypeReference<List<RsPureXmlMessageResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

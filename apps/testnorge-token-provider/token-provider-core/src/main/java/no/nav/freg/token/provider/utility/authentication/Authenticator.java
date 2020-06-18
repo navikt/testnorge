@@ -41,14 +41,14 @@ public class Authenticator {
         }
     }
 
-    private HttpEntity createUserAuthNegotiateRequest() {
+    private HttpEntity<Object> createUserAuthNegotiateRequest() {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Negotiate");
         headers.setContentType(MediaType.APPLICATION_JSON);
-        return new HttpEntity(headers);
+        return new HttpEntity<>(headers);
     }
 
-    private HttpEntity createUserAuthRequest(
+    private HttpEntity<Object> createUserAuthRequest(
             User user,
             String username,
             String password

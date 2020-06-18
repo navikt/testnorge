@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.tp.Forhold;
 import no.nav.registre.tp.FulltForhold;
 import no.nav.registre.tp.IdentMedData;
@@ -40,6 +41,7 @@ import no.nav.registre.tp.provider.rs.request.SyntetiseringsRequest;
 
 @Slf4j
 @Service
+@DependencyOn("testnorge-hodejegeren")
 public class TpService {
 
     private static final Integer MIN_AGE = 13;

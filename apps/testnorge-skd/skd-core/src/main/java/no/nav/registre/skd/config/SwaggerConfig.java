@@ -17,6 +17,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Configure automated swagger API documentation
@@ -31,7 +32,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
 
     @Bean
     public Docket api() {
-        HashSet contentTypeJson = new HashSet(Collections.singletonList("application/json"));
+        Set<String> contentTypeJson = new HashSet<>(Collections.singletonList("application/json"));
         return new Docket(DocumentationType.SWAGGER_2)
                 .ignoredParameterTypes(ApiIgnore.class)
                 .select()

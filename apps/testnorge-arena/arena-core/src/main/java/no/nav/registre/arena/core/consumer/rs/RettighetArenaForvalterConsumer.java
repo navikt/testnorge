@@ -6,6 +6,8 @@ import static no.nav.registre.arena.core.consumer.rs.util.Headers.NAV_CALL_ID;
 import static no.nav.registre.arena.core.consumer.rs.util.Headers.NAV_CONSUMER_ID;
 
 import lombok.extern.slf4j.Slf4j;
+
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -25,6 +27,7 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 
 @Slf4j
 @Component
+@DependencyOn(value = "arena-forvalteren", external = true)
 public class RettighetArenaForvalterConsumer {
 
     private final RestTemplate restTemplate;

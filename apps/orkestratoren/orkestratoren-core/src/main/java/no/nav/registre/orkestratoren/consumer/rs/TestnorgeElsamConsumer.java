@@ -14,9 +14,11 @@ import org.springframework.web.util.UriTemplate;
 import java.util.List;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserElsamRequest;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
+@DependencyOn("testnorge-elsam")
 public class TestnorgeElsamConsumer {
 
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

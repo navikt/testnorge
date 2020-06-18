@@ -1,6 +1,8 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
+
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +15,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest
 import java.util.List;
 
 @Component
+@DependencyOn("testnorge-aareg")
 public class TestnorgeArenaTiltakConsumer {
 
     private final ArenaConsumerUtils consumerUtils;

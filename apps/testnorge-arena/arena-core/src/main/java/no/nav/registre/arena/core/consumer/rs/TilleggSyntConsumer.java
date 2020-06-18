@@ -1,5 +1,6 @@
 package no.nav.registre.arena.core.consumer.rs;
 
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -14,6 +15,7 @@ import java.util.List;
 import no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils;
 
 @Component
+@DependencyOn(value = "nais-synthdata-arena-tilleggsstonad", external = true)
 public class TilleggSyntConsumer {
 
     private RestTemplate restTemplate;
@@ -39,7 +41,7 @@ public class TilleggSyntConsumer {
     private UriTemplate arenaTilleggReiseObligatoriskSamlingArbeidssoekereUrl;
     private UriTemplate arenaTilleggReisestoenadArbeidssoekereUrl;
 
-    private static final LocalDate arenaTilleggTilsynFamiliemedlemmerDateLimit = LocalDate.of(2020, 02, 29);
+    public static final LocalDate ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT = LocalDate.of(2020, 02, 29);
 
     public TilleggSyntConsumer(
             RestTemplateBuilder restTemplateBuilder,
@@ -98,7 +100,7 @@ public class TilleggSyntConsumer {
     }
 
     public List<NyttVedtakTillegg> opprettTilsynFamiliemedlemmer(int antallMeldinger) {
-        return opprettTilleggstoenad(antallMeldinger, arenaTilleggTilsynFamiliemedlemmerUrl, arenaTilleggTilsynFamiliemedlemmerDateLimit);
+        return opprettTilleggstoenad(antallMeldinger, arenaTilleggTilsynFamiliemedlemmerUrl, ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT);
     }
 
     public List<NyttVedtakTillegg> opprettTilsynBarnArbeidssoekere(int antallMeldinger) {

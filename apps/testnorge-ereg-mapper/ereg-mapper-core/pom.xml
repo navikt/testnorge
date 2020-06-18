@@ -12,7 +12,10 @@
     <artifactId>ereg-mapper-core</artifactId>
 
     <dependencies>
-
+        <dependency>
+            <artifactId>testnorge-core</artifactId>
+            <groupId>no.nav.registre.testnorge</groupId>
+        </dependency>
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>

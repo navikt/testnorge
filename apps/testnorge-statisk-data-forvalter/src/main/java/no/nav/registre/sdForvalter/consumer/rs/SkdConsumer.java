@@ -18,9 +18,11 @@ import java.util.stream.Collectors;
 import no.nav.registre.sdForvalter.consumer.rs.request.SkdRequest;
 import no.nav.registre.sdForvalter.consumer.rs.response.SkdResponse;
 import no.nav.registre.sdForvalter.domain.TpsIdentListe;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component
+@DependencyOn("testnorge-skd")
 public class SkdConsumer {
 
     private final RestTemplate restTemplate;

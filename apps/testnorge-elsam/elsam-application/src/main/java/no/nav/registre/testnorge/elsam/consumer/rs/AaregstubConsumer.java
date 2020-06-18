@@ -11,9 +11,11 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.List;
 
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.elsam.consumer.rs.response.aareg.AaregResponse;
 
 @Component
+@DependencyOn("testnorge-aaregstub")
 public class AaregstubConsumer {
 
     private final RestTemplate restTemplate;

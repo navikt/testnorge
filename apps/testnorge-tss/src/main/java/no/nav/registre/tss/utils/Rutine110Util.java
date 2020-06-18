@@ -5,6 +5,10 @@ import no.nav.registre.tss.consumer.rs.response.TssMessage;
 
 public class Rutine110Util {
 
+    private Rutine110Util() {
+
+    }
+
     private static final String FORMAT = "COB";
     private static final String KILDE = "SYNT";
     private static final String BRUKERID = "ORK";

@@ -14,11 +14,13 @@ import org.springframework.web.util.UriTemplate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.tss.consumer.rs.request.EregMapperRequest;
 
 @Component
 @Slf4j
 @RequiredArgsConstructor
+@DependencyOn("testnorge-ereg-mapper")
 public class EregMapperConsumer {
 
     private static final ParameterizedTypeReference<List<String>> ORGNR_RESPONSE = new ParameterizedTypeReference<>() {

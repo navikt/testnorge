@@ -8,6 +8,8 @@ import static no.nav.registre.aareg.util.ArbeidsforholdMappingUtil.mapArbeidsfor
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -50,6 +52,7 @@ import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@DependencyOn("testnorge-hodejegeren")
 public class SyntetiseringService {
 
     private static final String AAREG_NAME = "aareg";
@@ -64,7 +67,7 @@ public class SyntetiseringService {
     private final KodeverkConsumer kodeverkConsumer;
     private final Random rand;
 
-    public ResponseEntity opprettArbeidshistorikkOgSendTilAaregstub(
+    public ResponseEntity<List<RsAaregResponse>> opprettArbeidshistorikkOgSendTilAaregstub(
             SyntetiserAaregRequest syntetiserAaregRequest,
             Boolean sendAlleEksisterende
     ) {

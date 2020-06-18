@@ -12,9 +12,11 @@ import org.springframework.web.util.UriTemplate;
 import java.util.List;
 
 import no.nav.registre.spion.consumer.rs.response.aareg.AaregResponse;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component
+@DependencyOn("testnorge-aareg")
 public class AaregConsumer {
 
     private final RestTemplate restTemplate;

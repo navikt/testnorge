@@ -41,6 +41,9 @@ public class Vedtakshistorikk {
     @JsonProperty("BTIL")
     private List<NyttVedtakTiltak> barnetillegg;
 
+    @JsonProperty("TILTAK")
+    private List<NyttVedtakTiltak> tiltaksdeltakelse;
+
     @JsonProperty("TSOBOUTG")
     private List<NyttVedtakTillegg> boutgifter;
 

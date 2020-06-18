@@ -5,6 +5,10 @@ import no.nav.registre.tss.provider.rs.request.Rutine130Request;
 
 public class Rutine130Util {
 
+    private Rutine130Util() {
+        
+    }
+
     public static String opprett130Rutine(Rutine130Request message) {
         StringBuilder rutine = new StringBuilder(MELDINGSLENGDE);
         for (int i = 0; i < MELDINGSLENGDE; i++) {

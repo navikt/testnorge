@@ -8,9 +8,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import no.nav.registre.aareg.fasit.FasitApiConsumer;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
 @RequiredArgsConstructor
+@DependencyOn(value = "aareg-ws", external = true)
 public class AaregBehandleArbeidsforholdFasitConsumer {
 
     private static final String BASE_URL = "BaseUrl";

@@ -16,9 +16,11 @@ import java.util.List;
 
 import no.nav.registre.aareg.exception.SyntetiseringException;
 import no.nav.registre.aareg.syntetisering.RsAaregSyntetiseringsRequest;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
+@DependencyOn(value = "syntrest", external = true)
 public class AaregSyntetisererenConsumer {
 
     @Value("${aareg.pageSize}")
@@ -39,7 +41,7 @@ public class AaregSyntetisererenConsumer {
     @Timed(value = "aareg.resource.latency", extraTags = { "operation", "aareg-syntetisereren" })
     public List<RsAaregSyntetiseringsRequest> getSyntetiserteArbeidsforholdsmeldinger(List<String> identer) {
         List<RsAaregSyntetiseringsRequest> syntetiserteMeldinger = new ArrayList<>();
-        RequestEntity postRequest;
+        RequestEntity<List<String>> postRequest;
 
         if (identer.size() > pageSize) {
             for (int i = 0; i * pageSize < identer.size(); i++) {
@@ -63,7 +65,7 @@ public class AaregSyntetisererenConsumer {
 
     private void insertSyntetiskeArbeidsforhold(
             List<RsAaregSyntetiseringsRequest> syntetiserteMeldinger,
-            RequestEntity postRequest
+            RequestEntity<List<String>> postRequest
     ) {
         List<RsAaregSyntetiseringsRequest> response = null;
         try {

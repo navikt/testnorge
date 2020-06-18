@@ -52,4 +52,5 @@ public class TiltakController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(rettighetTiltakService.opprettBarnetillegg(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter()));
     }
+
 }

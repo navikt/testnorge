@@ -5,6 +5,7 @@ import static no.nav.registre.inntekt.consumer.rs.ConsumerUtils.buildInntektslis
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inntekt.domain.RsInntekt;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -22,6 +23,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
+@DependencyOn("inntektsmelding-stub")
 public class InntektstubV2Consumer {
 
     private static final int PAGE_SIZE = 100;

@@ -15,10 +15,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.elsam.consumer.rs.response.synt.ElsamSyntResponse;
 
 @Slf4j
 @Component
+@DependencyOn(value = "nais-synthdata-elsam", external = true)
 public class ElsamSyntConsumer {
 
     private static final ParameterizedTypeReference<Map<String, ElsamSyntResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
@@ -35,11 +37,11 @@ public class ElsamSyntConsumer {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    @Timed(value = "elsam.resource.latency", extraTags = { "operation", "elsam-syntetisering" })
+    @Timed(value = "elsam.resource.latency", extraTags = {"operation", "elsam-syntetisering"})
     public Map<String, ElsamSyntResponse> syntetiserSykemeldinger(List<Map<String, String>> sykemeldingRequest) {
         log.info("Oppretter syntentisert sykemelding for {}", sykemeldingRequest.stream().map(value -> String.join(", ", value.keySet())).collect(Collectors.joining(", ")));
 
-        RequestEntity postRequest = RequestEntity.post(genererSykemeldingerUrl.expand()).body(sykemeldingRequest);
+        RequestEntity<List<Map<String, String>>> postRequest = RequestEntity.post(genererSykemeldingerUrl.expand()).body(sykemeldingRequest);
         ResponseEntity<Map<String, ElsamSyntResponse>> response = restTemplate.exchange(postRequest, RESPONSE_TYPE);
 
         return response.getBody();

@@ -2,6 +2,8 @@ package no.nav.registre.frikort.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.frikort.consumer.rs.response.SyntFrikortResponse;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
@@ -15,6 +17,7 @@ import java.util.List;
 
 @Component
 @Slf4j
+@DependencyOn(value = "nais-synthdata-frikort", external = true)
 public class FrikortSyntetisererenConsumer {
 
     private RestTemplate restTemplate;

@@ -22,9 +22,11 @@ import java.util.List;
 
 import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
+@DependencyOn(value = "inst2",external = true)
 public class Inst2Consumer {
 
     private static final ParameterizedTypeReference<List<Institusjonsopphold>> RESPONSE_TYPE_HENT_INSTITUSJONSOPPHOLD = new ParameterizedTypeReference<>() {
@@ -105,7 +107,7 @@ public class Inst2Consumer {
         }
     }
 
-    public ResponseEntity oppdaterInstitusjonsoppholdIInst2(
+    public ResponseEntity<Object> oppdaterInstitusjonsoppholdIInst2(
             String bearerToken,
             String callId,
             String consumerId,
@@ -128,7 +130,7 @@ public class Inst2Consumer {
         }
     }
 
-    public ResponseEntity slettInstitusjonsoppholdFraInst2(
+    public ResponseEntity<Object> slettInstitusjonsoppholdFraInst2(
             String bearerToken,
             String callId,
             String consumerId,

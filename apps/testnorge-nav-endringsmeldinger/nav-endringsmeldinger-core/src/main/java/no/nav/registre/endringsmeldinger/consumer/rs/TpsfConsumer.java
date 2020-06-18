@@ -11,8 +11,10 @@ import org.springframework.web.util.UriTemplate;
 
 import no.nav.registre.endringsmeldinger.consumer.rs.requests.SendTilTpsRequest;
 import no.nav.registre.endringsmeldinger.consumer.rs.responses.RsPureXmlMessageResponse;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
+@DependencyOn(value = "tps-forvalteren", external = true)
 public class TpsfConsumer {
 
     private static final ParameterizedTypeReference<RsPureXmlMessageResponse> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

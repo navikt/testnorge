@@ -9,9 +9,11 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import no.nav.registre.inntekt.domain.altinn.rs.RsInntektsmelding;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component
+@DependencyOn("inntektsmelding-stub")
 public class AltinnInntektConsumer {
 
     private RestTemplate restTemplate;
@@ -33,7 +35,7 @@ public class AltinnInntektConsumer {
             RsInntektsmelding inntektsmelding,
             Boolean continueOnError
     ) {
-        RequestEntity postRequest = RequestEntity.post(urlMapper201812.expand())
+        RequestEntity<RsInntektsmelding> postRequest = RequestEntity.post(urlMapper201812.expand())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(inntektsmelding);
         try {
