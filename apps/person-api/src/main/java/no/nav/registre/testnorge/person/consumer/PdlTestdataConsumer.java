@@ -13,6 +13,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.person.consumer.command.PostAdresseCommand;
 import no.nav.registre.testnorge.person.consumer.command.PostNavnCommand;
 import no.nav.registre.testnorge.person.consumer.command.PostOpprettPersonCommand;
 import no.nav.registre.testnorge.person.domain.Person;
@@ -46,7 +47,8 @@ public class PdlTestdataConsumer {
 
         Arrays.asList(
                 new PostOpprettPersonCommand(restTemplate, url, person.getIdent(), token),
-                new PostNavnCommand(restTemplate, url, person, token)
+                new PostNavnCommand(restTemplate, url, person, token),
+                new PostAdresseCommand(restTemplate, url, person, token)
         ).forEach(callable -> CompletableFuture.supplyAsync(() -> {
                     try {
                         return callable.call();
