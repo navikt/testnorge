@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.tss.consumer.rs.response.Response110;
 import no.nav.registre.tss.consumer.rs.response.Response910;
 import no.nav.registre.tss.consumer.rs.response.TssMessage;
@@ -29,6 +30,7 @@ import no.nav.registre.tss.utils.rutine130.Rutine130Util;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@DependencyOn("testnorge-hodejegeren")
 public class IdentService {
 
     private final HodejegerenConsumer hodejegerenConsumer;

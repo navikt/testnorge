@@ -2,6 +2,10 @@ package no.nav.registre.frikort.utils;
 
 public class SwaggerUtils {
 
+    private SwaggerUtils() {
+
+    }
+
     public static final String REQUEST_BODY_DESCRIPTION = "JSON som inneholder følgende key-value par: \n\n " +
             "Key: ID-nummer - Value: antall meldinger som skal generes for ID-nummer \n\n" +
             "Example: \"1234567910\": 3";

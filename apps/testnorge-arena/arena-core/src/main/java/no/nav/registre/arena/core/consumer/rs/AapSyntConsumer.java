@@ -3,8 +3,6 @@ package no.nav.registre.arena.core.consumer.rs;
 import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.UTFALL_JA;
 import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.VEDTAK_TYPE_KODE_O;
 
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
@@ -22,11 +20,20 @@ import java.util.Random;
 
 import no.nav.registre.arena.core.consumer.rs.request.RettighetSyntRequest;
 import no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils;
+import no.nav.registre.testnorge.dependencyanalysis.DependenciesOn;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 
 @Component
+@DependenciesOn(value = {
+        @DependencyOn(value = "nais-synthdata-arena-aap", external = true),
+        @DependencyOn(value = "nais-synthdata-arena-vedtakshistorikk", external = true)
+})
 public class AapSyntConsumer {
 
     private static final LocalDate MINIMUM_DATE = LocalDate.of(2010, 10, 1); // krav i arena
+    public static final LocalDate ARENA_AAP_UNG_UFOER_DATE_LIMIT = LocalDate.of(2020, 1, 31);
 
     private RestTemplate restTemplate;
     private ConsumerUtils consumerUtils;
@@ -101,7 +108,7 @@ public class AapSyntConsumer {
     }
 
     public List<NyttVedtakAap> syntetiserRettighetUngUfoer(int antallMeldinger) {
-        var postRequest = consumerUtils.createPostRequest(arenaAapUngUfoerUrl, antallMeldinger);
+        var postRequest = consumerUtils.createPostRequest(arenaAapUngUfoerUrl, antallMeldinger, ARENA_AAP_UNG_UFOER_DATE_LIMIT);
         return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakAap>>() {
         }).getBody();
     }

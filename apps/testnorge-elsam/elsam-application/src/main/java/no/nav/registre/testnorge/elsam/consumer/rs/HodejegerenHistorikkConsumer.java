@@ -13,9 +13,11 @@ import org.springframework.web.util.UriTemplate;
 import java.util.List;
 
 import no.nav.registre.elsam.domain.ElsamSaveInHodejegerenRequest;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
+@DependencyOn("testnorge-hodejegeren")
 public class HodejegerenHistorikkConsumer {
 
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

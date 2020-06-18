@@ -17,9 +17,11 @@ import java.util.List;
 
 import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
+@DependencyOn("testnorge-skd")
 public class TestnorgeSkdConsumer {
 
     private RestTemplate restTemplate;
@@ -36,7 +38,7 @@ public class TestnorgeSkdConsumer {
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "skd" })
-    public ResponseEntity startSyntetisering(
+    public ResponseEntity<SkdMeldingerTilTpsRespons> startSyntetisering(
             SyntetiserSkdmeldingerRequest syntetiserSkdmeldingerRequest
     ) {
         var postRequest = RequestEntity.post(startSyntetiseringUrl.expand()).contentType(MediaType.APPLICATION_JSON).body(syntetiserSkdmeldingerRequest);

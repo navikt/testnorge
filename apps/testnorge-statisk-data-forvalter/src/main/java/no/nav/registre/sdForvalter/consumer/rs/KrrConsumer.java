@@ -23,9 +23,11 @@ import java.util.stream.Collectors;
 import no.nav.registre.sdForvalter.consumer.rs.request.KrrRequest;
 import no.nav.registre.sdForvalter.domain.Krr;
 import no.nav.registre.sdForvalter.domain.KrrListe;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component
+@DependencyOn(value = "krr-stub", external = true)
 public class KrrConsumer {
 
     private static final ParameterizedTypeReference<List<KrrRequest>> RESPONSE_TYPE = new ParameterizedTypeReference<List<KrrRequest>>() {

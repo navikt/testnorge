@@ -35,9 +35,11 @@ import no.nav.registre.skd.provider.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Service
 @Slf4j
+@DependencyOn("testnorge-hodejegeren")
 public class SyntetiseringService {
 
     static final String LEVENDE_IDENTER_I_NORGE = "levendeIdenterINorge";
@@ -74,7 +76,7 @@ public class SyntetiseringService {
 
     private List<String> feiledeEndringskoder;
 
-    public ResponseEntity puttIdenterIMeldingerOgLagre(
+    public ResponseEntity<SkdMeldingerTilTpsRespons> puttIdenterIMeldingerOgLagre(
             GenereringsOrdreRequest genereringsOrdreRequest
     ) {
         final var antallMeldingerPerEndringskode = genereringsOrdreRequest.getAntallMeldingerPerEndringskode();

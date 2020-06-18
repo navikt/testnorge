@@ -44,7 +44,7 @@ public class OrkestreringController {
     }
 
     @PostMapping("/flatfil/jenkins")
-    public ResponseEntity sendFlatfil(
+    public ResponseEntity<String> sendFlatfil(
             @RequestBody String flatFil,
             @RequestParam String miljoe
     ) {

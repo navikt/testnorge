@@ -38,10 +38,12 @@ import no.nav.registre.medl.database.repository.MedlemPeriodeRepository;
 import no.nav.registre.medl.database.repository.StudieinformasjonRepository;
 import no.nav.registre.medl.provider.rs.requests.SyntetiserMedlRequest;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@DependencyOn("testnorge-hodejegeren")
 public class SyntetiseringService {
 
     private static final String MEDL_NAME = "medl";

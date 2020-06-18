@@ -1,0 +1,31 @@
+application:
+  name: "avhengighetsanalyse-frontend"
+  version: @application.version@
+
+dependencies:
+  urls:
+    - http://testnorge-helsepersonell-api.default.svc.nais.local/dependencies
+    - http://testnorge-statisk-data-forvalter.default.svc.nais.local/dependencies
+    - http://orkestratoren.default.svc.nais.local/dependencies
+    - http://testnorge-tp.default.svc.nais.local/dependencies
+    - http://inntektsmelding-stub.default.svc.nais.local/dependencies
+    - http://testnorge-aareg.default.svc.nais.local/dependencies
+    - http://testnorge-aaregstub.default.svc.nais.local/dependencies
+    - http://testnorge-arena.default.svc.nais.local/dependencies
+    - http://testnorge-elsam.default.svc.nais.local/dependencies
+    - http://testnorge-ereg-mapper.default.svc.nais.local/dependencies
+    - http://testnorge-frikort.default.svc.nais.local/dependencies
+    - http://testnorge-hodejegeren.default.svc.nais.local/dependencies
+    - http://testnorge-inntekt.default.svc.nais.local/dependencies
+    - http://testnorge-inst.default.svc.nais.local/dependencies
+    - http://testnorge-medl.default.svc.nais.local/dependencies
+    - http://testnorge-nav-endringsmeldinger.default.svc.nais.local/dependencies
+    - http://testnorge-sam.default.svc.nais.local/dependencies
+    - http://testnorge-sigrun.default.svc.nais.local/dependencies
+    - http://testnorge-skd.default.svc.nais.local/dependencies
+    - http://testnorge-spion.default.svc.nais.local/dependencies
+    - http://testnorge-token-provider.default.svc.nais.local/dependencies
+    - http://testnorge-tss.default.svc.nais.local/dependencies
+    - http://testnorge-person-api.default.svc.nais.local/dependencies
+    - http://testnorge-sykemelding-api.default.svc.nais.local/dependencies
+  threads: 6

@@ -11,6 +11,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+import no.nav.registre.arena.core.consumer.rs.util.ArbeidssoekerCacheUtil;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyBruker;
@@ -37,7 +38,7 @@ import no.nav.registre.arena.core.config.AppConfig;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @TestPropertySource(locations = "classpath:application-test.properties")
-@ContextConfiguration(classes = { BrukereArenaForvalterConsumer.class, AppConfig.class })
+@ContextConfiguration(classes = { BrukereArenaForvalterConsumer.class, AppConfig.class, ArbeidssoekerCacheUtil.class })
 @EnableAutoConfiguration
 public class BrukereArenaForvalterConsumerTest {
 

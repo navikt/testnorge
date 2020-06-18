@@ -32,7 +32,7 @@ public class Vedtakshistorikk {
     @JsonProperty("AATFOR")
     private List<NyttVedtakAap> tvungenForvaltning;
 
-    @JsonProperty("FRI_MK")
+    @JsonProperty("FRI_MK_AAP")
     private List<NyttVedtakAap> fritakMeldekort;
 
     @JsonProperty("BASI")
@@ -40,6 +40,9 @@ public class Vedtakshistorikk {
 
     @JsonProperty("BTIL")
     private List<NyttVedtakTiltak> barnetillegg;
+
+    @JsonProperty("TILTAK")
+    private List<NyttVedtakTiltak> tiltaksdeltakelse;
 
     @JsonProperty("TSOBOUTG")
     private List<NyttVedtakTillegg> boutgifter;

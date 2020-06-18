@@ -12,11 +12,15 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+
+import java.util.List;
 
 @Component
+@DependencyOn("testnorge-sam")
 public class TestnorgeSamConsumer {
 
-    private static final ParameterizedTypeReference<ResponseEntity> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
+    private static final ParameterizedTypeReference<List<Object>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
     private RestTemplate restTemplate;
@@ -31,7 +35,7 @@ public class TestnorgeSamConsumer {
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "sam" })
-    public ResponseEntity startSyntetisering(
+    public ResponseEntity<List<Object>> startSyntetisering(
             SyntetiserSamRequest syntetiserSamRequest
     ) {
         var postRequest = RequestEntity.post(url.expand()).contentType(MediaType.APPLICATION_JSON).body(syntetiserSamRequest);

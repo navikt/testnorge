@@ -14,9 +14,25 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <artifactId>testnorge-core</artifactId>
+                <groupId>no.nav.registre.testnorge</groupId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <artifactId>testnorge-domain</artifactId>
                 <groupId>no.nav.registre.testnorge</groupId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <artifactId>testnorge-data-transfer-objects</artifactId>
+                <groupId>no.nav.registre.testnorge</groupId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <artifactId>testnorge-testing</artifactId>
+                <groupId>no.nav.registre.testnorge</groupId>
+                <version>${project.version}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -43,5 +59,9 @@
         <module>testnorge-nav-endringsmeldinger</module>
         <module>testnorge-token-provider</module>
         <module>testnorge-inntekt</module>
+        <module>helsepersonell-api</module>
+        <module>avhengighetsanalyse-frontend</module>
+        <module>sykemelding-api</module>
+        <module>person-api</module>
     </modules>
 </project>

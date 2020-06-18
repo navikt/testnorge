@@ -7,6 +7,8 @@ import static no.nav.registre.arena.core.service.util.ServiceUtils.MAX_ALDER_AAP
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MAX_ALDER_UNG_UFOER;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_AAP;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_UNG_UFOER;
+import static no.nav.registre.arena.core.consumer.rs.AapSyntConsumer.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
+import static no.nav.registre.arena.core.consumer.rs.TilleggSyntConsumer.ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +18,11 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.AapSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
@@ -28,6 +32,7 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetFritakMeldekortRe
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggsytelseRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksdeltakelseRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
@@ -40,6 +45,7 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakRes
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -50,6 +56,7 @@ public class VedtakshistorikkService {
     private final ServiceUtils serviceUtils;
     private final RettighetAapService rettighetAapService;
     private final RettighetTilleggService rettighetTilleggService;
+    private final RettighetTiltakService rettighetTiltakService;
 
     public Map<String, List<NyttVedtakResponse>> genererVedtakshistorikk(
             Long avspillergruppeId,
@@ -59,19 +66,31 @@ public class VedtakshistorikkService {
         var vedtakshistorikk = aapSyntConsumer.syntetiserVedtakshistorikk(antallNyeIdenter);
         Map<String, List<NyttVedtakResponse>> responses = new HashMap<>();
         for (var vedtakshistorikken : vedtakshistorikk) {
+            vedtakshistorikken.setTilsynFamiliemedlemmer(fjernTilsynFamiliemedlemmerVedtakMedUgyldigeDatoer(vedtakshistorikken.getTilsynFamiliemedlemmer()));
+            vedtakshistorikken.setUngUfoer(fjernAapUngUfoerMedUgyldigeDatoer(vedtakshistorikken.getUngUfoer()));
+
             var tidligsteDato = LocalDate.now();
             var aap = finnUtfyltAap(vedtakshistorikken);
+            var aapType = finnUtfyltAapType(vedtakshistorikken);
             var tiltak = finnUtfyltTiltak(vedtakshistorikken);
             var tillegg = finnUtfyltTillegg(vedtakshistorikken);
+            var barnetillegg = vedtakshistorikken.getBarnetillegg();
+            LocalDate tidligsteDatoBarnetillegg = null;
 
-            if (aap != null && !aap.isEmpty()) {
+            if (!aap.isEmpty()) {
                 tidligsteDato = finnTidligsteDatoAap(aap);
-            } else if (tiltak != null && !tiltak.isEmpty()) {
+            } else if (!aapType.isEmpty()) {
+                tidligsteDato = finnTidligsteDatoAapType(aapType);
+            } else if (!tiltak.isEmpty()) {
                 tidligsteDato = finnTidligsteDatoTiltak(tiltak);
-            } else if (tillegg != null && !tillegg.isEmpty()) {
+            } else if (!tillegg.isEmpty()) {
                 tidligsteDato = finnTidligsteDatoTillegg(tillegg);
             } else {
                 continue;
+            }
+
+            if (barnetillegg != null && !barnetillegg.isEmpty()) {
+                tidligsteDatoBarnetillegg = finnTidligsteDatoTiltak(barnetillegg);
             }
 
             var minimumAlder = Math.toIntExact(ChronoUnit.YEARS.between(tidligsteDato.minusYears(MIN_ALDER_AAP), LocalDate.now()));
@@ -79,7 +98,6 @@ public class VedtakshistorikkService {
                 log.error("Kunne ikke opprette vedtakshistorikk på ident med minimum alder {}", minimumAlder);
                 continue;
             }
-
             var maksimumAlder = minimumAlder + 50;
             if (maksimumAlder > MAX_ALDER_AAP) {
                 maksimumAlder = MAX_ALDER_AAP;
@@ -93,8 +111,21 @@ public class VedtakshistorikkService {
             if (minimumAlder > maksimumAlder) {
                 log.error("Kunne ikke finne ident i riktig aldersgruppe");
             } else {
-                var ident = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe).get(0);
-                responses.putAll(opprettHistorikkOgSendTilArena(avspillergruppeId, ident, miljoe, vedtakshistorikken));
+                List<String> identerIAldersgruppe = Collections.emptyList();
+
+                try {
+                  if (tidligsteDatoBarnetillegg != null) {
+                    identerIAldersgruppe = serviceUtils.getUtvalgteIdenterIAldersgruppeMedBarnUnder18(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe, tidligsteDatoBarnetillegg);
+                  } else {
+                    identerIAldersgruppe = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe);
+                  }
+                } catch (RuntimeException e) {
+                    log.error("Kunne ikke hente ident fra hodejegeren");
+                }
+
+                if (!identerIAldersgruppe.isEmpty()) {
+                    responses.putAll(opprettHistorikkOgSendTilArena(avspillergruppeId, identerIAldersgruppe.get(0), miljoe, vedtakshistorikken));
+                }
             }
         }
         return responses;
@@ -119,6 +150,7 @@ public class VedtakshistorikkService {
         opprettVedtakUngUfoer(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakTvungenForvaltning(vedtakshistorikk, personident, miljoe, rettigheter, identerMedKontonummer);
         opprettVedtakFritakMeldekort(vedtakshistorikk, personident, miljoe, rettigheter);
+        opprettVedtakTiltaksdeltakelse(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakTiltakspenger(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakBarnetillegg(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakTillegg(vedtakshistorikk.getBoutgifter(), personident, miljoe, rettigheter);
@@ -142,6 +174,28 @@ public class VedtakshistorikkService {
         return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
     }
 
+    private List<NyttVedtakTillegg> fjernTilsynFamiliemedlemmerVedtakMedUgyldigeDatoer(List<NyttVedtakTillegg> tilsynFamiliemedlemmer) {
+        List<NyttVedtakTillegg> nyTilsynFamiliemedlemmer = new ArrayList<>();
+        if (tilsynFamiliemedlemmer != null){
+            nyTilsynFamiliemedlemmer = tilsynFamiliemedlemmer.stream().filter(vedtak ->
+                    !vedtak.getFraDato().isAfter(ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT))
+                    .collect(Collectors.toList());
+        }
+
+        return nyTilsynFamiliemedlemmer.isEmpty() ? null : nyTilsynFamiliemedlemmer;
+    }
+
+    private List<NyttVedtakAap> fjernAapUngUfoerMedUgyldigeDatoer(List<NyttVedtakAap> ungUfoer){
+        List<NyttVedtakAap> nyUngUfoer = new ArrayList<>();
+        if (ungUfoer != null){
+            nyUngUfoer = ungUfoer.stream().filter(vedtak ->
+                    !vedtak.getFraDato().isAfter(ARENA_AAP_UNG_UFOER_DATE_LIMIT))
+                    .collect(Collectors.toList());
+        }
+
+        return nyUngUfoer.isEmpty() ? null : nyUngUfoer;
+    }
+
     private LocalDate finnTidligsteDatoAap(List<NyttVedtakAap> vedtak) {
         var tidligsteDato = LocalDate.now();
         for (var vedtaket : vedtak) {
@@ -157,6 +211,14 @@ public class VedtakshistorikkService {
                     }
                 }
             }
+        }
+        return tidligsteDato;
+    }
+
+    private LocalDate finnTidligsteDatoAapType(List<NyttVedtakAap> vedtak) {
+        var tidligsteDato = LocalDate.now();
+        for (var vedtaket : vedtak) {
+            tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, vedtaket.getFraDato());
         }
         return tidligsteDato;
     }
@@ -288,6 +350,40 @@ public class VedtakshistorikkService {
         }
     }
 
+    private void opprettVedtakTiltaksdeltakelse(
+            Vedtakshistorikk vedtak,
+            String personident,
+            String miljoe,
+            List<RettighetRequest> rettigheter
+    ){
+        var tiltaksdeltakelse = vedtak.getTiltaksdeltakelse();
+        if (tiltaksdeltakelse != null && !tiltaksdeltakelse.isEmpty()) {
+            var rettighetRequest = new RettighetTiltaksdeltakelseRequest(tiltaksdeltakelse);
+            rettighetRequest.setPersonident(personident);
+            rettighetRequest.setMiljoe(miljoe);
+            rettighetRequest.getNyeTiltaksdeltakelse().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
+            rettigheter.add(rettighetRequest);
+
+            opprettVedtakEndreDeltakerstatus(rettighetRequest, miljoe, rettigheter);
+        }
+    }
+
+    private void opprettVedtakEndreDeltakerstatus(
+            RettighetRequest tiltaksdeltakelse,
+            String miljoe,
+            List<RettighetRequest> rettigheter
+    ){
+        var response = NyttVedtakResponse.builder().feiledeRettigheter(Collections.emptyList()).build();
+        Map<String, List<NyttVedtakResponse>> identerMedTiltakdeltakelse = new HashMap<>();
+        identerMedTiltakdeltakelse.put(tiltaksdeltakelse.getPersonident(), Collections.singletonList(response));
+
+        var rettigheterForEndreDeltakerstatus = rettighetTiltakService.getRettigheterForEndreDeltakerstatus(
+                identerMedTiltakdeltakelse,
+                Collections.singletonList(tiltaksdeltakelse),
+                miljoe);
+        rettigheter.addAll(rettigheterForEndreDeltakerstatus);
+    }
+
     private void opprettVedtakTiltakspenger(
             Vedtakshistorikk vedtak,
             String personident,
@@ -338,14 +434,20 @@ public class VedtakshistorikkService {
 
     private List<NyttVedtakAap> finnUtfyltAap(Vedtakshistorikk vedtakshistorikk) {
         var aap = vedtakshistorikk.getAap();
+
+        if (aap != null && !aap.isEmpty()) {
+            return aap;
+        }
+
+        return Collections.emptyList();
+    }
+
+    private List<NyttVedtakAap> finnUtfyltAapType(Vedtakshistorikk vedtakshistorikk) {
         var aap115 = vedtakshistorikk.getAap115();
         var ungUfoer = vedtakshistorikk.getUngUfoer();
         var tvungenForvaltning = vedtakshistorikk.getTvungenForvaltning();
         var fritakMeldekort = vedtakshistorikk.getFritakMeldekort();
 
-        if (aap != null && !aap.isEmpty()) {
-            return aap;
-        }
         if (aap115 != null && !aap115.isEmpty()) {
             return aap115;
         }
@@ -359,12 +461,17 @@ public class VedtakshistorikkService {
             return fritakMeldekort;
         }
 
-        return null;
+        return Collections.emptyList();
     }
 
     private List<NyttVedtakTiltak> finnUtfyltTiltak(Vedtakshistorikk vedtakshistorikk) {
         var tiltakspenger = vedtakshistorikk.getTiltakspenger();
         var barnetillegg = vedtakshistorikk.getBarnetillegg();
+        var tiltaksdeltakelse = vedtakshistorikk.getTiltaksdeltakelse();
+
+        if (tiltaksdeltakelse != null && !tiltaksdeltakelse.isEmpty()){
+            return tiltaksdeltakelse;
+        }
 
         if (tiltakspenger != null && !tiltakspenger.isEmpty()) {
             return tiltakspenger;
@@ -374,7 +481,7 @@ public class VedtakshistorikkService {
             return barnetillegg;
         }
 
-        return null;
+        return Collections.emptyList();
     }
 
     private List<NyttVedtakTillegg> finnUtfyltTillegg(Vedtakshistorikk vedtakshistorikk) {
@@ -449,6 +556,6 @@ public class VedtakshistorikkService {
             return tilsynFamiliemedlemmerArbeidssoekere;
         }
 
-        return null;
+        return Collections.emptyList();
     }
 }

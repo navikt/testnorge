@@ -14,9 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import no.nav.registre.sam.SyntetisertSamordningsmelding;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
+@DependencyOn(value = "syntrest", external = true)
 public class SamSyntetisererenConsumer {
 
     private static final ParameterizedTypeReference<List<SyntetisertSamordningsmelding>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
@@ -31,7 +33,7 @@ public class SamSyntetisererenConsumer {
         this.url = new UriTemplate(syntrestServerUrl + "/v1/generate/sam?numToGenerate={numToGenerate}");
     }
 
-    @Timed(value = "sam.resource.latency", extraTags = { "operation", "sam-syntetisereren" })
+    @Timed(value = "sam.resource.latency", extraTags = {"operation", "sam-syntetisereren"})
     public List<SyntetisertSamordningsmelding> hentSammeldingerFromSyntRest(
             int numToGenerate
     ) {

@@ -24,16 +24,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import no.nav.registre.arena.core.consumer.rs.util.ArbeidssoekerCacheUtil;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyBruker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 
 @Component
 @Slf4j
+@DependencyOn(value = "arena-forvalteren", external = true)
 public class BrukereArenaForvalterConsumer {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private ArbeidssoekerCacheUtil arbeidssoekerCacheUtil;
 
     private UriTemplate postBrukere;
     private UriTemplate hentBrukere;
@@ -94,6 +100,11 @@ public class BrukereArenaForvalterConsumer {
     private List<Arbeidsoeker> hentFiltrerteArbeidsoekere(
             String refinedUrl
     ) {
+        var cachedeArbeidssoekere = arbeidssoekerCacheUtil.hentArbeidssoekere(refinedUrl);
+        if (!cachedeArbeidssoekere.isEmpty()) {
+            return cachedeArbeidssoekere;
+        }
+
         var uri = new UriTemplate(refinedUrl);
 
         var getRequest = RequestEntity.get(uri.expand())
@@ -102,7 +113,9 @@ public class BrukereArenaForvalterConsumer {
                 .build();
         var response = restTemplate.exchange(getRequest, NyeBrukereResponse.class).getBody();
         if (response != null) {
-            return gaaGjennomSider(refinedUrl, response.getAntallSider(), response.getArbeidsoekerList().size());
+            var arbeidssoekere = gaaGjennomSider(refinedUrl, response.getAntallSider(), response.getArbeidsoekerList().size());
+            arbeidssoekerCacheUtil.oppdaterCache(refinedUrl, arbeidssoekere);
+            return arbeidssoekere;
         } else {
             return new ArrayList<>();
         }

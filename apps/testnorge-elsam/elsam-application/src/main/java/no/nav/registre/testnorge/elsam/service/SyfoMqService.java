@@ -8,10 +8,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.elsam.consumer.rs.response.SykemeldingResponse;
 import no.nav.registre.testnorge.elsam.exception.InvalidEnvironmentException;
 
 @Service
+@DependencyOn(value = "syfo-dokmottak", external = true)
 public class SyfoMqService {
 
     @Autowired

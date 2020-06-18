@@ -5,6 +5,7 @@ on:
     branches: master
     paths:
       - apps/testnorge-skd/**
+      - libs/testnorge-core/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/skd:${{ github.sha }}

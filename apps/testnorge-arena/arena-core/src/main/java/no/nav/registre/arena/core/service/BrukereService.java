@@ -4,6 +4,8 @@ import static java.lang.Math.floor;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyBruker;
@@ -22,6 +24,7 @@ import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@DependencyOn("testnorge-hodejegeren")
 public class BrukereService {
 
     private static final double PROSENTANDEL_SOM_SKAL_HA_MELDEKORT = 0.2;

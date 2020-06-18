@@ -7,9 +7,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.elsam.consumer.rs.response.ereg.EregResponse;
 
 @Component
+@DependencyOn(value = "ereg",external = true)
 public class EregConsumer {
 
     private RestTemplate restTemplate;
@@ -24,7 +26,7 @@ public class EregConsumer {
     }
 
     public EregResponse hentEregdataFraOrgnummer(String orgnummer) {
-        RequestEntity getRequest = RequestEntity.get(eregUrl.expand(orgnummer))
+        RequestEntity<?> getRequest = RequestEntity.get(eregUrl.expand(orgnummer))
                 .header("Nav-Call-Id", "orkestratoren")
                 .header("Nav-Consumer-Id", "orkestratoren")
                 .build();

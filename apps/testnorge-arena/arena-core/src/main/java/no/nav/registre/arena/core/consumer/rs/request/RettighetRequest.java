@@ -24,7 +24,8 @@ import java.util.List;
         @JsonSubTypes.Type(value = RettighetTiltakspengerRequest.class, name = "tiltakspenger"),
         @JsonSubTypes.Type(value = RettighetTiltaksaktivitetRequest.class, name = "tiltaksaktivitet"),
         @JsonSubTypes.Type(value = RettighetTilleggsytelseRequest.class, name = "tilleggsytelse"),
-        @JsonSubTypes.Type(value = RettighetTilleggRequest.class, name = "tilleggstonad")
+        @JsonSubTypes.Type(value = RettighetTilleggRequest.class, name = "tilleggstonad"),
+        @JsonSubTypes.Type(value = RettighetEndreDeltakerstatusRequest.class, name = "endreDeltakerstatus")
 })
 @Getter
 @Setter

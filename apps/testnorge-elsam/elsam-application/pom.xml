@@ -13,7 +13,10 @@
     <artifactId>elsam-application</artifactId>
 
     <dependencies>
-
+        <dependency>
+            <artifactId>testnorge-core</artifactId>
+            <groupId>no.nav.registre.testnorge</groupId>
+        </dependency>
         <dependency>
             <groupId>no.nav.registre.testnorge</groupId>
             <artifactId>elsam-domain</artifactId>

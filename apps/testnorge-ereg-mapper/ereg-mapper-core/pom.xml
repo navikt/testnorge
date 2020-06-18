@@ -12,7 +12,10 @@
     <artifactId>ereg-mapper-core</artifactId>
 
     <dependencies>
-
+        <dependency>
+            <artifactId>testnorge-core</artifactId>
+            <groupId>no.nav.registre.testnorge</groupId>
+        </dependency>
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
@@ -47,7 +50,6 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.11.1</version>
             <scope>test</scope>
         </dependency>
 
@@ -73,6 +75,12 @@
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
+        </dependency>
+
+        <dependency>
+            <artifactId>testnorge-testing</artifactId>
+            <groupId>no.nav.registre.testnorge</groupId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
