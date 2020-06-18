@@ -26,4 +26,5 @@ dependencies:
     - https://testnorge-spion.nais.preprod.local/dependencies
     - https://testnorge-token-provider.nais.preprod.local/dependencies
     - https://testnorge-tss.nais.preprod.local/dependencies
+    - https://testnorge-person-api.nais.preprod.local/dependencies
   threads: 5

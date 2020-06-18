@@ -2,6 +2,7 @@ name: Deploy avhengighetsanalyse-frontend
 
 on:
   push:
+    breach: master
     paths:
       - apps/avhengighetsanalyse-frontend/**
       - libs/testnorge-core/**
