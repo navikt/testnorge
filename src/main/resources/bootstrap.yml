@@ -48,3 +48,8 @@ spring.kafka:
     max-poll-records: 100
     auto-offset-reset: earliest
     enable-auto-commit: false
+  streams:
+    application-id: ${app.name}-${nais.namespace}
+    properties:
+      poll.ms: 1000
+      processing.guarantee: exactly_once
