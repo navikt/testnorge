@@ -3,9 +3,14 @@ import Formatters from '~/utils/DataFormatter'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
+import { Historikk } from '~/components/ui/historikk/Historikk'
 
-type MidlertidigeAdresser = {
+type AlleMidlertidigeAdresser = {
 	midlertidigAdresse: Array<MidlertidigAdresse>
+}
+
+type Enkeltadresse = {
+	midlertidigAdresse: MidlertidigAdresse
 }
 
 type MidlertidigAdresse = {
@@ -34,9 +39,7 @@ type Postnummer = {
 	value: string
 }
 
-export const MidlertidigAdresse = ({ midlertidigAdresse }: MidlertidigeAdresser) => {
-	if (!midlertidigAdresse) return null
-
+export const Adressevisning = ({ midlertidigAdresse }: Enkeltadresse) => {
 	const {
 		adressetype,
 		gyldigTom,
@@ -51,7 +54,7 @@ export const MidlertidigAdresse = ({ midlertidigAdresse }: MidlertidigeAdresser)
 		postLinje3,
 		postLand,
 		tilleggsadresse
-	} = midlertidigAdresse[0]
+	} = midlertidigAdresse
 
 	const gate = <div>{`${gatenavn} ${husnr}`}</div>
 
@@ -70,23 +73,39 @@ export const MidlertidigAdresse = ({ midlertidigAdresse }: MidlertidigeAdresser)
 
 	return (
 		<>
+			<TitleValue title={Formatters.adressetypeToString(adressetype)} size="medium">
+				{adressetype === 'GATE' && gate}
+				{adressetype === 'STED' && sted}
+				{adressetype === 'PBOX' && postboks}
+				{adressetype === 'UTAD' && utland}
+				{postnr && (
+					<KodeverkConnector navn="Postnummer" value={postnr}>
+						{(v: PostnummerKodeverk, verdi: Postnummer) => (
+							<span>{verdi ? verdi.label : postnr}</span>
+						)}
+					</KodeverkConnector>
+				)}
+			</TitleValue>
+			<TitleValue title="Gyldig t.o.m." value={Formatters.formatDate(gyldigTom)} />
+			<TitleValue title="Tilleggsadresse" value={tilleggsadresse} />
+		</>
+	)
+}
+
+export const MidlertidigAdresse = ({ midlertidigAdresse }: AlleMidlertidigeAdresser) => {
+	if (!midlertidigAdresse) return null
+
+	return (
+		<>
 			<SubOverskrift label="Midlertidig adresse" iconKind="midlertidigAdresse" />
 			<div className="person-visning_content">
-				<TitleValue title={Formatters.adressetypeToString(adressetype)} size="medium">
-					{adressetype === 'GATE' && gate}
-					{adressetype === 'STED' && sted}
-					{adressetype === 'PBOX' && postboks}
-					{adressetype === 'UTAD' && utland}
-					{postnr && (
-						<KodeverkConnector navn="Postnummer" value={postnr}>
-							{(v: PostnummerKodeverk, verdi: Postnummer) => (
-								<span>{verdi ? verdi.label : postnr}</span>
-							)}
-						</KodeverkConnector>
-					)}
-				</TitleValue>
-				<TitleValue title="Gyldig t.o.m." value={Formatters.formatDate(gyldigTom)} />
-				<TitleValue title="Tilleggsadresse" value={tilleggsadresse} />
+				{/* 
+            	// @ts-ignore */}
+				<Historikk
+					component={Adressevisning}
+					propName="midlertidigAdresse"
+					data={midlertidigAdresse}
+				/>
 			</div>
 		</>
 	)
