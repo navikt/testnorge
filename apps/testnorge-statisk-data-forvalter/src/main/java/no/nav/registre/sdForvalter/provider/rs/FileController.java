@@ -1,6 +1,7 @@
 package no.nav.registre.sdForvalter.provider.rs;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,7 +45,7 @@ public class FileController {
     }
 
     @PostMapping("/ereg")
-    public ResponseEntity importEreg(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<HttpStatus> importEreg(@RequestParam("file") MultipartFile file) throws IOException {
         List<Ereg> list = EregCsvConverter.inst().read(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
         eregAdapter.save(new EregListe(list));
         return ResponseEntity.ok().build();
@@ -61,7 +62,7 @@ public class FileController {
     }
 
     @PostMapping("/tpsIdenter")
-    public ResponseEntity importTpsIdenter(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<?> importTpsIdenter(@RequestParam("file") MultipartFile file) throws IOException {
         List<TpsIdent> list = TpsIdentCsvConverter.inst().read(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
         tpsIdenterAdapter.save(new TpsIdentListe(list));
         return ResponseEntity.ok().build();
