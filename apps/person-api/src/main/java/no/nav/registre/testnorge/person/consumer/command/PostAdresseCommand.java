@@ -30,7 +30,7 @@ public class PostAdresseCommand implements Callable<HendelseDTO> {
         headers.add(PdlHeaders.NAV_PERSONIDENT, person.getIdent());
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + token);
         return restTemplate.exchange(
-                url + "/api/v1/bestilling/bostedadresse",
+                url + "/api/v1/bestilling/bostedsadresse",
                 HttpMethod.POST,
                 new HttpEntity<>(new AdresseDTO(person), headers),
                 HendelseDTO.class

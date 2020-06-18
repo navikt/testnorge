@@ -8,9 +8,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.person.consumer.command.PostAdresseCommand;
@@ -45,11 +49,11 @@ public class PdlTestdataConsumer {
         String token = tokenService.getIdToken();
         log.info("Oppretter person med ident {} i PDL", person.getIdent());
 
-        Arrays.asList(
+        List<? extends CompletableFuture<?>> results = Stream.of(
                 new PostOpprettPersonCommand(restTemplate, url, person.getIdent(), token),
                 new PostNavnCommand(restTemplate, url, person, token),
                 new PostAdresseCommand(restTemplate, url, person, token)
-        ).forEach(callable -> CompletableFuture.supplyAsync(() -> {
+        ).map(callable -> CompletableFuture.supplyAsync(() -> {
                     try {
                         return callable.call();
                     } catch (Exception e) {
@@ -57,6 +61,10 @@ public class PdlTestdataConsumer {
                         return null;
                     }
                 }, executor
-        ));
+        )).collect(Collectors.toList());
+
+        if (results.stream().anyMatch(Objects::isNull)) {
+            throw new RuntimeException("Feil ved innsendelse til PDL testdata");
+        }
     }
 }
