@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import java.util.List;
-
 @Value
 @NoArgsConstructor(force = true)
 @JsonIgnoreProperties(ignoreUnknown = true)

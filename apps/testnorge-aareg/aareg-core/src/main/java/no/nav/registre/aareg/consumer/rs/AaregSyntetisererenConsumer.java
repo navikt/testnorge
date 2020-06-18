@@ -1,9 +1,9 @@
 package no.nav.registre.aareg.consumer.rs;
 
-import static no.nav.registre.aareg.domain.CommonKeys.RESPONSE_TYPE_LIST_AAREG_REQUEST;
-
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.aareg.syntetisering.RsAaregSyntetiseringsRequest;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.RequestEntity;
@@ -14,9 +14,7 @@ import org.springframework.web.util.UriTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.nav.registre.aareg.exception.SyntetiseringException;
-import no.nav.registre.aareg.syntetisering.RsAaregSyntetiseringsRequest;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import static no.nav.registre.aareg.domain.CommonKeys.RESPONSE_TYPE_LIST_AAREG_REQUEST;
 
 @Component
 @Slf4j

@@ -1,6 +1,8 @@
 package no.nav.registre.aareg.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.registere.testnorge.core.ApplicationCoreConfig;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,10 +11,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Random;
-
-import no.nav.registere.testnorge.core.ApplicationCoreConfig;
-import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Configuration
 @Import(ApplicationCoreConfig.class)

@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Value;
-
-import no.nav.registre.sdForvalter.consumer.rs.request.KrrRequest;
 import no.nav.registre.sdForvalter.database.model.KrrModel;
 
 @Value

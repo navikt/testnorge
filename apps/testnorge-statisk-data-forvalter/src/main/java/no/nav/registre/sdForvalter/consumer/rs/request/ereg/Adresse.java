@@ -9,8 +9,6 @@ import lombok.Setter;
 import java.util.Collections;
 import java.util.List;
 
-import no.nav.registre.sdForvalter.database.model.AdresseModel;
-
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
