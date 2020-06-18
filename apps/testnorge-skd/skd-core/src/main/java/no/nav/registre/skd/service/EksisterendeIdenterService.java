@@ -34,11 +34,13 @@ import no.nav.registre.skd.exceptions.ManglerEksisterendeIdentException;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
 @Slf4j
+@DependencyOn("testnorge-hodejegeren")
 public class EksisterendeIdenterService {
 
     private static final String IDENT = "ident";

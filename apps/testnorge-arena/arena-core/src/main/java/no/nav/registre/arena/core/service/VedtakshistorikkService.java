@@ -32,6 +32,7 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetFritakMeldekortRe
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggsytelseRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksdeltakelseRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
@@ -55,6 +56,7 @@ public class VedtakshistorikkService {
     private final ServiceUtils serviceUtils;
     private final RettighetAapService rettighetAapService;
     private final RettighetTilleggService rettighetTilleggService;
+    private final RettighetTiltakService rettighetTiltakService;
 
     public Map<String, List<NyttVedtakResponse>> genererVedtakshistorikk(
             Long avspillergruppeId,
@@ -148,6 +150,7 @@ public class VedtakshistorikkService {
         opprettVedtakUngUfoer(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakTvungenForvaltning(vedtakshistorikk, personident, miljoe, rettigheter, identerMedKontonummer);
         opprettVedtakFritakMeldekort(vedtakshistorikk, personident, miljoe, rettigheter);
+        opprettVedtakTiltaksdeltakelse(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakTiltakspenger(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakBarnetillegg(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakTillegg(vedtakshistorikk.getBoutgifter(), personident, miljoe, rettigheter);
@@ -347,6 +350,40 @@ public class VedtakshistorikkService {
         }
     }
 
+    private void opprettVedtakTiltaksdeltakelse(
+            Vedtakshistorikk vedtak,
+            String personident,
+            String miljoe,
+            List<RettighetRequest> rettigheter
+    ){
+        var tiltaksdeltakelse = vedtak.getTiltaksdeltakelse();
+        if (tiltaksdeltakelse != null && !tiltaksdeltakelse.isEmpty()) {
+            var rettighetRequest = new RettighetTiltaksdeltakelseRequest(tiltaksdeltakelse);
+            rettighetRequest.setPersonident(personident);
+            rettighetRequest.setMiljoe(miljoe);
+            rettighetRequest.getNyeTiltaksdeltakelse().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
+            rettigheter.add(rettighetRequest);
+
+            opprettVedtakEndreDeltakerstatus(rettighetRequest, miljoe, rettigheter);
+        }
+    }
+
+    private void opprettVedtakEndreDeltakerstatus(
+            RettighetRequest tiltaksdeltakelse,
+            String miljoe,
+            List<RettighetRequest> rettigheter
+    ){
+        var response = NyttVedtakResponse.builder().feiledeRettigheter(Collections.emptyList()).build();
+        Map<String, List<NyttVedtakResponse>> identerMedTiltakdeltakelse = new HashMap<>();
+        identerMedTiltakdeltakelse.put(tiltaksdeltakelse.getPersonident(), Collections.singletonList(response));
+
+        var rettigheterForEndreDeltakerstatus = rettighetTiltakService.getRettigheterForEndreDeltakerstatus(
+                identerMedTiltakdeltakelse,
+                Collections.singletonList(tiltaksdeltakelse),
+                miljoe);
+        rettigheter.addAll(rettigheterForEndreDeltakerstatus);
+    }
+
     private void opprettVedtakTiltakspenger(
             Vedtakshistorikk vedtak,
             String personident,
@@ -430,6 +467,11 @@ public class VedtakshistorikkService {
     private List<NyttVedtakTiltak> finnUtfyltTiltak(Vedtakshistorikk vedtakshistorikk) {
         var tiltakspenger = vedtakshistorikk.getTiltakspenger();
         var barnetillegg = vedtakshistorikk.getBarnetillegg();
+        var tiltaksdeltakelse = vedtakshistorikk.getTiltaksdeltakelse();
+
+        if (tiltaksdeltakelse != null && !tiltaksdeltakelse.isEmpty()){
+            return tiltaksdeltakelse;
+        }
 
         if (tiltakspenger != null && !tiltakspenger.isEmpty()) {
             return tiltakspenger;

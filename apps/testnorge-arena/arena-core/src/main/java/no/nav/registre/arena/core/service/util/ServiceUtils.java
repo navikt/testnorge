@@ -29,6 +29,7 @@ import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoRespons
 import no.nav.registre.testnorge.consumers.hodejegeren.response.RelasjonsResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.internal.DataRequest;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.internal.HistorikkRequest;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Adresse;
@@ -40,6 +41,7 @@ import static no.nav.registre.arena.core.service.util.IdentUtils.hentFoedseldato
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@DependencyOn("testnorge-hodejegeren")
 public class ServiceUtils {
 
     public static final String BEGRUNNELSE = "Syntetisert rettighet";

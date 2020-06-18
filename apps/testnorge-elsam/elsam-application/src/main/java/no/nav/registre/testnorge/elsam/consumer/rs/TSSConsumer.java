@@ -14,10 +14,12 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.Map;
 
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.elsam.consumer.rs.response.tss.TssResponse;
 
 @Slf4j
 @Component
+@DependencyOn("testnorge-tss")
 public class TSSConsumer {
 
     private static final ParameterizedTypeReference<Map<String, TssResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

@@ -16,9 +16,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import no.nav.registre.ereg.consumer.rs.response.NameResponse;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component
+@DependencyOn(value = "ident-pool", external = true)
 public class IdentPoolConsumer {
 
     private static final ParameterizedTypeReference<List<NameResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<List<NameResponse>>() {

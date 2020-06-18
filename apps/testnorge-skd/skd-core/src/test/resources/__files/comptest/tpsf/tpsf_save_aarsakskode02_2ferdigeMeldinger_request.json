@@ -1,5 +1,6 @@
 [
   {
+    "id" : null,
     "beskrivelse": "IDENT: 11111111111- AARSAKSKODE:02",
     "transtype": "1",
     "maskindato": "20150716",
@@ -153,6 +154,7 @@
     "slekstnavnUgift": null
   },
   {
+    "id" : null,
     "beskrivelse": "IDENT: 22222222222- AARSAKSKODE:02",
     "transtype": "1",
     "maskindato": "20150716",
@@ -306,6 +308,7 @@
     "farsFarsNavn": " "
   },
   {
+    "id" : null,
     "beskrivelse": "IDENT: 11111111111- AARSAKSKODE:35",
     "fodselsdato": "111111",
     "personnummer": "11111",
@@ -459,6 +462,7 @@
     "meldingstype": "t1"
   },
   {
+    "id" : null,
     "beskrivelse": "IDENT: 22222222222- AARSAKSKODE:35",
     "fodselsdato": "222222",
     "personnummer": "22222",

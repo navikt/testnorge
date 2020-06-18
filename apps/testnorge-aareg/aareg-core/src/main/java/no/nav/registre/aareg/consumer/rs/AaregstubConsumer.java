@@ -20,9 +20,11 @@ import java.util.List;
 
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 import no.nav.registre.aareg.provider.rs.response.SletteArbeidsforholdResponse;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
+@DependencyOn("testnorge-aaregstub")
 public class AaregstubConsumer {
 
     private final RestTemplate restTemplate;

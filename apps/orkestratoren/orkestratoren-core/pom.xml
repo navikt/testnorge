@@ -105,7 +105,6 @@
             <artifactId>testnorge-consumers</artifactId>
             <version>${testnorge-consumers.version}</version>
         </dependency>
-
         <dependency>
             <groupId>no.nav.registre.testnorge</groupId>
             <artifactId>testnorge-domain</artifactId>

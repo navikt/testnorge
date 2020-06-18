@@ -17,9 +17,11 @@ import java.util.stream.Collectors;
 import no.nav.registre.sdForvalter.consumer.rs.request.ereg.EregMapperRequest;
 import no.nav.registre.sdForvalter.domain.Ereg;
 import no.nav.registre.sdForvalter.domain.EregListe;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
+@DependencyOn("testnorge-ereg-mapper")
 public class EregMapperConsumer {
 
     private final RestTemplate restTemplate;

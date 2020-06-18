@@ -27,9 +27,11 @@ import java.util.Map;
 
 import no.nav.registre.arena.core.consumer.rs.response.AktoerResponse;
 import no.nav.registre.arena.core.security.TokenService;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component
+@DependencyOn(value = "aktoerregister", external = true)
 public class AktoerRegisteretConsumer {
 
     private static final ParameterizedTypeReference<Map<String, AktoerResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

@@ -212,7 +212,7 @@ public class RettighetTiltakService {
         }
     }
 
-    private List<RettighetRequest> getRettigheterForEndreDeltakerstatus(
+    public List<RettighetRequest> getRettigheterForEndreDeltakerstatus(
             Map<String, List<NyttVedtakResponse>> identerMedOpprettedeTiltakdeltakelse,
             List<RettighetRequest> rettigheterTiltaksdeltakelse, String miljoe){
 
@@ -289,7 +289,8 @@ public class RettighetTiltakService {
         List<RettighetRequest> tiltaksaktiviteter = new ArrayList<>(rettigheter.size());
         for (var rettighet : rettigheter) {
             if (!(rettighet instanceof RettighetTilleggRequest)) {
-                throw new RuntimeException("Opprettelse av tiltaksaktivitet er kun støttet for tilleggsstønad");
+                log.error("Opprettelse av tiltaksaktivitet er kun støttet for tilleggsstønad");
+                continue;
             }
             RettighetTiltaksaktivitetRequest rettighetRequest = new RettighetTiltaksaktivitetRequest();
             rettighetRequest.setPersonident(rettighet.getPersonident());

@@ -11,18 +11,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
 import no.nav.registre.skd.consumer.requests.SlettSkdmeldingerRequest;
 import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
+@DependencyOn(value = "tps-forvalteren", external = true)
 public class TpsfConsumer {
 
     private static final ParameterizedTypeReference<List<Long>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
@@ -38,8 +44,10 @@ public class TpsfConsumer {
     private final UriTemplate uriTemplateSaveToTps;
     private final UriTemplate uriTemplateGetMeldingIder;
     private final UriTemplate urlGetMeldingIder;
-    private final UriTemplate urlSlettMeldinger;
-    private final UriTemplate urlSlettIdenterFraTps;
+    private final UriTemplate uriSlettMeldinger;
+    private final UriTemplate uriSlettIdenterFraTps;
+    private final UriTemplate uriGetMeldingerMedIds;
+    private final UriTemplate uriOppdaterSkdmelding;
 
     public TpsfConsumer(
             RestTemplateBuilder restTemplateBuilder,
@@ -53,8 +61,10 @@ public class TpsfConsumer {
         this.uriTemplateSaveToTps = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/send/{gruppeId}");
         this.uriTemplateGetMeldingIder = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/meldinger/{gruppeId}");
         this.urlGetMeldingIder = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/meldinger/{avspillergruppeId}");
-        this.urlSlettMeldinger = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/deletemeldinger");
-        this.urlSlettIdenterFraTps = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/deleteFromTps?miljoer={miljoer}&identer={identer}");
+        this.uriSlettMeldinger = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/deletemeldinger");
+        this.uriSlettIdenterFraTps = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/deleteFromTps?miljoer={miljoer}&identer={identer}");
+        this.uriGetMeldingerMedIds = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/meldinger?ids={ids}");
+        this.uriOppdaterSkdmelding = new UriTemplate(serverUrl + "/v1/endringsmelding/skd/updatemeldinger");
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
@@ -95,7 +105,7 @@ public class TpsfConsumer {
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
     public ResponseEntity slettMeldingerFraTpsf(List<Long> meldingIder) {
-        var postRequest = RequestEntity.post(urlSlettMeldinger.expand()).body(SlettSkdmeldingerRequest.builder().ids(meldingIder).build());
+        var postRequest = RequestEntity.post(uriSlettMeldinger.expand()).body(SlettSkdmeldingerRequest.builder().ids(meldingIder).build());
         return restTemplate.exchange(postRequest, ResponseEntity.class);
     }
 
@@ -110,7 +120,7 @@ public class TpsfConsumer {
         List<List<String>> identerPartisjonert = Lists.partition(identer, PAGE_SIZE);
         for (var partisjon : identerPartisjonert) {
             var identerSomString = String.join(",", partisjon);
-            var deleteRequest = RequestEntity.delete(urlSlettIdenterFraTps.expand(miljoerSomString, identerSomString)).build();
+            var deleteRequest = RequestEntity.delete(uriSlettIdenterFraTps.expand(miljoerSomString, identerSomString)).build();
             try {
                 restTemplate.exchange(deleteRequest, ResponseEntity.class);
             } catch (HttpClientErrorException e) {
@@ -118,5 +128,36 @@ public class TpsfConsumer {
             }
         }
         return response;
+    }
+
+    public List<RsMeldingstype> getMeldingerMedIds(List<String> ids) {
+        List<RsMeldingstype> response = new ArrayList<>();
+        for (var partisjonerteIder : Lists.partition(ids, 80)) {
+            var getRequest = RequestEntity.get(uriGetMeldingerMedIds.expand(String.join(",", partisjonerteIder))).build();
+            try {
+                var body = restTemplate.exchange(getRequest, new ParameterizedTypeReference<List<RsMeldingstype>>() {
+                }).getBody();
+                if (body != null) {
+                    response.addAll(body);
+                }
+            } catch (HttpStatusCodeException e) {
+                log.error("Kunne ikke hente meldinger med ider {}", partisjonerteIder, e);
+            }
+        }
+        return response;
+    }
+
+    public List<Long> oppdaterSkdMeldinger(List<RsMeldingstype> meldinger) {
+        if (!meldinger.isEmpty()) {
+            var postRequest = RequestEntity.post(uriOppdaterSkdmelding.expand()).body(meldinger);
+            var response = restTemplate.exchange(postRequest, Void.class);
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                List<Long> meldingIdsSomIkkeKunneOppdateres = meldinger.stream().map(RsMeldingstype::getId).collect(Collectors.toList());
+                log.error("Kunne ikke oppdatere meldinger med id-er: {}", meldingIdsSomIkkeKunneOppdateres);
+                return meldingIdsSomIkkeKunneOppdateres;
+            }
+            log.info("Oppdaterte meldinger med id-er: {}", meldinger.stream().map(RsMeldingstype::getId).collect(Collectors.toList()));
+        }
+        return Collections.emptyList();
     }
 }

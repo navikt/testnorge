@@ -31,9 +31,11 @@ import java.util.List;
 import java.util.UUID;
 
 import no.nav.registre.ereg.consumer.rs.request.JenkinsCrumbRequest;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component
+@DependencyOn(value = "jenkins", external = true)
 public class JenkinsConsumer {
 
     private final RestTemplate restTemplate;
