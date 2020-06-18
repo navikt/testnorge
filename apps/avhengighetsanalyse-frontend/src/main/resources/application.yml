@@ -4,28 +4,28 @@ application:
 
 dependencies:
   urls:
-    - https://testnorge-helsepersonell-api.nais.preprod.local/dependencies
-    - https://testnorge-statisk-data-forvalter.nais.preprod.local/dependencies
-    - https://orkestratoren.nais.preprod.local/dependencies
-    - https://testnorge-tp.nais.preprod.local/dependencies
-    - https://inntektsmelding-stub.nais.preprod.local/dependencies
-    - https://testnorge-aareg.nais.preprod.local/dependencies
-    - https://testnorge-aaregstub.nais.preprod.local/dependencies
-    - https://testnorge-arena.nais.preprod.local/dependencies
-    - https://testnorge-elsam.nais.preprod.local/dependencies
-    - https://testnorge-ereg-mapper.nais.preprod.local/dependencies
-    - https://testnorge-frikort.nais.preprod.local/dependencies
-    - https://testnorge-hodejegeren.nais.preprod.local/dependencies
-    - https://testnorge-inntekt.nais.preprod.local/dependencies
-    - https://testnorge-inst.nais.preprod.local/dependencies
-    - https://testnorge-medl.nais.preprod.local/dependencies
-    - https://testnorge-nav-endringsmeldinger.nais.preprod.local/dependencies
-    - https://testnorge-sam.nais.preprod.local/dependencies
-    - https://testnorge-sigrun.nais.preprod.local/dependencies
-    - https://testnorge-skd.nais.preprod.local/dependencies
-    - https://testnorge-spion.nais.preprod.local/dependencies
-    - https://testnorge-token-provider.nais.preprod.local/dependencies
-    - https://testnorge-tss.nais.preprod.local/dependencies
-    - https://testnorge-person-api.nais.preprod.local/dependencies
-    - https://testnorge-sykemelding-api.nais.preprod.local
+    - https://testnorge-helsepersonell-api.default.svc.nais.local/dependencies
+    - https://testnorge-statisk-data-forvalter.default.svc.nais.local/dependencies
+    - https://orkestratoren.default.svc.nais.local/dependencies
+    - https://testnorge-tp.default.svc.nais.local/dependencies
+    - https://inntektsmelding-stub.default.svc.nais.local/dependencies
+    - https://testnorge-aareg.default.svc.nais.local/dependencies
+    - https://testnorge-aaregstub.default.svc.nais.local/dependencies
+    - https://testnorge-arena.default.svc.nais.local/dependencies
+    - https://testnorge-elsam.default.svc.nais.local/dependencies
+    - https://testnorge-ereg-mapper.default.svc.nais.local/dependencies
+    - https://testnorge-frikort.default.svc.nais.local/dependencies
+    - https://testnorge-hodejegeren.default.svc.nais.local/dependencies
+    - https://testnorge-inntekt.default.svc.nais.local/dependencies
+    - https://testnorge-inst.default.svc.nais.local/dependencies
+    - https://testnorge-medl.default.svc.nais.local/dependencies
+    - https://testnorge-nav-endringsmeldinger.default.svc.nais.local/dependencies
+    - https://testnorge-sam.default.svc.nais.local/dependencies
+    - https://testnorge-sigrun.default.svc.nais.local/dependencies
+    - https://testnorge-skd.default.svc.nais.local/dependencies
+    - https://testnorge-spion.default.svc.nais.local/dependencies
+    - https://testnorge-token-provider.default.svc.nais.local/dependencies
+    - https://testnorge-tss.default.svc.nais.local/dependencies
+    - https://testnorge-person-api.default.svc.nais.local/dependencies
+    - https://testnorge-sykemelding-api.default.svc.nais.local/dependencies
   threads: 6

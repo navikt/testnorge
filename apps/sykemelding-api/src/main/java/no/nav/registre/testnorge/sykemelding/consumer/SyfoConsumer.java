@@ -5,10 +5,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.sykemelding.domain.Sykemelding;
 
 @Slf4j
 @Component
+@DependencyOn(value = "syfo-dokmottak", external = true)
 public class SyfoConsumer {
     private final JmsTemplate jmsTemplate;
     private final String queueName;
