@@ -19,10 +19,14 @@ enum GateadresseTyper {
 }
 
 export const Gateadresse = ({ formikBag }: Gateadresse) => {
+	const gateadresseNrInfo = 'tpsf.midlertidigAdresse.gateadresseNrInfo'
+	const norskAdresse = 'tpsf.midlertidigAdresse.norskAdresse'
+	const tilleggsadresse = 'tpsf.midlertidigAdresse.norskAdresse.tilleggsadresse'
+
 	const getState = () => {
-		if (_get(formikBag.values, 'tpsf.midlertidigAdresse.gateadresseNrInfo')) {
-			return _get(formikBag.values, 'tpsf.midlertidigAdresse.gateadresseNrInfo.nummertype')
-		} else if (_get(formikBag.values, 'tpsf.midlertidigAdresse.norskAdresse.gatenavn')) {
+		if (_get(formikBag.values, gateadresseNrInfo)) {
+			return _get(formikBag.values, `${gateadresseNrInfo}.nummertype`)
+		} else if (_get(formikBag.values, `${norskAdresse}.gatenavn`)) {
 			return GateadresseTyper.GATE
 		} else return GateadresseTyper.TILFELDIG
 	}
@@ -35,50 +39,38 @@ export const Gateadresse = ({ formikBag }: Gateadresse) => {
 
 		switch (type) {
 			case GateadresseTyper.TILFELDIG:
-				formikBag.setFieldValue('tpsf.midlertidigAdresse.norskAdresse', {
-					tilleggsadresse: _get(
-						formikBag.values,
-						'tpsf.midlertidigAdresse.norskAdresse.tilleggsadresse'
-					)
+				formikBag.setFieldValue(norskAdresse, {
+					tilleggsadresse: _get(formikBag.values, tilleggsadresse)
 				})
-				formikBag.setFieldValue('tpsf.midlertidigAdresse.gateadresseNrInfo', undefined)
+				formikBag.setFieldValue(gateadresseNrInfo, undefined)
 				break
 			case GateadresseTyper.POSTNR:
-				formikBag.setFieldValue('tpsf.midlertidigAdresse.norskAdresse', {
-					tilleggsadresse: _get(
-						formikBag.values,
-						'tpsf.midlertidigAdresse.norskAdresse.tilleggsadresse'
-					)
+				formikBag.setFieldValue(norskAdresse, {
+					tilleggsadresse: _get(formikBag.values, tilleggsadresse)
 				})
-				formikBag.setFieldValue('tpsf.midlertidigAdresse.gateadresseNrInfo', {
+				formikBag.setFieldValue(gateadresseNrInfo, {
 					nummertype: GateadresseTyper.POSTNR,
 					nummer: ''
 				})
 				break
 			case GateadresseTyper.KOMMUNENR:
-				formikBag.setFieldValue('tpsf.midlertidigAdresse.norskAdresse', {
-					tilleggsadresse: _get(
-						formikBag.values,
-						'tpsf.midlertidigAdresse.norskAdresse.tilleggsadresse'
-					)
+				formikBag.setFieldValue(norskAdresse, {
+					tilleggsadresse: _get(formikBag.values, tilleggsadresse)
 				})
-				formikBag.setFieldValue('tpsf.midlertidigAdresse.gateadresseNrInfo', {
+				formikBag.setFieldValue(gateadresseNrInfo, {
 					nummertype: GateadresseTyper.KOMMUNENR,
 					nummer: ''
 				})
 				break
 			case GateadresseTyper.GATE:
-				formikBag.setFieldValue('tpsf.midlertidigAdresse.norskAdresse', {
+				formikBag.setFieldValue(norskAdresse, {
 					postnr: '',
 					gatenavn: '',
 					gatekode: '',
 					husnr: '',
-					tilleggsadresse: _get(
-						formikBag.values,
-						'tpsf.midlertidigAdresse.norskAdresse.tilleggsadresse'
-					)
+					tilleggsadresse: _get(formikBag.values, tilleggsadresse)
 				})
-				formikBag.setFieldValue('tpsf.midlertidigAdresse.gateadresseNrInfo', undefined)
+				formikBag.setFieldValue(gateadresseNrInfo, undefined)
 			default:
 				break
 		}
@@ -120,7 +112,7 @@ export const Gateadresse = ({ formikBag }: Gateadresse) => {
 				<Kategori title="Generer midlertidig adresse ...">
 					{gateAdresseType === GateadresseTyper.POSTNR && (
 						<FormikSelect
-							name="tpsf.midlertidigAdresse.gateadresseNrInfo.nummer"
+							name={`${gateadresseNrInfo}.nummer`}
 							label="Postnummer"
 							kodeverk={AdresseKodeverk.PostnummerUtenPostboks}
 							size="large"
@@ -129,7 +121,7 @@ export const Gateadresse = ({ formikBag }: Gateadresse) => {
 					)}
 					{gateAdresseType === GateadresseTyper.KOMMUNENR && (
 						<FormikSelect
-							name="tpsf.midlertidigAdresse.gateadresseNrInfo.nummer"
+							name={`${gateadresseNrInfo}.nummer`}
 							label="Kommunenummer"
 							kodeverk={AdresseKodeverk.Kommunenummer}
 							size="large"

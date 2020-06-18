@@ -24,30 +24,29 @@ interface Adresse {
 }
 
 export const GateadresseDetaljert = ({ formikBag }: GateadresseDetaljert) => {
+	const norskAdresse = 'tpsf.midlertidigAdresse.norskAdresse'
+
 	const settAdresse = (adresse: Adresse) => {
-		formikBag.setFieldValue('tpsf.midlertidigAdresse.norskAdresse.postnr', adresse.postnr)
-		formikBag.setFieldValue('tpsf.midlertidigAdresse.norskAdresse.poststed', adresse.poststed)
-		formikBag.setFieldValue('tpsf.midlertidigAdresse.norskAdresse.gatenavn', adresse.gateadresse)
-		formikBag.setFieldValue('tpsf.midlertidigAdresse.norskAdresse.gatekode', adresse.gatekode)
-		formikBag.setFieldValue('tpsf.midlertidigAdresse.norskAdresse.husnr', adresse.husnummer)
+		formikBag.setFieldValue(`${norskAdresse}.postnr`, adresse.postnr)
+		formikBag.setFieldValue(`${norskAdresse}.poststed`, adresse.poststed)
+		formikBag.setFieldValue(`${norskAdresse}.gatenavn`, adresse.gateadresse)
+		formikBag.setFieldValue(`${norskAdresse}.gatekode`, adresse.gatekode)
+		formikBag.setFieldValue(`${norskAdresse}.husnr`, adresse.husnummer)
 	}
 
 	const renderGateadresse = () => {
-		const { gatenavn, husnr, postnr, poststed } = _get(
-			formikBag.values,
-			'tpsf.midlertidigAdresse.norskAdresse'
-		)
+		const { gatenavn, husnr, postnr, poststed } = _get(formikBag.values, norskAdresse)
 		if (!gatenavn) return ''
 		return `${gatenavn} ${parseInt(husnr)}, ${postnr} ${poststed}`
 	}
 
 	const feilmelding = () => {
 		if (
-			!_get(formikBag.values, 'tpsf.midlertidigAdresse.norskAdresse.gatenavn') &&
-			_has(formikBag.touched, 'tpsf.midlertidigAdresse.norskAdresse.gatenavn')
+			!_get(formikBag.values, `${norskAdresse}.gatenavn`) &&
+			_has(formikBag.touched, `${norskAdresse}.gatenavn`)
 		) {
 			return {
-				feilmelding: _get(formikBag.errors, 'tpsf.midlertidigAdresse.norskAdresse.gatenavn')
+				feilmelding: _get(formikBag.errors, `${norskAdresse}.gatenavn`)
 			}
 		}
 	}

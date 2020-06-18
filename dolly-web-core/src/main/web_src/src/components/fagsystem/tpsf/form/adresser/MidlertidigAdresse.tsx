@@ -29,9 +29,11 @@ enum AdresseTyper {
 }
 
 export const MidlertidigAdresse = ({ formikBag }: MidlertidigAdresse) => {
-	const [adressetype, setAdressetype] = useState(
-		_get(formikBag.values, 'tpsf.midlertidigAdresse.adressetype')
-	)
+	const adressetypePath = 'tpsf.midlertidigAdresse.adressetype'
+	const gyldigTom = 'tpsf.midlertidigAdresse.gyldigTom'
+	const tilleggsadresse = 'tpsf.midlertidigAdresse.norskAdresse.tilleggsadresse'
+
+	const [adressetype, setAdressetype] = useState(_get(formikBag.values, adressetypePath))
 
 	const handleAdressetypeChange = (valgt: Adressetype) => {
 		const type = valgt.value
@@ -40,33 +42,27 @@ export const MidlertidigAdresse = ({ formikBag }: MidlertidigAdresse) => {
 			case AdresseTyper.GATE:
 				formikBag.setFieldValue('tpsf.midlertidigAdresse', {
 					adressetype: type,
-					gyldigTom: _get(formikBag.values, 'tpsf.midlertidigAdresse.gyldigTom'),
+					gyldigTom: _get(formikBag.values, gyldigTom),
 					norskAdresse: {
-						tilleggsadresse: _get(
-							formikBag.values,
-							'tpsf.midlertidigAdresse.norskAdresse.tilleggsadresse'
-						)
+						tilleggsadresse: _get(formikBag.values, tilleggsadresse)
 					}
 				})
 				break
 			case AdresseTyper.STED:
 				formikBag.setFieldValue('tpsf.midlertidigAdresse', {
 					adressetype: type,
-					gyldigTom: _get(formikBag.values, 'tpsf.midlertidigAdresse.gyldigTom'),
+					gyldigTom: _get(formikBag.values, gyldigTom),
 					norskAdresse: {
 						postnr: '',
 						eiendomsnavn: '',
-						tilleggsadresse: _get(
-							formikBag.values,
-							'tpsf.midlertidigAdresse.norskAdresse.tilleggsadresse'
-						)
+						tilleggsadresse: _get(formikBag.values, tilleggsadresse)
 					}
 				})
 				break
 			case AdresseTyper.PBOX:
 				formikBag.setFieldValue('tpsf.midlertidigAdresse', {
 					adressetype: type,
-					gyldigTom: _get(formikBag.values, 'tpsf.midlertidigAdresse.gyldigTom'),
+					gyldigTom: _get(formikBag.values, gyldigTom),
 					norskAdresse: {
 						postnr: '',
 						postboksnr: '',
@@ -77,7 +73,7 @@ export const MidlertidigAdresse = ({ formikBag }: MidlertidigAdresse) => {
 			case AdresseTyper.UTAD:
 				formikBag.setFieldValue('tpsf.midlertidigAdresse', {
 					adressetype: type,
-					gyldigTom: _get(formikBag.values, 'tpsf.midlertidigAdresse.gyldigTom'),
+					gyldigTom: _get(formikBag.values, gyldigTom),
 					utenlandskAdresse: {
 						postLinje1: '',
 						postLinje2: '',
@@ -94,15 +90,15 @@ export const MidlertidigAdresse = ({ formikBag }: MidlertidigAdresse) => {
 	return (
 		<Kategori title="Midlertidig adresse" vis="tpsf.midlertidigAdresse">
 			<DollySelect
-				name="tpsf.midlertidigAdresse.adressetype"
+				name={adressetypePath}
 				label="Adressetype"
-				value={_get(formikBag.values, 'tpsf.midlertidigAdresse.adressetype')}
+				value={_get(formikBag.values, adressetypePath)}
 				options={Options('adresseType')}
 				size="large"
 				isClearable={false}
 				onChange={handleAdressetypeChange}
 			/>
-			<FormikDatepicker name="tpsf.midlertidigAdresse.gyldigTom" label="Gyldig t.o.m." />
+			<FormikDatepicker name={gyldigTom} label="Gyldig t.o.m." />
 			{adressetype === AdresseTyper.GATE && <Gateadresse formikBag={formikBag} />}
 			{adressetype === AdresseTyper.STED && <Stedsadresse />}
 			{adressetype === AdresseTyper.PBOX && <Postboksadresse />}
@@ -110,7 +106,7 @@ export const MidlertidigAdresse = ({ formikBag }: MidlertidigAdresse) => {
 			{(adressetype === AdresseTyper.GATE || adressetype === AdresseTyper.STED) && (
 				<Tilleggsadresse
 					formikBag={formikBag}
-					tilleggsadressePath="tpsf.midlertidigAdresse.norskAdresse.tilleggsadresse"
+					tilleggsadressePath={tilleggsadresse}
 					options="tilleggstypeMidlertidig"
 					type="midlertidig "
 				/>

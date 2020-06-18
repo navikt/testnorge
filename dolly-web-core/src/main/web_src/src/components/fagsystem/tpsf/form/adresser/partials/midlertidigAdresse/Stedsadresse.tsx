@@ -4,15 +4,13 @@ import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 
 export const Stedsadresse = () => {
+	const norskAdresse = 'tpsf.midlertidigAdresse.norskAdresse'
+
 	return (
 		<div className="flexbox--flex-wrap">
-			<FormikTextInput
-				name="tpsf.midlertidigAdresse.norskAdresse.eiendomsnavn"
-				label="Eiendomsnavn"
-				size="large"
-			/>
+			<FormikTextInput name={`${norskAdresse}.eiendomsnavn`} label="Eiendomsnavn" size="large" />
 			<FormikSelect
-				name="tpsf.midlertidigAdresse.norskAdresse.postnr"
+				name={`${norskAdresse}.postnr`}
 				label="Postnummer"
 				kodeverk={AdresseKodeverk.PostnummerUtenPostboks}
 				size="large"
