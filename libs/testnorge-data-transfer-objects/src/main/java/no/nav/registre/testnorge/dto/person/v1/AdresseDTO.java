@@ -10,17 +10,14 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class PersonDTO {
+public class AdresseDTO {
 
-    @JsonProperty(required = true)
-    String ident;
-    @JsonProperty(required = true)
-    String fornavn;
     @JsonProperty
-    String mellomnavn;
-    @JsonProperty(required = true)
-    String etternavn;
+    String gatenavn;
     @JsonProperty
-    AdresseDTO adresse;
-
+    String postnummer;
+    @JsonProperty
+    String poststed;
+    @JsonProperty
+    String kommunenummer;
 }
