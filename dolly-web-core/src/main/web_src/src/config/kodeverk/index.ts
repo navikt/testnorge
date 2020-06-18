@@ -9,6 +9,7 @@ export enum PersoninformasjonKodeverk {
 
 export enum AdresseKodeverk {
 	Postnummer = 'Postnummer',
+	PostnummerUtenPostboks = 'Postnummer vegadresser',
 	Kommunenummer = 'Kommuner',
 
 	PostadresseLand = 'LandAdresserFreg',

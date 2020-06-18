@@ -12,7 +12,8 @@ import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 export const Boadresse = ({ formikBag }) => {
 	const settBoadresse = adresse => {
 		formikBag.setFieldValue('tpsf.boadresse', {
-			flyttedato: formikBag.values.tpsf.boadresse.flyttedato
+			flyttedato: formikBag.values.tpsf.boadresse.flyttedato,
+			tilleggsadresse: formikBag.values.tpsf.boadresse.tilleggsadresse
 		})
 		formikBag.setFieldValue('tpsf.boadresse.adressetype', 'GATE')
 		formikBag.setFieldValue('tpsf.boadresse.gateadresse', adresse.gateadresse)
@@ -55,7 +56,7 @@ export const Boadresse = ({ formikBag }) => {
 			<div className="gateadresse">
 				<GyldigAdresseVelger settBoadresse={settBoadresse} formikBag={formikBag} />
 				<LoadableComponent
-					onFetch={() => DollyApi.getKodeverkByNavn(AdresseKodeverk.Postnummer)}
+					onFetch={() => DollyApi.getKodeverkByNavn(AdresseKodeverk.PostnummerUtenPostboks)}
 					render={data => {
 						return (
 							<DollyTextInput

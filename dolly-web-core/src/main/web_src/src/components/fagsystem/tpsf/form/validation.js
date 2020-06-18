@@ -4,10 +4,11 @@ import { isAfter, addDays } from 'date-fns'
 import Dataformatter from '~/utils/DataFormatter'
 import {
 	requiredString,
+	requiredNumber,
+	requiredDate,
 	ifPresent,
 	ifKeyHasValue,
-	messages,
-	requiredDate
+	messages
 } from '~/utils/YupValidations'
 
 const boadresse = Yup.object({
@@ -18,39 +19,65 @@ const boadresse = Yup.object({
 			'$tpsf.adresseNrInfo',
 			[null],
 			ifKeyHasValue(
-				'$tpsf.utenFastBopel',
-				[undefined, false],
-				Yup.string().required(
-					'Bruk adressevelgeren over for å hente gyldige adresser og velge et av forslagene'
+				'$tpsf.boadresse.tilleggsadresse',
+				[undefined],
+				ifKeyHasValue(
+					'$tpsf.utenFastBopel',
+					[undefined, false],
+					Yup.string().required(
+						'Bruk adressevelgeren over for å hente gyldige adresser og velge et av forslagene'
+					)
 				)
 			)
 		)
 	),
 	adressetype: requiredString,
-	gardsnr: Yup.string().when('adressetype', {
+	gardsnr: Yup.mixed().when('adressetype', {
 		is: 'MATR',
-		then: Yup.string()
-			.required(messages.required)
-			.max(5, 'Gårdsnummeret må være under 99999')
+		then: ifKeyHasValue(
+			'$tpsf.boadresse.tilleggsadresse',
+			[undefined],
+			Yup.string()
+				.required(messages.required)
+				.max(5, 'Gårdsnummeret må være under 99999')
+		)
 	}),
-	bruksnr: Yup.string().when('adressetype', {
+	bruksnr: Yup.mixed().when('adressetype', {
 		is: 'MATR',
-		then: Yup.string()
-			.required(messages.required)
-			.max(4, 'Bruksnummeret må være under 9999')
+		then: ifKeyHasValue(
+			'$tpsf.boadresse.tilleggsadresse',
+			[undefined],
+			Yup.string()
+				.required(messages.required)
+				.max(4, 'Bruksnummeret må være under 9999')
+		)
 	}),
 	festnr: Yup.string().max(4, 'Festenummer må være under 9999'),
 	undernr: Yup.string().max(3, 'Undernummer må være under 999'),
-	postnr: Yup.string().when('adressetype', { is: 'MATR', then: requiredString }),
-	kommunenr: Yup.string()
-		.when('adressetype', { is: 'MATR', then: requiredString })
-		.nullable()
+	postnr: Yup.mixed().when('adressetype', {
+		is: 'MATR',
+		then: ifKeyHasValue('$tpsf.boadresse.tilleggsadresse', [undefined], requiredString)
+	}),
+	kommunenr: Yup.mixed()
+		.when('adressetype', {
+			is: 'MATR',
+			then: ifKeyHasValue('$tpsf.boadresse.tilleggsadresse', [undefined], requiredString)
+		})
+		.nullable(),
+	tilleggsadresse: Yup.object({
+		tilleggType: ifPresent('$tpsf.boadresse.tilleggsadresse', requiredString),
+		nummer: ifKeyHasValue(
+			'$tpsf.boadresse.tilleggsadresse.tilleggType',
+			['LEILIGHET_NR', 'SEKSJON_NR', 'BOLIG_NR'],
+			requiredNumber.transform(num => (isNaN(num) ? undefined : num))
+		)
+	})
 })
 
 const adresseNrInfo = Yup.object({
-	nummer: Yup.string().when('nummertype', {
+	nummer: Yup.mixed().when('nummertype', {
 		is: v => v,
-		then: requiredString
+		then: ifKeyHasValue('$tpsf.boadresse.tilleggsadresse', [undefined], requiredString)
 	})
 }).nullable()
 

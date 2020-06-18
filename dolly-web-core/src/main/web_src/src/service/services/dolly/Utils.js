@@ -35,7 +35,11 @@ export const SortKodeverkArray = data => {
 			.filter(kode => kode.value !== 'UFB')
 	}
 
-	if (data.name === 'Postnummer' || data.name === 'Kommuner') {
+	if (
+		data.name === 'Postnummer' ||
+		data.name === 'Postnummer vegadresser' ||
+		data.name === 'Kommuner'
+	) {
 		return kodeverk.map(kode => ({
 			label: `${kode.value} - ${kode.label}`,
 			value: kode.value,

@@ -101,7 +101,7 @@ export const validation = {
 			arbeidsavtale: Yup.object({
 				yrke: requiredString,
 				stillingsprosent: Yup.number()
-					.min(1, 'Kan ikke være mindre enn ${min}')
+					.min(0, 'Kan ikke være mindre enn ${min}')
 					.max(100, 'Kan ikke være større enn ${max}')
 					.typeError(messages.required),
 				endringsdatoStillingsprosent: Yup.date().nullable(),
