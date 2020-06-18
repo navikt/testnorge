@@ -52,7 +52,6 @@
             <artifactId>digisyfo-sykmelding</artifactId>
             <version>1.2020.04.27-15.39-c32c8960a220</version>
         </dependency>
-
         <dependency>
             <groupId>com.ibm.mq</groupId>
             <artifactId>mq-jms-spring-boot-starter</artifactId>
