@@ -27,4 +27,5 @@ dependencies:
     - https://testnorge-token-provider.nais.preprod.local/dependencies
     - https://testnorge-tss.nais.preprod.local/dependencies
     - https://testnorge-person-api.nais.preprod.local/dependencies
-  threads: 5
+    - https://testnorge-sykemelding-api.nais.preprod.local
+  threads: 6
