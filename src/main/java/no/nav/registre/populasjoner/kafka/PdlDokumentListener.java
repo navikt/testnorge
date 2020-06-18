@@ -29,6 +29,7 @@ public class PdlDokumentListener {
 
     @KafkaListener(topics = "${pdl.kafka.topics.pdlDokument-v1.name}", groupId = "${app.kafka.group-id-prefix}-pdlDokumenter-1")
     public void onMessage(ConsumerRecords<String, String> records) {
+        log.info("Mottok melding på topic");
 
         List<DocumentIdWrapper> documentList = KafkaUtilities.asStream(records)
                 .map(this::convert)
