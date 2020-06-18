@@ -15,11 +15,11 @@ public class AdresseDTO {
 
 String kilde;
 String master;
-VegadresseDTO vegadresseDTO;
+VegadresseDTO vegadresse;
 
 
     public AdresseDTO(Person person) {
-        vegadresseDTO = new VegadresseDTO(person.getAdresse());
+        vegadresse = new VegadresseDTO(person.getAdresse());
         kilde = "DOLLY";
         master = "PDL";
     }

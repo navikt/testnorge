@@ -1,29 +1,27 @@
 package no.nav.registre.testnorge.person.consumer.dto;
 
-import java.util.Arrays;
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.Value;
 
 import no.nav.registre.testnorge.person.domain.Adresse;
 
+@Value
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor(force = true)
 public class VegadresseDTO {
 
-    public VegadresseDTO (Adresse adresse) {
-        adressenavn = splitGatenavn(adresse.getGatenavn()).get(0);
-        husnummer = splitGatenavn(adresse.getGatenavn()).get(1);
-        postnummer = adresse.getPostnummer();
-        kommunenummer = adresse.getKommunenummer();
-    }
-    String adressekode;
     String adressenavn;
-    String adresseTilleggsnavn;
-    String bruksenhetsnummer;
-    String bruksenhetstype;
-    String husbokstav;
     String husnummer;
     String postnummer;
     String kommunenummer;
 
-    private List<String> splitGatenavn ( String gatenavn) {
-        return Arrays.asList(gatenavn.split("^\\d+$", 2));
+    public VegadresseDTO(Adresse adresse) {
+        adressenavn = adresse.getAdressenavn();
+        husnummer = adresse.getHusnummer();
+        postnummer = adresse.getPostnummer();
+        kommunenummer = adresse.getKommunenummer();
     }
 }

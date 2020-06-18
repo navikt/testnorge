@@ -27,7 +27,7 @@ public class PdlTestdataConsumer {
     private final StsOidcTokenService tokenService;
     private final String url;
     private final RestTemplate restTemplate;
-    private Executor executor;
+    private final Executor executor;
 
     public PdlTestdataConsumer(
             StsOidcTokenService tokenService,

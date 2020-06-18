@@ -24,7 +24,7 @@ public class PostAdresseCommand implements Callable<HendelseDTO> {
     private final String token;
 
     @Override
-    public HendelseDTO call() throws Exception {
+    public HendelseDTO call() {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.add(PdlHeaders.NAV_PERSONIDENT, person.getIdent());

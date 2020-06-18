@@ -12,6 +12,14 @@ import no.nav.registre.testnorge.person.domain.Person;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class NavnDTO {
+    String fornavn;
+    String mellomnavn;
+    String etternavn;
+    String kilde;
+    String master;
+
+    OriginaltNavnDTO originaltNavn;
+
     public NavnDTO(Person person) {
         fornavn = person.getFornavn();
         etternavn = person.getEtternavn();
@@ -20,12 +28,4 @@ public class NavnDTO {
         kilde = "DOLLY";
         master = "PDL";
     }
-
-    String fornavn;
-    String mellomnavn;
-    String etternavn;
-    String kilde;
-    String master;
-
-    OriginaltNavnDTO originaltNavn;
 }
