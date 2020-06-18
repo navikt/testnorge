@@ -1,7 +1,6 @@
 package no.nav.registre.sdForvalter.database.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,20 +10,18 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import no.nav.registre.sdForvalter.domain.TpsIdent;
 
 @Entity
-@ToString
+@ToString(callSuper = true)
 @Getter
 @Setter
 @Slf4j
 @Table(name = "tps_identer")
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 public class TpsIdentModel extends FasteDataModel<TpsIdent> {
 
     @Id

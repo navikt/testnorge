@@ -12,7 +12,6 @@ import lombok.Value;
 import no.nav.registre.sdForvalter.database.model.TpsIdentModel;
 
 @Value
-@Builder
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -40,5 +39,16 @@ public class TpsIdent extends FasteData {
         address = model.getAddress();
         postNr = model.getPostNr();
         city = model.getCity();
+    }
+
+    @Builder
+    public TpsIdent (String fnr, String firstName, String lastName, String address, String postNr, String city, String gruppe, String opprinnelse) {
+        super(gruppe, opprinnelse);
+        this.fnr = fnr;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.postNr = postNr;
+        this.city = city;
     }
 }

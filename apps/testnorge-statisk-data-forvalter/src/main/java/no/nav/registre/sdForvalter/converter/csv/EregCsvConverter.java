@@ -23,6 +23,7 @@ public class EregCsvConverter extends CsvConverter<Ereg> {
         ORGNUMMER("Organisasjonsnummer*"),
         ENHETSTYPE("Enhetstype*"),
         NAVN("Navn"),
+        REDIGERT_NAVN("Redigert navn"),
         EPOST("Epost"),
         JURIDISK_ENHET("Juridisk enhet"),
         GRUPPE("Gruppe"),
@@ -57,6 +58,7 @@ public class EregCsvConverter extends CsvConverter<Ereg> {
                 .orgnr(getString(map, Headers.ORGNUMMER))
                 .enhetstype(getString(map, Headers.ENHETSTYPE))
                 .navn(getString(map, Headers.NAVN))
+                .redigertNavn(getString(map, Headers.REDIGERT_NAVN))
                 .epost(getString(map, Headers.EPOST))
                 .juridiskEnhet(getString(map, Headers.JURIDISK_ENHET))
                 .gruppe(getString(map, Headers.GRUPPE))
@@ -87,6 +89,7 @@ public class EregCsvConverter extends CsvConverter<Ereg> {
             map.put(Headers.ORGNUMMER.getValue(), item.getOrgnr());
             map.put(Headers.ENHETSTYPE.getValue(), item.getEnhetstype());
             map.put(Headers.NAVN.getValue(), item.getNavn());
+            map.put(Headers.REDIGERT_NAVN.getValue(), item.getRedigertNavn());
             map.put(Headers.EPOST.getValue(), item.getEpost());
             map.put(Headers.GRUPPE.getValue(), item.getGruppe());
             map.put(Headers.JURIDISK_ENHET.getValue(), item.getJuridiskEnhet());

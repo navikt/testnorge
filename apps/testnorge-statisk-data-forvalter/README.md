@@ -38,6 +38,9 @@ Dokumentasjon: [Swagger](https://testnorge-statisk-data-forvalter.nais.preprod.l
 
 For å legge til data kan man enten gå rett på databasen og fylle ut feltene, eller bruke APIet. 
 
+Data fra CSV-fil legges inn i databasen via file-controller. For riktig formatering av æøå konverteres excel-fil til UTF-8 i Notepad++ (Encoding -> Convert to UTF-8) før den brukes i POST. På samme måte må fil fra GET konverteres til ANSI for å vise korrekte tegn i Excel.   
+
+
 ## Nytt domene
 
 For å opprette et nytt domene må en POJO og repository opprettes. Det er sterkt anbefalt å eksponere dette nye domenet i APIet.

@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
@@ -15,6 +16,7 @@ import no.nav.registre.sdForvalter.domain.FasteData;
 @Getter
 @Setter
 @AllArgsConstructor
+@ToString
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @MappedSuperclass
