@@ -60,6 +60,7 @@
         <module>testnorge-token-provider</module>
         <module>testnorge-inntekt</module>
         <module>helsepersonell-api</module>
+        <module>sykemelding-api</module>
         <module>person-api</module>
     </modules>
 </project>
