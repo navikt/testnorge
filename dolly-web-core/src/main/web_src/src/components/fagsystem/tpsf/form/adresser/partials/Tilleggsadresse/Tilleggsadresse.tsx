@@ -8,18 +8,19 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 
 interface TilleggsadresseProps {
-	formikBag: FormikProps<{ tpsf: BoadresseValues }>
+	formikBag: FormikProps<{ tpsf?: AdresseValues }>
 	tilleggsadressePath: string
 	options: string
 	type?: string
 }
 
-interface BoadresseValues {
-	boadresse: TilleggsadresseValues
+interface AdresseValues {
+	boadresse?: TilleggsadresseValues
+	midlertidigAdresse?: TilleggsadresseValues
 }
 
 interface TilleggsadresseValues {
-	tilleggsadresse?: {
+	tilleggsadresse: {
 		tilleggType: string
 		nummer?: number
 	}

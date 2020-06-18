@@ -15,6 +15,12 @@ interface MidlertidigAdresse {
 	formikBag: FormikProps<{}>
 }
 
+interface Adressetype {
+	label: string
+	lowercaseLabel: string
+	value: string
+}
+
 enum AdresseTyper {
 	GATE = 'GATE',
 	STED = 'STED',
@@ -27,8 +33,8 @@ export const MidlertidigAdresse = ({ formikBag }: MidlertidigAdresse) => {
 		_get(formikBag.values, 'tpsf.midlertidigAdresse.adressetype')
 	)
 
-	const handleAdressetypeChange = (v: any) => {
-		const type = v.value
+	const handleAdressetypeChange = (valgt: Adressetype) => {
+		const type = valgt.value
 		setAdressetype(type)
 		switch (type) {
 			case AdresseTyper.GATE:

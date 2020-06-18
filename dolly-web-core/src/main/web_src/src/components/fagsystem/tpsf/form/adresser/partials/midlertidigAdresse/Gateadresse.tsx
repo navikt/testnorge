@@ -29,8 +29,8 @@ export const Gateadresse = ({ formikBag }: Gateadresse) => {
 
 	const [gateAdresseType, setGateAdresseType] = useState(getState())
 
-	const handleRadioChange = (v: any) => {
-		const type = v.target.value
+	const handleRadioChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		const type = event.target.value
 		setGateAdresseType(type)
 
 		switch (type) {

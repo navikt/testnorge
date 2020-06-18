@@ -24,6 +24,16 @@ type MidlertidigAdresse = {
 	tilleggsadresse: string
 }
 
+type PostnummerKodeverk = {
+	values: Array<Array<Postnummer>>
+}
+
+type Postnummer = {
+	data: string
+	label: string
+	value: string
+}
+
 export const MidlertidigAdresse = ({ midlertidigAdresse }: MidlertidigeAdresser) => {
 	if (!midlertidigAdresse) return null
 
@@ -69,7 +79,9 @@ export const MidlertidigAdresse = ({ midlertidigAdresse }: MidlertidigeAdresser)
 					{adressetype === 'UTAD' && utland}
 					{postnr && (
 						<KodeverkConnector navn="Postnummer" value={postnr}>
-							{(v, verdi) => <span>{verdi ? verdi.label : postnr}</span>}
+							{(v: PostnummerKodeverk, verdi: Postnummer) => (
+								<span>{verdi ? verdi.label : postnr}</span>
+							)}
 						</KodeverkConnector>
 					)}
 				</TitleValue>
