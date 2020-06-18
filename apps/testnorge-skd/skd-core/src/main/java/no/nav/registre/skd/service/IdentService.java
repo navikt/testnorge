@@ -7,6 +7,7 @@ import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import java.io.IOException;
 import java.net.URL;
@@ -20,6 +21,8 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.skd.consumer.IdentPoolConsumer;
 import no.nav.registre.skd.consumer.TpsfConsumer;
+import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
+import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.skd.service.utilities.IdenterCache;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
@@ -33,7 +36,7 @@ import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 public class IdentService {
 
     private static final Map<String, String> gamleTilNyeKommunenummer;
-    private static final int PARTITION_SIZE_GET_MELDING_IDER = 100;
+    private static final int PARTITION_SIZE = 100;
 
     private final TpsfConsumer tpsfConsumer;
     private final IdentPoolConsumer identPoolConsumer;
@@ -78,7 +81,7 @@ public class IdentService {
         var identerIAvspillergruppe = hodejegerenConsumer.get(avspillergruppeId);
         int antallIderSjekket = 0;
         int antallIdenterSjekket = 0;
-        for (var partisjonerteIdenter : Lists.partition(identerIAvspillergruppe, PARTITION_SIZE_GET_MELDING_IDER)) {
+        for (var partisjonerteIdenter : Lists.partition(identerIAvspillergruppe, PARTITION_SIZE)) {
             List<RsMeldingstype> meldingerSomSkalOppdateres = new ArrayList<>();
             var ikkeCachedeIdenter = getIdenterSomIkkeErCachet(partisjonerteIdenter);
             var meldingIderTilhoerendeIdenter = tpsfConsumer.getMeldingIderTilhoerendeIdenter(avspillergruppeId, ikkeCachedeIdenter);
@@ -101,6 +104,21 @@ public class IdentService {
         }
 
         return oppdaterteIder;
+    }
+
+    public SkdMeldingerTilTpsRespons sendToTps(Long avspillergruppeId, SendToTpsRequest sendToTpsRequest) {
+        var response = new SkdMeldingerTilTpsRespons(0, 0, new ArrayList<>());
+        for(var partisjonerteIder : Lists.partition(sendToTpsRequest.getIds(), PARTITION_SIZE)){
+            try {
+                var partisjonertResponse = tpsfConsumer.sendSkdmeldingerToTps(avspillergruppeId, new SendToTpsRequest(sendToTpsRequest.getEnvironment(), partisjonerteIder));
+                response.setAntallSendte(response.getAntallSendte() + partisjonertResponse.getAntallSendte());
+                response.setAntallFeilet(response.getAntallFeilet() + partisjonertResponse.getAntallFeilet());
+                response.getStatusFraFeilendeMeldinger().addAll(partisjonertResponse.getStatusFraFeilendeMeldinger());
+            } catch (HttpStatusCodeException e) {
+                log.error("Kunne ikke sende meldinger med id-er til tps: {}", partisjonerteIder.toString(), e);
+            }
+        }
+        return response;
     }
 
     private List<String> getIdenterSomIkkeErCachet(List<String> identer) {

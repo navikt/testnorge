@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
+import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.skd.service.IdentService;
 
 @RestController
@@ -36,5 +38,13 @@ public class IdentController {
             @PathVariable Long avspillergruppeId
     ) {
         return identService.oppdaterKommunenummerIAvspillergruppe(avspillergruppeId);
+    }
+
+    @PostMapping("sendMeldingerTilTps/{avspillergruppeId}")
+    public SkdMeldingerTilTpsRespons sendMeldingerTilTps(
+            @PathVariable Long avspillergruppeId,
+            @RequestBody SendToTpsRequest sendToTpsRequest
+    ) {
+        return identService.sendToTps(avspillergruppeId, sendToTpsRequest);
     }
 }
