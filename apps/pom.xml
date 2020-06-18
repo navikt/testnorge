@@ -70,5 +70,6 @@
         <module>person-api</module>
         <module>organisasjon-api</module>
         <module>arbeidsforhold-api</module>
+        <module>synt-sykemelding-api</module>
     </modules>
 </project>
