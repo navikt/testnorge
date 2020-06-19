@@ -13,12 +13,7 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 import no.nav.registre.arena.core.consumer.rs.AapSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
@@ -45,7 +40,8 @@ public class RettighetAapService {
     private final PensjonTestdataFacadeConsumer pensjonTestdataFacadeConsumer;
     private final Random rand;
 
-    private final static String SYKEPENGEERSTATNING = "SPE";
+    public final static String SYKEPENGEERSTATNING = "SPE";
+    public final static int SYKEPENGEERSTATNING_MAKS_PERIODE = 6;
 
     public Map<String, List<NyttVedtakResponse>> genererAapMedTilhoerende115(
             Long avspillergruppeId,
@@ -75,8 +71,8 @@ public class RettighetAapService {
             rettighetRequest.setMiljoe(miljoe);
 
             rettighetRequest.getNyeAap().forEach(rettighet -> {
-                if(rettighet.getAktivitetsfase().equals(SYKEPENGEERSTATNING)){
-
+                if(SYKEPENGEERSTATNING.equals(rettighet.getAktivitetsfase())){
+                    serviceUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(rettighet, SYKEPENGEERSTATNING_MAKS_PERIODE);
                 }
             });
 
@@ -89,10 +85,6 @@ public class RettighetAapService {
         serviceUtils.lagreIHodejegeren(identerMedOpprettedeRettigheter);
 
         return identerMedOpprettedeRettigheter;
-    }
-
-    public RettighetRequest sjekkDatoOgOppdater(RettighetRequest rettighetRequest){
-
     }
 
     public Map<String, List<NyttVedtakResponse>> genererAapMedTilhoerende115(
@@ -113,6 +105,10 @@ public class RettighetAapService {
         var rettighetRequest = new RettighetAapRequest(Collections.singletonList(syntetisertRettighet));
         rettighetRequest.setPersonident(ident);
         rettighetRequest.setMiljoe(miljoe);
+
+        if(SYKEPENGEERSTATNING.equals(rettighetRequest.getNyeAap().get(0).getAktivitetsfase())){
+            serviceUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(rettighetRequest.getNyeAap().get(0), SYKEPENGEERSTATNING_MAKS_PERIODE);
+        }
 
         rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(new ArrayList<>(Collections.singletonList(aap115Rettighet)), miljoe));
         return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(new ArrayList<>(Collections.singletonList(rettighetRequest)), miljoe));

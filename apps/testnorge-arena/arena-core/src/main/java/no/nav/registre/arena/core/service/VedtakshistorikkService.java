@@ -9,6 +9,8 @@ import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_AAP
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_UNG_UFOER;
 import static no.nav.registre.arena.core.consumer.rs.AapSyntConsumer.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
 import static no.nav.registre.arena.core.consumer.rs.TilleggSyntConsumer.ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT;
+import static no.nav.registre.arena.core.service.RettighetAapService.SYKEPENGEERSTATNING;
+import static no.nav.registre.arena.core.service.RettighetAapService.SYKEPENGEERSTATNING_MAKS_PERIODE;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -284,7 +286,9 @@ public class VedtakshistorikkService {
             rettighetRequest.setMiljoe(miljoe);
             rettighetRequest.getNyeAap().forEach(rettighet -> {
                 rettighet.setBegrunnelse(BEGRUNNELSE);
-
+                if(SYKEPENGEERSTATNING.equals(rettighet.getAktivitetsfase())){
+                    serviceUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(rettighet, SYKEPENGEERSTATNING_MAKS_PERIODE);
+                }
             });
             rettigheter.add(rettighetRequest);
         }
