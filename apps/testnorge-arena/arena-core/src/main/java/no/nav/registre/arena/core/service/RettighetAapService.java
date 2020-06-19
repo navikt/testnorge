@@ -45,8 +45,8 @@ public class RettighetAapService {
     private final PensjonTestdataFacadeConsumer pensjonTestdataFacadeConsumer;
     private final Random rand;
 
-    public final static String SYKEPENGEERSTATNING = "SPE";
-    public final static int SYKEPENGEERSTATNING_MAKS_PERIODE = 6;
+    public static final String SYKEPENGEERSTATNING = "SPE";
+    public static final int SYKEPENGEERSTATNING_MAKS_PERIODE = 6;
 
     public Map<String, List<NyttVedtakResponse>> genererAapMedTilhoerende115(
             Long avspillergruppeId,
