@@ -75,7 +75,9 @@ public class IdentService {
     }
 
     public List<Long> oppdaterKommunenummerIAvspillergruppe(
-            Long avspillergruppeId
+            Long avspillergruppeId,
+            String miljoe,
+            Boolean sendTilTps
     ) {
         List<Long> oppdaterteIder = new ArrayList<>();
         var identerIAvspillergruppe = hodejegerenConsumer.get(avspillergruppeId);
@@ -99,6 +101,11 @@ public class IdentService {
             antallIdenterSjekket += partisjonerteIdenter.size();
             var meldingIdsSomIkkeKunneOppdateres = tpsfConsumer.oppdaterSkdMeldinger(meldingerSomSkalOppdateres);
             oppdaterteIder.removeAll(meldingIdsSomIkkeKunneOppdateres);
+            if (sendTilTps) {
+                var meldingIdsSomSkalOppdateres = meldingerSomSkalOppdateres.stream().map(RsMeldingstype::getId).collect(Collectors.toList());
+                meldingIdsSomSkalOppdateres.removeAll(meldingIdsSomIkkeKunneOppdateres);
+                sendToTps(avspillergruppeId, new SendToTpsRequest(miljoe, meldingIdsSomSkalOppdateres));
+            }
             oppdaterteIdenterCache.addToCache(new HashSet<>(partisjonerteIdenter));
             log.info("Antall identer kontrollert: {}. Antall meldinger kontrollert: {}. Antall meldinger oppdatert: {}.", antallIdenterSjekket, antallIderSjekket, oppdaterteIder.size());
         }
@@ -106,9 +113,12 @@ public class IdentService {
         return oppdaterteIder;
     }
 
-    public SkdMeldingerTilTpsRespons sendToTps(Long avspillergruppeId, SendToTpsRequest sendToTpsRequest) {
+    public SkdMeldingerTilTpsRespons sendToTps(
+            Long avspillergruppeId,
+            SendToTpsRequest sendToTpsRequest
+    ) {
         var response = new SkdMeldingerTilTpsRespons(0, 0, new ArrayList<>());
-        for(var partisjonerteIder : Lists.partition(sendToTpsRequest.getIds(), PARTITION_SIZE)){
+        for (var partisjonerteIder : Lists.partition(sendToTpsRequest.getIds(), PARTITION_SIZE)) {
             try {
                 var partisjonertResponse = tpsfConsumer.sendSkdmeldingerToTps(avspillergruppeId, new SendToTpsRequest(sendToTpsRequest.getEnvironment(), partisjonerteIder));
                 response.setAntallSendte(response.getAntallSendte() + partisjonertResponse.getAntallSendte());
