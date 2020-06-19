@@ -35,6 +35,10 @@ export default {
 		return Request.post(Endpoints.gruppeBestillingFraEksisterendeIdenter(gruppeId), data)
 	},
 
+	updateGruppeLaas(gruppeId) {
+		return Request.put(Endpoints.laasGruppe(gruppeId))
+	},
+
 	//* Ident
 	updateIdentBeskrivelse(ident, beskrivelse) {
 		return Request.put(Endpoints.identBeskrivelse(ident), { beskrivelse })

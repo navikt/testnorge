@@ -5,6 +5,7 @@ import Column from './TableColumn'
 import _get from 'lodash/get'
 import _isFunction from 'lodash/isFunction'
 import _isNil from 'lodash/isNil'
+import { LaastGruppeIconItem } from '~/components/ui/icon/IconItem'
 
 import './Table.less'
 
@@ -23,6 +24,9 @@ const getRowKey = (row, columns) => {
 
 const getIconType = (iconItem, row) => {
 	if (!iconItem) return null
+	if (row.erLaast) {
+		iconItem = <LaastGruppeIconItem />
+	}
 	return _isFunction(iconItem) ? iconItem(row) : iconItem
 }
 
