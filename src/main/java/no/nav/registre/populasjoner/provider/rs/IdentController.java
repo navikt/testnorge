@@ -1,7 +1,6 @@
 package no.nav.registre.populasjoner.provider.rs;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,14 +22,6 @@ import no.nav.registre.populasjoner.service.IdentService;
 public class IdentController {
 
     private final IdentService identService;
-
-    @Value("${app.kafka.username}")
-    private String srv;
-
-    @GetMapping("/test")
-    public String debugTest() {
-        return srv;
-    }
 
     @GetMapping("{fnr}")
     public ResponseEntity<Ident> findByFnr(
