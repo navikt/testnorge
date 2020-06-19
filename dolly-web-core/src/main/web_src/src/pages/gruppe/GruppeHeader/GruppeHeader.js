@@ -54,7 +54,7 @@ export default function GruppeHeader({
 					/>
 					<Header.TitleValue title="Hensikt" value={gruppe.hensikt} />
 				</div>
-				<div className="gruppe-header_actions">
+				<div className="gruppe-header__actions">
 					{gruppe.erEierAvGruppe && !erLaast && (
 						<Button kind="edit" onClick={visRediger}>
 							REDIGER
