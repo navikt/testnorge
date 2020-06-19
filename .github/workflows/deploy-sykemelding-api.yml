@@ -2,7 +2,6 @@ name: Deploy sykemelding-api
 
 on:
   push:
-    branches: master
     paths:
       - apps/sykemelding-api/**
       - libs/testnorge-core/**

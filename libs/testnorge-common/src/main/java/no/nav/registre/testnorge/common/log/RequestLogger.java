@@ -13,8 +13,6 @@ import no.nav.registre.testnorge.common.headers.NavHeaders;
 
 @Slf4j
 public class RequestLogger {
-
-
     private final ContentCachingRequestWrapper request;
 
     public RequestLogger(ContentCachingRequestWrapper request) {
@@ -25,15 +23,15 @@ public class RequestLogger {
         return new String(request.getContentAsByteArray(), request.getCharacterEncoding());
     }
 
-    public void log() {
+    public String logAndGetUuid() {
         try {
-            MDC.clear();
+            var body = getBody();
             MDC.setContextMap(this.toPropertyMap());
-            log.trace(getBody());
-            MDC.clear();
+            log.trace(body.equals("") ? "[empty]" : body);
         } catch (Exception e) {
-            log.error("Klarer ikke aa lese fra request", e);
+            log.error("Klarer ikke å lese fra request", e);
         }
+        return request.getHeader(NavHeaders.UUID);
     }
 
     private Map<String, String> toPropertyMap() {
@@ -47,5 +45,4 @@ public class RequestLogger {
         properties.put(HttpHeaders.ACCEPT, request.getHeader(HttpHeaders.ACCEPT));
         return properties;
     }
-
 }

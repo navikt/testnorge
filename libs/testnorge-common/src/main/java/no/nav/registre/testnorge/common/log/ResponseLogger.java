@@ -2,8 +2,6 @@ package no.nav.registre.testnorge.common.log;
 
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.IOException;
@@ -27,29 +25,24 @@ public class ResponseLogger {
         return body;
     }
 
-    public void log() {
+    public void log(String uuid) {
         try {
-            MDC.clear();
-            MDC.setContextMap(this.toPropertyMap());
-            log.trace(getBody());
-            MDC.clear();
+            MDC.setContextMap(this.toPropertyMap(uuid));
+            var body = getBody();
+            log.trace(body.equals("") ? "[empty]" : body);
         } catch (IOException e) {
             log.error("Klarer ikke aa lese fra response", e);
         }
     }
 
-    private Map<String, String> toPropertyMap() {
+    private Map<String, String> toPropertyMap(String uuid) {
         Map<String, String> properties = new HashMap<>();
         properties.put("Transaction-Type", "response");
         properties.put("Status-Code", String.valueOf(response.getStatusCode()));
         if (response.getContentType() != null) {
             properties.put("Content-Type", response.getContentType());
         }
-        HttpHeaders headers = new ServletServerHttpResponse(response).getHeaders();
-
-        properties.put(NavHeaders.UUID, headers.getFirst(NavHeaders.UUID));
-        properties.put(HttpHeaders.HOST, headers.getFirst(HttpHeaders.HOST));
-
+        properties.put(NavHeaders.UUID, uuid);
         return properties;
     }
 }

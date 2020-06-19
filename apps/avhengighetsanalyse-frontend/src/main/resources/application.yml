@@ -30,4 +30,5 @@ dependencies:
     - http://testnorge-sykemelding-api.default.svc.nais.local/dependencies
     - http://testnorge-organisasjon-api.default.svc.nais.local/dependencies
     - http://testnorge-arbeidsforhold-api.default.svc.nais.local/dependencies
+    - http://testnorge-synt-sykemelding-api.default.svc.nais.local/dependencies
   threads: 6

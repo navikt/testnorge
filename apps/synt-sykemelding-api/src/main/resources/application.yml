@@ -6,7 +6,7 @@ consumers:
   helsepersonell:
     url: http://testnorge-helsepersonell-api.default.svc.nais.local
   synt-sykemelding:
-    url: http://nais-synthdata-elsam.default.svc.nais.local
+    url: http://synthdata-elsam.q2.svc.nais.local
   sykemelding:
     url: http://testnorge-sykemelding-api.default.svc.nais.local
     threads: 5

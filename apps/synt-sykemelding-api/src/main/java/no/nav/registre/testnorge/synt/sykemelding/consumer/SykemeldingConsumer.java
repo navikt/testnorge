@@ -12,6 +12,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import no.nav.registre.testnorge.common.session.NavSession;
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.command.PostSykemeldingCommand;
 import no.nav.registre.testnorge.synt.sykemelding.domain.Sykemelding;
@@ -36,16 +37,19 @@ public class SykemeldingConsumer {
     }
 
 
-    private CompletableFuture<ResponseEntity<String>> opprettSykemelding(Sykemelding sykemelding) {
+    private CompletableFuture<ResponseEntity<String>> opprettSykemelding(Sykemelding sykemelding, NavSession navSession) {
         return CompletableFuture.supplyAsync(
-                () -> new PostSykemeldingCommand(restTemplate, url, sykemelding).call(),
+                () -> new PostSykemeldingCommand(restTemplate, url, sykemelding, navSession).call(),
                 executor
         );
     }
 
 
-    public void opprett(SykemeldingListe liste) {
-        var futures = liste.getListe().stream().map(this::opprettSykemelding).collect(Collectors.toList());
+    public void opprett(SykemeldingListe liste, NavSession navSession) {
+        var futures = liste.getListe()
+                .stream()
+                .map(value -> opprettSykemelding(value, navSession))
+                .collect(Collectors.toList());
         futures.forEach(future -> {
             try {
                 future.get();

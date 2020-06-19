@@ -22,7 +22,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
+import no.nav.registre.testnorge.common.headers.NavHeaders;
 import no.nav.registre.testnorge.dto.helsepersonell.v1.LegeDTO;
 import no.nav.registre.testnorge.dto.helsepersonell.v1.LegeListeDTO;
 import no.nav.registre.testnorge.dto.hodejegeren.v1.PersondataDTO;
@@ -121,6 +123,7 @@ class HelsepersonellControllerIntegrationTest {
 
 
         String json = mvc.perform(get("/api/v1/helsepersonell/leger")
+                .header(NavHeaders.UUID, UUID.randomUUID())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn()
                 .getResponse()

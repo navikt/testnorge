@@ -17,6 +17,10 @@
             <groupId>no.nav.registre.testnorge</groupId>
         </dependency>
         <dependency>
+            <artifactId>testnorge-common</artifactId>
+            <groupId>no.nav.registre.testnorge</groupId>
+        </dependency>
+        <dependency>
             <artifactId>testnorge-data-transfer-objects</artifactId>
             <groupId>no.nav.registre.testnorge</groupId>
         </dependency>
