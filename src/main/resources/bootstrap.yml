@@ -41,10 +41,13 @@ spring.kafka:
     type: batch
   consumer:
     properties:
+      security.protocol: SASL_SSL
+      sasl:
+        mechanism: PLAIN
       isolation.level: read_committed
       specific.avro.reader: true
-#    key-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
-#    value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+#    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#    value-deserializer: org.apache.kafka.common.serialization.StringDeserializer§
     max-poll-records: 100
     auto-offset-reset: earliest
     enable-auto-commit: false
