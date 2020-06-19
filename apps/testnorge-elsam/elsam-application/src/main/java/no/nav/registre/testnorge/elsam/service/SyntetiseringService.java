@@ -140,7 +140,6 @@ public class SyntetiseringService {
                     log.error("IOException under opprettelse av sykmelding", e);
                 }
             }
-
             elsamData.add(identMedData);
         }
 

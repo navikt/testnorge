@@ -47,3 +47,4 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
           RESOURCE: apps/synt-sykemelding-api/nais.yaml
+        timeout-minutes: 5
