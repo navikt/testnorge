@@ -1,1 +1,0 @@
-# testnorge-common

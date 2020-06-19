@@ -36,6 +36,7 @@
         <logstash-logback-encoder.version>6.3</logstash-logback-encoder.version>
         <spring-cloud-contract-wiremock.version>2.2.3.RELEASE</spring-cloud-contract-wiremock.version>
         <assertj.version>3.16.1</assertj.version>
+        <sonar-maven-plugin.version>3.7.0.1746</sonar-maven-plugin.version>
     </properties>
 
 
@@ -102,20 +103,6 @@
             <id>github-package-registry-navikt</id>
             <url>https://maven.pkg.github.com/navikt/maven-release</url>
         </repository>
-        <repository>
-            <id>nexus-internal-release</id>
-            <url>https://repo.adeo.no/repository/maven-release</url>
-        </repository>
-        <!-- Mirror foran Maven Central NAV (brukes kun internt) -->
-        <repository>
-            <id>nexus-internal-mirror</id>
-            <url>https://repo.adeo.no/repository/maven-public</url>
-        </repository>
-        <!-- Skal brukes hvis bygget kjører internt (f.eks. Jenkins, fra utviklerimage, eller via ScaleFT) -->
-        <repository>
-            <id>internal-mirror-github-navikt</id>
-            <url>https://repo.adeo.no/repository/github-package-registry-navikt/</url>
-        </repository>
     </repositories>
 
     <scm>
@@ -131,7 +118,7 @@
                 <plugin>
                     <groupId>org.sonarsource.scanner.maven</groupId>
                     <artifactId>sonar-maven-plugin</artifactId>
-                    <version>3.7.0.1746</version>
+                    <version>${sonar-maven-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

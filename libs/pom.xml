@@ -17,6 +17,7 @@
         <module>testnorge-testing</module>
         <module>testnorge-core</module>
         <module>testnorge-dependency-analysis</module>
+        <module>testnorge-common</module>
     </modules>
 
 

@@ -15,7 +15,6 @@
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
         <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
         <commons-csv.version>1.8</commons-csv.version>
-        <testnorge-common.version>1.2020.05.23-15.56-e68c00984947</testnorge-common.version>
     </properties>
 
     <dependencies>
@@ -38,9 +37,8 @@
         </dependency>
 
         <dependency>
-            <groupId>no.nav.registre.testnorge.common</groupId>
+            <groupId>no.nav.registre.testnorge</groupId>
             <artifactId>testnorge-common</artifactId>
-            <version>${testnorge-common.version}</version>
         </dependency>
 
         <!-- LOMBOK -->
