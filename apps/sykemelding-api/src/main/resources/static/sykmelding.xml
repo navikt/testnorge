@@ -16,38 +16,18 @@
                         <TypeId DN="Organisasjonsnummeret i Enhetsregister (Brønnøysund)" S="1.16.578.1.12.3.1.1.9051"
                                 V="ENH"/>
                     </Ident>
-                    <Ident>
-                        <Id>FYLL INN HER-id</Id>
-                        <TypeId DN="Identifikator fra Helsetjenesteenhetsregisteret (HER-id)" V="HER"
-                                S="1.23.456.7.89.1.2.3.4567.8912"/>
-                    </Ident>
-                    <Address>
-                        <Type DN="Postadresse" V="PST"/>
-                        <StreetAdr>FYLL_INN_GATEADRESSE</StreetAdr>
-                        <PostalCode>FYLL_INN_POSTNUMMER</PostalCode>
-                        <City>FYLL_INN_BY</City>
-                    </Address>
                     <HealthcareProfessional>
                         <FamilyName>FYLL_INN_ETTERNAVN</FamilyName>
                         <MiddleName>FYLL_INN_MELLOMNAVN</MiddleName>
                         <GivenName>FYLL_INN_FORNAVN</GivenName>
                         <Ident>
-                            <Id>FYLL INN HER-id</Id>
-                            <TypeId DN="Identifikator fra Helsetjenesteenhetsregisteret (HER-id)" V="HER"
-                                    S="1.23.456.7.89.1.2.3.4567.8912"/>
-                        </Ident>
-                        <Ident>
-                            <Id>FYLL_INN_FNR</Id><!-- fiktiv -->
+                            <Id>FYLL_INN_FNR</Id>
                             <TypeId DN="Fødselsnummer" S="2.16.578.1.12.4.1.1.8327" V="FNR"/>
                         </Ident>
                         <Ident>
                             <Id>FYLL_INN_HPR-id</Id>
                             <TypeId DN="HPR-nummer" S="6.87.654.3.21.9.8.7.6543.2198" V="HPR"/>
                         </Ident>
-                        <TeleCom>
-                            <TypeTelecom DN="Arbeidsplass, direktenummer" V="WD"/>
-                            <TeleAddress V="tel:FYLL_INN_TLF"/>
-                        </TeleCom>
                     </HealthcareProfessional>
                 </Organisation>
             </Sender>
@@ -56,38 +36,20 @@
                 <Organisation>
                     <OrganisationName>FYLL_INN_ORGANISASJONSNAVN</OrganisationName>
                     <Ident>
-                        <Id>FYLL_INN_HER-id</Id>
-                        <TypeId V="HER" S="1.23.456.7.89.1.2.3.4567.8912"
-                                DN="Identifikator fra Helsetjenesteenhetsregisteret"/>
-                    </Ident>
-                    <Ident>
                         <Id>FYLL_INN_ENH-id</Id>
                         <TypeId DN="Organisasjonsnummeret i Enhetsregister (Brønnøysund)" S="1.16.578.1.12.3.1.1.9051"
                                 V="ENH"/>
                     </Ident>
-                    <Address>
-                        <Type DN="Postadresse" V="PST"/>
-                        <StreetAdr>FYLL_INN_GATEADRESSE</StreetAdr>
-                        <PostalCode>FYLL_INN_POSTNUMMER</PostalCode>
-                        <City>FYLL_INN_BY</City>
-                    </Address>
                 </Organisation>
             </Receiver>
             <Patient>
                 <FamilyName>FYLL_INN_ETTERNAVN</FamilyName>
-                <MiddleName>FYLL_INN_MELLOMNAVN</MiddleName>
                 <GivenName>FYLL_INN_FORNAVN</GivenName>
                 <DateOfBirth>FYLL_INN_FOEDSELSDATO</DateOfBirth>
                 <Ident>
                     <Id>FYLL_INN_FNR</Id>
                     <TypeId DN="Fødselsnummer" S="2.16.578.1.12.4.1.1.8327" V="FNR"/>
                 </Ident>
-                <Address>
-                    <Type DN="Postadresse" V="PST"/>
-                    <StreetAdr>FYLL_INN_GATEADRESSE</StreetAdr>
-                    <PostalCode>FYLL_INN_POSTNUMMER</PostalCode>
-                    <City>FYLL_INN_BY</City>
-                </Address>
             </Patient>
         </MsgInfo>
         <Document>

@@ -5,16 +5,20 @@ import lombok.SneakyThrows;
 import javax.xml.datatype.DatatypeFactory;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import no.nav.helse.eiFellesformat.XMLEIFellesformat;
 import no.nav.helse.eiFellesformat.XMLMottakenhetBlokk;
 import no.nav.helse.msgHead.XMLAddress;
+import no.nav.helse.msgHead.XMLCS;
+import no.nav.helse.msgHead.XMLHealthcareProfessional;
 import no.nav.helse.msgHead.XMLIdent;
 import no.nav.helse.msgHead.XMLMsgHead;
 import no.nav.helse.msgHead.XMLOrganisation;
 import no.nav.helse.msgHead.XMLPatient;
 import no.nav.registre.testnorge.dto.sykemelding.v1.AdresseDTO;
+import no.nav.registre.testnorge.dto.sykemelding.v1.LegeDTO;
 import no.nav.registre.testnorge.dto.sykemelding.v1.OrganisasjonDTO;
 import no.nav.registre.testnorge.dto.sykemelding.v1.PasientDTO;
 import no.nav.registre.testnorge.dto.sykemelding.v1.SykemeldingDTO;
@@ -32,7 +36,7 @@ public class Sykemelding {
         head.getMsgInfo().setGenDate(LocalDateTime.now());
         head.getMsgInfo().setMsgId(UUID.randomUUID().toString());
 
-        updateOrganisation(head.getMsgInfo().getSender().getOrganisation(), dto.getSender());
+        updateOrganisation(head.getMsgInfo().getSender().getOrganisation(), dto.getSender(), dto.getLege());
         updateOrganisation(head.getMsgInfo().getReceiver().getOrganisation(), dto.getMottaker());
         updatePatient(head.getMsgInfo().getPatient(), dto.getPasient());
         var dokument = new Dokument(dto, applicationInfo);
@@ -68,16 +72,46 @@ public class Sykemelding {
     }
 
 
-    private void updateOrganisation(XMLOrganisation organisation, OrganisasjonDTO dto) {
+    private void updateOrganisation(XMLOrganisation organisation, OrganisasjonDTO dto, LegeDTO legeDTO) {
         organisation.setOrganisationName(dto.getNavn());
-        XMLIdent enhIdent = organisation
-                .getIdent()
-                .stream()
-                .filter(value -> value.getTypeId().getV().equals("ENH"))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Klarte ikke å finne ident av type ENH for organisasjon"));
+
+        if (legeDTO != null) {
+            XMLHealthcareProfessional healthcareProfessional = organisation.getHealthcareProfessional();
+            healthcareProfessional.setFamilyName(legeDTO.getEtternavn());
+            healthcareProfessional.setGivenName(legeDTO.getFornavn());
+            healthcareProfessional.setMiddleName(legeDTO.getMellomnavn());
+            XMLIdent hpr = getXMLIdent(healthcareProfessional.getIdent(), "HPR");
+            hpr.setId(legeDTO.getHprId());
+            XMLIdent fnr = getXMLIdent(healthcareProfessional.getIdent(), "FNR");
+            fnr.setId(legeDTO.getIdent());
+            organisation.setHealthcareProfessional(healthcareProfessional);
+        }
+
+        XMLAddress xmlAddress = new XMLAddress();
+        XMLCS adresseType = new XMLCS();
+        adresseType.setDN("Postadresse");
+        adresseType.setV("PST");
+        xmlAddress.setType(adresseType);
+        xmlAddress.setCity(dto.getAdresse().getBy());
+        xmlAddress.setPostalCode(dto.getAdresse().getPostnummer());
+        xmlAddress.setStreetAdr(dto.getAdresse().getGate());
+        organisation.setAddress(xmlAddress);
+        XMLIdent enhIdent = getXMLIdent(organisation.getIdent(), "ENH");
         enhIdent.setId(dto.getOrgNr());
     }
+
+    private void updateOrganisation(XMLOrganisation organisation, OrganisasjonDTO dto) {
+        updateOrganisation(organisation, dto, null);
+    }
+
+
+    private XMLIdent getXMLIdent(List<XMLIdent> list, String type) {
+        return list.stream()
+                .filter(value -> value.getTypeId().getV().equals(type))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Klarte ikke å finne ident av type " + type));
+    }
+
 
     @SuppressWarnings("unchecked")
     private <T> T findObjectFromClass(final FilterInstanceOf filterAction) {
