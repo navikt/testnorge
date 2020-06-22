@@ -40,6 +40,13 @@ import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsRespo
 @Slf4j
 public class EksisterendeIdenterService {
 
+    private static final String STATUSQUO = "Kunne ikke hente status quo på ident {} - ";
+    private static final String BOSTEDSADRESSE = "bostedsAdresse";
+    private static final String KORTNAVN = "kortnavn";
+    private static final String FORNAVN = "fornavn";
+    private static final String MELLOMNAVN = "mellomnavn";
+    private static final String ETTERNAVN = "etternavn";
+    private static final String SVARSTATUS = "svarStatus";
     private static final int TPSF_PAGE_SIZE = 80;
     private static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
     private static final String ROUTINE_KERNINFO = "FS03-FDNUMMER-KERNINFO-O";
@@ -162,7 +169,7 @@ public class EksisterendeIdenterService {
             try {
                 utvalgteIdenterMedStatusQuo.put(tilfeldigIdent, tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, tilfeldigIdent));
             } catch (IOException e) {
-                log.error("Kunne ikke hente status quo på ident {} - ", tilfeldigIdent, e);
+                log.error(STATUSQUO, tilfeldigIdent, e);
             }
         }
 
@@ -199,13 +206,13 @@ public class EksisterendeIdenterService {
                 if (kontonummer.isEmpty()) {
                     continue;
                 }
-                JsonNode bostedsAdresse = statusQuoTilIdent.findValue("bostedsAdresse");
+                JsonNode bostedsAdresse = statusQuoTilIdent.findValue(BOSTEDSADRESSE);
                 identerMedKontoinformasjon.add(KontoinfoResponse.builder()
                         .fnr(statusQuoTilIdent.findValue("fodselsnummer").asText())
-                        .kortnavn(statusQuoTilIdent.findValue("kortnavn").asText())
-                        .fornavn(statusQuoTilIdent.findValue("fornavn").asText())
-                        .mellomnavn(statusQuoTilIdent.findValue("mellomnavn").asText())
-                        .etternavn(statusQuoTilIdent.findValue("etternavn").asText())
+                        .kortnavn(statusQuoTilIdent.findValue(KORTNAVN).asText())
+                        .fornavn(statusQuoTilIdent.findValue(FORNAVN).asText())
+                        .mellomnavn(statusQuoTilIdent.findValue(MELLOMNAVN).asText())
+                        .etternavn(statusQuoTilIdent.findValue(ETTERNAVN).asText())
                         .kontonummer(kontonummer)
                         .navn(statusQuoTilIdent.findValue("banknavn").asText())
                         .adresseLinje1(bostedsAdresse.findValue("adresse1").asText())
@@ -216,8 +223,8 @@ public class EksisterendeIdenterService {
                         .build());
                 i++;
             } catch (IOException e) {
-                log.error("Kunne ikke hente status quo på ident {} - ", ident, e);
-                throw new RuntimeException("Kunne ikke hente status quo på ident " + ident, e);
+                log.error(STATUSQUO, ident, e);
+                throw new RuntimeException(STATUSQUO + ident, e);
             }
         }
         return identerMedKontoinformasjon;
@@ -237,12 +244,12 @@ public class EksisterendeIdenterService {
                 var infoOnRoutineName = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, ident);
 
                 navnOgAdresse.set("personnavn", infoOnRoutineName.findValue("personnavn"));
-                navnOgAdresse.set("bostedsAdresse", infoOnRoutineName.findValue("bostedsAdresse"));
+                navnOgAdresse.set(BOSTEDSADRESSE, infoOnRoutineName.findValue(BOSTEDSADRESSE));
                 navnOgAdresse.set("NAVenhetDetalj", infoOnRoutineName.findValue("NAVenhetDetalj"));
 
                 utvalgteIdenterMedStatusQuo.put(ident, navnOgAdresse);
             } catch (IOException e) {
-                log.error("Kunne ikke hente status quo på ident {} - ", ident, e);
+                log.error(STATUSQUO, ident, e);
             }
         }
         return utvalgteIdenterMedStatusQuo;
@@ -282,10 +289,10 @@ public class EksisterendeIdenterService {
             var statusQuoTilIdent = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSDATA, AKSJONSKODE, miljoe, ident);
             return PersondataResponse.builder()
                     .fnr(statusQuoTilIdent.findValue("fnr").asText())
-                    .kortnavn(statusQuoTilIdent.findValue("kortnavn").asText())
-                    .fornavn(statusQuoTilIdent.findValue("fornavn").asText())
-                    .mellomnavn(statusQuoTilIdent.findValue("mellomnavn").asText())
-                    .etternavn(statusQuoTilIdent.findValue("etternavn").asText())
+                    .kortnavn(statusQuoTilIdent.findValue(KORTNAVN).asText())
+                    .fornavn(statusQuoTilIdent.findValue(FORNAVN).asText())
+                    .mellomnavn(statusQuoTilIdent.findValue(MELLOMNAVN).asText())
+                    .etternavn(statusQuoTilIdent.findValue(ETTERNAVN).asText())
                     .kodeStatsborger(statusQuoTilIdent.findValue("kodeStatsborger").asText())
                     .statsborger(statusQuoTilIdent.findValue("statsborger").asText())
                     .datoStatsborger(statusQuoTilIdent.findValue("datoStatsborger").asText())
@@ -297,8 +304,8 @@ public class EksisterendeIdenterService {
                     .datoInnvandret(statusQuoTilIdent.findValue("datoInnvandret").asText())
                     .build();
         } catch (IOException e) {
-            log.error("Kunne ikke hente status quo på ident {} - ", ident, e);
-            throw new RuntimeException("Kunne ikke hente status quo på ident " + ident, e);
+            log.error(STATUSQUO, ident, e);
+            throw new RuntimeException(STATUSQUO + ident, e);
         }
     }
 
@@ -330,7 +337,7 @@ public class EksisterendeIdenterService {
                 relasjonsResponse = RelasjonsResponse.builder().fnr(ident).relasjoner(new ArrayList<>()).build();
             }
         } catch (IOException e) {
-            log.error("Kunne ikke hente status quo på ident {} - ", ident, e);
+            log.error(STATUSQUO, ident, e);
         }
         return relasjonsResponse;
     }
@@ -353,9 +360,9 @@ public class EksisterendeIdenterService {
                         List<Map<String, Object>> identStatus = objectMapper.convertValue(statusFromTps, new TypeReference<List<Map<String, Object>>>() {
                         });
                         identStatus.stream()
-                                .filter(map -> map.containsKey("svarStatus"))
+                                .filter(map -> map.containsKey(SVARSTATUS))
                                 .forEach(map -> {
-                                    Map<String, String> svarStatus = objectMapper.convertValue(map.get("svarStatus"), new TypeReference<Map<String, String>>() {
+                                    Map<String, String> svarStatus = objectMapper.convertValue(map.get(SVARSTATUS), new TypeReference<Map<String, String>>() {
                                     });
                                     if ("08".equals(svarStatus.get("returStatus"))) {
                                         identerIkkeITps.add(String.valueOf(map.get("fnr")));
@@ -386,7 +393,7 @@ public class EksisterendeIdenterService {
                     List<Map<String, Object>> identStatus = objectMapper.convertValue(statusFromTps, new TypeReference<List<Map<String, Object>>>() {
                     });
                     for (var map : identStatus) {
-                        if (!map.containsKey("svarStatus")) {
+                        if (!map.containsKey(SVARSTATUS)) {
                             identerITps.add(String.valueOf(map.get("fnr")));
                         }
                     }
@@ -404,15 +411,15 @@ public class EksisterendeIdenterService {
             JsonNode relasjonNode
     ) {
         return Relasjon.builder()
-                .kortnavn(relasjonNode.findValue("kortnavn").asText())
+                .kortnavn(relasjonNode.findValue(KORTNAVN).asText())
                 .datoDo(relasjonNode.findValue("datoDo").asText())
                 .typeRelBeskr(relasjonNode.findValue("typeRelBeskr").asText())
-                .mellomnavn(relasjonNode.findValue("mellomnavn").asText())
-                .etternavn(relasjonNode.findValue("etternavn").asText())
+                .mellomnavn(relasjonNode.findValue(MELLOMNAVN).asText())
+                .etternavn(relasjonNode.findValue(ETTERNAVN).asText())
                 .adresseStatus(relasjonNode.findValue("adresseStatus").asInt())
                 .adrStatusBeskr(relasjonNode.findValue("adrStatusBeskr").asText())
                 .spesregType(relasjonNode.findValue("spesregType").asText())
-                .fornavn(relasjonNode.findValue("fornavn").asText())
+                .fornavn(relasjonNode.findValue(FORNAVN).asText())
                 .fnrRelasjon(relasjonNode.findValue("fnrRelasjon").asText())
                 .typeRelasjon(relasjonNode.findValue("typeRelasjon").asText())
                 .build();

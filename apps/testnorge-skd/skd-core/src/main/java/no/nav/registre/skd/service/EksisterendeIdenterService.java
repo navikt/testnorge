@@ -43,6 +43,8 @@ import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 @DependencyOn("testnorge-hodejegeren")
 public class EksisterendeIdenterService {
 
+    private static final String SKD_MELDINGSNUMMER = "Kunne ikke finne ident for SkdMelding med meldingsnummer ";
+
     private static final String IDENT = "ident";
     private static final String STATSBORGER_NORGE = "NORGE";
     private static final String SIVILSTANDSENDRING_AARSAKSKODE = "85";
@@ -154,7 +156,7 @@ public class EksisterendeIdenterService {
 
         for (int i = 0; i < meldinger.size(); i++) {
             if (i >= singleIdenterINorge.size() - 1) {
-                throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding med meldingsnummer "
+                throw new ManglerEksisterendeIdentException(SKD_MELDINGSNUMMER
                         + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen singleIdenterINorge fra TPSF avspillergruppen.");
             }
 
@@ -202,7 +204,7 @@ public class EksisterendeIdenterService {
         var i = 0;
         while (i < antallMeldingerFoerKjoering) {
             if (i >= gifteIdenterINorge.size() - 1) {
-                throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding med meldingsnummer "
+                throw new ManglerEksisterendeIdentException(SKD_MELDINGSNUMMER
                         + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen gifteIdenterINorge fra TPSF avspillergruppen.");
             }
 
@@ -309,7 +311,7 @@ public class EksisterendeIdenterService {
         var antallMeldingerFoerKjoering = meldinger.size();
         for (int i = 0; i < antallMeldingerFoerKjoering; i++) {
             if (i >= levendeIdenterINorge.size()) {
-                throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding med meldingsnummer "
+                throw new ManglerEksisterendeIdentException(SKD_MELDINGSNUMMER
                         + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen levendeIdenterINorge fra TPSF avspillergruppen.");
             }
 
@@ -354,7 +356,7 @@ public class EksisterendeIdenterService {
     ) {
         for (int i = 0; i < meldinger.size(); i++) {
             if (i >= levendeIdenterINorge.size()) {
-                throw new ManglerEksisterendeIdentException("Kunne ikke finne ident for SkdMelding med meldingsnummer "
+                throw new ManglerEksisterendeIdentException(SKD_MELDINGSNUMMER
                         + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen levendeIdenterINorge fra TPSF avspillergruppen.");
             }
 

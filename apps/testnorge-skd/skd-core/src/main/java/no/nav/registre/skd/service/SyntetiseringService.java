@@ -42,6 +42,9 @@ import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 @DependencyOn("testnorge-hodejegeren")
 public class SyntetiseringService {
 
+    static final String AVSPILLERGRUPPE = " i avspillergruppe ";
+    static final String SKDMELDING_ID_STRING = ". Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: ";
+    static final String SKDMELDINGER_TPSF_STRING = " - Skdmeldinger som ble lagret i TPSF: ";
     static final String LEVENDE_IDENTER_I_NORGE = "levendeIdenterINorge";
     static final String GIFTE_IDENTER_I_NORGE = "gifteIdenterINorge";
     static final String FOEDTE_IDENTER = "foedteIdenter";
@@ -128,15 +131,15 @@ public class SyntetiseringService {
                 }
             } catch (ManglendeInfoITpsException e) {
                 httpStatus = loggExceptionOgLeggTilFeiletEndringskode(e,
-                        "ManglendeInfoITPSException på endringskode " + endringskode.getEndringskode() + " i avspillergruppe " + genereringsOrdreRequest.getAvspillergruppeId() +
-                                ". Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: " + lagGrupperAvIder(idsLagretITpsfMenIkkeTps)
-                                + " - Skdmeldinger som ble lagret i TPSF: " + lagGrupperAvIder(ids),
+                        "ManglendeInfoITPSException på endringskode " + endringskode.getEndringskode() + AVSPILLERGRUPPE + genereringsOrdreRequest.getAvspillergruppeId() +
+                                SKDMELDING_ID_STRING + lagGrupperAvIder(idsLagretITpsfMenIkkeTps)
+                                + SKDMELDINGER_TPSF_STRING + lagGrupperAvIder(ids),
                         endringskode.getEndringskode());
             } catch (KunneIkkeSendeTilTpsException e) {
                 httpStatus = loggExceptionOgLeggTilFeiletEndringskode(e,
-                        "KunneIkkeSendeTilTpsException på endringskode " + endringskode.getEndringskode() + " i avspillergruppe " + genereringsOrdreRequest.getAvspillergruppeId() +
-                                ". Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: " + lagGrupperAvIder(idsLagretITpsfMenIkkeTps)
-                                + " - Skdmeldinger som ble lagret i TPSF: " + lagGrupperAvIder(ids),
+                        "KunneIkkeSendeTilTpsException på endringskode " + endringskode.getEndringskode() + AVSPILLERGRUPPE + genereringsOrdreRequest.getAvspillergruppeId() +
+                                SKDMELDING_ID_STRING + lagGrupperAvIder(idsLagretITpsfMenIkkeTps)
+                                + SKDMELDINGER_TPSF_STRING + lagGrupperAvIder(ids),
                         endringskode.getEndringskode());
             } catch (HttpStatusCodeException e) {
                 log.error(hentMeldingFraJson(e.getResponseBodyAsString()), e); // Loggfører message i response body fordi e.getMessage() kun gir statuskodens tekst.
@@ -147,9 +150,9 @@ public class SyntetiseringService {
                 httpStatus = HttpStatus.CONFLICT;
             } catch (RuntimeException e) {
                 httpStatus = loggExceptionOgLeggTilFeiletEndringskode(e,
-                        "RuntimeException på endringskode " + endringskode.getEndringskode() + " i avspillergruppe " + genereringsOrdreRequest.getAvspillergruppeId() +
-                                ". Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: " + lagGrupperAvIder(idsLagretITpsfMenIkkeTps)
-                                + " - Skdmeldinger som ble lagret i TPSF: " + lagGrupperAvIder(ids),
+                        "RuntimeException på endringskode " + endringskode.getEndringskode() + AVSPILLERGRUPPE + genereringsOrdreRequest.getAvspillergruppeId() +
+                                SKDMELDING_ID_STRING + lagGrupperAvIder(idsLagretITpsfMenIkkeTps)
+                                + SKDMELDINGER_TPSF_STRING + lagGrupperAvIder(ids),
                         endringskode.getEndringskode());
             }
         }

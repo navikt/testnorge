@@ -41,6 +41,8 @@ import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Person;
 @RequiredArgsConstructor
 public class AltinnInntektService {
 
+    private static final String ARBEIDSGIVER_TRENGS = "Må legge ved arbeidsgiver for å kunne opprette inntekt.";
+
     private final AaregService aaregService;
     private final AltinnInntektConsumer altinnInntektConsumer;
     private final DokmotConsumer dokmotConsumer;
@@ -88,7 +90,7 @@ public class AltinnInntektService {
             } else if (inntekt.getArbeidsgiverPrivat() != null) {
                 arbeidsgiverId = inntekt.getArbeidsgiverPrivat().getArbeidsgiverFnr();
             } else {
-                throw new RuntimeException("Må legge ved arbeidsgiver for å kunne opprette inntekt.");
+                throw new RuntimeException(ARBEIDSGIVER_TRENGS);
             }
             var kontaktinformasjon = hentKontaktinformasjonFraEreg(arbeidsgiverId, miljoe);
             Arbeidsforhold nyesteArbeidsforhold;
@@ -266,7 +268,7 @@ public class AltinnInntektService {
         } else if (inntekt.getArbeidsgiverPrivat() != null) {
             return inntekt.getArbeidsgiverPrivat().getArbeidsgiverFnr();
         } else {
-            throw new ValidationException("Må legge ved arbeidsgiver for å kunne opprette inntekt.");
+            throw new ValidationException(ARBEIDSGIVER_TRENGS);
         }
     }
 
@@ -276,7 +278,7 @@ public class AltinnInntektService {
         } else if (inntekt.getArbeidsgiverPrivat() != null) {
             return inntekt.getArbeidsgiverPrivat().getKontaktinformasjon();
         } else {
-            throw new ValidationException("Må legge ved arbeidsgiver for å kunne opprette inntekt.");
+            throw new ValidationException(ARBEIDSGIVER_TRENGS);
         }
     }
 

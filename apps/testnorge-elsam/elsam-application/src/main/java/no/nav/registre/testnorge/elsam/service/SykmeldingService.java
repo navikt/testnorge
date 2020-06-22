@@ -64,7 +64,7 @@ public class SykmeldingService {
         var lege = sykmeldingRequest.getLege();
         var detaljer = sykmeldingRequest.getDetaljer();
 
-        if (!"SM2013".equals(smtype)) {
+        if (!SMTYPE.equals(smtype)) {
             throw new IllegalArgumentException("smtype " + smtype + " er ikke støttet.");
         }
 
