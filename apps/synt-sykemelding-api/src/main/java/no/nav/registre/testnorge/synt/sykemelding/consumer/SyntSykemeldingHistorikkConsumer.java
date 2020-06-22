@@ -36,11 +36,12 @@ public class SyntSykemeldingHistorikkConsumer {
     }
 
     @SneakyThrows
-    public Map<String, SyntSykemeldingHistorikkDTO> genererSykemeldinger(Map<String, LocalDate> historikkMap, NavSession navSession) {
-        log.info("Generererer sykemelding for {}...", String.join(",", historikkMap.keySet()));
+    public SyntSykemeldingHistorikkDTO genererSykemeldinger(String ident, LocalDate startDato, NavSession navSession) {
+
+        log.info("Generererer sykemelding for {} fom {}", ident, startDato.toString());
 
         ResponseEntity<HashMap<String, SyntSykemeldingHistorikkDTO>> response = restTemplate.exchange(
-                RequestEntity.post(new URI(url)).header(NavHeaders.UUID, navSession.getUuid()).body(historikkMap),
+                RequestEntity.post(new URI(url)).header(NavHeaders.UUID, navSession.getUuid()).body(Map.of(ident, startDato)),
                 new ParameterizedTypeReference<>() {
                 });
         if (!response.getStatusCode().is2xxSuccessful()) {
@@ -51,6 +52,6 @@ public class SyntSykemeldingHistorikkConsumer {
             throw new RuntimeException("Klarer ikke å generere sykemeldinger. Response objectet er null.");
         }
         log.info("Sykemelding generert.");
-        return body;
+        return body.get(ident);
     }
 }

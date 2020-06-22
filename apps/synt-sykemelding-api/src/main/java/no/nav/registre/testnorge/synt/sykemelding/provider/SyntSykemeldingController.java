@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.registre.testnorge.common.headers.NavHeaders;
 import no.nav.registre.testnorge.common.session.NavSession;
-import no.nav.registre.testnorge.dto.synt.sykemelding.v1.SyntSykemeldingListeDTO;
+import no.nav.registre.testnorge.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
 import no.nav.registre.testnorge.synt.sykemelding.service.SykemeldingService;
 
 @RestController
@@ -22,9 +22,9 @@ public class SyntSykemeldingController {
     private final SykemeldingService service;
 
     @PostMapping
-    public ResponseEntity<HttpStatus> opprett(@RequestHeader(NavHeaders.UUID) String uuid, @RequestBody SyntSykemeldingListeDTO liste) {
+    public ResponseEntity<HttpStatus> opprett(@RequestHeader(NavHeaders.UUID) String uuid, @RequestBody SyntSykemeldingDTO sykemelding) {
         MDC.put(NavHeaders.UUID, uuid);
-        service.opprettSykemelding(liste, new NavSession(uuid));
+        service.opprettSykemelding(sykemelding, new NavSession(uuid));
         return ResponseEntity.ok().header(NavHeaders.UUID, uuid).build();
     }
 }
