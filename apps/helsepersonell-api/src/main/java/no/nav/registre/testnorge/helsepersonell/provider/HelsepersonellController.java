@@ -1,17 +1,14 @@
 package no.nav.registre.testnorge.helsepersonell.provider;
 
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.concurrent.TimeUnit;
 
-import no.nav.registre.testnorge.common.headers.NavHeaders;
 import no.nav.registre.testnorge.dto.helsepersonell.v1.LegeListeDTO;
 import no.nav.registre.testnorge.helsepersonell.adapter.HelsepersonellAdapter;
 
@@ -33,8 +30,8 @@ public class HelsepersonellController {
     }
 
     @GetMapping("/leger")
-    public ResponseEntity<LegeListeDTO> getLeger(@RequestHeader(NavHeaders.UUID) String uuid) {
-        MDC.put(NavHeaders.UUID, uuid);
+    public ResponseEntity<LegeListeDTO> getLeger() {
+
         var cacheControl
                 = CacheControl.maxAge(legerCacheHours, TimeUnit.HOURS)
                 .noTransform()
@@ -43,7 +40,6 @@ public class HelsepersonellController {
         return ResponseEntity
                 .ok()
                 .cacheControl(cacheControl)
-                .header(NavHeaders.UUID, uuid)
                 .body(leger.toDTO());
     }
 }

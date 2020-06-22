@@ -5,6 +5,8 @@ import lombok.SneakyThrows;
 import javax.xml.datatype.DatatypeFactory;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,7 +48,9 @@ public class Sykemelding {
         xmlMottakenhetBlokk.setEdiLoggId(UUID.randomUUID().toString());
         xmlMottakenhetBlokk.setAvsenderFnrFraDigSignatur(dto.getLege().getIdent());
         xmlMottakenhetBlokk.setMottattDatotid(
-                DatatypeFactory.newInstance().newXMLGregorianCalendar(dto.getStartDato().toString())
+                DatatypeFactory.newInstance().newXMLGregorianCalendar(
+                        GregorianCalendar.from(dto.getStartDato().atStartOfDay(ZoneId.systemDefault()))
+                )
         );
     }
 

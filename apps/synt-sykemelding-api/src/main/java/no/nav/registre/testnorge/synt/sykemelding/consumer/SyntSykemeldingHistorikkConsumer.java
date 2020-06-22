@@ -15,8 +15,6 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
-import no.nav.registre.testnorge.common.headers.NavHeaders;
-import no.nav.registre.testnorge.common.session.NavSession;
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntSykemeldingHistorikkDTO;
 
@@ -36,12 +34,12 @@ public class SyntSykemeldingHistorikkConsumer {
     }
 
     @SneakyThrows
-    public SyntSykemeldingHistorikkDTO genererSykemeldinger(String ident, LocalDate startDato, NavSession navSession) {
+    public SyntSykemeldingHistorikkDTO genererSykemeldinger(String ident, LocalDate startDato) {
 
         log.info("Generererer sykemelding for {} fom {}", ident, startDato.toString());
 
         ResponseEntity<HashMap<String, SyntSykemeldingHistorikkDTO>> response = restTemplate.exchange(
-                RequestEntity.post(new URI(url)).header(NavHeaders.UUID, navSession.getUuid()).body(Map.of(ident, startDato)),
+                RequestEntity.post(new URI(url)).body(Map.of(ident, startDato)),
                 new ParameterizedTypeReference<>() {
                 });
         if (!response.getStatusCode().is2xxSuccessful()) {

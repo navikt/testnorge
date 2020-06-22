@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.registre.testnorge.common.session.NavSession;
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.command.PostSykemeldingCommand;
 import no.nav.registre.testnorge.synt.sykemelding.domain.Sykemelding;
@@ -27,7 +26,7 @@ public class SykemeldingConsumer {
         this.url = url;
     }
 
-    public ResponseEntity<String> opprettSykemelding(Sykemelding sykemelding, NavSession navSession) {
-        return new PostSykemeldingCommand(restTemplate, url, sykemelding, navSession).call();
+    public ResponseEntity<String> opprettSykemelding(Sykemelding sykemelding) {
+        return new PostSykemeldingCommand(restTemplate, url, sykemelding).call();
     }
 }

@@ -34,8 +34,8 @@ public class TransactionFilter implements Filter {
         try {
             chain.doFilter(requestWrapper, responseWrapper);
         } finally {
-            var uuid = requestLogger.logAndGetUuid();
-            responseLogger.log(uuid);
+            requestLogger.log();
+            responseLogger.log();
         }
     }
 

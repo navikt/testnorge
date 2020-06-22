@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import no.nav.registre.testnorge.common.headers.NavHeaders;
-
 @Slf4j
 public class ResponseLogger {
 
@@ -25,9 +23,11 @@ public class ResponseLogger {
         return body;
     }
 
-    public void log(String uuid) {
+    public void log() {
         try {
-            MDC.setContextMap(this.toPropertyMap(uuid));
+            Map<String, String> contextMap = MDC.getCopyOfContextMap();
+            contextMap.putAll(this.toPropertyMap());
+            MDC.setContextMap(contextMap);
             var body = getBody();
             log.trace(body.equals("") ? "[empty]" : body);
         } catch (IOException e) {
@@ -35,14 +35,13 @@ public class ResponseLogger {
         }
     }
 
-    private Map<String, String> toPropertyMap(String uuid) {
+    private Map<String, String> toPropertyMap() {
         Map<String, String> properties = new HashMap<>();
         properties.put("Transaction-Type", "response");
         properties.put("Status-Code", String.valueOf(response.getStatusCode()));
         if (response.getContentType() != null) {
             properties.put("Content-Type", response.getContentType());
         }
-        properties.put(NavHeaders.UUID, uuid);
         return properties;
     }
 }

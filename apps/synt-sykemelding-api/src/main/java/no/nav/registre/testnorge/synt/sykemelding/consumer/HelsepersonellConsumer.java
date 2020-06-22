@@ -10,8 +10,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 
-import no.nav.registre.testnorge.common.headers.NavHeaders;
-import no.nav.registre.testnorge.common.session.NavSession;
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.dto.helsepersonell.v1.LegeListeDTO;
 import no.nav.registre.testnorge.synt.sykemelding.domain.LegeListe;
@@ -29,12 +27,9 @@ public class HelsepersonellConsumer {
     }
 
     @SneakyThrows
-    public LegeListe hentLeger(NavSession navSession) {
+    public LegeListe hentLeger() {
         log.info("Henter leger...");
-        var dto = restTemplate.exchange(
-                RequestEntity.get(new URI(url)).header(NavHeaders.UUID, navSession.getUuid()).build(),
-                LegeListeDTO.class
-        ).getBody();
+        var dto = restTemplate.exchange(RequestEntity.get(new URI(url)).build(), LegeListeDTO.class).getBody();
 
         if (dto == null) {
             throw new RuntimeException("Klarer ikke å hente leger fra helsepersonell-api");

@@ -1,17 +1,13 @@
 package no.nav.registre.testnorge.synt.sykemelding.provider;
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.registre.testnorge.common.headers.NavHeaders;
-import no.nav.registre.testnorge.common.session.NavSession;
 import no.nav.registre.testnorge.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
 import no.nav.registre.testnorge.synt.sykemelding.service.SykemeldingService;
 
@@ -22,9 +18,9 @@ public class SyntSykemeldingController {
     private final SykemeldingService service;
 
     @PostMapping
-    public ResponseEntity<HttpStatus> opprett(@RequestHeader(NavHeaders.UUID) String uuid, @RequestBody SyntSykemeldingDTO sykemelding) {
-        MDC.put(NavHeaders.UUID, uuid);
-        service.opprettSykemelding(sykemelding, new NavSession(uuid));
-        return ResponseEntity.ok().header(NavHeaders.UUID, uuid).build();
+    public ResponseEntity<HttpStatus> opprett(@RequestBody SyntSykemeldingDTO sykemelding) {
+
+        service.opprettSykemelding(sykemelding);
+        return ResponseEntity.ok().build();
     }
 }
