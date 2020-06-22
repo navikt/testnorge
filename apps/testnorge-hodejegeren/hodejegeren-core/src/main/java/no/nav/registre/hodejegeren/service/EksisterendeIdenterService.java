@@ -40,7 +40,7 @@ import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsRespo
 @Slf4j
 public class EksisterendeIdenterService {
 
-    private static final String STATUSQUO = "Kunne ikke hente status quo på ident {} - ";
+    private static final String STATUS_QUO_FEILMELDING = "Kunne ikke hente status quo på ident {} - ";
     private static final String BOSTEDSADRESSE = "bostedsAdresse";
     private static final String KORTNAVN = "kortnavn";
     private static final String FORNAVN = "fornavn";
@@ -169,7 +169,7 @@ public class EksisterendeIdenterService {
             try {
                 utvalgteIdenterMedStatusQuo.put(tilfeldigIdent, tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, tilfeldigIdent));
             } catch (IOException e) {
-                log.error(STATUSQUO, tilfeldigIdent, e);
+                log.error(STATUS_QUO_FEILMELDING, tilfeldigIdent, e);
             }
         }
 
@@ -223,7 +223,7 @@ public class EksisterendeIdenterService {
                         .build());
                 i++;
             } catch (IOException e) {
-                log.error(STATUSQUO, ident, e);
+                log.error(STATUS_QUO_FEILMELDING, ident, e);
                 throw new RuntimeException("Kunne ikke hente status quo på ident " + ident, e);
             }
         }
@@ -249,7 +249,7 @@ public class EksisterendeIdenterService {
 
                 utvalgteIdenterMedStatusQuo.put(ident, navnOgAdresse);
             } catch (IOException e) {
-                log.error(STATUSQUO, ident, e);
+                log.error(STATUS_QUO_FEILMELDING, ident, e);
             }
         }
         return utvalgteIdenterMedStatusQuo;
@@ -304,7 +304,7 @@ public class EksisterendeIdenterService {
                     .datoInnvandret(statusQuoTilIdent.findValue("datoInnvandret").asText())
                     .build();
         } catch (IOException e) {
-            log.error(STATUSQUO, ident, e);
+            log.error(STATUS_QUO_FEILMELDING, ident, e);
             throw new RuntimeException("Kunne ikke hente status quo på ident " + ident, e);
         }
     }
@@ -337,7 +337,7 @@ public class EksisterendeIdenterService {
                 relasjonsResponse = RelasjonsResponse.builder().fnr(ident).relasjoner(new ArrayList<>()).build();
             }
         } catch (IOException e) {
-            log.error(STATUSQUO, ident, e);
+            log.error(STATUS_QUO_FEILMELDING, ident, e);
         }
         return relasjonsResponse;
     }

@@ -22,14 +22,13 @@ import java.util.List;
 
 import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CALL_ID;
 import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CONSUMER_ID;
+import static no.nav.registre.inst.properties.HttpRequestConstants.ACCEPT;
+import static no.nav.registre.inst.properties.HttpRequestConstants.AUTHORIZATION;
 
 @Component
 @Slf4j
 @DependencyOn(value = "inst2",external = true)
 public class Inst2Consumer {
-
-    private static final String ACCEPT = "accept";
-    private static final String AUTHORIZATION = "Authorization";
 
     private static final ParameterizedTypeReference<List<Institusjonsopphold>> RESPONSE_TYPE_HENT_INSTITUSJONSOPPHOLD = new ParameterizedTypeReference<>() {
     };

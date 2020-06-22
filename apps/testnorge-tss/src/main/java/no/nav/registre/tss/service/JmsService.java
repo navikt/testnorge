@@ -26,8 +26,7 @@ import no.nav.registre.tss.utils.Rutine910Util;
 @Slf4j
 public class JmsService {
 
-    private static final String TARGETCLIENT_ONE = "?targetClient=1";
-    private static final String QUEUE = "queue:///";
+    private static final String DESTINATION_NAME = "queue:///%s?targetClient=1";
     private static final Set<String> STOETTEDE_MILJOER = new HashSet<>(Arrays.asList("q1", "q2"));
 
     @Autowired
@@ -48,7 +47,7 @@ public class JmsService {
     public void sendTilTss(List<String> meldinger, String koeNavn) {
         try {
             for (String melding : meldinger) {
-                Message message = jmsTemplate.sendAndReceive(QUEUE + koeNavn + TARGETCLIENT_ONE, session -> session.createTextMessage(melding));
+                Message message = jmsTemplate.sendAndReceive(String.format(DESTINATION_NAME, koeNavn), session -> session.createTextMessage(melding));
                 if (message != null)
                     log.info(message.getBody(String.class));
             }
@@ -67,7 +66,7 @@ public class JmsService {
 
             String rutine910 = Rutine910Util.opprettRutine(ident, TssTypeGruppe.identKodeType(TssTypeGruppe.getGruppe(samhandler.getType())));
 
-            Message mottattMelding = jmsTemplate.sendAndReceive(QUEUE + koeNavn + TARGETCLIENT_ONE, session -> session.createTextMessage(rutine910));
+            Message mottattMelding = jmsTemplate.sendAndReceive(String.format(DESTINATION_NAME, koeNavn), session -> session.createTextMessage(rutine910));
 
             if (mottattMelding != null) {
                 Response910 response = Response910Util.parseResponse(mottattMelding.getBody(String.class));
@@ -85,7 +84,7 @@ public class JmsService {
     public Response910 sendOgMotta910RutineFraTss(String ident, TssType type, String koeNavn) throws JMSException {
         String rutine910 = Rutine910Util.opprettRutine(ident, TssTypeGruppe.identKodeType(TssTypeGruppe.getGruppe(type)));
 
-        Message mottattMelding = jmsTemplate.sendAndReceive(QUEUE + koeNavn + TARGETCLIENT_ONE, session -> session.createTextMessage(rutine910));
+        Message mottattMelding = jmsTemplate.sendAndReceive(String.format(DESTINATION_NAME, koeNavn), session -> session.createTextMessage(rutine910));
 
         if (mottattMelding != null) {
             log.info(mottattMelding.getBody(String.class));
@@ -97,7 +96,7 @@ public class JmsService {
     }
 
     public Object sendOgMotta990RutineFraTss(String message, String koeNavn) throws JMSException {
-        Message mottattMelding = jmsTemplate.sendAndReceive(QUEUE + koeNavn + TARGETCLIENT_ONE, session -> session.createTextMessage(message));
+        Message mottattMelding = jmsTemplate.sendAndReceive(String.format(DESTINATION_NAME, koeNavn), session -> session.createTextMessage(message));
 
         if (mottattMelding != null) {
             return mottattMelding.getBody(String.class);
