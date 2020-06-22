@@ -82,7 +82,11 @@ public class Sykemelding {
 
         var perioder = sykemeldinger
                 .stream()
-                .map(value -> new PeriodeDTO(value.getStartPeriode(), value.getSluttPeriode(), aktivitetGrad(value)))
+                .map(value -> new PeriodeDTO(
+                        value.getStartPeriode(),
+                        value.getSluttPeriode().minusDays(1),
+                        aktivitetGrad(value)
+                ))
                 .collect(Collectors.toList());
 
 
