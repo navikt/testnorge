@@ -28,6 +28,7 @@ import no.nav.registre.hodejegeren.service.HistorikkService;
 @RequestMapping("api/v1/historikk")
 public class HistorikkController {
 
+    private static final String MAX_PAGE_STRING = "Max størrelse på side: ";
     private static final int MAX_PAGE_SIZE = 100;
 
     @Autowired
@@ -40,7 +41,7 @@ public class HistorikkController {
             @RequestParam(required = false, defaultValue = "10") Integer pageSize
     ) {
         if (pageSize > MAX_PAGE_SIZE) {
-            throw new RuntimeException("Max størrelse på side: " + MAX_PAGE_SIZE);
+            throw new RuntimeException(MAX_PAGE_STRING + MAX_PAGE_SIZE);
         }
         return historikkService.hentAllHistorikk(pageNumber, pageSize);
     }
@@ -53,7 +54,7 @@ public class HistorikkController {
             @RequestParam(required = false, defaultValue = "10") Integer pageSize
     ) {
         if (pageSize > MAX_PAGE_SIZE) {
-            throw new RuntimeException("Max størrelse på side: " + MAX_PAGE_SIZE);
+            throw new RuntimeException(MAX_PAGE_STRING + MAX_PAGE_SIZE);
         }
         return historikkService.hentHistorikkMedKilder(kilder, pageNumber, pageSize);
     }
@@ -67,7 +68,7 @@ public class HistorikkController {
             @RequestParam(required = false, defaultValue = "10") Integer pageSize
     ) {
         if (pageSize > MAX_PAGE_SIZE) {
-            throw new RuntimeException("Max størrelse på side: " + MAX_PAGE_SIZE);
+            throw new RuntimeException(MAX_PAGE_STRING + MAX_PAGE_SIZE);
         }
         return historikkService.hentHistorikkMedKriterier(kilder, pageNumber, pageSize, new ArrayList<>(Arrays.asList(keywords.split("&"))));
     }
