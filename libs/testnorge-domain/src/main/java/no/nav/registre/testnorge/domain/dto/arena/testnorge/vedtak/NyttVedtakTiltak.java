@@ -57,9 +57,6 @@ public class NyttVedtakTiltak extends NyttVedtak {
     @JsonAlias({"AARSAK_KODE", "aarsakKode"})
     private String aarsakKode;
 
-    @JsonAlias({"AVBRUDD_KODE", "avbruddKode"})
-    private String avbruddKode;
-
     @JsonAlias({ "DATO", "dato" })
     private LocalDate dato;
 
@@ -68,9 +65,6 @@ public class NyttVedtakTiltak extends NyttVedtak {
 
     @JsonAlias({"KOMMENTAR","kommentar"})
     private String kommentar;
-
-    @JsonAlias({"SAKSBEHANDLER", "saksbehandler"})
-    private String saksbehandler;
 
     @JsonAlias({ "TILTAKSKODE", "tiltakskode" })
     private String tiltakskode;
