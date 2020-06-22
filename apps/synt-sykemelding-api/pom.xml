@@ -11,7 +11,6 @@
 
     <artifactId>synt-sykemelding-api</artifactId>
 
-
     <dependencies>
         <dependency>
             <artifactId>testnorge-core</artifactId>
