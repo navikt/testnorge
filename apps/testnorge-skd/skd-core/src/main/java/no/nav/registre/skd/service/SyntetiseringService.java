@@ -129,12 +129,12 @@ public class SyntetiseringService {
                 }
             } catch (ManglendeInfoITpsException e) {
                 httpStatus = loggExceptionOgLeggTilFeiletEndringskode(e,
-                        "ManglendeInfoITPSException på endringskode " + String.format(FEILMELDING, endringskode.getEndringskode(),
+                        "ManglendeInfoITPSException: " + String.format(FEILMELDING, endringskode.getEndringskode(),
                                 genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(idsLagretITpsfMenIkkeTps),
                                 lagGrupperAvIder(ids)), endringskode.getEndringskode());
             } catch (KunneIkkeSendeTilTpsException e) {
                 httpStatus = loggExceptionOgLeggTilFeiletEndringskode(e,
-                        "KunneIkkeSendeTilTpsException på endringskode " + String.format(FEILMELDING, endringskode.getEndringskode(),
+                        "KunneIkkeSendeTilTpsException: " + String.format(FEILMELDING, endringskode.getEndringskode(),
                                 genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(idsLagretITpsfMenIkkeTps),
                                 lagGrupperAvIder(ids)), endringskode.getEndringskode());
             } catch (HttpStatusCodeException e) {
@@ -146,7 +146,7 @@ public class SyntetiseringService {
                 httpStatus = HttpStatus.CONFLICT;
             } catch (RuntimeException e) {
                 httpStatus = loggExceptionOgLeggTilFeiletEndringskode(e,
-                        "RuntimeException på endringskode " + String.format(FEILMELDING, endringskode.getEndringskode(),
+                        "RuntimeException: " + String.format(FEILMELDING, endringskode.getEndringskode(),
                                 genereringsOrdreRequest.getAvspillergruppeId(), lagGrupperAvIder(idsLagretITpsfMenIkkeTps),
                                 lagGrupperAvIder(ids)), endringskode.getEndringskode());
             }
