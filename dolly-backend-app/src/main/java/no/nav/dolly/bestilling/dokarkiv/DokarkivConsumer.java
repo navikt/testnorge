@@ -37,8 +37,7 @@ public class DokarkivConsumer {
     public ResponseEntity<DokarkivResponse> postDokarkiv(String environment, DokarkivRequest dokarkivRequest) {
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(providersProps.getDokarkiv().getUrl().replace("$", environment) + DOKARKIV_URL + FORSOEK_FERDIGSTILL))
-                        .header(AUTHORIZATION, getUserIdToken())
-                        .header(HEADER_NAV_CONSUMER_TOKEN, stsOidcService.getIdToken(environment.contains(PREPROD_ENV) ? PREPROD_ENV : TEST_ENV))
+                        .header(AUTHORIZATION, stsOidcService.getIdToken(environment.contains(PREPROD_ENV) ? PREPROD_ENV : TEST_ENV))
                 .body(dokarkivRequest), DokarkivResponse.class);
     }
 }

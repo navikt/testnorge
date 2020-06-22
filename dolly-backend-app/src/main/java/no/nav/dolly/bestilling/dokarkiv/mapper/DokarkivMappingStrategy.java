@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.dokarkiv.mapper;
 
+import static java.util.Objects.isNull;
 import static no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest.IdType.FNR;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -32,17 +33,19 @@ public class DokarkivMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<RsDokarkiv, DokarkivRequest>() {
                     @Override
                     public void mapAtoB(RsDokarkiv dokarkiv,
-                                DokarkivRequest dokarkivRequest, MappingContext context) {
+                            DokarkivRequest dokarkivRequest, MappingContext context) {
 
                         if (isBlank(dokarkiv.getKanal())) {
                             dokarkivRequest.setKanal(KANAL);
                         }
-                        if (isBlank(dokarkiv.getDokumenter().getDokumentVarianter().getFysiskDokument())) {
-                            Path pdfPath = Paths.get("dolly-backend-app/src/main/resources/dokarkiv/testpdf.pdf");
-                            try {
-                                dokarkivRequest.getDokumenter().getDokumentVarianter().setFysiskDokument(Arrays.toString(Files.readAllBytes(pdfPath)));
-                            } catch (IOException e) {
-                                log.error("Klarte ikke å legge inn PDF: ", e);
+                        if (!isNull(dokarkiv.getDokumenter()) && !isNull(dokarkiv.getDokumenter().getDokumentVarianter())) {
+                            if (isBlank(dokarkiv.getDokumenter().getDokumentVarianter().getFysiskDokument())) {
+                                Path pdfPath = Paths.get("dolly-backend-app/src/main/resources/dokarkiv/testpdf.pdf");
+                                try {
+                                    dokarkivRequest.getDokumenter().getDokumentVarianter().setFysiskDokument(Arrays.toString(Files.readAllBytes(pdfPath)));
+                                } catch (IOException e) {
+                                    log.error("Klarte ikke å hente test PDF: ", e);
+                                }
                             }
                         }
                         dokarkivRequest.setBruker(DokarkivRequest.Bruker.builder()
