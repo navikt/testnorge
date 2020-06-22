@@ -1,43 +1,49 @@
 package no.nav.dolly.bestilling.dokarkiv;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.properties.ProvidersProps;
+import static java.lang.String.format;
+import static no.nav.dolly.domain.CommonKeys.CONSUMER;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_TOKEN;
+import static no.nav.dolly.security.sts.StsOidcService.getUserIdToken;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
+import java.net.URI;
+import java.util.UUID;
+
+import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
+import no.nav.dolly.security.sts.StsOidcService;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
-import java.util.UUID;
-
-import static java.lang.String.format;
-import static no.nav.dolly.domain.CommonKeys.CONSUMER;
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
+import no.nav.dolly.metrics.Timed;
+import no.nav.dolly.properties.ProvidersProps;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class DokarkivConsumer {
 
-    private static final String DOKARKIV_URL = "/api/v1/dokarkiv";
+    private static final String DOKARKIV_URL = "/rest/journalpostapi/v1/journalpost";
+    private static final String FORSOEK_FERDIGSTILL = "?forsoekFerdigstill=true";
+    private static final String PREPROD_ENV = "q";
+    private static final String TEST_ENV = "t";
 
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
+    private final StsOidcService stsOidcService;
 
     @Timed(name = "providers", tags = { "operation", "dokarkiv-opprett" })
-    public ResponseEntity postDokarkiv(DokarkivRequest dokarkivRequest) {
+    public ResponseEntity<DokarkivResponse> postDokarkiv(String environment, DokarkivRequest dokarkivRequest) {
         return restTemplate.exchange(
-                RequestEntity.post(URI.create(providersProps.getDokarkiv().getUrl() + DOKARKIV_URL))
-                .header(HEADER_NAV_CALL_ID, getNavCallId())
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                RequestEntity.post(URI.create(providersProps.getDokarkiv().getUrl().replace("$", environment) + DOKARKIV_URL + FORSOEK_FERDIGSTILL))
+                        .header(AUTHORIZATION, getUserIdToken())
+                        .header(HEADER_NAV_CONSUMER_TOKEN, stsOidcService.getIdToken(environment.contains(PREPROD_ENV) ? PREPROD_ENV : TEST_ENV))
                 .body(dokarkivRequest), DokarkivResponse.class);
-        )
-    }
-
-    private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID().toString());
     }
 }
