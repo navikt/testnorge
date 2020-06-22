@@ -14,7 +14,6 @@ import static no.nav.registre.arena.core.service.RettighetAapService.SYKEPENGEER
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -43,6 +42,10 @@ import no.nav.registre.arena.core.service.util.ServiceUtils;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.GensakKoder;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 
 
 @Slf4j
@@ -67,7 +70,7 @@ public class VedtakshistorikkService {
         for (var vedtakshistorikken : vedtakshistorikk) {
             vedtakshistorikken.setTilsynFamiliemedlemmer(fjernTilsynFamiliemedlemmerVedtakMedUgyldigeDatoer(vedtakshistorikken.getTilsynFamiliemedlemmer()));
             vedtakshistorikken.setUngUfoer(fjernAapUngUfoerMedUgyldigeDatoer(vedtakshistorikken.getUngUfoer()));
-            vedtakshistorikken.setAap(oppdaterAapSykepengeerstatningDatoer(vedtakshistorikken.getAap()));
+            oppdaterAapSykepengeerstatningDatoer(vedtakshistorikken.getAap());
 
             var tidligsteDato = LocalDate.now();
             var aap = finnUtfyltAap(vedtakshistorikken);
@@ -196,7 +199,7 @@ public class VedtakshistorikkService {
         return nyUngUfoer.isEmpty() ? null : nyUngUfoer;
     }
 
-    private List<NyttVedtakAap> oppdaterAapSykepengeerstatningDatoer(List<NyttVedtakAap> aapVedtak) {
+    private void oppdaterAapSykepengeerstatningDatoer(List<NyttVedtakAap> aapVedtak) {
         int antallDagerEndret = 0;
         for (var vedtak : aapVedtak) {
             if(SYKEPENGEERSTATNING.equals(vedtak.getAktivitetsfase())){
@@ -210,8 +213,6 @@ public class VedtakshistorikkService {
                 antallDagerEndret += ChronoUnit.DAYS.between(nyTilDato, originalTilDato);
             }
         }
-
-        return aapVedtak;
     }
 
     private LocalDate finnTidligsteDatoAap(List<NyttVedtakAap> vedtak) {
