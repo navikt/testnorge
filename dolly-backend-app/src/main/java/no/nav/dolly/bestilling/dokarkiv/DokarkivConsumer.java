@@ -1,7 +1,5 @@
 package no.nav.dolly.bestilling.dokarkiv;
 
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_TOKEN;
-import static no.nav.dolly.security.sts.StsOidcService.getUserIdToken;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.net.URI;
@@ -38,6 +36,7 @@ public class DokarkivConsumer {
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(providersProps.getDokarkiv().getUrl().replace("$", environment) + DOKARKIV_URL + FORSOEK_FERDIGSTILL))
                         .header(AUTHORIZATION, stsOidcService.getIdToken(environment.contains(PREPROD_ENV) ? PREPROD_ENV : TEST_ENV))
-                .body(dokarkivRequest), DokarkivResponse.class);
+                        .body(dokarkivRequest),
+                DokarkivResponse.class);
     }
 }
