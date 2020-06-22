@@ -11,6 +11,7 @@ import java.util.Arrays;
 
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
@@ -18,6 +19,7 @@ import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.mapper.MappingStrategy;
 
+@Slf4j
 @Component
 public class DokarkivMappingStrategy implements MappingStrategy {
 
@@ -40,7 +42,7 @@ public class DokarkivMappingStrategy implements MappingStrategy {
                             try {
                                 dokarkivRequest.getDokumenter().getDokumentVarianter().setFysiskDokument(Arrays.toString(Files.readAllBytes(pdfPath)));
                             } catch (IOException e) {
-                                e.printStackTrace();
+                                log.error("Klarte ikke å legge inn PDF: ", e);
                             }
                         }
                         dokarkivRequest.setBruker(DokarkivRequest.Bruker.builder()

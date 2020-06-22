@@ -1,18 +1,11 @@
 package no.nav.dolly.bestilling.dokarkiv;
 
-import static java.lang.String.format;
-import static no.nav.dolly.domain.CommonKeys.CONSUMER;
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_TOKEN;
 import static no.nav.dolly.security.sts.StsOidcService.getUserIdToken;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.net.URI;
-import java.util.UUID;
 
-import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
-import no.nav.dolly.security.sts.StsOidcService;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,8 +14,10 @@ import org.springframework.web.client.RestTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
+import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.properties.ProvidersProps;
+import no.nav.dolly.security.sts.StsOidcService;
 
 @Slf4j
 @Service
