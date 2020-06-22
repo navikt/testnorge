@@ -224,7 +224,7 @@ public class EksisterendeIdenterService {
                 i++;
             } catch (IOException e) {
                 log.error(STATUSQUO, ident, e);
-                throw new RuntimeException(STATUSQUO + ident, e);
+                throw new RuntimeException("Kunne ikke hente status quo på ident " + ident, e);
             }
         }
         return identerMedKontoinformasjon;
@@ -305,7 +305,7 @@ public class EksisterendeIdenterService {
                     .build();
         } catch (IOException e) {
             log.error(STATUSQUO, ident, e);
-            throw new RuntimeException(STATUSQUO + ident, e);
+            throw new RuntimeException("Kunne ikke hente status quo på ident " + ident, e);
         }
     }
 
