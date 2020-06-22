@@ -200,17 +200,19 @@ public class VedtakshistorikkService {
     }
 
     private void oppdaterAapSykepengeerstatningDatoer(List<NyttVedtakAap> aapVedtak) {
-        int antallDagerEndret = 0;
-        for (var vedtak : aapVedtak) {
-            if(SYKEPENGEERSTATNING.equals(vedtak.getAktivitetsfase())){
-                vedtak.setFraDato(vedtak.getFraDato().minusDays(antallDagerEndret));
-                vedtak.setTilDato(vedtak.getTilDato().minusDays(antallDagerEndret));
+        if( aapVedtak!= null){
+            int antallDagerEndret = 0;
+            for (var vedtak : aapVedtak) {
+                if(SYKEPENGEERSTATNING.equals(vedtak.getAktivitetsfase())){
+                    vedtak.setFraDato(vedtak.getFraDato().minusDays(antallDagerEndret));
+                    vedtak.setTilDato(vedtak.getTilDato().minusDays(antallDagerEndret));
 
-                var originalTilDato = vedtak.getTilDato();
-                serviceUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(vedtak, SYKEPENGEERSTATNING_MAKS_PERIODE);
-                var nyTilDato = vedtak.getTilDato();
+                    var originalTilDato = vedtak.getTilDato();
+                    serviceUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(vedtak, SYKEPENGEERSTATNING_MAKS_PERIODE);
+                    var nyTilDato = vedtak.getTilDato();
 
-                antallDagerEndret += ChronoUnit.DAYS.between(nyTilDato, originalTilDato);
+                    antallDagerEndret += ChronoUnit.DAYS.between(nyTilDato, originalTilDato);
+                }
             }
         }
     }
