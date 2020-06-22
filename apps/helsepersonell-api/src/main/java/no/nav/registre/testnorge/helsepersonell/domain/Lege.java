@@ -25,7 +25,7 @@ public class Lege {
                     .build();
         } catch (Exception e) {
             log.error("Klarer ikke å hente persondata", e);
-            throw new RuntimeException("Feil ved opprettelse av lege");
+            return null;
         }
     }
 }
