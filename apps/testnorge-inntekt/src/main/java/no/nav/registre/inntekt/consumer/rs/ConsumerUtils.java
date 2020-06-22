@@ -25,6 +25,8 @@ import java.util.Map;
 @Service
 public class ConsumerUtils {
 
+    private static final String KONTANTYTELSE = "kontantytelse";
+
     private ConsumerUtils() {
 
     }
@@ -50,12 +52,12 @@ public class ConsumerUtils {
     public static void setBeskrivelseOgFordel(Inntekt inntekt) {
         if (LOENNSINNTEKT == inntekt.getInntektstype()) {
             inntekt.setBeskrivelse("fastloenn");
-            inntekt.setFordel("kontantytelse");
+            inntekt.setFordel(KONTANTYTELSE);
             inntekt.setUtloeserArbeidsgiveravgift(true);
             inntekt.setInngaarIGrunnlagForTrekk(true);
         } else if (YTELSE_FRA_OFFENTLIGE == inntekt.getInntektstype()) {
             inntekt.setBeskrivelse("arbeidsavklaringspenger");
-            inntekt.setFordel("kontantytelse");
+            inntekt.setFordel(KONTANTYTELSE);
             inntekt.setUtloeserArbeidsgiveravgift(false);
             inntekt.setInngaarIGrunnlagForTrekk(true);
         } else if (PENSJON_ELLER_TRYGD == inntekt.getInntektstype()) {
@@ -63,7 +65,7 @@ public class ConsumerUtils {
             double grunnpensjon = (pensjonsgrad / 100.0) * inntekt.getBeloep();
             double tillegspensjon = inntekt.getBeloep() - grunnpensjon;
             inntekt.setBeskrivelse("alderspensjon");
-            inntekt.setFordel("kontantytelse");
+            inntekt.setFordel(KONTANTYTELSE);
             inntekt.setUtloeserArbeidsgiveravgift(false);
             inntekt.setInngaarIGrunnlagForTrekk(true);
             var tilleggsinformasjon = new Tilleggsinformasjon(AldersUfoereEtterlatteAvtalefestetOgKrigspensjon.builder()
@@ -74,7 +76,7 @@ public class ConsumerUtils {
             inntekt.setTilleggsinformasjon(tilleggsinformasjon);
         } else if (NAERINGSINNTEKT == inntekt.getInntektstype()) {
             inntekt.setBeskrivelse("sykepenger");
-            inntekt.setFordel("kontantytelse");
+            inntekt.setFordel(KONTANTYTELSE);
             inntekt.setUtloeserArbeidsgiveravgift(false);
             inntekt.setInngaarIGrunnlagForTrekk(false);
         } else {

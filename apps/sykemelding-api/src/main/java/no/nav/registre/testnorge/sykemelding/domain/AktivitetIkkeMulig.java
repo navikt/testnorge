@@ -7,25 +7,27 @@ import no.kith.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpply
 class AktivitetIkkeMulig {
     private final XMLHelseOpplysningerArbeidsuforhet.Aktivitet.Periode.AktivitetIkkeMulig xmlAktivitetIkkeMulig;
 
+    private static final String ANNET = "Annet";
+
     AktivitetIkkeMulig(boolean manglendeTilretteleggingPaaArbeidsplassen) {
         xmlAktivitetIkkeMulig = new XMLHelseOpplysningerArbeidsuforhet.Aktivitet.Periode.AktivitetIkkeMulig()
                 .withMedisinskeArsaker(new XMLArsakType()
                         .withArsakskode(new XMLCS()
-                                .withDN("Annet")
+                                .withDN(ANNET)
                                 .withV("3"))
                         .withBeskriv("andre årsaker til sykefravær")
                 );
         if (manglendeTilretteleggingPaaArbeidsplassen) {
             xmlAktivitetIkkeMulig.withArbeidsplassen(new XMLArsakType()
                     .withArsakskode(new XMLCS()
-                            .withDN("Annet")
+                            .withDN(ANNET)
                             .withV("1"))
                     .withBeskriv("her tilrettelegger ikke arbeidsgiver godt nok")
             );
         } else {
             xmlAktivitetIkkeMulig.withArbeidsplassen(new XMLArsakType()
                     .withArsakskode(new XMLCS()
-                            .withDN("Annet")
+                            .withDN(ANNET)
                             .withV("9"))
                     .withBeskriv("andre årsaker til sykefravær")
             );

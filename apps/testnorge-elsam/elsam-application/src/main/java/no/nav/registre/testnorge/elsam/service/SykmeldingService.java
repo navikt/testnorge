@@ -57,16 +57,11 @@ public class SykmeldingService {
         var biDiagnoser = sykmeldingRequest.getBiDiagnoser();
         var legeFnr = sykmeldingRequest.getLege().getFnr();
         var manglendeTilrettelegging = sykmeldingRequest.getManglendeTilretteleggingPaaArbeidsplassen();
-        var smtype = SMTYPE;
         var perioder = sykmeldingRequest.getSykmeldingPerioder();
 
         var ident = sykmeldingRequest.getIdent();
         var lege = sykmeldingRequest.getLege();
         var detaljer = sykmeldingRequest.getDetaljer();
-
-        if (!"SM2013".equals(smtype)) {
-            throw new IllegalArgumentException("smtype " + smtype + " er ikke støttet.");
-        }
 
         var iterator = fellesformat.getAny().iterator();
 
@@ -94,7 +89,7 @@ public class SykmeldingService {
         opprettAdresse(pasient.getAddress(), ident);
 
         var sykmelding = ElsamXmlUtil
-                .lagHelseopplysninger(ident, syketilfelleStartDato, utstedelsesdato, lege, hovedDiagnose, biDiagnoser, perioder, smtype, manglendeTilrettelegging, detaljer);
+                .lagHelseopplysninger(ident, syketilfelleStartDato, utstedelsesdato, lege, hovedDiagnose, biDiagnoser, perioder, SMTYPE, manglendeTilrettelegging, detaljer);
 
         xmlMsgHead.getDocument().get(0).getRefDoc().getContent().getAny().set(0, sykmelding);
         xmlMsgHead.getMsgInfo().setMsgId(msgid);

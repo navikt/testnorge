@@ -38,6 +38,8 @@ import no.nav.registre.arena.core.service.util.ServiceUtils;
 @RequiredArgsConstructor
 public class RettighetAapService {
 
+    private static final String REGEX_RN = "[\r\n]";
+
     private final AapSyntConsumer aapSyntConsumer;
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final BrukereService brukereService;
@@ -241,9 +243,9 @@ public class RettighetAapService {
             if (response.getResponse().getHttpStatus().getStatus() != 200) {
                 log.error(
                         "Kunne ikke opprette ident {} i popp i miljø {}. Feilmelding: {}",
-                        ident.replaceAll("[\r\n]", ""),
-                        response.getMiljo().replaceAll("[\r\n]", ""),
-                        response.getResponse().getMessage().replaceAll("[\r\n]", "")
+                        ident.replaceAll(REGEX_RN, ""),
+                        response.getMiljo().replaceAll(REGEX_RN, ""),
+                        response.getResponse().getMessage().replaceAll(REGEX_RN, "")
                 );
             }
         }
@@ -261,9 +263,9 @@ public class RettighetAapService {
             if (response.getResponse().getHttpStatus().getStatus() != 200) {
                 log.error(
                         "Kunne ikke opprette inntekt på ident {} i popp i miljø {}. Feilmelding: {}",
-                        ident.replaceAll("[\r\n]", ""),
-                        response.getMiljo().replaceAll("[\r\n]", ""),
-                        response.getResponse().getMessage().replaceAll("[\r\n]", "")
+                        ident.replaceAll(REGEX_RN, ""),
+                        response.getMiljo().replaceAll(REGEX_RN, ""),
+                        response.getResponse().getMessage().replaceAll(REGEX_RN, "")
                 );
             }
         }

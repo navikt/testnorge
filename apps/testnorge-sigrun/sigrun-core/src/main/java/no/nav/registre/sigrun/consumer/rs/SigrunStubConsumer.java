@@ -23,6 +23,9 @@ import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 @DependencyOn(value = "sigrun-skd-stub", external = true)
 public class SigrunStubConsumer {
 
+    private static final String NAV_CALL_ID_STRING = "Nav-Call-Id";
+    private static final String NAV_CONSUMER_ID_STRING = "Nav-Consumer-Id";
+
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
@@ -51,14 +54,14 @@ public class SigrunStubConsumer {
         if (testdataEier != null) {
             hentFnrUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/hentPersonidentifikatorer?testdataEier={testdataEier}");
             getRequest = RequestEntity.get(hentFnrUrl.expand(testdataEier))
-                    .header("Nav-Call-Id", NAV_CALL_ID)
-                    .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
+                    .header(NAV_CALL_ID_STRING, NAV_CALL_ID)
+                    .header(NAV_CONSUMER_ID_STRING, NAV_CONSUMER_ID)
                     .build();
         } else {
             hentFnrUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/hentPersonidentifikatorer");
             getRequest = RequestEntity.get(hentFnrUrl.expand())
-                    .header("Nav-Call-Id", NAV_CALL_ID)
-                    .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
+                    .header(NAV_CALL_ID_STRING, NAV_CALL_ID)
+                    .header(NAV_CONSUMER_ID_STRING, NAV_CONSUMER_ID)
                     .build();
         }
         var response = restTemplate.exchange(getRequest, RESPONSE_TYPE).getBody();
@@ -82,8 +85,8 @@ public class SigrunStubConsumer {
     ) {
         var sendDataUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/opprettBolk");
         var postRequest = RequestEntity.post(sendDataUrl.expand())
-                .header("Nav-Call-Id", NAV_CALL_ID)
-                .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
+                .header(NAV_CALL_ID_STRING, NAV_CALL_ID)
+                .header(NAV_CONSUMER_ID_STRING, NAV_CONSUMER_ID)
                 .header("testdataEier", testdataEier)
                 .body(meldinger);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE);
@@ -96,8 +99,8 @@ public class SigrunStubConsumer {
     ) {
         var hentSkattegrunnlagUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/les");
         var getRequest = RequestEntity.get(hentSkattegrunnlagUrl.expand())
-                .header("Nav-Call-Id", NAV_CALL_ID)
-                .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
+                .header(NAV_CALL_ID_STRING, NAV_CALL_ID)
+                .header(NAV_CONSUMER_ID_STRING, NAV_CONSUMER_ID)
                 .header("personidentifikator", ident)
                 .build();
         return restTemplate.exchange(getRequest, RESPONSE_TYPE_HENT_SKATTEGRUNNLAG).getBody();
@@ -110,8 +113,8 @@ public class SigrunStubConsumer {
     ) {
         var slettSkattegrunnlagUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/slett");
         var deleteRequest = RequestEntity.delete(slettSkattegrunnlagUrl.expand())
-                .header("Nav-Call-Id", NAV_CALL_ID)
-                .header("Nav-Consumer-Id", NAV_CONSUMER_ID)
+                .header(NAV_CALL_ID_STRING, NAV_CALL_ID)
+                .header(NAV_CONSUMER_ID_STRING, NAV_CONSUMER_ID)
                 .header("personidentifikator", skattegrunnlag.getPersonidentifikator())
                 .header("grunnlag", skattegrunnlag.getGrunnlag())
                 .header("inntektsaar", skattegrunnlag.getInntektsaar())
