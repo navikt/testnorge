@@ -7,7 +7,6 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -30,8 +29,6 @@ public class DokarkivClient implements ClientRegister {
     private final DokarkivConsumer dokarkivConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
-    private final TransaksjonMappingService transaksjonMappingService;
-    private final ObjectMapper objectMapper;
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -46,12 +43,12 @@ public class DokarkivClient implements ClientRegister {
 
                 try {
                     ResponseEntity<DokarkivResponse> response = dokarkivConsumer.postDokarkiv(environment, dokarkivRequest);
-                    if(response.hasBody()) {
+                    if (response.hasBody()) {
                         status.append(',')
                                 .append(environment)
                                 .append(":OK");
                     }
-                } catch(RuntimeException e) {
+                } catch (RuntimeException e) {
 
                     status.append(',')
                             .append(environment)
@@ -62,7 +59,6 @@ public class DokarkivClient implements ClientRegister {
                             dokarkivRequest.getBruker().getId(), environment, e);
 
                 }
-
             });
         }
     }
@@ -70,15 +66,5 @@ public class DokarkivClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-    }
-
-    private String toJson(Object object) {
-
-        try {
-            return objectMapper.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
-            log.error("Feilet å konvertere dokument fra dokarkiv", e);
-        }
-        return null;
     }
 }
