@@ -1,6 +1,5 @@
 package no.nav.registre.testnorge.helsepersonell.provider;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
@@ -95,11 +94,19 @@ class HelsepersonellControllerIntegrationTest {
                 .withResponseBody(
                         Collections.singletonList(SamhandlerDTO
                                 .builder()
-                                .identer(Collections.singletonList(IdentDTO
-                                        .builder()
-                                        .identTypeKode("HPR")
-                                        .ident("54321")
-                                        .build()))
+                                .kode("LE")
+                                .identer(Arrays.asList(
+                                        IdentDTO
+                                                .builder()
+                                                .identTypeKode("HPR")
+                                                .ident("54321")
+                                                .build(),
+                                        IdentDTO
+                                                .builder()
+                                                .identTypeKode("FNR")
+                                                .ident(firstPersonIdent)
+                                                .build()
+                                ))
                                 .build()
                         ))
                 .stubGet();
@@ -112,11 +119,19 @@ class HelsepersonellControllerIntegrationTest {
                 .withResponseBody(
                         Collections.singletonList(SamhandlerDTO
                                 .builder()
-                                .identer(Collections.singletonList(IdentDTO
-                                        .builder()
-                                        .identTypeKode("HPR")
-                                        .ident("12345")
-                                        .build()))
+                                .kode("LE")
+                                .identer(Arrays.asList(
+                                        IdentDTO
+                                                .builder()
+                                                .identTypeKode("HPR")
+                                                .ident("12345")
+                                                .build(),
+                                        IdentDTO
+                                                .builder()
+                                                .identTypeKode("FNR")
+                                                .ident(secondPersonIdent)
+                                                .build()
+                                ))
                                 .build()
                         ))
                 .stubGet();
