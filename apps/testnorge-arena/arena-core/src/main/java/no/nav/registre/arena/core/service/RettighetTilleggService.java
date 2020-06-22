@@ -166,7 +166,18 @@ public class RettighetTilleggService {
     }
 
     public void opprettTiltaksaktiviteter(List<RettighetRequest> rettigheter) {
-        var aktivitetResponse = rettighetTiltakService.opprettTiltaksaktiviteter(rettigheter);
+        var aktivitetResponse = rettighetTiltakService.opprettTiltaksaktiviteterFraRettigheter(rettigheter);
+        for (var response : aktivitetResponse.values()) {
+            for (var vedtakResponse : response) {
+                if (vedtakResponse.getFeiledeRettigheter() != null && !vedtakResponse.getFeiledeRettigheter().isEmpty()) {
+                    log.error("Kunne ikke opprette aktivitet på ident {}", vedtakResponse.getFeiledeRettigheter().get(0).getPersonident());
+                }
+            }
+        }
+    }
+
+    public void opprettTiltaksaktiviteterForHistorikk(List<RettighetRequest> rettigheter) {
+        var aktivitetResponse = rettighetTiltakService.opprettTiltaksaktiviteterForHistorikk(rettigheter);
         for (var response : aktivitetResponse.values()) {
             for (var vedtakResponse : response) {
                 if (vedtakResponse.getFeiledeRettigheter() != null && !vedtakResponse.getFeiledeRettigheter().isEmpty()) {

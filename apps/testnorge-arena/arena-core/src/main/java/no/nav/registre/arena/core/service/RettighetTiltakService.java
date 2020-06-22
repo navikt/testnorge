@@ -285,7 +285,7 @@ public class RettighetTiltakService {
         return endringer;
     }
 
-    Map<String, List<NyttVedtakResponse>> opprettTiltaksaktiviteter(List<RettighetRequest> rettigheter) {
+    Map<String, List<NyttVedtakResponse>> opprettTiltaksaktiviteterForHistorikk(List<RettighetRequest> rettigheter) {
         List<RettighetRequest> tiltaksaktiviteter = new ArrayList<>(rettigheter.size());
         for (var rettighet : rettigheter) {
             if (!(rettighet instanceof RettighetTilleggRequest)) {
@@ -297,6 +297,7 @@ public class RettighetTiltakService {
             rettighetRequest.setMiljoe(rettighet.getMiljoe());
             NyttVedtakTiltak nyttVedtakTiltak = new NyttVedtakTiltak();
             nyttVedtakTiltak.setAktivitetkode(serviceUtils.velgAktivitetBasertPaaSannsynlighet(vedtakMedAktitivetskode.get(rettighet.getVedtakTillegg().get(0).getRettighetKode())).getAktivitetkode());
+            nyttVedtakTiltak.setAktivitetstatuskode("FULLF");
             nyttVedtakTiltak.setBeskrivelse(BEGRUNNELSE);
             nyttVedtakTiltak.setFraDato(rettighet.getVedtakTillegg().get(0).getVedtaksperiode().getFom());
             List<NyttVedtakTiltak> nyTiltaksaktivitet = new ArrayList<>(Collections.singletonList(nyttVedtakTiltak));
@@ -305,6 +306,62 @@ public class RettighetTiltakService {
         }
 
         return rettighetArenaForvalterConsumer.opprettRettighet(tiltaksaktiviteter);
+    }
+
+    Map<String, List<NyttVedtakResponse>> opprettTiltaksaktiviteterForRettigheter(List<RettighetRequest> rettigheter) {
+        List<RettighetRequest> tiltaksaktiviteter = new ArrayList<>(rettigheter.size());
+        for (var rettighet : rettigheter) {
+            if (!(rettighet instanceof RettighetTilleggRequest)) {
+                log.error("Opprettelse av tiltaksaktivitet er kun støttet for tilleggsstønad");
+                continue;
+            }
+            var syntetisertRettighet = tiltakSyntConsumer.opprettTiltaksaktivitet(1).get(0);
+
+            syntetisertRettighet.setBeskrivelse(BEGRUNNELSE);
+            syntetisertRettighet.setFraDato(rettighet.getVedtakTillegg().get(0).getVedtaksperiode().getFom());
+            syntetisertRettighet.setTilDato(rettighet.getVedtakTillegg().get(0).getVedtaksperiode().getTom());
+
+            RettighetTiltaksaktivitetRequest rettighetRequest = new RettighetTiltaksaktivitetRequest(Collections.singletonList(syntetisertRettighet));
+            rettighetRequest.setPersonident(rettighet.getPersonident());
+            rettighetRequest.setMiljoe(rettighet.getMiljoe());
+
+            tiltaksaktiviteter.add(rettighetRequest);
+        }
+
+        return rettighetArenaForvalterConsumer.opprettRettighet(tiltaksaktiviteter);
+    }
+
+    public Map<String, List<NyttVedtakResponse>> opprettTiltaksaktivitet(
+            Long avspillergruppeId,
+            String miljoe,
+            int antallNyeIdenter
+    ) {
+        var utvalgteIdenter = serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
+
+        var syntetiserteRettigheter = tiltakSyntConsumer.opprettTiltaksaktivitet(utvalgteIdenter.size());
+
+        List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
+        for (var syntetisertRettighet : syntetiserteRettigheter) {
+            var rettighetRequest = new RettighetTiltaksaktivitetRequest(Collections.singletonList(syntetisertRettighet));
+
+            rettighetRequest.setPersonident(utvalgteIdenter.remove(utvalgteIdenter.size() - 1));
+            rettighetRequest.setMiljoe(miljoe);
+
+            rettigheter.add(rettighetRequest);
+        }
+
+        var responses = rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe));
+        for (var response : responses.values()) {
+            for (var nyttVedtakResponse : response) {
+                if (!nyttVedtakResponse.getFeiledeRettigheter().isEmpty()) {
+                    log.error("Kunne ikke opprette deltakelse for alle identer");
+                }
+            }
+        }
+
+        serviceUtils.lagreIHodejegeren(responses);
+
+        return responses;
     }
 
     private List<String> finnIdenterMedBarn(
