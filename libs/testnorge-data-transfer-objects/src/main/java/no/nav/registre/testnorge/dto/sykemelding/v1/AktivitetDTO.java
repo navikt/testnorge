@@ -1,9 +1,8 @@
 package no.nav.registre.testnorge.dto.sykemelding.v1;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
@@ -11,13 +10,9 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class DiagnoseDTO {
-    @JsonProperty
-    private String dn;
-
-    @JsonProperty
-    private String s;
-
-    @JsonProperty
-    private String v;
+public class AktivitetDTO {
+    private final Integer grad;
+    private final Boolean reisetilskudd;
+    private final Integer behandlingsdager;
+    private final Aktivitet aktivitet;
 }

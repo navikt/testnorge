@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.dto.sykemelding.v1.AdresseDTO;
-import no.nav.registre.testnorge.dto.sykemelding.v1.AktivitetGrad;
+import no.nav.registre.testnorge.dto.sykemelding.v1.Aktivitet;
+import no.nav.registre.testnorge.dto.sykemelding.v1.AktivitetDTO;
 import no.nav.registre.testnorge.dto.sykemelding.v1.ArbeidsgiverDTO;
 import no.nav.registre.testnorge.dto.sykemelding.v1.DetaljerDTO;
 import no.nav.registre.testnorge.dto.sykemelding.v1.DiagnoseDTO;
@@ -79,13 +80,17 @@ public class Sykemelding {
                 .foedselsdato(syntSykemelding.getPasient().getFoedselsdato())
                 .navKontor("ST.HANSHAUGEN")
                 .build();
-
         var perioder = sykemeldinger
                 .stream()
                 .map(value -> new PeriodeDTO(
                         value.getStartPeriode(),
                         value.getSluttPeriode().minusDays(1),
-                        aktivitetGrad(value)
+                        AktivitetDTO
+                                .builder()
+                                .aktivitet(value.getSykmeldingsprosent() == 100.0 ? Aktivitet.INGEN : null)
+                                .grad(value.getSykmeldingsprosent().intValue())
+                                .reisetilskudd(value.getReisetilskudd())
+                                .build()
                 ))
                 .collect(Collectors.toList());
 
@@ -120,26 +125,4 @@ public class Sykemelding {
                 ).build();
     }
 
-
-    private AktivitetGrad aktivitetGrad(no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntSykemeldingDTO synt) {
-        switch (synt.getSykmeldingsprosent().intValue()) {
-            case 100:
-                return AktivitetGrad.INGEN;
-            case 80:
-                return AktivitetGrad.GRADERT_80;
-            case 60:
-                if (synt.getReisetilskudd() != null && synt.getReisetilskudd()) {
-                    return AktivitetGrad.GRADERT_REISETILSKUDD;
-                }
-                return AktivitetGrad.GRADERT_60;
-            case 50:
-                return AktivitetGrad.GRADERT_50;
-            case 40:
-                return AktivitetGrad.GRADERT_40;
-            case 20:
-                return AktivitetGrad.GRADERT_20;
-            default:
-                throw new RuntimeException("Sykemeldingsprosent ikke støttet: " + synt.getSykmeldingsprosent());
-        }
-    }
 }
