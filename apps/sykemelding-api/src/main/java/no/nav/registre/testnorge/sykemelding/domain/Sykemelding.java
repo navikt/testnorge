@@ -1,5 +1,8 @@
 package no.nav.registre.testnorge.sykemelding.domain;
 
+import lombok.SneakyThrows;
+
+import javax.xml.datatype.DatatypeFactory;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -21,6 +24,7 @@ import no.nav.registre.testnorge.sykemelding.util.StaticResourceLoader;
 public class Sykemelding {
     private final XMLEIFellesformat fellesformat;
 
+    @SneakyThrows
     public Sykemelding(SykemeldingDTO dto, ApplicationInfo applicationInfo) {
         var xml = StaticResourceLoader.loadAsString("sykmelding.xml", StandardCharsets.ISO_8859_1);
         fellesformat = JAXBSykemeldingConverter.getInstance().convertToXMLEIFellesformat(xml);
@@ -37,6 +41,9 @@ public class Sykemelding {
         var xmlMottakenhetBlokk = getXMLMottakenhetBlokk();
         xmlMottakenhetBlokk.setEdiLoggId(UUID.randomUUID().toString());
         xmlMottakenhetBlokk.setAvsenderFnrFraDigSignatur(dto.getLege().getIdent());
+        xmlMottakenhetBlokk.setMottattDatotid(
+                DatatypeFactory.newInstance().newXMLGregorianCalendar(dto.getStartDato().toString())
+        );
     }
 
     private XMLMsgHead getXMLMsgHead() {
@@ -98,7 +105,7 @@ public class Sykemelding {
         return JAXBSykemeldingConverter.getInstance().convertToXml(fellesformat);
     }
 
-    public String getMsgId(){
+    public String getMsgId() {
         return getXMLMsgHead().getMsgInfo().getMsgId();
     }
 }
