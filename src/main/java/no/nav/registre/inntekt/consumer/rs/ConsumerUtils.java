@@ -6,7 +6,7 @@ import static no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjo
 import static no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype.PENSJON_ELLER_TRYGD;
 import static no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype.YTELSE_FRA_OFFENTLIGE;
 
-import no.nav.registre.inntekt.domain.RsInntekt;
+import no.nav.registre.inntekt.domain.inntektstub.RsInntekt;
 import no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntekt;
 import no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 import no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype;

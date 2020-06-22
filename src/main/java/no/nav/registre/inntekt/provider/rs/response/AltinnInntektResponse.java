@@ -6,7 +6,8 @@ import lombok.Value;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.inntekt.domain.dokmot.ProsessertInntektDokument;
+import no.nav.registre.inntekt.consumer.rs.dokmot.dto.ProsessertInntektDokumentDTO;
+import no.nav.registre.inntekt.consumer.rs.dokmot.dto.ProsessertInntektDokument;
 
 @Value
 public class AltinnInntektResponse {

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.inntekt.consumer.rs.InntektstubV2Consumer;
-import no.nav.registre.inntekt.domain.RsInntekt;
+import no.nav.registre.inntekt.domain.inntektstub.RsInntekt;
 
 @RestController
 @RequestMapping("/api/v1")

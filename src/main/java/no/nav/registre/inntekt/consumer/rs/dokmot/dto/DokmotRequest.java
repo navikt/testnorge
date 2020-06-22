@@ -8,8 +8,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import no.nav.registre.inntekt.domain.dokmot.InntektDokument;
-import no.nav.registre.inntekt.utils.FileLoader;
+import no.nav.registre.inntekt.utils.FilLaster;
 
 @Value
 public class DokmotRequest {
@@ -22,8 +21,8 @@ public class DokmotRequest {
     private Bruker bruker;
     @JsonProperty
     private String tema;
-    @JsonProperty("tittel")
-    private String titel;
+    @JsonProperty
+    private String tittel;
     @JsonProperty
     private String kanal;
     @JsonProperty
@@ -34,17 +33,17 @@ public class DokmotRequest {
     private List<Dokument> dokumenter;
 
     public DokmotRequest(InntektDokument inntektDokument) {
-        Dokumentvariant orginal = Dokumentvariant
+        Dokumentvariant original = Dokumentvariant
                 .builder()
-                .filtype("XML")
-                .variantformat("ORIGINAL")
+                .filtype(inntektDokument.getMetadata().getFiltypeOriginal())
+                .variantformat(inntektDokument.getMetadata().getVariantformatOriginal())
                 .fysiskDokument(inntektDokument.getXml().getBytes(StandardCharsets.UTF_8))
                 .build();
-        Dokumentvariant arktiv = Dokumentvariant
+        Dokumentvariant arkiv = Dokumentvariant
                 .builder()
-                .filtype("PDF")
-                .variantformat("ARKIV")
-                .fysiskDokument(FileLoader.inst().getDummyPDF())
+                .filtype(inntektDokument.getMetadata().getFiltypeArkiv())
+                .variantformat(inntektDokument.getMetadata().getVariantformatArkiv())
+                .fysiskDokument(FilLaster.instans().hentDummyPDF())
                 .build();
 
         this.journalposttype = inntektDokument.getMetadata().getJournalpostType();
@@ -55,10 +54,10 @@ public class DokmotRequest {
         );
         this.bruker = new Bruker(inntektDokument.getArbeidstakerFnr(), inntektDokument.getMetadata().getBrukerIdType());
         this.tema = inntektDokument.getMetadata().getTema();
-        this.titel = inntektDokument.getMetadata().getTittel();
+        this.tittel = inntektDokument.getMetadata().getTittel();
         this.kanal = inntektDokument.getMetadata().getKanal();
         this.eksternReferanseId = inntektDokument.getMetadata().getEksternReferanseId();
         this.datoMottatt = inntektDokument.getDatoMottatt();
-        this.dokumenter = Collections.singletonList(new Dokument(inntektDokument.getMetadata(), orginal, arktiv));
+        this.dokumenter = Collections.singletonList(new Dokument(inntektDokument.getMetadata(), original, arkiv));
     }
 }

@@ -1,13 +1,13 @@
 package no.nav.registre.inntekt.provider.rs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsforhold;
-import no.nav.registre.inntekt.domain.altinn.rs.RsArbeidsgiver;
-import no.nav.registre.inntekt.domain.altinn.rs.RsAvsendersystem;
-import no.nav.registre.inntekt.domain.altinn.rs.RsInntekt;
-import no.nav.registre.inntekt.domain.altinn.rs.RsInntektsmelding;
-import no.nav.registre.inntekt.domain.altinn.rs.RsKontaktinformasjon;
-import no.nav.registre.inntekt.domain.altinn.rs.RsNaturalytelseDetaljer;
+import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsArbeidsforhold;
+import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsArbeidsgiver;
+import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsAvsendersystem;
+import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsInntekt;
+import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsInntektsmelding;
+import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsKontaktinformasjon;
+import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsNaturalytelseDetaljer;
 
 import org.junit.After;
 import org.junit.Before;

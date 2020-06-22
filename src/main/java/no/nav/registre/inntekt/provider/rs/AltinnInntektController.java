@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.registre.inntekt.provider.rs.requests.AltinnDollyRequest;
-import no.nav.registre.inntekt.provider.rs.requests.AltinnRequest;
+import no.nav.registre.inntekt.provider.rs.requests.AltinnInntektsmeldingRequest;
+import no.nav.registre.inntekt.provider.rs.requests.GenererAltinnInntektRequest;
 import no.nav.registre.inntekt.provider.rs.response.AltinnInntektResponse;
 import no.nav.registre.inntekt.service.AltinnInntektService;
 import no.nav.registre.inntekt.utils.ValidationException;
@@ -30,7 +30,7 @@ public class AltinnInntektController {
     @PostMapping(value = "/generer")
     public void generer(
             @RequestParam(required = false, defaultValue = "true") Boolean opprettPaaEksisterende,
-            @RequestBody AltinnRequest request
+            @RequestBody GenererAltinnInntektRequest request
     ) throws ValidationException {
         throw new ValidationException("NOT IMPLEMENTED");
     }
@@ -38,7 +38,7 @@ public class AltinnInntektController {
     @PostMapping(value = "/enkeltident")
     @ResponseBody
     public ResponseEntity<?> genererMeldingForIdent(
-            @RequestBody AltinnDollyRequest dollyRequest,
+            @RequestBody AltinnInntektsmeldingRequest dollyRequest,
             @RequestParam(value = "valider", required = false, defaultValue = "false") Boolean valider,
             @RequestParam(value = "includeXml", required = false) Boolean includeXml,
             @RequestParam(value = "continueOnError", defaultValue = "false") Boolean continueOnError
@@ -60,7 +60,7 @@ public class AltinnInntektController {
         }
     }
 
-    private void validerInntektsmelding(AltinnDollyRequest dollyRequest) throws ValidationException {
+    private void validerInntektsmelding(AltinnInntektsmeldingRequest dollyRequest) throws ValidationException {
         for (var inntekt : dollyRequest.getInntekter()) {
             var arbeidsgiver = inntekt.getArbeidsgiver();
             var arbeidsgiverPrivat = inntekt.getArbeidsgiverPrivat();

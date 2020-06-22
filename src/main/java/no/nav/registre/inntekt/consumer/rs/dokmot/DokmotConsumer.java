@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.inntekt.consumer.rs.dokmot.command.OpprettJournalpostCommand;
 import no.nav.registre.inntekt.consumer.rs.dokmot.dto.DokmotRequest;
-import no.nav.registre.inntekt.domain.dokmot.InntektDokument;
-import no.nav.registre.inntekt.domain.dokmot.ProsessertInntektDokument;
+import no.nav.registre.inntekt.consumer.rs.dokmot.dto.InntektDokument;
+import no.nav.registre.inntekt.consumer.rs.dokmot.dto.ProsessertInntektDokument;
 import no.nav.registre.inntekt.security.sts.StsOidcService;
 
 @Slf4j

@@ -28,7 +28,7 @@ import java.util.TreeMap;
 import no.nav.registre.inntekt.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektSyntConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektstubV2Consumer;
-import no.nav.registre.inntekt.domain.RsInntekt;
+import no.nav.registre.inntekt.domain.inntektstub.RsInntekt;
 import no.nav.registre.inntekt.provider.rs.requests.SyntetiseringsRequest;
 import no.nav.registre.inntekt.testUtils.InntektGenerator;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;

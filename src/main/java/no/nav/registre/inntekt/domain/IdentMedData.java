@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.registre.inntekt.domain.inntektstub.RsInntekt;
 
 import java.util.List;
 
