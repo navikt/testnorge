@@ -22,13 +22,14 @@ import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntSykemeldingHi
 
 @RequiredArgsConstructor
 public class Sykemelding {
+    private final Person pasient;
     private final SyntSykemeldingHistorikkDTO historikk;
     private final SyntSykemeldingDTO syntSykemelding;
     private final Lege lege;
 
 
     public String getIdent() {
-        return syntSykemelding.getPasient().getIdent();
+        return pasient.getIdent();
     }
 
     public SykemeldingDTO toDTO() {
@@ -73,11 +74,11 @@ public class Sykemelding {
 
         var pasient = PasientDTO
                 .builder()
-                .ident(syntSykemelding.getPasient().getIdent())
-                .fornavn(syntSykemelding.getPasient().getFornavn())
-                .mellomnavn(syntSykemelding.getPasient().getMellomnavn())
-                .etternavn(syntSykemelding.getPasient().getEtternavn())
-                .foedselsdato(syntSykemelding.getPasient().getFoedselsdato())
+                .ident(this.pasient.getIdent())
+                .fornavn(this.pasient.getFornvan())
+                .mellomnavn(this.pasient.getMellomnavn())
+                .etternavn(this.pasient.getEtternavn())
+                .foedselsdato(this.pasient.getFoedselsdato())
                 .navKontor("ST.HANSHAUGEN")
                 .build();
         var perioder = sykemeldinger

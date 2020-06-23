@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class SyntSykemeldingDTO {
-    PasientDTO pasient;
+    String ident;
     LocalDate startDato;
     ArbeidsgiverDTO arbeidsgiver;
 }

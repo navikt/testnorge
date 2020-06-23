@@ -9,10 +9,14 @@ public class Lege {
         this.dto = dto;
     }
 
+    public String getIdent() {
+        return dto.getFnr();
+    }
+
     public no.nav.registre.testnorge.dto.sykemelding.v1.LegeDTO toDTO() {
         return no.nav.registre.testnorge.dto.sykemelding.v1.LegeDTO
                 .builder()
-                .ident(dto.getFnr())
+                .ident(getIdent())
                 .fornavn(dto.getFornavn())
                 .mellomnavn(dto.getMellomnavn())
                 .etternavn(dto.getEtternavn())
