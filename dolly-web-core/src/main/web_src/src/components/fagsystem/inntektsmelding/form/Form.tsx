@@ -166,7 +166,6 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 										<FormikTextInput
 											name={`${path}.arbeidsgiverPrivat.arbeidsgiverFnr`}
 											label="Arbeidsgiver (fnr/dnr/bost)"
-											type="number"
 										/>
 									)}
 									<FormikDatepicker
