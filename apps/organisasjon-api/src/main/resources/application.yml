@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: testnorge-organisasjon-api
+
+application:
+  version: @application.version@
+  name: testnorge-organisasjon-api
