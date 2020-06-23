@@ -75,7 +75,6 @@ public class StsOidcTokenService {
     }
 
     private void updateToken() {
-        log.info("Oppdaterer token for username {}", username);
         ResponseEntity<?> responseEntity = restTemplate.exchange(RequestEntity
                         .get(URI.create((url)
                                 .concat("?grant_type=client_credentials&scope=openid")))
