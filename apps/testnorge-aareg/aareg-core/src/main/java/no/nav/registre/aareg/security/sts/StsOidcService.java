@@ -73,10 +73,8 @@ public class StsOidcService {
     }
 
     private void updateToken(Environment env) {
-        var url = stsOidcFasitConsumer.getStsOidcService(env);
-        log.info("Henter token fra sis oidc url " + url);
         var getRequest = RequestEntity
-                .get(URI.create(url.concat("?grant_type=client_credentials&scope=openid")))
+                .get(URI.create(stsOidcFasitConsumer.getStsOidcService(env).concat("?grant_type=client_credentials&scope=openid")))
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
                 .header(AUTHORIZATION, "Basic " +
                         Base64.getEncoder().encodeToString((

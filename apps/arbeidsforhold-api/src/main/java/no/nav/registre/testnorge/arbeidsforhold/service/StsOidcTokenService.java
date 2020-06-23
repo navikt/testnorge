@@ -7,6 +7,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.RequestEntity;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.Base64;
 
 
+@Slf4j
 @Service
 public class StsOidcTokenService {
 
@@ -73,6 +75,7 @@ public class StsOidcTokenService {
     }
 
     private void updateToken() {
+        log.info("Oppdaterer token for username {}", username);
         ResponseEntity<?> responseEntity = restTemplate.exchange(RequestEntity
                         .get(URI.create((url)
                                 .concat("?grant_type=client_credentials&scope=openid")))
