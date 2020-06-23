@@ -10,6 +10,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -24,6 +25,7 @@ import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.properties.CredentialsProps;
 import no.nav.registre.aareg.properties.Environment;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class StsOidcService {
@@ -71,8 +73,10 @@ public class StsOidcService {
     }
 
     private void updateToken(Environment env) {
+        var url = stsOidcFasitConsumer.getStsOidcService(env);
+        log.info("Henter token fra sis oidc url " + url);
         var getRequest = RequestEntity
-                .get(URI.create(stsOidcFasitConsumer.getStsOidcService(env).concat("?grant_type=client_credentials&scope=openid")))
+                .get(URI.create(url.concat("?grant_type=client_credentials&scope=openid")))
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
                 .header(AUTHORIZATION, "Basic " +
                         Base64.getEncoder().encodeToString((
