@@ -29,6 +29,8 @@ import no.nav.registre.elsam.domain.SykmeldingPeriode;
 
 public class ElsamXmlUtil {
 
+    private static final String ANNET = "Annet";
+
     private ElsamXmlUtil() {
     }
 
@@ -68,7 +70,7 @@ public class ElsamXmlUtil {
             sykmelding.getAktivitet().getPeriode().stream().filter(p -> p.getAktivitetIkkeMulig() != null).forEach(p -> p.setAktivitetIkkeMulig(p.getAktivitetIkkeMulig()
                     .withArbeidsplassen(new XMLArsakType()
                             .withArsakskode(new XMLCS()
-                                    .withDN("Annet")
+                                    .withDN(ANNET)
                                     .withV("1"))
                             .withBeskriv("her tilrettelegger ikke arbeidsgiver godt nok"))));
         }
@@ -213,12 +215,12 @@ public class ElsamXmlUtil {
         return new XMLHelseOpplysningerArbeidsuforhet.Aktivitet.Periode.AktivitetIkkeMulig()
                 .withArbeidsplassen(new XMLArsakType()
                         .withArsakskode(new XMLCS()
-                                .withDN("Annet")
+                                .withDN(ANNET)
                                 .withV("9"))
                         .withBeskriv("andre årsaker til sykefravær"))
                 .withMedisinskeArsaker(new XMLArsakType()
                         .withArsakskode(new XMLCS()
-                                .withDN("Annet")
+                                .withDN(ANNET)
                                 .withV("3"))
                         .withBeskriv("andre årsaker til sykefravær"));
     }

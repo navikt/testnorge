@@ -200,15 +200,19 @@ public class VedtakshistorikkService {
         if (aapVedtak != null) {
             int antallDagerEndret = 0;
             for (var vedtak : aapVedtak) {
-                if (AKTIVITETSFASE_SYKEPENGEERSTATNING.equals(vedtak.getAktivitetsfase())) {
+                if (AKTIVITETSFASE_SYKEPENGEERSTATNING.equals(vedtak.getAktivitetsfase()) && vedtak.getFraDato() != null) {
                     vedtak.setFraDato(vedtak.getFraDato().minusDays(antallDagerEndret));
-                    vedtak.setTilDato(vedtak.getTilDato().minusDays(antallDagerEndret));
+                    if (vedtak.getTilDato() == null) {
+                        vedtak.setTilDato(vedtak.getFraDato().plusMonths(6));
+                    } else {
+                        vedtak.setTilDato(vedtak.getTilDato().minusDays(antallDagerEndret));
 
-                    var originalTilDato = vedtak.getTilDato();
-                    serviceUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(vedtak, SYKEPENGEERSTATNING_MAKS_PERIODE);
-                    var nyTilDato = vedtak.getTilDato();
+                        var originalTilDato = vedtak.getTilDato();
+                        serviceUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(vedtak, SYKEPENGEERSTATNING_MAKS_PERIODE);
+                        var nyTilDato = vedtak.getTilDato();
 
-                    antallDagerEndret += ChronoUnit.DAYS.between(nyTilDato, originalTilDato);
+                        antallDagerEndret += ChronoUnit.DAYS.between(nyTilDato, originalTilDato);
+                    }
                 }
             }
         }
