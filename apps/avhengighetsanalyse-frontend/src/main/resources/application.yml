@@ -28,4 +28,5 @@ dependencies:
     - http://testnorge-tss.default.svc.nais.local/dependencies
     - http://testnorge-person-api.default.svc.nais.local/dependencies
     - http://testnorge-sykemelding-api.default.svc.nais.local/dependencies
+    - http://testnorge-organisasjon-api.default.svc.nais.local/dependencies
   threads: 6
