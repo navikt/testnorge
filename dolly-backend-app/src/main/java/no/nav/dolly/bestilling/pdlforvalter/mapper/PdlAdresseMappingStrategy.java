@@ -7,6 +7,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
@@ -56,12 +57,12 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
 
                         matrikkeladresse.setAdressetilleggsnavn(rsMatrikkeladresse.getMellomnavn());
                         matrikkeladresse.setBruksenhetstype(Bruksenhetstype.BOLIG);
-                        matrikkeladresse.setBruksnummer(Integer.valueOf(rsMatrikkeladresse.getBruksnr()));
-                        matrikkeladresse.setFestenummer(Integer.valueOf(rsMatrikkeladresse.getFestenr()));
-                        matrikkeladresse.setGaardsnummer(Integer.valueOf(rsMatrikkeladresse.getGardsnr()));
+                        matrikkeladresse.setBruksnummer(toNumeric(rsMatrikkeladresse.getBruksnr()));
+                        matrikkeladresse.setFestenummer(toNumeric(rsMatrikkeladresse.getFestenr()));
+                        matrikkeladresse.setGaardsnummer(toNumeric(rsMatrikkeladresse.getGardsnr()));
                         matrikkeladresse.setKommunenummer(rsMatrikkeladresse.getKommunenr());
                         matrikkeladresse.setPostnummer(rsMatrikkeladresse.getPostnr());
-                        matrikkeladresse.setUndernummer(Integer.valueOf(rsMatrikkeladresse.getUndernr()));
+                        matrikkeladresse.setUndernummer(toNumeric(rsMatrikkeladresse.getUndernr()));
                         matrikkeladresse.setAdressetilleggsnavn(getTilleggsnavn(rsMatrikkeladresse));
                     }
                 })
@@ -121,5 +122,10 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
     public static LocalDate getDato(LocalDateTime dateTime) {
 
         return nonNull(dateTime) ? dateTime.toLocalDate() : null;
+    }
+
+    private static Integer toNumeric(String number){
+
+        return StringUtils.isNumeric(number) ? Integer.valueOf(number) : null;
     }
 }
