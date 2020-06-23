@@ -38,6 +38,7 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksdeltakelse
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
+import no.nav.registre.arena.core.service.exception.VedtakshistorikkException;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.GensakKoder;
@@ -168,7 +169,7 @@ public class VedtakshistorikkService {
         } else if (senesteVedtak instanceof NyttVedtakTillegg) {
             rettighetRequests = serviceUtils.opprettArbeidssoekerTillegg(rettigheter, miljoe);
         } else {
-            throw new RuntimeException("Ukjent vedtakstype");
+            throw new VedtakshistorikkException("Ukjent vedtakstype " + senesteVedtak.getClass());
         }
 
         return rettighetArenaForvalterConsumer.opprettRettighet(rettighetRequests);
