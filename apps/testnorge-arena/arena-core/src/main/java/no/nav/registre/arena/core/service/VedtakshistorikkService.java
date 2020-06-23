@@ -12,6 +12,7 @@ import static no.nav.registre.arena.core.consumer.rs.TilleggSyntConsumer.ARENA_T
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.arena.core.consumer.rs.request.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -26,16 +27,6 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.AapSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetAap115Request;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetAapRequest;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetFritakMeldekortRequest;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggRequest;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggsytelseRequest;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksdeltakelseRequest;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequest;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.GensakKoder;
@@ -55,7 +46,6 @@ public class VedtakshistorikkService {
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final ServiceUtils serviceUtils;
     private final RettighetAapService rettighetAapService;
-    private final RettighetTilleggService rettighetTilleggService;
     private final RettighetTiltakService rettighetTiltakService;
 
     public Map<String, List<NyttVedtakResponse>> genererVedtakshistorikk(
@@ -114,11 +104,11 @@ public class VedtakshistorikkService {
                 List<String> identerIAldersgruppe = Collections.emptyList();
 
                 try {
-                  if (tidligsteDatoBarnetillegg != null) {
-                    identerIAldersgruppe = serviceUtils.getUtvalgteIdenterIAldersgruppeMedBarnUnder18(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe, tidligsteDatoBarnetillegg);
-                  } else {
-                    identerIAldersgruppe = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe);
-                  }
+                    if (tidligsteDatoBarnetillegg != null) {
+                        identerIAldersgruppe = serviceUtils.getUtvalgteIdenterIAldersgruppeMedBarnUnder18(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe, tidligsteDatoBarnetillegg);
+                    } else {
+                        identerIAldersgruppe = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe);
+                    }
                 } catch (RuntimeException e) {
                     log.error("Kunne ikke hente ident fra hodejegeren");
                 }
@@ -176,7 +166,7 @@ public class VedtakshistorikkService {
 
     private List<NyttVedtakTillegg> fjernTilsynFamiliemedlemmerVedtakMedUgyldigeDatoer(List<NyttVedtakTillegg> tilsynFamiliemedlemmer) {
         List<NyttVedtakTillegg> nyTilsynFamiliemedlemmer = new ArrayList<>();
-        if (tilsynFamiliemedlemmer != null){
+        if (tilsynFamiliemedlemmer != null) {
             nyTilsynFamiliemedlemmer = tilsynFamiliemedlemmer.stream().filter(vedtak ->
                     !vedtak.getFraDato().isAfter(ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT))
                     .collect(Collectors.toList());
@@ -185,9 +175,9 @@ public class VedtakshistorikkService {
         return nyTilsynFamiliemedlemmer.isEmpty() ? null : nyTilsynFamiliemedlemmer;
     }
 
-    private List<NyttVedtakAap> fjernAapUngUfoerMedUgyldigeDatoer(List<NyttVedtakAap> ungUfoer){
+    private List<NyttVedtakAap> fjernAapUngUfoerMedUgyldigeDatoer(List<NyttVedtakAap> ungUfoer) {
         List<NyttVedtakAap> nyUngUfoer = new ArrayList<>();
-        if (ungUfoer != null){
+        if (ungUfoer != null) {
             nyUngUfoer = ungUfoer.stream().filter(vedtak ->
                     !vedtak.getFraDato().isAfter(ARENA_AAP_UNG_UFOER_DATE_LIMIT))
                     .collect(Collectors.toList());
@@ -355,7 +345,7 @@ public class VedtakshistorikkService {
             String personident,
             String miljoe,
             List<RettighetRequest> rettigheter
-    ){
+    ) {
         var tiltaksdeltakelse = vedtak.getTiltaksdeltakelse();
         if (tiltaksdeltakelse != null && !tiltaksdeltakelse.isEmpty()) {
             var rettighetRequest = new RettighetTiltaksdeltakelseRequest(tiltaksdeltakelse);
@@ -372,7 +362,7 @@ public class VedtakshistorikkService {
             RettighetRequest tiltaksdeltakelse,
             String miljoe,
             List<RettighetRequest> rettigheter
-    ){
+    ) {
         var response = NyttVedtakResponse.builder().feiledeRettigheter(Collections.emptyList()).build();
         Map<String, List<NyttVedtakResponse>> identerMedTiltakdeltakelse = new HashMap<>();
         identerMedTiltakdeltakelse.put(tiltaksdeltakelse.getPersonident(), Collections.singletonList(response));
@@ -423,12 +413,21 @@ public class VedtakshistorikkService {
             List<RettighetRequest> rettigheter
     ) {
         if (vedtak != null && !vedtak.isEmpty()) {
-            rettighetTilleggService.opprettTiltaksaktiviteter(rettigheter);
             var rettighetRequest = new RettighetTilleggRequest(vedtak);
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
             rettighetRequest.getNyeTilleggsstonad().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
+            opprettTiltaksaktivitet(rettigheter, rettighetRequest);
             rettigheter.add(rettighetRequest);
+        }
+    }
+
+    private void opprettTiltaksaktivitet(List<RettighetRequest> rettigheter, RettighetRequest request) {
+        if (request instanceof RettighetTilleggRequest) {
+            rettigheter.add(rettighetTiltakService.opprettRettighetTiltaksaktivitetRequest(
+                    request, false));
+        } else {
+            log.error("Opprettelse av tiltaksaktivitet er kun støttet for tilleggsstønad");
         }
     }
 
@@ -469,7 +468,7 @@ public class VedtakshistorikkService {
         var barnetillegg = vedtakshistorikk.getBarnetillegg();
         var tiltaksdeltakelse = vedtakshistorikk.getTiltaksdeltakelse();
 
-        if (tiltaksdeltakelse != null && !tiltaksdeltakelse.isEmpty()){
+        if (tiltaksdeltakelse != null && !tiltaksdeltakelse.isEmpty()) {
             return tiltaksdeltakelse;
         }
 

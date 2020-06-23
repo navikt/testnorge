@@ -51,6 +51,7 @@ public class RettighetTiltakService {
 
     private static final Map<String, List<AktivitetskodeMedSannsynlighet>> vedtakMedAktitivetskode;
     private static final Map<String, List<String>> deltakerstatuskoderMedAarsakkoder;
+    private static final String aktivitetstatuskodeFullfoert = "FULLF";
 
     static {
         deltakerstatuskoderMedAarsakkoder = new HashMap<>();
@@ -214,7 +215,7 @@ public class RettighetTiltakService {
 
     public List<RettighetRequest> getRettigheterForEndreDeltakerstatus(
             Map<String, List<NyttVedtakResponse>> identerMedOpprettedeTiltakdeltakelse,
-            List<RettighetRequest> rettigheterTiltaksdeltakelse, String miljoe){
+            List<RettighetRequest> rettigheterTiltaksdeltakelse, String miljoe) {
 
         List<RettighetRequest> rettigheter = new ArrayList<>(identerMedOpprettedeTiltakdeltakelse.size());
         for (var entry : identerMedOpprettedeTiltakdeltakelse.entrySet()) {
@@ -285,50 +286,47 @@ public class RettighetTiltakService {
         return endringer;
     }
 
-    Map<String, List<NyttVedtakResponse>> opprettTiltaksaktiviteterForHistorikk(List<RettighetRequest> rettigheter) {
+    Map<String, List<NyttVedtakResponse>> opprettTiltaksaktiviteter(
+            List<RettighetRequest> rettigheter
+    ) {
         List<RettighetRequest> tiltaksaktiviteter = new ArrayList<>(rettigheter.size());
         for (var rettighet : rettigheter) {
             if (!(rettighet instanceof RettighetTilleggRequest)) {
                 log.error("Opprettelse av tiltaksaktivitet er kun støttet for tilleggsstønad");
                 continue;
             }
-            RettighetTiltaksaktivitetRequest rettighetRequest = new RettighetTiltaksaktivitetRequest();
-            rettighetRequest.setPersonident(rettighet.getPersonident());
-            rettighetRequest.setMiljoe(rettighet.getMiljoe());
-            NyttVedtakTiltak nyttVedtakTiltak = new NyttVedtakTiltak();
-            nyttVedtakTiltak.setAktivitetkode(serviceUtils.velgAktivitetBasertPaaSannsynlighet(vedtakMedAktitivetskode.get(rettighet.getVedtakTillegg().get(0).getRettighetKode())).getAktivitetkode());
-            nyttVedtakTiltak.setAktivitetstatuskode("FULLF");
-            nyttVedtakTiltak.setBeskrivelse(BEGRUNNELSE);
-            nyttVedtakTiltak.setFraDato(rettighet.getVedtakTillegg().get(0).getVedtaksperiode().getFom());
-            List<NyttVedtakTiltak> nyTiltaksaktivitet = new ArrayList<>(Collections.singletonList(nyttVedtakTiltak));
-            rettighetRequest.setNyeTiltaksaktivitet(nyTiltaksaktivitet);
-            tiltaksaktiviteter.add(rettighetRequest);
+            tiltaksaktiviteter.add(opprettRettighetTiltaksaktivitetRequest(rettighet, true));
         }
 
         return rettighetArenaForvalterConsumer.opprettRettighet(tiltaksaktiviteter);
     }
 
-    Map<String, List<NyttVedtakResponse>> opprettTiltaksaktiviteterForRettigheter(List<RettighetRequest> rettigheter) {
-        List<RettighetRequest> tiltaksaktiviteter = new ArrayList<>(rettigheter.size());
-        for (var rettighet : rettigheter) {
-            if (!(rettighet instanceof RettighetTilleggRequest)) {
-                log.error("Opprettelse av tiltaksaktivitet er kun støttet for tilleggsstønad");
-                continue;
-            }
-            var syntetisertRettighet = tiltakSyntConsumer.opprettTiltaksaktivitet(1).get(0);
-
-            syntetisertRettighet.setBeskrivelse(BEGRUNNELSE);
-            syntetisertRettighet.setFraDato(rettighet.getVedtakTillegg().get(0).getVedtaksperiode().getFom());
-            syntetisertRettighet.setTilDato(rettighet.getVedtakTillegg().get(0).getVedtaksperiode().getTom());
-
-            RettighetTiltaksaktivitetRequest rettighetRequest = new RettighetTiltaksaktivitetRequest(Collections.singletonList(syntetisertRettighet));
-            rettighetRequest.setPersonident(rettighet.getPersonident());
-            rettighetRequest.setMiljoe(rettighet.getMiljoe());
-
-            tiltaksaktiviteter.add(rettighetRequest);
+    public RettighetTiltaksaktivitetRequest opprettRettighetTiltaksaktivitetRequest(
+            RettighetRequest rettighet,
+            Boolean setTilfeldigStatuskode
+    ) {
+        var statuskode = aktivitetstatuskodeFullfoert;
+        if (setTilfeldigStatuskode) {
+            statuskode = tiltakSyntConsumer.opprettTiltaksaktivitet(1).get(0).getAktivitetstatuskode();
         }
 
-        return rettighetArenaForvalterConsumer.opprettRettighet(tiltaksaktiviteter);
+        var nyttVedtakTiltak = new NyttVedtakTiltak();
+
+        nyttVedtakTiltak.setAktivitetstatuskode(statuskode);
+        nyttVedtakTiltak.setAktivitetkode(serviceUtils.velgAktivitetBasertPaaSannsynlighet(
+                vedtakMedAktitivetskode.get(rettighet.getVedtakTillegg().get(0).getRettighetKode())).getAktivitetkode());
+
+        nyttVedtakTiltak.setBeskrivelse(BEGRUNNELSE);
+
+        var antallVedtakTillegg = rettighet.getVedtakTillegg().size();
+        nyttVedtakTiltak.setFraDato(rettighet.getVedtakTillegg().get(0).getVedtaksperiode().getFom());
+        nyttVedtakTiltak.setTilDato(rettighet.getVedtakTillegg().get(antallVedtakTillegg - 1).getVedtaksperiode().getTom());
+
+        RettighetTiltaksaktivitetRequest rettighetRequest = new RettighetTiltaksaktivitetRequest(Collections.singletonList(nyttVedtakTiltak));
+        rettighetRequest.setPersonident(rettighet.getPersonident());
+        rettighetRequest.setMiljoe(rettighet.getMiljoe());
+
+        return rettighetRequest;
     }
 
     public Map<String, List<NyttVedtakResponse>> opprettTiltaksaktivitet(
@@ -349,7 +347,6 @@ public class RettighetTiltakService {
 
             rettigheter.add(rettighetRequest);
         }
-
         var responses = rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe));
         for (var response : responses.values()) {
             for (var nyttVedtakResponse : response) {
