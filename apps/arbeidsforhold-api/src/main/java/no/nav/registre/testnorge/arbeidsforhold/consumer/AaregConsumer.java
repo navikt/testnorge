@@ -12,7 +12,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.arbeidsforhold.consumer.dto.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.arbeidsforhold.domain.Arbeidsforhold;
@@ -21,6 +22,9 @@ import no.nav.registre.testnorge.arbeidsforhold.service.StsOidcTokenService;
 @Slf4j
 @Component
 public class AaregConsumer {
+
+    private static final String HEADER_NAV_CONSUMER_TOKEN = "Nav-Consumer-Token";
+    private static final String HEADER_NAV_PERSON_IDENT = "Nav-Personident";
 
     private final StsOidcTokenService tokenService;
     private final RestTemplate restTemplate;
@@ -33,32 +37,37 @@ public class AaregConsumer {
     }
 
     @SneakyThrows
-    public Arbeidsforhold getArbeidsforhold(String ident, String orgnummer, String arbeidsforholdId) {
+    public List<Arbeidsforhold> getArbeidsforholds(String ident) {
         RequestEntity<Void> request = RequestEntity
                 .get(new URI(url + "/v1/arbeidstaker/arbeidsforhold"))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenService.getToken())
+                .header(HEADER_NAV_CONSUMER_TOKEN, "Bearer " + tokenService.getToken())
+                .header(HEADER_NAV_PERSON_IDENT, ident)
                 .build();
         ResponseEntity<ArbeidsforholdDTO[]> response = restTemplate.exchange(request, ArbeidsforholdDTO[].class);
 
         if (!response.getStatusCode().is2xxSuccessful() || !response.hasBody()) {
             log.warn(
-                    "Klarer ikke aa hente arbeidsforhold for {} med orgnummer {} og arbeidsforholdId {}. Response code: {}",
+                    "Klarer ikke aa hente arbeidsforhold for {} . Response code: {}",
                     ident,
-                    orgnummer,
-                    arbeidsforholdId,
                     response.getStatusCodeValue()
             );
         }
-
-        Optional<ArbeidsforholdDTO> arbeidsforhold = Arrays.stream(response.getBody())
-                .filter(value -> value.getArbeidsgiver().getOrganisasjonsnummer().equals(orgnummer))
-                .filter(value -> value.getArbeidsforholdId().equals(arbeidsforholdId))
-                .findFirst();
-
-        if (arbeidsforhold.isEmpty()) {
-            throw new RuntimeException("KLarer ikke å finne arbeidsforhold for" + ident);
-        }
-        return new Arbeidsforhold(arbeidsforhold.get());
+        return Arrays.stream(response.getBody()).map(Arbeidsforhold::new).collect(Collectors.toList());
     }
 
+    public List<Arbeidsforhold> getArbeidsforholds(String ident, String orgnummer) {
+        return getArbeidsforholds(ident)
+                .stream()
+                .filter(value -> value.getOrgnummer().equals(orgnummer))
+                .collect(Collectors.toList());
+    }
+
+    public Arbeidsforhold getArbeidsforhold(String ident, String orgnummer, String arbeidsforholdId) {
+        return getArbeidsforholds(ident, orgnummer)
+                .stream()
+                .filter(value -> value.getArbeidsforholdId().equals(arbeidsforholdId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Klarer ikke aa finne arbeidsforhold for " + ident));
+    }
 }

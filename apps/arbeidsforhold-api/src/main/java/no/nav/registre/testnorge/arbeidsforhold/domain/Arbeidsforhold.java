@@ -1,10 +1,12 @@
 package no.nav.registre.testnorge.arbeidsforhold.domain;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.testnorge.arbeidsforhold.consumer.dto.ArbeidsforholdDTO;
 
 @Slf4j
+@Getter
 public class Arbeidsforhold {
     private final String arbeidsforholdId;
     private final String orgnummer;
