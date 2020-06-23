@@ -1,0 +1,41 @@
+package no.nav.registre.sdforvalter.domain;
+
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import no.nav.registre.sdforvalter.database.model.EregModel;
+import no.nav.registre.sdforvalter.dto.organisasjon.v1.OrganisasjonListeDTO;
+
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public final class EregListe extends FasteDataListe<Ereg> {
+
+    public EregListe(Ereg... eregs) {
+        super(Arrays.asList(eregs));
+    }
+
+    public EregListe(Iterable<EregModel> iterable) {
+        super(iterable);
+    }
+
+    public EregListe(List<Ereg> liste) {
+        super(liste);
+    }
+
+
+    public EregListe(OrganisasjonListeDTO listeDTO) {
+        this(listeDTO.getListe().stream().map(Ereg::new).collect(Collectors.toList()));
+    }
+
+    public OrganisasjonListeDTO toDTO() {
+        return OrganisasjonListeDTO
+                .builder()
+                .liste(this.getListe().stream().map(Ereg::toDTO).collect(Collectors.toList()))
+                .build();
+    }
+
+}

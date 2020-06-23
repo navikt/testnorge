@@ -69,5 +69,6 @@
         <module>sykemelding-api</module>
         <module>person-api</module>
         <module>organisasjon-api</module>
+        <module>arbeidsforhold-api</module>
     </modules>
 </project>

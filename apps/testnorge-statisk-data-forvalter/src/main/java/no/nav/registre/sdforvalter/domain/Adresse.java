@@ -1,0 +1,65 @@
+package no.nav.registre.sdforvalter.domain;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.Value;
+
+import no.nav.registre.sdforvalter.database.model.AdresseModel;
+import no.nav.registre.sdforvalter.dto.organisasjon.v1.AdresseDTO;
+
+@Value
+@AllArgsConstructor
+@NoArgsConstructor(force = true)
+@Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Adresse {
+    @JsonProperty
+    private final String adresse;
+    @JsonProperty
+    private final String postnr;
+    @JsonProperty
+    private final String kommunenr;
+    @JsonProperty
+    private final String landkode;
+    @JsonProperty
+    private final String poststed;
+
+    public Adresse(AdresseModel model) {
+        this.adresse = model.getAdresse();
+        this.postnr = model.getPostnr();
+        this.kommunenr = model.getKommunenr();
+        this.landkode = model.getLandkode();
+        this.poststed = model.getPoststed();
+    }
+
+    public Adresse(no.nav.registre.sdforvalter.consumer.rs.request.ereg.Adresse adresse) {
+        this.adresse = String.join(" ", adresse.getAdresser());
+        this.kommunenr = adresse.getKommunenr();
+        this.landkode = adresse.getLandkode();
+        this.postnr = adresse.getPostnr();
+        this.poststed = adresse.getPoststed();
+    }
+
+    public AdresseDTO toDTO() {
+        return AdresseDTO
+                .builder()
+                .adresselinje1(adresse)
+                .postnr(postnr)
+                .kommunenr(kommunenr)
+                .landkode(landkode)
+                .poststed(poststed)
+                .build();
+    }
+
+    public Adresse(AdresseDTO dto) {
+        adresse = dto.getAdresselinje1();
+        postnr = dto.getPostnr();
+        kommunenr = dto.getKommunenr();
+        landkode = dto.getLandkode();
+        poststed = dto.getPoststed();
+    }
+
+}

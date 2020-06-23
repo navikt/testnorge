@@ -43,6 +43,7 @@ NAV_TOKEN må lages i din github konto. (Dette er noe som vi jobber med å fjern
 ![Deploy person-api](https://github.com/navikt/testnorge/workflows/Deploy%20person-api/badge.svg)
 ![Deploy sykemelding-api](https://github.com/navikt/testnorge/workflows/Deploy%20sykemelding-api/badge.svg)
 ![Deploy organisasjon-api](https://github.com/navikt/testnorge/workflows/Deploy%20organisasjon-api/badge.svg)
+![Deploy arbeidsforhold-api](https://github.com/navikt/testnorge/workflows/Deploy%20arbeidsforhold-api/badge.svg)
 
 
 ## Migrering inn i monorepo
