@@ -169,7 +169,7 @@ public class VedtakshistorikkService {
         } else if (senesteVedtak instanceof NyttVedtakTillegg) {
             rettighetRequests = serviceUtils.opprettArbeidssoekerTillegg(rettigheter, miljoe);
         } else {
-            throw new VedtakshistorikkException("Ukjent vedtakstype " + senesteVedtak.getClass());
+            throw new VedtakshistorikkException("Ukjent vedtakstype: " + (senesteVedtak != null ? senesteVedtak.getClass() : null));
         }
 
         return rettighetArenaForvalterConsumer.opprettRettighet(rettighetRequests);
