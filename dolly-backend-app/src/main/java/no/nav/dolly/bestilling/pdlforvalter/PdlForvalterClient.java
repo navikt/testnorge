@@ -27,9 +27,9 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlInnflytting;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlForeldreansvar;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFolkeregisterpersonstatus;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlForeldreansvar;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlInnflytting;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
@@ -191,6 +191,11 @@ public class PdlForvalterClient implements ClientRegister {
         } catch (DollyFunctionalException e) {
 
             status.append('&').append(e.getMessage().replaceAll(",", ";"));
+
+        } catch (RuntimeException e) {
+
+            status.append('&')
+                    .append(errorStatusDecoder.decodeRuntimeException(e));
         }
     }
 
