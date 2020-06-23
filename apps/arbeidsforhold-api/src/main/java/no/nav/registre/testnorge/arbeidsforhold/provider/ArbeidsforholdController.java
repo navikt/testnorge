@@ -12,7 +12,7 @@ import no.nav.registre.testnorge.arbeidsforhold.consumer.AaregConsumer;
 import no.nav.registre.testnorge.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
 
 @RestController
-@RequestMapping("/api/api/arbeidsforhold")
+@RequestMapping("/api/v1/arbeidsforhold")
 @RequiredArgsConstructor
 public class ArbeidsforholdController {
 
@@ -22,7 +22,7 @@ public class ArbeidsforholdController {
     public ResponseEntity<ArbeidsforholdDTO> getArbeidsforhold(
             @PathVariable("ident") String ident,
             @PathVariable("orgnummer") String orgnummer,
-            @PathVariable("ident") String arbeidsforholdId
+            @PathVariable("arbeidsforholdId") String arbeidsforholdId
     ) {
         var arbeidsforhold = consumer.getArbeidsforhold(ident, orgnummer, arbeidsforholdId);
         return ResponseEntity.ok(arbeidsforhold.toDTO());
