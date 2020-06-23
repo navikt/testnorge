@@ -68,5 +68,6 @@
         <module>avhengighetsanalyse-frontend</module>
         <module>sykemelding-api</module>
         <module>person-api</module>
+        <module>arbeidsforhold-api</module>
     </modules>
 </project>
