@@ -1,10 +1,10 @@
 package no.nav.registre.inst.consumer.rs;
 
-import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CALL_ID;
-import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CONSUMER_ID;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.inst.Institusjonsopphold;
+import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -20,9 +20,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.nav.registre.inst.Institusjonsopphold;
-import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CALL_ID;
+import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CONSUMER_ID;
+import static no.nav.registre.inst.properties.HttpRequestConstants.ACCEPT;
+import static no.nav.registre.inst.properties.HttpRequestConstants.AUTHORIZATION;
 
 @Component
 @Slf4j
@@ -57,8 +58,8 @@ public class Inst2Consumer {
             String ident
     ) {
         var getRequest = RequestEntity.get(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/person/institusjonsopphold").expand())
-                .header("accept", "*/*")
-                .header("Authorization", bearerToken)
+                .header(ACCEPT, "*/*")
+                .header(AUTHORIZATION, bearerToken)
                 .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, consumerId)
                 .header("Nav-Personident", ident)
@@ -86,8 +87,8 @@ public class Inst2Consumer {
             Institusjonsopphold institusjonsopphold
     ) {
         var postRequest = RequestEntity.post(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/person/institusjonsopphold?validatePeriod=true").expand())
-                .header("accept", "*/*")
-                .header("Authorization", bearerToken)
+                .header(ACCEPT, "*/*")
+                .header(AUTHORIZATION, bearerToken)
                 .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, consumerId)
                 .body(institusjonsopphold);
@@ -116,8 +117,8 @@ public class Inst2Consumer {
             Institusjonsopphold institusjonsopphold
     ) {
         var putRequest = RequestEntity.put(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/person/institusjonsopphold/{oppholdId}").expand(oppholdId))
-                .header("accept", "*/*")
-                .header("Authorization", bearerToken)
+                .header(ACCEPT, "*/*")
+                .header(AUTHORIZATION, bearerToken)
                 .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, consumerId)
                 .body(institusjonsopphold);
@@ -138,8 +139,8 @@ public class Inst2Consumer {
             Long oppholdId
     ) {
         var deleteRequest = RequestEntity.delete(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/person/institusjonsopphold/{oppholdId}").expand(oppholdId))
-                .header("accept", "*/*")
-                .header("Authorization", bearerToken)
+                .header(ACCEPT, "*/*")
+                .header(AUTHORIZATION, bearerToken)
                 .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, consumerId)
                 .build();
@@ -162,8 +163,8 @@ public class Inst2Consumer {
     ) {
         var getRequest = RequestEntity.get(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/institusjon/oppslag/tssEksternId/{tssEksternId}?date={date}")
                 .expand(tssEksternId, date))
-                .header("accept", "*/*")
-                .header("Authorization", bearerToken)
+                .header(ACCEPT, "*/*")
+                .header(AUTHORIZATION, bearerToken)
                 .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, consumerId)
                 .build();

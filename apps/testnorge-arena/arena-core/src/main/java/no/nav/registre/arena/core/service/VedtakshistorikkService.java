@@ -9,6 +9,8 @@ import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_AAP
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_UNG_UFOER;
 import static no.nav.registre.arena.core.consumer.rs.AapSyntConsumer.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
 import static no.nav.registre.arena.core.consumer.rs.TilleggSyntConsumer.ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT;
+import static no.nav.registre.arena.core.service.RettighetAapService.SYKEPENGEERSTATNING;
+import static no.nav.registre.arena.core.service.RettighetAapService.SYKEPENGEERSTATNING_MAKS_PERIODE;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,6 +69,7 @@ public class VedtakshistorikkService {
         for (var vedtakshistorikken : vedtakshistorikk) {
             vedtakshistorikken.setTilsynFamiliemedlemmer(fjernTilsynFamiliemedlemmerVedtakMedUgyldigeDatoer(vedtakshistorikken.getTilsynFamiliemedlemmer()));
             vedtakshistorikken.setUngUfoer(fjernAapUngUfoerMedUgyldigeDatoer(vedtakshistorikken.getUngUfoer()));
+            oppdaterAapSykepengeerstatningDatoer(vedtakshistorikken.getAap());
 
             var tidligsteDato = LocalDate.now();
             var aap = finnUtfyltAap(vedtakshistorikken);
@@ -195,6 +198,28 @@ public class VedtakshistorikkService {
         return nyUngUfoer.isEmpty() ? null : nyUngUfoer;
     }
 
+    private void oppdaterAapSykepengeerstatningDatoer(List<NyttVedtakAap> aapVedtak) {
+        if (aapVedtak != null) {
+            int antallDagerEndret = 0;
+            for (var vedtak : aapVedtak) {
+                if (SYKEPENGEERSTATNING.equals(vedtak.getAktivitetsfase()) && vedtak.getFraDato() != null) {
+                    vedtak.setFraDato(vedtak.getFraDato().minusDays(antallDagerEndret));
+                    if (vedtak.getTilDato() == null) {
+                        vedtak.setTilDato(vedtak.getFraDato().plusMonths(6));
+                    } else {
+                        vedtak.setTilDato(vedtak.getTilDato().minusDays(antallDagerEndret));
+
+                        var originalTilDato = vedtak.getTilDato();
+                        serviceUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(vedtak, SYKEPENGEERSTATNING_MAKS_PERIODE);
+                        var nyTilDato = vedtak.getTilDato();
+
+                        antallDagerEndret += ChronoUnit.DAYS.between(nyTilDato, originalTilDato);
+                    }
+                }
+            }
+        }
+    }
+
     private LocalDate finnTidligsteDatoAap(List<NyttVedtakAap> vedtak) {
         var tidligsteDato = LocalDate.now();
         for (var vedtaket : vedtak) {
@@ -281,7 +306,9 @@ public class VedtakshistorikkService {
             var rettighetRequest = new RettighetAapRequest(aap);
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
-            rettighetRequest.getNyeAap().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
+            rettighetRequest.getNyeAap().forEach(rettighet ->
+                    rettighet.setBegrunnelse(BEGRUNNELSE)
+            );
             rettigheter.add(rettighetRequest);
         }
     }

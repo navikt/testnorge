@@ -5,6 +5,7 @@ import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.EIER;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.Relasjon;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -328,5 +329,16 @@ public class ServiceUtils {
             }
         }
         return firstResponses;
+    }
+
+    public void setDatoPeriodeVedtakInnenforMaxAntallMaaneder(NyttVedtak vedtak, int antallMaaneder){
+        var tilDato = vedtak.getTilDato();
+        if(tilDato != null){
+            var tilDatoLimit = vedtak.getFraDato().plusMonths(antallMaaneder);
+
+            if(tilDato.isAfter(tilDatoLimit)){
+                vedtak.setTilDato(tilDatoLimit);
+            }
+        }
     }
 }

@@ -26,7 +26,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NyttVedtak {
 
-    @JsonAlias({ "AVBRUDDSKODE", "avbruddKode" })
+    @JsonAlias({ "AVBRUDDSKODE", "AVBRUDD_KODE", "avbruddKode" })
     private String avbruddKode;
 
     @JsonAlias({ "BEGRUNNELSE", "begrunnelse" })

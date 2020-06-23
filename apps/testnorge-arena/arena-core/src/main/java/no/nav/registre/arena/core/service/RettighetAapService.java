@@ -38,12 +38,17 @@ import no.nav.registre.arena.core.service.util.ServiceUtils;
 @RequiredArgsConstructor
 public class RettighetAapService {
 
+    private static final String REGEX_RN = "[\r\n]";
+
     private final AapSyntConsumer aapSyntConsumer;
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final BrukereService brukereService;
     private final ServiceUtils serviceUtils;
     private final PensjonTestdataFacadeConsumer pensjonTestdataFacadeConsumer;
     private final Random rand;
+
+    public static final String SYKEPENGEERSTATNING = "SPE";
+    public static final int SYKEPENGEERSTATNING_MAKS_PERIODE = 6;
 
     public Map<String, List<NyttVedtakResponse>> genererAapMedTilhoerende115(
             Long avspillergruppeId,
@@ -71,6 +76,12 @@ public class RettighetAapService {
             var rettighetRequest = new RettighetAapRequest(Collections.singletonList(syntetisertRettighet));
             rettighetRequest.setPersonident(ident);
             rettighetRequest.setMiljoe(miljoe);
+
+            rettighetRequest.getNyeAap().forEach(rettighet -> {
+                if(SYKEPENGEERSTATNING.equals(rettighet.getAktivitetsfase())){
+                    serviceUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(rettighet, SYKEPENGEERSTATNING_MAKS_PERIODE);
+                }
+            });
 
             rettigheter.add(rettighetRequest);
         }
@@ -101,6 +112,10 @@ public class RettighetAapService {
         var rettighetRequest = new RettighetAapRequest(Collections.singletonList(syntetisertRettighet));
         rettighetRequest.setPersonident(ident);
         rettighetRequest.setMiljoe(miljoe);
+
+        if(SYKEPENGEERSTATNING.equals(rettighetRequest.getNyeAap().get(0).getAktivitetsfase())){
+            serviceUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(rettighetRequest.getNyeAap().get(0), SYKEPENGEERSTATNING_MAKS_PERIODE);
+        }
 
         rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(new ArrayList<>(Collections.singletonList(aap115Rettighet)), miljoe));
         return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(new ArrayList<>(Collections.singletonList(rettighetRequest)), miljoe));
@@ -228,9 +243,9 @@ public class RettighetAapService {
             if (response.getResponse().getHttpStatus().getStatus() != 200) {
                 log.error(
                         "Kunne ikke opprette ident {} i popp i miljø {}. Feilmelding: {}",
-                        ident.replaceAll("[\r\n]", ""),
-                        response.getMiljo().replaceAll("[\r\n]", ""),
-                        response.getResponse().getMessage().replaceAll("[\r\n]", "")
+                        ident.replaceAll(REGEX_RN, ""),
+                        response.getMiljo().replaceAll(REGEX_RN, ""),
+                        response.getResponse().getMessage().replaceAll(REGEX_RN, "")
                 );
             }
         }
@@ -248,9 +263,9 @@ public class RettighetAapService {
             if (response.getResponse().getHttpStatus().getStatus() != 200) {
                 log.error(
                         "Kunne ikke opprette inntekt på ident {} i popp i miljø {}. Feilmelding: {}",
-                        ident.replaceAll("[\r\n]", ""),
-                        response.getMiljo().replaceAll("[\r\n]", ""),
-                        response.getResponse().getMessage().replaceAll("[\r\n]", "")
+                        ident.replaceAll(REGEX_RN, ""),
+                        response.getMiljo().replaceAll(REGEX_RN, ""),
+                        response.getResponse().getMessage().replaceAll(REGEX_RN, "")
                 );
             }
         }
