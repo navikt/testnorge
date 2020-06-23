@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import no.nav.registre.arena.core.consumer.rs.AktoerRegisteretConsumer;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.service.BrukereService;
+import no.nav.registre.arena.core.service.exception.ArbeidssoekerException;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.Relasjon;
@@ -147,7 +148,7 @@ public class ServiceUtils {
             kvalifiseringsgruppe = rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VURDI;
             break;
         default:
-            throw new RuntimeException("Ukjent aktivitetsfase " + aktivitetsfase);
+            throw new ArbeidssoekerException("Ukjent aktivitetsfase " + aktivitetsfase);
         }
         return opprettArbeidssoeker(rettigheter, miljoe, kvalifiseringsgruppe);
     }

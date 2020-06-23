@@ -276,21 +276,19 @@ public class VedtakshistorikkService {
         }
     }
 
-    private NyttVedtak finnSenesteVedtak(List vedtak) {
+    private NyttVedtak finnSenesteVedtak(List<? extends NyttVedtak> vedtak) {
         var senesteDato = LocalDate.MIN;
         NyttVedtak senesteVedtak = null;
         for (var vedtaket : vedtak) {
-            LocalDate vedtakFraDato = null;
+            LocalDate vedtakFraDato;
             if (vedtaket instanceof NyttVedtakTillegg) {
                 vedtakFraDato = ((NyttVedtakTillegg) vedtaket).getVedtaksperiode().getFom();
-            } else if (vedtaket instanceof NyttVedtak) {
-                vedtakFraDato = ((NyttVedtak) vedtaket).getFraDato();
+            } else {
+                vedtakFraDato = vedtaket.getFraDato();
             }
-            if (vedtakFraDato != null) {
-                if (senesteDato.isBefore(vedtakFraDato)) {
-                    senesteDato = vedtakFraDato;
-                    senesteVedtak = (NyttVedtak) vedtaket;
-                }
+            if (vedtakFraDato != null && senesteDato.isBefore(vedtakFraDato)) {
+                senesteDato = vedtakFraDato;
+                senesteVedtak = vedtaket;
             }
         }
         return senesteVedtak;
