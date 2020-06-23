@@ -7,8 +7,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
@@ -94,4 +97,65 @@ public class Vedtakshistorikk {
 
     @JsonProperty("TSRTILFAM")
     private List<NyttVedtakTillegg> tilsynFamiliemedlemmerArbeidssoekere;
+
+    public List<NyttVedtak> getAlleVedtak() {
+        List<NyttVedtak> alleVedtak = new ArrayList<>();
+        alleVedtak.addAll(getAlleAapVedtak());
+        alleVedtak.addAll(getAlleTiltakVedtak());
+        alleVedtak.addAll(getAlleTilleggVedtak());
+
+        return alleVedtak;
+    }
+
+    public List<NyttVedtakAap> getAlleAapVedtak() {
+        List<NyttVedtakAap> alleAapVedtak = new ArrayList<>();
+        addAllIfNotNull(alleAapVedtak, aap);
+        addAllIfNotNull(alleAapVedtak, aap115);
+        addAllIfNotNull(alleAapVedtak, ungUfoer);
+        addAllIfNotNull(alleAapVedtak, tvungenForvaltning);
+        addAllIfNotNull(alleAapVedtak, fritakMeldekort);
+
+        return alleAapVedtak;
+    }
+
+    public List<NyttVedtakTiltak> getAlleTiltakVedtak() {
+        List<NyttVedtakTiltak> alleTiltakVedtak = new ArrayList<>();
+        addAllIfNotNull(alleTiltakVedtak, tiltakspenger);
+        addAllIfNotNull(alleTiltakVedtak, barnetillegg);
+        addAllIfNotNull(alleTiltakVedtak, tiltaksdeltakelse);
+
+        return alleTiltakVedtak;
+    }
+
+    public List<NyttVedtakTillegg> getAlleTilleggVedtak() {
+        List<NyttVedtakTillegg> alleTilleggVedtak = new ArrayList<>();
+        addAllIfNotNull(alleTilleggVedtak, boutgifter);
+        addAllIfNotNull(alleTilleggVedtak, dagligReise);
+        addAllIfNotNull(alleTilleggVedtak, flytting);
+        addAllIfNotNull(alleTilleggVedtak, laeremidler);
+        addAllIfNotNull(alleTilleggVedtak, hjemreise);
+        addAllIfNotNull(alleTilleggVedtak, reiseObligatoriskSamling);
+        addAllIfNotNull(alleTilleggVedtak, tilsynBarn);
+        addAllIfNotNull(alleTilleggVedtak, tilsynFamiliemedlemmer);
+        addAllIfNotNull(alleTilleggVedtak, boutgifterArbeidssoekere);
+        addAllIfNotNull(alleTilleggVedtak, dagligReiseArbeidssoekere);
+        addAllIfNotNull(alleTilleggVedtak, flyttingArbeidssoekere);
+        addAllIfNotNull(alleTilleggVedtak, laeremidlerArbeidssoekere);
+        addAllIfNotNull(alleTilleggVedtak, hjemreiseArbeidssoekere);
+        addAllIfNotNull(alleTilleggVedtak, reisestoenadArbeidssoekere);
+        addAllIfNotNull(alleTilleggVedtak, reiseObligatoriskSamlingArbeidssoekere);
+        addAllIfNotNull(alleTilleggVedtak, tilsynBarnArbeidssoekere);
+        addAllIfNotNull(alleTilleggVedtak, tilsynFamiliemedlemmerArbeidssoekere);
+
+        return alleTilleggVedtak;
+    }
+
+    private static <E> void addAllIfNotNull(
+            List<E> list,
+            Collection<? extends E> c
+    ) {
+        if (c != null) {
+            list.addAll(c);
+        }
+    }
 }
