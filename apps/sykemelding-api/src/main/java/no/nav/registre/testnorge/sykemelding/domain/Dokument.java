@@ -43,6 +43,13 @@ class Dokument {
                         .withSystemNavn(applicationInfo.getName())
                         .withSystemVersjon(applicationInfo.getVersion())
                 );
+
+        if(dto.getUmidelbarBistand() != null){
+            xmlHelseOpplysningerArbeidsuforhet.withMeldingTilNav(
+                    new XMLHelseOpplysningerArbeidsuforhet.MeldingTilNav()
+                            .withBistandNAVUmiddelbart(dto.getUmidelbarBistand())
+            );
+        }
     }
 
     private static LocalDate findFom(List<PeriodeDTO> perioder) {

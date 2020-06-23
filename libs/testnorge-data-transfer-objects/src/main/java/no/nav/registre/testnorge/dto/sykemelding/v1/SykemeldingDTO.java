@@ -41,6 +41,8 @@ public class SykemeldingDTO {
     private List<DiagnoseDTO> biDiagnoser;
     @JsonProperty
     private DetaljerDTO detaljer;
+    @JsonProperty
+    private Boolean umidelbarBistand;
 
     @JsonIgnore
     public List<DiagnoseDTO> getBiDiagnoser() {

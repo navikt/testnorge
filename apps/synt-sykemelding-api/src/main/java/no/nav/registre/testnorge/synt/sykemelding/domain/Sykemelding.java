@@ -117,6 +117,7 @@ public class Sykemelding {
                 .mottaker(mottaker)
                 .pasient(pasient)
                 .perioder(perioder)
+                .umidelbarBistand(true)
                 .sender(sender)
                 .detaljer(DetaljerDTO
                         .builder()
