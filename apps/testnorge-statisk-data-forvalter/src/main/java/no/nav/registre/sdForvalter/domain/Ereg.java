@@ -7,13 +7,14 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.Value;
-import no.nav.registre.sdForvalter.consumer.rs.request.ereg.EregMapperRequest;
-import no.nav.registre.sdForvalter.database.model.EregModel;
-import no.nav.registre.sdForvalter.dto.organisasjon.v1.OrganisasjonDTO;
 import org.apache.logging.log4j.util.Strings;
 
 import java.util.List;
 import java.util.Map;
+
+import no.nav.registre.sdForvalter.consumer.rs.request.ereg.EregMapperRequest;
+import no.nav.registre.sdForvalter.database.model.EregModel;
+import no.nav.registre.sdForvalter.dto.organisasjon.v1.OrganisasjonDTO;
 
 
 @Value

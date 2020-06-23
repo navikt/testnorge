@@ -2,13 +2,6 @@ package no.nav.registre.sdForvalter.provider.rs.v1;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.sdForvalter.adapter.AaregAdapter;
-import no.nav.registre.sdForvalter.adapter.EregAdapter;
-import no.nav.registre.sdForvalter.adapter.KrrAdapter;
-import no.nav.registre.sdForvalter.adapter.TpsIdenterAdapter;
-import no.nav.registre.sdForvalter.domain.AaregListe;
-import no.nav.registre.sdForvalter.domain.KrrListe;
-import no.nav.registre.sdForvalter.domain.TpsIdentListe;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +9,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import no.nav.registre.sdForvalter.adapter.AaregAdapter;
+import no.nav.registre.sdForvalter.adapter.EregAdapter;
+import no.nav.registre.sdForvalter.adapter.KrrAdapter;
+import no.nav.registre.sdForvalter.adapter.TpsIdenterAdapter;
+import no.nav.registre.sdForvalter.domain.AaregListe;
+import no.nav.registre.sdForvalter.domain.KrrListe;
+import no.nav.registre.sdForvalter.domain.TpsIdentListe;
 
 @Slf4j
 @RestController

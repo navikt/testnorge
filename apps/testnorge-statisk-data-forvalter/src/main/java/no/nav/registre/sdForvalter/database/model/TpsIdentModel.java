@@ -7,11 +7,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.sdForvalter.domain.TpsIdent;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import no.nav.registre.sdForvalter.domain.TpsIdent;
 
 @Entity
 @ToString
