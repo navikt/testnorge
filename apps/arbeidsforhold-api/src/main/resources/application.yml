@@ -1,3 +1,17 @@
+spring:
+  application:
+    name: testnorge-arbeidsforhold-api
+
 application:
   version: @application.version@
   name: testnorge-arbeidsforhold-api
+
+sts:
+  token:
+    provider:
+      url: ${STS_TOKEN_PROVIDER_URL}
+      username: ${STS_TOKEN_PROVIDER_USERNAME}
+      password: ${STS_TOKEN_PROVIDER_PASSWORD}
+
+aareg:
+  url: https://modapp-q1.adeo.no/aareg-services/api

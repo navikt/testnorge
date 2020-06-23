@@ -7,5 +7,5 @@ import no.nav.registere.testnorge.core.ApplicationCoreConfig;
 
 @Configuration
 @Import(ApplicationCoreConfig.class)
-public class AppConfig {
+public class ApplicationConfig {
 }
