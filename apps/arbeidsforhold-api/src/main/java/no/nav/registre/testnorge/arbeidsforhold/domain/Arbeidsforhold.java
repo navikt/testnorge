@@ -16,9 +16,17 @@ public class Arbeidsforhold {
     public Arbeidsforhold(ArbeidsforholdDTO dto) {
         arbeidsforholdId = dto.getArbeidsforholdId();
         orgnummer = dto.getArbeidsgiver().getOrganisasjonsnummer();
+
+
+        if(dto.getArbeidsavtaler().isEmpty()){
+            throw new RuntimeException("Finner ikke arbeidesforhold");
+        }
+
         if (dto.getArbeidsavtaler().size() > 1) {
             log.warn("Fant flere arbeidsavtaler. Velger den første i listen");
         }
+
+
         var arbeidsavtale = dto.getArbeidsavtaler().get(0);
         stillingsprosent = arbeidsavtale.getStillingsprosent();
         yrke = arbeidsavtale.getYrke();

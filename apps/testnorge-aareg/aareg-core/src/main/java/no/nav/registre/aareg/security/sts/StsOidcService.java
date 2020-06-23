@@ -25,7 +25,6 @@ import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.properties.CredentialsProps;
 import no.nav.registre.aareg.properties.Environment;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class StsOidcService {

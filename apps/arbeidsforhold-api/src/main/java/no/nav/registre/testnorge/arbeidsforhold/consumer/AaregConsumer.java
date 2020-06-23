@@ -45,10 +45,9 @@ public class AaregConsumer {
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .build();
         ResponseEntity<ArbeidsforholdDTO[]> response = restTemplate.exchange(request, ArbeidsforholdDTO[].class);
-
         if (!response.getStatusCode().is2xxSuccessful() || !response.hasBody()) {
             log.warn(
-                    "Klarer ikke aa hente arbeidsforhold for {} . Response code: {}",
+                    "Klarer ikke å hente arbeidsforhold for {}. Response code: {}",
                     ident,
                     response.getStatusCodeValue()
             );
