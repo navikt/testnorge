@@ -460,8 +460,10 @@ public class VedtakshistorikkService {
 
     private void opprettTiltaksaktivitet(List<RettighetRequest> rettigheter, RettighetRequest request) {
         if (request instanceof RettighetTilleggRequest) {
-            rettigheter.add(rettighetTiltakService.opprettRettighetTiltaksaktivitetRequest(
-                    request, false));
+            if (request.getVedtakTillegg() != null && !request.getVedtakTillegg().isEmpty()) {
+                rettigheter.add(rettighetTiltakService.opprettRettighetTiltaksaktivitetRequest(
+                        request, false));
+            }
         } else {
             log.error("Opprettelse av tiltaksaktivitet er kun støttet for tilleggsstønad");
         }

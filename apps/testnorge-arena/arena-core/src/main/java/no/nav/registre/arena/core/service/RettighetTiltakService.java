@@ -51,7 +51,7 @@ public class RettighetTiltakService {
 
     private static final Map<String, List<AktivitetskodeMedSannsynlighet>> vedtakMedAktitivetskode;
     private static final Map<String, List<String>> deltakerstatuskoderMedAarsakkoder;
-    private static final String aktivitetstatuskodeFullfoert = "FULLF";
+    public static final String aktivitetstatuskodeFullfoert = "FULLF";
 
     static {
         deltakerstatuskoderMedAarsakkoder = new HashMap<>();
@@ -295,16 +295,21 @@ public class RettighetTiltakService {
                 log.error("Opprettelse av tiltaksaktivitet er kun støttet for tilleggsstønad");
                 continue;
             }
-            tiltaksaktiviteter.add(opprettRettighetTiltaksaktivitetRequest(rettighet, true));
+            if (rettighet.getVedtakTillegg() != null && !rettighet.getVedtakTillegg().isEmpty()) {
+                tiltaksaktiviteter.add(opprettRettighetTiltaksaktivitetRequest(rettighet, true));
+            }
         }
 
         return rettighetArenaForvalterConsumer.opprettRettighet(tiltaksaktiviteter);
     }
 
-    public RettighetTiltaksaktivitetRequest opprettRettighetTiltaksaktivitetRequest(
+    RettighetTiltaksaktivitetRequest opprettRettighetTiltaksaktivitetRequest(
             RettighetRequest rettighet,
             Boolean setTilfeldigStatuskode
     ) {
+        if (rettighet.getVedtakTillegg() != null && !rettighet.getVedtakTillegg().isEmpty()) {
+
+        }
         var statuskode = aktivitetstatuskodeFullfoert;
         if (setTilfeldigStatuskode) {
             statuskode = tiltakSyntConsumer.opprettTiltaksaktivitet(1).get(0).getAktivitetstatuskode();
