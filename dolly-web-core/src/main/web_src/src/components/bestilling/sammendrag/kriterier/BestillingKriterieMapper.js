@@ -859,5 +859,21 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	if (inntektsmeldingKriterier)
 		data.push(mapInntektsmeldingKriterier(inntektsmeldingKriterier.inntekter))
 
+	const dokarkivKriterier = bestillingData.dokarkiv
+
+	if (dokarkivKriterier) {
+		const dokarkiv = {
+			header: 'Dokumenter',
+			items: [
+				obj('Tittel', dokarkivKriterier.tittel),
+				obj('Tema', dokarkivKriterier.tema),
+				obj('Journalførende enhet', dokarkivKriterier.journalfoerendeEnhet),
+				obj('Brevkode', dokarkivKriterier.dokumenter.brevkode)
+			]
+		}
+
+		data.push(dokarkiv)
+	}
+
 	return data
 }

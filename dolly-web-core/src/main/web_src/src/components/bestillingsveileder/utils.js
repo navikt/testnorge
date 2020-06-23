@@ -12,7 +12,8 @@ const rootPaths = [
 	'arenaforvalter',
 	'udistub',
 	'inntektsmelding',
-	'brregstub'
+	'brregstub',
+	'dokarkiv'
 ]
 
 export const harAvhukedeAttributter = values => {

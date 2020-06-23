@@ -26,6 +26,7 @@ import FileChecklistLight from '~/assets/icons/nav-ikoner/line/SVG/17-files/file
 import FileRefresh from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-refresh.svg'
 // import NewFile from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-new-1.svg'
 import NewFile from '~/assets/icons/nav-ikoner/filled/SVG/17-files/file-add.svg'
+import Files from '~/assets/icons/nav-ikoner/line/SVG/17-files/files-3.svg'
 import Synchronize from '~/assets/icons/nav-ikoner/filled/SVG/19-interface/synchronize-3.svg'
 import AddCircle from '~/assets/icons/nav-ikoner/line/SVG/19-interface/add-circle.svg'
 import RemoveCircle from '~/assets/icons/nav-ikoner/line/SVG/19-interface/remove-circle.svg'
@@ -128,7 +129,8 @@ export const icons = {
 	barn: Baby,
 	dolly: Dolly,
 	pensjon: PiggyBank,
-	brreg: BrregLogo
+	brreg: BrregLogo,
+	dokarkiv: Files
 }
 
 const px = v => `${v}px`
