@@ -1,5 +1,7 @@
 package no.nav.dolly.bestilling.dokarkiv.domain;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +17,7 @@ public class DokarkivResponse {
 
     private String journalpostId;
     private boolean journalpostferdigstilt;
-    private DokumentInfo dokumenter;
+    private List<DokumentInfo> dokumenter;
 
     @Getter
     @Setter

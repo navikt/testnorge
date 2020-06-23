@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -34,7 +36,7 @@ public class RsDokarkiv {
     @ApiModelProperty(
             position = 2
     )
-    private JournalPostType journalPost;
+    private JournalPostType journalpostType;
 
     @ApiModelProperty(
             position = 3,
@@ -71,7 +73,7 @@ public class RsDokarkiv {
             position = 8,
             value = "Første dokument blir tilknyttet som hoveddokument på journalposten. Øvrige dokumenter tilknyttes som vedlegg. Rekkefølgen på vedlegg beholdes ikke ved uthenting av journalpost."
     )
-    private Dokument dokumenter;
+    private List<Dokument> dokumenter;
 
     @Getter
     @Setter
@@ -129,7 +131,7 @@ public class RsDokarkiv {
                 position = 3,
                 value = "DokumentVariant"
         )
-        private DokumentVariant dokumentVarianter;
+        private List<DokumentVariant> dokumentvarianter;
     }
 
     @Getter

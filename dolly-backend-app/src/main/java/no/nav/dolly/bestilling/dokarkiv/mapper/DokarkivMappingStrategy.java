@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.dokarkiv.mapper;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest.IdType.FNR;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -8,7 +9,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 
@@ -25,6 +29,8 @@ import no.nav.dolly.mapper.MappingStrategy;
 public class DokarkivMappingStrategy implements MappingStrategy {
 
     private static final String KANAL = "SCAN_IM";
+    private static final String PDFA = "PDFA";
+    private static final String ARKIV = "ARKIV";
 
     @Override
     public void register(MapperFactory factory) {
@@ -34,15 +40,31 @@ public class DokarkivMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(RsDokarkiv dokarkiv,
                             DokarkivRequest dokarkivRequest, MappingContext context) {
+                            boolean dokarkivIsSet = true;
 
                         if (isBlank(dokarkiv.getKanal())) {
                             dokarkivRequest.setKanal(KANAL);
                         }
-                        if (!isNull(dokarkiv.getDokumenter()) && !isNull(dokarkiv.getDokumenter().getDokumentVarianter())
-                                && isBlank(dokarkiv.getDokumenter().getDokumentVarianter().getFysiskDokument())) {
+                        if (isNull(dokarkiv.getDokumenter())) {
+                            dokarkivIsSet = false;
+                            List<DokarkivRequest.Dokument> dokumenter = new ArrayList<>();
+                            dokarkivRequest.setDokumenter(dokumenter);
+                            List<DokarkivRequest.DokumentVariant> dokumentVarianter = new ArrayList<>();
+                            dokumentVarianter.add(new DokarkivRequest.DokumentVariant());
+                            dokarkivRequest.getDokumenter().get(0).setDokumentvarianter(dokumentVarianter);
+                        } else if (isNull(dokarkiv.getDokumenter().get(0).getDokumentvarianter())) {
+                            dokarkivIsSet = false;
+                            List<DokarkivRequest.DokumentVariant> dokumentVarianter = new ArrayList<>();
+                            dokumentVarianter.add(new DokarkivRequest.DokumentVariant());
+                            dokarkivRequest.getDokumenter().get(0).setDokumentvarianter(dokumentVarianter);
+                        }
+                        if (!dokarkivIsSet || isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getFysiskDokument())) {
                             Path pdfPath = Paths.get("dolly-backend-app/src/main/resources/dokarkiv/testpdf.pdf");
                             try {
-                                dokarkivRequest.getDokumenter().getDokumentVarianter().setFysiskDokument(Arrays.toString(Files.readAllBytes(pdfPath)));
+                                byte[] pdfByteArray = Files.readAllBytes(pdfPath);
+                                dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setFiltype(PDFA);
+                                dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setFysiskDokument(Base64.getEncoder().encodeToString(pdfByteArray));
+                                dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setVariantformat(ARKIV);
                             } catch (IOException e) {
                                 log.error("Klarte ikke å hente test PDF: ", e);
                             }

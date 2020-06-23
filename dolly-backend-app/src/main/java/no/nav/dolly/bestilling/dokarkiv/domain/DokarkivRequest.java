@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,7 +28,7 @@ public class DokarkivRequest {
     }
 
     private String tittel;
-    private JournalPostType journalPost;
+    private JournalPostType journalpostType;
     private String tema;
     private String behandlingstema;
     private String kanal;
@@ -34,7 +36,7 @@ public class DokarkivRequest {
     private AvsenderMottaker avsenderMottaker;
     private Bruker bruker;
     private Sak sak;
-    private Dokument dokumenter;
+    private List<Dokument> dokumenter;
 
     @Getter
     @Setter
@@ -59,7 +61,7 @@ public class DokarkivRequest {
 
         private String tittel;
         private String brevkode;
-        private DokumentVariant dokumentVarianter;
+        private List<DokumentVariant> dokumentvarianter;
     }
 
     @Getter
