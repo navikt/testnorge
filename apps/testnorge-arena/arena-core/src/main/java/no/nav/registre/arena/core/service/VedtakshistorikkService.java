@@ -280,13 +280,16 @@ public class VedtakshistorikkService {
         var senesteDato = LocalDate.MIN;
         NyttVedtak senesteVedtak = null;
         for (var vedtaket : vedtak) {
-            if (vedtaket instanceof NyttVedtak) {
-                var vedtakFraDato = ((NyttVedtak) vedtaket).getFraDato();
-                if (vedtakFraDato != null) {
-                    if (senesteDato.isBefore(vedtakFraDato)) {
-                        senesteDato = ((NyttVedtak) vedtaket).getFraDato();
-                        senesteVedtak = (NyttVedtak) vedtaket;
-                    }
+            LocalDate vedtakFraDato = null;
+            if (vedtaket instanceof NyttVedtakTillegg) {
+                vedtakFraDato = ((NyttVedtakTillegg) vedtaket).getVedtaksperiode().getFom();
+            } else if (vedtaket instanceof NyttVedtak) {
+                vedtakFraDato = ((NyttVedtak) vedtaket).getFraDato();
+            }
+            if (vedtakFraDato != null) {
+                if (senesteDato.isBefore(vedtakFraDato)) {
+                    senesteDato = vedtakFraDato;
+                    senesteVedtak = (NyttVedtak) vedtaket;
                 }
             }
         }

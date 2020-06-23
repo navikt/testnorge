@@ -130,17 +130,23 @@ public class ServiceUtils {
             String aktivitetsfase
     ) {
         Kvalifiseringsgrupper kvalifiseringsgruppe;
-        if (AKTIVITETSFASE_UNDER_ARBEIDSAVKLARING.equals(aktivitetsfase)) {
+        switch (aktivitetsfase) {
+        case AKTIVITETSFASE_UNDER_ARBEIDSAVKLARING:
             kvalifiseringsgruppe = rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VARIG;
-        } else if (AKTIVITETSFASE_ARBEIDSUTPROEVING.equals(aktivitetsfase)) {
+            break;
+        case AKTIVITETSFASE_ARBEIDSUTPROEVING:
             kvalifiseringsgruppe = Kvalifiseringsgrupper.BATT;
-        } else if (AKTIVITETSFASE_FERDIG_AVKLART.equals(aktivitetsfase)) {
+            break;
+        case AKTIVITETSFASE_FERDIG_AVKLART:
             kvalifiseringsgruppe = rand.nextBoolean() ? Kvalifiseringsgrupper.BFORM : Kvalifiseringsgrupper.IKVAL;
-        } else if (AKTIVITETSFASE_VURDERING_FOR_UFOERE.equals(aktivitetsfase)) {
+            break;
+        case AKTIVITETSFASE_VURDERING_FOR_UFOERE:
             kvalifiseringsgruppe = rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VARIG;
-        } else if (AKTIVITETSFASE_SYKEPENGEERSTATNING.equals(aktivitetsfase)) {
+            break;
+        case AKTIVITETSFASE_SYKEPENGEERSTATNING:
             kvalifiseringsgruppe = rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VURDI;
-        } else {
+            break;
+        default:
             throw new RuntimeException("Ukjent aktivitetsfase " + aktivitetsfase);
         }
         return opprettArbeidssoeker(rettigheter, miljoe, kvalifiseringsgruppe);
