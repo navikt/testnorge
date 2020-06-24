@@ -136,6 +136,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 					name="inntektsmelding.inntekter"
 					header="Inntekt"
 					newEntry={initialValues(typeArbeidsgiver)}
+					canBeEmpty={false}
 				>
 					{(path: string, idx: number) => {
 						const ytelse = _get(formikBag.values, `${path}.ytelse`)
