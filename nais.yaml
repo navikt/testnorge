@@ -21,6 +21,9 @@ spec:
     max: 1
   vault:
     enabled: true
+    paths:
+      - kvPath: /serviceuser/data/dev/srvorkestratoren
+        mountPath: /var/run/secrets/nais.io/service_user
   resources:
     requests:
       cpu: 200m
