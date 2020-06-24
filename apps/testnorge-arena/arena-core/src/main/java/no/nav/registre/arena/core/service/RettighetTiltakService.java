@@ -244,7 +244,7 @@ public class RettighetTiltakService {
                 var deltakerstatuskode = serviceUtils.velgKodeBasertPaaSannsynlighet(
                         vedtakMedStatuskoder.get("DELTAKER")).getKode();
 
-                if(!erHistoriskStatus){
+                if(Boolean.FALSE.equals(erHistoriskStatus)){
                     deltakerstatuskode = tiltakSyntConsumer.opprettDeltakerstatus(1).get(0).getDeltakerstatusKode();
                 }
 
@@ -325,13 +325,10 @@ public class RettighetTiltakService {
             RettighetRequest rettighet,
             Boolean erHistoriskAktivitet
     ) {
-        if (rettighet.getVedtakTillegg() != null && !rettighet.getVedtakTillegg().isEmpty()) {
-
-        }
         var statuskode = serviceUtils.velgKodeBasertPaaSannsynlighet(
                 vedtakMedStatuskoder.get("AKTIVITET")).getKode();
 
-        if (!erHistoriskAktivitet) {
+        if (Boolean.FALSE.equals(erHistoriskAktivitet)) {
             statuskode = tiltakSyntConsumer.opprettTiltaksaktivitet(1).get(0).getAktivitetStatuskode();
         }
 
