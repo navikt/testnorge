@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import lombok.Setter;
 import no.nav.dolly.domain.resultset.aareg.RsAaregArbeidsforhold;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
+import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
@@ -37,7 +39,7 @@ public class RsMalBestillingWrapper {
     public Map<String, Set<RsMalBestilling>> getMalbestillinger() {
 
         if (isNull(malbestillinger)) {
-            malbestillinger = new TreeMap();
+            malbestillinger = new TreeMap<>();
         }
         return malbestillinger;
     }
@@ -80,5 +82,6 @@ public class RsMalBestillingWrapper {
         private RsInntektsmelding inntektsmelding;
         private PensjonData pensjonforvalter;
         private RsBregdata brregstub;
+        private RsDokarkiv dokarkiv;
     }
 }

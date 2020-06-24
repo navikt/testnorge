@@ -5,6 +5,7 @@ import static java.util.Objects.isNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import no.nav.dolly.domain.resultset.RsStatusRapport;
 import no.nav.dolly.domain.resultset.aareg.RsAaregArbeidsforhold;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
+import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
@@ -55,14 +57,14 @@ public class RsBestillingStatus {
 
     public List<String> getEnvironments() {
         if (isNull(environments)) {
-            environments = new ArrayList();
+            environments = new ArrayList<>();
         }
         return environments;
     }
 
     public List<RsStatusRapport> getStatus() {
         if (isNull(status)) {
-            status = new ArrayList();
+            status = new ArrayList<>();
         }
         return status;
     }
@@ -88,5 +90,6 @@ public class RsBestillingStatus {
         private PensjonData pensjonforvalter;
         private RsInntektsmelding inntektsmelding;
         private RsBregdata brregstub;
+        private RsDokarkiv dokarkiv;
     }
 }
