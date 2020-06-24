@@ -1,4 +1,18 @@
 <settings>
+    <profiles>
+        <profile>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>confluent</id>
+                    <url>https://packages.confluent.io/maven/</url>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+
     <servers>
         <server>
             <id>github-package-registry-navikt</id>
