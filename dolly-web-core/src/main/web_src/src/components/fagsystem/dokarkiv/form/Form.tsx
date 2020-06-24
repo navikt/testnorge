@@ -5,7 +5,6 @@ import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-// import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
 import { erForste } from '~/components/ui/form/formUtils'
@@ -24,8 +23,8 @@ const dokarkivAttributt = 'dokarkiv'
 
 export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 	const handleSkjemaChange = (v: React.ChangeEvent<any>) => {
-		formikBag.setFieldValue('dokarkiv.tittel', v.label)
-		formikBag.setFieldValue('dokarkiv.dokumenter.tittel', v.label)
+		formikBag.setFieldValue('dokarkiv.tittel', v.data)
+		formikBag.setFieldValue('dokarkiv.dokumenter.tittel', v.data)
 	}
 
 	return (
@@ -44,8 +43,6 @@ export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 							label="Skjema"
 							afterChange={handleSkjemaChange}
 							kodeverk={Kodeverk.NAVSKJEMA}
-							// TODO: Når kodeverk er på plass - fiks label med SortKodeverkArray i Utils.js
-							// options={Options('skjema')}
 							size="grow"
 							optionHeight={50}
 							isClearable={false}
