@@ -2,6 +2,7 @@ package no.nav.registre.sdforvalter.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -19,6 +20,7 @@ import no.nav.registre.sdforvalter.domain.TpsIdentListe;
 
 @Slf4j
 @Component
+@DependsOn("person-api")
 public class PersonConsumer {
 
     private final RestTemplate restTemplate;

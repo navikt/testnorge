@@ -1,7 +1,8 @@
-package no.nav.registre.sdforvalter.consumer.rs.ereg;
+package no.nav.registre.sdforvalter.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -12,28 +13,37 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import no.nav.registre.sdforvalter.consumer.rs.ereg.command.GetOrganisasjon;
-import no.nav.registre.sdforvalter.consumer.rs.response.ereg.EregOrganisasjon;
 import no.nav.registre.sdforvalter.domain.status.ereg.Organisasjon;
-
+import no.nav.registre.testnorge.common.command.GetOrganisasjonCommand;
 
 @Slf4j
 @Component
-public class EregConsumer {
+@DependsOn("organisasjon-api")
+public class OrganisasjonConsumer {
     private final RestTemplate restTemplate;
-    private final String eregUrl;
+    private final String url;
+    private final Executor executor;
 
-    public EregConsumer(
+    public OrganisasjonConsumer(
             RestTemplate restTemplate,
-            @Value("${ereg.api}") String eregUrl
+            @Value("${organsisasjon.api.url}") String url,
+            @Value("${organsisasjon.api.threads}") Integer threads
     ) {
         this.restTemplate = restTemplate;
-        this.eregUrl = eregUrl;
+        this.url = url;
+        this.executor = Executors.newFixedThreadPool(threads);
     }
 
-    private CompletableFuture<EregOrganisasjon> getOrganisasjon(String orgnummer, String miljo, Executor executor) {
+    private CompletableFuture<Organisasjon> getOrganisasjon(String orgnummer, String miljo, Executor executor) {
         return CompletableFuture.supplyAsync(
-                () -> new GetOrganisasjon(eregUrl, miljo, orgnummer, restTemplate).call(),
+                () -> {
+                    try {
+                        return new Organisasjon(new GetOrganisasjonCommand(restTemplate, url, orgnummer, miljo).call());
+                    } catch (Exception e) {
+                        log.warn("Klrer ikke å hente organsisasjon {}", orgnummer);
+                        return null;
+                    }
+                },
                 executor
         );
     }
@@ -45,5 +55,5 @@ public class EregConsumer {
         orgnummerList.forEach(orgnummer -> asyncMap.put(orgnummer, getOrganisasjon(orgnummer, miljo, executorService)));
         return asyncMap.getMap();
     }
-}
 
+}
