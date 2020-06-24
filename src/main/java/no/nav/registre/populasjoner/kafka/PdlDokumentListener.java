@@ -44,7 +44,6 @@ public class PdlDokumentListener {
     @KafkaListener(topics = "#{kafkaTopics.getPdlDokument()}")
     public void onMessage(@Payload String message) {
         log.info("Mottok melding på topic");
-        log.info(message);
 
         ConsumerRecords<String, String> records = new ObjectMapper().convertValue(message, new TypeReference<>() {
         });
