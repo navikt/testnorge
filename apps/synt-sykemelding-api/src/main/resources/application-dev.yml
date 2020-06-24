@@ -1,5 +1,5 @@
 consumers:
-  hodejegern:
+  hodejegeren:
     url: https://testnorge-hodejegeren.nais.preprod.local
   helsepersonell:
     url: https://testnorge-helsepersonell-api.nais.preprod.local

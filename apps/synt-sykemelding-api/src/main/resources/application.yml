@@ -4,7 +4,7 @@ application:
 
 
 consumers:
-  hodejegern:
+  hodejegeren:
     url: https://testnorge-hodejegeren.default.svc.nais.local
   helsepersonell:
     url: http://testnorge-helsepersonell-api.default.svc.nais.local
