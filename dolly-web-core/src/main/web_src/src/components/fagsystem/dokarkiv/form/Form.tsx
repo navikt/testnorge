@@ -5,7 +5,7 @@ import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+// import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
 import { erForste } from '~/components/ui/form/formUtils'
@@ -23,8 +23,9 @@ enum Kodeverk {
 const dokarkivAttributt = 'dokarkiv'
 
 export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
-	const handleTittelChange = (v: React.ChangeEvent<any>) => {
-		formikBag.setFieldValue('dokarkiv.dokumenter.tittel', v.target.value)
+	const handleSkjemaChange = (v: React.ChangeEvent<any>) => {
+		formikBag.setFieldValue('dokarkiv.tittel', v.label)
+		formikBag.setFieldValue('dokarkiv.dokumenter.tittel', v.label)
 	}
 
 	return (
@@ -37,24 +38,27 @@ export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 				startOpen={() => erForste(formikBag.values, [dokarkivAttributt])}
 			>
 				<Kategori title="Oppretting av skannet dokument" vis={dokarkivAttributt}>
-					<FormikTextInput
-						name="dokarkiv.tittel"
-						label="Tittel"
-						onBlur={handleTittelChange}
-						size="large"
-					/>
-					<FormikSelect name="dokarkiv.tema" label="Tema" kodeverk={Kodeverk.TEMA} size="xlarge" />
-					<FormikTextInput name="dokarkiv.journalfoerendeEnhet" label="Journalførende enhet" />
-				</Kategori>
-				<Kategori title="Dokument" vis={dokarkivAttributt}>
+					<div className="flexbox--full-width">
+						<FormikSelect
+							name="dokarkiv.dokumenter.brevkode"
+							label="Skjema"
+							afterChange={handleSkjemaChange}
+							kodeverk={Kodeverk.NAVSKJEMA}
+							// TODO: Når kodeverk er på plass - fiks label med SortKodeverkArray i Utils.js
+							// options={Options('skjema')}
+							size="grow"
+							optionHeight={50}
+							isClearable={false}
+						/>
+					</div>
 					<FormikSelect
-						name="dokarkiv.dokumenter.brevkode"
-						label="Brevkode"
-						kodeverk={Kodeverk.NAVSKJEMA} // Er tom
-						size="xxlarge"
+						name="dokarkiv.tema"
+						label="Tema"
+						kodeverk={Kodeverk.TEMA}
+						size="xlarge"
+						isClearable={false}
 					/>
-					{/* <FormikTextInput name="dokarkiv.dokumenter.brevkode" label="Brevkode" size="xxlarge" /> */}
-					{/* Kanskje bare mest brukte som Options */}
+					<FormikTextInput name="dokarkiv.journalfoerendeEnhet" label="Journalførende enhet" />
 				</Kategori>
 			</Panel>
 		</Vis>
@@ -69,6 +73,7 @@ DokarkivForm.validation = {
 			tema: requiredString,
 			journalfoerendeEnhet: Yup.string(),
 			dokumenter: Yup.object({
+				tittel: requiredString,
 				brevkode: requiredString
 			})
 		})

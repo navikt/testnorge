@@ -865,10 +865,10 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		const dokarkiv = {
 			header: 'Dokumenter',
 			items: [
+				obj('Brevkode', dokarkivKriterier.dokumenter.brevkode),
 				obj('Tittel', dokarkivKriterier.tittel),
 				obj('Tema', dokarkivKriterier.tema),
-				obj('Journalførende enhet', dokarkivKriterier.journalfoerendeEnhet),
-				obj('Brevkode', dokarkivKriterier.dokumenter.brevkode)
+				obj('Journalførende enhet', dokarkivKriterier.journalfoerendeEnhet)
 			]
 		}
 

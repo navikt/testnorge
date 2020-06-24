@@ -1,5 +1,7 @@
 // Specialbehov for modifisering og sortering av kodeverk
 export const SortKodeverkArray = data => {
+	console.log('data :>> ', data)
+
 	const kodeverk = data.koder
 	if (data.name == 'Språk') {
 		const spesKoder = ['ES', 'EN', 'NN', 'NB']

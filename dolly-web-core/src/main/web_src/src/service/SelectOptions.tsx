@@ -239,6 +239,29 @@ const selectOptions: SelectOptions = {
 		{ value: 'LEILIGHET_NR', label: 'Leilighet nummer' },
 		{ value: 'SEKSJON_NR', label: 'Seksjon nummer' },
 		{ value: 'BOLIG_NR', label: 'Bolig nummer' }
+	],
+
+	// TODO: Kun for test - fjernes:
+	skjema: [
+		{
+			value: 'NAV 14-04.10',
+			label: 'Søknad om svangerskapspenger til selvstendig næringsdrivende og frilanser'
+		},
+		{ value: 'NAV 14-05.06', label: 'Søknad om foreldrepenger ved adopsjon' },
+		{ value: 'NAV 14-05.07', label: 'Søknad om engangsstønad ved fødsel' },
+		{ value: 'NAV 14-05.09', label: 'Søknad om foreldrepenger ved fødsel' },
+		{ value: 'NAV 14-16.05', label: 'Søknad om endring eller nytt uttak av foreldrepenger' },
+		{
+			value: 'NAV 14-35.01',
+			label:
+				'Inntektsopplysninger for selvstendig næringsdrivende og frilansere som skal ha foreldrepenger eller svangerskapspenger'
+		},
+		{
+			value: 'NAV 08-30.01',
+			label:
+				'Inntektsopplysninger for arbeidstaker som skal ha sykepenger foreldrepenger svangerskapspenger pleie-/opplæringspenger og omsorgspenger'
+		},
+		{ value: 'NAV 90-00.08', label: 'Klage/anke' }
 	]
 }
 
