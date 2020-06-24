@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.dokarkiv.mapper;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest.IdType.FNR;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -10,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
@@ -40,7 +38,7 @@ public class DokarkivMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(RsDokarkiv dokarkiv,
                             DokarkivRequest dokarkivRequest, MappingContext context) {
-                            boolean dokarkivIsSet = true;
+                        boolean dokarkivIsSet = true;
 
                         if (isBlank(dokarkiv.getKanal())) {
                             dokarkivRequest.setKanal(KANAL);
