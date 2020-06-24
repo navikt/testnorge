@@ -130,31 +130,11 @@ public class ServiceUtils {
             String miljoe,
             String aktivitetsfase
     ) {
-        Kvalifiseringsgrupper kvalifiseringsgruppe;
         if (aktivitetsfase == null || aktivitetsfase.isBlank()) {
-            kvalifiseringsgruppe = Kvalifiseringsgrupper.BATT;
+            return opprettArbeidssoeker(rettigheter, miljoe, Kvalifiseringsgrupper.BATT);
         } else {
-            switch (aktivitetsfase) {
-            case AKTIVITETSFASE_UNDER_ARBEIDSAVKLARING:
-                kvalifiseringsgruppe = rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VARIG;
-                break;
-            case AKTIVITETSFASE_ARBEIDSUTPROEVING:
-                kvalifiseringsgruppe = Kvalifiseringsgrupper.BATT;
-                break;
-            case AKTIVITETSFASE_FERDIG_AVKLART:
-                kvalifiseringsgruppe = rand.nextBoolean() ? Kvalifiseringsgrupper.BFORM : Kvalifiseringsgrupper.IKVAL;
-                break;
-            case AKTIVITETSFASE_VURDERING_FOR_UFOERE:
-                kvalifiseringsgruppe = rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VARIG;
-                break;
-            case AKTIVITETSFASE_SYKEPENGEERSTATNING:
-                kvalifiseringsgruppe = rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VURDI;
-                break;
-            default:
-                throw new ArbeidssoekerException("Ukjent aktivitetsfase " + aktivitetsfase);
-            }
+            return opprettArbeidssoeker(rettigheter, miljoe, velgKvalifiseringsgruppeBasertPaaAktivitetsfase(aktivitetsfase));
         }
-        return opprettArbeidssoeker(rettigheter, miljoe, kvalifiseringsgruppe);
     }
 
     public List<RettighetRequest> opprettArbeidssoekerTiltak(
@@ -169,6 +149,23 @@ public class ServiceUtils {
             String miljoe
     ) {
         return opprettArbeidssoeker(rettigheter, miljoe, rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM);
+    }
+
+    private Kvalifiseringsgrupper velgKvalifiseringsgruppeBasertPaaAktivitetsfase(String aktivitetsfase) {
+        switch (aktivitetsfase) {
+        case AKTIVITETSFASE_UNDER_ARBEIDSAVKLARING:
+            return rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VARIG;
+        case AKTIVITETSFASE_ARBEIDSUTPROEVING:
+            return Kvalifiseringsgrupper.BATT;
+        case AKTIVITETSFASE_FERDIG_AVKLART:
+            return rand.nextBoolean() ? Kvalifiseringsgrupper.BFORM : Kvalifiseringsgrupper.IKVAL;
+        case AKTIVITETSFASE_VURDERING_FOR_UFOERE:
+            return rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VARIG;
+        case AKTIVITETSFASE_SYKEPENGEERSTATNING:
+            return rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VURDI;
+        default:
+            throw new ArbeidssoekerException("Ukjent aktivitetsfase " + aktivitetsfase);
+        }
     }
 
     private List<String> filtrerIdenterUtenAktoerId(
