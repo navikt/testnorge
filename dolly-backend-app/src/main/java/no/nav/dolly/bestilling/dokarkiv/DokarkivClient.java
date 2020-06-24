@@ -7,8 +7,6 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -28,7 +26,6 @@ public class DokarkivClient implements ClientRegister {
     private final DokarkivConsumer dokarkivConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
-    private final ObjectMapper objectMapper;
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
