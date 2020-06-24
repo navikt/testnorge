@@ -52,7 +52,6 @@ public class RettighetTiltakService {
     private static final Map<String, List<KodeMedSannsynlighet>> vedtakMedAktitivetskode;
     private static final Map<String, List<KodeMedSannsynlighet>> vedtakMedStatuskoder;
     private static final Map<String, List<String>> deltakerstatuskoderMedAarsakkoder;
-    public static final String aktivitetstatuskodeFullfoert = "FULLF";
 
     static {
         deltakerstatuskoderMedAarsakkoder = new HashMap<>();
