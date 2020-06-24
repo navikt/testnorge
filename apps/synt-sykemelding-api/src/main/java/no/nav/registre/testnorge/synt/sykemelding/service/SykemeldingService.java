@@ -9,9 +9,6 @@ import no.nav.registre.testnorge.synt.sykemelding.consumer.HelsepersonellConsume
 import no.nav.registre.testnorge.synt.sykemelding.consumer.HodejegerenConsumer;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.SykemeldingConsumer;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.SyntSykemeldingHistorikkConsumer;
-import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntSykemeldingHistorikkDTO;
-import no.nav.registre.testnorge.synt.sykemelding.domain.Arbeidsforhold;
-import no.nav.registre.testnorge.synt.sykemelding.domain.LegeListe;
 import no.nav.registre.testnorge.synt.sykemelding.domain.Sykemelding;
 
 @Service
@@ -23,23 +20,22 @@ public class SykemeldingService {
     private final HodejegerenConsumer hodejegerenConsumer;
     private final ArbeidsforholdAdapter arbeidsforholdAdapter;
 
-    public void opprettSykemelding(SyntSykemeldingDTO sykemeldingDTO) {
+    public void opprettSykemelding(SyntSykemeldingDTO dto) {
 
-        var pasient = hodejegerenConsumer.getPersondata(sykemeldingDTO.getIdent());
+        var pasient = hodejegerenConsumer.getPersondata(dto.getIdent());
         var arbeidsforhold = arbeidsforholdAdapter.getArbeidsforhold(
-                sykemeldingDTO.getIdent(),
-                sykemeldingDTO.getOrgnummer(),
-                sykemeldingDTO.getArbeidsforholdId()
+                dto.getIdent(),
+                dto.getOrgnummer(),
+                dto.getArbeidsforholdId()
         );
-
-        SyntSykemeldingHistorikkDTO historikk = historikkConsumer.genererSykemeldinger(
-                sykemeldingDTO.getIdent(),
-                sykemeldingDTO.getStartDato()
+        var historikk = historikkConsumer.genererSykemeldinger(
+                dto.getIdent(),
+                dto.getStartDato()
         );
-        LegeListe legeListe = helsepersonellConsumer.hentLeger();
+        var legeListe = helsepersonellConsumer.hentLeger();
 
         sykemeldingConsumer.opprettSykemelding(
-                new Sykemelding(pasient, historikk, sykemeldingDTO, legeListe.getRandomLege(), arbeidsforhold)
+                new Sykemelding(pasient, historikk, dto, legeListe.getRandomLege(), arbeidsforhold)
         );
     }
 }

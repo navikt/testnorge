@@ -18,7 +18,8 @@ public class HodejegerenConsumer {
 
     public HodejegerenConsumer(
             @Value("${consumers.hodejegeren.url}") String url,
-            RestTemplateBuilder restTemplateBuilder) {
+            RestTemplateBuilder restTemplateBuilder
+    ) {
         this.url = url;
         this.restTemplate = restTemplateBuilder.build();
     }

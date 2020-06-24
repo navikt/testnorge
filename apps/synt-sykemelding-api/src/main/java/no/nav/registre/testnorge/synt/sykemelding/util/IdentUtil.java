@@ -4,6 +4,10 @@ import static java.lang.Integer.parseInt;
 
 import java.time.LocalDate;
 
+/**
+ * Fjernes når vi går over til PDL som har fødselsdato
+ */
+@Deprecated
 public final class IdentUtil {
     private IdentUtil() {
     }

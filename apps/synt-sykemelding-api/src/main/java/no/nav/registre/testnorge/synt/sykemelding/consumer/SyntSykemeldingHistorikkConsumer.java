@@ -35,7 +35,6 @@ public class SyntSykemeldingHistorikkConsumer {
 
     @SneakyThrows
     public SyntSykemeldingHistorikkDTO genererSykemeldinger(String ident, LocalDate startDato) {
-
         log.info("Generererer sykemelding for {} fom {}", ident, startDato.toString());
 
         ResponseEntity<HashMap<String, SyntSykemeldingHistorikkDTO>> response = restTemplate.exchange(

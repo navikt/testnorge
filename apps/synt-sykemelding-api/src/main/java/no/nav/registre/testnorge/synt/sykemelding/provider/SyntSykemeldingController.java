@@ -19,7 +19,6 @@ public class SyntSykemeldingController {
 
     @PostMapping
     public ResponseEntity<HttpStatus> opprett(@RequestBody SyntSykemeldingDTO sykemelding) {
-
         service.opprettSykemelding(sykemelding);
         return ResponseEntity.ok().build();
     }
