@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
+import no.nav.registre.testnorge.dto.organisasjon.v1.AdresseDTO;
+
 @Value
 @Builder
 @AllArgsConstructor
@@ -15,4 +17,9 @@ public class Adresse {
     public Adresse(no.nav.registre.sdforvalter.domain.Adresse adresse){
         kommunenummer = adresse.getKommunenr();
     }
+
+    public Adresse(AdresseDTO adresseDTO){
+        this.kommunenummer = adresseDTO.getKommunenummer();
+    }
+
 }

@@ -16,9 +16,11 @@ import java.util.stream.Collectors;
 import no.nav.registre.sdforvalter.consumer.rs.command.PostPersonCommand;
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component
+@DependencyOn("person-api")
 public class PersonConsumer {
 
     private final RestTemplate restTemplate;
