@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
@@ -74,10 +75,14 @@ public class BestillingProgress {
     @Column(name = "BREGSTUB_STATUS")
     private String brregstubStatus;
 
+    @Column(name = "DOKARKIV_STATUS")
+    private String dokarkivStatus;
+
     private String feil;
 
     public BestillingProgress(Long bestillingId, String ident) {
         this.ident = ident;
         this.bestillingId = bestillingId;
     }
+
 }

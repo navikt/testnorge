@@ -4,7 +4,6 @@ import static java.util.Objects.nonNull;
 
 import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +26,6 @@ public class DokarkivClient implements ClientRegister {
     private final DokarkivConsumer dokarkivConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
-    private final ObjectMapper objectMapper;
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -56,9 +54,9 @@ public class DokarkivClient implements ClientRegister {
 
                     log.error("Feilet å legge inn person: {} til Dokarkiv miljø: {}",
                             dokarkivRequest.getBruker().getId(), environment, e);
-
                 }
             });
+            progress.setDokarkivStatus(status.substring(1));
         }
     }
 

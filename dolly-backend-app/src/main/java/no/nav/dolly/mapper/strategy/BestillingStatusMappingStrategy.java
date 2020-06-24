@@ -3,6 +3,7 @@ package no.nav.dolly.mapper.strategy;
 import static no.nav.dolly.mapper.BestillingAaregStatusMapper.buildAaregStatusMap;
 import static no.nav.dolly.mapper.BestillingArenaforvalterStatusMapper.buildArenaStatusMap;
 import static no.nav.dolly.mapper.BestillingBrregStubStatusMapper.buildBrregStubStatusMap;
+import static no.nav.dolly.mapper.BestillingDokarkivStatusMapper.buildDokarkivStatusMap;
 import static no.nav.dolly.mapper.BestillingInntektsmeldingStatusMapper.buildInntektsmeldingStatusMap;
 import static no.nav.dolly.mapper.BestillingInntektstubStatusMapper.buildInntektstubStatusMap;
 import static no.nav.dolly.mapper.BestillingInstdataStatusMapper.buildInstdataStatusMap;
@@ -15,6 +16,7 @@ import static no.nav.dolly.mapper.BestillingUdiStubStatusMapper.buildUdiStubStat
 
 import java.util.Arrays;
 import java.util.Iterator;
+
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -44,8 +46,8 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         Iterator<BestillingProgress> it = bestilling.getProgresser().iterator();
                         while (it.hasNext()) {
                             String ident = it.next().getIdent();
-                            if (!bestilling.getGruppe().getTestidenter().stream()
-                                    .anyMatch(testident -> testident.getIdent().equals(ident))) {
+                            if (bestilling.getGruppe().getTestidenter().stream()
+                                    .noneMatch(testident -> testident.getIdent().equals(ident))) {
                                 it.remove();
                             }
                         }
@@ -66,6 +68,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildPensjonforvalterStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildInntektsmeldingStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildBrregStubStatusMap(bestilling.getProgresser()));
+                        bestillingStatus.getStatus().addAll(buildDokarkivStatusMap(bestilling.getProgresser()));
                         bestillingStatus.setBestilling(RsBestillingStatus.RsBestilling.builder()
                                 .pdlforvalter(bestillingRequest.getPdlforvalter())
                                 .aareg(bestillingRequest.getAareg())
@@ -78,6 +81,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .pensjonforvalter(bestillingRequest.getPensjonforvalter())
                                 .inntektsmelding(bestillingRequest.getInntektsmelding())
                                 .brregstub(bestillingRequest.getBrregstub())
+                                .dokarkiv(bestillingRequest.getDokarkiv())
                                 .tpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()))
                                 .build());
                     }
