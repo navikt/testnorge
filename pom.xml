@@ -27,6 +27,7 @@
         <spring-vault.version>2.1.1.RELEASE</spring-vault.version>
         <hikari-cp.version>3.3.1</hikari-cp.version>
         <postgresql.version>42.2.5</postgresql.version>
+        <common.version>2.2020.05.13_14.46-9bafc245bcc7</common.version>
     </properties>
 
     <dependencies>
@@ -133,6 +134,19 @@
             <artifactId>maven-pmd-plugin</artifactId>
             <version>${maven-pmd-plugin.version}</version>
             <type>maven-plugin</type>
+        </dependency>
+
+
+        <!-- NAV COMMON -->
+        <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>util</artifactId>
+            <version>${common.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.common</groupId>
+            <artifactId>health</artifactId>
+            <version>${common.version}</version>
         </dependency>
     </dependencies>
 

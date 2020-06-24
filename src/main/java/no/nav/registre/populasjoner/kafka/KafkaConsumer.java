@@ -3,13 +3,14 @@ package no.nav.registre.populasjoner.kafka;
 import static no.nav.registre.populasjoner.kafka.CollectionUtils.chunk;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -21,14 +22,25 @@ import no.nav.registre.populasjoner.kafka.domain.PdlDokument;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
-public class PdlDokumentListener {
+public class KafkaConsumer {
 
+    private final KafkaTopics kafkaTopics;
     private final ObjectMapper mapper;
     private final PdlDokumentService service;
 
-    @KafkaListener(topics = "${pdl.kafka.topics.pdlDokument-v1.name}", groupId = "${app.kafka.group-id-prefix}-pdlDokumenter-1")
-    public void onMessage(ConsumerRecords<String, String> records) {
+    @Autowired
+    public KafkaConsumer(
+            KafkaTopics kafkaTopics,
+            ObjectMapper mapper,
+            PdlDokumentService service
+    ) {
+        this.kafkaTopics = kafkaTopics;
+        this.mapper = mapper;
+        this.service = service;
+    }
+
+    @KafkaListener(topics = "#{kafkaTopics.getPdlDokument()}")
+    public void onMessage(@Payload ConsumerRecords<String, String> records) {
         log.info("Mottok melding på topic");
 
         List<DocumentIdWrapper> documentList = KafkaUtilities.asStream(records)
@@ -39,7 +51,6 @@ public class PdlDokumentListener {
         for (List<DocumentIdWrapper> documentIdWrappers : chunk) {
             service.processBulk(documentIdWrappers);
         }
-
     }
 
     private DocumentIdWrapper convert(ConsumerRecord<String, String> record) {
@@ -67,6 +78,4 @@ public class PdlDokumentListener {
             MDC.clear();
         }
     }
-
 }
-
