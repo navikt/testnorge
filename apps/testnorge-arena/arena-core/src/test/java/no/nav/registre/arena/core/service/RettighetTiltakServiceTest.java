@@ -123,7 +123,7 @@ public class RettighetTiltakServiceTest {
         assertThat(request.getVedtakTiltak()).hasSize(1);
         assertThat(request.getVedtakTiltak().get(0).getFraDato()).isEqualTo(LocalDate.now().minusMonths(1));
         assertThat(request.getVedtakTiltak().get(0).getTilDato()).isEqualTo(LocalDate.now());
-        assertThat(request.getVedtakTiltak().get(0).getAktivitetstatuskode()).isEqualTo(aktivitetskodeMedSannsynlighet.getKode());
+        assertThat(request.getVedtakTiltak().get(0).getAktivitetStatuskode()).isEqualTo(aktivitetskodeMedSannsynlighet.getKode());
         assertThat(request.getVedtakTiltak().get(0).getAktivitetkode()).isEqualTo(aktivitetskodeMedSannsynlighet.getKode());
 
     }

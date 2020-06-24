@@ -45,8 +45,8 @@ public class NyttVedtakTiltak extends NyttVedtak {
     @JsonAlias({ "AKTIVITETSKODE", "AKTIVITETKODE", "aktivitetkode" })
     private String aktivitetkode;
 
-    @JsonAlias({"AKTIVITETSTATUSKODE", "aktivitetstatuskode"})
-    private String aktivitetstatuskode;
+    @JsonAlias({"AKTIVITETSTATUSKODE", "aktivitetStatuskode", "aktivitetstatuskode"})
+    private String aktivitetStatuskode;
 
     @JsonAlias({ "BESKRIVELSE", "beskrivelse" })
     private String beskrivelse;

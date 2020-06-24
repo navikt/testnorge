@@ -333,12 +333,12 @@ public class RettighetTiltakService {
                 vedtakMedStatuskoder.get("AKTIVITET")).getKode();
 
         if (!erHistoriskAktivitet) {
-            statuskode = tiltakSyntConsumer.opprettTiltaksaktivitet(1).get(0).getAktivitetstatuskode();
+            statuskode = tiltakSyntConsumer.opprettTiltaksaktivitet(1).get(0).getAktivitetStatuskode();
         }
 
         var nyttVedtakTiltak = new NyttVedtakTiltak();
 
-        nyttVedtakTiltak.setAktivitetstatuskode(statuskode);
+        nyttVedtakTiltak.setAktivitetStatuskode(statuskode);
         nyttVedtakTiltak.setAktivitetkode(serviceUtils.velgKodeBasertPaaSannsynlighet(
                 vedtakMedAktitivetskode.get(rettighet.getVedtakTillegg().get(0).getRettighetKode())).getKode());
 

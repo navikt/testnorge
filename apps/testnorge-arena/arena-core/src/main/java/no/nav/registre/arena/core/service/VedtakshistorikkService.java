@@ -80,6 +80,11 @@ public class VedtakshistorikkService {
             var barnetillegg = vedtakshistorikken.getBarnetillegg();
             LocalDate tidligsteDatoBarnetillegg = null;
 
+            if (tillegg.isEmpty()) {
+                log.error("Ingen tillegg");
+                continue;
+            }
+
             if (!aap.isEmpty()) {
                 tidligsteDato = finnTidligsteDatoAap(aap);
             } else if (!aapType.isEmpty()) {
@@ -156,6 +161,7 @@ public class VedtakshistorikkService {
         opprettVedtakTiltaksdeltakelse(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakTiltakspenger(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakBarnetillegg(vedtakshistorikk, personident, miljoe, rettigheter);
+
         opprettVedtakTillegg(vedtakshistorikk.getAlleTilleggVedtak(), personident, miljoe, rettigheter);
 
         var senesteVedtak = finnSenesteVedtak(vedtakshistorikk.getAlleVedtak());
@@ -477,14 +483,10 @@ public class VedtakshistorikkService {
         }
     }
 
-    private void opprettTiltaksaktivitet(List<RettighetRequest> rettigheter, RettighetRequest request) {
-        if (request instanceof RettighetTilleggRequest) {
-            if (request.getVedtakTillegg() != null && !request.getVedtakTillegg().isEmpty()) {
-                rettigheter.add(rettighetTiltakService.opprettRettighetTiltaksaktivitetRequest(
-                        request, true));
-            }
-        } else {
-            log.error("Opprettelse av tiltaksaktivitet er kun støttet for tilleggsstønad");
+    private void opprettTiltaksaktivitet(List<RettighetRequest> rettigheter, RettighetTilleggRequest request) {
+        if (request.getVedtakTillegg() != null && !request.getVedtakTillegg().isEmpty()) {
+            rettigheter.add(rettighetTiltakService.opprettRettighetTiltaksaktivitetRequest(
+                    request, true));
         }
     }
 
