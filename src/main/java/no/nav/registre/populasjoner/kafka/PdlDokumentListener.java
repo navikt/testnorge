@@ -47,8 +47,12 @@ public class PdlDokumentListener {
         }
 
         if (jsonNode != null) {
-            JsonNode hentIdenter = jsonNode.findValue("hentIdenter");
-            log.info("fra json-node: {}", hentIdenter.toPrettyString());
+            var hentIdenter = jsonNode.findValue("hentIdenter");
+            if (hentIdenter == null) {
+                log.info("Fant ikke felt 'hentIdenter' i node {}", jsonNode);
+            } else {
+                log.info("fra json-node: {}", hentIdenter.toPrettyString());
+            }
         }
 
         //        ConsumerRecords<String, String> records = new ObjectMapper().convertValue(message, new TypeReference<>() {
