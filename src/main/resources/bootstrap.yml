@@ -46,8 +46,6 @@ spring.kafka:
         mechanism: PLAIN
       isolation.level: read_committed
       specific.avro.reader: true
-#    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-#    value-deserializer: org.apache.kafka.common.serialization.StringDeserializer§
     max-poll-records: 100
     auto-offset-reset: earliest
     enable-auto-commit: false

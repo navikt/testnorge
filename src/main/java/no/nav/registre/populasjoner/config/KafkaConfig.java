@@ -1,6 +1,7 @@
 package no.nav.registre.populasjoner.config;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.common.config.SslConfigs;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +27,12 @@ public class KafkaConfig {
     @Value("${spring.kafka.properties.schema.registry.url}")
     private String schemaUrl;
 
+    @Value("${javax.net.ssl.trustStore}")
+    private String truststoreLocation;
+
+    @Value("${javax.net.ssl.trustStorePassword}")
+    private String truststorePassword;
+
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         Map<String, Object> config = new HashMap<>();
@@ -34,7 +41,9 @@ public class KafkaConfig {
         config.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaGroup);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        config.put("schema.registry.url", schemaUrl);
+        config.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, truststoreLocation);
+        config.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, truststorePassword);
+//        config.put("schema.registry.url", schemaUrl);
 
         return new DefaultKafkaConsumerFactory<>(config);
     }
