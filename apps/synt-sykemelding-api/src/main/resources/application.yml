@@ -12,3 +12,7 @@ consumers:
     url: http://synthdata-elsam.q2.svc.nais.local
   sykemelding:
     url: http://testnorge-sykemelding-api.default.svc.nais.local
+  organisasjon:
+    url: http://testnorge-organisasjon-api.default.svc.nais.local
+  arbeidsforhold:
+    url: http://testnorge-arbeidsforhold-api.default.svc.nais.local

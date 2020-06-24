@@ -26,6 +26,7 @@ public class Sykemelding {
     private final SyntSykemeldingHistorikkDTO historikk;
     private final SyntSykemeldingDTO syntSykemelding;
     private final Lege lege;
+    private final Arbeidsforhold arbeidsforhold;
 
 
     public String getIdent() {
@@ -35,9 +36,9 @@ public class Sykemelding {
     public SykemeldingDTO toDTO() {
         var arbeidsgiverDTO = ArbeidsgiverDTO
                 .builder()
-                .navn(syntSykemelding.getArbeidsgiver().getNavn())
-                .stillingsprosent(syntSykemelding.getArbeidsgiver().getStillingsprosent())
-                .yrkesbetegnelse(syntSykemelding.getArbeidsgiver().getYrkesbetegnelse())
+                .navn(arbeidsforhold.getNavn())
+                .stillingsprosent(arbeidsforhold.getStillingsprosent())
+                .yrkesbetegnelse(arbeidsforhold.getYrkesbetegnelse())
                 .build();
 
         var sykemeldinger = historikk.getSykmeldinger();
@@ -60,14 +61,14 @@ public class Sykemelding {
 
         var mottaker = OrganisasjonDTO
                 .builder()
-                .navn(syntSykemelding.getArbeidsgiver().getNavn())
-                .orgNr(syntSykemelding.getArbeidsgiver().getOrgnr())
+                .navn(arbeidsforhold.getNavn())
+                .orgNr(arbeidsforhold.getOrgnr())
                 .adresse(AdresseDTO
                         .builder()
-                        .by(syntSykemelding.getArbeidsgiver().getBy())
-                        .gate(syntSykemelding.getArbeidsgiver().getGatenavn())
-                        .land(syntSykemelding.getArbeidsgiver().getLand())
-                        .postnummer(syntSykemelding.getArbeidsgiver().getPostnummer())
+                        .by(arbeidsforhold.getBy())
+                        .gate(arbeidsforhold.getGatenavn())
+                        .land(arbeidsforhold.getLand())
+                        .postnummer(arbeidsforhold.getPostnummer())
                         .build()
                 )
                 .build();

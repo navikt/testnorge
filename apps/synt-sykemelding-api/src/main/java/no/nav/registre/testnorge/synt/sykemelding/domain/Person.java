@@ -1,7 +1,5 @@
 package no.nav.registre.testnorge.synt.sykemelding.domain;
 
-import static java.lang.Integer.parseInt;
-
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
@@ -14,7 +12,7 @@ import no.nav.registre.testnorge.synt.sykemelding.util.IdentUtil;
 public class Person {
     private final PersondataDTO dto;
 
-    public String getIdent(){
+    public String getIdent() {
         return dto.getFnr();
     }
 
@@ -34,7 +32,7 @@ public class Person {
      * Er et eget felt i DPL, men vi manger PDL i q1.
      */
     @Deprecated
-    public LocalDate getFoedselsdato(){
+    public LocalDate getFoedselsdato() {
         return IdentUtil.toBirthdate(getIdent());
     }
 }

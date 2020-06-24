@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor(force = true)
 public class SyntSykemeldingDTO {
     String ident;
+    String orgnummer;
+    String arbeidsforholdId;
     LocalDate startDato;
-    ArbeidsgiverDTO arbeidsgiver;
 }
