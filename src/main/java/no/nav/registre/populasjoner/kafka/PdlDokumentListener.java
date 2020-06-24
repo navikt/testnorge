@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import no.nav.registre.populasjoner.kafka.domain.PdlDokument;
+import no.nav.registre.populasjoner.kafka.person.IdentDetaljDto;
 
 @Slf4j
 @Component
@@ -65,6 +66,9 @@ public class PdlDokumentListener {
                 return new DocumentIdWrapper(record.key(), null);
             } else {
                 val dokument = mapper.readValue(record.value(), PdlDokument.class);
+                for (IdentDetaljDto identDetaljDto : dokument.getHentIdenter().getIdenter()) {
+                    log.info("Konvertert ident: {}", identDetaljDto.getIdent());
+                }
                 return new DocumentIdWrapper(record.key(), dokument);
             }
         } catch (RuntimeException | IOException exception) {
