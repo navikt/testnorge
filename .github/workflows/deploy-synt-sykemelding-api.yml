@@ -2,6 +2,7 @@ name: Deploy synt-sykemelding-api
 
 on:
   push:
+    branches: master
     paths:
       - apps/synt-sykemelding-api/**
       - libs/testnorge-core/**

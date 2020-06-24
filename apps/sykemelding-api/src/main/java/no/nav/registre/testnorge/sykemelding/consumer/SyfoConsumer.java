@@ -24,6 +24,6 @@ public class SyfoConsumer {
         String xml = sykemelding.toXml();
         log.info("Legger sykemelding på kø med MsgId {}", sykemelding.getMsgId());
         jmsTemplate.send(queueName, session -> session.createTextMessage(xml));
-        log.trace("MsgId {}: {}", sykemelding.getMsgId(), xml);
+        log.trace(xml);
     }
 }
