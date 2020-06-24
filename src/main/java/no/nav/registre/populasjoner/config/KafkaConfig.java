@@ -7,9 +7,9 @@ import static org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_
 import static org.apache.kafka.clients.consumer.ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG;
 
+import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.common.config.SaslConfigs;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -68,8 +68,8 @@ public class KafkaConfig {
         props.put(SaslConfigs.SASL_MECHANISM, "PLAIN");
         props.put(SaslConfigs.SASL_JAAS_CONFIG,
                 "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"" + serviceUserCredentials.username + "\" password=\"" + serviceUserCredentials.password + "\";");
-        props.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(KEY_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+        props.put(VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
         return props;
     }
 

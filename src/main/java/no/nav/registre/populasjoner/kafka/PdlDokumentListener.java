@@ -22,14 +22,14 @@ import no.nav.registre.populasjoner.kafka.domain.PdlDokument;
 
 @Slf4j
 @Component
-public class KafkaConsumer {
+public class PdlDokumentListener {
 
     private final KafkaTopics kafkaTopics;
     private final ObjectMapper mapper;
     private final PdlDokumentService service;
 
     @Autowired
-    public KafkaConsumer(
+    public PdlDokumentListener(
             KafkaTopics kafkaTopics,
             ObjectMapper mapper,
             PdlDokumentService service
