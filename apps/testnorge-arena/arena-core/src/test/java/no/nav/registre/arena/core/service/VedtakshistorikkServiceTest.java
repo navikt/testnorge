@@ -114,7 +114,7 @@ public class VedtakshistorikkServiceTest {
     }
 
     @Test
-    public void shouldGenerereVedtakshistorikk() throws Exception {
+    public void shouldGenerereVedtakshistorikk() {
         var kontonummer = "12131843564";
         var forvalterFnr = "02020202020";
         when(serviceUtils.getIdenterMedKontoinformasjon(avspillergruppeId, miljoe, antallIdenter))

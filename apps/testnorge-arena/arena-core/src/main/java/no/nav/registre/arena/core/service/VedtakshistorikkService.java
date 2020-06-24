@@ -454,9 +454,9 @@ public class VedtakshistorikkService {
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
             rettighetRequest.getNyeTilleggsstonad().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
-            log.info("Før: "+rettigheter.size());
+
             opprettTiltaksaktivitet(rettigheter, rettighetRequest);
-            log.info("Etter: "+rettigheter.size());
+
             rettigheter.add(rettighetRequest);
         }
     }
