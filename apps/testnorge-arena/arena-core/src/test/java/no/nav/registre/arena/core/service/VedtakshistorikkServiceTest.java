@@ -19,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -84,6 +85,7 @@ public class VedtakshistorikkServiceTest {
                 .build();
         var nyRettighetTiltaksdeltaklse = NyttVedtakTiltak.builder()
                 .tiltakskarakteristikk("IND").build();
+        nyRettighetTiltaksdeltaklse.setFraDato(LocalDate.now());
 
         aapRettigheter = new ArrayList<>(Collections.singletonList(nyRettighetAap));
         ungUfoerRettigheter = new ArrayList<>(Collections.singletonList(nyRettighetUngUfoer));
@@ -193,7 +195,7 @@ public class VedtakshistorikkServiceTest {
         responseAsMap.put(fnr1, expectedResponsesFromArenaForvalter);
 
         when(aapSyntConsumer.syntetiserVedtakshistorikk(antallIdenter)).thenReturn(vedtakshistorikkMedTiltakListe);
-        when(serviceUtils.opprettArbeidssoekerAap(anyList(), anyString()))
+        when(serviceUtils.opprettArbeidssoekerTiltak(anyList(), anyString()))
                 .thenReturn(Collections.emptyList());
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(responseAsMap);
 

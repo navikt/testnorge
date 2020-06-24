@@ -1,16 +1,16 @@
 package no.nav.registre.arena.core.service;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static no.nav.registre.arena.core.consumer.rs.AapSyntConsumer.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
+import static no.nav.registre.arena.core.consumer.rs.TilleggSyntConsumer.ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT;
 import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.getFoedselsdatoFraFnr;
+import static no.nav.registre.arena.core.service.RettighetAapService.SYKEPENGEERSTATNING_MAKS_PERIODE;
+import static no.nav.registre.arena.core.service.util.ServiceUtils.AKTIVITETSFASE_SYKEPENGEERSTATNING;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.BEGRUNNELSE;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MAX_ALDER_AAP;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MAX_ALDER_UNG_UFOER;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_AAP;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_UNG_UFOER;
-import static no.nav.registre.arena.core.consumer.rs.AapSyntConsumer.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
-import static no.nav.registre.arena.core.consumer.rs.TilleggSyntConsumer.ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT;
-import static no.nav.registre.arena.core.service.RettighetAapService.SYKEPENGEERSTATNING;
-import static no.nav.registre.arena.core.service.RettighetAapService.SYKEPENGEERSTATNING_MAKS_PERIODE;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,15 +38,16 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksdeltakelse
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
+import no.nav.registre.arena.core.service.exception.VedtakshistorikkException;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.GensakKoder;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
-
 
 @Slf4j
 @Service
@@ -73,9 +74,9 @@ public class VedtakshistorikkService {
 
             var tidligsteDato = LocalDate.now();
             var aap = finnUtfyltAap(vedtakshistorikken);
-            var aapType = finnUtfyltAapType(vedtakshistorikken);
-            var tiltak = finnUtfyltTiltak(vedtakshistorikken);
-            var tillegg = finnUtfyltTillegg(vedtakshistorikken);
+            var aapType = vedtakshistorikken.getAlleAapVedtak();
+            var tiltak = vedtakshistorikken.getAlleTiltakVedtak();
+            var tillegg = vedtakshistorikken.getAlleTilleggVedtak();
             var barnetillegg = vedtakshistorikken.getBarnetillegg();
             LocalDate tidligsteDatoBarnetillegg = null;
 
@@ -155,25 +156,22 @@ public class VedtakshistorikkService {
         opprettVedtakTiltaksdeltakelse(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakTiltakspenger(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakBarnetillegg(vedtakshistorikk, personident, miljoe, rettigheter);
-        opprettVedtakTillegg(vedtakshistorikk.getBoutgifter(), personident, miljoe, rettigheter);
-        opprettVedtakTillegg(vedtakshistorikk.getDagligReise(), personident, miljoe, rettigheter);
-        opprettVedtakTillegg(vedtakshistorikk.getFlytting(), personident, miljoe, rettigheter);
-        opprettVedtakTillegg(vedtakshistorikk.getLaeremidler(), personident, miljoe, rettigheter);
-        opprettVedtakTillegg(vedtakshistorikk.getHjemreise(), personident, miljoe, rettigheter);
-        opprettVedtakTillegg(vedtakshistorikk.getReiseObligatoriskSamling(), personident, miljoe, rettigheter);
-        opprettVedtakTillegg(vedtakshistorikk.getTilsynBarn(), personident, miljoe, rettigheter);
-        opprettVedtakTillegg(vedtakshistorikk.getTilsynFamiliemedlemmer(), personident, miljoe, rettigheter);
-        opprettVedtakTillegg(vedtakshistorikk.getBoutgifterArbeidssoekere(), personident, miljoe, rettigheter);
-        opprettVedtakTillegg(vedtakshistorikk.getDagligReiseArbeidssoekere(), personident, miljoe, rettigheter);
-        opprettVedtakTillegg(vedtakshistorikk.getFlyttingArbeidssoekere(), personident, miljoe, rettigheter);
-        opprettVedtakTillegg(vedtakshistorikk.getLaeremidlerArbeidssoekere(), personident, miljoe, rettigheter);
-        opprettVedtakTillegg(vedtakshistorikk.getHjemreiseArbeidssoekere(), personident, miljoe, rettigheter);
-        opprettVedtakTillegg(vedtakshistorikk.getReisestoenadArbeidssoekere(), personident, miljoe, rettigheter);
-        opprettVedtakTillegg(vedtakshistorikk.getReiseObligatoriskSamlingArbeidssoekere(), personident, miljoe, rettigheter);
-        opprettVedtakTillegg(vedtakshistorikk.getTilsynBarnArbeidssoekere(), personident, miljoe, rettigheter);
-        opprettVedtakTillegg(vedtakshistorikk.getTilsynFamiliemedlemmerArbeidssoekere(), personident, miljoe, rettigheter);
+        opprettVedtakTillegg(vedtakshistorikk.getAlleTilleggVedtak(), personident, miljoe, rettigheter);
 
-        return rettighetArenaForvalterConsumer.opprettRettighet(serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
+        var senesteVedtak = finnSenesteVedtak(vedtakshistorikk.getAlleVedtak());
+
+        List<RettighetRequest> rettighetRequests;
+        if (senesteVedtak instanceof NyttVedtakAap) {
+            rettighetRequests = serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe, ((NyttVedtakAap) senesteVedtak).getAktivitetsfase());
+        } else if (senesteVedtak instanceof NyttVedtakTiltak) {
+            rettighetRequests = serviceUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe);
+        } else if (senesteVedtak instanceof NyttVedtakTillegg) {
+            rettighetRequests = serviceUtils.opprettArbeidssoekerTillegg(rettigheter, miljoe);
+        } else {
+            throw new VedtakshistorikkException("Ukjent vedtakstype: " + (senesteVedtak != null ? senesteVedtak.getClass() : null));
+        }
+
+        return rettighetArenaForvalterConsumer.opprettRettighet(rettighetRequests);
     }
 
     private List<NyttVedtakTillegg> fjernTilsynFamiliemedlemmerVedtakMedUgyldigeDatoer(List<NyttVedtakTillegg> tilsynFamiliemedlemmer) {
@@ -202,7 +200,7 @@ public class VedtakshistorikkService {
         if (aapVedtak != null) {
             int antallDagerEndret = 0;
             for (var vedtak : aapVedtak) {
-                if (SYKEPENGEERSTATNING.equals(vedtak.getAktivitetsfase()) && vedtak.getFraDato() != null) {
+                if (AKTIVITETSFASE_SYKEPENGEERSTATNING.equals(vedtak.getAktivitetsfase()) && vedtak.getFraDato() != null) {
                     vedtak.setFraDato(vedtak.getFraDato().minusDays(antallDagerEndret));
                     if (vedtak.getTilDato() == null) {
                         vedtak.setTilDato(vedtak.getFraDato().plusMonths(6));
@@ -276,6 +274,24 @@ public class VedtakshistorikkService {
         } else {
             return date1;
         }
+    }
+
+    private NyttVedtak finnSenesteVedtak(List<? extends NyttVedtak> vedtak) {
+        var senesteDato = LocalDate.MIN;
+        NyttVedtak senesteVedtak = null;
+        for (var vedtaket : vedtak) {
+            LocalDate vedtakFraDato;
+            if (vedtaket instanceof NyttVedtakTillegg) {
+                vedtakFraDato = ((NyttVedtakTillegg) vedtaket).getVedtaksperiode().getFom();
+            } else {
+                vedtakFraDato = vedtaket.getFraDato();
+            }
+            if (vedtakFraDato != null && senesteDato.isBefore(vedtakFraDato)) {
+                senesteDato = vedtakFraDato;
+                senesteVedtak = vedtaket;
+            }
+        }
+        return senesteVedtak;
     }
 
     private void opprettVedtakAap115(
@@ -477,123 +493,6 @@ public class VedtakshistorikkService {
 
         if (aap != null && !aap.isEmpty()) {
             return aap;
-        }
-
-        return Collections.emptyList();
-    }
-
-    private List<NyttVedtakAap> finnUtfyltAapType(Vedtakshistorikk vedtakshistorikk) {
-        var aap115 = vedtakshistorikk.getAap115();
-        var ungUfoer = vedtakshistorikk.getUngUfoer();
-        var tvungenForvaltning = vedtakshistorikk.getTvungenForvaltning();
-        var fritakMeldekort = vedtakshistorikk.getFritakMeldekort();
-
-        if (aap115 != null && !aap115.isEmpty()) {
-            return aap115;
-        }
-        if (ungUfoer != null && !ungUfoer.isEmpty()) {
-            return ungUfoer;
-        }
-        if (tvungenForvaltning != null && !tvungenForvaltning.isEmpty()) {
-            return tvungenForvaltning;
-        }
-        if (fritakMeldekort != null && !fritakMeldekort.isEmpty()) {
-            return fritakMeldekort;
-        }
-
-        return Collections.emptyList();
-    }
-
-    private List<NyttVedtakTiltak> finnUtfyltTiltak(Vedtakshistorikk vedtakshistorikk) {
-        var tiltakspenger = vedtakshistorikk.getTiltakspenger();
-        var barnetillegg = vedtakshistorikk.getBarnetillegg();
-        var tiltaksdeltakelse = vedtakshistorikk.getTiltaksdeltakelse();
-
-        if (tiltaksdeltakelse != null && !tiltaksdeltakelse.isEmpty()) {
-            return tiltaksdeltakelse;
-        }
-
-        if (tiltakspenger != null && !tiltakspenger.isEmpty()) {
-            return tiltakspenger;
-        }
-
-        if (barnetillegg != null && !barnetillegg.isEmpty()) {
-            return barnetillegg;
-        }
-
-        return Collections.emptyList();
-    }
-
-    private List<NyttVedtakTillegg> finnUtfyltTillegg(Vedtakshistorikk vedtakshistorikk) {
-        var boutgifter = vedtakshistorikk.getBoutgifter();
-        var dagligReise = vedtakshistorikk.getDagligReise();
-        var flytting = vedtakshistorikk.getFlytting();
-        var laeremidler = vedtakshistorikk.getLaeremidler();
-        var hjemreise = vedtakshistorikk.getHjemreise();
-        var reiseObligatoriskSamling = vedtakshistorikk.getReiseObligatoriskSamling();
-        var tilsynBarn = vedtakshistorikk.getTilsynBarn();
-        var tilsynFamiliemedlemmer = vedtakshistorikk.getTilsynFamiliemedlemmer();
-        var boutgifterArbeidssoekere = vedtakshistorikk.getBoutgifterArbeidssoekere();
-        var dagligReiseArbeidssoekere = vedtakshistorikk.getDagligReiseArbeidssoekere();
-        var flyttingArbeidssoekere = vedtakshistorikk.getFlyttingArbeidssoekere();
-        var laeremidlerArbeidssoekere = vedtakshistorikk.getLaeremidlerArbeidssoekere();
-        var hjemreiseArbeidssoekere = vedtakshistorikk.getHjemreiseArbeidssoekere();
-        var reisestoenadArbeidssoekere = vedtakshistorikk.getReisestoenadArbeidssoekere();
-        var reiseObligatoriskSamlingArbeidssoekere = vedtakshistorikk.getReiseObligatoriskSamlingArbeidssoekere();
-        var tilsynBarnArbeidssoekere = vedtakshistorikk.getTilsynBarnArbeidssoekere();
-        var tilsynFamiliemedlemmerArbeidssoekere = vedtakshistorikk.getTilsynFamiliemedlemmerArbeidssoekere();
-
-        if (boutgifter != null && !boutgifter.isEmpty()) {
-            return boutgifter;
-        }
-        if (dagligReise != null && !dagligReise.isEmpty()) {
-            return dagligReise;
-        }
-        if (flytting != null && !flytting.isEmpty()) {
-            return flytting;
-        }
-        if (laeremidler != null && !laeremidler.isEmpty()) {
-            return laeremidler;
-        }
-        if (hjemreise != null && !hjemreise.isEmpty()) {
-            return hjemreise;
-        }
-        if (reiseObligatoriskSamling != null && !reiseObligatoriskSamling.isEmpty()) {
-            return reiseObligatoriskSamling;
-        }
-        if (tilsynBarn != null && !tilsynBarn.isEmpty()) {
-            return tilsynBarn;
-        }
-        if (tilsynFamiliemedlemmer != null && !tilsynFamiliemedlemmer.isEmpty()) {
-            return tilsynFamiliemedlemmer;
-        }
-
-        if (boutgifterArbeidssoekere != null && !boutgifterArbeidssoekere.isEmpty()) {
-            return boutgifterArbeidssoekere;
-        }
-        if (dagligReiseArbeidssoekere != null && !dagligReiseArbeidssoekere.isEmpty()) {
-            return dagligReiseArbeidssoekere;
-        }
-        if (flyttingArbeidssoekere != null && !flyttingArbeidssoekere.isEmpty()) {
-            return flyttingArbeidssoekere;
-        }
-        if (laeremidlerArbeidssoekere != null && !laeremidlerArbeidssoekere.isEmpty()) {
-            return laeremidlerArbeidssoekere;
-        }
-        if (hjemreiseArbeidssoekere != null && !hjemreiseArbeidssoekere.isEmpty()) {
-            return hjemreiseArbeidssoekere;
-        }
-        if (reisestoenadArbeidssoekere != null && !reisestoenadArbeidssoekere.isEmpty()) {
-            return reisestoenadArbeidssoekere;
-        }
-        if (reiseObligatoriskSamlingArbeidssoekere != null && !reiseObligatoriskSamlingArbeidssoekere.isEmpty()) {
-            return reiseObligatoriskSamlingArbeidssoekere;
-        }
-        if (tilsynBarnArbeidssoekere != null && !tilsynBarnArbeidssoekere.isEmpty()) {
-            return tilsynBarnArbeidssoekere;
-        }
-        if (tilsynFamiliemedlemmerArbeidssoekere != null && !tilsynFamiliemedlemmerArbeidssoekere.isEmpty()) {
-            return tilsynFamiliemedlemmerArbeidssoekere;
         }
 
         return Collections.emptyList();

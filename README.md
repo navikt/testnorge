@@ -1,4 +1,5 @@
 ![Build](https://github.com/navikt/testnorge/workflows/Build/badge.svg)
+![Build sonar](https://github.com/navikt/testnorge/workflows/Build%20sonar/badge.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=navikt_testnorge&metric=alert_status)](https://sonarcloud.io/dashboard?id=navikt_testnorge)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=navikt_testnorge&metric=coverage)](https://sonarcloud.io/dashboard?id=navikt_testnorge)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=navikt_testnorge&metric=ncloc)](https://sonarcloud.io/dashboard?id=navikt_testnorge)
@@ -42,6 +43,8 @@ NAV_TOKEN må lages i din github konto. (Dette er noe som vi jobber med å fjern
 ![Deploy avhengighetsanalyse-frontend](https://github.com/navikt/testnorge/workflows/Deploy%20avhengighetsanalyse-frontend/badge.svg)
 ![Deploy person-api](https://github.com/navikt/testnorge/workflows/Deploy%20person-api/badge.svg)
 ![Deploy sykemelding-api](https://github.com/navikt/testnorge/workflows/Deploy%20sykemelding-api/badge.svg)
+![Deploy organisasjon-api](https://github.com/navikt/testnorge/workflows/Deploy%20organisasjon-api/badge.svg)
+![Deploy arbeidsforhold-api](https://github.com/navikt/testnorge/workflows/Deploy%20arbeidsforhold-api/badge.svg)
 
 
 ## Migrering inn i monorepo

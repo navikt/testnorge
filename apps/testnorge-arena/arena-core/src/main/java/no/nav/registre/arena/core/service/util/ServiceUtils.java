@@ -1,11 +1,10 @@
 package no.nav.registre.arena.core.service.util;
 
 import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.EIER;
+import static no.nav.registre.arena.core.service.util.IdentUtils.hentFoedseldato;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.consumers.hodejegeren.response.Relasjon;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -25,19 +24,20 @@ import java.util.stream.Collectors;
 import no.nav.registre.arena.core.consumer.rs.AktoerRegisteretConsumer;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.service.BrukereService;
+import no.nav.registre.arena.core.service.exception.ArbeidssoekerException;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
+import no.nav.registre.testnorge.consumers.hodejegeren.response.Relasjon;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.RelasjonsResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.internal.DataRequest;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.internal.HistorikkRequest;
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Adresse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Forvalter;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Konto;
-
-import static no.nav.registre.arena.core.service.util.IdentUtils.hentFoedseldato;
 
 @Slf4j
 @Service
@@ -53,6 +53,12 @@ public class ServiceUtils {
     private static final String KILDE_ARENA = "arena";
     private static final int PAGE_SIZE = 10;
     private static final String RELASJON_BARN = "BARN";
+
+    public static final String AKTIVITETSFASE_UNDER_ARBEIDSAVKLARING = "UA";
+    public static final String AKTIVITETSFASE_ARBEIDSUTPROEVING = "AU";
+    public static final String AKTIVITETSFASE_FERDIG_AVKLART = "FA";
+    public static final String AKTIVITETSFASE_VURDERING_FOR_UFOERE = "UVUP";
+    public static final String AKTIVITETSFASE_SYKEPENGEERSTATNING = "SPE";
 
     private final HodejegerenConsumer hodejegerenConsumer;
     private final BrukereService brukereService;
@@ -119,6 +125,18 @@ public class ServiceUtils {
         return opprettArbeidssoeker(rettigheter, miljoe, rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VARIG);
     }
 
+    public List<RettighetRequest> opprettArbeidssoekerAap(
+            List<RettighetRequest> rettigheter,
+            String miljoe,
+            String aktivitetsfase
+    ) {
+        if (aktivitetsfase == null || aktivitetsfase.isBlank()) {
+            return opprettArbeidssoeker(rettigheter, miljoe, Kvalifiseringsgrupper.BATT);
+        } else {
+            return opprettArbeidssoeker(rettigheter, miljoe, velgKvalifiseringsgruppeBasertPaaAktivitetsfase(aktivitetsfase));
+        }
+    }
+
     public List<RettighetRequest> opprettArbeidssoekerTiltak(
             List<RettighetRequest> rettigheter,
             String miljoe
@@ -130,8 +148,24 @@ public class ServiceUtils {
             List<RettighetRequest> rettigheter,
             String miljoe
     ) {
-        //TODO: Finn ut hvilke kvalifiseringsgrupper som er vanligst her
         return opprettArbeidssoeker(rettigheter, miljoe, rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM);
+    }
+
+    private Kvalifiseringsgrupper velgKvalifiseringsgruppeBasertPaaAktivitetsfase(String aktivitetsfase) {
+        switch (aktivitetsfase) {
+        case AKTIVITETSFASE_UNDER_ARBEIDSAVKLARING:
+            return rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VARIG;
+        case AKTIVITETSFASE_ARBEIDSUTPROEVING:
+            return Kvalifiseringsgrupper.BATT;
+        case AKTIVITETSFASE_FERDIG_AVKLART:
+            return rand.nextBoolean() ? Kvalifiseringsgrupper.BFORM : Kvalifiseringsgrupper.IKVAL;
+        case AKTIVITETSFASE_VURDERING_FOR_UFOERE:
+            return rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VARIG;
+        case AKTIVITETSFASE_SYKEPENGEERSTATNING:
+            return rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VURDI;
+        default:
+            throw new ArbeidssoekerException("Ukjent aktivitetsfase " + aktivitetsfase);
+        }
     }
 
     private List<String> filtrerIdenterUtenAktoerId(
@@ -156,7 +190,7 @@ public class ServiceUtils {
             String miljoe,
             int antallNyeIdenter,
             LocalDate tidligsteDato
-    ){
+    ) {
         var identerUtenArenabruker = filtrerEksisterendeBrukereIArena(identer, miljoe);
 
         var identerPartisjonert = partisjonerListe(identerUtenArenabruker, PAGE_SIZE);
@@ -170,7 +204,7 @@ public class ServiceUtils {
                 var relasjonsResponse = getRelasjonerTilIdent(ident, miljoe);
 
                 for (var relasjon : relasjonsResponse.getRelasjoner()) {
-                    if(erRelasjonEtBarnUnder18VedTidspunkt(relasjon, tidligsteDato)){
+                    if (erRelasjonEtBarnUnder18VedTidspunkt(relasjon, tidligsteDato)) {
                         utvalgteIdenter.add(ident);
                         if (utvalgteIdenter.size() >= antallNyeIdenter) {
                             return utvalgteIdenter;
@@ -182,10 +216,13 @@ public class ServiceUtils {
         return utvalgteIdenter;
     }
 
-    private boolean erRelasjonEtBarnUnder18VedTidspunkt(Relasjon relasjon, LocalDate tidspunkt){
+    private boolean erRelasjonEtBarnUnder18VedTidspunkt(
+            Relasjon relasjon,
+            LocalDate tidspunkt
+    ) {
         if (RELASJON_BARN.equals(relasjon.getTypeRelasjon())) {
             var doedsdato = relasjon.getDatoDo();
-            if(doedsdato != null && !doedsdato.equals("")){
+            if (doedsdato != null && !doedsdato.equals("")) {
                 return false;
             }
 
@@ -233,7 +270,10 @@ public class ServiceUtils {
         return rettigheter;
     }
 
-    public List<String> getIdenterMedFoedselsmelding(Long avspillergruppeId, int maxAlder) {
+    public List<String> getIdenterMedFoedselsmelding(
+            Long avspillergruppeId,
+            int maxAlder
+    ) {
         return hodejegerenConsumer.getFoedte(avspillergruppeId, null, maxAlder);
     }
 
@@ -319,7 +359,8 @@ public class ServiceUtils {
 
     public Map<String, List<NyttVedtakResponse>> combineNyttVedtakResponseLists(
             Map<String, List<NyttVedtakResponse>> firstResponses,
-            Map<String, List<NyttVedtakResponse>> secondResponses) {
+            Map<String, List<NyttVedtakResponse>> secondResponses
+    ) {
         if (!secondResponses.isEmpty()) {
             for (var entry : firstResponses.entrySet()) {
                 String ident = entry.getKey();
@@ -331,12 +372,15 @@ public class ServiceUtils {
         return firstResponses;
     }
 
-    public void setDatoPeriodeVedtakInnenforMaxAntallMaaneder(NyttVedtak vedtak, int antallMaaneder){
+    public void setDatoPeriodeVedtakInnenforMaxAntallMaaneder(
+            NyttVedtak vedtak,
+            int antallMaaneder
+    ) {
         var tilDato = vedtak.getTilDato();
-        if(tilDato != null){
+        if (tilDato != null) {
             var tilDatoLimit = vedtak.getFraDato().plusMonths(antallMaaneder);
 
-            if(tilDato.isAfter(tilDatoLimit)){
+            if (tilDato.isAfter(tilDatoLimit)) {
                 vedtak.setTilDato(tilDatoLimit);
             }
         }
