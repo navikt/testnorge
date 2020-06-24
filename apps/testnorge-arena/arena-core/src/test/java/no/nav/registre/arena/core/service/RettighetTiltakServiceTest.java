@@ -10,7 +10,7 @@ import java.util.Map;
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.TiltakSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggRequest;
-import no.nav.registre.arena.core.service.util.AktivitetskodeMedSannsynlighet;
+import no.nav.registre.arena.core.service.util.KodeMedSannsynlighet;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
@@ -112,9 +112,9 @@ public class RettighetTiltakServiceTest {
         var tilleggRequest = new RettighetTilleggRequest();
         tilleggRequest.setNyeTilleggsstonad(Collections.singletonList(nyttVedtakTillegg));
 
-        var aktivitetskodeMedSannsynlighet = AktivitetskodeMedSannsynlighet.builder().aktivitetkode("ARBFORB").build();
+        var aktivitetskodeMedSannsynlighet = KodeMedSannsynlighet.builder().kode("ARBFORB").build();
 
-        when(serviceUtils.velgAktivitetBasertPaaSannsynlighet(anyList())).thenReturn(aktivitetskodeMedSannsynlighet);
+        when(serviceUtils.velgKodeBasertPaaSannsynlighet(anyList())).thenReturn(aktivitetskodeMedSannsynlighet);
 
         var request = rettighetTiltakService.opprettRettighetTiltaksaktivitetRequest(tilleggRequest, false);
 
@@ -122,7 +122,7 @@ public class RettighetTiltakServiceTest {
         assertThat(request.getVedtakTiltak().get(0).getFraDato()).isEqualTo(LocalDate.now().minusMonths(1));
         assertThat(request.getVedtakTiltak().get(0).getTilDato()).isEqualTo(LocalDate.now());
         assertThat(request.getVedtakTiltak().get(0).getAktivitetstatuskode()).isEqualTo(aktivitetstatuskodeFullfoert);
-        assertThat(request.getVedtakTiltak().get(0).getAktivitetkode()).isEqualTo(aktivitetskodeMedSannsynlighet.getAktivitetkode());
+        assertThat(request.getVedtakTiltak().get(0).getAktivitetkode()).isEqualTo(aktivitetskodeMedSannsynlighet.getKode());
 
     }
 

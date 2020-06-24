@@ -114,7 +114,7 @@ public class VedtakshistorikkServiceTest {
     }
 
     @Test
-    public void shouldGenerereVedtakshistorikk() {
+    public void shouldGenerereVedtakshistorikk() throws Exception {
         var kontonummer = "12131843564";
         var forvalterFnr = "02020202020";
         when(serviceUtils.getIdenterMedKontoinformasjon(avspillergruppeId, miljoe, antallIdenter))
@@ -207,7 +207,7 @@ public class VedtakshistorikkServiceTest {
         verify(serviceUtils).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(1), anyInt(), anyInt(), eq(miljoe));
         verify(aapSyntConsumer).syntetiserVedtakshistorikk(antallIdenter);
         verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
-        verify(rettighetTiltakService).getRettigheterForEndreDeltakerstatus(anyMap(), anyList(), anyString());
+        verify(rettighetTiltakService).getRettigheterForEndreDeltakerstatus(anyMap(), anyList(), anyString(), true);
 
         assertThat(response.get(fnr1)).hasSize(2);
 

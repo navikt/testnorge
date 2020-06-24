@@ -406,7 +406,8 @@ public class VedtakshistorikkService {
         var rettigheterForEndreDeltakerstatus = rettighetTiltakService.getRettigheterForEndreDeltakerstatus(
                 identerMedTiltakdeltakelse,
                 Collections.singletonList(tiltaksdeltakelse),
-                miljoe);
+                miljoe,
+                true);
         rettigheter.addAll(rettigheterForEndreDeltakerstatus);
     }
 
@@ -453,7 +454,9 @@ public class VedtakshistorikkService {
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
             rettighetRequest.getNyeTilleggsstonad().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
+            log.info("Før: "+rettigheter.size());
             opprettTiltaksaktivitet(rettigheter, rettighetRequest);
+            log.info("Etter: "+rettigheter.size());
             rettigheter.add(rettighetRequest);
         }
     }
@@ -462,7 +465,7 @@ public class VedtakshistorikkService {
         if (request instanceof RettighetTilleggRequest) {
             if (request.getVedtakTillegg() != null && !request.getVedtakTillegg().isEmpty()) {
                 rettigheter.add(rettighetTiltakService.opprettRettighetTiltaksaktivitetRequest(
-                        request, false));
+                        request, true));
             }
         } else {
             log.error("Opprettelse av tiltaksaktivitet er kun støttet for tilleggsstønad");

@@ -31,7 +31,7 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggsytelseReq
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksaktivitetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksdeltakelseRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequest;
-import no.nav.registre.arena.core.service.util.AktivitetskodeMedSannsynlighet;
+import no.nav.registre.arena.core.service.util.KodeMedSannsynlighet;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 
@@ -49,7 +49,8 @@ public class RettighetTiltakService {
     private final ServiceUtils serviceUtils;
     private final Random rand;
 
-    private static final Map<String, List<AktivitetskodeMedSannsynlighet>> vedtakMedAktitivetskode;
+    private static final Map<String, List<KodeMedSannsynlighet>> vedtakMedAktitivetskode;
+    private static final Map<String, List<KodeMedSannsynlighet>> vedtakMedStatuskoder;
     private static final Map<String, List<String>> deltakerstatuskoderMedAarsakkoder;
     public static final String aktivitetstatuskodeFullfoert = "FULLF";
 
@@ -60,14 +61,24 @@ public class RettighetTiltakService {
         deltakerstatuskoderMedAarsakkoder.put("DELAVB", Arrays.asList("ANN", "BEGA", "FTOAT", "SYK"));
 
         vedtakMedAktitivetskode = new HashMap<>();
-        URL resource = Resources.getResource("vedtak_til_aktivitetkode.json");
+        URL resourceAktivitetkoder = Resources.getResource("vedtak_til_aktivitetkode.json");
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            Map<String, List<AktivitetskodeMedSannsynlighet>> map = objectMapper.readValue(resource, new TypeReference<>() {
+            Map<String, List<KodeMedSannsynlighet>> map = objectMapper.readValue(resourceAktivitetkoder, new TypeReference<>() {
             });
             vedtakMedAktitivetskode.putAll(map);
         } catch (IOException e) {
             log.error("Kunne ikke laste inn aktivitetskoder.", e);
+        }
+
+        vedtakMedStatuskoder = new HashMap<>();
+        URL resourceStatuskoder = Resources.getResource("vedtak_til_statuskode.json");
+        try {
+            Map<String, List<KodeMedSannsynlighet>> map = objectMapper.readValue(resourceStatuskoder, new TypeReference<>() {
+            });
+            vedtakMedStatuskoder.putAll(map);
+        } catch (IOException e) {
+            log.error("Kunne ikke laste inn statuskoder.", e);
         }
     }
 
@@ -193,7 +204,8 @@ public class RettighetTiltakService {
         var rettigheter = getRettigheterForEndreDeltakerstatus(
                 identerMedOpprettedeTiltakdeltakelse,
                 rettigheterTiltaksdeltakelse,
-                miljoe);
+                miljoe,
+                false);
 
         if (!rettigheter.isEmpty()) {
             var responses = rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
@@ -215,8 +227,10 @@ public class RettighetTiltakService {
 
     public List<RettighetRequest> getRettigheterForEndreDeltakerstatus(
             Map<String, List<NyttVedtakResponse>> identerMedOpprettedeTiltakdeltakelse,
-            List<RettighetRequest> rettigheterTiltaksdeltakelse, String miljoe) {
-
+            List<RettighetRequest> rettigheterTiltaksdeltakelse,
+            String miljoe,
+            Boolean erHistoriskStatus
+    ) {
         List<RettighetRequest> rettigheter = new ArrayList<>(identerMedOpprettedeTiltakdeltakelse.size());
         for (var entry : identerMedOpprettedeTiltakdeltakelse.entrySet()) {
             String ident = entry.getKey();
@@ -228,9 +242,13 @@ public class RettighetTiltakService {
 
                 NyttVedtakTiltak tiltaksdeltakelse = filterteRettigheter.get(0).getVedtakTiltak().get(0);
 
-                var syntetisertRettighet = tiltakSyntConsumer.opprettDeltakerstatus(1).get(0);
+                var deltakerstatuskode = serviceUtils.velgKodeBasertPaaSannsynlighet(
+                        vedtakMedStatuskoder.get("DELTAKER")).getKode();
 
-                var deltakerstatuskode = syntetisertRettighet.getDeltakerstatusKode();
+                if(!erHistoriskStatus){
+                    deltakerstatuskode = tiltakSyntConsumer.opprettDeltakerstatus(1).get(0).getDeltakerstatusKode();
+                }
+
                 if (!IGNORED_DELTAKERSTATUSKODER.contains(deltakerstatuskode)) {
 
                     List<String> endringer = getEndringerMedGyldigRekkefoelge(deltakerstatuskode, tiltaksdeltakelse.getTiltakskarakteristikk());
@@ -251,7 +269,8 @@ public class RettighetTiltakService {
             String ident,
             String miljoe,
             NyttVedtakTiltak tiltaksdeltakelse,
-            String deltakerstatuskode) {
+            String deltakerstatuskode
+    ) {
 
         NyttVedtakTiltak vedtak = new NyttVedtakTiltak();
         vedtak.setTiltakskarakteristikk(tiltaksdeltakelse.getTiltakskarakteristikk());
@@ -296,7 +315,7 @@ public class RettighetTiltakService {
                 continue;
             }
             if (rettighet.getVedtakTillegg() != null && !rettighet.getVedtakTillegg().isEmpty()) {
-                tiltaksaktiviteter.add(opprettRettighetTiltaksaktivitetRequest(rettighet, true));
+                tiltaksaktiviteter.add(opprettRettighetTiltaksaktivitetRequest(rettighet, false));
             }
         }
 
@@ -305,21 +324,23 @@ public class RettighetTiltakService {
 
     RettighetTiltaksaktivitetRequest opprettRettighetTiltaksaktivitetRequest(
             RettighetRequest rettighet,
-            Boolean setTilfeldigStatuskode
+            Boolean erHistoriskAktivitet
     ) {
         if (rettighet.getVedtakTillegg() != null && !rettighet.getVedtakTillegg().isEmpty()) {
 
         }
-        var statuskode = aktivitetstatuskodeFullfoert;
-        if (setTilfeldigStatuskode) {
+        var statuskode = serviceUtils.velgKodeBasertPaaSannsynlighet(
+                vedtakMedStatuskoder.get("AKTIVITET")).getKode();
+
+        if (!erHistoriskAktivitet) {
             statuskode = tiltakSyntConsumer.opprettTiltaksaktivitet(1).get(0).getAktivitetstatuskode();
         }
 
         var nyttVedtakTiltak = new NyttVedtakTiltak();
 
         nyttVedtakTiltak.setAktivitetstatuskode(statuskode);
-        nyttVedtakTiltak.setAktivitetkode(serviceUtils.velgAktivitetBasertPaaSannsynlighet(
-                vedtakMedAktitivetskode.get(rettighet.getVedtakTillegg().get(0).getRettighetKode())).getAktivitetkode());
+        nyttVedtakTiltak.setAktivitetkode(serviceUtils.velgKodeBasertPaaSannsynlighet(
+                vedtakMedAktitivetskode.get(rettighet.getVedtakTillegg().get(0).getRettighetKode())).getKode());
 
         nyttVedtakTiltak.setBeskrivelse(BEGRUNNELSE);
 

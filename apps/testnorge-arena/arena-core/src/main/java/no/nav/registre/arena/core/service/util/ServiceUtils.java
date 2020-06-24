@@ -263,9 +263,9 @@ public class ServiceUtils {
                 .build();
     }
 
-    public AktivitetskodeMedSannsynlighet velgAktivitetBasertPaaSannsynlighet(List<AktivitetskodeMedSannsynlighet> aktivitetskoder) {
+    public KodeMedSannsynlighet velgKodeBasertPaaSannsynlighet(List<KodeMedSannsynlighet> koder) {
         int totalSum = 0;
-        for (var a : aktivitetskoder) {
+        for (var a : koder) {
             totalSum += a.getSannsynlighet();
         }
 
@@ -273,10 +273,10 @@ public class ServiceUtils {
         int sum = 0;
         int i = 0;
         while (sum < index) {
-            sum += aktivitetskoder.get(i++).getSannsynlighet();
+            sum += koder.get(i++).getSannsynlighet();
         }
 
-        return aktivitetskoder.get(Math.max(0, i - 1));
+        return koder.get(Math.max(0, i - 1));
     }
 
     public void lagreIHodejegeren(Map<String, List<NyttVedtakResponse>> identerMedOpprettedeRettigheter) {

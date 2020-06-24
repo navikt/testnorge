@@ -11,8 +11,8 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AktivitetskodeMedSannsynlighet {
+public class KodeMedSannsynlighet {
 
-    private String aktivitetkode;
+    private String kode;
     private Integer sannsynlighet;
 }
