@@ -31,8 +31,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.times;
 
-import static no.nav.registre.arena.core.service.RettighetTiltakService.aktivitetstatuskodeFullfoert;
-
 @RunWith(MockitoJUnitRunner.class)
 public class RettighetTiltakServiceTest {
 
@@ -91,6 +89,10 @@ public class RettighetTiltakServiceTest {
         when(tiltakSyntConsumer.opprettDeltakerstatus(antallNyeIdenter)).thenReturn(vedtak);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(response);
 
+        var aktivitetskodeMedSannsynlighet = KodeMedSannsynlighet.builder().kode("FULLF").build();
+
+        when(serviceUtils.velgKodeBasertPaaSannsynlighet(anyList())).thenReturn(aktivitetskodeMedSannsynlighet);
+
         rettighetTiltakService.opprettTiltaksdeltakelse(avspillergruppeId, miljoe, antallNyeIdenter);
 
         verify(tiltakSyntConsumer).opprettTiltaksdeltakelse(antallNyeIdenter);
@@ -112,16 +114,16 @@ public class RettighetTiltakServiceTest {
         var tilleggRequest = new RettighetTilleggRequest();
         tilleggRequest.setNyeTilleggsstonad(Collections.singletonList(nyttVedtakTillegg));
 
-        var aktivitetskodeMedSannsynlighet = KodeMedSannsynlighet.builder().kode("ARBFORB").build();
+        var aktivitetskodeMedSannsynlighet = KodeMedSannsynlighet.builder().kode("TEST").build();
 
         when(serviceUtils.velgKodeBasertPaaSannsynlighet(anyList())).thenReturn(aktivitetskodeMedSannsynlighet);
 
-        var request = rettighetTiltakService.opprettRettighetTiltaksaktivitetRequest(tilleggRequest, false);
+        var request = rettighetTiltakService.opprettRettighetTiltaksaktivitetRequest(tilleggRequest, true);
 
         assertThat(request.getVedtakTiltak()).hasSize(1);
         assertThat(request.getVedtakTiltak().get(0).getFraDato()).isEqualTo(LocalDate.now().minusMonths(1));
         assertThat(request.getVedtakTiltak().get(0).getTilDato()).isEqualTo(LocalDate.now());
-        assertThat(request.getVedtakTiltak().get(0).getAktivitetstatuskode()).isEqualTo(aktivitetstatuskodeFullfoert);
+        assertThat(request.getVedtakTiltak().get(0).getAktivitetstatuskode()).isEqualTo(aktivitetskodeMedSannsynlighet.getKode());
         assertThat(request.getVedtakTiltak().get(0).getAktivitetkode()).isEqualTo(aktivitetskodeMedSannsynlighet.getKode());
 
     }
