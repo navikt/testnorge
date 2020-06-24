@@ -7,7 +7,7 @@ import no.nav.registre.populasjoner.kafka.domain.PdlDokument;
 @Value
 class DocumentIdWrapper {
 
-    String identifator;
+    String identifikator;
     PdlDokument dokument;
 
     boolean isTombstone() {

@@ -2,6 +2,7 @@ package no.nav.registre.populasjoner.kafka;
 
 import static no.nav.registre.populasjoner.kafka.CollectionUtils.chunk;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -40,8 +41,12 @@ public class PdlDokumentListener {
     }
 
     @KafkaListener(topics = "#{kafkaTopics.getPdlDokument()}")
-    public void onMessage(@Payload ConsumerRecords<String, String> records) {
+    public void onMessage(@Payload String message) {
         log.info("Mottok melding på topic");
+        log.info(message);
+
+        ConsumerRecords<String, String> records = new ObjectMapper().convertValue(message, new TypeReference<>() {
+        });
 
         List<DocumentIdWrapper> documentList = KafkaUtilities.asStream(records)
                 .map(this::convert)

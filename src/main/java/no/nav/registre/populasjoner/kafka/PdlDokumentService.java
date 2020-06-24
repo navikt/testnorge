@@ -23,7 +23,7 @@ public class PdlDokumentService {
     @Retryable(maxAttempts = 5, backoff = @Backoff(multiplier = 2))
     public void processBulk(List<DocumentIdWrapper> docs) {
         for (var a : docs) {
-            log.info("identifikator: []", a.getIdentifator());
+            log.info("identifikator: []", a.getIdentifikator());
             if (a.getDokument() != null) {
                 List<IdentDetaljDto> identer = a.getDokument().getHentIdenter().getIdenter();
                 if (identer != null) {
