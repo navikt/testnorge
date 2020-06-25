@@ -87,9 +87,9 @@ public class KonverteringService {
     private SamhandlerListe lagSamhandlerListe(SyntFrikortResponse res, EgenandelListe listeAvEgenandeler){
         List<Samhandler> samhandlerListe = new ArrayList<>();
 
-        // TODO: sett innsendingstype til innsendt verdi når det er sjekket at mulige verdier fra synt-frikort stemmer
         Samhandler samhandler = Samhandler.builder()
                 .type(res.getSamhandlertypekode())
+                .innsendingstype(res.getInnsendingstypekode())
                 .listeAvEgenandeler(listeAvEgenandeler)
                 .build();
         samhandlerListe.add(samhandler);
