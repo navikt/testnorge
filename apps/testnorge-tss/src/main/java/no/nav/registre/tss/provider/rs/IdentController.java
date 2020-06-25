@@ -36,7 +36,7 @@ public class IdentController {
     }
 
     @PostMapping("/{type}/{ident}")
-    public List<String> opprettLeger(@RequestParam String miljoe, @PathVariable String ident, @PathVariable TssType type) {
+    public List<String> opprettLege(@RequestParam String miljoe, @PathVariable String ident, @PathVariable TssType type) {
         return identService.opprettLegeITss(miljoe.toLowerCase(), ident, type);
     }
 

@@ -49,7 +49,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("Testnorge Synt Sykemelding API")
-                .description("API for syntentisering av sykemeldinger")
+                .description("API for syntetisering av sykemeldinger")
                 .version(appVersion)
                 .termsOfServiceUrl("https://nav.no")
                 .contact(new Contact("Team Dolly", "https://nav-it.slack.com/archives/CA3P9NGA2", "dolly@nav.no"))

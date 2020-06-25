@@ -44,10 +44,10 @@ class Dokument {
                         .withSystemVersjon(applicationInfo.getVersion())
                 );
 
-        if(dto.getUmidelbarBistand() != null){
+        if(dto.getUmiddelbarBistand() != null){
             xmlHelseOpplysningerArbeidsuforhet.withMeldingTilNav(
                     new XMLHelseOpplysningerArbeidsuforhet.MeldingTilNav()
-                            .withBistandNAVUmiddelbart(dto.getUmidelbarBistand())
+                            .withBistandNAVUmiddelbart(dto.getUmiddelbarBistand())
             );
         }
     }

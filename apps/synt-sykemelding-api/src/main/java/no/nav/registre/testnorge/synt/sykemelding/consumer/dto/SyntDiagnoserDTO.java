@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.synt.sykemelding.consumer.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,10 @@ import lombok.Value;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class SyntDiagnoserDTO {
-    String dn;
-    String s;
-    String v;
+    @JsonProperty("dn")
+    String diagnose;
+    @JsonProperty("s")
+    String system;
+    @JsonProperty("v")
+    String diagnosekode;
 }

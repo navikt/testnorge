@@ -25,7 +25,7 @@ public class PostSykemeldingCommand implements Callable<ResponseEntity<String>> 
                 String.class
         );
         if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new RuntimeException("Klarer ikke å opprette sykemeldign for " + sykemelding.getIdent());
+            throw new RuntimeException("Klarer ikke å opprette sykemelding for " + sykemelding.getIdent());
         }
         return response;
     }

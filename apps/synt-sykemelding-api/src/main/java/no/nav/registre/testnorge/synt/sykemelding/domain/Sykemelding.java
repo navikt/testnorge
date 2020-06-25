@@ -49,14 +49,20 @@ public class Sykemelding {
                 : Collections.emptyList();
 
         var biDiagnoser = syntBiDiagnoser.stream()
-                .map(value -> DiagnoseDTO.builder().dn(value.getDn()).s(value.getS()).v(value.getV()).build())
+                .map(value -> DiagnoseDTO
+                        .builder()
+                        .diagnose(value.getDiagnose())
+                        .system(value.getSystem())
+                        .diagnosekode(value.getDiagnosekode())
+                        .build()
+                )
                 .collect(Collectors.toList());
 
         var hovedDiagnose = DiagnoseDTO
                 .builder()
-                .dn(firstSykemelding.getHovedDiagnose().getDn())
-                .s(firstSykemelding.getHovedDiagnose().getS())
-                .v(firstSykemelding.getHovedDiagnose().getV())
+                .diagnose(firstSykemelding.getHovedDiagnose().getDiagnose())
+                .system(firstSykemelding.getHovedDiagnose().getSystem())
+                .diagnosekode(firstSykemelding.getHovedDiagnose().getDiagnosekode())
                 .build();
 
         var mottaker = OrganisasjonDTO
@@ -119,7 +125,7 @@ public class Sykemelding {
                 .mottaker(mottaker)
                 .pasient(pasient)
                 .perioder(perioder)
-                .umidelbarBistand(true)
+                .umiddelbarBistand(true)
                 .sender(sender)
                 .detaljer(DetaljerDTO
                         .builder()
