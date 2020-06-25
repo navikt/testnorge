@@ -10,12 +10,11 @@ import no.nav.registre.testnorge.dto.helsepersonell.v1.LegeDTO;
 @Slf4j
 @RequiredArgsConstructor
 public class Lege {
-    private final CompletableFuture<Samhandler> samhandlerFuture;
+    private final Samhandler samhandler;
     private final CompletableFuture<Persondata> persondataFuture;
 
     public LegeDTO toDTO() {
         try {
-            Samhandler samhandler = samhandlerFuture.get();
             Persondata persondata = persondataFuture.get();
             return LegeDTO.builder()
                     .fnr(persondata.getFnr())
@@ -25,8 +24,8 @@ public class Lege {
                     .hprId(samhandler.getHprId())
                     .build();
         } catch (Exception e) {
-            log.error("Klarer ikke å hente samhandler/persondata", e);
-            throw new RuntimeException("Feil ved opprettelse av lege");
+            log.error("Klarer ikke å hente persondata", e);
+            return null;
         }
     }
 }

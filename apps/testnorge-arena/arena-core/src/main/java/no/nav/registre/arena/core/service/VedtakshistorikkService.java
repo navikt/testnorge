@@ -58,7 +58,6 @@ public class VedtakshistorikkService {
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final ServiceUtils serviceUtils;
     private final RettighetAapService rettighetAapService;
-    private final RettighetTilleggService rettighetTilleggService;
     private final RettighetTiltakService rettighetTiltakService;
 
     public Map<String, List<NyttVedtakResponse>> genererVedtakshistorikk(
@@ -157,6 +156,7 @@ public class VedtakshistorikkService {
         opprettVedtakTiltaksdeltakelse(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakTiltakspenger(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakBarnetillegg(vedtakshistorikk, personident, miljoe, rettigheter);
+
         opprettVedtakTillegg(vedtakshistorikk.getAlleTilleggVedtak(), personident, miljoe, rettigheter);
 
         var senesteVedtak = finnSenesteVedtak(vedtakshistorikk.getAlleVedtak());
@@ -423,7 +423,8 @@ public class VedtakshistorikkService {
         var rettigheterForEndreDeltakerstatus = rettighetTiltakService.getRettigheterForEndreDeltakerstatus(
                 identerMedTiltakdeltakelse,
                 Collections.singletonList(tiltaksdeltakelse),
-                miljoe);
+                miljoe,
+                true);
         rettigheter.addAll(rettigheterForEndreDeltakerstatus);
     }
 
@@ -466,12 +467,21 @@ public class VedtakshistorikkService {
             List<RettighetRequest> rettigheter
     ) {
         if (vedtak != null && !vedtak.isEmpty()) {
-            rettighetTilleggService.opprettTiltaksaktiviteter(rettigheter);
             var rettighetRequest = new RettighetTilleggRequest(vedtak);
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
             rettighetRequest.getNyeTilleggsstonad().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
+
+            opprettTiltaksaktivitet(rettigheter, rettighetRequest);
+
             rettigheter.add(rettighetRequest);
+        }
+    }
+
+    private void opprettTiltaksaktivitet(List<RettighetRequest> rettigheter, RettighetTilleggRequest request) {
+        if (request.getVedtakTillegg() != null && !request.getVedtakTillegg().isEmpty()) {
+            rettigheter.add(rettighetTiltakService.opprettRettighetTiltaksaktivitetRequest(
+                    request, true));
         }
     }
 

@@ -16,4 +16,7 @@ public class SamhandlerDTO {
 
     @JsonProperty("samh_ident")
     private final List<IdentDTO> identer;
+
+    @JsonProperty("samh_type_kode")
+    private final String kode;
 }

@@ -1,5 +1,6 @@
 package no.nav.registre.arena.core.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,8 +9,12 @@ import java.util.Map;
 
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.TiltakSyntConsumer;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggRequest;
+import no.nav.registre.arena.core.service.util.KodeMedSannsynlighet;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 
 import org.junit.Before;
@@ -19,12 +24,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.times;
-
 
 @RunWith(MockitoJUnitRunner.class)
 public class RettighetTiltakServiceTest {
@@ -84,12 +89,43 @@ public class RettighetTiltakServiceTest {
         when(tiltakSyntConsumer.opprettDeltakerstatus(antallNyeIdenter)).thenReturn(vedtak);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(response);
 
+        var aktivitetskodeMedSannsynlighet = KodeMedSannsynlighet.builder().kode("FULLF").build();
+
+        when(serviceUtils.velgKodeBasertPaaSannsynlighet(anyList())).thenReturn(aktivitetskodeMedSannsynlighet);
+
         rettighetTiltakService.opprettTiltaksdeltakelse(avspillergruppeId, miljoe, antallNyeIdenter);
 
         verify(tiltakSyntConsumer).opprettTiltaksdeltakelse(antallNyeIdenter);
         verify(serviceUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(tiltakSyntConsumer).opprettDeltakerstatus(antallNyeIdenter);
         verify(rettighetArenaForvalterConsumer, times(2)).opprettRettighet(anyList());
+    }
+
+    @Test
+    public void shouldOppretteRettighetTiltaksaktivitetRequest() {
+        var vedtaksperiode = new Vedtaksperiode();
+        vedtaksperiode.setFom(LocalDate.now().minusMonths(1));
+        vedtaksperiode.setTom(LocalDate.now());
+
+        var nyttVedtakTillegg = new NyttVedtakTillegg();
+        nyttVedtakTillegg.setVedtaksperiode(vedtaksperiode);
+        nyttVedtakTillegg.setRettighetKode("TSOFLYTT");
+
+        var tilleggRequest = new RettighetTilleggRequest();
+        tilleggRequest.setNyeTilleggsstonad(Collections.singletonList(nyttVedtakTillegg));
+
+        var aktivitetskodeMedSannsynlighet = KodeMedSannsynlighet.builder().kode("TEST").build();
+
+        when(serviceUtils.velgKodeBasertPaaSannsynlighet(anyList())).thenReturn(aktivitetskodeMedSannsynlighet);
+
+        var request = rettighetTiltakService.opprettRettighetTiltaksaktivitetRequest(tilleggRequest, true);
+
+        assertThat(request.getVedtakTiltak()).hasSize(1);
+        assertThat(request.getVedtakTiltak().get(0).getFraDato()).isEqualTo(LocalDate.now().minusMonths(1));
+        assertThat(request.getVedtakTiltak().get(0).getTilDato()).isEqualTo(LocalDate.now());
+        assertThat(request.getVedtakTiltak().get(0).getAktivitetStatuskode()).isEqualTo(aktivitetskodeMedSannsynlighet.getKode());
+        assertThat(request.getVedtakTiltak().get(0).getAktivitetkode()).isEqualTo(aktivitetskodeMedSannsynlighet.getKode());
+
     }
 
 

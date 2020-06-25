@@ -53,4 +53,14 @@ public class TiltakController {
                 .body(rettighetTiltakService.opprettBarnetillegg(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter()));
     }
 
+    @PostMapping("generer/tiltaksaktivitet")
+    public ResponseEntity<Map<String, List<NyttVedtakResponse>>> genererTiltaksaktivitet(
+            @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(rettighetTiltakService.opprettTiltaksaktivitet(syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe(), syntetiserArenaRequest.getAntallNyeIdenter()));
+    }
+
 }
