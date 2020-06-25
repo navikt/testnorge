@@ -5,7 +5,7 @@ import lombok.Value;
 import no.nav.registre.populasjoner.kafka.domain.PdlDokument;
 
 @Value
-class DocumentIdWrapper {
+public class DocumentIdWrapper {
 
     String identifikator;
     PdlDokument dokument;

@@ -12,6 +12,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.List;
 
 import no.nav.registre.populasjoner.kafka.domain.PdlDokument;
 import no.nav.registre.populasjoner.kafka.person.IdentDetaljDto;
@@ -36,24 +37,28 @@ public class PdlDokumentListener {
     }
 
     @KafkaListener(topics = "#{kafkaTopics.getPdlDokument()}")
-    public void onMessage(@Payload String message) {
+    public void onMessage(@Payload List<DocumentIdWrapper> message) {
         log.info("Mottok melding på topic");
 
-        JsonNode jsonNode = null;
-        try {
-            jsonNode = new ObjectMapper().convertValue(message, JsonNode.class);
-        } catch (Exception e) {
-            log.error("Kunne ikke konvertere melding til jsonNode");
+        for(var documentIdWrapper : message) {
+            log.info("dokumentId: {}", documentIdWrapper.getIdentifikator());
         }
 
-        if (jsonNode != null) {
-            var hentIdenter = jsonNode.findValue("hentIdenter");
-            if (hentIdenter == null) {
-                log.info("Fant ikke felt 'hentIdenter' i node {}", jsonNode);
-            } else {
-                log.info("fra json-node: {}", hentIdenter.toPrettyString());
-            }
-        }
+//        JsonNode jsonNode = null;
+//        try {
+//            jsonNode = new ObjectMapper().convertValue(message, JsonNode.class);
+//        } catch (Exception e) {
+//            log.error("Kunne ikke konvertere melding til jsonNode");
+//        }
+//
+//        if (jsonNode != null) {
+//            var hentIdenter = jsonNode.findValue("hentIdenter");
+//            if (hentIdenter == null) {
+//                log.info("Fant ikke felt 'hentIdenter' i node {}", jsonNode);
+//            } else {
+//                log.info("fra json-node: {}", hentIdenter.toPrettyString());
+//            }
+//        }
 
         //        ConsumerRecords<String, String> records = new ObjectMapper().convertValue(message, new TypeReference<>() {
         //        });
