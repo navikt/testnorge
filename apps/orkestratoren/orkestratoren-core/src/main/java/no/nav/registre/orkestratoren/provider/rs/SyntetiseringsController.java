@@ -29,7 +29,6 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaTillegg
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaTiltakRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaVedtakshistorikkRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserElsamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserMedlRequest;
@@ -41,7 +40,6 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.TestnorgeBisysService;
-import no.nav.registre.orkestratoren.service.TestnorgeElsamService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
 import no.nav.registre.orkestratoren.service.TestnorgeMedlService;
@@ -60,9 +58,6 @@ public class SyntetiseringsController {
 
     @Autowired
     private TestnorgeInntektService testnorgeInntektService;
-
-    @Autowired
-    private TestnorgeElsamService testnorgeElsamService;
 
     @Autowired
     private TestnorgeSigrunService testnorgeSigrunService;
@@ -110,15 +105,6 @@ public class SyntetiseringsController {
             @RequestBody SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest
     ) {
         return testnorgeInntektService.genererInntektsmeldinger(syntetiserInntektsmeldingRequest);
-    }
-
-    @PostMapping(value = "/elsam/sykemeldinger/generer")
-    public List<String> opprettSykemeldingerIElsam(
-            @RequestBody SyntetiserElsamRequest syntetiserElsamRequest
-    ) {
-        var fnrMedGenererteMeldinger = testnorgeElsamService.genererElsamSykemeldinger(syntetiserElsamRequest);
-        log.info("elsam har opprettet {} sykemeldinger. Personer som har fått opprettet sykemelding: {}", fnrMedGenererteMeldinger.size(), Arrays.toString(fnrMedGenererteMeldinger.toArray()));
-        return fnrMedGenererteMeldinger;
     }
 
     @PostMapping(value = "/popp/skattegrunnlag/generer")
