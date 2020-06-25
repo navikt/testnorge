@@ -25,7 +25,6 @@ import java.util.Map;
 import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.TestnorgeBisysService;
-import no.nav.registre.orkestratoren.service.TestnorgeElsamService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
 import no.nav.registre.orkestratoren.service.TestnorgeMedlService;
@@ -42,9 +41,6 @@ public class JobControllerTest {
 
     @Mock
     private TestnorgeInntektService testnorgeInntektService;
-
-    @Mock
-    private TestnorgeElsamService testnorgeElsamService;
 
     @Mock
     private TestnorgeSigrunService testnorgeSigrunService;
@@ -107,12 +103,6 @@ public class JobControllerTest {
     public void shouldStartInntektBatch() {
         jobController.inntektSyntBatch();
         verify(testnorgeInntektService).genererInntektsmeldinger(any());
-    }
-
-    @Test
-    public void shouldStartElsamBatch() {
-        jobController.elsamSyntBatch();
-        verify(testnorgeElsamService).genererElsamSykemeldinger(any());
     }
 
     @Test

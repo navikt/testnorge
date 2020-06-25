@@ -16,7 +16,6 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaAapRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaVedtakshistorikkRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserElsamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserMedlRequest;
@@ -27,7 +26,6 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.TestnorgeBisysService;
-import no.nav.registre.orkestratoren.service.TestnorgeElsamService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
 import no.nav.registre.orkestratoren.service.TestnorgeMedlService;
@@ -50,9 +48,6 @@ public class JobController {
 
     @Value("#{${batch.navMeldinger}}")
     private Map<String, Integer> antallNavmeldingerPerEndringskode;
-
-    @Value("${elsambatch.antallSykemeldinger}")
-    private int antallSykemeldinger;
 
     @Value("${poppbatch.antallNyeIdenter}")
     private int poppbatchAntallNyeIdenter;
@@ -83,9 +78,6 @@ public class JobController {
 
     @Autowired
     private TestnorgeInntektService testnorgeInntektService;
-
-    @Autowired
-    private TestnorgeElsamService testnorgeElsamService;
 
     @Autowired
     private TestnorgeSigrunService testnorgeSigrunService;
@@ -140,15 +132,6 @@ public class JobController {
             var request = new SyntetiserInntektsmeldingRequest(entry.getKey(), entry.getValue());
             var feiledeInntektsmeldinger = testnorgeInntektService.genererInntektsmeldinger(request);
             log.info("Inntekt-synt.-batch har matet Inntektstub med meldinger. Meldinger som feilet: {}.", feiledeInntektsmeldinger.keySet().toString());
-        }
-    }
-
-    public void elsamSyntBatch() {
-        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            var request = new SyntetiserElsamRequest(entry.getKey(), entry.getValue(), antallSykemeldinger);
-            var fnrMedGenererteMeldinger = testnorgeElsamService.genererElsamSykemeldinger(request);
-            log.info("elsambatch har opprettet {} sykemeldinger i miljø {}. Personer som har fått opprettet sykemelding: {}", fnrMedGenererteMeldinger.size(), entry.getValue(),
-                    Arrays.toString(fnrMedGenererteMeldinger.toArray()));
         }
     }
 
