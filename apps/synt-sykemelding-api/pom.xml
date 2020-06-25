@@ -21,6 +21,10 @@
             <groupId>no.nav.registre.testnorge</groupId>
         </dependency>
         <dependency>
+            <artifactId>testnorge-common-command</artifactId>
+            <groupId>no.nav.registre.testnorge</groupId>
+        </dependency>
+        <dependency>
             <artifactId>testnorge-data-transfer-objects</artifactId>
             <groupId>no.nav.registre.testnorge</groupId>
         </dependency>
