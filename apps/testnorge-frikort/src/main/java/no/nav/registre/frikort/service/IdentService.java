@@ -5,32 +5,27 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import no.nav.registre.frikort.consumer.rs.FrikortSyntetisererenConsumer;
-import no.nav.registre.frikort.provider.rs.request.SyntetiserFrikortRequest;
+import no.nav.registre.frikort.provider.rs.request.IdentMedAntallFrikort;
+import no.nav.registre.frikort.provider.rs.request.IdentRequest;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SyntetiseringService {
-
-    private static final int ANTALL_FRIKORT_PER_IDENT = 1;
+public class IdentService {
 
     private final FrikortSyntetisererenConsumer frikortSyntetisererenConsumer;
     private final KonverteringService konverteringService;
     private final MqService mqService;
 
-    public List<String> opprettSyntetiskeFrikort(
-            SyntetiserFrikortRequest syntetiserFrikortRequest,
+    public List<String> hentSyntetiskeEgenandelerSomXML(
+            IdentRequest identRequest,
             boolean leggPaaKoe
     ) throws JAXBException {
-        List<String> identer = new ArrayList<>(); // fra hodejegeren
-
-        var identMap = identer.stream().collect(Collectors.toMap(ident -> ident, ident -> ANTALL_FRIKORT_PER_IDENT, (a, b) -> b));
-
+        var identMap = identRequest.getIdenter().stream().collect(Collectors.toMap(IdentMedAntallFrikort::getIdent, IdentMedAntallFrikort::getAntallFrikort, (a, b) -> b));
         var egenandeler = frikortSyntetisererenConsumer.hentSyntetiskeEgenandelerFraSyntRest(identMap);
 
         var xmlMeldinger = konverteringService.konverterEgenandelerTilXmlString(egenandeler);
@@ -42,6 +37,6 @@ public class SyntetiseringService {
             log.info("Generert(e) egenandelsmelding(er) ble lagt til på kø.");
         }
 
-        return null;
+        return xmlMeldinger;
     }
 }
