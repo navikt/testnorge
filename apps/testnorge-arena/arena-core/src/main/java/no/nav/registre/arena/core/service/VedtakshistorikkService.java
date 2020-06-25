@@ -156,7 +156,7 @@ public class VedtakshistorikkService {
         opprettVedtakTiltaksdeltakelse(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakTiltakspenger(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakBarnetillegg(vedtakshistorikk, personident, miljoe, rettigheter);
-
+        opprettVedtakEndreDeltakerstatus(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakTillegg(vedtakshistorikk.getAlleTilleggVedtak(), personident, miljoe, rettigheter);
 
         var senesteVedtak = finnSenesteVedtak(vedtakshistorikk.getAlleVedtak());
@@ -406,26 +406,34 @@ public class VedtakshistorikkService {
             rettighetRequest.setMiljoe(miljoe);
             rettighetRequest.getNyeTiltaksdeltakelse().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
             rettigheter.add(rettighetRequest);
-
-            opprettVedtakEndreDeltakerstatus(rettighetRequest, miljoe, rettigheter);
         }
     }
 
     private void opprettVedtakEndreDeltakerstatus(
-            RettighetRequest tiltaksdeltakelse,
+            Vedtakshistorikk vedtak,
+            String personident,
             String miljoe,
             List<RettighetRequest> rettigheter
     ) {
-        var response = NyttVedtakResponse.builder().feiledeRettigheter(Collections.emptyList()).build();
-        Map<String, List<NyttVedtakResponse>> identerMedTiltakdeltakelse = new HashMap<>();
-        identerMedTiltakdeltakelse.put(tiltaksdeltakelse.getPersonident(), Collections.singletonList(response));
+        var tiltaksdeltakelse = vedtak.getTiltaksdeltakelse();
+        if (tiltaksdeltakelse != null && !tiltaksdeltakelse.isEmpty()) {
+            for (var deltakelse : tiltaksdeltakelse){
+                var response = NyttVedtakResponse.builder().feiledeRettigheter(Collections.emptyList()).build();
+                Map<String, List<NyttVedtakResponse>> identerMedTiltakdeltakelse = new HashMap<>();
+                identerMedTiltakdeltakelse.put(personident, Collections.singletonList(response));
 
-        var rettigheterForEndreDeltakerstatus = rettighetTiltakService.getRettigheterForEndreDeltakerstatus(
-                identerMedTiltakdeltakelse,
-                Collections.singletonList(tiltaksdeltakelse),
-                miljoe,
-                true);
-        rettigheter.addAll(rettigheterForEndreDeltakerstatus);
+                var deltakelseRettighetRequest = new RettighetTiltaksdeltakelseRequest(Collections.singletonList(deltakelse));
+                deltakelseRettighetRequest.setPersonident(personident);
+
+                var rettigheterForEndreDeltakerstatus = rettighetTiltakService.getRettigheterForEndreDeltakerstatus(
+                        identerMedTiltakdeltakelse,
+                        Collections.singletonList(deltakelseRettighetRequest),
+                        miljoe,
+                        true);
+                rettigheter.addAll(rettigheterForEndreDeltakerstatus);
+            }
+        }
+
     }
 
     private void opprettVedtakTiltakspenger(
