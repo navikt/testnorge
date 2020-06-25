@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -37,12 +38,10 @@ public class PdlDokumentListener {
     }
 
     @KafkaListener(topics = "#{kafkaTopics.getPdlDokument()}")
-    public void onMessage(@Payload List<JsonNode> message) {
+    public void onMessage(ConsumerRecords<String, String> message) {
         log.info("Mottok melding på topic");
 
-        for (var node : message) {
-            log.info("node: {}", node);
-        }
+        log.info("melding: {}", message);
 
         //        JsonNode jsonNode = null;
         //        try {
