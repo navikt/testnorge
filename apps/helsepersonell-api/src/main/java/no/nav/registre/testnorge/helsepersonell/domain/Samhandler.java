@@ -2,8 +2,6 @@ package no.nav.registre.testnorge.helsepersonell.domain;
 
 import lombok.RequiredArgsConstructor;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -12,7 +10,7 @@ import no.nav.registre.testnorge.dto.samhandlerregisteret.v1.SamhandlerDTO;
 
 @RequiredArgsConstructor
 public class Samhandler {
-    private final static Set<String> SAMHANDLER_KODE_MED_MULIGHET_TIL_AA_LAGE_SYKEMELDING = Set.of("KI", "LE", "MT", "FT", "TL");
+    private static final Set<String> SAMHANDLER_KODE_MED_MULIGHET_TIL_AA_LAGE_SYKEMELDING = Set.of("KI", "LE", "MT", "FT", "TL");
 
     private final SamhandlerDTO dto;
 

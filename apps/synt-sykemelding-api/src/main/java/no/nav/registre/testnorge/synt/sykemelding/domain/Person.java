@@ -29,7 +29,7 @@ public class Person {
     }
 
     /**
-     * Er et eget felt i DPL, men vi manger PDL i q1.
+     * @deprecated Er et eget felt i DPL, men vi manger PDL i q1.
      */
     @Deprecated
     public LocalDate getFoedselsdato() {
