@@ -133,7 +133,7 @@ export const FormikDollyFieldArray = ({
 			return (
 				<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
 					{values.map((curr, idx) => {
-						const showDeleteButton = canBeEmpty === true ? true : values.length < 2 ? false : true
+						const showDeleteButton = canBeEmpty === true ? true : values.length >= 2
 						const path = `${name}.${idx}`
 						const handleRemove = () => arrayHelpers.remove(idx)
 						return nested ? (
