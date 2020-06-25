@@ -33,6 +33,8 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap
 public class AapSyntConsumer {
 
     private static final LocalDate MINIMUM_DATE = LocalDate.of(2010, 10, 1); // krav i arena
+    // mangler støtte for tiltakspenger bak i tid
+    private static final LocalDate MIDLERTIDIG_MINIMUM_DATE = LocalDate.of(2017, 6, 1);
     public static final LocalDate ARENA_AAP_UNG_UFOER_DATE_LIMIT = LocalDate.of(2020, 1, 31);
 
     private RestTemplate restTemplate;
@@ -68,7 +70,7 @@ public class AapSyntConsumer {
         List<LocalDate> oppstartsdatoer = new ArrayList<>(antallIdenter);
 
         for (int i = 0; i < antallIdenter; i++) {
-            oppstartsdatoer.add(LocalDate.now().minusMonths(rand.nextInt(Math.toIntExact(ChronoUnit.MONTHS.between(MINIMUM_DATE, LocalDate.now())))));
+            oppstartsdatoer.add(LocalDate.now().minusMonths(rand.nextInt(Math.toIntExact(ChronoUnit.MONTHS.between(MIDLERTIDIG_MINIMUM_DATE, LocalDate.now())))));
         }
 
         var postRequest = RequestEntity.post(arenaVedtakshistorikkUrl.expand()).body(oppstartsdatoer);
