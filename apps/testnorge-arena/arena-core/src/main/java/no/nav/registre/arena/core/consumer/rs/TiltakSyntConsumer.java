@@ -25,6 +25,7 @@ public class TiltakSyntConsumer {
     private UriTemplate arenaTiltakspengerUrl;
     private UriTemplate arenaBarnetilleggUrl;
     private UriTemplate arenaDeltakerstatusUrl;
+    private UriTemplate arenaTiltaksaktivitetUrl;
 
     public TiltakSyntConsumer(
             RestTemplateBuilder restTemplateBuilder,
@@ -37,6 +38,7 @@ public class TiltakSyntConsumer {
         this.arenaTiltakspengerUrl = new UriTemplate(arenaTiltakServerUrl + "/v1/arena/tiltak/basi");
         this.arenaBarnetilleggUrl = new UriTemplate(arenaTiltakServerUrl + "/v1/arena/tiltak/btil");
         this.arenaDeltakerstatusUrl = new UriTemplate(arenaTiltakServerUrl + "/v1/arena/tiltak/deltakerstatus");
+        this.arenaTiltaksaktivitetUrl = new UriTemplate(arenaTiltakServerUrl + "/v1/arena/tiltak/aktivitet");
     }
 
     public List<NyttVedtakTiltak> opprettTiltaksdeltakelse(int antallMeldinger) {
@@ -59,6 +61,12 @@ public class TiltakSyntConsumer {
 
     public List<NyttVedtakTiltak> opprettDeltakerstatus(int antallMeldinger) {
         var postRequest = consumerUtils.createPostRequest(arenaDeltakerstatusUrl, antallMeldinger);
+        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakTiltak>>() {
+        }).getBody();
+    }
+
+    public List<NyttVedtakTiltak> opprettTiltaksaktivitet(int antallMeldinger) {
+        var postRequest = consumerUtils.createPostRequest(arenaTiltaksaktivitetUrl, antallMeldinger);
         return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakTiltak>>() {
         }).getBody();
     }

@@ -38,13 +38,13 @@ public class NyttVedtak {
     @JsonAlias({ "DATO_MOTTATT", "datoMottatt" })
     private LocalDate datoMottatt;
 
-    @JsonAlias({ "FRA_DATO", "fraDato" })
+    @JsonAlias({ "FRA_DATO", "DATO_FRA", "fraDato" })
     private LocalDate fraDato;
 
     @JsonAlias({ "SAKSBEHANDLER", "saksbehandler" })
     private String saksbehandler;
 
-    @JsonAlias({ "TIL_DATO", "tilDato" })
+    @JsonAlias({ "TIL_DATO", "DATO_TIL", "tilDato" })
     private LocalDate tilDato;
 
     @JsonAlias({ "UTFALL", "utfall" })

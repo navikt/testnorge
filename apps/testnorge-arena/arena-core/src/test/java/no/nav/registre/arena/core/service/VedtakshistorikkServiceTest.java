@@ -1,6 +1,7 @@
 package no.nav.registre.arena.core.service;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyMap;
@@ -209,7 +210,7 @@ public class VedtakshistorikkServiceTest {
         verify(serviceUtils).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(1), anyInt(), anyInt(), eq(miljoe));
         verify(aapSyntConsumer).syntetiserVedtakshistorikk(antallIdenter);
         verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
-        verify(rettighetTiltakService).getRettigheterForEndreDeltakerstatus(anyMap(), anyList(), anyString());
+        verify(rettighetTiltakService).getRettigheterForEndreDeltakerstatus(anyMap(), anyList(), anyString(), anyBoolean());
 
         assertThat(response.get(fnr1)).hasSize(2);
 
