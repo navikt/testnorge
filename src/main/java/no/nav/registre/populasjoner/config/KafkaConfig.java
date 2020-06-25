@@ -7,9 +7,9 @@ import static org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_
 import static org.apache.kafka.clients.consumer.ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG;
 
+import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.common.config.SaslConfigs;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,14 +18,12 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import java.util.HashMap;
 
 import no.nav.common.utils.Credentials;
 import no.nav.registre.populasjoner.kafka.KafkaHelsesjekk;
 import no.nav.registre.populasjoner.kafka.KafkaTopics;
-import no.nav.registre.populasjoner.kafka.domain.PdlDokument;
 
 @EnableKafka
 @Configuration
@@ -53,19 +51,17 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, PdlDokument> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, PdlDokument> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<Object, Object> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<Object, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         factory.setErrorHandler(kafkaHelsesjekk);
         return factory;
     }
 
     @Bean
-    public ConsumerFactory<String, PdlDokument> consumerFactory() {
+    public ConsumerFactory<Object, Object> consumerFactory() {
         return new DefaultKafkaConsumerFactory<>(
-                kafkaConsumerProperties(brokersUrl, serviceUserCredentials),
-                new StringDeserializer(),
-                new JsonDeserializer<>(PdlDokument.class));
+                kafkaConsumerProperties(brokersUrl, serviceUserCredentials));
     }
 
     //    @Bean RecordMessageConverter messageConverter() {
@@ -82,9 +78,9 @@ public class KafkaConfig {
         props.put(SaslConfigs.SASL_MECHANISM, "PLAIN");
         props.put(SaslConfigs.SASL_JAAS_CONFIG,
                 "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"" + serviceUserCredentials.username + "\" password=\"" + serviceUserCredentials.password + "\";");
-        props.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-        //        props.put("schema.registry.url", "http://kafka-schema-registry.tpa.svc.nais.local:8081");
+        props.put(KEY_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+        props.put(VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+        props.put("schema.registry.url", "http://kafka-schema-registry.tpa.svc.nais.local:8081");
         return props;
     }
 
