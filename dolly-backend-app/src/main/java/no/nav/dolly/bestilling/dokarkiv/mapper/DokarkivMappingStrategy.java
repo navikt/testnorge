@@ -26,7 +26,7 @@ import no.nav.dolly.mapper.MappingStrategy;
 @Component
 public class DokarkivMappingStrategy implements MappingStrategy {
 
-    private static final String KANAL = "SCAN_IM";
+    private static final String KANAL = "SKAN_IM";
     private static final String PDFA = "PDFA";
     private static final String ARKIV = "ARKIV";
 
@@ -38,31 +38,38 @@ public class DokarkivMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(RsDokarkiv dokarkiv,
                             DokarkivRequest dokarkivRequest, MappingContext context) {
-                        boolean dokarkivIsSet = true;
+                        boolean dokumentVariantSendtMed = true;
 
                         if (isBlank(dokarkiv.getKanal())) {
                             dokarkivRequest.setKanal(KANAL);
                         }
+                        if (isNull(dokarkiv.getJournalpostType()) || isBlank(dokarkiv.getJournalpostType().name())) {
+                            dokarkivRequest.setJournalpostType(DokarkivRequest.JournalPostType.INNGAAENDE);
+                        }
                         if (isNull(dokarkiv.getDokumenter())) {
-                            dokarkivIsSet = false;
+                            dokumentVariantSendtMed = false;
                             List<DokarkivRequest.Dokument> dokumenter = new ArrayList<>();
                             dokarkivRequest.setDokumenter(dokumenter);
                             List<DokarkivRequest.DokumentVariant> dokumentVarianter = new ArrayList<>();
                             dokumentVarianter.add(new DokarkivRequest.DokumentVariant());
                             dokarkivRequest.getDokumenter().get(0).setDokumentvarianter(dokumentVarianter);
                         } else if (isNull(dokarkiv.getDokumenter().get(0).getDokumentvarianter())) {
-                            dokarkivIsSet = false;
+                            dokumentVariantSendtMed = false;
                             List<DokarkivRequest.DokumentVariant> dokumentVarianter = new ArrayList<>();
                             dokumentVarianter.add(new DokarkivRequest.DokumentVariant());
                             dokarkivRequest.getDokumenter().get(0).setDokumentvarianter(dokumentVarianter);
                         }
-                        if (!dokarkivIsSet || isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getFysiskDokument())) {
+                        if (!dokumentVariantSendtMed || isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getFiltype())) {
+                            dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setFiltype(PDFA);
+                        }
+                        if (!dokumentVariantSendtMed || isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getVariantformat())) {
+                            dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setVariantformat(ARKIV);
+                        }
+                        if (!dokumentVariantSendtMed || isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getFysiskDokument())) {
                             Path pdfPath = Paths.get("dolly-backend-app/src/main/resources/dokarkiv/testpdf.pdf");
                             try {
                                 byte[] pdfByteArray = Files.readAllBytes(pdfPath);
-                                dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setFiltype(PDFA);
                                 dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setFysiskDokument(Base64.getEncoder().encodeToString(pdfByteArray));
-                                dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setVariantformat(ARKIV);
                             } catch (IOException e) {
                                 log.error("Klarte ikke å hente test PDF: ", e);
                             }
