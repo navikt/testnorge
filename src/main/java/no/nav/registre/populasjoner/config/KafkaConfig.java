@@ -16,16 +16,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
-import org.springframework.kafka.config.KafkaListenerContainerFactory;
+import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.support.converter.RecordMessageConverter;
-import org.springframework.kafka.support.converter.StringJsonMessageConverter;
+import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import java.util.HashMap;
 
 import no.nav.common.utils.Credentials;
 import no.nav.registre.populasjoner.kafka.KafkaHelsesjekk;
 import no.nav.registre.populasjoner.kafka.KafkaTopics;
+import no.nav.registre.populasjoner.kafka.domain.PdlDokument;
 
 @EnableKafka
 @Configuration
@@ -53,16 +53,24 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaListenerContainerFactory kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(new DefaultKafkaConsumerFactory<>(kafkaConsumerProperties(brokersUrl, serviceUserCredentials)));
+    public ConcurrentKafkaListenerContainerFactory<String, PdlDokument> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, PdlDokument> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory());
         factory.setErrorHandler(kafkaHelsesjekk);
         return factory;
     }
 
-    @Bean RecordMessageConverter messageConverter() {
-        return new StringJsonMessageConverter();
+    @Bean
+    public ConsumerFactory<String, PdlDokument> consumerFactory() {
+        return new DefaultKafkaConsumerFactory<>(
+                kafkaConsumerProperties(brokersUrl, serviceUserCredentials),
+                new StringDeserializer(),
+                new JsonDeserializer<>(PdlDokument.class));
     }
+
+    //    @Bean RecordMessageConverter messageConverter() {
+    //        return new StringJsonMessageConverter();
+    //    }
 
     private HashMap<String, Object> kafkaBaseProperties(
             String kafkaBrokersUrl,
@@ -75,7 +83,7 @@ public class KafkaConfig {
         props.put(SaslConfigs.SASL_JAAS_CONFIG,
                 "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"" + serviceUserCredentials.username + "\" password=\"" + serviceUserCredentials.password + "\";");
         props.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         //        props.put("schema.registry.url", "http://kafka-schema-registry.tpa.svc.nais.local:8081");
         return props;
     }

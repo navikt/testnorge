@@ -1,19 +1,18 @@
 package no.nav.registre.populasjoner.kafka;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.List;
 
 import no.nav.registre.populasjoner.kafka.domain.PdlDokument;
 import no.nav.registre.populasjoner.kafka.person.IdentDetaljDto;
@@ -38,10 +37,17 @@ public class PdlDokumentListener {
     }
 
     @KafkaListener(topics = "#{kafkaTopics.getPdlDokument()}")
-    public void onMessage(@Payload PdlDokument message) {
+    public void onMessage(
+            @Payload PdlDokument message,
+            @Headers MessageHeaders headers
+    ) {
         log.info("Mottok melding på topic");
 
         log.info("melding: {}", message);
+
+        headers.keySet().forEach(key -> {
+            log.info("{}: {}", key, headers.get(key));
+        });
 
         //        JsonNode jsonNode = null;
         //        try {
