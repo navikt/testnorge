@@ -9,12 +9,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import no.nav.registre.testnorge.common.headers.NavHeaders;
-
 @Slf4j
 public class RequestLogger {
-
-
     private final ContentCachingRequestWrapper request;
 
     public RequestLogger(ContentCachingRequestWrapper request) {
@@ -27,12 +23,13 @@ public class RequestLogger {
 
     public void log() {
         try {
-            MDC.clear();
-            MDC.setContextMap(this.toPropertyMap());
-            log.trace(getBody());
-            MDC.clear();
+            Map<String, String> contextMap = MDC.getCopyOfContextMap();
+            contextMap.putAll(this.toPropertyMap());
+            MDC.setContextMap(contextMap);
+            var body = getBody();
+            log.trace(body.equals("") ? "[empty]" : body);
         } catch (Exception e) {
-            log.error("Klarer ikke aa lese fra request", e);
+            log.error("Klarer ikke å lese fra request", e);
         }
     }
 
@@ -42,10 +39,8 @@ public class RequestLogger {
         properties.put("Method", String.valueOf(request.getMethod()));
         properties.put("Url", String.valueOf(request.getRequestURI()));
         properties.put("Content-Type", request.getContentType());
-        properties.put(NavHeaders.UUID, request.getHeader(NavHeaders.UUID));
         properties.put(HttpHeaders.HOST, this.request.getHeader(HttpHeaders.HOST));
         properties.put(HttpHeaders.ACCEPT, request.getHeader(HttpHeaders.ACCEPT));
         return properties;
     }
-
 }

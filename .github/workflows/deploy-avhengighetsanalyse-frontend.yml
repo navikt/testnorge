@@ -2,7 +2,7 @@ name: Deploy avhengighetsanalyse-frontend
 
 on:
   push:
-    breach: master
+    branches: master
     paths:
       - apps/avhengighetsanalyse-frontend/**
       - libs/testnorge-core/**
@@ -56,10 +56,10 @@ jobs:
           docker build --tag ${IMAGE} . -f ./apps/avhengighetsanalyse-frontend/Dockerfile
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}
-        timeout-minutes: 5
       - name: Deploy to nais
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
           RESOURCE: apps/avhengighetsanalyse-frontend/nais.yaml
+        timeout-minutes: 5

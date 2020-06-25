@@ -16,5 +16,5 @@ import java.time.LocalDate;
 public class PeriodeDTO {
     private LocalDate fom;
     private LocalDate tom;
-    private AktivitetGrad aktivitetGrad;
+    private AktivitetDTO aktivitet;
 }

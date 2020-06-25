@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <springProfile name="prod">
-
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="net.logstash.logback.encoder.LogstashEncoder">
                 <customFields>{"log_type":"default"}</customFields>
@@ -26,4 +25,11 @@
             <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>
+
+    <logger name="no.nav.registre.testnorge.common.log.RequestLogger">
+        <level value="TRACE" />
+    </logger>
+    <logger name="no.nav.registre.testnorge.common.log.ResponseLogger">
+        <level value="TRACE" />
+    </logger>
 </configuration>

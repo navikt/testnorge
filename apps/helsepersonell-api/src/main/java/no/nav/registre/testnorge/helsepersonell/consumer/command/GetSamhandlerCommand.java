@@ -9,7 +9,7 @@ import java.util.concurrent.Callable;
 import no.nav.registre.testnorge.dto.samhandlerregisteret.v1.SamhandlerDTO;
 
 @Slf4j
-public class GetSamhandlerCommand implements Callable<SamhandlerDTO> {
+public class GetSamhandlerCommand implements Callable<SamhandlerDTO[]> {
     private final String ident;
     private final UriTemplate uriTemplate;
     private final RestTemplate restTemplate;
@@ -21,7 +21,7 @@ public class GetSamhandlerCommand implements Callable<SamhandlerDTO> {
     }
 
     @Override
-    public SamhandlerDTO call() {
+    public SamhandlerDTO[] call() {
         try {
             log.info("Henter samhandlerinformasjon for ident {}", ident);
 
@@ -29,10 +29,7 @@ public class GetSamhandlerCommand implements Callable<SamhandlerDTO> {
             if (samhandlereDTOs == null || samhandlereDTOs.length == 0) {
                 throw new RuntimeException("Finer ikke ident " + ident + " i samhandlerregisteret.");
             }
-            if (samhandlereDTOs.length > 1) {
-                log.warn("Fant flere enn ett samhandlerinformasjon for ident {}. Velger den første i listen.", ident);
-            }
-            return samhandlereDTOs[0];
+            return samhandlereDTOs;
         } catch (Exception e) {
             log.error("Feil ved henting av samhandlerinformasjon til ident {}", ident, e);
             throw e;

@@ -11,4 +11,10 @@ import lombok.Value;
 @NoArgsConstructor(force = true)
 public class AdresseDTO {
     String kommunenummer;
+    String adresselinje1;
+    String adresselinje2;
+    String adresselinje3;
+    String landkode;
+    String postnummer;
+    String poststed;
 }

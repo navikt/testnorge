@@ -11,14 +11,13 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-@EqualsAndHashCode
 public class DiagnoseDTO {
     @JsonProperty
-    private String dn;
+    private String diagnose;
 
     @JsonProperty
-    private String s;
+    private String system;
 
     @JsonProperty
-    private String v;
+    private String diagnosekode;
 }

@@ -6,9 +6,12 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.helsepersonell.consumer.command.GetSamhandlerCommand;
@@ -32,9 +35,12 @@ public class SamhandlerregisteretConsumer {
         this.executor = Executors.newFixedThreadPool(threads);
     }
 
-    public CompletableFuture<Samhandler> getSamhandler(String ident) {
+    public CompletableFuture<List<Samhandler>> getSamhandler(String ident) {
         return CompletableFuture.supplyAsync(
-                () -> new Samhandler(new GetSamhandlerCommand(url, ident, restTemplate).call()),
+                () -> Arrays
+                        .stream(new GetSamhandlerCommand(url, ident, restTemplate).call())
+                        .map(Samhandler::new)
+                        .collect(Collectors.toList()),
                 executor
         );
     }
