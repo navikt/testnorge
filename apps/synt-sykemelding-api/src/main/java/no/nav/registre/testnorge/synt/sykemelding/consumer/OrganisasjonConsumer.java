@@ -6,9 +6,9 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import no.nav.registre.testnorge.common.command.GetOrganisasjonCommand;
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.dto.organisasjon.v1.OrganisasjonDTO;
-import no.nav.registre.testnorge.synt.sykemelding.consumer.command.GetOrgansiasjonCommand;
 
 @Component
 @DependencyOn("organisasjon-api")
@@ -26,6 +26,6 @@ public class OrganisasjonConsumer {
 
     @SneakyThrows
     public OrganisasjonDTO getOrganisasjon(String orgnummer) {
-        return new GetOrgansiasjonCommand(restTemplate, url, orgnummer, "q1").call();
+        return new GetOrganisasjonCommand(restTemplate, url, orgnummer, "q1").call();
     }
 }
