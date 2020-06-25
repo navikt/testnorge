@@ -23,7 +23,6 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 import java.util.HashMap;
 
 import no.nav.common.utils.Credentials;
-import no.nav.registre.populasjoner.kafka.DocumentIdWrapper;
 import no.nav.registre.populasjoner.kafka.KafkaHelsesjekk;
 import no.nav.registre.populasjoner.kafka.KafkaTopics;
 
@@ -64,11 +63,6 @@ public class KafkaConfig {
             String kafkaBrokersUrl,
             Credentials serviceUserCredentials
     ) {
-        JsonDeserializer<DocumentIdWrapper> deserializer = new JsonDeserializer<>(DocumentIdWrapper.class);
-        deserializer.setRemoveTypeHeaders(false);
-        deserializer.addTrustedPackages("*");
-        deserializer.setUseTypeMapperForKey(true);
-
         HashMap<String, Object> props = new HashMap<>();
         props.put(BOOTSTRAP_SERVERS_CONFIG, kafkaBrokersUrl);
         props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_SSL");
@@ -76,7 +70,7 @@ public class KafkaConfig {
         props.put(SaslConfigs.SASL_JAAS_CONFIG,
                 "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"" + serviceUserCredentials.username + "\" password=\"" + serviceUserCredentials.password + "\";");
         props.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(VALUE_DESERIALIZER_CLASS_CONFIG, deserializer);
+        props.put(VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         return props;
     }
 
