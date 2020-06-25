@@ -228,23 +228,23 @@ public class RettighetTiltakService {
             Map<String, List<NyttVedtakResponse>> identerMedOpprettedeTiltakdeltakelse,
             List<RettighetRequest> rettigheterTiltaksdeltakelse,
             String miljoe,
-            Boolean erHistoriskStatus
+            boolean erHistoriskStatus
     ) {
         List<RettighetRequest> rettigheter = new ArrayList<>(identerMedOpprettedeTiltakdeltakelse.size());
         for (var entry : identerMedOpprettedeTiltakdeltakelse.entrySet()) {
-            String ident = entry.getKey();
+            var ident = entry.getKey();
             var feiledeRettigheter = identerMedOpprettedeTiltakdeltakelse.get(ident).get(0).getFeiledeRettigheter();
 
             if (feiledeRettigheter != null && feiledeRettigheter.isEmpty()) {
                 List<RettighetRequest> filterteRettigheter = rettigheterTiltaksdeltakelse.stream().
                         filter(request -> request.getPersonident().equals(ident)).collect(Collectors.toList());
 
-                NyttVedtakTiltak tiltaksdeltakelse = filterteRettigheter.get(0).getVedtakTiltak().get(0);
+                var tiltaksdeltakelse = filterteRettigheter.get(0).getVedtakTiltak().get(0);
 
                 var deltakerstatuskode = serviceUtils.velgKodeBasertPaaSannsynlighet(
                         vedtakMedStatuskoder.get("DELTAKER")).getKode();
 
-                if(Boolean.FALSE.equals(erHistoriskStatus)){
+                if(!erHistoriskStatus){
                     deltakerstatuskode = tiltakSyntConsumer.opprettDeltakerstatus(1).get(0).getDeltakerstatusKode();
                 }
 
@@ -323,12 +323,12 @@ public class RettighetTiltakService {
 
     RettighetTiltaksaktivitetRequest opprettRettighetTiltaksaktivitetRequest(
             RettighetRequest rettighet,
-            Boolean erHistoriskAktivitet
+            boolean erHistoriskAktivitet
     ) {
         var statuskode = serviceUtils.velgKodeBasertPaaSannsynlighet(
                 vedtakMedStatuskoder.get("AKTIVITET")).getKode();
 
-        if (Boolean.FALSE.equals(erHistoriskAktivitet)) {
+        if (!erHistoriskAktivitet) {
             statuskode = tiltakSyntConsumer.opprettTiltaksaktivitet(1).get(0).getAktivitetStatuskode();
         }
 
@@ -344,7 +344,7 @@ public class RettighetTiltakService {
         nyttVedtakTiltak.setFraDato(rettighet.getVedtakTillegg().get(0).getVedtaksperiode().getFom());
         nyttVedtakTiltak.setTilDato(rettighet.getVedtakTillegg().get(antallVedtakTillegg - 1).getVedtaksperiode().getTom());
 
-        RettighetTiltaksaktivitetRequest rettighetRequest = new RettighetTiltaksaktivitetRequest(Collections.singletonList(nyttVedtakTiltak));
+        var rettighetRequest = new RettighetTiltaksaktivitetRequest(Collections.singletonList(nyttVedtakTiltak));
         rettighetRequest.setPersonident(rettighet.getPersonident());
         rettighetRequest.setMiljoe(rettighet.getMiljoe());
 
