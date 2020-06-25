@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Value;
 
 import no.nav.registre.sdforvalter.domain.Ereg;
+import no.nav.registre.testnorge.dto.organisasjon.v1.OrganisasjonDTO;
 
 @Value
 @Builder
@@ -34,5 +35,15 @@ public class Organisasjon {
         juridiskEnhet = ereg.getJuridiskEnhet();
         postadresse = ereg.getPostadresse() != null ? new Adresse(ereg.getPostadresse()) : null;
         forretningsadresser = ereg.getForretningsAdresse() != null ? new Adresse(ereg.getForretningsAdresse()) : null;
+    }
+
+    public Organisasjon(OrganisasjonDTO dto) {
+        orgnummer = dto.getOrgnummer();
+        enhetType = dto.getEnhetType();
+        navn = dto.getNavn();
+        juridiskEnhet = dto.getJuridiskEnhet();
+        postadresse = dto.getPostadresse() != null ? new Adresse(dto.getPostadresse()) : null;
+        forretningsadresser = dto.getForretningsadresser() != null ? new Adresse(dto.getForretningsadresser()) : null;
+        redigertnavn = dto.getRedigertnavn();
     }
 }

@@ -1,4 +1,4 @@
-package no.nav.registre.sdforvalter.consumer.rs.ereg;
+package no.nav.registre.sdforvalter.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,9 +11,9 @@ import no.nav.registre.sdforvalter.domain.status.ereg.Organisasjon;
 
 @Slf4j
 public class AsyncOrganisasjonMap {
-    private final Map<String, CompletableFuture<EregOrganisasjon>> futureList = new HashMap<>();
+    private final Map<String, CompletableFuture<Organisasjon>> futureList = new HashMap<>();
 
-    public void put(String orgnummer, CompletableFuture<EregOrganisasjon> completable) {
+    public void put(String orgnummer, CompletableFuture<Organisasjon> completable) {
         futureList.put(orgnummer, completable);
     }
 
@@ -21,9 +21,8 @@ public class AsyncOrganisasjonMap {
         Map<String, Organisasjon> organisasjoner = new HashMap<>();
         futureList.forEach((orgnummer, completable) -> {
             try {
-                EregOrganisasjon response = completable.get();
-                if (response != null) {
-                    Organisasjon organisasjon = response.toOrganisasjon();
+                Organisasjon organisasjon = completable.get();
+                if (organisasjon != null) {
                     if (!orgnummer.equals(organisasjon.getOrgnummer())) {
                         throw new RuntimeException(
                                 "Miss match mellom orgnummer fra faste data " + orgnummer + " og ereg " + organisasjon.getOrgnummer()

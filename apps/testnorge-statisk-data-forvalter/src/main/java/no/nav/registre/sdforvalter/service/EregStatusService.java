@@ -8,18 +8,18 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.sdforvalter.adapter.EregAdapter;
-import no.nav.registre.sdforvalter.consumer.rs.ereg.EregConsumer;
+import no.nav.registre.sdforvalter.consumer.rs.OrganisasjonConsumer;
 import no.nav.registre.sdforvalter.domain.Ereg;
 import no.nav.registre.sdforvalter.domain.EregListe;
-import no.nav.registre.sdforvalter.domain.status.ereg.OrganisasjonStatusMap;
 import no.nav.registre.sdforvalter.domain.status.ereg.Organisasjon;
 import no.nav.registre.sdforvalter.domain.status.ereg.OrganisasjonStatus;
+import no.nav.registre.sdforvalter.domain.status.ereg.OrganisasjonStatusMap;
 
 @Service
 @RequiredArgsConstructor
 public class EregStatusService {
     private final EregAdapter adapter;
-    private final EregConsumer consumer;
+    private final OrganisasjonConsumer consumer;
 
     public OrganisasjonStatusMap getStatusByOrgnr(String miljo, String gruppe, Boolean equal) {
         return getStatus(miljo, adapter.fetchByIds(Set.of(gruppe)), equal);
