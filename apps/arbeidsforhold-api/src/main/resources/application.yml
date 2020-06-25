@@ -1,10 +1,10 @@
 spring:
   application:
-    name: testnorge-arbeidsforhold-api
+    name: arbeidsforhold-api
 
 application:
   version: @application.version@
-  name: testnorge-arbeidsforhold-api
+  name: arbeidsforhold-api
 
 sts:
   token:
