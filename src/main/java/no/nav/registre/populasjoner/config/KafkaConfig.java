@@ -60,7 +60,7 @@ public class KafkaConfig {
         return factory;
     }
 
-    private static HashMap<String, Object> kafkaBaseProperties(
+    private HashMap<String, Object> kafkaBaseProperties(
             String kafkaBrokersUrl,
             Credentials serviceUserCredentials
     ) {
@@ -80,7 +80,7 @@ public class KafkaConfig {
         return props;
     }
 
-    private static HashMap<String, Object> kafkaConsumerProperties(
+    private HashMap<String, Object> kafkaConsumerProperties(
             String kafkaBrokersUrl,
             Credentials serviceUserCredentials
     ) {
