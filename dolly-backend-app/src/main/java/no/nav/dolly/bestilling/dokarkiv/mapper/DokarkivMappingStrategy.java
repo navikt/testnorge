@@ -2,15 +2,14 @@ package no.nav.dolly.bestilling.dokarkiv.mapper;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest.IdType.FNR;
+import static no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv.JournalPostType.INNGAAENDE;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
 
 import org.springframework.stereotype.Component;
 
@@ -36,36 +35,17 @@ public class DokarkivMappingStrategy implements MappingStrategy {
         factory.classMap(RsDokarkiv.class, DokarkivRequest.class)
                 .customize(new CustomMapper<RsDokarkiv, DokarkivRequest>() {
                     @Override
-                    public void mapAtoB(RsDokarkiv dokarkiv,
-                            DokarkivRequest dokarkivRequest, MappingContext context) {
-                        boolean dokumentVariantSendtMed = true;
+                    public void mapAtoB(RsDokarkiv dokarkiv, DokarkivRequest dokarkivRequest, MappingContext context) {
 
-                        if (isBlank(dokarkiv.getKanal())) {
-                            dokarkivRequest.setKanal(KANAL);
-                        }
-                        if (isNull(dokarkiv.getJournalpostType()) || isBlank(dokarkiv.getJournalpostType().name())) {
-                            dokarkivRequest.setJournalpostType(DokarkivRequest.JournalPostType.INNGAAENDE);
-                        }
-                        if (isNull(dokarkiv.getDokumenter())) {
-                            dokumentVariantSendtMed = false;
-                            List<DokarkivRequest.Dokument> dokumenter = new ArrayList<>();
-                            dokarkivRequest.setDokumenter(dokumenter);
-                            List<DokarkivRequest.DokumentVariant> dokumentVarianter = new ArrayList<>();
-                            dokumentVarianter.add(new DokarkivRequest.DokumentVariant());
-                            dokarkivRequest.getDokumenter().get(0).setDokumentvarianter(dokumentVarianter);
-                        } else if (isNull(dokarkiv.getDokumenter().get(0).getDokumentvarianter())) {
-                            dokumentVariantSendtMed = false;
-                            List<DokarkivRequest.DokumentVariant> dokumentVarianter = new ArrayList<>();
-                            dokumentVarianter.add(new DokarkivRequest.DokumentVariant());
-                            dokarkivRequest.getDokumenter().get(0).setDokumentvarianter(dokumentVarianter);
-                        }
-                        if (!dokumentVariantSendtMed || isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getFiltype())) {
+                        dokarkivRequest.setKanal(isBlank(dokarkiv.getKanal()) ? KANAL : dokarkiv.getKanal());
+                        dokarkivRequest.setJournalpostType(isNull(dokarkiv.getJournalpostType()) ? INNGAAENDE : dokarkiv.getJournalpostType());
+                        if (isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getFiltype())) {
                             dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setFiltype(PDFA);
                         }
-                        if (!dokumentVariantSendtMed || isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getVariantformat())) {
+                        if (isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getVariantformat())) {
                             dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setVariantformat(ARKIV);
                         }
-                        if (!dokumentVariantSendtMed || isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getFysiskDokument())) {
+                        if (isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getFysiskDokument())) {
                             Path pdfPath = Paths.get("dolly-backend-app/src/main/resources/dokarkiv/testpdf.pdf");
                             try {
                                 byte[] pdfByteArray = Files.readAllBytes(pdfPath);
@@ -77,7 +57,6 @@ public class DokarkivMappingStrategy implements MappingStrategy {
                         dokarkivRequest.setBruker(DokarkivRequest.Bruker.builder()
                                 .idType(FNR)
                                 .build());
-
                     }
                 })
                 .byDefault()

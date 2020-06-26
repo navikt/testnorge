@@ -1,5 +1,10 @@
 package no.nav.dolly.bestilling.dokarkiv.domain;
 
+import static java.util.Objects.isNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -7,8 +12,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
+import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 
 @Getter
 @Setter
@@ -17,18 +21,13 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DokarkivRequest {
 
-    public enum JournalPostType {
-
-        INNGAAENDE, UTGAAENDE, NOTAT
-    }
-
     public enum IdType {
 
         FNR, ORGNR, HPRNR, UTL_ORG
     }
 
     private String tittel;
-    private JournalPostType journalpostType;
+    private RsDokarkiv.JournalPostType journalpostType;
     private String tema;
     private String behandlingstema;
     private String kanal;
@@ -37,6 +36,14 @@ public class DokarkivRequest {
     private Bruker bruker;
     private Sak sak;
     private List<Dokument> dokumenter;
+
+    public List<Dokument> getDokumenter() {
+        if (isNull(dokumenter)) {
+            dokumenter = new ArrayList<>();
+            dokumenter.add(new Dokument());
+        }
+        return dokumenter;
+    }
 
     @Getter
     @Setter
@@ -62,6 +69,14 @@ public class DokarkivRequest {
         private String tittel;
         private String brevkode;
         private List<DokumentVariant> dokumentvarianter;
+
+        public List<DokumentVariant> getDokumentvarianter() {
+            if (isNull(dokumentvarianter)) {
+                dokumentvarianter = new ArrayList<>();
+                dokumentvarianter.add(new DokumentVariant());
+            }
+            return dokumentvarianter;
+        }
     }
 
     @Getter
@@ -77,7 +92,6 @@ public class DokarkivRequest {
         private String variantformat;
     }
 
-
     @Getter
     @Setter
     @Builder
@@ -89,7 +103,6 @@ public class DokarkivRequest {
         private String id;
         private IdType idType;
     }
-
 
     @Getter
     @Setter
