@@ -1,6 +1,9 @@
 package no.nav.registre.frikort.consumer.rs;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
@@ -31,7 +34,9 @@ public class FrikortSyntetisererenConsumer {
     }
 
     public Map<String, List<SyntFrikortResponse>> hentSyntetiskeEgenandelerFraSyntRest(Map<String, Integer> request) {
-        var postRequest = RequestEntity.post(URI.create(syntServerUrl + "/api/v1/generate")).body(request);
+        var postRequest = RequestEntity.post(URI.create(syntServerUrl + "/api/v1/generate"))
+                .header(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE)
+                .body(request);
 
         try {
             return restTemplate.exchange(postRequest, new ParameterizedTypeReference<Map<String, List<SyntFrikortResponse>>>() {
