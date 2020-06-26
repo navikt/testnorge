@@ -1,15 +1,11 @@
 package no.nav.registre.testnorge.person.provider;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
 import no.nav.registre.testnorge.person.domain.Person;
 import no.nav.registre.testnorge.person.service.PersonService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/person")
@@ -22,5 +18,12 @@ public class PersonController {
     public ResponseEntity<?> createPerson(@RequestBody PersonDTO personDTO) {
         service.createPerson(new Person(personDTO));
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping
+    public PersonDTO getPerson(@RequestParam String ident) {
+        //Validering på at ident består av 11 tegn?
+        Person person = service.getPerson((ident));
+        return ResponseEntity.ok(person.toDTO()).getBody();
     }
 }
