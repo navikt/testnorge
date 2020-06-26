@@ -4,12 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
+import java.util.List;
+
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class HentPerson {
 
-    Navn navn;
-    Bostedsadresse bostedsadresse;
-    Folkeregisteridentifikator folkeregisteridentifikator;
+    List<Navn> navn;
+    List<Bostedsadresse> bostedsadresse;
+    List<Folkeregisteridentifikator> folkeregisteridentifikator;
 }

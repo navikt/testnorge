@@ -1,10 +1,10 @@
 package no.nav.registre.testnorge.person.consumer.command;
 
+import static org.reflections.Reflections.log;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import no.nav.registre.testnorge.person.consumer.dto.graphql.Request;
-import no.nav.registre.testnorge.person.consumer.dto.graphql.PdlPerson;
-import no.nav.registre.testnorge.person.consumer.header.PdlHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.web.client.RestTemplate;
@@ -12,7 +12,6 @@ import org.springframework.web.client.RestTemplate;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -21,8 +20,9 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
-import static org.reflections.Reflections.log;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import no.nav.registre.testnorge.person.consumer.dto.graphql.PdlPerson;
+import no.nav.registre.testnorge.person.consumer.dto.graphql.Request;
+import no.nav.registre.testnorge.person.consumer.header.PdlHeaders;
 
 @RequiredArgsConstructor
 public class GetPersonCommand implements Callable<PdlPerson> {
@@ -37,7 +37,7 @@ public class GetPersonCommand implements Callable<PdlPerson> {
 
     @Override
     public PdlPerson call() {
-        Map<String, Object> variables = new HashMap();
+        Map<String, Object> variables = new HashMap<>();
         variables.put("ident", ident);
         variables.put("historikk", true);
 

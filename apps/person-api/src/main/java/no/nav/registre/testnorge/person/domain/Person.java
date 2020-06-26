@@ -4,8 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Optional;
+
 import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
+import no.nav.registre.testnorge.person.consumer.dto.graphql.Bostedsadresse;
+import no.nav.registre.testnorge.person.consumer.dto.graphql.Folkeregisteridentifikator;
 import no.nav.registre.testnorge.person.consumer.dto.graphql.HentPerson;
+import no.nav.registre.testnorge.person.consumer.dto.graphql.Navn;
 import no.nav.registre.testnorge.person.consumer.dto.graphql.PdlPerson;
 
 @Getter
@@ -32,14 +38,18 @@ public class Person {
 
     public Person(PdlPerson pdlPerson) {
         HentPerson person = pdlPerson.getData().getHentPerson();
+        Optional<Navn> navn = person.getNavn().stream().findFirst();
+        Optional<Bostedsadresse> adresse = person.getBostedsadresse().stream().findFirst();
+        Optional<Folkeregisteridentifikator> folkeregisteridentifikator = person.getFolkeregisteridentifikator().stream().findFirst();
+
 
         Person.builder()
-                .ident(person.getFolkeregisteridentifikator().getIdentifikasjonsnummer())
-                .fornavn(person.getNavn().getFornavn())
-                .mellomnavn(person.getNavn().getMellomnavn())
-                .etternavn(person.getNavn().getEtternavn())
-                .adresse(person.getBostedsadresse().getVegadresse() != null
-                        ? new Adresse(person.getBostedsadresse().getVegadresse())
+                .ident(folkeregisteridentifikator.isEmpty() ? null : folkeregisteridentifikator.get().getIdentifikasjonsnummer())
+                .fornavn(navn.isEmpty() ? null : navn.get().getFornavn())
+                .mellomnavn(navn.isEmpty() ? null : navn.get().getFornavn())
+                .etternavn(navn.isEmpty() ? null : navn.get().getFornavn())
+                .adresse(adresse.isEmpty() ? null : adresse.get().getVegadresse() != null
+                        ? new Adresse(adresse.get().getVegadresse())
                         : null)
                 .build();
     }
