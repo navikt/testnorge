@@ -1,12 +1,12 @@
 import * as React from 'react'
-import LoadableComponent from '~/components/ui/loading/LoadableComponent'
+import LoadableComponent, { Feilmelding } from '~/components/ui/loading/LoadableComponent'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { EregResponse } from '~/service/Responses'
 import { Organisasjon } from './types'
 
 type OrganisasjonLoaderProps = {
 	filter?: (response: EregResponse) => boolean
-	render: (list: Organisasjon[]) => JSX.Element
+	render: (list: Organisasjon[], feilmelding: Feilmelding) => JSX.Element
 }
 
 export const OrganisasjonLoader = ({ filter = () => true, render }: OrganisasjonLoaderProps) => {
@@ -31,5 +31,10 @@ export const OrganisasjonLoader = ({ filter = () => true, render }: Organisasjon
 						postadresse: response.postadresse
 					}))
 		)
-	return <LoadableComponent onFetch={onFetch} render={(list: Organisasjon[]) => render(list)} />
+	return (
+		<LoadableComponent
+			onFetch={onFetch}
+			render={(list: Organisasjon[], feilmelding: Feilmelding) => render(list, feilmelding)}
+		/>
+	)
 }

@@ -17,7 +17,7 @@ export const OrganisasjonSelect = ({
 }: OrganisasjonSelectProps) => (
 	<OrganisasjonLoader
 		filter={filter}
-		render={liste => (
+		render={(liste, feilmelding) => (
 			<FormikSelect
 				name={path}
 				label={label}
@@ -26,6 +26,7 @@ export const OrganisasjonSelect = ({
 				size="xlarge"
 				isClearable={false}
 				optionHeight={50}
+				feil={feilmelding}
 			/>
 		)}
 	/>
