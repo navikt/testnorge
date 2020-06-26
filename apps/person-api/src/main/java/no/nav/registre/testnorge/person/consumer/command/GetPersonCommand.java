@@ -32,7 +32,7 @@ public class GetPersonCommand implements Callable<PdlPerson> {
     private final String url;
     private final String ident;
     private final String token;
-    private final String tema = "GEN";
+    private final static String tema = "GEN";
     private final ObjectMapper mapper;
 
     @Override

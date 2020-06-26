@@ -39,19 +39,18 @@ public class Person {
     public Person(PdlPerson pdlPerson) {
         HentPerson person = pdlPerson.getData().getHentPerson();
         Optional<Navn> navn = person.getNavn().stream().findFirst();
-        Optional<Bostedsadresse> adresse = person.getBostedsadresse().stream().findFirst();
+        Optional<Bostedsadresse> bostedsadresse = person.getBostedsadresse().stream().findFirst();
         Optional<Folkeregisteridentifikator> folkeregisteridentifikator = person.getFolkeregisteridentifikator().stream().findFirst();
 
-
-        Person.builder()
-                .ident(folkeregisteridentifikator.isEmpty() ? null : folkeregisteridentifikator.get().getIdentifikasjonsnummer())
-                .fornavn(navn.isEmpty() ? null : navn.get().getFornavn())
-                .mellomnavn(navn.isEmpty() ? null : navn.get().getFornavn())
-                .etternavn(navn.isEmpty() ? null : navn.get().getFornavn())
-                .adresse(adresse.isEmpty() ? null : adresse.get().getVegadresse() != null
-                        ? new Adresse(adresse.get().getVegadresse())
-                        : null)
-                .build();
+        ident = folkeregisteridentifikator.isEmpty() ? null : folkeregisteridentifikator.get().getIdentifikasjonsnummer();
+        fornavn = navn.isEmpty() ? null : navn.get().getFornavn();
+        mellomnavn = navn.isEmpty() ? null : navn.get().getMellomnavn();
+        etternavn = navn.isEmpty() ? null : navn.get().getEtternavn();
+        if (!bostedsadresse.isEmpty()) {
+            if (bostedsadresse.get().getVegadresse() != null) {
+                adresse = new Adresse(bostedsadresse.get().getVegadresse());
+            }
+        }
     }
 
     public PersonDTO toDTO() {
@@ -60,7 +59,7 @@ public class Person {
                 .fornavn(fornavn)
                 .mellomnavn(mellomnavn)
                 .etternavn(etternavn)
-                .adresse(adresse.toDto())
+                .adresse(adresse != null ? adresse.toDto() : null)
                 .build();
     }
 }
