@@ -1,5 +1,8 @@
 package no.nav.dolly.bestilling.dokarkiv.domain;
 
+import static java.util.Objects.isNull;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -18,6 +21,13 @@ public class DokarkivResponse {
     private String journalpostId;
     private boolean journalpostferdigstilt;
     private List<DokumentInfo> dokumenter;
+
+    public List<DokumentInfo> getDokumenter() {
+        if (isNull(dokumenter)) {
+            dokumenter = new ArrayList<>();
+        }
+        return dokumenter;
+    }
 
     @Getter
     @Setter

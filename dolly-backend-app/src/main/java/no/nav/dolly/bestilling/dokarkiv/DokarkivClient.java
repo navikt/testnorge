@@ -16,6 +16,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
+import no.nav.dolly.bestilling.dokarkiv.domain.JoarkTransaksjon;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -51,8 +52,9 @@ public class DokarkivClient implements ClientRegister {
                             status.append(',')
                                     .append(environment)
                                     .append(":OK");
+
+                            saveTranskasjonId(response.getBody(), tpsPerson.getHovedperson(), environment);
                         }
-                        saveTranskasjonId(response, tpsPerson.getHovedperson(), environment);
 
                     } catch (RuntimeException e) {
 
@@ -75,17 +77,18 @@ public class DokarkivClient implements ClientRegister {
 
     }
 
-    private void saveTranskasjonId(ResponseEntity<DokarkivResponse> response, String ident, String miljoe) {
+    private void saveTranskasjonId(DokarkivResponse response, String ident, String miljoe) {
 
-        if (response.hasBody()) {
-            transaksjonMappingService.save(
-                    TransaksjonMapping.builder()
-                            .ident(ident)
-                            .transaksjonId(toJson(response))
-                            .datoEndret(LocalDateTime.now())
-                            .miljoe(miljoe)
-                            .system(DOKARKIV.name())
-                            .build());
-        }
+        transaksjonMappingService.save(
+                TransaksjonMapping.builder()
+                        .ident(ident)
+                        .transaksjonId(toJson(JoarkTransaksjon.builder()
+                                .journalpostId(response.getJournalpostId())
+                                .dokumentInfoId(response.getDokumenter().get(0).getDokumentInfoId())
+                                .build()))
+                        .datoEndret(LocalDateTime.now())
+                        .miljoe(miljoe)
+                        .system(DOKARKIV.name())
+                        .build());
     }
 }
