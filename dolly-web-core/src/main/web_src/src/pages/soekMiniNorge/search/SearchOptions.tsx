@@ -43,7 +43,7 @@ export const SearchOptions = (props: SearchOptionsProps) => {
 				<FormikSelect
 					name="boadresse.postnr"
 					label="Postnummer"
-					kodeverk={AdresseKodeverk.Postnummer}
+					kodeverk={AdresseKodeverk.PostnummerUtenPostboks}
 				/>
 				<h3>Diverse</h3>
 				<FormikSelect

@@ -24,10 +24,10 @@ export enum Tema {
 
 export type Inntektsmelding = {
 	joarkMetadata: { tema: string }
-	inntekter: Array<Inntekter>
+	inntekter: Array<Inntekt>
 }
 
-export type Inntekter = {
+export type Inntekt = {
 	aarsakTilInnsending: string
 	naerRelasjon: boolean
 	startdatoForeldrepengeperiode: string

@@ -1,5 +1,6 @@
 import { FormikProps } from 'formik'
 import _isNil from 'lodash/isNil'
+// @ts-ignore
 import { Inntektsinformasjon } from './inntektinformasjonTypes'
 
 type Versjonsoversikt = {

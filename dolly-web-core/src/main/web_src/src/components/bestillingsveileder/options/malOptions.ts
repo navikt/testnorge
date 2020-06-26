@@ -1,7 +1,10 @@
 import { initialValues } from './utils'
 import _ from 'lodash'
+import { useSelector } from 'react-redux'
+import { filterMiljoe } from '~/components/miljoVelger/MiljoeInfo/TilgjengeligeMiljoer'
 
 export const initialValuesBasedOnMal = (mal: any) => {
+	const tilgjengeligeEnvironments = useSelector((state: any) => state.environments.data)
 	const initialValuesMal = Object.assign({}, mal.bestilling)
 
 	if (initialValuesMal.aareg) {
@@ -28,6 +31,10 @@ export const initialValuesBasedOnMal = (mal: any) => {
 		initialValuesMal.udistub = getUpdatedUdistubData(initialValuesMal.udistub)
 	}
 
+	initialValuesMal.environments = filterMiljoe(
+		tilgjengeligeEnvironments,
+		mal.bestilling.environments
+	)
 	return initialValuesMal
 }
 

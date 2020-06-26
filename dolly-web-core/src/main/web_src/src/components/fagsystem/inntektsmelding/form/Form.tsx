@@ -21,7 +21,7 @@ import {
 } from '~/utils/YupValidations'
 import { FormikProps } from 'formik'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
-import { Kodeverk, Ytelser, Inntekter } from '../InntektsmeldingTypes'
+import { Kodeverk, Ytelser, Inntekt } from '../InntektsmeldingTypes'
 import InntektsmeldingSelect from './partials/InntektsmeldingSelect'
 import InntektsmeldingYtelseSelect from './partials/InntektsmeldingYtelseSelect'
 import OmsorgspengerForm from './partials/omsorgspengerForm'
@@ -87,23 +87,21 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 	const handleArbeidsgiverChange = (type: string) => {
 		setTypeArbeidsgiver(type)
 
-		_get(formikBag.values, 'inntektsmelding.inntekter').forEach(
-			(inntekt: Inntekter, idx: number) => {
-				if (type === TypeArbeidsgiver.VIRKSOMHET) {
-					formikBag.setFieldValue(
-						`inntektsmelding.inntekter[${idx}].arbeidsgiver.virksomhetsnummer`,
-						''
-					)
-					formikBag.setFieldValue(`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat`, undefined)
-				} else if (type === TypeArbeidsgiver.PRIVATPERSON) {
-					formikBag.setFieldValue(`inntektsmelding.inntekter[${idx}].arbeidsgiver`, undefined)
-					formikBag.setFieldValue(
-						`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat.arbeidsgiverFnr`,
-						''
-					)
-				}
+		_get(formikBag.values, 'inntektsmelding.inntekter').forEach((inntekt: Inntekt, idx: number) => {
+			if (type === TypeArbeidsgiver.VIRKSOMHET) {
+				formikBag.setFieldValue(
+					`inntektsmelding.inntekter[${idx}].arbeidsgiver.virksomhetsnummer`,
+					''
+				)
+				formikBag.setFieldValue(`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat`, undefined)
+			} else if (type === TypeArbeidsgiver.PRIVATPERSON) {
+				formikBag.setFieldValue(`inntektsmelding.inntekter[${idx}].arbeidsgiver`, undefined)
+				formikBag.setFieldValue(
+					`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat.arbeidsgiverFnr`,
+					''
+				)
 			}
-		)
+		})
 	}
 
 	return (
@@ -138,6 +136,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 					name="inntektsmelding.inntekter"
 					header="Inntekt"
 					newEntry={initialValues(typeArbeidsgiver)}
+					canBeEmpty={false}
 				>
 					{(path: string, idx: number) => {
 						const ytelse = _get(formikBag.values, `${path}.ytelse`)
@@ -168,7 +167,6 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 										<FormikTextInput
 											name={`${path}.arbeidsgiverPrivat.arbeidsgiverFnr`}
 											label="Arbeidsgiver (fnr/dnr/bost)"
-											type="number"
 										/>
 									)}
 									<FormikDatepicker
