@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.person.consumer;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.person.consumer.command.GetPersonCommand;
@@ -18,20 +19,23 @@ public class PdlApiConsumer {
     private final StsOidcTokenService tokenService;
     private final String personforvalterUrl;
     private final RestTemplate restTemplate;
+    private final ObjectMapper mapper;
 
     public PdlApiConsumer(
             StsOidcTokenService tokenService,
             @Value("${system.pdl.personforvalterUrl}") String personforvalterUrl,
-            RestTemplateBuilder restTemplateBuilder
+            RestTemplateBuilder restTemplateBuilder,
+            ObjectMapper mapper
     ) {
         this.tokenService = tokenService;
         this.personforvalterUrl = personforvalterUrl;
         this.restTemplate = restTemplateBuilder.build();
+        this.mapper = mapper;
     }
 
     public Person getPerson(String ident) {
         String token = tokenService.getIdToken();
 
-        return new Person(new GetPersonCommand(restTemplate, personforvalterUrl, ident, token).call());
+        return new Person(new GetPersonCommand(restTemplate, personforvalterUrl, ident, token, mapper).call());
     }
 }

@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.person.consumer.command;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.person.consumer.dto.graphql.Request;
 import no.nav.registre.testnorge.person.consumer.dto.graphql.PdlPerson;
@@ -8,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -17,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
 import static org.reflections.Reflections.log;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -30,6 +33,7 @@ public class GetPersonCommand implements Callable<PdlPerson> {
     private final String ident;
     private final String token;
     private final String tema = "GEN";
+    private final ObjectMapper mapper;
 
     @Override
     public PdlPerson call() {
@@ -42,8 +46,9 @@ public class GetPersonCommand implements Callable<PdlPerson> {
                 .getContextClassLoader()
                 .getResourceAsStream("pdl/pdlQuery.graphql");
         try {
-            Reader reader = new InputStreamReader(queryStream, StandardCharsets.UTF_8);
-            query = reader.toString();
+
+            query = new BufferedReader(new InputStreamReader(queryStream, StandardCharsets.UTF_8))
+                    .lines().collect(Collectors.joining("\n"));
         } catch (Exception e) {
             log.error("Lesing av queryressurs feilet");
         }
