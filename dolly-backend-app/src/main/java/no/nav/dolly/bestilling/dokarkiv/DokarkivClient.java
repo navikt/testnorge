@@ -1,7 +1,10 @@
 package no.nav.dolly.bestilling.dokarkiv;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
+import static sun.plugin2.util.PojoUtil.toJson;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -14,9 +17,11 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.service.TransaksjonMappingService;
 
 @Slf4j
 @Service
@@ -26,6 +31,7 @@ public class DokarkivClient implements ClientRegister {
     private final DokarkivConsumer dokarkivConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
+    private final TransaksjonMappingService transaksjonMappingService;
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -38,30 +44,48 @@ public class DokarkivClient implements ClientRegister {
             dokarkivRequest.getBruker().setId(tpsPerson.getHovedperson());
             bestilling.getEnvironments().forEach(environment -> {
 
-                try {
-                    ResponseEntity<DokarkivResponse> response = dokarkivConsumer.postDokarkiv(environment, dokarkivRequest);
-                    if (response.hasBody()) {
+                if (!transaksjonMappingService.existAlready(DOKARKIV, tpsPerson.getHovedperson(), environment) || isOpprettEndre) {
+                    try {
+                        ResponseEntity<DokarkivResponse> response = dokarkivConsumer.postDokarkiv(environment, dokarkivRequest);
+                        if (response.hasBody()) {
+                            status.append(',')
+                                    .append(environment)
+                                    .append(":OK");
+                        }
+                        saveTranskasjonId(response, tpsPerson.getHovedperson(), environment);
+
+                    } catch (RuntimeException e) {
+
                         status.append(',')
                                 .append(environment)
-                                .append(":OK");
+                                .append(':')
+                                .append(errorStatusDecoder.decodeRuntimeException(e));
+
+                        log.error("Feilet å legge inn person: {} til Dokarkiv miljø: {}",
+                                dokarkivRequest.getBruker().getId(), environment, e);
                     }
-                } catch (RuntimeException e) {
-
-                    status.append(',')
-                            .append(environment)
-                            .append(':')
-                            .append(errorStatusDecoder.decodeRuntimeException(e));
-
-                    log.error("Feilet å legge inn person: {} til Dokarkiv miljø: {}",
-                            dokarkivRequest.getBruker().getId(), environment, e);
                 }
             });
-            progress.setDokarkivStatus(status.substring(1));
+            progress.setDokarkivStatus(status.length() > 0 ? status.substring(1) : null);
         }
     }
 
     @Override
     public void release(List<String> identer) {
 
+    }
+
+    private void saveTranskasjonId(ResponseEntity<DokarkivResponse> response, String ident, String miljoe) {
+
+        if (response.hasBody()) {
+            transaksjonMappingService.save(
+                    TransaksjonMapping.builder()
+                            .ident(ident)
+                            .transaksjonId(toJson(response))
+                            .datoEndret(LocalDateTime.now())
+                            .miljoe(miljoe)
+                            .system(DOKARKIV.name())
+                            .build());
+        }
     }
 }

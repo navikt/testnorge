@@ -5,6 +5,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.Collection;
 import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,9 +35,14 @@ public class TransaksjonMappingService {
                 .anyMatch(mapping -> miljoe.equals(mapping.getMiljoe()));
     }
 
-    @Transactional
     public void saveAll(Collection<TransaksjonMapping> entries) {
 
-        entries.forEach(transaksjonMappingRepository::save);
+        entries.forEach(this::save);
+    }
+
+    @Transactional
+    public void save(TransaksjonMapping entry) {
+
+        transaksjonMappingRepository.save(entry);
     }
 }
