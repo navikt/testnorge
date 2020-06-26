@@ -5,12 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import no.nav.registre.frikort.consumer.rs.FrikortSyntetisererenConsumer;
 import no.nav.registre.frikort.provider.rs.request.SyntetiserFrikortRequest;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 
 @Slf4j
 @Service
@@ -18,8 +19,11 @@ import no.nav.registre.frikort.provider.rs.request.SyntetiserFrikortRequest;
 public class SyntetiseringService {
 
     private static final int ANTALL_FRIKORT_PER_IDENT = 1;
+    private static final int MIN_ALDER = 16;
+    private static final int MAX_ALDER = 70;
 
     private final FrikortSyntetisererenConsumer frikortSyntetisererenConsumer;
+    private final HodejegerenConsumer hodejegerenConsumer;
     private final KonverteringService konverteringService;
     private final MqService mqService;
 
@@ -27,8 +31,16 @@ public class SyntetiseringService {
             SyntetiserFrikortRequest syntetiserFrikortRequest,
             boolean leggPaaKoe
     ) throws JAXBException {
-        List<String> identer = new ArrayList<>(); // fra hodejegeren
+        var identerMedKontonummer = hodejegerenConsumer
+                .getIdenterMedKontonummer(
+                        syntetiserFrikortRequest.getAvspillergruppeId(),
+                        syntetiserFrikortRequest.getMiljoe(),
+                        syntetiserFrikortRequest.getAntallNyeIdenter(),
+                        MIN_ALDER,
+                        MAX_ALDER
+                );
 
+        var identer = identerMedKontonummer.stream().map(KontoinfoResponse::getFnr).collect(Collectors.toList());
         var identMap = identer.stream().collect(Collectors.toMap(ident -> ident, ident -> ANTALL_FRIKORT_PER_IDENT, (a, b) -> b));
 
         var egenandeler = frikortSyntetisererenConsumer.hentSyntetiskeEgenandelerFraSyntRest(identMap);

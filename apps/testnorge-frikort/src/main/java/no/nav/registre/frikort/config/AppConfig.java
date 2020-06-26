@@ -1,11 +1,10 @@
 package no.nav.registre.frikort.config;
 
-import no.nav.registere.testnorge.core.ApplicationCoreConfig;
-import no.nav.registre.frikort.domain.xml.Egenandelsmelding;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.client.RestTemplate;
 
@@ -13,6 +12,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import no.nav.registere.testnorge.core.ApplicationCoreConfig;
+import no.nav.registre.frikort.domain.xml.Egenandelsmelding;
+import no.nav.registre.testnorge.consumers.ConsumerFactory;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Configuration
 @ComponentScan
@@ -38,4 +41,9 @@ public class AppConfig {
         return marshaller;
     }
 
+    @Bean
+    @DependsOn("restTemplate")
+    public HodejegerenConsumer hodejegerenConsumer() {
+        return (HodejegerenConsumer) ConsumerFactory.create(HodejegerenConsumer.class, restTemplate());
+    }
 }
