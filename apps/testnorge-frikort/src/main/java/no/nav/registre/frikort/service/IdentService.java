@@ -8,35 +8,24 @@ import javax.xml.bind.JAXBException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.frikort.consumer.rs.FrikortSyntetisererenConsumer;
 import no.nav.registre.frikort.provider.rs.request.IdentMedAntallFrikort;
 import no.nav.registre.frikort.provider.rs.request.IdentRequest;
+import no.nav.registre.frikort.provider.rs.response.SyntetiserFrikortResponse;
+import no.nav.registre.frikort.service.common.ServiceUtils;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class IdentService {
 
-    private final FrikortSyntetisererenConsumer frikortSyntetisererenConsumer;
-    private final KonverteringService konverteringService;
-    private final MqService mqService;
+    private final ServiceUtils serviceUtils;
 
-    public List<String> hentSyntetiskeEgenandelerSomXML(
+    public List<SyntetiserFrikortResponse> hentSyntetiskeEgenandelerSomXML(
             IdentRequest identRequest,
             boolean leggPaaKoe
     ) throws JAXBException {
         var identMap = identRequest.getIdenter().stream().collect(Collectors.toMap(IdentMedAntallFrikort::getIdent, IdentMedAntallFrikort::getAntallFrikort, (a, b) -> b));
-        var egenandeler = frikortSyntetisererenConsumer.hentSyntetiskeEgenandelerFraSyntRest(identMap);
 
-        var xmlMeldinger = konverteringService.konverterEgenandelerTilXmlString(egenandeler);
-
-        log.info("{} egenandelsmelding(er) ble generert og gjort om til XMLString.", xmlMeldinger.size());
-
-        if (leggPaaKoe) {
-            mqService.leggTilMeldingerPaaKoe(xmlMeldinger);
-            log.info("Generert(e) egenandelsmelding(er) ble lagt til på kø.");
-        }
-
-        return xmlMeldinger;
+        return serviceUtils.hentSyntetiskeFrikortOgLeggPaaKoe(identMap, leggPaaKoe);
     }
 }

@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import javax.xml.bind.JAXBException;
 import java.util.List;
 
 import no.nav.registre.frikort.provider.rs.request.IdentRequest;
+import no.nav.registre.frikort.provider.rs.response.SyntetiserFrikortResponse;
 import no.nav.registre.frikort.service.IdentService;
 
 @Slf4j
@@ -29,12 +31,12 @@ public class IdentController {
 
     @PostMapping(value = "/opprett")
     @ApiOperation(value = "Generer syntetiske egenandelsmeldinger som XML string på gitte identer.")
-    public List<String> genererEgenandelsmeldinger(
+    public ResponseEntity<List<SyntetiserFrikortResponse>> genererEgenandelsmeldinger(
             @ApiParam(value = REQUEST_BODY_DESCRIPTION, required = true)
             @RequestBody() IdentRequest identRequest,
             @ApiParam(value = LEGG_PAA_KOE_DESCRIPTION)
             @RequestParam(defaultValue = "true") boolean leggPaaKoe
     ) throws JAXBException {
-        return identService.hentSyntetiskeEgenandelerSomXML(identRequest, leggPaaKoe);
+        return ResponseEntity.ok(identService.hentSyntetiskeEgenandelerSomXML(identRequest, leggPaaKoe));
     }
 }

@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import no.nav.registre.frikort.provider.rs.response.LeggPaaKoeStatus;
+import no.nav.registre.frikort.provider.rs.response.SyntetiserFrikortResponse;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -20,19 +23,19 @@ public class MqService {
     @Value("${mq.q2.queue.name}")
     private String koeNavn;
 
-    public void leggTilMeldingerPaaKoe(List<String> xmlMeldinger) {
-        for (var melding : xmlMeldinger) {
-            leggTilMeldingPaaKoe(melding);
+    public void leggTilMeldingerPaaKoe(List<SyntetiserFrikortResponse> syntetiskeFrikort) {
+        for (var frikort : syntetiskeFrikort) {
+            try {
+                leggTilMeldingPaaKoe(frikort.getXml());
+                frikort.setLagtPaaKoe(LeggPaaKoeStatus.OK);
+            } catch (RuntimeException e) {
+                frikort.setLagtPaaKoe(LeggPaaKoeStatus.ERROR);
+                log.error("Kunne ikke legge melding på kø", e);
+            }
         }
     }
 
-    public void leggTilMeldingPaaKoe(String xmlMelding) {
-        try {
-            jmsTemplate.send(koeNavn, session -> session.createTextMessage(xmlMelding));
-        } catch (Exception e) {
-            log.error("Kunne ikke legge melding på kø.", e);
-            throw e;
-        }
+    private void leggTilMeldingPaaKoe(String xmlMelding) throws RuntimeException {
+        jmsTemplate.send(koeNavn, session -> session.createTextMessage(xmlMelding));
     }
-
 }
