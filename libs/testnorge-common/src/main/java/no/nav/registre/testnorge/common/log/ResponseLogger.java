@@ -2,15 +2,11 @@ package no.nav.registre.testnorge.common.log;
 
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import no.nav.registre.testnorge.common.headers.NavHeaders;
 
 @Slf4j
 public class ResponseLogger {
@@ -29,10 +25,11 @@ public class ResponseLogger {
 
     public void log() {
         try {
-            MDC.clear();
-            MDC.setContextMap(this.toPropertyMap());
-            log.trace(getBody());
-            MDC.clear();
+            Map<String, String> contextMap = MDC.getCopyOfContextMap();
+            contextMap.putAll(this.toPropertyMap());
+            MDC.setContextMap(contextMap);
+            var body = getBody();
+            log.trace(body.equals("") ? "[empty]" : body);
         } catch (IOException e) {
             log.error("Klarer ikke aa lese fra response", e);
         }
@@ -45,11 +42,6 @@ public class ResponseLogger {
         if (response.getContentType() != null) {
             properties.put("Content-Type", response.getContentType());
         }
-        HttpHeaders headers = new ServletServerHttpResponse(response).getHeaders();
-
-        properties.put(NavHeaders.UUID, headers.getFirst(NavHeaders.UUID));
-        properties.put(HttpHeaders.HOST, headers.getFirst(HttpHeaders.HOST));
-
         return properties;
     }
 }

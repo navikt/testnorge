@@ -4,5 +4,6 @@ public enum Kvalifiseringsgrupper {
     IKVAL,
     BFORM,
     BATT,
-    VARIG
+    VARIG,
+    VURDI
 }

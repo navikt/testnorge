@@ -1,6 +1,10 @@
+spring:
+  application:
+    name: person-api
+
 application:
   version: @application.version@
-  name: testnorge-person-api
+  name: person-api
 
 system:
   pdl:

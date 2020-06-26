@@ -34,6 +34,11 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>no.nav.registre.testnorge</groupId>
+            <artifactId>testnorge-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <artifactId>testnorge-dependency-analysis</artifactId>
             <groupId>no.nav.registre.testnorge</groupId>
             <version>${project.version}</version>

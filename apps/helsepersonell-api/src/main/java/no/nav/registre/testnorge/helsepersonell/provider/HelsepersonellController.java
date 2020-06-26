@@ -31,6 +31,7 @@ public class HelsepersonellController {
 
     @GetMapping("/leger")
     public ResponseEntity<LegeListeDTO> getLeger() {
+
         var cacheControl
                 = CacheControl.maxAge(legerCacheHours, TimeUnit.HOURS)
                 .noTransform()

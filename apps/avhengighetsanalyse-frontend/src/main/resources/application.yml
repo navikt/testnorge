@@ -12,7 +12,6 @@ dependencies:
     - http://testnorge-aareg.default.svc.nais.local/dependencies
     - http://testnorge-aaregstub.default.svc.nais.local/dependencies
     - http://testnorge-arena.default.svc.nais.local/dependencies
-    - http://testnorge-elsam.default.svc.nais.local/dependencies
     - http://testnorge-ereg-mapper.default.svc.nais.local/dependencies
     - http://testnorge-frikort.default.svc.nais.local/dependencies
     - http://testnorge-hodejegeren.default.svc.nais.local/dependencies
@@ -28,4 +27,7 @@ dependencies:
     - http://testnorge-tss.default.svc.nais.local/dependencies
     - http://testnorge-person-api.default.svc.nais.local/dependencies
     - http://testnorge-sykemelding-api.default.svc.nais.local/dependencies
+    - http://testnorge-organisasjon-api.default.svc.nais.local/dependencies
+    - http://testnorge-arbeidsforhold-api.default.svc.nais.local/dependencies
+    - http://testnorge-synt-sykemelding-api.default.svc.nais.local/dependencies
   threads: 6

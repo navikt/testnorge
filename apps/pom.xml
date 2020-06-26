@@ -34,6 +34,11 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <artifactId>testnorge-common-command</artifactId>
+                <groupId>no.nav.registre.testnorge</groupId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <artifactId>testnorge-testing</artifactId>
                 <groupId>no.nav.registre.testnorge</groupId>
                 <version>${project.version}</version>
@@ -44,7 +49,6 @@
 
     <modules>
         <module>testnorge-ereg-mapper</module>
-        <module>testnorge-elsam</module>
         <module>testnorge-medl</module>
         <module>testnorge-arena</module>
         <module>testnorge-skd</module>
@@ -68,5 +72,8 @@
         <module>avhengighetsanalyse-frontend</module>
         <module>sykemelding-api</module>
         <module>person-api</module>
+        <module>organisasjon-api</module>
+        <module>arbeidsforhold-api</module>
+        <module>synt-sykemelding-api</module>
     </modules>
 </project>

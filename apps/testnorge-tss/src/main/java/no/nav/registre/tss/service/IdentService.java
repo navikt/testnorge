@@ -41,6 +41,14 @@ public class IdentService {
 
     private final EregService eregService;
 
+
+    public List<String> opprettLegeITss(String miljoe, String ident, TssType type) {
+        List<Samhandler> leger = hentPersondataFraHodejegeren(miljoe, Collections.singletonList(ident)).stream()
+                .map(person -> new Samhandler(person, type))
+                .collect(Collectors.toList());
+        return opprettSamhandler(miljoe, leger);
+    }
+
     public List<String> opprettLegerITss(String miljoe, List<String> identer) {
         List<Samhandler> leger = hentPersondataFraHodejegeren(miljoe, identer).stream()
                 .map(person -> new Samhandler(person, TssType.LE))

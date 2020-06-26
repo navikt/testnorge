@@ -1,4 +1,5 @@
 ![Build](https://github.com/navikt/testnorge/workflows/Build/badge.svg)
+![Build sonar](https://github.com/navikt/testnorge/workflows/Build%20sonar/badge.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=navikt_testnorge&metric=alert_status)](https://sonarcloud.io/dashboard?id=navikt_testnorge)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=navikt_testnorge&metric=coverage)](https://sonarcloud.io/dashboard?id=navikt_testnorge)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=navikt_testnorge&metric=ncloc)](https://sonarcloud.io/dashboard?id=navikt_testnorge)
@@ -18,7 +19,6 @@ NAV_TOKEN må lages i din github konto. (Dette er noe som vi jobber med å fjern
 ## Deploy status
 
 ![Deploy testnorge-ereg-mapper](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-ereg-mapper/badge.svg)
-![Deploy testnorge-elsam](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-elsam/badge.svg)
 ![Deploy testnorge-medl](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-medl/badge.svg)
 ![Deploy testnorge-arena](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-arena/badge.svg)
 ![Deploy testnorge-skd](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-skd/badge.svg)
@@ -42,6 +42,9 @@ NAV_TOKEN må lages i din github konto. (Dette er noe som vi jobber med å fjern
 ![Deploy avhengighetsanalyse-frontend](https://github.com/navikt/testnorge/workflows/Deploy%20avhengighetsanalyse-frontend/badge.svg)
 ![Deploy person-api](https://github.com/navikt/testnorge/workflows/Deploy%20person-api/badge.svg)
 ![Deploy sykemelding-api](https://github.com/navikt/testnorge/workflows/Deploy%20sykemelding-api/badge.svg)
+![Deploy organisasjon-api](https://github.com/navikt/testnorge/workflows/Deploy%20organisasjon-api/badge.svg)
+![Deploy arbeidsforhold-api](https://github.com/navikt/testnorge/workflows/Deploy%20arbeidsforhold-api/badge.svg)
+![Deploy synt-sykemelding-api](https://github.com/navikt/testnorge/workflows/Deploy%20synt-sykemelding-api/badge.svg)
 
 
 ## Migrering inn i monorepo
@@ -60,3 +63,7 @@ Eller kjør:
 /bin/bash  ./tools/migrate.sh $REPO_NAVN
 ```
 
+## TODO
+
+- [ ] Fjern testnorge-elsam fra nais
+- [ ] Fjern testnorge-elsam fra vault

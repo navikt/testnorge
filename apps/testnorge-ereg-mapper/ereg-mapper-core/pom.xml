@@ -20,10 +20,6 @@
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>no.nav.registre.testnorge</groupId>
-            <artifactId>testnorge-common</artifactId>
-        </dependency>
 
         <!--Utility-->
         <dependency>

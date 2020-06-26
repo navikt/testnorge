@@ -35,6 +35,11 @@ public class IdentController {
         return identService.opprettLegerITss(miljoe.toLowerCase(), identer);
     }
 
+    @PostMapping("/{type}/{ident}")
+    public List<String> opprettLege(@RequestParam String miljoe, @PathVariable String ident, @PathVariable TssType type) {
+        return identService.opprettLegeITss(miljoe.toLowerCase(), ident, type);
+    }
+
     @PostMapping("/samhandlere")
     public List<String> opprettSamhandlere(@RequestParam String miljoe, @RequestParam(required = false)
             List<TssTypeGruppe> eksluderteGrupper, @RequestBody List<String> identer) throws JMSException {

@@ -17,7 +17,7 @@ public class Samhandler {
     private final String type;
     private final long samhandlerid = 0L;
     private final long innsendingid = 0L;
-    private final String innsendingstype = "LOM";
+    private final String innsendingstype;
     private final LocalDateTime datoMottattEkstern = LocalDateTime.of(2018, Month.JANUARY, 01, 00, 00, 00);
     private final LocalDateTime datoGenerert = LocalDateTime.of(2018, Month.JANUARY, 01, 00, 00, 00);
     private final String fornavn = "Ikke Satt";

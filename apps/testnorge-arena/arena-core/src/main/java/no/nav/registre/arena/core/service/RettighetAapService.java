@@ -6,6 +6,7 @@ import static no.nav.registre.arena.core.service.util.ServiceUtils.MAX_ALDER_AAP
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MAX_ALDER_UNG_UFOER;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_AAP;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_UNG_UFOER;
+import static no.nav.registre.arena.core.service.util.ServiceUtils.AKTIVITETSFASE_SYKEPENGEERSTATNING;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +48,6 @@ public class RettighetAapService {
     private final PensjonTestdataFacadeConsumer pensjonTestdataFacadeConsumer;
     private final Random rand;
 
-    public static final String SYKEPENGEERSTATNING = "SPE";
     public static final int SYKEPENGEERSTATNING_MAKS_PERIODE = 6;
 
     public Map<String, List<NyttVedtakResponse>> genererAapMedTilhoerende115(
@@ -78,7 +78,7 @@ public class RettighetAapService {
             rettighetRequest.setMiljoe(miljoe);
 
             rettighetRequest.getNyeAap().forEach(rettighet -> {
-                if(SYKEPENGEERSTATNING.equals(rettighet.getAktivitetsfase())){
+                if(AKTIVITETSFASE_SYKEPENGEERSTATNING.equals(rettighet.getAktivitetsfase())){
                     serviceUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(rettighet, SYKEPENGEERSTATNING_MAKS_PERIODE);
                 }
             });
@@ -113,7 +113,7 @@ public class RettighetAapService {
         rettighetRequest.setPersonident(ident);
         rettighetRequest.setMiljoe(miljoe);
 
-        if(SYKEPENGEERSTATNING.equals(rettighetRequest.getNyeAap().get(0).getAktivitetsfase())){
+        if(AKTIVITETSFASE_SYKEPENGEERSTATNING.equals(rettighetRequest.getNyeAap().get(0).getAktivitetsfase())){
             serviceUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(rettighetRequest.getNyeAap().get(0), SYKEPENGEERSTATNING_MAKS_PERIODE);
         }
 

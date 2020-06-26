@@ -1,6 +1,7 @@
 package no.nav.registre.arena.core.service;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyMap;
@@ -24,6 +25,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -89,6 +91,7 @@ public class VedtakshistorikkServiceTest {
                 .build();
         var nyRettighetTiltaksdeltaklse = NyttVedtakTiltak.builder()
                 .tiltakskarakteristikk("IND").build();
+        nyRettighetTiltaksdeltaklse.setFraDato(LocalDate.now());
 
         aapRettigheter = new ArrayList<>(Collections.singletonList(nyRettighetAap));
         ungUfoerRettigheter = new ArrayList<>(Collections.singletonList(nyRettighetUngUfoer));
@@ -198,7 +201,7 @@ public class VedtakshistorikkServiceTest {
         responseAsMap.put(fnr1, expectedResponsesFromArenaForvalter);
 
         when(aapSyntConsumer.syntetiserVedtakshistorikk(antallIdenter)).thenReturn(vedtakshistorikkMedTiltakListe);
-        when(serviceUtils.opprettArbeidssoekerAap(anyList(), anyString()))
+        when(serviceUtils.opprettArbeidssoekerTiltak(anyList(), anyString()))
                 .thenReturn(Collections.emptyList());
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(responseAsMap);
 
@@ -207,7 +210,7 @@ public class VedtakshistorikkServiceTest {
         verify(serviceUtils).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(1), anyInt(), anyInt(), eq(miljoe));
         verify(aapSyntConsumer).syntetiserVedtakshistorikk(antallIdenter);
         verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
-        verify(rettighetTiltakService).getRettigheterForEndreDeltakerstatus(anyMap(), anyList(), anyString());
+        verify(rettighetTiltakService).getRettigheterForEndreDeltakerstatus(anyMap(), anyList(), anyString(), anyBoolean());
 
         assertThat(response.get(fnr1)).hasSize(2);
 
