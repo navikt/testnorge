@@ -37,6 +37,6 @@ public class IdentController {
             @ApiParam(value = LEGG_PAA_KOE_DESCRIPTION)
             @RequestParam(defaultValue = "true") boolean leggPaaKoe
     ) throws JAXBException {
-        return ResponseEntity.ok(identService.hentSyntetiskeEgenandelerSomXML(identRequest, leggPaaKoe));
+        return ResponseEntity.ok(identService.opprettSyntetiskeEgenandeler(identRequest, leggPaaKoe));
     }
 }

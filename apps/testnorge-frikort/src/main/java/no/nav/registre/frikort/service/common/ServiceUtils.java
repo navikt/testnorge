@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import no.nav.registre.frikort.consumer.rs.FrikortSyntetisererenConsumer;
-import no.nav.registre.frikort.provider.rs.response.LeggPaaKoeStatus;
 import no.nav.registre.frikort.provider.rs.response.SyntetiserFrikortResponse;
+import no.nav.registre.frikort.provider.rs.response.SyntetiserFrikortResponse.LeggPaaKoeStatus;
 import no.nav.registre.frikort.service.KonverteringService;
 import no.nav.registre.frikort.service.MqService;
 
@@ -24,22 +24,22 @@ public class ServiceUtils {
     private final KonverteringService konverteringService;
     private final MqService mqService;
 
-    public List<SyntetiserFrikortResponse> hentSyntetiskeFrikortOgLeggPaaKoe(Map<String, Integer> identMap, boolean leggPaaKoe) throws JAXBException {
+    public List<SyntetiserFrikortResponse> hentSyntetiskeEgenandelerOgLeggPaaKoe(Map<String, Integer> identMap, boolean leggPaaKoe) throws JAXBException {
         var egenandeler = frikortSyntetisererenConsumer.hentSyntetiskeEgenandelerFraSyntRest(identMap);
 
         var xmlMeldinger = konverteringService.konverterEgenandelerTilXmlString(egenandeler);
 
         log.info("{} egenandelsmelding(er) ble generert og gjort om til XMLString.", xmlMeldinger.size());
 
-        var opprettedeFrikort = xmlMeldinger.stream().map(xmlMelding -> SyntetiserFrikortResponse.builder()
+        var opprettedeEgenandeler = xmlMeldinger.stream().map(xmlMelding -> SyntetiserFrikortResponse.builder()
                 .xml(xmlMelding)
                 .lagtPaaKoe(LeggPaaKoeStatus.NO)
                 .build()).collect(Collectors.toList());
 
         if (leggPaaKoe) {
-            mqService.leggTilMeldingerPaaKoe(opprettedeFrikort);
+            mqService.leggTilMeldingerPaaKoe(opprettedeEgenandeler);
         }
 
-        return opprettedeFrikort;
+        return opprettedeEgenandeler;
     }
 }

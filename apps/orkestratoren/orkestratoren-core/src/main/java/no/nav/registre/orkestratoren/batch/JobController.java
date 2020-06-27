@@ -12,10 +12,12 @@ import org.springframework.web.client.HttpStatusCodeException;
 import java.util.Arrays;
 import java.util.Map;
 
+import no.nav.registre.orkestratoren.consumer.rs.TestnorgeFrikortConsumer;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaAapRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaVedtakshistorikkRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserMedlRequest;
@@ -26,6 +28,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.TestnorgeBisysService;
+import no.nav.registre.orkestratoren.service.TestnorgeFrikortService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
 import no.nav.registre.orkestratoren.service.TestnorgeMedlService;
@@ -73,6 +76,9 @@ public class JobController {
     @Value("${medlbatch.prosentfaktor}")
     private double medlProsentfaktor;
 
+    @Value("${frikortbatch.antallNyeIdenter}")
+    private int frikortAntallNyeIdenter;
+
     @Autowired
     private TestnorgeSkdService testnorgeSkdService;
 
@@ -102,6 +108,9 @@ public class JobController {
 
     @Autowired
     private TestnorgeMedlService testnorgeMedlService;
+
+    @Autowired
+    private TestnorgeFrikortService testnorgeFrikortService;
 
     @Scheduled(cron = "0 0 0 * * *")
     public void tpsSyntBatch() {
@@ -211,6 +220,14 @@ public class JobController {
         for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
             var syntetiserMedlRequest = new SyntetiserMedlRequest(entry.getKey(), entry.getValue(), medlProsentfaktor);
             testnorgeMedlService.genererMedlemskap(syntetiserMedlRequest);
+        }
+    }
+
+    @Scheduled(cron = "0 0 0 * * *")
+    public void frikortSyntBatch() {
+        for(var entry : avspillergruppeIdMedMiljoe.entrySet()) {
+            var syntetiserFrikortRequest = new SyntetiserFrikortRequest(entry.getKey(), entry.getValue(), frikortAntallNyeIdenter);
+            testnorgeFrikortService.genererFrikortEgenmeldinger(syntetiserFrikortRequest);
         }
     }
 }

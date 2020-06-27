@@ -1,7 +1,6 @@
-package no.nav.registre.frikort.provider.rs.response;
+package no.nav.registre.orkestratoren.consumer.rs.response;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,8 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class SyntetiserFrikortResponse {
+public class GenererFrikortResponse {
 
     private LeggPaaKoeStatus lagtPaaKoe;
     private String xml;

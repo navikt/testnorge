@@ -37,6 +37,6 @@ public class SyntetiseringController {
             @ApiParam(value = LEGG_PAA_KOE_DESCRIPTION)
             @RequestParam(defaultValue = "true") boolean leggPaaKoe
     ) throws JAXBException {
-        return ResponseEntity.ok(syntetiseringService.opprettSyntetiskeFrikort(syntetiserFrikortRequest, leggPaaKoe));
+        return ResponseEntity.ok(syntetiseringService.opprettSyntetiskeEgenandeler(syntetiserFrikortRequest, leggPaaKoe));
     }
 }

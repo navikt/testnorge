@@ -20,12 +20,12 @@ public class IdentService {
 
     private final ServiceUtils serviceUtils;
 
-    public List<SyntetiserFrikortResponse> hentSyntetiskeEgenandelerSomXML(
+    public List<SyntetiserFrikortResponse> opprettSyntetiskeEgenandeler(
             IdentRequest identRequest,
             boolean leggPaaKoe
     ) throws JAXBException {
         var identMap = identRequest.getIdenter().stream().collect(Collectors.toMap(IdentMedAntallFrikort::getIdent, IdentMedAntallFrikort::getAntallFrikort, (a, b) -> b));
 
-        return serviceUtils.hentSyntetiskeFrikortOgLeggPaaKoe(identMap, leggPaaKoe);
+        return serviceUtils.hentSyntetiskeEgenandelerOgLeggPaaKoe(identMap, leggPaaKoe);
     }
 }

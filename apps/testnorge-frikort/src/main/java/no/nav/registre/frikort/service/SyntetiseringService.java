@@ -19,14 +19,14 @@ import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoRespons
 @RequiredArgsConstructor
 public class SyntetiseringService {
 
-    private static final int ANTALL_FRIKORT_PER_IDENT = 1;
+    private static final int ANTALL_EGENANDELER_PER_IDENT = 1;
     private static final int MIN_ALDER = 16;
     private static final int MAX_ALDER = 70;
 
     private final HodejegerenConsumer hodejegerenConsumer;
     private final ServiceUtils serviceUtils;
 
-    public List<SyntetiserFrikortResponse> opprettSyntetiskeFrikort(
+    public List<SyntetiserFrikortResponse> opprettSyntetiskeEgenandeler(
             SyntetiserFrikortRequest syntetiserFrikortRequest,
             boolean leggPaaKoe
     ) throws JAXBException {
@@ -40,8 +40,8 @@ public class SyntetiseringService {
                 );
 
         var identer = identerMedKontonummer.stream().map(KontoinfoResponse::getFnr).collect(Collectors.toList());
-        var identMap = identer.stream().collect(Collectors.toMap(ident -> ident, ident -> ANTALL_FRIKORT_PER_IDENT, (a, b) -> b));
+        var identMap = identer.stream().collect(Collectors.toMap(ident -> ident, ident -> ANTALL_EGENANDELER_PER_IDENT, (a, b) -> b));
 
-        return serviceUtils.hentSyntetiskeFrikortOgLeggPaaKoe(identMap, leggPaaKoe);
+        return serviceUtils.hentSyntetiskeEgenandelerOgLeggPaaKoe(identMap, leggPaaKoe);
     }
 }

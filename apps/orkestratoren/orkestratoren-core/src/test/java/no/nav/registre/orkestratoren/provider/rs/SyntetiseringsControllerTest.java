@@ -14,6 +14,7 @@ import java.util.Map;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserMedlRequest;
@@ -24,6 +25,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.TestnorgeBisysService;
+import no.nav.registre.orkestratoren.service.TestnorgeFrikortService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
 import no.nav.registre.orkestratoren.service.TestnorgeMedlService;
@@ -59,6 +61,9 @@ public class SyntetiseringsControllerTest {
 
     @Mock
     private TestnorgeMedlService testnorgeMedlService;
+
+    @Mock
+    private TestnorgeFrikortService testnorgeFrikortService;
 
     @InjectMocks
     private SyntetiseringsController syntetiseringsController;
@@ -201,5 +206,13 @@ public class SyntetiseringsControllerTest {
         syntetiseringsController.opprettMedlemskapIMedl(syntetiserMedlRequest);
 
         verify(testnorgeMedlService).genererMedlemskap(syntetiserMedlRequest);
+    }
+
+    @Test
+    public void shouldProduceEgenandelInFrikort() {
+        var syntetiserFrikortRequest = new SyntetiserFrikortRequest(avspillergruppeId, miljoe, 2);
+        syntetiseringsController.opprettEgenandelerIFrikort(syntetiserFrikortRequest);
+
+        verify(testnorgeFrikortService).genererFrikortEgenmeldinger(syntetiserFrikortRequest);
     }
 }

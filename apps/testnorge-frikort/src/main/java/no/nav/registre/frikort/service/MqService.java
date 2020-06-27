@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import no.nav.registre.frikort.provider.rs.response.LeggPaaKoeStatus;
 import no.nav.registre.frikort.provider.rs.response.SyntetiserFrikortResponse;
+import no.nav.registre.frikort.provider.rs.response.SyntetiserFrikortResponse.LeggPaaKoeStatus;
 
 @Slf4j
 @Service
@@ -23,8 +23,8 @@ public class MqService {
     @Value("${mq.q2.queue.name}")
     private String koeNavn;
 
-    public void leggTilMeldingerPaaKoe(List<SyntetiserFrikortResponse> syntetiskeFrikort) {
-        for (var frikort : syntetiskeFrikort) {
+    public void leggTilMeldingerPaaKoe(List<SyntetiserFrikortResponse> syntetiskeEgenandeler) {
+        for (var frikort : syntetiskeEgenandeler) {
             try {
                 leggTilMeldingPaaKoe(frikort.getXml());
                 frikort.setLagtPaaKoe(LeggPaaKoeStatus.OK);
