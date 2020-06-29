@@ -35,7 +35,7 @@ public class MqService {
         }
     }
 
-    private void leggTilMeldingPaaKoe(String xmlMelding) throws RuntimeException {
+    private void leggTilMeldingPaaKoe(String xmlMelding) {
         jmsTemplate.send(koeNavn, session -> session.createTextMessage(xmlMelding));
     }
 }

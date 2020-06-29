@@ -9,10 +9,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 
-import java.util.Arrays;
 import java.util.Map;
 
-import no.nav.registre.orkestratoren.consumer.rs.TestnorgeFrikortConsumer;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaAapRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaVedtakshistorikkRequest;
@@ -25,8 +23,8 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldinger
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
-import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
+import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeBisysService;
 import no.nav.registre.orkestratoren.service.TestnorgeFrikortService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
@@ -225,7 +223,7 @@ public class JobController {
 
     @Scheduled(cron = "0 0 0 * * *")
     public void frikortSyntBatch() {
-        for(var entry : avspillergruppeIdMedMiljoe.entrySet()) {
+        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
             var syntetiserFrikortRequest = new SyntetiserFrikortRequest(entry.getKey(), entry.getValue(), frikortAntallNyeIdenter);
             testnorgeFrikortService.genererFrikortEgenmeldinger(syntetiserFrikortRequest);
         }
