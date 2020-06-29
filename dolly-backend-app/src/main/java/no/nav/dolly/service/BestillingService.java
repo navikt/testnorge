@@ -222,6 +222,7 @@ public class BestillingService {
         );
     }
 
+    @Transactional
     public Bestilling saveBestilling(Long gruppeId, RsDollyImportFraTpsRequest request) {
 
         Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
