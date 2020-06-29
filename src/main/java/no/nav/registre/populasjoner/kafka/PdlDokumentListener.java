@@ -106,7 +106,6 @@ public class PdlDokumentListener {
         var endringer = identifikator.getMetadata().getEndringer();
         for (var endring : endringer) {
             if (METADATA_OPPRETT.equals(endring.getType())) {
-                log.info("Ident med kilde {}", endring.getKilde());
                 if (KILDE_TENOR.equals(endring.getKilde())) {
                     identService.saveIdentWithFnr(identifikator.getIdentifikasjonsnummer());
                 }
