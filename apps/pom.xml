@@ -75,6 +75,7 @@
         <module>organisasjon-api</module>
         <module>arbeidsforhold-api</module>
         <module>synt-sykemelding-api</module>
+        <module>hendelse-api</module>
         <module>testnorge-populasjoner</module>
     </modules>
 </project>
