@@ -79,7 +79,7 @@ public class PdlDokumentListener {
             if ("preprod".equalsIgnoreCase(System.getenv("STACK"))) {
                 throw new UnrecoverableException("Failed to process message", exception);
             } else {
-                throw new UnrecoverableException("Failed to process message");
+                throw new UnrecoverableException("Failed to process message", exception);
             }
         } finally {
             MDC.clear();
