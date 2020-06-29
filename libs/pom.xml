@@ -19,6 +19,7 @@
         <module>testnorge-dependency-analysis</module>
         <module>testnorge-common</module>
         <module>testnorge-common-command</module>
+        <module>testnorge-avro-schema</module>
     </modules>
 
 

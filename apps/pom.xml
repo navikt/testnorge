@@ -39,6 +39,11 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <artifactId>testnorge-avro-schema</artifactId>
+                <groupId>no.nav.registre.testnorge</groupId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <artifactId>testnorge-testing</artifactId>
                 <groupId>no.nav.registre.testnorge</groupId>
                 <version>${project.version}</version>

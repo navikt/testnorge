@@ -20,7 +20,7 @@
         }
       ],
       "numPartitions": 10,
-      "topicName": "testnorge-hendelse-v1"
+      "topicName": "testnorge-opprett-hendelse-v1"
     }
   ]
 }

@@ -56,7 +56,6 @@ public class HendelseModel {
     @CreatedDate
     private Date opprettet;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "ident_id", referencedColumnName = "id", nullable = false)
-    private IdentModel ident;
+    @Column(name = "ident", nullable = false, updatable = false)
+    private String ident;
 }
