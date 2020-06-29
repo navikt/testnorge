@@ -259,6 +259,8 @@ public class DollyBestillingService {
             clearCache();
         });
         bestilling.setFerdig(true);
+        bestilling.setSistOppdatert(now());
+        bestillingService.saveBestillingToDB(bestilling);
         clearCache();
     }
 
