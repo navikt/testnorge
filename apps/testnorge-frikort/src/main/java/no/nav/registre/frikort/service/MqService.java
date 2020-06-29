@@ -1,6 +1,5 @@
 package no.nav.registre.frikort.service;
 
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +14,6 @@ import no.nav.registre.frikort.provider.rs.response.SyntetiserFrikortResponse.Le
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@NoArgsConstructor(force = true)
 public class MqService {
 
     private final JmsTemplate jmsTemplate;
