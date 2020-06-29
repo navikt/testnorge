@@ -1,22 +1,22 @@
 package no.nav.registre.populasjoner.kafka.folkeregisterperson;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Metadata {
 
-    private final String opplysningsId;
-    @NotEmpty
-    private final String master;
-    @NotNull
-    private final List<Endring> endringer;
-    @Setter
+    private String opplysningsId;
+    private String master;
+    private List<Endring> endringer;
     private Boolean historisk;
 }
