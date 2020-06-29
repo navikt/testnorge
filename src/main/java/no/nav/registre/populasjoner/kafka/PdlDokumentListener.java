@@ -66,10 +66,8 @@ public class PdlDokumentListener {
                 return Folkeregisterperson.builder().build();
             } else {
                 var node = mapper.readValue(record.value().substring(record.value().indexOf("{\"")), JsonNode.class).findValue(JSON_NODE_IDENTIFIKATOR);
-                var folkeregisterperson = Folkeregisterperson.builder().folkeregisteridentifikator(mapper.convertValue(node, new TypeReference<>() {
+                return Folkeregisterperson.builder().folkeregisteridentifikator(mapper.convertValue(node, new TypeReference<>() {
                 })).build();
-                log.info(folkeregisterperson.toString());
-                return folkeregisterperson;
             }
         } catch (RuntimeException | IOException exception) {
 
@@ -81,7 +79,7 @@ public class PdlDokumentListener {
             if ("preprod".equalsIgnoreCase(System.getenv("STACK"))) {
                 throw new UnrecoverableException("Failed to process message", exception);
             } else {
-                throw new UnrecoverableException("Failed to process message", exception);
+                throw new UnrecoverableException("Failed to process message");
             }
         } finally {
             MDC.clear();
