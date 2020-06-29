@@ -36,6 +36,7 @@ public class MqService {
     }
 
     private void leggTilMeldingPaaKoe(String xmlMelding) {
+        log.info("Legger på kø {}", koeNavn);
         jmsTemplate.send(koeNavn, session -> session.createTextMessage(xmlMelding));
     }
 }
