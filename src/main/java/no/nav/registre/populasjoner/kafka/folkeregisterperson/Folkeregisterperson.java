@@ -1,4 +1,4 @@
-package no.nav.registre.populasjoner.kafka.person;
+package no.nav.registre.populasjoner.kafka.folkeregisterperson;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,8 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PersonIdenterDto {
+public class Folkeregisterperson {
 
-    List<IdentDetaljDto> identer;
-
+    private List<Folkeregisteridentifikator> folkeregisteridentifikator;
 }
