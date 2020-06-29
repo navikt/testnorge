@@ -11,10 +11,10 @@ import javax.xml.bind.annotation.XmlElement;
 @Builder
 public class Borger {
 
-    private final long borgerid;
+    private final String borgerid;
 
     @XmlElement
-    public long getBorgerid() {
+    public String getBorgerid() {
         return borgerid;
     }
 }

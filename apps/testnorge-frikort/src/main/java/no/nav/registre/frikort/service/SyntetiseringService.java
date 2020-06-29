@@ -2,26 +2,46 @@ package no.nav.registre.frikort.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.frikort.consumer.rs.FrikortSyntetisererenConsumer;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBException;
-
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
+
+import no.nav.registre.frikort.provider.rs.request.SyntetiserFrikortRequest;
+import no.nav.registre.frikort.provider.rs.response.SyntetiserFrikortResponse;
+import no.nav.registre.frikort.service.common.ServiceUtils;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class SyntetiseringService {
 
-    private final FrikortSyntetisererenConsumer frikortSyntetisererenConsumer;
-    private final KonverteringService konverteringService;
+    private static final int ANTALL_EGENANDELER_PER_IDENT = 1;
+    private static final int MIN_ALDER = 16;
+    private static final int MAX_ALDER = 70;
 
-    public List<String> hentSyntetiskeEgenandelerSomXML(Map<String, Integer> request) throws JAXBException {
-        var egenandeler = frikortSyntetisererenConsumer.hentSyntetiskeEgenandelerFraSyntRest(request);
+    private final HodejegerenConsumer hodejegerenConsumer;
+    private final ServiceUtils serviceUtils;
 
-        return konverteringService.konverterEgenandelerTilXmlString(egenandeler);
+    public List<SyntetiserFrikortResponse> opprettSyntetiskeEgenandeler(
+            SyntetiserFrikortRequest syntetiserFrikortRequest,
+            boolean leggPaaKoe
+    ) throws JAXBException {
+        var identerMedKontonummer = hodejegerenConsumer
+                .getIdenterMedKontonummer(
+                        syntetiserFrikortRequest.getAvspillergruppeId(),
+                        syntetiserFrikortRequest.getMiljoe(),
+                        syntetiserFrikortRequest.getAntallNyeIdenter(),
+                        MIN_ALDER,
+                        MAX_ALDER
+                );
+
+        var identer = identerMedKontonummer.stream().map(KontoinfoResponse::getFnr).collect(Collectors.toList());
+        var identMap = identer.stream().collect(Collectors.toMap(ident -> ident, ident -> ANTALL_EGENANDELER_PER_IDENT, (a, b) -> b));
+
+        return serviceUtils.hentSyntetiskeEgenandelerOgLeggPaaKoe(identMap, leggPaaKoe);
     }
-
 }

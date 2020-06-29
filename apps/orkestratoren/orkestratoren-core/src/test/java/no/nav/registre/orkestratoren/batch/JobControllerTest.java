@@ -25,6 +25,7 @@ import java.util.Map;
 import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.TestnorgeBisysService;
+import no.nav.registre.orkestratoren.service.TestnorgeFrikortService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
 import no.nav.registre.orkestratoren.service.TestnorgeMedlService;
@@ -65,6 +66,9 @@ public class JobControllerTest {
 
     @Mock
     private TestnorgeMedlService testnorgeMedlService;
+
+    @Mock
+    private TestnorgeFrikortService testnorgeFrikortService;
 
     @InjectMocks
     private JobController jobController;
@@ -145,5 +149,11 @@ public class JobControllerTest {
     public void shouldStartMedlBatch() {
         jobController.medlSyntBatch();
         verify(testnorgeMedlService).genererMedlemskap(any());
+    }
+
+    @Test
+    public void shouldStartFrikortBatch() {
+        jobController.frikortSyntBatch();
+        verify(testnorgeFrikortService).genererFrikortEgenmeldinger(any());
     }
 }

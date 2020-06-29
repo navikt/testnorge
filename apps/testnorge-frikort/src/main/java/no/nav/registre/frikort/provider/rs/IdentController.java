@@ -17,26 +17,26 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.xml.bind.JAXBException;
 import java.util.List;
 
-import no.nav.registre.frikort.provider.rs.request.SyntetiserFrikortRequest;
+import no.nav.registre.frikort.provider.rs.request.IdentRequest;
 import no.nav.registre.frikort.provider.rs.response.SyntetiserFrikortResponse;
-import no.nav.registre.frikort.service.SyntetiseringService;
+import no.nav.registre.frikort.service.IdentService;
 
 @Slf4j
 @RestController
-@RequestMapping("api/v1/syntetisering")
+@RequestMapping("api/v1/ident")
 @RequiredArgsConstructor
-public class SyntetiseringController {
+public class IdentController {
 
-    private final SyntetiseringService syntetiseringService;
+    private final IdentService identService;
 
-    @PostMapping(value = "/generer")
-    @ApiOperation(value = "Generer syntetiske egenandelsmeldinger som XML string på identer i gitt avspillergruppe fra gitt miljø.")
+    @PostMapping(value = "/opprett")
+    @ApiOperation(value = "Generer syntetiske egenandelsmeldinger som XML string på gitte identer.")
     public ResponseEntity<List<SyntetiserFrikortResponse>> genererEgenandelsmeldinger(
             @ApiParam(value = REQUEST_BODY_DESCRIPTION, required = true)
-            @RequestBody() SyntetiserFrikortRequest syntetiserFrikortRequest,
+            @RequestBody() IdentRequest identRequest,
             @ApiParam(value = LEGG_PAA_KOE_DESCRIPTION)
             @RequestParam(defaultValue = "true") boolean leggPaaKoe
     ) throws JAXBException {
-        return ResponseEntity.ok(syntetiseringService.opprettSyntetiskeEgenandeler(syntetiserFrikortRequest, leggPaaKoe));
+        return ResponseEntity.ok(identService.opprettSyntetiskeEgenandeler(identRequest, leggPaaKoe));
     }
 }
