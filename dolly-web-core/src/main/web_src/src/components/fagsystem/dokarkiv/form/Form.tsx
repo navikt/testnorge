@@ -24,7 +24,7 @@ const dokarkivAttributt = 'dokarkiv'
 export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 	const handleSkjemaChange = (v: React.ChangeEvent<any>) => {
 		formikBag.setFieldValue('dokarkiv.tittel', v.data)
-		formikBag.setFieldValue('dokarkiv.dokumenter.tittel', v.data)
+		formikBag.setFieldValue('dokarkiv.dokumenter[0].tittel', v.data)
 	}
 
 	return (
@@ -39,7 +39,7 @@ export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 				<Kategori title="Oppretting av skannet dokument" vis={dokarkivAttributt}>
 					<div className="flexbox--full-width">
 						<FormikSelect
-							name="dokarkiv.dokumenter.brevkode"
+							name="dokarkiv.dokumenter[0].brevkode"
 							label="Skjema"
 							afterChange={handleSkjemaChange}
 							kodeverk={Kodeverk.NAVSKJEMA}
@@ -69,10 +69,12 @@ DokarkivForm.validation = {
 			tittel: requiredString,
 			tema: requiredString,
 			journalfoerendeEnhet: Yup.string(),
-			dokumenter: Yup.object({
-				tittel: requiredString,
-				brevkode: requiredString
-			})
+			dokumenter: Yup.array().of(
+				Yup.object({
+					tittel: requiredString,
+					brevkode: requiredString
+				})
+			)
 		})
 	)
 }

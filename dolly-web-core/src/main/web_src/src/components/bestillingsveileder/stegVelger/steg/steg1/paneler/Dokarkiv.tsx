@@ -31,12 +31,14 @@ DokarkivPanel.initialValues = ({ set, del, has }: any) => ({
 			set('dokarkiv', {
 				tittel: '',
 				tema: '',
-				kanal: 'SKAN_IM', // Evt mulighet for å velge skanner selv?
+				kanal: 'SKAN_IM',
 				journalfoerendeEnhet: '',
-				dokumenter: {
-					tittel: '',
-					brevkode: ''
-				}
+				dokumenter: [
+					{
+						tittel: '',
+						brevkode: ''
+					}
+				]
 			})
 		},
 		remove() {

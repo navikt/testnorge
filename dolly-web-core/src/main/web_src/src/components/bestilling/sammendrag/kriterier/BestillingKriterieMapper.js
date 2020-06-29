@@ -860,12 +860,12 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		data.push(mapInntektsmeldingKriterier(inntektsmeldingKriterier.inntekter))
 
 	const dokarkivKriterier = bestillingData.dokarkiv
-
+	console.log('dokarkivKriterier :>> ', dokarkivKriterier)
 	if (dokarkivKriterier) {
 		const dokarkiv = {
 			header: 'Dokumenter',
 			items: [
-				obj('Brevkode', dokarkivKriterier.dokumenter.brevkode),
+				obj('Brevkode', dokarkivKriterier.dokumenter[0].brevkode),
 				obj('Tittel', dokarkivKriterier.tittel),
 				obj('Tema', dokarkivKriterier.tema),
 				obj('Journalførende enhet', dokarkivKriterier.journalfoerendeEnhet)
