@@ -66,6 +66,7 @@ public class PdlDokumentListener {
                 return Folkeregisterperson.builder().build();
             } else {
                 JsonNode node = mapper.readValue(record.value().substring(record.value().indexOf("{")), JsonNode.class).findValue(JSON_NODE_IDENTIFIKATOR);
+                log.info("Mapper node: {}", node);
                 return Folkeregisterperson.builder().folkeregisteridentifikator(mapper.convertValue(node, new TypeReference<>() {
                 })).build();
             }
