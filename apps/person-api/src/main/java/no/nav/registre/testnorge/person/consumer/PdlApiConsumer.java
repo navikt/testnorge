@@ -2,14 +2,15 @@ package no.nav.registre.testnorge.person.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.person.consumer.command.GetPersonCommand;
-import no.nav.registre.testnorge.person.domain.Person;
-import no.nav.registre.testnorge.person.service.StsOidcTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.person.consumer.command.GetPersonCommand;
+import no.nav.registre.testnorge.person.domain.Person;
+import no.nav.registre.testnorge.person.service.StsOidcTokenService;
 
 @Slf4j
 @Component

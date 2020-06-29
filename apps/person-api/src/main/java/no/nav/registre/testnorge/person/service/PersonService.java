@@ -15,7 +15,8 @@ public class PersonService {
     public void createPerson(Person person) {
         pdlPersonAdapter.createPerson(person);
     }
-    public Person getPerson (String ident) {
+
+    public Person getPerson(String ident) {
         return pdlPersonAdapter.getPerson(ident);
     }
 }

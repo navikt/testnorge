@@ -8,12 +8,10 @@ import lombok.NoArgsConstructor;
 import java.util.Optional;
 
 import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
-import no.nav.registre.testnorge.person.consumer.dto.graphql.Bostedsadresse;
 import no.nav.registre.testnorge.person.consumer.dto.graphql.Folkeregisteridentifikator;
 import no.nav.registre.testnorge.person.consumer.dto.graphql.HentPerson;
 import no.nav.registre.testnorge.person.consumer.dto.graphql.Navn;
 import no.nav.registre.testnorge.person.consumer.dto.graphql.PdlPerson;
-import no.nav.registre.testnorge.person.consumer.dto.graphql.Vegadresse;
 
 @Getter
 @Builder

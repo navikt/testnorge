@@ -46,7 +46,6 @@ public class GetPersonCommand implements Callable<PdlPerson> {
                 .getContextClassLoader()
                 .getResourceAsStream("pdl/pdlQuery.graphql");
         try {
-
             query = new BufferedReader(new InputStreamReader(queryStream, StandardCharsets.UTF_8))
                     .lines().collect(Collectors.joining("\n"));
         } catch (Exception e) {

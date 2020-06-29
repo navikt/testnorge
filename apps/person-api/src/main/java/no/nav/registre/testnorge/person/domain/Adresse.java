@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 import java.util.Arrays;
 import java.util.List;
 
-import no.nav.registre.testnorge.person.consumer.dto.graphql.Vegadresse;
 import no.nav.registre.testnorge.dto.person.v1.AdresseDTO;
+import no.nav.registre.testnorge.person.consumer.dto.graphql.Vegadresse;
 
 @Getter
 @Builder
