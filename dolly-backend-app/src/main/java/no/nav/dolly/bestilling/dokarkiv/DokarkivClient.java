@@ -2,13 +2,13 @@ package no.nav.dolly.bestilling.dokarkiv;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
-import static sun.plugin2.util.PojoUtil.toJson;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +33,7 @@ public class DokarkivClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
     private final TransaksjonMappingService transaksjonMappingService;
+    private final ObjectMapper objectMapper;
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -90,5 +91,15 @@ public class DokarkivClient implements ClientRegister {
                         .miljoe(miljoe)
                         .system(DOKARKIV.name())
                         .build());
+    }
+
+    private String toJson(Object object) {
+
+        try {
+            return objectMapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            log.error("Feilet å konvertere transaksjonsId for dokarkiv", e);
+        }
+        return null;
     }
 }
