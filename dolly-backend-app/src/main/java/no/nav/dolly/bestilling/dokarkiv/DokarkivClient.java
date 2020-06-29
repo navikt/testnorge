@@ -17,7 +17,6 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.service.TpsfPersonCache;
 
 @Slf4j
 @Service
@@ -25,7 +24,6 @@ import no.nav.dolly.service.TpsfPersonCache;
 public class DokarkivClient implements ClientRegister {
 
     private final DokarkivConsumer dokarkivConsumer;
-    private final TpsfPersonCache tpsfPersonCache;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
 
