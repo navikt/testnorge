@@ -29,6 +29,7 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.RsDollyImportFraTpsRequest;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
@@ -120,6 +121,18 @@ public class TestgruppeController {
                 request.getOpprettFraIdenter().size(), request.getOpprettFraIdenter());
 
         dollyBestillingService.opprettPersonerFraIdenterMedKriterierAsync(gruppeId, request, bestilling);
+        return mapperFacade.map(bestilling, RsBestillingStatus.class);
+    }
+
+    @ApiOperation(value = "Importere testpersoner fra TPS basert på liste av identer", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/{gruppeId}/bestilling/importFraTps")
+    public RsBestillingStatus importAvIdenterBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyImportFraTpsRequest request) {
+
+        Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request);
+
+        dollyBestillingService.importAvPersonerFraTpsAsync(bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 }

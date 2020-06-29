@@ -55,6 +55,7 @@ public class TpsfService {
     private static final String TPSF_DELETE_PERSONER_URL = TPSF_BASE_URL + "/personer?identer=";
     private static final String TPSF_GET_ENVIRONMENTS = "/api/v1/environments";
     private static final String TPSF_PERSON_RELASJON = TPSF_BASE_URL + "/relasjonperson?ident=";
+    private static final String TPSF_IMPORTER_PERSON = TPSF_BASE_URL + "/import/lagre";
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
@@ -127,6 +128,16 @@ public class TpsfService {
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, getUserIdToken())
                 .body(tpsfBestilling), List.class).getBody();
+    }
+
+    @Timed(name = "providers", tags = { "operation", "tpsf_hentPersonFraTps" })
+    public String importerPersonFraTps(TpsfImportPersonRequest tpsfImportPersonRequest) {
+
+        return restTemplate.exchange(RequestEntity.post(
+                URI.create(providersProps.getTpsf().getUrl() + TPSF_IMPORTER_PERSON))
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, getUserIdToken())
+                .body(tpsfImportPersonRequest), String.class).getBody();
     }
 
     private ResponseEntity<Object> postToTpsf(String addtionalUrl, Object request) {

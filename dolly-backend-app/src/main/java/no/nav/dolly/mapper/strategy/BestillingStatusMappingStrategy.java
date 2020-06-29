@@ -4,6 +4,7 @@ import static no.nav.dolly.mapper.BestillingAaregStatusMapper.buildAaregStatusMa
 import static no.nav.dolly.mapper.BestillingArenaforvalterStatusMapper.buildArenaStatusMap;
 import static no.nav.dolly.mapper.BestillingBrregStubStatusMapper.buildBrregStubStatusMap;
 import static no.nav.dolly.mapper.BestillingDokarkivStatusMapper.buildDokarkivStatusMap;
+import static no.nav.dolly.mapper.BestillingImportFraTpsStatusMapper.buildImportFraTpsStatusMap;
 import static no.nav.dolly.mapper.BestillingInntektsmeldingStatusMapper.buildInntektsmeldingStatusMap;
 import static no.nav.dolly.mapper.BestillingInntektstubStatusMapper.buildInntektstubStatusMap;
 import static no.nav.dolly.mapper.BestillingInstdataStatusMapper.buildInstdataStatusMap;
@@ -15,8 +16,6 @@ import static no.nav.dolly.mapper.BestillingTpsfStatusMapper.buildTpsfStatusMap;
 import static no.nav.dolly.mapper.BestillingUdiStubStatusMapper.buildUdiStubStatusMap;
 
 import java.util.Arrays;
-import java.util.Iterator;
-
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -25,7 +24,6 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.mapper.MappingStrategy;
@@ -43,20 +41,20 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<Bestilling, RsBestillingStatus>() {
                     @Override public void mapAtoB(Bestilling bestilling, RsBestillingStatus bestillingStatus, MappingContext context) {
 
-                        Iterator<BestillingProgress> it = bestilling.getProgresser().iterator();
-                        while (it.hasNext()) {
-                            String ident = it.next().getIdent();
-                            if (bestilling.getGruppe().getTestidenter().stream()
-                                    .noneMatch(testident -> testident.getIdent().equals(ident))) {
-                                it.remove();
-                            }
-                        }
+//                        Iterator<BestillingProgress> it = bestilling.getProgresser().iterator();
+//                        while (it.hasNext()) {
+//                            String ident = it.next().getIdent();
+//                            if (bestilling.getGruppe().getTestidenter().stream()
+//                                    .noneMatch(testident -> testident.getIdent().equals(ident))) {
+//                                it.remove();
+//                            }
+//                        }
 
                         RsDollyBestillingRequest bestillingRequest = jsonBestillingMapper.mapBestillingRequest(bestilling.getBestKriterier());
                         bestillingStatus.setAntallLevert(bestilling.getProgresser().size());
                         bestillingStatus.setEnvironments(Arrays.asList(bestilling.getMiljoer().split(",")));
                         bestillingStatus.setGruppeId(bestilling.getGruppe().getId());
-                        bestillingStatus.getStatus().addAll(buildTpsfStatusMap(bestilling.getProgresser()));
+                        bestillingStatus.getStatus().addAll(buildTpsfStatusMap(bestilling));
                         bestillingStatus.getStatus().addAll(buildKrrStubStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildSigrunStubStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildAaregStatusMap(bestilling.getProgresser()));
@@ -69,6 +67,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildInntektsmeldingStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildBrregStubStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildDokarkivStatusMap(bestilling.getProgresser()));
+                        bestillingStatus.getStatus().addAll(buildImportFraTpsStatusMap(bestilling));
                         bestillingStatus.setBestilling(RsBestillingStatus.RsBestilling.builder()
                                 .pdlforvalter(bestillingRequest.getPdlforvalter())
                                 .aareg(bestillingRequest.getAareg())
@@ -83,6 +82,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .brregstub(bestillingRequest.getBrregstub())
                                 .dokarkiv(bestillingRequest.getDokarkiv())
                                 .tpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()))
+                                .importFraTps(bestilling.getTpsImport())
                                 .build());
                     }
                 })
