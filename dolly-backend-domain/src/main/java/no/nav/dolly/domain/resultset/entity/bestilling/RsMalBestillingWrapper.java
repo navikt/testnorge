@@ -25,6 +25,7 @@ import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
+import no.nav.dolly.domain.resultset.sykemelding.RsSyntSykemelding;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 
@@ -83,5 +84,6 @@ public class RsMalBestillingWrapper {
         private PensjonData pensjonforvalter;
         private RsBregdata brregstub;
         private RsDokarkiv dokarkiv;
+        private RsSyntSykemelding syntSykemelding;
     }
 }

@@ -78,6 +78,9 @@ public class BestillingProgress {
     @Column(name = "DOKARKIV_STATUS")
     private String dokarkivStatus;
 
+    @Column(name = "SYNT_SYKEMELDING_STATUS")
+    private String syntSykemeldingStatus;
+
     private String feil;
 
     public BestillingProgress(Long bestillingId, String ident) {

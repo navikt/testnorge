@@ -4,6 +4,7 @@ import static java.util.Objects.isNull;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -23,6 +24,7 @@ import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
+import no.nav.dolly.domain.resultset.sykemelding.RsSyntSykemelding;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 
 @Getter
@@ -106,30 +108,35 @@ public class RsDollyBestilling {
     )
     private RsDokarkiv dokarkiv;
 
+    @ApiModelProperty(
+            position = 14
+    )
+    private RsSyntSykemelding syntSykemelding;
+
     public List<RsAaregArbeidsforhold> getAareg() {
         if (isNull(aareg)) {
-            aareg = new ArrayList();
+            aareg = new ArrayList<>();
         }
         return aareg;
     }
 
     public List<String> getEnvironments() {
         if (isNull(environments)) {
-            environments = new ArrayList();
+            environments = new ArrayList<>();
         }
         return environments;
     }
 
     public List<OpprettSkattegrunnlag> getSigrunstub() {
         if (isNull(sigrunstub)) {
-            sigrunstub = new ArrayList();
+            sigrunstub = new ArrayList<>();
         }
         return sigrunstub;
     }
 
     public List<RsInstdata> getInstdata() {
         if (isNull(instdata)) {
-            instdata = new ArrayList();
+            instdata = new ArrayList<>();
         }
         return instdata;
     }
