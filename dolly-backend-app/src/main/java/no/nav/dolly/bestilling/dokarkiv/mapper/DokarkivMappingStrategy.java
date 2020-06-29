@@ -58,33 +58,37 @@ public class DokarkivMappingStrategy implements MappingStrategy {
                                 .fagsaksystem(FAGSAK_SYSTEM)
                                 .sakstype(FAGSAK_TYPE)
                                 .build());
-                        if (dokarkivRequest.getDokumenter().isEmpty()) {
-                            dokarkivRequest.getDokumenter().add(new DokarkivRequest.Dokument());
-                        }
-                        if (dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().isEmpty()) {
-                            dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().add(new DokarkivRequest.DokumentVariant());
-                        }
-                        if (isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getFiltype())) {
-                            dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setFiltype(PDFA);
-                        }
-                        if (isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getVariantformat())) {
-                            dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setVariantformat(ARKIV);
-                        }
-                        if (isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getFysiskDokument())) {
-                            Path pdfPath = Paths.get("dolly-backend-app/src/main/resources/dokarkiv/testpdf.pdf");
-                            try {
-                                byte[] pdfByteArray = Files.readAllBytes(pdfPath);
-                                dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setFysiskDokument(Base64.getEncoder().encodeToString(pdfByteArray));
-                            } catch (IOException e) {
-                                log.error("Klarte ikke å hente test PDF: ", e);
-                            }
-                        }
                         dokarkivRequest.setBruker(DokarkivRequest.Bruker.builder()
                                 .idType(FNR)
                                 .build());
+                        fyllDokarkivDokument(dokarkiv, dokarkivRequest);
                     }
                 })
                 .byDefault()
                 .register();
+    }
+
+    private void fyllDokarkivDokument(RsDokarkiv dokarkiv, DokarkivRequest dokarkivRequest) {
+        if (dokarkivRequest.getDokumenter().isEmpty()) {
+            dokarkivRequest.getDokumenter().add(new DokarkivRequest.Dokument());
+        }
+        if (dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().isEmpty()) {
+            dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().add(new DokarkivRequest.DokumentVariant());
+        }
+        if (isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getFiltype())) {
+            dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setFiltype(PDFA);
+        }
+        if (isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getVariantformat())) {
+            dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setVariantformat(ARKIV);
+        }
+        if (isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getFysiskDokument())) {
+            Path pdfPath = Paths.get("dolly-backend-app/src/main/resources/dokarkiv/testpdf.pdf");
+            try {
+                byte[] pdfByteArray = Files.readAllBytes(pdfPath);
+                dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setFysiskDokument(Base64.getEncoder().encodeToString(pdfByteArray));
+            } catch (IOException e) {
+                log.error("Klarte ikke å hente test PDF: ", e);
+            }
+        }
     }
 }
