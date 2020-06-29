@@ -51,7 +51,7 @@ public class TestnorgeFrikortConsumerTest {
 
     @Test
     public void shouldStartSyntetisering() {
-        var expectedUri = serverUrl + "/v1/syntetisering/generer";
+        var expectedUri = serverUrl + "/v1/syntetisering/generer?leggPaaKoe=true";
         stubFrikortSyntConsumer(expectedUri);
 
         var response = testnorgeFrikortConsumer.startSyntetisering(syntetiserFrikortRequest);

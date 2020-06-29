@@ -29,7 +29,7 @@ public class TestnorgeFrikortConsumer {
             @Value("${testnorge-frikort.rest.api.url}") String frikortServerUrl
     ) {
         this.restTemplate = restTemplateBuilder.build();
-        this.url = new UriTemplate(frikortServerUrl + "/v1/syntetisering/generer");
+        this.url = new UriTemplate(frikortServerUrl + "/v1/syntetisering/generer?leggPaaKoe=true");
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "frikort" })

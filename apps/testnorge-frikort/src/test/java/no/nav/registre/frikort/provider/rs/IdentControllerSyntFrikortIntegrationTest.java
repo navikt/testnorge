@@ -46,7 +46,6 @@ public class IdentControllerSyntFrikortIntegrationTest {
 
     @Test
     public void shouldGetResponseFromSyntFrikort() throws Exception {
-
         var request = IdentRequest.builder()
                 .identer(Collections.singletonList(IdentMedAntallFrikort.builder()
                         .ident(testIdent)
