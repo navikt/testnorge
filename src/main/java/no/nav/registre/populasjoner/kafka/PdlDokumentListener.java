@@ -48,6 +48,7 @@ public class PdlDokumentListener {
     public void onMessage(
             ConsumerRecords<String, String> records
     ) {
+        log.info("Mottok melding på topic");
         var folkeregisterpersoner = KafkaUtilities.asStream(records)
                 .map(this::extractPersonIdenter)
                 .collect(Collectors.toList());
@@ -105,6 +106,7 @@ public class PdlDokumentListener {
         var endringer = identifikator.getMetadata().getEndringer();
         for (var endring : endringer) {
             if (METADATA_OPPRETT.equals(endring.getType())) {
+                log.info("Ident med kilde {}", endring.getKilde());
                 if (KILDE_TENOR.equals(endring.getKilde())) {
                     identService.saveIdentWithFnr(identifikator.getIdentifikasjonsnummer());
                 }
