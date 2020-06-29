@@ -1,7 +1,6 @@
 package no.nav.registre.frikort.provider.rs;
 
 import static no.nav.registre.frikort.utils.SwaggerUtils.LEGG_PAA_KOE_DESCRIPTION;
-import static no.nav.registre.frikort.utils.SwaggerUtils.REQUEST_BODY_DESCRIPTION;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -32,7 +31,6 @@ public class IdentController {
     @PostMapping(value = "/opprett")
     @ApiOperation(value = "Generer syntetiske egenandelsmeldinger som XML string på gitte identer.")
     public ResponseEntity<List<SyntetiserFrikortResponse>> genererEgenandelsmeldinger(
-            @ApiParam(value = REQUEST_BODY_DESCRIPTION, required = true)
             @RequestBody() IdentRequest identRequest,
             @ApiParam(value = LEGG_PAA_KOE_DESCRIPTION)
             @RequestParam(defaultValue = "true") boolean leggPaaKoe
