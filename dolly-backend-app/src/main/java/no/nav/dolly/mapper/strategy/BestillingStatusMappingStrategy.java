@@ -41,15 +41,6 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<Bestilling, RsBestillingStatus>() {
                     @Override public void mapAtoB(Bestilling bestilling, RsBestillingStatus bestillingStatus, MappingContext context) {
 
-//                        Iterator<BestillingProgress> it = bestilling.getProgresser().iterator();
-//                        while (it.hasNext()) {
-//                            String ident = it.next().getIdent();
-//                            if (bestilling.getGruppe().getTestidenter().stream()
-//                                    .noneMatch(testident -> testident.getIdent().equals(ident))) {
-//                                it.remove();
-//                            }
-//                        }
-
                         RsDollyBestillingRequest bestillingRequest = jsonBestillingMapper.mapBestillingRequest(bestilling.getBestKriterier());
                         bestillingStatus.setAntallLevert(bestilling.getProgresser().size());
                         bestillingStatus.setEnvironments(Arrays.asList(bestilling.getMiljoer().split(",")));
