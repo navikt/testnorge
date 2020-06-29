@@ -13,6 +13,7 @@ import no.nav.registre.testnorge.person.consumer.dto.graphql.Folkeregisteridenti
 import no.nav.registre.testnorge.person.consumer.dto.graphql.HentPerson;
 import no.nav.registre.testnorge.person.consumer.dto.graphql.Navn;
 import no.nav.registre.testnorge.person.consumer.dto.graphql.PdlPerson;
+import no.nav.registre.testnorge.person.consumer.dto.graphql.Vegadresse;
 
 @Getter
 @Builder
@@ -38,8 +39,9 @@ public class Person {
 
     public Person(PdlPerson pdlPerson) {
         HentPerson person = pdlPerson.getData().getHentPerson();
+
         Optional<Navn> navn = person.getNavn().stream().findFirst();
-        Optional<Bostedsadresse> bostedsadresse = person.getBostedsadresse().stream().findFirst();
+        Optional <Bostedsadresse> bostedsadresse = person.getBostedsadresse().stream().findFirst();
         Optional<Folkeregisteridentifikator> folkeregisteridentifikator = person.getFolkeregisteridentifikator().stream().findFirst();
 
         ident = folkeregisteridentifikator.isEmpty() ? null : folkeregisteridentifikator.get().getIdentifikasjonsnummer();
@@ -47,8 +49,9 @@ public class Person {
         mellomnavn = navn.isEmpty() ? null : navn.get().getMellomnavn();
         etternavn = navn.isEmpty() ? null : navn.get().getEtternavn();
         if (!bostedsadresse.isEmpty()) {
-            if (bostedsadresse.get().getVegadresse() != null) {
-                adresse = new Adresse(bostedsadresse.get().getVegadresse());
+            Vegadresse vegadresse = bostedsadresse.get().getVegadresse();
+            if (vegadresse != null) {
+                adresse = new Adresse(vegadresse);
             }
         }
     }

@@ -27,12 +27,12 @@ import no.nav.registre.testnorge.person.consumer.header.PdlHeaders;
 @RequiredArgsConstructor
 public class GetPersonCommand implements Callable<PdlPerson> {
     private static final String GRAPHQL_URL = "/graphql";
+    private final static String TEMA_GENERELL = "GEN";
 
     private final RestTemplate restTemplate;
     private final String url;
     private final String ident;
     private final String token;
-    private final static String tema = "GEN";
     private final ObjectMapper mapper;
 
     @Override
@@ -63,7 +63,7 @@ public class GetPersonCommand implements Callable<PdlPerson> {
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(PdlHeaders.HEADER_NAV_CALL_ID, "Dolly: " + UUID.randomUUID().toString())
                 .header(PdlHeaders.HEADER_NAV_CONSUMER_TOKEN, "Bearer " + token)
-                .header(PdlHeaders.TEMA, tema)
+                .header(PdlHeaders.TEMA, TEMA_GENERELL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(graphQLRequest), PdlPerson.class)
                 .getBody();
