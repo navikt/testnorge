@@ -27,7 +27,7 @@ import no.nav.registre.testnorge.person.consumer.header.PdlHeaders;
 @RequiredArgsConstructor
 public class GetPersonCommand implements Callable<PdlPerson> {
     private static final String GRAPHQL_URL = "/graphql";
-    private final static String TEMA_GENERELL = "GEN";
+    private static final String TEMA_GENERELL = "GEN";
 
     private final RestTemplate restTemplate;
     private final String url;

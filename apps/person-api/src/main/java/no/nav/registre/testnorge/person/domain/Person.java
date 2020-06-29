@@ -48,7 +48,7 @@ public class Person {
         fornavn = navn.isEmpty() ? null : navn.get().getFornavn();
         mellomnavn = navn.isEmpty() ? null : navn.get().getMellomnavn();
         etternavn = navn.isEmpty() ? null : navn.get().getEtternavn();
-        if (!bostedsadresse.isEmpty()) {
+        if (bostedsadresse.isPresent()) {
             Vegadresse vegadresse = bostedsadresse.get().getVegadresse();
             if (vegadresse != null) {
                 adresse = new Adresse(vegadresse);

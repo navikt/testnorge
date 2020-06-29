@@ -21,9 +21,10 @@ public class PersonController {
     }
 
     @GetMapping
-    public PersonDTO getPerson(@RequestParam String ident) {
+    public Person getPerson(@RequestParam String ident) {
         //Validering på at ident består av 11 tegn?
         Person person = service.getPerson((ident));
-        return ResponseEntity.ok(person.toDTO()).getBody();
+        return ResponseEntity.ok(person).getBody();
+        //return ResponseEntity.ok(person.toDTO()).getBody();
     }
 }
