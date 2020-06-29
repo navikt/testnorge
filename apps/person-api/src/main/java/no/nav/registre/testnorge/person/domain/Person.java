@@ -39,21 +39,21 @@ public class Person {
 
     public Person(PdlPerson pdlPerson) {
         HentPerson person = pdlPerson.getData().getHentPerson();
-
         Optional<Navn> navn = person.getNavn().stream().findFirst();
-        Optional <Bostedsadresse> bostedsadresse = person.getBostedsadresse().stream().findFirst();
-        Optional<Folkeregisteridentifikator> folkeregisteridentifikator = person.getFolkeregisteridentifikator().stream().findFirst();
 
-        ident = folkeregisteridentifikator.isEmpty() ? null : folkeregisteridentifikator.get().getIdentifikasjonsnummer();
-        fornavn = navn.isEmpty() ? null : navn.get().getFornavn();
-        mellomnavn = navn.isEmpty() ? null : navn.get().getMellomnavn();
-        etternavn = navn.isEmpty() ? null : navn.get().getEtternavn();
-        if (bostedsadresse.isPresent()) {
-            Vegadresse vegadresse = bostedsadresse.get().getVegadresse();
-            if (vegadresse != null) {
-                adresse = new Adresse(vegadresse);
-            }
-        }
+        ident = person.getFolkeregisteridentifikator()
+                .stream()
+                .findFirst()
+                .map(Folkeregisteridentifikator::getIdentifikasjonsnummer)
+                .orElse(null);
+        fornavn = navn.map(Navn::getFornavn).orElse(null);
+        mellomnavn = navn.map(Navn::getMellomnavn).orElse(null);
+        etternavn = navn.map(Navn::getEtternavn).orElse(null);
+        adresse = person.getBostedsadresse()
+                .stream()
+                .findFirst()
+                .map(value -> new Adresse(value.getVegadresse()))
+                .orElse(null);
     }
 
     public PersonDTO toDTO() {

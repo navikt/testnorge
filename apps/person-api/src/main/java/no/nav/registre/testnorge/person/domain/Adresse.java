@@ -23,20 +23,16 @@ public class Adresse {
     private String kommunenummer;
 
     public Adresse(AdresseDTO dto) {
-        Adresse.builder()
-                .gatenavn(dto.getGatenavn())
-                .postnummer(dto.getPostnummer())
-                .poststed(dto.getPoststed())
-                .kommunenummer(dto.getKommunenummer())
-                .build();
+        gatenavn = dto.getGatenavn();
+        postnummer = dto.getPostnummer();
+        poststed = dto.getPoststed();
+        kommunenummer = dto.getKommunenummer();
     }
 
     public Adresse(Vegadresse vegadresse) {
-        Adresse.builder()
-                .gatenavn(vegadresse.getAdressenavn() + " " + vegadresse.getHusnummer())
-                .postnummer(vegadresse.getPostnummer())
-                .kommunenummer(vegadresse.getKommunenummer())
-                .build();
+        gatenavn = vegadresse.getAdressenavn() + " " + vegadresse.getHusnummer();
+        postnummer = vegadresse.getPostnummer();
+        kommunenummer = vegadresse.getKommunenummer();
     }
 
     public AdresseDTO toDto() {
