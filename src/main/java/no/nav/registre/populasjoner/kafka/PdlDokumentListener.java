@@ -65,10 +65,11 @@ public class PdlDokumentListener {
             if (record.value() == null) {
                 return Folkeregisterperson.builder().build();
             } else {
-                JsonNode node = mapper.readValue(record.value().substring(record.value().indexOf("{")), JsonNode.class).findValue(JSON_NODE_IDENTIFIKATOR);
-                log.info("Mapper node: {}", node);
-                return Folkeregisterperson.builder().folkeregisteridentifikator(mapper.convertValue(node, new TypeReference<>() {
+                var node = mapper.readValue(record.value().substring(record.value().indexOf("{\"")), JsonNode.class).findValue(JSON_NODE_IDENTIFIKATOR);
+                var folkeregisterperson = Folkeregisterperson.builder().folkeregisteridentifikator(mapper.convertValue(node, new TypeReference<>() {
                 })).build();
+                log.info(folkeregisterperson.toString());
+                return folkeregisterperson;
             }
         } catch (RuntimeException | IOException exception) {
 
