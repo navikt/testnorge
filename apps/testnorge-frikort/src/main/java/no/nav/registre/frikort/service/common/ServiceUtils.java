@@ -29,8 +29,6 @@ public class ServiceUtils {
 
         var xmlMeldinger = konverteringService.konverterEgenandelerTilXmlString(egenandeler);
 
-        log.info("{} egenandelsmelding(er) ble generert og gjort om til XMLString.", xmlMeldinger.size());
-
         var opprettedeEgenandeler = xmlMeldinger.stream().map(xmlMelding -> SyntetiserFrikortResponse.builder()
                 .xml(xmlMelding)
                 .lagtPaaKoe(LeggPaaKoeStatus.NO)
