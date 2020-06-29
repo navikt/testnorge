@@ -24,10 +24,15 @@ public class ResponseLogger {
     }
 
     public void log() {
+
         try {
-            Map<String, String> contextMap = MDC.getCopyOfContextMap();
-            contextMap.putAll(this.toPropertyMap());
-            MDC.setContextMap(contextMap);
+            if (MDC.getCopyOfContextMap() != null) {
+                Map<String, String> contextMap = MDC.getCopyOfContextMap();
+                contextMap.putAll(this.toPropertyMap());
+                MDC.setContextMap(contextMap);
+            } else {
+                MDC.setContextMap(this.toPropertyMap());
+            }
             var body = getBody();
             log.trace(body.equals("") ? "[empty]" : body);
         } catch (IOException e) {
