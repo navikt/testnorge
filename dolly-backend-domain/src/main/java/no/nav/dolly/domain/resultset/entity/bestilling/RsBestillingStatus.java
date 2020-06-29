@@ -78,6 +78,7 @@ public class RsBestillingStatus {
     public static class RsBestilling {
 
         private RsTpsfUtvidetBestilling tpsf;
+        private String importFraTps;
 
         private RsPdldata pdlforvalter;
         private RsDigitalKontaktdata krrstub;

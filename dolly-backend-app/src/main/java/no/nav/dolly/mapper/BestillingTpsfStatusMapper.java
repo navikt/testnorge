@@ -6,6 +6,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.TPSF;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -23,26 +24,27 @@ public final class BestillingTpsfStatusMapper {
 
     private static final String SUCCESS = "OK";
 
-    public static List<RsStatusRapport> buildTpsfStatusMap(List<BestillingProgress> progressList) {
+    public static List<RsStatusRapport> buildTpsfStatusMap(Bestilling bestilling) {
 
         Map<String, Map<String, Set<String>>> errorEnvIdents = new HashMap<>();
 
-        progressList.forEach(progress -> {
-            if (nonNull(progress.getTpsfSuccessEnv())) {
-                newArrayList(progress.getTpsfSuccessEnv().split(",")).forEach(environ ->
-                        checkNUpdateStatus(errorEnvIdents, progress.getIdent(), environ, SUCCESS)
-                );
-            }
-            if (nonNull(progress.getFeil())) {
-                newArrayList(progress.getFeil().split(",")).forEach(error -> {
-                    String[] environErrMsg = error.split(":", 2);
-                    String environ = environErrMsg[0];
-                    String errMsg = environErrMsg.length > 1 ? environErrMsg[1].trim() : "";
-                    checkNUpdateStatus(errorEnvIdents, progress.getIdent(), environ, errMsg);
-                });
-            }
-        });
-
+        if (isBlank(bestilling.getTpsImport())) {
+            bestilling.getProgresser().forEach(progress -> {
+                if (nonNull(progress.getTpsfSuccessEnv())) {
+                    newArrayList(progress.getTpsfSuccessEnv().split(",")).forEach(environ ->
+                            checkNUpdateStatus(errorEnvIdents, progress.getIdent(), environ, SUCCESS)
+                    );
+                }
+                if (nonNull(progress.getFeil())) {
+                    newArrayList(progress.getFeil().split(",")).forEach(error -> {
+                        String[] environErrMsg = error.split(":", 2);
+                        String environ = environErrMsg[0];
+                        String errMsg = environErrMsg.length > 1 ? environErrMsg[1].trim() : "";
+                        checkNUpdateStatus(errorEnvIdents, progress.getIdent(), environ, errMsg);
+                    });
+                }
+            });
+        }
         return errorEnvIdents.isEmpty() ? emptyList() :
                 singletonList(RsStatusRapport.builder().id(TPSF).navn(TPSF.getBeskrivelse())
                         .statuser(errorEnvIdents.entrySet().stream().map(status ->

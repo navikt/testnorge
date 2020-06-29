@@ -30,6 +30,7 @@ import no.nav.dolly.domain.jpa.BestilteKriterier;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.RsDollyImportFraTpsRequest;
 import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregArbeidsforhold;
@@ -219,6 +220,22 @@ public class BestillingService {
                         .userId(getUserPrinciple())
                         .build()
         );
+    }
+
+    @Transactional
+    public Bestilling saveBestilling(Long gruppeId, RsDollyImportFraTpsRequest request) {
+
+        Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
+
+        return saveBestillingToDB(
+                Bestilling.builder()
+                        .gruppe(gruppe)
+                        .miljoer(request.getEnvironment())
+                        .sistOppdatert(now())
+                        .userId(getUserPrinciple())
+                        .antallIdenter(request.getIdenter().size())
+                        .tpsImport(join(",", request.getIdenter()))
+                        .build());
     }
 
     @Transactional
