@@ -30,7 +30,7 @@ public class DokarkivMappingStrategy implements MappingStrategy {
     private static final String ARKIV = "ARKIV";
     private static final String BEHANDLINGSTEMA = "ab0001";
     private static final String AVSENDER_ID = "09071844797";
-    private static final String AVSENDER_NAVN = "Hansen, Per";
+    private static final String AVSENDER_NAVN = "Villstyring, Sedat";
     private static final String FAGSAK_ID = "10695768";
     private static final String FAGSAK_SYSTEM = "AO01";
     private static final String FAGSAK_TYPE = "FAGSAK";
@@ -58,6 +58,12 @@ public class DokarkivMappingStrategy implements MappingStrategy {
                                 .fagsaksystem(FAGSAK_SYSTEM)
                                 .sakstype(FAGSAK_TYPE)
                                 .build());
+                        if (dokarkivRequest.getDokumenter().isEmpty()) {
+                            dokarkivRequest.getDokumenter().add(new DokarkivRequest.Dokument());
+                        }
+                        if (dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().isEmpty()) {
+                            dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().add(new DokarkivRequest.DokumentVariant());
+                        }
                         if (isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getFiltype())) {
                             dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setFiltype(PDFA);
                         }
