@@ -3,6 +3,7 @@ package no.nav.dolly.domain.jpa;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -21,6 +22,7 @@ import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
+import no.nav.dolly.domain.resultset.sykemelding.RsSyntSykemelding;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 
 @Getter
@@ -43,4 +45,5 @@ public class BestilteKriterier {
     private RsInntektsmelding inntektsmelding;
     private RsBregdata brregstub;
     private RsDokarkiv dokarkiv;
+    private RsSyntSykemelding syntsykemelding;
 }

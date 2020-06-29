@@ -14,9 +14,11 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -157,6 +159,7 @@ public class BestillingService {
                                 .inntektsmelding(request.getInntektsmelding())
                                 .brregstub(request.getBrregstub())
                                 .dokarkiv(request.getDokarkiv())
+                                .syntsykemelding(request.getSyntSykemelding())
                                 .build()))
                         .malBestillingNavn(request.getMalBestillingNavn())
                         .userId(getUserPrinciple())
@@ -189,6 +192,7 @@ public class BestillingService {
                                 .inntektsmelding(request.getInntektsmelding())
                                 .brregstub(request.getBrregstub())
                                 .dokarkiv(request.getDokarkiv())
+                                .syntsykemelding(request.getSyntSykemelding())
                                 .build()))
                         .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
                         .malBestillingNavn(request.getMalBestillingNavn())
