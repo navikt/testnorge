@@ -244,16 +244,19 @@ public class DollyBestillingService {
         identer.forEach(ident -> {
             BestillingProgress progress = new BestillingProgress(bestilling.getId(), ident);
             try {
-                tpsfService.importerPersonFraTps(TpsfImportPersonRequest.builder()
+                Person person = tpsfService.importerPersonFraTps(TpsfImportPersonRequest.builder()
                         .miljoe(bestilling.getMiljoer())
                         .ident(ident)
                         .build());
 
                 identService.saveIdentTilGruppe(ident, bestilling.getGruppe());
-                progress.setTpsfSuccessEnv(bestilling.getMiljoer());
+                progress.setTpsImportStatus(SUCCESS);
+
+                TpsPerson tpsPerson = tpsfPersonCache.prepareTpsPersoner(person);
+                gjenopprettNonTpsf(tpsPerson, bestilling, progress);
 
             } catch (RuntimeException e) {
-                progress.setFeil(errorStatusDecoder.decodeRuntimeException(e));
+                progress.setTpsImportStatus(errorStatusDecoder.decodeRuntimeException(e));
             }
             oppdaterProgress(bestilling, progress);
             clearCache();
