@@ -410,9 +410,9 @@ public class VedtakshistorikkService {
             var rettighetRequest = new RettighetTiltaksdeltakelseRequest(tiltaksdeltakelse);
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
-            rettighetRequest.getNyeTiltaksdeltakelse().forEach(rettighet -> {
-                rettighet.setBegrunnelse(BEGRUNNELSE);
-            });
+            rettighetRequest.getNyeTiltaksdeltakelse().forEach(rettighet ->
+                    rettighet.setBegrunnelse(BEGRUNNELSE)
+            );
             rettigheter.add(rettighetRequest);
         }
     }
@@ -452,16 +452,18 @@ public class VedtakshistorikkService {
             for (var deltakelse : tiltaksdeltakelser) {
                 var fraDato = deltakelse.getFraDato();
                 var tilDato = deltakelse.getTilDato();
-                if (fraDato != null && tilDato != null && tilDato.isBefore(LocalDate.now().plusDays(1))) {
+                if (fraDato != null && fraDato.isBefore(LocalDate.now().plusDays(1))) {
+                    if (tilDato != null && tilDato.isBefore(LocalDate.now().plusDays(1))) {
 
-                    var deltakerstatuskode = serviceUtils.velgKodeBasertPaaSannsynlighet(
-                            vedtakMedStatuskoder.get("DELTAKER")).getKode();
+                        var deltakerstatuskode = serviceUtils.velgKodeBasertPaaSannsynlighet(
+                                vedtakMedStatuskoder.get("DELTAKER")).getKode();
 
-                    if(AVSLUTTENDE_DELTAKERSTATUSKODER.contains(deltakerstatuskode)){
-                        var rettighetRequest = rettighetTiltakService.opprettRettighetEndreDeltakerstatusRequest(personident, miljoe,
-                                deltakelse, deltakerstatuskode);
+                        if (AVSLUTTENDE_DELTAKERSTATUSKODER.contains(deltakerstatuskode)) {
+                            var rettighetRequest = rettighetTiltakService.opprettRettighetEndreDeltakerstatusRequest(personident, miljoe,
+                                    deltakelse, deltakerstatuskode);
 
-                        rettigheter.add(rettighetRequest);
+                            rettigheter.add(rettighetRequest);
+                        }
                     }
                 }
             }
