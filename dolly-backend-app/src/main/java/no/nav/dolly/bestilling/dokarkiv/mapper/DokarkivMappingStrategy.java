@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.dokarkiv.mapper;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest.IdType.FNR;
+import static no.nav.dolly.bestilling.dokarkiv.mapper.PdfVedlegg.PDF_VEDLEGG;
 import static no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv.JournalPostType.INNGAAENDE;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -78,7 +79,7 @@ public class DokarkivMappingStrategy implements MappingStrategy {
             dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setVariantformat(ARKIV);
         }
         if (isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getFysiskDokument())) {
-                dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setFysiskDokument(PdfVedlegg.PDF_VEDLEGG);
+                dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setFysiskDokument(PDF_VEDLEGG);
         }
     }
 }
