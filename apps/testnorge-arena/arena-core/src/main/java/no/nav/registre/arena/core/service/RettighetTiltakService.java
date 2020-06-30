@@ -299,13 +299,11 @@ public class RettighetTiltakService {
             endringer.add("TILBUD");
             endringer.add("JATAKK");
         }
-        endringer.add("GJENN");
 
         if (!deltakerstatuskode.equals("GJENN")) {
-            if(ChronoUnit.MONTHS.between(tiltaksdeltakelse.getFraDato(), LocalDate.now()) > 3){
-                endringer.add(deltakerstatuskode);
-            }
+            endringer.add("GJENN");
         }
+        endringer.add(deltakerstatuskode);
 
         return endringer;
     }

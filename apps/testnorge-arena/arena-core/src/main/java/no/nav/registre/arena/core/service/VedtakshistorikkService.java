@@ -20,7 +20,12 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.AapSyntConsumer;
@@ -79,6 +84,10 @@ public class VedtakshistorikkService {
             var tillegg = vedtakshistorikken.getAlleTilleggVedtak();
             var barnetillegg = vedtakshistorikken.getBarnetillegg();
             LocalDate tidligsteDatoBarnetillegg = null;
+
+            if(tiltak.isEmpty()){
+                continue;
+            }
 
             if (!aap.isEmpty()) {
                 tidligsteDato = finnTidligsteDatoAap(aap);
@@ -407,9 +416,6 @@ public class VedtakshistorikkService {
             rettighetRequest.setMiljoe(miljoe);
             rettighetRequest.getNyeTiltaksdeltakelse().forEach(rettighet -> {
                 rettighet.setBegrunnelse(BEGRUNNELSE);
-                rettighet.setTiltakVedtak("J");
-                rettighet.setTiltakYtelse("J");
-                rettighet.setTiltakskode("");
             });
             rettigheter.add(rettighetRequest);
         }
