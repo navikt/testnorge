@@ -1,6 +1,5 @@
 package no.nav.registre.testnorge.synt.sykemelding.consumer;
 
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
@@ -24,7 +23,6 @@ public class OrganisasjonConsumer {
         this.url = url;
     }
 
-    @SneakyThrows
     public OrganisasjonDTO getOrganisasjon(String orgnummer) {
         return new GetOrganisasjonCommand(restTemplate, url, orgnummer, "q1").call();
     }

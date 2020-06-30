@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.common.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.RequestEntity;
 import org.springframework.web.client.RestTemplate;
@@ -20,8 +21,9 @@ public class GetOrganisasjonCommand implements Callable<OrganisasjonDTO> {
     private final String orgnummer;
     private final String miljo;
 
+    @SneakyThrows
     @Override
-    public OrganisasjonDTO call() throws Exception {
+    public OrganisasjonDTO call() {
         log.info("Henter org {}", orgnummer);
         var response = restTemplate.exchange(
                 RequestEntity.get(new URI(url + "/api/v1/organisasjoner/" + orgnummer)).header("miljo", this.miljo).build(),
