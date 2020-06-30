@@ -1,4 +1,4 @@
-package no.nav.dolly.mapper.strategy;
+package no.nav.dolly.mapper;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.emptyList;

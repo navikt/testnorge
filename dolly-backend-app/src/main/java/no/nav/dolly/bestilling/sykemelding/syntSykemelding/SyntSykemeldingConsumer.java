@@ -8,7 +8,6 @@ import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 import java.net.URI;
 import java.util.UUID;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -31,13 +30,13 @@ public class SyntSykemeldingConsumer {
     private final ProvidersProps providersProps;
 
     @Timed(name = "providers", tags = { "operation", "opprett" })
-    public ResponseEntity<HttpStatus> postSyntSykemelding(SyntSykemeldingRequest sykemeldingRequest) {
+    public ResponseEntity<String> postSyntSykemelding(SyntSykemeldingRequest sykemeldingRequest) {
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(providersProps.getSyntSykemelding().getUrl() + SYNT_SYKEMELDING_URL))
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .body(sykemeldingRequest),
-                HttpStatus.class);
+                String.class);
     }
 
     private static String getNavCallId() {

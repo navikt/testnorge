@@ -4,7 +4,6 @@ import static java.util.Objects.nonNull;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +37,7 @@ public class SyntSykemeldingClient implements ClientRegister {
             bestilling.getEnvironments().forEach(environment -> {
 
                 try {
-                    ResponseEntity<HttpStatus> response = syntSykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest);
+                    ResponseEntity<String> response = syntSykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest);
                     if (response.hasBody()) {
                         status.append(',')
                                 .append(environment)

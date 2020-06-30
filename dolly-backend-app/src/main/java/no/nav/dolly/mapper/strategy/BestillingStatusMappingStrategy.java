@@ -11,9 +11,9 @@ import static no.nav.dolly.mapper.BestillingKrrStubStatusMapper.buildKrrStubStat
 import static no.nav.dolly.mapper.BestillingPdlForvalterStatusMapper.buildPdldataStatusMap;
 import static no.nav.dolly.mapper.BestillingPensjonforvalterStatusMapper.buildPensjonforvalterStatusMap;
 import static no.nav.dolly.mapper.BestillingSigrunStubStatusMapper.buildSigrunStubStatusMap;
+import static no.nav.dolly.mapper.BestillingSyntSykemeldingStatusMapper.buildSyntSykemeldingStatusMap;
 import static no.nav.dolly.mapper.BestillingTpsfStatusMapper.buildTpsfStatusMap;
 import static no.nav.dolly.mapper.BestillingUdiStubStatusMapper.buildUdiStubStatusMap;
-import static no.nav.dolly.mapper.strategy.BestillingSyntSykemeldingStatusMapper.buildSyntSykemeldingStatusMap;
 
 import java.util.Arrays;
 import java.util.Iterator;
