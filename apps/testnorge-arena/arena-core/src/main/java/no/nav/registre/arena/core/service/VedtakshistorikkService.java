@@ -409,9 +409,10 @@ public class VedtakshistorikkService {
             var rettighetRequest = new RettighetTiltaksdeltakelseRequest(tiltaksdeltakelse);
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
-            rettighetRequest.getNyeTiltaksdeltakelse().forEach(rettighet ->
-                    rettighet.setBegrunnelse(BEGRUNNELSE)
-            );
+            rettighetRequest.getNyeTiltaksdeltakelse().forEach(rettighet -> {
+                rettighet.setBegrunnelse(BEGRUNNELSE);
+                rettighet.setTiltakYtelse("J");
+            });
             rettigheter.add(rettighetRequest);
         }
     }
