@@ -250,7 +250,7 @@ public class RettighetTiltakService {
 
                 if (!IGNORED_DELTAKERSTATUSKODER.contains(deltakerstatuskode)) {
 
-                    List<String> endringer = getEndringerMedGyldigRekkefoelge(deltakerstatuskode, tiltaksdeltakelse.getTiltakskarakteristikk());
+                    List<String> endringer = getEndringerMedGyldigRekkefoelge(deltakerstatuskode, tiltaksdeltakelse);
 
                     for (var endring : endringer) {
                         var rettighetRequest = opprettRettighetEndreDeltakerstatusRequest(ident, miljoe,
@@ -264,7 +264,7 @@ public class RettighetTiltakService {
         return rettigheter;
     }
 
-    private RettighetEndreDeltakerstatusRequest opprettRettighetEndreDeltakerstatusRequest(
+    public RettighetEndreDeltakerstatusRequest opprettRettighetEndreDeltakerstatusRequest(
             String ident,
             String miljoe,
             NyttVedtakTiltak tiltaksdeltakelse,
@@ -289,13 +289,15 @@ public class RettighetTiltakService {
         return rettighetRequest;
     }
 
-    private List<String> getEndringerMedGyldigRekkefoelge(String deltakerstatuskode, String tiltakskarakteristikk) {
+    public List<String> getEndringerMedGyldigRekkefoelge(String deltakerstatuskode, NyttVedtakTiltak tiltaksdeltakelse) {
+        var tiltakskarakteristikk = tiltaksdeltakelse.getTiltakskarakteristikk();
         List<String> endringer = new ArrayList<>();
 
         if (tiltakskarakteristikk.equals("AMO")) {
             endringer.add("TILBUD");
             endringer.add("JATAKK");
         }
+
         if (!deltakerstatuskode.equals("GJENN")) {
             endringer.add("GJENN");
         }
@@ -426,5 +428,9 @@ public class RettighetTiltakService {
             }
         }
         return utvalgteIdenter;
+    }
+
+    public Map<String, List<KodeMedSannsynlighet>> getVedtakMedStatuskoder(){
+        return vedtakMedStatuskoder;
     }
 }
