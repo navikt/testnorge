@@ -84,7 +84,7 @@ public class VedtakshistorikkService {
             var tillegg = vedtakshistorikken.getAlleTilleggVedtak();
             var barnetillegg = vedtakshistorikken.getBarnetillegg();
             LocalDate tidligsteDatoBarnetillegg = null;
-
+            
             if (!aap.isEmpty()) {
                 tidligsteDato = finnTidligsteDatoAap(aap);
             } else if (!aapType.isEmpty()) {
@@ -450,24 +450,32 @@ public class VedtakshistorikkService {
         var tiltaksdeltakelser = vedtak.getTiltaksdeltakelse();
         if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
             for (var deltakelse : tiltaksdeltakelser) {
-                var fraDato = deltakelse.getFraDato();
-                var tilDato = deltakelse.getTilDato();
-                if (fraDato != null && fraDato.isBefore(LocalDate.now().plusDays(1))) {
-                    if (tilDato != null && tilDato.isBefore(LocalDate.now().plusDays(1))) {
+                if (shouldSetDeltakelseTilFullfoert(deltakelse)) {
+                    var deltakerstatuskode = serviceUtils.velgKodeBasertPaaSannsynlighet(
+                            vedtakMedStatuskoder.get("DELTAKER")).getKode();
 
-                        var deltakerstatuskode = serviceUtils.velgKodeBasertPaaSannsynlighet(
-                                vedtakMedStatuskoder.get("DELTAKER")).getKode();
+                    if (AVSLUTTENDE_DELTAKERSTATUSKODER.contains(deltakerstatuskode)) {
+                        var rettighetRequest = rettighetTiltakService.opprettRettighetEndreDeltakerstatusRequest(personident, miljoe,
+                                deltakelse, deltakerstatuskode);
 
-                        if (AVSLUTTENDE_DELTAKERSTATUSKODER.contains(deltakerstatuskode)) {
-                            var rettighetRequest = rettighetTiltakService.opprettRettighetEndreDeltakerstatusRequest(personident, miljoe,
-                                    deltakelse, deltakerstatuskode);
-
-                            rettigheter.add(rettighetRequest);
-                        }
+                        rettigheter.add(rettighetRequest);
                     }
                 }
             }
         }
+    }
+
+    private boolean shouldSetDeltakelseTilFullfoert(NyttVedtakTiltak tiltaksdeltakelse) {
+        var fraDato = tiltaksdeltakelse.getFraDato();
+        var tilDato = tiltaksdeltakelse.getTilDato();
+
+        if (fraDato == null || tilDato == null) {
+            return false;
+        }
+        if (fraDato.isAfter(LocalDate.now()) || tilDato.isAfter(LocalDate.now())) {
+            return false;
+        }
+        return true;
     }
 
     private void opprettVedtakTiltakspenger(
