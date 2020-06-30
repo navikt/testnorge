@@ -78,7 +78,7 @@ public class DokarkivMappingStrategy implements MappingStrategy {
             dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setVariantformat(ARKIV);
         }
         if (isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getFysiskDokument())) {
-                dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setFysiskDokument(PdfVedlegg.pdfByte64);
+                dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setFysiskDokument(PdfVedlegg.PDFBYTE64);
         }
     }
 }
