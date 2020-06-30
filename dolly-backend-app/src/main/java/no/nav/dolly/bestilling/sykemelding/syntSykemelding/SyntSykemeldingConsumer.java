@@ -2,8 +2,6 @@ package no.nav.dolly.bestilling.sykemelding.syntSykemelding;
 
 import static java.lang.String.format;
 import static no.nav.dolly.domain.CommonKeys.CONSUMER;
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 
 import java.net.URI;
 import java.util.UUID;
@@ -33,8 +31,8 @@ public class SyntSykemeldingConsumer {
     public ResponseEntity<String> postSyntSykemelding(SyntSykemeldingRequest sykemeldingRequest) {
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(providersProps.getSyntSykemelding().getUrl() + SYNT_SYKEMELDING_URL))
-                        .header(HEADER_NAV_CALL_ID, getNavCallId())
-                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                        //.header(HEADER_NAV_CALL_ID, getNavCallId())
+                        //.header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .body(sykemeldingRequest),
                 String.class);
     }
