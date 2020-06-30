@@ -63,7 +63,7 @@ public class VedtakshistorikkService {
     private final RettighetTiltakService rettighetTiltakService;
 
     private static final List<String> AVSLUTTENDE_DELTAKERSTATUSKODER = Arrays.asList("DELAVB", "FULLF");
-    private static final String DELTAKERSTATUS_GJENNOMFOERES = "GJENN";
+    public static final String DELTAKERSTATUS_GJENNOMFOERES = "GJENN";
 
     public Map<String, List<NyttVedtakResponse>> genererVedtakshistorikk(
             Long avspillergruppeId,
