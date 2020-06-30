@@ -50,7 +50,7 @@ public class RettighetTiltakService {
     private final Random rand;
 
     private static final Map<String, List<KodeMedSannsynlighet>> vedtakMedAktitivetskode;
-    protected static final Map<String, List<KodeMedSannsynlighet>> vedtakMedStatuskoder;
+    private static final Map<String, List<KodeMedSannsynlighet>> vedtakMedStatuskoder;
     private static final Map<String, List<String>> deltakerstatuskoderMedAarsakkoder;
 
     static {
@@ -428,5 +428,9 @@ public class RettighetTiltakService {
             }
         }
         return utvalgteIdenter;
+    }
+
+    public Map<String, List<KodeMedSannsynlighet>> getVedtakMedStatuskoder(){
+        return vedtakMedStatuskoder;
     }
 }

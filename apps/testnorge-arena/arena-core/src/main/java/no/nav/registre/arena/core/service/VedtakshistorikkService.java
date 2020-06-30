@@ -11,7 +11,6 @@ import static no.nav.registre.arena.core.service.util.ServiceUtils.MAX_ALDER_AAP
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MAX_ALDER_UNG_UFOER;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_AAP;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_UNG_UFOER;
-import static no.nav.registre.arena.core.service.RettighetTiltakService.vedtakMedStatuskoder;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -84,7 +83,7 @@ public class VedtakshistorikkService {
             var tillegg = vedtakshistorikken.getAlleTilleggVedtak();
             var barnetillegg = vedtakshistorikken.getBarnetillegg();
             LocalDate tidligsteDatoBarnetillegg = null;
-            
+
             if (!aap.isEmpty()) {
                 tidligsteDato = finnTidligsteDatoAap(aap);
             } else if (!aapType.isEmpty()) {
@@ -452,7 +451,7 @@ public class VedtakshistorikkService {
             for (var deltakelse : tiltaksdeltakelser) {
                 if (shouldSetDeltakelseTilFullfoert(deltakelse)) {
                     var deltakerstatuskode = serviceUtils.velgKodeBasertPaaSannsynlighet(
-                            vedtakMedStatuskoder.get("DELTAKER")).getKode();
+                            rettighetTiltakService.getVedtakMedStatuskoder().get("DELTAKER")).getKode();
 
                     if (AVSLUTTENDE_DELTAKERSTATUSKODER.contains(deltakerstatuskode)) {
                         var rettighetRequest = rettighetTiltakService.opprettRettighetEndreDeltakerstatusRequest(personident, miljoe,
