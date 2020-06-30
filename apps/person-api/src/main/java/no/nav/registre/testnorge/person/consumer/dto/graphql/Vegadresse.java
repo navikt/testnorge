@@ -8,7 +8,6 @@ import lombok.Value;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class Vegadresse {
-
     String adressenavn;
     String husnummer;
     String postnummer;

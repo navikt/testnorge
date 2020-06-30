@@ -10,7 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class PdlPerson {
-
     List<Feilmelding> errors;
     Data data;
 }

@@ -10,7 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class HentPerson {
-
     List<Navn> navn;
     List<Bostedsadresse> bostedsadresse;
     List<Folkeregisteridentifikator> folkeregisteridentifikator;

@@ -8,6 +8,5 @@ import lombok.Value;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class Bostedsadresse {
-
     Vegadresse vegadresse;
 }

@@ -8,7 +8,6 @@ import lombok.Value;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class Folkeregisteridentifikator {
-
     String identifikasjonsnummer;
     String status;
     String type;

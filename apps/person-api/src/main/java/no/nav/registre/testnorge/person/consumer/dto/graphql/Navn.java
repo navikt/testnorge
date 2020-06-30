@@ -8,7 +8,6 @@ import lombok.Value;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class Navn {
-
     String fornavn;
     String mellomnavn;
     String etternavn;
