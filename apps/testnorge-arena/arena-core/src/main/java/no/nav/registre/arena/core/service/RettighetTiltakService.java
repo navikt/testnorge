@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -50,7 +52,7 @@ public class RettighetTiltakService {
     private final Random rand;
 
     private static final Map<String, List<KodeMedSannsynlighet>> vedtakMedAktitivetskode;
-    private static final Map<String, List<KodeMedSannsynlighet>> vedtakMedStatuskoder;
+    public static final Map<String, List<KodeMedSannsynlighet>> vedtakMedStatuskoder;
     private static final Map<String, List<String>> deltakerstatuskoderMedAarsakkoder;
 
     static {
@@ -250,7 +252,7 @@ public class RettighetTiltakService {
 
                 if (!IGNORED_DELTAKERSTATUSKODER.contains(deltakerstatuskode)) {
 
-                    List<String> endringer = getEndringerMedGyldigRekkefoelge(deltakerstatuskode, tiltaksdeltakelse.getTiltakskarakteristikk());
+                    List<String> endringer = getEndringerMedGyldigRekkefoelge(deltakerstatuskode, tiltaksdeltakelse);
 
                     for (var endring : endringer) {
                         var rettighetRequest = opprettRettighetEndreDeltakerstatusRequest(ident, miljoe,
@@ -264,7 +266,7 @@ public class RettighetTiltakService {
         return rettigheter;
     }
 
-    private RettighetEndreDeltakerstatusRequest opprettRettighetEndreDeltakerstatusRequest(
+    public RettighetEndreDeltakerstatusRequest opprettRettighetEndreDeltakerstatusRequest(
             String ident,
             String miljoe,
             NyttVedtakTiltak tiltaksdeltakelse,
@@ -289,17 +291,21 @@ public class RettighetTiltakService {
         return rettighetRequest;
     }
 
-    private List<String> getEndringerMedGyldigRekkefoelge(String deltakerstatuskode, String tiltakskarakteristikk) {
+    public List<String> getEndringerMedGyldigRekkefoelge(String deltakerstatuskode, NyttVedtakTiltak tiltaksdeltakelse) {
+        var tiltakskarakteristikk = tiltaksdeltakelse.getTiltakskarakteristikk();
         List<String> endringer = new ArrayList<>();
 
         if (tiltakskarakteristikk.equals("AMO")) {
             endringer.add("TILBUD");
             endringer.add("JATAKK");
         }
+        endringer.add("GJENN");
+
         if (!deltakerstatuskode.equals("GJENN")) {
-            endringer.add("GJENN");
+            if(ChronoUnit.MONTHS.between(tiltaksdeltakelse.getFraDato(), LocalDate.now()) > 3){
+                endringer.add(deltakerstatuskode);
+            }
         }
-        endringer.add(deltakerstatuskode);
 
         return endringer;
     }
