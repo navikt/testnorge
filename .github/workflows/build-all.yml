@@ -18,8 +18,14 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.11
-      - name: Build with Maven
+      - name: Install
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: mvn -T 5 --settings maven-settings.xml -B package --file pom.xml -Dmaven.artifact.threads=5
+        run: mvn -T 10 --settings maven-settings.xml install
+      - name: SonarCloud
+        env:
+          GITHUB_USERNAME: token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_LOGIN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn --settings maven-settings.xml sonar:sonar
