@@ -29,7 +29,7 @@ import no.nav.registre.aaregstub.provider.rs.AaregstubController;
 import no.nav.registre.aaregstub.repository.ArbeidsforholdRepository;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @TestPropertySource(locations = "classpath:application-test.properties")
 public class ArbeidsforholdCompTest {

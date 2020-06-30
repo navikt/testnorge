@@ -34,7 +34,7 @@ import no.nav.registre.sam.database.TSamVedtakRepository;
 import no.nav.registre.sam.service.SyntetiseringService;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @TestPropertySource(locations = "classpath:application-test.properties")
 public class SamordningCompTest {
