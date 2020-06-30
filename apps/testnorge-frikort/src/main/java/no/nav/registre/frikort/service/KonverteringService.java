@@ -7,11 +7,15 @@ import org.springframework.stereotype.Service;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.StringWriter;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import no.nav.registre.frikort.consumer.rs.response.SyntFrikortResponse;
 import no.nav.registre.frikort.domain.xml.Borger;
@@ -28,6 +32,7 @@ public class KonverteringService {
 
     private final Marshaller marshaller;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH.mm.ss,SSSSSS");
+    private final Random rand;
 
     public List<String> konverterEgenandelerTilXmlString(Map<String, List<SyntFrikortResponse>> egenandeler) throws JAXBException {
         try {
@@ -75,7 +80,7 @@ public class KonverteringService {
         var borger = Borger.builder().borgerid(id).build();
 
         var egenandel = Egenandel.builder()
-                .betaltEgenandel(Boolean.parseBoolean(res.getBetalt()))
+                .betaltEgenandel(konverterTilBoolean(res.getBetalt()))
                 .borger(borger)
                 .datoMottatt(LocalDateTime.parse(res.getDato_mottatt(), formatter))
                 .datoTjeneste(LocalDateTime.parse(res.getDatotjeneste(), formatter))
@@ -84,6 +89,8 @@ public class KonverteringService {
                 .egenandelskode(res.getEgenandelskode())
                 .enkeltregningsstatus(res.getEnkeltregningsstatuskode())
                 .build();
+
+        settGyldigeDatoer(egenandel);
 
         egenandelListe.add(egenandel);
 
@@ -94,12 +101,14 @@ public class KonverteringService {
             SyntFrikortResponse res,
             EgenandelListe listeAvEgenandeler
     ) {
-        List<Samhandler> samhandlerListe = new ArrayList<>();
+        var samhandlerListe = new ArrayList<Samhandler>();
 
         var samhandler = Samhandler.builder()
                 .type(res.getSamhandlertypekode())
                 .innsendingstype(res.getInnsendingstypekode())
                 .listeAvEgenandeler(listeAvEgenandeler)
+                .datoMottattEkstern(LocalDate.now().atStartOfDay())
+                .datoGenerert(LocalDate.now().atStartOfDay())
                 .build();
         samhandlerListe.add(samhandler);
 
@@ -113,5 +122,24 @@ public class KonverteringService {
         marshaller.marshal(melding, sw);
 
         return sw.toString();
+    }
+
+    private void settGyldigeDatoer(Egenandel egenandel) {
+        try {
+            var datoMottatt = LocalDateTime.parse(egenandel.getDatoMottatt());
+            var datoTjeneste = LocalDateTime.parse(egenandel.getDatoTjeneste());
+            if (ChronoUnit.WEEKS.between(datoMottatt, LocalDateTime.now()) > 12) {
+                datoMottatt = LocalDateTime.now().minusWeeks(rand.nextInt(6)).minusWeeks(1);
+                datoTjeneste = datoMottatt.minusDays(rand.nextInt(7));
+            }
+            egenandel.setDatoMottatt(datoMottatt);
+            egenandel.setDatoTjeneste(datoTjeneste);
+        } catch (DateTimeParseException e) {
+            log.error("Kunne ikke oppdatere datofelt i syntetisk egenmelding", e);
+        }
+    }
+
+    private boolean konverterTilBoolean(String value) {
+        return "1".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value);
     }
 }

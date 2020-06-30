@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import java.util.Random;
 
 import no.nav.registere.testnorge.core.ApplicationCoreConfig;
 import no.nav.registre.frikort.domain.xml.Egenandelsmelding;
@@ -39,6 +40,11 @@ public class AppConfig {
         marshaller.setProperty(Marshaller.JAXB_ENCODING, "ISO-8859-1");
 
         return marshaller;
+    }
+
+    @Bean
+    public Random rand() {
+        return new Random();
     }
 
     @Bean
