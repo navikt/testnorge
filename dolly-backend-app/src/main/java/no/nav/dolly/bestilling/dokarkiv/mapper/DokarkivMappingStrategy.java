@@ -69,11 +69,13 @@ public class DokarkivMappingStrategy implements MappingStrategy {
     }
 
     private void fyllDokarkivDokument(RsDokarkiv dokarkiv, DokarkivRequest dokarkivRequest) {
-        if (dokarkivRequest.getDokumenter().isEmpty()) {
+        if (dokarkiv.getDokumenter().isEmpty()) {
             dokarkivRequest.getDokumenter().add(new DokarkivRequest.Dokument());
+            dokarkiv.getDokumenter().add(new RsDokarkiv.Dokument());
         }
-        if (dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().isEmpty()) {
+        if (dokarkiv.getDokumenter().get(0).getDokumentvarianter().isEmpty()) {
             dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().add(new DokarkivRequest.DokumentVariant());
+            dokarkiv.getDokumenter().get(0).getDokumentvarianter().add(new RsDokarkiv.DokumentVariant());
         }
         if (isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getFiltype())) {
             dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setFiltype(PDFA);
