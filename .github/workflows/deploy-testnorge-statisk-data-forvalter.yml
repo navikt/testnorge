@@ -5,7 +5,6 @@ on:
     branches: master
     paths:
       - apps/testnorge-statisk-data-forvalter/**
-      - libs/testnorge-core/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/statisk-data-forvalter:${{ github.sha }}

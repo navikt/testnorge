@@ -5,7 +5,6 @@ on:
     branches: master
     paths:
       - apps/person-api/**
-      - libs/testnorge-core/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/person-api:${{ github.sha }}

@@ -6,9 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 @Slf4j
-@EnableAutoConfiguration(exclude = {
-
-})
 @Profile("dev")
 @Configuration
 public class DevConfig {

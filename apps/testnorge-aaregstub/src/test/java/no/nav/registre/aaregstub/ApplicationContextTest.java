@@ -1,4 +1,4 @@
-package no.nav.registre.aaregstub.testnorge;
+package no.nav.registre.aaregstub;
 
 
 import org.junit.Test;
@@ -9,7 +9,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application-test.properties")
 public class ApplicationContextTest {
 

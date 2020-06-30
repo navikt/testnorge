@@ -29,7 +29,7 @@ import no.nav.registre.sdforvalter.database.repository.TpsIdenterRepository;
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
 @TestPropertySource(
