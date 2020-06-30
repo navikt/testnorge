@@ -471,10 +471,7 @@ public class VedtakshistorikkService {
         if (fraDato == null || tilDato == null) {
             return false;
         }
-        if (fraDato.isAfter(LocalDate.now()) || tilDato.isAfter(LocalDate.now())) {
-            return false;
-        }
-        return true;
+        return fraDato.isBefore(LocalDate.now().plusDays(1)) && tilDato.isBefore(LocalDate.now().plusDays(1));
     }
 
     private void opprettVedtakTiltakspenger(
