@@ -12,18 +12,19 @@ import no.nav.registre.testnorge.dto.sykemelding.v1.SykemeldingDTO;
 import no.nav.registre.testnorge.sykemelding.consumer.SyfoConsumer;
 import no.nav.registre.testnorge.sykemelding.domain.ApplicationInfo;
 import no.nav.registre.testnorge.sykemelding.domain.Sykemelding;
+import no.nav.registre.testnorge.sykemelding.service.SykemeldingService;
 
 @RestController
 @RequestMapping("/api/v1/sykemeldinger")
 @RequiredArgsConstructor
 public class SykemeldingController {
 
-    private final SyfoConsumer syfoConsumer;
+    private final SykemeldingService service;
     private final ApplicationInfo applicationInfo;
 
     @PostMapping
     public ResponseEntity<HttpStatus> create(@RequestBody SykemeldingDTO dto) {
-        syfoConsumer.send(new Sykemelding(dto, applicationInfo));
+        service.send(new Sykemelding(dto, applicationInfo));
         return ResponseEntity.ok().build();
     }
 }

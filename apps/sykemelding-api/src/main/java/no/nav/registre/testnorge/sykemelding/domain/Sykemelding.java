@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 
 import javax.xml.datatype.DatatypeFactory;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.GregorianCalendar;
@@ -29,6 +30,9 @@ import no.nav.registre.testnorge.sykemelding.util.StaticResourceLoader;
 
 public class Sykemelding {
     private final XMLEIFellesformat fellesformat;
+    private final LocalDate fom;
+    private final LocalDate tom;
+    private final String ident;
 
     @SneakyThrows
     public Sykemelding(SykemeldingDTO dto, ApplicationInfo applicationInfo) {
@@ -43,6 +47,10 @@ public class Sykemelding {
         updatePatient(head.getMsgInfo().getPatient(), dto.getPasient());
         var dokument = new Dokument(dto, applicationInfo);
         head.getDocument().get(0).getRefDoc().getContent().getAny().set(0, dokument.getXmlObject());
+
+        fom = dokument.getFom();
+        tom = dokument.getTom();
+        ident = dto.getPasient().getIdent();
 
         var xmlMottakenhetBlokk = getXMLMottakenhetBlokk();
         xmlMottakenhetBlokk.setEdiLoggId(UUID.randomUUID().toString());
@@ -74,7 +82,6 @@ public class Sykemelding {
             address.setCity(adresse.getBy());
         }
     }
-
 
     private void updateOrganisation(XMLOrganisation organisation, OrganisasjonDTO dto, LegeDTO legeDTO) {
         organisation.setOrganisationName(dto.getNavn());
@@ -138,6 +145,17 @@ public class Sykemelding {
         boolean filter(Object value);
     }
 
+    public LocalDate getFom() {
+        return fom;
+    }
+
+    public LocalDate getTom() {
+        return tom;
+    }
+
+    public String getIdent() {
+        return ident;
+    }
 
     public String toXml() {
         return JAXBSykemeldingConverter.getInstance().convertToXml(fellesformat);
