@@ -28,7 +28,7 @@ import no.nav.registre.ereg.config.TestConfig;
 import no.nav.registre.ereg.provider.rs.request.EregDataRequest;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = TestConfig.class)
+@SpringBootTest(classes = TestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
 @TestPropertySource(
