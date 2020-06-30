@@ -74,6 +74,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .dokarkiv(bestillingRequest.getDokarkiv())
                                 .tpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()))
                                 .importFraTps(bestilling.getTpsImport())
+                                .kildeMiljoe(bestilling.getKildeMiljoe())
                                 .build());
                     }
                 })

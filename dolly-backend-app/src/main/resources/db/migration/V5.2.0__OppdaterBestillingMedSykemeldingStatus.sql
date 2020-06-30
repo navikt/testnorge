@@ -3,6 +3,6 @@
 -----------------------------
 ALTER TABLE T_BESTILLING_PROGRESS
     ADD (
-        SYNT_SYKEMELDING_STATUS VARCHAR2(500)
+        SYKEMELDING_STATUS VARCHAR2(500)
         );
 
