@@ -1,8 +1,13 @@
 package no.nav.dolly.bestilling.dokarkiv;
 
+import static java.lang.String.format;
+import static no.nav.dolly.domain.CommonKeys.CONSUMER;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.net.URI;
+import java.util.UUID;
 
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -33,10 +38,20 @@ public class DokarkivConsumer {
 
     @Timed(name = "providers", tags = { "operation", "dokarkiv-opprett" })
     public ResponseEntity<DokarkivResponse> postDokarkiv(String environment, DokarkivRequest dokarkivRequest) {
+
+        String callId = getNavCallId();
+        log.info("Dokarkiv melding sendt, callId: {}, consumerId: {}, miljø: {}", callId, CONSUMER, environment);
+
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(providersProps.getDokarkiv().getUrl().replace("$", environment) + DOKARKIV_URL + FORSOEK_FERDIGSTILL))
                         .header(AUTHORIZATION, stsOidcService.getIdToken(environment.contains(PREPROD_ENV) ? PREPROD_ENV : TEST_ENV))
+                        .header(HEADER_NAV_CALL_ID, callId)
+                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .body(dokarkivRequest),
                 DokarkivResponse.class);
+    }
+
+    private static String getNavCallId() {
+        return format("%s %s", CONSUMER, UUID.randomUUID().toString());
     }
 }

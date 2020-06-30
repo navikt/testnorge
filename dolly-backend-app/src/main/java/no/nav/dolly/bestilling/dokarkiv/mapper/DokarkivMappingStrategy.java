@@ -2,14 +2,9 @@ package no.nav.dolly.bestilling.dokarkiv.mapper;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest.IdType.FNR;
+import static no.nav.dolly.bestilling.dokarkiv.mapper.PdfVedlegg.PDF_VEDLEGG;
 import static no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv.JournalPostType.INNGAAENDE;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Base64;
 
 import org.springframework.stereotype.Component;
 
@@ -84,13 +79,7 @@ public class DokarkivMappingStrategy implements MappingStrategy {
             dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setVariantformat(ARKIV);
         }
         if (isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getFysiskDokument())) {
-            Path pdfPath = Paths.get("dolly-backend-app/src/main/resources/dokarkiv/testpdf.pdf");
-            try {
-                byte[] pdfByteArray = Files.readAllBytes(pdfPath);
-                dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setFysiskDokument(Base64.getEncoder().encodeToString(pdfByteArray));
-            } catch (IOException e) {
-                log.error("Klarte ikke å hente test PDF: ", e);
-            }
+                dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setFysiskDokument(PDF_VEDLEGG);
         }
     }
 }
