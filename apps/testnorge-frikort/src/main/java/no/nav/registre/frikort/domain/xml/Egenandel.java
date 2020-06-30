@@ -3,26 +3,27 @@ package no.nav.registre.frikort.domain.xml;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.xml.bind.annotation.XmlElement;
 import java.time.LocalDateTime;
 
-@NoArgsConstructor(force = true)
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Egenandel {
 
-    private final String egenandelskode;
-    private final long enkeltregningsid = 1234567890;
-    private final String enkeltregningsstatus;
-    private final int enkeltregningsnr = 22396;
-    private final double egenandelsats;
-    private final double egenandelsbelop;
-    private final LocalDateTime datoTjeneste;
-    private final LocalDateTime datoMottatt;
-    private final boolean betaltEgenandel;
-    private final Borger borger;
-
+    private String egenandelskode;
+    private long enkeltregningsid = 1234567890;
+    private String enkeltregningsstatus;
+    private int enkeltregningsnr = 22396;
+    private double egenandelsats;
+    private double egenandelsbelop;
+    private LocalDateTime datoTjeneste;
+    private LocalDateTime datoMottatt;
+    private boolean betaltEgenandel;
+    private Borger borger;
 
     @XmlElement
     public String getEgenandelskode() {
@@ -30,7 +31,7 @@ public class Egenandel {
     }
 
     @XmlElement
-    public double getEgenandelsats(){
+    public double getEgenandelsats() {
         return egenandelsats;
     }
 
