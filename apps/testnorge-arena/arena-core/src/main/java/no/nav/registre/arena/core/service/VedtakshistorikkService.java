@@ -85,10 +85,6 @@ public class VedtakshistorikkService {
             var barnetillegg = vedtakshistorikken.getBarnetillegg();
             LocalDate tidligsteDatoBarnetillegg = null;
 
-            if(tiltak.isEmpty()){
-                continue;
-            }
-
             if (!aap.isEmpty()) {
                 tidligsteDato = finnTidligsteDatoAap(aap);
             } else if (!aapType.isEmpty()) {
