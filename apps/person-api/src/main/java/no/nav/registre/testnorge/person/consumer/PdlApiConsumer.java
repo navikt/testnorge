@@ -7,8 +7,12 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.stream.Collectors;
+
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.person.consumer.command.GetPersonCommand;
+import no.nav.registre.testnorge.person.consumer.dto.graphql.Feilmelding;
+import no.nav.registre.testnorge.person.consumer.dto.graphql.PdlPerson;
 import no.nav.registre.testnorge.person.domain.Person;
 import no.nav.registre.testnorge.person.service.StsOidcTokenService;
 
@@ -37,6 +41,22 @@ public class PdlApiConsumer {
     public Person getPerson(String ident) {
         String token = tokenService.getIdToken();
 
-        return new Person(new GetPersonCommand(restTemplate, personforvalterUrl, ident, token, mapper).call());
+        PdlPerson pdlPerson = new GetPersonCommand(restTemplate, personforvalterUrl, ident, token, mapper).call();
+
+        if (pdlPerson.getErrors().isEmpty()) {
+            return new Person(pdlPerson);
+        }
+
+        if (pdlPerson.getErrors()
+                .stream()
+                .anyMatch(value -> value.getMessage().equals("Fant ikke person"))) {
+            return null;
+        }
+
+        log.error("Finner ikke person i pdl: {}", pdlPerson.getErrors()
+                .stream()
+                .map(Feilmelding::getMessage)
+                .collect(Collectors.joining(", ")));
+        throw new RuntimeException("Feil ved henting av pdl-personer");
     }
 }
