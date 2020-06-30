@@ -11,7 +11,7 @@ import static no.nav.dolly.mapper.BestillingKrrStubStatusMapper.buildKrrStubStat
 import static no.nav.dolly.mapper.BestillingPdlForvalterStatusMapper.buildPdldataStatusMap;
 import static no.nav.dolly.mapper.BestillingPensjonforvalterStatusMapper.buildPensjonforvalterStatusMap;
 import static no.nav.dolly.mapper.BestillingSigrunStubStatusMapper.buildSigrunStubStatusMap;
-import static no.nav.dolly.mapper.BestillingSyntSykemeldingStatusMapper.buildSyntSykemeldingStatusMap;
+import static no.nav.dolly.mapper.BestillingSykemeldingStatusMapper.buildSykemeldingStatusMap;
 import static no.nav.dolly.mapper.BestillingTpsfStatusMapper.buildTpsfStatusMap;
 import static no.nav.dolly.mapper.BestillingUdiStubStatusMapper.buildUdiStubStatusMap;
 
@@ -70,7 +70,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildInntektsmeldingStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildBrregStubStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildDokarkivStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildSyntSykemeldingStatusMap(bestilling.getProgresser()));
+                        bestillingStatus.getStatus().addAll(buildSykemeldingStatusMap(bestilling.getProgresser()));
                         bestillingStatus.setBestilling(RsBestillingStatus.RsBestilling.builder()
                                 .pdlforvalter(bestillingRequest.getPdlforvalter())
                                 .aareg(bestillingRequest.getAareg())
@@ -84,7 +84,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .inntektsmelding(bestillingRequest.getInntektsmelding())
                                 .brregstub(bestillingRequest.getBrregstub())
                                 .dokarkiv(bestillingRequest.getDokarkiv())
-                                .syntSykemelding(bestillingRequest.getSyntSykemelding())
+                                .syntSykemelding(bestillingRequest.getSykemelding())
                                 .tpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()))
                                 .build());
                     }

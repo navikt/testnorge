@@ -27,7 +27,7 @@ public enum SystemTyper {
     INNTKMELD("Inntektsmelding (ALTINN/JOARK)"),
     BRREGSTUB("Brønnøysundregistrene (BRREGSTUB)"),
     DOKARKIV("Dokumentarkiv (JOARK)"),
-    SYNT_SYKEMELDING("Testnorge Synt Sykemelding");
+    SYKEMELDING("Testnorge Synt Sykemelding");
 
     SystemTyper(String beskrivelse) {
         this.beskrivelse = beskrivelse;

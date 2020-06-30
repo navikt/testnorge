@@ -78,8 +78,8 @@ public class BestillingProgress {
     @Column(name = "DOKARKIV_STATUS")
     private String dokarkivStatus;
 
-    @Column(name = "SYNT_SYKEMELDING_STATUS")
-    private String syntSykemeldingStatus;
+    @Column(name = "SYKEMELDING_STATUS")
+    private String sykemeldingStatus;
 
     private String feil;
 

@@ -24,7 +24,7 @@ import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
-import no.nav.dolly.domain.resultset.sykemelding.RsSyntSykemelding;
+import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 
 @Getter
@@ -111,7 +111,7 @@ public class RsDollyBestilling {
     @ApiModelProperty(
             position = 14
     )
-    private RsSyntSykemelding syntSykemelding;
+    private RsSykemelding sykemelding;
 
     public List<RsAaregArbeidsforhold> getAareg() {
         if (isNull(aareg)) {
