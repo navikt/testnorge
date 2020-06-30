@@ -92,6 +92,6 @@ public class RsBestillingStatus {
         private RsInntektsmelding inntektsmelding;
         private RsBregdata brregstub;
         private RsDokarkiv dokarkiv;
-        private RsSykemelding syntSykemelding;
+        private RsSykemelding sykemelding;
     }
 }

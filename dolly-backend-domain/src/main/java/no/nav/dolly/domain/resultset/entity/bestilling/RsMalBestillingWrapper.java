@@ -84,6 +84,6 @@ public class RsMalBestillingWrapper {
         private PensjonData pensjonforvalter;
         private RsBregdata brregstub;
         private RsDokarkiv dokarkiv;
-        private RsSykemelding syntSykemelding;
+        private RsSykemelding sykemelding;
     }
 }

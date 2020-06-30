@@ -84,7 +84,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .inntektsmelding(bestillingRequest.getInntektsmelding())
                                 .brregstub(bestillingRequest.getBrregstub())
                                 .dokarkiv(bestillingRequest.getDokarkiv())
-                                .syntSykemelding(bestillingRequest.getSykemelding())
+                                .sykemelding(bestillingRequest.getSykemelding())
                                 .tpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()))
                                 .build());
                     }
