@@ -49,7 +49,7 @@ export const PersonVisning = ({
 				liste={InntektsmeldingVisning.filterValues(bestillingsListe)}
 				ident={ident.ident}
 			/>
-			<DokarkivVisning data={DokarkivVisning.filterValues(bestillingsListe)} ident={ident.ident} />
+
 			<BrregVisning data={data.brregstub} loading={loading.brregstub} />
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
 			<InstVisning data={data.instdata} loading={loading.instdata} />
@@ -62,6 +62,7 @@ export const PersonVisning = ({
 				data={UdiVisning.filterValues(data.udistub, bestilling.bestilling.udistub)}
 				loading={loading.udistub}
 			/>
+			<DokarkivVisning data={DokarkivVisning.filterValues(bestillingsListe)} ident={ident.ident} />
 			<TidligereBestillinger ids={ident.bestillingId} />
 			<BeskrivelseConnector ident={ident} iLaastGruppe={iLaastGruppe} />
 			<div className="person-visning_actions">

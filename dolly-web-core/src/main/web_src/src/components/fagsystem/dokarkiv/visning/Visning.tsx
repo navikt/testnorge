@@ -27,19 +27,22 @@ type Bestilling = {
 
 export const DokarkivVisning = ({ data, ident }: DokarkivVisning) => {
 	// Viser foreløpig bestillingsdata
-	if (!data || data.length < 1 || (data.length === 1 && !data[0])) return null
-	const dokument = data[0]
+	if (!data || data.length < 1 || !data[0]) return null
 
 	return (
 		<div>
 			<SubOverskrift label="Dokumenter" iconKind="dokarkiv" />
-			<div className="person-visning_content">
-				<TitleValue title="Kanal" value={dokument.kanal} />
-				<TitleValue title="Brevkode" value={dokument.dokumenter[0].brevkode} />
-				<TitleValue title="Tittel" value={dokument.dokumenter[0].tittel} />
-				<TitleValue title="Tema" value={dokument.tema} />
-				<TitleValue title="Journalførende enhet" value={dokument.journalfoerendeEnhet} />
-			</div>
+			{data.map((dokument, idx) => {
+				return (
+					<div className="person-visning_content" key={idx}>
+						<TitleValue title="Kanal" value={dokument.kanal} />
+						<TitleValue title="Brevkode" value={dokument.dokumenter[0].brevkode} />
+						<TitleValue title="Tittel" value={dokument.dokumenter[0].tittel} />
+						<TitleValue title="Tema" value={dokument.tema} />
+						<TitleValue title="Journalførende enhet" value={dokument.journalfoerendeEnhet} />
+					</div>
+				)
+			})}
 			<JournalpostidVisning system="DOKARKIV" ident={ident} />
 		</div>
 	)

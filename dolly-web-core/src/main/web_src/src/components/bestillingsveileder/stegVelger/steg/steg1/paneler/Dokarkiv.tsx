@@ -9,7 +9,6 @@ export const DokarkivPanel = ({ stateModifier }: any) => {
 		// @ts-ignore
 		<Panel
 			heading={DokarkivPanel.heading}
-			// informasjonstekst={infoTekst}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="dokarkiv"

@@ -14,6 +14,13 @@ interface DokarkivForm {
 	formikBag: FormikProps<{}>
 }
 
+type Skjema = {
+	data: string
+	label: string
+	lowercaseLabel: string
+	value: string
+}
+
 enum Kodeverk {
 	TEMA = 'Tema',
 	NAVSKJEMA = 'NAVSkjema'
@@ -22,9 +29,9 @@ enum Kodeverk {
 const dokarkivAttributt = 'dokarkiv'
 
 export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
-	const handleSkjemaChange = (v: React.ChangeEvent<any>) => {
-		formikBag.setFieldValue('dokarkiv.tittel', v.data)
-		formikBag.setFieldValue('dokarkiv.dokumenter[0].tittel', v.data)
+	const handleSkjemaChange = (skjema: Skjema) => {
+		formikBag.setFieldValue('dokarkiv.tittel', skjema.data)
+		formikBag.setFieldValue('dokarkiv.dokumenter[0].tittel', skjema.data)
 	}
 
 	return (
@@ -34,6 +41,7 @@ export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 				heading="Dokumenter"
 				hasErrors={panelError(formikBag, dokarkivAttributt)}
 				iconType="dokarkiv"
+				// @ts-ignore
 				startOpen={() => erForste(formikBag.values, [dokarkivAttributt])}
 			>
 				<Kategori title="Oppretting av skannet dokument" vis={dokarkivAttributt}>
