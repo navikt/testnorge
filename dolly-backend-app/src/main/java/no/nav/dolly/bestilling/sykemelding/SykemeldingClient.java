@@ -45,8 +45,9 @@ public class SykemeldingClient implements ClientRegister {
             StringBuilder status = new StringBuilder();
             try {
                 SyntSykemeldingRequest syntSykemeldingRequest = mapperFacade.map(bestilling.getSykemelding().getSyntSykemelding(), SyntSykemeldingRequest.class);
+                syntSykemeldingRequest.setIdent(tpsPerson.getHovedperson());
 
-                if (!transaksjonMappingService.existAlready(SYKEMELDING, tpsPerson.getHovedperson() ) || isOpprettEndre) {
+                if (!transaksjonMappingService.existAlready(SYKEMELDING, tpsPerson.getHovedperson(), null) || isOpprettEndre) {
 
                     ResponseEntity<String> response = sykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest);
                     if (response.hasBody()) {
@@ -60,7 +61,7 @@ public class SykemeldingClient implements ClientRegister {
 
                 status.append(errorStatusDecoder.decodeRuntimeException(e));
             }
-            progress.setSykemeldingStatus(status.toString());
+            progress.setSykemeldingStatus(status.toString().replace("=",":"));
         }
     }
 
