@@ -90,7 +90,7 @@ public class KonverteringService {
                 .enkeltregningsstatus(res.getEnkeltregningsstatuskode())
                 .build();
 
-        settGyldigeDatoer(egenandel);
+        validerEgenandel(egenandel);
 
         egenandelListe.add(egenandel);
 
@@ -124,6 +124,11 @@ public class KonverteringService {
         return sw.toString();
     }
 
+    private void validerEgenandel(Egenandel egenandel) {
+        settGyldigeDatoer(egenandel);
+        settGyldigEgenandelskodeOgBeloep(egenandel);
+    }
+
     private void settGyldigeDatoer(Egenandel egenandel) {
         try {
             var datoMottatt = LocalDateTime.parse(egenandel.getDatoMottatt());
@@ -136,6 +141,16 @@ public class KonverteringService {
             egenandel.setDatoTjeneste(datoTjeneste);
         } catch (DateTimeParseException e) {
             log.error("Kunne ikke oppdatere datofelt i syntetisk egenmelding", e);
+        }
+    }
+
+    private void settGyldigEgenandelskodeOgBeloep(Egenandel egenandel) {
+        String egenandelskode = egenandel.getEgenandelskode();
+        if (!"C".equals(egenandelskode)) {
+            egenandel.setEgenandelsbelop(0);
+        }
+        if(!"F".equals(egenandelskode)) {
+            egenandel.setEgenandelsats(0);
         }
     }
 
