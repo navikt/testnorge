@@ -21,8 +21,6 @@ import no.nav.dolly.domain.resultset.RsStatusRapport;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingImportFraTpsStatusMapper {
 
-    private static final String OK_STATUS = "OK";
-
     public static List<RsStatusRapport> buildImportFraTpsStatusMap(Bestilling bestilling) {
 
         //  status     miljø       ident
@@ -30,9 +28,9 @@ public final class BestillingImportFraTpsStatusMapper {
 
         if (isNotBlank(bestilling.getTpsImport())) {
             bestilling.getProgresser().forEach(progress -> {
-                    String status = isNotBlank(progress.getTpsfSuccessEnv()) ? OK_STATUS :
-                            progress.getFeil().replaceAll("\\d{11}", "").replace("  ", " ");
-                    String environ = bestilling.getMiljoer();
+                    String status =
+                            progress.getTpsImportStatus().replaceAll("\\d{11}", "").replace("  ", " ");
+                    String environ = bestilling.getKildeMiljoe();
                     checkAndUpdateStatus(statusEnvIdents, progress.getIdent(), environ, status);
             });
         }

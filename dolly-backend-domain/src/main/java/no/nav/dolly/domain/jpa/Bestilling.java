@@ -93,6 +93,9 @@ public class Bestilling {
     @Column(name = "TPS_IMPORT")
     private String tpsImport;
 
+    @Column(name = "KILDE_MILJOE")
+    private String kildeMiljoe;
+
     @OneToMany(mappedBy = "bestillingId", fetch = FetchType.LAZY)
     private List<BestillingProgress> progresser;
 

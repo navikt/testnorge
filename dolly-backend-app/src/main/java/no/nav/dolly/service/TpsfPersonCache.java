@@ -23,7 +23,7 @@ public class TpsfPersonCache {
 
     private final TpsfService tpsfService;
 
-    public void fetchIfEmpty(TpsPerson tpsPerson) {
+    public TpsPerson fetchIfEmpty(TpsPerson tpsPerson) {
 
         List<String> tpsfIdenter = new ArrayList<>();
         Stream.of(singletonList(tpsPerson.getHovedperson()), tpsPerson.getPartnere(), tpsPerson.getBarn()).forEach(tpsfIdenter::addAll);
@@ -37,6 +37,8 @@ public class TpsfPersonCache {
         if (notFound.get()) {
             tpsPerson.setPersondetaljer(tpsfService.hentTestpersoner(tpsfIdenter));
         }
+
+        return tpsPerson;
     }
 
     public TpsPerson prepareTpsPersoner(RsOppdaterPersonResponse identer) {
@@ -65,5 +67,22 @@ public class TpsfPersonCache {
         }
 
         return new TpsPerson();
+    }
+
+    public TpsPerson prepareTpsPersoner(Person person) {
+
+        return fetchIfEmpty(TpsPerson.builder()
+                .hovedperson(person.getIdent())
+                .partnere(person.getRelasjoner().stream()
+                        .filter(Relasjon::isPartner)
+                        .map(Relasjon::getPersonRelasjonMed)
+                        .map(Person::getIdent)
+                        .collect(Collectors.toList()))
+                .barn(person.getRelasjoner().stream()
+                        .filter(Relasjon::isBarn)
+                        .map(Relasjon::getPersonRelasjonMed)
+                        .map(Person::getIdent)
+                        .collect(Collectors.toList()))
+                .build());
     }
 }

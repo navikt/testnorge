@@ -35,8 +35,7 @@ public class RsDollyBestilling {
 
     @ApiModelProperty(
             position = 1,
-            value = "Liste av miljøer bestillingen gjelder for",
-            required = true
+            value = "Liste av miljøer bestillingen skal deployes til"
     )
     private List<String> environments;
 

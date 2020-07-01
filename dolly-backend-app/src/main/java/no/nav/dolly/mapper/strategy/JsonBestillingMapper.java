@@ -1,6 +1,7 @@
 package no.nav.dolly.mapper.strategy;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.io.IOException;
 import org.springframework.stereotype.Component;
@@ -20,7 +21,10 @@ public class JsonBestillingMapper {
 
     public RsTpsfUtvidetBestilling mapTpsfRequest(String jsonInput) {
         try {
-            RsTpsfUtvidetBestilling tpsfUtvidetBestilling = objectMapper.readValue(nonNull(jsonInput) ? jsonInput : "{}", RsTpsfUtvidetBestilling.class);
+            if (isBlank(jsonInput)) {
+                return null;
+            }
+            RsTpsfUtvidetBestilling tpsfUtvidetBestilling = objectMapper.readValue(jsonInput, RsTpsfUtvidetBestilling.class);
             if (nonNull(tpsfUtvidetBestilling.getRelasjoner()) && nonNull(tpsfUtvidetBestilling.getRelasjoner().getPartner())) {
                 tpsfUtvidetBestilling.getRelasjoner().getPartnere().add(tpsfUtvidetBestilling.getRelasjoner().getPartner());
                 tpsfUtvidetBestilling.getRelasjoner().setPartner(null);

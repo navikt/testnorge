@@ -131,13 +131,13 @@ public class TpsfService {
     }
 
     @Timed(name = "providers", tags = { "operation", "tpsf_hentPersonFraTps" })
-    public String importerPersonFraTps(TpsfImportPersonRequest tpsfImportPersonRequest) {
+    public Person importerPersonFraTps(TpsfImportPersonRequest tpsfImportPersonRequest) {
 
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(providersProps.getTpsf().getUrl() + TPSF_IMPORTER_PERSON))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, getUserIdToken())
-                .body(tpsfImportPersonRequest), String.class).getBody();
+                .body(tpsfImportPersonRequest), Person.class).getBody();
     }
 
     private ResponseEntity<Object> postToTpsf(String addtionalUrl, Object request) {
