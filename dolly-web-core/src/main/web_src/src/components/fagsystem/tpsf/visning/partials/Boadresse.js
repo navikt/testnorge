@@ -58,7 +58,7 @@ export const Adressevisning = ({ boadresse }) => {
 }
 
 export const Boadresse = ({ boadresse }) => {
-	if (!boadresse) return false
+	if (!boadresse || boadresse.length < 1) return false
 
 	return (
 		<>

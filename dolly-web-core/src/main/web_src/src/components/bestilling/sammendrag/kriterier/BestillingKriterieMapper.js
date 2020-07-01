@@ -856,8 +856,16 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		])
 	})
 
-	if (inntektsmeldingKriterier)
-		data.push(mapInntektsmeldingKriterier(inntektsmeldingKriterier.inntekter))
+	const tomInntektsmelding = {
+		header: 'Inntektsmelding (fra Altinn)',
+		items: [obj('Inntektsmelding', 'Tom bestilling')]
+	}
+
+	if (inntektsmeldingKriterier) {
+		if (_isEmpty(inntektsmeldingKriterier.inntekter)) {
+			data.push(tomInntektsmelding)
+		} else data.push(mapInntektsmeldingKriterier(inntektsmeldingKriterier.inntekter))
+	}
 
 	const dokarkivKriterier = bestillingData.dokarkiv
 
