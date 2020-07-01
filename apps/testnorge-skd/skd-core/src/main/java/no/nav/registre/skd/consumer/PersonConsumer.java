@@ -6,37 +6,33 @@ import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.util.List;
-
 
 @Component
 @Slf4j
 @DependencyOn("person-api")
-public class PersonApiConsumer {
+public class PersonConsumer {
 
     private final UriTemplate serverUrl;
 
-    private static final ParameterizedTypeReference<ResponseEntity<?>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {};
+    private final RestTemplate restTemplate;
 
-    @Autowired
-    private RestTemplate restTemplate;
-
-    public PersonApiConsumer(
-            @Value("${person-api.rest.api.url}") String personApiUrl
+    public PersonConsumer(
+            @Value("${person.rest.api.url}") String personApiUrl,
+            RestTemplate restTemplate
     ) {
         this.serverUrl = new UriTemplate(personApiUrl + "/v1/person");
+        this.restTemplate = restTemplate;
     }
 
-    public ResponseEntity<?> leggTilIdentIPdl(PersonDTO person) {
+    public ResponseEntity<String> leggTilIdentIPdl(PersonDTO person) {
         var postRequest = RequestEntity.post(serverUrl.expand()).body(person);
-        return restTemplate.exchange(postRequest, RESPONSE_TYPE);
+        return restTemplate.exchange(postRequest, String.class);
     }
 
 }
