@@ -66,5 +66,5 @@ Eller kjør:
 
 ## TODO
 
-- [ ] Fjern testnorge-elsam fra nais
-- [ ] Fjern testnorge-elsam fra vault
+- [x] Fjern testnorge-elsam fra nais
+- [x] Fjern testnorge-elsam fra vault
