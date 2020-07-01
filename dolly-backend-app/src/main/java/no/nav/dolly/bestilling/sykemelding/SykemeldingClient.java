@@ -46,8 +46,7 @@ public class SykemeldingClient implements ClientRegister {
             try {
                 SyntSykemeldingRequest syntSykemeldingRequest = mapperFacade.map(bestilling.getSykemelding().getSyntSykemelding(), SyntSykemeldingRequest.class);
 
-                if (/* !transaksjonMappingService.existAlready(SYNT_SYKEMELDING, tpsPerson.getHovedperson()) || */
-                isOpprettEndre) {
+                if (!transaksjonMappingService.existAlready(SYKEMELDING, tpsPerson.getHovedperson() ) || isOpprettEndre) {
 
                     ResponseEntity<String> response = sykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest);
                     if (response.hasBody()) {
@@ -79,7 +78,6 @@ public class SykemeldingClient implements ClientRegister {
                                 .orgnummer(sykemelding.getOrgnummer())
                                 .arbeidsforholdId(sykemelding.getArbeidsforholdId())))
                         .datoEndret(LocalDateTime.now())
-                        .miljoe("q2") // riktig miljø? importe konstant?
                         .system(SYKEMELDING.name())
                         .build());
     }
