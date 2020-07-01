@@ -51,7 +51,7 @@ public class DokarkivClient implements ClientRegister {
             dokarkivRequest.getBruker().setId(tpsPerson.getHovedperson());
             Person avsender = tpsPerson.getPerson(tpsPerson.getHovedperson());
             dokarkivRequest.getAvsenderMottaker().setId(tpsPerson.getHovedperson());
-            dokarkivRequest.getAvsenderMottaker().setNavn(String.format("%s, %s%s", avsender.getFornavn(), avsender.getEtternavn(), isNull(avsender.getMellomnavn()) ? null : ", " + avsender.getMellomnavn()));
+            dokarkivRequest.getAvsenderMottaker().setNavn(String.format("%s, %s%s", avsender.getFornavn(), avsender.getEtternavn(), isNull(avsender.getMellomnavn()) ? "" : ", " + avsender.getMellomnavn()));
 
             bestilling.getEnvironments().forEach(environment -> {
 
