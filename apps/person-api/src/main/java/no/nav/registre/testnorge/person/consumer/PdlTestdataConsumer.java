@@ -2,12 +2,6 @@ package no.nav.registre.testnorge.person.consumer;
 
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.person.consumer.command.PostAdresseCommand;
-import no.nav.registre.testnorge.person.consumer.command.PostNavnCommand;
-import no.nav.registre.testnorge.person.consumer.command.PostOpprettPersonCommand;
-import no.nav.registre.testnorge.person.domain.Person;
-import no.nav.registre.testnorge.person.service.StsOidcTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
@@ -20,6 +14,13 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.person.consumer.command.PostAdresseCommand;
+import no.nav.registre.testnorge.person.consumer.command.PostNavnCommand;
+import no.nav.registre.testnorge.person.consumer.command.PostOpprettPersonCommand;
+import no.nav.registre.testnorge.person.domain.Person;
+import no.nav.registre.testnorge.person.service.StsOidcTokenService;
 
 @Slf4j
 @Component

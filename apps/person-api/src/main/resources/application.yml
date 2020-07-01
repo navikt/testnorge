@@ -9,7 +9,7 @@ application:
 system:
   pdl:
     pdlTestdataUrl: https://pdl-testdata.nais.preprod.local
-    personforvalterUrl: https://pdl-api.nais.preprod.local
+    pdlApi: https://pdl-api.nais.preprod.local
     threads: 5
 
 sts:

@@ -22,26 +22,26 @@ import no.nav.registre.testnorge.person.service.StsOidcTokenService;
 public class PdlApiConsumer {
 
     private final StsOidcTokenService tokenService;
-    private final String personforvalterUrl;
+    private final String pdlApiUrl;
     private final RestTemplate restTemplate;
     private final ObjectMapper mapper;
 
     public PdlApiConsumer(
             StsOidcTokenService tokenService,
-            @Value("${system.pdl.personforvalterUrl}") String personforvalterUrl,
+            @Value("${system.pdl.pdlApi}") String pdlApiUrl,
             RestTemplateBuilder restTemplateBuilder,
             ObjectMapper mapper
     ) {
         this.tokenService = tokenService;
-        this.personforvalterUrl = personforvalterUrl;
+        this.pdlApiUrl = pdlApiUrl;
         this.restTemplate = restTemplateBuilder.build();
         this.mapper = mapper;
     }
 
-    public Person getPerson(String ident) {
+    public Person getPerson(String ident) throws RuntimeException {
         String token = tokenService.getIdToken();
 
-        PdlPerson pdlPerson = new GetPersonCommand(restTemplate, personforvalterUrl, ident, token, mapper).call();
+        PdlPerson pdlPerson = new GetPersonCommand(restTemplate, pdlApiUrl, ident, token, mapper).call();
 
         if (pdlPerson.getErrors().isEmpty()) {
             return new Person(pdlPerson);
