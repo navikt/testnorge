@@ -60,7 +60,6 @@ public class RsDokarkiv {
     public List<Dokument> getDokumenter() {
         if (isNull(dokumenter)) {
             dokumenter = new ArrayList<>();
-            dokumenter.add(new Dokument());
         }
         return dokumenter;
     }
@@ -108,7 +107,6 @@ public class RsDokarkiv {
         public List<DokumentVariant> getDokumentvarianter() {
             if (isNull(dokumentvarianter)) {
                 dokumentvarianter = new ArrayList<>();
-                dokumentvarianter.add(new DokumentVariant());
             }
             return dokumentvarianter;
         }

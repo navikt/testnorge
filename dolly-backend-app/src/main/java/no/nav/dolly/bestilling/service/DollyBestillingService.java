@@ -4,6 +4,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
@@ -31,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.tpsf.TpsfImportPersonRequest;
 import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -53,6 +55,7 @@ import no.nav.dolly.domain.resultset.tpsf.ServiceRoutineResponseStatus;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsfRelasjonRequest;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.BestillingProgressRepository;
@@ -82,6 +85,7 @@ public class DollyBestillingService {
     private final ObjectMapper objectMapper;
     private final List<ClientRegister> clientRegisters;
     private final CounterCustomRegistry counterCustomRegistry;
+    private final ErrorStatusDecoder errorStatusDecoder;
 
     @Async
     public void opprettPersonerByKriterierAsync(Long gruppeId, RsDollyBestillingRequest request, Bestilling bestilling) {
@@ -232,6 +236,40 @@ public class DollyBestillingService {
         clearCache();
     }
 
+    @Async
+    public void importAvPersonerFraTpsAsync(Bestilling bestilling) {
+
+        List<String> identer = asList(bestilling.getTpsImport().split(","));
+
+        identer.forEach(ident -> {
+            BestillingProgress progress = new BestillingProgress(bestilling.getId(), ident);
+            try {
+                Person person = tpsfService.importerPersonFraTps(TpsfImportPersonRequest.builder()
+                        .miljoe(bestilling.getKildeMiljoe())
+                        .ident(ident)
+                        .build());
+
+                progress.setTpsImportStatus(SUCCESS);
+
+                sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(","))
+                        .stream().filter(miljoe -> !bestilling.getKildeMiljoe().equalsIgnoreCase(miljoe))
+                        .collect(toList()), singletonList(ident), bestilling.getGruppe(), progress);
+
+                TpsPerson tpsPerson = tpsfPersonCache.prepareTpsPersoner(person);
+                gjenopprettNonTpsf(tpsPerson, bestilling, progress);
+
+            } catch (RuntimeException e) {
+                progress.setTpsImportStatus(errorStatusDecoder.decodeRuntimeException(e));
+            }
+            oppdaterProgress(bestilling, progress);
+            clearCache();
+        });
+        bestilling.setFerdig(true);
+        bestilling.setSistOppdatert(now());
+        bestillingService.saveBestillingToDB(bestilling);
+        clearCache();
+    }
+
     private void gjenopprettNonTpsf(TpsPerson tpsPerson, Bestilling bestilling, BestillingProgress progress) {
 
         if (nonNull(bestilling.getBestKriterier())) {
@@ -369,13 +407,22 @@ public class DollyBestillingService {
 
     private void sendIdenterTilTPS(List<String> environments, List<String> identer, Testgruppe testgruppe, BestillingProgress progress) {
         try {
-            RsSkdMeldingResponse response = tpsfService.sendIdenterTilTpsFraTPSF(identer, environments.stream().map(String::toLowerCase).collect(toList()));
-            String feedbackTps = tpsfResponseHandler.extractTPSFeedback(response.getSendSkdMeldingTilTpsResponsene());
-            log.info(feedbackTps);
+            RsSkdMeldingResponse response = null;
+            if (!environments.isEmpty()) {
+                response = tpsfService.sendIdenterTilTpsFraTPSF(identer, environments.stream().map(String::toLowerCase).collect(toList()));
+                String feedbackTps = tpsfResponseHandler.extractTPSFeedback(response.getSendSkdMeldingTilTpsResponsene());
+                log.info(feedbackTps);
+            }
 
             String hovedperson = getHovedpersonAvBestillingsidenter(identer);
-            List<String> successMiljoer = extraxtSuccessMiljoForHovedperson(hovedperson, response);
-            List<String> failureMiljoer = extraxtFailureMiljoForHovedperson(hovedperson, response);
+
+            List<String> successMiljoer = new ArrayList<>();
+            List<String> failureMiljoer = new ArrayList<>();
+
+            if (!environments.isEmpty()) {
+                successMiljoer.addAll(extraxtSuccessMiljoForHovedperson(hovedperson, response));
+                failureMiljoer.addAll(extraxtFailureMiljoForHovedperson(hovedperson, response));
+            }
 
             if (nonNull(testgruppe)) {
                 identService.saveIdentTilGruppe(hovedperson, testgruppe);

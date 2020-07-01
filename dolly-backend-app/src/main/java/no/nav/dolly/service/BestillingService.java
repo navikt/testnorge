@@ -18,7 +18,6 @@ import java.util.Set;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,6 +31,7 @@ import no.nav.dolly.domain.jpa.BestilteKriterier;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.RsDollyImportFraTpsRequest;
 import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregArbeidsforhold;
@@ -146,21 +146,7 @@ public class BestillingService {
                         .sistOppdatert(now())
                         .miljoer(join(",", request.getEnvironments()))
                         .tpsfKriterier(toJson(request.getTpsf()))
-                        .bestKriterier(toJson(BestilteKriterier.builder()
-                                .aareg(request.getAareg())
-                                .krrstub(request.getKrrstub())
-                                .udistub(request.getUdistub())
-                                .sigrunstub(request.getSigrunstub())
-                                .arenaforvalter(request.getArenaforvalter())
-                                .pdlforvalter(request.getPdlforvalter())
-                                .instdata(request.getInstdata())
-                                .inntektstub(request.getInntektstub())
-                                .pensjonforvalter(request.getPensjonforvalter())
-                                .inntektsmelding(request.getInntektsmelding())
-                                .brregstub(request.getBrregstub())
-                                .dokarkiv(request.getDokarkiv())
-                                .sykemelding(request.getSykemelding())
-                                .build()))
+                        .bestKriterier(getBestKriterier(request))
                         .malBestillingNavn(request.getMalBestillingNavn())
                         .userId(getUserPrinciple())
                         .build());
@@ -179,21 +165,7 @@ public class BestillingService {
                         .sistOppdatert(now())
                         .miljoer(join(",", request.getEnvironments()))
                         .tpsfKriterier(toJson(tpsf))
-                        .bestKriterier(toJson(BestilteKriterier.builder()
-                                .aareg(request.getAareg())
-                                .krrstub(request.getKrrstub())
-                                .udistub(request.getUdistub())
-                                .sigrunstub(request.getSigrunstub())
-                                .arenaforvalter(request.getArenaforvalter())
-                                .pdlforvalter(request.getPdlforvalter())
-                                .instdata(request.getInstdata())
-                                .inntektstub(request.getInntektstub())
-                                .pensjonforvalter(request.getPensjonforvalter())
-                                .inntektsmelding(request.getInntektsmelding())
-                                .brregstub(request.getBrregstub())
-                                .dokarkiv(request.getDokarkiv())
-                                .sykemelding(request.getSykemelding())
-                                .build()))
+                        .bestKriterier(getBestKriterier(request))
                         .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
                         .malBestillingNavn(request.getMalBestillingNavn())
                         .userId(getUserPrinciple())
@@ -223,6 +195,25 @@ public class BestillingService {
                         .userId(getUserPrinciple())
                         .build()
         );
+    }
+
+    @Transactional
+    public Bestilling saveBestilling(Long gruppeId, RsDollyImportFraTpsRequest request) {
+
+        Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
+        fixAaregAbstractClassProblem(request.getAareg());
+        fixPdlAbstractClassProblem(request.getPdlforvalter());
+        return saveBestillingToDB(
+                Bestilling.builder()
+                        .gruppe(gruppe)
+                        .kildeMiljoe(request.getKildeMiljoe())
+                        .miljoer(join(",", request.getEnvironments()))
+                        .sistOppdatert(now())
+                        .userId(getUserPrinciple())
+                        .antallIdenter(request.getIdenter().size())
+                        .bestKriterier(getBestKriterier(request))
+                        .tpsImport(join(",", request.getIdenter()))
+                        .build());
     }
 
     @Transactional
@@ -282,5 +273,23 @@ public class BestillingService {
             log.info("Konvertering til Json feilet", e);
         }
         return null;
+    }
+
+    private String getBestKriterier(RsDollyBestilling request) {
+        return toJson(BestilteKriterier.builder()
+                .aareg(request.getAareg())
+                .krrstub(request.getKrrstub())
+                .udistub(request.getUdistub())
+                .sigrunstub(request.getSigrunstub())
+                .arenaforvalter(request.getArenaforvalter())
+                .pdlforvalter(request.getPdlforvalter())
+                .instdata(request.getInstdata())
+                .inntektstub(request.getInntektstub())
+                .pensjonforvalter(request.getPensjonforvalter())
+                .inntektsmelding(request.getInntektsmelding())
+                .brregstub(request.getBrregstub())
+                .dokarkiv(request.getDokarkiv())
+                .sykemelding(request.getSykemelding())
+                .build());
     }
 }
