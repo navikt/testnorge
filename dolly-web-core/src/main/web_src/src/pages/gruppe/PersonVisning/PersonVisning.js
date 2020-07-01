@@ -49,7 +49,6 @@ export const PersonVisning = ({
 				liste={InntektsmeldingVisning.filterValues(bestillingsListe)}
 				ident={ident.ident}
 			/>
-
 			<BrregVisning data={data.brregstub} loading={loading.brregstub} />
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
 			<InstVisning data={data.instdata} loading={loading.instdata} />

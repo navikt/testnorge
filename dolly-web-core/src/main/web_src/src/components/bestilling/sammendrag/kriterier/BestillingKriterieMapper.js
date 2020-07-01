@@ -860,7 +860,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		data.push(mapInntektsmeldingKriterier(inntektsmeldingKriterier.inntekter))
 
 	const dokarkivKriterier = bestillingData.dokarkiv
-	console.log('dokarkivKriterier :>> ', dokarkivKriterier)
+
 	if (dokarkivKriterier) {
 		const dokarkiv = {
 			header: 'Dokumenter',
