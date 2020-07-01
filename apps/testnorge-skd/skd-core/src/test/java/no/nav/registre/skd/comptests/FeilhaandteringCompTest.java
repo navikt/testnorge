@@ -97,6 +97,7 @@ public class FeilhaandteringCompTest {
         stubTpsf(gruppeId);
         stubSendIderTilTps(gruppeId);
         stubTpConsumer();
+        stubPersonApiConsumer();
 
         stubTpsSynt(INNVANDRING.getEndringskode(), antallMeldinger, "comptest/tpssynt/tpsSynt_aarsakskode02_2meldinger_Response.json");
         stubTpsSynt(NAVNEENDRING_FOERSTE.getEndringskode(), antallMeldinger, "comptest/tpssynt/tpsSynt_aarsakskode06_2meldinger_Response.json");
@@ -223,5 +224,10 @@ public class FeilhaandteringCompTest {
                 .willReturn(ok()
                         .withHeader("content-type", "application/json")
                         .withBody("[\"" + expectedFnrFromIdentpool.get(1) + "\"]")));
+    }
+
+    private void stubPersonApiConsumer() {
+        stubFor(post(urlPathEqualTo("/person-api/api/v1/person"))
+                .willReturn(aResponse().withStatus(200)));
     }
 }
