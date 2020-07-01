@@ -10,6 +10,7 @@ import static no.nav.registre.skd.service.Endringskoder.TILDELING_DNUMMER;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.skd.consumer.PersonApiConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -75,6 +76,9 @@ public class SyntetiseringService {
     @Autowired
     private TpService tpService;
 
+    @Autowired
+    private PersonApiService personApiService;
+
     private List<String> feiledeEndringskoder;
 
     public ResponseEntity<SkdMeldingerTilTpsRespons> puttIdenterIMeldingerOgLagre(
@@ -125,6 +129,11 @@ public class SyntetiseringService {
                     var feiledeTpIdenter = tpService.leggTilIdenterITp(nyeIdenterDenneEndringskoden, miljoe);
                     if (!feiledeTpIdenter.isEmpty()) {
                         log.error("Følgende identer kunne ikke lagres i TP: {}", feiledeTpIdenter.toString());
+                    }
+
+                    if(Arrays.asList(FOEDSELSMELDING, INNVANDRING).contains(endringskode)){
+                        nyeIdenterDenneEndringskoden.removeAll(feiledeTpIdenter);
+                        personApiService.leggTilIdenterIPdl(nyeIdenterDenneEndringskoden);
                     }
                 }
             } catch (ManglendeInfoITpsException e) {
