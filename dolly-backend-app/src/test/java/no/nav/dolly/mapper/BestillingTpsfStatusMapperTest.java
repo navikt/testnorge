@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
@@ -38,9 +37,7 @@ public class BestillingTpsfStatusMapperTest {
     @Test
     public void tpsfStatusMapper_MapFeilmeldinger() {
 
-        List<RsStatusRapport> statusrapport = BestillingTpsfStatusMapper.buildTpsfStatusMap(Bestilling.builder()
-                .progresser(ERROR_STATUS)
-                .build());
+        List<RsStatusRapport> statusrapport = BestillingTpsfStatusMapper.buildTpsfStatusMap(ERROR_STATUS);
 
         assertThat(statusrapport.get(0).getStatuser().get(0).getMelding(), is(equalTo("FEIL: SQL-problem i KC57308")));
         assertThat(statusrapport.get(0).getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("qx")));

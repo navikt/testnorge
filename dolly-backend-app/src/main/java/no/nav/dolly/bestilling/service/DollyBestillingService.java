@@ -249,11 +249,11 @@ public class DollyBestillingService {
                         .ident(ident)
                         .build());
 
+                progress.setTpsImportStatus(SUCCESS);
+
                 sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(","))
                         .stream().filter(miljoe -> !bestilling.getKildeMiljoe().equalsIgnoreCase(miljoe))
                         .collect(toList()), singletonList(ident), bestilling.getGruppe(), progress);
-
-                progress.setTpsImportStatus(SUCCESS);
 
                 TpsPerson tpsPerson = tpsfPersonCache.prepareTpsPersoner(person);
                 gjenopprettNonTpsf(tpsPerson, bestilling, progress);

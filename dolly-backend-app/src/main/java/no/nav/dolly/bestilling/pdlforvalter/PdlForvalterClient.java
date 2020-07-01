@@ -60,8 +60,6 @@ import no.nav.dolly.service.TpsfPersonCache;
 @RequiredArgsConstructor
 public class PdlForvalterClient implements ClientRegister {
 
-    public enum StausResponse {DONE, PENDING, DELETING}
-
     public static final String KONTAKTINFORMASJON_DOEDSBO = "KontaktinformasjonForDoedsbo";
     public static final String UTENLANDS_IDENTIFIKASJONSNUMMER = "UtenlandskIdentifikasjonsnummer";
     public static final String FALSK_IDENTITET = "FalskIdentitet";
