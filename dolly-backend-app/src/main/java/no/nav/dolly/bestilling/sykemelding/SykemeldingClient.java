@@ -59,7 +59,7 @@ public class SykemeldingClient implements ClientRegister {
                 }
             } catch (RuntimeException e) {
 
-                status.append(errorStatusDecoder.decodeRuntimeException(e).replace("=", ":"));
+                status.append(errorStatusDecoder.decodeRuntimeException(e).replace('=', ':'));
             }
             progress.setSykemeldingStatus(status.toString());
         }
