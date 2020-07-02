@@ -14,6 +14,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -288,6 +289,7 @@ public class BestillingService {
                 .inntektsmelding(request.getInntektsmelding())
                 .brregstub(request.getBrregstub())
                 .dokarkiv(request.getDokarkiv())
+                .sykemelding(request.getSykemelding())
                 .build());
     }
 }
