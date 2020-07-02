@@ -51,7 +51,7 @@ public class SykemeldingClient implements ClientRegister {
 
                     ResponseEntity<String> response = sykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest);
                     if (response.hasBody()) {
-                        status.append(":OK");
+                        status.append("OK");
 
                         saveTranskasjonId(bestilling.getSykemelding().getSyntSykemelding(), tpsPerson.getHovedperson());
                     }
@@ -59,7 +59,7 @@ public class SykemeldingClient implements ClientRegister {
                 }
             } catch (RuntimeException e) {
 
-                status.append(errorStatusDecoder.decodeRuntimeException(e).replace('=', ':'));
+                status.append(errorStatusDecoder.decodeRuntimeException(e));
             }
             progress.setSykemeldingStatus(status.toString());
         }
