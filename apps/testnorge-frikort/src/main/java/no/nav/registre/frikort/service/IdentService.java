@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import no.nav.registre.frikort.provider.rs.request.IdentMedAntallFrikort;
 import no.nav.registre.frikort.provider.rs.request.IdentRequest;
 import no.nav.registre.frikort.provider.rs.response.SyntetiserFrikortResponse;
-import no.nav.registre.frikort.service.common.ServiceUtils;
+import no.nav.registre.frikort.service.util.ServiceUtils;
 
 @Slf4j
 @Service

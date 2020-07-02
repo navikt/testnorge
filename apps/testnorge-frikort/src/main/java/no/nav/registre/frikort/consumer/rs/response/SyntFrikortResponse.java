@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
+import no.nav.registre.frikort.domain.xml.Egenandelskode;
+
 @Value
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
@@ -14,7 +16,7 @@ public class SyntFrikortResponse {
     String datotjeneste;
     String datotjenestestart;
     double egenandelsats;
-    String egenandelskode;
+    Egenandelskode egenandelskode;
     String enkeltregningsstatuskode;
     String innsendingstypekode;
     String kildesystemkode;

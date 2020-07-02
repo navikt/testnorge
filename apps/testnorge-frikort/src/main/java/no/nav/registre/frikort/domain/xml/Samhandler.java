@@ -14,12 +14,12 @@ import java.time.LocalDateTime;
 public class Samhandler {
 
     private final String type;
-    private final long samhandlerid = 0L;
+    private final String samhandlerid;
     private final long innsendingid = 0L;
     private final String innsendingstype;
     private final LocalDateTime datoMottattEkstern;
     private final LocalDateTime datoGenerert;
-    private final String fornavn = "Ikke Satt";
+    private final String fornavn;
     private final EgenandelListe listeAvEgenandeler;
 
     @XmlAttribute
@@ -28,7 +28,7 @@ public class Samhandler {
     }
 
     @XmlElement
-    public long getSamhandlerid() {
+    public String getSamhandlerid() {
         return samhandlerid;
     }
 

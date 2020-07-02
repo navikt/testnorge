@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 public class Egenandel {
 
-    private String egenandelskode;
+    private Egenandelskode egenandelskode;
     private long enkeltregningsid = 1234567890;
     private String enkeltregningsstatus;
     private int enkeltregningsnr = 22396;
@@ -27,7 +27,7 @@ public class Egenandel {
 
     @XmlElement
     public String getEgenandelskode() {
-        return egenandelskode;
+        return egenandelskode.toString();
     }
 
     @XmlElement
