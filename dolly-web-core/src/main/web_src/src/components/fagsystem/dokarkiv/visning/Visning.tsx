@@ -1,4 +1,5 @@
 import React from 'react'
+import _get from 'lodash/get'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import JournalpostidVisning from '~/components/journalpostid/journalpostidVisning'
@@ -36,8 +37,8 @@ export const DokarkivVisning = ({ data, ident }: DokarkivVisning) => {
 				return (
 					<div className="person-visning_content" key={idx}>
 						<TitleValue title="Kanal" value={dokument.kanal} />
-						<TitleValue title="Brevkode" value={dokument.dokumenter[0].brevkode} />
-						<TitleValue title="Tittel" value={dokument.dokumenter[0].tittel} />
+						<TitleValue title="Brevkode" value={_get(dokument, 'dokumenter[0].brevkode')} />
+						<TitleValue title="Tittel" value={_get(dokument, 'dokumenter[0].tittel')} />
 						<TitleValue title="Tema" value={dokument.tema} />
 						<TitleValue title="Journalførende enhet" value={dokument.journalfoerendeEnhet} />
 					</div>
