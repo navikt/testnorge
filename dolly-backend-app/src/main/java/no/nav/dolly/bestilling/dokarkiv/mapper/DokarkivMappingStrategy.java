@@ -24,8 +24,6 @@ public class DokarkivMappingStrategy implements MappingStrategy {
     private static final String PDFA = "PDFA";
     private static final String ARKIV = "ARKIV";
     private static final String BEHANDLINGSTEMA = "ab0001";
-    private static final String AVSENDER_ID = "09071844797";
-    private static final String AVSENDER_NAVN = "Villstyring, Sedat";
     private static final String FAGSAK_ID = "10695768";
     private static final String FAGSAK_SYSTEM = "AO01";
     private static final String FAGSAK_TYPE = "FAGSAK";
@@ -43,9 +41,7 @@ public class DokarkivMappingStrategy implements MappingStrategy {
                         dokarkivRequest.setBehandlingstema(isNull(dokarkiv.getBehandlingstema()) ? BEHANDLINGSTEMA : dokarkiv.getBehandlingstema());
                         if (isNull(dokarkiv.getAvsenderMottaker())) {
                             dokarkivRequest.setAvsenderMottaker(DokarkivRequest.AvsenderMottaker.builder()
-                                    .id(AVSENDER_ID)
                                     .idType(FNR)
-                                    .navn(AVSENDER_NAVN)
                                     .build());
                         }
                         dokarkivRequest.setSak(DokarkivRequest.Sak.builder()
@@ -79,7 +75,7 @@ public class DokarkivMappingStrategy implements MappingStrategy {
             dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setVariantformat(ARKIV);
         }
         if (isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getFysiskDokument())) {
-                dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setFysiskDokument(PDF_VEDLEGG);
+            dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setFysiskDokument(PDF_VEDLEGG);
         }
     }
 }
