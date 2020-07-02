@@ -78,6 +78,9 @@ public class BestillingProgress {
     @Column(name = "DOKARKIV_STATUS")
     private String dokarkivStatus;
 
+    @Column(name = "SYKEMELDING_STATUS")
+    private String sykemeldingStatus;
+
     @Column(name = "TPS_IMPORT_STATUS")
     private String tpsImportStatus;
 
