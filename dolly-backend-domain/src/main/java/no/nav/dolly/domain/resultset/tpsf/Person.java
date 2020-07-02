@@ -53,6 +53,8 @@ public class Person {
     private String telefonnummer_1;
     private String telefonLandskode_2;
     private String telefonnummer_2;
+    private String tknavn;
+    private String tknr;
     private Boolean utenFastBopel;
     private String personStatus;
     private List<InnvandretUtvandret> innvandretUtvandret;
