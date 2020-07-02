@@ -38,6 +38,7 @@ import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
@@ -100,15 +101,13 @@ public class DollyBestillingService {
             int loopCount = 0;
             while (!bestillingService.isStoppet(bestilling.getId()) && loopCount < request.getAntall()) {
                 preparePerson(request, bestilling, testgruppe, tpsfBestilling);
-                clearCache();
                 loopCount++;
             }
         } catch (Exception e) {
             log.error("Bestilling med id <" + bestilling.getId() + "> til gruppeId <" + gruppeId + "> feilet grunnet " + e.getMessage(), e);
             bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, e.getMessage()));
         } finally {
-            oppdaterProgressFerdig(bestilling);
-            clearCache();
+            oppdaterBestillingFerdig(bestilling);
         }
     }
 
@@ -132,15 +131,13 @@ public class DollyBestillingService {
             while (!bestillingService.isStoppet(bestilling.getId()) && loopCount < identer.size()) {
                 tpsfBestilling.setOpprettFraIdenter(newArrayList(identer.get(loopCount)));
                 preparePerson(request, bestilling, testgruppe, tpsfBestilling);
-                clearCache();
                 loopCount++;
             }
         } catch (Exception e) {
             log.error("Bestilling med id={} til gruppeId={} ble avsluttet med feil={}", bestilling.getId(), gruppeId, e.getMessage(), e);
             bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, e.getMessage()));
         } finally {
-            oppdaterProgressFerdig(bestilling);
-            clearCache();
+            oppdaterBestillingFerdig(bestilling);
         }
     }
 
@@ -169,8 +166,7 @@ public class DollyBestillingService {
             bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, e.getMessage()));
 
         } finally {
-            oppdaterProgressFerdig(bestilling);
-            clearCache();
+            oppdaterBestillingFerdig(bestilling);
         }
     }
 
@@ -200,8 +196,7 @@ public class DollyBestillingService {
             bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, e.getMessage()));
 
         } finally {
-            oppdaterProgressFerdig(bestilling);
-            clearCache();
+            oppdaterBestillingFerdig(bestilling);
         }
     }
 
@@ -228,12 +223,9 @@ public class DollyBestillingService {
             sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(",")), extractIdenter(personer), bestilling.getGruppe(), progress);
 
             gjenopprettNonTpsf(tpsPerson, bestilling, progress);
-
-            oppdaterProgress(bestilling, progress);
-            clearCache();
         }
-        oppdaterProgressFerdig(bestilling);
-        clearCache();
+
+        oppdaterBestillingFerdig(bestilling);
     }
 
     @Async
@@ -262,34 +254,85 @@ public class DollyBestillingService {
                 progress.setTpsImportStatus(errorStatusDecoder.decodeRuntimeException(e));
             }
             oppdaterProgress(bestilling, progress);
-            clearCache();
+
         });
-        bestilling.setFerdig(true);
-        bestilling.setSistOppdatert(now());
-        bestillingService.saveBestillingToDB(bestilling);
-        clearCache();
+        oppdaterBestillingFerdig(bestilling);
+    }
+
+    @Async
+    public void leggTilPaaGruppeAsync(Bestilling bestilling) {
+
+        TpsfBestilling tpsfBestilling = nonNull(bestilling.getTpsfKriterier()) ?
+                mapperFacade.map(bestilling.getTpsfKriterier(), TpsfBestilling.class) : new TpsfBestilling();
+
+        RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
+
+        if (nonNull(bestKriterier)) {
+            bestilling.getGruppe().getTestidenter().parallelStream()
+                    .filter(testident -> !bestillingService.isStoppet(bestilling.getId()))
+                    .map(testident -> doPerson(bestilling, tpsfBestilling, bestKriterier, testident))
+                    .collect(toList());
+        } else {
+            bestilling.setFeil(format("Feil: kunne ikke mappe JSON request, se logg", bestilling.getId()));
+        }
+        oppdaterBestillingFerdig(bestilling);
+    }
+
+    private boolean doPerson(Bestilling bestilling, TpsfBestilling tpsfBestilling, RsDollyBestillingRequest bestKriterier, Testident testident) {
+        BestillingProgress progress = new BestillingProgress(bestilling.getId(), testident.getIdent());
+        try {
+            RsOppdaterPersonResponse oppdaterPersonResponse = tpsfService.endreLeggTilPaaPerson(testident.getIdent(), tpsfBestilling);
+            if (!oppdaterPersonResponse.getIdentTupler().isEmpty()) {
+
+                sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(",")),
+                        oppdaterPersonResponse.getIdentTupler().stream()
+                                .map(RsOppdaterPersonResponse.IdentTuple::getIdent).collect(toList()), null, progress);
+
+                TpsPerson tpsPerson = tpsfPersonCache.prepareTpsPersoner(oppdaterPersonResponse);
+                counterCustomRegistry.invoke(bestKriterier);
+                clientRegisters.forEach(clientRegister ->
+                        clientRegister.gjenopprett(bestKriterier, tpsPerson, progress, true));
+            } else {
+                progress.setFeil("NA:Feil= Ident finnes ikke i database");
+            }
+
+        } catch (RuntimeException e) {
+            progress.setFeil(format("NA:%s", errorStatusDecoder.decodeRuntimeException(e)));
+
+        } finally {
+            oppdaterProgress(bestilling, progress);
+        }
+        return true;
+    }
+
+    private void doPerson(){}
+    private RsDollyBestillingRequest getDollyBestillingRequest(Bestilling bestilling) {
+
+        try {
+            RsDollyBestillingRequest bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestillingRequest.class);
+            if (nonNull(bestilling.getTpsfKriterier())) {
+                bestKriterier.setTpsf(objectMapper.readValue(bestilling.getTpsfKriterier(), RsTpsfUtvidetBestilling.class));
+            }
+            bestKriterier.setEnvironments(newArrayList(bestilling.getMiljoer().split(",")));
+            return bestKriterier;
+
+        } catch (JsonProcessingException e) {
+            log.error("Feilet å lese JSON {}", e.getMessage(), e);
+            return null;
+        }
     }
 
     private void gjenopprettNonTpsf(TpsPerson tpsPerson, Bestilling bestilling, BestillingProgress progress) {
 
         if (nonNull(bestilling.getBestKriterier())) {
-            try {
-                RsDollyBestillingRequest bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestillingRequest.class);
-                if (nonNull(bestilling.getTpsfKriterier())) {
-                    bestKriterier.setTpsf(objectMapper.readValue(bestilling.getTpsfKriterier(), RsTpsfUtvidetBestilling.class));
-                }
-                bestKriterier.setEnvironments(newArrayList(bestilling.getMiljoer().split(",")));
 
-                counterCustomRegistry.invoke(bestKriterier);
-                clientRegisters.forEach(clientRegister ->
-                        clientRegister.gjenopprett(bestKriterier, tpsPerson, progress, false));
+            RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
 
-                oppdaterProgress(bestilling, progress);
-
-            } catch (IOException e) {
-                log.error("Feilet å lese bestillingskriterier", e);
-            }
+            counterCustomRegistry.invoke(bestKriterier);
+            clientRegisters.forEach(clientRegister ->
+                    clientRegister.gjenopprett(bestKriterier, tpsPerson, progress, false));
         }
+        oppdaterProgress(bestilling, progress);
     }
 
     private void oppdaterBestilling(Bestilling bestilling, CheckStatusResponse tilgjengeligeIdenter) {
@@ -303,7 +346,6 @@ public class DollyBestillingService {
                                         identStatus.getIdent().substring(identStatus.getIdent().length() - 4, identStatus.getIdent().length())))
                         .feil(format("Miljø: %s", identStatus.getStatus()))
                         .build());
-                clearCache();
             }
         });
     }
@@ -324,7 +366,6 @@ public class DollyBestillingService {
             if (nonNull(bestilling.getTpsfKriterier())) {
                 bestKriterier.setTpsf(objectMapper.readValue(bestilling.getTpsfKriterier(), RsTpsfUtvidetBestilling.class));
             }
-
             counterCustomRegistry.invoke(bestKriterier);
             clientRegisters.forEach(clientRegister -> clientRegister.gjenopprett(bestKriterier, tpsPerson, progress, false));
 
@@ -368,20 +409,21 @@ public class DollyBestillingService {
         return tpsPerson;
     }
 
-    private void oppdaterProgressFerdig(Bestilling bestilling) {
+    private void oppdaterBestillingFerdig(Bestilling bestilling) {
         if (bestillingService.isStoppet(bestilling.getId())) {
             bestilling.setStoppet(true);
         }
         bestilling.setFerdig(true);
+        bestilling.setSistOppdatert(now());
         bestillingService.saveBestillingToDB(bestilling);
+        clearCache();
     }
 
     private void oppdaterProgress(Bestilling bestilling, BestillingProgress progress) {
-        if (!bestillingService.isStoppet(bestilling.getId())) {
-            bestillingProgressRepository.save(progress);
-        }
+        bestillingProgressRepository.save(progress);
         bestilling.setSistOppdatert(now());
         bestillingService.saveBestillingToDB(bestilling);
+        clearCache();
     }
 
     private void clearCache() {
@@ -399,7 +441,6 @@ public class DollyBestillingService {
         personer.forEach(person -> {
             identerMedFamilie.add(person.getIdent());
             person.getRelasjoner().forEach(relasjon -> identerMedFamilie.add(relasjon.getPersonRelasjonMed().getIdent()));
-
         });
 
         return identerMedFamilie;

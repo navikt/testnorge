@@ -2,6 +2,7 @@ package no.nav.dolly.security.sts;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.properties.Environment.PREPROD;
 import static no.nav.dolly.properties.Environment.TEST;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -45,7 +46,8 @@ public class StsOidcService {
     private Map<Environment, LocalDateTime> expiry = new EnumMap<>(Environment.class);
 
     public static String getUserIdToken() {
-        return "Bearer " + ((OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication()).getIdToken();
+        return "Bearer " + (nonNull(SecurityContextHolder.getContext().getAuthentication()) ?
+                ((OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication()).getIdToken() : "");
     }
 
     public static String getUserPrinciple() {

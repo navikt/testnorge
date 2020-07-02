@@ -193,7 +193,7 @@ public class DollyBestillingServiceTest {
         ArgumentCaptor<BestillingProgress> argumentCaptor = ArgumentCaptor.forClass(BestillingProgress.class);
 
         verify(identService).saveIdentTilGruppe(IDENT_1, standardGruppe);
-        verify(bestillingProgressRepository, times(2)).save(argumentCaptor.capture());
+        verify(bestillingProgressRepository).save(argumentCaptor.capture());
 
         BestillingProgress bestillingProgress = argumentCaptor.getValue();
 
@@ -226,7 +226,7 @@ public class DollyBestillingServiceTest {
         ArgumentCaptor<BestillingProgress> argumentCaptor = ArgumentCaptor.forClass(BestillingProgress.class);
 
         verify(identService, times(1)).saveIdentTilGruppe(IDENT_1, standardGruppe);
-        verify(bestillingProgressRepository, times(4)).save(argumentCaptor.capture());
+        verify(bestillingProgressRepository, times(2)).save(argumentCaptor.capture());
         verify(tpsfResponseHandler).setErrorMessageToBestillingsProgress(any(TpsfException.class), any(BestillingProgress.class));
 
         List<BestillingProgress> bestillingProgresses = argumentCaptor.getAllValues();
@@ -278,7 +278,7 @@ public class DollyBestillingServiceTest {
                         .tpsfKriterier("json")
                         .miljoer("t2,t3").build());
 
-        verify(bestillingService, times(4)).isStoppet(BESTILLING_ID);
+        verify(bestillingService, times(3)).isStoppet(BESTILLING_ID);
         verify(tpsfService).hentTestpersoner(anyList());
         verify(tpsfService).sendIdenterTilTpsFraTPSF(anyList(), anyList());
         verify(tpsfResponseHandler).extractTPSFeedback(anyList());

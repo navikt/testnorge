@@ -28,6 +28,7 @@ import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
+import no.nav.dolly.domain.resultset.RsDollyBestillingLeggTilPaaGruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyImportFraTpsRequest;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
@@ -124,7 +125,7 @@ public class TestgruppeController {
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
-    @ApiOperation(value = "Importere testpersoner fra TPS basert på liste av identer", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @ApiOperation(value = "Importere testpersoner fra TPS og legg til berikning non-TPS artifacter", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling/importFraTps")
@@ -133,6 +134,18 @@ public class TestgruppeController {
         Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request);
 
         dollyBestillingService.importAvPersonerFraTpsAsync(bestilling);
+        return mapperFacade.map(bestilling, RsBestillingStatus.class);
+    }
+
+    @ApiOperation(value = "Legg til berikning på alle i gruppe", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping("/{gruppeId}/leggtilpaagruppe")
+    public RsBestillingStatus endreGruppeLeggTil(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingLeggTilPaaGruppe request) {
+
+        Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request);
+
+        dollyBestillingService.leggTilPaaGruppeAsync(bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 }
