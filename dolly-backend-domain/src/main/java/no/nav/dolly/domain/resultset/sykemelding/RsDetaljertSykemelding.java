@@ -142,7 +142,7 @@ public class RsDetaljertSykemelding {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-    private static class Lege {
+    public static class Lege {
 
         @ApiModelProperty(position = 1)
         private String fornavn;
@@ -166,7 +166,7 @@ public class RsDetaljertSykemelding {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-    private static class Organisasjon {
+    public static class Organisasjon {
 
         @ApiModelProperty(position = 1)
         private Adresse adresse;
@@ -184,7 +184,7 @@ public class RsDetaljertSykemelding {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-    private static class Pasient {
+    public static class Pasient {
 
         @ApiModelProperty(position = 1)
         private Adresse adresse;
@@ -217,7 +217,7 @@ public class RsDetaljertSykemelding {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-    private static class Periode {
+    public static class Periode {
 
         @ApiModelProperty(position = 1)
         private Aktivitet aktivitet;
@@ -235,7 +235,7 @@ public class RsDetaljertSykemelding {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-    private static class Aktivitet {
+    public static class Aktivitet {
 
         @ApiModelProperty(position = 1)
         private AktivitetType aktivitet;
@@ -257,7 +257,7 @@ public class RsDetaljertSykemelding {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-    private static class Adresse {
+    public static class Adresse {
 
         @ApiModelProperty(position = 1)
         private String by;

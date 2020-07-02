@@ -20,6 +20,7 @@ import lombok.Setter;
 public class RsSykemelding {
 
     private RsSyntSykemelding syntSykemelding;
+    private RsDetaljertSykemelding detaljertSykemelding;
 
     @Getter
     @Setter

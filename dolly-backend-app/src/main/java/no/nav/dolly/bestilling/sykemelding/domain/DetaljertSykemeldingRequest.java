@@ -101,7 +101,7 @@ public class DetaljertSykemeldingRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-    private static class Lege {
+    public static class Lege {
 
         private String fornavn;
         private String etternavn;
@@ -116,7 +116,7 @@ public class DetaljertSykemeldingRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-    private static class Organisasjon {
+    public static class Organisasjon {
 
         private Adresse adresse;
         private String navn;
@@ -129,7 +129,7 @@ public class DetaljertSykemeldingRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-    private static class Pasient {
+    public static class Pasient {
 
         private Adresse adresse;
         private String etternavn;
@@ -147,7 +147,7 @@ public class DetaljertSykemeldingRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-    private static class Periode {
+    public static class Periode {
 
         private Aktivitet aktivitet;
         private LocalDate fom;
@@ -160,7 +160,7 @@ public class DetaljertSykemeldingRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-    private static class Aktivitet {
+    public static class Aktivitet {
 
         private AktivitetType aktivitet;
         private Integer behandlingsdager;
@@ -175,7 +175,7 @@ public class DetaljertSykemeldingRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-    private static class Adresse {
+    public static class Adresse {
 
         private String by;
         private String gate;

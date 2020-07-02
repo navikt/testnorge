@@ -36,6 +36,7 @@ public class ProvidersProps {
     private Aktoerregister aktoerregister = new Aktoerregister();
     private Dokarkiv dokarkiv = new Dokarkiv();
     private SyntSykemelding syntSykemelding = new SyntSykemelding();
+    private DetaljertSykemelding detaljertSykemelding = new DetaljertSykemelding();
 
     @Getter
     @Setter
@@ -242,6 +243,16 @@ public class ProvidersProps {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SyntSykemelding {
+
+        private String url;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DetaljertSykemelding {
 
         private String url;
     }
