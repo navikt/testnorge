@@ -43,5 +43,4 @@ public class BestillingSykemeldingStatusMapper {
                                 .collect(Collectors.toList()))
                         .build());
     }
-
 }
