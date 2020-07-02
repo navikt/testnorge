@@ -12,7 +12,7 @@ type InntektstubVirksomhetToggle = {
 
 enum ToggleValg {
 	ORGANISASJON = 'ORGANISASJON',
-	ENKELTMANNSFORETAK = 'ENKELTMANNSFORETAK'
+	PRIVAT = 'PRIVAT'
 }
 
 export const InntektstubVirksomhetToggle = ({ formikBag, path }: InntektstubVirksomhetToggle) => {
@@ -24,7 +24,7 @@ export const InntektstubVirksomhetToggle = ({ formikBag, path }: InntektstubVirk
 		_get(formikBag.values, virksomhetPath)
 			? _get(formikBag.values, virksomhetPath).length === orgnummerLength
 				? ToggleValg.ORGANISASJON
-				: ToggleValg.ENKELTMANNSFORETAK
+				: ToggleValg.PRIVAT
 			: ToggleValg.ORGANISASJON
 	)
 
@@ -45,11 +45,11 @@ export const InntektstubVirksomhetToggle = ({ formikBag, path }: InntektstubVirk
 					Organisasjon
 				</ToggleKnapp>
 				<ToggleKnapp
-					key={ToggleValg.ENKELTMANNSFORETAK}
-					value={ToggleValg.ENKELTMANNSFORETAK}
-					checked={inputType === ToggleValg.ENKELTMANNSFORETAK}
+					key={ToggleValg.PRIVAT}
+					value={ToggleValg.PRIVAT}
+					checked={inputType === ToggleValg.PRIVAT}
 				>
-					Enkeltmannsforetak
+					Privat
 				</ToggleKnapp>
 			</ToggleGruppe>
 
