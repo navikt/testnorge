@@ -1,5 +1,6 @@
 package no.nav.registre.frikort.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -15,7 +16,6 @@ import java.util.Random;
 
 import no.nav.registere.testnorge.core.ApplicationCoreConfig;
 import no.nav.registre.frikort.domain.xml.Egenandelsmelding;
-import no.nav.registre.testnorge.consumers.ConsumerFactory;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Configuration
@@ -23,6 +23,9 @@ import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 @EnableAutoConfiguration
 @Import(ApplicationCoreConfig.class)
 public class AppConfig {
+
+    @Value("${testnorge.hodejegeren.url}")
+    private String testnorgeHodejegerenUrl;
 
     @Bean
     public RestTemplate restTemplate() {
@@ -50,6 +53,6 @@ public class AppConfig {
     @Bean
     @DependsOn("restTemplate")
     public HodejegerenConsumer hodejegerenConsumer() {
-        return (HodejegerenConsumer) ConsumerFactory.create(HodejegerenConsumer.class, restTemplate());
+        return new HodejegerenConsumer(testnorgeHodejegerenUrl, restTemplate());
     }
 }

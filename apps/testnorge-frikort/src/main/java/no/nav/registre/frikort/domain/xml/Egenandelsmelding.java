@@ -39,5 +39,4 @@ public class Egenandelsmelding {
     public SamhandlerListe getListeAvSamhandlere() {
         return listeAvSamhandlere;
     }
-
 }
