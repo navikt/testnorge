@@ -27,6 +27,7 @@ export default ({ ident }: JournalpostId) => (
 			)
 		}
 		render={(data: Array<Response>) =>
+			data &&
 			data.length > 0 && (
 				<DollyFieldArray data={data} header="Journalpost-Id" nested>
 					{(id: Response, idx: number) => {
