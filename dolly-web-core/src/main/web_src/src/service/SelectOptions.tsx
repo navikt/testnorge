@@ -43,6 +43,13 @@ const selectOptions: SelectOptions = {
 		{ value: 'KOMMUNENR', label: 'kommunenummer' }
 	],
 
+	adresseType: [
+		{ value: 'GATE', label: 'Norsk gateadresse' },
+		{ value: 'STED', label: 'Norsk stedsadresse' },
+		{ value: 'PBOX', label: 'Norsk postboksadresse' },
+		{ value: 'UTAD', label: 'Utenlandsk adresse' }
+	],
+
 	// SIGRUN
 	tjeneste: [
 		{ value: 'BEREGNET_SKATT', label: 'Beregnet skatt' },
@@ -238,6 +245,11 @@ const selectOptions: SelectOptions = {
 		{ value: 'CO_NAVN', label: 'CO Navn' },
 		{ value: 'LEILIGHET_NR', label: 'Leilighet nummer' },
 		{ value: 'SEKSJON_NR', label: 'Seksjon nummer' },
+		{ value: 'BOLIG_NR', label: 'Bolig nummer' }
+	],
+
+	tilleggstypeMidlertidig: [
+		{ value: 'CO_NAVN', label: 'CO Navn' },
 		{ value: 'BOLIG_NR', label: 'Bolig nummer' }
 	]
 }

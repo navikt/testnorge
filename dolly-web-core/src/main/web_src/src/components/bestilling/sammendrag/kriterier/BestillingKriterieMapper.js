@@ -85,6 +85,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		const {
 			boadresse,
 			postadresse,
+			midlertidigAdresse,
 			adresseNrInfo,
 			identHistorikk,
 			relasjoner,
@@ -165,6 +166,98 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				]
 			}
 			data.push(postadresse)
+		}
+
+		if (midlertidigAdresse) {
+			let typeGateadresse = null
+			if (midlertidigAdresse.adressetype === 'GATE') {
+				if (midlertidigAdresse.gateadresseNrInfo) {
+					typeGateadresse = `Tilfeldig, basert på ${Formatters.showLabel(
+						'adresseNrType',
+						midlertidigAdresse.gateadresseNrInfo.nummertype
+					)}`
+				} else if (midlertidigAdresse.norskAdresse && midlertidigAdresse.norskAdresse.gatenavn) {
+					typeGateadresse = 'Detaljert'
+				} else {
+					typeGateadresse = 'Tilfeldig'
+				}
+			}
+
+			const midlertidigAdresseObj = {
+				header: 'Midlertidig adresse',
+				items: [
+					obj('Adressetype', Formatters.showLabel('adresseType', midlertidigAdresse.adressetype)),
+					obj('Gyldig t.o.m.', Formatters.formatDate(midlertidigAdresse.gyldigTom)),
+					obj('Type gateadresse', typeGateadresse),
+					obj(
+						midlertidigAdresse.gateadresseNrInfo &&
+							Formatters.showLabel(
+								'adresseNrType',
+								midlertidigAdresse.gateadresseNrInfo.nummertype
+							),
+						midlertidigAdresse.gateadresseNrInfo && midlertidigAdresse.gateadresseNrInfo.nummer
+					),
+					obj(
+						'Gatenavn',
+						midlertidigAdresse.norskAdresse && midlertidigAdresse.norskAdresse.gatenavn
+					),
+					obj(
+						'Husnummer',
+						midlertidigAdresse.norskAdresse && midlertidigAdresse.norskAdresse.husnr
+					),
+					obj(
+						'Eiendomsnavn',
+						midlertidigAdresse.norskAdresse && midlertidigAdresse.norskAdresse.eiendomsnavn
+					),
+					obj(
+						'Postboksnummer',
+						midlertidigAdresse.norskAdresse && midlertidigAdresse.norskAdresse.postboksnr
+					),
+					obj(
+						'Postboksanlegg',
+						midlertidigAdresse.norskAdresse && midlertidigAdresse.norskAdresse.postboksAnlegg
+					),
+					obj(
+						'Postnummer',
+						midlertidigAdresse.norskAdresse && midlertidigAdresse.norskAdresse.postnr
+					),
+					obj(
+						'Postlinje 1',
+						midlertidigAdresse.utenlandskAdresse && midlertidigAdresse.utenlandskAdresse.postLinje1
+					),
+					obj(
+						'Postlinje 2',
+						midlertidigAdresse.utenlandskAdresse && midlertidigAdresse.utenlandskAdresse.postLinje2
+					),
+					obj(
+						'Postlinje 3',
+						midlertidigAdresse.utenlandskAdresse && midlertidigAdresse.utenlandskAdresse.postLinje3
+					),
+					obj(
+						'Land',
+						midlertidigAdresse.utenlandskAdresse && midlertidigAdresse.utenlandskAdresse.postLand,
+						AdresseKodeverk.PostadresseLand
+					)
+				]
+			}
+			data.push(midlertidigAdresseObj)
+
+			if (midlertidigAdresse.norskAdresse && midlertidigAdresse.norskAdresse.tilleggsadresse) {
+				const midlertidigTilleggsadresseObj = {
+					header: 'Midlertidig tilleggsadresse',
+					items: [
+						obj(
+							'Tilleggstype',
+							Formatters.showLabel(
+								'tilleggstypeMidlertidig',
+								midlertidigAdresse.norskAdresse.tilleggsadresse.tilleggType
+							)
+						),
+						obj('Nummer', midlertidigAdresse.norskAdresse.tilleggsadresse.nummer)
+					]
+				}
+				data.push(midlertidigTilleggsadresseObj)
+			}
 		}
 
 		if (identHistorikk) {

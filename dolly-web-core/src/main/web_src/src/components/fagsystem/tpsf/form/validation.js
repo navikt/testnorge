@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import _get from 'lodash/get'
-import { isAfter, addDays } from 'date-fns'
+import { isAfter, addDays, isBefore } from 'date-fns'
 import Dataformatter from '~/utils/DataFormatter'
 import {
 	requiredString,
@@ -80,6 +80,62 @@ const adresseNrInfo = Yup.object({
 		then: ifKeyHasValue('$tpsf.boadresse.tilleggsadresse', [undefined], requiredString)
 	})
 }).nullable()
+
+const midlertidigAdresse = Yup.object({
+	adressetype: requiredString,
+	gyldigTom: Yup.string().test(
+		'is-within-one-year-from-today',
+		'Dato må være innen ett år fra i dag',
+		function validDate(dato) {
+			if (!dato) return true
+			const ettAarFraIDag = new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+			const dateValid =
+				isAfter(new Date(dato), addDays(new Date(), -1)) && isBefore(new Date(dato), ettAarFraIDag)
+			return dateValid
+		}
+	),
+	gateadresseNrInfo: Yup.object({
+		nummertype: ifPresent('$tpsf.midlertidigAdresse.gateadresseNrInfo', requiredString),
+		nummer: ifPresent('$tpsf.midlertidigAdresse.gateadresseNrInfo', requiredString)
+	}),
+	norskAdresse: Yup.object({
+		tilleggsadresse: Yup.object({
+			tilleggType: ifPresent(
+				'$tpsf.midlertidigAdresse.norskAdresse.tilleggsadresse.tilleggType',
+				requiredString
+			),
+			nummer: ifKeyHasValue(
+				'$tpsf.midlertidigAdresse.norskAdresse.tilleggsadresse.tilleggType',
+				'BOLIG_NR',
+				requiredString
+			)
+		}),
+		postnr: ifPresent('$tpsf.midlertidigAdresse.norskAdresse.postnr', requiredString),
+		gatenavn: ifKeyHasValue(
+			'$tpsf.midlertidigAdresse.adressetype',
+			['GATE'],
+			ifPresent(
+				'$tpsf.midlertidigAdresse.norskAdresse.gatenavn',
+				Yup.string().required(
+					'Bruk adressevelgeren over for å hente gyldige adresser og velge et av forslagene'
+				)
+			)
+		),
+		gatekode: Yup.string(),
+		husnr: Yup.string(),
+		eiendomsnavn: ifKeyHasValue('$tpsf.midlertidigAdresse.adressetype', 'STED', requiredString),
+		postboksnr: Yup.string()
+			.min(1, 'Feltet er påkrevd')
+			.max(5, 'Nummer kan ha maks fem siffer'),
+		postboksAnlegg: ifKeyHasValue('$tpsf.midlertidigAdresse.adressetype', 'PBOX', requiredString)
+	}),
+	utenlandskAdresse: Yup.object({
+		postLinje1: ifPresent('$tpsf.midlertidigAdresse.utenlandskAdresse', requiredString),
+		postLinje2: Yup.string(),
+		postLinje3: Yup.string(),
+		postLand: ifPresent('$tpsf.midlertidigAdresse.utenlandskAdresse', requiredString)
+	})
+})
 
 export const sivilstander = Yup.array().of(
 	Yup.object({
@@ -320,6 +376,7 @@ export const validation = {
 			).nullable(),
 			boadresse: ifPresent('$tpsf.boadresse', boadresse),
 			adresseNrInfo: ifPresent('$tpsf.adresseNrInfo', adresseNrInfo),
+			midlertidigAdresse: ifPresent('$tpsf.midlertidigAdresse', midlertidigAdresse),
 			postadresse: Yup.array().of(
 				Yup.object({
 					postLinje3: Yup.string().when('postLand', {
