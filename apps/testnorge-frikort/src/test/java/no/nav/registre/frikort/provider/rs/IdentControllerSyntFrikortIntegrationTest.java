@@ -88,7 +88,7 @@ public class IdentControllerSyntFrikortIntegrationTest {
                 .withResponseBody(syntResponse)
                 .stubPost();
 
-        mvc.perform(post("/api/v1/ident/opprett?leggPaaKoe=false")
+        mvc.perform(post("/api/v1/ident/syntetisk?leggPaaKoe=false")
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());

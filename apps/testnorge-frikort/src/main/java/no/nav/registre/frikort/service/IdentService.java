@@ -6,9 +6,13 @@ import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import no.nav.registre.frikort.consumer.rs.response.SyntFrikortResponse;
+import no.nav.registre.frikort.provider.rs.request.EgenandelRequest;
 import no.nav.registre.frikort.provider.rs.request.IdentMedAntallFrikort;
 import no.nav.registre.frikort.provider.rs.request.IdentRequest;
 import no.nav.registre.frikort.provider.rs.response.SyntetiserFrikortResponse;
@@ -23,14 +27,33 @@ public class IdentService {
 
     public List<SyntetiserFrikortResponse> opprettSyntetiskeEgenandeler(
             IdentRequest identRequest,
-            boolean leggPaaKoe
+            boolean leggPaaKoe,
+            boolean validerEgenandel
     ) throws JAXBException {
         var identMap = identRequest.getIdenter().stream().collect(Collectors.toMap(IdentMedAntallFrikort::getIdent, IdentMedAntallFrikort::getAntallFrikort, (a, b) -> b));
 
-        return serviceUtils.hentSyntetiskeEgenandelerOgLeggPaaKoe(identMap, leggPaaKoe);
+        return serviceUtils.hentSyntetiskeEgenandelerOgLeggPaaKoe(identMap, leggPaaKoe, validerEgenandel);
+    }
+
+    public List<SyntetiserFrikortResponse> opprettEgenandeler(
+            List<EgenandelRequest> egenandeler,
+            boolean leggPaaKoe,
+            boolean validerEgenandel
+    ) throws JAXBException {
+        var samhandlerePersondata = serviceUtils.hentSamhandlere();
+        var egenandelMap = egenandeler.stream().collect(Collectors.toMap(EgenandelRequest::getIdent, EgenandelRequest::getEgenandeler, (a, b) -> b));
+        return serviceUtils.konverterTilXMLOgLeggPaaKoe(egenandelMap, samhandlerePersondata, leggPaaKoe, validerEgenandel);
     }
 
     public List<String> hentTilgjengeligeMiljoer() {
         return Collections.singletonList("q2");
+    }
+
+    public Map<String, List<SyntFrikortResponse>> hentSyntetiskeEgenandeler(int antallEgenandeler) {
+        Map<String, Integer> identMap = new HashMap<>();
+        for (int i = 0; i < antallEgenandeler; i++) {
+            identMap.put("IDENT_" + (i + 1), 1);
+        }
+        return serviceUtils.hentSyntetiskeEgenandelerPaginert(identMap);
     }
 }

@@ -39,10 +39,11 @@ public class KonverteringService {
 
     public List<String> konverterEgenandelerTilXmlString(
             Map<String, List<SyntFrikortResponse>> egenandeler,
-            List<PersondataResponse> samhandlerePersondata
+            List<PersondataResponse> samhandlerePersondata,
+            boolean validerEgenandel
     ) throws JAXBException {
         try {
-            var egenandelsmeldingListe = lagEgenandelsmeldingListe(egenandeler, samhandlerePersondata);
+            var egenandelsmeldingListe = lagEgenandelsmeldingListe(egenandeler, samhandlerePersondata, validerEgenandel);
 
             var xmlMeldinger = new ArrayList<String>(egenandelsmeldingListe.size());
             for (var melding : egenandelsmeldingListe) {
@@ -58,14 +59,15 @@ public class KonverteringService {
 
     private List<Egenandelsmelding> lagEgenandelsmeldingListe(
             Map<String, List<SyntFrikortResponse>> egenandeler,
-            List<PersondataResponse> samhandlerePersondata
+            List<PersondataResponse> samhandlerePersondata,
+            boolean validerEgenandel
     ) {
         var egenandelsmeldingListe = new ArrayList<Egenandelsmelding>();
 
         egenandeler.forEach((id, infoListe) -> {
             for (var res : infoListe) {
                 try {
-                    var listeAvEgenandeler = lagEgenandelsListe(res, id);
+                    var listeAvEgenandeler = lagEgenandelsListe(res, id, validerEgenandel);
                     var listeAvSamhandlere = lagSamhandlerListe(res, listeAvEgenandeler, samhandlerePersondata);
 
                     var egenandelsmelding = Egenandelsmelding.builder()
@@ -86,7 +88,8 @@ public class KonverteringService {
 
     private EgenandelListe lagEgenandelsListe(
             SyntFrikortResponse res,
-            String id
+            String id,
+            boolean validerEgenandel
     ) {
         var egenandelListe = new ArrayList<Egenandel>();
 
@@ -103,7 +106,9 @@ public class KonverteringService {
                 .enkeltregningsstatus(res.getEnkeltregningsstatuskode())
                 .build();
 
-        validerEgenandel(egenandel);
+        if (validerEgenandel) {
+            validerEgenandel(egenandel);
+        }
 
         egenandelListe.add(egenandel);
 
