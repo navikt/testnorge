@@ -33,7 +33,7 @@ export const ArenaVisning = ({ data, bestillinger, loading }) => {
 	const arenaBestillinger = bestillinger.filter(bestilling =>
 		bestilling.hasOwnProperty('arenaforvalter')
 	)
-	console.log('bestillinger :>> ', bestillinger)
+
 	const visningData = []
 
 	// Arenaforvalternen returnerer veldig lite informasjon, bruker derfor data fra bestillingen i tillegg
