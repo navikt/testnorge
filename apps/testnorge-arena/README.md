@@ -8,5 +8,5 @@ Applikasjonen har også støtte for å opprette syntetiske historiske vedtak, gj
 Kjør ApplicationStarter med føgende argumenter:
  - -Djavax.net.ssl.trustStore=[path til lokal truststore]
  - -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
- - -DIDA_USERNAME=[brukernavn til IDA-bruker (Z-ident)] 
- - -DIDA_PASSWORD=[passord til IDA-bruker]
+ - -Dspring.cloud.vault.token=(Copy token fra Vault)
+ - -Dspring.profiles.active=dev
