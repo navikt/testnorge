@@ -57,7 +57,7 @@ export const ArenaVisning = ({ data, bestillinger, loading }) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Arena" />
+			<SubOverskrift label="Arena" iconKind="arena" />
 			<div className="person-visning_content">
 				<Historikk component={Visning} data={visningData} />
 			</div>
