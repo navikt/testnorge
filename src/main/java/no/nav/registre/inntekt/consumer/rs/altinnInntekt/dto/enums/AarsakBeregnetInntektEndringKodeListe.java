@@ -1,5 +1,7 @@
 package no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum AarsakBeregnetInntektEndringKodeListe implements AltinnEnum {
     TARIFFENDRING("Tariffendring"),
     FEIL_INNTEKT("FeilInntekt");
@@ -10,6 +12,7 @@ public enum AarsakBeregnetInntektEndringKodeListe implements AltinnEnum {
         this.value = value;
     }
 
+    @JsonValue
     public String getValue() {
         return value;
     }

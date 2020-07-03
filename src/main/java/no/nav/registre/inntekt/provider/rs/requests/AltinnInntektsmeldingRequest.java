@@ -6,7 +6,7 @@ import lombok.Value;
 
 import java.util.List;
 
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.RsAltinnInntektInfo;
+import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.RsInntektsmeldingRequest;
 import no.nav.registre.inntekt.consumer.rs.dokmot.dto.RsJoarkMetadata;
 
 @Value
@@ -19,5 +19,5 @@ public class AltinnInntektsmeldingRequest {
     @JsonProperty
     private RsJoarkMetadata joarkMetadata;
     @JsonProperty
-    private List<RsAltinnInntektInfo> inntekter;
+    private List<RsInntektsmeldingRequest> inntekter;
 }

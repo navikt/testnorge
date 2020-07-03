@@ -13,9 +13,11 @@ import java.util.Objects;
 
 import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.enums.AarsakInnsendingKodeListe;
 import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.enums.YtelseKodeListe;
+import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsArbeidsforhold;
 import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsArbeidsgiver;
 import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsArbeidsgiverPrivat;
 import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsAvsendersystem;
+import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsNaturalytelseDetaljer;
 import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsOmsorgspenger;
 import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsPeriode;
 import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsRefusjon;
@@ -28,7 +30,7 @@ import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsSykepengerIArb
 @ApiModel
 @Value
 @NoArgsConstructor(force = true)
-public class RsAltinnInntektInfo {
+public class RsInntektsmeldingRequest {
 
     @JsonProperty
     @ApiModelProperty(required = true)
@@ -56,7 +58,7 @@ public class RsAltinnInntektInfo {
 
     @JsonProperty
     @ApiModelProperty(value = "Gjeldende arbeidsforhold. \'nillable\' i XSD skjema.", required = true)
-    private RsAltinnArbeidsforhold arbeidsforhold;
+    private RsArbeidsforhold arbeidsforhold;
 
     @JsonProperty
     @ApiModelProperty
@@ -76,11 +78,11 @@ public class RsAltinnInntektInfo {
 
     @JsonProperty
     @ApiModelProperty
-    private List<RsAltinnNaturalytelseDetaljer> opphoerAvNaturalytelseListe;
+    private List<RsNaturalytelseDetaljer> opphoerAvNaturalytelseListe;
 
     @JsonProperty
     @ApiModelProperty
-    private List<RsAltinnNaturalytelseDetaljer> gjenopptakelseNaturalytelseListe;
+    private List<RsNaturalytelseDetaljer> gjenopptakelseNaturalytelseListe;
 
     @JsonProperty
     @ApiModelProperty
@@ -90,11 +92,11 @@ public class RsAltinnInntektInfo {
         return Objects.requireNonNullElse(avsendersystem, new RsAvsendersystem());
     }
 
-    public List<RsAltinnNaturalytelseDetaljer> getOpphoerAvNaturalytelseListe() {
+    public List<RsNaturalytelseDetaljer> getOpphoerAvNaturalytelseListe() {
         return Objects.requireNonNullElse(opphoerAvNaturalytelseListe, Collections.emptyList());
     }
 
-    public List<RsAltinnNaturalytelseDetaljer> getGjenopptakelseNaturalytelseListe() {
+    public List<RsNaturalytelseDetaljer> getGjenopptakelseNaturalytelseListe() {
         return Objects.requireNonNullElse(gjenopptakelseNaturalytelseListe, Collections.emptyList());
     }
 

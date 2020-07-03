@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
+import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.enums.AarsakInnsendingKodeListe;
+import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.enums.YtelseKodeListe;
 
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
@@ -23,10 +25,10 @@ public class RsInntektsmelding {
 
     @JsonProperty
     @ApiModelProperty(required = true)
-    private String ytelse;
+    private YtelseKodeListe ytelse;
     @JsonProperty
     @ApiModelProperty(required = true)
-    private String aarsakTilInnsending;
+    private AarsakInnsendingKodeListe aarsakTilInnsending;
     @JsonProperty
     @Size(min = 11, max = 11)
     @ApiModelProperty(value = "Arbeidstakers fødselsnummer", required = true)
@@ -72,6 +74,9 @@ public class RsInntektsmelding {
     @ApiModelProperty()
     private List<RsPeriode> pleiepengerPerioder;
 
+    public RsAvsendersystem getAvsendersystem() {
+        return Objects.requireNonNullElse(avsendersystem, new RsAvsendersystem());
+    }
 
     public List<RsNaturalytelseDetaljer> getOpphoerAvNaturalytelseListe() {
         return Objects.requireNonNullElse(opphoerAvNaturalytelseListe, Collections.emptyList());

@@ -19,8 +19,7 @@ public class AltinnInntektResponse {
 
     public AltinnInntektResponse(
             String fnr,
-            List<ProsessertInntektDokument> dokumentList,
-            boolean includeXml
+            List<ProsessertInntektDokument> dokumentList
     ) {
         this.fnr = fnr;
         this.dokumenter = dokumentList

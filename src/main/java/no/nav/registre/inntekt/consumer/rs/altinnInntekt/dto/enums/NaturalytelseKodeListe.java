@@ -1,5 +1,7 @@
 package no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum NaturalytelseKodeListe implements AltinnEnum {
     AKSJER_GRUNNFONDSBEVIS_TIL_UNDERKURS("aksjerGrunnfondsbevisTilUnderkurs"),
     LOSJI("losji"),
@@ -27,6 +29,7 @@ public enum NaturalytelseKodeListe implements AltinnEnum {
         this.value = value;
     }
 
+    @JsonValue
     public String getValue() {
         return value;
     }

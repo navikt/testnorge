@@ -1,5 +1,7 @@
 package no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum BegrunnelseIngenEllerRedusertUtbetalingKodeListe implements AltinnEnum {
     LOVLIG_FRAVAER("LovligFravaer"),
     FRAVAER_UTEN_GYLDIG_GRUNN("FravaerUtenGyldigGrunn"),
@@ -20,6 +22,7 @@ public enum BegrunnelseIngenEllerRedusertUtbetalingKodeListe implements AltinnEn
         this.value = value;
     }
 
+    @JsonValue
     public String getValue() {
         return value;
     }

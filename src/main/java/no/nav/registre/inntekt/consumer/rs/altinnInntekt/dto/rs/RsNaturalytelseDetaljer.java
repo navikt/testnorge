@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
+import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.enums.NaturalytelseKodeListe;
 
 import java.time.LocalDate;
 
@@ -19,7 +20,7 @@ public class RsNaturalytelseDetaljer {
 
     @JsonProperty
     @ApiModelProperty
-    private String naturalytelseType;
+    private NaturalytelseKodeListe naturalytelseType;
     @JsonProperty
     @ApiModelProperty(value = "Startdato for naturaytelse", example = "YYYY-MM-DD")
     private LocalDate fom;

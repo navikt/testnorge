@@ -1,5 +1,7 @@
 package no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum AarsakInnsendingKodeListe implements AltinnEnum {
     NY("Ny"),
     ENDRING("Endring");
@@ -10,6 +12,7 @@ public enum AarsakInnsendingKodeListe implements AltinnEnum {
         this.value = value;
     }
 
+    @JsonValue
     public String getValue() {
         return value;
     }

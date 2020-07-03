@@ -14,9 +14,8 @@ public class ProsessertInntektDokumentDTO {
     @JsonProperty
     private final String xml;
 
-    public ProsessertInntektDokumentDTO(ProsessertInntektDokument dokument, boolean includeXml) {
+    public ProsessertInntektDokumentDTO(ProsessertInntektDokument dokument) {
         this.journalpostId = dokument.getJournalpostId();
         this.dokumentInfoId = dokument.getDokumentInfoId();
-        this.xml = includeXml ? dokument.getXml() : null;
     }
 }

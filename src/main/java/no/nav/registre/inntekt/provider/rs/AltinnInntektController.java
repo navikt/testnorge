@@ -39,16 +39,16 @@ public class AltinnInntektController {
     @ResponseBody
     public ResponseEntity<?> genererMeldingForIdent(
             @RequestBody AltinnInntektsmeldingRequest dollyRequest,
-            @RequestParam(value = "valider", required = false, defaultValue = "false") Boolean valider,
-            @RequestParam(value = "includeXml", required = false) Boolean includeXml,
-            @RequestParam(value = "continueOnError", defaultValue = "false") Boolean continueOnError
+            @RequestParam(value = "validerArbeidsfohrold", required = false, defaultValue = "false") Boolean validerArbeidsforhold,
+            @RequestParam(value = "includeXml", required = false, defaultValue = "false") Boolean includeXml,
+            @RequestParam(value = "continueOnError", required = false, defaultValue = "false") Boolean continueOnError
     ) {
         try {
             validerInntektsmelding(dollyRequest);
+            var altinnInntektMeldinger = altinnInntektService.lagAltinnMeldinger(dollyRequest, continueOnError, validerArbeidsforhold, includeXml);
             var altinnInntektResponse = new AltinnInntektResponse(
                     dollyRequest.getArbeidstakerFnr(),
-                    altinnInntektService.lagAltinnMeldinger(dollyRequest, continueOnError, valider),
-                    includeXml != null && includeXml
+                    altinnInntektMeldinger
             );
             return ResponseEntity.ok(altinnInntektResponse);
         } catch (ValidationException e) {

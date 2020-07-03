@@ -19,6 +19,7 @@ import java.util.Objects;
 public class RsAvsendersystem {
     private static final String DEFAULT_SYSTEMNAVN = "ORKESTRATOREN";
     private static final String DEFAULT_SYSTEMVERSJON = "1";
+    private static final String DEFAULT_INNSENDINGSTIDSPUNKT = "9999-12-31T12:00:00";
 
     @JsonProperty(defaultValue = DEFAULT_SYSTEMNAVN)
     @ApiModelProperty
@@ -26,8 +27,8 @@ public class RsAvsendersystem {
     @JsonProperty(defaultValue = DEFAULT_SYSTEMVERSJON)
     @ApiModelProperty
     private String systemversjon;
-    @JsonProperty(defaultValue = "Systemtiden når request blir gitt")
-    @ApiModelProperty(example = "yyyy-MM-ddThh:mm:ss")
+    @JsonProperty(defaultValue = DEFAULT_INNSENDINGSTIDSPUNKT)
+    @ApiModelProperty(value = "Systemtiden når request blir gitt", example = "YYYY-MM-ddThh:mm:ss")
     private LocalDateTime innsendingstidspunkt;
 
     public String getSystemnavn() {

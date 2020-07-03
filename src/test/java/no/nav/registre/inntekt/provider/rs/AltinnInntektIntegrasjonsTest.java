@@ -1,6 +1,9 @@
 package no.nav.registre.inntekt.provider.rs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.enums.AarsakInnsendingKodeListe;
+import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.enums.NaturalytelseKodeListe;
+import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.enums.YtelseKodeListe;
 import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsArbeidsforhold;
 import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsArbeidsgiver;
 import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsAvsendersystem;
@@ -200,8 +203,8 @@ public class AltinnInntektIntegrasjonsTest {
 
     private RsInntektsmelding getPassingMelding() {
         return RsInntektsmelding.builder()
-                .ytelse("Opplaeringspenger")
-                .aarsakTilInnsending("Ny")
+                .ytelse(YtelseKodeListe.OPPLAERINGSPENGER)
+                .aarsakTilInnsending(AarsakInnsendingKodeListe.NY)
                 .arbeidstakerFnr("12345678910")
                 .naerRelasjon(false)
                 .avsendersystem(RsAvsendersystem.builder()
@@ -233,12 +236,12 @@ public class AltinnInntektIntegrasjonsTest {
                 .startdatoForeldrepengeperiode(null)
                 .opphoerAvNaturalytelseListe(Arrays.asList(
                         RsNaturalytelseDetaljer.builder()
-                                .naturalytelseType("elektroniskKommunikasjon")
+                                .naturalytelseType(NaturalytelseKodeListe.ELEKTRONISK_KOMMUNIKASJON)
                                 .fom(LocalDate.parse("1776-08-09"))
                                 .beloepPrMnd(6.02214076)
                                 .build(),
                         RsNaturalytelseDetaljer.builder()
-                                .naturalytelseType("aksjerGrunnfondsbevisTilUnderkurs")
+                                .naturalytelseType(NaturalytelseKodeListe.AKSJER_GRUNNFONDSBEVIS_TIL_UNDERKURS)
                                 .fom(LocalDate.parse("2020-12-25"))
                                 .beloepPrMnd(-3.14159265359)
                                 .build()))
