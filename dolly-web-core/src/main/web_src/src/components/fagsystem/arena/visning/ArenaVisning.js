@@ -1,4 +1,5 @@
 import React from 'react'
+import _get from 'lodash/get'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
@@ -6,6 +7,7 @@ import Loading from '~/components/ui/loading/Loading'
 import { Historikk } from '~/components/ui/historikk/Historikk'
 
 export const Visning = ({ data }) => {
+	if (!data) return null
 	return (
 		<>
 			<TitleValue title="Brukertype" value={data.brukertype} />
@@ -36,7 +38,7 @@ export const ArenaVisning = ({ data, bestillinger, loading }) => {
 
 	// Arenaforvalternen returnerer veldig lite informasjon, bruker derfor data fra bestillingen i tillegg
 	sortedData.forEach((info, idx) => {
-		if (arenaBestillinger[idx].arenaforvalter !== undefined) {
+		if (_get(arenaBestillinger, `[${idx}].arenaforvalter`) !== undefined) {
 			const { kvalifiseringsgruppe, inaktiveringDato, aap115, aap } = arenaBestillinger[
 				idx
 			].arenaforvalter
@@ -55,7 +57,7 @@ export const ArenaVisning = ({ data, bestillinger, loading }) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Arena" />
+			<SubOverskrift label="Arena" iconKind="arena" />
 			<div className="person-visning_content">
 				<Historikk component={Visning} data={visningData} />
 			</div>
