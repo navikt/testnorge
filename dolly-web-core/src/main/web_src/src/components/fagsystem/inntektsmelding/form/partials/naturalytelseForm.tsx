@@ -31,7 +31,7 @@ export default ({ path }: NaturalytelseForm) => (
 						path={`${path}.naturalytelseType`}
 						label="Årsak til innsending"
 						kodeverk={Kodeverk.NaturalYtelse}
-						size="medium"
+						size="xlarge"
 					/>
 				</>
 			)}
@@ -49,7 +49,7 @@ export default ({ path }: NaturalytelseForm) => (
 						path={`${path}.naturalytelseType`}
 						label="Årsak til innsending"
 						kodeverk={Kodeverk.NaturalYtelse}
-						size="medium"
+						size="xlarge"
 					/>
 				</>
 			)}
