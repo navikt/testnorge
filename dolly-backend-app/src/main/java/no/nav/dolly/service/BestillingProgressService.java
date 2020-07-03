@@ -18,7 +18,7 @@ public class BestillingProgressService {
 
 
     public List<BestillingProgress> fetchBestillingProgressByBestillingsIdFromDB(Long bestillingsId) {
-        List<BestillingProgress> progress = bestillingProgressRepository.findBestillingProgressByBestillingIdOrderByBestillingId(bestillingsId);
+        List<BestillingProgress> progress = bestillingProgressRepository.findByBestillingId(bestillingsId);
 
         if (isNull(progress) || progress.isEmpty()) {
             throw new NotFoundException("Kunne ikke finne bestillingsprogress med bestillingId=" + bestillingsId + ", i tabell T_BESTILLINGS_PROGRESS");
@@ -28,6 +28,6 @@ public class BestillingProgressService {
     }
 
     public List<BestillingProgress> fetchBestillingProgressByBestillingId(Long bestillingsId) {
-        return bestillingProgressRepository.findBestillingProgressByBestillingIdOrderByBestillingId(bestillingsId);
+        return bestillingProgressRepository.findByBestillingId(bestillingsId);
     }
 }

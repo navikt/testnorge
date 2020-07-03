@@ -32,9 +32,7 @@ import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingKontrollRepository;
-import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
@@ -49,12 +47,6 @@ public class BestillingServiceTest {
 
     @Mock
     private BestillingKontrollRepository bestillingKontrollRepository;
-
-    @Mock
-    private IdentRepository identRepository;
-
-    @Mock
-    private BestillingProgressRepository bestillingProgressRepository;
 
     @Mock
     private TestgruppeRepository testgruppeRepository;
@@ -134,8 +126,6 @@ public class BestillingServiceTest {
 
         verify(bestillingKontrollRepository).findByBestillingId(BEST_ID);
         verify(bestillingKontrollRepository).save(any(BestillingKontroll.class));
-        verify(identRepository).deleteTestidentsByBestillingId(BEST_ID);
-        verify(bestillingProgressRepository).deleteByBestillingId(BEST_ID);
     }
 
     @Test(expected = NotFoundException.class)

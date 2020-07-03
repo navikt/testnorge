@@ -2,13 +2,13 @@ package no.nav.dolly.domain.resultset.tpsf;
 
 import static java.util.Objects.isNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Setter
 @Builder
@@ -23,5 +23,11 @@ public class CheckStatusResponse {
             statuser = new ArrayList<>();
         }
         return statuser;
+    }
+
+    public boolean isAvailable(String ident) {
+        return getStatuser().stream()
+                .filter(ident1-> ident1.getIdent().equals(ident))
+                .anyMatch(IdentStatus::isAvailable);
     }
 }

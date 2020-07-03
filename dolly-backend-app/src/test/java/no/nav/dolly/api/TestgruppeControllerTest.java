@@ -5,13 +5,11 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -20,14 +18,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
+import no.nav.dolly.bestilling.service.OpprettPersonerByKriterierService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
-import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.provider.api.TestgruppeController;
 import no.nav.dolly.service.BestillingService;
@@ -55,6 +52,9 @@ public class TestgruppeControllerTest {
 
     @Mock
     private PersonService personService;
+
+    @Mock
+    private OpprettPersonerByKriterierService opprettPersonerByKriterierService;
 
     @InjectMocks
     private TestgruppeController testgruppeController;
@@ -117,23 +117,6 @@ public class TestgruppeControllerTest {
         when(bestillingService.saveBestilling(eq(GRUPPE_ID), any(RsDollyBestilling.class), any(RsTpsfUtvidetBestilling.class), eq(ant), eq(null))).thenReturn(bestilling);
 
         testgruppeController.opprettIdentBestilling(GRUPPE_ID, dollyBestillingRequest);
-        verify(dollyBestillingService).opprettPersonerByKriterierAsync(GRUPPE_ID, dollyBestillingRequest, bestilling);
-    }
-
-    @Test
-    public void oppretteIdentBestillingFraEksisterende() {
-        List<String> envir = singletonList("u");
-
-        RsDollyBestillingFraIdenterRequest dollyBestillingsRequest = new RsDollyBestillingFraIdenterRequest();
-        dollyBestillingsRequest.getOpprettFraIdenter().add(IDENT);
-        dollyBestillingsRequest.setTpsf(RsTpsfUtvidetBestilling.builder().build());
-        dollyBestillingsRequest.setEnvironments(envir);
-
-        Bestilling bestilling = Bestilling.builder().id(BESTILLING_ID).build();
-
-        when(bestillingService.saveBestilling(eq(GRUPPE_ID), any(RsDollyBestilling.class), any(RsTpsfBasisBestilling.class), eq(1), anyList())).thenReturn(bestilling);
-
-        testgruppeController.opprettIdentBestillingFraIdenter(GRUPPE_ID, dollyBestillingsRequest);
-        verify(dollyBestillingService).opprettPersonerFraIdenterMedKriterierAsync(GRUPPE_ID, dollyBestillingsRequest, bestilling);
+        verify(opprettPersonerByKriterierService).executeAsync(bestilling);
     }
 }

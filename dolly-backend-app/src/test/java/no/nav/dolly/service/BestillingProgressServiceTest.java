@@ -30,21 +30,21 @@ public class BestillingProgressServiceTest {
 
     @Test(expected = NotFoundException.class)
     public void bestillingProgressKasterExceptionHvisManIkkeFinnerProgress() throws Exception {
-        when(mockRepo.findBestillingProgressByBestillingIdOrderByBestillingId(any())).thenReturn(null);
+        when(mockRepo.findByBestillingId(any())).thenReturn(null);
         progressService.fetchBestillingProgressByBestillingsIdFromDB(null);
     }
 
     @Test
     public void hviFetchBestillingProgressFinnerObjectSåReturnerObjektet() {
         BestillingProgress mock = Mockito.mock(BestillingProgress.class);
-        when(mockRepo.findBestillingProgressByBestillingIdOrderByBestillingId(1l)).thenReturn(Arrays.asList(mock));
+        when(mockRepo.findByBestillingId(1l)).thenReturn(Arrays.asList(mock));
         List<BestillingProgress> bes = progressService.fetchBestillingProgressByBestillingsIdFromDB(1l);
         assertThat(bes.get(0), is(mock));
     }
 
     @Test
     public void hvisFetchProgressSomReturnererTomListeHvisIkkeFunnetIkkeFinnerObjektSåReturnerTomListe() {
-        when(mockRepo.findBestillingProgressByBestillingIdOrderByBestillingId(1l)).thenReturn(new ArrayList<>());
+        when(mockRepo.findByBestillingId(1l)).thenReturn(new ArrayList<>());
         List<BestillingProgress> bes = progressService.fetchBestillingProgressByBestillingId(1l);
         assertThat(bes.isEmpty(), is(true));
     }

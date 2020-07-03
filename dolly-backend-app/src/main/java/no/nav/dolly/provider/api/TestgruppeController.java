@@ -25,6 +25,10 @@ import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
+import no.nav.dolly.bestilling.service.ImportAvPersonerFraTpsService;
+import no.nav.dolly.bestilling.service.LeggTilPaaGruppeService;
+import no.nav.dolly.bestilling.service.OpprettPersonerByKriterierService;
+import no.nav.dolly.bestilling.service.OpprettPersonerFraIdenterMedKriterierService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
@@ -43,10 +47,14 @@ import no.nav.dolly.service.TestgruppeService;
 @RequestMapping(value = "api/v1/gruppe")
 public class TestgruppeController {
 
-    private final TestgruppeService testgruppeService;
-    private final MapperFacade mapperFacade;
-    private final DollyBestillingService dollyBestillingService;
     private final BestillingService bestillingService;
+    private final DollyBestillingService dollyBestillingService;
+    private final MapperFacade mapperFacade;
+    private final ImportAvPersonerFraTpsService importAvPersonerFraTpsService;
+    private final LeggTilPaaGruppeService leggTilPaaGruppeService;
+    private final TestgruppeService testgruppeService;
+    private final OpprettPersonerByKriterierService opprettPersonerByKriterierService;
+    private final OpprettPersonerFraIdenterMedKriterierService opprettPersonerFraIdenterMedKriterierService;
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @Transactional
@@ -109,7 +117,7 @@ public class TestgruppeController {
     public RsBestillingStatus opprettIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingRequest request) {
         Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request, request.getTpsf(), request.getAntall(), null);
 
-        dollyBestillingService.opprettPersonerByKriterierAsync(gruppeId, request, bestilling);
+        opprettPersonerByKriterierService.executeAsync(bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
@@ -121,7 +129,7 @@ public class TestgruppeController {
         Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request, request.getTpsf(),
                 request.getOpprettFraIdenter().size(), request.getOpprettFraIdenter());
 
-        dollyBestillingService.opprettPersonerFraIdenterMedKriterierAsync(gruppeId, request, bestilling);
+        opprettPersonerFraIdenterMedKriterierService.executeAsync(bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
@@ -133,7 +141,7 @@ public class TestgruppeController {
 
         Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request);
 
-        dollyBestillingService.importAvPersonerFraTpsAsync(bestilling);
+        importAvPersonerFraTpsService.executeAsync(bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
@@ -145,7 +153,7 @@ public class TestgruppeController {
 
         Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request);
 
-        dollyBestillingService.leggTilPaaGruppeAsync(bestilling);
+        leggTilPaaGruppeService.executeAsync(bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 }
