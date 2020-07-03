@@ -1,6 +1,7 @@
 package no.nav.registre.frikort.provider.rs;
 
 import static no.nav.registre.frikort.utils.SwaggerUtils.LEGG_PAA_KOE_DESCRIPTION;
+import static no.nav.registre.frikort.utils.SwaggerUtils.VALIDER_EGENANDEL_DESCRIPTION;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -15,8 +16,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.xml.bind.JAXBException;
+import java.util.ArrayList;
 import java.util.List;
 
+import no.nav.registre.frikort.consumer.rs.response.SyntFrikortResponse;
+import no.nav.registre.frikort.provider.rs.request.EgenandelRequest;
 import no.nav.registre.frikort.provider.rs.request.IdentRequest;
 import no.nav.registre.frikort.provider.rs.response.SyntetiserFrikortResponse;
 import no.nav.registre.frikort.service.IdentService;
@@ -29,19 +33,43 @@ public class IdentController {
 
     private final IdentService identService;
 
-    @PostMapping(value = "/ident/opprett")
+    @PostMapping(value = "/ident/syntetisk")
     @ApiOperation(value = "Generer syntetiske egenandelsmeldinger som XML string på gitte identer.")
     public ResponseEntity<List<SyntetiserFrikortResponse>> genererEgenandelsmeldinger(
             @RequestBody() IdentRequest identRequest,
             @ApiParam(value = LEGG_PAA_KOE_DESCRIPTION)
-            @RequestParam(defaultValue = "true") boolean leggPaaKoe
+            @RequestParam(defaultValue = "true") boolean leggPaaKoe,
+            @RequestParam(defaultValue = "false", required = false) boolean validerEgenandel
     ) throws JAXBException {
-        return ResponseEntity.ok(identService.opprettSyntetiskeEgenandeler(identRequest, leggPaaKoe));
+        return ResponseEntity.ok(identService.opprettSyntetiskeEgenandeler(identRequest, leggPaaKoe, validerEgenandel));
+    }
+
+    @PostMapping(value = "/ident")
+    @ApiOperation(value = "Generer egenandelsmeldinger som XML og legg på kø.")
+    public ResponseEntity<List<SyntetiserFrikortResponse>> opprettEgenandelsmeldinger(
+            @RequestBody() List<EgenandelRequest> egenandeler,
+            @ApiParam(value = LEGG_PAA_KOE_DESCRIPTION)
+            @RequestParam(defaultValue = "true") boolean leggPaaKoe,
+            @ApiParam(value = VALIDER_EGENANDEL_DESCRIPTION)
+            @RequestParam(defaultValue = "false", required = false) boolean validerEgenandel
+    ) throws JAXBException {
+        return ResponseEntity.ok(identService.opprettEgenandeler(egenandeler, leggPaaKoe, validerEgenandel));
+    }
+
+    @GetMapping("/syntetiskData")
+    @ApiOperation(value = "Her kan man hente syntetiske egenandeler på json-format.")
+    public ResponseEntity<List<SyntFrikortResponse>> hentSyntetiskeEgenandeler(
+            @RequestParam Integer antallEgenandeler
+    ) {
+        var identerMedEgenandeler = identService.hentSyntetiskeEgenandeler(antallEgenandeler);
+        var syntetiskeEgenandeler = new ArrayList<SyntFrikortResponse>();
+        identerMedEgenandeler.forEach((key, value) -> syntetiskeEgenandeler.addAll(value));
+        return ResponseEntity.ok(syntetiskeEgenandeler);
     }
 
     @GetMapping("/miljoer")
     @ApiOperation(value = "Her kan man sjekke hvilke miljøer frikort er tilgjengelig i.")
-    public List<String> hentTilgjengeligeMiljoer() {
-        return identService.hentTilgjengeligeMiljoer();
+    public ResponseEntity<List<String>> hentTilgjengeligeMiljoer() {
+        return ResponseEntity.ok(identService.hentTilgjengeligeMiljoer());
     }
 }

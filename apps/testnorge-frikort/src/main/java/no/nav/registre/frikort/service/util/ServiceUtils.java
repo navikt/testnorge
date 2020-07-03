@@ -37,25 +37,22 @@ public class ServiceUtils {
 
     public List<SyntetiserFrikortResponse> hentSyntetiskeEgenandelerOgLeggPaaKoe(
             Map<String, Integer> identMap,
-            boolean leggPaaKoe
+            boolean leggPaaKoe,
+            boolean validerEgenandel
     ) throws JAXBException {
-        var samhandlere = hodejegerenConsumer.get(AVSPILLERGRUPPE_SAMHANDLERE);
-        var samhandlerePersondata = new ArrayList<PersondataResponse>();
-        for (var samhandler : samhandlere) {
-            try {
-                samhandlerePersondata.add(hodejegerenConsumer.getPersondata(samhandler, MILJOE_SAMHANDLERE));
-            } catch (RuntimeException e) {
-                log.error("Kunne ikke hente samhandler", e);
-            }
-        }
-
-        if (samhandlerePersondata.isEmpty()) {
-            throw new RuntimeException("Kunne ikke hente noen samhandlere");
-        }
-
+        var samhandlerePersondata = hentSamhandlere();
         var egenandeler = hentSyntetiskeEgenandelerPaginert(identMap);
+        return konverterTilXMLOgLeggPaaKoe(egenandeler, samhandlerePersondata, leggPaaKoe, validerEgenandel);
+    }
 
-        var xmlMeldinger = konverteringService.konverterEgenandelerTilXmlString(egenandeler, samhandlerePersondata);
+    public List<SyntetiserFrikortResponse> konverterTilXMLOgLeggPaaKoe(
+            Map<String, List<SyntFrikortResponse>> egenandeler,
+            List<PersondataResponse> samhandlerePersondata,
+            boolean leggPaaKoe,
+            boolean validerEgenandel
+    )
+            throws JAXBException {
+        var xmlMeldinger = konverteringService.konverterEgenandelerTilXmlString(egenandeler, samhandlerePersondata, validerEgenandel);
 
         var opprettedeEgenandeler = xmlMeldinger.stream().map(xmlMelding -> SyntetiserFrikortResponse.builder()
                 .xml(xmlMelding)
@@ -69,7 +66,7 @@ public class ServiceUtils {
         return opprettedeEgenandeler;
     }
 
-    private Map<String, List<SyntFrikortResponse>> hentSyntetiskeEgenandelerPaginert(Map<String, Integer> identMap) {
+    public Map<String, List<SyntFrikortResponse>> hentSyntetiskeEgenandelerPaginert(Map<String, Integer> identMap) {
         var egenandeler = new HashMap<String, List<SyntFrikortResponse>>();
         var paginertMap = new HashMap<String, Integer>();
         int parsedSize = 0;
@@ -89,5 +86,25 @@ public class ServiceUtils {
             }
         }
         return egenandeler;
+    }
+
+    public List<PersondataResponse> hentSamhandlere() {
+        var samhandlere = hodejegerenConsumer.get(AVSPILLERGRUPPE_SAMHANDLERE);
+        var samhandlerePersondata = new ArrayList<PersondataResponse>();
+        for (var samhandler : samhandlere) {
+            try {
+                samhandlerePersondata.add(hodejegerenConsumer.getPersondata(samhandler, MILJOE_SAMHANDLERE));
+                if (samhandlerePersondata.size() == 10) {
+                    break;
+                }
+            } catch (RuntimeException e) {
+                log.error("Kunne ikke hente samhandler", e);
+            }
+        }
+
+        if (samhandlerePersondata.isEmpty()) {
+            throw new RuntimeException("Kunne ikke hente noen samhandlere");
+        }
+        return samhandlerePersondata;
     }
 }
