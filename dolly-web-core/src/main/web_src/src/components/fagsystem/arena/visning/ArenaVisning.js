@@ -7,7 +7,7 @@ import Loading from '~/components/ui/loading/Loading'
 import { Historikk } from '~/components/ui/historikk/Historikk'
 
 export const Visning = ({ data }) => {
-	if (!data || data.length < 1) return null
+	if (!data) return null
 	return (
 		<>
 			<TitleValue title="Brukertype" value={data.brukertype} />
@@ -33,12 +33,12 @@ export const ArenaVisning = ({ data, bestillinger, loading }) => {
 	const arenaBestillinger = bestillinger.filter(bestilling =>
 		bestilling.hasOwnProperty('arenaforvalter')
 	)
-
+	console.log('bestillinger :>> ', bestillinger)
 	const visningData = []
 
 	// Arenaforvalternen returnerer veldig lite informasjon, bruker derfor data fra bestillingen i tillegg
 	sortedData.forEach((info, idx) => {
-		if (_get(arenaBestillinger, '[idx].arenaforvalter') !== undefined) {
+		if (_get(arenaBestillinger, `[${idx}].arenaforvalter`) !== undefined) {
 			const { kvalifiseringsgruppe, inaktiveringDato, aap115, aap } = arenaBestillinger[
 				idx
 			].arenaforvalter
