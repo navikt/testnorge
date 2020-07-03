@@ -43,9 +43,9 @@ public class InntektsmeldingDTO implements ToXmlElement<XMLInntektsmeldingM> {
     @JsonProperty
     private LocalDate startdatoForeldrepengeperiode;
     @JsonProperty
-    private List<NaturaYtelseDetaljerDTO> opphoerAvNaturalytelseListe;
+    private List<NaturalYtelseDetaljerDTO> opphoerAvNaturalytelseListe;
     @JsonProperty
-    private List<NaturaYtelseDetaljerDTO> gjenopptakelseNaturalytelseListe;
+    private List<NaturalYtelseDetaljerDTO> gjenopptakelseNaturalytelseListe;
     @JsonProperty
     private List<PeriodeDTO> pleiepengerPerioder;
 
@@ -63,7 +63,7 @@ public class InntektsmeldingDTO implements ToXmlElement<XMLInntektsmeldingM> {
 
         if (opphoerAvNaturalytelseListe != null) {
             XMLOpphoerAvNaturalytelseListe xmlOpphoerAvNaturalytelseListe = factory.createXMLOpphoerAvNaturalytelseListe();
-            xmlOpphoerAvNaturalytelseListe.withOpphoerAvNaturalytelse(NaturaYtelseDetaljerDTO.covert(opphoerAvNaturalytelseListe));
+            xmlOpphoerAvNaturalytelseListe.withOpphoerAvNaturalytelse(NaturalYtelseDetaljerDTO.covert(opphoerAvNaturalytelseListe));
             xmlSkjemainnhold.setOpphoerAvNaturalytelseListe(
                     factory.createXMLSkjemainnholdOpphoerAvNaturalytelseListe(xmlOpphoerAvNaturalytelseListe)
             );
@@ -71,7 +71,7 @@ public class InntektsmeldingDTO implements ToXmlElement<XMLInntektsmeldingM> {
 
         if (gjenopptakelseNaturalytelseListe != null) {
             XMLGjenopptakelseNaturalytelseListe xmlGjenopptakelseNaturalytelseListe = factory.createXMLGjenopptakelseNaturalytelseListe();
-            xmlGjenopptakelseNaturalytelseListe.withNaturalytelseDetaljer(NaturaYtelseDetaljerDTO.covert(gjenopptakelseNaturalytelseListe));
+            xmlGjenopptakelseNaturalytelseListe.withNaturalytelseDetaljer(NaturalYtelseDetaljerDTO.covert(gjenopptakelseNaturalytelseListe));
             xmlSkjemainnhold.setGjenopptakelseNaturalytelseListe(
                     factory.createXMLSkjemainnholdGjenopptakelseNaturalytelseListe(xmlGjenopptakelseNaturalytelseListe)
             );
