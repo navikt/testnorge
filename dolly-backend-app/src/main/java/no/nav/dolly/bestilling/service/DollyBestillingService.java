@@ -35,13 +35,9 @@ import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
-import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
-import no.nav.dolly.domain.resultset.tpsf.IdentStatus;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsSkdMeldingResponse;
@@ -160,47 +156,6 @@ public class DollyBestillingService {
             counterCustomRegistry.invoke(bestKriterier);
             clientRegisters.forEach(clientRegister ->
                     clientRegister.gjenopprett(bestKriterier, tpsPerson, progress, isOpprettEndre));
-    }
-
-    private void oppdaterBestilling(Bestilling bestilling, CheckStatusResponse tilgjengeligeIdenter) {
-        bestilling.setAntallIdenter((int) tilgjengeligeIdenter.getStatuser().stream().filter(IdentStatus::isAvailable).count());
-        tilgjengeligeIdenter.getStatuser().forEach(identStatus -> {
-            if (!identStatus.isAvailable()) {
-                oppdaterProgress(bestilling, BestillingProgress.builder()
-                        .bestillingId(bestilling.getId())
-                        .ident(identStatus.getIdent().length() <= 11 ? identStatus.getIdent() :
-                                format("%s*%s", identStatus.getIdent().substring(0, 6),
-                                        identStatus.getIdent().substring(identStatus.getIdent().length() - 4, identStatus.getIdent().length())))
-                        .feil(format("Miljø: %s", identStatus.getStatus()))
-                        .build());
-            }
-        });
-    }
-
-    private void preparePerson(RsDollyBestilling request, Bestilling bestilling, Testgruppe testgruppe, TpsfBestilling tpsfBestilling) {
-
-        try {
-            List<String> leverteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
-
-            TpsPerson tpsPerson = buildTpsPerson(bestilling, leverteIdenter, null);
-
-            BestillingProgress progress = new BestillingProgress(bestilling.getId(), tpsPerson.getHovedperson());
-
-            sendIdenterTilTPS(request.getEnvironments(), leverteIdenter, testgruppe, progress);
-
-            RsDollyUtvidetBestilling bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyUtvidetBestilling.class);
-            bestKriterier.setEnvironments(request.getEnvironments());
-            if (nonNull(bestilling.getTpsfKriterier())) {
-                bestKriterier.setTpsf(objectMapper.readValue(bestilling.getTpsfKriterier(), RsTpsfUtvidetBestilling.class));
-            }
-            counterCustomRegistry.invoke(bestKriterier);
-            clientRegisters.forEach(clientRegister -> clientRegister.gjenopprett(bestKriterier, tpsPerson, progress, false));
-
-            oppdaterProgress(bestilling, progress);
-
-        } catch (IOException e) {
-            log.error("Feilet å lese bestillingskriterier", e);
-        }
     }
 
     protected TpsPerson buildTpsPerson(Bestilling bestilling, List<String> leverteIdenter, List<Person> personer) {

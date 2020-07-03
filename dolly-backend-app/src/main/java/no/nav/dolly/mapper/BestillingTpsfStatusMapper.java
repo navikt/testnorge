@@ -47,7 +47,7 @@ public final class BestillingTpsfStatusMapper {
                 singletonList(RsStatusRapport.builder().id(TPSF).navn(TPSF.getBeskrivelse())
                         .statuser(errorEnvIdents.entrySet().stream().map(status ->
                                 RsStatusRapport.Status.builder()
-                                        .melding(status.getKey().replace("=", ":"))
+                                        .melding(status.getKey().replace('=', ':'))
                                         .detaljert(status.getValue().entrySet().stream()
                                                 .map(detaljert -> RsStatusRapport.Detaljert.builder()
                                                         .miljo(detaljert.getKey())
