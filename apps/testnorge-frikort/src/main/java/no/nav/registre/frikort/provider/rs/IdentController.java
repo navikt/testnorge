@@ -39,9 +39,10 @@ public class IdentController {
             @RequestBody() IdentRequest identRequest,
             @ApiParam(value = LEGG_PAA_KOE_DESCRIPTION)
             @RequestParam(defaultValue = "true") boolean leggPaaKoe,
-            @RequestParam(defaultValue = "false", required = false) boolean validerEgenandel
+            @ApiParam(value = VALIDER_EGENANDEL_DESCRIPTION)
+            @RequestParam(defaultValue = "true", required = false) boolean validerEgenandeler
     ) throws JAXBException {
-        return ResponseEntity.ok(identService.opprettSyntetiskeEgenandeler(identRequest, leggPaaKoe, validerEgenandel));
+        return ResponseEntity.ok(identService.opprettSyntetiskeEgenandeler(identRequest, leggPaaKoe, validerEgenandeler));
     }
 
     @PostMapping(value = "/ident")
@@ -49,19 +50,19 @@ public class IdentController {
     public ResponseEntity<List<SyntetiserFrikortResponse>> opprettEgenandelsmeldinger(
             @RequestBody() List<EgenandelRequest> egenandeler,
             @ApiParam(value = LEGG_PAA_KOE_DESCRIPTION)
-            @RequestParam(defaultValue = "true") boolean leggPaaKoe,
-            @ApiParam(value = VALIDER_EGENANDEL_DESCRIPTION)
-            @RequestParam(defaultValue = "false", required = false) boolean validerEgenandel
+            @RequestParam(defaultValue = "true") boolean leggPaaKoe
     ) throws JAXBException {
-        return ResponseEntity.ok(identService.opprettEgenandeler(egenandeler, leggPaaKoe, validerEgenandel));
+        return ResponseEntity.ok(identService.opprettEgenandeler(egenandeler, leggPaaKoe));
     }
 
     @GetMapping("/syntetiskData")
     @ApiOperation(value = "Her kan man hente syntetiske egenandeler på json-format.")
     public ResponseEntity<List<SyntFrikortResponse>> hentSyntetiskeEgenandeler(
-            @RequestParam Integer antallEgenandeler
+            @RequestParam Integer antallEgenandeler,
+            @ApiParam(value = VALIDER_EGENANDEL_DESCRIPTION)
+            @RequestParam(defaultValue = "true", required = false) boolean validerEgenandeler
     ) {
-        var identerMedEgenandeler = identService.hentSyntetiskeEgenandeler(antallEgenandeler);
+        var identerMedEgenandeler = identService.hentSyntetiskeEgenandeler(antallEgenandeler, validerEgenandeler);
         var syntetiskeEgenandeler = new ArrayList<SyntFrikortResponse>();
         identerMedEgenandeler.forEach((key, value) -> syntetiskeEgenandeler.addAll(value));
         return ResponseEntity.ok(syntetiskeEgenandeler);
