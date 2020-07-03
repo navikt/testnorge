@@ -19,12 +19,16 @@ public class TestnorgeFrikortService {
     private final TestnorgeFrikortConsumer testnorgeFrikortConsumer;
 
     public List<GenererFrikortResponse> genererFrikortEgenmeldinger(SyntetiserFrikortRequest syntetiserFrikortRequest) {
+        int antallLagtPaKoeOk = 0;
         var genererFrikortResponse = testnorgeFrikortConsumer.startSyntetisering(syntetiserFrikortRequest);
         for (var egenandel : genererFrikortResponse) {
             if (LeggPaaKoeStatus.ERROR == egenandel.getLagtPaaKoe()) {
                 log.error("Kunne ikke legge egenandel på kø. Feilende xml: {}", egenandel.getXml());
+            } else if (LeggPaaKoeStatus.OK == egenandel.getLagtPaaKoe()) {
+                antallLagtPaKoeOk++;
             }
         }
+        log.info("{} syntetiske egenandeler ble lagt på kø", antallLagtPaKoeOk);
         return genererFrikortResponse;
     }
 }
