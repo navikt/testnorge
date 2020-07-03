@@ -85,7 +85,7 @@ export const DollySelect = props => (
 	</InputWrapper>
 )
 
-const P_FormikSelect = ({ fastfield, ...props }) => (
+const P_FormikSelect = ({ fastfield, feil, ...props }) => (
 	<FormikField name={props.name} fastfield={fastfield}>
 		{({ field, form, meta }) => {
 			const handleChange = (selected, meta) => {
@@ -117,7 +117,7 @@ const P_FormikSelect = ({ fastfield, ...props }) => (
 					value={field.value}
 					onChange={handleChange}
 					onBlur={handleBlur}
-					feil={fieldError(meta)}
+					feil={feil || fieldError(meta)}
 					{...props}
 				/>
 			)

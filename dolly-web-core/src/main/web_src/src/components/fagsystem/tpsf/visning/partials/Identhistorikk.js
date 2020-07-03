@@ -4,7 +4,7 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 
 export const Identhistorikk = ({ identhistorikk, visTittel = true }) => {
-	if (!identhistorikk) return false
+	if (!identhistorikk || identhistorikk.length < 1) return false
 
 	return (
 		<div>

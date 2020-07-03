@@ -17,7 +17,12 @@ const ikonTypeMap = {
 	Stoppet: 'report-problem-triangle'
 }
 
-export default function BestillingListe({ bestillinger, searchActive, isFetchingBestillinger }) {
+export default function BestillingListe({
+	bestillinger,
+	searchActive,
+	isFetchingBestillinger,
+	iLaastGruppe
+}) {
 	if (isFetchingBestillinger) return <Loading label="Laster bestillinger" panel />
 	if (!bestillinger) return null
 
@@ -74,7 +79,9 @@ export default function BestillingListe({ bestillinger, searchActive, isFetching
 			data={sortedBestillinger}
 			columns={columns}
 			iconItem={<BestillingIconItem />}
-			onExpand={bestilling => <BestillingDetaljer bestilling={bestilling} />}
+			onExpand={bestilling => (
+				<BestillingDetaljer bestilling={bestilling} iLaastGruppe={iLaastGruppe} />
+			)}
 			pagination
 		/>
 	)

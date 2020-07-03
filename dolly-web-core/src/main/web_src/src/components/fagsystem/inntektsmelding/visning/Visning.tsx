@@ -15,7 +15,7 @@ import RefusjonVisning from './partials/refusjonVisning'
 import SykepengerVisning from './partials/sykepengerVisning'
 import PleiepengerVisning from './partials/pleiepengerVisning'
 import NaturalytelseVisning from './partials/naturalytelseVisning'
-import JournalpostidVisning from './partials/journalpostidVisning'
+import JournalpostidVisning from '~/components/journalpostid/journalpostidVisning'
 
 interface InntektsmeldingVisning {
 	liste: Array<Inntektsmelding>
@@ -118,7 +118,7 @@ const EnkelInntektsmeldingVisning = ({ data, ident }: EnkelInntektsmelding) => (
 					data={inntekt.opphoerAvNaturalytelseListe}
 					header="Opphør av naturalytelse"
 				/>
-				<JournalpostidVisning ident={ident} />
+				<JournalpostidVisning system="INNTKMELD" ident={ident} />
 			</>
 		)}
 	</DollyFieldArray>

@@ -14,7 +14,8 @@ import {
 	AaregVisning,
 	UdiVisning,
 	InntektsmeldingVisning,
-	BrregVisning
+	BrregVisning,
+	DokarkivVisning
 } from '~/components/fagsystem'
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
@@ -31,7 +32,8 @@ export const PersonVisning = ({
 	bestillingsListe,
 	loading,
 	slettPerson,
-	leggTilPaaPerson
+	leggTilPaaPerson,
+	iLaastGruppe
 }) => {
 	useMount(fetchDataFraFagsystemer)
 
@@ -59,18 +61,24 @@ export const PersonVisning = ({
 				data={UdiVisning.filterValues(data.udistub, bestilling.bestilling.udistub)}
 				loading={loading.udistub}
 			/>
+			<DokarkivVisning data={DokarkivVisning.filterValues(bestillingsListe)} ident={ident.ident} />
 			<TidligereBestillinger ids={ident.bestillingId} />
-			<BeskrivelseConnector ident={ident} />
+			<BeskrivelseConnector ident={ident} iLaastGruppe={iLaastGruppe} />
 			<div className="person-visning_actions">
-				<Button onClick={() => leggTilPaaPerson(data)} kind="add-circle">
-					LEGG TIL
-				</Button>
-
-				<LeggTilRelasjonModal environments={bestilling.environments} personInfo={data.tpsf} />
+				{!iLaastGruppe && (
+					<Button onClick={() => leggTilPaaPerson(data)} kind="add-circle">
+						LEGG TIL
+					</Button>
+				)}
+				{!iLaastGruppe && (
+					<LeggTilRelasjonModal environments={bestilling.environments} personInfo={data.tpsf} />
+				)}
 				<BestillingSammendragModal bestilling={bestilling} />
-				<SlettButton action={slettPerson} loading={loading.slettPerson}>
-					Er du sikker på at du vil slette denne personen?
-				</SlettButton>
+				{!iLaastGruppe && (
+					<SlettButton action={slettPerson} loading={loading.slettPerson}>
+						Er du sikker på at du vil slette denne personen?
+					</SlettButton>
+				)}
 			</div>
 		</div>
 	)

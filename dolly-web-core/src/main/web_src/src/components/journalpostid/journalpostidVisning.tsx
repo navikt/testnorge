@@ -7,6 +7,7 @@ import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 
 interface JournalpostId {
+	system: string
 	ident: string
 }
 
@@ -15,10 +16,10 @@ type Response = {
 	transaksjonId: string
 }
 
-export default ({ ident }: JournalpostId) => (
+export default ({ system, ident }: JournalpostId) => (
 	<LoadableComponent
 		onFetch={() =>
-			DollyApi.getTransaksjonid('INNTKMELD', ident).then(
+			DollyApi.getTransaksjonid(system, ident).then(
 				({ data }): Array<Response> =>
 					data.map((id: Response) => ({
 						transaksjonId: id.transaksjonId,

@@ -949,8 +949,32 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		])
 	})
 
-	if (inntektsmeldingKriterier)
-		data.push(mapInntektsmeldingKriterier(inntektsmeldingKriterier.inntekter))
+	const tomInntektsmelding = {
+		header: 'Inntektsmelding (fra Altinn)',
+		items: [obj('Inntektsmelding', 'Tom bestilling')]
+	}
+
+	if (inntektsmeldingKriterier) {
+		if (_isEmpty(inntektsmeldingKriterier.inntekter)) {
+			data.push(tomInntektsmelding)
+		} else data.push(mapInntektsmeldingKriterier(inntektsmeldingKriterier.inntekter))
+	}
+
+	const dokarkivKriterier = bestillingData.dokarkiv
+
+	if (dokarkivKriterier) {
+		const dokarkiv = {
+			header: 'Dokumenter',
+			items: [
+				obj('Brevkode', dokarkivKriterier.dokumenter[0].brevkode),
+				obj('Tittel', dokarkivKriterier.tittel),
+				obj('Tema', dokarkivKriterier.tema),
+				obj('Journalførende enhet', dokarkivKriterier.journalfoerendeEnhet)
+			]
+		}
+
+		data.push(dokarkiv)
+	}
 
 	return data
 }

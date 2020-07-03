@@ -1,22 +1,46 @@
 import React, { Fragment } from 'react'
 import Button from '~/components/ui/button/Button'
 import useBoolean from '~/utils/hooks/useBoolean'
+import Hjelpetekst from '~/components/hjelpetekst'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
 import FavoriteButtonConnector from '~/components/ui/button/FavoriteButton/FavoriteButtonConnector'
 import { EksporterCSV } from '~/pages/gruppe/EksporterCSV/EksporterCSV'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
+import { LaasButton } from '~/components/ui/button/LaasButton/LaasButton.tsx'
 import { Header } from '~/components/ui/header/Header'
 import Formatters from '~/utils/DataFormatter'
 
 import './GruppeHeader.less'
 
-export default function GruppeHeader({ gruppe, identArray, isDeletingGruppe, deleteGruppe }) {
+export default function GruppeHeader({
+	gruppe,
+	identArray,
+	isDeletingGruppe,
+	deleteGruppe,
+	laasGruppe,
+	isLockingGruppe
+}) {
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
+
+	const erLaast = gruppe.erLaast
+
+	const headerClass = erLaast ? 'gruppe-header-laast' : 'gruppe-header'
+	const gruppeNavn = erLaast ? `${gruppe.navn} (låst)` : gruppe.navn
+	const iconType = erLaast ? 'lockedGroup' : 'group'
 
 	return (
 		<Fragment>
-			<h1>{gruppe.navn}</h1>
-			<Header className="gruppe-header" icon="group">
+			<div className="page-header flexbox--align-center">
+				<h1>{gruppeNavn}</h1>
+				{erLaast && (
+					<Hjelpetekst hjelpetekstFor="Låst gruppe" type="under">
+						Denne gruppen er låst. Låste grupper er velegnet for å dele med eksterne samhandlere
+						fordi de ikke kan endres, og blir heller ikke påvirket av prodlast i samhandlermiljøet
+						(Q1). Kontakt team Dolly dersom du ønsker å låse opp gruppen.
+					</Hjelpetekst>
+				)}
+			</div>
+			<Header className={headerClass} icon={iconType}>
 				<div className="flexbox">
 					<Header.TitleValue title="Eier" value={gruppe.opprettetAvNavIdent} />
 					<Header.TitleValue title="Antall personer" value={identArray.length} />
@@ -30,15 +54,26 @@ export default function GruppeHeader({ gruppe, identArray, isDeletingGruppe, del
 					/>
 					<Header.TitleValue title="Hensikt" value={gruppe.hensikt} />
 				</div>
-				<div className="gruppe-header_actions">
-					{gruppe.erEierAvGruppe && (
+				<div className="gruppe-header__actions">
+					{gruppe.erEierAvGruppe && !erLaast && (
 						<Button kind="edit" onClick={visRediger}>
 							REDIGER
 						</Button>
 					)}
-					<SlettButton action={deleteGruppe} loading={isDeletingGruppe}>
-						Er du sikker på at du vil slette denne gruppen?
-					</SlettButton>
+					{!erLaast && (
+						<LaasButton action={laasGruppe} loading={isLockingGruppe}>
+							Er du sikker på at du vil låse denne gruppen? <br />
+							En gruppe som er låst kan ikke endres, og blir heller ikke <br />
+							påvirket av prodlast i samhandlermiljøet (Q1). <br />
+							Når gruppen er låst må du kontakte team Dolly <br />
+							dersom du ønsker å låse den opp igjen.
+						</LaasButton>
+					)}
+					{!erLaast && (
+						<SlettButton action={deleteGruppe} loading={isDeletingGruppe}>
+							Er du sikker på at du vil slette denne gruppen?
+						</SlettButton>
+					)}
 					<EksporterCSV identer={identArray} gruppeId={gruppe.id} />
 					{!gruppe.erEierAvGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
 				</div>

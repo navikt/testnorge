@@ -12,6 +12,7 @@ import { KontaktDoedsboPanel } from './paneler/KontaktDoedsbo'
 import { ArenaPanel } from './paneler/Arena'
 import { UdiPanel } from './paneler/Udi'
 import { BrregPanel } from './paneler/Brreg'
+import { DokarkivPanel } from './paneler/Dokarkiv'
 
 export const Steg1 = ({ stateModifier }) => {
 	const opts = useContext(BestillingsveilederContext)
@@ -28,7 +29,8 @@ export const Steg1 = ({ stateModifier }) => {
 		InstitusjonsoppholdPanel,
 		KontaktReservasjonsPanel,
 		ArenaPanel,
-		UdiPanel
+		UdiPanel,
+		DokarkivPanel
 	]
 		.map(panel => ({
 			label: panel.heading,
@@ -49,6 +51,7 @@ export const Steg1 = ({ stateModifier }) => {
 			<KontaktReservasjonsPanel stateModifier={stateModifier} />
 			<ArenaPanel stateModifier={stateModifier} />
 			<UdiPanel stateModifier={stateModifier} />
+			<DokarkivPanel stateModifier={stateModifier} />
 		</AttributtVelger>
 	)
 }

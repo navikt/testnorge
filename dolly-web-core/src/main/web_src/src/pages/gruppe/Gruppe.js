@@ -18,12 +18,14 @@ const VISNING_BESTILLING = 'bestilling'
 export default function Gruppe({
 	getGruppe,
 	deleteGruppe,
+	laasGruppe,
 	getBestillinger,
 	gruppe,
 	identer,
 	zBruker,
 	isFetching,
 	isDeletingGruppe,
+	isLockingGruppe,
 	match,
 	history
 }) {
@@ -53,6 +55,8 @@ export default function Gruppe({
 		return new Set(iterable).size
 	}
 
+	const erLaast = gruppe.erLaast
+
 	return (
 		<div className="gruppe-container">
 			<GruppeHeader
@@ -60,12 +64,19 @@ export default function Gruppe({
 				identArray={identArray}
 				deleteGruppe={deleteGruppe}
 				isDeletingGruppe={isDeletingGruppe}
+				laasGruppe={laasGruppe}
+				isLockingGruppe={isLockingGruppe}
 			/>
 
 			<StatusListeConnector gruppeId={gruppe.id} />
 
 			<div className="toolbar">
-				<NavButton type="hoved" onClick={visStartBestilling}>
+				<NavButton
+					type="hoved"
+					onClick={visStartBestilling}
+					disabled={erLaast}
+					title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
+				>
 					Opprett personer
 				</NavButton>
 
@@ -94,8 +105,8 @@ export default function Gruppe({
 				/>
 			)}
 
-			{visning === VISNING_PERSONER && <PersonListeConnector />}
-			{visning === VISNING_BESTILLING && <BestillingListeConnector />}
+			{visning === VISNING_PERSONER && <PersonListeConnector iLaastGruppe={erLaast} />}
+			{visning === VISNING_BESTILLING && <BestillingListeConnector iLaastGruppe={erLaast} />}
 		</div>
 	)
 }

@@ -6,6 +6,7 @@ import Trashcan from '~/assets/icons/nav-ikoner/line/SVG/01-edition/bin-1.svg'
 import EditIcon from '~/assets/icons/nav-ikoner/line/SVG/01-edition/pencil-2.svg'
 import Search from '~/assets/icons/nav-ikoner/line/SVG/01-edition/search.svg'
 import Skull from '~/assets/icons/nav-ikoner/line/SVG/01-edition/skull-1.svg'
+import Lock from '~/assets/icons/nav-ikoner/line/SVG/01-edition/line-version-lock-close-2.svg'
 import ChatBubble from '~/assets/icons/nav-ikoner/line/SVG/06-comment-chat/bubble-chat-1.svg'
 import ThumbsUp from '~/assets/icons/nav-ikoner/line/SVG/05-votes-rewards/filled-version-thumbs-up-2.svg'
 import ThumbsDown from '~/assets/icons/nav-ikoner/line/SVG/05-votes-rewards/filled-version-thumbs-down-2.svg'
@@ -25,6 +26,7 @@ import FileChecklistLight from '~/assets/icons/nav-ikoner/line/SVG/17-files/file
 import FileRefresh from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-refresh.svg'
 // import NewFile from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-new-1.svg'
 import NewFile from '~/assets/icons/nav-ikoner/filled/SVG/17-files/file-add.svg'
+import Files from '~/assets/icons/nav-ikoner/line/SVG/17-files/files-3.svg'
 import Synchronize from '~/assets/icons/nav-ikoner/filled/SVG/19-interface/synchronize-3.svg'
 import AddCircle from '~/assets/icons/nav-ikoner/line/SVG/19-interface/add-circle.svg'
 import RemoveCircle from '~/assets/icons/nav-ikoner/line/SVG/19-interface/remove-circle.svg'
@@ -62,6 +64,7 @@ import Love from '~/assets/icons/custom/Love.svg'
 import Baby from '~/assets/icons/custom/Baby.svg'
 import Dolly from '~/assets/icons/custom/Dolly.svg'
 import BrregLogo from '~/assets/icons/custom/Brreg_logo.svg'
+import LockedGroup from '~/assets/icons/custom/LockedGroup.svg'
 
 import './Icon.less'
 
@@ -90,6 +93,7 @@ export const icons = {
 	'chevron-right': ChevronRight,
 	ThumbsUp: ThumbsUp,
 	ThumbsDown: ThumbsDown,
+	lock: Lock,
 
 	man: Man,
 	manLight: ManLight,
@@ -99,6 +103,7 @@ export const icons = {
 	group: Group,
 	groupLight: GroupLight,
 	groupDark: GroupDark,
+	lockedGroup: LockedGroup,
 	bestilling: FileChecklist,
 	bestillingLight: FileChecklistLight,
 	newFile: NewFile,
@@ -126,7 +131,8 @@ export const icons = {
 	barn: Baby,
 	dolly: Dolly,
 	pensjon: PiggyBank,
-	brreg: BrregLogo
+	brreg: BrregLogo,
+	dokarkiv: Files
 }
 
 const px = v => `${v}px`

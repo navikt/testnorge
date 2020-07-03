@@ -64,7 +64,7 @@ const selectOptions: SelectOptions = {
 	// AAREG
 	aktoertype: [
 		{ value: 'ORG', label: 'Organisasjon' },
-		{ value: 'PERS', label: 'Enkeltmannsforetak' }
+		{ value: 'PERS', label: 'Privat' }
 	],
 
 	orgnummer: [

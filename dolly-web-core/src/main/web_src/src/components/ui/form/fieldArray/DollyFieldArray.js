@@ -51,13 +51,20 @@ export const DollyFieldArrayWrapper = ({
 	</div>
 )
 
-export const DollyFaBlokk = ({ header, idx, handleRemove, hjelpetekst, children }) => (
+export const DollyFaBlokk = ({
+	header,
+	idx,
+	handleRemove,
+	hjelpetekst,
+	children,
+	showDeleteButton
+}) => (
 	<div className="dfa-blokk">
 		<div className="dfa-blokk_header">
 			<Numbering idx={idx} />
 			<h2>{header}</h2>
 			{hjelpetekst && <Hjelpetekst hjelpetekstFor={header}>{hjelpetekst}</Hjelpetekst>}
-			<DeleteButton onClick={handleRemove} />
+			{showDeleteButton && <DeleteButton onClick={handleRemove} />}
 		</div>
 		<div className="dfa-blokk_content">{children}</div>
 	</div>
@@ -116,7 +123,8 @@ export const FormikDollyFieldArray = ({
 	hjelpetekst = null,
 	nested = false,
 	children,
-	isFull = false
+	isFull = false,
+	canBeEmpty = true
 }) => (
 	<FieldArray name={name}>
 		{arrayHelpers => {
@@ -125,6 +133,7 @@ export const FormikDollyFieldArray = ({
 			return (
 				<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
 					{values.map((curr, idx) => {
+						const showDeleteButton = canBeEmpty === true ? true : values.length >= 2
 						const path = `${name}.${idx}`
 						const handleRemove = () => arrayHelpers.remove(idx)
 						return nested ? (
@@ -138,6 +147,7 @@ export const FormikDollyFieldArray = ({
 								header={header}
 								hjelpetekst={hjelpetekst}
 								handleRemove={handleRemove}
+								showDeleteButton={showDeleteButton}
 							>
 								{children(path, idx, curr)}
 							</DollyFaBlokk>

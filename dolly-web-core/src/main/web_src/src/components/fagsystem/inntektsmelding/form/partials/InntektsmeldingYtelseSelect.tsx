@@ -1,7 +1,7 @@
 import React from 'react'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
-import LoadableComponent from '~/components/ui/loading/LoadableComponent'
+import LoadableComponent, { Feilmelding } from '~/components/ui/loading/LoadableComponent'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import Formatters from '~/utils/DataFormatter'
@@ -32,6 +32,12 @@ export default ({
 	size = 'medium'
 }: InntektsmeldingSelect) => {
 	const ytelsePath = `${path}.ytelse`
+
+	const feil = (feilmelding: Feilmelding) => {
+		if (_has(formikBag.touched, ytelsePath) && _get(formikBag.values, ytelsePath) === '')
+			return { feilmelding: 'Feltet er påkrevd' }
+		else return feilmelding
+	}
 	return (
 		<LoadableComponent
 			onFetch={() =>
@@ -43,7 +49,7 @@ export default ({
 					}))
 				)
 			}
-			render={(data: Array<Option>) => (
+			render={(data: Array<Option>, feilmelding: Feilmelding) => (
 				<DollySelect
 					name={ytelsePath}
 					label={label}
@@ -52,12 +58,7 @@ export default ({
 					size={size}
 					value={_get(formikBag.values, ytelsePath)}
 					onChange={(e: Option) => setYtelseOgTema(e, formikBag, path, idx)}
-					feil={
-						_has(formikBag.touched, ytelsePath) &&
-						_get(formikBag.values, ytelsePath) === '' && {
-							feilmelding: 'Feltet er påkrevd'
-						}
-					}
+					feil={feil(feilmelding)}
 					isClearable={false}
 				/>
 			)}

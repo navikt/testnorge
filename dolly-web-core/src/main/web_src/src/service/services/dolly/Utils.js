@@ -95,5 +95,13 @@ export const SortKodeverkArray = data => {
 		return kodeverk.filter(kode => !spesKoder.includes(kode.value))
 	}
 
+	if (data.name === 'NAVSkjema') {
+		return kodeverk.map(kode => ({
+			label: `${kode.value}: ${kode.label}`,
+			value: kode.value,
+			data: kode.label
+		}))
+	}
+
 	return kodeverk
 }

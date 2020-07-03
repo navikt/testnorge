@@ -34,6 +34,10 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/bestilling/fraidenter`
 	}
 
+	static laasGruppe(gruppeId) {
+		return `${groupBase}/${gruppeId}/laas?erLaast=true`
+	}
+
 	static gruppeBestillingStatus(gruppeId) {
 		return `${groupBase}/${gruppeId}/bestillingStatus`
 	}
