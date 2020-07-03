@@ -14,7 +14,8 @@ import {
 	AaregVisning,
 	UdiVisning,
 	InntektsmeldingVisning,
-	BrregVisning
+	BrregVisning,
+	DokarkivVisning
 } from '~/components/fagsystem'
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
@@ -60,6 +61,7 @@ export const PersonVisning = ({
 				data={UdiVisning.filterValues(data.udistub, bestilling.bestilling.udistub)}
 				loading={loading.udistub}
 			/>
+			<DokarkivVisning data={DokarkivVisning.filterValues(bestillingsListe)} ident={ident.ident} />
 			<TidligereBestillinger ids={ident.bestillingId} />
 			<BeskrivelseConnector ident={ident} iLaastGruppe={iLaastGruppe} />
 			<div className="person-visning_actions">
