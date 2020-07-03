@@ -13,9 +13,10 @@ import java.util.stream.Collectors;
 
 @Value
 @NoArgsConstructor(force = true)
-public class NaturaYtelseDetaljerDTO implements ToXmlElement<XMLNaturalytelseDetaljer> {
+public class NaturalYtelseDetaljerDTO implements ToXmlElement<XMLNaturalytelseDetaljer> {
+
     @JsonProperty
-    private String naturaytelseType;
+    private String naturalytelseType;
     @JsonProperty
     private LocalDate fom;
     @JsonProperty
@@ -31,14 +32,14 @@ public class NaturaYtelseDetaljerDTO implements ToXmlElement<XMLNaturalytelseDet
         ));
         xmlNaturalytelseDetaljer.setFom(factory.createXMLNaturalytelseDetaljerFom(fom));
         xmlNaturalytelseDetaljer.setNaturalytelseType(factory.createXMLNaturalytelseDetaljerNaturalytelseType(
-                naturaytelseType
+                naturalytelseType
         ));
 
         return xmlNaturalytelseDetaljer;
     }
 
-    static List<XMLNaturalytelseDetaljer> covert(List<NaturaYtelseDetaljerDTO> list){
-        return list.stream().map(NaturaYtelseDetaljerDTO::toXmlElement).collect(Collectors.toList());
+    static List<XMLNaturalytelseDetaljer> covert(List<NaturalYtelseDetaljerDTO> list) {
+        return list.stream().map(NaturalYtelseDetaljerDTO::toXmlElement).collect(Collectors.toList());
     }
 
 }
