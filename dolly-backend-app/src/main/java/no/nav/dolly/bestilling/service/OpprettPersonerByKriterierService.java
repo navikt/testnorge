@@ -79,8 +79,11 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                             gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, false);
 
                         } catch (RuntimeException e) {
-                            (nonNull(progress) ? progress : new BestillingProgress(bestilling.getId(), "?"))
-                                    .setFeil("NA:" + errorStatusDecoder.decodeRuntimeException(e));
+                            progress = BestillingProgress.builder()
+                                    .bestillingId(bestilling.getId())
+                                    .ident("?")
+                                    .feil("NA:" + errorStatusDecoder.decodeRuntimeException(e))
+                                    .build();
                         } finally {
                             oppdaterProgress(bestilling, progress);
                         }

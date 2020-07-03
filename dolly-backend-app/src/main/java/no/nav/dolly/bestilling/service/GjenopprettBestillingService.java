@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.service;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static java.lang.String.format;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 
@@ -73,7 +72,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
 
                                 gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, false);
                             } else {
-                                progress.setFeil(format("NA:Feil= Finner ikke personen i database", gjenopprettFraProgress.getIdent()));
+                                progress.setFeil("NA:Feil= Finner ikke personen i database");
                             }
 
                         } catch (RuntimeException e) {
