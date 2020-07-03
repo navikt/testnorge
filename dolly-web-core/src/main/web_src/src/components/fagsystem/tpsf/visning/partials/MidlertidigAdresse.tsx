@@ -93,7 +93,7 @@ export const Adressevisning = ({ midlertidigAdresse }: Enkeltadresse) => {
 }
 
 export const MidlertidigAdresse = ({ midlertidigAdresse }: AlleMidlertidigeAdresser) => {
-	if (!midlertidigAdresse) return null
+	if (!midlertidigAdresse || midlertidigAdresse.length < 1) return null
 
 	return (
 		<>
