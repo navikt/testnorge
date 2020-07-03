@@ -3,28 +3,30 @@ package no.nav.registre.frikort.domain.xml;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import java.time.LocalDateTime;
 
-@NoArgsConstructor(force = true)
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Samhandler {
 
-    private final String type;
-    private final String samhandlerid;
-    private final long innsendingid = 0L;
-    private final String innsendingstype;
-    private final LocalDateTime datoMottattEkstern;
-    private final LocalDateTime datoGenerert;
-    private final String fornavn;
-    private final EgenandelListe listeAvEgenandeler;
+    private Samhandlertypekode type;
+    private String samhandlerid;
+    private long innsendingid = 0L;
+    private String innsendingstype;
+    private LocalDateTime datoMottattEkstern;
+    private LocalDateTime datoGenerert;
+    private String fornavn;
+    private EgenandelListe listeAvEgenandeler;
 
     @XmlAttribute
     public String getType() {
-        return type;
+        return type.toString();
     }
 
     @XmlElement

@@ -28,32 +28,31 @@ public class IdentService {
     public List<SyntetiserFrikortResponse> opprettSyntetiskeEgenandeler(
             IdentRequest identRequest,
             boolean leggPaaKoe,
-            boolean validerEgenandel
+            boolean validerEgenandeler
     ) throws JAXBException {
         var identMap = identRequest.getIdenter().stream().collect(Collectors.toMap(IdentMedAntallFrikort::getIdent, IdentMedAntallFrikort::getAntallFrikort, (a, b) -> b));
 
-        return serviceUtils.hentSyntetiskeEgenandelerOgLeggPaaKoe(identMap, leggPaaKoe, validerEgenandel);
+        return serviceUtils.hentSyntetiskeEgenandelerOgLeggPaaKoe(identMap, leggPaaKoe, validerEgenandeler);
     }
 
     public List<SyntetiserFrikortResponse> opprettEgenandeler(
             List<EgenandelRequest> egenandeler,
-            boolean leggPaaKoe,
-            boolean validerEgenandel
+            boolean leggPaaKoe
     ) throws JAXBException {
         var samhandlerePersondata = serviceUtils.hentSamhandlere();
         var egenandelMap = egenandeler.stream().collect(Collectors.toMap(EgenandelRequest::getIdent, EgenandelRequest::getEgenandeler, (a, b) -> b));
-        return serviceUtils.konverterTilXMLOgLeggPaaKoe(egenandelMap, samhandlerePersondata, leggPaaKoe, validerEgenandel);
+        return serviceUtils.konverterTilXMLOgLeggPaaKoe(egenandelMap, samhandlerePersondata, leggPaaKoe);
     }
 
     public List<String> hentTilgjengeligeMiljoer() {
         return Collections.singletonList("q2");
     }
 
-    public Map<String, List<SyntFrikortResponse>> hentSyntetiskeEgenandeler(int antallEgenandeler) {
+    public Map<String, List<SyntFrikortResponse>> hentSyntetiskeEgenandeler(int antallEgenandeler, boolean validerEgenandeler) {
         Map<String, Integer> identMap = new HashMap<>();
         for (int i = 0; i < antallEgenandeler; i++) {
             identMap.put("IDENT_" + (i + 1), 1);
         }
-        return serviceUtils.hentSyntetiskeEgenandelerPaginert(identMap);
+        return serviceUtils.hentSyntetiskeEgenandelerPaginert(identMap, validerEgenandeler);
     }
 }
