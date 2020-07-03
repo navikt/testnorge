@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,13 +23,13 @@ import no.nav.registre.frikort.service.IdentService;
 
 @Slf4j
 @RestController
-@RequestMapping("api/v1/ident")
+@RequestMapping("api/v1")
 @RequiredArgsConstructor
 public class IdentController {
 
     private final IdentService identService;
 
-    @PostMapping(value = "/opprett")
+    @PostMapping(value = "/ident/opprett")
     @ApiOperation(value = "Generer syntetiske egenandelsmeldinger som XML string på gitte identer.")
     public ResponseEntity<List<SyntetiserFrikortResponse>> genererEgenandelsmeldinger(
             @RequestBody() IdentRequest identRequest,
@@ -36,5 +37,11 @@ public class IdentController {
             @RequestParam(defaultValue = "true") boolean leggPaaKoe
     ) throws JAXBException {
         return ResponseEntity.ok(identService.opprettSyntetiskeEgenandeler(identRequest, leggPaaKoe));
+    }
+
+    @GetMapping("/miljoer")
+    @ApiOperation(value = "Her kan man sjekke hvilke miljøer frikort er tilgjengelig i.")
+    public List<String> hentTilgjengeligeMiljoer() {
+        return identService.hentTilgjengeligeMiljoer();
     }
 }
