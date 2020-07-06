@@ -8,5 +8,4 @@ Applikasjonen har også støtte for å opprette syntetiske historiske vedtak, gj
 Kjør ApplicationStarter med føgende argumenter:
  - -Djavax.net.ssl.trustStore=[path til lokal truststore]
  - -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
- - -Dspring.cloud.vault.token=(Copy token fra Vault)
- - -Dspring.profiles.active=dev
+ - -Dspring.cloud.vault.token=[Kopier token fra vault]
