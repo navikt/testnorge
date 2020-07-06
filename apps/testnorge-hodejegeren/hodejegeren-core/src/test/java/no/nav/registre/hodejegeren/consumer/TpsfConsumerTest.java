@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.http.client.MockClientHttpResponse;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 
@@ -26,6 +27,7 @@ import java.util.Set;
 @RunWith(SpringRunner.class)
 @RestClientTest(TpsfConsumer.class)
 @ActiveProfiles("itest")
+@TestPropertySource(locations = "classpath:application-itest.properties")
 public class TpsfConsumerTest {
 
     @Autowired

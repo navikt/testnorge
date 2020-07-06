@@ -7,7 +7,4 @@ Applikasjonen tilbyr også en søkefunksjon, der man kan søke etter visse egens
 Kjør LocalApplicationStarter med føgende argumenter:
  - -Djavax.net.ssl.trustStore=[path til lokal truststore]
  - -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
- - -DTESTNORGE_IDA_CREDENTIAL_TPSF_USERNAME=[brukernavn til IDA-bruker (Z-ident)] 
- - -DTESTNORGE_IDA_CREDENTIAL_TPSF_PASSWORD=[passord til IDA-bruker]
- - -Dspring.data.mongodb.username=[brukernavn til IDA-bruker som har tilgang til mongodb-basen]
- - -Dspring.data.mongodb.password=[passord til IDA-bruker som har tilgang til mongodb-basen]
+ - -Dspring.cloud.vault.token=[Kopier token fra vault]
