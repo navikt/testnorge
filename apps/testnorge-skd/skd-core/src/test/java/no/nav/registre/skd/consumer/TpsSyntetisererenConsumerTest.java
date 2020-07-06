@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 
@@ -21,6 +22,7 @@ import no.nav.registre.skd.testutils.AssertionUtils;
 
 @RunWith(SpringRunner.class)
 @RestClientTest(TpsSyntetisererenConsumer.class)
+@TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("test")
 public class TpsSyntetisererenConsumerTest {
 

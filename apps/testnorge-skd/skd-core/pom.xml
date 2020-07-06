@@ -89,6 +89,13 @@
             <artifactId>testnorge-consumers</artifactId>
             <version>1.10.7-RELEASE</version>
         </dependency>
+
+        <!--VAULT-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-vault-config</artifactId>
+            <version>${spring-cloud.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
