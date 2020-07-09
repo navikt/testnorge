@@ -16,7 +16,7 @@ og cloud vault token må hentes fra Vault.
 
 __I Intellij:__ 
 
-Kjør ApplicationStarter med føgende argumenter:
+Kjør ApplicationStarter med følgende argumenter:
 (Run -> Edit Configurations -> VM Options) 
 * -Djavax.net.ssl.trustStore=C:\path\to\truststore
 * -Djavax.net.ssl.trustStorePassword=(Passord)
