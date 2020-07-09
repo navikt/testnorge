@@ -4,7 +4,7 @@ Testnorge-skd er en applikasjon som henter syntetiske skd-meldinger og fyller di
 Skd-meldingene har ulike typer, og forårsaker forskjellige endringer på personer i TPS. Det er slik mininorge berikes med nye identer og endringer på eksisterende identer.
 
 ### Lokal kjøring
-Kjør LocalApplicationStarter med føgende argumenter:
+Kjør LocalApplicationStarter med følgende argumenter:
  - -Djavax.net.ssl.trustStore=[path til lokal truststore]
  - -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
  - -Dspring.cloud.vault.token=[Kopier token fra vault]
