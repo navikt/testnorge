@@ -111,6 +111,13 @@
             <version>1.8.0-RELEASE</version>
         </dependency>
 
+        <!--VAULT-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-vault-config</artifactId>
+            <version>${spring-cloud.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

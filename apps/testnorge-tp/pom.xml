@@ -25,6 +25,7 @@
         <java.version>11</java.version>
         <log.exceptions.version>1.5.0</log.exceptions.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
+        <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
     </properties>
 
     <dependencyManagement>
