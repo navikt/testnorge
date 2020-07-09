@@ -16,9 +16,8 @@ og cloud vault token må hentes fra Vault.
 
 __I Intellij:__ 
 
-Run -> Edit Configurations -> VM Options 
-
-Fyll inn verdiene:
+Kjør ApplicationStarter med føgende argumenter:
+(Run -> Edit Configurations -> VM Options) 
 * -Djavax.net.ssl.trustStore=C:\path\to\truststore
 * -Djavax.net.ssl.trustStorePassword=(Passord)
 * -Dspring.cloud.vault.token=(Copy token fra Vault)
