@@ -117,6 +117,10 @@
             <artifactId>spring-cloud-starter-vault-config</artifactId>
             <version>${spring-cloud.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc7</artifactId>
+        </dependency>
 
     </dependencies>
 
