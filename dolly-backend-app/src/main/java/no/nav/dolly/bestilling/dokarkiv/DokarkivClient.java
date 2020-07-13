@@ -27,6 +27,7 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.service.TpsfPersonCache;
 import no.nav.dolly.service.TransaksjonMappingService;
 
 @Slf4j
@@ -39,6 +40,7 @@ public class DokarkivClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final TransaksjonMappingService transaksjonMappingService;
     private final ObjectMapper objectMapper;
+    private final TpsfPersonCache tpsfPersonCache;
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -48,6 +50,7 @@ public class DokarkivClient implements ClientRegister {
             StringBuilder status = new StringBuilder();
             DokarkivRequest dokarkivRequest = mapperFacade.map(bestilling.getDokarkiv(), DokarkivRequest.class);
 
+            tpsfPersonCache.fetchIfEmpty(tpsPerson);
             dokarkivRequest.getBruker().setId(tpsPerson.getHovedperson());
             Person avsender = tpsPerson.getPerson(tpsPerson.getHovedperson());
             dokarkivRequest.getAvsenderMottaker().setId(tpsPerson.getHovedperson());
