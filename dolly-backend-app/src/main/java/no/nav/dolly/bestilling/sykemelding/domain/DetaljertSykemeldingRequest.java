@@ -133,7 +133,7 @@ public class DetaljertSykemeldingRequest {
 
         private Adresse adresse;
         private String etternavn;
-        private LocalDate foedselsdato;
+        private LocalDateTime foedselsdato;
         private String fornavn;
         private String ident;
         private String mellomnavn;
