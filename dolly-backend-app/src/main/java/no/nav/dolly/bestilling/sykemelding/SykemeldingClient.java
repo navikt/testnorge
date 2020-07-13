@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.sykemelding;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
 
@@ -25,7 +26,9 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding.RsSyntSykemelding;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.domain.resultset.tpsf.adresse.BoGateadresse;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.service.TpsfPersonCache;
 import no.nav.dolly.service.TransaksjonMappingService;
 
 @Slf4j
@@ -36,6 +39,7 @@ public class SykemeldingClient implements ClientRegister {
     private final SykemeldingConsumer sykemeldingConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final TransaksjonMappingService transaksjonMappingService;
+    private final TpsfPersonCache tpsfPersonCache;
     private final MapperFacade mapperFacade;
     private final ObjectMapper objectMapper;
 
@@ -46,13 +50,34 @@ public class SykemeldingClient implements ClientRegister {
 
             StringBuilder status = new StringBuilder();
             try {
+                tpsfPersonCache.fetchIfEmpty(tpsPerson);
                 SyntSykemeldingRequest syntSykemeldingRequest = mapperFacade.map(bestilling.getSykemelding().getSyntSykemelding(), SyntSykemeldingRequest.class);
                 syntSykemeldingRequest.setIdent(tpsPerson.getHovedperson());
 
                 DetaljertSykemeldingRequest detaljertSykemeldingRequest = mapperFacade.map(bestilling.getSykemelding().getDetaljertSykemelding(), DetaljertSykemeldingRequest.class);
                 Person pasient = tpsPerson.getPerson(tpsPerson.getHovedperson());
-                detaljertSykemeldingRequest.getPasient().setFornavn(pasient.getFornavn());
-                // Mapping her? detaljertSykemeldingRequest.getPasient().setAdresse(pasient.getBoadresse());
+                BoGateadresse pasientAdresse = (BoGateadresse) pasient.getBoadresse().get(0);
+
+                // Denne skulle vi hente? detaljertSykemeldingRequest.getLege()
+
+                detaljertSykemeldingRequest.setArbeidsgiver(DetaljertSykemeldingRequest.Arbeidsgiver.builder()
+                        .build());
+
+                detaljertSykemeldingRequest.setPasient(DetaljertSykemeldingRequest.Pasient.builder()
+                        .fornavn(pasient.getFornavn())
+                        .etternavn(pasient.getEtternavn())
+                        .mellomnavn(isNull(pasient.getMellomnavn()) ? null : pasient.getMellomnavn())
+                        .foedselsdato(pasient.getFoedselsdato())
+                        .ident(pasient.getIdent())
+                        .navKontor(pasient.getTknavn())
+                        .telefon(isNull(pasient.getTelefonnummer_1()) ? null : pasient.getTelefonnummer_1())
+                        .adresse(DetaljertSykemeldingRequest.Adresse.builder()
+                                .by(pasient.getBoadresse().get(0).getPostnr())
+                                .gate(pasientAdresse.getGateadresse())
+                                .land(pasient.getStatsborgerskap().get(0).getStatsborgerskap())
+                                .postnummer(pasient.getBoadresse().get(0).getPostnr())
+                                .build())
+                        .build());
 
                 if (!transaksjonMappingService.existAlready(SYKEMELDING, tpsPerson.getHovedperson(), null) || isOpprettEndre) {
 
