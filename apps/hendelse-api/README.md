@@ -1,5 +1,5 @@
 ## Testnorge-Hendelse-api
-
+API for hendelser.
 
 ### Swagger
 Swagger finnes under [/api](https://testnorge-hendelse-api.nais.preprod.local/api) -endepunktet til applikasjonen.
