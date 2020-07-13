@@ -1,5 +1,5 @@
 ## Testnorge-Arbeidsforhold-api
-
+API for arbeidsforhold.
 
 ### Swagger
 Swagger finnes under [/api](https://testnorge-arbeidsforhold-api.nais.preprod.local/api) -endepunktet til applikasjonen.
