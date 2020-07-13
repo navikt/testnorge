@@ -23,6 +23,7 @@ import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
+import no.nav.dolly.domain.resultset.sykemelding.RsDetaljertSykemelding;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding.RsSyntSykemelding;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
@@ -60,9 +61,6 @@ public class SykemeldingClient implements ClientRegister {
 
                 // Denne skulle vi hente? detaljertSykemeldingRequest.getLege()
 
-                detaljertSykemeldingRequest.setArbeidsgiver(DetaljertSykemeldingRequest.Arbeidsgiver.builder()
-                        .build());
-
                 detaljertSykemeldingRequest.setPasient(DetaljertSykemeldingRequest.Pasient.builder()
                         .fornavn(pasient.getFornavn())
                         .etternavn(pasient.getEtternavn())
@@ -84,8 +82,17 @@ public class SykemeldingClient implements ClientRegister {
                     ResponseEntity<String> response = sykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest);
                     if (response.hasBody()) {
                         status.append("OK");
+                        RsSyntSykemelding syntSykemelding = bestilling.getSykemelding().getSyntSykemelding();
 
-                        saveTranskasjonId(bestilling.getSykemelding().getSyntSykemelding(), tpsPerson.getHovedperson());
+                        saveTranskasjonId(syntSykemelding.getOrgnummer(), syntSykemelding.getArbeidsforholdId(), tpsPerson.getHovedperson());
+                    }
+
+                    ResponseEntity<String> responseDetaljert = sykemeldingConsumer.postDetaljertSykemelding(detaljertSykemeldingRequest);
+                    if (responseDetaljert.hasBody()) {
+                        status.append("OK");
+                        RsDetaljertSykemelding detaljertSykemelding = bestilling.getSykemelding().getDetaljertSykemelding();
+
+                        // saveTranskasjonId(detaljertSykemelding.get, tpsPerson.getHovedperson());
                     }
 
                 }
@@ -102,14 +109,14 @@ public class SykemeldingClient implements ClientRegister {
 
     }
 
-    private void saveTranskasjonId(RsSyntSykemelding sykemelding, String ident) {
+    private void saveTranskasjonId(String orgnummer, String arbeidsforholdsId, String ident) {
 
         transaksjonMappingService.save(
                 TransaksjonMapping.builder()
                         .ident(ident)
                         .transaksjonId(toJson(SykemeldingTransaksjon.builder()
-                                .orgnummer(sykemelding.getOrgnummer())
-                                .arbeidsforholdId(sykemelding.getArbeidsforholdId())))
+                                .orgnummer(orgnummer)
+                                .arbeidsforholdId(arbeidsforholdsId)))
                         .datoEndret(LocalDateTime.now())
                         .system(SYKEMELDING.name())
                         .build());
