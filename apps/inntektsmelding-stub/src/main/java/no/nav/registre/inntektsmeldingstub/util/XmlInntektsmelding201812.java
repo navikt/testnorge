@@ -53,7 +53,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class XmlInntektsmelding201812 {
@@ -125,9 +124,8 @@ public class XmlInntektsmelding201812 {
     }
 
     private static XMLDelvisFravaer createDelvisFravaer(RsDelvisFravaer delvisFravaer) {
-        final Optional<Double> timerOptional = delvisFravaer.getTimer();
         BigDecimal timer = null;
-        if (timerOptional.isPresent()) { timer = BigDecimal.valueOf(timerOptional.get()); }
+        if (delvisFravaer.getTimer().isPresent()) { timer = BigDecimal.valueOf(delvisFravaer.getTimer().get()); }
         return new XMLDelvisFravaer(
                 new JAXBElement<>(new QName(NAMESPACE_URI, "dato"), LocalDate.class, delvisFravaer.getDato().orElse(null)),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "timer"), BigDecimal.class, timer));
@@ -159,9 +157,8 @@ public class XmlInntektsmelding201812 {
     }
 
     private static XMLNaturalytelseDetaljer createNaturalytelse(RsNaturaYtelseDetaljer detaljer) {
-        final Optional<Double> beloepOptional = detaljer.getBeloepPrMnd();
         BigDecimal beloep = null;
-        if (beloepOptional.isPresent()) { beloep = BigDecimal.valueOf(beloepOptional.get()); }
+        if (detaljer.getBeloepPrMnd().isPresent()) { beloep = BigDecimal.valueOf(detaljer.getBeloepPrMnd().get()); }
         return new XMLNaturalytelseDetaljer(
                 new JAXBElement<>(new QName(NAMESPACE_URI, "naturalytelseType"), String.class, detaljer.getNaturaytelseType().orElse(null)),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "fom"), LocalDate.class, detaljer.getFom().orElse(null)),
@@ -170,9 +167,8 @@ public class XmlInntektsmelding201812 {
 
     private static XMLSykepengerIArbeidsgiverperioden createSykepengerIArbeidsgiverperioden(RsSykepengerIArbeidsgiverperioden sykepenger) {
         if (Objects.isNull(sykepenger)) { return null; }
-        final Optional<Double> bruttoUtbetaltOptional = sykepenger.getBruttoUtbetalt();
         BigDecimal bruttoUtbetalt = null;
-        if (bruttoUtbetaltOptional.isPresent()) { bruttoUtbetalt = BigDecimal.valueOf(bruttoUtbetaltOptional.get()); }
+        if (sykepenger.getBruttoUtbetalt().isPresent()) { bruttoUtbetalt = BigDecimal.valueOf(sykepenger.getBruttoUtbetalt().get()); }
         return new XMLSykepengerIArbeidsgiverperioden(
                 new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsgiverPeriodeListe"),
                         XMLArbeidsgiverperiodeListe.class,
@@ -191,12 +187,10 @@ public class XmlInntektsmelding201812 {
 
     private static XMLRefusjon createRefusjon(RsRefusjon refusjon) {
         if (Objects.isNull(refusjon)) { return null; }
-        final Optional<Double> belopOptional = refusjon.getRefusjonsbeloepPrMnd();
-        final Optional<LocalDate> opphoersdatoOptional = refusjon.getRefusjonsopphoersdato();
         BigDecimal belop = null;
         LocalDate opphoersdato = null;
-        if (belopOptional.isPresent()) { belop = BigDecimal.valueOf(belopOptional.get()); }
-        if (opphoersdatoOptional.isPresent()) { opphoersdato = opphoersdatoOptional.get(); }
+        if (refusjon.getRefusjonsbeloepPrMnd().isPresent()) { belop = BigDecimal.valueOf(refusjon.getRefusjonsbeloepPrMnd().get()); }
+        if (refusjon.getRefusjonsopphoersdato().isPresent()) { opphoersdato = refusjon.getRefusjonsopphoersdato().get(); }
         return new XMLRefusjon(
                 new JAXBElement<>(new QName(NAMESPACE_URI, "refusjonsbeloepPrMnd"), BigDecimal.class, belop),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "refusjonsopphoersdato"), LocalDate.class, opphoersdato),
@@ -213,12 +207,10 @@ public class XmlInntektsmelding201812 {
 
     private static XMLEndringIRefusjon createEndringIRefusjon(RsEndringIRefusjon endring) {
         if (Objects.isNull(endring)) { return null; }
-        final Optional<LocalDate> endringsdatoOptional = endring.getEndringsdato();
-        final Optional<Double> refusjonsbeloepOptional = endring.getRefusjonsbeloepPrMnd();
         LocalDate endringsdato = null;
         BigDecimal refusjonsbeloep = null;
-        if (endringsdatoOptional.isPresent()) { endringsdato = endringsdatoOptional.get(); }
-        if (refusjonsbeloepOptional.isPresent()) { refusjonsbeloep = BigDecimal.valueOf(refusjonsbeloepOptional.get()); }
+        if (endring.getEndringsdato().isPresent()) { endringsdato = endring.getEndringsdato().get(); }
+        if (endring.getRefusjonsbeloepPrMnd().isPresent()) { refusjonsbeloep = BigDecimal.valueOf(endring.getRefusjonsbeloepPrMnd().get()); }
         return new XMLEndringIRefusjon(
                 new JAXBElement<>(new QName(NAMESPACE_URI, "endringsdato"), LocalDate.class, endringsdato),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "refusjonsbeloepPrMnd"), BigDecimal.class, refusjonsbeloep));
@@ -247,9 +239,8 @@ public class XmlInntektsmelding201812 {
     }
 
     private static XMLGraderingIForeldrepenger createGraderingIForeldrepenger(RsGraderingIForeldrepenger gradering) {
-        final Optional<Integer> arbeidstidprosentOptional = gradering.getArbeidstidprosent();
         BigInteger arbeidstidprosent = null;
-        if (arbeidstidprosentOptional.isPresent()) { arbeidstidprosent = BigInteger.valueOf(arbeidstidprosentOptional.get()); }
+        if (gradering.getArbeidstidprosent().isPresent()) { arbeidstidprosent = BigInteger.valueOf(gradering.getArbeidstidprosent().get()); }
         return new XMLGraderingIForeldrepenger(
                 new JAXBElement<>(new QName(NAMESPACE_URI, "periode"), XMLPeriode.class, createPeriode(gradering.getPeriode().orElse(null))),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidstidprosent"), BigInteger.class, arbeidstidprosent));
@@ -280,9 +271,9 @@ public class XmlInntektsmelding201812 {
 
     private static XMLInntekt createInntekt(RsInntekt inntekt) {
         if (Objects.isNull(inntekt)) { return null; }
-        final Optional<Double> beloepOptional = inntekt.getBeloep();
+
         BigDecimal beloep = null;
-        if (beloepOptional.isPresent()) { beloep = BigDecimal.valueOf(beloepOptional.get()); }
+        if (inntekt.getBeloep().isPresent()) { beloep = BigDecimal.valueOf(inntekt.getBeloep().get()); }
         return new XMLInntekt(
                 new JAXBElement<>(new QName(NAMESPACE_URI, "beloep"), BigDecimal.class, beloep),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "aarsakVedEndring"), String.class, inntekt.getAarsakVedEndring().orElse(null))
