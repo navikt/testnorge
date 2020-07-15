@@ -63,6 +63,13 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+
+        <!--VAULT-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-vault-config</artifactId>
+            <version>${spring-cloud.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -20,6 +20,7 @@
         <java.version>1.8</java.version>
         <freg.security.oidc.utility.version>3.0.3</freg.security.oidc.utility.version>
         <cxf.version>3.2.2</cxf.version>
+        <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
     </properties>
 
     <modules>
