@@ -68,7 +68,7 @@ public class AktoerRegisteretConsumer {
         headers.add("Nav-Personidenter", identer.toString().substring(1, identer.toString().length() - 1));
         headers.add(AUTHORIZATION, tokenService.getIdToken());
 
-        var request = new RequestEntity(headers, HttpMethod.GET, uriTemplate.expand());
+        var request = new RequestEntity<Map<String, AktoerResponse>>(headers, HttpMethod.GET, uriTemplate.expand());
         var response = restTemplate.exchange(request, RESPONSE_TYPE);
         if (response.getStatusCode() != HttpStatus.OK) {
             log.warn("Kunne ikke hente aktør id for identer: {}", identer.toString().replaceAll("[\r\n]", ""));

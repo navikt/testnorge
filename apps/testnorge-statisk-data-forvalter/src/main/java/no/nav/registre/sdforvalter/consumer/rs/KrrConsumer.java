@@ -91,7 +91,7 @@ public class KrrConsumer {
 
         fnrs.forEach(fnr -> {
             httpHeaders.add("Nav-Personident", fnr);
-            RequestEntity requestEntity = new RequestEntity<>(httpHeaders, HttpMethod.GET, krrUrl);
+            RequestEntity<Set<String>> requestEntity = new RequestEntity<>(httpHeaders, HttpMethod.GET, krrUrl);
             try {
                 ResponseEntity<List<KrrRequest>> response = restTemplate.exchange(requestEntity, RESPONSE_TYPE);
                 if (response.getStatusCode() == HttpStatus.OK) {

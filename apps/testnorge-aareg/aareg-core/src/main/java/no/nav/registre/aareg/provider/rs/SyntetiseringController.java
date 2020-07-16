@@ -23,7 +23,7 @@ public class SyntetiseringController {
     private final SyntetiseringService syntetiseringService;
 
     @PostMapping(value = "/generer")
-    public ResponseEntity genererArbeidsforholdsmeldinger(
+    public ResponseEntity<List<RsAaregResponse>> genererArbeidsforholdsmeldinger(
             @RequestParam(defaultValue = "true") Boolean sendAlleEksisterende,
             @RequestBody SyntetiserAaregRequest syntetiserAaregRequest
     ) {

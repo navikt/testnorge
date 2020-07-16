@@ -60,7 +60,7 @@ public class SyntetiseringService {
     @Autowired
     private TSamVedtakRepository tSamVedtakRepository;
 
-    public ResponseEntity opprettOgLagreSyntetiserteSamordningsmeldinger(
+    public ResponseEntity<String> opprettOgLagreSyntetiserteSamordningsmeldinger(
             List<String> identer
     ) {
         var syntetiserteMeldinger = samSyntetisererenConsumer.hentSammeldingerFromSyntRest(identer.size());

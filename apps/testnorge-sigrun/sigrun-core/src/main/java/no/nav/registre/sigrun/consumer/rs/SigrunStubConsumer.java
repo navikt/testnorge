@@ -89,7 +89,7 @@ public class SigrunStubConsumer {
                 .header(NAV_CONSUMER_ID_STRING, NAV_CONSUMER_ID)
                 .header("testdataEier", testdataEier)
                 .body(meldinger);
-        return restTemplate.exchange(postRequest, RESPONSE_TYPE);
+        return restTemplate.exchange(postRequest, List.class);
     }
 
     @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "sigrun-skd-stub" })
@@ -107,7 +107,7 @@ public class SigrunStubConsumer {
     }
 
     @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "sigrun-skd-stub" })
-    public ResponseEntity slettEksisterendeSkattegrunnlag(
+    public ResponseEntity<String> slettEksisterendeSkattegrunnlag(
             SigrunSkattegrunnlagResponse skattegrunnlag,
             String miljoe
     ) {
@@ -120,6 +120,6 @@ public class SigrunStubConsumer {
                 .header("inntektsaar", skattegrunnlag.getInntektsaar())
                 .header("tjeneste", skattegrunnlag.getTjeneste())
                 .build();
-        return restTemplate.exchange(deleteRequest, ResponseEntity.class);
+        return restTemplate.exchange(deleteRequest, String.class);
     }
 }
