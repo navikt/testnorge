@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Tooltip from 'rc-tooltip'
 import { useMount } from 'react-use'
 import _last from 'lodash/last'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
 import 'rc-tooltip/assets/bootstrap.css'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import Loading from '~/components/ui/loading/Loading'
@@ -28,6 +29,8 @@ export default function PersonListe({
 }) {
 	useMount(fetchTpsfPersoner)
 
+	const [ignoreClick, setIgnoreClick] = useState(false)
+
 	if (isFetching) return <Loading label="laster personer" panel />
 
 	if (!personListe || personListe.length === 0)
@@ -50,12 +53,35 @@ export default function PersonListe({
 		)
 	}
 
+	const onCopyClick = event => {
+		event.stopPropagation()
+	}
+
 	const columns = [
 		{
 			text: 'Ident',
 			width: '20',
 			dataField: 'identNr',
-			unique: true
+			unique: true,
+
+			formatter: (cell, row) => (
+				<div style={{ display: 'flex' }}>
+					{row.identNr}
+					<CopyToClipboard text={row.identNr}>
+						<Tooltip
+							overlay={'Kopier'}
+							placement="top"
+							destroyTooltipOnHide={true}
+							mouseEnterDelay={0}
+							mouseLeaveDelay={0.1}
+						>
+							<div onClick={onCopyClick}>
+								<Icon kind="copy" size={15} />
+							</div>
+						</Tooltip>
+					</CopyToClipboard>
+				</div>
+			)
 		},
 		{
 			text: 'Navn',
