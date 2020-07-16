@@ -25,6 +25,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
+        <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
         <testnorge-consumers.version>1.11.11-RELEASE</testnorge-consumers.version>
     </properties>
 

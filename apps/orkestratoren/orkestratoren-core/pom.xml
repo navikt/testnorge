@@ -109,6 +109,13 @@
             <groupId>no.nav.registre.testnorge</groupId>
             <artifactId>testnorge-domain</artifactId>
         </dependency>
+
+        <!--VAULT-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-vault-config</artifactId>
+            <version>${spring-cloud.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
