@@ -1,4 +1,8 @@
 import React, { useState } from 'react'
+// @ts-ignore
+import Tooltip from 'rc-tooltip'
+// @ts-ignore
+import { CopyToClipboard } from 'react-copy-to-clipboard'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
@@ -9,6 +13,7 @@ import ResultatVisningConnecter from '~/pages/soekMiniNorge/search/ResultatVisni
 import { Feedback } from '~/components/feedback'
 import { Innhold } from '../hodejegeren/types'
 import Button from '~/components/ui/button/Button'
+import Icon from '~/components/ui/icon/Icon'
 
 interface SearchResultVisningProps {
 	soekOptions: string
@@ -32,7 +37,32 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 			text: 'Ident',
 			width: '40',
 			dataField: 'personIdent.id',
-			unique: true
+			unique: true,
+			formatter: (cell: string, row: Innhold) => (
+				<div style={{ display: 'flex' }}>
+					{row.personIdent.id}
+					<CopyToClipboard text={row.personIdent.id}>
+						<Tooltip
+							overlay={'Kopier'}
+							placement="top"
+							destroyTooltipOnHide={true}
+							mouseEnterDelay={0}
+							mouseLeaveDelay={0.1}
+						>
+							<div
+								onClick={event => {
+									event.stopPropagation()
+								}}
+							>
+								{
+									// @ts-ignore
+									<Icon kind="copy" size={15} />
+								}
+							</div>
+						</Tooltip>
+					</CopyToClipboard>
+				</div>
+			)
 		},
 		{
 			text: 'Type',

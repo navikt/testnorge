@@ -51,10 +51,6 @@ export default function PersonListe({
 		)
 	}
 
-	const onCopyClick = event => {
-		event.stopPropagation()
-	}
-
 	const columns = [
 		{
 			text: 'Ident',
@@ -73,7 +69,11 @@ export default function PersonListe({
 							mouseEnterDelay={0}
 							mouseLeaveDelay={0.1}
 						>
-							<div onClick={onCopyClick}>
+							<div
+								onClick={event => {
+									event.stopPropagation()
+								}}
+							>
 								<Icon kind="copy" size={15} />
 							</div>
 						</Tooltip>
