@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Tooltip from 'rc-tooltip'
 import { useMount } from 'react-use'
 import _last from 'lodash/last'
@@ -28,8 +28,6 @@ export default function PersonListe({
 	fetchTpsfPersoner
 }) {
 	useMount(fetchTpsfPersoner)
-
-	const [ignoreClick, setIgnoreClick] = useState(false)
 
 	if (isFetching) return <Loading label="laster personer" panel />
 
