@@ -2,20 +2,20 @@ package no.nav.registre.testnorge.arbeidsforhold.provider;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.client.WireMock;
+import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.client.WireMock;
 
 import no.nav.registre.testnorge.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.dto.hodejegeren.v1.PersondataDTO;
@@ -25,9 +25,8 @@ import no.nav.registre.testnorge.test.JsonWiremockHelper;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
-@DirtiesContext
 @TestPropertySource(locations = "classpath:application-test.properties")
-class ArbeidsforholdControllerIntegrationTest {
+public class ArbeidsforholdControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -35,8 +34,8 @@ class ArbeidsforholdControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // @Test
-    void should_get_single_arbeidsforhold() throws Exception {
+    @Test
+    public void should_get_single_arbeidsforhold() throws Exception {
 
         String personIdent = "12125678903";
         String orgnummer = "163852480";
@@ -73,9 +72,7 @@ class ArbeidsforholdControllerIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        ArbeidsforholdDTO actual = objectMapper.readValue(json, ArbeidsforholdDTO.class);
-
-        System.out.println(actual);
+        //TODO fullføre test, fungerer ikke
     }
 
     @AfterEach
