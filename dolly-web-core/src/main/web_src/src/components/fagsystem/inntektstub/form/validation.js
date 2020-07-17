@@ -40,6 +40,8 @@ const nyeInntekterOverlapper = (alleInntekter, currInntektsinformasjon) => {
 	if (likeOrgnrIndex.length < 2) return false
 
 	const tidsrom = finnTidsrom(maaneder)
+	console.log(tidsrom)
+	console.log(likeOrgnrIndex)
 	return finnesOverlappendeDato(tidsrom, likeOrgnrIndex)
 }
 
@@ -94,7 +96,7 @@ const finnesOverlappendeDato = (tidsrom, index) => {
 	return tidsromSomIkkeKanOverlappe.some((tidsrom, idx) => {
 		if (idx === 0) return //Tester mot første tidsrom
 		return areIntervalsOverlapping(
-			{ start: firstInterval.start, end: firstInterval.end },
+			{ start: firstInterval.start, end: addDays(firstInterval.end, 1) },
 			{ start: tidsrom.start, end: tidsrom.end }
 		)
 	})
