@@ -78,7 +78,10 @@ const getInterval = inntektsinformasjon => {
 	const currDato = dato(inntektsinformasjon.sisteAarMaaned)
 	return inntektsinformasjon.antallMaaneder
 		? {
-				start: subMonths(currDato, inntektsinformasjon.antallMaaneder),
+				start: subMonths(
+					currDato,
+					inntektsinformasjon.antallMaaneder > 0 ? inntektsinformasjon.antallMaaneder - 1 : 0
+				),
 				end: currDato
 		  }
 		: {
@@ -152,6 +155,7 @@ export const validation = {
 				antallMaaneder: Yup.number()
 					.integer('Kan ikke være et desimaltall')
 					.transform((i, j) => (j === '' ? null : i))
+					.min(1, 'Antall måneder må være et positivt tall')
 					.nullable(),
 				virksomhet: unikOrgMndTest(requiredString.typeError(messages.required)).nullable(),
 				// virksomhet: requiredString.typeError(messages.required),
