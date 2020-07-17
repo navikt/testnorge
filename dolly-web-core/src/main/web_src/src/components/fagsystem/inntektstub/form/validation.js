@@ -76,12 +76,9 @@ const finnTidsrom = maaneder => maaneder.map(maaned => getInterval(maaned))
 
 const getInterval = inntektsinformasjon => {
 	const currDato = dato(inntektsinformasjon.sisteAarMaaned)
-	return inntektsinformasjon.antallMaaneder
+	return inntektsinformasjon.antallMaaneder && inntektsinformasjon.antallMaaneder > 1
 		? {
-				start: subMonths(
-					currDato,
-					inntektsinformasjon.antallMaaneder > 0 ? inntektsinformasjon.antallMaaneder - 1 : 0
-				),
+				start: subMonths(currDato, inntektsinformasjon.antallMaaneder - 1),
 				end: currDato
 		  }
 		: {
