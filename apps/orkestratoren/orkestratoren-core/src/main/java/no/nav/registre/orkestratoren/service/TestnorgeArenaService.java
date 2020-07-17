@@ -1,5 +1,7 @@
 package no.nav.registre.orkestratoren.service;
 
+import static java.util.Objects.isNull;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -125,164 +127,84 @@ public class TestnorgeArenaService {
     public List<NyttVedtakTillegg> opprettArenaTilleggstoenad(SyntetiserArenaTilleggstoenadRequest tilleggstoenadRequest) {
         List<NyttVedtakTillegg> arenaRespons = new ArrayList<>();
 
-        if (tilleggstoenadRequest.getAntallBoutgifter() != null && tilleggstoenadRequest.getAntallBoutgifter() > 0) {
-            var nyeTilleggBoutgifter = tilleggstoenadConsumer.opprettBoutgifter(SyntetiserArenaRequest.builder()
-                    .avspillergruppeId(tilleggstoenadRequest.getAvspillergruppeId())
-                    .miljoe(tilleggstoenadRequest.getMiljoe())
-                    .antallNyeIdenter(tilleggstoenadRequest.getAntallBoutgifter())
-                    .build());
+            var nyeTilleggBoutgifter = tilleggstoenadConsumer.opprettBoutgifter(buildSyntArenaRequest(tilleggstoenadRequest, tilleggstoenadRequest.getAntallBoutgifter()));
             byggTilleggstoenadResponse("boutgifter", nyeTilleggBoutgifter, arenaRespons);
-        }
 
-        if (tilleggstoenadRequest.getAntallDagligReise() != null && tilleggstoenadRequest.getAntallDagligReise() > 0) {
-            var nyeTilleggDagligReise = tilleggstoenadConsumer.opprettDagligReise(SyntetiserArenaRequest.builder()
-                    .avspillergruppeId(tilleggstoenadRequest.getAvspillergruppeId())
-                    .miljoe(tilleggstoenadRequest.getMiljoe())
-                    .antallNyeIdenter(tilleggstoenadRequest.getAntallDagligReise())
-                    .build());
+            var nyeTilleggDagligReise = tilleggstoenadConsumer.opprettDagligReise(buildSyntArenaRequest(tilleggstoenadRequest, tilleggstoenadRequest.getAntallDagligReise()));
             byggTilleggstoenadResponse("daglig reise", nyeTilleggDagligReise, arenaRespons);
-        }
 
-        if (tilleggstoenadRequest.getAntallFlytting() != null && tilleggstoenadRequest.getAntallFlytting() > 0) {
-            var nyeTilleggFlytting = tilleggstoenadConsumer.opprettFlytting(SyntetiserArenaRequest.builder()
-                    .avspillergruppeId(tilleggstoenadRequest.getAvspillergruppeId())
-                    .miljoe(tilleggstoenadRequest.getMiljoe())
-                    .antallNyeIdenter(tilleggstoenadRequest.getAntallFlytting())
-                    .build());
+            var nyeTilleggFlytting = tilleggstoenadConsumer.opprettFlytting(buildSyntArenaRequest(tilleggstoenadRequest, tilleggstoenadRequest.getAntallFlytting()));
             byggTilleggstoenadResponse("flytting", nyeTilleggFlytting, arenaRespons);
-        }
 
-        if (tilleggstoenadRequest.getAntallLaeremidler() != null && tilleggstoenadRequest.getAntallLaeremidler() > 0) {
-            var nyeTilleggLaeremidler = tilleggstoenadConsumer.opprettLaeremidler(SyntetiserArenaRequest.builder()
-                    .avspillergruppeId(tilleggstoenadRequest.getAvspillergruppeId())
-                    .miljoe(tilleggstoenadRequest.getMiljoe())
-                    .antallNyeIdenter(tilleggstoenadRequest.getAntallLaeremidler())
-                    .build());
+            var nyeTilleggLaeremidler = tilleggstoenadConsumer.opprettLaeremidler(buildSyntArenaRequest(tilleggstoenadRequest, tilleggstoenadRequest.getAntallLaeremidler()));
             byggTilleggstoenadResponse("læremidler", nyeTilleggLaeremidler, arenaRespons);
-        }
 
-        if (tilleggstoenadRequest.getAntallHjemreise() != null && tilleggstoenadRequest.getAntallHjemreise() > 0) {
-            var nyeTilleggHjemreise = tilleggstoenadConsumer.opprettHjemreise(SyntetiserArenaRequest.builder()
-                    .avspillergruppeId(tilleggstoenadRequest.getAvspillergruppeId())
-                    .miljoe(tilleggstoenadRequest.getMiljoe())
-                    .antallNyeIdenter(tilleggstoenadRequest.getAntallHjemreise())
-                    .build());
+            var nyeTilleggHjemreise = tilleggstoenadConsumer.opprettHjemreise(buildSyntArenaRequest(tilleggstoenadRequest, tilleggstoenadRequest.getAntallHjemreise()));
             byggTilleggstoenadResponse("hjemreise", nyeTilleggHjemreise, arenaRespons);
-        }
 
-        if (tilleggstoenadRequest.getAntallReiseObligatoriskSamling() != null && tilleggstoenadRequest.getAntallReiseObligatoriskSamling() > 0) {
-            var nyeTilleggReiseObligatoriskSamling = tilleggstoenadConsumer.opprettReiseObligatoriskSamling(SyntetiserArenaRequest.builder()
-                    .avspillergruppeId(tilleggstoenadRequest.getAvspillergruppeId())
-                    .miljoe(tilleggstoenadRequest.getMiljoe())
-                    .antallNyeIdenter(tilleggstoenadRequest.getAntallReiseObligatoriskSamling())
-                    .build());
+            var nyeTilleggReiseObligatoriskSamling = tilleggstoenadConsumer.opprettReiseObligatoriskSamling(buildSyntArenaRequest(tilleggstoenadRequest, tilleggstoenadRequest.getAntallReiseObligatoriskSamling()));
             byggTilleggstoenadResponse("reise obligatorisk samling", nyeTilleggReiseObligatoriskSamling, arenaRespons);
-        }
 
-        if (tilleggstoenadRequest.getAntallTilsynBarn() != null && tilleggstoenadRequest.getAntallTilsynBarn() > 0) {
-            var nyeTilleggTilsynBarn = tilleggstoenadConsumer.opprettTilsynBarn(SyntetiserArenaRequest.builder()
-                    .avspillergruppeId(tilleggstoenadRequest.getAvspillergruppeId())
-                    .miljoe(tilleggstoenadRequest.getMiljoe())
-                    .antallNyeIdenter(tilleggstoenadRequest.getAntallTilsynBarn())
-                    .build());
+            var nyeTilleggTilsynBarn = tilleggstoenadConsumer.opprettTilsynBarn(buildSyntArenaRequest(tilleggstoenadRequest, tilleggstoenadRequest.getAntallTilsynBarn()));
             byggTilleggstoenadResponse("tilsyn barn", nyeTilleggTilsynBarn, arenaRespons);
-        }
 
-        if (tilleggstoenadRequest.getAntallTilsynFamiliemedlemmer() != null && tilleggstoenadRequest.getAntallTilsynFamiliemedlemmer() > 0) {
-            var nyeTilleggTilsynFamiliemedlemmer = tilleggstoenadConsumer.opprettTilsynFamiliemedlemmer(SyntetiserArenaRequest.builder()
-                    .avspillergruppeId(tilleggstoenadRequest.getAvspillergruppeId())
-                    .miljoe(tilleggstoenadRequest.getMiljoe())
-                    .antallNyeIdenter(tilleggstoenadRequest.getAntallTilsynFamiliemedlemmer())
-                    .build());
+            var nyeTilleggTilsynFamiliemedlemmer = tilleggstoenadConsumer.opprettTilsynFamiliemedlemmer(buildSyntArenaRequest(tilleggstoenadRequest, tilleggstoenadRequest.getAntallTilsynFamiliemedlemmer()));
             byggTilleggstoenadResponse("tilsyn familiemedlemmer", nyeTilleggTilsynFamiliemedlemmer, arenaRespons);
-        }
 
         return arenaRespons;
+    }
+
+    private SyntetiserArenaRequest buildSyntArenaRequest(SyntetiserArenaTilleggstoenadRequest request, Integer antallNyeIdenter) {
+        if (antallNyeIdenter == null || antallNyeIdenter == 0) {
+            return null;
+        }
+        return SyntetiserArenaRequest.builder()
+                .avspillergruppeId(request.getAvspillergruppeId())
+                .miljoe(request.getMiljoe())
+                .antallNyeIdenter(antallNyeIdenter)
+                .build();
+    }
+
+    private SyntetiserArenaRequest buildSyntArenaArbeidssoekerRequest(SyntetiserArenaTilleggstoenadArbeidssoekereRequest request, Integer antallNyeIdenter) {
+        if (antallNyeIdenter == null || antallNyeIdenter == 0) {
+            return null;
+        }
+        return SyntetiserArenaRequest.builder()
+                .avspillergruppeId(request.getAvspillergruppeId())
+                .miljoe(request.getMiljoe())
+                .antallNyeIdenter(antallNyeIdenter)
+                .build();
     }
 
     public List<NyttVedtakTillegg> opprettArenaTilleggstoenadArbeidssoekere(SyntetiserArenaTilleggstoenadArbeidssoekereRequest tilleggstoenadArbeidssoekereRequest) {
         List<NyttVedtakTillegg> arenaRespons = new ArrayList<>();
 
-        if (tilleggstoenadArbeidssoekereRequest.getAntallTilsynBarnArbeidssoekere() != null && tilleggstoenadArbeidssoekereRequest.getAntallTilsynBarnArbeidssoekere() > 0) {
-            var nyeTilleggTilsynBarnArbeidssoeker = tilleggstoenadConsumer.opprettTilsynBarnArbeidssoekere(SyntetiserArenaRequest.builder()
-                    .avspillergruppeId(tilleggstoenadArbeidssoekereRequest.getAvspillergruppeId())
-                    .miljoe(tilleggstoenadArbeidssoekereRequest.getMiljoe())
-                    .antallNyeIdenter(tilleggstoenadArbeidssoekereRequest.getAntallTilsynBarnArbeidssoekere())
-                    .build());
+            var nyeTilleggTilsynBarnArbeidssoeker = tilleggstoenadConsumer.opprettTilsynBarnArbeidssoekere(buildSyntArenaArbeidssoekerRequest(tilleggstoenadArbeidssoekereRequest, tilleggstoenadArbeidssoekereRequest.getAntallTilsynBarnArbeidssoekere()));
             byggTilleggstoenadResponse("tilsyn barn - arbeidssøkere", nyeTilleggTilsynBarnArbeidssoeker, arenaRespons);
-        }
 
-        if (tilleggstoenadArbeidssoekereRequest.getAntallTilsynFamiliemedlemmerArbeidssoekere() != null && tilleggstoenadArbeidssoekereRequest.getAntallTilsynFamiliemedlemmerArbeidssoekere() > 0) {
-            var nyeTilleggTilsynFamiliemedlemmerArbeidssoeker = tilleggstoenadConsumer.opprettTilsynFamiliemedlemmerArbeidssoekere(SyntetiserArenaRequest.builder()
-                    .avspillergruppeId(tilleggstoenadArbeidssoekereRequest.getAvspillergruppeId())
-                    .miljoe(tilleggstoenadArbeidssoekereRequest.getMiljoe())
-                    .antallNyeIdenter(tilleggstoenadArbeidssoekereRequest.getAntallTilsynFamiliemedlemmerArbeidssoekere())
-                    .build());
+            var nyeTilleggTilsynFamiliemedlemmerArbeidssoeker = tilleggstoenadConsumer.opprettTilsynFamiliemedlemmerArbeidssoekere(buildSyntArenaArbeidssoekerRequest(tilleggstoenadArbeidssoekereRequest, tilleggstoenadArbeidssoekereRequest.getAntallTilsynFamiliemedlemmerArbeidssoekere()));
             byggTilleggstoenadResponse("tilsyn familiemedlemmer - arbeidssøkere", nyeTilleggTilsynFamiliemedlemmerArbeidssoeker, arenaRespons);
-        }
 
-        if (tilleggstoenadArbeidssoekereRequest.getAntallBoutgifterArbeidssoekere() != null && tilleggstoenadArbeidssoekereRequest.getAntallBoutgifterArbeidssoekere() > 0) {
-            var nyeTilleggBoutgifterArbeidssoeker = tilleggstoenadConsumer.opprettBoutgifterArbeidssoekere(SyntetiserArenaRequest.builder()
-                    .avspillergruppeId(tilleggstoenadArbeidssoekereRequest.getAvspillergruppeId())
-                    .miljoe(tilleggstoenadArbeidssoekereRequest.getMiljoe())
-                    .antallNyeIdenter(tilleggstoenadArbeidssoekereRequest.getAntallBoutgifterArbeidssoekere())
-                    .build());
+            var nyeTilleggBoutgifterArbeidssoeker = tilleggstoenadConsumer.opprettBoutgifterArbeidssoekere(buildSyntArenaArbeidssoekerRequest(tilleggstoenadArbeidssoekereRequest, tilleggstoenadArbeidssoekereRequest.getAntallBoutgifterArbeidssoekere()));
             byggTilleggstoenadResponse("boutgifter - arbeidssøkere", nyeTilleggBoutgifterArbeidssoeker, arenaRespons);
-        }
 
-        if (tilleggstoenadArbeidssoekereRequest.getAntallDagligReiseArbeidssoekere() != null && tilleggstoenadArbeidssoekereRequest.getAntallDagligReiseArbeidssoekere() > 0) {
-            var nyeTilleggDagligReiseArbeidssoeker = tilleggstoenadConsumer.opprettDagligReiseArbeidssoekere(SyntetiserArenaRequest.builder()
-                    .avspillergruppeId(tilleggstoenadArbeidssoekereRequest.getAvspillergruppeId())
-                    .miljoe(tilleggstoenadArbeidssoekereRequest.getMiljoe())
-                    .antallNyeIdenter(tilleggstoenadArbeidssoekereRequest.getAntallDagligReiseArbeidssoekere())
-                    .build());
+            var nyeTilleggDagligReiseArbeidssoeker = tilleggstoenadConsumer.opprettDagligReiseArbeidssoekere(buildSyntArenaArbeidssoekerRequest(tilleggstoenadArbeidssoekereRequest, tilleggstoenadArbeidssoekereRequest.getAntallDagligReiseArbeidssoekere()));
             byggTilleggstoenadResponse("daglig reise - arbeidssøkere", nyeTilleggDagligReiseArbeidssoeker, arenaRespons);
-        }
 
-        if (tilleggstoenadArbeidssoekereRequest.getAntallFlyttingArbeidssoekere() != null && tilleggstoenadArbeidssoekereRequest.getAntallFlyttingArbeidssoekere() > 0) {
-            var nyeTilleggFlyttingArbeidssoeker = tilleggstoenadConsumer.opprettFlyttingArbeidssoekere(SyntetiserArenaRequest.builder()
-                    .avspillergruppeId(tilleggstoenadArbeidssoekereRequest.getAvspillergruppeId())
-                    .miljoe(tilleggstoenadArbeidssoekereRequest.getMiljoe())
-                    .antallNyeIdenter(tilleggstoenadArbeidssoekereRequest.getAntallFlyttingArbeidssoekere())
-                    .build());
+            var nyeTilleggFlyttingArbeidssoeker = tilleggstoenadConsumer.opprettFlyttingArbeidssoekere(buildSyntArenaArbeidssoekerRequest(tilleggstoenadArbeidssoekereRequest, tilleggstoenadArbeidssoekereRequest.getAntallFlyttingArbeidssoekere()));
             byggTilleggstoenadResponse("flytting - arbeidssøkere", nyeTilleggFlyttingArbeidssoeker, arenaRespons);
-        }
 
-        if (tilleggstoenadArbeidssoekereRequest.getAntallLaeremidlerArbeidssoekere() != null && tilleggstoenadArbeidssoekereRequest.getAntallLaeremidlerArbeidssoekere() > 0) {
-            var nyeTilleggLaeremidlerArbeidssoeker = tilleggstoenadConsumer.opprettLaeremidlerArbeidssoekere(SyntetiserArenaRequest.builder()
-                    .avspillergruppeId(tilleggstoenadArbeidssoekereRequest.getAvspillergruppeId())
-                    .miljoe(tilleggstoenadArbeidssoekereRequest.getMiljoe())
-                    .antallNyeIdenter(tilleggstoenadArbeidssoekereRequest.getAntallLaeremidlerArbeidssoekere())
-                    .build());
+            var nyeTilleggLaeremidlerArbeidssoeker = tilleggstoenadConsumer.opprettLaeremidlerArbeidssoekere(buildSyntArenaArbeidssoekerRequest(tilleggstoenadArbeidssoekereRequest, tilleggstoenadArbeidssoekereRequest.getAntallLaeremidlerArbeidssoekere()));
             byggTilleggstoenadResponse("læremidler - arbeidssøkere", nyeTilleggLaeremidlerArbeidssoeker, arenaRespons);
-        }
 
-        if (tilleggstoenadArbeidssoekereRequest.getAntallHjemreiseArbeidssoekere() != null && tilleggstoenadArbeidssoekereRequest.getAntallHjemreiseArbeidssoekere() > 0) {
-            var nyeTilleggHjemreiseArbeidssoeker = tilleggstoenadConsumer.opprettHjemreiseArbeidssoekere(SyntetiserArenaRequest.builder()
-                    .avspillergruppeId(tilleggstoenadArbeidssoekereRequest.getAvspillergruppeId())
-                    .miljoe(tilleggstoenadArbeidssoekereRequest.getMiljoe())
-                    .antallNyeIdenter(tilleggstoenadArbeidssoekereRequest.getAntallHjemreiseArbeidssoekere())
-                    .build());
+            var nyeTilleggHjemreiseArbeidssoeker = tilleggstoenadConsumer.opprettHjemreiseArbeidssoekere(buildSyntArenaArbeidssoekerRequest(tilleggstoenadArbeidssoekereRequest, tilleggstoenadArbeidssoekereRequest.getAntallHjemreiseArbeidssoekere()));
             byggTilleggstoenadResponse("hjemreise - arbeidssøkere", nyeTilleggHjemreiseArbeidssoeker, arenaRespons);
-        }
 
-        if (tilleggstoenadArbeidssoekereRequest.getAntallReiseObligatoriskSamlingArbeidssoekere() != null && tilleggstoenadArbeidssoekereRequest.getAntallReiseObligatoriskSamlingArbeidssoekere() > 0) {
-            var nyeTilleggReiseObligatoriskSamlingArbeidssoeker = tilleggstoenadConsumer.opprettReiseObligatoriskSamlingArbeidssoekere(SyntetiserArenaRequest.builder()
-                    .avspillergruppeId(tilleggstoenadArbeidssoekereRequest.getAvspillergruppeId())
-                    .miljoe(tilleggstoenadArbeidssoekereRequest.getMiljoe())
-                    .antallNyeIdenter(tilleggstoenadArbeidssoekereRequest.getAntallReiseObligatoriskSamlingArbeidssoekere())
-                    .build());
+            var nyeTilleggReiseObligatoriskSamlingArbeidssoeker = tilleggstoenadConsumer.opprettReiseObligatoriskSamlingArbeidssoekere(buildSyntArenaArbeidssoekerRequest(tilleggstoenadArbeidssoekereRequest, tilleggstoenadArbeidssoekereRequest.getAntallReiseObligatoriskSamlingArbeidssoekere()));
             byggTilleggstoenadResponse("reise obligatorisk samling - arbeidssøkere", nyeTilleggReiseObligatoriskSamlingArbeidssoeker, arenaRespons);
-        }
 
-        if (tilleggstoenadArbeidssoekereRequest.getAntallReisestoenadArbeidssoekere() != null && tilleggstoenadArbeidssoekereRequest.getAntallReisestoenadArbeidssoekere() > 0) {
-            var nyeTilleggReisestoenadArbeidssoeker = tilleggstoenadConsumer.opprettReisestoenadArbeidssoekere(SyntetiserArenaRequest.builder()
-                    .avspillergruppeId(tilleggstoenadArbeidssoekereRequest.getAvspillergruppeId())
-                    .miljoe(tilleggstoenadArbeidssoekereRequest.getMiljoe())
-                    .antallNyeIdenter(tilleggstoenadArbeidssoekereRequest.getAntallReisestoenadArbeidssoekere())
-                    .build());
+            var nyeTilleggReisestoenadArbeidssoeker = tilleggstoenadConsumer.opprettReisestoenadArbeidssoekere(buildSyntArenaArbeidssoekerRequest(tilleggstoenadArbeidssoekereRequest, tilleggstoenadArbeidssoekereRequest.getAntallReisestoenadArbeidssoekere()));
             byggTilleggstoenadResponse("reisestønad - arbeidssøkere", nyeTilleggReisestoenadArbeidssoeker, arenaRespons);
-        }
 
         return arenaRespons;
     }
@@ -328,6 +250,7 @@ public class TestnorgeArenaService {
             List<NyttVedtakResponse> nyeVedtakTilleggstoenad,
             List<NyttVedtakTillegg> arenaRespons
     ) {
+        if(isNull(nyeVedtakTilleggstoenad)) { return; }
         List<NyttVedtakTillegg> nyeRettigheter = new ArrayList<>();
         List<NyttVedtakFeil> feiledeRettigheter = new ArrayList<>();
         for (var vedtak : nyeVedtakTilleggstoenad) {
