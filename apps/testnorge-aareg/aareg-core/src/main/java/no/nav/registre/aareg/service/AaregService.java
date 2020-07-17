@@ -6,9 +6,6 @@ import static no.nav.registre.aareg.util.ArbeidsforholdMappingUtil.getLocalDateT
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Organisasjon;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Person;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -31,6 +28,9 @@ import no.nav.registre.aareg.domain.RsPeriode;
 import no.nav.registre.aareg.domain.RsPersonAareg;
 import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Organisasjon;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Person;
 
 @Slf4j
 @Service
@@ -69,41 +69,7 @@ public class AaregService {
         miljoer.forEach(environment -> {
             try {
                 ResponseEntity<List<Arbeidsforhold>> arbeidsforholdResponse = aaregRestConsumer.hentArbeidsforhold(ident, environment);
-                if (arbeidsforholdResponse != null && arbeidsforholdResponse.hasBody()) {
-                    var responseBody = arbeidsforholdResponse.getBody();
-                    if (responseBody != null) {
-                        responseBody.forEach(map -> Collections.singletonList(map).forEach(
-                                forhold -> {
-                                    var arbeidsforhold = RsArbeidsforhold.builder()
-                                            .arbeidsforholdIDnav(forhold.getNavArbeidsforholdId())
-                                            .arbeidsforholdID(forhold.getArbeidsforholdId())
-                                            .arbeidsgiver("Person".equals(forhold.getArbeidsgiver().getType()) ?
-                                                    RsAktoerPerson.builder()
-                                                            .ident(((Person) (forhold.getArbeidsgiver())).getOffentligIdent())
-                                                            .build() :
-                                                    RsOrganisasjon.builder()
-                                                            .orgnummer(((Organisasjon) (forhold.getArbeidsgiver())).getOrganisasjonsnummer())
-                                                            .build())
-                                            .arbeidsforholdstype(forhold.getType())
-                                            .arbeidstaker(RsPersonAareg.builder()
-                                                    .ident(forhold.getArbeidstaker().getOffentligIdent())
-                                                    .build())
-                                            .ansettelsesPeriode(RsPeriode.builder()
-                                                    .fom(getLocalDateTimeFromLocalDate(forhold.getAnsettelsesperiode().getPeriode().getFom()))
-                                                    .fom(getLocalDateTimeFromLocalDate(forhold.getAnsettelsesperiode().getPeriode().getTom()))
-                                                    .build())
-                                            .arbeidsavtale(RsArbeidsavtale.builder()
-                                                    .yrke(forhold.getArbeidsavtaler().get(0).getYrke())
-                                                    .stillingsprosent(0.0)
-                                                    .endringsdatoStillingsprosent(
-                                                            getLocalDateTimeFromLocalDate(forhold.getAnsettelsesperiode().getPeriode().getFom()))
-                                                    .build())
-                                            .build();
-                                    resultMap.putAll(aaregWsConsumer.oppdaterArbeidsforhold(buildRequest(arbeidsforhold, environment, navCallId)));
-                                }
-                        ));
-                    }
-                }
+                mapArbeidsforhold(navCallId, resultMap, environment, arbeidsforholdResponse);
             } catch (HttpClientErrorException e) {
                 if (HttpStatus.NOT_FOUND.value() != e.getStatusCode().value()) {
                     throw e;
@@ -117,6 +83,42 @@ public class AaregService {
         return RsAaregResponse.builder()
                 .statusPerMiljoe(resultMap)
                 .build();
+    }
+
+    private void mapArbeidsforhold(String navCallId, Map<String, String> resultMap, String environment, ResponseEntity<List<Arbeidsforhold>> arbeidsforholdResponse) {
+        if (arbeidsforholdResponse != null && arbeidsforholdResponse.getBody() != null) {
+            var responseBody = arbeidsforholdResponse.getBody();
+                responseBody.forEach(map -> Collections.singletonList(map).forEach(
+                        forhold -> {
+                            var arbeidsforhold = RsArbeidsforhold.builder()
+                                    .arbeidsforholdIDnav(forhold.getNavArbeidsforholdId())
+                                    .arbeidsforholdID(forhold.getArbeidsforholdId())
+                                    .arbeidsgiver("Person".equals(forhold.getArbeidsgiver().getType()) ?
+                                            RsAktoerPerson.builder()
+                                                    .ident(((Person) (forhold.getArbeidsgiver())).getOffentligIdent())
+                                                    .build() :
+                                            RsOrganisasjon.builder()
+                                                    .orgnummer(((Organisasjon) (forhold.getArbeidsgiver())).getOrganisasjonsnummer())
+                                                    .build())
+                                    .arbeidsforholdstype(forhold.getType())
+                                    .arbeidstaker(RsPersonAareg.builder()
+                                            .ident(forhold.getArbeidstaker().getOffentligIdent())
+                                            .build())
+                                    .ansettelsesPeriode(RsPeriode.builder()
+                                            .fom(getLocalDateTimeFromLocalDate(forhold.getAnsettelsesperiode().getPeriode().getFom()))
+                                            .fom(getLocalDateTimeFromLocalDate(forhold.getAnsettelsesperiode().getPeriode().getTom()))
+                                            .build())
+                                    .arbeidsavtale(RsArbeidsavtale.builder()
+                                            .yrke(forhold.getArbeidsavtaler().get(0).getYrke())
+                                            .stillingsprosent(0.0)
+                                            .endringsdatoStillingsprosent(
+                                                    getLocalDateTimeFromLocalDate(forhold.getAnsettelsesperiode().getPeriode().getFom()))
+                                            .build())
+                                    .build();
+                            resultMap.putAll(aaregWsConsumer.oppdaterArbeidsforhold(buildRequest(arbeidsforhold, environment, navCallId)));
+                        }
+                ));
+            }
     }
 
     private static RsAaregOppdaterRequest buildRequest(
