@@ -10,10 +10,11 @@ import no.nav.registre.testnorge.organisasjon.consumer.dto.DetaljerDTO;
 import no.nav.registre.testnorge.organisasjon.consumer.dto.NavnDTO;
 import no.nav.registre.testnorge.organisasjon.consumer.dto.OrganisasjonDTO;
 import no.nav.registre.testnorge.test.JsonWiremockHelper;
-import org.junit.After;
-import org.junit.Ignore;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,7 +40,6 @@ class OrganisasjonControllerEregIntegrationTest {
     private static final String orgnummer = "123456789";
     private static final String miljo = "test";
 
-    @Ignore
     @Test
     void shouldGetOrganisasjon() throws Exception {
         var url = "/ereg-"+miljo+"/api/v1/organisasjon/" + orgnummer;
@@ -74,7 +74,7 @@ class OrganisasjonControllerEregIntegrationTest {
 
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         reset();
     }
