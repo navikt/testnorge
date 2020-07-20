@@ -1,13 +1,14 @@
 package no.nav.registre.sigrun.service;
 
-import io.micrometer.core.annotation.Timed;
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import io.micrometer.core.annotation.Timed;
+import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.sigrun.IdentMedData;
 import no.nav.registre.sigrun.PoppSyntetisererenResponse;
@@ -15,6 +16,7 @@ import no.nav.registre.sigrun.SigrunSaveInHodejegerenRequest;
 import no.nav.registre.sigrun.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.sigrun.consumer.rs.PoppSyntetisererenConsumer;
 import no.nav.registre.sigrun.consumer.rs.SigrunStubConsumer;
+import no.nav.registre.sigrun.consumer.rs.responses.SigrunSkattegrunnlagResponse;
 import no.nav.registre.sigrun.provider.rs.requests.SyntetiserSigrunRequest;
 import no.nav.registre.sigrun.provider.rs.responses.SletteGrunnlagResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
@@ -72,25 +74,7 @@ public class SigrunService {
         if (response.getStatusCode().is2xxSuccessful()) {
             List<IdentMedData> identerMedData = new ArrayList<>(identer.size());
 
-            for (var ident : identer) {
-                var identMedData = IdentMedData.builder()
-                        .id(ident)
-                        .data(new ArrayList<>())
-                        .build();
-                identerMedData.add(identMedData);
-
-                var syntetiserteMeldingerIterator = syntetiserteMeldinger.iterator();
-                while (syntetiserteMeldingerIterator.hasNext()) {
-                    var melding = syntetiserteMeldingerIterator.next();
-                    var personidentifikator = melding.getPersonidentifikator();
-                    if (ident.equals(personidentifikator)) {
-                        identMedData.getData().add(melding);
-                        syntetiserteMeldingerIterator.remove();
-                    } else {
-                        break; // vi kan breake her da meldingene ligger sortert etter personidentifikator
-                    }
-                }
-            }
+            fyllIdenterMedData(identer, syntetiserteMeldinger, identerMedData);
 
             var hodejegerenRequest = new SigrunSaveInHodejegerenRequest(SIGRUN_NAME, identerMedData);
 
@@ -106,6 +90,28 @@ public class SigrunService {
             }
         }
         return response;
+    }
+
+    private void fyllIdenterMedData(List<String> identer, List<PoppSyntetisererenResponse> syntetiserteMeldinger, List<IdentMedData> identerMedData) {
+        for (var ident : identer) {
+            var identMedData = IdentMedData.builder()
+                    .id(ident)
+                    .data(new ArrayList<>())
+                    .build();
+            identerMedData.add(identMedData);
+
+            var syntetiserteMeldingerIterator = syntetiserteMeldinger.iterator();
+            while (syntetiserteMeldingerIterator.hasNext()) {
+                var melding = syntetiserteMeldingerIterator.next();
+                var personidentifikator = melding.getPersonidentifikator();
+                if (ident.equals(personidentifikator)) {
+                    identMedData.getData().add(melding);
+                    syntetiserteMeldingerIterator.remove();
+                } else {
+                    break; // vi kan breake her da meldingene ligger sortert etter personidentifikator
+                }
+            }
+        }
     }
 
     public SletteGrunnlagResponse slettSkattegrunnlagTilIdenter(
@@ -128,12 +134,7 @@ public class SigrunService {
             for (var skattegrunnlag : skattegrunnlagTilIdent) {
                 if (testdataEier.equals(skattegrunnlag.getTestdataEier())) {
                     var response = sigrunStubConsumer.slettEksisterendeSkattegrunnlag(skattegrunnlag, miljoe);
-                    if (response.getStatusCode().is2xxSuccessful()) {
-                        sletteGrunnlagResponse.getGrunnlagSomBleSlettet().add(skattegrunnlag);
-                    } else {
-                        sletteGrunnlagResponse.getGrunnlagSomIkkeKunneSlettes().add(skattegrunnlag);
-                        log.error("Kunne ikke slette skattegrunnlag {} til ident {}", skattegrunnlag.getGrunnlag(), ident);
-                    }
+                    fyllSletteGrunnlagResponse(sletteGrunnlagResponse, ident, skattegrunnlag, response);
                 } else {
                     if (!sletteGrunnlagResponse.getIdenterMedGrunnlagFraAnnenTestdataEier().contains(ident)) {
                         sletteGrunnlagResponse.getIdenterMedGrunnlagFraAnnenTestdataEier().add(ident);
@@ -143,6 +144,15 @@ public class SigrunService {
         }
 
         return sletteGrunnlagResponse;
+    }
+
+    private void fyllSletteGrunnlagResponse(SletteGrunnlagResponse sletteGrunnlagResponse, String ident, SigrunSkattegrunnlagResponse skattegrunnlag, ResponseEntity<?> response) {
+        if (response.getStatusCode().is2xxSuccessful()) {
+            sletteGrunnlagResponse.getGrunnlagSomBleSlettet().add(skattegrunnlag);
+        } else {
+            sletteGrunnlagResponse.getGrunnlagSomIkkeKunneSlettes().add(skattegrunnlag);
+            log.error("Kunne ikke slette skattegrunnlag {} til ident {}", skattegrunnlag.getGrunnlag(), ident);
+        }
     }
 
     public List<String> finnEksisterendeIdenter(
