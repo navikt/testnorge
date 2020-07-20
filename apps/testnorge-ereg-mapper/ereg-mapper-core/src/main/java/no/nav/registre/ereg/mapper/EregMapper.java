@@ -1,12 +1,6 @@
 package no.nav.registre.ereg.mapper;
 
-import com.google.common.base.Strings;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -15,9 +9,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+
+import com.google.common.base.Strings;
+
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import no.nav.registre.ereg.consumer.rs.EregConsumer;
 import no.nav.registre.ereg.csv.NaeringskodeRecord;
-import no.nav.registre.ereg.provider.rs.request.*;
+import no.nav.registre.ereg.provider.rs.request.AdresseRs;
+import no.nav.registre.ereg.provider.rs.request.EregDataRequest;
+import no.nav.registre.ereg.provider.rs.request.Kapital;
+import no.nav.registre.ereg.provider.rs.request.KnytningRs;
+import no.nav.registre.ereg.provider.rs.request.Maalform;
+import no.nav.registre.ereg.provider.rs.request.Naeringskode;
+import no.nav.registre.ereg.provider.rs.request.NavnRs;
+import no.nav.registre.ereg.provider.rs.request.Telefon;
+import no.nav.registre.ereg.provider.rs.request.UnderlagtHjemland;
+import no.nav.registre.ereg.provider.rs.request.UtenlandsRegister;
 import no.nav.registre.ereg.service.NameService;
 
 @Slf4j
@@ -77,6 +90,7 @@ public class EregMapper {
                                     })
                                     .map(Naeringskode::getKode)
                                     .collect(Collectors.toList());
+
                             List<String> fullNames = nameService.getFullNames(naeringskoder, enhetstype);
                             for (int i = 0; i < requests.size(); i++) {
                                 requests.get(i).setNavn(
@@ -143,55 +157,28 @@ public class EregMapper {
         }
 
         String epost = data.getEpost();
-        if (epost != null) {
-            file.append(createSingleFieldWithBase(158, "EPOS", endringsType, epost));
-            numRecords++;
-        }
+        numRecords = appendFileCreateSingleFieldWithBase(numRecords, 158, file, "EPOS", endringsType, epost);
 
         String iAdr = data.getInternetAdresse();
-        if (iAdr != null) {
-            file.append(createSingleFieldWithBase(158, "IADR", endringsType, iAdr));
-            numRecords++;
-        }
+        numRecords = appendFileCreateSingleFieldWithBase(numRecords, 158, file, "IADR", endringsType, iAdr);
 
         Maalform maalform = data.getMaalform();
-        if (maalform != null) {
-            file.append(createSingleFieldWithBase(8, "MÅL ", endringsType, maalform.getForm()));
-            numRecords++;
-        }
+        numRecords = appendFileCreateSingleFieldWithBase(numRecords, 8, file, "MÅL", endringsType, maalform.getForm());
 
         Boolean harAnsatte = data.getHarAnsatte();
-        if (harAnsatte != null) {
-            file.append(createSingleFieldWithBase(8, "ARBG", endringsType, harAnsatte ? "J" : "N"));
-            numRecords++;
-        }
+        numRecords = appendFileCreateSingleFieldWithBaseBoolean(numRecords, 8, file, "ARBG", endringsType, harAnsatte);
 
         String sektorKode = data.getSektorKode();
-        if (sektorKode != null) {
-            file.append(createSingleFieldWithBase(16, "ISEK", endringsType, sektorKode));
-            numRecords++;
-        }
+        numRecords = appendFileCreateSingleFieldWithBase(numRecords, 16, file, "ISEK", endringsType, sektorKode);
 
         String stiftelsesDato = data.getStiftelsesDato();
-        if (stiftelsesDato != null) {
-            file.append(createSingleFieldWithBase(16, "STID", endringsType, stiftelsesDato));
-            numRecords++;
-        }
+        numRecords = appendFileCreateSingleFieldWithBase(numRecords, 16, file, "STID", endringsType, stiftelsesDato);
 
         Telefon telefon = data.getTelefon();
         if (telefon != null) {
-            if (telefon.getFast() != null) {
-                file.append(createSingleFieldWithBase(16, "TFON", endringsType, telefon.getFast()));
-                numRecords++;
-            }
-            if (telefon.getFax() != null) {
-                file.append(createSingleFieldWithBase(16, "TFAX", endringsType, telefon.getFax()));
-                numRecords++;
-            }
-            if (telefon.getMobil() != null) {
-                file.append(createSingleFieldWithBase(16, "MTLF", endringsType, telefon.getMobil()));
-                numRecords++;
-            }
+            numRecords = appendFileCreateSingleFieldWithBase(numRecords, 16, file, "TFON", endringsType, telefon.getFast());
+            numRecords = appendFileCreateSingleFieldWithBase(numRecords, 16, file, "TFAX", endringsType, telefon.getFax());
+            numRecords = appendFileCreateSingleFieldWithBase(numRecords, 16, file, "MTLF", endringsType, telefon.getMobil());
         }
 
         String frivillighetsKode = data.getFrivillighetsKode();
@@ -201,44 +188,23 @@ public class EregMapper {
         }
 
         String nedleggelse = data.getNedleggelsesDato();
-        if (nedleggelse != null) {
-            file.append(createDatoRecord("NDAT", nedleggelse, endringsType));
-            numRecords++;
-        }
+        numRecords = appendFileCreateDatoRecord(numRecords, file, endringsType, nedleggelse, "NDAT");
         String oppstart = data.getOppstartsDato();
-        if (oppstart != null) {
-            file.append(createDatoRecord("BDAT", oppstart, endringsType));
-            numRecords++;
-        }
+        numRecords = appendFileCreateDatoRecord(numRecords, file, endringsType, oppstart, "BDAT");
         String eierskapskifte = data.getEierskapskifteDato();
-        if (eierskapskifte != null) {
-            file.append(createDatoRecord("EDAT", eierskapskifte, endringsType));
-            numRecords++;
-        }
+        numRecords = appendFileCreateDatoRecord(numRecords, file, endringsType, eierskapskifte, "EDAT");
 
         Boolean kjoensfordeling = data.getKjoensfordeling();
-        if (kjoensfordeling != null) {
-            file.append(createSingleFieldWithBase(9, "KJRPN", endringsType, kjoensfordeling ? "J" : "N"));
-            numRecords++;
-        }
+        numRecords = appendFileCreateSingleFieldWithBaseBoolean(numRecords, 9, file, "KJRPN", endringsType, kjoensfordeling);
 
         Boolean utelukkendeVirksomhetINorge = data.getUtelukkendeVirksomhetINorge();
-        if (utelukkendeVirksomhetINorge != null) {
-            file.append(createSingleFieldWithBase(9, "UVNON", endringsType, utelukkendeVirksomhetINorge ? "J" : "N"));
-            numRecords++;
-        }
+        numRecords = appendFileCreateSingleFieldWithBaseBoolean(numRecords, 9, file, "UVNON", endringsType, utelukkendeVirksomhetINorge);
 
         Boolean heleidINorge = data.getUtelukkendeVirksomhetINorge();
-        if (heleidINorge != null) {
-            file.append(createSingleFieldWithBase(9, "UENON", endringsType, heleidINorge ? "J" : "N"));
-            numRecords++;
-        }
+        numRecords = appendFileCreateSingleFieldWithBaseBoolean(numRecords, 9, file, "UENON", endringsType, heleidINorge);
 
         Boolean fravalgAvRevisjonen = data.getUtelukkendeVirksomhetINorge();
-        if (fravalgAvRevisjonen != null) {
-            file.append(createSingleFieldWithBase(9, "RVFGN", endringsType, fravalgAvRevisjonen ? "J" : "N"));
-            numRecords++;
-        }
+        numRecords = appendFileCreateSingleFieldWithBaseBoolean(numRecords, 9, file, "RVFGN", endringsType, fravalgAvRevisjonen);
 
         UtenlandsRegister utenlandsRegister = data.getUtenlandsRegister();
         if (utenlandsRegister != null) {
@@ -263,6 +229,75 @@ public class EregMapper {
             numRecords++;
         }
 
+        numRecords = skrivKapitalHvisEksisterer(data, numRecords, file, endringsType);
+
+        Naeringskode naeringskode = data.getNaeringskode();
+        if (naeringskode != null) {
+            file.append(createNaeringskodeRecord(naeringskode.getKode(), naeringskode.getGyldighetsdato(), naeringskode.getHjelpeEnhet(), endringsType));
+            numRecords++;
+        }
+
+        numRecords = skrivFormaelHvisEksisterer(data, numRecords, file, endringsType);
+
+        numRecords = skrivFrivilligMvaHvisEksisterer(data, numRecords, file, endringsType);
+
+        numRecords = skrivKnytningerHvisEksisterer(data, numRecords, file);
+
+        return new RecordsAndCount(file.toString(), numRecords);
+    }
+
+    private int skrivKnytningerHvisEksisterer(EregDataRequest data, int numRecords, StringBuilder file) {
+        List<KnytningRs> knytninger = data.getKnytninger();
+        if (knytninger != null) {
+            List<String> collect = knytninger.stream().map(k -> createKnyntningsRecord(
+                    k.getType(),
+                    k.getAnsvarsandel(),
+                    k.getFratreden(),
+                    k.getOrgnr(),
+                    k.getValgtAv(),
+                    k.getKorrektOrgNr()))
+                    .collect(Collectors.toList());
+            for (String s : collect) {
+                file.append(s);
+                numRecords++;
+            }
+        }
+        return numRecords;
+    }
+
+    private int skrivFrivilligMvaHvisEksisterer(EregDataRequest data, int numRecords, StringBuilder file, String endringsType) {
+        List<String> frivilligMVA = data.getFrivilligRegistreringerMVA();
+        if (frivilligMVA != null) {
+            if (frivilligMVA.size() > 5) {
+                throw new IllegalStateException("For mange frivillige mva registreringer for et dokument på en bedrift");
+            }
+            List<String> collect = frivilligMVA.stream().map(f -> createSingleFieldWithBase(14, "FMVA", endringsType, f)).collect(Collectors.toList());
+            for (String s : collect) {
+                file.append(s);
+                numRecords++;
+            }
+        }
+        return numRecords;
+    }
+
+    private int skrivFormaelHvisEksisterer(EregDataRequest data, int numRecords, StringBuilder file, String endringsType) {
+        String formaal = data.getFormaal();
+        if (formaal != null) {
+            final int RECORD_SIZE = 70;
+            int size = formaal.length();
+            for (int i = 0; i < Math.ceil((double) size / (double) RECORD_SIZE); i++) {
+                int readStopIndex = (i + 1) * RECORD_SIZE;
+                if (size < readStopIndex) {
+                    readStopIndex = size;
+                }
+                file.append(createSingleFieldWithBase(78, "FORM", endringsType, formaal.substring(i * RECORD_SIZE, readStopIndex)));
+                numRecords++;
+            }
+        }
+        return numRecords;
+    }
+
+    private int skrivKapitalHvisEksisterer(EregDataRequest data, int numRecords, StringBuilder file, String endringsType) {
         Kapital kapital = data.getKapital();
         if (kapital != null) {
             final int RECORD_SIZE = 70;
@@ -280,57 +315,31 @@ public class EregMapper {
                 numRecords++;
             }
         }
+        return numRecords;
+    }
 
-        Naeringskode naeringskode = data.getNaeringskode();
-        if (naeringskode != null) {
-            file.append(createNaeringskodeRecord(naeringskode.getKode(), naeringskode.getGyldighetsdato(),
-                    naeringskode.getHjelpeEnhet(), endringsType));
+    private int appendFileCreateDatoRecord(int numRecords, StringBuilder file, String endringsType, String nedleggelse, String ndat) {
+        if (nedleggelse != null) {
+            file.append(createDatoRecord(ndat, nedleggelse, endringsType));
             numRecords++;
         }
+        return numRecords;
+    }
 
-        String formaal = data.getFormaal();
-        if (formaal != null) {
-            final int RECORD_SIZE = 70;
-            int size = formaal.length();
-            for (int i = 0; i < Math.ceil((double) size / (double) RECORD_SIZE); i++) {
-                int readStopIndex = (i + 1) * RECORD_SIZE;
-                if (size < readStopIndex) {
-                    readStopIndex = size;
-                }
-                file.append(createSingleFieldWithBase(78, "FORM", endringsType, formaal.substring(i * RECORD_SIZE, readStopIndex)));
-                numRecords++;
-            }
+    private int appendFileCreateSingleFieldWithBase(int numRecords, int size, StringBuilder file, String type, String endringsType, String verdi) {
+        if (verdi != null) {
+            file.append(createSingleFieldWithBase(size, type, endringsType, verdi));
+            numRecords++;
         }
+        return numRecords;
+    }
 
-        List<String> frivilligMVA = data.getFrivilligRegistreringerMVA();
-        if (frivilligMVA != null) {
-            if (frivilligMVA.size() > 5) {
-                throw new IllegalStateException("For mange frivillige mva registreringer for et dokument på en bedrift");
-            }
-            List<String> collect = frivilligMVA.stream().map(f -> createSingleFieldWithBase(14, "FMVA", endringsType, f)).collect(Collectors.toList());
-            for (String s : collect) {
-                file.append(s);
-                numRecords++;
-            }
+    private int appendFileCreateSingleFieldWithBaseBoolean(int numRecords, int size, StringBuilder file, String type, String endringsType, Boolean verdi) {
+        if (verdi != null) {
+            file.append(createSingleFieldWithBase(size, type, endringsType, isTrue(verdi) ? "J" : "N"));
+            numRecords++;
         }
-
-        List<KnytningRs> knytninger = data.getKnytninger();
-        if (knytninger != null) {
-            List<String> collect = knytninger.stream().map(k -> createKnyntningsRecord(
-                    k.getType(),
-                    k.getAnsvarsandel(),
-                    k.getFratreden(),
-                    k.getOrgnr(),
-                    k.getValgtAv(),
-                    k.getKorrektOrgNr()))
-                    .collect(Collectors.toList());
-            for (String s : collect) {
-                file.append(s);
-                numRecords++;
-            }
-        }
-
-        return new RecordsAndCount(file.toString(), numRecords);
+        return numRecords;
     }
 
     private String createENH(
@@ -461,7 +470,7 @@ public class EregMapper {
             Boolean hjelpeEnhet,
             String endringsType
     ) {
-        String verdi = hjelpeEnhet ? "J" : endringsType;
+        String verdi = isTrue(hjelpeEnhet) ? "J" : endringsType;
         StringBuilder stringBuilder = createBaseStringbuilder(23, "NACE", endringsType);
         stringBuilder.replace(8, 8 + naeringskode.length(), naeringskode)
                 .replace(14, 14 + gyldighetsDato.length(), gyldighetsDato)
