@@ -61,35 +61,7 @@ public class EregMapper {
                 .collect(Collectors.groupingBy(EregDataRequest::getEnhetstype))
                 .forEach(
                         (enhetstype, requests) -> {
-                            List<String> naeringskoder = requests.stream()
-                                    .map(d -> {
-                                        if (d.getNaeringskode() == null) {
-                                            NaeringskodeRecord randomNaeringskode = nameService.getRandomNaeringskode();
-                                            String dato = getDateNowFormatted();
-                                            if (!"".equals(randomNaeringskode.getValidFrom())) {
-                                                dato = randomNaeringskode.getValidFrom().replace("-", "");
-                                            }
-                                            d.setNaeringskode(Naeringskode.builder()
-                                                    .kode(randomNaeringskode.getCode())
-                                                    .hjelpeEnhet(false)
-                                                    .gyldighetsdato(dato)
-                                                    .build());
-                                        } else {
-                                            if ("".equals(d.getNaeringskode().getKode())) {
-                                                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
-                                                        "Unable to resolve næringskode when the entry was supplied");
-                                            }
-
-                                            if ("".equals(d.getNaeringskode().getGyldighetsdato())) {
-                                                d.getNaeringskode().setKode(nameService.getNaeringskodeRecord(
-                                                        d.getNaeringskode().getKode())
-                                                        .getValidFrom().replace("-", ""));
-                                            }
-                                        }
-                                        return d.getNaeringskode();
-                                    })
-                                    .map(Naeringskode::getKode)
-                                    .collect(Collectors.toList());
+                            List<String> naeringskoder = mapRequestToNaeringskoder(requests);
 
                             List<String> fullNames = nameService.getFullNames(naeringskoder, enhetstype);
                             for (int i = 0; i < requests.size(); i++) {
@@ -125,6 +97,38 @@ public class EregMapper {
         eregFile.append(createTrailer(units, totalRecords));
 
         return eregFile.toString();
+    }
+
+    private List<String> mapRequestToNaeringskoder(List<EregDataRequest> requests) {
+        return requests.stream()
+                                        .map(d -> {
+                                            if (d.getNaeringskode() == null) {
+                                                NaeringskodeRecord randomNaeringskode = nameService.getRandomNaeringskode();
+                                                String dato = getDateNowFormatted();
+                                                if (!"".equals(randomNaeringskode.getValidFrom())) {
+                                                    dato = randomNaeringskode.getValidFrom().replace("-", "");
+                                                }
+                                                d.setNaeringskode(Naeringskode.builder()
+                                                        .kode(randomNaeringskode.getCode())
+                                                        .hjelpeEnhet(false)
+                                                        .gyldighetsdato(dato)
+                                                        .build());
+                                            } else {
+                                                if ("".equals(d.getNaeringskode().getKode())) {
+                                                    throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+                                                            "Unable to resolve næringskode when the entry was supplied");
+                                                }
+
+                                                if ("".equals(d.getNaeringskode().getGyldighetsdato())) {
+                                                    d.getNaeringskode().setKode(nameService.getNaeringskodeRecord(
+                                                            d.getNaeringskode().getKode())
+                                                            .getValidFrom().replace("-", ""));
+                                                }
+                                            }
+                                            return d.getNaeringskode();
+                                        })
+                                        .map(Naeringskode::getKode)
+                                        .collect(Collectors.toList());
     }
 
     private RecordsAndCount createUnit(EregDataRequest data) {
@@ -163,7 +167,9 @@ public class EregMapper {
         numRecords = appendFileCreateSingleFieldWithBase(numRecords, 158, file, "IADR", endringsType, iAdr);
 
         Maalform maalform = data.getMaalform();
-        numRecords = appendFileCreateSingleFieldWithBase(numRecords, 8, file, "MÅL", endringsType, maalform.getForm());
+        if (maalform != null) {
+            numRecords = appendFileCreateSingleFieldWithBase(numRecords, 8, file, "MÅL", endringsType, maalform.getForm());
+        }
 
         Boolean harAnsatte = data.getHarAnsatte();
         numRecords = appendFileCreateSingleFieldWithBaseBoolean(numRecords, 8, file, "ARBG", endringsType, harAnsatte);
