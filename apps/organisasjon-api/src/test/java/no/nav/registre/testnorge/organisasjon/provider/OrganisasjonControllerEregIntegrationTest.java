@@ -37,13 +37,14 @@ class OrganisasjonControllerEregIntegrationTest {
     private ObjectMapper objectMapper;
 
     private static final String orgnummer = "123456789";
+    private static final String miljo = "test";
 
     @Ignore
     @Test
     void shouldGetOrganisasjon() throws Exception {
-        var url = "/ereg-test/api/v1/organisasjon/" + orgnummer;
+        var url = "/ereg-"+miljo+"/api/v1/organisasjon/" + orgnummer;
 
-        OrganisasjonDTO orgResponse = OrganisasjonDTO.builder()
+        var orgResponse = OrganisasjonDTO.builder()
                 .navn(NavnDTO.builder().navnelinje1("NavneLinje").redigertnavn("RedigertNavn").build())
                 .type("Type")
                 .detaljer(DetaljerDTO.builder().enhetstype("Enhetstype").build())
@@ -60,7 +61,7 @@ class OrganisasjonControllerEregIntegrationTest {
 
         mvc.perform(get("/api/v1/organisasjoner/" + orgnummer)
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("miljo", "test"))
+                .header("miljo", miljo))
                 .andExpect(status().isOk());
 
         JsonWiremockHelper
