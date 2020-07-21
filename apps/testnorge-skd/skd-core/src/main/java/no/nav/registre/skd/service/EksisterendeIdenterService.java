@@ -35,6 +35,7 @@ import no.nav.registre.skd.exceptions.ManglerEksisterendeIdentException;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.registre.testnorge.consumers.hodejegeren.response.RelasjonsResponse;
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Service
@@ -261,11 +262,7 @@ public class EksisterendeIdenterService {
 
             var morFnr = "";
 
-            for (var relasjon : relasjonerTilBarn.getRelasjoner()) {
-                if (RELASJON_MOR.equals(relasjon.getTypeRelasjon())) {
-                    morFnr = relasjon.getFnrRelasjon();
-                }
-            }
+            morFnr = hentMorFnrRelasjon(relasjonerTilBarn, morFnr);
 
             var farFnr = foedselService.findFar(morFnr, foedtIdent, levendeIdenterINorge, new ArrayList<>());
             if (farFnr != null) {
@@ -288,6 +285,18 @@ public class EksisterendeIdenterService {
         }
 
         oppdaterMeldingerMedFarsFnr(meldinger, barnMedFedre, antallMeldinger, brukteIdenterIDenneBolken);
+    }
+
+    private String hentMorFnrRelasjon(RelasjonsResponse relasjonerTilBarn, String morFnr) {
+        for (var relasjon : relasjonerTilBarn.getRelasjoner()) {
+            if (RELASJON_FAR.equals(relasjon.getTypeRelasjon())) {
+                break;
+            }
+            if (RELASJON_MOR.equals(relasjon.getTypeRelasjon())) {
+                morFnr = relasjon.getFnrRelasjon();
+            }
+        }
+        return morFnr;
     }
 
     void behandleDoedsmelding(
