@@ -1,13 +1,6 @@
 package no.nav.registre.testnorge.person.consumer;
 
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -16,11 +9,19 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+
+import lombok.extern.slf4j.Slf4j;
+
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.person.consumer.command.PostAdresseCommand;
 import no.nav.registre.testnorge.person.consumer.command.PostNavnCommand;
 import no.nav.registre.testnorge.person.consumer.command.PostOpprettPersonCommand;
 import no.nav.registre.testnorge.person.domain.Person;
+import no.nav.registre.testnorge.person.exception.PdlCreatePersonException;
 import no.nav.registre.testnorge.person.service.StsOidcTokenService;
 
 @Slf4j
@@ -64,7 +65,7 @@ public class PdlTestdataConsumer {
         )).collect(Collectors.toList());
 
         if (results.stream().anyMatch(Objects::isNull)) {
-            throw new RuntimeException("Feil ved innsendelse til PDL testdata");
+            throw new PdlCreatePersonException("Feil ved innsendelse til PDL testdata");
         }
     }
 }

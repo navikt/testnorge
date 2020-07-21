@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.testnorge.arbeidsforhold.consumer.dto.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.arbeidsforhold.exception.ArbeidsforholdNotFoundException;
 
 @Slf4j
 @Getter
@@ -19,7 +20,7 @@ public class Arbeidsforhold {
 
 
         if(dto.getArbeidsavtaler().isEmpty()){
-            throw new RuntimeException("Finner ikke arbeidesforhold");
+            throw new ArbeidsforholdNotFoundException("Finner ikke arbeidesforhold");
         }
 
         if (dto.getArbeidsavtaler().size() > 1) {

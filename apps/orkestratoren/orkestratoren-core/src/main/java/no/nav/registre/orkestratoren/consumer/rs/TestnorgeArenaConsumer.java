@@ -1,7 +1,7 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import io.micrometer.core.annotation.Timed;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
@@ -12,10 +12,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.util.List;
+import io.micrometer.core.annotation.Timed;
+import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.orkestratoren.consumer.rs.response.GenererArenaResponse;
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteArenaResponse;
+import no.nav.registre.orkestratoren.exception.ArenaSyntetiseringException;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
@@ -30,9 +32,9 @@ public class TestnorgeArenaConsumer {
     private static final ParameterizedTypeReference<SletteArenaResponse> RESPONSE_TYPE_DELETE = new ParameterizedTypeReference<>() {
     };
 
-    private RestTemplate restTemplate;
-    private UriTemplate arenaOpprettArbeidsoekereUrl;
-    private UriTemplate arenaSlettArbeidsoekereUrl;
+    private final RestTemplate restTemplate;
+    private final UriTemplate arenaOpprettArbeidsoekereUrl;
+    private final UriTemplate arenaSlettArbeidsoekereUrl;
 
     public TestnorgeArenaConsumer(
             RestTemplateBuilder restTemplateBuilder,
@@ -56,7 +58,7 @@ public class TestnorgeArenaConsumer {
         if (response != null) {
             return response.getRegistrerteIdenter();
         } else {
-            throw new RuntimeException("Feil i syntetisering av arena");
+            throw new ArenaSyntetiseringException("Feil i syntetisering av arena");
         }
     }
 
