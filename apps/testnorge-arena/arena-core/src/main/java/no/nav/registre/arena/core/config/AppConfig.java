@@ -1,5 +1,6 @@
 package no.nav.registre.arena.core.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
@@ -16,6 +17,9 @@ import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 @Import(ApplicationCoreConfig.class)
 public class AppConfig {
 
+    @Value("${testnorge-hodejegeren.rest-api.url}")
+    private String hodejegerenUrl;
+
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
@@ -29,6 +33,6 @@ public class AppConfig {
     @Bean
     @DependsOn("restTemplate")
     public HodejegerenConsumer hodejegerenConsumer() {
-        return (HodejegerenConsumer) ConsumerFactory.create(HodejegerenConsumer.class, restTemplate());
+        return new HodejegerenConsumer(hodejegerenUrl, restTemplate());
     }
 }

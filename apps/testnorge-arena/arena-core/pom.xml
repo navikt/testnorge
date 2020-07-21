@@ -79,6 +79,11 @@
             <artifactId>spring-cloud-contract-wiremock</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>no.nav.registre.testnorge</groupId>
+            <artifactId>testnorge-testing</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <!-- DOCUMENTATION -->
         <dependency>
