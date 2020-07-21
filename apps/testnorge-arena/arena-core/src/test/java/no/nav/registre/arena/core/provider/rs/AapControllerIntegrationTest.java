@@ -13,9 +13,7 @@ import no.nav.registre.arena.core.pensjon.response.PensjonTestdataResponse;
 import no.nav.registre.arena.core.pensjon.response.PensjonTestdataResponseDetails;
 import no.nav.registre.arena.core.pensjon.response.PensjonTestdataStatus;
 import no.nav.registre.arena.core.provider.rs.request.SyntetiserArenaRequest;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyBruker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.test.JsonWiremockHelper;
@@ -37,7 +35,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RunWith(SpringRunner.class)
