@@ -12,7 +12,7 @@ import no.nav.registre.testnorge.organisasjon.consumer.dto.OrganisasjonDTO;
 import no.nav.registre.testnorge.test.JsonWiremockHelper;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
-class OrganisasjonControllerEregIntegrationTest {
+public class OrganisasjonControllerEregIntegrationTest {
 
     @Autowired
     private MockMvc mvc;
@@ -41,7 +41,7 @@ class OrganisasjonControllerEregIntegrationTest {
     private static final String miljo = "test";
 
     @Test
-    void shouldGetOrganisasjon() throws Exception {
+    public void shouldGetOrganisasjon() throws Exception {
         var url = "/ereg-"+miljo+"/api/v1/organisasjon/" + orgnummer;
 
         var orgResponse = OrganisasjonDTO.builder()
