@@ -3,6 +3,8 @@ package no.nav.registre.testnorge.test;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.delete;
+import static com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.matching;
@@ -69,18 +71,8 @@ public class JsonWiremockHelper {
     public void stubPost() {
         MappingBuilder mappingBuilder = post(urlPathPattern);
 
-        queryParamMap.forEach((name, value) -> mappingBuilder.withQueryParam(name, equalTo(value)));
+        updateMappingBuilder(mappingBuilder);
 
-        if (requestBody != null) {
-            mappingBuilder.withRequestBody(equalToJson(requestBody));
-        }
-
-        if (responseBody != null) {
-            mappingBuilder.willReturn(aResponse()
-                    .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .withBody(responseBody)
-            );
-        }
         stubFor(mappingBuilder);
     }
 
@@ -105,6 +97,45 @@ public class JsonWiremockHelper {
 
     public void verifyPost() {
         RequestPatternBuilder requestPatternBuilder = postRequestedFor(urlPathPattern);
+        if (requestBody != null) {
+
+            if (requestFieldsToIgnore.isEmpty()) {
+                requestPatternBuilder.withRequestBody(equalToJson(requestBody));
+            } else {
+                requestPatternBuilder.withRequestBody(matching(convertToRegexString(
+                        requestBody,
+                        requestFieldsToIgnore.toArray(String[]::new)
+                )));
+            }
+
+        }
+        verify(requestPatternBuilder);
+    }
+
+    public void stubDelete() {
+        MappingBuilder mappingBuilder = delete(urlPathPattern);
+
+        updateMappingBuilder(mappingBuilder);
+        stubFor(mappingBuilder);
+    }
+
+    private void updateMappingBuilder(MappingBuilder mappingBuilder){
+        queryParamMap.forEach((name, value) -> mappingBuilder.withQueryParam(name, equalTo(value)));
+
+        if (requestBody != null) {
+            mappingBuilder.withRequestBody(equalToJson(requestBody));
+        }
+
+        if (responseBody != null) {
+            mappingBuilder.willReturn(aResponse()
+                    .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .withBody(responseBody)
+            );
+        }
+    }
+
+    public void verifyDelete() {
+        RequestPatternBuilder requestPatternBuilder = deleteRequestedFor(urlPathPattern);
         if (requestBody != null) {
 
             if (requestFieldsToIgnore.isEmpty()) {

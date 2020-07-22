@@ -1,9 +1,12 @@
 package no.nav.registre.arena.core.provider.rs;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.registre.arena.core.consumer.rs.response.AktoerInnhold;
@@ -35,6 +38,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RunWith(SpringRunner.class)
@@ -176,10 +180,13 @@ public class AapControllerIntegrationTest {
                 .withUrlPathMatching(saveHistorikkUrl)
                 .stubPost();
 
-        mvc.perform(post("/api/v1/syntetisering/generer/rettighet/aap")
+        var resultat = mvc.perform(post("/api/v1/syntetisering/generer/rettighet/aap")
                 .content(objectMapper.writeValueAsString(new SyntetiserArenaRequest(avspillergruppeId, miljoe, 1)))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();;
 
         JsonWiremockHelper
                 .builder(objectMapper)
@@ -250,6 +257,12 @@ public class AapControllerIntegrationTest {
                 .builder(objectMapper)
                 .withUrlPathMatching(saveHistorikkUrl)
                 .verifyPost();
+
+        Map<String, List<NyttVedtakResponse>> resultatMap = objectMapper.readValue(resultat,
+                new TypeReference<>() {});
+
+        assertTrue(resultatMap.containsKey(ident));
+        assertEquals(1, resultatMap.size());
     }
 
     @AfterEach
