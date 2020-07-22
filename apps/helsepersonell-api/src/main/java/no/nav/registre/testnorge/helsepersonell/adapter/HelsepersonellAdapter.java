@@ -15,7 +15,7 @@ import no.nav.registre.testnorge.helsepersonell.consumer.SamhandlerregisteretCon
 import no.nav.registre.testnorge.helsepersonell.domain.Lege;
 import no.nav.registre.testnorge.helsepersonell.domain.LegeListe;
 import no.nav.registre.testnorge.helsepersonell.domain.Samhandler;
-import no.nav.registre.testnorge.helsepersonell.exception.OpprettLegeException;
+import no.nav.registre.testnorge.helsepersonell.exception.UgyldigSamhandlerException;
 
 @Slf4j
 @Component
@@ -33,7 +33,7 @@ public class HelsepersonellAdapter {
                         return value.get();
                     } catch (Exception e) {
                         log.error("Klarer ikke å hente samhandler", e);
-                        throw new OpprettLegeException("Feil ved opprettelse av lege");
+                        throw new UgyldigSamhandlerException("Feil ved opprettelse av lege");
                     }
                 })
                 .flatMap(Collection::stream)

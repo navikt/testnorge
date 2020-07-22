@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.extern.slf4j.Slf4j;
 
-import no.nav.registre.testnorge.arbeidsforhold.exception.SikkerhetsTokenFornyException;
+import no.nav.registre.testnorge.arbeidsforhold.exception.SikkerhetsTokenExpiredException;
 
 
 @Slf4j
@@ -62,7 +62,7 @@ public class StsOidcTokenService {
                         updateToken();
                     } catch (RuntimeException e) {
                         if (hasExpired()) {
-                            throw new SikkerhetsTokenFornyException("Sikkerhet-token kunne ikke fornyes", e);
+                            throw new SikkerhetsTokenExpiredException("Sikkerhet-token kunne ikke fornyes", e);
                         }
                     }
                 }

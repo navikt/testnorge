@@ -9,7 +9,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 
 import lombok.extern.slf4j.Slf4j;
 
-import no.nav.registre.testnorge.hendelse.exception.HentVaultTokenException;
+import no.nav.registre.testnorge.hendelse.exception.UgyldigVaultTokenException;
 
 @Slf4j
 public final class VaultUtil {
@@ -32,10 +32,10 @@ public final class VaultUtil {
                 byte[] encoded = Files.readAllBytes(Paths.get("/var/run/secrets/nais.io/vault/vault_token"));
                 return new String(encoded, StandardCharsets.UTF_8).trim();
             } else {
-                throw new HentVaultTokenException("Klarer ikke å hente vault token");
+                throw new UgyldigVaultTokenException("Klarer ikke å hente vault token");
             }
         } catch (Exception e) {
-            throw new HentVaultTokenException("Could not get a vault token for authentication", e);
+            throw new UgyldigVaultTokenException("Could not get a vault token for authentication", e);
         }
     }
 

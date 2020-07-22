@@ -20,7 +20,7 @@ public class Arbeidsforhold {
 
 
         if(dto.getArbeidsavtaler().isEmpty()){
-            throw new ArbeidsforholdNotFoundException("Finner ikke arbeidesforhold");
+            throw new ArbeidsforholdNotFoundException("Finner ikke arbeidsforhold");
         }
 
         if (dto.getArbeidsavtaler().size() > 1) {
