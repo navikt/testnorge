@@ -59,6 +59,18 @@ public class AapControllerIntegrationTest {
     private static final String miljoe = "test";
     private static final Long avspillergruppeId=123456789L;
 
+    private static final String tokenProviderUrl="(.*)/token-provider";
+    private static final String hentLevendeIdenterIAldersgruppeUrl="(.*)/hodejegeren/api/v1/levende-identer-i-aldersgruppe/"+avspillergruppeId;
+    private static final String hentIdenterIAktoerregisteretUrl="(.*)/aktoerregister/v1/identer";
+    private static final String brukereArenaUrl="(.*)/arena-forvalteren/api/v1/bruker";
+    private static final String hentSyntetisertRettighetAapUrl="(.*)/syntetisereren/api/v1/arena/aap";
+    private static final String hentSyntetisertRettighetAap115Url="(.*)/syntetisereren/api/v1/arena/aap/11_5";
+    private static final String opprettPersonIPoppUrl="(.*)/pensjon-testdata-facade/api/v1/person";
+    private static final String opprettInntektIPoppUrl="(.*)/pensjon-testdata-facade/api/v1/inntekt";
+    private static final String opprettRettigheterAap115Url = "(.*)/arena-forvalteren/api/v1/aap115";
+    private static final String opprettRettigheterAapUrl = "(.*)/arena-forvalteren/api/v1/aap";
+    private static final String saveHistorikkUrl="(.*)/hodejegeren/api/v1/historikk";
+
     private NyttVedtakAap vedtak;
     private NyttVedtakResponse nyttVedtakResponse;
     private NyeBrukereResponse nyeBrukereResponse;
@@ -98,17 +110,6 @@ public class AapControllerIntegrationTest {
 
     @Test
     public void shouldGenerereRettighetAap() throws Exception {
-        var tokenProviderUrl="(.*)/token-provider";
-        var hentLevendeIdenterIAldersgruppeUrl="(.*)/hodejegeren/api/v1/levende-identer-i-aldersgruppe/"+avspillergruppeId;
-        var hentIdenterIAktoerregisteretUrl="(.*)/aktoerregister/v1/identer";
-        var brukereArenaUrl="(.*)/arena-forvalteren/api/v1/bruker";
-        var hentSyntetisertRettighetAapUrl="(.*)/syntetisereren/api/v1/arena/aap";
-        var hentSyntetisertRettighetAap115Url="(.*)/syntetisereren/api/v1/arena/aap/11_5";
-        var opprettPersonIPoppUrl="(.*)/pensjon-testdata-facade/api/v1/person";
-        var opprettInntektIPoppUrl="(.*)/pensjon-testdata-facade/api/v1/inntekt";
-        var opprettRettigheterAap115Url = "(.*)/arena-forvalteren/api/v1/aap115";
-        var opprettRettigheterAapUrl = "(.*)/arena-forvalteren/api/v1/aap";
-        var saveHistorikkUrl="(.*)/hodejegeren/api/v1/historikk";
 
         JsonWiremockHelper
                 .builder(objectMapper)

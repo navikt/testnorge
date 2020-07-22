@@ -1,12 +1,10 @@
 package no.nav.registre.arena.core.provider.rs;
 
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.registre.arena.core.provider.rs.request.SyntetiserArenaRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.test.JsonWiremockHelper;
 
 import org.junit.Before;
@@ -25,8 +23,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
 import static org.junit.Assert.assertEquals;
@@ -94,7 +90,7 @@ public class BrukereControllerIntegrationTest {
                 .withResponseBody(sendBrukerResponse)
                 .stubPost();
 
-        var mvcResultat = mvc.perform(post("/api/v1/syntetisering/generer")
+        var mvcResultat = mvc.perform(post("/api/v1/syntetisering/generer/tillegg/boutgifter")
                 .queryParam("personident", ident)
                 .content(objectMapper.writeValueAsString(syntetiserArenaRequest))
                 .contentType(MediaType.APPLICATION_JSON))
