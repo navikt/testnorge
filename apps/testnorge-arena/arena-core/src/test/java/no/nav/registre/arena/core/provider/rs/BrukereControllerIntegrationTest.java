@@ -90,7 +90,7 @@ public class BrukereControllerIntegrationTest {
                 .withResponseBody(sendBrukerResponse)
                 .stubPost();
 
-        var mvcResultat = mvc.perform(post("/api/v1/syntetisering/generer/tillegg/boutgifter")
+        var mvcResultat = mvc.perform(post("/api/v1/syntetisering/generer")
                 .queryParam("personident", ident)
                 .content(objectMapper.writeValueAsString(syntetiserArenaRequest))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -147,7 +147,6 @@ public class BrukereControllerIntegrationTest {
                 .stubPost();
 
         var mvcResultat = mvc.perform(post("/api/v1/syntetisering/generer")
-                .queryParam("personident", ident)
                 .content(objectMapper.writeValueAsString(syntetiserArenaRequest))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
