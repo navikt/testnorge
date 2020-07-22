@@ -49,15 +49,18 @@ public class IdentControllerIntegrationTest {
     private static final String arenaForvalterenUrl = "(.*)/arena-forvalteren/api/v1/bruker";
 
     private NyeBrukereResponse nyeBrukereResponse;
+    private List<Arbeidsoeker> arbeidsoekere;
 
     @Before
     public void setUp(){
-        nyeBrukereResponse = new NyeBrukereResponse();
-        nyeBrukereResponse.setAntallSider(1);
-        nyeBrukereResponse.setArbeidsoekerList(Collections.singletonList(Arbeidsoeker.builder()
+        arbeidsoekere = Collections.singletonList(Arbeidsoeker.builder()
                 .personident(ident)
                 .miljoe(miljoe)
-                .build()));
+                .build());
+
+        nyeBrukereResponse = new NyeBrukereResponse();
+        nyeBrukereResponse.setAntallSider(1);
+        nyeBrukereResponse.setArbeidsoekerList(arbeidsoekere);
     }
 
     @Test
@@ -69,17 +72,27 @@ public class IdentControllerIntegrationTest {
                 .withResponseBody(nyeBrukereResponse)
                 .stubGet();
 
-        mvc.perform(get("/api/v1/ident/hent")
+        var resultat = mvc.perform(get("/api/v1/ident/hent")
                 .queryParam("ident", ident)
                 .queryParam("miljoe", miljoe)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
 
         JsonWiremockHelper
                 .builder(objectMapper)
                 .withUrlPathMatching(arenaForvalterenUrl)
                 .withResponseBody(nyeBrukereResponse)
                 .verifyGet();
+
+        assertEquals(ident,
+                (objectMapper.readValue(resultat,
+                        new TypeReference<List<Arbeidsoeker>>() {})).get(0).getPersonident());
+        assertEquals(miljoe,
+                (objectMapper.readValue(resultat,
+                        new TypeReference<List<Arbeidsoeker>>() {})).get(0).getMiljoe());
     }
 
     @Test
