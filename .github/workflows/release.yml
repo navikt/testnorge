@@ -41,6 +41,6 @@ jobs:
 
           mvn -B versions:set -DnewVersion="$VERSION"
           mvn -B versions:commit
-          mvn -B --settings maven-settings.xml deploy -Dmaven.wagon.http.pool=false
+          mvn -B --settings maven-settings.xml deploy -Dmaven.wagon.http.pool=false -Dmaven.test.skip
           git tag -a $VERSION -m "Tag release version"
           git push origin $VERSION
