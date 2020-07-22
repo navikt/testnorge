@@ -1,12 +1,14 @@
 package no.nav.registre.sdforvalter.consumer.rs.command;
 
-import lombok.RequiredArgsConstructor;
+import java.util.concurrent.Callable;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.concurrent.Callable;
+import lombok.RequiredArgsConstructor;
 
 import no.nav.registre.sdforvalter.domain.TpsIdent;
+import no.nav.registre.sdforvalter.exception.FeilVedOpprettelseException;
 import no.nav.registre.testnorge.dto.person.v1.AdresseDTO;
 import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
 
@@ -28,13 +30,12 @@ public class PostPersonCommand implements Callable<ResponseEntity<String>> {
                         .gatenavn(ident.getAddress())
                         .postnummer(ident.getPostNr())
                         .poststed(ident.getCity())
-                        .build()
-                )
+                        .build())
                 .build();
 
         ResponseEntity<String> response = restTemplate.postForEntity(url + "/api/v1/person", person, String.class);
         if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new RuntimeException("Feil ved opprettelse av person " + ident.getFnr() + ". Status code: " + response.getStatusCodeValue());
+            throw new FeilVedOpprettelseException("Feil ved opprettelse av person " + ident.getFnr() + ". Status code: " + response.getStatusCodeValue());
         }
         return response;
     }

@@ -3,17 +3,18 @@ package no.nav.registre.inntekt.service;
 import static no.nav.registre.inntekt.utils.CommonConstants.TYPE_ORGANISASJON;
 import static no.nav.registre.inntekt.utils.CommonConstants.TYPE_PERSON;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.stereotype.Service;
-
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.inntekt.consumer.rs.AltinnInntektConsumer;
 import no.nav.registre.inntekt.consumer.rs.dokmot.DokmotConsumer;
@@ -30,6 +31,7 @@ import no.nav.registre.inntekt.domain.altinn.rs.RsUtsettelseAvForeldrepenger;
 import no.nav.registre.inntekt.domain.dokmot.InntektDokument;
 import no.nav.registre.inntekt.domain.dokmot.ProsessertInntektDokument;
 import no.nav.registre.inntekt.domain.dokmot.RsJoarkMetadata;
+import no.nav.registre.inntekt.exception.UgyldigArbeidsgiverException;
 import no.nav.registre.inntekt.provider.rs.requests.AltinnDollyRequest;
 import no.nav.registre.inntekt.utils.ValidationException;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
@@ -90,7 +92,7 @@ public class AltinnInntektService {
             } else if (inntekt.getArbeidsgiverPrivat() != null) {
                 arbeidsgiverId = inntekt.getArbeidsgiverPrivat().getArbeidsgiverFnr();
             } else {
-                throw new RuntimeException(ARBEIDSGIVER_TRENGS_FEILMELDING);
+                throw new UgyldigArbeidsgiverException(ARBEIDSGIVER_TRENGS_FEILMELDING);
             }
             var kontaktinformasjon = hentKontaktinformasjonFraEreg(arbeidsgiverId, miljoe);
             Arbeidsforhold nyesteArbeidsforhold;

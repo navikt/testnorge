@@ -1,14 +1,5 @@
 package no.nav.registre.skd.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
-import com.google.common.io.Resources;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpStatusCodeException;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -19,10 +10,22 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
+import com.google.common.io.Resources;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import no.nav.registre.skd.consumer.IdentPoolConsumer;
 import no.nav.registre.skd.consumer.TpsfConsumer;
 import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
 import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
+import no.nav.registre.skd.exceptions.IdentIOException;
 import no.nav.registre.skd.service.utilities.IdenterCache;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
@@ -53,7 +56,7 @@ public class IdentService {
             map.forEach(gamleTilNyeKommunenummer::put);
         } catch (IOException e) {
             log.error("Kunne ikke laste inn kommunenummer.", e);
-            throw new RuntimeException("Kunne ikke laste inn kommunenummer.", e);
+            throw new IdentIOException("Kunne ikke laste inn kommunenummer.", e);
         }
     }
 

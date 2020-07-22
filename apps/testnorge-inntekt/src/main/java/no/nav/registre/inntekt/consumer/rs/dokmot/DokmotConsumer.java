@@ -1,11 +1,5 @@
 package no.nav.registre.inntekt.consumer.rs.dokmot;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriTemplate;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -15,10 +9,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriTemplate;
+
+import lombok.extern.slf4j.Slf4j;
+
 import no.nav.registre.inntekt.consumer.rs.dokmot.command.OpprettJournalpostCommand;
 import no.nav.registre.inntekt.consumer.rs.dokmot.dto.DokmotRequest;
 import no.nav.registre.inntekt.domain.dokmot.InntektDokument;
 import no.nav.registre.inntekt.domain.dokmot.ProsessertInntektDokument;
+import no.nav.registre.inntekt.exception.UgyldigJournalpostException;
 import no.nav.registre.inntekt.security.sts.StsOidcService;
 
 @Slf4j
@@ -71,7 +73,7 @@ public class DokmotConsumer {
                 if(continueOnError){
                     return null;
                 }
-                throw new RuntimeException("Feil ved opprettelse av journalpost for inntektsmelding", e);
+                throw new UgyldigJournalpostException("Feil ved opprettelse av journalpost for inntektsmelding", e);
             }
         }).filter(Objects::nonNull).collect(Collectors.toList());
 

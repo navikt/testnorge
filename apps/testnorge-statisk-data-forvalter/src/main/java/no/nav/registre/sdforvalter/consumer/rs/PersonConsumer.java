@@ -1,11 +1,5 @@
 package no.nav.registre.sdforvalter.consumer.rs;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -13,9 +7,17 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+
+import lombok.extern.slf4j.Slf4j;
+
 import no.nav.registre.sdforvalter.consumer.rs.command.PostPersonCommand;
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
+import no.nav.registre.sdforvalter.exception.UgyldigIdentException;
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Slf4j
@@ -61,10 +63,10 @@ public class PersonConsumer {
         }).collect(Collectors.toList());
 
         if (responses.stream().anyMatch(Objects::isNull)) {
-            throw new RuntimeException("Klarer ikke å opprette alle identer");
+            throw new UgyldigIdentException("Klarer ikke å opprette alle identer");
         }
         if (responses.stream().map(value -> !value.getStatusCode().is2xxSuccessful()).findAny().isEmpty()) {
-            throw new RuntimeException("Klarer ikke å opprette alle identer");
+            throw new UgyldigIdentException("Klarer ikke å opprette alle identer");
         }
     }
 }

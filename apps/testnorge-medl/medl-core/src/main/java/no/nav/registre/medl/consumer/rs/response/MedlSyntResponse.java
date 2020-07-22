@@ -1,13 +1,16 @@
 package no.nav.registre.medl.consumer.rs.response;
 
+import java.lang.reflect.Field;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.lang.reflect.Field;
+import no.nav.registre.medl.exception.MeldingIllegalAccessException;
 
 @Getter
 @Setter
@@ -86,7 +89,7 @@ public class MedlSyntResponse {
                     }
                 }
             } catch (IllegalAccessException e) {
-                throw new RuntimeException(e.getMessage(), e.getCause());
+                throw new MeldingIllegalAccessException(e.getMessage(), e.getCause());
             }
         }
     }
