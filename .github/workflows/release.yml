@@ -1,0 +1,38 @@
+name: Release
+
+on: [push]
+
+jobs:
+  release:
+    name: Releasing testnorge modules
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Cache Dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+      - name: Set up JDK 1.11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.11
+      - name: Setup git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git
+          git config --global user.email "dolly@nav.no"
+          git config --global user.name "$GITHUB_ACTOR"
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo Release started by $GITHUB_ACTOR
+          VERSION="$(TZ="Europe/Oslo" date +%Y.%m.%d-%H.%M)-$GITHUB_SHA"
+          mvn -B versions:set -DnewVersion="$VERSION"
+          mvn -B versions:commit
+          mvn -B --settings maven-settings.xml deploy -Dmaven.wagon.http.pool=false
+          git tag -a $VERSION -m "Tag release version: $VERSION"
+          git push origin $VERSION
