@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
+import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingTransaksjon;
 import no.nav.dolly.bestilling.sykemelding.domain.SykemeldingTransaksjon;
 import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -61,21 +62,7 @@ public class SykemeldingClient implements ClientRegister {
 
                 // Denne skulle vi hente? detaljertSykemeldingRequest.getLege()
 
-                detaljertSykemeldingRequest.setPasient(DetaljertSykemeldingRequest.Pasient.builder()
-                        .fornavn(pasient.getFornavn())
-                        .etternavn(pasient.getEtternavn())
-                        .mellomnavn(isNull(pasient.getMellomnavn()) ? null : pasient.getMellomnavn())
-                        .foedselsdato(pasient.getFoedselsdato())
-                        .ident(pasient.getIdent())
-                        .navKontor(pasient.getTknavn())
-                        .telefon(isNull(pasient.getTelefonnummer_1()) ? null : pasient.getTelefonnummer_1())
-                        .adresse(DetaljertSykemeldingRequest.Adresse.builder()
-                                .by(pasient.getBoadresse().get(0).getPostnr())
-                                .gate(pasientAdresse.getGateadresse())
-                                .land(pasient.getStatsborgerskap().get(0).getStatsborgerskap())
-                                .postnummer(pasient.getBoadresse().get(0).getPostnr())
-                                .build())
-                        .build());
+                fyllRequestPasient(detaljertSykemeldingRequest, pasient, pasientAdresse);
 
                 if (!transaksjonMappingService.existAlready(SYKEMELDING, tpsPerson.getHovedperson(), null) || isOpprettEndre) {
 
@@ -92,7 +79,7 @@ public class SykemeldingClient implements ClientRegister {
                         status.append("OK");
                         RsDetaljertSykemelding detaljertSykemelding = bestilling.getSykemelding().getDetaljertSykemelding();
 
-                        // saveTranskasjonId(detaljertSykemelding.get, tpsPerson.getHovedperson());
+                        saveTranskasjonId(detaljertSykemelding.getStartDato(), detaljertSykemelding.getPasient(), detaljertSykemelding.getHovedDiagnose(), tpsPerson.getHovedperson());
                     }
 
                 }
@@ -104,9 +91,41 @@ public class SykemeldingClient implements ClientRegister {
         }
     }
 
+    private void fyllRequestPasient(DetaljertSykemeldingRequest detaljertSykemeldingRequest, Person pasient, BoGateadresse pasientAdresse) {
+        detaljertSykemeldingRequest.setPasient(DetaljertSykemeldingRequest.Pasient.builder()
+                .fornavn(pasient.getFornavn())
+                .etternavn(pasient.getEtternavn())
+                .mellomnavn(isNull(pasient.getMellomnavn()) ? null : pasient.getMellomnavn())
+                .foedselsdato(pasient.getFoedselsdato())
+                .ident(pasient.getIdent())
+                .navKontor(pasient.getTknavn())
+                .telefon(isNull(pasient.getTelefonnummer_1()) ? null : pasient.getTelefonnummer_1())
+                .adresse(DetaljertSykemeldingRequest.Adresse.builder()
+                        .by(pasient.getBoadresse().get(0).getPostnr())
+                        .gate(pasientAdresse.getGateadresse())
+                        .land(pasient.getStatsborgerskap().get(0).getStatsborgerskap())
+                        .postnummer(pasient.getBoadresse().get(0).getPostnr())
+                        .build())
+                .build());
+    }
+
     @Override
     public void release(List<String> identer) {
 
+    }
+
+    private void saveTranskasjonId(LocalDateTime startDato, RsDetaljertSykemelding.Pasient pasient, RsDetaljertSykemelding.Diagnose hovedDiagnose, String ident) {
+
+        transaksjonMappingService.save(TransaksjonMapping.builder()
+                .ident(ident)
+                .transaksjonId(toJson(DetaljertSykemeldingTransaksjon.builder()
+                        .hovedDiagnose(hovedDiagnose)
+                        .pasient(pasient)
+                        .startDato(startDato)
+                        .build()))
+                .datoEndret(LocalDateTime.now())
+                .system(SYKEMELDING.name())
+                .build());
     }
 
     private void saveTranskasjonId(String orgnummer, String arbeidsforholdsId, String ident) {
