@@ -19,6 +19,13 @@
         <module>libs</module>
     </modules>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/navikt/testnorge</url>
+        </repository>
+    </distributionManagement>
+
     <properties>
         <application.version>${maven.build.timestamp}</application.version>
         <sonar.projectKey>navikt_testnorge</sonar.projectKey>
@@ -126,6 +133,10 @@
             <id>confluent</id>
             <url>http://packages.confluent.io/maven/</url>
         </repository>
+        <repository>
+            <id>testnorge</id>
+            <url>https://maven.pkg.github.com/navikt/testnorge</url>
+        </repository>
     </repositories>
 
     <scm>
@@ -154,6 +165,13 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
                 <plugin>
                     <groupId>org.sonarsource.scanner.maven</groupId>
                     <artifactId>sonar-maven-plugin</artifactId>
