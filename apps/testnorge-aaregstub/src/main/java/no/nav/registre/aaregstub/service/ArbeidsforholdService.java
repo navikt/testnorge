@@ -1,14 +1,15 @@
 package no.nav.registre.aaregstub.service;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.aaregstub.arbeidsforhold.ArbeidsforholdsResponse;
 import no.nav.registre.aaregstub.arbeidsforhold.Ident;
@@ -76,28 +77,27 @@ public class ArbeidsforholdService {
         if (arbeidsforhold == null) {
             return;
         }
-            String fnr = arbeidsforhold.getArbeidstaker().getIdent();
-            arbeidsforhold.setIdenten(null);
+        String fnr = arbeidsforhold.getArbeidstaker().getIdent();
+        arbeidsforhold.setIdenten(null);
 
-            Long arbeidsavtaleId = arbeidsforhold.getArbeidsavtale().getId();
-            arbeidsforhold.setArbeidsavtale(null);
+        Long arbeidsavtaleId = arbeidsforhold.getArbeidsavtale().getId();
+        arbeidsforhold.setArbeidsavtale(null);
 
         slettArbeidsforholdTimerPermisjonReiser(arbeidsforhold);
 
         arbeidsavtaleRepository.deleteById(arbeidsavtaleId);
 
-            Ident ident = identRepository.findByFnr(fnr).orElse(null);
+        Ident ident = identRepository.findByFnr(fnr).orElse(null);
 
-            if (ident != null) {
-                ident.getArbeidsforhold().remove(arbeidsforhold);
-                if (ident.getArbeidsforhold().isEmpty()) {
-                    identRepository.deleteById(fnr);
-                }
+        if (ident != null) {
+            ident.getArbeidsforhold().remove(arbeidsforhold);
+            if (ident.getArbeidsforhold().isEmpty()) {
+                identRepository.deleteById(fnr);
             }
+        }
 
-            arbeidsforholdRepository.deleteById(id);
+        arbeidsforholdRepository.deleteById(id);
     }
-
 
     public List<String> hentAlleArbeidstakere() {
         return identRepository.getAllDistinctIdents();
