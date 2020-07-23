@@ -39,7 +39,7 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 			dataField: 'personIdent.id',
 			unique: true,
 			formatter: (cell: string, row: Innhold) => (
-				<div style={{ display: 'flex' }}>
+				<div className="identnummer-cell">
 					{row.personIdent.id}
 					<CopyToClipboard text={row.personIdent.id}>
 						<Tooltip

@@ -59,7 +59,7 @@ export default function PersonListe({
 			unique: true,
 
 			formatter: (cell, row) => (
-				<div style={{ display: 'flex' }}>
+				<div className="identnummer-cell">
 					{row.identNr}
 					<CopyToClipboard text={row.identNr}>
 						<Tooltip
