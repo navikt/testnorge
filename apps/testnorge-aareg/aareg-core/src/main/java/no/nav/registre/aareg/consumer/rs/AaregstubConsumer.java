@@ -18,9 +18,8 @@ import org.springframework.web.util.UriTemplate;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
-import no.nav.registre.aareg.exception.AaregResponseNullPointerException;
+import no.nav.registre.aareg.exception.ResponseNullPointerException;
 import no.nav.registre.aareg.provider.rs.response.SletteArbeidsforholdResponse;
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
@@ -55,6 +54,7 @@ public class AaregstubConsumer {
             eksisterendeIdenter.addAll(response);
         } else {
             log.error("AaregstubConsumer.hentEksisterendeIdenter: Kunne ikke hente response body fra Aaregstub: NullPointerException");
+            throw new ResponseNullPointerException("Kunne ikke hente eksisterende ident fra aaregstub");
         }
 
         return eksisterendeIdenter;
@@ -77,7 +77,7 @@ public class AaregstubConsumer {
             return response.getBody();
         } else {
             log.error("AaregstubConsumer.sendTilAaregstub: Kunne ikke hente response body fra Aaregstub: NullPointerException");
-            throw new AaregResponseNullPointerException("Kunne ikke lagre i aaregstub");
+            throw new ResponseNullPointerException("Kunne ikke lagre i aaregstub");
         }
     }
 

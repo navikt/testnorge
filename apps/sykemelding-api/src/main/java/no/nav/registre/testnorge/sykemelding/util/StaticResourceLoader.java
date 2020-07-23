@@ -4,7 +4,7 @@ package no.nav.registre.testnorge.sykemelding.util;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
-import no.nav.registre.testnorge.sykemelding.exception.StaticResourceLoaderException;
+import no.nav.registre.testnorge.sykemelding.exception.ResourceLoaderException;
 
 public class StaticResourceLoader {
 
@@ -17,7 +17,7 @@ public class StaticResourceLoader {
         try (InputStream inputStream = resource.openStream()) {
             return new String(inputStream.readAllBytes(), charsets);
         } catch (Exception e) {
-            throw new StaticResourceLoaderException("Klarer ikke å laste inn resource " + name, e);
+            throw new ResourceLoaderException("Klarer ikke å laste inn resource " + name, e);
         }
     }
 }

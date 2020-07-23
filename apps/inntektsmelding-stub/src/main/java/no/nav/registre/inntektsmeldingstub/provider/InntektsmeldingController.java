@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import no.nav.registre.inntektsmeldingstub.exception.JaxbToXmlException;
 import no.nav.registre.inntektsmeldingstub.provider.rs.RsInntektsmelding;
 import no.nav.registre.inntektsmeldingstub.util.XmlInntektsmelding201812;
@@ -49,10 +48,8 @@ public class InntektsmeldingController {
             //Write XML to StringWriter
             jaxbMarshaller.marshal(inntektsmelding, sw);
 
-            //Verify XML Content
-            String xmlContent = sw.toString();
-            log.info(xmlContent);
-            return xmlContent;
+            //Return XML Content
+            return sw.toString();
         } catch (JAXBException e) {
             throw new JaxbToXmlException("Klarte ikke å konvertere inntektsmelding til XML", e);
         }
