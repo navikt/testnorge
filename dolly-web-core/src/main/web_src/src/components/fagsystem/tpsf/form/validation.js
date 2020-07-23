@@ -234,6 +234,11 @@ const foedtFoerOgEtterTest = (validation, validerFoedtFoer) => {
 			const foedtEtterValue = _get(values, `${path}.foedtEtter`)
 			const foedtFoerValue = _get(values, `${path}.foedtFoer`)
 
+			const identtype = _get(values, `${path}.identtype`)
+			if (identtype === 'FDAT') {
+				return true
+			}
+
 			if (validerFoedtFoer) {
 				if (foedtEtterValue !== '' && foedtEtterValue !== undefined) {
 					const foedtEtterDato = new Date(foedtEtterValue)
@@ -314,10 +319,6 @@ const barn = Yup.array()
 			utenFastBopel: Yup.boolean(),
 			boadresse: Yup.object({
 				kommunenr: Yup.string().nullable()
-			}),
-			foedselsdato: Yup.mixed().when('borHos', {
-				is: val => val === undefined,
-				then: requiredDate
 			}),
 			doedsdato: Yup.date()
 		})

@@ -30,6 +30,8 @@ export const initialValuesDoedfoedt = {
 	barnType: '',
 	partnerNr: null,
 	foedselsdato: '',
+	foedtEtter: '',
+	foedtFoer: '',
 	doedsdato: ''
 }
 
@@ -46,6 +48,8 @@ export const Barn = ({ formikBag }) => {
 	const handleFoedselsdatoChange = (path, dato) => {
 		formikBag.setFieldValue(`${path}.foedselsdato`, dato)
 		formikBag.setFieldValue(`${path}.doedsdato`, dato)
+		formikBag.setFieldValue(`${path}.foedtEtter`, dato)
+		formikBag.setFieldValue(`${path}.foedtFoer`, dato)
 	}
 
 	const getOptionsPartnerNr = () => {
