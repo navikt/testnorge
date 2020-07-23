@@ -2,16 +2,17 @@ apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
   name: dolly
-  namespace: u2
+  namespace: default
   labels:
     team: registre
 spec:
   replicas:
-    min: 1
+    min: 2
     max: 2
   port: 8080
   ingresses:
-    - https://dolly-u2.nais.preprod.local
+    - https://dolly.nais.preprod.local
+    - https://dolly.nais-dev-fss.adeo.no
   liveness:
     path: /internal/isAlive
     initialDelay: 20
@@ -32,8 +33,9 @@ spec:
     limits:
       cpu: 1500m
       memory: 2048Mi
+  image: {{ image }}
   vault:
     enabled: true
     paths:
-      - kvPath: /kv/preprod/fss/dolly/u2
+      - kvPath: /kv/preprod/fss/dolly/default
         mountPath: /var/run/secrets/nais.io/vault
