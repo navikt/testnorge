@@ -320,6 +320,10 @@ const barn = Yup.array()
 			boadresse: Yup.object({
 				kommunenr: Yup.string().nullable()
 			}),
+			foedselsdato: Yup.mixed().when('borHos', {
+				is: val => val === undefined,
+				then: requiredDate
+			}),
 			doedsdato: Yup.date()
 		})
 	)
