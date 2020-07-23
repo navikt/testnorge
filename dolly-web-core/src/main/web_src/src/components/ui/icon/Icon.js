@@ -24,6 +24,7 @@ import NewFileTable from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-table
 import FileChecklist from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-checklist.svg'
 import FileChecklistLight from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-checklistLight.svg'
 import FileRefresh from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-refresh.svg'
+import Copy from '~/assets/icons/nav-ikoner/line/SVG/17-files/copy-1.svg'
 // import NewFile from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-new-1.svg'
 import NewFile from '~/assets/icons/nav-ikoner/filled/SVG/17-files/file-add.svg'
 import Files from '~/assets/icons/nav-ikoner/line/SVG/17-files/files-3.svg'
@@ -132,7 +133,8 @@ export const icons = {
 	dolly: Dolly,
 	pensjon: PiggyBank,
 	brreg: BrregLogo,
-	dokarkiv: Files
+	dokarkiv: Files,
+	copy: Copy
 }
 
 const px = v => `${v}px`
