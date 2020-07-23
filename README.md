@@ -11,6 +11,16 @@ Swagger finnes under /swagger-ui.html.
 - Logg på [dolly-t2](https://dolly-t2.nais.preprod.local/) for å få oppdatert OIDC token i nettleser.
 - Kjør applikasjonen med npm start (fra C:\path\dolly-web\dolly-web-core\src\main\web_src)
 
+NB: Legg til i .npmrc filen får å kjøre fra utv image
+
+```
+https-proxy=http://155.55.60.117:8088/
+proxy=http://155.55.60.117:8088/
+registry=http://registry.npmjs.org/
+no-proxy=*.adeo.no
+strict-ssl=false
+```
+
 #### Java
 For å kjøre lokalt (LocalAppStarter) må active profile settes til "local". I tillegg, for å kunne gjøre kall mot NAIS apper må nav 
 truststore settes opp og cloud vault token må hentes fra Vault. Vault token hentes ved at man logger inn i Vault, 
