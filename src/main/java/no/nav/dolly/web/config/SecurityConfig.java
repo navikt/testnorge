@@ -1,4 +1,4 @@
-package no.nav.dolly.web;
+package no.nav.dolly.web.config;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.freg.security.oidc.auth.common.HttpSecurityConfigurer;
