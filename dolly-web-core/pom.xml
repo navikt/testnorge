@@ -66,10 +66,9 @@
                 </os>
             </activation>
             <properties>
-                <script.extension></script.extension>
+                <script.extension/>
             </properties>
         </profile>
-
         <profile>
             <id>build-web-preinstalled</id>
             <activation>
@@ -84,19 +83,16 @@
                         <artifactId>exec-maven-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>npm install</id>
+                                <id>npm ci</id>
                                 <goals>
                                     <goal>exec</goal>
                                 </goals>
                                 <phase>generate-resources</phase>
                                 <configuration>
-                                    <executable>npm${script.extension}</executable>
+                                    <executable>npm</executable>
                                     <arguments>
                                         <!--OK-->
                                         <argument>install</argument>
-                                        <argument>--registry=http://registry.npmjs.org/</argument>
-                                        <argument>--https-proxy=http://155.55.60.117:8088</argument>
-                                        <argument>--proxy=http://155.55.60.117:8088</argument>
                                         <!--OK end-->
                                     </arguments>
                                     <workingDirectory>src/main/web_src</workingDirectory>
@@ -109,14 +105,11 @@
                                 </goals>
                                 <phase>generate-resources</phase>
                                 <configuration>
-                                    <executable>npm${script.extension}</executable>
+                                    <executable>npm</executable>
                                     <arguments>
                                         <!--OK-->
                                         <argument>run</argument>
                                         <argument>build</argument>
-                                        <argument>--registry=http://registry.npmjs.org/</argument>
-                                        <argument>--https-proxy=http://155.55.60.117:8088</argument>
-                                        <argument>--proxy=http://155.55.60.117:8088</argument>
                                         <!--OK end-->
                                     </arguments>
                                     <workingDirectory>src/main/web_src</workingDirectory>
@@ -128,5 +121,4 @@
             </build>
         </profile>
     </profiles>
-
 </project>

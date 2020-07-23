@@ -24,9 +24,9 @@
     <properties>
         <jsoup.version>1.11.3</jsoup.version>
         <logstash-logback-encoder.version>6.0</logstash-logback-encoder.version>
-        <freg-security-oidc.version>3.3.5</freg-security-oidc.version>
+        <freg-security-oidc.version>2c24d35d</freg-security-oidc.version>
         <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
-        <commons-lang3.version>3.9</commons-lang3.version>
+        <commons-lang3.version>3.11</commons-lang3.version>
         <papertrailapp.version>1.0.0</papertrailapp.version>
         <logstash-logback-encoder.version>5.1</logstash-logback-encoder.version>
     </properties>

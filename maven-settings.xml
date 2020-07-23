@@ -6,14 +6,6 @@
             </activation>
             <repositories>
                 <repository>
-                    <id>nexus-internal-release</id>
-                    <url>https://repo.adeo.no/repository/maven-release</url>
-                </repository>
-                <repository>
-                    <id>nexus-internal-mirror</id>
-                    <url>https://repo.adeo.no/repository/maven-public</url>
-                </repository>
-                <repository>
                     <id>github-package-registry-navikt</id>
                     <url>https://maven.pkg.github.com/navikt/maven-release</url>
                 </repository>
@@ -23,8 +15,8 @@
     <servers>
         <server>
             <id>github-package-registry-navikt</id>
-            <username>token</username>
-            <password>${env.NAV_TOKEN}</password>
+            <username>${USERNAME}</username>
+            <password>${TOKEN}</password>
         </server>
     </servers>
 </settings>
