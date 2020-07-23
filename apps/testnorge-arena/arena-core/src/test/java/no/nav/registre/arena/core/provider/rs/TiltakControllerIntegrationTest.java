@@ -34,8 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -270,8 +269,7 @@ public class TiltakControllerIntegrationTest {
         Map<String, List<NyttVedtakResponse>> resultat = objectMapper.readValue(mvcResultat,
                 new TypeReference<>() {});
 
-        assertTrue(resultat.containsKey(ident));
-        assertEquals(1, resultat.size());
+        assertThat(resultat.keySet()).contains(ident).hasSize(1);
     }
 
     @AfterEach

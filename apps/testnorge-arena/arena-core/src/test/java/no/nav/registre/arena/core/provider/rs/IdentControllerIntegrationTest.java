@@ -1,12 +1,11 @@
 package no.nav.registre.arena.core.provider.rs;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
@@ -29,6 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -72,7 +72,7 @@ public class IdentControllerIntegrationTest {
                 .withResponseBody(nyeBrukereResponse)
                 .stubGet();
 
-        var resultat = mvc.perform(get("/api/v1/ident/hent")
+        var mvcResultat = mvc.perform(get("/api/v1/ident/hent")
                 .queryParam("ident", ident)
                 .queryParam("miljoe", miljoe)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -87,12 +87,11 @@ public class IdentControllerIntegrationTest {
                 .withResponseBody(nyeBrukereResponse)
                 .verifyGet();
 
-        assertEquals(ident,
-                (objectMapper.readValue(resultat,
-                        new TypeReference<List<Arbeidsoeker>>() {})).get(0).getPersonident());
-        assertEquals(miljoe,
-                (objectMapper.readValue(resultat,
-                        new TypeReference<List<Arbeidsoeker>>() {})).get(0).getMiljoe());
+        Arbeidsoeker[] resultat = objectMapper.readValue(mvcResultat, Arbeidsoeker[].class);
+
+        assertThat(resultat).hasSize(1);
+        assertThat(resultat[0].getPersonident()).isEqualTo(ident);
+        assertThat(resultat[0].getMiljoe()).isEqualTo(miljoe);
     }
 
     @Test
@@ -106,7 +105,7 @@ public class IdentControllerIntegrationTest {
                 .withResponseBody("Resultat")
                 .stubDelete();
 
-        var resultat = mvc.perform(delete("/api/v1/ident/slett")
+        var mvcResultat = mvc.perform(delete("/api/v1/ident/slett")
                 .queryParam("miljoe", miljoe)
                 .content(objectMapper.writeValueAsString(Collections.singletonList(ident)))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -123,9 +122,9 @@ public class IdentControllerIntegrationTest {
                 .withResponseBody("Resultat")
                 .verifyDelete();
 
-        assertEquals(Collections.singletonList(ident),
-                objectMapper.readValue(resultat,
-                        new TypeReference<List<String>>() {}));
+        String[] resultat = objectMapper.readValue(mvcResultat, String[].class);
+
+        assertThat(resultat).isEqualTo(new String[]{ident});
     }
 
     @AfterEach

@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Collections;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -120,9 +120,9 @@ public class BrukereControllerIntegrationTest {
         NyeBrukereResponse resultat = objectMapper.readValue(mvcResultat,
                 new TypeReference<>() {});
 
-        assertEquals(1, resultat.getArbeidsoekerList().size());
-        assertEquals(ident, resultat.getArbeidsoekerList().get(0).getPersonident());
-        assertEquals(miljoe, resultat.getArbeidsoekerList().get(0).getMiljoe());
+        assertThat(resultat.getArbeidsoekerList()).hasSize(1);
+        assertThat(resultat.getArbeidsoekerList().get(0).getPersonident()).isEqualTo(ident);
+        assertThat(resultat.getArbeidsoekerList().get(0).getMiljoe()).isEqualTo(miljoe);
     }
 
     @Test
@@ -175,9 +175,9 @@ public class BrukereControllerIntegrationTest {
         NyeBrukereResponse resultat = objectMapper.readValue(mvcResultat,
                 new TypeReference<>() {});
 
-        assertEquals(1, resultat.getArbeidsoekerList().size());
-        assertEquals(ident, resultat.getArbeidsoekerList().get(0).getPersonident());
-        assertEquals(miljoe, resultat.getArbeidsoekerList().get(0).getMiljoe());
+        assertThat(resultat.getArbeidsoekerList()).hasSize(1);
+        assertThat(resultat.getArbeidsoekerList().get(0).getPersonident()).isEqualTo(ident);
+        assertThat(resultat.getArbeidsoekerList().get(0).getMiljoe()).isEqualTo(miljoe);
     }
 
     @AfterEach

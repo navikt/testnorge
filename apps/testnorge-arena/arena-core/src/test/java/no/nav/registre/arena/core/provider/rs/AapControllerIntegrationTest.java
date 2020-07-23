@@ -1,8 +1,7 @@
 package no.nav.registre.arena.core.provider.rs;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -181,7 +180,7 @@ public class AapControllerIntegrationTest {
                 .withUrlPathMatching(saveHistorikkUrl)
                 .stubPost();
 
-        var resultat = mvc.perform(post("/api/v1/syntetisering/generer/rettighet/aap")
+        var mvcResultat = mvc.perform(post("/api/v1/syntetisering/generer/rettighet/aap")
                 .content(objectMapper.writeValueAsString(new SyntetiserArenaRequest(avspillergruppeId, miljoe, 1)))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -259,11 +258,10 @@ public class AapControllerIntegrationTest {
                 .withUrlPathMatching(saveHistorikkUrl)
                 .verifyPost();
 
-        Map<String, List<NyttVedtakResponse>> resultatMap = objectMapper.readValue(resultat,
+        Map<String, List<NyttVedtakResponse>> resultat = objectMapper.readValue(mvcResultat,
                 new TypeReference<>() {});
 
-        assertTrue(resultatMap.containsKey(ident));
-        assertEquals(1, resultatMap.size());
+        assertThat(resultat.keySet()).contains(ident).hasSize(1);
     }
 
     @AfterEach
