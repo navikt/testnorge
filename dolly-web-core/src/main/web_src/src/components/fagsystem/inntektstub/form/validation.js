@@ -76,9 +76,9 @@ const finnTidsrom = maaneder => maaneder.map(maaned => getInterval(maaned))
 
 const getInterval = inntektsinformasjon => {
 	const currDato = dato(inntektsinformasjon.sisteAarMaaned)
-	return inntektsinformasjon.antallMaaneder
+	return inntektsinformasjon.antallMaaneder && inntektsinformasjon.antallMaaneder > 1
 		? {
-				start: subMonths(currDato, inntektsinformasjon.antallMaaneder),
+				start: subMonths(currDato, inntektsinformasjon.antallMaaneder - 1),
 				end: currDato
 		  }
 		: {
@@ -94,7 +94,7 @@ const finnesOverlappendeDato = (tidsrom, index) => {
 	return tidsromSomIkkeKanOverlappe.some((tidsrom, idx) => {
 		if (idx === 0) return //Tester mot første tidsrom
 		return areIntervalsOverlapping(
-			{ start: firstInterval.start, end: firstInterval.end },
+			{ start: firstInterval.start, end: addDays(firstInterval.end, 1) },
 			{ start: tidsrom.start, end: tidsrom.end }
 		)
 	})
@@ -152,6 +152,7 @@ export const validation = {
 				antallMaaneder: Yup.number()
 					.integer('Kan ikke være et desimaltall')
 					.transform((i, j) => (j === '' ? null : i))
+					.min(1, 'Antall måneder må være et positivt tall')
 					.nullable(),
 				virksomhet: unikOrgMndTest(requiredString.typeError(messages.required)).nullable(),
 				// virksomhet: requiredString.typeError(messages.required),
