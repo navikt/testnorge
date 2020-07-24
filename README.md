@@ -1,3 +1,10 @@
+![Build](https://github.com/navikt/dolly-frontend/workflows/Build/badge.svg)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=navikt_dolly-frontend&metric=alert_status)](https://sonarcloud.io/dashboard?id=navikt_dolly-frontend)
+![Deploy](https://github.com/navikt/dolly-frontend/workflows/Deploy/badge.svg)
+![Deploy t1](https://github.com/navikt/dolly-frontend/workflows/Deploy%20t1/badge.svg)
+![Deploy t2](https://github.com/navikt/dolly-frontend/workflows/Deploy%20t2/badge.svg)
+![Deploy u2](https://github.com/navikt/dolly-frontend/workflows/Deploy%20u2/badge.svg)
+
 # Dolly
 Prosjekt for å opprette og konfigurere testpersoner knyttet til fellesregistrene i NAV
 
