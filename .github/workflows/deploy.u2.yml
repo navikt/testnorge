@@ -1,9 +1,7 @@
 name: Deploy u2
 
-on:
-  push:
-    paths:
-      - !docs/**
+on: [push]
+
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/dolly-frontend:${{ github.sha }}
 

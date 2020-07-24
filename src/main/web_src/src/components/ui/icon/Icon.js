@@ -139,7 +139,13 @@ export const icons = {
 
 const px = v => `${v}px`
 
-export default function Icon({ kind, title, size = 24, style, className }) {
+export default function Icon({
+	kind,
+	title = undefined,
+	size = 24,
+	style = undefined,
+	className = undefined
+}) {
 	if (!icons[kind]) return null
 
 	const cssClass = cn('svg-icon', `svg-icon-${kind}`, className)
