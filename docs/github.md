@@ -1,5 +1,5 @@
 ---
-title: Åpen kildekode i GitHub
+title: Åpen kildekode
 layout: default
 nav_order: 2
 ---
