@@ -9,7 +9,8 @@ nav_order: 1
 ## Innhold
 {: .no_toc .text-delta }
 
-1. TOC {:toc}
+1. TOC
+{:toc}
 
 Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske testdata.  I Dolly kan du opprette syntetiske testpersoner med forskjellige egenskaper, og tilgjengeliggjøre testdataene i valgte testmiljøer.
 
