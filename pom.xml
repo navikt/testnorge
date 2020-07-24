@@ -141,6 +141,10 @@
             <url>https://repo.adeo.no/repository/maven-release</url>
         </repository>
         <repository>
+            <id>internal-mirror-github-navikt</id>
+            <url>https://repo.adeo.no/repository/github-package-registry-navikt/</url>
+        </repository>
+        <repository>
             <id>github-package-registry-navikt</id>
             <url>https://maven.pkg.github.com/navikt/maven-release</url>
         </repository>
