@@ -30,6 +30,7 @@ jobs:
       - name: Analyse code with SonarCloud
         env:
           USERNAME: token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_LOGIN: ${{ secrets.SONAR_TOKEN }}
         run: mvn --settings maven-settings.xml sonar:sonar
