@@ -3,7 +3,6 @@ package no.nav.registre.testnorge.arbeidsforhold.provider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 
-import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arbeidsforhold.consumer.dto.ArbeidsavtaleDTO;
 import no.nav.registre.testnorge.arbeidsforhold.consumer.dto.ArbeidsgiverDTO;
 import no.nav.registre.testnorge.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
@@ -29,7 +28,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
