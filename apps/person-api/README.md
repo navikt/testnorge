@@ -1,4 +1,5 @@
 ## Testnorge-Person-api
+API for person.
 
 ### Swagger
 Swagger finnes under [/api](https://testnorge-person-api.nais.preprod.local/api) -endepunktet til applikasjonen.

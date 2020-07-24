@@ -85,3 +85,18 @@ into `testnorge-ereg-mapper/ereg-mapper-core/src/main/resources/naeringskoder.cs
 ### Generation of orgnr
 A orgnr generator can be found in ognr_generator folder. This requires the `requests` library. It checks both the synthetic environment and the production like
 environment for existsing orgnr.
+
+## Swagger
+Swagger finnes under [/api](https://testnorge-ereg-mapper.nais.preprod.local/api) -endepunktet til applikasjonen.
+
+## Lokal kjøring
+Kjør LocalApplicationStarter med følgende argumenter:
+ - -Djavax.net.ssl.trustStore=[path til lokal truststore]
+ - -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
+ - -Dspring.profiles.active=local
+ - -DJENKINS_REST_API_URL=[url til jenkins rest api]
+ - -DJENKINS_PASSWORD=[jenkins passord]
+ - -DJENKINS_USERNAME=[jenkins brukernavn]
+ - -DIDENT_POOL_URL=[url til ident pool]
+ - -DEREG_API_URL=[url til ereg api]
+ - -DJENKINS_SERVER_Q2=[jenkins server]

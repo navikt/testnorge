@@ -15,9 +15,6 @@
 
     <properties>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
-        <springframework.cloud.version>2.2.2.RELEASE</springframework.cloud.version>
-        <springframework.cloud.databases.version>2.1.0.RELEASE</springframework.cloud.databases.version>
-        <spring-vault.version>2.1.1.RELEASE</spring-vault.version>
         <common.version>2.2020.05.13_14.46-9bafc245bcc7</common.version>
     </properties>
 
@@ -38,12 +35,10 @@
         <dependency>
             <groupId>org.springframework.vault</groupId>
             <artifactId>spring-vault-core</artifactId>
-            <version>${spring-vault.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-vault-config-databases</artifactId>
-            <version>${springframework.cloud.databases.version}</version>
         </dependency>
 
         <!-- DATABASE -->
