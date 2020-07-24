@@ -52,3 +52,12 @@ sterkt anbefalt å følge. Disse applikasjonen er ansvarlige for å opprette man
 ## Bygg og deploy
 
 CircleCI håndterer bygg og deploy til nais via [deployment-cli](https://github.com/navikt/deployment-cli). Github packages er brukt for å hoste docker image som blir generert og et personlig access token + brukernavn må legges til i CircleCI prosjektet. 
+
+## Swagger
+Swagger finnes under [/api](https://testnorge-statisk-data-forvalter.nais.preprod.local/api) -endepunktet til applikasjonen.
+
+## Lokal kjøring
+Kjør ApplicationStarter med følgende argumenter:
+ - -Djavax.net.ssl.trustStore=[path til lokal truststore]
+ - -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
+ - -Dspring.profiles.active=local
