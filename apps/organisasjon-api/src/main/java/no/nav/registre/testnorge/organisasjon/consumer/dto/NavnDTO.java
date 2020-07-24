@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Value;
 
 @Value
+@Builder
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-@Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NavnDTO {
 

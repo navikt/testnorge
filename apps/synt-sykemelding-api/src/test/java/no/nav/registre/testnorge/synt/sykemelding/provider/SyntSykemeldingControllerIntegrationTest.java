@@ -13,13 +13,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import no.nav.registre.testnorge.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.dto.helsepersonell.v1.LegeListeDTO;
+import no.nav.registre.testnorge.dto.hodejegeren.v1.PersondataDTO;
+import no.nav.registre.testnorge.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.registre.testnorge.dto.sykemelding.v1.SykemeldingDTO;
 import no.nav.registre.testnorge.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
+import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntSykemeldingHistorikkDTO;
 import no.nav.registre.testnorge.synt.sykemelding.domain.Arbeidsforhold;
 import no.nav.registre.testnorge.synt.sykemelding.domain.Lege;
 import no.nav.registre.testnorge.synt.sykemelding.domain.Person;
 import no.nav.registre.testnorge.synt.sykemelding.domain.Sykemelding;
 import no.nav.registre.testnorge.test.JsonWiremockHelper;
 
+import org.junit.Before;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,45 +63,53 @@ public class SyntSykemeldingControllerIntegrationTest {
     private static final String orgnr = "123456789";
     private static final String arbeidsforholdId = "1";
 
-    @Test
-    public void shouldOpprettSyntSykemelding() throws Exception {
+    private static final String hodejegerenUrl = "(.*)/hodejegeren/api/v1/persondata";
+    private static final String arbeidsforholdUrl = "(.*)/arbeidsforhold/api/v1/arbeidsforhold/" + ident + "/" + orgnr + "/" + arbeidsforholdId;
+    private static final String organisasjonUrl = "(.*)/organisasjon/api/v1/organisasjoner/" + orgnr;
+    private static final String historikkUrl = "(.*)/synt/api/v1/generate_sykmeldings_history_json";
+    private static final String helsepersonellUrl = "(.*)/helsepersonell/api/v1/helsepersonell/leger";
+    private static final String sykemeldingUrl = "(.*)/sykemelding/api/v1/sykemeldinger";
 
-        var dto = SyntSykemeldingDTO.builder()
+    private SyntSykemeldingDTO dto;
+    private PersondataDTO hodejegerenResponse;
+    private ArbeidsforholdDTO arbeidsforholdResponse;
+    private OrganisasjonDTO organisasjonResponse;
+    private Map<String, LocalDate> historikkRequest = Map.of(ident, LocalDate.now());
+    private Map<String, SyntSykemeldingHistorikkDTO> historikkResponse;
+    private LegeListeDTO helsepersonellResponse;
+    private SykemeldingDTO sykemeldingRequest;
+
+    @Before
+    public void setUp(){
+        dto = SyntSykemeldingDTO.builder()
                 .arbeidsforholdId(arbeidsforholdId)
                 .ident(ident)
                 .orgnummer(orgnr)
                 .startDato(LocalDate.now())
                 .build();
 
-        var hodejegerenUrl = "(.*)/hodejegeren/api/v1/persondata";
-        var arbeidsforholdUrl = "(.*)/arbeidsforhold/api/v1/arbeidsforhold/" + ident + "/" + orgnr + "/" + arbeidsforholdId;
-        var organisasjonUrl = "(.*)/organisasjon/api/v1/organisasjoner/" + orgnr;
-        var historikkUrl = "(.*)/synt/api/v1/generate_sykmeldings_history_json";
-        var helsepersonellUrl = "(.*)/helsepersonell/api/v1/helsepersonell/leger";
-        var sykemeldingUrl = "(.*)/sykemelding/api/v1/sykemeldinger";
-
-        var hodejegerenResponse = getTestPersonDataDTO(ident);
-
-        var arbeidsforholdResponse = getTestArbeidsforholdDTO(arbeidsforholdId, orgnr);
-
-        var organisasjonResponse = getTestOrganisasjonDTO(orgnr);
+        hodejegerenResponse = getTestPersonDataDTO(ident);
+        arbeidsforholdResponse = getTestArbeidsforholdDTO(arbeidsforholdId, orgnr);
+        organisasjonResponse = getTestOrganisasjonDTO(orgnr);
 
         var arbeidsforhold = new Arbeidsforhold(
                 arbeidsforholdResponse,
                 organisasjonResponse
         );
 
-        var historikkRequest = Map.of(ident, LocalDate.now());
-        var historikkResponse = getTestHistorikk(ident);
+        historikkResponse = getTestHistorikk(ident);
+        helsepersonellResponse = getTestLegeListeDTO();
 
-        var helsepersonellResponse = getTestLegeListeDTO();
-
-        var sykemeldingRequest = new Sykemelding(
+        sykemeldingRequest = new Sykemelding(
                 new Person(hodejegerenResponse),
                 historikkResponse.get(ident),
                 dto,
                 new Lege(helsepersonellResponse.getLeger().get(0)),
                 arbeidsforhold).toDTO();
+    }
+
+    @Test
+    public void shouldOpprettSyntSykemelding() throws Exception {
 
         JsonWiremockHelper
                 .builder(objectMapper)

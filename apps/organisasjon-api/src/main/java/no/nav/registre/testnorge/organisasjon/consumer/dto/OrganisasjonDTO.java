@@ -14,9 +14,9 @@ import java.util.List;
 
 @Slf4j
 @Value
+@Builder
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-@Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OrganisasjonDTO {
     @JsonProperty(required = true)

@@ -11,6 +11,7 @@ import no.nav.registre.testnorge.organisasjon.consumer.dto.NavnDTO;
 import no.nav.registre.testnorge.organisasjon.consumer.dto.OrganisasjonDTO;
 import no.nav.registre.testnorge.test.JsonWiremockHelper;
 
+import org.junit.Before;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -39,37 +41,45 @@ public class OrganisasjonControllerEregIntegrationTest {
 
     private static final String orgnummer = "123456789";
     private static final String miljo = "test";
+    private static final String eregUrl = "/ereg-"+miljo+"/api/v1/organisasjon/" + orgnummer;
 
-    @Test
-    public void shouldGetOrganisasjon() throws Exception {
-        var url = "/ereg-"+miljo+"/api/v1/organisasjon/" + orgnummer;
+    private OrganisasjonDTO organisasjonReponse;
 
-        var orgResponse = OrganisasjonDTO.builder()
+    @Before
+    public void setUp(){
+        organisasjonReponse = OrganisasjonDTO.builder()
                 .navn(NavnDTO.builder().navnelinje1("NavneLinje").redigertnavn("RedigertNavn").build())
                 .type("Type")
                 .detaljer(DetaljerDTO.builder().enhetstype("Enhetstype").build())
                 .organisasjonsnummer(orgnummer)
                 .build();
+    }
+
+    @Test
+    public void shouldGetOrganisasjon() throws Exception {
 
         JsonWiremockHelper
                 .builder(objectMapper)
-                .withUrlPathMatching(url)
+                .withUrlPathMatching(eregUrl)
                 .withQueryParam("inkluderHierarki", "true")
                 .withQueryParam("inkluderHistorikk", "false")
-                .withResponseBody(orgResponse)
+                .withResponseBody(organisasjonReponse)
                 .stubGet();
 
         mvc.perform(get("/api/v1/organisasjoner/" + orgnummer)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("miljo", miljo))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
 
         JsonWiremockHelper
                 .builder(objectMapper)
-                .withUrlPathMatching(url)
+                .withUrlPathMatching(eregUrl)
                 .withQueryParam("inkluderHierarki", "true")
                 .withQueryParam("inkluderHistorikk", "false")
-                .withResponseBody(orgResponse)
+                .withResponseBody(organisasjonReponse)
                 .verifyGet();
 
     }

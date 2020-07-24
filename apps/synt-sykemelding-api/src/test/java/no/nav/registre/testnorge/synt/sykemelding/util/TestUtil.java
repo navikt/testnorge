@@ -12,6 +12,7 @@ import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntSykemeldingHi
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 public class TestUtil {
 
@@ -42,7 +43,7 @@ public class TestUtil {
                 .build();
     }
 
-    public static HashMap<String, SyntSykemeldingHistorikkDTO> getTestHistorikk(String ident){
+    public static Map<String, SyntSykemeldingHistorikkDTO> getTestHistorikk(String ident){
         var resultat = new HashMap<String, SyntSykemeldingHistorikkDTO>();
         resultat.put(ident, getTestSyntSykemeldingHistorikkDTO());
 
