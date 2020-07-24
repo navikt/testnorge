@@ -12,6 +12,8 @@ nav_order: 1
 1. TOC
 {:toc}
 
+---
+
 Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske testdata.  I Dolly kan du opprette syntetiske testpersoner med forskjellige egenskaper, og tilgjengeliggjøre testdataene i valgte testmiljøer.
 
 Fra utviklerimage eller Citrix benytt lenken: 
@@ -24,6 +26,8 @@ Utenfor de interne Nav systemene benytt:
 
 Denne lenken krever tilgangen "Utvikling på laptop"
 
+---
+
 ## Dolly pålogging 
 
 For å logge inn i Dolly trenger du en Z-bruker. Detaljert beskrivelse av hvordan du kan opprette en Z-bruker, samt logge inn i Dolly finner du her: [Hvordan opprette Z-bruker](https://confluence.adeo.no/pages/viewpage.action?pageId=333640780)
@@ -31,6 +35,8 @@ For å logge inn i Dolly trenger du en Z-bruker. Detaljert beskrivelse av hvorda
 Det første som møter deg når du har logget inn er en startside med noen menyvalg. Siden åpnes automatisk med en oversikt over dine testdatagrupper
 
 ![Startside](assets/startside.png)
+
+---
 
 ## Opprette en ny testdatagruppe
 
@@ -86,6 +92,8 @@ Velg miljø og trykk opprett
 
 Testdatagruppen har fått nye testpersoner og du kan jobbe med disse i relevante fagsystemer.  Trykk på pil ned til høyre på raden for å få opp detaljinformasjon om hver enkelt testperson. 
 
+---
+
 ## Opprette og bruke maler
 
 Når du oppretter en ny person i Dolly kan du velge å lagre denne bestillingen som en mal. Denne malen kan senere hentes opp av deg selv eller andre, og vil gi deg en ferdigutfylt bestilling med de samme egenskapene og verdiene.
@@ -100,11 +108,15 @@ For å bruke en mal, velger du dette i første steg når du oppretter personer. 
 
 Når du da starter bestillingen vil du få de valgte egenskapene og verdiene som utgangspunkt, men du har også muligheten til å endre på disse dersom du ønsker det.
 
+---
+
 ## Endringsmelding
 
 Øverst i menyen kan du velge endringsmelding. Her har du mulighet til å sende inn en fødselsmelding eller dødsmelding til et ønsket testmiljø. Merk at det kun er mulig å sende inn endringsmelding på en person om gangen.
 
 ![Endringsmelding](assets/endringsmelding.png)
+
+---
 
 ## API-dok
 

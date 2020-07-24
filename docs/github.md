@@ -8,4 +8,6 @@ nav_order: 2
 
 Dolly er åpen kildekode som er lagert i GitHub.
 
+---
+
 [Se i GitHUb](https://github.com/navikt/dolly-frontend/){: .btn }
