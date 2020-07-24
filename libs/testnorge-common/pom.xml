@@ -12,12 +12,6 @@
 
     <artifactId>testnorge-common</artifactId>
 
-    <properties>
-        <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
-        <logback-syslog4j>1.0.0</logback-syslog4j>
-        <javax.servlet.version>2.5</javax.servlet.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -35,13 +29,10 @@
         <dependency>
             <groupId>com.papertrailapp</groupId>
             <artifactId>logback-syslog4j</artifactId>
-            <version>${logback-syslog4j}</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
-            <version>${javax.servlet.version}</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -51,7 +42,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler-plugin.version}</version>
                 <configuration>
                     <source>1.11</source>
                     <target>1.11</target>
