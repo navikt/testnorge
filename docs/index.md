@@ -1,1 +1,6 @@
-# Hello Dolly users!
+---
+title: My page
+layout: default
+---
+
+# {{ page.title }}
