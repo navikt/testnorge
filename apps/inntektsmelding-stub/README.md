@@ -26,3 +26,12 @@ Trenger tre funksjonaliteter til inntektsmelding-stub (mest ryddig med egen adap
       er noe i inntektstub, syntetiser data som avviker fra det som ble sendt inn i requesten.
  - 3: motta json med gitt antall felt, så syntetiserer vi resten og legger i inntektsmeldingen (trenger ikke sende til 
       inntektstub i dette tilfellet)
+
+## Swagger
+Swagger finnes under [/api](https://inntektsmelding-stub.nais.preprod.local/api) -endepunktet til applikasjonen.
+
+## Lokal kjøring
+Kjør ApplicationStarter med følgende argumenter:
+ - -Djavax.net.ssl.trustStore=[path til lokal truststore]
+ - -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
+ - -Dspring.profiles.active=dev
