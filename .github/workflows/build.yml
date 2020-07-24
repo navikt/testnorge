@@ -5,10 +5,9 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
-      - name: Cache Dependencies
+      - name: Cache Maven dependencies
         uses: actions/cache@v1
         with:
           path: ~/.m2/repository
@@ -18,14 +17,20 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.11
-      - name: Install
+      - name: Compile with Maven
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: mvn -T 10 --settings maven-settings.xml install
-      - name: SonarCloud
+        run: mvn --settings maven-settings.xml compile
+      - name: Test with Maven
+        env:
+          GITHUB_USERNAME: token
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+        run: mvn -T 10 --settings maven-settings.xml test
+      - name: Analyse code with SonarCloud
         env:
           GITHUB_USERNAME: token
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_LOGIN: ${{ secrets.SONAR_TOKEN }}
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
         run: mvn --settings maven-settings.xml sonar:sonar
