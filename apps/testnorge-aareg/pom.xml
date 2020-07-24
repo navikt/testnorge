@@ -10,7 +10,6 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-
     <artifactId>testnorge-aareg</artifactId>
     <packaging>pom</packaging>
 
@@ -31,9 +30,7 @@
         <behandle.arbeidsforhold.version>1.2.1</behandle.arbeidsforhold.version>
         <neethi.version>3.1.1</neethi.version>
         <cxf.version>3.3.3</cxf.version>
-        <freg-security-oidc.version>e603e2b2</freg-security-oidc.version>
         <tjenestespesifikasjoner.version>1.2020.04.30-11.45-a45e1248c063</tjenestespesifikasjoner.version>
-        <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -51,11 +48,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <repositories>
-        <repository>
-            <id>github-package-registry-navikt</id>
-            <url>https://maven.pkg.github.com/navikt/maven-release</url>
-        </repository>
-    </repositories>
 </project>

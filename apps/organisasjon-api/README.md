@@ -1,5 +1,5 @@
 ## Testnorge-Organisasjon-api
-
+API for organsiasjoner.
 
 ### Swagger
 Swagger finnes under [/api](https://testnorge-organisasjon-api.nais.preprod.local/api) -endepunktet til applikasjonen.
