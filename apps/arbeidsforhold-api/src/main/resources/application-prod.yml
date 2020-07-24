@@ -1,0 +1,6 @@
+sts:
+  token:
+    provider:
+      url: ${STS_TOKEN_PROVIDER_URL}
+      username: ${STS_TOKEN_PROVIDER_USERNAME}
+      password: ${STS_TOKEN_PROVIDER_PASSWORD}
