@@ -9,13 +9,33 @@
 
 ## Avhenighetsanalyse
 
+**Kan kun brukes fra utviklerimage**
 https://testnorge-avhengighetsanalyse-frontend.nais.preprod.local/
 
 ## Kjør lokalt
 
-`mvn --settings maven-settings.xml -DNAV_TOKEN=xxx clean install`
+**NB: `navtunnel` må kjøre**
 
-NAV_TOKEN må lages i din github konto. (Dette er noe som vi jobber med å fjerne)
+Legg inn dette i **din** maven settings.xml fil:
+```
+<settings>
+    <profiles>
+        <profile>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>internal-mirror-github-navikt</id>
+                    <url>https://repo.adeo.no/repository/github-package-registry-navikt/</url>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+</settings>
+```
+
+Så kjør `mvn clean install`
 
 ## Deploy status
 
@@ -65,8 +85,3 @@ Eller kjør:
 ```
 /bin/bash  ./.tools/migrate.sh $REPO_NAVN
 ```
-
-## TODO
-
-- [x] Fjern testnorge-elsam fra nais
-- [x] Fjern testnorge-elsam fra vault
