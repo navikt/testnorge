@@ -56,8 +56,11 @@
         <sonar-maven-plugin.version>3.7.0.1746</sonar-maven-plugin.version>
         <org.apache.avro.version>1.9.2</org.apache.avro.version>
         <io.confluent.kafka.version>5.5.0</io.confluent.kafka.version>
+        <reflections.version>0.9.11</reflections.version>
+        <logback-syslog4j>1.0.0</logback-syslog4j>
+        <javax.servlet.version>2.5</javax.servlet.version>
+        <freg-security.version>e603e2b2</freg-security.version>
     </properties>
-
 
     <dependencyManagement>
         <dependencies>
@@ -112,6 +115,27 @@
                 <artifactId>kafka-avro-serializer</artifactId>
                 <version>${io.confluent.kafka.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.reflections</groupId>
+                <artifactId>reflections</artifactId>
+                <version>${reflections.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.papertrailapp</groupId>
+                <artifactId>logback-syslog4j</artifactId>
+                <version>${logback-syslog4j}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>${javax.servlet.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.freg</groupId>
+                <artifactId>freg-security-oidc</artifactId>
+                <version>${freg-security.version}</version>
+            </dependency>
 
             <!-- Logging -->
             <dependency>
@@ -132,6 +156,7 @@
                 <version>${assertj.version}</version>
                 <scope>test</scope>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 
