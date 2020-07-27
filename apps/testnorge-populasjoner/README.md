@@ -5,7 +5,7 @@ En applikasjon som lytter på hendelser fra PDl og trekker ut identer som tilhø
 ## Swagger
 Swagger finnes under [/api](https://testnorge-populasjoner.nais.preprod.local/api) -endepunktet til applikasjonen.
 
-## Lokal kjøring
+## Lokal kjøring (i utviklerimage)
 Kjør ApplicationStarter med følgende argumenter:
  - -Djavax.net.ssl.trustStore=[path til lokal truststore]
  - -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
