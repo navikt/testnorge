@@ -15,7 +15,6 @@
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
         <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
         <commons-csv.version>1.8</commons-csv.version>
-        <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
     </properties>
 
     <dependencies>
@@ -146,7 +145,6 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-vault-config</artifactId>
-            <version>${spring-cloud.version}</version>
         </dependency>
     </dependencies>
     <build>
