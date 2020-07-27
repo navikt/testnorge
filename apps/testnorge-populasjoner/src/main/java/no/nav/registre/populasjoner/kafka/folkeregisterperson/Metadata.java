@@ -14,9 +14,5 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class Metadata {
-
-    private String opplysningsId;
-    private String master;
     private List<Endring> endringer;
-    private Boolean historisk;
 }
