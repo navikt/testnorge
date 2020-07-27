@@ -110,7 +110,6 @@
             <artifactId>logstash-logback-encoder</artifactId>
         </dependency>
 
-
         <!-- NAV COMMON -->
         <dependency>
             <groupId>no.nav.common</groupId>
@@ -121,6 +120,12 @@
             <groupId>no.nav.common</groupId>
             <artifactId>health</artifactId>
             <version>${common.version}</version>
+        </dependency>
+
+        <!--VAULT-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-vault-config</artifactId>
         </dependency>
     </dependencies>
 

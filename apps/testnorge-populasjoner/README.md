@@ -10,5 +10,4 @@ Kjør ApplicationStarter med følgende argumenter:
  - -Djavax.net.ssl.trustStore=[path til lokal truststore]
  - -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
  - -Dspring.profiles.active=local
- - -DSRV_USER=[srv brukernavn]
- - -DSRV_PASS=[srv passord]
+ - -Dspring.cloud.vault.token=[Kopier token fra vault]
