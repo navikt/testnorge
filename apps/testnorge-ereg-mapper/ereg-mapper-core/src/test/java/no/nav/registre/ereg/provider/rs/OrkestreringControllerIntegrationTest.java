@@ -19,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -44,6 +45,7 @@ import no.nav.registre.testnorge.test.JsonWiremockHelper;
 @TestPropertySource(
         locations = "classpath:application-test.properties"
 )
+@ActiveProfiles("test")
 public class OrkestreringControllerIntegrationTest {
 
     private final static String BEREG007_PATTERN = "(.*)/view/Registre/job/Start_BEREG007/buildWithParameters";
