@@ -47,14 +47,14 @@ public class IdentController {
     public ResponseEntity<Ident> save(
             @PathVariable String fnr
     ) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(identService.saveIdentWithFnr(fnr));
+        return ResponseEntity.status(HttpStatus.CREATED).body(identService.saveIdent(fnr));
     }
 
     @PutMapping("{fnr}")
     public ResponseEntity<Ident> updateByFnr(
             @PathVariable String fnr
     ) {
-        var ident = identService.updateIdentWithFnr(fnr);
+        var ident = identService.updateIdent(fnr);
         if (ident != null) {
             return ResponseEntity.ok(ident);
         }
@@ -65,7 +65,7 @@ public class IdentController {
     public ResponseEntity<Ident> deleteByFnr(
             @PathVariable String fnr
     ) {
-        var ident = identService.deleteIdentWithFnr(fnr);
+        var ident = identService.deleteIdent(fnr);
         if (ident != null) {
             return ResponseEntity.ok(ident);
         }
