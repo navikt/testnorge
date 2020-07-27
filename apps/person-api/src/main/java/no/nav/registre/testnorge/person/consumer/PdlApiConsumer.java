@@ -43,7 +43,7 @@ public class PdlApiConsumer {
 
         PdlPerson pdlPerson = new GetPersonCommand(restTemplate, pdlApiUrl, ident, token, mapper).call();
 
-        if (pdlPerson.getData().getHentPerson() != null) {
+        if (pdlPerson.getErrors().isEmpty()) {
             return new Person(pdlPerson);
         }
 
