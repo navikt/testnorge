@@ -1,5 +1,6 @@
 package no.nav.registre.skd.service;
 
+import static java.util.Objects.isNull;
 import static no.nav.registre.skd.service.SyntetiseringService.BRUKTE_IDENTER_I_DENNE_BOLKEN;
 import static no.nav.registre.skd.service.SyntetiseringService.FOEDTE_IDENTER;
 import static no.nav.registre.skd.service.SyntetiseringService.GIFTE_IDENTER_I_NORGE;
@@ -29,7 +30,6 @@ import io.micrometer.core.annotation.Timed;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import no.nav.registre.skd.exceptions.ManglendeInfoITpsException;
 import no.nav.registre.skd.exceptions.ManglerEksisterendeIdentException;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
@@ -260,9 +260,11 @@ public class EksisterendeIdenterService {
                 continue;
             }
 
-            var morFnr = "";
+            var morFnr = hentMorFnrRelasjon(relasjonerTilBarn);
 
-            morFnr = hentMorFnrRelasjon(relasjonerTilBarn, morFnr);
+            if (isNull(morFnr)) {
+                continue;
+            }
 
             var farFnr = foedselService.findFar(morFnr, foedtIdent, levendeIdenterINorge, new ArrayList<>());
             if (farFnr != null) {
@@ -287,10 +289,11 @@ public class EksisterendeIdenterService {
         oppdaterMeldingerMedFarsFnr(meldinger, barnMedFedre, antallMeldinger, brukteIdenterIDenneBolken);
     }
 
-    private String hentMorFnrRelasjon(RelasjonsResponse relasjonerTilBarn, String morFnr) {
+    private String hentMorFnrRelasjon(RelasjonsResponse relasjonerTilBarn) {
+        String morFnr = "";
         for (var relasjon : relasjonerTilBarn.getRelasjoner()) {
             if (RELASJON_FAR.equals(relasjon.getTypeRelasjon())) {
-                break;
+                return null;
             }
             if (RELASJON_MOR.equals(relasjon.getTypeRelasjon())) {
                 morFnr = relasjon.getFnrRelasjon();
