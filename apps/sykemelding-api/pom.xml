@@ -12,7 +12,8 @@
     <artifactId>sykemelding-api</artifactId>
 
     <properties>
-        <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
+        <no.nav.helse.xml.version>2019.07.30-12-26-5c924ef4f04022bbb850aaf299eb8e4464c1ca6a</no.nav.helse.xml.version>
+        <tjenestespesifikasjoner.version>1.2019.02.28-20.22-e0a79af1ccde</tjenestespesifikasjoner.version>
     </properties>
 
     <dependencies>
@@ -52,17 +53,17 @@
         <dependency>
             <groupId>no.nav.helse.xml</groupId>
             <artifactId>kith-hodemelding</artifactId>
-            <version>2019.07.30-12-26-5c924ef4f04022bbb850aaf299eb8e4464c1ca6a</version>
+            <version>${no.nav.helse.xml.version}</version>
         </dependency>
         <dependency>
             <groupId>no.nav.helse.xml</groupId>
             <artifactId>xmlfellesformat</artifactId>
-            <version>2019.07.30-12-26-5c924ef4f04022bbb850aaf299eb8e4464c1ca6a</version>
+            <version>${no.nav.helse.xml.version}</version>
         </dependency>
         <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>digisyfo-sykmelding</artifactId>
-            <version>1.2019.02.28-20.22-e0a79af1ccde</version>
+            <version>${tjenestespesifikasjoner.version}</version>
         </dependency>
         <dependency>
             <groupId>com.ibm.mq</groupId>
@@ -114,7 +115,6 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-vault-config</artifactId>
-            <version>${spring-cloud.version}</version>
         </dependency>
     </dependencies>
 
