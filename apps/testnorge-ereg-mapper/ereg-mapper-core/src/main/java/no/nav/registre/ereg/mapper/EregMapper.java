@@ -18,7 +18,6 @@ import com.google.common.base.Strings;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import no.nav.registre.ereg.consumer.rs.EregConsumer;
 import no.nav.registre.ereg.csv.NaeringskodeRecord;
 import no.nav.registre.ereg.provider.rs.request.AdresseRs;
@@ -49,8 +48,7 @@ public class EregMapper {
     public String mapEregFromRequests(
             List<EregDataRequest> data,
             String miljoe,
-            boolean validate
-    ) {
+            boolean validate) {
 
         StringBuilder eregFile = new StringBuilder(makeHeader());
         int units = 0;
@@ -68,11 +66,9 @@ public class EregMapper {
                                 requests.get(i).setNavn(
                                         NavnRs.builder()
                                                 .navneListe(Collections.singletonList(fullNames.get(i)))
-                                                .build()
-                                );
+                                                .build());
                             }
-                        }
-                );
+                        });
 
         for (EregDataRequest eregDataRequest : data) {
             if (validate && eregDataRequest.getEndringsType().equals("N")) {
@@ -101,34 +97,34 @@ public class EregMapper {
 
     private List<String> mapRequestToNaeringskoder(List<EregDataRequest> requests) {
         return requests.stream()
-                                        .map(d -> {
-                                            if (d.getNaeringskode() == null) {
-                                                NaeringskodeRecord randomNaeringskode = nameService.getRandomNaeringskode();
-                                                String dato = getDateNowFormatted();
-                                                if (!"".equals(randomNaeringskode.getValidFrom())) {
-                                                    dato = randomNaeringskode.getValidFrom().replace("-", "");
-                                                }
-                                                d.setNaeringskode(Naeringskode.builder()
-                                                        .kode(randomNaeringskode.getCode())
-                                                        .hjelpeEnhet(false)
-                                                        .gyldighetsdato(dato)
-                                                        .build());
-                                            } else {
-                                                if ("".equals(d.getNaeringskode().getKode())) {
-                                                    throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
-                                                            "Unable to resolve næringskode when the entry was supplied");
-                                                }
+                .map(d -> {
+                    if (d.getNaeringskode() == null) {
+                        NaeringskodeRecord randomNaeringskode = nameService.getRandomNaeringskode();
+                        String dato = getDateNowFormatted();
+                        if (!"".equals(randomNaeringskode.getValidFrom())) {
+                            dato = randomNaeringskode.getValidFrom().replace("-", "");
+                        }
+                        d.setNaeringskode(Naeringskode.builder()
+                                .kode(randomNaeringskode.getCode())
+                                .hjelpeEnhet(false)
+                                .gyldighetsdato(dato)
+                                .build());
+                    } else {
+                        if ("".equals(d.getNaeringskode().getKode())) {
+                            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+                                    "Unable to resolve næringskode when the entry was supplied");
+                        }
 
-                                                if ("".equals(d.getNaeringskode().getGyldighetsdato())) {
-                                                    d.getNaeringskode().setKode(nameService.getNaeringskodeRecord(
-                                                            d.getNaeringskode().getKode())
-                                                            .getValidFrom().replace("-", ""));
-                                                }
-                                            }
-                                            return d.getNaeringskode();
-                                        })
-                                        .map(Naeringskode::getKode)
-                                        .collect(Collectors.toList());
+                        if ("".equals(d.getNaeringskode().getGyldighetsdato())) {
+                            d.getNaeringskode().setKode(nameService.getNaeringskodeRecord(
+                                    d.getNaeringskode().getKode())
+                                    .getValidFrom().replace("-", ""));
+                        }
+                    }
+                    return d.getNaeringskode();
+                })
+                .map(Naeringskode::getKode)
+                .collect(Collectors.toList());
     }
 
     private RecordsAndCount createUnit(EregDataRequest data) {
@@ -351,8 +347,7 @@ public class EregMapper {
     private String createENH(
             String orgId,
             String unitType,
-            String endringsType
-    ) {
+            String endringsType) {
         StringBuilder stringBuilder = createStringBuilderWithReplacement(49, ' ');
 
         String dateNowFormatted = getDateNowFormatted();
@@ -373,8 +368,7 @@ public class EregMapper {
     private String createNavn(
             List<String> navneListe,
             String redigertNavn,
-            String endringsType
-    ) {
+            String endringsType) {
         StringBuilder stringBuilder = createBaseStringbuilder(219, "NAVN", endringsType);
         concatListToString(stringBuilder, navneListe, 8);
         stringBuilder.replace(183, 183 + redigertNavn.length(), redigertNavn).append("\n");
@@ -388,8 +382,7 @@ public class EregMapper {
     private String createFrivilligKategori(
             String kode,
             String rangering,
-            String endringsType
-    ) {
+            String endringsType) {
 
         StringBuilder stringBuilder = createBaseStringbuilder(14, "KATG", endringsType);
         stringBuilder.replace(8, 8 + kode.length(), kode)
@@ -401,8 +394,7 @@ public class EregMapper {
     private String createDatoRecord(
             String type,
             String dato,
-            String endringsType
-    ) {
+            String endringsType) {
 
         StringBuilder stringBuilder = createBaseStringbuilder(16, type, endringsType);
         stringBuilder.replace(8, 8 + dato.length(), dato)
@@ -417,8 +409,7 @@ public class EregMapper {
             String postNr,
             String landCode,
             String kommuneNr,
-            String postSted
-    ) {
+            String postSted) {
         StringBuilder stringBuilder = createBaseStringbuilder(185, type, endringsType);
         stringBuilder.replace(8, 8 + postNr.length(), postNr)
                 .replace(17, 17 + landCode.length(), landCode)
@@ -438,8 +429,7 @@ public class EregMapper {
             String foretaksform,
             String beskrivelseHjemland,
             String beskrivelseNorge,
-            String endringsType
-    ) {
+            String endringsType) {
 
         StringBuilder stringBuilder = createBaseStringbuilder(159, "ULOV", endringsType);
         stringBuilder.replace(8, 8 + landkode.length(), landkode)
@@ -456,8 +446,7 @@ public class EregMapper {
             String kapitalInnbetalt,
             String kapitalBundet,
             String fritekst,
-            String endringsType
-    ) {
+            String endringsType) {
         StringBuilder stringBuilder = createBaseStringbuilder(187, "KAPI", endringsType);
         stringBuilder.replace(8, 8 + valuttakode.length(), valuttakode)
                 .replace(11, 29, createStringBuilderWithReplacement(18, '0').toString())
@@ -474,8 +463,7 @@ public class EregMapper {
             String naeringskode,
             String gyldighetsDato,
             Boolean hjelpeEnhet,
-            String endringsType
-    ) {
+            String endringsType) {
         String verdi = isTrue(hjelpeEnhet) ? "J" : endringsType;
         StringBuilder stringBuilder = createBaseStringbuilder(23, "NACE", endringsType);
         stringBuilder.replace(8, 8 + naeringskode.length(), naeringskode)
@@ -488,8 +476,7 @@ public class EregMapper {
     private StringBuilder createBaseStringbuilder(
             int size,
             String type,
-            String endringsType
-    ) {
+            String endringsType) {
         StringBuilder stringBuilder = createStringBuilderWithReplacement(size, ' ');
         stringBuilder.replace(0, type.length(), type)
                 .replace(4, 5, endringsType);
@@ -500,8 +487,7 @@ public class EregMapper {
             int size,
             String type,
             String endringsType,
-            String value
-    ) {
+            String value) {
         StringBuilder stringBuilder = createBaseStringbuilder(size, type, endringsType);
         stringBuilder.replace(8, 8 + value.length(), value)
                 .append("\n");
@@ -511,8 +497,7 @@ public class EregMapper {
     private void concatListToString(
             StringBuilder stringBuilder,
             List<String> list,
-            int indexStart
-    ) {
+            int indexStart) {
         int iterSize = 3;
         if (list.size() < iterSize) {
             iterSize = list.size();
@@ -527,8 +512,7 @@ public class EregMapper {
 
     private String createStatus(
             String statusType,
-            String endringsType
-    ) {
+            String endringsType) {
         StringBuilder stringBuilder = createStringBuilderWithReplacement(8, ' ');
         stringBuilder.replace(0, statusType.length(), statusType)
                 .replace(4, 4 + endringsType.length(), endringsType).append("\n");
@@ -537,9 +521,8 @@ public class EregMapper {
 
     private String createTrailer(
             int units,
-            int records
-    ) {
-        //Legger til header og trailer i antall records
+            int records) {
+        // Legger til header og trailer i antall records
         records = records + 2;
         StringBuilder stringBuilder = createStringBuilderWithReplacement(23, '0');
         stringBuilder.replace(0, 6, "TRAIER ")
@@ -551,8 +534,7 @@ public class EregMapper {
 
     private StringBuilder createStringBuilderWithReplacement(
             int size,
-            char replacement
-    ) {
+            char replacement) {
         StringBuilder stringBuilder = new StringBuilder(size);
         stringBuilder.setLength(size);
         for (int i = 0; i < stringBuilder.length(); i++) {
@@ -565,8 +547,7 @@ public class EregMapper {
             List<String> navn,
             String registerNr,
             AdresseRs adresse,
-            String endringsType
-    ) {
+            String endringsType) {
 
         StringBuilder stringBuilder = createBaseStringbuilder(291, "UREG", endringsType);
         stringBuilder.replace(8, 8 + registerNr.length(), registerNr);
@@ -589,8 +570,7 @@ public class EregMapper {
             String fratreden,
             String orgNr,
             String valgtAv,
-            String korrektOrgNr
-    ) {
+            String korrektOrgNr) {
         StringBuilder stringBuilder = createStringBuilderWithReplacement(66, ' ');
         stringBuilder
                 .replace(0, 8, type)
