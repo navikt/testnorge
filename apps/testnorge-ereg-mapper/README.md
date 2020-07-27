@@ -93,5 +93,4 @@ Swagger finnes under [/api](https://testnorge-ereg-mapper.nais.preprod.local/api
 Kjør LocalApplicationStarter med følgende argumenter:
  - -Djavax.net.ssl.trustStore=[path til lokal truststore]
  - -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
- - -Dspring.profiles.active=local
  - -Dspring.cloud.vault.token=[Kopier token fra vault]
