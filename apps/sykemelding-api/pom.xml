@@ -52,17 +52,17 @@
         <dependency>
             <groupId>no.nav.helse.xml</groupId>
             <artifactId>kith-hodemelding</artifactId>
-            <version>1.9daf0fa</version>
+            <version>2019.07.30-12-26-5c924ef4f04022bbb850aaf299eb8e4464c1ca6a</version>
         </dependency>
         <dependency>
             <groupId>no.nav.helse.xml</groupId>
             <artifactId>xmlfellesformat</artifactId>
-            <version>1.e1999cf</version>
+            <version>2019.07.30-12-26-5c924ef4f04022bbb850aaf299eb8e4464c1ca6a</version>
         </dependency>
         <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>digisyfo-sykmelding</artifactId>
-            <version>1.2020.04.27-15.39-c32c8960a220</version>
+            <version>1.2019.02.28-20.22-e0a79af1ccde</version>
         </dependency>
         <dependency>
             <groupId>com.ibm.mq</groupId>
