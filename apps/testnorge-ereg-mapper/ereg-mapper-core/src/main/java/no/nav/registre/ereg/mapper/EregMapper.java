@@ -320,9 +320,9 @@ public class EregMapper {
         return numRecords;
     }
 
-    private int appendFileCreateDatoRecord(int numRecords, StringBuilder file, String endringsType, String nedleggelse, String ndat) {
+    private int appendFileCreateDatoRecord(int numRecords, StringBuilder file, String endringsType, String nedleggelse, String type) {
         if (nedleggelse != null) {
-            file.append(createDatoRecord(ndat, nedleggelse, endringsType));
+            file.append(createDatoRecord(type, nedleggelse, endringsType));
             numRecords++;
         }
         return numRecords;
