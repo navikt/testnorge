@@ -12,7 +12,6 @@
 
     <artifactId>testnorge-populasjoner</artifactId>
 
-
     <properties>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
         <common.version>2.2020.05.13_14.46-9bafc245bcc7</common.version>
@@ -73,13 +72,16 @@
             <artifactId>kafka-clients</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
         </dependency>
         <dependency>
             <groupId>io.confluent</groupId>
             <artifactId>kafka-avro-serializer</artifactId>
-            <version>5.3.1</version>
         </dependency>
 
         <!-- TEST -->
@@ -128,7 +130,6 @@
             <artifactId>spring-cloud-starter-vault-config</artifactId>
         </dependency>
     </dependencies>
-
 
     <build>
         <finalName>app</finalName>
