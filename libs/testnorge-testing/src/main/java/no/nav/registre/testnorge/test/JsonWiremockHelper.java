@@ -4,6 +4,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
@@ -97,6 +98,11 @@ public class JsonWiremockHelper {
         stubFor(mappingBuilder);
     }
 
+    public void verifyGet() {
+        RequestPatternBuilder requestPatternBuilder = getRequestedFor(urlPathPattern);
+        verify(requestPatternBuilder);
+    }
+
     public void verifyPost() {
         RequestPatternBuilder requestPatternBuilder = postRequestedFor(urlPathPattern);
         if (requestBody != null) {
@@ -113,7 +119,6 @@ public class JsonWiremockHelper {
         }
         verify(requestPatternBuilder);
     }
-
 
     private static String convertToRegexString(final String value, String... fieldToIgnore) {
         return ignoreFields(

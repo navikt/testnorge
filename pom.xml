@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.0.RELEASE</version>
+        <version>2.3.1.RELEASE</version>
     </parent>
 
     <groupId>no.nav.registre.testnorge</groupId>
@@ -18,10 +18,27 @@
         <module>apps</module>
         <module>libs</module>
     </modules>
-
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <organization>NAV (Arbeids- og velferdsdirektoratet) - The Norwegian Labour and Welfare Administration</organization>
+            <organizationUrl>https://www.nav.no</organizationUrl>
+        </developer>
+    </developers>
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/navikt/testnorge</url>
+        </repository>
+    </distributionManagement>
 
     <properties>
-        <application.version>${project.version} - ${maven.build.timestamp}</application.version>
+        <application.version>${maven.build.timestamp}</application.version>
         <sonar.projectKey>navikt_testnorge</sonar.projectKey>
         <sonar.projectName>testnorge</sonar.projectName>
         <sonar.organization>navit</sonar.organization>
@@ -29,19 +46,31 @@
         <!--suppress UnresolvedMavenProperty Ligger som secret i github-->
         <sonar.login>${SONAR_LOGIN}</sonar.login>
         <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
+        <spring-cloud-dependencies.version>Hoxton.SR6</spring-cloud-dependencies.version>
         <springfox.version>2.9.2</springfox.version>
         <hibernate-validator.verison>6.1.5.Final</hibernate-validator.verison>
-        <ojdbc8.version>12.2.0.1</ojdbc8.version>
-        <ojdbc7.version>12.1.0.2</ojdbc7.version>
+        <ojdbc8.version>19.7.0.0</ojdbc8.version>
         <logstash-logback-encoder.version>6.3</logstash-logback-encoder.version>
         <spring-cloud-contract-wiremock.version>2.2.3.RELEASE</spring-cloud-contract-wiremock.version>
         <assertj.version>3.16.1</assertj.version>
         <sonar-maven-plugin.version>3.7.0.1746</sonar-maven-plugin.version>
+        <org.apache.avro.version>1.9.2</org.apache.avro.version>
+        <io.confluent.kafka.version>5.5.0</io.confluent.kafka.version>
+        <reflections.version>0.9.11</reflections.version>
+        <logback-syslog4j>1.0.0</logback-syslog4j>
+        <javax.servlet.version>2.5</javax.servlet.version>
+        <freg-security.version>e603e2b2</freg-security.version>
     </properties>
-
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson</groupId>
                 <artifactId>jackson-bom</artifactId>
@@ -63,17 +92,55 @@
                 <artifactId>hibernate-validator</artifactId>
                 <version>${hibernate-validator.verison}</version>
             </dependency>
+
             <dependency>
-                <groupId>com.oracle.jdbc</groupId>
+                <groupId>com.oracle.database.jdbc</groupId>
                 <artifactId>ojdbc8</artifactId>
                 <version>${ojdbc8.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.oracle</groupId>
-                <artifactId>ojdbc7</artifactId>
-                <version>${ojdbc7.version}</version>
+                <scope>runtime</scope>
             </dependency>
 
+            <dependency>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro-compiler</artifactId>
+                <version>${org.apache.avro.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro-maven-plugin</artifactId>
+                <version>${org.apache.avro.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro</artifactId>
+                <version>${org.apache.avro.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.confluent</groupId>
+                <artifactId>kafka-avro-serializer</artifactId>
+                <version>${io.confluent.kafka.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.reflections</groupId>
+                <artifactId>reflections</artifactId>
+                <version>${reflections.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.papertrailapp</groupId>
+                <artifactId>logback-syslog4j</artifactId>
+                <version>${logback-syslog4j}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>${javax.servlet.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>no.nav.freg</groupId>
+                <artifactId>freg-security-oidc</artifactId>
+                <version>${freg-security.version}</version>
+            </dependency>
 
             <!-- Logging -->
             <dependency>
@@ -94,14 +161,18 @@
                 <version>${assertj.version}</version>
                 <scope>test</scope>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
-
 
     <repositories>
         <repository>
             <id>github-package-registry-navikt</id>
             <url>https://maven.pkg.github.com/navikt/maven-release</url>
+        </repository>
+        <repository>
+            <id>confluent</id>
+            <url>http://packages.confluent.io/maven/</url>
         </repository>
     </repositories>
 
@@ -112,9 +183,32 @@
         <tag>HEAD</tag>
     </scm>
 
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
                 <plugin>
                     <groupId>org.sonarsource.scanner.maven</groupId>
                     <artifactId>sonar-maven-plugin</artifactId>

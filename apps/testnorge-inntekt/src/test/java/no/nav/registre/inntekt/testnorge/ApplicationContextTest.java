@@ -13,7 +13,7 @@ import no.nav.registre.inntekt.config.AppConfig;
 
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application-test.properties")
 public class ApplicationContextTest {
 

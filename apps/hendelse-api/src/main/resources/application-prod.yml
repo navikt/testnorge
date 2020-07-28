@@ -1,0 +1,12 @@
+app:
+  db:
+    flyway:
+      role: testnorge-hendelse-admin
+      backend: postgresql/preprod-fss/creds
+
+spring:
+  datasource:
+    url: jdbc:postgresql://b27dbvl016.preprod.local:5432/testnorge-hendelse?useUnicode=yes&characterEncoding=UTF-8
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 0

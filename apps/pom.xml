@@ -39,6 +39,11 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <artifactId>testnorge-avro-schema</artifactId>
+                <groupId>no.nav.registre.testnorge</groupId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <artifactId>testnorge-testing</artifactId>
                 <groupId>no.nav.registre.testnorge</groupId>
                 <version>${project.version}</version>
@@ -75,5 +80,7 @@
         <module>organisasjon-api</module>
         <module>arbeidsforhold-api</module>
         <module>synt-sykemelding-api</module>
+        <module>hendelse-api</module>
+        <module>testnorge-populasjoner</module>
     </modules>
 </project>

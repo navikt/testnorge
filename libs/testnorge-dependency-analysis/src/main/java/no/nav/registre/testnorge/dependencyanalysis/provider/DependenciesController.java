@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.dependencyanalysis.provider;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import no.nav.registre.testnorge.dependencyanalysis.DependencyAnalysis;
 import no.nav.registre.testnorge.dto.dependencyanalysis.v1.ApplicationDependenciesDTO;
 
+@Profile("prod")
 @RestController
 @RequestMapping("/dependencies")
 public class DependenciesController {

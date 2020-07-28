@@ -3,10 +3,7 @@ package no.nav.registre.testnorge.sykemelding.domain;
 import no.kith.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpplysningerArbeidsuforhet;
 
 import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
 
-import no.nav.registre.testnorge.dto.sykemelding.v1.PeriodeDTO;
 import no.nav.registre.testnorge.dto.sykemelding.v1.SykemeldingDTO;
 
 class Dokument {
@@ -14,11 +11,13 @@ class Dokument {
 
     Dokument(SykemeldingDTO dto, ApplicationInfo applicationInfo) {
 
-        var fom = findFom(dto.getPerioder());
+        var aktivitet = new Aktivitet(dto.getPerioder(), dto.getManglendeTilretteleggingPaaArbeidsplassen());
+        var fom = Aktivitet.getFom(aktivitet.getXmlObject());
+
         var pasient = new Pasient(dto.getPasient(), dto.getLege());
         var arbeidsgiver = new Arbeidsgiver(dto.getArbeidsgiver());
         var medisinskVurdering = new MedisinskVurdering(fom, dto.getHovedDiagnose(), dto.getBiDiagnoser());
-        var aktivitet = new Aktivitet(dto.getPerioder(), dto.getManglendeTilretteleggingPaaArbeidsplassen());
+
         var prognose = new Prognose(fom, dto.getDetaljer());
         var lege = new Lege(dto.getLege());
 
@@ -44,7 +43,7 @@ class Dokument {
                         .withSystemVersjon(applicationInfo.getVersion())
                 );
 
-        if(dto.getUmiddelbarBistand() != null){
+        if (dto.getUmiddelbarBistand() != null) {
             xmlHelseOpplysningerArbeidsuforhet.withMeldingTilNav(
                     new XMLHelseOpplysningerArbeidsuforhet.MeldingTilNav()
                             .withBistandNAVUmiddelbart(dto.getUmiddelbarBistand())
@@ -52,11 +51,12 @@ class Dokument {
         }
     }
 
-    private static LocalDate findFom(List<PeriodeDTO> perioder) {
-        return perioder.stream()
-                .map(PeriodeDTO::getFom)
-                .min(Comparator.comparing(LocalDate::toEpochDay))
-                .orElseThrow();
+    public LocalDate getFom() {
+        return Aktivitet.getFom(xmlHelseOpplysningerArbeidsuforhet.getAktivitet());
+    }
+
+    public LocalDate getTom() {
+        return Aktivitet.getTom(xmlHelseOpplysningerArbeidsuforhet.getAktivitet());
     }
 
     XMLHelseOpplysningerArbeidsuforhet getXmlObject() {

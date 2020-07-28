@@ -1,24 +1,10 @@
 <settings>
-
-    <profiles>
-        <profile>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <repositories>
-                <repository>
-                    <id>hand-china</id>
-                    <url>http://nexus.saas.hand-china.com/content/repositories/rdc/</url>
-                </repository>
-                <repository>
-                    <id>XWiki</id>
-                    <url>https://maven.xwiki.org/externals/</url>
-                </repository>
-            </repositories>
-        </profile>
-    </profiles>
-
     <servers>
+        <server>
+            <id>github</id>
+            <username>x-access-token</username>
+            <password>${env.GITHUB_TOKEN}</password>
+        </server>
         <server>
             <id>github-package-registry-navikt</id>
             <username>token</username>

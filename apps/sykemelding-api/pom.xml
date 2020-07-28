@@ -11,6 +11,11 @@
 
     <artifactId>sykemelding-api</artifactId>
 
+    <properties>
+        <no.nav.helse.xml.version>2019.07.30-12-26-5c924ef4f04022bbb850aaf299eb8e4464c1ca6a</no.nav.helse.xml.version>
+        <tjenestespesifikasjoner.version>1.2019.02.28-20.22-e0a79af1ccde</tjenestespesifikasjoner.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <artifactId>testnorge-core</artifactId>
@@ -48,22 +53,26 @@
         <dependency>
             <groupId>no.nav.helse.xml</groupId>
             <artifactId>kith-hodemelding</artifactId>
-            <version>1.9daf0fa</version>
+            <version>${no.nav.helse.xml.version}</version>
         </dependency>
         <dependency>
             <groupId>no.nav.helse.xml</groupId>
             <artifactId>xmlfellesformat</artifactId>
-            <version>1.e1999cf</version>
+            <version>${no.nav.helse.xml.version}</version>
         </dependency>
         <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>digisyfo-sykmelding</artifactId>
-            <version>1.2020.04.27-15.39-c32c8960a220</version>
+            <version>${tjenestespesifikasjoner.version}</version>
         </dependency>
         <dependency>
             <groupId>com.ibm.mq</groupId>
             <artifactId>mq-jms-spring-boot-starter</artifactId>
             <version>2.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -89,7 +98,24 @@
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
         </dependency>
+        <dependency>
+            <artifactId>testnorge-avro-schema</artifactId>
+            <groupId>no.nav.registre.testnorge</groupId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.confluent</groupId>
+            <artifactId>kafka-avro-serializer</artifactId>
+        </dependency>
 
+        <!--VAULT-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-vault-config</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

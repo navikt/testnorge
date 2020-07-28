@@ -23,6 +23,9 @@ spec:
     max: 1
   vault:
     enabled: true
+    paths:
+      - kvPath: /serviceuser/data/dev/srvhendelse
+        mountPath: /secret/serviceuser
   resources:
     requests:
       cpu: 200m

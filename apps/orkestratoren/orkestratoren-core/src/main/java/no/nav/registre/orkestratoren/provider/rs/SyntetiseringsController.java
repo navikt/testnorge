@@ -1,10 +1,6 @@
 package no.nav.registre.orkestratoren.provider.rs;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +12,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import no.nav.registre.orkestratoren.consumer.rs.response.GenererFrikortResponse;
 import no.nav.registre.orkestratoren.consumer.rs.response.RsPureXmlMessageResponse;
+import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaAapRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
@@ -29,6 +26,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaTillegg
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaTiltakRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaVedtakshistorikkRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserMedlRequest;
@@ -37,9 +35,10 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
-import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
+import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeBisysService;
+import no.nav.registre.orkestratoren.service.TestnorgeFrikortService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
 import no.nav.registre.orkestratoren.service.TestnorgeMedlService;
@@ -47,6 +46,9 @@ import no.nav.registre.orkestratoren.service.TestnorgeSamService;
 import no.nav.registre.orkestratoren.service.TestnorgeSigrunService;
 import no.nav.registre.orkestratoren.service.TestnorgeSkdService;
 import no.nav.registre.orkestratoren.service.TestnorgeTpService;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 
 @RestController
 @RequestMapping("api/v1/syntetisering")
@@ -82,6 +84,9 @@ public class SyntetiseringsController {
 
     @Autowired
     private TestnorgeMedlService testnorgeMedlService;
+
+    @Autowired
+    private TestnorgeFrikortService testnorgeFrikortService;
 
     @PostMapping(value = "/tps/skdmeldinger/generer")
     public ResponseEntity<SkdMeldingerTilTpsRespons> opprettSkdmeldingerITPS(
@@ -138,7 +143,7 @@ public class SyntetiseringsController {
     }
 
     @PostMapping(value = "/tp/ytelser/generer")
-    public ResponseEntity<String> opprettYtelserITp(
+    public ResponseEntity<?> opprettYtelserITp(
             @RequestBody SyntetiserTpRequest request
     ) {
         return testnorgeTpService.genererTp(request);
@@ -198,7 +203,13 @@ public class SyntetiseringsController {
     public Object opprettMedlemskapIMedl(
             @RequestBody SyntetiserMedlRequest syntetiserMedlRequest
     ) {
-
         return testnorgeMedlService.genererMedlemskap(syntetiserMedlRequest);
+    }
+
+    @PostMapping(value = "/frikort/egenandeler/generer")
+    public List<GenererFrikortResponse> opprettEgenandelerIFrikort(
+            @RequestBody SyntetiserFrikortRequest syntetiserFrikortRequest
+    ) {
+        return testnorgeFrikortService.genererFrikortEgenmeldinger(syntetiserFrikortRequest);
     }
 }

@@ -26,7 +26,7 @@ public class ApplicationDependencies {
     public ApplicationDependenciesDTO toDTO() {
         return new ApplicationDependenciesDTO(
                 applicationName,
-                dependencies.stream().map(Dependency::toTDO).collect(Collectors.toSet())
+                dependencies.stream().map(Dependency::toDTO).collect(Collectors.toSet())
         );
     }
 }

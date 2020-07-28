@@ -11,6 +11,7 @@ import java.util.Map;
 
 @Slf4j
 public class RequestLogger {
+
     private final ContentCachingRequestWrapper request;
 
     public RequestLogger(ContentCachingRequestWrapper request) {
@@ -23,9 +24,13 @@ public class RequestLogger {
 
     public void log() {
         try {
-            Map<String, String> contextMap = MDC.getCopyOfContextMap();
-            contextMap.putAll(this.toPropertyMap());
-            MDC.setContextMap(contextMap);
+            if (MDC.getCopyOfContextMap() != null) {
+                Map<String, String> contextMap = MDC.getCopyOfContextMap();
+                contextMap.putAll(this.toPropertyMap());
+                MDC.setContextMap(contextMap);
+            } else {
+                MDC.setContextMap(this.toPropertyMap());
+            }
             var body = getBody();
             log.trace(body.equals("") ? "[empty]" : body);
         } catch (Exception e) {

@@ -1,15 +1,13 @@
 package no.nav.registre.sigrun.service;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.registre.sigrun.PoppSyntetisererenResponse;
+import no.nav.registre.sigrun.consumer.rs.HodejegerenHistorikkConsumer;
+import no.nav.registre.sigrun.consumer.rs.PoppSyntetisererenConsumer;
+import no.nav.registre.sigrun.consumer.rs.SigrunStubConsumer;
+import no.nav.registre.sigrun.consumer.rs.responses.SigrunSkattegrunnlagResponse;
+import no.nav.registre.sigrun.provider.rs.requests.SyntetiserSigrunRequest;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,13 +24,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import no.nav.registre.sigrun.PoppSyntetisererenResponse;
-import no.nav.registre.sigrun.consumer.rs.HodejegerenHistorikkConsumer;
-import no.nav.registre.sigrun.consumer.rs.PoppSyntetisererenConsumer;
-import no.nav.registre.sigrun.consumer.rs.SigrunStubConsumer;
-import no.nav.registre.sigrun.consumer.rs.responses.SigrunSkattegrunnlagResponse;
-import no.nav.registre.sigrun.provider.rs.requests.SyntetiserSigrunRequest;
-import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SigrunServiceTest {
@@ -68,14 +67,14 @@ public class SigrunServiceTest {
         var identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
 
         when(poppSyntetisererenConsumer.hentPoppMeldingerFromSyntRest(identer)).thenReturn(poppSyntetisererenResponse);
-        when(sigrunStubConsumer.sendDataTilSigrunstub(poppSyntetisererenResponse, testdataEier, miljoe)).thenReturn(ResponseEntity.status(HttpStatus.OK).body(HttpStatus.OK));
+        when(sigrunStubConsumer.sendDataTilSigrunstub(poppSyntetisererenResponse, testdataEier, miljoe)).thenReturn(ResponseEntity.status(HttpStatus.OK).body(identer));
 
         var actualResponse = sigrunService.genererPoppmeldingerOgSendTilSigrunStub(identer, testdataEier, miljoe);
 
         verify(poppSyntetisererenConsumer).hentPoppMeldingerFromSyntRest(identer);
         verify(sigrunStubConsumer).sendDataTilSigrunstub(poppSyntetisererenResponse, testdataEier, miljoe);
         verify(hodejegerenHistorikkConsumer).saveHistory(any());
-        assertThat(actualResponse.getBody(), equalTo(HttpStatus.OK));
+        assertThat(actualResponse.getBody(), equalTo(identer));
     }
 
     @Test

@@ -1,25 +1,24 @@
 package no.nav.registre.frikort.provider.rs;
 
+import static no.nav.registre.frikort.utils.SwaggerUtils.LEGG_PAA_KOE_DESCRIPTION;
+
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
-import java.util.Map;
-import javax.xml.bind.JAXBException;
-
-import no.nav.registre.frikort.service.MqService;
-import no.nav.registre.frikort.service.SyntetiseringService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import static no.nav.registre.frikort.utils.SwaggerUtils.LEGG_PAA_KOE_DESCRIPTION;
-import static no.nav.registre.frikort.utils.SwaggerUtils.REQUEST_BODY_DESCRIPTION;
+import javax.xml.bind.JAXBException;
+import java.util.List;
 
+import no.nav.registre.frikort.provider.rs.request.SyntetiserFrikortRequest;
+import no.nav.registre.frikort.provider.rs.response.SyntetiserFrikortResponse;
+import no.nav.registre.frikort.service.SyntetiseringService;
 
 @Slf4j
 @RestController
@@ -28,26 +27,14 @@ import static no.nav.registre.frikort.utils.SwaggerUtils.REQUEST_BODY_DESCRIPTIO
 public class SyntetiseringController {
 
     private final SyntetiseringService syntetiseringService;
-    private final MqService mqService;
 
     @PostMapping(value = "/generer")
-    @ApiOperation(value = "Generer syntetiske egenandelsmeldinger som XML string.")
-    public List<String> genererEgenandelsmeldinger(
-            @ApiParam(value = REQUEST_BODY_DESCRIPTION, required = true)
-            @RequestBody() Map<String, Integer> request,
+    @ApiOperation(value = "Generer syntetiske egenandelsmeldinger som XML string på identer i gitt avspillergruppe fra gitt miljø.")
+    public ResponseEntity<List<SyntetiserFrikortResponse>> genererEgenandelsmeldinger(
+            @RequestBody() SyntetiserFrikortRequest syntetiserFrikortRequest,
             @ApiParam(value = LEGG_PAA_KOE_DESCRIPTION)
-            @RequestParam(defaultValue = "true") boolean leggPaaKoe) throws JAXBException {
-
-        List<String> xmlMeldinger = syntetiseringService.hentSyntetiskeEgenandelerSomXML(request);
-        log.info("{} egenandelsmelding(er) ble generert og gjort om til XMLString.", xmlMeldinger.size());
-
-        if (leggPaaKoe) {
-            for (String melding : xmlMeldinger) {
-                mqService.leggTilMeldingPaaKoe(melding);
-            }
-            log.info("Generert(e) egenandelsmelding(er) ble lagt til på kø.");
-        }
-        return xmlMeldinger;
+            @RequestParam(defaultValue = "true") boolean leggPaaKoe
+    ) throws JAXBException {
+        return ResponseEntity.ok(syntetiseringService.opprettSyntetiskeEgenandeler(syntetiserFrikortRequest, leggPaaKoe));
     }
-
 }

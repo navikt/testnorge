@@ -104,9 +104,9 @@ public class TpsfConsumer {
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
-    public ResponseEntity slettMeldingerFraTpsf(List<Long> meldingIder) {
+    public ResponseEntity<String> slettMeldingerFraTpsf(List<Long> meldingIder) {
         var postRequest = RequestEntity.post(uriSlettMeldinger.expand()).body(SlettSkdmeldingerRequest.builder().ids(meldingIder).build());
-        return restTemplate.exchange(postRequest, ResponseEntity.class);
+        return restTemplate.exchange(postRequest, String.class);
     }
 
     @Timed

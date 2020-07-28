@@ -1,4 +1,5 @@
 # testnorge-frikort
+Testnorge-frikort tilbyr endepunkt for å lage syntetiske egenandelsmeldinger.
 
 ## Dokumentasjon
 

@@ -1,20 +1,41 @@
 ![Build](https://github.com/navikt/testnorge/workflows/Build/badge.svg)
-![Build sonar](https://github.com/navikt/testnorge/workflows/Build%20sonar/badge.svg)
+![Release](https://github.com/navikt/testnorge/workflows/Release/badge.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=navikt_testnorge&metric=alert_status)](https://sonarcloud.io/dashboard?id=navikt_testnorge)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=navikt_testnorge&metric=coverage)](https://sonarcloud.io/dashboard?id=navikt_testnorge)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=navikt_testnorge&metric=ncloc)](https://sonarcloud.io/dashboard?id=navikt_testnorge)
+[![tag](https://img.shields.io/github/v/tag/navikt/testnorge)](https://github.com/navikt/testnorge/releases)
 
 # testnorge
 
 ## Avhenighetsanalyse
 
+**Kan kun brukes fra utviklerimage**
 https://testnorge-avhengighetsanalyse-frontend.nais.preprod.local/
 
 ## Kjør lokalt
 
-`mvn --settings maven-settings.xml -DNAV_TOKEN=xxx clean install`
+**NB: `navtunnel` må kjøre**
 
-NAV_TOKEN må lages i din github konto. (Dette er noe som vi jobber med å fjerne)
+Legg inn dette i **din** maven settings.xml fil:
+```
+<settings>
+    <profiles>
+        <profile>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>internal-mirror-github-navikt</id>
+                    <url>https://repo.adeo.no/repository/github-package-registry-navikt/</url>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+</settings>
+```
+
+Så kjør `mvn clean install`
 
 ## Deploy status
 
@@ -45,6 +66,8 @@ NAV_TOKEN må lages i din github konto. (Dette er noe som vi jobber med å fjern
 ![Deploy organisasjon-api](https://github.com/navikt/testnorge/workflows/Deploy%20organisasjon-api/badge.svg)
 ![Deploy arbeidsforhold-api](https://github.com/navikt/testnorge/workflows/Deploy%20arbeidsforhold-api/badge.svg)
 ![Deploy synt-sykemelding-api](https://github.com/navikt/testnorge/workflows/Deploy%20synt-sykemelding-api/badge.svg)
+![Deploy testnorge-populasjoner](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-populasjoner/badge.svg)
+![Deploy hendelse-api](https://github.com/navikt/testnorge/workflows/Deploy%20hendelse-api/badge.svg)
 
 
 ## Migrering inn i monorepo
@@ -60,10 +83,5 @@ git push
 
 Eller kjør:
 ```
-/bin/bash  ./tools/migrate.sh $REPO_NAVN
+/bin/bash  ./.tools/migrate.sh $REPO_NAVN
 ```
-
-## TODO
-
-- [ ] Fjern testnorge-elsam fra nais
-- [ ] Fjern testnorge-elsam fra vault

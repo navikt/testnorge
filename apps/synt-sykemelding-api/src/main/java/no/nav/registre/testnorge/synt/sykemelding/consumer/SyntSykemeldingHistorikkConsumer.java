@@ -39,7 +39,8 @@ public class SyntSykemeldingHistorikkConsumer {
 
         ResponseEntity<HashMap<String, SyntSykemeldingHistorikkDTO>> response = restTemplate.exchange(
                 RequestEntity.post(new URI(url)).body(Map.of(ident, startDato)),
-                new ParameterizedTypeReference<>() {
+                // IKKE bruk bare <> skriv <HashMap<String, SyntSykemeldingHistorikkDTO>>. Uten dette blir det kompelerings feil i Java 11
+                new ParameterizedTypeReference<HashMap<String, SyntSykemeldingHistorikkDTO>>() {
                 });
         if (!response.getStatusCode().is2xxSuccessful()) {
             throw new RuntimeException("Klarer ikke å generere sykemeldinger (http kode: " + response.getStatusCodeValue() + ")");

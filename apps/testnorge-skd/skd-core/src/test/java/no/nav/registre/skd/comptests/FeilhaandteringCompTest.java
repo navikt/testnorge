@@ -33,6 +33,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
@@ -52,6 +53,7 @@ import no.nav.registre.skd.service.SyntetiseringService;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { ApplicationTestConfig.class, ApplicationStarter.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
+@TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("test")
 public class FeilhaandteringCompTest {
 
@@ -97,6 +99,7 @@ public class FeilhaandteringCompTest {
         stubTpsf(gruppeId);
         stubSendIderTilTps(gruppeId);
         stubTpConsumer();
+        stubPersonApiConsumer();
 
         stubTpsSynt(INNVANDRING.getEndringskode(), antallMeldinger, "comptest/tpssynt/tpsSynt_aarsakskode02_2meldinger_Response.json");
         stubTpsSynt(NAVNEENDRING_FOERSTE.getEndringskode(), antallMeldinger, "comptest/tpssynt/tpsSynt_aarsakskode06_2meldinger_Response.json");
@@ -223,5 +226,10 @@ public class FeilhaandteringCompTest {
                 .willReturn(ok()
                         .withHeader("content-type", "application/json")
                         .withBody("[\"" + expectedFnrFromIdentpool.get(1) + "\"]")));
+    }
+
+    private void stubPersonApiConsumer() {
+        stubFor(post(urlPathEqualTo("/person-api/api/v1/person"))
+                .willReturn(aResponse().withStatus(200)));
     }
 }

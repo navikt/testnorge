@@ -75,6 +75,9 @@ public class SyntetiseringService {
     @Autowired
     private TpService tpService;
 
+    @Autowired
+    private PersonService personService;
+
     private List<String> feiledeEndringskoder;
 
     public ResponseEntity<SkdMeldingerTilTpsRespons> puttIdenterIMeldingerOgLagre(
@@ -126,7 +129,11 @@ public class SyntetiseringService {
                     if (!feiledeTpIdenter.isEmpty()) {
                         log.error("Følgende identer kunne ikke lagres i TP: {}", feiledeTpIdenter.toString());
                     }
+                    if(Arrays.asList(FOEDSELSMELDING, INNVANDRING).contains(endringskode)){
+                        personService.leggTilIdenterIPdl(nyeIdenterDenneEndringskoden);
+                    }
                 }
+
             } catch (ManglendeInfoITpsException e) {
                 httpStatus = loggExceptionOgLeggTilFeiletEndringskode(e,
                         "ManglendeInfoITPSException: " + String.format(FEILMELDING, endringskode.getEndringskode(),
