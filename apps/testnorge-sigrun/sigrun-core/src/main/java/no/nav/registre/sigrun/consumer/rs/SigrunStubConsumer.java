@@ -2,6 +2,9 @@ package no.nav.registre.sigrun.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.sigrun.PoppSyntetisererenResponse;
+import no.nav.registre.sigrun.consumer.rs.responses.SigrunSkattegrunnlagResponse;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -13,10 +16,6 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import no.nav.registre.sigrun.PoppSyntetisererenResponse;
-import no.nav.registre.sigrun.consumer.rs.responses.SigrunSkattegrunnlagResponse;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
@@ -78,7 +77,7 @@ public class SigrunStubConsumer {
     }
 
     @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "sigrun-skd-stub" })
-    public ResponseEntity sendDataTilSigrunstub(
+    public ResponseEntity<List<String>> sendDataTilSigrunstub(
             List<PoppSyntetisererenResponse> meldinger,
             String testdataEier,
             String miljoe
@@ -89,7 +88,7 @@ public class SigrunStubConsumer {
                 .header(NAV_CONSUMER_ID_STRING, NAV_CONSUMER_ID)
                 .header("testdataEier", testdataEier)
                 .body(meldinger);
-        return restTemplate.exchange(postRequest, List.class);
+        return restTemplate.exchange(postRequest, RESPONSE_TYPE);
     }
 
     @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "sigrun-skd-stub" })
