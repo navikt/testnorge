@@ -26,11 +26,13 @@ public class PdlDokumentListener {
     public void register(@Payload List<PdlDokument> liste) {
         Set<String> identer = liste
                 .stream()
+                .filter(Objects::nonNull)
                 .map(PdlDokument::getFolkeregisteridentifikator)
                 .filter(Objects::nonNull)
                 .flatMap(Collection::stream)
                 .filter(Objects::nonNull)
                 .map(Folkeregisteridentifikator::getIdentifikasjonsnummer)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
         if (identer.isEmpty()) {
