@@ -178,59 +178,6 @@ public class TilleggsstoenadControllerIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        JsonWiremockHelper
-                .builder(objectMapper)
-                .withUrlPathMatching(tokenProviderUrl)
-                .verifyGet();
-
-        JsonWiremockHelper
-                .builder(objectMapper)
-                .withUrlPathMatching(hentIdenterIAktoerregisteretUrl)
-                .withResponseBody(identerIAktoerRegisteret)
-                .verifyGet();
-
-        JsonWiremockHelper
-                .builder(objectMapper)
-                .withUrlPathMatching(arenaTilleggBoutgiftUrl)
-                .withResponseBody(Collections.singletonList(vedtakTillegg))
-                .verifyPost();
-
-        JsonWiremockHelper
-                .builder(objectMapper)
-                .withUrlPathMatching(hentLevendeIdenterUrl)
-                .withResponseBody(Collections.singletonList(ident))
-                .verifyGet();
-
-        JsonWiremockHelper
-                .builder(objectMapper)
-                .withUrlPathMatching(arenaForvalterenUrl)
-                .withResponseBody(hentBrukereResponse)
-                .verifyGet();
-
-        JsonWiremockHelper
-                .builder(objectMapper)
-                .withUrlPathMatching(arenaForvalterenUrl)
-                .withResponseBody(sendBrukerResponse)
-                .verifyPost();
-
-        JsonWiremockHelper
-                .builder(objectMapper)
-                .withUrlPathMatching(arenaTiltaksaktivitetUrl)
-                .withResponseBody(Collections.singletonList(vedtakTiltak))
-                .verifyPost();
-
-        JsonWiremockHelper
-                .builder(objectMapper)
-                .withUrlPathMatching(opprettRettigheterTilleggUrl)
-                .withResponseBody(nyttVedtakTilleggResponse)
-                .stubPost();
-
-        JsonWiremockHelper
-                .builder(objectMapper)
-                .withUrlPathMatching(opprettRettigheterTiltaksaktivitetUrl)
-                .withResponseBody(nyttVedtakTiltakResponse)
-                .verifyPost();
-
         Map<String, List<NyttVedtakResponse>> resultat = objectMapper.readValue(mvcResultat,
                 new TypeReference<>() {});
 
