@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeArenaAapConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeArenaConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeArenaTilleggstoenadConsumer;
@@ -164,9 +163,6 @@ public class TestnorgeArenaService {
     }
 
     private SyntetiserArenaRequest byggSyntArenaRequest(SyntetiserArenaTilleggstoenadRequest request, Integer antallNyeIdenter) {
-        if (antallNyeIdenter == null || antallNyeIdenter == 0) {
-            return null;
-        }
         return SyntetiserArenaRequest.builder()
                 .avspillergruppeId(request.getAvspillergruppeId())
                 .miljoe(request.getMiljoe())
@@ -175,9 +171,6 @@ public class TestnorgeArenaService {
     }
 
     private SyntetiserArenaRequest byggSyntArenaArbeidssoekerRequest(SyntetiserArenaTilleggstoenadArbeidssoekereRequest request, Integer antallNyeIdenter) {
-        if (antallNyeIdenter == null || antallNyeIdenter == 0) {
-            return null;
-        }
         return SyntetiserArenaRequest.builder()
                 .avspillergruppeId(request.getAvspillergruppeId())
                 .miljoe(request.getMiljoe())
