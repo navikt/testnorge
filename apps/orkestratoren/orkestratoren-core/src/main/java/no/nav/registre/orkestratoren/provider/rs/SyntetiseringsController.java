@@ -143,7 +143,7 @@ public class SyntetiseringsController {
     }
 
     @PostMapping(value = "/tp/ytelser/generer")
-    public ResponseEntity<String> opprettYtelserITp(
+    public ResponseEntity<?> opprettYtelserITp(
             @RequestBody SyntetiserTpRequest request
     ) {
         return testnorgeTpService.genererTp(request);

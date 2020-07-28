@@ -44,7 +44,7 @@ public class EregMapperConsumer {
 
     public List<String> hentNyttOrgnr(int antall) {
         UriTemplate uriTemplate = new UriTemplate(eregMapperUrl + "/v1/orgnr?antall={antall}");
-        RequestEntity request = new RequestEntity(HttpMethod.GET, uriTemplate.expand(antall));
+        RequestEntity<?> request = new RequestEntity<>(HttpMethod.GET, uriTemplate.expand(antall));
         ResponseEntity<List<String>> response = restTemplate.exchange(request, ORGNR_RESPONSE);
         if (response.getStatusCode().is2xxSuccessful()) {
             log.info("Bruker orgnr: {}", response.getBody());

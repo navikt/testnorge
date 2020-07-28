@@ -30,7 +30,7 @@ public class TestnorgeTpServiceTest {
         var avspillergruppeId = 123L;
         var miljoe = "t1";
         var antallNyeIdenter = 2;
-        var expectedResponse = ResponseEntity.ok().build();
+        ResponseEntity<String> expectedResponse = ResponseEntity.ok().build();
         var syntetiserTpRequest = new SyntetiserTpRequest(avspillergruppeId, miljoe, antallNyeIdenter);
 
         when(testnorgeTpConsumer.startSyntetisering(syntetiserTpRequest)).thenReturn(expectedResponse);

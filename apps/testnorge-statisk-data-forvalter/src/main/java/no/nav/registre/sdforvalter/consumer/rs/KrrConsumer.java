@@ -1,6 +1,10 @@
 package no.nav.registre.sdforvalter.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.sdforvalter.consumer.rs.request.KrrRequest;
+import no.nav.registre.sdforvalter.domain.Krr;
+import no.nav.registre.sdforvalter.domain.KrrListe;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -20,17 +24,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.registre.sdforvalter.consumer.rs.request.KrrRequest;
-import no.nav.registre.sdforvalter.domain.Krr;
-import no.nav.registre.sdforvalter.domain.KrrListe;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
-
 @Slf4j
 @Component
 @DependencyOn(value = "krr-stub", external = true)
 public class KrrConsumer {
 
-    private static final ParameterizedTypeReference<List<KrrRequest>> RESPONSE_TYPE = new ParameterizedTypeReference<List<KrrRequest>>() {
+    private static final ParameterizedTypeReference<List<KrrRequest>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
     private final RestTemplate restTemplate;
@@ -91,7 +90,7 @@ public class KrrConsumer {
 
         fnrs.forEach(fnr -> {
             httpHeaders.add("Nav-Personident", fnr);
-            RequestEntity requestEntity = new RequestEntity<>(httpHeaders, HttpMethod.GET, krrUrl);
+            var requestEntity = new RequestEntity<>(httpHeaders, HttpMethod.GET, krrUrl);
             try {
                 ResponseEntity<List<KrrRequest>> response = restTemplate.exchange(requestEntity, RESPONSE_TYPE);
                 if (response.getStatusCode() == HttpStatus.OK) {
