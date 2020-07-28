@@ -2,12 +2,8 @@ package no.nav.registre.populasjoner.kafka;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.populasjoner.kafka.folkeregisterperson.Folkeregisteridentifikator;
-import no.nav.registre.populasjoner.kafka.folkeregisterperson.PdlDokument;
-import no.nav.registre.populasjoner.service.IdentService;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,11 +11,15 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import no.nav.registre.populasjoner.adapter.TenorIdenterAdapter;
+import no.nav.registre.populasjoner.kafka.folkeregisterperson.Folkeregisteridentifikator;
+import no.nav.registre.populasjoner.kafka.folkeregisterperson.PdlDokument;
+
 @Slf4j
-@Component
+// @Component // TODO Disabled util release of Tenor
 @RequiredArgsConstructor
 public class PdlDokumentListener {
-    private final IdentService identService;
+    private final TenorIdenterAdapter adapter;
 
     @KafkaListener(topics = "aapen-person-pdl-dokument-v1")
     public void register(@Payload List<PdlDokument> liste) {
@@ -39,6 +39,6 @@ public class PdlDokumentListener {
         } else {
             log.info("Fant {} nye identer fra Tenor", identer.size());
         }
-        identer.forEach(identService::saveIdent);
+        identer.forEach(adapter::saveIdent);
     }
 }
