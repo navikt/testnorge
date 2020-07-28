@@ -6,3 +6,6 @@ Applikasjonen er også koblet til Testnorge-aaregstub, og sender syntetiserte ar
 
 ### Branches
 Testnorge-Aareg har en master-branch som kjører i Q2, og en tilleggsbranch som kjører i U2. Denne tilleggsbranchen er tilstede for å gjøre testing med Dolly i U2. Det er viktig at begge branchene oppdateres ved videreutvikling av applikasjonen, så lenge Dolly har en U2-instans.
+
+### Lokal kjøring
+For øyeblikket er det problemer med å få kjørt testnorge-aareg lokalt i utviklerimage da man ikke får tak i alle dependencies. 
