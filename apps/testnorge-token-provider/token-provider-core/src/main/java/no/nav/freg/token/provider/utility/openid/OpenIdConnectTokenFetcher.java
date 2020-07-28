@@ -41,7 +41,7 @@ class OpenIdConnectTokenFetcher {
         return UriComponentsBuilder.fromHttpUrl(openIdConnect.getIssoHost()).path("/access_token").build().encode().toUriString();
     }
 
-    private HttpEntity tokenRequest(String authorizationCode) throws UnsupportedEncodingException {
+    private HttpEntity<?> tokenRequest(String authorizationCode) throws UnsupportedEncodingException {
         HttpHeaders headers = new HttpHeaders();
         headers.set(AUTHORIZATION, basicCredentials());
         headers.setCacheControl("no-cache");

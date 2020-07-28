@@ -15,9 +15,8 @@ public class ApplicationStarter {
         System.setProperty("nais.namespace", "default");
         if ("prod".equals(System.getProperty("spring.profiles.active"))) {
             VaultUtil.initCloudVaultToken();
-        } else {
-            System.setProperty("spring.cloud.vault.token", "00000000-0000-0000-0000-000000000000");
         }
+
         SpringApplication.run(ApplicationStarter.class, args);
     }
 }

@@ -83,6 +83,12 @@
             <groupId>no.nav.registre.testnorge</groupId>
             <scope>test</scope>
         </dependency>
+
+        <!--VAULT-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-vault-config</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

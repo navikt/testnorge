@@ -21,7 +21,7 @@ public class SyntetiseringController {
 
     @ApiOperation(value = "Her kan man starte generering av syntetiske samordningsmeldinger på personer i en gitt TPSF-avspillergruppe i et gitt miljø.")
     @PostMapping(value = "/generer")
-    public ResponseEntity genererSamordningsmeldinger(
+    public ResponseEntity<String> genererSamordningsmeldinger(
             @RequestBody SyntetiserSamRequest syntetiserSamRequest
     ) {
         TenantContext.setTenant(syntetiserSamRequest.getMiljoe());

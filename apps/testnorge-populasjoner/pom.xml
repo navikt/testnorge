@@ -12,12 +12,8 @@
 
     <artifactId>testnorge-populasjoner</artifactId>
 
-
     <properties>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
-        <springframework.cloud.version>2.2.2.RELEASE</springframework.cloud.version>
-        <springframework.cloud.databases.version>2.1.0.RELEASE</springframework.cloud.databases.version>
-        <spring-vault.version>2.1.1.RELEASE</spring-vault.version>
         <common.version>2.2020.05.13_14.46-9bafc245bcc7</common.version>
     </properties>
 
@@ -38,12 +34,10 @@
         <dependency>
             <groupId>org.springframework.vault</groupId>
             <artifactId>spring-vault-core</artifactId>
-            <version>${spring-vault.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-vault-config-databases</artifactId>
-            <version>${springframework.cloud.databases.version}</version>
         </dependency>
 
         <!-- DATABASE -->
@@ -78,13 +72,16 @@
             <artifactId>kafka-clients</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
         </dependency>
         <dependency>
             <groupId>io.confluent</groupId>
             <artifactId>kafka-avro-serializer</artifactId>
-            <version>5.3.1</version>
         </dependency>
 
         <!-- TEST -->
@@ -115,7 +112,6 @@
             <artifactId>logstash-logback-encoder</artifactId>
         </dependency>
 
-
         <!-- NAV COMMON -->
         <dependency>
             <groupId>no.nav.common</groupId>
@@ -127,8 +123,13 @@
             <artifactId>health</artifactId>
             <version>${common.version}</version>
         </dependency>
-    </dependencies>
 
+        <!--VAULT-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-vault-config</artifactId>
+        </dependency>
+    </dependencies>
 
     <build>
         <finalName>app</finalName>
