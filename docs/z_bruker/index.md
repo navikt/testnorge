@@ -1,5 +1,5 @@
 ---
-title: Hvordan logge inn i Dolly og opprette Z-bruker (testbruker i IDA-rutinen)
+title: Opprette Z-bruker (testbruker i IDA-rutinen)
 layout: default
 nav_order: 4
 ---
@@ -8,9 +8,9 @@ nav_order: 4
 
 Bruk av Dolly selvbetjeningsløsning krever pålogging som testbruker - Z-bruker - med rettigheter gitt i verktøyet IDA. Disse testbrukerne kan tildeles andre og flere rettigheter enn man har med NAVIdenten i produksjon. Testerne kan på denne måten teste ny funksjonalitet i systemene med ulike roller og tilganger. 
 
-Dolly kan du åpne fra fra utviklerimage/Citrix: https://dolly.nais.preprod.local/ 
+Dolly kan du åpne fra fra utviklerimage/Citrix: [Dolly-Utviklerimage](https://dolly.nais.preprod.local/)
 
-eller direkte fra laptop: https://dolly.nais-dev-fss.adeo.no/
+eller direkte fra laptop: [Dolly Utenfor Utviklerimage](https://dolly.nais-dev-fss.adeo.no/)
 
 Brukerveiledning: [Kom i gang med Dolly](../index.md)
 
@@ -27,7 +27,7 @@ Brukerveiledning: [Kom i gang med Dolly](../index.md)
 
 ### Åpne Dolly på Laptop
 
-1. Åpne Dolly i nettleseren ved å trykke på lenken: https://dolly.nais-dev-fss.adeo.no/ 
+1. Åpne Dolly i nettleseren ved å trykke på lenken: [Dolly Utviklerimage](https://dolly.nais.preprod.local/) / [Dolly Utenfor Utviklerimage](https://dolly.nais-dev-fss.adeo.no/) 
 
 2. Logg på med AD-brukeren din (NAVident og passord)
 
@@ -54,7 +54,7 @@ Brukerveiledning: [Kom i gang med Dolly](../index.md)
 ---
 
 ### Pålogging
-* Åpne Dolly i Chrome SKSS ved å trykke på lenken eller legg inn: https://dolly.nais.preprod.local/
+* Åpne Dolly i Chrome SKSS ved å trykke på lenken eller legg inn: [Dolly Utviklerimage](https://dolly.nais.preprod.local/) / [Dolly Utenfor Utviklerimage](https://dolly.nais-dev-fss.adeo.no/)
 
 ![Openam Login](assets/openam_logginn.png)
 
@@ -75,7 +75,7 @@ For å kunne opprette en egen Z-bruker trenger du tilgang til IDA. Dette bestill
 Merk at for bruk av en Dolly-testperson i Gosys, må egne egenskaper legges på Z-bruker i IDA rutinen. Se nærmere beskrivelse under.
 
 ### Logg inn i IDA
-1. Fra Chrome SKSS logg inn i IDA: https://ida.adeo.no/#/login
+1. Fra Chrome SKSS logg inn i IDA: [IDA logg inn](https://ida.adeo.no/#/login)
 
 
 ![Ida Login](assets/ida_login.png)
