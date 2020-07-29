@@ -30,7 +30,7 @@ public class TestnorgeTpConsumer {
         this.url = new UriTemplate(baseUrl + "/v1/syntetisering/generer/");
     }
 
-    public ResponseEntity startSyntetisering(
+    public ResponseEntity<String> startSyntetisering(
             SyntetiserTpRequest request
     ) {
         var postRequest = RequestEntity.post(url.expand()).contentType(MediaType.APPLICATION_JSON).body(request);
