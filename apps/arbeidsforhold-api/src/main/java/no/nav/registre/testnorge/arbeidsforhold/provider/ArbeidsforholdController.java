@@ -5,9 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +24,17 @@ import no.nav.registre.testnorge.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
 @RequiredArgsConstructor
 public class ArbeidsforholdController {
     private final AaregConsumer consumer;
+
+    @PostMapping
+    public ResponseEntity<ArbeidsforholdDTO> createArbeidsforhold(@RequestBody ArbeidsforholdDTO dto) {
+        Arbeidsforhold arbeidsforhold = consumer.createArbeidsforhold(new Arbeidsforhold(dto));
+        URI uri = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{ident}/{orgnummer}/{arbeidsforholdId}")
+                .buildAndExpand(arbeidsforhold.getIdent(), arbeidsforhold.getOrgnummer(), arbeidsforhold.getArbeidsforholdId())
+                .toUri();
+        return ResponseEntity.created(uri).build();
+    }
 
     @GetMapping("/{ident}/{orgnummer}/{arbeidsforholdId}")
     public ResponseEntity<ArbeidsforholdDTO> getArbeidsforhold(

@@ -9,7 +9,7 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class ArbeidsgiverDTO {
+public class ArbeidstakerDTO {
     String type;
-    String organisasjonsnummer;
+    String offentligIdent;
 }
