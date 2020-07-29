@@ -30,7 +30,7 @@ Denne lenken krever tilgangen "Utvikling på laptop"
 
 ## Dolly pålogging 
 
-For å logge inn i Dolly trenger du en Z-bruker. Detaljert beskrivelse av hvordan du kan opprette en Z-bruker, samt logge inn i Dolly finner du her: [Hvordan opprette Z-bruker](https://confluence.adeo.no/pages/viewpage.action?pageId=333640780)
+For å logge inn i Dolly trenger du en Z-bruker. Detaljert beskrivelse av hvordan du kan opprette en Z-bruker, samt logge inn i Dolly finner du her: [Hvordan opprette Z-bruker](z_bruker/index.md)
 
 Det første som møter deg når du har logget inn er en startside med noen menyvalg. Siden åpnes automatisk med en oversikt over dine testdatagrupper
 
