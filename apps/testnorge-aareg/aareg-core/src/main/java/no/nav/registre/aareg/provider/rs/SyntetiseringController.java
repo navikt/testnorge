@@ -1,6 +1,10 @@
 package no.nav.registre.aareg.provider.rs;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
+import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
+import no.nav.registre.aareg.service.SyntetiseringService;
+import no.nav.registre.aareg.syntetisering.RsAaregSyntetiseringsRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,11 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
-import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
-import no.nav.registre.aareg.service.SyntetiseringService;
-import no.nav.registre.aareg.syntetisering.RsAaregSyntetiseringsRequest;
-
 @RestController
 @RequestMapping("api/v1/syntetisering")
 @RequiredArgsConstructor
@@ -23,7 +22,7 @@ public class SyntetiseringController {
     private final SyntetiseringService syntetiseringService;
 
     @PostMapping(value = "/generer")
-    public ResponseEntity genererArbeidsforholdsmeldinger(
+    public ResponseEntity<List<RsAaregResponse>> genererArbeidsforholdsmeldinger(
             @RequestParam(defaultValue = "true") Boolean sendAlleEksisterende,
             @RequestBody SyntetiserAaregRequest syntetiserAaregRequest
     ) {

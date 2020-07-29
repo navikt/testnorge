@@ -1,12 +1,9 @@
 package no.nav.registre.arena.core.consumer.rs;
 
-import static no.nav.registre.arena.core.consumer.rs.util.Headers.AUTHORIZATION;
-import static no.nav.registre.arena.core.consumer.rs.util.Headers.CALL_ID;
-import static no.nav.registre.arena.core.consumer.rs.util.Headers.CONSUMER_ID;
-import static no.nav.registre.arena.core.consumer.rs.util.Headers.NAV_CALL_ID;
-import static no.nav.registre.arena.core.consumer.rs.util.Headers.NAV_CONSUMER_ID;
-
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.arena.core.consumer.rs.response.AktoerResponse;
+import no.nav.registre.arena.core.security.TokenService;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -25,9 +22,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.arena.core.consumer.rs.response.AktoerResponse;
-import no.nav.registre.arena.core.security.TokenService;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import static no.nav.registre.arena.core.consumer.rs.util.Headers.AUTHORIZATION;
+import static no.nav.registre.arena.core.consumer.rs.util.Headers.CALL_ID;
+import static no.nav.registre.arena.core.consumer.rs.util.Headers.CONSUMER_ID;
+import static no.nav.registre.arena.core.consumer.rs.util.Headers.NAV_CALL_ID;
+import static no.nav.registre.arena.core.consumer.rs.util.Headers.NAV_CONSUMER_ID;
 
 @Slf4j
 @Component
@@ -68,7 +67,7 @@ public class AktoerRegisteretConsumer {
         headers.add("Nav-Personidenter", identer.toString().substring(1, identer.toString().length() - 1));
         headers.add(AUTHORIZATION, tokenService.getIdToken());
 
-        var request = new RequestEntity(headers, HttpMethod.GET, uriTemplate.expand());
+        RequestEntity<?> request = new RequestEntity<>(headers, HttpMethod.GET, uriTemplate.expand());
         var response = restTemplate.exchange(request, RESPONSE_TYPE);
         if (response.getStatusCode() != HttpStatus.OK) {
             log.warn("Kunne ikke hente aktør id for identer: {}", identer.toString().replaceAll("[\r\n]", ""));

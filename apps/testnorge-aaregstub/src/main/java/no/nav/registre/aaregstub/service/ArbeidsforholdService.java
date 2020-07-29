@@ -1,14 +1,15 @@
 package no.nav.registre.aaregstub.service;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.aaregstub.arbeidsforhold.ArbeidsforholdsResponse;
 import no.nav.registre.aaregstub.arbeidsforhold.Ident;
@@ -73,53 +74,29 @@ public class ArbeidsforholdService {
     public void slettArbeidsforhold(Long id) {
         Arbeidsforhold arbeidsforhold = arbeidsforholdRepository.findById(id).orElse(null);
 
-        if (arbeidsforhold != null) {
-            String fnr = arbeidsforhold.getArbeidstaker().getIdent();
-            arbeidsforhold.setIdenten(null);
-
-            Long arbeidsavtaleId = arbeidsforhold.getArbeidsavtale().getId();
-            arbeidsforhold.setArbeidsavtale(null);
-
-            List<AntallTimerForTimeloennet> antallTimerForTimeloennet = arbeidsforhold.getAntallTimerForTimeloennet();
-            if (antallTimerForTimeloennet != null) {
-                for (AntallTimerForTimeloennet antallTimer : antallTimerForTimeloennet) {
-                    Long antallTimerForTimeloennetId = antallTimer.getId();
-                    antallTimer.setArbeidsforholdet(null);
-                    antallTimerForTimeloennetRepository.deleteById(antallTimerForTimeloennetId);
-                }
-            }
-
-            List<Permisjon> permisjoner = arbeidsforhold.getPermisjon();
-            if (permisjoner != null) {
-                for (Permisjon permisjon : permisjoner) {
-                    Long permisjonId = permisjon.getId();
-                    permisjon.setArbeidsforholdet(null);
-                    permisjonRepository.deleteById(permisjonId);
-                }
-            }
-
-            List<Utenlandsopphold> utenlandsopphold = arbeidsforhold.getUtenlandsopphold();
-            if (utenlandsopphold != null) {
-                for (Utenlandsopphold opphold : utenlandsopphold) {
-                    Long utenlandsoppholdId = opphold.getId();
-                    opphold.setArbeidsforholdet(null);
-                    utenlandsoppholdRepository.deleteById(utenlandsoppholdId);
-                }
-            }
-
-            arbeidsavtaleRepository.deleteById(arbeidsavtaleId);
-
-            Ident ident = identRepository.findByFnr(fnr).orElse(null);
-
-            if (ident != null) {
-                ident.getArbeidsforhold().remove(arbeidsforhold);
-                if (ident.getArbeidsforhold().isEmpty()) {
-                    identRepository.deleteById(fnr);
-                }
-            }
-
-            arbeidsforholdRepository.deleteById(id);
+        if (arbeidsforhold == null) {
+            return;
         }
+        String fnr = arbeidsforhold.getArbeidstaker().getIdent();
+        arbeidsforhold.setIdenten(null);
+
+        Long arbeidsavtaleId = arbeidsforhold.getArbeidsavtale().getId();
+        arbeidsforhold.setArbeidsavtale(null);
+
+        slettArbeidsforholdTimerPermisjonReiser(arbeidsforhold);
+
+        arbeidsavtaleRepository.deleteById(arbeidsavtaleId);
+
+        Ident ident = identRepository.findByFnr(fnr).orElse(null);
+
+        if (ident != null) {
+            ident.getArbeidsforhold().remove(arbeidsforhold);
+            if (ident.getArbeidsforhold().isEmpty()) {
+                identRepository.deleteById(fnr);
+            }
+        }
+
+        arbeidsforholdRepository.deleteById(id);
     }
 
     public List<String> hentAlleArbeidstakere() {
@@ -136,26 +113,7 @@ public class ArbeidsforholdService {
             Arbeidsavtale arbeidsavtale = arbeidsforhold.getArbeidsavtale();
             arbeidsavtale.setArbeidsforholdet(arbeidsforhold);
 
-            List<AntallTimerForTimeloennet> antallTimerForTimeloennet = arbeidsforhold.getAntallTimerForTimeloennet();
-            if (antallTimerForTimeloennet != null) {
-                for (AntallTimerForTimeloennet antallTimer : antallTimerForTimeloennet) {
-                    antallTimer.setArbeidsforholdet(arbeidsforhold);
-                }
-            }
-
-            List<Permisjon> permisjoner = arbeidsforhold.getPermisjon();
-            if (permisjoner != null) {
-                for (Permisjon permisjon : permisjoner) {
-                    permisjon.setArbeidsforholdet(arbeidsforhold);
-                }
-            }
-
-            List<Utenlandsopphold> utenlandsopphold = arbeidsforhold.getUtenlandsopphold();
-            if (utenlandsopphold != null) {
-                for (Utenlandsopphold opphold : utenlandsopphold) {
-                    opphold.setArbeidsforholdet(arbeidsforhold);
-                }
-            }
+            hentArbeidsforholdTimerPermisjonReiser(arbeidsforhold);
 
             if (ident != null) {
                 ident.getArbeidsforhold().add(arbeidsforhold);
@@ -166,6 +124,58 @@ public class ArbeidsforholdService {
             arbeidsforhold.setIdenten(ident);
 
             identRepository.save(ident);
+        }
+    }
+
+    private void slettArbeidsforholdTimerPermisjonReiser(Arbeidsforhold arbeidsforhold) {
+        List<AntallTimerForTimeloennet> antallTimerForTimeloennet = arbeidsforhold.getAntallTimerForTimeloennet();
+        if (antallTimerForTimeloennet != null) {
+            for (AntallTimerForTimeloennet antallTimer : antallTimerForTimeloennet) {
+                Long antallTimerForTimeloennetId = antallTimer.getId();
+                antallTimer.setArbeidsforholdet(null);
+                antallTimerForTimeloennetRepository.deleteById(antallTimerForTimeloennetId);
+            }
+        }
+
+        List<Permisjon> permisjoner = arbeidsforhold.getPermisjon();
+        if (permisjoner != null) {
+            for (Permisjon permisjon : permisjoner) {
+                Long permisjonId = permisjon.getId();
+                permisjon.setArbeidsforholdet(null);
+                permisjonRepository.deleteById(permisjonId);
+            }
+        }
+
+        List<Utenlandsopphold> utenlandsopphold = arbeidsforhold.getUtenlandsopphold();
+        if (utenlandsopphold != null) {
+            for (Utenlandsopphold opphold : utenlandsopphold) {
+                Long utenlandsoppholdId = opphold.getId();
+                opphold.setArbeidsforholdet(null);
+                utenlandsoppholdRepository.deleteById(utenlandsoppholdId);
+            }
+        }
+    }
+
+    private void hentArbeidsforholdTimerPermisjonReiser(Arbeidsforhold arbeidsforhold) {
+        List<AntallTimerForTimeloennet> antallTimerForTimeloennet = arbeidsforhold.getAntallTimerForTimeloennet();
+        if (antallTimerForTimeloennet != null) {
+            for (AntallTimerForTimeloennet antallTimer : antallTimerForTimeloennet) {
+                antallTimer.setArbeidsforholdet(arbeidsforhold);
+            }
+        }
+
+        List<Permisjon> permisjoner = arbeidsforhold.getPermisjon();
+        if (permisjoner != null) {
+            for (Permisjon permisjon : permisjoner) {
+                permisjon.setArbeidsforholdet(arbeidsforhold);
+            }
+        }
+
+        List<Utenlandsopphold> utenlandsopphold = arbeidsforhold.getUtenlandsopphold();
+        if (utenlandsopphold != null) {
+            for (Utenlandsopphold opphold : utenlandsopphold) {
+                opphold.setArbeidsforholdet(arbeidsforhold);
+            }
         }
     }
 

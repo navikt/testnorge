@@ -8,12 +8,6 @@ application:
 
 system:
   pdl:
-    url: https://pdl-testdata.nais.preprod.local
+    pdlTestdataUrl: https://pdl-testdata.nais.preprod.local
+    pdlApi: https://pdl-api.nais.preprod.local
     threads: 5
-
-sts:
-  token:
-    provider:
-      url: ${STS_TOKEN_PROVIDER_URL}
-      username: ${STS_TOKEN_PROVIDER_USERNAME}
-      password: ${STS_TOKEN_PROVIDER_PASSWORD}

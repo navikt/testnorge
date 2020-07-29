@@ -3,6 +3,7 @@ package no.nav.registre.tp.config;
 import com.google.common.collect.Maps;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.tp.database.multitenancy.MultitenantDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -13,8 +14,6 @@ import org.springframework.core.env.Environment;
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
-
-import no.nav.registre.tp.database.multitenancy.MultitenantDataSource;
 
 @Slf4j
 @Configuration
@@ -36,7 +35,7 @@ public class MultitenantConfiguration {
     public DataSource dataSource() {
         Map<Object, Object> resolvedDataSources = Maps.newHashMapWithExpectedSize(databaseEnvironments.size());
         for (String env : databaseEnvironments) {
-            DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create(Thread.currentThread().getContextClassLoader());
+            DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create(Thread.currentThread().getContextClassLoader());
             // Assumption: The tenant database uses the same driver class
             // as the default database that you configure.
             String envPrefix = String.format("tp.db.%s.", env);
@@ -73,7 +72,7 @@ public class MultitenantConfiguration {
      * @return
      */
     private DataSource defaultDataSource() {
-        DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create(Thread.currentThread().getContextClassLoader())
+        DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create(Thread.currentThread().getContextClassLoader())
                 .driverClassName(properties.getDriverClassName())
                 .url(properties.getUrl())
                 .username(properties.getUsername())

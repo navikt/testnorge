@@ -1,15 +1,16 @@
 package no.nav.registre.ereg;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 
-@Slf4j
 @SpringBootApplication(scanBasePackages = "no.nav.registre")
 public class LocalApplicationStarter {
 
     public static void main(String[] args) {
-        SpringApplication.run(LocalApplicationStarter.class, args);
+        new SpringApplicationBuilder()
+                .sources(LocalApplicationStarter.class)
+                .profiles("local")
+                .run(args);
     }
 
 }

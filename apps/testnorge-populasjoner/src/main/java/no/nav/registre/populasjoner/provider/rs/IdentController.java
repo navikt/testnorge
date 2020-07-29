@@ -1,6 +1,8 @@
 package no.nav.registre.populasjoner.provider.rs;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.registre.populasjoner.domain.Ident;
+import no.nav.registre.populasjoner.service.IdentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,9 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-
-import no.nav.registre.populasjoner.domain.Ident;
-import no.nav.registre.populasjoner.service.IdentService;
 
 @RestController
 @RequestMapping("/api/v1/ident")
@@ -47,14 +46,14 @@ public class IdentController {
     public ResponseEntity<Ident> save(
             @PathVariable String fnr
     ) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(identService.saveIdentWithFnr(fnr));
+        return ResponseEntity.status(HttpStatus.CREATED).body(identService.saveIdent(fnr));
     }
 
     @PutMapping("{fnr}")
     public ResponseEntity<Ident> updateByFnr(
             @PathVariable String fnr
     ) {
-        var ident = identService.updateIdentWithFnr(fnr);
+        var ident = identService.updateIdent(fnr);
         if (ident != null) {
             return ResponseEntity.ok(ident);
         }
@@ -65,7 +64,7 @@ public class IdentController {
     public ResponseEntity<Ident> deleteByFnr(
             @PathVariable String fnr
     ) {
-        var ident = identService.deleteIdentWithFnr(fnr);
+        var ident = identService.deleteIdent(fnr);
         if (ident != null) {
             return ResponseEntity.ok(ident);
         }

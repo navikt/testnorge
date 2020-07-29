@@ -1,12 +1,10 @@
 package no.nav.registre.ereg.provider.rs;
 
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.registre.ereg.config.TestConfig;
+import no.nav.registre.ereg.provider.rs.request.EregDataRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,8 +23,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import no.nav.registre.ereg.config.TestConfig;
-import no.nav.registre.ereg.provider.rs.request.EregDataRequest;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -34,6 +34,7 @@ import no.nav.registre.ereg.provider.rs.request.EregDataRequest;
 @TestPropertySource(
         locations = "classpath:application-test.properties"
 )
+@ActiveProfiles("test")
 public class OrganisasjonControllerIntegrationTest {
 
     private static final String WINDOWS_LINE_SEPERATOR = "\r\n";

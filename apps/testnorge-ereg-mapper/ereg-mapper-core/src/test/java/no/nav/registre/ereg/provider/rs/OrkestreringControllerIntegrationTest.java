@@ -1,15 +1,10 @@
 package no.nav.registre.ereg.provider.rs;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.findAll;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.reset;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
+import no.nav.registre.ereg.config.TestConfig;
+import no.nav.registre.ereg.consumer.rs.request.JenkinsCrumbRequest;
+import no.nav.registre.testnorge.test.JsonWiremockHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,9 +29,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.ereg.config.TestConfig;
-import no.nav.registre.ereg.consumer.rs.request.JenkinsCrumbRequest;
-import no.nav.registre.testnorge.test.JsonWiremockHelper;
+import static com.github.tomakehurst.wiremock.client.WireMock.findAll;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.reset;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -44,6 +44,7 @@ import no.nav.registre.testnorge.test.JsonWiremockHelper;
 @TestPropertySource(
         locations = "classpath:application-test.properties"
 )
+@ActiveProfiles("test")
 public class OrkestreringControllerIntegrationTest {
 
     private final static String BEREG007_PATTERN = "(.*)/view/Registre/job/Start_BEREG007/buildWithParameters";

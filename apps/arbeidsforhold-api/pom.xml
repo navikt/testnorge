@@ -11,10 +11,6 @@
 
     <artifactId>arbeidsforhold-api</artifactId>
 
-    <properties>
-        <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <artifactId>testnorge-core</artifactId>
@@ -61,7 +57,6 @@
         <dependency>
             <groupId>no.nav.freg</groupId>
             <artifactId>freg-security-oidc</artifactId>
-            <version>e603e2b2</version>
         </dependency>
 
         <dependency>
@@ -93,7 +88,6 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-vault-config</artifactId>
-            <version>${spring-cloud.version}</version>
         </dependency>
     </dependencies>
 

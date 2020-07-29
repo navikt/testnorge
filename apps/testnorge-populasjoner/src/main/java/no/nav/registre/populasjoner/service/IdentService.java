@@ -1,14 +1,13 @@
 package no.nav.registre.populasjoner.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.registre.populasjoner.domain.Ident;
+import no.nav.registre.populasjoner.repository.IdentRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import no.nav.registre.populasjoner.domain.Ident;
-import no.nav.registre.populasjoner.repository.IdentRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -26,11 +25,11 @@ public class IdentService {
         return identer;
     }
 
-    public Ident saveIdentWithFnr(String fnr) {
+    public Ident saveIdent(String fnr) {
         var currentTime = LocalDateTime.now();
         var existingIdent = findIdentByFnr(fnr);
         if (existingIdent != null) {
-            return updateIdentWithFnr(fnr);
+            return updateIdent(fnr);
         } else {
             return identRepository.save(Ident.builder()
                     .fnr(fnr)
@@ -40,11 +39,11 @@ public class IdentService {
         }
     }
 
-    public Ident updateIdentWithFnr(String fnr) {
+    public Ident updateIdent(String fnr) {
         return updateIdent(identRepository.findByFnr(fnr).orElse(null));
     }
 
-    public Ident deleteIdentWithFnr(String fnr) {
+    public Ident deleteIdent(String fnr) {
         return deleteIdent(identRepository.findByFnr(fnr).orElse(null));
     }
 

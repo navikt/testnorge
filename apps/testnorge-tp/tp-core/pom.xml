@@ -66,9 +66,8 @@
 
         <!--DATABASE-->
         <dependency>
-            <groupId>com.oracle.jdbc</groupId>
+            <groupId>com.oracle.database.jdbc</groupId>
             <artifactId>ojdbc8</artifactId>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -109,6 +108,12 @@
             <groupId>no.nav.registre</groupId>
             <artifactId>testnorge-consumers</artifactId>
             <version>1.8.0-RELEASE</version>
+        </dependency>
+
+        <!--VAULT-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-vault-config</artifactId>
         </dependency>
 
     </dependencies>

@@ -5,12 +5,11 @@
  */
 package no.nav.registre.testnorge.avro.hendelse;
 
-import org.apache.avro.generic.GenericArray;
+import org.apache.avro.message.BinaryMessageDecoder;
+import org.apache.avro.message.BinaryMessageEncoder;
+import org.apache.avro.message.SchemaStore;
 import org.apache.avro.specific.SpecificData;
 import org.apache.avro.util.Utf8;
-import org.apache.avro.message.BinaryMessageEncoder;
-import org.apache.avro.message.BinaryMessageDecoder;
-import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class Hendelse extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
@@ -71,10 +70,10 @@ public class Hendelse extends org.apache.avro.specific.SpecificRecordBase implem
     return DECODER.decode(b);
   }
 
-   private java.lang.CharSequence ident;
-   private java.lang.CharSequence fom;
-   private java.lang.CharSequence tom;
-   private java.lang.CharSequence type;
+  @Deprecated public java.lang.CharSequence ident;
+  @Deprecated public java.lang.CharSequence fom;
+  @Deprecated public java.lang.CharSequence tom;
+  @Deprecated public java.lang.CharSequence type;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -106,7 +105,7 @@ public class Hendelse extends org.apache.avro.specific.SpecificRecordBase implem
     case 1: return fom;
     case 2: return tom;
     case 3: return type;
-    default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
+    default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
 
@@ -118,7 +117,7 @@ public class Hendelse extends org.apache.avro.specific.SpecificRecordBase implem
     case 1: fom = (java.lang.CharSequence)value$; break;
     case 2: tom = (java.lang.CharSequence)value$; break;
     case 3: type = (java.lang.CharSequence)value$; break;
-    default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
+    default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
 

@@ -2,6 +2,8 @@ package no.nav.registre.tss.consumer.rs;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.tss.consumer.rs.request.EregMapperRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -13,9 +15,6 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
-import no.nav.registre.tss.consumer.rs.request.EregMapperRequest;
 
 @Component
 @Slf4j
@@ -44,7 +43,7 @@ public class EregMapperConsumer {
 
     public List<String> hentNyttOrgnr(int antall) {
         UriTemplate uriTemplate = new UriTemplate(eregMapperUrl + "/v1/orgnr?antall={antall}");
-        RequestEntity request = new RequestEntity(HttpMethod.GET, uriTemplate.expand(antall));
+        RequestEntity<?> request = new RequestEntity<>(HttpMethod.GET, uriTemplate.expand(antall));
         ResponseEntity<List<String>> response = restTemplate.exchange(request, ORGNR_RESPONSE);
         if (response.getStatusCode().is2xxSuccessful()) {
             log.info("Bruker orgnr: {}", response.getBody());

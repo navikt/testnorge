@@ -1,15 +1,12 @@
 package no.nav.registre.populasjoner.config;
 
-import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG;
-import static org.apache.kafka.clients.consumer.ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG;
-import static org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG;
-import static org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG;
-import static org.apache.kafka.clients.consumer.ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG;
-import static org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG;
-
+import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
+import io.confluent.kafka.serializers.KafkaAvroDeserializer;
+import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
+import no.nav.common.utils.Credentials;
 import org.apache.kafka.clients.CommonClientConfigs;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.config.SaslConfigs;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,30 +20,31 @@ import org.springframework.kafka.support.converter.BatchMessagingMessageConverte
 import org.springframework.kafka.support.converter.RecordMessageConverter;
 import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 
+import java.net.InetSocketAddress;
 import java.util.HashMap;
 
-import no.nav.common.utils.Credentials;
-import no.nav.registre.populasjoner.kafka.KafkaTopics;
+import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG;
+import static org.apache.kafka.clients.consumer.ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG;
+import static org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG;
+import static org.apache.kafka.clients.consumer.ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG;
 
 @EnableKafka
 @Configuration
 public class KafkaConfig {
 
+    private static final String GROUP_ID = "testnorge-populasjoner-default-pdlDokumenter-2";
     private final Credentials serviceUserCredentials;
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String brokersUrl;
 
-    @Autowired
-    public KafkaConfig(
-            Credentials serviceUserCredentials
-    ) {
-        this.serviceUserCredentials = serviceUserCredentials;
-    }
 
-    @Bean
-    public KafkaTopics kafkaTopics() {
-        return KafkaTopics.create();
+    @Value("${kafka.schema.registry.url}")
+    private String schemaRegistryUrl;
+
+    @Autowired
+    public KafkaConfig(Credentials serviceUserCredentials) {
+        this.serviceUserCredentials = serviceUserCredentials;
     }
 
     @Bean
@@ -65,7 +63,8 @@ public class KafkaConfig {
                 kafkaConsumerProperties(brokersUrl, serviceUserCredentials));
     }
 
-    @Bean RecordMessageConverter messageConverter() {
+    @Bean
+    RecordMessageConverter messageConverter() {
         return new StringJsonMessageConverter();
     }
 
@@ -74,14 +73,17 @@ public class KafkaConfig {
             Credentials serviceUserCredentials
     ) {
         HashMap<String, Object> props = new HashMap<>();
+
         props.put(BOOTSTRAP_SERVERS_CONFIG, kafkaBrokersUrl);
+        props.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
         props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_SSL");
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
         props.put(SaslConfigs.SASL_MECHANISM, "PLAIN");
         props.put(SaslConfigs.SASL_JAAS_CONFIG,
                 "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"" + serviceUserCredentials.username + "\" password=\"" + serviceUserCredentials.password + "\";");
-        props.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put("schema.registry.url", "http://kafka-schema-registry.tpa.svc.nais.local:8081");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+        props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true);
         return props;
     }
 
@@ -89,8 +91,11 @@ public class KafkaConfig {
             String kafkaBrokersUrl,
             Credentials serviceUserCredentials
     ) {
+
+        InetSocketAddress inetSocketAddress = new InetSocketAddress(0);
         HashMap<String, Object> props = kafkaBaseProperties(kafkaBrokersUrl, serviceUserCredentials);
-        props.put(GROUP_ID_CONFIG, "testnorge-populasjoner-default-pdlDokumenter-1");
+        props.put(GROUP_ID_CONFIG, GROUP_ID);
+        props.put(ConsumerConfig.CLIENT_ID_CONFIG, GROUP_ID + inetSocketAddress.getHostString());
         props.put(AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put(MAX_POLL_INTERVAL_MS_CONFIG, 5000);
         return props;
