@@ -12,10 +12,6 @@ import static no.nav.registre.arena.core.service.util.ServiceUtils.MAX_ALDER_UNG
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_AAP;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_UNG_UFOER;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -26,6 +22,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.arena.core.consumer.rs.AapSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
@@ -76,28 +77,11 @@ public class VedtakshistorikkService {
             vedtakshistorikken.setUngUfoer(fjernAapUngUfoerMedUgyldigeDatoer(vedtakshistorikken.getUngUfoer()));
             oppdaterAapSykepengeerstatningDatoer(vedtakshistorikken.getAap());
 
-            var tidligsteDato = LocalDate.now();
-            var aap = finnUtfyltAap(vedtakshistorikken);
-            var aapType = vedtakshistorikken.getAlleAapVedtak();
-            var tiltak = vedtakshistorikken.getAlleTiltakVedtak();
-            var tillegg = vedtakshistorikken.getAlleTilleggVedtak();
-            var barnetillegg = vedtakshistorikken.getBarnetillegg();
-            LocalDate tidligsteDatoBarnetillegg = null;
+            LocalDate tidligsteDato = settTidligsteDato(vedtakshistorikken);
+            LocalDate tidligsteDatoBarnetillegg = settTidligeDatoBarnetillegg(vedtakshistorikken.getBarnetillegg());
 
-            if (!aap.isEmpty()) {
-                tidligsteDato = finnTidligsteDatoAap(aap);
-            } else if (!aapType.isEmpty()) {
-                tidligsteDato = finnTidligsteDatoAapType(aapType);
-            } else if (!tiltak.isEmpty()) {
-                tidligsteDato = finnTidligsteDatoTiltak(tiltak);
-            } else if (!tillegg.isEmpty()) {
-                tidligsteDato = finnTidligsteDatoTillegg(tillegg);
-            } else {
+            if (tidligsteDato == null) {
                 continue;
-            }
-
-            if (barnetillegg != null && !barnetillegg.isEmpty()) {
-                tidligsteDatoBarnetillegg = finnTidligsteDatoTiltak(barnetillegg);
             }
 
             var minimumAlder = Math.toIntExact(ChronoUnit.YEARS.between(tidligsteDato.minusYears(MIN_ALDER_AAP), LocalDate.now()));
@@ -118,24 +102,56 @@ public class VedtakshistorikkService {
             if (minimumAlder > maksimumAlder) {
                 log.error("Kunne ikke finne ident i riktig aldersgruppe");
             } else {
-                List<String> identerIAldersgruppe = Collections.emptyList();
-
-                try {
-                    if (tidligsteDatoBarnetillegg != null) {
-                        identerIAldersgruppe = serviceUtils.getUtvalgteIdenterIAldersgruppeMedBarnUnder18(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe, tidligsteDatoBarnetillegg);
-                    } else {
-                        identerIAldersgruppe = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe);
-                    }
-                } catch (RuntimeException e) {
-                    log.error("Kunne ikke hente ident fra hodejegeren");
-                }
-
-                if (!identerIAldersgruppe.isEmpty()) {
-                    responses.putAll(opprettHistorikkOgSendTilArena(avspillergruppeId, identerIAldersgruppe.get(0), miljoe, vedtakshistorikken));
-                }
+                opprettVedtaksHistorikkResponse(avspillergruppeId, miljoe, responses, vedtakshistorikken, tidligsteDatoBarnetillegg, minimumAlder, maksimumAlder);
             }
         }
         return responses;
+    }
+
+    private void opprettVedtaksHistorikkResponse(Long avspillergruppeId, String miljoe, Map<String, List<NyttVedtakResponse>> responses, Vedtakshistorikk vedtakshistorikken, LocalDate tidligsteDatoBarnetillegg, int minimumAlder, int maksimumAlder) {
+        List<String> identerIAldersgruppe = Collections.emptyList();
+        try {
+            if (tidligsteDatoBarnetillegg != null) {
+                identerIAldersgruppe = serviceUtils.getUtvalgteIdenterIAldersgruppeMedBarnUnder18(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe, tidligsteDatoBarnetillegg);
+            } else {
+                identerIAldersgruppe = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe);
+            }
+        } catch (RuntimeException e) {
+            log.error("Kunne ikke hente ident fra hodejegeren");
+        }
+
+        if (!identerIAldersgruppe.isEmpty()) {
+            responses.putAll(opprettHistorikkOgSendTilArena(avspillergruppeId, identerIAldersgruppe.get(0), miljoe, vedtakshistorikken));
+        }
+    }
+
+    private LocalDate settTidligsteDato(Vedtakshistorikk vedtakshistorikken) {
+
+        LocalDate tidligsteDato;
+        var aap = finnUtfyltAap(vedtakshistorikken);
+        var aapType = vedtakshistorikken.getAlleAapVedtak();
+        var tiltak = vedtakshistorikken.getAlleTiltakVedtak();
+        var tillegg = vedtakshistorikken.getAlleTilleggVedtak();
+
+        if (!aap.isEmpty()) {
+            tidligsteDato = finnTidligsteDatoAap(aap);
+        } else if (!aapType.isEmpty()) {
+            tidligsteDato = finnTidligsteDatoAapType(aapType);
+        } else if (!tiltak.isEmpty()) {
+            tidligsteDato = finnTidligsteDatoTiltak(tiltak);
+        } else if (!tillegg.isEmpty()) {
+            tidligsteDato = finnTidligsteDatoTillegg(tillegg);
+        } else {
+            return null;
+        }
+        return tidligsteDato;
+    }
+
+    private LocalDate settTidligeDatoBarnetillegg(List<NyttVedtakTiltak> barnetillegg) {
+        if (barnetillegg != null && !barnetillegg.isEmpty()) {
+            return finnTidligsteDatoTiltak(barnetillegg);
+        }
+        return null;
     }
 
     private Map<String, List<NyttVedtakResponse>> opprettHistorikkOgSendTilArena(
@@ -230,13 +246,14 @@ public class VedtakshistorikkService {
             tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, vedtaket.getFraDato());
             var genSaksopplysninger = vedtaket.getGenSaksopplysninger();
             for (var saksopplysning : genSaksopplysninger) {
+                if(isNullOrEmpty(saksopplysning.getVerdi())) {
+                    continue;
+                }
                 if (GensakKoder.KDATO.equals(saksopplysning.getKode())
                         || GensakKoder.BTID.equals(saksopplysning.getKode())
                         || GensakKoder.UFTID.equals(saksopplysning.getKode())
                         || GensakKoder.YDATO.equals(saksopplysning.getKode())) {
-                    if (!isNullOrEmpty(saksopplysning.getVerdi())) {
-                        tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, LocalDate.parse(saksopplysning.getVerdi(), DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-                    }
+                            tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, LocalDate.parse(saksopplysning.getVerdi(), DateTimeFormatter.ofPattern("dd-MM-yyyy")));
                 }
             }
         }

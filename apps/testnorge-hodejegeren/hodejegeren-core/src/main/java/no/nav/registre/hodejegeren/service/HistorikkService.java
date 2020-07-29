@@ -1,7 +1,12 @@
 package no.nav.registre.hodejegeren.service;
 
-import lombok.RequiredArgsConstructor;
-import no.nav.registre.testnorge.domain.dto.namespacetps.TpsPersonDokumentType;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -11,12 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import lombok.RequiredArgsConstructor;
 
 import no.nav.registre.hodejegeren.logging.Level;
 import no.nav.registre.hodejegeren.logging.LogEvent;
@@ -30,6 +30,7 @@ import no.nav.registre.hodejegeren.provider.rs.requests.DataRequest;
 import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
 import no.nav.registre.hodejegeren.provider.rs.requests.skd.PersonDokumentWrapper;
 import no.nav.registre.hodejegeren.service.utilities.PersonDokumentUtility;
+import no.nav.registre.testnorge.domain.dto.namespacetps.TpsPersonDokumentType;
 
 @RequiredArgsConstructor
 @Service
@@ -79,7 +80,7 @@ public class HistorikkService {
 
         }
         query.limit(pageSize);
-        query.skip(pageNumber * pageSize);
+        query.skip((long) pageNumber * pageSize);
         List<SyntHistorikk> results = new ArrayList<>(mongoTemplate.find(query, SyntHistorikk.class));
 
         results.forEach(historikk -> historikk.getKilder().removeIf(kilde -> !kilder.contains(kilde.getNavn())));
@@ -127,14 +128,8 @@ public class HistorikkService {
             var id = kilde.getId();
             List<Data> nyData = new ArrayList<>(kilde.getData().size());
 
-            var opprettelsesTidspunkt = LocalDateTime.now();
-            for (var o : kilde.getData()) {
-                nyData.add(Data.builder()
-                        .innhold(o)
-                        .datoOpprettet(opprettelsesTidspunkt)
-                        .datoEndret(opprettelsesTidspunkt)
-                        .build());
-            }
+            leggTilDataFraKilde(kilde, nyData);
+
             var eksisterendeHistorikk = hentHistorikkMedId(id);
             if (eksisterendeHistorikk != null) {
                 var eksisterendeKilder = eksisterendeHistorikk.getKilder();
@@ -159,6 +154,17 @@ public class HistorikkService {
             }
         }
         return opprettedeIder;
+    }
+
+    private void leggTilDataFraKilde(DataRequest kilde, List<Data> nyData) {
+        var opprettelsesTidspunkt = LocalDateTime.now();
+        for (var o : kilde.getData()) {
+            nyData.add(Data.builder()
+                    .innhold(o)
+                    .datoOpprettet(opprettelsesTidspunkt)
+                    .datoEndret(opprettelsesTidspunkt)
+                    .build());
+        }
     }
 
     public List<String> oppdaterTpsPersonDokument(
