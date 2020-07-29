@@ -1,11 +1,6 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import static org.junit.Assert.assertEquals;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +13,11 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
+import static org.junit.Assert.assertEquals;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 @RunWith(SpringRunner.class)
 @RestClientTest(TestnorgeTpConsumer.class)

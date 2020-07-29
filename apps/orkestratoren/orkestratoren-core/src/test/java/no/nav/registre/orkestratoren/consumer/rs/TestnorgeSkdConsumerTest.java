@@ -1,12 +1,7 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-
+import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,8 +23,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 @RunWith(SpringRunner.class)
 @RestClientTest(TestnorgeSkdConsumer.class)

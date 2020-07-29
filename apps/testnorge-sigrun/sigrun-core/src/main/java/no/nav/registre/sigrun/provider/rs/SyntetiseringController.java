@@ -1,6 +1,8 @@
 package no.nav.registre.sigrun.provider.rs;
 
 import io.swagger.annotations.ApiOperation;
+import no.nav.registre.sigrun.provider.rs.requests.SyntetiserSigrunRequest;
+import no.nav.registre.sigrun.service.SigrunService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,9 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-
-import no.nav.registre.sigrun.provider.rs.requests.SyntetiserSigrunRequest;
-import no.nav.registre.sigrun.service.SigrunService;
 
 @RestController
 @RequestMapping("api/v1/syntetisering")

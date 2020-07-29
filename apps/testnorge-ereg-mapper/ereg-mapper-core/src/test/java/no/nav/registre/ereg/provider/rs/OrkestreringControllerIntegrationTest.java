@@ -1,15 +1,10 @@
 package no.nav.registre.ereg.provider.rs;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.findAll;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.reset;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
+import no.nav.registre.ereg.config.TestConfig;
+import no.nav.registre.ereg.consumer.rs.request.JenkinsCrumbRequest;
+import no.nav.registre.testnorge.test.JsonWiremockHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,9 +29,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.ereg.config.TestConfig;
-import no.nav.registre.ereg.consumer.rs.request.JenkinsCrumbRequest;
-import no.nav.registre.testnorge.test.JsonWiremockHelper;
+import static com.github.tomakehurst.wiremock.client.WireMock.findAll;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.reset;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
