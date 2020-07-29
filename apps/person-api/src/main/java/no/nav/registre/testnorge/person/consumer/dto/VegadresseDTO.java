@@ -12,7 +12,6 @@ import no.nav.registre.testnorge.person.domain.Adresse;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class VegadresseDTO {
-
     String adressenavn;
     String husnummer;
     String postnummer;
