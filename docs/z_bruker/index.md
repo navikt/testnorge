@@ -1,18 +1,16 @@
 ---
-title: Opprette Z-bruker (testbruker i IDA-rutinen)
+title: Hvordan Opprette Z-bruker
 layout: default
 nav_order: 4
 ---
 
 # {{ page.title }}
 
-Bruk av Dolly selvbetjeningsløsning krever pålogging som testbruker - Z-bruker - med rettigheter gitt i verktøyet IDA. Disse testbrukerne kan tildeles andre og flere rettigheter enn man har med NAVIdenten i produksjon. Testerne kan på denne måten teste ny funksjonalitet i systemene med ulike roller og tilganger. 
-
 Dolly kan du åpne fra fra utviklerimage/Citrix: [Dolly-Utviklerimage](https://dolly.nais.preprod.local/)
 
 eller direkte fra laptop: [Dolly Utenfor Utviklerimage](https://dolly.nais-dev-fss.adeo.no/)
 
-Brukerveiledning: [Kom i gang med Dolly](../index.md)
+Generell Brukerveiledning: [Kom i gang med Dolly](../index.md)
 
 ## Innhold
 {: .no_toc .text-delta }
