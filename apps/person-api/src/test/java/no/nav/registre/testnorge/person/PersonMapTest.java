@@ -28,7 +28,7 @@ public class PersonMapTest {
         Navn pdlNavn = new Navn("Line", null, "Linesen");
         Folkeregisteridentifikator folkeregisteridentifikator = new Folkeregisteridentifikator("12345678912", null, null);
         Bostedsadresse bostedsadresse = new Bostedsadresse(new Vegadresse("Linegata", "12", "2650", null));
-        PdlPerson graphqlResponse = new PdlPerson(null, new Data (new HentPerson(
+        PdlPerson graphqlResponse = new PdlPerson(null, new Data(new HentPerson(
                 Collections.singletonList(pdlNavn),
                 Collections.singletonList(bostedsadresse),
                 Collections.singletonList(folkeregisteridentifikator))));

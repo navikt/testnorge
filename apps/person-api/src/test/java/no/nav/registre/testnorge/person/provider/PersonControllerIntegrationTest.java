@@ -1,18 +1,12 @@
 package no.nav.registre.testnorge.person.provider;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.reflections.Reflections.log;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import no.nav.registre.testnorge.dto.person.v1.AdresseDTO;
-import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
-import no.nav.registre.testnorge.person.consumer.dto.graphql.Bostedsadresse;
-import no.nav.registre.testnorge.person.consumer.dto.graphql.Data;
-import no.nav.registre.testnorge.person.consumer.dto.graphql.Folkeregisteridentifikator;
-import no.nav.registre.testnorge.person.consumer.dto.graphql.HentPerson;
-import no.nav.registre.testnorge.person.consumer.dto.graphql.Navn;
-import no.nav.registre.testnorge.person.consumer.dto.graphql.PdlPerson;
-import no.nav.registre.testnorge.person.consumer.dto.graphql.Request;
-import no.nav.registre.testnorge.person.consumer.dto.graphql.Vegadresse;
-import no.nav.registre.testnorge.test.JsonWiremockHelper;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.runner.RunWith;
@@ -34,10 +28,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.reflections.Reflections.log;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import no.nav.registre.testnorge.dto.person.v1.AdresseDTO;
+import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
+import no.nav.registre.testnorge.person.consumer.dto.graphql.Bostedsadresse;
+import no.nav.registre.testnorge.person.consumer.dto.graphql.Data;
+import no.nav.registre.testnorge.person.consumer.dto.graphql.Folkeregisteridentifikator;
+import no.nav.registre.testnorge.person.consumer.dto.graphql.HentPerson;
+import no.nav.registre.testnorge.person.consumer.dto.graphql.Navn;
+import no.nav.registre.testnorge.person.consumer.dto.graphql.PdlPerson;
+import no.nav.registre.testnorge.person.consumer.dto.graphql.Request;
+import no.nav.registre.testnorge.person.consumer.dto.graphql.Vegadresse;
+import no.nav.registre.testnorge.test.JsonWiremockHelper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

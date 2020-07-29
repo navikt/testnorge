@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.constraints.Size;
 import java.net.URI;
 
 import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
@@ -36,10 +37,7 @@ public class PersonController {
     }
 
     @GetMapping("/{ident}")
-    public ResponseEntity<PersonDTO> getPerson(@PathVariable String ident) {
-        if (ident.length() != 11) {
-            ResponseEntity.badRequest().body("Ident må ha 11 siffer");
-        }
+    public ResponseEntity<PersonDTO> getPerson(@PathVariable("ident") @Size(min = 11, max = 11, message = "Ident må ha 11 siffer") String ident) {
         Person person = service.getPerson((ident));
 
         if (person == null) {

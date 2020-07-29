@@ -1,6 +1,5 @@
 package no.nav.registre.testnorge.person.consumer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -24,24 +23,21 @@ public class PdlApiConsumer {
     private final StsOidcTokenService tokenService;
     private final String pdlApiUrl;
     private final RestTemplate restTemplate;
-    private final ObjectMapper mapper;
 
     public PdlApiConsumer(
             StsOidcTokenService tokenService,
             @Value("${system.pdl.pdlApi}") String pdlApiUrl,
-            RestTemplateBuilder restTemplateBuilder,
-            ObjectMapper mapper
+            RestTemplateBuilder restTemplateBuilder
     ) {
         this.tokenService = tokenService;
         this.pdlApiUrl = pdlApiUrl;
         this.restTemplate = restTemplateBuilder.build();
-        this.mapper = mapper;
     }
 
     public Person getPerson(String ident) throws RuntimeException {
         String token = tokenService.getIdToken();
 
-        PdlPerson pdlPerson = new GetPersonCommand(restTemplate, pdlApiUrl, ident, token, mapper).call();
+        PdlPerson pdlPerson = new GetPersonCommand(restTemplate, pdlApiUrl, ident, token).call();
 
         if (pdlPerson.getErrors().isEmpty()) {
             return new Person(pdlPerson);

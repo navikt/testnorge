@@ -3,7 +3,6 @@ package no.nav.registre.testnorge.person.consumer.command;
 import static org.reflections.Reflections.log;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -33,7 +32,6 @@ public class GetPersonCommand implements Callable<PdlPerson> {
     private final String url;
     private final String ident;
     private final String token;
-    private final ObjectMapper mapper;
 
     @Override
     public PdlPerson call() {
