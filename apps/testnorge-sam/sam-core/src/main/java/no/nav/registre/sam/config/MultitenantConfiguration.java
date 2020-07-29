@@ -3,6 +3,7 @@ package no.nav.registre.sam.config;
 import com.google.common.collect.Maps;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.sam.multitenancy.MultitenantDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -13,8 +14,6 @@ import org.springframework.core.env.Environment;
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
-
-import no.nav.registre.sam.multitenancy.MultitenantDataSource;
 
 @Slf4j
 @Configuration

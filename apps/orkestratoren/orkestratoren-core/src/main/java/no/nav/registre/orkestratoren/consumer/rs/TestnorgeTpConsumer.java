@@ -1,6 +1,8 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
@@ -10,9 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
-
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j

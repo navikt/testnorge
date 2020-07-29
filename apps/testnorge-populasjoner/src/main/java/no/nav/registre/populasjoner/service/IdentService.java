@@ -1,14 +1,13 @@
 package no.nav.registre.populasjoner.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.registre.populasjoner.domain.Ident;
+import no.nav.registre.populasjoner.repository.IdentRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import no.nav.registre.populasjoner.domain.Ident;
-import no.nav.registre.populasjoner.repository.IdentRepository;
 
 @Service
 @RequiredArgsConstructor

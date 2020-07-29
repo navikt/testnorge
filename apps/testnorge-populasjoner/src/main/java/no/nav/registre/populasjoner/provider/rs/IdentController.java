@@ -1,6 +1,8 @@
 package no.nav.registre.populasjoner.provider.rs;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.registre.populasjoner.domain.Ident;
+import no.nav.registre.populasjoner.service.IdentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,9 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-
-import no.nav.registre.populasjoner.domain.Ident;
-import no.nav.registre.populasjoner.service.IdentService;
 
 @RestController
 @RequestMapping("/api/v1/ident")
