@@ -60,4 +60,5 @@ Swagger finnes under [/api](https://testnorge-statisk-data-forvalter.nais.prepro
 Kjør ApplicationStarter med følgende argumenter:
  - -Djavax.net.ssl.trustStore=[path til lokal truststore]
  - -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
- - -Dspring.profiles.active=local
+ - -Dspring.profiles.active=dev
+ - -Dspring.cloud.vault.token=[Kopier token fra vault]
