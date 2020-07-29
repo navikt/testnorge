@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: statistikk-api
+  flyway:
+    locations: classpath:db/migration
+  jpa:
+    database: POSTGRESQL
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+application:
+  version: @application.version@
+  name: statistikk-api
