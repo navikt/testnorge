@@ -8,5 +8,6 @@ application:
 
 system:
   pdl:
-    url: https://pdl-testdata.nais.preprod.local
+    pdlTestdataUrl: https://pdl-testdata.nais.preprod.local
+    pdlApi: https://pdl-api.nais.preprod.local
     threads: 5

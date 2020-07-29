@@ -1,0 +1,26 @@
+fragment vegadresseDetails on Vegadresse {
+    husnummer
+    adressenavn
+    postnummer
+    kommunenummer
+}
+
+query ($ident: ID!, $historikk: Boolean) {
+    hentPerson(ident: $ident) {
+        navn(historikk: $historikk) {
+            fornavn,
+            mellomnavn,
+            etternavn
+        },
+        bostedsadresse(historikk: $historikk) {
+            vegadresse {
+                ...vegadresseDetails
+            }
+        },
+        folkeregisteridentifikator(historikk: $historikk) {
+            identifikasjonsnummer,
+            status,
+            type
+        }
+    }
+}

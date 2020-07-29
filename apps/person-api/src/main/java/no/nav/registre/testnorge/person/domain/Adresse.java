@@ -1,22 +1,50 @@
 package no.nav.registre.testnorge.person.domain;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Arrays;
 import java.util.List;
 
 import no.nav.registre.testnorge.dto.person.v1.AdresseDTO;
+import no.nav.registre.testnorge.person.consumer.dto.graphql.Vegadresse;
 
-
-@RequiredArgsConstructor
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Adresse {
-    private final AdresseDTO dto;
 
-    public String getGatenavn() {
-        return dto.getGatenavn();
+    private String gatenavn;
+    private String postnummer;
+    private String poststed;
+    private String kommunenummer;
+
+    public Adresse(AdresseDTO dto) {
+        gatenavn = dto.getGatenavn();
+        postnummer = dto.getPostnummer();
+        poststed = dto.getPoststed();
+        kommunenummer = dto.getKommunenummer();
     }
 
-    public String getAdressenavn () {
+    public Adresse(Vegadresse vegadresse) {
+        gatenavn = vegadresse.getAdressenavn() + " " + vegadresse.getHusnummer();
+        postnummer = vegadresse.getPostnummer();
+        kommunenummer = vegadresse.getKommunenummer();
+    }
+
+    public AdresseDTO toDto() {
+        return no.nav.registre.testnorge.dto.person.v1.AdresseDTO.builder()
+                .gatenavn(gatenavn)
+                .postnummer(postnummer)
+                .poststed(poststed)
+                .kommunenummer(kommunenummer)
+                .build();
+    }
+
+    public String getAdressenavn() {
         if (getGatenavn() == null) {
             return null;
         }
@@ -24,7 +52,7 @@ public class Adresse {
         return list.get(0);
     }
 
-    public String getHusnummer () {
+    public String getHusnummer() {
         if (getGatenavn() == null) {
             return null;
         }
@@ -32,19 +60,7 @@ public class Adresse {
         return list.size() == 2 ? list.get(1) : null;
     }
 
-    public String getPostnummer() {
-        return dto.getPostnummer();
-    }
-
-    public String getPoststed() {
-        return dto.getPoststed();
-    }
-
-    public String getKommunenummer() {
-        return dto.getKommunenummer();
-    }
-
-    private List<String> splitGatenavn (String gatenavn) {
+    private List<String> splitGatenavn(String gatenavn) {
         return Arrays.asList(gatenavn.split("^\\d+$", 2));
     }
 }

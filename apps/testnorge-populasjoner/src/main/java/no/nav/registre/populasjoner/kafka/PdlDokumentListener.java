@@ -2,6 +2,9 @@ package no.nav.registre.populasjoner.kafka;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.populasjoner.kafka.folkeregisterperson.Folkeregisteridentifikator;
+import no.nav.registre.populasjoner.kafka.folkeregisterperson.PdlDokument;
+import no.nav.registre.populasjoner.service.IdentService;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
@@ -11,10 +14,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import no.nav.registre.populasjoner.kafka.folkeregisterperson.Folkeregisteridentifikator;
-import no.nav.registre.populasjoner.kafka.folkeregisterperson.PdlDokument;
-import no.nav.registre.populasjoner.service.IdentService;
 
 @Slf4j
 @Component

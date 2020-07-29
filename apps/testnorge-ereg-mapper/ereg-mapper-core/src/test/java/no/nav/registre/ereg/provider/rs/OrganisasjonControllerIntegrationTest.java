@@ -1,12 +1,10 @@
 package no.nav.registre.ereg.provider.rs;
 
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.registre.ereg.config.TestConfig;
+import no.nav.registre.ereg.provider.rs.request.EregDataRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +23,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import no.nav.registre.ereg.config.TestConfig;
-import no.nav.registre.ereg.provider.rs.request.EregDataRequest;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
