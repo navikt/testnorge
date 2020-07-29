@@ -26,4 +26,11 @@
             <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>
+
+    <logger name="no.nav.registre.testnorge.common.log.RequestLogger">
+        <level value="TRACE"/>
+    </logger>
+    <logger name="no.nav.registre.testnorge.common.log.ResponseLogger">
+        <level value="TRACE"/>
+    </logger>
 </configuration>

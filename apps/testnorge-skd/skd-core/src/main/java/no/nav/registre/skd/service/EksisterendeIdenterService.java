@@ -1,5 +1,6 @@
 package no.nav.registre.skd.service;
 
+import static java.util.Objects.isNull;
 import static no.nav.registre.skd.service.SyntetiseringService.BRUKTE_IDENTER_I_DENNE_BOLKEN;
 import static no.nav.registre.skd.service.SyntetiseringService.FOEDTE_IDENTER;
 import static no.nav.registre.skd.service.SyntetiseringService.GIFTE_IDENTER_I_NORGE;
@@ -9,14 +10,6 @@ import static no.nav.registre.skd.service.utilities.IdentUtility.getFoedselsdato
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.opprettKopiAvSkdMelding;
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.putEktefellePartnerFnrInnIMelding;
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.putFnrInnIMelding;
-
-import io.micrometer.core.annotation.Timed;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpStatusCodeException;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -29,11 +22,20 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Predicate;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
+
+import io.micrometer.core.annotation.Timed;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.skd.exceptions.ManglendeInfoITpsException;
 import no.nav.registre.skd.exceptions.ManglerEksisterendeIdentException;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.registre.testnorge.consumers.hodejegeren.response.RelasjonsResponse;
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Service
@@ -154,22 +156,10 @@ public class EksisterendeIdenterService {
         List<RsMeldingstype> meldingerForPartnere = new ArrayList<>();
 
         for (int i = 0; i < meldinger.size(); i++) {
-            if (i >= singleIdenterINorge.size() - 1) {
-                throw new ManglerEksisterendeIdentException(SKD_MELDINGSNUMMER_FEILMELDING
-                        + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen singleIdenterINorge fra TPSF avspillergruppen.");
-            }
+            forFaaIdenterFeilmelding(meldinger, i, singleIdenterINorge.size() - 1, ". For få identer i listen singleIdenterINorge fra TPSF avspillergruppen.");
 
-            Map<String, String> statusQuoIdent;
-            statusQuoIdent = getIdentWithStatus(singleIdenterINorge, endringskode, environment,
-                    (Map<String, String> a) -> KoderForSivilstand.GIFT.getAlleSivilstandkodene().contains(a.get(SIVILSTAND))
-                            || KoderForSivilstand.SEPARERT.getAlleSivilstandkodene().contains(a.get(SIVILSTAND))
-                            || ChronoUnit.YEARS.between(getFoedselsdatoFraFnr(a.get(IDENT)), LocalDate.now()) < 18);
-
-            Map<String, String> statusQuoPartnerIdent;
-            statusQuoPartnerIdent = getIdentWithStatus(singleIdenterINorge, endringskode, environment,
-                    (Map<String, String> a) -> KoderForSivilstand.GIFT.getAlleSivilstandkodene().contains(a.get(SIVILSTAND))
-                            || KoderForSivilstand.SEPARERT.getAlleSivilstandkodene().contains(a.get(SIVILSTAND))
-                            || ChronoUnit.YEARS.between(getFoedselsdatoFraFnr(a.get(IDENT)), LocalDate.now()) < 18);
+            Map<String, String> statusQuoIdent = hentIdentMedStatus(singleIdenterINorge, endringskode, environment);
+            Map<String, String> statusQuoPartnerIdent = hentIdentMedStatus(singleIdenterINorge, endringskode, environment);
 
             var ident = statusQuoIdent.get(IDENT);
             var identPartner = statusQuoPartnerIdent.get(IDENT);
@@ -190,6 +180,15 @@ public class EksisterendeIdenterService {
         meldinger.addAll(meldingerForPartnere);
     }
 
+    private Map<String, String> hentIdentMedStatus(List<String> singleIdenterINorge, Endringskoder endringskode, String environment) {
+        Map<String, String> statusQuoIdent;
+        statusQuoIdent = getIdentWithStatus(singleIdenterINorge, endringskode, environment,
+                (Map<String, String> a) -> KoderForSivilstand.GIFT.getAlleSivilstandkodene().contains(a.get(SIVILSTAND))
+                        || KoderForSivilstand.SEPARERT.getAlleSivilstandkodene().contains(a.get(SIVILSTAND))
+                        || ChronoUnit.YEARS.between(getFoedselsdatoFraFnr(a.get(IDENT)), LocalDate.now()) < 18);
+        return statusQuoIdent;
+    }
+
     void behandleSeperasjonSkilsmisse(
             List<RsMeldingstype> meldinger,
             List<String> gifteIdenterINorge,
@@ -202,10 +201,7 @@ public class EksisterendeIdenterService {
         var antallMeldingerFoerKjoering = meldinger.size();
         var i = 0;
         while (i < antallMeldingerFoerKjoering) {
-            if (i >= gifteIdenterINorge.size() - 1) {
-                throw new ManglerEksisterendeIdentException(SKD_MELDINGSNUMMER_FEILMELDING
-                        + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen gifteIdenterINorge fra TPSF avspillergruppen.");
-            }
+            forFaaIdenterFeilmelding(meldinger, i, gifteIdenterINorge.size() - 1, ". For få identer i listen gifteIdenterINorge fra TPSF avspillergruppen.");
 
             var statusQuoIdent = getIdentWithStatus(gifteIdenterINorge, endringskode, environment,
                     (Map<String, String> a) -> !KoderForSivilstand.GIFT.getAlleSivilstandkodene().contains(a.get(SIVILSTAND))
@@ -257,7 +253,6 @@ public class EksisterendeIdenterService {
         var antallMeldinger = meldinger.size();
         Map<String, String> barnMedFedre = new HashMap<>();
 
-        iterateFoedteIdenter:
         for (String foedtIdent : foedteIdenter) {
             var relasjonerTilBarn = hodejegerenConsumer.getRelasjoner(foedtIdent, environment);
 
@@ -265,14 +260,10 @@ public class EksisterendeIdenterService {
                 continue;
             }
 
-            var morFnr = "";
+            var morFnr = hentMorFnrRelasjon(relasjonerTilBarn);
 
-            for (var relasjon : relasjonerTilBarn.getRelasjoner()) {
-                if (RELASJON_FAR.equals(relasjon.getTypeRelasjon())) {
-                    continue iterateFoedteIdenter;
-                } else if (RELASJON_MOR.equals(relasjon.getTypeRelasjon())) {
-                    morFnr = relasjon.getFnrRelasjon();
-                }
+            if (isNull(morFnr)) {
+                continue;
             }
 
             var farFnr = foedselService.findFar(morFnr, foedtIdent, levendeIdenterINorge, new ArrayList<>());
@@ -298,6 +289,19 @@ public class EksisterendeIdenterService {
         oppdaterMeldingerMedFarsFnr(meldinger, barnMedFedre, antallMeldinger, brukteIdenterIDenneBolken);
     }
 
+    private String hentMorFnrRelasjon(RelasjonsResponse relasjonerTilBarn) {
+        String morFnr = "";
+        for (var relasjon : relasjonerTilBarn.getRelasjoner()) {
+            if (RELASJON_FAR.equals(relasjon.getTypeRelasjon())) {
+                return null;
+            }
+            if (RELASJON_MOR.equals(relasjon.getTypeRelasjon())) {
+                morFnr = relasjon.getFnrRelasjon();
+            }
+        }
+        return morFnr;
+    }
+
     void behandleDoedsmelding(
             List<RsMeldingstype> meldinger,
             List<String> levendeIdenterINorge,
@@ -309,10 +313,7 @@ public class EksisterendeIdenterService {
 
         var antallMeldingerFoerKjoering = meldinger.size();
         for (int i = 0; i < antallMeldingerFoerKjoering; i++) {
-            if (i >= levendeIdenterINorge.size()) {
-                throw new ManglerEksisterendeIdentException(SKD_MELDINGSNUMMER_FEILMELDING
-                        + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen levendeIdenterINorge fra TPSF avspillergruppen.");
-            }
+            forFaaIdenterFeilmelding(meldinger, i, levendeIdenterINorge.size(), ". For få identer i listen levendeIdenterINorge fra TPSF avspillergruppen.");
 
             var statusQuoIdent = getIdentWithStatus(levendeIdenterINorge, endringskode, environment,
                     (Map<String, String> a) -> a.get(DATO_DO) != null && !a.get(DATO_DO).isEmpty() || !STATSBORGER_NORGE.equals(a.get(STATSBORGER)));
@@ -346,6 +347,13 @@ public class EksisterendeIdenterService {
         meldinger.addAll(meldingerForPartnere);
     }
 
+    private void forFaaIdenterFeilmelding(List<RsMeldingstype> meldinger, int i, int size, String s) {
+        if (i >= size) {
+            throw new ManglerEksisterendeIdentException(SKD_MELDINGSNUMMER_FEILMELDING
+                    + meldinger.get(i).getMeldingsnrHosTpsSynt() + s);
+        }
+    }
+
     void behandleGenerellAarsak(
             List<RsMeldingstype> meldinger,
             List<String> levendeIdenterINorge,
@@ -354,10 +362,7 @@ public class EksisterendeIdenterService {
             String environment
     ) {
         for (int i = 0; i < meldinger.size(); i++) {
-            if (i >= levendeIdenterINorge.size()) {
-                throw new ManglerEksisterendeIdentException(SKD_MELDINGSNUMMER_FEILMELDING
-                        + meldinger.get(i).getMeldingsnrHosTpsSynt() + ". For få identer i listen levendeIdenterINorge fra TPSF avspillergruppen.");
-            }
+            forFaaIdenterFeilmelding(meldinger, i, levendeIdenterINorge.size(), ". For få identer i listen levendeIdenterINorge fra TPSF avspillergruppen.");
 
             var statusQuoIdent = getIdentWithStatus(levendeIdenterINorge, endringskode, environment,
                     (Map<String, String> a) -> a.get(DATO_DO) != null && !a.get(DATO_DO).isEmpty() || !STATSBORGER_NORGE.equals(a.get(STATSBORGER)));

@@ -1,0 +1,6 @@
+sts:
+  token:
+    provider:
+      url: http://dummy/
+      username: dummy
+      password: dummy
