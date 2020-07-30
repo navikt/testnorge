@@ -16,7 +16,7 @@ Kjør SykemeldingApiApplicationStarter med følgende argumenter:
 ### Utenfor utviklerimage
 
 #### Windows
-Ha BIG-IP Endge Client kjørende og kjør SykemeldingApiApplicationStarter med samme argumenter som for utviklerimage.
+Ha BIG-IP Edge Client kjørende og kjør SykemeldingApiApplicationStarter med samme argumenter som for utviklerimage.
     
 #### Mac
 Ha Nav-Tunnel kjørende og kjør SykemeldingApiApplicationStarter med samme argumenter som for utviklerimage og legg til følgende argumenter:
