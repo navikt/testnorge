@@ -13,7 +13,6 @@
     <artifactId>testnorge-populasjoner</artifactId>
 
     <properties>
-        <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
         <common.version>2.2020.05.13_14.46-9bafc245bcc7</common.version>
     </properties>
 
@@ -167,7 +166,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler-plugin.version}</version>
                 <configuration>
                     <source>1.11</source>
                     <target>1.11</target>

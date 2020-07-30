@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -16,7 +18,7 @@ import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
-@DependencyOn(value = "syntrest",external = true)
+@DependencyOn(value = "syntrest", external = true)
 public class PoppSyntetisererenConsumer {
 
     private static final ParameterizedTypeReference<List<PoppSyntetisererenResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
@@ -32,7 +34,9 @@ public class PoppSyntetisererenConsumer {
     }
 
     public List<PoppSyntetisererenResponse> hentPoppMeldingerFromSyntRest(List<String> fnrs) {
-        var postRequest = RequestEntity.post(url.expand()).body(fnrs);
+        var postRequest = RequestEntity.post(url.expand())
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(fnrs);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
 }
