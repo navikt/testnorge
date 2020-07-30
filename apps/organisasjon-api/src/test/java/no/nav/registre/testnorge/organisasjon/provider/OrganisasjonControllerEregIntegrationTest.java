@@ -69,10 +69,7 @@ public class OrganisasjonControllerEregIntegrationTest {
         mvc.perform(get("/api/v1/organisasjoner/" + orgnummer)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("miljo", miljo))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
+                .andExpect(status().isOk());
 
         JsonWiremockHelper
                 .builder(objectMapper)
