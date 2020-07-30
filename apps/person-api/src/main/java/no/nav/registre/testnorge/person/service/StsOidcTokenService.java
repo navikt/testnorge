@@ -6,7 +6,10 @@ import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import java.net.URI;
+import java.time.LocalDateTime;
+import java.util.Base64;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.RequestEntity;
@@ -14,9 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
-import java.time.LocalDateTime;
-import java.util.Base64;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import no.nav.registre.testnorge.person.exception.SikkerhetsTokenFornyException;
 
 
 @Service
@@ -57,7 +60,7 @@ public class StsOidcTokenService {
                         updateToken();
                     } catch (RuntimeException e) {
                         if (hasExpired()) {
-                            throw new RuntimeException("Sikkerhet-token kunne ikke fornyes", e);
+                            throw new SikkerhetsTokenFornyException("Sikkerhet-token kunne ikke fornyes", e);
                         }
                     }
                 }

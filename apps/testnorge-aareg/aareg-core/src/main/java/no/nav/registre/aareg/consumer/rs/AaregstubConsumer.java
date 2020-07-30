@@ -3,8 +3,10 @@ package no.nav.registre.aareg.consumer.rs;
 import static no.nav.registre.aareg.domain.CommonKeys.RESPONSE_TYPE_LIST_LONG;
 import static no.nav.registre.aareg.domain.CommonKeys.RESPONSE_TYPE_LIST_STRING;
 
-import io.micrometer.core.annotation.Timed;
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.RequestEntity;
@@ -14,11 +16,10 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
+import io.micrometer.core.annotation.Timed;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
+import no.nav.registre.aareg.exception.ResponseNullPointerException;
 import no.nav.registre.aareg.provider.rs.response.SletteArbeidsforholdResponse;
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
@@ -53,6 +54,7 @@ public class AaregstubConsumer {
             eksisterendeIdenter.addAll(response);
         } else {
             log.error("AaregstubConsumer.hentEksisterendeIdenter: Kunne ikke hente response body fra Aaregstub: NullPointerException");
+            throw new ResponseNullPointerException("Kunne ikke hente eksisterende ident fra aaregstub");
         }
 
         return eksisterendeIdenter;
@@ -75,7 +77,7 @@ public class AaregstubConsumer {
             return response.getBody();
         } else {
             log.error("AaregstubConsumer.sendTilAaregstub: Kunne ikke hente response body fra Aaregstub: NullPointerException");
-            throw new RuntimeException("Kunne ikke lagre i aaregstub");
+            throw new ResponseNullPointerException("Kunne ikke lagre i aaregstub");
         }
     }
 

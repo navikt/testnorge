@@ -1,13 +1,5 @@
 package no.nav.registre.tss.service;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jms.core.JmsTemplate;
-import org.springframework.stereotype.Service;
-
-import javax.jms.JMSException;
-import javax.jms.Message;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,10 +7,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.jms.JMSException;
+import javax.jms.Message;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.stereotype.Service;
+
+import lombok.extern.slf4j.Slf4j;
+
 import no.nav.registre.tss.consumer.rs.response.Response910;
 import no.nav.registre.tss.domain.Samhandler;
 import no.nav.registre.tss.domain.TssType;
 import no.nav.registre.tss.domain.TssTypeGruppe;
+import no.nav.registre.tss.exception.TssSendTilKoeException;
 import no.nav.registre.tss.utils.Response910Util;
 import no.nav.registre.tss.utils.Rutine910Util;
 
@@ -53,7 +56,7 @@ public class JmsService {
             }
         } catch (JMSException e) {
             log.error("Kunne ikke sende til kø", e);
-            throw new RuntimeException(e);
+            throw new TssSendTilKoeException(e);
         }
     }
 

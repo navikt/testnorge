@@ -1,10 +1,14 @@
 package no.nav.registre.inst.consumer.rs;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.inst.Institusjonsopphold;
-import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import static no.nav.registre.inst.properties.HttpRequestConstants.ACCEPT;
+import static no.nav.registre.inst.properties.HttpRequestConstants.AUTHORIZATION;
+import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CALL_ID;
+import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CONSUMER_ID;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -16,14 +20,14 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CALL_ID;
-import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CONSUMER_ID;
-import static no.nav.registre.inst.properties.HttpRequestConstants.ACCEPT;
-import static no.nav.registre.inst.properties.HttpRequestConstants.AUTHORIZATION;
+import lombok.extern.slf4j.Slf4j;
+
+import no.nav.registre.inst.Institusjonsopphold;
+import no.nav.registre.inst.exception.UgyldigIdentResponseException;
+import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
@@ -73,7 +77,7 @@ public class Inst2Consumer {
                 return new ArrayList<>();
             } else {
                 log.error("Kunne ikke hente ident fra inst2", e);
-                throw new RuntimeException("Kunne ikke hente ident fra inst2", e);
+                throw new UgyldigIdentResponseException("Kunne ikke hente ident fra inst2", e);
             }
         }
         return response;

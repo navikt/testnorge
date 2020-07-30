@@ -1,5 +1,12 @@
 package no.nav.registre.inntekt.utils;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import no.nav.registre.inntekt.domain.aareg.RsAktoer;
@@ -12,7 +19,8 @@ import no.nav.registre.inntekt.domain.aareg.RsPeriode;
 import no.nav.registre.inntekt.domain.aareg.RsPermisjon;
 import no.nav.registre.inntekt.domain.aareg.RsPersonAareg;
 import no.nav.registre.inntekt.domain.aareg.RsUtenlandsopphold;
-
+import no.nav.registre.inntekt.exception.UgyldigArbeidsforholdException;
+import no.nav.registre.inntekt.exception.UgyldigArbeidsgiverException;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Ansettelsesperiode;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.AntallTimerForTimeloennet;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsavtale;
@@ -26,13 +34,6 @@ import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.PermisjonP
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Person;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Sporingsinformasjon;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Utenlandsopphold;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class ArbeidsforholdMappingUtil {
 
@@ -107,7 +108,7 @@ public class ArbeidsforholdMappingUtil {
                     .offentligIdent(findStringNullSafe(arbeidsgiver, "offentligIdent"))
                     .build();
         } else {
-            throw new RuntimeException("Ukjent arbeidsgivertype: " + arbeidsgiverType);
+            throw new UgyldigArbeidsgiverException("Ukjent arbeidsgivertype: " + arbeidsgiverType);
         }
         return opplysningspliktigArbeidsgiver;
     }
@@ -248,7 +249,7 @@ public class ArbeidsforholdMappingUtil {
             rsAktoerPerson.setAktoertype("PERS");
             return rsAktoerPerson;
         } else {
-            throw new RuntimeException("Ukjent aktørtype: " + opplysningspliktigArbeidsgiver.getType());
+            throw new UgyldigArbeidsforholdException("Ukjent aktørtype: " + opplysningspliktigArbeidsgiver.getType());
         }
     }
 

@@ -1,12 +1,15 @@
 package no.nav.registre.testnorge.hendelse.util;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.core.env.ConfigurableEnvironment;
-
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.core.env.ConfigurableEnvironment;
+
+import lombok.extern.slf4j.Slf4j;
+
+import no.nav.registre.testnorge.hendelse.exception.UgyldigVaultTokenException;
 
 @Slf4j
 public final class VaultUtil {
@@ -29,10 +32,10 @@ public final class VaultUtil {
                 byte[] encoded = Files.readAllBytes(Paths.get("/var/run/secrets/nais.io/vault/vault_token"));
                 return new String(encoded, StandardCharsets.UTF_8).trim();
             } else {
-                throw new RuntimeException("Klarer ikke å hente vault token");
+                throw new UgyldigVaultTokenException("Klarer ikke å hente vault token");
             }
         } catch (Exception e) {
-            throw new RuntimeException("Could not get a vault token for authentication", e);
+            throw new UgyldigVaultTokenException("Could not get a vault token for authentication", e);
         }
     }
 

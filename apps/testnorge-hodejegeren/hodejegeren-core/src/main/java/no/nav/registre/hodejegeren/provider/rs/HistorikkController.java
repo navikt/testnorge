@@ -1,7 +1,10 @@
 package no.nav.registre.hodejegeren.provider.rs;
 
-import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,11 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 
+import no.nav.registre.hodejegeren.exception.SidetallOverMaksException;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikk;
 import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
 import no.nav.registre.hodejegeren.service.HistorikkService;
@@ -41,7 +43,7 @@ public class HistorikkController {
             @RequestParam(required = false, defaultValue = "10") Integer pageSize
     ) {
         if (pageSize > MAX_PAGE_SIZE) {
-            throw new RuntimeException(MAX_PAGE_STRING + MAX_PAGE_SIZE);
+            throw new SidetallOverMaksException(MAX_PAGE_STRING + MAX_PAGE_SIZE);
         }
         return historikkService.hentAllHistorikk(pageNumber, pageSize);
     }
@@ -54,7 +56,7 @@ public class HistorikkController {
             @RequestParam(required = false, defaultValue = "10") Integer pageSize
     ) {
         if (pageSize > MAX_PAGE_SIZE) {
-            throw new RuntimeException(MAX_PAGE_STRING + MAX_PAGE_SIZE);
+            throw new SidetallOverMaksException(MAX_PAGE_STRING + MAX_PAGE_SIZE);
         }
         return historikkService.hentHistorikkMedKilder(kilder, pageNumber, pageSize);
     }
@@ -68,7 +70,7 @@ public class HistorikkController {
             @RequestParam(required = false, defaultValue = "10") Integer pageSize
     ) {
         if (pageSize > MAX_PAGE_SIZE) {
-            throw new RuntimeException(MAX_PAGE_STRING + MAX_PAGE_SIZE);
+            throw new SidetallOverMaksException(MAX_PAGE_STRING + MAX_PAGE_SIZE);
         }
         return historikkService.hentHistorikkMedKriterier(kilder, pageNumber, pageSize, new ArrayList<>(Arrays.asList(keywords.split("&"))));
     }

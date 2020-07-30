@@ -1,7 +1,5 @@
 package no.nav.registre.aareg.consumer.rs;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
@@ -9,15 +7,15 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
@@ -27,14 +25,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 import no.nav.registre.aareg.domain.RsArbeidsforhold;
 import no.nav.registre.aareg.domain.RsPersonAareg;
+import no.nav.registre.aareg.exception.ResponseNullPointerException;
 
 @RunWith(SpringRunner.class)
 @RestClientTest(AaregstubConsumer.class)
@@ -95,19 +92,11 @@ public class AaregstubConsumerTest {
     }
 
     @Test
-    public void shouldLogOnEmptyResponse() {
+    public void shouldThrowExceptionOnEmptyResponse() {
         var expectedUri = serverUrl + "/v1/hentAlleArbeidstakere";
         stubAaregstubWithEmptyBody(expectedUri);
 
-        var logger = (Logger) LoggerFactory.getLogger(AaregstubConsumer.class);
-        ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
-        listAppender.start();
-        logger.addAppender(listAppender);
-
-        aaregstubConsumer.hentEksisterendeIdenter();
-
-        assertThat(listAppender.list.size(), is(equalTo(1)));
-        assertThat(listAppender.list.get(0).toString(), containsString("Kunne ikke hente response body fra Aaregstub: NullPointerException"));
+        Assertions.assertThrows(ResponseNullPointerException.class, () -> aaregstubConsumer.hentEksisterendeIdenter());
     }
 
     @Test

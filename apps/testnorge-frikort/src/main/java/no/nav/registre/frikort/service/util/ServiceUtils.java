@@ -1,13 +1,5 @@
 package no.nav.registre.frikort.service.util;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.io.Resources;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -19,9 +11,21 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import javax.xml.bind.JAXBException;
+
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.io.Resources;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import no.nav.registre.frikort.consumer.rs.FrikortSyntetisererenConsumer;
 import no.nav.registre.frikort.consumer.rs.response.SyntFrikortResponse;
 import no.nav.registre.frikort.domain.xml.Egenandelskode;
+import no.nav.registre.frikort.exception.UgyldigSamhandlerdataException;
 import no.nav.registre.frikort.provider.rs.response.SyntetiserFrikortResponse;
 import no.nav.registre.frikort.provider.rs.response.SyntetiserFrikortResponse.LeggPaaKoeStatus;
 import no.nav.registre.frikort.service.KonverteringService;
@@ -133,7 +137,7 @@ public class ServiceUtils {
         }
 
         if (samhandlerePersondata.isEmpty()) {
-            throw new RuntimeException("Kunne ikke hente noen samhandlere");
+            throw new UgyldigSamhandlerdataException("Kunne ikke hente noen samhandlere");
         }
         return samhandlerePersondata;
     }

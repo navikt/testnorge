@@ -3,6 +3,7 @@ package no.nav.registre.tss.utils;
 import java.util.List;
 
 import no.nav.registre.tss.consumer.rs.response.TssMessage;
+import no.nav.registre.tss.exception.UkjentRutineException;
 
 public class RutineUtil {
 
@@ -31,7 +32,7 @@ public class RutineUtil {
                 flatfil.append(Rutine175Util.opprett175Rutine(rutine));
                 break;
             default:
-                throw new RuntimeException("Ukjent idKode");
+                throw new UkjentRutineException("Ukjent idKode");
             }
         }
 
