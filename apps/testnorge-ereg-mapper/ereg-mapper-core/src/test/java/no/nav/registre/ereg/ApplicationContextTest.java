@@ -1,4 +1,4 @@
-package no.nav.registre.ereg.testnorge;
+package no.nav.registre.ereg;
 
 
 import no.nav.registre.ereg.config.TestConfig;

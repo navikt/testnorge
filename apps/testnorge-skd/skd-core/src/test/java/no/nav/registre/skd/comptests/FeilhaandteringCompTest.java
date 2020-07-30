@@ -28,7 +28,6 @@ import ch.qos.logback.core.read.ListAppender;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpStatus;
@@ -51,7 +50,7 @@ import no.nav.registre.skd.provider.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.skd.service.SyntetiseringService;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { ApplicationTestConfig.class, ApplicationStarter.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = {ApplicationTestConfig.class, ApplicationStarter.class})
 @AutoConfigureWireMock(port = 0)
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("test")
@@ -68,12 +67,6 @@ public class FeilhaandteringCompTest {
 
     @Autowired
     private Random randMock;
-
-    @Value("${testnorges.ida.credential.tpsf.username}")
-    private String username;
-
-    @Value("${testnorges.ida.credential.tpsf.password}")
-    private String password;
 
     /**
      * Hvis en Exception blir kastet som det ikke er spesiell behandling for, SÅ skal de database-idene til de skdmeldingene som

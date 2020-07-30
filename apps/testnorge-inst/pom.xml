@@ -22,22 +22,4 @@
         <module>inst-domain</module>
     </modules>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>11</java.version>
-        <spring-boot-admin.version>2.0.2</spring-boot-admin.version>
-        <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
-    </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-contract-wiremock</artifactId>
-                <version>2.0.2.RELEASE</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 </project>
