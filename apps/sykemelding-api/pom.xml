@@ -110,7 +110,6 @@
             <groupId>io.confluent</groupId>
             <artifactId>kafka-avro-serializer</artifactId>
         </dependency>
-
         <!--VAULT-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
