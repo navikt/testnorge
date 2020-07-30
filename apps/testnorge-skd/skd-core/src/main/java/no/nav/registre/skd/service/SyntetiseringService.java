@@ -7,15 +7,6 @@ import static no.nav.registre.skd.service.Endringskoder.FOEDSELSNUMMERKORREKSJON
 import static no.nav.registre.skd.service.Endringskoder.INNVANDRING;
 import static no.nav.registre.skd.service.Endringskoder.TILDELING_DNUMMER;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.micrometer.core.annotation.Timed;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpStatusCodeException;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +15,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.micrometer.core.annotation.Timed;
+import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.skd.consumer.TpsSyntetisererenConsumer;
 import no.nav.registre.skd.consumer.TpsfConsumer;
@@ -124,15 +126,7 @@ public class SyntetiseringService {
                 fjernBrukteIdenterFraListerMedIdenter(listerMedIdenter);
                 idsLagretITpsfMenIkkeTps.removeAll(ids);
 
-                if (!nyeIdenterDenneEndringskoden.isEmpty()) {
-                    var feiledeTpIdenter = tpService.leggTilIdenterITp(nyeIdenterDenneEndringskoden, miljoe);
-                    if (!feiledeTpIdenter.isEmpty()) {
-                        log.error("Følgende identer kunne ikke lagres i TP: {}", feiledeTpIdenter.toString());
-                    }
-                    if(Arrays.asList(FOEDSELSMELDING, INNVANDRING).contains(endringskode)){
-                        personService.leggTilIdenterIPdl(nyeIdenterDenneEndringskoden);
-                    }
-                }
+                leggNyeIdenterIPdl(miljoe, nyeIdenterDenneEndringskoden, endringskode);
 
             } catch (ManglendeInfoITpsException e) {
                 httpStatus = loggExceptionOgLeggTilFeiletEndringskode(e,
@@ -164,6 +158,18 @@ public class SyntetiseringService {
         }
 
         return ResponseEntity.status(httpStatus).body(skdMeldingerTilTpsResponsTotal);
+    }
+
+    private void leggNyeIdenterIPdl(String miljoe, List<String> nyeIdenterDenneEndringskoden, Endringskoder endringskode) {
+        if (!nyeIdenterDenneEndringskoden.isEmpty()) {
+            var feiledeTpIdenter = tpService.leggTilIdenterITp(nyeIdenterDenneEndringskoden, miljoe);
+            if (!feiledeTpIdenter.isEmpty()) {
+                log.error("Følgende identer kunne ikke lagres i TP: {}", feiledeTpIdenter.toString());
+            }
+            if(Arrays.asList(FOEDSELSMELDING, INNVANDRING).contains(endringskode)){
+                personService.leggTilIdenterIPdl(nyeIdenterDenneEndringskoden);
+            }
+        }
     }
 
     private void fjernBrukteIdenterFraListerMedIdenter(
@@ -300,15 +306,7 @@ public class SyntetiseringService {
         var rangeToAdd = new StringBuilder();
 
         for (int i = 0; i < ids.size(); i++) {
-            if (i >= ids.size() - 1) {
-                if (rangeStarted) {
-                    rangeToAdd.append(ids.get(i));
-                    idsWithRange.add(rangeToAdd.toString());
-                } else {
-                    idsWithRange.add(ids.get(i).toString());
-                }
-                break;
-            }
+            if (sisteElementIListe(ids, idsWithRange, rangeStarted, rangeToAdd, i)) break;
             if (ids.get(i + 1) == ids.get(i) + 1) {
                 if (!rangeStarted) {
                     rangeToAdd = new StringBuilder(ids.get(i).toString()).append(" - ");
@@ -325,6 +323,19 @@ public class SyntetiseringService {
             }
         }
         return idsWithRange;
+    }
+
+    private boolean sisteElementIListe(List<Long> ids, List<String> idsWithRange, boolean rangeStarted, StringBuilder rangeToAdd, int i) {
+        if (i >= ids.size() - 1) {
+            if (rangeStarted) {
+                rangeToAdd.append(ids.get(i));
+                idsWithRange.add(rangeToAdd.toString());
+            } else {
+                idsWithRange.add(ids.get(i).toString());
+            }
+            return true;
+        }
+        return false;
     }
 
     private void sendSkdMeldingerTilTpsOgOppdaterStatus(

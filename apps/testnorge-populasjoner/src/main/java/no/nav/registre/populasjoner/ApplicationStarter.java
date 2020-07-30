@@ -1,13 +1,16 @@
 package no.nav.registre.populasjoner;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.populasjoner.vault.VaultUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
 
-import no.nav.registre.populasjoner.vault.VaultUtil;
+import no.nav.registere.testnorge.core.ApplicationCoreConfig;
 
 @Slf4j
 @SpringBootApplication
+@Import(ApplicationCoreConfig.class)
 public class ApplicationStarter {
 
     public static void main(String[] args) {

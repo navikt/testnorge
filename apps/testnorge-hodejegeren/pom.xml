@@ -29,7 +29,6 @@
         <person-tps-avstemming-v1.version>1.0.2</person-tps-avstemming-v1.version>
         <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
         <testnorge-consumers.version>1.11.11-RELEASE</testnorge-consumers.version>
-        <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
     </properties>
 
     <dependencyManagement>

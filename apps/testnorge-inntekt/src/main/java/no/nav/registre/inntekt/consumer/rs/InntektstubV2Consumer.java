@@ -2,11 +2,11 @@ package no.nav.registre.inntekt.consumer.rs;
 
 import static no.nav.registre.inntekt.consumer.rs.ConsumerUtils.buildInntektsliste;
 
-import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.inntekt.domain.RsInntekt;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
@@ -16,10 +16,13 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
+
+import no.nav.registre.inntekt.domain.RsInntekt;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 
 @Slf4j
 @Component
@@ -100,18 +103,22 @@ public class InntektstubV2Consumer {
             if (responseBody != null) {
                 response = responseBody;
                 for (var inntektsinformasjon : response) {
-                    if (inntektsinformasjon.getFeilmelding() != null && !inntektsinformasjon.getFeilmelding().isEmpty()) {
-                        for (var inntekt : inntektsinformasjon.getInntektsliste()) {
-                            if (inntekt.getFeilmelding() != null && !inntekt.getFeilmelding().isEmpty()) {
-                                log.info("Feil på innlegging av inntekt av type {} - feilmelding: {}", inntekt.getInntektstype(), inntektsinformasjon.getFeilmelding());
-                            }
-                        }
-                    }
+                    sjekkInnteksinformasjonForFeilmeldinger(inntektsinformasjon);
                 }
             }
         } catch (HttpStatusCodeException e) {
             log.error("Kunne ikke legge inntekt i inntektstub", e);
         }
         return response;
+    }
+
+    private void sjekkInnteksinformasjonForFeilmeldinger(Inntektsinformasjon inntektsinformasjon) {
+        if (inntektsinformasjon.getFeilmelding() != null && !inntektsinformasjon.getFeilmelding().isEmpty()) {
+            for (var inntekt : inntektsinformasjon.getInntektsliste()) {
+                if (inntekt.getFeilmelding() != null && !inntekt.getFeilmelding().isEmpty()) {
+                    log.info("Feil på innlegging av inntekt av type {} - feilmelding: {}", inntekt.getInntektstype(), inntektsinformasjon.getFeilmelding());
+                }
+            }
+        }
     }
 }

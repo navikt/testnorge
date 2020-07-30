@@ -1,19 +1,21 @@
 package no.nav.registre.testnorge.helsepersonell.adapter;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.testnorge.helsepersonell.consumer.HodejegerenConsumer;
 import no.nav.registre.testnorge.helsepersonell.consumer.SamhandlerregisteretConsumer;
 import no.nav.registre.testnorge.helsepersonell.domain.Lege;
 import no.nav.registre.testnorge.helsepersonell.domain.LegeListe;
 import no.nav.registre.testnorge.helsepersonell.domain.Samhandler;
+import no.nav.registre.testnorge.helsepersonell.exception.UgyldigSamhandlerException;
 
 @Slf4j
 @Component
@@ -31,7 +33,7 @@ public class HelsepersonellAdapter {
                         return value.get();
                     } catch (Exception e) {
                         log.error("Klarer ikke å hente samhandler", e);
-                        throw new RuntimeException("Feil ved opprettelse av lege");
+                        throw new UgyldigSamhandlerException("Feil ved opprettelse av lege");
                     }
                 })
                 .flatMap(Collection::stream)

@@ -1,14 +1,17 @@
 package no.nav.registre.inntektsmeldingstub.util;
 
-import lombok.extern.slf4j.Slf4j;
+import java.io.StringReader;
+import java.io.StringWriter;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import java.io.StringReader;
-import java.io.StringWriter;
+
+import lombok.extern.slf4j.Slf4j;
+
+import no.nav.registre.inntektsmeldingstub.exception.JaxbToXmlException;
 
 @Slf4j
 public class XmlConverter {
@@ -35,7 +38,7 @@ public class XmlConverter {
             }
             return xmlContent;
         } catch (JAXBException e) {
-            throw new RuntimeException(e);
+            throw new JaxbToXmlException("klarte ikke å konvertere Jaxb element til XML", e);
         }
     }
 
@@ -60,7 +63,7 @@ public class XmlConverter {
             return (T) unmarshaller.unmarshal(new StringReader(xml));
 
         } catch (JAXBException e) {
-            throw new RuntimeException(e);
+            throw new JaxbToXmlException("klarte ikke å konvertere Jaxb element til Objekt", e);
         }
     }
 }

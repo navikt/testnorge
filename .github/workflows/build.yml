@@ -27,6 +27,11 @@ jobs:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
         run: mvn -T 10 --settings maven-settings.xml test
+      - name: Package with Maven
+        env:
+          GITHUB_USERNAME: token
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+        run: mvn --settings maven-settings.xml package -Dmaven.test.skip
       - name: Analyse code with SonarCloud
         env:
           GITHUB_USERNAME: token

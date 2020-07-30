@@ -7,8 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -24,8 +22,8 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.TiltakSyntConsumer;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetEndreDeltakerstatusRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggsytelseRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksaktivitetRequest;
@@ -34,6 +32,8 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequ
 import no.nav.registre.arena.core.service.util.KodeMedSannsynlighet;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 
 @Slf4j
 @Service
@@ -409,25 +409,27 @@ public class RettighetTiltakService {
                 }
             }
 
-            if (!morFnr.isEmpty() && !farFnr.isEmpty()) {
-                if (rand.nextBoolean()) {
-                    utvalgteIdenter.add(morFnr);
-                } else {
-                    utvalgteIdenter.add(farFnr);
-                }
-            } else if (!morFnr.isEmpty()) {
-                utvalgteIdenter.add(morFnr);
-            } else if (!farFnr.isEmpty()) {
-                utvalgteIdenter.add(farFnr);
-            } else {
-                continue;
-            }
+            setUtvalgteIdenterFoedselsnr(utvalgteIdenter, farFnr, morFnr);
 
             if (utvalgteIdenter.size() >= antallIdenter) {
                 break;
             }
         }
         return utvalgteIdenter;
+    }
+
+    private void setUtvalgteIdenterFoedselsnr(List<String> utvalgteIdenter, String farFnr, String morFnr) {
+        if (!morFnr.isEmpty() && !farFnr.isEmpty()) {
+            if (rand.nextBoolean()) {
+                utvalgteIdenter.add(morFnr);
+            } else {
+                utvalgteIdenter.add(farFnr);
+            }
+        } else if (!morFnr.isEmpty()) {
+            utvalgteIdenter.add(morFnr);
+        } else if (!farFnr.isEmpty()) {
+            utvalgteIdenter.add(farFnr);
+        }
     }
 
     public Map<String, List<KodeMedSannsynlighet>> getVedtakMedStatuskoder(){

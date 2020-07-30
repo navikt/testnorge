@@ -1,15 +1,17 @@
 package no.nav.registre.testnorge.synt.sykemelding.consumer.command;
 
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
+import java.net.URI;
+import java.util.concurrent.Callable;
+
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
-import java.util.concurrent.Callable;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 import no.nav.registre.testnorge.synt.sykemelding.domain.Sykemelding;
+import no.nav.registre.testnorge.synt.sykemelding.exception.GenererSykemeldingerException;
 
 @RequiredArgsConstructor
 public class PostSykemeldingCommand implements Callable<ResponseEntity<String>> {
@@ -25,7 +27,7 @@ public class PostSykemeldingCommand implements Callable<ResponseEntity<String>> 
                 String.class
         );
         if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new RuntimeException("Klarer ikke å opprette sykemelding for " + sykemelding.getIdent());
+            throw new GenererSykemeldingerException("Klarer ikke å opprette sykemelding for " + sykemelding.getIdent());
         }
         return response;
     }

@@ -8,9 +8,6 @@ import static no.nav.registre.aareg.util.ArbeidsforholdMappingUtil.mapArbeidsfor
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +45,8 @@ import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
 import no.nav.registre.aareg.syntetisering.RsAaregSyntetiseringsRequest;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
 
 @Service
 @Slf4j
@@ -74,7 +73,7 @@ public class SyntetiseringService {
         List<RsAaregResponse> statusFraAareg = new ArrayList<>();
         var levendeIdenter = new HashSet<>(hentLevendeIdenter(syntetiserAaregRequest.getAvspillergruppeId(), MINIMUM_ALDER));
         var identerIAaregstub = new ArrayList<>(hentIdenterIAvspillergruppeMedArbeidsforhold(syntetiserAaregRequest.getAvspillergruppeId(), syntetiserAaregRequest.getMiljoe(), false));
-        if (sendAlleEksisterende) {
+        if (sendAlleEksisterende != null && sendAlleEksisterende) {
             Map<String, List<Arbeidsforhold>> identerSomSkalBeholdeArbeidsforhold = new HashMap<>();
             populerIdenterSomSkalBeholdeArbeidsforhold(syntetiserAaregRequest, identerIAaregstub, identerSomSkalBeholdeArbeidsforhold);
             levendeIdenter.removeAll(identerSomSkalBeholdeArbeidsforhold.keySet());
@@ -146,12 +145,7 @@ public class SyntetiseringService {
 
             List<RsAaregSyntetiseringsRequest> ugyldigeArbeidsforhold = new ArrayList<>();
 
-            for (var arbeidsforholdsResponse : arbeidsforhold) {
-                if (arbeidsforholdsResponse.getArbeidsforhold().getArbeidsavtale() == null) {
-                    log.warn("Arbeidsavtale er null for arbeidstaker med id {}. Hopper over opprettelse.", arbeidsforholdsResponse.getArbeidsforhold().getArbeidstaker().getIdent());
-                    ugyldigeArbeidsforhold.add(arbeidsforholdsResponse);
-                }
-            }
+            sjekkArbeidsforholdEtterArbeidsavtale(arbeidsforhold, ugyldigeArbeidsforhold);
 
             arbeidsforhold.removeAll(ugyldigeArbeidsforhold);
         }
@@ -163,6 +157,15 @@ public class SyntetiseringService {
         }
 
         return aaregResponses;
+    }
+
+    private void sjekkArbeidsforholdEtterArbeidsavtale(List<RsAaregSyntetiseringsRequest> arbeidsforhold, List<RsAaregSyntetiseringsRequest> ugyldigeArbeidsforhold) {
+        for (var arbeidsforholdsResponse : arbeidsforhold) {
+            if (arbeidsforholdsResponse.getArbeidsforhold().getArbeidsavtale() == null) {
+                log.warn("Arbeidsavtale er null for arbeidstaker med id {}. Hopper over opprettelse.", arbeidsforholdsResponse.getArbeidsforhold().getArbeidstaker().getIdent());
+                ugyldigeArbeidsforhold.add(arbeidsforholdsResponse);
+            }
+        }
     }
 
     public Set<String> hentIdenterIAvspillergruppeMedArbeidsforhold(

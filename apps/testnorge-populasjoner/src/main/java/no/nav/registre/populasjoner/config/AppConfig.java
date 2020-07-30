@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 import no.nav.common.utils.Credentials;
 
 @Configuration
-@Profile("!local")
+@Profile("prod")
 public class AppConfig {
 
     @Bean

@@ -1,12 +1,7 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-
+import no.nav.registre.orkestratoren.consumer.rs.response.GenererFrikortResponse.LeggPaaKoeStatus;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,9 +15,12 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 
-import no.nav.registre.orkestratoren.consumer.rs.response.GenererFrikortResponse;
-import no.nav.registre.orkestratoren.consumer.rs.response.GenererFrikortResponse.LeggPaaKoeStatus;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortRequest;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 @RunWith(SpringRunner.class)
 @RestClientTest(TestnorgeFrikortConsumer.class)

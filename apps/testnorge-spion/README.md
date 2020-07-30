@@ -7,17 +7,13 @@ Testnorge-spion tilbyr endepunkt for å lage syntetiske vedtak og legge dem på 
 Swagger finnes under [/api](https://testnorge-spion.nais.preprod.local/api) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
-
-### Java
-For å kjøre lokalt må active profile settes til "dev". I tillegg, for å kunne gjøre kall mot NAIS apper må nav truststore settes opp 
-og cloud vault token må hentes fra Vault. 
-
-__I Intellij:__ 
-
-Run -> Edit Configurations -> VM Options 
-
-Fyll inn verdiene:
-* -Djavax.net.ssl.trustStore=C:\path\to\truststore
-* -Djavax.net.ssl.trustStorePassword=(Passord)
-* -Dspring.cloud.vault.token=(Copy token fra Vault)
-* -Dspring.profiles.active=dev
+Kjør ApplicationStarter med følgende argumenter:
+- -Djavax.net.ssl.trustStore=[path til lokal truststore]
+- -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
+- -Dspring.profiles.active=dev
+- -Davspillergruppe.id=[avspillergruppe id]
+- -Davspillergruppe.miljoe=[avspillergruppe miljø]
+- -Dkafka.brokers.url=[url for kafka brokers]
+- -Dkafka.schema.registry.url=[url for kafka schema registry]
+- -Dserviceuser.spion.password=[passord til servicebruker]
+- -Dserviceuser.spion.username=[brukernavn til servicebruker]

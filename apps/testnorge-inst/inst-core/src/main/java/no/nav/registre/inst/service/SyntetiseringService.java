@@ -1,16 +1,17 @@
 package no.nav.registre.inst.service;
 
-import io.micrometer.core.annotation.Timed;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import io.micrometer.core.annotation.Timed;
+import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.inst.IdentMedData;
 import no.nav.registre.inst.InstSaveInHodejegerenRequest;
@@ -122,14 +123,7 @@ public class SyntetiseringService {
                 log.warn("Ident {} har allerede fått opprettet institusjonsforhold. Hopper over opprettelse.", personident);
             } else {
                 institusjonsopphold.setPersonident(personident);
-                var oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(bearerToken, callId, consumerId, miljoe, institusjonsopphold);
-                if (statusFraInst2.containsKey(personident)) {
-                    statusFraInst2.get(personident).add(oppholdResponse);
-                } else {
-                    List<OppholdResponse> oppholdResponses = new ArrayList<>();
-                    oppholdResponses.add(oppholdResponse);
-                    statusFraInst2.put(personident, oppholdResponses);
-                }
+                OppholdResponse oppholdResponse = fyllOppholdResponse(bearerToken, callId, consumerId, miljoe, statusFraInst2, institusjonsopphold, personident);
 
                 if (oppholdResponse.getStatus().is2xxSuccessful()) {
                     antallOppholdOpprettet++;
@@ -160,6 +154,18 @@ public class SyntetiseringService {
         }
 
         return statusFraInst2;
+    }
+
+    private OppholdResponse fyllOppholdResponse(String bearerToken, String callId, String consumerId, String miljoe, Map<String, List<OppholdResponse>> statusFraInst2, Institusjonsopphold institusjonsopphold, String personident) {
+        var oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(bearerToken, callId, consumerId, miljoe, institusjonsopphold);
+        if (statusFraInst2.containsKey(personident)) {
+            statusFraInst2.get(personident).add(oppholdResponse);
+        } else {
+            List<OppholdResponse> oppholdResponses = new ArrayList<>();
+            oppholdResponses.add(oppholdResponse);
+            statusFraInst2.put(personident, oppholdResponses);
+        }
+        return oppholdResponse;
     }
 
     private List<Institusjonsopphold> validerOgFjernUgyldigeMeldinger(

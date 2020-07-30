@@ -1,12 +1,14 @@
 package no.nav.registre.testnorge.helsepersonell.consumer.command;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.concurrent.Callable;
+
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.util.concurrent.Callable;
+import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.testnorge.dto.samhandlerregisteret.v1.SamhandlerDTO;
+import no.nav.registre.testnorge.helsepersonell.exception.IdentNotFoundException;
 
 @Slf4j
 public class GetSamhandlerCommand implements Callable<SamhandlerDTO[]> {
@@ -27,7 +29,7 @@ public class GetSamhandlerCommand implements Callable<SamhandlerDTO[]> {
 
             SamhandlerDTO[] samhandlereDTOs = restTemplate.getForObject(uriTemplate.expand(ident), SamhandlerDTO[].class);
             if (samhandlereDTOs == null || samhandlereDTOs.length == 0) {
-                throw new RuntimeException("Finer ikke ident " + ident + " i samhandlerregisteret.");
+                throw new IdentNotFoundException("Finer ikke ident " + ident + " i samhandlerregisteret.");
             }
             return samhandlereDTOs;
         } catch (Exception e) {

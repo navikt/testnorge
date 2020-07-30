@@ -1,10 +1,13 @@
 package no.nav.registre.inntekt.utils;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
-
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.apache.commons.io.IOUtils;
+
+import lombok.extern.slf4j.Slf4j;
+
+import no.nav.registre.inntekt.exception.FileLoaderIOException;
 
 @Slf4j
 public class FileLoader {
@@ -29,7 +32,7 @@ public class FileLoader {
                 log.info("{} lasted inn med byte lengde {}.", DUMMY_PDF_FILE_PATH, dummyPDF.length);
             } catch (IOException e) {
                 log.error("Klarer ikke aa laste inn {}.", DUMMY_PDF_FILE_PATH, e);
-                throw new RuntimeException(e);
+                throw new FileLoaderIOException(e);
             }
         }
         return dummyPDF;

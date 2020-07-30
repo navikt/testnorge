@@ -1,7 +1,10 @@
 package no.nav.registre.testnorge.synt.sykemelding.consumer;
 
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import java.net.URI;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
@@ -10,13 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntSykemeldingHistorikkDTO;
+import no.nav.registre.testnorge.synt.sykemelding.exception.GenererSykemeldingerException;
 
 @Slf4j
 @Component
@@ -43,11 +45,11 @@ public class SyntSykemeldingHistorikkConsumer {
                 new ParameterizedTypeReference<HashMap<String, SyntSykemeldingHistorikkDTO>>() {
                 });
         if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new RuntimeException("Klarer ikke å generere sykemeldinger (http kode: " + response.getStatusCodeValue() + ")");
+            throw new GenererSykemeldingerException("Klarer ikke å generere sykemeldinger (http kode: " + response.getStatusCodeValue() + ")");
         }
         var body = response.getBody();
         if (body == null) {
-            throw new RuntimeException("Klarer ikke å generere sykemeldinger. Response objectet er null.");
+            throw new GenererSykemeldingerException("Klarer ikke å generere sykemeldinger. Response objectet er null.");
         }
         log.info("Sykemelding generert.");
         return body.get(ident);

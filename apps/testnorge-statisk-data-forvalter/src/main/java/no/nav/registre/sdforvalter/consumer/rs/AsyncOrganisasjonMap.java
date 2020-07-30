@@ -1,13 +1,13 @@
 package no.nav.registre.sdforvalter.consumer.rs;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import no.nav.registre.sdforvalter.consumer.rs.response.ereg.EregOrganisasjon;
+import lombok.extern.slf4j.Slf4j;
+
 import no.nav.registre.sdforvalter.domain.status.ereg.Organisasjon;
+import no.nav.registre.sdforvalter.exception.MapMismatchException;
 
 @Slf4j
 public class AsyncOrganisasjonMap {
@@ -24,7 +24,7 @@ public class AsyncOrganisasjonMap {
                 Organisasjon organisasjon = completable.get();
                 if (organisasjon != null) {
                     if (!orgnummer.equals(organisasjon.getOrgnummer())) {
-                        throw new RuntimeException(
+                        throw new MapMismatchException(
                                 "Miss match mellom orgnummer fra faste data " + orgnummer + " og ereg " + organisasjon.getOrgnummer()
                         );
                     }

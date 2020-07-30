@@ -1,14 +1,16 @@
 package no.nav.registre.skd.service;
 
+import static net.logstash.logback.encoder.org.apache.commons.lang3.BooleanUtils.isTrue;
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.opprettStatsborgerendringsmelding;
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.setObligatoriskeFelt;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.skd.consumer.IdentPoolConsumer;
 import no.nav.registre.skd.consumer.TpsSyntetisererenConsumer;
@@ -63,16 +65,7 @@ public class FasteMeldingerService {
             var syntetisertMelding = (RsMeldingstype1Felter) syntetiserteSkdmeldinger.get(i);
             var fastMelding = fasteMeldinger.get(i);
 
-            String adresselinje3;
-            if (fastMelding.getPostnr() != null && fastMelding.getBy() != null) {
-                adresselinje3 = fastMelding.getPostnr() + " " + fastMelding.getBy();
-            } else if (fastMelding.getPostnr() != null && fastMelding.getBy() == null) {
-                adresselinje3 = "";
-            } else {
-                adresselinje3 = syntetisertMelding.getPostnummer() + " " + syntetisertMelding.getAdresse3();
-            }
-            adresselinje3 += fastMelding.getPostnr() != null ? fastMelding.getPostnr() : syntetisertMelding.getPostnummer();
-            adresselinje3 += fastMelding.getBy() != null ? fastMelding.getBy() : syntetisertMelding.getAdresse3();
+            String adresselinje3 = opprettAdresselinje3(syntetisertMelding, fastMelding);
 
             var nyMelding = RsMeldingstype1Felter.builder()
                     .fodselsdato(fastMelding.getFoedselsdato())
@@ -84,15 +77,7 @@ public class FasteMeldingerService {
                     .adresse3(adresselinje3)
                     .build();
 
-            if (isNullOrEmpty(nyMelding.getSlektsnavn()) || isNullOrEmpty(nyMelding.getFornavn())) {
-                var navn = identPoolConsumer.hentNavn();
-                if (isNullOrEmpty(nyMelding.getFornavn())) {
-                    nyMelding.setFornavn(navn.getFornavn());
-                }
-                if (isNullOrEmpty(nyMelding.getSlektsnavn())) {
-                    nyMelding.setSlektsnavn(navn.getEtternavn());
-                }
-            }
+            oprettNyMeldingFornavnSlektsnavn(nyMelding);
 
             setObligatoriskeFelt(syntetisertMelding, nyMelding);
             nyMelding.setStatuskode(syntetisertMelding.getStatuskode());
@@ -107,12 +92,38 @@ public class FasteMeldingerService {
 
             nyeFasteMeldinger.add(nyMelding);
 
-            if (opprettEndringStatsborgerskap) {
+            if (isTrue(opprettEndringStatsborgerskap)) {
                 nyeFasteMeldinger.add(opprettStatsborgerendringsmelding(nyMelding));
             }
         }
 
         return tpsfConsumer.saveSkdEndringsmeldingerInTPSF(avspillergruppeId, nyeFasteMeldinger);
+    }
+
+    private String opprettAdresselinje3(RsMeldingstype1Felter syntetisertMelding, FastMeldingRequest fastMelding) {
+        String adresselinje3;
+        if (fastMelding.getPostnr() != null && fastMelding.getBy() != null) {
+            adresselinje3 = fastMelding.getPostnr() + " " + fastMelding.getBy();
+        } else if (fastMelding.getPostnr() != null && fastMelding.getBy() == null) {
+            adresselinje3 = "";
+        } else {
+            adresselinje3 = syntetisertMelding.getPostnummer() + " " + syntetisertMelding.getAdresse3();
+        }
+        adresselinje3 += fastMelding.getPostnr() != null ? fastMelding.getPostnr() : syntetisertMelding.getPostnummer();
+        adresselinje3 += fastMelding.getBy() != null ? fastMelding.getBy() : syntetisertMelding.getAdresse3();
+        return adresselinje3;
+    }
+
+    private void oprettNyMeldingFornavnSlektsnavn(RsMeldingstype1Felter nyMelding) {
+        if (isNullOrEmpty(nyMelding.getSlektsnavn()) || isNullOrEmpty(nyMelding.getFornavn())) {
+            var navn = identPoolConsumer.hentNavn();
+            if (isNullOrEmpty(nyMelding.getFornavn())) {
+                nyMelding.setFornavn(navn.getFornavn());
+            }
+            if (isNullOrEmpty(nyMelding.getSlektsnavn())) {
+                nyMelding.setSlektsnavn(navn.getEtternavn());
+            }
+        }
     }
 
     private static boolean isNullOrEmpty(String s) {

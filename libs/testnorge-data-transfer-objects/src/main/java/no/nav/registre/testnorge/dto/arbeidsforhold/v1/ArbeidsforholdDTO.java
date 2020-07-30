@@ -1,17 +1,30 @@
 package no.nav.registre.testnorge.dto.arbeidsforhold.v1;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
+
+import java.time.LocalDate;
 
 @Value
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class ArbeidsforholdDTO {
-    private final String arbeidsforholdId;
-    private final String orgnummer;
-    private final Double stillingsprosent;
-    private final String yrke;
+    @JsonProperty
+    String arbeidsforholdId;
+    @JsonProperty(required = true)
+    String orgnummer;
+    @JsonProperty(required = true)
+    Double stillingsprosent;
+    @JsonProperty(required = true)
+    String yrke;
+    @JsonProperty(required = true)
+    LocalDate fom;
+    @JsonProperty(required = true)
+    LocalDate tom;
+    @JsonProperty(required = true)
+    String ident;
 }

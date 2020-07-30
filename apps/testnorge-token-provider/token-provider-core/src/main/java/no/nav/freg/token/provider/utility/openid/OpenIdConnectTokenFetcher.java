@@ -1,9 +1,8 @@
 package no.nav.freg.token.provider.utility.openid;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
 import lombok.RequiredArgsConstructor;
+import no.nav.freg.token.provider.utility.common.OpenIdConnectException;
+import no.nav.freg.token.provider.utility.common.RestConsumer;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -16,8 +15,8 @@ import javax.xml.bind.DatatypeConverter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import no.nav.freg.token.provider.utility.common.OpenIdConnectException;
-import no.nav.freg.token.provider.utility.common.RestConsumer;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Service
 @RequiredArgsConstructor

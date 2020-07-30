@@ -7,16 +7,6 @@ import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperS
 import static no.nav.registre.hodejegeren.service.TpsStatusQuoService.AKSJONSKODE;
 import static no.nav.registre.hodejegeren.service.utilities.IdentUtility.getFoedselsdatoFraFnr;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -28,7 +18,20 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
+
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
+import no.nav.registre.hodejegeren.exception.IdentIOException;
 import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
 import no.nav.registre.hodejegeren.provider.rs.responses.NavEnhetResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.kontoinfo.KontoinfoResponse;
@@ -224,7 +227,7 @@ public class EksisterendeIdenterService {
                 i++;
             } catch (IOException e) {
                 log.error(STATUS_QUO_FEILMELDING, ident, e);
-                throw new RuntimeException("Kunne ikke hente status quo på ident " + ident, e);
+                throw new IdentIOException("Kunne ikke hente status quo på ident " + ident, e);
             }
         }
         return identerMedKontoinformasjon;
@@ -305,7 +308,7 @@ public class EksisterendeIdenterService {
                     .build();
         } catch (IOException e) {
             log.error(STATUS_QUO_FEILMELDING, ident, e);
-            throw new RuntimeException("Kunne ikke hente status quo på ident " + ident, e);
+            throw new IdentIOException("Kunne ikke hente status quo på ident " + ident, e);
         }
     }
 
