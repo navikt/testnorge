@@ -4,21 +4,26 @@ Adapter for inntekt
 Tilbyr endepunkter for å opprette et gitt antall syntetiske inntekter, AltinnInntektmedlinger.
 Arbeidsforholdene til inntektsmeldingene blir validert mot Aareg i miljø.
 
-## Dokumentasjon
-### Swagger
+## Swagger
 Swagger finnes under [/api](https://testnorge-inntekt.nais.preprod.local/api) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
-
-### Java
-For å kjøre lokalt må active profile settes til "local". I tillegg, for å kunne gjøre kall mot NAIS apper må nav truststore settes opp 
-og cloud vault token må hentes fra Vault. 
-
-__I Intellij:__ 
-
+   
+### Utviklerimage
 Kjør ApplicationStarter med følgende argumenter:
-(Run -> Edit Configurations -> VM Options) 
-* -Djavax.net.ssl.trustStore=C:\path\to\truststore
-* -Djavax.net.ssl.trustStorePassword=(Passord)
-* -Dspring.cloud.vault.token=(Copy token fra Vault)
-* -Dspring.profiles.active=local
+ - -Djavax.net.ssl.trustStore=[path til lokal truststore]
+ - -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
+ - -Dspring.cloud.vault.token=[kopier token fra vault]
+ - -Dspring.profiles.active=local
+    
+### Utenfor utviklerimage
+
+#### Windows
+Ha BIG-IP Endge Client kjørende og kjør ApplicationStarter med samme argumenter som for utviklerimage.
+    
+#### Mac
+Ha Nav-Tunnel kjørende og kjør ApplicationStarter med samme argumenter som for utviklerimage og legg til følgende argumenter:
+- -DsocksProxyHost=127.0.0.1
+- -DsocksProxyPort=14122
+- -DsocksNonProxyHosts=127.0.0.1|dl.bintray.com|repo.maven.apache.org|maven.adeo.no|packages.confluent.io|confluent.io|maven.xwiki.org|maven.repository.redhat.com
+    

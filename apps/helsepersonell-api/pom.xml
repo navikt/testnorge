@@ -11,10 +11,6 @@
 
     <artifactId>helsepersonell-api</artifactId>
 
-    <properties>
-        <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <artifactId>testnorge-core</artifactId>
@@ -74,7 +70,6 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-vault-config</artifactId>
-            <version>${spring-cloud.version}</version>
         </dependency>
     </dependencies>
 

@@ -57,8 +57,22 @@ CircleCI håndterer bygg og deploy til nais via [deployment-cli](https://github.
 Swagger finnes under [/api](https://testnorge-statisk-data-forvalter.nais.preprod.local/api) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
+      
+### Utviklerimage
 Kjør ApplicationStarter med følgende argumenter:
- - -Djavax.net.ssl.trustStore=[path til lokal truststore]
- - -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
- - -Dspring.profiles.active=dev
- - -Dspring.cloud.vault.token=[Kopier token fra vault]
+- -Djavax.net.ssl.trustStore=[path til lokal truststore]
+- -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
+- -Dspring.profiles.active=dev
+- -Dspring.cloud.vault.token=[Kopier token fra vault]
+   
+### Utenfor utviklerimage
+   
+#### Windows
+Ha BIG-IP Endge Client kjørende og kjør ApplicationStarter med samme argumenter som for utviklerimage.
+       
+#### Mac
+Ha Nav-Tunnel kjørende og kjør ApplicationStarter med samme argumenter som for utviklerimage og legg til følgende argumenter:
+- -DsocksProxyHost=127.0.0.1
+- -DsocksProxyPort=14122
+- -DsocksNonProxyHosts=127.0.0.1|dl.bintray.com|repo.maven.apache.org|maven.adeo.no|packages.confluent.io|confluent.io|maven.xwiki.org|maven.repository.redhat.com
+       
