@@ -43,7 +43,6 @@
         <sonar.projectName>testnorge</sonar.projectName>
         <sonar.organization>navit</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml, target/site/jacoco-it/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <!--suppress UnresolvedMavenProperty Ligger som secret i github-->
         <sonar.login>${SONAR_LOGIN}</sonar.login>
         <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
@@ -61,6 +60,7 @@
         <logback-syslog4j>1.0.0</logback-syslog4j>
         <javax.servlet.version>2.5</javax.servlet.version>
         <freg-security.version>e603e2b2</freg-security.version>
+        <jacoco.version>0.8.5</jacoco.version>
     </properties>
 
     <dependencyManagement>
@@ -189,6 +189,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -203,6 +204,37 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco.version}</version>
+                    <executions>
+                        <execution>
+                            <id>prepare-agent</id>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>report</id>
+                            <phase>prepare-package</phase>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>post-unit-test</id>
+                            <phase>test</phase>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                            <configuration>
+                                <dataFile>target/jacoco.exec</dataFile>
+                                <outputDirectory>target/coverage</outputDirectory>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
