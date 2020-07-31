@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.arbeidsforhold.consumer.dto;
+package no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,6 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class ArbeidsavtaleDTO {
-    Double stillingsprosent;
-    String yrke;
-    String arbeidstidsordning;
+public class ArbeidstakerDTO {
+    String ident;
 }

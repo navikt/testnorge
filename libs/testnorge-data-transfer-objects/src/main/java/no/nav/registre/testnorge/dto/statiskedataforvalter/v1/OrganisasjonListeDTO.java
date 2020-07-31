@@ -1,4 +1,4 @@
-package no.nav.registre.sdforvalter.dto.organisasjon.v1;
+package no.nav.registre.testnorge.dto.statiskedataforvalter.v1;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -14,5 +14,5 @@ import java.util.List;
 @NoArgsConstructor(force = true)
 public class OrganisasjonListeDTO {
     @JsonProperty
-    private final List<OrganisasjonDTO> liste;
+    List<OrganisasjonDTO> liste;
 }

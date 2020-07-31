@@ -17,6 +17,8 @@ public class ArbeidsforholdDTO {
     String arbeidsforholdId;
     @JsonProperty(required = true)
     String orgnummer;
+    @JsonProperty
+    String arbeidstidsordning;
     @JsonProperty(required = true)
     Double stillingsprosent;
     @JsonProperty(required = true)

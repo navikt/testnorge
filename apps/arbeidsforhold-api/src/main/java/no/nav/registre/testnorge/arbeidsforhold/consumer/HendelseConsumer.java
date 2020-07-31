@@ -31,7 +31,7 @@ public class HendelseConsumer {
                 Hendelse.newBuilder()
                         .setIdent(ident)
                         .setFom(fom.format(formatter))
-                        .setTom(tom.format(formatter))
+                        .setTom(tom != null ? tom.format(formatter) : null)
                         .setType(HendelseType.ARBEIDSFORHOLD_OPPRETTET.name())
                         .build()
         );

@@ -1,4 +1,4 @@
-package no.nav.registre.sdforvalter.dto.organisasjon.v1;
+package no.nav.registre.testnorge.dto.statiskedataforvalter.v1;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -13,17 +13,17 @@ import lombok.Value;
 public class AdresseDTO {
 
     @JsonProperty(required = true)
-    private String adresselinje1;
+    String adresselinje1;
     @JsonProperty
-    private String adresselinje2;
+    String adresselinje2;
     @JsonProperty
-    private String adresselinje3;
+    String adresselinje3;
     @JsonProperty
-    private String postnr;
+    String postnr;
     @JsonProperty
-    private String kommunenr;
+    String kommunenr;
     @JsonProperty(required = true)
-    private String landkode;
+    String landkode;
     @JsonProperty
-    private String poststed;
+    String poststed;
 }
