@@ -1,10 +1,14 @@
 package no.nav.registre.testnorge.arbeidsforhold.provider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDate;
 import java.util.Collections;
 
+import no.nav.registre.testnorge.arbeidsforhold.consumer.dto.AnsettelsesperiodeDTO;
 import no.nav.registre.testnorge.arbeidsforhold.consumer.dto.ArbeidsavtaleDTO;
 import no.nav.registre.testnorge.arbeidsforhold.consumer.dto.ArbeidsgiverDTO;
+import no.nav.registre.testnorge.arbeidsforhold.consumer.dto.ArbeidstakerDTO;
+import no.nav.registre.testnorge.arbeidsforhold.consumer.dto.PeriodeDTO;
 import no.nav.registre.testnorge.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.test.JsonWiremockHelper;
 
@@ -27,7 +31,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
@@ -47,20 +50,31 @@ public class ArbeidsforholdControllerIntegrationTest {
     private static final String yrke = "Tester";
     private static final double stillingsprosent = 100.00;
     private static final String aaregUrl = "(.*)/aareg-test/api/v1/arbeidstaker/arbeidsforhold";
-    private static final String tokenUrl =  "(.*)/token-provider";
+    private static final String tokenUrl = "(.*)/token-provider";
 
-    private no.nav.registre.testnorge.arbeidsforhold.consumer.dto.ArbeidsforholdDTO aaregResponse;
+    private no.nav.registre.testnorge.arbeidsforhold.consumer.dto.ArbeidsforholdDTO[] aaregResponse;
 
     @Before
-    public void setUp(){
-        aaregResponse = no.nav.registre.testnorge.arbeidsforhold.consumer.dto.ArbeidsforholdDTO.builder()
+    public void setUp() {
+        var arbeidsforhold = no.nav.registre.testnorge.arbeidsforhold.consumer.dto.ArbeidsforholdDTO.builder()
                 .arbeidsforholdId(arbeidsforholdId)
                 .arbeidsgiver(ArbeidsgiverDTO.builder().organisasjonsnummer(orgnummer).build())
                 .arbeidsavtaler(Collections.singletonList(ArbeidsavtaleDTO.builder()
                         .stillingsprosent(stillingsprosent)
                         .yrke(yrke)
                         .build()))
+                .ansettelsesperiode(AnsettelsesperiodeDTO.builder()
+                        .periode(PeriodeDTO.builder()
+                                .fom(LocalDate.now().minusMonths(3))
+                                .tom(LocalDate.now())
+                                .build())
+                        .build())
+                .arbeidstaker(ArbeidstakerDTO.builder()
+                        .offentligIdent(personIdent)
+                        .build())
                 .build();
+
+        aaregResponse = new no.nav.registre.testnorge.arbeidsforhold.consumer.dto.ArbeidsforholdDTO[] { arbeidsforhold };
     }
 
     @Test
@@ -74,7 +88,7 @@ public class ArbeidsforholdControllerIntegrationTest {
         JsonWiremockHelper
                 .builder(objectMapper)
                 .withUrlPathMatching(aaregUrl)
-                .withResponseBody(Collections.singletonList(aaregResponse))
+                .withResponseBody(aaregResponse)
                 .stubGet();
 
         var mvcResultat = mockMvc.perform(get("/api/v1/arbeidsforhold/" + personIdent)
@@ -103,6 +117,7 @@ public class ArbeidsforholdControllerIntegrationTest {
         assertThat(resultat[0].getOrgnummer()).isEqualTo(orgnummer);
         assertThat(resultat[0].getYrke()).isEqualTo(yrke);
         assertThat(resultat[0].getStillingsprosent()).isEqualTo(stillingsprosent);
+        assertThat(resultat[0].getIdent()).isEqualTo(personIdent);
     }
 
     @AfterEach
