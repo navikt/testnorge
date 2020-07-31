@@ -32,6 +32,7 @@ import no.nav.registre.testnorge.dto.person.v1.AdresseDTO;
 import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
 import no.nav.registre.testnorge.person.consumer.dto.graphql.Bostedsadresse;
 import no.nav.registre.testnorge.person.consumer.dto.graphql.Data;
+import no.nav.registre.testnorge.person.consumer.dto.graphql.Foedsel;
 import no.nav.registre.testnorge.person.consumer.dto.graphql.Folkeregisteridentifikator;
 import no.nav.registre.testnorge.person.consumer.dto.graphql.HentPerson;
 import no.nav.registre.testnorge.person.consumer.dto.graphql.Navn;
@@ -58,10 +59,12 @@ public class PersonControllerIntegrationTest {
     @Test
     public void should_get_dtoPerson() throws Exception {
         Navn pdlNavn = new Navn("Line", null, "Linesen");
+        Foedsel foedsel = new Foedsel("1980-10-02");
         Folkeregisteridentifikator folkeregisteridentifikator = new Folkeregisteridentifikator("12345678912", null, null);
         Bostedsadresse bostedsadresse = new Bostedsadresse(new Vegadresse("Linegata", "12", "2650", null));
         PdlPerson graphqlResponse = new PdlPerson(Collections.EMPTY_LIST, new Data(new HentPerson(
                 Collections.singletonList(pdlNavn),
+                Collections.singletonList(foedsel),
                 Collections.singletonList(bostedsadresse),
                 Collections.singletonList(folkeregisteridentifikator))));
 
@@ -90,6 +93,7 @@ public class PersonControllerIntegrationTest {
                 .fornavn("Line")
                 .etternavn("Linesen")
                 .ident("12345678912")
+                .foedselsdato("1980-10-02")
                 .adresse(new AdresseDTO("Linegata 12", "2650", null, null))
                 .build();
 

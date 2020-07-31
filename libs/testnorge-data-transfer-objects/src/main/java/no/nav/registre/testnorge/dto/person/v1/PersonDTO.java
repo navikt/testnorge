@@ -14,6 +14,7 @@ public class PersonDTO {
 
     @JsonProperty(required = true)
     String ident;
+    String foedselsdato;
     @JsonProperty(required = true)
     String fornavn;
     @JsonProperty
