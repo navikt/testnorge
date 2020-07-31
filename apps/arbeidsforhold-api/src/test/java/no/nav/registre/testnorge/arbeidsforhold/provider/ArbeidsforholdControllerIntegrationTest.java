@@ -10,6 +10,7 @@ import no.nav.registre.testnorge.arbeidsforhold.consumer.dto.ArbeidsgiverDTO;
 import no.nav.registre.testnorge.arbeidsforhold.consumer.dto.ArbeidstakerDTO;
 import no.nav.registre.testnorge.arbeidsforhold.consumer.dto.PeriodeDTO;
 import no.nav.registre.testnorge.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.arbeidsforhold.domain.Arbeidsforhold;
 import no.nav.registre.testnorge.test.JsonWiremockHelper;
 
 import org.junit.Before;
@@ -113,11 +114,7 @@ public class ArbeidsforholdControllerIntegrationTest {
                 ArbeidsforholdDTO[].class);
 
         assertThat(resultat).hasSize(1);
-        assertThat(resultat[0].getArbeidsforholdId()).isEqualTo(arbeidsforholdId);
-        assertThat(resultat[0].getOrgnummer()).isEqualTo(orgnummer);
-        assertThat(resultat[0].getYrke()).isEqualTo(yrke);
-        assertThat(resultat[0].getStillingsprosent()).isEqualTo(stillingsprosent);
-        assertThat(resultat[0].getIdent()).isEqualTo(personIdent);
+        assertThat(resultat[0]).isEqualToComparingFieldByField(new Arbeidsforhold(aaregResponse[0]));
     }
 
     @AfterEach
