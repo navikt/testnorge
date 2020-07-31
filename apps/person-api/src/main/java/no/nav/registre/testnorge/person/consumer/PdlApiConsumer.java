@@ -39,6 +39,7 @@ public class PdlApiConsumer {
 
         PdlPerson pdlPerson = new GetPersonCommand(restTemplate, pdlApiUrl, ident, token).call();
 
+        log.info("Hva går galt med fødsel: {}", pdlPerson);
         if (pdlPerson.getErrors().isEmpty()) {
             return new Person(pdlPerson);
         }

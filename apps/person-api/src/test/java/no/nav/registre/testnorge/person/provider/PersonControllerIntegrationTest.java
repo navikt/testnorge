@@ -62,11 +62,12 @@ public class PersonControllerIntegrationTest {
         Foedsel foedsel = new Foedsel("1980-10-02");
         Folkeregisteridentifikator folkeregisteridentifikator = new Folkeregisteridentifikator("12345678912", null, null);
         Bostedsadresse bostedsadresse = new Bostedsadresse(new Vegadresse("Linegata", "12", "2650", null));
-        PdlPerson graphqlResponse = new PdlPerson(Collections.EMPTY_LIST, new Data(new HentPerson(
-                Collections.singletonList(pdlNavn),
-                Collections.singletonList(foedsel),
-                Collections.singletonList(bostedsadresse),
-                Collections.singletonList(folkeregisteridentifikator))));
+        PdlPerson graphqlResponse = new PdlPerson(Collections.EMPTY_LIST,
+                new Data(new HentPerson(
+                        Collections.singletonList(pdlNavn),
+                        Collections.singletonList(foedsel),
+                        Collections.singletonList(bostedsadresse),
+                        Collections.singletonList(folkeregisteridentifikator))));
 
         JsonWiremockHelper
                 .builder(objectMapper)
@@ -78,7 +79,10 @@ public class PersonControllerIntegrationTest {
         JsonWiremockHelper
                 .builder(objectMapper)
                 .withUrlPathMatching("(.*)/token/")
-                .withResponseBody(Token.builder().access_token("access").expires_in(LocalDateTime.now().plusMinutes(60)).build())
+                .withResponseBody(Token.builder()
+                        .access_token("access")
+                        .expires_in(LocalDateTime.now().plusMinutes(60))
+                        .build())
                 .stubGet();
 
         String json = mvc.perform(get("/api/v1/personer/12345678912"))
