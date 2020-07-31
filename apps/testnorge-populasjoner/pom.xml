@@ -137,6 +137,15 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-vault-config</artifactId>
         </dependency>
+        <dependency>
+            <groupId>no.nav.registre.testnorge</groupId>
+            <artifactId>testnorge-testing</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.registre.testnorge</groupId>
+            <artifactId>testnorge-domain</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
