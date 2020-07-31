@@ -34,7 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
-@ActiveProfiles("test")
 public class BrukereControllerIntegrationTest {
     @Autowired
     private MockMvc mvc;

@@ -45,7 +45,6 @@ import java.util.Map;
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
-@ActiveProfiles("test")
 public class AapControllerIntegrationTest {
 
     @Autowired
