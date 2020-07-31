@@ -8,6 +8,8 @@ import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -84,6 +86,7 @@ public class SigrunStubConsumer {
     ) {
         var sendDataUrl = new UriTemplate(String.format(sigrunBaseUrl, miljoe) + "testdata/opprettBolk");
         var postRequest = RequestEntity.post(sendDataUrl.expand())
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(NAV_CALL_ID_STRING, NAV_CALL_ID)
                 .header(NAV_CONSUMER_ID_STRING, NAV_CONSUMER_ID)
                 .header("testdataEier", testdataEier)

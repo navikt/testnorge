@@ -1,6 +1,5 @@
 package no.nav.registre.skd.consumer;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -58,8 +57,6 @@ public class TpConsumerTest {
 
     private void stubTpConsumer() {
         stubFor(post(urlPathEqualTo("/tp/api/v1/orkestrering/opprettPersoner/" + miljoe))
-                .withRequestBody(equalToJson(
-                        "[\"" + fnr1 + "\", \"" + fnr2 + "\"]"))
                 .willReturn(ok()
                         .withHeader("content-type", "application/json")
                         .withBody("[\"" + fnr2 + "\"]")));

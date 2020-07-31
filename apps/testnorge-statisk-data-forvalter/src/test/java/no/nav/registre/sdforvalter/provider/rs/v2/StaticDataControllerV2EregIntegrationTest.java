@@ -34,7 +34,7 @@ import no.nav.registre.sdforvalter.domain.Opprinnelse;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc()
 @TestPropertySource(
         locations = "classpath:application-test.properties"
 )
