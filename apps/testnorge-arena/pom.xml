@@ -18,4 +18,21 @@
         <module>arena-local</module>
     </modules>
 
+    <properties>
+        <springframework.cloud.version>2.1.2.RELEASE</springframework.cloud.version>
+    </properties>
+
+
+    <!-- TODO: fjerne denne dependency. For øyeblikket feiler integrasjonstester uten den.    -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- TEST -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-contract-wiremock</artifactId>
+                <version>${springframework.cloud.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 </project>

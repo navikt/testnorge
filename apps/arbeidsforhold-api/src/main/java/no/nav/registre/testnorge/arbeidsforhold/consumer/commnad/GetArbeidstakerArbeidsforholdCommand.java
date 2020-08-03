@@ -38,7 +38,7 @@ public class GetArbeidstakerArbeidsforholdCommand implements Callable<List<Arbei
                 .build();
 
         ResponseEntity<ArbeidsforholdDTO[]> response = restTemplate.exchange(request, ArbeidsforholdDTO[].class);
-        if (!response.getStatusCode().is2xxSuccessful() || !response.hasBody()) {
+        if (!response.getStatusCode().is2xxSuccessful() || !response.hasBody() || response.getBody()==null) {
             log.error(
                     "Klarer ikke å hente arbeidsforhold for {}. Response code: {}",
                     ident,
