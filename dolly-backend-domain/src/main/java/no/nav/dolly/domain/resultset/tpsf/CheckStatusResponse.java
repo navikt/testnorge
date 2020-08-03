@@ -24,10 +24,4 @@ public class CheckStatusResponse {
         }
         return statuser;
     }
-
-    public boolean isAvailable(String ident) {
-        return getStatuser().stream()
-                .filter(ident1-> ident1.getIdent().equals(ident))
-                .anyMatch(IdentStatus::isAvailable);
-    }
 }

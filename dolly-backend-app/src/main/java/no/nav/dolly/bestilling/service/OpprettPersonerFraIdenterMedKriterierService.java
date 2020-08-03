@@ -68,7 +68,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
 
                         BestillingProgress progress = new BestillingProgress(bestilling.getId(), identStatus.getIdent());
                         try {
-                            if (tilgjengeligeIdenter.isAvailable(identStatus.getIdent())) {
+                            if (identStatus.isAvailable()) {
 
                                 tpsfBestilling.setOpprettFraIdenter(newArrayList(identStatus.getIdent()));
                                 List<String> leverteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
@@ -79,7 +79,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                 TpsPerson tpsPerson = buildTpsPerson(bestilling, leverteIdenter, null);
                                 gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, false);
                             } else {
-                                progress.setFeil("NA:Feil= Ident er ikke tilgjengelig");
+                                progress.setFeil("NA:Feil= Ident er ikke tilgjengelig; " + identStatus.getStatus());
                             }
                         } catch (RuntimeException e) {
                             progress.setFeil("NA:" + errorStatusDecoder.decodeRuntimeException(e));

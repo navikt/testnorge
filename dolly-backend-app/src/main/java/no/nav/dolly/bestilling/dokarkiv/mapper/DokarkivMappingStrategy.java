@@ -56,29 +56,28 @@ public class DokarkivMappingStrategy implements MappingStrategy {
                         dokarkivRequest.setBruker(DokarkivRequest.Bruker.builder()
                                 .idType(FNR)
                                 .build());
-                        fyllDokarkivDokument(dokarkiv, dokarkivRequest);
+                        fyllDokarkivDokument(dokarkivRequest);
                     }
                 })
                 .byDefault()
                 .register();
     }
 
-    private void fyllDokarkivDokument(RsDokarkiv dokarkiv, DokarkivRequest dokarkivRequest) {
-        if (dokarkiv.getDokumenter().isEmpty()) {
+    private void fyllDokarkivDokument(DokarkivRequest dokarkivRequest) {
+
+        if (dokarkivRequest.getDokumenter().isEmpty()) {
             dokarkivRequest.getDokumenter().add(new DokarkivRequest.Dokument());
-            dokarkiv.getDokumenter().add(new RsDokarkiv.Dokument());
         }
-        if (dokarkiv.getDokumenter().get(0).getDokumentvarianter().isEmpty()) {
+        if (dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().isEmpty()) {
             dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().add(new DokarkivRequest.DokumentVariant());
-            dokarkiv.getDokumenter().get(0).getDokumentvarianter().add(new RsDokarkiv.DokumentVariant());
         }
-        if (isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getFiltype())) {
+        if (isBlank(dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).getFiltype())) {
             dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setFiltype(PDFA);
         }
-        if (isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getVariantformat())) {
+        if (isBlank(dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).getVariantformat())) {
             dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setVariantformat(ARKIV);
         }
-        if (isBlank(dokarkiv.getDokumenter().get(0).getDokumentvarianter().get(0).getFysiskDokument())) {
+        if (isBlank(dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).getFysiskDokument())) {
                 dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setFysiskDokument(PDF_VEDLEGG);
         }
     }
