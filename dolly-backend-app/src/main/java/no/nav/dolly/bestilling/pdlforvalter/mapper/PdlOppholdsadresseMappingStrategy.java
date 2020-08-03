@@ -61,14 +61,21 @@ public class PdlOppholdsadresseMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(RsPostadresse postadresse, UtenlandskAdresse utenlandskAdresse, MappingContext context) {
 
-                        StringBuilder adresse = new StringBuilder(postadresse.getPostLinje1());
+                        StringBuilder adresse = new StringBuilder();
+                        if (isNotBlank(postadresse.getPostLinje1())) {
+                            postadresse.getPostLinje1();
+                        }
                         if (isNotBlank(postadresse.getPostLinje2())) {
-                            adresse.append(' ')
-                                    .append(postadresse.getPostLinje2());
+                            if (isNotBlank(postadresse.getPostLinje1())) {
+                                adresse.append(", ");
+                            }
+                            adresse.append(postadresse.getPostLinje2());
                         }
                         if (isNotBlank(postadresse.getPostLinje3())) {
-                            adresse.append(' ')
-                                    .append(postadresse.getPostLinje3());
+                            if (isNotBlank(postadresse.getPostLinje1()) || isNotBlank(postadresse.getPostLinje2())) {
+                                adresse.append(", ");
+                            }
+                            adresse.append(postadresse.getPostLinje3());
                         }
                         utenlandskAdresse.setAdressenavnNummer(adresse.toString());
                         utenlandskAdresse.setLandkode(postadresse.getPostLand());

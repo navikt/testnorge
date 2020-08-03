@@ -1,6 +1,7 @@
 package no.nav.dolly.domain.resultset.tpsf.adresse;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -44,12 +45,27 @@ public class RsPostadresse {
     private String postLand;
 
     @JsonIgnore
+    public boolean isValid() {
+        int count = 0;
+        if (isNotBlank(postLinje1)) {
+            count++;
+        }
+        if (isNotBlank(postLinje2)) {
+            count++;
+        }
+        if (isNotBlank(postLinje3)) {
+            count++;
+        }
+        return count > 1;
+    }
+
+    @JsonIgnore
     public boolean isNorsk() {
-        return isBlank(postLand) || "NOR".equals(postLand);
+        return (isBlank(postLand) || "NOR".equals(postLand)) && isValid();
     }
 
     @JsonIgnore
     public boolean isUtenlandsk() {
-        return !isNorsk();
+        return isNotBlank(postLand) && !"NOR".equals(postLand) && isValid();
     }
 }

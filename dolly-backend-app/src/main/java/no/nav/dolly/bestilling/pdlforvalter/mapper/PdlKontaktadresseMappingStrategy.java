@@ -93,7 +93,9 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(MidlertidigUtadAdresse utadAdresse, UtenlandskAdresseIFrittFormat utenlandskAdresseIFrittFormat, MappingContext context) {
 
-                        utenlandskAdresseIFrittFormat.getAdresselinjer().add(utadAdresse.getPostLinje1());
+                        if (isNotBlank(utadAdresse.getPostLinje1())) {
+                            utenlandskAdresseIFrittFormat.getAdresselinjer().add(utadAdresse.getPostLinje1());
+                        }
                         if (isNotBlank(utadAdresse.getPostLinje2())) {
                             utenlandskAdresseIFrittFormat.getAdresselinjer().add(utadAdresse.getPostLinje2());
                         }
@@ -106,11 +108,14 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                 .register();
 
         factory.classMap(RsPostadresse.class, UtenlandskAdresseIFrittFormat.class)
+
                 .customize(new CustomMapper<RsPostadresse, UtenlandskAdresseIFrittFormat>() {
                     @Override
                     public void mapAtoB(RsPostadresse postadresse, UtenlandskAdresseIFrittFormat utenlandskAdresse, MappingContext context) {
 
-                        utenlandskAdresse.getAdresselinjer().add(postadresse.getPostLinje1());
+                        if (isNotBlank(postadresse.getPostLinje1())) {
+                            utenlandskAdresse.getAdresselinjer().add(postadresse.getPostLinje1());
+                        }
                         if (isNotBlank(postadresse.getPostLinje2())) {
                             utenlandskAdresse.getAdresselinjer().add(postadresse.getPostLinje2());
                         }
@@ -124,6 +129,7 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
     }
 
     private void mapNorskAdresse(MapperFacade mapperFacade, PdlPersonAdresseWrapper wrapper, PdlKontaktadresse kontaktadresse) {
+
         if (!wrapper.getPerson().getMidlertidigAdresse().isEmpty() &&
                 GATE == wrapper.getPerson().getMidlertidigAdresse().get(0).getAdressetype()) {
 
