@@ -14,6 +14,7 @@ import no.nav.registre.testnorge.dto.sykemelding.v1.SykemeldingDTO;
 import no.nav.registre.testnorge.sykemelding.domain.ApplicationInfo;
 import no.nav.registre.testnorge.sykemelding.domain.Sykemelding;
 import no.nav.registre.testnorge.sykemelding.service.SykemeldingService;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,11 +37,12 @@ public class SykemeldingControllerTest {
     @InjectMocks
     private SykemeldingController sykemeldingController;
 
-    @Ignore
-    @Test
-    public void shouldCreateSykemelding() {
+    SykemeldingDTO sykemeldingRequest;
+    Sykemelding sykemelding;
 
-        SykemeldingDTO sykemeldingRequest = new SykemeldingDTO(
+    @Before
+    public void setUp() {
+        sykemeldingRequest = new SykemeldingDTO(
                 LocalDate.now(),
                 PasientDTO.builder()
                         .ident("11111124314")
@@ -67,7 +69,7 @@ public class SykemeldingControllerTest {
                         .stillingsprosent((double) 100)
                         .yrkesbetegnelse("giver")
                         .build(),
-               false,
+                false,
                 new ArrayList<>(Collections.singletonList(PeriodeDTO.builder().aktivitet(
                         AktivitetDTO.builder()
                                 .aktivitet(Aktivitet.AVVENTENDE)
@@ -110,16 +112,18 @@ public class SykemeldingControllerTest {
                         .build(),
                 true);
 
-        Sykemelding sykemelding = new Sykemelding(sykemeldingRequest, ApplicationInfo.builder()
+        sykemelding = new Sykemelding(sykemeldingRequest, ApplicationInfo.builder()
                 .name("test")
                 .version("v1")
                 .build());
+    }
 
-        System.out.println(sykemelding.toXml());
+    @Ignore("Gir error, fikk ikke til when.then")
+    @Test
+    public void shouldCreateSykemelding() {
 
         sykemeldingController.create(sykemeldingRequest);
 
         verify(sykemeldingService).send(sykemelding);
     }
-
 }
