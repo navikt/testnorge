@@ -28,11 +28,11 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: mvn --projects :orkestratoren-core --also-make --settings maven-settings.xml compile
+        run: mvn --projects :orkestratoren --also-make --settings maven-settings.xml compile
       - name: Test
-        run: mvn --projects :orkestratoren-core --also-make --settings maven-settings.xml test
+        run: mvn --projects :orkestratoren --also-make --settings maven-settings.xml test
       - name: Package
-        run: mvn --projects :orkestratoren-core --also-make --settings maven-settings.xml package -Dmaven.test.skip
+        run: mvn --projects :orkestratoren --also-make --settings maven-settings.xml package -Dmaven.test.skip
 
       - name: Build and publish Docker image
         env:
