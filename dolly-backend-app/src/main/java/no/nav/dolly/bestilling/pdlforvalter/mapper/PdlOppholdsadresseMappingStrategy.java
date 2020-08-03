@@ -63,21 +63,18 @@ public class PdlOppholdsadresseMappingStrategy implements MappingStrategy {
 
                         StringBuilder adresse = new StringBuilder();
                         if (isNotBlank(postadresse.getPostLinje1())) {
-                            postadresse.getPostLinje1();
+                            adresse.append(postadresse.getPostLinje1())
+                                    .append(", ");
                         }
                         if (isNotBlank(postadresse.getPostLinje2())) {
-                            if (isNotBlank(postadresse.getPostLinje1())) {
-                                adresse.append(", ");
-                            }
-                            adresse.append(postadresse.getPostLinje2());
+                            adresse.append(postadresse.getPostLinje2())
+                                    .append(", ");
                         }
                         if (isNotBlank(postadresse.getPostLinje3())) {
-                            if (isNotBlank(postadresse.getPostLinje1()) || isNotBlank(postadresse.getPostLinje2())) {
-                                adresse.append(", ");
-                            }
-                            adresse.append(postadresse.getPostLinje3());
+                            adresse.append(postadresse.getPostLinje3())
+                                    .append(", ");
                         }
-                        utenlandskAdresse.setAdressenavnNummer(adresse.toString());
+                        utenlandskAdresse.setAdressenavnNummer(adresse.substring(0, adresse.length() - 2));
                         utenlandskAdresse.setLandkode(postadresse.getPostLand());
                     }
                 })
