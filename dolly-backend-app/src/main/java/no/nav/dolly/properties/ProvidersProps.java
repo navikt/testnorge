@@ -35,6 +35,7 @@ public class ProvidersProps {
     private Brregstub brregstub = new Brregstub();
     private Aktoerregister aktoerregister = new Aktoerregister();
     private Dokarkiv dokarkiv = new Dokarkiv();
+    private SyntSykemelding syntSykemelding = new SyntSykemelding();
 
     @Getter
     @Setter
@@ -235,4 +236,13 @@ public class ProvidersProps {
         private String url;
     }
 
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SyntSykemelding {
+
+        private String url;
+    }
 }
