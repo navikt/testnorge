@@ -58,7 +58,7 @@ public class PopulasjonerControllerIntegrationTest {
     }
 
     @Test
-    public void shouldHentePersonerFraArena() throws Exception {
+    public void shouldHentePersonerFraMiniNorge() throws Exception {
 
         String hentIdenterFraHodejegeren = "(.*)/v1/alle-identer/" + avspillergruppe;
 
