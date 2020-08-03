@@ -1,11 +1,13 @@
 package no.nav.registre.aaregstub.vault;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.core.env.ConfigurableEnvironment;
-
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.core.env.ConfigurableEnvironment;
+
+import no.nav.registre.aaregstub.exception.UgyldigVaultTokenException;
 
 public final class VaultUtil {
 
@@ -28,10 +30,10 @@ public final class VaultUtil {
                 byte[] encoded = Files.readAllBytes(Paths.get("/var/run/secrets/nais.io/vault/vault_token"));
                 return new String(encoded, StandardCharsets.UTF_8).trim();
             } else {
-                throw new RuntimeException("Neither VAULT_TOKEN or VAULT_TOKEN_PATH is set");
+                throw new UgyldigVaultTokenException("Neither VAULT_TOKEN or VAULT_TOKEN_PATH is set");
             }
         } catch (Exception e) {
-            throw new RuntimeException("Could not get a vault token for authentication", e);
+            throw new UgyldigVaultTokenException("Could not get a vault token for authentication", e);
         }
     }
 

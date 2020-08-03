@@ -14,8 +14,7 @@
     <packaging>jar</packaging>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
+        <no.nav.tjenestespesifikasjoner.version>1.2019.08.16-13.46-35cbdfd492d4</no.nav.tjenestespesifikasjoner.version>
     </properties>
 
     <dependencies>
@@ -72,16 +71,11 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-bean-validators</artifactId>
-            <version>${springfox.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>no.nav.tjenestespesifikasjoner</groupId>
             <artifactId>nav-altinn-inntektsmelding</artifactId>
-            <version>1.2019.08.16-13.46-35cbdfd492d4</version>
+            <version>${no.nav.tjenestespesifikasjoner.version}</version>
         </dependency>
 
         <!-- TEST -->
@@ -92,7 +86,6 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-contract-wiremock</artifactId>
-            <version>2.0.2.RELEASE</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -104,19 +97,16 @@
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
-            <version>2.3.0</version>
         </dependency>
 
         <dependency>
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
-            <version>1.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>2.3.0</version>
         </dependency>
     </dependencies>
 
@@ -130,7 +120,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler-plugin.version}</version>
                 <configuration>
                     <source>1.11</source>
                     <target>1.11</target>
@@ -151,21 +140,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.4</version>
                 <executions>
-                    <execution>
-                        <id>prepare-agent</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
                     <execution>
                         <id>post-unit-test</id>
                         <phase>test</phase>

@@ -1,6 +1,14 @@
 package no.nav.registre.ereg.consumer.rs;
 
-import lombok.extern.slf4j.Slf4j;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -21,16 +29,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.ereg.consumer.rs.request.JenkinsCrumbRequest;
+import no.nav.registre.ereg.exception.UgyldigJenkinsCrumbException;
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Slf4j
@@ -74,7 +76,7 @@ public class JenkinsConsumer {
         if (crumbRequest != null) {
             return crumbRequest.getCrumb();
         }
-        throw new RuntimeException("Kunne ikke generere en crumb i Jenkins");
+        throw new UgyldigJenkinsCrumbException("Kunne ikke generere en crumb i Jenkins");
     }
 
     public boolean send(String flatFile, String env) {

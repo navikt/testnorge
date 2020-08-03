@@ -10,5 +10,6 @@ import lombok.Value;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class ArbeidsgiverDTO {
+    String type;
     String organisasjonsnummer;
 }

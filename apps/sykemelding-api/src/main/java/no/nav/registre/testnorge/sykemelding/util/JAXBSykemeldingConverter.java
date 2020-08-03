@@ -6,17 +6,19 @@ import static javax.xml.bind.Marshaller.JAXB_ENCODING;
 import static javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT;
 import static javax.xml.bind.Marshaller.JAXB_FRAGMENT;
 
-import no.kith.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpplysningerArbeidsuforhet;
+import java.io.StringReader;
+import java.io.StringWriter;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.transform.stream.StreamResult;
-import java.io.StringReader;
-import java.io.StringWriter;
+
+import no.kith.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpplysningerArbeidsuforhet;
 
 import no.nav.helse.eiFellesformat.XMLEIFellesformat;
 import no.nav.helse.msgHead.XMLMsgHead;
+import no.nav.registre.testnorge.sykemelding.exception.JAXBSykemeldingConverterException;
 
 public class JAXBSykemeldingConverter {
 
@@ -33,7 +35,7 @@ public class JAXBSykemeldingConverter {
             try {
                 instance = new JAXBSykemeldingConverter();
             } catch (JAXBException e) {
-                throw new RuntimeException("Klarer ikke å opprette sykemelding converter", e);
+                throw new JAXBSykemeldingConverterException("Klarer ikke å opprette sykemelding converter", e);
             }
         }
         return instance;
@@ -43,7 +45,7 @@ public class JAXBSykemeldingConverter {
         try {
             return (XMLEIFellesformat) context.createUnmarshaller().unmarshal(new StringReader(xml));
         } catch (JAXBException e) {
-            throw new RuntimeException("Klarer ikke å opprette XMLEIFellesformat fra xml", e);
+            throw new JAXBSykemeldingConverterException("Klarer ikke å opprette XMLEIFellesformat fra xml", e);
         }
     }
 
@@ -58,7 +60,7 @@ public class JAXBSykemeldingConverter {
             marshaller.marshal(element, new StreamResult(writer));
             return writer.toString();
         } catch (JAXBException e) {
-            throw new RuntimeException("Klarer ikke å konvertere sykemelding til xml", e);
+            throw new JAXBSykemeldingConverterException("Klarer ikke å konvertere sykemelding til xml", e);
         }
     }
 }

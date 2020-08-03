@@ -1,15 +1,16 @@
 package no.nav.registre.inst.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
+import no.nav.registre.inst.exception.UkjentMiljoeException;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
 import no.nav.registre.inst.security.TokenService;
 
@@ -149,7 +150,7 @@ public class IdentService {
         } else if (miljoe.contains("t")) {
             return tokenService.getIdTokenT();
         } else {
-            throw new RuntimeException("Kjente ikke igjen miljø " + miljoe);
+            throw new UkjentMiljoeException("Kjente ikke igjen miljø " + miljoe);
         }
     }
 

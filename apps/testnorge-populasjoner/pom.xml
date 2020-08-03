@@ -13,11 +13,14 @@
     <artifactId>testnorge-populasjoner</artifactId>
 
     <properties>
-        <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
         <common.version>2.2020.05.13_14.46-9bafc245bcc7</common.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <artifactId>testnorge-core</artifactId>
+            <groupId>no.nav.registre.testnorge</groupId>
+        </dependency>
         <!-- Utility -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -134,6 +137,15 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-vault-config</artifactId>
         </dependency>
+        <dependency>
+            <groupId>no.nav.registre.testnorge</groupId>
+            <artifactId>testnorge-testing</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.registre.testnorge</groupId>
+            <artifactId>testnorge-domain</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -144,9 +156,25 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
             <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>post-unit-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>target/jacoco.exec</dataFile>
+                            <outputDirectory>target/coverage</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler-plugin.version}</version>
                 <configuration>
                     <source>1.11</source>
                     <target>1.11</target>

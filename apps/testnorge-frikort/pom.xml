@@ -13,15 +13,10 @@
     <artifactId>testnorge-frikort</artifactId>
 
     <properties>
-        <commons-math3.version>3.6.1</commons-math3.version>
+
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <jaxb-core.version>2.3.0.1</jaxb-core.version>
         <jaxb-impl.version>2.3.1</jaxb-impl.version>
-        <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
-        <mq-jms-spring-boot-starter.version>2.0.0</mq-jms-spring-boot-starter.version>
-        <spring.boot.maven.plugin.version>2.1.8.RELEASE</spring.boot.maven.plugin.version>
-        <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
-        <testnorge-consumers.version>1.12.0-RELEASE</testnorge-consumers.version>
     </properties>
 
     <dependencies>
@@ -40,7 +35,6 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math3</artifactId>
-            <version>${commons-math3.version}</version>
         </dependency>
 
         <!-- LOMBOK -->
@@ -82,7 +76,6 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-contract-wiremock</artifactId>
-            <version>2.0.2.RELEASE</version>
             <scope>test</scope>
         </dependency>
 
@@ -106,7 +99,6 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-vault-config</artifactId>
-            <version>${spring-cloud.version}</version>
         </dependency>
 
         <!--JAXB-->
@@ -130,7 +122,6 @@
         <dependency>
             <groupId>com.ibm.mq</groupId>
             <artifactId>mq-jms-spring-boot-starter</artifactId>
-            <version>${mq-jms-spring-boot-starter.version}</version>
         </dependency>
 
         <dependency>
@@ -138,12 +129,15 @@
             <groupId>no.nav.registre.testnorge</groupId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+        </dependency>
 
         <!-- HODEJEGEREN -->
         <dependency>
             <groupId>no.nav.registre</groupId>
             <artifactId>testnorge-consumers</artifactId>
-            <version>${testnorge-consumers.version}</version>
         </dependency>
     </dependencies>
 
@@ -156,9 +150,25 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
             <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>post-unit-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>target/jacoco.exec</dataFile>
+                            <outputDirectory>target/coverage</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler-plugin.version}</version>
                 <configuration>
                     <source>1.11</source>
                     <target>1.11</target>

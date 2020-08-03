@@ -11,11 +11,6 @@
     </parent>
     <artifactId>testnorge-statisk-data-forvalter</artifactId>
 
-    <properties>
-        <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
-        <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
-        <commons-csv.version>1.8</commons-csv.version>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -37,7 +32,6 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
-            <version>${commons-csv.version}</version>
         </dependency>
 
         <!-- LOMBOK -->
@@ -66,7 +60,6 @@
         <dependency>
             <groupId>org.springframework.vault</groupId>
             <artifactId>spring-vault-core</artifactId>
-            <version>2.2.2.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -79,7 +72,6 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-vault-config-databases</artifactId>
-            <version>2.2.2.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
@@ -101,6 +93,10 @@
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
         </dependency>
+        <dependency>
+            <artifactId>testnorge-data-transfer-objects</artifactId>
+            <groupId>no.nav.registre.testnorge</groupId>
+        </dependency>
 
         <!--NETWORK-->
         <dependency>
@@ -116,7 +112,6 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-contract-wiremock</artifactId>
-            <version>2.0.2.RELEASE</version>
             <scope>test</scope>
         </dependency>
 
@@ -140,6 +135,12 @@
             <groupId>no.nav.registre.testnorge</groupId>
             <scope>test</scope>
         </dependency>
+
+        <!--VAULT-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-vault-config</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <finalName>testnorge-statisk-data-forvalter</finalName>
@@ -149,9 +150,25 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
             <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>post-unit-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>target/jacoco.exec</dataFile>
+                            <outputDirectory>target/coverage</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler-plugin.version}</version>
                 <configuration>
                     <forceJavacCompilerUse>true</forceJavacCompilerUse>
                     <source>1.11</source>

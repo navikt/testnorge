@@ -19,21 +19,13 @@
     </modules>
 
     <properties>
-        <java.version>11</java.version>
         <springframework.cloud.version>2.1.2.RELEASE</springframework.cloud.version>
-        <testnorge-consumers.version>1.12.0-RELEASE</testnorge-consumers.version>
-        <jacoco.version>0.8.3</jacoco.version>
-        <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
-        <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
     </properties>
 
+
+    <!-- TODO: fjerne denne dependency. For øyeblikket feiler integrasjonstester uten den.    -->
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>no.nav.registre</groupId>
-                <artifactId>testnorge-consumers</artifactId>
-                <version>${testnorge-consumers.version}</version>
-            </dependency>
             <!-- TEST -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
@@ -42,4 +34,5 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
 </project>

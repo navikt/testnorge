@@ -1,5 +1,7 @@
 package no.nav.registre.tss.domain;
 
+import no.nav.registre.tss.exception.UkjentSamhandlerException;
+
 public enum TssTypeGruppe {
     ADVO,
     AFPO,
@@ -169,7 +171,7 @@ public enum TssTypeGruppe {
             case UTL:
                 return UTL;
         }
-        throw new RuntimeException("Ukjent samhandler gruppe: " + type);
+        throw new UkjentSamhandlerException("Ukjent samhandler gruppe: " + type);
     }
 
     public static boolean skalHaOrgnummer(TssTypeGruppe gruppe) {
@@ -180,8 +182,8 @@ public enum TssTypeGruppe {
             case OFF:
             case ORG:
                 return true;
+            default: return false;
         }
-        return false;
     }
 
     public static String identKodeType(TssTypeGruppe gruppe) {

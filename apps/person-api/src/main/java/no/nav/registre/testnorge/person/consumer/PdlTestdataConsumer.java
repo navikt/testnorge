@@ -20,6 +20,7 @@ import no.nav.registre.testnorge.person.consumer.command.PostAdresseCommand;
 import no.nav.registre.testnorge.person.consumer.command.PostNavnCommand;
 import no.nav.registre.testnorge.person.consumer.command.PostOpprettPersonCommand;
 import no.nav.registre.testnorge.person.domain.Person;
+import no.nav.registre.testnorge.person.exception.PdlCreatePersonException;
 import no.nav.registre.testnorge.person.service.StsOidcTokenService;
 
 @Slf4j
@@ -63,7 +64,7 @@ public class PdlTestdataConsumer {
         )).collect(Collectors.toList());
 
         if (results.stream().anyMatch(Objects::isNull)) {
-            throw new RuntimeException("Feil ved innsendelse til PDL testdata");
+            throw new PdlCreatePersonException("Feil ved innsendelse til PDL testdata");
         }
     }
 }

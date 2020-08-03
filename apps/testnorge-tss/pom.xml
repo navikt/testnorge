@@ -12,11 +12,6 @@
 
     <artifactId>testnorge-tss</artifactId>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler-plugin.version>3.8.1</maven.compiler-plugin.version>
-        <opencsv.version>4.6</opencsv.version>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -59,21 +54,18 @@
         <dependency>
             <groupId>no.nav.registre</groupId>
             <artifactId>testnorge-consumers</artifactId>
-            <version>1.10.7-RELEASE</version>
         </dependency>
 
         <!--> IBMMQ </!-->
         <dependency>
             <groupId>com.ibm.mq</groupId>
             <artifactId>mq-jms-spring-boot-starter</artifactId>
-            <version>2.0.0</version>
         </dependency>
 
         <!--TEST-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-contract-wiremock</artifactId>
-            <version>2.0.2.RELEASE</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -99,7 +91,6 @@
         <dependency>
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
-            <version>${opencsv.version}</version>
         </dependency>
     </dependencies>
 
@@ -112,9 +103,25 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
             <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>post-unit-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>target/jacoco.exec</dataFile>
+                            <outputDirectory>target/coverage</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler-plugin.version}</version>
                 <configuration>
                     <source>1.11</source>
                     <target>1.11</target>

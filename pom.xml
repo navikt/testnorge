@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.1.RELEASE</version>
+        <version>2.3.2.RELEASE</version>
     </parent>
 
     <groupId>no.nav.registre.testnorge</groupId>
@@ -38,12 +38,14 @@
     </distributionManagement>
 
     <properties>
+        <java.version>11</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <application.version>${maven.build.timestamp}</application.version>
         <sonar.projectKey>navikt_testnorge</sonar.projectKey>
         <sonar.projectName>testnorge</sonar.projectName>
         <sonar.organization>navit</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml, target/site/jacoco-it/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <!--suppress UnresolvedMavenProperty Ligger som secret i github-->
         <sonar.login>${SONAR_LOGIN}</sonar.login>
         <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
@@ -61,6 +63,13 @@
         <logback-syslog4j>1.0.0</logback-syslog4j>
         <javax.servlet.version>2.5</javax.servlet.version>
         <freg-security.version>e603e2b2</freg-security.version>
+        <jacoco.version>0.8.5</jacoco.version>
+        <javax.activation.version>1.1</javax.activation.version>
+        <mq-jms-spring-boot-starter.version>2.0.0</mq-jms-spring-boot-starter.version>
+        <opencsv.version>4.6</opencsv.version>
+        <commons-math3.version>3.6.1</commons-math3.version>
+        <commons-csv.version>1.8</commons-csv.version>
+        <testnorge-consumers.version>1.12.0-RELEASE</testnorge-consumers.version>
     </properties>
 
     <dependencyManagement>
@@ -102,6 +111,11 @@
             </dependency>
 
             <dependency>
+                <groupId>javax.activation</groupId>
+                <artifactId>activation</artifactId>
+                <version>${javax.activation.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.avro</groupId>
                 <artifactId>avro-compiler</artifactId>
                 <version>${org.apache.avro.version}</version>
@@ -142,12 +156,32 @@
                 <artifactId>freg-security-oidc</artifactId>
                 <version>${freg-security.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.ibm.mq</groupId>
+                <artifactId>mq-jms-spring-boot-starter</artifactId>
+                <version>${mq-jms-spring-boot-starter.version}</version>
+            </dependency>
 
             <!-- Logging -->
             <dependency>
                 <groupId>net.logstash.logback</groupId>
                 <artifactId>logstash-logback-encoder</artifactId>
                 <version>${logstash-logback-encoder.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.opencsv</groupId>
+                <artifactId>opencsv</artifactId>
+                <version>${opencsv.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-math3</artifactId>
+                <version>${commons-math3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-csv</artifactId>
+                <version>${commons-csv.version}</version>
             </dependency>
 
             <!--Test-->
@@ -163,6 +197,11 @@
                 <scope>test</scope>
             </dependency>
 
+            <dependency>
+                <groupId>no.nav.registre</groupId>
+                <artifactId>testnorge-consumers</artifactId>
+                <version>${testnorge-consumers.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -189,6 +228,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -203,6 +243,11 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco.version}</version>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>

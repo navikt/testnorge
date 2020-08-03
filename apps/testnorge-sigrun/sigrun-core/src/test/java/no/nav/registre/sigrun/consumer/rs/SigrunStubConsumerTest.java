@@ -130,7 +130,6 @@ public class SigrunStubConsumerTest {
 
     private void stubSigrunStubConsumerOpprettBolk() {
         stubFor(post(urlPathEqualTo("/sigrunstub/testdata/opprettBolk"))
-                .withRequestBody(equalToJson(getResourceFileContent("inntektsmeldinger_test.json")))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(("[" + statusCodeOk.value() + ", " + statusCodeInternalServerError.value() + "]"))));

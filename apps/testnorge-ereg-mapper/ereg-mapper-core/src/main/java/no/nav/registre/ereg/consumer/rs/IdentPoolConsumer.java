@@ -1,6 +1,8 @@
 package no.nav.registre.ereg.consumer.rs;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -12,10 +14,10 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.ereg.consumer.rs.response.NameResponse;
+import no.nav.registre.ereg.exception.UgyldigEregResponseException;
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @Slf4j
@@ -37,7 +39,7 @@ public class IdentPoolConsumer {
         try {
             ResponseEntity<List<NameResponse>> response = restTemplate.exchange(nameServiceTemplate.expand(count), HttpMethod.GET, null, RESPONSE_TYPE);
             if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
-                throw new RuntimeException("Klarte ikke hente ut fake names fra IdentPool (Respons statuskode: " + response.getStatusCodeValue() + ")");
+                throw new UgyldigEregResponseException("Klarte ikke hente ut fake names fra IdentPool (Respons statuskode: " + response.getStatusCodeValue() + ")");
             }
             return response.getBody().stream().map(NameResponse::toString).collect(Collectors.toList());
         } catch (HttpClientErrorException e) {

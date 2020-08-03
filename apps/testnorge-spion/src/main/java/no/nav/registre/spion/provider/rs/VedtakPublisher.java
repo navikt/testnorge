@@ -1,24 +1,27 @@
 package no.nav.registre.spion.provider.rs;
 
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import no.nav.registre.spion.provider.rs.response.SyntetiserVedtakResponse;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import lombok.extern.slf4j.Slf4j;
+
 import no.nav.registre.spion.domain.Vedtak;
+import no.nav.registre.spion.exception.PubliserVedtakException;
+import no.nav.registre.spion.provider.rs.response.SyntetiserVedtakResponse;
 
 @Slf4j
 @Component
@@ -59,7 +62,7 @@ public class VedtakPublisher {
         return antallVellykket;
     }
 
-    public void publish(SyntetiserVedtakResponse response) throws Exception {
+    public void publish(SyntetiserVedtakResponse response) throws JsonProcessingException {
         for (Vedtak vedtak : response.getVedtak()) {
             String id = UUID.randomUUID().toString();
             String vedtakString = om.writeValueAsString(vedtak);
@@ -80,7 +83,7 @@ public class VedtakPublisher {
             });
 
             if(!wasSuccess){
-                throw new Exception("Fikk ikke sendt vedtak til Kakfa topic.");
+                throw new PubliserVedtakException("Fikk ikke sendt vedtak til Kakfa topic.");
             }
         }
     }
