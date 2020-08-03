@@ -45,7 +45,6 @@ jobs:
     needs: build-jar
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
        env:
         APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
         CLUSTER: dev-fss
@@ -55,7 +54,6 @@ jobs:
     needs: build-jar
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
