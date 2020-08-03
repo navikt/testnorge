@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import no.nav.registre.orkestratoren.batch.v1.JobController;
 import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.TestnorgeBisysService;

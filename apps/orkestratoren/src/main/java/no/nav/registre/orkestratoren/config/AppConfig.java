@@ -12,7 +12,7 @@ import org.springframework.jms.annotation.EnableJms;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.registere.testnorge.core.ApplicationCoreConfig;
-import no.nav.registre.orkestratoren.batch.JobController;
+import no.nav.registre.orkestratoren.batch.v1.JobController;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Configuration
