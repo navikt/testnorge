@@ -1,4 +1,4 @@
-package no.nav.registre.sdforvalter.dto.organisasjon.v1;
+package no.nav.registre.testnorge.dto.statiskedataforvalter.v1;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -16,29 +16,29 @@ public class OrganisasjonDTO {
 
     @Pattern(regexp = "^(8|9)\\d{8}$")
     @JsonProperty(required = true)
-    private final String orgnr;
+    String orgnr;
     @JsonProperty(required = true)
-    private final String enhetstype;
+    String enhetstype;
     @JsonProperty
-    private final String navn;
+    String navn;
     @JsonProperty
-    private final String redigertNavn;
+    String redigertNavn;
     @JsonProperty
-    private final String epost;
+    String epost;
     @JsonProperty
-    private final String internetAdresse;
+    String internetAdresse;
     @JsonProperty
-    private final String naeringskode;
+    String naeringskode;
     @JsonProperty
-    private final String juridiskEnhet;
+    String juridiskEnhet;
     @JsonProperty
-    private final AdresseDTO forretningsAdresse;
+    AdresseDTO forretningsAdresse;
     @JsonProperty
-    private final AdresseDTO postadresse;
+    AdresseDTO postadresse;
     @JsonProperty
-    private final boolean kanHaArbeidsforhold;
+    boolean kanHaArbeidsforhold;
     @JsonProperty
-    private final String gruppe;
+    String gruppe;
     @JsonProperty
-    private final String opprinnelse;
+    String opprinnelse;
 }

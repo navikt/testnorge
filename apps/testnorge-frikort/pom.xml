@@ -17,7 +17,6 @@
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <jaxb-core.version>2.3.0.1</jaxb-core.version>
         <jaxb-impl.version>2.3.1</jaxb-impl.version>
-        <spring.boot.maven.plugin.version>2.1.8.RELEASE</spring.boot.maven.plugin.version>
     </properties>
 
     <dependencies>
@@ -129,6 +128,10 @@
             <artifactId>testnorge-testing</artifactId>
             <groupId>no.nav.registre.testnorge</groupId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
         </dependency>
 
         <!-- HODEJEGEREN -->
