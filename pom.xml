@@ -69,6 +69,7 @@
         <opencsv.version>4.6</opencsv.version>
         <commons-math3.version>3.6.1</commons-math3.version>
         <commons-csv.version>1.8</commons-csv.version>
+        <testnorge-consumers.version>1.12.0-RELEASE</testnorge-consumers.version>
     </properties>
 
     <dependencyManagement>
@@ -199,7 +200,7 @@
             <dependency>
                 <groupId>no.nav.registre</groupId>
                 <artifactId>testnorge-consumers</artifactId>
-                <version>1.12.0-RELEASE</version>
+                <version>${testnorge-consumers.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -246,32 +247,6 @@
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>${jacoco.version}</version>
-                    <executions>
-                        <execution>
-                            <id>prepare-agent</id>
-                            <goals>
-                                <goal>prepare-agent</goal>
-                            </goals>
-                        </execution>
-                        <execution>
-                            <id>report</id>
-                            <phase>prepare-package</phase>
-                            <goals>
-                                <goal>report</goal>
-                            </goals>
-                        </execution>
-                        <execution>
-                            <id>post-unit-test</id>
-                            <phase>test</phase>
-                            <goals>
-                                <goal>report</goal>
-                            </goals>
-                            <configuration>
-                                <dataFile>target/jacoco.exec</dataFile>
-                                <outputDirectory>target/coverage</outputDirectory>
-                            </configuration>
-                        </execution>
-                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

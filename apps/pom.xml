@@ -82,5 +82,6 @@
         <module>synt-sykemelding-api</module>
         <module>hendelse-api</module>
         <module>testnorge-populasjoner</module>
+        <module>statistikk-api</module>
     </modules>
 </project>
