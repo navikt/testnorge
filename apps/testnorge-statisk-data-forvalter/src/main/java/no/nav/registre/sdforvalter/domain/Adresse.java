@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import no.nav.registre.sdforvalter.database.model.AdresseModel;
-import no.nav.registre.sdforvalter.dto.organisasjon.v1.AdresseDTO;
+import no.nav.registre.testnorge.dto.statiskedataforvalter.v1.AdresseDTO;
 
 @Value
 @AllArgsConstructor

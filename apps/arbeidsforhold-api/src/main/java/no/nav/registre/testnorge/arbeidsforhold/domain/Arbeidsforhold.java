@@ -14,6 +14,7 @@ public class Arbeidsforhold {
     private final String arbeidsforholdId;
     private final String orgnummer;
     private final Double stillingsprosent;
+    private final String arbeidstidsordning;
     private final String yrke;
     private final LocalDate fom;
     private final LocalDate tom;
@@ -24,7 +25,7 @@ public class Arbeidsforhold {
         orgnummer = dto.getArbeidsgiver().getOrganisasjonsnummer();
 
 
-        if(dto.getArbeidsavtaler().isEmpty()){
+        if (dto.getArbeidsavtaler().isEmpty()) {
             throw new ArbeidsforholdNotFoundException("Finner ikke arbeidsforhold");
         }
 
@@ -35,6 +36,7 @@ public class Arbeidsforhold {
         var arbeidsavtale = dto.getArbeidsavtaler().get(0);
         stillingsprosent = arbeidsavtale.getStillingsprosent();
         yrke = arbeidsavtale.getYrke();
+        arbeidstidsordning = arbeidsavtale.getArbeidstidsordning();
         fom = dto.getAnsettelsesperiode().getPeriode().getFom();
         tom = dto.getAnsettelsesperiode().getPeriode().getTom();
         ident = dto.getArbeidstaker().getOffentligIdent();
@@ -44,6 +46,7 @@ public class Arbeidsforhold {
         arbeidsforholdId = dto.getArbeidsforholdId();
         orgnummer = dto.getOrgnummer();
         stillingsprosent = dto.getStillingsprosent();
+        arbeidstidsordning = dto.getArbeidstidsordning();
         yrke = dto.getYrke();
         fom = dto.getFom();
         tom = dto.getTom();
@@ -56,6 +59,7 @@ public class Arbeidsforhold {
                 .arbeidsforholdId(arbeidsforholdId)
                 .orgnummer(orgnummer)
                 .stillingsprosent(stillingsprosent)
+                .arbeidstidsordning(arbeidstidsordning)
                 .yrke(yrke)
                 .fom(fom)
                 .tom(tom)

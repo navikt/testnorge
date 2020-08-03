@@ -1,7 +1,6 @@
 package no.nav.registre.populasjoner;
 
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +17,6 @@ public class ApplicationContextTest {
     /**
      * Used to test app runtime dependency and properties and properties
      */
-    @Ignore("Må håndtere Kafka")
     @Test
     @SuppressWarnings("java:S2699")
     public void load_app_context() {

@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
-@Profile("local")
+@Profile("!prod")
 public class LocalAppConfig {
 
     @Value("${service.username}")

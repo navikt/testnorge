@@ -1,0 +1,7 @@
+consumers:
+  synt-arbeidsforhold:
+    url: https://syntrest.nais.preprod.local
+  arbeidsforhold:
+    url: https://testnorge-arbeidsforhold-api.nais.preprod.local
+  statiske-data-forvalter:
+    url: https://testnorge-statisk-data-forvalter.nais.preprod.local

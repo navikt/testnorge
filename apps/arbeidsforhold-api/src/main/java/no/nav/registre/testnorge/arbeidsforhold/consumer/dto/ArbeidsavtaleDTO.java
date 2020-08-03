@@ -12,4 +12,5 @@ import lombok.Value;
 public class ArbeidsavtaleDTO {
     Double stillingsprosent;
     String yrke;
+    String arbeidstidsordning;
 }
