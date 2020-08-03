@@ -143,7 +143,7 @@ public class BrukereArenaForvalterConsumer {
         return arbeidssoekere;
     }
 
-    @Timed(value = "testnroge.arena.resource.latency", extraTags = { "operation", "arena-forvalteren" })
+    @Timed(value = "testnorge.arena.resource.latency", extraTags = { "operation", "arena-forvalteren" })
     public Boolean slettBruker(
             String personident,
             String miljoe
