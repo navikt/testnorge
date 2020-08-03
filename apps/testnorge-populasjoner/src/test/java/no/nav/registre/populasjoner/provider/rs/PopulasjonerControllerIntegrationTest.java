@@ -2,13 +2,13 @@ package no.nav.registre.populasjoner.provider.rs;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import no.nav.registre.populasjoner.domain.Populasjon;
 import no.nav.registre.testnorge.test.JsonWiremockHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
@@ -18,7 +18,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -40,34 +40,32 @@ public class PopulasjonerControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private static final String ident = "11111164723";
-    private static final String populasjon = "TENOR";
-    private static final String arenaForvalterenUrl = "(.*)/arena-forvalteren/api/v1/bruker";
-    private static final String miljoe = "test";
+    private final Populasjon populasjon = Populasjon.MINI_NORGE;
 
-    private NyeBrukereResponse nyeBrukereResponse;
-    private List<Arbeidsoeker> arbeidsoekerList;
+    @Value("${tpsf.avspiller.gruppe}")
+    private String avspillergruppe;
+
+    List<String> hodejegerResponse;
 
     @Before
     public void setUp(){
-        arbeidsoekerList = Collections.singletonList(Arbeidsoeker.builder()
-                .personident(ident)
-                .miljoe(miljoe)
-                .build());
+        hodejegerResponse = new ArrayList<>();
 
-        nyeBrukereResponse = new NyeBrukereResponse();
-        nyeBrukereResponse.setAntallSider(1);
-        nyeBrukereResponse.setArbeidsoekerList(arbeidsoekerList);
-
+        String ident = "11111164723";
+        String ident2 = "11111154723";
+        hodejegerResponse.add(ident);
+        hodejegerResponse.add(ident2);
     }
 
     @Test
     public void shouldHentePersonerFraArena() throws Exception {
 
+        String hentIdenterFraHodejegeren = "(.*)/v1/alle-identer/" + avspillergruppe;
+
         JsonWiremockHelper
                 .builder(objectMapper)
-                .withUrlPathMatching(arenaForvalterenUrl)
-                .withResponseBody(arbeidsoekerList)
+                .withUrlPathMatching(hentIdenterFraHodejegeren)
+                .withResponseBody(hodejegerResponse)
                 .stubGet();
 
         var mvcResultat = mockMvc.perform(get("/api/v1/populasjoner/" + populasjon + "/identer")
@@ -79,12 +77,12 @@ public class PopulasjonerControllerIntegrationTest {
 
         JsonWiremockHelper
                 .builder(objectMapper)
-                .withUrlPathMatching(arenaForvalterenUrl)
-                .withResponseBody(arbeidsoekerList)
+                .withUrlPathMatching(hentIdenterFraHodejegeren)
+                .withResponseBody(hodejegerResponse)
                 .verifyGet();
 
         Set<String> resultat = objectMapper.readValue(mvcResultat, new TypeReference<>() {});
 
-        assertThat(resultat).hasSize(1);
+        assertThat(resultat).hasSize(2).containsOnly("11111164723", "11111154723");
     }
 }
