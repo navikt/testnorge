@@ -48,16 +48,18 @@ public class SykemeldingOrkestreringsService {
         }
         double antallSykemeldtIprosent = (double) aktiveSykemeldinger.size() / (double) aktiveArbeidsforhold.size();
 
+        log.info("Det er {}% sykemeldt", antallSykemeldtIprosent * 100);
+
         if (antallSykemeldtIprosent >= maalAntallSykemeldtIProsent) {
             log.info(
                     "Oppretter ingen flere sykemeldinger siden det er {}% aktive og målet er {}%",
-                    antallSykemeldtIprosent,
-                    maalAntallSykemeldtIProsent
+                    antallSykemeldtIprosent * 100,
+                    maalAntallSykemeldtIProsent * 100
             );
             return;
         }
 
-        int antallSykemeldingerAOpprette = (int) Math.ceil(
+        int antallSykemeldingerAOpprette = (int) Math.round(
                 (maalAntallSykemeldtIProsent - antallSykemeldtIprosent) * aktiveArbeidsforhold.size()
         );
 

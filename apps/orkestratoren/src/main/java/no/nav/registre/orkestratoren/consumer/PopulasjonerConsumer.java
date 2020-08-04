@@ -24,7 +24,7 @@ public class PopulasjonerConsumer {
             @Value("${consumers.populasjoner.url}") String url
     ) {
         this.restTemplate = restTemplateBuilder.build();
-        this.url = url + "/api/v1/populasjoner/MINI_NORGE";
+        this.url = url + "/api/v1/populasjoner/MINI_NORGE/identer";
     }
 
     public Set<String> getPopulasjon() {

@@ -24,7 +24,7 @@ public class SykemeldingSytentiseringsService {
     private final SyntSykemeldingConsumer syntSykemeldingConsumer;
 
     public void syntentiser(Set<String> identer, LocalDate startDate) {
-        log.info("Syntentiserer {} nye sykemeldinger med start dato {}.", identer.size(), startDate.toString());
+        log.info("Syntentiserer {} ny(e) sykemelding(er) med start dato {}.", identer.size(), startDate.toString());
         Map<String, CompletableFuture<ArbeidsforholdDTO>> arbeidsforholdMap = identer
                 .stream()
                 .collect(Collectors.toMap(

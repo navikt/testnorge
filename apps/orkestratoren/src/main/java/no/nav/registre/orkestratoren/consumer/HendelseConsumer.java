@@ -28,7 +28,7 @@ public class HendelseConsumer {
 
     public HendelseConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${consumers.hendelse.url}}") String url
+            @Value("${consumers.hendelse.url}") String url
     ) {
         this.restTemplate = restTemplateBuilder.build();
         this.url = url + "/api/v1/hendelser";

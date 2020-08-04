@@ -24,8 +24,6 @@ public class GetArbeidsforholdCommand implements Callable<List<ArbeidsforholdDTO
 
     @Override
     public List<ArbeidsforholdDTO> call() {
-        log.info("Henter arbeidsforhold for {}", ident);
-
         var requestEntity = RequestEntity
                 .get(URI.create(url + "/api/v1/arbeidsforhold/" + ident))
                 .build();

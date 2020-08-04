@@ -24,18 +24,18 @@ public class SyntSykemeldingConsumer {
 
     public SyntSykemeldingConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${consumers.syntsykemelding.url}}") String url,
+            @Value("${consumers.syntsykemelding.url}") String url,
             @Value("${consumers.syntsykemelding.threads}") Integer threads
     ) {
         this.restTemplate = restTemplateBuilder.build();
-        this.url = url + "/api/v1/arbeidsforhold";
+        this.url = url;
         this.executor = Executors.newFixedThreadPool(threads);
     }
 
     @SneakyThrows
     public CompletableFuture<Void> createSyntSykemldinger(String ident, ArbeidsforholdDTO arbeidsforhold, LocalDate startDate) {
         log.info(
-                "Oppretter synt sykemelding for {} i orgnummer {} med arbeidsforhold id {}.",
+                "Oppretter synt sykemelding for {} i organisjasjon {} med arbeidsforhold id {}.",
                 ident,
                 arbeidsforhold.getOrgnummer(),
                 arbeidsforhold.getArbeidsforholdId()

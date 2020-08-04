@@ -25,11 +25,11 @@ public class ArbeidsforholdConsumer {
 
     public ArbeidsforholdConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${consumers.arbeidsforhold.url}}") String url,
+            @Value("${consumers.arbeidsforhold.url}") String url,
             @Value("${consumers.arbeidsforhold.threads}") Integer threads
     ) {
         this.restTemplate = restTemplateBuilder.build();
-        this.url = url + "/api/v1/arbeidsforhold";
+        this.url = url;
         this.executor = Executors.newFixedThreadPool(threads);
     }
 
