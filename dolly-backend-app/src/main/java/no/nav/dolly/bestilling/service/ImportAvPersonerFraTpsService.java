@@ -59,40 +59,40 @@ public class ImportAvPersonerFraTpsService extends DollyBestillingService {
 
         if (nonNull(bestKriterier)) {
 
-            dollyForkJoinPool.submit(() ->
-                    asList(bestilling.getTpsImport().split(",")).parallelStream()
-                            .filter(ident -> !bestilling.isStoppet())
-                            .map(ident -> {
-                                BestillingProgress progress = new BestillingProgress(bestilling.getId(), ident);
-                                try {
-                                    Person person = tpsfService.importerPersonFraTps(TpsfImportPersonRequest.builder()
-                                            .miljoe(bestilling.getKildeMiljoe())
-                                            .ident(ident)
-                                            .build());
+            dollyForkJoinPool.submit(() -> {
+                asList(bestilling.getTpsImport().split(",")).parallelStream()
+                        .filter(ident -> !bestilling.isStoppet())
+                        .map(ident -> {
+                            BestillingProgress progress = new BestillingProgress(bestilling.getId(), ident);
+                            try {
+                                Person person = tpsfService.importerPersonFraTps(TpsfImportPersonRequest.builder()
+                                        .miljoe(bestilling.getKildeMiljoe())
+                                        .ident(ident)
+                                        .build());
 
-                                    progress.setTpsImportStatus(SUCCESS);
+                                progress.setTpsImportStatus(SUCCESS);
 
-                                    sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(","))
-                                            .stream().filter(miljoe -> !bestilling.getKildeMiljoe().equalsIgnoreCase(miljoe))
-                                            .collect(toList()), singletonList(ident), bestilling.getGruppe(), progress);
+                                sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(","))
+                                        .stream().filter(miljoe -> !bestilling.getKildeMiljoe().equalsIgnoreCase(miljoe))
+                                        .collect(toList()), singletonList(ident), bestilling.getGruppe(), progress);
 
-                                    TpsPerson tpsPerson = tpsfPersonCache.prepareTpsPersoner(person);
-                                    gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, false);
+                                TpsPerson tpsPerson = tpsfPersonCache.prepareTpsPersoner(person);
+                                gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, false);
 
-                                } catch (RuntimeException e) {
-                                    progress.setTpsImportStatus(errorStatusDecoder.decodeRuntimeException(e));
+                            } catch (RuntimeException e) {
+                                progress.setTpsImportStatus(errorStatusDecoder.decodeRuntimeException(e));
 
-                                } finally {
-                                    oppdaterProgress(bestilling, progress);
-                                }
-                                return null;
-                            }).collect(toList())
-            );
+                            } finally {
+                                oppdaterProgress(bestilling, progress);
+                            }
+                            return null;
+                        }).collect(toList());
+                oppdaterBestillingFerdig(bestilling);
+            });
 
         } else {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
+            oppdaterBestillingFerdig(bestilling);
         }
-
-        oppdaterBestillingFerdig(bestilling);
     }
 }

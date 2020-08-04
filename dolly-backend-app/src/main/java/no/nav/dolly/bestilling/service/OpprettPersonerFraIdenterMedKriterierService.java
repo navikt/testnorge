@@ -65,38 +65,39 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
             CheckStatusResponse tilgjengeligeIdenter = tpsfService.checkEksisterendeIdenter(
                     newArrayList(bestilling.getOpprettFraIdenter().split(",")));
 
-            dollyForkJoinPool.submit(() ->
-                    tilgjengeligeIdenter.getStatuser().parallelStream()
-                            .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
-                            .map(identStatus -> {
+            dollyForkJoinPool.submit(() -> {
+                tilgjengeligeIdenter.getStatuser().parallelStream()
+                        .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
+                        .map(identStatus -> {
 
-                                BestillingProgress progress = new BestillingProgress(bestilling.getId(), identStatus.getIdent());
-                                try {
-                                    if (identStatus.isAvailable()) {
+                            BestillingProgress progress = new BestillingProgress(bestilling.getId(), identStatus.getIdent());
+                            try {
+                                if (identStatus.isAvailable()) {
 
-                                        tpsfBestilling.setOpprettFraIdenter(newArrayList(identStatus.getIdent()));
-                                        List<String> leverteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
+                                    tpsfBestilling.setOpprettFraIdenter(newArrayList(identStatus.getIdent()));
+                                    List<String> leverteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
 
-                                        sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(",")), leverteIdenter,
-                                                bestilling.getGruppe(), progress);
+                                    sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(",")), leverteIdenter,
+                                            bestilling.getGruppe(), progress);
 
-                                        TpsPerson tpsPerson = buildTpsPerson(bestilling, leverteIdenter, null);
-                                        gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, false);
-                                    } else {
-                                        progress.setFeil("NA:Feil= Ident er ikke tilgjengelig; " + identStatus.getStatus());
-                                    }
-                                } catch (RuntimeException e) {
-                                    progress.setFeil("NA:" + errorStatusDecoder.decodeRuntimeException(e));
-                                } finally {
-                                    oppdaterProgress(bestilling, progress);
+                                    TpsPerson tpsPerson = buildTpsPerson(bestilling, leverteIdenter, null);
+                                    gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, false);
+                                } else {
+                                    progress.setFeil("NA:Feil= Ident er ikke tilgjengelig; " + identStatus.getStatus());
                                 }
-                                return null;
-                            })
-                            .collect(Collectors.toList())
-            );
+                            } catch (RuntimeException e) {
+                                progress.setFeil("NA:" + errorStatusDecoder.decodeRuntimeException(e));
+                            } finally {
+                                oppdaterProgress(bestilling, progress);
+                            }
+                            return null;
+                        })
+                        .collect(Collectors.toList());
+                oppdaterBestillingFerdig(bestilling);
+            });
         } else {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
+            oppdaterBestillingFerdig(bestilling);
         }
-        oppdaterBestillingFerdig(bestilling);
     }
 }

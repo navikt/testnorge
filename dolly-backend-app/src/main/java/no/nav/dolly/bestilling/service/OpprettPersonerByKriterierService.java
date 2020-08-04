@@ -65,41 +65,42 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                     mapperFacade.map(bestKriterier.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
             tpsfBestilling.setAntall(1);
 
-            dollyForkJoinPool.submit(() ->
-                    Collections.nCopies(bestilling.getAntallIdenter(), true).parallelStream()
-                            .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
-                            .map(ident -> {
+            dollyForkJoinPool.submit(() -> {
+                Collections.nCopies(bestilling.getAntallIdenter(), true).parallelStream()
+                        .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
+                        .map(ident -> {
 
-                                BestillingProgress progress = null;
-                                try {
-                                    List<String> leverteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
+                            BestillingProgress progress = null;
+                            try {
+                                List<String> leverteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
 
-                                    TpsPerson tpsPerson = buildTpsPerson(bestilling, leverteIdenter, null);
-                                    progress = new BestillingProgress(bestilling.getId(), tpsPerson.getHovedperson());
+                                TpsPerson tpsPerson = buildTpsPerson(bestilling, leverteIdenter, null);
+                                progress = new BestillingProgress(bestilling.getId(), tpsPerson.getHovedperson());
 
-                                    sendIdenterTilTPS(Lists.newArrayList(bestilling.getMiljoer().split(",")),
-                                            leverteIdenter, bestilling.getGruppe(), progress);
+                                sendIdenterTilTPS(Lists.newArrayList(bestilling.getMiljoer().split(",")),
+                                        leverteIdenter, bestilling.getGruppe(), progress);
 
-                                    gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, false);
+                                gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, false);
 
-                                } catch (RuntimeException e) {
-                                    progress = BestillingProgress.builder()
-                                            .bestillingId(bestilling.getId())
-                                            .ident("?")
-                                            .feil("NA:" + errorStatusDecoder.decodeRuntimeException(e))
-                                            .build();
-                                } finally {
-                                    oppdaterProgress(bestilling, progress);
-                                }
+                            } catch (RuntimeException e) {
+                                progress = BestillingProgress.builder()
+                                        .bestillingId(bestilling.getId())
+                                        .ident("?")
+                                        .feil("NA:" + errorStatusDecoder.decodeRuntimeException(e))
+                                        .build();
+                            } finally {
+                                oppdaterProgress(bestilling, progress);
+                            }
 
-                                return null;
-                            })
-                            .collect(Collectors.toList())
-            );
+                            return null;
+                        })
+                        .collect(Collectors.toList());
+                oppdaterBestillingFerdig(bestilling);
+            });
 
         } else {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
+            oppdaterBestillingFerdig(bestilling);
         }
-        oppdaterBestillingFerdig(bestilling);
     }
 }

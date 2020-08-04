@@ -64,39 +64,40 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
             TpsfBestilling tpsfBestilling = nonNull(bestKriterier.getTpsf()) ?
                     mapperFacade.map(bestKriterier.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
 
-            dollyForkJoinPool.submit(() ->
-                    bestilling.getGruppe().getTestidenter().parallelStream()
-                            .filter(testident -> !bestillingService.isStoppet(bestilling.getId()))
-                            .map(testident -> {
-                                BestillingProgress progress = new BestillingProgress(bestilling.getId(), testident.getIdent());
-                                try {
-                                    RsOppdaterPersonResponse oppdaterPersonResponse = tpsfService.endreLeggTilPaaPerson(testident.getIdent(), tpsfBestilling);
-                                    if (!oppdaterPersonResponse.getIdentTupler().isEmpty()) {
+            dollyForkJoinPool.submit(() -> {
+                bestilling.getGruppe().getTestidenter().parallelStream()
+                        .filter(testident -> !bestillingService.isStoppet(bestilling.getId()))
+                        .map(testident -> {
+                            BestillingProgress progress = new BestillingProgress(bestilling.getId(), testident.getIdent());
+                            try {
+                                RsOppdaterPersonResponse oppdaterPersonResponse = tpsfService.endreLeggTilPaaPerson(testident.getIdent(), tpsfBestilling);
+                                if (!oppdaterPersonResponse.getIdentTupler().isEmpty()) {
 
-                                        sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(",")),
-                                                oppdaterPersonResponse.getIdentTupler().stream()
-                                                        .map(RsOppdaterPersonResponse.IdentTuple::getIdent).collect(toList()), null, progress);
+                                    sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(",")),
+                                            oppdaterPersonResponse.getIdentTupler().stream()
+                                                    .map(RsOppdaterPersonResponse.IdentTuple::getIdent).collect(toList()), null, progress);
 
-                                        TpsPerson tpsPerson = tpsfPersonCache.prepareTpsPersoner(oppdaterPersonResponse);
-                                        gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, true);
+                                    TpsPerson tpsPerson = tpsfPersonCache.prepareTpsPersoner(oppdaterPersonResponse);
+                                    gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, true);
 
-                                    } else {
-                                        progress.setFeil("NA:Feil= Ident finnes ikke i database");
-                                    }
-
-                                } catch (RuntimeException e) {
-                                    progress.setFeil("NA:" + errorStatusDecoder.decodeRuntimeException(e));
-
-                                } finally {
-                                    oppdaterProgress(bestilling, progress);
+                                } else {
+                                    progress.setFeil("NA:Feil= Ident finnes ikke i database");
                                 }
-                                return null;
-                            }).collect(toList())
-            );
+
+                            } catch (RuntimeException e) {
+                                progress.setFeil("NA:" + errorStatusDecoder.decodeRuntimeException(e));
+
+                            } finally {
+                                oppdaterProgress(bestilling, progress);
+                            }
+                            return null;
+                        }).collect(toList());
+                oppdaterBestillingFerdig(bestilling);
+            });
 
         } else {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
+            oppdaterBestillingFerdig(bestilling);
         }
-        oppdaterBestillingFerdig(bestilling);
     }
 }

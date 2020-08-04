@@ -60,37 +60,39 @@ public class GjenopprettBestillingService extends DollyBestillingService {
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
 
         if (nonNull(bestKriterier)) {
-            dollyForkJoinPool.submit(() -> bestillingProgressRepository.findByBestillingId(bestilling.getOpprettetFraId()).parallelStream()
-                    .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
-                    .map(gjenopprettFraProgress -> {
+            dollyForkJoinPool.submit(() -> {
+                bestillingProgressRepository.findByBestillingId(bestilling.getOpprettetFraId()).parallelStream()
+                        .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
+                        .map(gjenopprettFraProgress -> {
 
-                        BestillingProgress progress = new BestillingProgress(bestilling.getId(), gjenopprettFraProgress.getIdent());
-                        try {
-                            List<Person> personer = tpsfService.hentTestpersoner(singletonList(gjenopprettFraProgress.getIdent()));
+                            BestillingProgress progress = new BestillingProgress(bestilling.getId(), gjenopprettFraProgress.getIdent());
+                            try {
+                                List<Person> personer = tpsfService.hentTestpersoner(singletonList(gjenopprettFraProgress.getIdent()));
 
-                            if (!personer.isEmpty()) {
-                                TpsPerson tpsPerson = tpsfPersonCache.prepareTpsPersoner(personer.get(0));
-                                sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(",")), tpsPerson.getPersondetaljer().
-                                        stream().map(Person::getIdent).collect(Collectors.toList()), bestilling.getGruppe(), progress);
+                                if (!personer.isEmpty()) {
+                                    TpsPerson tpsPerson = tpsfPersonCache.prepareTpsPersoner(personer.get(0));
+                                    sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(",")), tpsPerson.getPersondetaljer().
+                                            stream().map(Person::getIdent).collect(Collectors.toList()), bestilling.getGruppe(), progress);
 
-                                gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, false);
-                            } else {
-                                progress.setFeil("NA:Feil= Finner ikke personen i database");
+                                    gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, false);
+                                } else {
+                                    progress.setFeil("NA:Feil= Finner ikke personen i database");
+                                }
+
+                            } catch (RuntimeException e) {
+                                progress.setFeil(errorStatusDecoder.decodeRuntimeException(e));
+
+                            } finally {
+                                oppdaterProgress(bestilling, progress);
                             }
-
-                        } catch (RuntimeException e) {
-                            progress.setFeil(errorStatusDecoder.decodeRuntimeException(e));
-
-                        } finally {
-                            oppdaterProgress(bestilling, progress);
-                        }
-                        return null;
-                    })
-                    .collect(Collectors.toList())
-            );
+                            return null;
+                        })
+                        .collect(Collectors.toList());
+                oppdaterBestillingFerdig(bestilling);
+            });
         } else {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
+            oppdaterBestillingFerdig(bestilling);
         }
-        oppdaterBestillingFerdig(bestilling);
     }
 }
