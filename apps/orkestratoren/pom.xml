@@ -119,6 +119,10 @@
             <groupId>no.nav.registre.testnorge</groupId>
             <artifactId>testnorge-domain</artifactId>
         </dependency>
+        <dependency>
+            <artifactId>testnorge-data-transfer-objects</artifactId>
+            <groupId>no.nav.registre.testnorge</groupId>
+        </dependency>
 
         <!--VAULT-->
         <dependency>
