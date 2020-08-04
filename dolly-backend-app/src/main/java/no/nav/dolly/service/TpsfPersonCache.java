@@ -43,7 +43,9 @@ public class TpsfPersonCache {
 
     public TpsPerson prepareTpsPersoner(RsOppdaterPersonResponse identer) {
 
-        List<Person> personer = tpsfService.hentTestpersoner(singletonList(identer.getIdentTupler().get(0).getIdent()));
+        List<Person> personer = tpsfService.hentTestpersoner(identer.getIdentTupler().stream()
+                .map(RsOppdaterPersonResponse.IdentTuple::getIdent)
+                .collect(Collectors.toList()));
 
         if (!personer.isEmpty()) {
             return TpsPerson.builder()

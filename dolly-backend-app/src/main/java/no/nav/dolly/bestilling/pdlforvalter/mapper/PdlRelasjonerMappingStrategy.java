@@ -59,7 +59,7 @@ public class PdlRelasjonerMappingStrategy implements MappingStrategy {
                         sivilstand.setType(mapSivilstand(person.getSivilstand()));
                         sivilstand.setSivilstandsdato(mapperFacade.map(person.getSivilstandRegdato(), LocalDate.class));
                         sivilstand.setRelatertVedSivilstand(person.getRelasjoner().stream()
-                                .filter(Relasjon::isPartner)
+                                .filter(relasjon -> relasjon.isPartner() && person.isSivilstandGift())
                                 .map(Relasjon::getPersonRelasjonMed)
                                 .filter(Person::isSivilstandGift)
                                 .map(Person::getIdent)

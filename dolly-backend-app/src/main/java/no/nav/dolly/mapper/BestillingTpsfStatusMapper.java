@@ -37,7 +37,7 @@ public final class BestillingTpsfStatusMapper {
                 newArrayList(progress.getFeil().split(",")).forEach(error -> {
                     String[] environErrMsg = error.split(":", 2);
                     String environ = environErrMsg[0];
-                    String errMsg = environErrMsg.length > 1 ? environErrMsg[1].trim() : "";
+                    String errMsg = environErrMsg.length > 1 ? environErrMsg[1].trim().replaceAll("\\d+\\s", "") : "";
                     checkNUpdateStatus(errorEnvIdents, progress.getIdent(), environ, errMsg);
                 });
             }
@@ -47,7 +47,7 @@ public final class BestillingTpsfStatusMapper {
                 singletonList(RsStatusRapport.builder().id(TPSF).navn(TPSF.getBeskrivelse())
                         .statuser(errorEnvIdents.entrySet().stream().map(status ->
                                 RsStatusRapport.Status.builder()
-                                        .melding(status.getKey())
+                                        .melding(status.getKey().replace('=', ':'))
                                         .detaljert(status.getValue().entrySet().stream()
                                                 .map(detaljert -> RsStatusRapport.Detaljert.builder()
                                                         .miljo(detaljert.getKey())

@@ -5,7 +5,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -76,21 +75,6 @@ public class BestillingControllerTest {
         bestillingController.stopBestillingProgress(BESTILLING_ID);
 
         verify(bestillingService).cancelBestilling(BESTILLING_ID);
-        verify(mapperFacade).map(any(Bestilling.class), eq(RsBestillingStatus.class));
-    }
-
-    @Test
-    public void gjenopprettBestillingOk() {
-
-        when(bestillingService.createBestillingForGjenopprett(eq(BESTILLING_ID), anyList()))
-                .thenReturn(Bestilling.builder().build());
-        when(mapperFacade.map(any(Bestilling.class), eq(RsBestillingStatus.class)))
-                .thenReturn(RsBestillingStatus.builder().id(BESTILLING_ID).build());
-
-        RsBestillingStatus bestilling = bestillingController.gjenopprettBestilling(BESTILLING_ID, null);
-
-        assertThat(bestilling.getId(), is(equalTo(BESTILLING_ID)));
-        verify(dollyBestillingService).gjenopprettBestillingAsync(any(Bestilling.class));
         verify(mapperFacade).map(any(Bestilling.class), eq(RsBestillingStatus.class));
     }
 

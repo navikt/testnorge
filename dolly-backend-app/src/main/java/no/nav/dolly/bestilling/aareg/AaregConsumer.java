@@ -52,7 +52,6 @@ public class AaregConsumer {
     @Timed(name = "providers", tags = { "operation", "aareg_getArbeidforhold" })
     public List<ArbeidsforholdResponse> hentArbeidsforhold(String ident, String miljoe) {
 
-        try {
             ResponseEntity<ArbeidsforholdResponse[]> response =
                     restTemplate.exchange(
                             RequestEntity.get(URI.create(format(HENT_ARBEIDSFORHOLD, providersProps.getAaregdata().getUrl(), ident, miljoe)))
@@ -62,11 +61,6 @@ public class AaregConsumer {
                                     .build(), ArbeidsforholdResponse[].class);
 
             return response.hasBody() ? newArrayList(response.getBody()) : emptyList();
-
-        } catch (RuntimeException e) {
-            log.error("Lesing av aareg i {} feilet, {}", miljoe, e.getLocalizedMessage());
-            return emptyList();
-        }
     }
 
     @Timed(name = "providers", tags = { "operation", "aareg_deleteArbeidsforhold" })

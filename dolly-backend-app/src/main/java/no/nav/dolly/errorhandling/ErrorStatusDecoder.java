@@ -1,5 +1,7 @@
 package no.nav.dolly.errorhandling;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +17,10 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class ErrorStatusDecoder {
+
+    private static final String ERROR = "error";
+    private static final String MESSAGE = "message";
+    private static final String DETAILS = "details";
 
     private final ObjectMapper objectMapper;
 
@@ -56,16 +62,19 @@ public class ErrorStatusDecoder {
             if (((HttpClientErrorException) e).getResponseBodyAsString().contains("{")) {
                 try {
                     Map<String, Object> status = objectMapper.readValue(((HttpClientErrorException) e).getResponseBodyAsString(), Map.class);
-                    if (status.containsKey("message")) {
-                        builder.append(encodeErrorStatus((String) status.get("message")));
+                    if (status.containsKey(ERROR) && isNotBlank((String) status.get(ERROR))) {
+                        builder.append("error=").append(status.get(ERROR)).append(';');
                     }
-                    if (status.containsKey("details") && status.get("details") instanceof List) {
+                    if (status.containsKey(MESSAGE) && isNotBlank((String) status.get(MESSAGE))) {
+                        builder.append("message=").append(encodeErrorStatus((String) status.get(MESSAGE))).append(';');
+                    }
+                    if (status.containsKey(DETAILS) && status.get(DETAILS) instanceof List) {
                         StringBuilder meldinger = new StringBuilder("=");
-                        List<Map<String, String>> details = (List) status.get("details");
+                        List<Map<String, String>> details = (List) status.get(DETAILS);
                         details.forEach(entry ->
                                 entry.forEach((key, value) ->
                                         meldinger.append(' ').append(key).append("= ").append(value)));
-                        builder.append(encodeErrorStatus(meldinger.toString()));
+                        builder.append("details=").append(encodeErrorStatus(meldinger.toString()));
                     }
 
                 } catch (IOException ioe) {
@@ -73,13 +82,12 @@ public class ErrorStatusDecoder {
                 }
 
             } else {
-
-                builder.append(encodeErrorStatus(((HttpClientErrorException) e).getResponseBodyAsString()));
+                    builder.append(encodeErrorStatus(((HttpClientErrorException) e).getResponseBodyAsString()));
             }
 
         } else {
 
-            builder.append(" Teknisk feil. Se logg!");
+            builder.append("Teknisk feil. Se logg!");
             log.error("Teknisk feil {} mottatt fra system", e.getMessage(), e);
         }
 

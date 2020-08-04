@@ -1,19 +1,19 @@
 package no.nav.dolly.repository;
 
-import no.nav.dolly.domain.jpa.BestillingProgress;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
-import java.util.Optional;
+import no.nav.dolly.domain.jpa.BestillingProgress;
 
 public interface BestillingProgressRepository extends Repository<BestillingProgress, Long> {
 
     Optional<BestillingProgress> save(BestillingProgress bestillingProgress);
 
-    List<BestillingProgress> findBestillingProgressByBestillingIdOrderByBestillingId(Long bestillingId);
+    List<BestillingProgress> findByBestillingId(Long bestillingId);
 
     void deleteByBestillingId(Long bestillingId);
 

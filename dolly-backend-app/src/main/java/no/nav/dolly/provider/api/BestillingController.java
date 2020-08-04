@@ -27,6 +27,7 @@ import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
+import no.nav.dolly.bestilling.service.GjenopprettBestillingService;
 import no.nav.dolly.domain.MalbestillingNavn;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
@@ -44,6 +45,7 @@ public class BestillingController {
     private final BestillingService bestillingService;
     private final MalBestillingService malBestillingService;
     private final DollyBestillingService dollyBestillingService;
+    private final GjenopprettBestillingService gjenopprettBestillingService;
 
     @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/{bestillingId}")
@@ -72,7 +74,7 @@ public class BestillingController {
     @ApiOperation(value = "Gjenopprett en bestilling med bestillingsId, for en liste med miljoer", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public RsBestillingStatus gjenopprettBestilling(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "miljoer", required = false) String miljoer) {
         Bestilling bestilling = bestillingService.createBestillingForGjenopprett(bestillingId, nonNull(miljoer) ? asList(miljoer.split(",")) : emptyList());
-        dollyBestillingService.gjenopprettBestillingAsync(bestilling);
+        gjenopprettBestillingService.executeAsync(bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
