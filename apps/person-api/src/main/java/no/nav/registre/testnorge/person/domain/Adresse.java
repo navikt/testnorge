@@ -9,7 +9,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import no.nav.registre.testnorge.dto.person.v1.AdresseDTO;
-import no.nav.registre.testnorge.person.consumer.dto.graphql.Vegadresse;
+import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.Vegadresse;
+import no.nav.registre.testnorge.person.consumer.dto.tpsf.Boadresse;
 
 @Getter
 @Builder
@@ -33,6 +34,11 @@ public class Adresse {
         gatenavn = vegadresse.getAdressenavn() + " " + vegadresse.getHusnummer();
         postnummer = vegadresse.getPostnummer();
         kommunenummer = vegadresse.getKommunenummer();
+    }
+
+    public Adresse (Boadresse boadresse) {
+        gatenavn = boadresse.getGateadresse() + " " + boadresse.getHusnummer();
+        postnummer = boadresse.getPostnr();
     }
 
     public AdresseDTO toDto() {

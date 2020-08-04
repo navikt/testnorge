@@ -17,6 +17,9 @@ query ($ident: ID!, $historikk: Boolean) {
                 ...vegadresseDetails
             }
         },
+        foedsel {
+            foedselsdato
+        },
         folkeregisteridentifikator(historikk: $historikk) {
             identifikasjonsnummer,
             status,

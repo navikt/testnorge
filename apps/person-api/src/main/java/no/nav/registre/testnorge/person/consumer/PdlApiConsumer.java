@@ -9,15 +9,15 @@ import org.springframework.web.client.RestTemplate;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.person.consumer.command.GetPersonCommand;
-import no.nav.registre.testnorge.person.consumer.dto.graphql.Feilmelding;
-import no.nav.registre.testnorge.person.consumer.dto.graphql.PdlPerson;
+import no.nav.registre.testnorge.person.consumer.command.GetPdlPersonCommand;
+import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.Feilmelding;
+import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.PdlPerson;
 import no.nav.registre.testnorge.person.domain.Person;
 import no.nav.registre.testnorge.person.service.StsOidcTokenService;
 
 @Slf4j
 @Component
-@DependencyOn(value = "pdl-testdata", external = true)
+@DependencyOn(value = "pdl-api", external = true)
 public class PdlApiConsumer {
 
     private final StsOidcTokenService tokenService;
@@ -37,9 +37,9 @@ public class PdlApiConsumer {
     public Person getPerson(String ident) throws RuntimeException {
         String token = tokenService.getIdToken();
 
-        PdlPerson pdlPerson = new GetPersonCommand(restTemplate, pdlApiUrl, ident, token).call();
+        PdlPerson pdlPerson = new GetPdlPersonCommand(restTemplate, pdlApiUrl, ident, token).call();
 
-        log.info("Hva går galt med fødsel: {}", pdlPerson);
+        log.info("Hva går galt med fødsel OBS! Denne skal fjernes: {}", pdlPerson);
         if (pdlPerson.getErrors().isEmpty()) {
             return new Person(pdlPerson);
         }

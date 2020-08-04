@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.person.consumer.dto;
+package no.nav.registre.testnorge.person.consumer.dto.tpsf;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,8 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class HendelseDTO {
-    String hendelseId;
+public class Boadresse {
+    String gateadresse;
+    String husnummer;
+    String postnr;
 }
