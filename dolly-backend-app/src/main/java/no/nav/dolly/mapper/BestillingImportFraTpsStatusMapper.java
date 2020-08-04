@@ -29,7 +29,7 @@ public final class BestillingImportFraTpsStatusMapper {
         if (isNotBlank(bestilling.getTpsImport())) {
             bestilling.getProgresser().forEach(progress -> {
                     String status =
-                            progress.getTpsImportStatus().replaceAll("\\d{11}", "").replace("  ", " ");
+                            progress.getTpsImportStatus().replaceAll("\\d{11}", "");
                     String environ = bestilling.getKildeMiljoe();
                     checkAndUpdateStatus(statusEnvIdents, progress.getIdent(), environ, status);
             });
