@@ -5,6 +5,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 
 import java.util.List;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
@@ -35,12 +36,13 @@ public class GjenopprettBestillingService extends DollyBestillingService {
     private TpsfPersonCache tpsfPersonCache;
     private TpsfService tpsfService;
     private BestillingProgressRepository bestillingProgressRepository;
+    private ForkJoinPool dollyForkJoinPool;
 
     public GjenopprettBestillingService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService, TpsfPersonCache tpsfPersonCache,
             IdentService identService, BestillingProgressRepository bestillingProgressRepository,
             BestillingService bestillingService, MapperFacade mapperFacade, CacheManager cacheManager,
             ObjectMapper objectMapper, List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
-            ErrorStatusDecoder errorStatusDecoder) {
+            ErrorStatusDecoder errorStatusDecoder, ForkJoinPool dollyForkJoinPool) {
         super(tpsfResponseHandler, tpsfService, tpsfPersonCache, identService, bestillingProgressRepository, bestillingService,
                 mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry);
 
@@ -49,6 +51,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
         this.tpsfPersonCache = tpsfPersonCache;
         this.tpsfService = tpsfService;
         this.bestillingProgressRepository = bestillingProgressRepository;
+        this.dollyForkJoinPool = dollyForkJoinPool;
     }
 
     @Async
@@ -57,7 +60,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
 
         if (nonNull(bestKriterier)) {
-            bestillingProgressRepository.findByBestillingId(bestilling.getOpprettetFraId()).parallelStream()
+            dollyForkJoinPool.submit(() -> bestillingProgressRepository.findByBestillingId(bestilling.getOpprettetFraId()).parallelStream()
                     .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
                     .map(gjenopprettFraProgress -> {
 
@@ -83,7 +86,8 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                         }
                         return null;
                     })
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toList())
+            );
         } else {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
         }

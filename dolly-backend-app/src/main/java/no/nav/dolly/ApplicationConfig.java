@@ -1,20 +1,24 @@
 package no.nav.dolly;
 
 import java.net.ProxySelector;
+import java.util.concurrent.ForkJoinPool;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
+import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 public class ApplicationConfig {
 
     private static final int TIMEOUT = 300_000;
+    private static final int THREADS_COUNT = 10;
 
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
@@ -31,5 +35,20 @@ public class ApplicationConfig {
                         .setMaxConnTotal(5000)
                         .build()))
                 .build();
+    }
+
+    @Bean
+    public MethodInvokingFactoryBean methodInvokingFactoryBean() {
+        MethodInvokingFactoryBean methodInvokingFactoryBean = new MethodInvokingFactoryBean();
+        methodInvokingFactoryBean.setTargetClass(SecurityContextHolder.class);
+        methodInvokingFactoryBean.setTargetMethod("setStrategyName");
+        methodInvokingFactoryBean.setArguments(new String[]{SecurityContextHolder.MODE_INHERITABLETHREADLOCAL});
+        return methodInvokingFactoryBean;
+    }
+
+    @Bean
+    public ForkJoinPool dollyForkJoinPool() {
+        return new ForkJoinPool(
+                THREADS_COUNT, ForkJoinPool.defaultForkJoinWorkerThreadFactory, null, true);
     }
 }

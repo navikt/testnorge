@@ -4,6 +4,7 @@ import static java.util.Objects.nonNull;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
@@ -36,12 +37,13 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
     private ErrorStatusDecoder errorStatusDecoder;
     private MapperFacade mapperFacade;
     private TpsfService tpsfService;
+    private ForkJoinPool dollyForkJoinPool;
 
     public OpprettPersonerByKriterierService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService,
             TpsfPersonCache tpsfPersonCache, IdentService identService, BestillingProgressRepository bestillingProgressRepository,
             BestillingService bestillingService, MapperFacade mapperFacade, CacheManager cacheManager,
             ObjectMapper objectMapper, List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
-            ErrorStatusDecoder errorStatusDecoder) {
+            ErrorStatusDecoder errorStatusDecoder, ForkJoinPool dollyForkJoinPool) {
         super(tpsfResponseHandler, tpsfService, tpsfPersonCache, identService, bestillingProgressRepository,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry);
 
@@ -49,6 +51,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
         this.errorStatusDecoder = errorStatusDecoder;
         this.mapperFacade = mapperFacade;
         this.tpsfService = tpsfService;
+        this.dollyForkJoinPool = dollyForkJoinPool;
     }
 
     @Async
@@ -62,35 +65,37 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                     mapperFacade.map(bestKriterier.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
             tpsfBestilling.setAntall(1);
 
-            Collections.nCopies(bestilling.getAntallIdenter(), true).parallelStream()
-                    .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
-                    .map(ident -> {
+            dollyForkJoinPool.submit(() ->
+                    Collections.nCopies(bestilling.getAntallIdenter(), true).parallelStream()
+                            .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
+                            .map(ident -> {
 
-                        BestillingProgress progress = null;
-                        try {
-                            List<String> leverteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
+                                BestillingProgress progress = null;
+                                try {
+                                    List<String> leverteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
 
-                            TpsPerson tpsPerson = buildTpsPerson(bestilling, leverteIdenter, null);
-                            progress = new BestillingProgress(bestilling.getId(), tpsPerson.getHovedperson());
+                                    TpsPerson tpsPerson = buildTpsPerson(bestilling, leverteIdenter, null);
+                                    progress = new BestillingProgress(bestilling.getId(), tpsPerson.getHovedperson());
 
-                            sendIdenterTilTPS(Lists.newArrayList(bestilling.getMiljoer().split(",")),
-                                    leverteIdenter, bestilling.getGruppe(), progress);
+                                    sendIdenterTilTPS(Lists.newArrayList(bestilling.getMiljoer().split(",")),
+                                            leverteIdenter, bestilling.getGruppe(), progress);
 
-                            gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, false);
+                                    gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, false);
 
-                        } catch (RuntimeException e) {
-                            progress = BestillingProgress.builder()
-                                    .bestillingId(bestilling.getId())
-                                    .ident("?")
-                                    .feil("NA:" + errorStatusDecoder.decodeRuntimeException(e))
-                                    .build();
-                        } finally {
-                            oppdaterProgress(bestilling, progress);
-                        }
+                                } catch (RuntimeException e) {
+                                    progress = BestillingProgress.builder()
+                                            .bestillingId(bestilling.getId())
+                                            .ident("?")
+                                            .feil("NA:" + errorStatusDecoder.decodeRuntimeException(e))
+                                            .build();
+                                } finally {
+                                    oppdaterProgress(bestilling, progress);
+                                }
 
-                        return null;
-                    })
-                    .collect(Collectors.toList());
+                                return null;
+                            })
+                            .collect(Collectors.toList())
+            );
 
         } else {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");

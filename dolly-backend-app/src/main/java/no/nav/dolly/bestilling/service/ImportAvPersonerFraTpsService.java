@@ -7,6 +7,7 @@ import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.concurrent.ForkJoinPool;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -35,18 +36,20 @@ public class ImportAvPersonerFraTpsService extends DollyBestillingService {
     private TpsfService tpsfService;
     private TpsfPersonCache tpsfPersonCache;
     private ErrorStatusDecoder errorStatusDecoder;
+    private ForkJoinPool dollyForkJoinPool;
 
     public ImportAvPersonerFraTpsService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService, TpsfPersonCache tpsfPersonCache,
             IdentService identService, BestillingProgressRepository bestillingProgressRepository,
             BestillingService bestillingService, MapperFacade mapperFacade, CacheManager cacheManager,
             ObjectMapper objectMapper, List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
-            ErrorStatusDecoder errorStatusDecoder) {
+            ErrorStatusDecoder errorStatusDecoder, ForkJoinPool dollyForkJoinPool) {
         super(tpsfResponseHandler, tpsfService, tpsfPersonCache, identService, bestillingProgressRepository, bestillingService,
                 mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry);
 
         this.tpsfService = tpsfService;
         this.tpsfPersonCache = tpsfPersonCache;
         this.errorStatusDecoder = errorStatusDecoder;
+        this.dollyForkJoinPool = dollyForkJoinPool;
     }
 
     @Async
@@ -56,33 +59,35 @@ public class ImportAvPersonerFraTpsService extends DollyBestillingService {
 
         if (nonNull(bestKriterier)) {
 
-            asList(bestilling.getTpsImport().split(",")).parallelStream()
-                    .filter(ident -> !bestilling.isStoppet())
-                    .map(ident -> {
-                        BestillingProgress progress = new BestillingProgress(bestilling.getId(), ident);
-                        try {
-                            Person person = tpsfService.importerPersonFraTps(TpsfImportPersonRequest.builder()
-                                    .miljoe(bestilling.getKildeMiljoe())
-                                    .ident(ident)
-                                    .build());
+            dollyForkJoinPool.submit(() ->
+                    asList(bestilling.getTpsImport().split(",")).parallelStream()
+                            .filter(ident -> !bestilling.isStoppet())
+                            .map(ident -> {
+                                BestillingProgress progress = new BestillingProgress(bestilling.getId(), ident);
+                                try {
+                                    Person person = tpsfService.importerPersonFraTps(TpsfImportPersonRequest.builder()
+                                            .miljoe(bestilling.getKildeMiljoe())
+                                            .ident(ident)
+                                            .build());
 
-                            progress.setTpsImportStatus(SUCCESS);
+                                    progress.setTpsImportStatus(SUCCESS);
 
-                            sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(","))
-                                    .stream().filter(miljoe -> !bestilling.getKildeMiljoe().equalsIgnoreCase(miljoe))
-                                    .collect(toList()), singletonList(ident), bestilling.getGruppe(), progress);
+                                    sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(","))
+                                            .stream().filter(miljoe -> !bestilling.getKildeMiljoe().equalsIgnoreCase(miljoe))
+                                            .collect(toList()), singletonList(ident), bestilling.getGruppe(), progress);
 
-                            TpsPerson tpsPerson = tpsfPersonCache.prepareTpsPersoner(person);
-                            gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, false);
+                                    TpsPerson tpsPerson = tpsfPersonCache.prepareTpsPersoner(person);
+                                    gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, false);
 
-                        } catch (RuntimeException e) {
-                            progress.setTpsImportStatus(errorStatusDecoder.decodeRuntimeException(e));
+                                } catch (RuntimeException e) {
+                                    progress.setTpsImportStatus(errorStatusDecoder.decodeRuntimeException(e));
 
-                        } finally {
-                            oppdaterProgress(bestilling, progress);
-                        }
-                        return null;
-                    }).collect(toList());
+                                } finally {
+                                    oppdaterProgress(bestilling, progress);
+                                }
+                                return null;
+                            }).collect(toList())
+            );
 
         } else {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
