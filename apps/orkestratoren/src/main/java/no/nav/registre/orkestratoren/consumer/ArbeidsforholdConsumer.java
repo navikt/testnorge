@@ -37,15 +37,15 @@ public class ArbeidsforholdConsumer {
     public CompletableFuture<ArbeidsforholdDTO> getArbeidsforholdAt(String ident, LocalDate date) {
         var command = new GetArbeidsforholdCommand(restTemplate, url, ident);
         log.info("Henter arbeidsforhold for {} på dato {}.", ident, date);
-        return CompletableFuture.supplyAsync(
-                command::call, executor
-        ).thenApply(list -> list
-                .stream()
-                .filter(value -> value.getFom().isBefore(date) || value.getFom().isEqual(date))
-                .filter(value -> value.getTom() == null || value.getTom().isEqual(date) || value.getTom().isAfter(date))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Klarer ikke å finne aktivt arbeidsforhold for " + ident))
-        );
+        return CompletableFuture
+                .supplyAsync(command::call, executor)
+                .thenApply(list -> list
+                        .stream()
+                        .filter(value -> value.getFom().isBefore(date) || value.getFom().isEqual(date))
+                        .filter(value -> value.getTom() == null || value.getTom().isEqual(date) || value.getTom().isAfter(date))
+                        .findFirst()
+                        .orElseThrow(() -> new RuntimeException("Klarer ikke å finne aktivt arbeidsforhold for " + ident))
+                );
     }
 
 

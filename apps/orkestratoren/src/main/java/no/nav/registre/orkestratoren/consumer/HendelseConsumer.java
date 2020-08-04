@@ -3,24 +3,18 @@ package no.nav.registre.orkestratoren.consumer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.orkestratoren.consumer.command.GetHendelseCommand;
 import no.nav.registre.testnorge.dto.hendelse.v1.HendelseDTO;
 import no.nav.registre.testnorge.dto.hendelse.v1.HendelseType;
 
 @Slf4j
 @Component
-@DependencyOn("hendelse-api")
 public class HendelseConsumer {
 
     private final RestTemplate restTemplate;
@@ -35,39 +29,16 @@ public class HendelseConsumer {
     }
 
     public List<HendelseDTO> getSykemeldingerAt(LocalDate date) {
-        RequestEntity<Void> request = RequestEntity
-                .get(URI.create(this.url + "?type=" + HendelseType.SYKEMELDING_OPPRETTET + "&between=" + format(date)))
-                .build();
-
         log.info("Henter aktive opprette sykemeldinger.");
-        ResponseEntity<HendelseDTO[]> entity = restTemplate.exchange(request, HendelseDTO[].class);
-
-        if (!entity.getStatusCode().is2xxSuccessful() || entity.getBody() == null) {
-            throw new RuntimeException("Klarer ikke a hente ut antall sykemeldinger.");
-        }
-
-        log.info("Antall aktive sykemeldinger: {}", entity.getBody().length);
-        return Arrays.asList(entity.getBody());
+        List<HendelseDTO> list = new GetHendelseCommand(restTemplate, url, HendelseType.SYKEMELDING_OPPRETTET, date).call();
+        log.info("Antall aktive sykemeldinger: {}", list.size());
+        return list;
     }
 
     public List<HendelseDTO> getArbeidsforholdAt(LocalDate date) {
-        RequestEntity<Void> request = RequestEntity
-                .get(URI.create(this.url + "?type=" + HendelseType.ARBEIDSFORHOLD_OPPRETTET + "&between=" + format(date)))
-                .build();
-
         log.info("Henter aktive arbeidsforhold.");
-        ResponseEntity<HendelseDTO[]> entity = restTemplate.exchange(request, HendelseDTO[].class);
-
-        if (!entity.getStatusCode().is2xxSuccessful() || entity.getBody() == null) {
-            throw new RuntimeException("Klarer ikke a hente ut aktive arbeidsforhold.");
-        }
-
-        log.info("Antall aktive arbeidsforhold: {}", entity.getBody().length);
-        return Arrays.asList(entity.getBody());
-    }
-
-
-    private String format(LocalDate localDate) {
-        return localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        List<HendelseDTO> list = new GetHendelseCommand(restTemplate, url, HendelseType.ARBEIDSFORHOLD_OPPRETTET, date).call();
+        log.info("Antall aktive arbeidsforhold: {}", list.size());
+        return list;
     }
 }
