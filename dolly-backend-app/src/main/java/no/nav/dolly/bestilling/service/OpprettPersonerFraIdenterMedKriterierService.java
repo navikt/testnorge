@@ -59,9 +59,6 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
 
         if (nonNull(bestKriterier)) {
 
-            TpsfBestilling tpsfBestilling = nonNull(bestKriterier.getTpsf()) ?
-                    mapperFacade.map(bestKriterier.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
-
             CheckStatusResponse tilgjengeligeIdenter = tpsfService.checkEksisterendeIdenter(
                     newArrayList(bestilling.getOpprettFraIdenter().split(",")));
 
@@ -74,6 +71,8 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                             try {
                                 if (identStatus.isAvailable()) {
 
+                                    TpsfBestilling tpsfBestilling = nonNull(bestKriterier.getTpsf()) ?
+                                            mapperFacade.map(bestKriterier.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
                                     tpsfBestilling.setOpprettFraIdenter(newArrayList(identStatus.getIdent()));
                                     List<String> leverteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
 
