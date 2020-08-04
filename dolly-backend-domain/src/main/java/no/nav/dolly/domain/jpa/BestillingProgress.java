@@ -81,6 +81,9 @@ public class BestillingProgress {
     @Column(name = "SYKEMELDING_STATUS")
     private String sykemeldingStatus;
 
+    @Column(name = "SKJERMINGSREGISTER_STATUS")
+    private String skjermingsregisterStatus;
+
     @Column(name = "TPS_IMPORT_STATUS")
     private String tpsImportStatus;
 

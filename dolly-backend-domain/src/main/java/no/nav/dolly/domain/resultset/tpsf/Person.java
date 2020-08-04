@@ -57,6 +57,8 @@ public class Person {
     private String personStatus;
     private List<InnvandretUtvandret> innvandretUtvandret;
     private List<MidlertidigAdresse> midlertidigAdresse;
+    private String egenAnsattDatoFom;
+    private String egenAnsattDatoTom;
 
     public List<MidlertidigAdresse> getMidlertidigAdresse() {
         if (isNull(midlertidigAdresse)) {
