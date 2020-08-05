@@ -22,7 +22,7 @@ public class SykemeldingOrkestreringsService {
     private final PopulasjonerConsumer populasjonerConsumer;
     private final HendelseConsumer hendelseConsumer;
     private final StatistikkConsumer statistikkConsumer;
-    private final SykemeldingSytentiseringsService sykemeldingSytentiseringsService;
+    private final SykemeldingSyntetiseringsService sykemeldingSyntetiseringsService;
 
     public void orkistrer() {
 
@@ -43,7 +43,7 @@ public class SykemeldingOrkestreringsService {
         double maalAntallSykemeldtIProsent = statistikkConsumer.getAntallSykemeldtIProsent();
 
         if (aktiveArbeidsforhold.isEmpty()) {
-            log.warn("Ingen akrive arbeidsforhold. Avslutter syntentisering av sykemeldinger.");
+            log.warn("Ingen aktive arbeidsforhold. Avslutter syntetisering av sykemeldinger.");
             return;
         }
         double antallSykemeldtIprosent = (double) aktiveSykemeldinger.size() / (double) aktiveArbeidsforhold.size();
@@ -52,7 +52,7 @@ public class SykemeldingOrkestreringsService {
 
         if (antallSykemeldtIprosent >= maalAntallSykemeldtIProsent) {
             log.info(
-                    "Oppretter ingen flere sykemeldinger siden det er {}% aktive og målet er {}%",
+                    "Oppretter ingen nye sykemeldinger siden det er {}% aktive og målet er {}%",
                     antallSykemeldtIprosent * 100,
                     maalAntallSykemeldtIProsent * 100
             );
@@ -69,7 +69,7 @@ public class SykemeldingOrkestreringsService {
                 .limit(antallSykemeldingerAOpprette)
                 .collect(Collectors.toSet());
 
-        sykemeldingSytentiseringsService.syntentiser(identerMedArbeidsforholdUtenSykemelding, startDate);
+        sykemeldingSyntetiseringsService.syntentiser(identerMedArbeidsforholdUtenSykemelding, startDate);
     }
 
     private Set<String> getIdenterIPopulasjonenFra(List<HendelseDTO> hendelseer, Set<String> populasjon) {

@@ -18,7 +18,7 @@ import no.nav.registre.testnorge.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SykemeldingSytentiseringsService {
+public class SykemeldingSyntetiseringsService {
 
     private final ArbeidsforholdConsumer arbeidsforholdConsumer;
     private final SyntSykemeldingConsumer syntSykemeldingConsumer;
@@ -42,7 +42,7 @@ public class SykemeldingSytentiseringsService {
                         syntSykemeldingConsumer.createSyntSykemldinger(ident, arbeidsforhold, startDate)
                 );
             } catch (Exception e) {
-                log.error("Klarte ikke å hente å hente arbeidsforhold for {}.", ident, e);
+                log.error("Klarte ikke å hente arbeidsforhold for {}.", ident, e);
             }
         });
 

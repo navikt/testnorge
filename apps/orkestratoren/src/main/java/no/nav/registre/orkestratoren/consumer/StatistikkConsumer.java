@@ -30,11 +30,11 @@ public class StatistikkConsumer {
 
     public double getAntallSykemeldtIProsent() {
         RequestEntity<Void> request = RequestEntity.get(URI.create(this.url)).build();
-        log.info("Henteller antall arbeidstakere som er i snitt sykemeldt.");
+        log.info("Henter antall arbeidstakere som i snitt er sykemeldt.");
         ResponseEntity<StatistikkDTO> entity = restTemplate.exchange(request, StatistikkDTO.class);
 
         if (!entity.getStatusCode().is2xxSuccessful() || entity.getBody() == null) {
-            throw new RuntimeException("Klarer ikke a hente ut antall sykemldete i prossent");
+            throw new RuntimeException("Klarer ikke a hente ut antall sykemeldte i prosent");
         }
         return entity.getBody().getValue();
     }
