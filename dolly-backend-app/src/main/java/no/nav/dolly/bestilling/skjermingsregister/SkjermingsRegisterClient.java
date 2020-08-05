@@ -46,7 +46,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (nonNull(bestilling.getSkjermingsRegister())) {
+        if (nonNull(bestilling.getSkjermingsRegister()) && !bestilling.getSkjermingsRegister().isEmpty()) {
 
             StringBuilder status = new StringBuilder();
             try {
@@ -56,13 +56,11 @@ public class SkjermingsRegisterClient implements ClientRegister {
                 Person hovedPerson = tpsPerson.getPerson(tpsPerson.getHovedperson());
                 if (isTrue(erAktivEgenansatt(hovedPerson.getEgenAnsattDatoFom(), hovedPerson.getEgenAnsattDatoTom()))) {
 
-                    skjermingsDataRequest.setSkjermetPerson(SkjermingsDataRequest.SkjermetPerson.builder()
-                            .fornavn(hovedPerson.getFornavn())
-                            .etternavn(hovedPerson.getEtternavn())
-                            .personident(hovedPerson.getIdent())
-                            .skjermetFra(LocalDateTime.parse(hovedPerson.getEgenAnsattDatoFom()))
-                            .skjermetTil(LocalDateTime.parse(hovedPerson.getEgenAnsattDatoTom()))
-                            .build());
+                    skjermingsDataRequest.setEtternavn(hovedPerson.getEtternavn());
+                    skjermingsDataRequest.setFornavn(hovedPerson.getFornavn());
+                    skjermingsDataRequest.setPersonident(hovedPerson.getIdent());
+                    skjermingsDataRequest.setSkjermetFra(LocalDateTime.parse(hovedPerson.getEgenAnsattDatoFom()));
+                    skjermingsDataRequest.setSkjermetTil(LocalDateTime.parse(hovedPerson.getEgenAnsattDatoTom()));
 
                     if (!transaksjonMappingService.existAlready(SKJERMINGSREGISTER, tpsPerson.getHovedperson(), null) || isOpprettEndre) {
 
@@ -70,7 +68,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
                         if (response.hasBody()) {
                             status.append("OK");
 
-                            saveTranskasjonId(bestilling.getSkjermingsRegister().get(0).getSkjermetPerson(), tpsPerson.getHovedperson());
+                            saveTranskasjonId(bestilling.getSkjermingsRegister().get(0), tpsPerson.getHovedperson());
                         }
 
                     }
@@ -102,7 +100,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
         return gjeldendeTidspunkt.isAfter(egenAnsattFomDateTime) && gjeldendeTidspunkt.isBefore(egenAnsattTomDateTime);
     }
 
-    private void saveTranskasjonId(RsSkjermingsRegister.SkjermetPerson skjermetPerson, String ident) {
+    private void saveTranskasjonId(RsSkjermingsRegister skjermetPerson, String ident) {
 
         transaksjonMappingService.save(
                 TransaksjonMapping.builder()

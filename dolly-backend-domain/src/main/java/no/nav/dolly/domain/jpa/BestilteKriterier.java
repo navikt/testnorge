@@ -47,5 +47,5 @@ public class BestilteKriterier {
     private RsBregdata brregstub;
     private RsDokarkiv dokarkiv;
     private RsSykemelding sykemelding;
-    private RsSkjermingsRegister skjermingsRegister;
+    private List<RsSkjermingsRegister> skjermingsRegister;
 }

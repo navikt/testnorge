@@ -18,6 +18,7 @@ import java.util.Set;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -290,6 +291,7 @@ public class BestillingService {
                 .brregstub(request.getBrregstub())
                 .dokarkiv(request.getDokarkiv())
                 .sykemelding(request.getSykemelding())
+                .skjermingsRegister(request.getSkjermingsRegister())
                 .build());
     }
 }

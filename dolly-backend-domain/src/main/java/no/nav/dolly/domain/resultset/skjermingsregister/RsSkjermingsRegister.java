@@ -19,28 +19,18 @@ import lombok.Setter;
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
 public class RsSkjermingsRegister {
 
-    @ApiModelProperty(position = 1, value = "Liste av personer som er skjermet")
-    private SkjermetPerson skjermetPerson;
+    @ApiModelProperty(position = 1, value = "Ident på skjermet person")
+    private String personident;
 
-    @Getter
-    @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-    public static class SkjermetPerson {
+    @ApiModelProperty(position = 2, value = "Fornavn til skjermet person")
+    private String fornavn;
 
-        @ApiModelProperty(position = 1, value = "Ident på skjermet person")
-        private String personident;
+    @ApiModelProperty(position = 3, value = "Etternavn til skjermet person")
+    private String etternavn;
 
-        @ApiModelProperty(position = 2, value = "Fornavn til skjermet person")
-        private String fornavn;
+    @ApiModelProperty(position = 4, value = "Dato og tidspunkt personen ble skjermet fra")
+    private LocalDateTime skjermetFra;
 
-        @ApiModelProperty(position = 3, value = "Etternavn til skjermet person")
-        private String etternavn;
-
-        @ApiModelProperty(position = 4, value = "Dato og tidspunkt personen ble skjermet fra")
-        private LocalDateTime skjermetFra;
-    }
-
+    @ApiModelProperty(position = 5, value = "Dato og tidspunkt personen blir skjermet til")
+    private LocalDateTime skjermetTil;
 }
