@@ -1,7 +1,7 @@
 naiseratorApplicationPipeline {
     applicationName = "dolly-backend"
     team = "registre"
-    javaVersion = "11"
+    javaVersion = "1.8"
     namespace = "default"
     branchDeployments = [
         [branch: "dolly-backend-test-u2", namespace: "u2"],
