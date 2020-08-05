@@ -59,8 +59,8 @@ public class SkjermingsRegisterClient implements ClientRegister {
 
                 tpsfPersonCache.fetchIfEmpty(tpsPerson);
                 Person hovedPerson = tpsPerson.getPerson(tpsPerson.getHovedperson());
-                hovedPerson.setEgenAnsattDatoFom(register.getSkjermetFra().toString());
-                hovedPerson.setEgenAnsattDatoTom(register.getSkjermetTil().toString());
+                hovedPerson.setEgenAnsattDatoFom(register.getSkjermetFra());
+                hovedPerson.setEgenAnsattDatoTom(register.getSkjermetTil());
                 if (isTrue(erAktivEgenansatt(hovedPerson.getEgenAnsattDatoFom(), hovedPerson.getEgenAnsattDatoTom()))) {
 
                     skjermingsDataRequest.setEtternavn(hovedPerson.getEtternavn());
@@ -88,7 +88,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
             status.append("OK");
 
             saveTranskasjonId(Objects.requireNonNull(response.getBody()), tpsPerson.getHovedperson());
-        } else if (response.getStatusCode() == HttpStatus.BAD_REQUEST) {
+        } else if (response.hasBody() && response.getStatusCode() == HttpStatus.BAD_REQUEST) {
             status.append("BAD REQUEST: Forsøk på duplikate skjerminger eller ugyldige skjermingsopplysninger");
         }
     }
@@ -98,16 +98,14 @@ public class SkjermingsRegisterClient implements ClientRegister {
         identer.forEach(skjermingsRegisterConsumer::deleteSkjerming);
     }
 
-    private Boolean erAktivEgenansatt(String egenAnsattFom, String egenAnsattTom) {
+    private Boolean erAktivEgenansatt(LocalDateTime egenAnsattFom, LocalDateTime egenAnsattTom) {
 
         if (isNull(egenAnsattFom) || isNull(egenAnsattTom)) {
             return false;
         }
 
         LocalDateTime gjeldendeTidspunkt = LocalDateTime.now();
-        LocalDateTime egenAnsattFomDateTime = LocalDateTime.parse(egenAnsattFom);
-        LocalDateTime egenAnsattTomDateTime = LocalDateTime.parse(egenAnsattTom);
-        return gjeldendeTidspunkt.isAfter(egenAnsattFomDateTime) && gjeldendeTidspunkt.isBefore(egenAnsattTomDateTime);
+        return gjeldendeTidspunkt.isAfter(egenAnsattFom) && gjeldendeTidspunkt.isBefore(egenAnsattTom);
     }
 
     private void saveTranskasjonId(List<SkjermingsDataResponse> response, String ident) {
