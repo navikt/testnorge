@@ -69,7 +69,7 @@ public class AaregMergeUtil {
         AtomicInteger arbeidsforholdId = new AtomicInteger(
                 eksisterendeArbeidsforhold.stream()
                         .map(ArbeidsforholdResponse::getArbeidsforholdId)
-                        .mapToInt(Integer::new)
+                        .mapToInt(Integer::valueOf)
                         .max().orElse(0)
         );
 
@@ -78,9 +78,9 @@ public class AaregMergeUtil {
                         .map(ArbeidsforholdResponse::getPermisjonPermitteringer)
                         .flatMap(permisjonPermittering -> permisjonPermittering.stream()
                                 .map(ArbeidsforholdResponse.PermisjonPermittering::getPermisjonPermitteringId)
-                                .map(Integer::new)
+                                .map(Integer::valueOf)
                         )
-                        .max(Comparator.comparing(Integer::new)).orElse(0)
+                        .max(Comparator.comparing(id -> id)).orElse(0)
         );
 
         nyeArbeidsforhold.forEach(arbeidforhold -> {
