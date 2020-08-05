@@ -39,7 +39,6 @@ public class PdlApiConsumer {
 
         PdlPerson pdlPerson = new GetPdlPersonCommand(restTemplate, pdlApiUrl, ident, token).call();
 
-        log.info("Hva går galt med fødsel OBS! Denne skal fjernes: {}", pdlPerson);
         if (pdlPerson.getErrors().isEmpty()) {
             return new Person(pdlPerson);
         }

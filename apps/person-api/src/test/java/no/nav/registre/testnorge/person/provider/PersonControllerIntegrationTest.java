@@ -61,9 +61,10 @@ public class PersonControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-//    @Test
+    @Test
     public void should_get_dtoPerson_from_tps() throws Exception {
         IdentMiljoeRequest tpsfRequest = new IdentMiljoeRequest("12345678921", Collections.singletonList("t4"));
+
         List<Boadresse> boadresse = Collections.singletonList(Boadresse.builder()
                 .gateadresse("Linegata")
                 .husnummer("12")
@@ -77,16 +78,16 @@ public class PersonControllerIntegrationTest {
                 .foedselsdato("1980-10-02")
                 .boadresse(boadresse)
                 .build();
-        List<PersonMiljoeResponse> tpsfResponse = Collections.singletonList(new PersonMiljoeResponse("t4", tpsPerson));
+
 
         JsonWiremockHelper
                 .builder(objectMapper)
                 .withUrlPathMatching("(.*)/import")
                 .withRequestBody(tpsfRequest)
-                .withResponseBody(tpsfResponse)
-                .stubGet();
+                .withResponseBody(Collections.singletonList(new PersonMiljoeResponse("t4", tpsPerson)))
+                .stubPost();
 
-        String json = mvc.perform(get("/api/v1/personer/12345678912")
+        String json = mvc.perform(get("/api/v1/personer/12345678921")
                 .header("persondatasystem", "TPS")
                 .header("miljoe", "t4")
         )
@@ -100,7 +101,7 @@ public class PersonControllerIntegrationTest {
         PersonDTO expected = PersonDTO.builder()
                 .fornavn("Line")
                 .etternavn("Linesen")
-                .ident("12345678912")
+                .ident("12345678921")
                 .foedselsdato("1980-10-02")
                 .adresse(new AdresseDTO("Linegata 12", "2650", null, null))
                 .build();
@@ -108,6 +109,28 @@ public class PersonControllerIntegrationTest {
         assertThat(actualPerson).isEqualTo(expected);
     }
 
+    @Test
+    public void should_return_404_when_empty_response_from_tpsf() throws Exception{
+        IdentMiljoeRequest tpsfRequest = new IdentMiljoeRequest("12345678921", Collections.singletonList("t4"));
+        String[] response = {};
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/import")
+                .withRequestBody(tpsfRequest)
+                .withResponseBody(response)
+                .stubPost();
+
+        String json = mvc.perform(get("/api/v1/personer/12345678921")
+                .header("persondatasystem", "TPS")
+                .header("miljoe", "t4")
+        )
+                .andExpect(status().is4xxClientError())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+    }
 
     @Test
     public void should_get_dtoPerson_from_pdl() throws Exception {
