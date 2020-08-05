@@ -82,7 +82,7 @@ public class RsDollyBestilling {
     private RsSykemelding sykemelding;
 
     @ApiModelProperty(position = 15)
-    private RsSkjermingsRegister skjermingsRegister;
+    private List<RsSkjermingsRegister> skjermingsRegister;
 
     public List<RsAaregArbeidsforhold> getAareg() {
         if (isNull(aareg)) {
@@ -103,6 +103,13 @@ public class RsDollyBestilling {
             sigrunstub = new ArrayList<>();
         }
         return sigrunstub;
+    }
+
+    public List<RsSkjermingsRegister> getSkjermingsRegister() {
+        if (isNull(skjermingsRegister)) {
+            skjermingsRegister = new ArrayList<>();
+        }
+        return skjermingsRegister;
     }
 
     public List<RsInstdata> getInstdata() {

@@ -1,11 +1,11 @@
 package no.nav.dolly.bestilling.skjermingsregister;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.SKJERMINGSREGISTER;
 import static org.apache.cxf.common.util.PropertyUtils.isTrue;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataRequest;
+import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataResponse;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataTransaksjon;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
@@ -55,20 +56,21 @@ public class SkjermingsRegisterClient implements ClientRegister {
                 Person hovedPerson = tpsPerson.getPerson(tpsPerson.getHovedperson());
                 if (isTrue(erAktivEgenansatt(hovedPerson.getEgenAnsattDatoFom(), hovedPerson.getEgenAnsattDatoTom()))) {
 
-                    skjermingsDataRequest.setSkjermedePersoner(Collections.singletonList(SkjermingsDataRequest.SkjermetPerson.builder()
+                    skjermingsDataRequest.setSkjermetPerson(SkjermingsDataRequest.SkjermetPerson.builder()
                             .fornavn(hovedPerson.getFornavn())
                             .etternavn(hovedPerson.getEtternavn())
                             .personident(hovedPerson.getIdent())
-                            .skjermetFra(LocalDateTime.now())
-                            .build()));
+                            .skjermetFra(LocalDateTime.parse(hovedPerson.getEgenAnsattDatoFom()))
+                            .skjermetTil(LocalDateTime.parse(hovedPerson.getEgenAnsattDatoTom()))
+                            .build());
 
                     if (!transaksjonMappingService.existAlready(SKJERMINGSREGISTER, tpsPerson.getHovedperson(), null) || isOpprettEndre) {
 
-                        ResponseEntity<String> response = skjermingsRegisterConsumer.postSkjerming(skjermingsDataRequest);
+                        ResponseEntity<SkjermingsDataResponse> response = skjermingsRegisterConsumer.postSkjerming(skjermingsDataRequest);
                         if (response.hasBody()) {
                             status.append("OK");
 
-                            saveTranskasjonId(bestilling.getSkjermingsRegister().getSkjermedePersoner().get(0), tpsPerson.getHovedperson());
+                            saveTranskasjonId(bestilling.getSkjermingsRegister().get(0).getSkjermetPerson(), tpsPerson.getHovedperson());
                         }
 
                     }
@@ -89,6 +91,10 @@ public class SkjermingsRegisterClient implements ClientRegister {
     }
 
     private Boolean erAktivEgenansatt(String egenAnsattFom, String egenAnsattTom) {
+
+        if (isNull(egenAnsattFom) || isNull(egenAnsattTom)) {
+            return false;
+        }
 
         LocalDateTime gjeldendeTidspunkt = LocalDateTime.now();
         LocalDateTime egenAnsattFomDateTime = LocalDateTime.parse(egenAnsattFom);

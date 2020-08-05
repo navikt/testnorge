@@ -1,10 +1,6 @@
 package no.nav.dolly.bestilling.skjermingsregister.domain;
 
-import static java.util.Objects.isNull;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -21,14 +17,7 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SkjermingsDataRequest {
 
-    private List<SkjermetPerson> skjermedePersoner;
-
-    public List<SkjermetPerson> getSkjermedePersoner() {
-        if (isNull(skjermedePersoner)) {
-            return new ArrayList<>();
-        }
-        return skjermedePersoner;
-    }
+    private SkjermetPerson skjermetPerson;
 
     @Getter
     @Setter
@@ -42,5 +31,6 @@ public class SkjermingsDataRequest {
         private String fornavn;
         private String etternavn;
         private LocalDateTime skjermetFra;
+        private LocalDateTime skjermetTil;
     }
 }

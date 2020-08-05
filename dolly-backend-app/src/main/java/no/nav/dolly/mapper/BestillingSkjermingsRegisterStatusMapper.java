@@ -1,6 +1,15 @@
 package no.nav.dolly.mapper;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.resultset.SystemTyper.SKJERMINGSREGISTER;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -12,5 +21,26 @@ public final class BestillingSkjermingsRegisterStatusMapper {
 
     public static List<RsStatusRapport> buildSkjermRegisterStatusMap(List<BestillingProgress> progressList) {
 
+        Map<String, List<String>> statusMap = new HashMap<>();
+
+        progressList.forEach(progress -> {
+            if (nonNull(progress.getSkjermingsregisterStatus())) {
+                if (statusMap.containsKey(progress.getSkjermingsregisterStatus())) {
+                    statusMap.get(progress.getSkjermingsregisterStatus()).add(progress.getIdent());
+                } else {
+                    statusMap.put(progress.getSkjermingsregisterStatus(), newArrayList(progress.getIdent()));
+                }
+            }
+        });
+
+        return statusMap.isEmpty() ? emptyList()
+                : singletonList(RsStatusRapport.builder().id(SKJERMINGSREGISTER).navn(SKJERMINGSREGISTER.getBeskrivelse())
+                        .statuser(statusMap.entrySet().stream()
+                                .map(entry -> RsStatusRapport.Status.builder()
+                                        .melding(entry.getKey().replaceAll("=", ":"))
+                                        .identer(entry.getValue())
+                                        .build())
+                                .collect(Collectors.toList()))
+                        .build());
     }
 }

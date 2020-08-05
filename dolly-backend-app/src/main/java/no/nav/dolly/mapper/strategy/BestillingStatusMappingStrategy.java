@@ -12,11 +12,13 @@ import static no.nav.dolly.mapper.BestillingKrrStubStatusMapper.buildKrrStubStat
 import static no.nav.dolly.mapper.BestillingPdlForvalterStatusMapper.buildPdldataStatusMap;
 import static no.nav.dolly.mapper.BestillingPensjonforvalterStatusMapper.buildPensjonforvalterStatusMap;
 import static no.nav.dolly.mapper.BestillingSigrunStubStatusMapper.buildSigrunStubStatusMap;
+import static no.nav.dolly.mapper.BestillingSkjermingsRegisterStatusMapper.buildSkjermRegisterStatusMap;
 import static no.nav.dolly.mapper.BestillingSykemeldingStatusMapper.buildSykemeldingStatusMap;
 import static no.nav.dolly.mapper.BestillingTpsfStatusMapper.buildTpsfStatusMap;
 import static no.nav.dolly.mapper.BestillingUdiStubStatusMapper.buildUdiStubStatusMap;
 
 import java.util.Arrays;
+
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -61,6 +63,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildDokarkivStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildImportFraTpsStatusMap(bestilling));
                         bestillingStatus.getStatus().addAll(buildSykemeldingStatusMap(bestilling.getProgresser()));
+                        bestillingStatus.getStatus().addAll(buildSkjermRegisterStatusMap(bestilling.getProgresser()));
                         bestillingStatus.setBestilling(RsBestillingStatus.RsBestilling.builder()
                                 .pdlforvalter(bestillingRequest.getPdlforvalter())
                                 .aareg(bestillingRequest.getAareg())
@@ -75,6 +78,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .brregstub(bestillingRequest.getBrregstub())
                                 .dokarkiv(bestillingRequest.getDokarkiv())
                                 .sykemelding(bestillingRequest.getSykemelding())
+                                .skjermingsRegister(bestillingRequest.getSkjermingsRegister())
                                 .tpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()))
                                 .importFraTps(bestilling.getTpsImport())
                                 .kildeMiljoe(bestilling.getKildeMiljoe())

@@ -1,10 +1,6 @@
 package no.nav.dolly.domain.resultset.skjermingsregister;
 
-import static java.util.Objects.isNull;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -24,14 +20,7 @@ import lombok.Setter;
 public class RsSkjermingsRegister {
 
     @ApiModelProperty(position = 1, value = "Liste av personer som er skjermet")
-    private List<SkjermetPerson> skjermedePersoner;
-
-    public List<SkjermetPerson> getSkjermedePersoner() {
-        if (isNull(skjermedePersoner)) {
-            return new ArrayList<>();
-        }
-        return skjermedePersoner;
-    }
+    private SkjermetPerson skjermetPerson;
 
     @Getter
     @Setter
