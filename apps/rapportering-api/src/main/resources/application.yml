@@ -1,8 +1,26 @@
 application:
   version: @application.version@
-  name: synt-arbeidsforhold-api
+  name: rapportering-api
 
 spring:
+  application:
+    name: rapportering-api
   flyway:
-    enabled: false
+    locations: classpath:db/migration
+  jpa:
+    database: POSTGRESQL
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
+kafka:
+  bootstrapservers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
+  schemaregistryservers: http://kafka-schema-registry.tpa.svc.nais.local:8081
+  groupid: testnorge-rapportering-api-v1
+
+
+consumer:
+  slack:
+    token: ${slack.token}
+    url: https://slack.com/api/chat.postMessage
+    channel: ${slack.channel}

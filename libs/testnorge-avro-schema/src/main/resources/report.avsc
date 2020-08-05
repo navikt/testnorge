@@ -1,0 +1,43 @@
+{
+   "type":"record",
+   "name":"Report",
+   "namespace":"no.nav.registre.testnorge.avro.report",
+   "fields":[
+      {
+         "name":"applicationName",
+         "type":"string"
+      },
+      {
+         "name":"name",
+         "type":"string"
+      },
+      {
+         "name": "start",
+         "type": "string"
+      },
+      {
+         "name": "end",
+         "type": "string"
+      },
+      {
+         "name":"entries",
+         "type":{
+            "type": "array",
+            "items":{
+                "name": "Entry",
+                "type": "record",
+                "fields": [
+                    {
+                        "name": "status",
+                        "type": "string"
+                    },
+                    {
+                        "name": "description",
+                        "type": "string"
+                    }
+                ]
+            }
+         }
+      }
+   ]
+}

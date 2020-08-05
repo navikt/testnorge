@@ -22,5 +22,5 @@ Ha BIG-IP Edge Client kjørende og kjør RapporteringApiApplicationStarter med s
 Ha Nav-Tunnel kjørende og kjør RapporteringApiApplicationStarter med samme argumenter som for utviklerimage og legg til følgende argumenter:
 - -DsocksProxyHost=127.0.0.1
 - -DsocksProxyPort=14122
-- -DsocksNonProxyHosts=127.0.0.1|dl.bintray.com|repo.maven.apache.org|maven.adeo.no|packages.confluent.io|confluent.io|maven.xwiki.org|maven.repository.redhat.com
-   
+- -DsocksNonProxyHosts=slack.com
+- -Dhttp.nonProxyHosts=slack.com
