@@ -16,9 +16,9 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SkjermingsDataRequest {
 
-    private String personident;
-    private String fornavn;
     private String etternavn;
+    private String fornavn;
+    private String personident;
     private LocalDateTime skjermetFra;
     private LocalDateTime skjermetTil;
 }

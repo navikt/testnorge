@@ -7,9 +7,13 @@ import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.domain.CommonKeys.SYNTH_ENV;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+import java.lang.reflect.ParameterizedType;
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -40,7 +44,7 @@ public class SkjermingsRegisterConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "skjermingsdata-opprett" })
-    public ResponseEntity<SkjermingsDataResponse> postSkjerming(SkjermingsDataRequest skjermingsDataRequest) {
+    public ResponseEntity<List<SkjermingsDataResponse>> postSkjerming(List<SkjermingsDataRequest> skjermingsDataRequest) {
 
         String callid = getNavCallId();
         log.info("Skjermings melding sendt, callid: {}, consumerId: {}", callid, CONSUMER);
@@ -51,7 +55,8 @@ public class SkjermingsRegisterConsumer {
                         .header(HEADER_NAV_CALL_ID, callid)
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .body(skjermingsDataRequest),
-                SkjermingsDataResponse.class);
+                new ParameterizedTypeReference<List<SkjermingsDataResponse>>() {
+                });
     }
 
     @Timed(name = "providers", tags = { "operation", "skjerminsdata-opphoer" })
@@ -66,11 +71,12 @@ public class SkjermingsRegisterConsumer {
                         .header(HEADER_NAV_CALL_ID, callid)
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .build(),
-                SkjermingsDataResponse.class);
+                new ParameterizedTypeReference<SkjermingsDataResponse>() {
+                });
     }
 
     @Timed(name = "providers", tags = { "operation", "skjerminsdata-slett" })
-    public ResponseEntity<SkjermingsDataResponse> deleteSkjerming(String fnr) {
+    public ResponseEntity<String> deleteSkjerming(String fnr) {
 
         String callid = getNavCallId();
         log.info("Skjermings melding sendt, callid: {}, consumerId: {}", callid, CONSUMER);
@@ -81,6 +87,6 @@ public class SkjermingsRegisterConsumer {
                         .header(HEADER_NAV_CALL_ID, callid)
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .build(),
-                SkjermingsDataResponse.class);
+                String.class);
     }
 }
