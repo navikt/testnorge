@@ -7,12 +7,10 @@ import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.domain.CommonKeys.SYNTH_ENV;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-import java.lang.reflect.ParameterizedType;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
-import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +45,7 @@ public class SkjermingsRegisterConsumer {
     public ResponseEntity<List<SkjermingsDataResponse>> postSkjerming(List<SkjermingsDataRequest> skjermingsDataRequest) {
 
         String callid = getNavCallId();
-        log.info("Skjermings melding sendt, callid: {}, consumerId: {}", callid, CONSUMER);
+        logInfoSkjermingsMelding(getNavCallId(), CONSUMER);
 
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(providersProps.getSkjermingsRegister().getUrl() + SKJERMINGSREGISTER_URL))
@@ -63,7 +61,7 @@ public class SkjermingsRegisterConsumer {
     public ResponseEntity<SkjermingsDataResponse> putSkjerming(String fnr) {
 
         String callid = getNavCallId();
-        log.info("Skjermings melding sendt, callid: {}, consumerId: {}", callid, CONSUMER);
+        logInfoSkjermingsMelding(getNavCallId(), CONSUMER);
 
         return restTemplate.exchange(
                 RequestEntity.put(URI.create(providersProps.getSkjermingsRegister().getUrl() + SKJERMINGOPPHOER_URL + fnr))
@@ -79,7 +77,7 @@ public class SkjermingsRegisterConsumer {
     public ResponseEntity<String> deleteSkjerming(String fnr) {
 
         String callid = getNavCallId();
-        log.info("Skjermings melding sendt, callid: {}, consumerId: {}", callid, CONSUMER);
+        logInfoSkjermingsMelding(getNavCallId(), CONSUMER);
 
         return restTemplate.exchange(
                 RequestEntity.delete(URI.create(providersProps.getSkjermingsRegister().getUrl() + SKJERMINGSREGISTER_URL + "/" + fnr))
@@ -88,5 +86,9 @@ public class SkjermingsRegisterConsumer {
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .build(),
                 String.class);
+    }
+
+    private void logInfoSkjermingsMelding(String callId, String consumer) {
+        log.info("Skjermings melding sendt, callid: {}, consumerId: {}", callId, consumer);
     }
 }

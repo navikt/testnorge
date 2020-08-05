@@ -8,6 +8,7 @@ import static org.apache.cxf.common.util.PropertyUtils.isTrue;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -68,13 +69,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
 
                     if (!transaksjonMappingService.existAlready(SKJERMINGSREGISTER, tpsPerson.getHovedperson(), null) || isOpprettEndre) {
 
-                        ResponseEntity<List<SkjermingsDataResponse>> response = skjermingsRegisterConsumer.postSkjerming(Collections.singletonList(skjermingsDataRequest));
-                        if (response.hasBody() && response.getStatusCode().equals(HttpStatus.CREATED)) {
-                            status.append("OK");
-
-                            saveTranskasjonId(response.getBody(), tpsPerson.getHovedperson());
-                        }
-
+                        handleSkjermingDataResponse(tpsPerson, status, skjermingsDataRequest);
                     }
                 }
             } catch (RuntimeException e) {
@@ -84,6 +79,17 @@ public class SkjermingsRegisterClient implements ClientRegister {
                 log.error("Feilet å skjerme person med ident: {}", tpsPerson.getHovedperson(), e);
             }
             progress.setSkjermingsregisterStatus(status.toString());
+        }
+    }
+
+    private void handleSkjermingDataResponse(TpsPerson tpsPerson, StringBuilder status, SkjermingsDataRequest skjermingsDataRequest) {
+        ResponseEntity<List<SkjermingsDataResponse>> response = skjermingsRegisterConsumer.postSkjerming(Collections.singletonList(skjermingsDataRequest));
+        if (response.hasBody() && response.getStatusCode() == HttpStatus.CREATED) {
+            status.append("OK");
+
+            saveTranskasjonId(Objects.requireNonNull(response.getBody()), tpsPerson.getHovedperson());
+        } else if (response.getStatusCode() == HttpStatus.BAD_REQUEST) {
+            status.append("BAD REQUEST: Forsøk på duplikate skjerminger eller ugyldige skjermingsopplysninger");
         }
     }
 
@@ -112,7 +118,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
                         .transaksjonId(toJson(SkjermingsDataTransaksjon.builder()
                                 .heltNavn(response.get(0).getFornavn() + " " + response.get(0).getEtternavn())
                                 .datoEndret(response.get(0).getEndretDato())
-                                .datoOpprettet()
+                                .datoOpprettet(response.get(0).getOpprettetDato())
                                 .build()))
                         .datoEndret(LocalDateTime.now())
                         .system(SKJERMINGSREGISTER.name())
