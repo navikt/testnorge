@@ -7,7 +7,7 @@ on:
       - apps/synt-arbeidsforhold-api/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/arbeidsforhold-api:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/synt-arbeidsforhold-api:${{ github.sha }}
 
 jobs:
   build_and_deploy:
