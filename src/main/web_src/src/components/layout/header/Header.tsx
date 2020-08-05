@@ -1,14 +1,20 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 import Icon from '~/components/ui/icon/Icon'
+// @ts-ignore
 import logo from '~/assets/img/nav-logo-hvit.png'
-
 import './Header.less'
+import Logger from '~/logger'
+import { useLocation } from 'react-use'
 
-export default ({ brukerData }) => {
-	const isGruppePathActive = (match, location) => {
-		return location.pathname === '/' || location.pathname.includes('/gruppe')
+type Props = {
+	brukerData: {
+		brukerId: string
 	}
+}
+
+export default ({ brukerData }: Props) => {
+	const location = useLocation()
 
 	return (
 		<header className="app-header">
@@ -21,11 +27,21 @@ export default ({ brukerData }) => {
 			</NavLink>
 
 			<div className="menu-links">
-				<NavLink isActive={isGruppePathActive} to="/">
+				<NavLink
+					isActive={() => location.pathname === '/' || location.pathname.includes('/gruppe')}
+					to="/"
+				>
 					Testdatagrupper
 				</NavLink>
 				<NavLink to="/tpsendring">Endringsmelding</NavLink>
 				<NavLink to="/soek">Søk i Mini-Norge</NavLink>
+				<a
+					href="https://navikt.github.io/dolly-frontend/"
+					target="_blank"
+					onClick={() => Logger.log({ event: 'Trykket på dokumentasjon header' })}
+				>
+					Dokumentasjon
+				</a>
 				<a href="/swagger-ui.html" target="_blank">
 					API-dok
 				</a>
@@ -33,7 +49,7 @@ export default ({ brukerData }) => {
 
 			<div className="profil-area flexbox--all-center">
 				<NavLink to="/minside">
-					<Icon kind="user" size="25" />
+					<Icon kind="user" size={25} />
 					{brukerData.brukerId}
 				</NavLink>
 			</div>

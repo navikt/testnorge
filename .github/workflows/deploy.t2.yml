@@ -3,8 +3,6 @@ name: Deploy t2
 on:
   push:
     branches: master
-    paths:
-      - !docs/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/dolly-frontend:${{ github.sha }}
