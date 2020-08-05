@@ -110,7 +110,7 @@ public class PersonControllerIntegrationTest {
     }
 
     @Test
-    public void should_return_404_when_empty_response_from_tpsf() throws Exception{
+    public void should_return_404_when_empty_response_from_tpsf() throws Exception {
         IdentMiljoeRequest tpsfRequest = new IdentMiljoeRequest("12345678921", Collections.singletonList("t4"));
         String[] response = {};
 
@@ -121,15 +121,11 @@ public class PersonControllerIntegrationTest {
                 .withResponseBody(response)
                 .stubPost();
 
-        String json = mvc.perform(get("/api/v1/personer/12345678921")
+        mvc.perform(get("/api/v1/personer/12345678921")
                 .header("persondatasystem", "TPS")
                 .header("miljoe", "t4")
         )
-                .andExpect(status().is4xxClientError())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
+                .andExpect(status().is4xxClientError());
     }
 
     @Test

@@ -32,12 +32,16 @@ public class GetTpsPersonCommand implements Callable<PersonMiljoeResponse> {
                 .post(URI.create(tpsfUrl + HENT_PERSON_FRA_TPS_URL))
                 .body(requestBody), PersonMiljoeResponse[].class);
 
-        if(!response.getStatusCode().is2xxSuccessful() || !response.hasBody() || response.getBody().length == 0){
+        if(!response.getStatusCode().is2xxSuccessful() || !response.hasBody() ){
             throw new RuntimeException("Noe gikk galt ved henting av " + ident + " fra TPS");
         }
 
+        if ( response.getBody().length == 0 ) {
+            return null;
+        }
+
         if (response.getBody().length > 1) {
-            log.warn("Endepunktet returnerte mer enn ett svar. Det første svaret blir returnert");
+            log.warn("Endepunktet returnerte en liste med mer en enn ett element. Det første elementet blir returnert");
         }
 
         return response.getBody()[0];

@@ -29,6 +29,6 @@ public class TpsForvalterenConsumer {
 
     public Person getPerson(String ident, String miljoe) {
         PersonMiljoeResponse tpsPerson = new GetTpsPersonCommand(restTemplate, tpsfUrl, ident, miljoe).call();
-        return new Person(tpsPerson.getPerson());
+        return tpsPerson == null ? null : new Person(tpsPerson.getPerson());
     }
 }
