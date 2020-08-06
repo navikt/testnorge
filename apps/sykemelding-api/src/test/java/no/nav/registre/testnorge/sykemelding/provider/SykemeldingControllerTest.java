@@ -11,30 +11,41 @@ import no.nav.registre.testnorge.dto.sykemelding.v1.OrganisasjonDTO;
 import no.nav.registre.testnorge.dto.sykemelding.v1.PasientDTO;
 import no.nav.registre.testnorge.dto.sykemelding.v1.PeriodeDTO;
 import no.nav.registre.testnorge.dto.sykemelding.v1.SykemeldingDTO;
+import no.nav.registre.testnorge.sykemelding.consumer.HendelseConsumer;
+import no.nav.registre.testnorge.sykemelding.consumer.SyfoConsumer;
 import no.nav.registre.testnorge.sykemelding.domain.ApplicationInfo;
 import no.nav.registre.testnorge.sykemelding.domain.Sykemelding;
 import no.nav.registre.testnorge.sykemelding.service.SykemeldingService;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collections;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SykemeldingControllerTest {
 
     @Mock
-    private SykemeldingService sykemeldingService;
+    private  ApplicationInfo applicationInfo;
+
+    @Mock
+    private SyfoConsumer syfoConsumer;
+
+    @Mock
+    private HendelseConsumer consumer;
 
     @InjectMocks
+    private SykemeldingService sykemeldingService;
+
     private SykemeldingController sykemeldingController;
 
     SykemeldingDTO sykemeldingRequest;
@@ -42,6 +53,12 @@ public class SykemeldingControllerTest {
 
     @Before
     public void setUp() {
+        sykemeldingController = new SykemeldingController(sykemeldingService, applicationInfo);
+
+        when(applicationInfo.getName()).thenReturn("test");
+        when(applicationInfo.getVersion()).thenReturn("1");
+
+
         sykemeldingRequest = new SykemeldingDTO(
                 LocalDate.now(),
                 PasientDTO.builder()
@@ -70,7 +87,7 @@ public class SykemeldingControllerTest {
                         .yrkesbetegnelse("giver")
                         .build(),
                 false,
-                new ArrayList<>(Collections.singletonList(PeriodeDTO.builder().aktivitet(
+                Collections.singletonList(PeriodeDTO.builder().aktivitet(
                         AktivitetDTO.builder()
                                 .aktivitet(Aktivitet.AVVENTENDE)
                                 .behandlingsdager(20)
@@ -78,7 +95,7 @@ public class SykemeldingControllerTest {
                                 .grad(1).build())
                         .fom(LocalDate.now().minusMonths(3))
                         .tom(LocalDate.now())
-                        .build())),
+                        .build()),
                 OrganisasjonDTO.builder()
                         .navn("sender")
                         .adresse(AdresseDTO.builder()
@@ -118,12 +135,9 @@ public class SykemeldingControllerTest {
                 .build());
     }
 
-    @Ignore("Gir error, fikk ikke til when.then")
     @Test
-    public void shouldCreateSykemelding() {
-
+    public void should_send_sykemelding_to_syfo() {
         sykemeldingController.create(sykemeldingRequest);
-
-        verify(sykemeldingService).send(sykemelding);
+        verify(syfoConsumer, Mockito.atMostOnce()).send(any(Sykemelding.class));
     }
 }

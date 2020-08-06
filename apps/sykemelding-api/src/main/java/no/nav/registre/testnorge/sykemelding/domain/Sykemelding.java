@@ -1,16 +1,7 @@
 package no.nav.registre.testnorge.sykemelding.domain;
 
 import lombok.SneakyThrows;
-
-import javax.xml.datatype.DatatypeFactory;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.UUID;
-
+import lombok.ToString;
 import no.nav.helse.eiFellesformat.XMLEIFellesformat;
 import no.nav.helse.eiFellesformat.XMLMottakenhetBlokk;
 import no.nav.helse.msgHead.XMLAddress;
@@ -28,6 +19,16 @@ import no.nav.registre.testnorge.dto.sykemelding.v1.SykemeldingDTO;
 import no.nav.registre.testnorge.sykemelding.util.JAXBSykemeldingConverter;
 import no.nav.registre.testnorge.sykemelding.util.StaticResourceLoader;
 
+import javax.xml.datatype.DatatypeFactory;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.UUID;
+
+@ToString
 public class Sykemelding {
     private final XMLEIFellesformat fellesformat;
     private final LocalDate fom;
@@ -76,7 +77,7 @@ public class Sykemelding {
 
         AdresseDTO adresse = dto.getAdresse();
         if (adresse != null) {
-            XMLAddress address = patient.getAddress();
+            XMLAddress address = patient.getAddress() == null ? new XMLAddress() : patient.getAddress();
             address.setStreetAdr(adresse.getGate());
             address.setPostalCode(adresse.getPostnummer());
             address.setCity(adresse.getBy());
