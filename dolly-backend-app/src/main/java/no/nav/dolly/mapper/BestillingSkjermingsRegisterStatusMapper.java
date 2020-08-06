@@ -37,7 +37,7 @@ public final class BestillingSkjermingsRegisterStatusMapper {
                 : singletonList(RsStatusRapport.builder().id(SKJERMINGSREGISTER).navn(SKJERMINGSREGISTER.getBeskrivelse())
                         .statuser(statusMap.entrySet().stream()
                                 .map(entry -> RsStatusRapport.Status.builder()
-                                        .melding(entry.getKey().replace("=", ":"))
+                                        .melding(entry.getKey().replace('=', ':'))
                                         .identer(entry.getValue())
                                         .build())
                                 .collect(Collectors.toList()))
