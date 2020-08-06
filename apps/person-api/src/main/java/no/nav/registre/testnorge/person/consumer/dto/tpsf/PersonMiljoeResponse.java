@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.person.consumer.dto;
+package no.nav.registre.testnorge.person.consumer.dto.tpsf;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,7 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class OpprettPersonDTO {
-    String opprettetPersonident;
+public class PersonMiljoeResponse {
+    String environment;
+    TpsPerson person;
 }

@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Collections;
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.person.consumer.dto.OpprettPersonDTO;
+import no.nav.registre.testnorge.person.consumer.dto.pdl.OpprettPersonDTO;
 import no.nav.registre.testnorge.person.consumer.header.PdlHeaders;
 
 @RequiredArgsConstructor

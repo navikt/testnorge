@@ -6,4 +6,5 @@ public interface PersonAdapter {
     void createPerson(Person person);
 
     Person getPerson(String ident);
+    Person getPerson(String ident, String miljoe);
 }

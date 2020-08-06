@@ -19,12 +19,12 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.person.consumer.dto.graphql.PdlPerson;
-import no.nav.registre.testnorge.person.consumer.dto.graphql.Request;
+import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.PdlPerson;
+import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.Request;
 import no.nav.registre.testnorge.person.consumer.header.PdlHeaders;
 
 @RequiredArgsConstructor
-public class GetPersonCommand implements Callable<PdlPerson> {
+public class GetPdlPersonCommand implements Callable<PdlPerson> {
     private static final String GRAPHQL_URL = "/graphql";
     private static final String TEMA_GENERELL = "GEN";
 
