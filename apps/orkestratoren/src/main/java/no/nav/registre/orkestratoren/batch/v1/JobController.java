@@ -194,7 +194,7 @@ public class JobController {
         }
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 0 6 * * *")
     public void arenaSyntBatch() {
         for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
             for (int i = 0; i < arenaAntallNyeIdenter; i++) {
