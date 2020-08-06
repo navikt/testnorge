@@ -84,5 +84,6 @@
         <module>testnorge-populasjoner</module>
         <module>synt-arbeidsforhold-api</module>
         <module>statistikk-api</module>
+        <module>rapportering-api</module>
     </modules>
 </project>
