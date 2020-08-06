@@ -25,19 +25,25 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.dto.person.v1.AdresseDTO;
 import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
-import no.nav.registre.testnorge.person.consumer.dto.graphql.Bostedsadresse;
-import no.nav.registre.testnorge.person.consumer.dto.graphql.Data;
-import no.nav.registre.testnorge.person.consumer.dto.graphql.Folkeregisteridentifikator;
-import no.nav.registre.testnorge.person.consumer.dto.graphql.HentPerson;
-import no.nav.registre.testnorge.person.consumer.dto.graphql.Navn;
-import no.nav.registre.testnorge.person.consumer.dto.graphql.PdlPerson;
-import no.nav.registre.testnorge.person.consumer.dto.graphql.Request;
-import no.nav.registre.testnorge.person.consumer.dto.graphql.Vegadresse;
+import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.Bostedsadresse;
+import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.Data;
+import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.Foedsel;
+import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.Folkeregisteridentifikator;
+import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.HentPerson;
+import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.Navn;
+import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.PdlPerson;
+import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.Request;
+import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.Vegadresse;
+import no.nav.registre.testnorge.person.consumer.dto.tpsf.Boadresse;
+import no.nav.registre.testnorge.person.consumer.dto.tpsf.IdentMiljoeRequest;
+import no.nav.registre.testnorge.person.consumer.dto.tpsf.PersonMiljoeResponse;
+import no.nav.registre.testnorge.person.consumer.dto.tpsf.TpsPerson;
 import no.nav.registre.testnorge.test.JsonWiremockHelper;
 
 @RunWith(SpringRunner.class)
@@ -56,14 +62,84 @@ public class PersonControllerIntegrationTest {
     private ObjectMapper objectMapper;
 
     @Test
-    public void should_get_dtoPerson() throws Exception {
+    public void should_get_dtoPerson_from_tps() throws Exception {
+        IdentMiljoeRequest tpsfRequest = new IdentMiljoeRequest("12345678921", Collections.singletonList("t4"));
+
+        List<Boadresse> boadresse = Collections.singletonList(Boadresse.builder()
+                .gateadresse("Linegata")
+                .husnummer("12")
+                .postnr("2650")
+                .build()
+        );
+        TpsPerson tpsPerson = TpsPerson.builder()
+                .ident("12345678921")
+                .fornavn("Line")
+                .etternavn("Linesen")
+                .foedselsdato("1980-10-02")
+                .boadresse(boadresse)
+                .build();
+
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/import")
+                .withRequestBody(tpsfRequest)
+                .withResponseBody(Collections.singletonList(new PersonMiljoeResponse("t4", tpsPerson)))
+                .stubPost();
+
+        String json = mvc.perform(get("/api/v1/personer/12345678921")
+                .header("persondatasystem", "TPS")
+                .header("miljoe", "t4")
+        )
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        PersonDTO actualPerson = objectMapper.readValue(json, PersonDTO.class);
+
+        PersonDTO expected = PersonDTO.builder()
+                .fornavn("Line")
+                .etternavn("Linesen")
+                .ident("12345678921")
+                .foedselsdato("1980-10-02")
+                .adresse(new AdresseDTO("Linegata 12", "2650", null, null))
+                .build();
+
+        assertThat(actualPerson).isEqualTo(expected);
+    }
+
+    @Test
+    public void should_return_404_when_empty_response_from_tpsf() throws Exception {
+        IdentMiljoeRequest tpsfRequest = new IdentMiljoeRequest("12345678921", Collections.singletonList("t4"));
+        String[] response = {};
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/import")
+                .withRequestBody(tpsfRequest)
+                .withResponseBody(response)
+                .stubPost();
+
+        mvc.perform(get("/api/v1/personer/12345678921")
+                .header("persondatasystem", "TPS")
+                .header("miljoe", "t4")
+        )
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void should_get_dtoPerson_from_pdl() throws Exception {
         Navn pdlNavn = new Navn("Line", null, "Linesen");
+        Foedsel foedsel = new Foedsel("1980-10-02");
         Folkeregisteridentifikator folkeregisteridentifikator = new Folkeregisteridentifikator("12345678912", null, null);
         Bostedsadresse bostedsadresse = new Bostedsadresse(new Vegadresse("Linegata", "12", "2650", null));
-        PdlPerson graphqlResponse = new PdlPerson(Collections.EMPTY_LIST, new Data(new HentPerson(
-                Collections.singletonList(pdlNavn),
-                Collections.singletonList(bostedsadresse),
-                Collections.singletonList(folkeregisteridentifikator))));
+        PdlPerson graphqlResponse = new PdlPerson(Collections.EMPTY_LIST,
+                new Data(new HentPerson(
+                        Collections.singletonList(pdlNavn),
+                        Collections.singletonList(foedsel),
+                        Collections.singletonList(bostedsadresse),
+                        Collections.singletonList(folkeregisteridentifikator))));
 
         JsonWiremockHelper
                 .builder(objectMapper)
@@ -75,10 +151,16 @@ public class PersonControllerIntegrationTest {
         JsonWiremockHelper
                 .builder(objectMapper)
                 .withUrlPathMatching("(.*)/token/")
-                .withResponseBody(Token.builder().access_token("access").expires_in(LocalDateTime.now().plusMinutes(60)).build())
+                .withResponseBody(Token.builder()
+                        .access_token("access")
+                        .expires_in(LocalDateTime.now().plusMinutes(60))
+                        .build())
                 .stubGet();
 
-        String json = mvc.perform(get("/api/v1/personer/12345678912"))
+        String json = mvc.perform(get("/api/v1/personer/12345678912")
+                .header("persondatasystem", "PDL")
+                .header("miljoe", "")
+        )
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -90,6 +172,7 @@ public class PersonControllerIntegrationTest {
                 .fornavn("Line")
                 .etternavn("Linesen")
                 .ident("12345678912")
+                .foedselsdato("1980-10-02")
                 .adresse(new AdresseDTO("Linegata 12", "2650", null, null))
                 .build();
 

@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.person.consumer.dto;
+package no.nav.registre.testnorge.person.consumer.dto.pdl;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

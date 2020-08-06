@@ -10,8 +10,8 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Collections;
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.person.consumer.dto.HendelseDTO;
-import no.nav.registre.testnorge.person.consumer.dto.NavnDTO;
+import no.nav.registre.testnorge.person.consumer.dto.pdl.HendelseDTO;
+import no.nav.registre.testnorge.person.consumer.dto.pdl.NavnDTO;
 import no.nav.registre.testnorge.person.consumer.header.PdlHeaders;
 import no.nav.registre.testnorge.person.domain.Person;
 
