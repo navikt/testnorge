@@ -13,6 +13,7 @@ public class TpsPersonAdapter implements PersonAdapter {
 
     @Override
     public void createPerson(Person person) {
+        //Kommer
     }
 
     @Override

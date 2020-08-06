@@ -41,7 +41,7 @@ public class GetTpsPersonCommand implements Callable<PersonMiljoeResponse> {
         }
 
         if (response.getBody().length > 1) {
-            log.warn("Endepunktet returnerte en liste med mer en enn ett element. Det første elementet blir returnert");
+            log.warn("TPSF returnerte en liste med mer enn ett element. Det første elementet blir returnert");
         }
 
         return response.getBody()[0];
