@@ -42,13 +42,13 @@ public class ApplicationConfig {
         MethodInvokingFactoryBean methodInvokingFactoryBean = new MethodInvokingFactoryBean();
         methodInvokingFactoryBean.setTargetClass(SecurityContextHolder.class);
         methodInvokingFactoryBean.setTargetMethod("setStrategyName");
-        methodInvokingFactoryBean.setArguments(new String[]{SecurityContextHolder.MODE_INHERITABLETHREADLOCAL});
+        methodInvokingFactoryBean.setArguments(new String[] { SecurityContextHolder.MODE_INHERITABLETHREADLOCAL });
         return methodInvokingFactoryBean;
     }
 
     @Bean
     public ForkJoinPool dollyForkJoinPool() {
-        return new ForkJoinPool(
-                THREADS_COUNT, ForkJoinPool.defaultForkJoinWorkerThreadFactory, null, true);
+
+        return new ForkJoinPool(THREADS_COUNT, new ForkJoinWorkerThreadFactory(), null, false);
     }
 }
