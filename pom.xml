@@ -29,7 +29,7 @@
         <application.version>${project.version}</application.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>11</java.version>
+        <java.version>1.8</java.version>
         <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
         <freg-security-oidc.version>3.5.0</freg-security-oidc.version>
         <freg.property.version>1.2.0</freg.property.version>
@@ -39,7 +39,7 @@
         <jdbc.ojdbc.version>18.3.0.0</jdbc.ojdbc.version>
         <jdbc.ucp.version>12.2.0.1</jdbc.ucp.version>
         <jdbc.ons.version>12.2.0.1</jdbc.ons.version>
-        <orika.version>1.5.4</orika.version>
+        <orika.version>1.5.2</orika.version>
         <cxf.version>3.3.4</cxf.version>
         <modig-security.version>3.0.6</modig-security.version>
         <ehcache-core.version>2.6.11</ehcache-core.version>
