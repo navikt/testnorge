@@ -84,7 +84,7 @@ public class Report {
     }
 
     private String entryToText(Entry entry) {
-        return getIcon(entry.getStatus()) + " " + entry.getDescription() + " (" + entry.getTime().format(FORMATTER) + ")";
+        return getIcon(entry.getStatus()) + " " + entry.getDescription();
     }
 
     private String getIcon(EntryStatus status) {
@@ -95,7 +95,7 @@ public class Report {
                 return ":warning:";
             case INFO:
             default:
-                return ":information_source:";
+                return ":white_check_mark:";
         }
     }
 }
