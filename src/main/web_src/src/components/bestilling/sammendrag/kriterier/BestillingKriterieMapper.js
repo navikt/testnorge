@@ -506,6 +506,63 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		data.push(inntektStub)
 	}
 
+	const sykemeldingKriterier = _get(bestillingData, 'sykdom.sykemelding')
+
+	if (sykemeldingKriterier) {
+		console.log('sykemeldingKriterier :>> ', sykemeldingKriterier)
+		const sykemelding = {
+			header: 'Sykemelding',
+			items: [
+				obj('Startdato', Formatters.formatDate(sykemeldingKriterier.startDato)),
+				obj('Organisasjonsnummer', sykemeldingKriterier.orgnummer),
+				obj('Arbeidsforhold-ID', sykemeldingKriterier.arbeidsforholdId),
+				obj(
+					'Trenger umiddelbar bistand',
+					sykemeldingKriterier.hasOwnProperty('umiddelbarBistand') &&
+						(sykemeldingKriterier.umiddelbarBistand ? 'JA' : 'NEI')
+				),
+				obj(
+					'Manglende tilrettelegging på arbeidsplassen',
+					sykemeldingKriterier.hasOwnProperty('manglendeTilretteleggingPaaArbeidsplassen') &&
+						(sykemeldingKriterier.manglendeTilretteleggingPaaArbeidsplassen ? 'JA' : 'NEI')
+				),
+				obj('Diagnose', _get(sykemeldingKriterier, 'hovedDiagnose.diagnose')),
+				obj('Diagnosekode', _get(sykemeldingKriterier, 'hovedDiagnose.diagnosekode')),
+				obj('System', _get(sykemeldingKriterier, 'hovedDiagnose.system')),
+				obj(
+					'Antall registrerte bidiagnoser',
+					sykemeldingKriterier.biDiagnoser && sykemeldingKriterier.biDiagnoser.length
+				),
+				obj(
+					'Lege navn',
+					sykemeldingKriterier.lege &&
+						`${sykemeldingKriterier.lege.fornavn} ${sykemeldingKriterier.lege.mellomnavn} ${sykemeldingKriterier.lege.etternavn}`
+				),
+				obj('Lege ident', _get(sykemeldingKriterier, 'lege.ident')),
+				obj('Lege HPR-nummer', _get(sykemeldingKriterier, 'lege.hprId')),
+				obj('Arbeidsgiver', _get(sykemeldingKriterier, 'arbeidsgiver.navn')),
+				obj('Yrkesbetegnelse', _get(sykemeldingKriterier, 'arbeidsgiver.yrkesbetegnelse')),
+				obj('Stillingsprosent', _get(sykemeldingKriterier, 'arbeidsgiver.stillingsprosent')),
+				obj(
+					'Antall registrerte perioder',
+					sykemeldingKriterier.perioder && sykemeldingKriterier.perioder.length
+				),
+				obj('Tiltak fra NAV', _get(sykemeldingKriterier, 'detaljer.tiltakNav')),
+				obj('Tiltak på arbeidsplass', _get(sykemeldingKriterier, 'detaljer.tiltakArbeidsplass')),
+				obj(
+					'Hensyn på arbeidsplass',
+					_get(sykemeldingKriterier, 'detaljer.beskrivHensynArbeidsplassen')
+				),
+				obj(
+					'Arbeidsfør etter endt periode',
+					sykemeldingKriterier.detaljer &&
+						(sykemeldingKriterier.detaljer.arbeidsforEtterEndtPeriode ? 'JA' : 'NEI')
+				)
+			]
+		}
+		data.push(sykemelding)
+	}
+
 	const brregstubKriterier = bestillingData.brregstub
 
 	if (brregstubKriterier) {

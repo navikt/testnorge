@@ -251,6 +251,17 @@ const selectOptions: SelectOptions = {
 	tilleggstypeMidlertidig: [
 		{ value: 'CO_NAVN', label: 'CO Navn' },
 		{ value: 'BOLIG_NR', label: 'Bolig nummer' }
+	],
+
+	// Sykdom:
+	diagnose: [
+		{ value: 'A01', label: 'Smerte generell/flere steder (A01)' },
+		{ value: 'A02', label: 'Frysninger (A02)' }
+	],
+
+	aktivitet: [
+		{ value: 'INGEN', label: 'Ingen' },
+		{ value: 'AVVENTENDE', label: 'Avventende' }
 	]
 }
 

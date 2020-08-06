@@ -51,6 +51,7 @@ import ChevronUp from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-up-8
 import ChevronLeft from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-left-8.svg'
 import ChevronRight from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-right-8.svg'
 import PiggyBank from '~/assets/icons/nav-ikoner/line/SVG/24-business-finance/piggy-bank.svg'
+import Plaster from '~/assets/icons/nav-ikoner/line/SVG/40-health/first-aid-plaster.svg'
 
 import ProblemTriangle from '~/assets/icons/custom/ProblemTriangle.svg'
 import Details from '~/assets/icons/custom/Details.svg'
@@ -134,7 +135,8 @@ export const icons = {
 	pensjon: PiggyBank,
 	brreg: BrregLogo,
 	dokarkiv: Files,
-	copy: Copy
+	copy: Copy,
+	sykdom: Plaster
 }
 
 const px = v => `${v}px`
