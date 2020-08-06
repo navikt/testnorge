@@ -13,7 +13,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SkjermingsDataTransaksjon {
 
-    private String heltNavn;
-    private String datoEndret;
-    private String datoOpprettet;
+    private String ansattSkjermetFra;
+    private String ansattSkjermetTil;
 }

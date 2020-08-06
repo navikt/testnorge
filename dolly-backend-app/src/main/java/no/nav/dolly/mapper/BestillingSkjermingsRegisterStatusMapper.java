@@ -19,7 +19,7 @@ import no.nav.dolly.domain.resultset.RsStatusRapport;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingSkjermingsRegisterStatusMapper {
 
-    public static List<RsStatusRapport> buildSkjermRegisterStatusMap(List<BestillingProgress> progressList) {
+    public static List<RsStatusRapport> buildSkjermingsRegisterStatusMap(List<BestillingProgress> progressList) {
 
         Map<String, List<String>> statusMap = new HashMap<>();
 
@@ -37,7 +37,7 @@ public final class BestillingSkjermingsRegisterStatusMapper {
                 : singletonList(RsStatusRapport.builder().id(SKJERMINGSREGISTER).navn(SKJERMINGSREGISTER.getBeskrivelse())
                         .statuser(statusMap.entrySet().stream()
                                 .map(entry -> RsStatusRapport.Status.builder()
-                                        .melding(entry.getKey().replaceAll("=", ":"))
+                                        .melding(entry.getKey().replace("=", ":"))
                                         .identer(entry.getValue())
                                         .build())
                                 .collect(Collectors.toList()))

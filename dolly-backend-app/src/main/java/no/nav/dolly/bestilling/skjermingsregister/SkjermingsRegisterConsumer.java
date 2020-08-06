@@ -45,7 +45,7 @@ public class SkjermingsRegisterConsumer {
     public ResponseEntity<List<SkjermingsDataResponse>> postSkjerming(List<SkjermingsDataRequest> skjermingsDataRequest) {
 
         String callid = getNavCallId();
-        logInfoSkjermingsMelding(getNavCallId(), CONSUMER);
+        logInfoSkjermingsMelding(callid, CONSUMER);
 
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(providersProps.getSkjermingsRegister().getUrl() + SKJERMINGSREGISTER_URL))
@@ -61,7 +61,7 @@ public class SkjermingsRegisterConsumer {
     public ResponseEntity<SkjermingsDataResponse> putSkjerming(String fnr) {
 
         String callid = getNavCallId();
-        logInfoSkjermingsMelding(getNavCallId(), CONSUMER);
+        logInfoSkjermingsMelding(callid, CONSUMER);
 
         return restTemplate.exchange(
                 RequestEntity.put(URI.create(providersProps.getSkjermingsRegister().getUrl() + SKJERMINGOPPHOER_URL + fnr))
@@ -77,7 +77,7 @@ public class SkjermingsRegisterConsumer {
     public ResponseEntity<String> deleteSkjerming(String fnr) {
 
         String callid = getNavCallId();
-        logInfoSkjermingsMelding(getNavCallId(), CONSUMER);
+        logInfoSkjermingsMelding(callid, CONSUMER);
 
         return restTemplate.exchange(
                 RequestEntity.delete(URI.create(providersProps.getSkjermingsRegister().getUrl() + SKJERMINGSREGISTER_URL + "/" + fnr))
@@ -89,6 +89,7 @@ public class SkjermingsRegisterConsumer {
     }
 
     private void logInfoSkjermingsMelding(String callId, String consumer) {
-        log.info("Skjermings melding sendt, callid: {}, consumerId: {}", callId, consumer);
+
+        log.info("Skjermingsmelding sendt, callid: {}, consumerId: {}", callId, consumer);
     }
 }

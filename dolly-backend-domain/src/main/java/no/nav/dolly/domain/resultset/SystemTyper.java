@@ -28,7 +28,7 @@ public enum SystemTyper {
     BRREGSTUB("Brønnøysundregistrene (BRREGSTUB)"),
     DOKARKIV("Dokumentarkiv (JOARK)"),
     SYKEMELDING("Testnorge Synt Sykemelding"),
-    TPSIMPORT("Import av identer (MINI-NORGE)"), SKJERMINGSREGISTER("Skjermingsregister for NAV-ansatte");
+    TPSIMPORT("Import av identer (MINI-NORGE)"), SKJERMINGSREGISTER("NAV-ansatt Skjermingsregister");
 
     SystemTyper(String beskrivelse) {
         this.beskrivelse = beskrivelse;
