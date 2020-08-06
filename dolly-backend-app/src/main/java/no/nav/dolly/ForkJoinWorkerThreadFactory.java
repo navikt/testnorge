@@ -11,7 +11,7 @@ public class ForkJoinWorkerThreadFactory implements ForkJoinPool.ForkJoinWorkerT
         return new MyForkJoinWorkerThread(pool);
     }
 
-    private static class MyForkJoinWorkerThread extends ForkJoinWorkerThread {
+    private static final class MyForkJoinWorkerThread extends ForkJoinWorkerThread {
 
         private MyForkJoinWorkerThread(final ForkJoinPool pool) {
             super(pool);
