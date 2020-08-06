@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataRequest;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataResponse;
@@ -27,7 +26,6 @@ import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataTransaksj
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.skjermingsregister.RsSkjermingsRegister;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
@@ -41,7 +39,6 @@ public class SkjermingsRegisterClient implements ClientRegister {
 
     private final SkjermingsRegisterConsumer skjermingsRegisterConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
-    private final MapperFacade mapperFacade;
     private final TransaksjonMappingService transaksjonMappingService;
     private final ObjectMapper objectMapper;
     private final TpsfPersonCache tpsfPersonCache;
@@ -49,31 +46,26 @@ public class SkjermingsRegisterClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (nonNull(bestilling.getSkjermingsRegister()) && !bestilling.getSkjermingsRegister().isEmpty()) {
+        if (nonNull(bestilling.getTpsf())) {
 
             StringBuilder status = new StringBuilder();
             try {
-                RsSkjermingsRegister register = bestilling.getSkjermingsRegister().get(0);
-
-                SkjermingsDataRequest skjermingsDataRequest = mapperFacade.map(register, SkjermingsDataRequest.class);
-
                 tpsfPersonCache.fetchIfEmpty(tpsPerson);
                 Person hovedPerson = tpsPerson.getPerson(tpsPerson.getHovedperson());
-                hovedPerson.setEgenAnsattDatoFom(register.getSkjermetFra());
-                hovedPerson.setEgenAnsattDatoTom(register.getSkjermetTil());
-                if (isTrue(erAktivEgenansatt(hovedPerson.getEgenAnsattDatoFom(), hovedPerson.getEgenAnsattDatoTom()))) {
 
-                    skjermingsDataRequest.setEtternavn(hovedPerson.getEtternavn());
-                    skjermingsDataRequest.setFornavn(hovedPerson.getFornavn());
-                    skjermingsDataRequest.setPersonident(hovedPerson.getIdent());
+                SkjermingsDataRequest skjermingsDataRequest = SkjermingsDataRequest.builder()
+                        .etternavn(hovedPerson.getEtternavn())
+                        .fornavn(hovedPerson.getFornavn())
+                        .personident(hovedPerson.getIdent())
+                        .skjermetFra(hovedPerson.getEgenAnsattDatoFom())
+                        .skjermetTil(hovedPerson.getEgenAnsattDatoTom())
+                        .build();
 
-                    if (!transaksjonMappingService.existAlready(SKJERMINGSREGISTER, tpsPerson.getHovedperson(), null) || isOpprettEndre) {
-
-                        handleSkjermingDataResponse(tpsPerson, status, skjermingsDataRequest);
-                    }
+                if (isTrue(erAktivEgenansatt(hovedPerson.getEgenAnsattDatoFom(), hovedPerson.getEgenAnsattDatoTom())) &&
+                        (!transaksjonMappingService.existAlready(SKJERMINGSREGISTER, tpsPerson.getHovedperson(), null) || isOpprettEndre)) {
+                    handleSkjermingDataResponse(tpsPerson, status, skjermingsDataRequest);
                 }
             } catch (RuntimeException e) {
-
                 status.append(errorStatusDecoder.decodeRuntimeException(e));
 
                 log.error("Feilet å skjerme person med ident: {}", tpsPerson.getHovedperson(), e);

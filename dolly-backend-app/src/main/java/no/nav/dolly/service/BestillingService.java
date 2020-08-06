@@ -61,6 +61,24 @@ public class BestillingService {
     private final ObjectMapper objectMapper;
     private final TestgruppeRepository testgruppeRepository;
 
+    private static void fixAaregAbstractClassProblem(List<RsAaregArbeidsforhold> aaregdata) {
+
+        aaregdata.forEach(arbeidforhold -> arbeidforhold.getArbeidsgiver().setAktoertype(
+                arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS"));
+    }
+
+    private static void fixPdlAbstractClassProblem(RsPdldata pdldata) {
+
+        if (nonNull(pdldata)) {
+            if (nonNull(pdldata.getKontaktinformasjonForDoedsbo())) {
+                pdldata.getKontaktinformasjonForDoedsbo().setAdressat(pdldata.getKontaktinformasjonForDoedsbo().getAdressat());
+            }
+            if (nonNull(pdldata.getFalskIdentitet())) {
+                pdldata.getFalskIdentitet().setRettIdentitet(pdldata.getFalskIdentitet().getRettIdentitet());
+            }
+        }
+    }
+
     public Bestilling fetchBestillingById(Long bestillingId) {
         return bestillingRepository.findById(bestillingId).orElseThrow(() -> new NotFoundException(format("Fant ikke bestillingId %d", bestillingId)));
     }
@@ -194,8 +212,7 @@ public class BestillingService {
                         .tpsfKriterier(bestilling.getTpsfKriterier())
                         .bestKriterier(bestilling.getBestKriterier())
                         .userId(getUserPrinciple())
-                        .build()
-        );
+                        .build());
     }
 
     @Transactional
@@ -246,25 +263,6 @@ public class BestillingService {
         });
     }
 
-    private static void fixAaregAbstractClassProblem(List<RsAaregArbeidsforhold> aaregdata) {
-
-        aaregdata.forEach(arbeidforhold ->
-                arbeidforhold.getArbeidsgiver().setAktoertype(
-                        arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS"));
-    }
-
-    private static void fixPdlAbstractClassProblem(RsPdldata pdldata) {
-
-        if (nonNull(pdldata)) {
-            if (nonNull(pdldata.getKontaktinformasjonForDoedsbo())) {
-                pdldata.getKontaktinformasjonForDoedsbo().setAdressat(pdldata.getKontaktinformasjonForDoedsbo().getAdressat());
-            }
-            if (nonNull(pdldata.getFalskIdentitet())) {
-                pdldata.getFalskIdentitet().setRettIdentitet(pdldata.getFalskIdentitet().getRettIdentitet());
-            }
-        }
-    }
-
     private String toJson(Object object) {
         try {
             if (nonNull(object)) {
@@ -291,7 +289,6 @@ public class BestillingService {
                 .brregstub(request.getBrregstub())
                 .dokarkiv(request.getDokarkiv())
                 .sykemelding(request.getSykemelding())
-                .skjermingsRegister(request.getSkjermingsRegister())
                 .build());
     }
 }

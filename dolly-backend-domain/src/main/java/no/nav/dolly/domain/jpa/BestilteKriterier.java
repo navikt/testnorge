@@ -22,7 +22,6 @@ import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
-import no.nav.dolly.domain.resultset.skjermingsregister.RsSkjermingsRegister;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 
@@ -35,7 +34,7 @@ import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 public class BestilteKriterier {
 
     private List<RsAaregArbeidsforhold> aareg;
-	private RsDigitalKontaktdata krrstub;
+    private RsDigitalKontaktdata krrstub;
     private RsUdiPerson udistub;
     private List<OpprettSkattegrunnlag> sigrunstub;
     private Arenadata arenaforvalter;
@@ -47,5 +46,4 @@ public class BestilteKriterier {
     private RsBregdata brregstub;
     private RsDokarkiv dokarkiv;
     private RsSykemelding sykemelding;
-    private List<RsSkjermingsRegister> skjermingsRegister;
 }

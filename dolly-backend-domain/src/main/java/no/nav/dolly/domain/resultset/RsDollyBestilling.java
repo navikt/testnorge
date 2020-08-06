@@ -24,7 +24,6 @@ import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
-import no.nav.dolly.domain.resultset.skjermingsregister.RsSkjermingsRegister;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 
@@ -81,9 +80,6 @@ public class RsDollyBestilling {
     @ApiModelProperty(position = 14)
     private RsSykemelding sykemelding;
 
-    @ApiModelProperty(position = 15)
-    private List<RsSkjermingsRegister> skjermingsRegister;
-
     public List<RsAaregArbeidsforhold> getAareg() {
         if (isNull(aareg)) {
             aareg = new ArrayList<>();
@@ -103,13 +99,6 @@ public class RsDollyBestilling {
             sigrunstub = new ArrayList<>();
         }
         return sigrunstub;
-    }
-
-    public List<RsSkjermingsRegister> getSkjermingsRegister() {
-        if (isNull(skjermingsRegister)) {
-            skjermingsRegister = new ArrayList<>();
-        }
-        return skjermingsRegister;
     }
 
     public List<RsInstdata> getInstdata() {
