@@ -34,6 +34,10 @@
                     {
                         "name": "description",
                         "type": "string"
+                    },
+                    {
+                        "name": "time",
+                        "type": "string"
                     }
                 ]
             }

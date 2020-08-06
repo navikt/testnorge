@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import no.nav.registre.orkestratoren.consumer.ArbeidsforholdConsumer;
 import no.nav.registre.orkestratoren.consumer.SyntSykemeldingConsumer;
 import no.nav.registre.testnorge.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.reporting.Reporting;
 
 @Slf4j
 @Service
@@ -23,8 +24,13 @@ public class SykemeldingSyntetiseringsService {
     private final ArbeidsforholdConsumer arbeidsforholdConsumer;
     private final SyntSykemeldingConsumer syntSykemeldingConsumer;
 
-    public void syntentiser(Set<String> identer, LocalDate startDate) {
+    public void syntentiser(Set<String> identer, LocalDate startDate, Reporting reporting) {
         log.info("Syntentiserer {} ny(e) sykemelding(er) med start dato {}.", identer.size(), startDate.toString());
+        reporting.info(
+                "Syntentiserer {} ny(e) sykemelding(er) med start dato {}.",
+                identer.size(), startDate.toString()
+        );
+
         Map<String, CompletableFuture<ArbeidsforholdDTO>> arbeidsforholdMap = identer
                 .stream()
                 .collect(Collectors.toMap(
@@ -43,6 +49,7 @@ public class SykemeldingSyntetiseringsService {
                 );
             } catch (Exception e) {
                 log.error("Klarte ikke å hente arbeidsforhold for {}.", ident, e);
+                reporting.error("Klarte ikke å hente arbeidsforhold for {}. Exception: {}", ident, e.getMessage());
             }
         });
 
@@ -51,6 +58,10 @@ public class SykemeldingSyntetiseringsService {
                 future.get();
             } catch (Exception e) {
                 log.error("Klarte ikke å opprette synt sykemelding for {}.", ident, e);
+                reporting.error(
+                        "Klarte ikke å opprette synt sykemelding for {}. Exception: {}",
+                        ident, e.getMessage()
+                );
             }
         });
     }

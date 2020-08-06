@@ -13,6 +13,7 @@ import no.nav.registre.orkestratoren.consumer.HendelseConsumer;
 import no.nav.registre.orkestratoren.consumer.PopulasjonerConsumer;
 import no.nav.registre.orkestratoren.consumer.StatistikkConsumer;
 import no.nav.registre.testnorge.dto.hendelse.v1.HendelseDTO;
+import no.nav.registre.testnorge.libs.reporting.Reporting;
 
 @Slf4j
 @Service
@@ -24,7 +25,7 @@ public class SykemeldingOrkestreringsService {
     private final StatistikkConsumer statistikkConsumer;
     private final SykemeldingSyntetiseringsService sykemeldingSyntetiseringsService;
 
-    public void orkistrer() {
+    public void orkistrer(Reporting reporting) {
 
         LocalDate startDate = LocalDate.now();
 
@@ -44,17 +45,22 @@ public class SykemeldingOrkestreringsService {
 
         if (aktiveArbeidsforhold.isEmpty()) {
             log.warn("Ingen aktive arbeidsforhold. Avslutter syntetisering av sykemeldinger.");
+            reporting.warn("Ingen aktive arbeidsforhold. Avslutter syntetisering av sykemeldinger.");
             return;
         }
         double antallSykemeldtIprosent = (double) aktiveSykemeldinger.size() / (double) aktiveArbeidsforhold.size();
 
         log.info("Det er {}% sykemeldt", antallSykemeldtIprosent * 100);
+        reporting.info("Det er {}% sykemeldt", antallSykemeldtIprosent * 100);
 
         if (antallSykemeldtIprosent >= maalAntallSykemeldtIProsent) {
             log.info(
                     "Oppretter ingen nye sykemeldinger siden det er {}% aktive og målet er {}%",
-                    antallSykemeldtIprosent * 100,
-                    maalAntallSykemeldtIProsent * 100
+                    antallSykemeldtIprosent * 100, maalAntallSykemeldtIProsent * 100
+            );
+            reporting.info(
+                    "Oppretter ingen nye sykemeldinger siden det er {}% aktive og målet er {}%",
+                    antallSykemeldtIprosent * 100, maalAntallSykemeldtIProsent * 100
             );
             return;
         }
@@ -69,7 +75,7 @@ public class SykemeldingOrkestreringsService {
                 .limit(antallSykemeldingerAOpprette)
                 .collect(Collectors.toSet());
 
-        sykemeldingSyntetiseringsService.syntentiser(identerMedArbeidsforholdUtenSykemelding, startDate);
+        sykemeldingSyntetiseringsService.syntentiser(identerMedArbeidsforholdUtenSykemelding, startDate, reporting);
     }
 
     private Set<String> getIdenterIPopulasjonenFra(List<HendelseDTO> hendelseer, Set<String> populasjon) {

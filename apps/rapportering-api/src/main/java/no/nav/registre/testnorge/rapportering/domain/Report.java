@@ -30,7 +30,7 @@ public class Report {
     LocalDateTime end;
     List<Entry> entries;
 
-    public Report(ReportModel model){
+    public Report(ReportModel model) {
         id = model.getId();
         applicationName = model.getApplicationName();
         name = model.getName();
@@ -67,7 +67,7 @@ public class Report {
 
     public Message toSlackMessage(String channel) {
         var headerBlock = Block.from("*Rapport fra " + name + " (" + applicationName + ")*");
-        var durationBlock = Block.from("(" + start.format(FORMATTER) +" - " + end.format(FORMATTER) + ")");
+        var durationBlock = Block.from("(" + start.format(FORMATTER) + " - " + end.format(FORMATTER) + ")");
         var blocks = new ArrayList<Block>();
 
         blocks.add(headerBlock);
@@ -84,9 +84,8 @@ public class Report {
     }
 
     private String entryToText(Entry entry) {
-        return getIcon(entry.getStatus()) + " " + entry.getDescription();
+        return getIcon(entry.getStatus()) + " " + entry.getDescription() + " (" + entry.getTime().format(FORMATTER) + ")";
     }
-
 
     private String getIcon(EntryStatus status) {
         switch (status) {

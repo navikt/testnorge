@@ -112,6 +112,14 @@
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.confluent</groupId>
+            <artifactId>kafka-avro-serializer</artifactId>
+        </dependency>
 
         <!-- TESTNORGE -->
         <dependency>
@@ -124,6 +132,14 @@
         </dependency>
         <dependency>
             <artifactId>testnorge-data-transfer-objects</artifactId>
+            <groupId>no.nav.registre.testnorge</groupId>
+        </dependency>
+        <dependency>
+            <artifactId>testnorge-reporting</artifactId>
+            <groupId>no.nav.registre.testnorge</groupId>
+        </dependency>
+        <dependency>
+            <artifactId>testnorge-avro-schema</artifactId>
             <groupId>no.nav.registre.testnorge</groupId>
         </dependency>
 

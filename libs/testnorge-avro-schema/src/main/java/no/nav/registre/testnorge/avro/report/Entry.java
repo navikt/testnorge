@@ -14,8 +14,8 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class Entry extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -8453064533982588971L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Entry\",\"namespace\":\"no.nav.registre.testnorge.avro.report\",\"fields\":[{\"name\":\"status\",\"type\":\"string\"},{\"name\":\"description\",\"type\":\"string\"}]}");
+  private static final long serialVersionUID = 7399292871890382179L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Entry\",\"namespace\":\"no.nav.registre.testnorge.avro.report\",\"fields\":[{\"name\":\"status\",\"type\":\"string\"},{\"name\":\"description\",\"type\":\"string\"},{\"name\":\"time\",\"type\":\"string\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
@@ -73,6 +73,7 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
 
    private java.lang.CharSequence status;
    private java.lang.CharSequence description;
+   private java.lang.CharSequence time;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -85,10 +86,12 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
    * All-args constructor.
    * @param status The new value for status
    * @param description The new value for description
+   * @param time The new value for time
    */
-  public Entry(java.lang.CharSequence status, java.lang.CharSequence description) {
+  public Entry(java.lang.CharSequence status, java.lang.CharSequence description, java.lang.CharSequence time) {
     this.status = status;
     this.description = description;
+    this.time = time;
   }
 
   public org.apache.avro.specific.SpecificData getSpecificData() { return MODEL$; }
@@ -98,6 +101,7 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
     switch (field$) {
     case 0: return status;
     case 1: return description;
+    case 2: return time;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -108,6 +112,7 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
     switch (field$) {
     case 0: status = (java.lang.CharSequence)value$; break;
     case 1: description = (java.lang.CharSequence)value$; break;
+    case 2: time = (java.lang.CharSequence)value$; break;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -144,6 +149,23 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
    */
   public void setDescription(java.lang.CharSequence value) {
     this.description = value;
+  }
+
+  /**
+   * Gets the value of the 'time' field.
+   * @return The value of the 'time' field.
+   */
+  public java.lang.CharSequence getTime() {
+    return time;
+  }
+
+
+  /**
+   * Sets the value of the 'time' field.
+   * @param value the value to set.
+   */
+  public void setTime(java.lang.CharSequence value) {
+    this.time = value;
   }
 
   /**
@@ -189,6 +211,7 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
 
     private java.lang.CharSequence status;
     private java.lang.CharSequence description;
+    private java.lang.CharSequence time;
 
     /** Creates a new Builder */
     private Builder() {
@@ -209,6 +232,10 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
         this.description = data().deepCopy(fields()[1].schema(), other.description);
         fieldSetFlags()[1] = other.fieldSetFlags()[1];
       }
+      if (isValidValue(fields()[2], other.time)) {
+        this.time = data().deepCopy(fields()[2].schema(), other.time);
+        fieldSetFlags()[2] = other.fieldSetFlags()[2];
+      }
     }
 
     /**
@@ -224,6 +251,10 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
       if (isValidValue(fields()[1], other.description)) {
         this.description = data().deepCopy(fields()[1].schema(), other.description);
         fieldSetFlags()[1] = true;
+      }
+      if (isValidValue(fields()[2], other.time)) {
+        this.time = data().deepCopy(fields()[2].schema(), other.time);
+        fieldSetFlags()[2] = true;
       }
     }
 
@@ -307,6 +338,46 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
       return this;
     }
 
+    /**
+      * Gets the value of the 'time' field.
+      * @return The value.
+      */
+    public java.lang.CharSequence getTime() {
+      return time;
+    }
+
+
+    /**
+      * Sets the value of the 'time' field.
+      * @param value The value of 'time'.
+      * @return This builder.
+      */
+    public no.nav.registre.testnorge.avro.report.Entry.Builder setTime(java.lang.CharSequence value) {
+      validate(fields()[2], value);
+      this.time = value;
+      fieldSetFlags()[2] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'time' field has been set.
+      * @return True if the 'time' field has been set, false otherwise.
+      */
+    public boolean hasTime() {
+      return fieldSetFlags()[2];
+    }
+
+
+    /**
+      * Clears the value of the 'time' field.
+      * @return This builder.
+      */
+    public no.nav.registre.testnorge.avro.report.Entry.Builder clearTime() {
+      time = null;
+      fieldSetFlags()[2] = false;
+      return this;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public Entry build() {
@@ -314,6 +385,7 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
         Entry record = new Entry();
         record.status = fieldSetFlags()[0] ? this.status : (java.lang.CharSequence) defaultValue(fields()[0]);
         record.description = fieldSetFlags()[1] ? this.description : (java.lang.CharSequence) defaultValue(fields()[1]);
+        record.time = fieldSetFlags()[2] ? this.time : (java.lang.CharSequence) defaultValue(fields()[2]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
         throw e;
@@ -350,6 +422,8 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
 
     out.writeString(this.description);
 
+    out.writeString(this.time);
+
   }
 
   @Override public void customDecode(org.apache.avro.io.ResolvingDecoder in)
@@ -361,8 +435,10 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
 
       this.description = in.readString(this.description instanceof Utf8 ? (Utf8)this.description : null);
 
+      this.time = in.readString(this.time instanceof Utf8 ? (Utf8)this.time : null);
+
     } else {
-      for (int i = 0; i < 2; i++) {
+      for (int i = 0; i < 3; i++) {
         switch (fieldOrder[i].pos()) {
         case 0:
           this.status = in.readString(this.status instanceof Utf8 ? (Utf8)this.status : null);
@@ -370,6 +446,10 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
 
         case 1:
           this.description = in.readString(this.description instanceof Utf8 ? (Utf8)this.description : null);
+          break;
+
+        case 2:
+          this.time = in.readString(this.time instanceof Utf8 ? (Utf8)this.time : null);
           break;
 
         default:
