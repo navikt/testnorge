@@ -66,7 +66,7 @@ public class Report {
     }
 
     public Message toSlackMessage(String channel) {
-        var headerBlock = Block.from("*Rapport fra " + name + " (" + applicationName + ")*");
+        var headerBlock = Block.from("Rapport fra " + name + " (" + applicationName + ")", "header");
         var durationBlock = Block.from("(" + start.format(FORMATTER) + " - " + end.format(FORMATTER) + ")");
         var blocks = new ArrayList<Block>();
 
@@ -75,7 +75,7 @@ public class Report {
         blocks.addAll(entries.stream().map(
                 value -> Block.from(entryToText(value))
         ).collect(Collectors.toList()));
-
+        blocks.add(Block.from(null, "divider"));
         return Message
                 .builder()
                 .channel(channel)
