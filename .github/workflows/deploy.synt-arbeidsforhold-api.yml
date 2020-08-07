@@ -2,7 +2,6 @@ name: Deploy synt-arbeidsforhold-api
 
 on:
   push:
-    branches: master
     paths:
       - apps/synt-arbeidsforhold-api/**
 
@@ -44,7 +43,6 @@ jobs:
       - name: Deploy to nais
         timeout-minutes: 5
         uses: nais/deploy/actions/deploy@v1
-        working-directory: apps/synt-arbeidsforhold-api/
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
