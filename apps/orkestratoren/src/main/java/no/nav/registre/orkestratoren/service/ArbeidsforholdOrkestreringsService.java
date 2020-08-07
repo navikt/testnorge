@@ -53,8 +53,8 @@ public class ArbeidsforholdOrkestreringsService {
         }
 
         if (personer.isEmpty()) {
-            log.warn("Fant ingen personer, avslutter orkestrering...");
-            reporting.warn("Fant ingen personer, avslutter orkestrering...");
+            log.warn("Fant ingen personer, avslutter orkestrering");
+            reporting.warn("Fant ingen personer, avslutter orkestrering");
             return;
         }
 
@@ -65,11 +65,16 @@ public class ArbeidsforholdOrkestreringsService {
                 .filter(person -> person.getFoedselsdato().isBefore(LocalDateTime.now().plusMinutes(74)))
                 .collect(Collectors.toSet());
 
+
+        if (personerSomKanVaereIArbeidstyrken.isEmpty()) {
+            log.warn("Fant ingen som kan være i arbeidssyrken, avslutter orkestreing.");
+        }
+
         double antallArbeidstakereSomErIArbeidsstyrkenIProsent = statistikkConsumer
                 .getAntallArbeidstakereSomErIArbeidsstyrkenIProsent();
 
         double antallPersonIArbeidsstyrkenIProsent =
-                (double) Math.max(aktiveArbeidsforhold.size(), 1) / (double) personerSomKanVaereIArbeidstyrken.size();
+                (double) aktiveArbeidsforhold.size() / (double) personerSomKanVaereIArbeidstyrken.size();
 
         if (antallPersonIArbeidsstyrkenIProsent > antallArbeidstakereSomErIArbeidsstyrkenIProsent) {
             log.info("Oppretter ingen flere arbeidsforhold da antall i arbeidstyrken er {}% og målet er {}%",
