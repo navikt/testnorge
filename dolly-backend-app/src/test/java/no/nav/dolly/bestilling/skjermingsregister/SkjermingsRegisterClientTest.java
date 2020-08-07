@@ -36,9 +36,6 @@ import no.nav.dolly.service.TransaksjonMappingService;
 @RunWith(MockitoJUnitRunner.class)
 public class SkjermingsRegisterClientTest {
 
-    private final String ident = "11111123456";
-    private final String fornavn = "Synt";
-    private final String etternavn = "Syntesen";
     @Mock
     private SkjermingsRegisterConsumer skjermingsRegisterConsumer;
     @Mock
@@ -92,6 +89,9 @@ public class SkjermingsRegisterClientTest {
                 .identtype(IdentType.FNR.name())
                 .build());
 
+        String etternavn = "Syntesen";
+        String fornavn = "Synt";
+        String ident = "11111123456";
         person = TpsPerson.builder()
                 .hovedperson(ident)
                 .persondetaljer(Collections.singletonList(Person.builder()
