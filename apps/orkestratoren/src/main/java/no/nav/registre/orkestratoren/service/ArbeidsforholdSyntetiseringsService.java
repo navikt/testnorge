@@ -27,13 +27,23 @@ public class ArbeidsforholdSyntetiseringsService {
                 .map(value -> syntArbeidsforholdConsumer.createArbeidsforhold(value.getIdent(), value.getFoedselsdato().toLocalDate()))
                 .collect(Collectors.toList());
 
+        int count = 0;
         for (var future : futures) {
             try {
                 future.get();
+                count++;
             } catch (Exception e) {
                 log.error("klarer ikke å opprette arbeidsforhold", e);
                 reporting.error("klarer ikke å opprette arbeidsforhold: {}", e.getMessage());
             }
+        }
+
+        if (count < personer.size()) {
+            log.warn("Klarte ikke å opprette alle arbeidsforhold {}/{}.", count, personer.size());
+        }
+
+        if (count == personer.size()) {
+            log.info("Alle {} arbeidsforhold opprettet.", count);
         }
     }
 }

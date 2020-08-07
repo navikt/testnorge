@@ -44,8 +44,8 @@ public class ArbeidsforholdOrkestreringsService {
                 populasjon
         );
 
-        log.info("Fant {} aktive arbeidsforhold på {}.", populasjon.size(), startDate);
-        reporting.info("Fant {} aktive arbeidsforhold på {}.", populasjon.size(), startDate);
+        log.info("Fant {} aktive arbeidsforhold på {}.", aktiveArbeidsforhold.size(), startDate);
+        reporting.info("Fant {} aktive arbeidsforhold på {}.", aktiveArbeidsforhold.size(), startDate);
 
         Set<PersonDTO> personer = personConsumer.getPersoner(populasjon);
 
@@ -79,7 +79,7 @@ public class ArbeidsforholdOrkestreringsService {
         double antallPersonIArbeidsstyrkenIProsent =
                 (double) aktiveArbeidsforhold.size() / (double) personerSomKanVaereIArbeidstyrken.size();
 
-        if (antallPersonIArbeidsstyrkenIProsent > antallArbeidstakereSomErIArbeidsstyrkenIProsent) {
+        if (antallPersonIArbeidsstyrkenIProsent >= antallArbeidstakereSomErIArbeidsstyrkenIProsent) {
             log.info("Oppretter ingen flere arbeidsforhold da antall i arbeidstyrken er {}% og målet er {}%",
                     antallPersonIArbeidsstyrkenIProsent * 100,
                     antallArbeidstakereSomErIArbeidsstyrkenIProsent * 100

@@ -33,7 +33,7 @@ public class StatistikkConsumer {
 
     public double getAntallArbeidstakereSomErIArbeidsstyrkenIProsent() {
         var command = new GetStatistikkCommand(restTemplate, url, StatistikkType.ANTALL_ARBEIDSTAKERE_SOM_ER_I_ARBEIDSSTYRKEN);
-        log.info("Henter antall arbeidstakere som i snitt er sykemeldt.");
+        log.info("Henter antall personer som i snitt er i arbeide.");
         return command.call().getValue();
     }
 }
