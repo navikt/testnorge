@@ -32,8 +32,6 @@ import java.util.Set;
 import static java.util.Arrays.asList;
 import static no.nav.registre.aareg.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.registre.aareg.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
 
 /**
  * Configure automated swagger API documentation
@@ -94,13 +92,6 @@ public class SwaggerConfig implements WebMvcConfigurer {
 
     private List<Parameter> globalHeaders() {
         return asList(
-                new ParameterBuilder()
-                        .name(AUTHORIZATION)
-                        .description("\"Bearer \" + OIDC token")
-                        .modelRef(new ModelRef(MODEL_TYPE_STRING))
-                        .parameterType(PARAM_TYPE)
-                        .required(true)
-                        .build(),
                 new ParameterBuilder()
                         .name(HEADER_NAV_CONSUMER_ID)
                         .description("En ID for systemet som gjør kallet, som regel servicebrukeren til applikasjonen.")

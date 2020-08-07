@@ -57,6 +57,7 @@ public class StsOidcService {
                         if (hasExpired(env)) {
                             throw new TestnorgeAaregFunctionalException("Sikkerhet-token kunne ikke fornyes", e);
                         }
+                        throw e;
                     }
                 }
             }
