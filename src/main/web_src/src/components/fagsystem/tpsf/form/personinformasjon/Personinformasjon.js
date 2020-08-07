@@ -23,6 +23,7 @@ const diversePaths = [
 	'tpsf.sivilstand',
 	'tpsf.sprakKode',
 	'tpsf.egenAnsattDatoFom',
+	'tpsf.egenAnsattDatoTom',
 	'tpsf.spesreg',
 	'tpsf.utenFastBopel',
 	'tpsf.erForsvunnet',

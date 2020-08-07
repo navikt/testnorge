@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import { isAfter } from 'date-fns'
 import { PersoninformasjonKodeverk } from '~/config/kodeverk'
+import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
@@ -14,6 +16,15 @@ export const Diverse = ({ formikBag }) => {
 			formikBag.setFieldValue(`tpsf.bankkontonrRegdato`, null)
 		}
 	}
+	const opts = useContext(BestillingsveilederContext)
+	const { personFoerLeggTil } = opts
+	const harSkjerming = personFoerLeggTil
+		? personFoerLeggTil.tpsf.hasOwnProperty('egenAnsattDatoFom') // hvis denne er true...
+			? personFoerLeggTil.tpsf.hasOwnProperty('egenAnsattDatoTom') // hvis denne er true...
+				? isAfter(new Date(personFoerLeggTil.tpsf.egenAnsattDatoTom), new Date()) // sjekk om dato er før i dag - true, else - false
+				: true
+			: false
+		: false
 
 	return (
 		<React.Fragment>
@@ -39,7 +50,15 @@ export const Diverse = ({ formikBag }) => {
 				visHvisAvhuket
 			/>
 
-			<FormikDatepicker name="tpsf.egenAnsattDatoFom" label="Egenansatt fra" visHvisAvhuket />
+			<FormikDatepicker
+				name="tpsf.egenAnsattDatoFom"
+				label="Egenansatt fra"
+				disabled={harSkjerming}
+				visHvisAvhuket
+			/>
+			{harSkjerming && (
+				<FormikDatepicker name="tpsf.egenAnsattDatoTom" label="Egenansatt til" visHvisAvhuket />
+			)}
 
 			<Vis attributt="tpsf.erForsvunnet">
 				<FormikSelect name="tpsf.erForsvunnet" label="Er forsvunnet" options={Options('boolean')} />

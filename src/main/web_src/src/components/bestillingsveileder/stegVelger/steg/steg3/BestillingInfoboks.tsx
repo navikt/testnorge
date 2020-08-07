@@ -33,7 +33,7 @@ export const BestillingInfoboks = ({ bestillingsdata }: BestillingInfoboks) => {
 		return (
 			// @ts-ignore
 			<AlertStripeInfo style={{ marginTop: 20 }}>
-				Tilgangsstyring basert på diskresjonskode og egenansatt har nattlig oppdatering, slik at
+				Tilgangsstyring basert på diskresjonskode og skjerming har nattlig oppdatering, slik at
 				riktig tilgang mot miljø kan verifiseres først dagen etter. Ta kontakt med team Dolly i
 				morgen hvis ønsket tilgang mot miljø ikke samsvarer med bestillingen.
 			</AlertStripeInfo>
