@@ -55,7 +55,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
                 tpsfPersonCache.fetchIfEmpty(tpsPerson);
                 Person hovedPerson = tpsPerson.getPerson(tpsPerson.getHovedperson());
 
-                SkjermingsDataRequest skjermingsDataRequest = mapperFacade.map(tpsPerson.getPerson(tpsPerson.getHovedperson()), SkjermingsDataRequest.class);
+                SkjermingsDataRequest skjermingsDataRequest = mapperFacade.map(hovedPerson, SkjermingsDataRequest.class);
 
                 if (!transaksjonMappingService.existAlready(SKJERMINGSREGISTER, tpsPerson.getHovedperson(), null) || isOpprettEndre) {
                     if (isOpphoertEgenAnsatt(hovedPerson.getEgenAnsattDatoFom(), hovedPerson.getEgenAnsattDatoTom())) {
