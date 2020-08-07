@@ -19,9 +19,9 @@ export const Diverse = ({ formikBag }) => {
 	const opts = useContext(BestillingsveilederContext)
 	const { personFoerLeggTil } = opts
 	const harSkjerming = personFoerLeggTil
-		? personFoerLeggTil.tpsf.hasOwnProperty('egenAnsattDatoFom') // hvis denne er true...
-			? personFoerLeggTil.tpsf.hasOwnProperty('egenAnsattDatoTom') // hvis denne er true...
-				? isAfter(new Date(personFoerLeggTil.tpsf.egenAnsattDatoTom), new Date()) // sjekk om dato er før i dag - true, else - false
+		? personFoerLeggTil.tpsf.hasOwnProperty('egenAnsattDatoFom')
+			? personFoerLeggTil.tpsf.hasOwnProperty('egenAnsattDatoTom')
+				? isAfter(new Date(personFoerLeggTil.tpsf.egenAnsattDatoTom), new Date())
 				: true
 			: false
 		: false
