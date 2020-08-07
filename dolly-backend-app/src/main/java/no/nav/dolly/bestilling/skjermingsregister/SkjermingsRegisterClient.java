@@ -84,7 +84,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
 
     private void sendOpphoerSkjermingRequest(TpsPerson tpsPerson, StringBuilder status) {
         ResponseEntity<String> response = skjermingsRegisterConsumer.putSkjerming(tpsPerson.getHovedperson());
-        if (response.hasBody() && response.getStatusCode() == HttpStatus.OK) {
+        if (response.getStatusCode() == HttpStatus.OK) {
             status.append("OK");
 
             saveTranskasjonId(tpsPerson);
