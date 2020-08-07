@@ -58,11 +58,11 @@ public class ArbeidsforholdOrkestreringsService {
             return;
         }
 
-        log.info("Henter ut personer mellom 16-73 år");
-        reporting.info("Henter ut personer mellom 16-73 år");
+        log.info("Henter ut personer mellom 15-74 år");
+        reporting.info("Henter ut personer mellom 15-74 år");
         Set<PersonDTO> personerSomKanVaereIArbeidstyrken = personer.stream()
-                .filter(person -> person.getFoedselsdato().isBefore(LocalDateTime.now().minusYears(16)))
-                .filter(person -> person.getFoedselsdato().isAfter(LocalDateTime.now().plusMinutes(73)))
+                .filter(person -> person.getFoedselsdato().isBefore(LocalDateTime.now().minusYears(15)))
+                .filter(person -> person.getFoedselsdato().isAfter(LocalDateTime.now().plusMinutes(74)))
                 .filter(person -> aktiveArbeidsforhold.contains(person.getIdent()))
                 .collect(Collectors.toSet());
 
