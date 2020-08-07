@@ -14,8 +14,8 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class Report extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 2025866384125327381L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Report\",\"namespace\":\"no.nav.registre.testnorge.avro.report\",\"fields\":[{\"name\":\"applicationName\",\"type\":\"string\"},{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"start\",\"type\":\"string\"},{\"name\":\"end\",\"type\":\"string\"},{\"name\":\"entries\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"Entry\",\"fields\":[{\"name\":\"status\",\"type\":\"string\"},{\"name\":\"description\",\"type\":\"string\"}]}}}]}");
+  private static final long serialVersionUID = 5616231436741485167L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Report\",\"namespace\":\"no.nav.registre.testnorge.avro.report\",\"fields\":[{\"name\":\"applicationName\",\"type\":\"string\"},{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"start\",\"type\":\"string\"},{\"name\":\"end\",\"type\":\"string\"},{\"name\":\"entries\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"Entry\",\"fields\":[{\"name\":\"status\",\"type\":\"string\"},{\"name\":\"description\",\"type\":\"string\"},{\"name\":\"time\",\"type\":\"string\"}]}}}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();

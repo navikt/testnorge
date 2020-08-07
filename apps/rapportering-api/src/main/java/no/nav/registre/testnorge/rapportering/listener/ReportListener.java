@@ -20,6 +20,7 @@ public class ReportListener {
 
     @KafkaListener(topics = "testnorge-rapportering-v1")
     public void register(@Payload Report report) {
+        log.info("Ny rapport registert");
         adapter.save(new no.nav.registre.testnorge.rapportering.domain.Report(report));
     }
 }

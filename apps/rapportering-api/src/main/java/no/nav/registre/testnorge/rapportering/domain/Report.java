@@ -30,7 +30,7 @@ public class Report {
     LocalDateTime end;
     List<Entry> entries;
 
-    public Report(ReportModel model){
+    public Report(ReportModel model) {
         id = model.getId();
         applicationName = model.getApplicationName();
         name = model.getName();
@@ -66,8 +66,8 @@ public class Report {
     }
 
     public Message toSlackMessage(String channel) {
-        var headerBlock = Block.from("*Rapport fra " + name + " (" + applicationName + ")*");
-        var durationBlock = Block.from("(" + start.format(FORMATTER) +" - " + end.format(FORMATTER) + ")");
+        var headerBlock = Block.from("Rapport fra " + name + " (" + applicationName + ")", "header");
+        var durationBlock = Block.from("(" + start.format(FORMATTER) + " - " + end.format(FORMATTER) + ")");
         var blocks = new ArrayList<Block>();
 
         blocks.add(headerBlock);
@@ -75,7 +75,7 @@ public class Report {
         blocks.addAll(entries.stream().map(
                 value -> Block.from(entryToText(value))
         ).collect(Collectors.toList()));
-
+        blocks.add(Block.from(null, "divider"));
         return Message
                 .builder()
                 .channel(channel)
@@ -87,7 +87,6 @@ public class Report {
         return getIcon(entry.getStatus()) + " " + entry.getDescription();
     }
 
-
     private String getIcon(EntryStatus status) {
         switch (status) {
             case ERROR:
@@ -96,7 +95,7 @@ public class Report {
                 return ":warning:";
             case INFO:
             default:
-                return ":information_source:";
+                return ":white_check_mark:";
         }
     }
 }

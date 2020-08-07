@@ -18,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.sql.Timestamp;
 import java.util.Date;
 
 import no.nav.registre.testnorge.dto.rapprtering.v1.EntryStatus;
@@ -46,4 +47,7 @@ public class EntryModel {
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreatedDate
     private Date createdAt;
+
+    @Column(name = "time", nullable = false, updatable = false)
+    private Timestamp time;
 }
