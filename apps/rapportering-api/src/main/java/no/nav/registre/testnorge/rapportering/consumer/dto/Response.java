@@ -10,8 +10,6 @@ import lombok.Value;
 @Builder
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_ABSENT)
 public class Response {
     Boolean ok;
-    String response_metadata;
 }

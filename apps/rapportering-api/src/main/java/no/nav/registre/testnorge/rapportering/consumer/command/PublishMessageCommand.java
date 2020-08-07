@@ -31,9 +31,6 @@ public class PublishMessageCommand implements Callable<Response> {
         var response = restTemplate.exchange(request, Response.class);
 
         if (!response.getStatusCode().is2xxSuccessful() || !response.hasBody() || !response.getBody().getOk()) {
-            if (response.hasBody() && !response.getBody().getOk()) {
-                log.error("Response message from slack {}", response.getBody().getResponse_metadata());
-            }
             throw new RuntimeException("Klarer ikke publisere meldinger til slack");
 
         }
