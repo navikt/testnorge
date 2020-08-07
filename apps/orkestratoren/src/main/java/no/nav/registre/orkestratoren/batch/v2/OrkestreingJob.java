@@ -7,7 +7,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import no.nav.registre.orkestratoren.service.OrkestreingsService;
+import no.nav.registre.orkestratoren.service.OrkestreringsService;
 
 @Component
 @EnableScheduling
@@ -16,10 +16,10 @@ import no.nav.registre.orkestratoren.service.OrkestreingsService;
 @RequiredArgsConstructor
 public class OrkestreingJob {
 
-    private final OrkestreingsService orkestreingsService;
+    private final OrkestreringsService orkestreingsService;
 
     @Scheduled(cron = "0 0 7 * * *")
     public void sykemeldingOrkestreringsBatch() {
-        orkestreingsService.orkisterSykemeldinger();
+        orkestreingsService.orkestrerSykemeldinger();
     }
 }

@@ -9,12 +9,12 @@ import no.nav.registre.testnorge.libs.reporting.domin.Config;
 
 @Service
 @RequiredArgsConstructor
-public class OrkestreingsService {
+public class OrkestreringsService {
 
     private final SykemeldingOrkestreringsService sykemeldingOrkestreringsService;
     private final RapporteringConsumer rapporteringConsumer;
 
-    public void orkisterSykemeldinger() {
+    public void orkestrerSykemeldinger() {
         var reportingEngine = new ReportingEngine(
                 Config.builder().name("Orkestrering av sykemeldinger batch").build(),
                 sykemeldingOrkestreringsService::orkistrer,

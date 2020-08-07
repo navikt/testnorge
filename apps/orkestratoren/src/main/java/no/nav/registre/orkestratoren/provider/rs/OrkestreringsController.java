@@ -7,18 +7,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.registre.orkestratoren.service.OrkestreingsService;
+import no.nav.registre.orkestratoren.service.OrkestreringsService;
 
 @RestController
 @RequestMapping("/api/v1/orkestrering")
 @RequiredArgsConstructor
 public class OrkestreringsController {
 
-    private final OrkestreingsService service;
+    private final OrkestreringsService service;
 
     @PostMapping("/sykemeldinger")
     public ResponseEntity<HttpStatus> triggerSykemeldinger() {
-        service.orkisterSykemeldinger();
+        service.orkestrerSykemeldinger();
         return ResponseEntity.ok().build();
     }
 }
