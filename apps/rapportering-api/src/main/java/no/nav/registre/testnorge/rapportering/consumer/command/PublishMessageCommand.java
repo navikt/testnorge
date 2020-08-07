@@ -21,7 +21,6 @@ public class PublishMessageCommand implements Callable<Response> {
     private final RestTemplate restTemplate;
     private final Message message;
 
-
     @Override
     public Response call() {
         var request = RequestEntity.post(URI.create(url))
@@ -32,7 +31,6 @@ public class PublishMessageCommand implements Callable<Response> {
 
         if (!response.getStatusCode().is2xxSuccessful() || !response.hasBody() || !response.getBody().getOk()) {
             throw new RuntimeException("Klarer ikke publisere meldinger til slack");
-
         }
         return response.getBody();
     }

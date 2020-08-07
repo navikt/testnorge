@@ -44,6 +44,8 @@ public class ArbeidsforholdOrkestreringsService {
                 populasjon
         );
 
+        log.info("Fant {} aktive arbeidsforhold på {}.", populasjon.size(), startDate);
+        reporting.info("Fant {} aktive arbeidsforhold på {}.", populasjon.size(), startDate);
 
         Set<PersonDTO> personer = personConsumer.getPersoner(populasjon);
 
@@ -68,6 +70,7 @@ public class ArbeidsforholdOrkestreringsService {
 
         if (personerSomKanVaereIArbeidstyrken.isEmpty()) {
             log.warn("Fant ingen som kan være i arbeidssyrken, avslutter orkestreing.");
+            return;
         }
 
         double antallArbeidstakereSomErIArbeidsstyrkenIProsent = statistikkConsumer
