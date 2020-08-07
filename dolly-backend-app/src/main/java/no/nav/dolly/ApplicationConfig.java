@@ -49,6 +49,6 @@ public class ApplicationConfig {
     @Bean
     public ForkJoinPool dollyForkJoinPool() {
 
-        return new ForkJoinPool(THREADS_COUNT, new ForkJoinWorkerThreadFactory(), null, false);
+        return new ForkJoinPool(THREADS_COUNT, new ForkJoinWorkerThreadFactory(), null, true);
     }
 }
