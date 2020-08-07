@@ -61,23 +61,24 @@ public class ArbeidsforholdOrkestreringsService {
         log.info("Henter ut personer mellom 15-74 år");
         reporting.info("Henter ut personer mellom 15-74 år");
         Set<PersonDTO> personerSomKanVaereIArbeidstyrken = personer.stream()
-                .filter(person -> person.getFoedselsdato().isBefore(LocalDateTime.now().minusYears(15)))
-                .filter(person -> person.getFoedselsdato().isAfter(LocalDateTime.now().plusMinutes(74)))
-                .filter(person -> aktiveArbeidsforhold.contains(person.getIdent()))
+                .filter(person -> person.getFoedselsdato().isAfter(LocalDateTime.now().minusYears(15)))
+                .filter(person -> person.getFoedselsdato().isBefore(LocalDateTime.now().plusMinutes(74)))
                 .collect(Collectors.toSet());
 
         double antallArbeidstakereSomErIArbeidsstyrkenIProsent = statistikkConsumer
                 .getAntallArbeidstakereSomErIArbeidsstyrkenIProsent();
 
-        double antallPersonIArbeidsstyrkenIProsent = (double) aktiveArbeidsforhold.size() / (double) personerSomKanVaereIArbeidstyrken.size();
+        double antallPersonIArbeidsstyrkenIProsent =
+                (double) Math.max(aktiveArbeidsforhold.size(), 1) / (double) personerSomKanVaereIArbeidstyrken.size();
+
         if (antallPersonIArbeidsstyrkenIProsent > antallArbeidstakereSomErIArbeidsstyrkenIProsent) {
             log.info("Oppretter ingen flere arbeidsforhold da antall i arbeidstyrken er {}% og målet er {}%",
-                    antallPersonIArbeidsstyrkenIProsent,
-                    antallArbeidstakereSomErIArbeidsstyrkenIProsent
+                    antallPersonIArbeidsstyrkenIProsent * 100,
+                    antallArbeidstakereSomErIArbeidsstyrkenIProsent * 100
             );
             reporting.info("Oppretter ingen flere arbeidsforhold da antall i arbeidstyrken er {}% og målet er {}%",
-                    antallPersonIArbeidsstyrkenIProsent,
-                    antallArbeidstakereSomErIArbeidsstyrkenIProsent
+                    antallPersonIArbeidsstyrkenIProsent * 100,
+                    antallArbeidstakereSomErIArbeidsstyrkenIProsent * 100
             );
             return;
         }
