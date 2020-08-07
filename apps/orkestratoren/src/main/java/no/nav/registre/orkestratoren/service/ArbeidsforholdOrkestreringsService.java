@@ -70,6 +70,7 @@ public class ArbeidsforholdOrkestreringsService {
 
         if (personerSomKanVaereIArbeidstyrken.isEmpty()) {
             log.warn("Fant ingen som kan være i arbeidssyrken, avslutter orkestreing.");
+            reporting.warn("Fant ingen som kan være i arbeidssyrken, avslutter orkestreing.");
             return;
         }
 

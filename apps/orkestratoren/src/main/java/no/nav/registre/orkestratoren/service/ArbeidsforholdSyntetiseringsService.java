@@ -34,16 +34,22 @@ public class ArbeidsforholdSyntetiseringsService {
                 count++;
             } catch (Exception e) {
                 log.error("klarer ikke å opprette arbeidsforhold", e);
-                reporting.error("klarer ikke å opprette arbeidsforhold: {}", e.getMessage());
             }
         }
 
         if (count < personer.size()) {
-            log.warn("Klarte ikke å opprette alle arbeidsforhold {}/{}.", count, personer.size());
+            if (count == 0) {
+                log.error("Klarte ikke å opprette arbeidsforhold.");
+                reporting.error("Klarte ikke å opprette arbeidsforhold.");
+            } else {
+                log.warn("Klarte ikke å opprette alle arbeidsforhold {}/{}.", count, personer.size());
+                reporting.warn("Klarte ikke å opprette alle arbeidsforhold {}/{}.", count, personer.size());
+            }
         }
 
         if (count == personer.size()) {
             log.info("Alle {} arbeidsforhold opprettet.", count);
+            reporting.info("Alle {} arbeidsforhold opprettet.", count);
         }
     }
 }
