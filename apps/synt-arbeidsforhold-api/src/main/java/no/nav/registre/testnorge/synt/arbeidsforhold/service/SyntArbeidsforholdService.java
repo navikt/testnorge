@@ -29,16 +29,10 @@ public class SyntArbeidsforholdService {
         Organisasjon organisasjon = statiskeDataForvalterConsumer.getRandomOrganisasjonWhichSupportsArbeidsforhold();
         var generated = syntArbeidsforholdConsumer.genererArbeidsforhold(dto.getIdent());
         AnsettelsePeriodeDTO ansettelsesPeriode = generated.getAnsettelsesPeriode();
-        LocalDate generatedFom = ansettelsesPeriode.getFom();
-        LocalDate generatedTom = ansettelsesPeriode.getTom();
 
-        LocalDate fom = generatedFom.minusYears(MINIMAL_WORKING_AGE).isBefore(dto.getFoedselsdato())
-                ? dto.getFoedselsdato().plusYears(AGE_OF_MAJORITY)
-                : generatedFom;
+        LocalDate fom = adjustFom(ansettelsesPeriode.getFom(), dto);
 
-        LocalDate tom = generatedTom == null ? null : generatedTom.isBefore(fom)
-                ? generatedTom.plusYears(2)
-                : generatedTom;
+        LocalDate tom = adjustTom(ansettelsesPeriode.getTom(), fom);
 
         Arbeidsforhold arbeidsforhold = Arbeidsforhold
                 .builder()
@@ -49,5 +43,23 @@ public class SyntArbeidsforholdService {
                 .build();
 
         arbeidsforholdConsumer.createArbeidsforhold(arbeidsforhold);
+    }
+
+    private LocalDate adjustFom(LocalDate fom, SyntArbeidsforholdDTO dto) {
+        if (fom.minusYears(MINIMAL_WORKING_AGE).isBefore(dto.getFoedselsdato())) {
+            return dto.getFoedselsdato().plusYears(AGE_OF_MAJORITY);
+        } else if (fom.isAfter(LocalDate.now())) {
+            return LocalDate.now();
+        }
+        return fom;
+    }
+
+    private LocalDate adjustTom(LocalDate tom, LocalDate fom) {
+        if (tom == null) {
+            return null;
+        } else if (tom.isBefore(fom)) {
+            return fom.plusYears(2);
+        }
+        return tom;
     }
 }

@@ -80,11 +80,11 @@ public class ArbeidsforholdOrkestreringsService {
                 (double) aktiveArbeidsforhold.size() / (double) personerSomKanVaereIArbeidstyrken.size();
 
         if (antallPersonIArbeidsstyrkenIProsent >= antallArbeidstakereSomErIArbeidsstyrkenIProsent) {
-            log.info("Oppretter ingen flere arbeidsforhold da antall i arbeidstyrken er {}% og målet er {}%",
+            log.info("Oppretter ingen flere arbeidsforhold da antall i arbeidstyrken er {}% og målet er {}%.",
                     antallPersonIArbeidsstyrkenIProsent * 100,
                     antallArbeidstakereSomErIArbeidsstyrkenIProsent * 100
             );
-            reporting.info("Oppretter ingen flere arbeidsforhold da antall i arbeidstyrken er {}% og målet er {}%",
+            reporting.info("Oppretter ingen flere arbeidsforhold da antall i arbeidstyrken er {}% og målet er {}%.",
                     antallPersonIArbeidsstyrkenIProsent * 100,
                     antallArbeidstakereSomErIArbeidsstyrkenIProsent * 100
             );
