@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/statistikk-api/**
+      - libs/testnorge-data-transfer-objects/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/statistikk-api:${{ github.sha }}

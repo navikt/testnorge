@@ -39,7 +39,6 @@ public class StatistikkController {
                 .path("/{type}")
                 .buildAndExpand(statistikk.getType())
                 .toUri();
-
         return ResponseEntity.created(uri).build();
     }
 
