@@ -1,8 +1,7 @@
-name: Deploy testnorge-aareg
+name: Deploy testnorge-aareg dev
 
 on:
   push:
-    branches: master
     paths:
       - apps/testnorge-aareg/**
 
@@ -41,35 +40,9 @@ jobs:
           docker build --tag ${IMAGE} . -f ./apps/testnorge-aareg/Dockerfile
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}
-  deploy-default:
-    name: "Deploy default"
-    needs: build-jar
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-fss
-          RESOURCE: apps/testnorge-aareg/nais.yaml
-  deploy-t6:
-    name: "Deploy t6"
-    needs: build-jar
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-fss
-          RESOURCE: apps/testnorge-aareg/nais_t6.yaml
-  deploy-u2:
-    name: "Deploy u2"
-    needs: build-jar
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: nais/deploy/actions/deploy@v1
+      - name: Deploy to nais
+        timeout-minutes: 5
+        uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-fss
