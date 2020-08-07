@@ -22,8 +22,6 @@ public class SkjermingsRegisterMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Person person, SkjermingsDataRequest request, MappingContext context) {
 
-                        request.setFornavn(person.getFornavn());
-                        request.setEtternavn(person.getEtternavn());
                         request.setPersonident(person.getIdent());
                         request.setSkjermetFra(person.getEgenAnsattDatoFom());
                         request.setSkjermetTil(person.getEgenAnsattDatoTom());
