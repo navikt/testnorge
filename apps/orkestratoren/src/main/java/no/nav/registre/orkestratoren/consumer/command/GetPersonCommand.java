@@ -22,7 +22,11 @@ public class GetPersonCommand implements Callable<PersonDTO> {
 
     @Override
     public PersonDTO call() {
-        var request = RequestEntity.get(URI.create(this.url + "/api/v1/personer/" + ident)).build();
+        var request = RequestEntity
+                .get(URI.create(this.url + "/api/v1/personer/" + ident))
+                .header("persondatasystem", "TPS")
+                .header("miljoe", "q1")
+                .build();
         ResponseEntity<PersonDTO> response = restTemplate.exchange(request, PersonDTO.class);
 
         if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
