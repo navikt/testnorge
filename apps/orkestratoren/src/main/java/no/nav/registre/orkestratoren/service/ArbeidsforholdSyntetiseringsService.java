@@ -42,8 +42,8 @@ public class ArbeidsforholdSyntetiseringsService {
                 log.error("Klarte ikke å opprette arbeidsforhold.");
                 reporting.error("Klarte ikke å opprette arbeidsforhold.");
             } else {
-                log.warn("Klarte ikke å opprette alle arbeidsforhold {}/{}.", count, personer.size());
-                reporting.warn("Klarte ikke å opprette alle arbeidsforhold {}/{}.", count, personer.size());
+                log.warn("Klarte ikke å opprette alle arbeidsforhold bare {}/{}.", count, personer.size());
+                reporting.warn("Klarte ikke å opprette alle arbeidsforhold bare {}/{}.", count, personer.size());
             }
         }
 

@@ -30,6 +30,8 @@ public class CreateSyntArbeidsforholdCommand implements Callable<Void> {
 
         if (!response.getStatusCode().is2xxSuccessful()) {
             throw new RuntimeException("Klarer ikke a hente å opprette arbeidsforhold for " + ident);
+        } else {
+            log.info("Arbeidsforhold opprettet for {}", ident);
         }
         return response.getBody();
     }
