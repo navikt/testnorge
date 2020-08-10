@@ -25,6 +25,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlForeldreansvar;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpphold;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand;
@@ -65,6 +66,7 @@ public class PdlForvalterConsumer {
     private static final String PDL_BESTILLING_INNFLYTTING_URL = PDL_BESTILLING_URL + "/innflytting";
     private static final String PDL_BESTILLING_UTFLYTTING_URL = PDL_BESTILLING_URL + "/utflytting";
     private static final String PDL_BESTILLING_FORELDREANSVAR_URL = PDL_BESTILLING_URL + "/foreldreansvar";
+    private static final String PDL_BESTILLING_OPPHOLD_URL = PDL_BESTILLING_URL + "/opphold";
     private static final String PDL_BESTILLING_FOLKEREGISTERPERSONSTATUS_URL = PDL_BESTILLING_URL + "/folkeregisterpersonstatus";
 
     private static final String PDL_BESTILLING_SLETTING_URL = "/api/v1/personident";
@@ -243,6 +245,14 @@ public class PdlForvalterConsumer {
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_UTFLYTTING_URL,
                 utflytting, ident, "utflytting");
+    }
+
+    @Timed(name = "providers", tags = { "operation", "pdl_opphold" })
+    public ResponseEntity postOpphold(PdlOpphold opphold, String ident) {
+
+        return postRequest(
+                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_OPPHOLD_URL,
+                opphold, ident, "opphold");
     }
 
     private ResponseEntity postRequest(String url, Object body, String ident, String beskrivelse) {
