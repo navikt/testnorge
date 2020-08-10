@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.skjermingsregister;
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.SKJERMINGSREGISTER;
 
 import java.time.LocalDateTime;
@@ -13,6 +12,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,86 +49,94 @@ public class SkjermingsRegisterClient implements ClientRegister {
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getTpsf())) {
-
             StringBuilder status = new StringBuilder();
-            try {
-                tpsfPersonCache.fetchIfEmpty(tpsPerson);
-                Person hovedPerson = tpsPerson.getPerson(tpsPerson.getHovedperson());
+            tpsfPersonCache.fetchIfEmpty(tpsPerson);
+            tpsPerson.getPersondetaljer().forEach(person -> {
 
-                SkjermingsDataRequest skjermingsDataRequest = mapperFacade.map(hovedPerson, SkjermingsDataRequest.class);
-
-                if (!transaksjonMappingService.existAlready(SKJERMINGSREGISTER, tpsPerson.getHovedperson(), null) || isOpprettEndre) {
-                    if (isOpphoertEgenAnsatt(hovedPerson.getEgenAnsattDatoFom(), hovedPerson.getEgenAnsattDatoTom())) {
-                        sendOpphoerSkjermingRequest(tpsPerson, status);
-                    } else if (isAktivEgenansatt(hovedPerson.getEgenAnsattDatoFom(), hovedPerson.getEgenAnsattDatoTom())) {
-                        sendSkjermingDataRequest(tpsPerson, status, skjermingsDataRequest);
+                try {
+                    SkjermingsDataRequest skjermingsDataRequest = mapperFacade.map(person, SkjermingsDataRequest.class);
+                    checkAktivEllerOpphoertSkjerming(tpsPerson.getHovedperson(), status, person, skjermingsDataRequest);
+                } catch (HttpClientErrorException e) {
+                    if (e.getStatusCode() == HttpStatus.BAD_REQUEST && isAlleredeInSkjermingsRegister(person)) {
+                        status.append(String.format("Ident: %s eksisterer allerede i skjermingsregister", person.getIdent()));
+                        log.error("Ident: {} eksisterer allerede i skjermingsregister", person.getIdent(), e);
+                    } else {
+                        status.append(errorStatusDecoder.decodeRuntimeException(e));
+                        log.error("Feilet å skjerme person med ident: {}", person.getIdent(), e);
                     }
+                } catch (RuntimeException e) {
+                    status.append(errorStatusDecoder.decodeRuntimeException(e));
+                    log.error("Feilet å skjerme person med ident: {}", person.getIdent(), e);
                 }
-            } catch (RuntimeException e) {
-                status.append(errorStatusDecoder.decodeRuntimeException(e));
-
-                log.error("Feilet å skjerme person med ident: {}", tpsPerson.getHovedperson(), e);
-            }
+            });
             progress.setSkjermingsregisterStatus(status.toString());
-        }
-    }
-
-    private void sendSkjermingDataRequest(TpsPerson tpsPerson, StringBuilder status, SkjermingsDataRequest skjermingsDataRequest) {
-        ResponseEntity<List<SkjermingsDataResponse>> response = skjermingsRegisterConsumer.postSkjerming(Collections.singletonList(skjermingsDataRequest));
-        if (response.hasBody() && response.getStatusCode() == HttpStatus.CREATED) {
-            status.append("OK");
-
-            saveTranskasjonId(requireNonNull(response.getBody()), tpsPerson);
-        }
-    }
-
-    private void sendOpphoerSkjermingRequest(TpsPerson tpsPerson, StringBuilder status) {
-        ResponseEntity<String> response = skjermingsRegisterConsumer.putSkjerming(tpsPerson.getHovedperson());
-        if (response.getStatusCode() == HttpStatus.OK) {
-            status.append("OK");
-
-            saveTranskasjonId(tpsPerson);
         }
     }
 
     @Override
     public void release(List<String> identer) {
+
         identer.forEach(skjermingsRegisterConsumer::deleteSkjerming);
     }
 
-    private static boolean isAktivEgenansatt(LocalDateTime egenAnsattFom, LocalDateTime egenAnsattTom) {
+    private void checkAktivEllerOpphoertSkjerming(String hovedperson, StringBuilder status, Person person, SkjermingsDataRequest skjermingsDataRequest) {
 
-        return nonNull(egenAnsattFom) && (isNull(egenAnsattTom) || now().isBefore(egenAnsattTom));
+        if (isAktivSkjerming(person)) {
+            sendSkjermingDataRequest(person, status, skjermingsDataRequest, hovedperson);
+        } else if (isOpphoertSkjerming(person)) {
+            sendOpphoerSkjermingRequest(person, status, hovedperson);
+        }
     }
 
-    private static boolean isOpphoertEgenAnsatt(LocalDateTime egenAnsattFom, LocalDateTime egenAnsattTom) {
+    private boolean isAlleredeInSkjermingsRegister(Person person) {
 
-        return nonNull(egenAnsattFom) && nonNull(egenAnsattTom) && now().isAfter(egenAnsattTom);
+        if (nonNull(person)) {
+            ResponseEntity<List<SkjermingsDataResponse>> skjermingResponseEntity = skjermingsRegisterConsumer.getSkjerming(person.getIdent());
+            return (skjermingResponseEntity.getStatusCode().equals(HttpStatus.OK) && skjermingResponseEntity.hasBody());
+        }
+        return false;
     }
 
-    private void saveTranskasjonId(List<SkjermingsDataResponse> response, TpsPerson tpsPerson) {
+    private void sendSkjermingDataRequest(Person person, StringBuilder status, SkjermingsDataRequest skjermingsDataRequest, String hovedIdent) {
+
+        ResponseEntity<List<SkjermingsDataResponse>> response = skjermingsRegisterConsumer.postSkjerming(Collections.singletonList(skjermingsDataRequest));
+        if (response.hasBody() && response.getStatusCode() == HttpStatus.CREATED && person.getIdent().equals(hovedIdent)) {
+            status.append("OK");
+
+            saveTranskasjonId(person);
+        } else if (response.getStatusCode().equals(HttpStatus.BAD_REQUEST)) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private void sendOpphoerSkjermingRequest(Person person, StringBuilder status, String hovedIdent) {
+
+        ResponseEntity<String> response = skjermingsRegisterConsumer.putSkjerming(person.getIdent());
+        if (response.getStatusCode() == HttpStatus.OK && person.getIdent().equals(hovedIdent)) {
+            status.append("OK");
+
+            saveTranskasjonId(person);
+        }
+    }
+
+    private static boolean isAktivSkjerming(Person person) {
+
+        return nonNull(person.getEgenAnsattDatoFom()) && (isNull(person.getEgenAnsattDatoTom()) || now().isBefore(person.getEgenAnsattDatoTom()));
+    }
+
+    private static boolean isOpphoertSkjerming(Person person) {
+
+        return nonNull(person.getEgenAnsattDatoFom()) && nonNull(person.getEgenAnsattDatoTom()) && now().isAfter(person.getEgenAnsattDatoTom());
+    }
+
+    private void saveTranskasjonId(Person person) {
 
         transaksjonMappingService.save(
                 TransaksjonMapping.builder()
-                        .ident(tpsPerson.getHovedperson())
+                        .ident(person.getIdent())
                         .transaksjonId(toJson(SkjermingsDataTransaksjon.builder()
-                                .ansattSkjermetFra(response.get(0).getSkjermetFra())
-                                .ansattSkjermetTil(response.get(0).getSkjermetTil())
-                                .build()))
-                        .datoEndret(LocalDateTime.now())
-                        .system(SKJERMINGSREGISTER.name())
-                        .build());
-    }
-
-    private void saveTranskasjonId(TpsPerson tpsPerson) {
-
-        Person hovedPerson = tpsPerson.getPerson(tpsPerson.getHovedperson());
-        transaksjonMappingService.save(
-                TransaksjonMapping.builder()
-                        .ident(tpsPerson.getHovedperson())
-                        .transaksjonId(toJson(SkjermingsDataTransaksjon.builder()
-                                .ansattSkjermetFra(hovedPerson.getEgenAnsattDatoFom().toString())
-                                .ansattSkjermetTil(hovedPerson.getEgenAnsattDatoTom().toString())
+                                .ansattSkjermetFra(person.getEgenAnsattDatoFom().toString())
+                                .ansattSkjermetTil(person.getEgenAnsattDatoTom().toString())
                                 .build()))
                         .datoEndret(LocalDateTime.now())
                         .system(SKJERMINGSREGISTER.name())

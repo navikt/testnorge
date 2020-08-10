@@ -37,10 +37,6 @@ public class SkjermingsRegisterConsumer {
     private final ProvidersProps providersProps;
     private final StsOidcService stsOidcService;
 
-    private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID().toString());
-    }
-
     @Timed(name = "providers", tags = { "operation", "skjermingsdata-opprett" })
     public ResponseEntity<List<SkjermingsDataResponse>> postSkjerming(List<SkjermingsDataRequest> skjermingsDataRequest) {
 
@@ -53,6 +49,21 @@ public class SkjermingsRegisterConsumer {
                         .header(HEADER_NAV_CALL_ID, callid)
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .body(skjermingsDataRequest),
+                new ParameterizedTypeReference<List<SkjermingsDataResponse>>() {
+                });
+    }
+
+    @Timed(name = "providers", tags = { "operation", "skjermingsdata-hent" })
+    public ResponseEntity<List<SkjermingsDataResponse>> getSkjerming(String ident) {
+
+        String callid = getNavCallId();
+        logInfoSkjermingsMelding(callid, CONSUMER);
+
+        return restTemplate.exchange(
+                RequestEntity.get(URI.create(providersProps.getSkjermingsRegister().getUrl() + SKJERMINGSREGISTER_URL + "/" + ident))
+                        .header(AUTHORIZATION, stsOidcService.getIdToken(SYNTH_ENV))
+                        .header(HEADER_NAV_CALL_ID, callid)
+                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER).build(),
                 new ParameterizedTypeReference<List<SkjermingsDataResponse>>() {
                 });
     }
@@ -85,6 +96,10 @@ public class SkjermingsRegisterConsumer {
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .build(),
                 String.class);
+    }
+
+    private static String getNavCallId() {
+        return format("%s %s", CONSUMER, UUID.randomUUID().toString());
     }
 
     private void logInfoSkjermingsMelding(String callId, String consumer) {
