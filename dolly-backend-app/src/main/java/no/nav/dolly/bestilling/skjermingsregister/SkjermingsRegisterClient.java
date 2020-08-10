@@ -91,7 +91,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
     private boolean isAlleredeInSkjermingsRegister(Person person) {
 
         if (nonNull(person)) {
-            ResponseEntity<List<SkjermingsDataResponse>> skjermingResponseEntity = skjermingsRegisterConsumer.getSkjerming(person.getIdent());
+            ResponseEntity<SkjermingsDataResponse> skjermingResponseEntity = skjermingsRegisterConsumer.getSkjerming(person.getIdent());
             return (skjermingResponseEntity.getStatusCode().equals(HttpStatus.OK) && skjermingResponseEntity.hasBody());
         }
         return false;

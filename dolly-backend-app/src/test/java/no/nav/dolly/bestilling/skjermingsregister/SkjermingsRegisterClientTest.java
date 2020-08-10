@@ -59,7 +59,7 @@ public class SkjermingsRegisterClientTest {
 
         BestillingProgress progress = new BestillingProgress();
         when(skjermingsRegisterConsumer.postSkjerming(any())).thenReturn(new ResponseEntity<>(Collections.singletonList(response), HttpStatus.BAD_REQUEST));
-        when(skjermingsRegisterConsumer.getSkjerming(any())).thenReturn(new ResponseEntity<>(Collections.singletonList(response), HttpStatus.OK));
+        when(skjermingsRegisterConsumer.getSkjerming(any())).thenReturn(new ResponseEntity<>(response, HttpStatus.OK));
 
         skjermingsRegisterClient.gjenopprett(bestilling, person, progress, false);
         assertThat(progress.getSkjermingsregisterStatus()).isNotNull().contains("eksisterer allerede i skjermingsregister");

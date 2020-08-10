@@ -54,7 +54,7 @@ public class SkjermingsRegisterConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "skjermingsdata-hent" })
-    public ResponseEntity<List<SkjermingsDataResponse>> getSkjerming(String ident) {
+    public ResponseEntity<SkjermingsDataResponse> getSkjerming(String ident) {
 
         String callid = getNavCallId();
         logInfoSkjermingsMelding(callid, CONSUMER);
@@ -64,8 +64,7 @@ public class SkjermingsRegisterConsumer {
                         .header(AUTHORIZATION, stsOidcService.getIdToken(SYNTH_ENV))
                         .header(HEADER_NAV_CALL_ID, callid)
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER).build(),
-                new ParameterizedTypeReference<List<SkjermingsDataResponse>>() {
-                });
+                SkjermingsDataResponse.class);
     }
 
     @Timed(name = "providers", tags = { "operation", "skjerminsdata-opphoer" })
