@@ -2,6 +2,7 @@ name: Deploy synt-arbeidsforhold-api
 
 on:
   push:
+    branches: master
     paths:
       - apps/synt-arbeidsforhold-api/**
 

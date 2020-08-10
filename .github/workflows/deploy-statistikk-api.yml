@@ -1,6 +1,7 @@
 name: Deploy statistikk-api
 
 on:
+  branches: master
   push:
     paths:
       - apps/statistikk-api/**
