@@ -52,12 +52,12 @@ export const Diverse = ({ formikBag }) => {
 
 			<FormikDatepicker
 				name="tpsf.egenAnsattDatoFom"
-				label="Egenansatt fra"
+				label="Skjerming fra"
 				disabled={harSkjerming}
 				visHvisAvhuket
 			/>
 			{harSkjerming && (
-				<FormikDatepicker name="tpsf.egenAnsattDatoTom" label="Egenansatt til" visHvisAvhuket />
+				<FormikDatepicker name="tpsf.egenAnsattDatoTom" label="Skjerming til" visHvisAvhuket />
 			)}
 
 			<Vis attributt="tpsf.erForsvunnet">
