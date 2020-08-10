@@ -33,6 +33,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlInnflytting;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpphold;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper;
@@ -86,7 +87,7 @@ public class PdlForvalterClient implements ClientRegister {
                 if (!isOpprettEndre) {
                     sendDeleteIdent(tpsPerson);
                 }
-                sendPdlPersondetaljer(tpsPerson, status, isOpprettEndre);
+                sendPdlPersondetaljer(bestilling, tpsPerson, status, isOpprettEndre);
 
                 if (nonNull(bestilling.getPdlforvalter())) {
                     Pdldata pdldata = mapperFacade.map(bestilling.getPdlforvalter(), Pdldata.class);
@@ -160,7 +161,7 @@ public class PdlForvalterClient implements ClientRegister {
                 relasjon.isBarn() && barn.next().isKjonnUkjent();
     }
 
-    private void sendPdlPersondetaljer(TpsPerson tpsPerson, StringBuilder status, boolean isOpprettEndre) {
+    private void sendPdlPersondetaljer(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, StringBuilder status, boolean isOpprettEndre) {
 
         status.append('$').append(PDL_FORVALTER);
 
@@ -183,6 +184,7 @@ public class PdlForvalterClient implements ClientRegister {
                 sendSivilstand(person);
                 sendTelefonnummer(person);
                 sendDoedsfall(person);
+                sendOpphold(bestilling, person);
             });
             status.append("&OK");
 
@@ -194,6 +196,13 @@ public class PdlForvalterClient implements ClientRegister {
 
             status.append('&')
                     .append(errorStatusDecoder.decodeRuntimeException(e));
+        }
+    }
+
+    private void sendOpphold(RsDollyUtvidetBestilling bestilling, Person person) {
+
+        if (nonNull(bestilling.getUdistub()) && nonNull(bestilling.getUdistub().getOppholdStatus())) {
+            pdlForvalterConsumer.postOpphold(mapperFacade.map(bestilling.getUdistub(), PdlOpphold.class), person.getIdent());
         }
     }
 
