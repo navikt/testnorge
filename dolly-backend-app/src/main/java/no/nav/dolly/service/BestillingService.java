@@ -18,6 +18,7 @@ import java.util.Set;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -192,8 +193,7 @@ public class BestillingService {
                         .tpsfKriterier(bestilling.getTpsfKriterier())
                         .bestKriterier(bestilling.getBestKriterier())
                         .userId(getUserPrinciple())
-                        .build()
-        );
+                        .build());
     }
 
     @Transactional
@@ -263,9 +263,8 @@ public class BestillingService {
 
     private static void fixAaregAbstractClassProblem(List<RsAaregArbeidsforhold> aaregdata) {
 
-        aaregdata.forEach(arbeidforhold ->
-                arbeidforhold.getArbeidsgiver().setAktoertype(
-                        arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS"));
+        aaregdata.forEach(arbeidforhold -> arbeidforhold.getArbeidsgiver().setAktoertype(
+                arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS"));
     }
 
     private static void fixPdlAbstractClassProblem(RsPdldata pdldata) {

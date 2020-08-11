@@ -12,11 +12,13 @@ import static no.nav.dolly.mapper.BestillingKrrStubStatusMapper.buildKrrStubStat
 import static no.nav.dolly.mapper.BestillingPdlForvalterStatusMapper.buildPdldataStatusMap;
 import static no.nav.dolly.mapper.BestillingPensjonforvalterStatusMapper.buildPensjonforvalterStatusMap;
 import static no.nav.dolly.mapper.BestillingSigrunStubStatusMapper.buildSigrunStubStatusMap;
+import static no.nav.dolly.mapper.BestillingSkjermingsRegisterStatusMapper.buildSkjermingsRegisterStatusMap;
 import static no.nav.dolly.mapper.BestillingSykemeldingStatusMapper.buildSykemeldingStatusMap;
 import static no.nav.dolly.mapper.BestillingTpsfStatusMapper.buildTpsfStatusMap;
 import static no.nav.dolly.mapper.BestillingUdiStubStatusMapper.buildUdiStubStatusMap;
 
 import java.util.Arrays;
+
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -40,7 +42,8 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
     public void register(MapperFactory factory) {
         factory.classMap(Bestilling.class, RsBestillingStatus.class)
                 .customize(new CustomMapper<Bestilling, RsBestillingStatus>() {
-                    @Override public void mapAtoB(Bestilling bestilling, RsBestillingStatus bestillingStatus, MappingContext context) {
+                    @Override
+                    public void mapAtoB(Bestilling bestilling, RsBestillingStatus bestillingStatus, MappingContext context) {
 
                         RsDollyBestillingRequest bestillingRequest = jsonBestillingMapper.mapBestillingRequest(bestilling.getBestKriterier());
                         bestillingStatus.setAntallLevert(bestilling.getProgresser().size());
@@ -61,6 +64,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildDokarkivStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildImportFraTpsStatusMap(bestilling));
                         bestillingStatus.getStatus().addAll(buildSykemeldingStatusMap(bestilling.getProgresser()));
+                        bestillingStatus.getStatus().addAll(buildSkjermingsRegisterStatusMap(bestilling.getProgresser()));
                         bestillingStatus.setBestilling(RsBestillingStatus.RsBestilling.builder()
                                 .pdlforvalter(bestillingRequest.getPdlforvalter())
                                 .aareg(bestillingRequest.getAareg())
