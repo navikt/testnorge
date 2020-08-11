@@ -92,7 +92,7 @@ public class OppslagController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/leger")
+    @GetMapping("/helsepersonell/leger")
     @ApiOperation(value = "Hent liste med leger", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public ResponseEntity<LegeListeDTO> getLeger() {
         return helsepersonellConsumer.getLeger();
