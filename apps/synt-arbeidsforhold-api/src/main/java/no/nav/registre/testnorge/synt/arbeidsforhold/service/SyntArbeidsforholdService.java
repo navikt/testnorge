@@ -12,7 +12,6 @@ import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.StatiskeDataForval
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.SyntArbeidsforholdConsumer;
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.AnsettelsePeriodeDTO;
 import no.nav.registre.testnorge.synt.arbeidsforhold.domain.Arbeidsforhold;
-import no.nav.registre.testnorge.synt.arbeidsforhold.domain.KodeverkSet;
 import no.nav.registre.testnorge.synt.arbeidsforhold.domain.Organisasjon;
 
 @Service

@@ -12,5 +12,5 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class KodeverkDTO {
-    public Map<String, Object[]> betydninger;
+    Map<String, Object[]> betydninger;
 }
