@@ -34,7 +34,7 @@ import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 public class BestilteKriterier {
 
     private List<RsAaregArbeidsforhold> aareg;
-	private RsDigitalKontaktdata krrstub;
+    private RsDigitalKontaktdata krrstub;
     private RsUdiPerson udistub;
     private List<OpprettSkattegrunnlag> sigrunstub;
     private Arenadata arenaforvalter;
