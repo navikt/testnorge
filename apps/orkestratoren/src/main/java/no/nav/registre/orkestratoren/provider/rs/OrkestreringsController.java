@@ -21,4 +21,10 @@ public class OrkestreringsController {
         service.orkestrerSykemeldinger();
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/arbeidsforhold")
+    public ResponseEntity<HttpStatus> triggerArbeidsforhold() {
+        service.orkestrerArbeidsforhold();
+        return ResponseEntity.ok().build();
+    }
 }

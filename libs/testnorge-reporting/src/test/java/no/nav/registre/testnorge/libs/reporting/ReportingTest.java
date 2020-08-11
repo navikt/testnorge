@@ -43,4 +43,14 @@ class ReportingTest {
                 );
     }
 
+    @Test
+    void should_handle_characters(){
+        reporting.info("Dette er test av: {}", "$");
+        assertThat(reporting.build().getEntries())
+                .usingElementComparatorIgnoringFields("time")
+                .containsOnly(
+                        new Entry(EntryStatus.INFO, "Dette er test av: $", null)
+                );
+    }
+
 }

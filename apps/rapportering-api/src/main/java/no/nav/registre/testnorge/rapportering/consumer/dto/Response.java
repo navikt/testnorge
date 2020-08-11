@@ -9,13 +9,7 @@ import lombok.Value;
 @Value
 @Builder
 @NoArgsConstructor(force = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @AllArgsConstructor
-public class Block {
-    String type;
-    Text text;
-
-    public static Block from(String text){
-        return Block.builder().type("section").text(Text.builder().text(text).build()).build();
-    }
+public class Response {
+    Boolean ok;
 }

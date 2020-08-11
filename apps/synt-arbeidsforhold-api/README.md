@@ -14,6 +14,7 @@ Kjør SyntSykemeldingApiApplicationStarter med følgende argumenter:
  
  #### Windows
  Ha BIG-IP Edge Client kjørende og kjør LocalApplicationStarter med samme argumenter som for utviklerimage.
+   
      
  #### Mac
  Ha Nav-Tunnel kjørende og kjør LocalApplicationStarter med samme argumenter som for utviklerimage og legg til følgende argumenter:

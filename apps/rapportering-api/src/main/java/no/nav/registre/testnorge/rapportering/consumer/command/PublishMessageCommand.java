@@ -11,25 +11,25 @@ import java.net.URI;
 import java.util.concurrent.Callable;
 
 import no.nav.registre.testnorge.rapportering.consumer.dto.Message;
+import no.nav.registre.testnorge.rapportering.consumer.dto.Response;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PublishMessageCommand implements Callable<Void> {
+public class PublishMessageCommand implements Callable<Response> {
     private final String token;
     private final String url;
     private final RestTemplate restTemplate;
     private final Message message;
 
-
     @Override
-    public Void call() {
+    public Response call() {
         var request = RequestEntity.post(URI.create(url))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(message);
-        var response = restTemplate.exchange(request, Void.class);
+        var response = restTemplate.exchange(request, Response.class);
 
-        if(!response.getStatusCode().is2xxSuccessful()){
+        if (!response.getStatusCode().is2xxSuccessful() || !response.hasBody() || !response.getBody().getOk()) {
             throw new RuntimeException("Klarer ikke publisere meldinger til slack");
         }
         return response.getBody();

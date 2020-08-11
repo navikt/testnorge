@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
 
 import no.nav.registre.testnorge.dto.rapprtering.v1.EntryStatus;
 import no.nav.registre.testnorge.libs.reporting.domin.Config;
@@ -42,7 +43,7 @@ public class Reporting {
         var message = values == null || values.length == 0 ? entry : Arrays
                 .stream(values)
                 .map(Object::toString)
-                .reduce(entry, (pre, current) -> pre.replaceFirst("\\{\\}", current));
+                .reduce(entry, (pre, current) -> pre.replaceFirst("\\{\\}", Matcher.quoteReplacement(current)));
         entries.add(new Entry(status, message, LocalDateTime.now()));
     }
 

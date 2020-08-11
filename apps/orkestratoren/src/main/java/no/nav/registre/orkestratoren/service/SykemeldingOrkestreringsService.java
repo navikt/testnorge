@@ -65,7 +65,7 @@ public class SykemeldingOrkestreringsService {
             return;
         }
 
-        int antallSykemeldingerAOpprette = (int) Math.round(
+        long antallSykemeldingerAOpprette = Math.round(
                 (maalAntallSykemeldtIProsent - antallSykemeldtIprosent) * aktiveArbeidsforhold.size()
         );
 

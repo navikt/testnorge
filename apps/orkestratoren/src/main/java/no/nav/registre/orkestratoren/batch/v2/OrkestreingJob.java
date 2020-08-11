@@ -22,4 +22,9 @@ public class OrkestreingJob {
     public void sykemeldingOrkestreringsBatch() {
         orkestreingsService.orkestrerSykemeldinger();
     }
+
+    @Scheduled(cron = "0 0 7 * * *")
+    public void arbeidsforholdOrkestreringsBatch() {
+        orkestreingsService.orkestrerArbeidsforhold();
+    }
 }
