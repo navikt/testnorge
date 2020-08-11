@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -24,6 +25,7 @@ public class SykemeldingOrkestreringsService {
     private final HendelseConsumer hendelseConsumer;
     private final StatistikkConsumer statistikkConsumer;
     private final SykemeldingSyntetiseringsService sykemeldingSyntetiseringsService;
+    private final DecimalFormat format = new DecimalFormat("##.0");
 
     public void orkistrer(Reporting reporting) {
 
@@ -50,22 +52,22 @@ public class SykemeldingOrkestreringsService {
         }
         double antallSykemeldtIprosent = (double) aktiveSykemeldinger.size() / (double) aktiveArbeidsforhold.size();
 
-        log.info("Det er {}% sykemeldt", antallSykemeldtIprosent * 100);
-        reporting.info("Det er {}% sykemeldt", antallSykemeldtIprosent * 100);
+        log.info("Det er {}% sykemeldt", format.format(antallSykemeldtIprosent * 100));
+        reporting.info("Det er {}% sykemeldt", format.format(antallSykemeldtIprosent * 100));
 
         if (antallSykemeldtIprosent >= maalAntallSykemeldtIProsent) {
             log.info(
                     "Oppretter ingen nye sykemeldinger siden det er {}% aktive og målet er {}%",
-                    antallSykemeldtIprosent * 100, maalAntallSykemeldtIProsent * 100
+                    format.format(antallSykemeldtIprosent * 100), format.format(maalAntallSykemeldtIProsent * 100)
             );
             reporting.info(
                     "Oppretter ingen nye sykemeldinger siden det er {}% aktive og målet er {}%",
-                    antallSykemeldtIprosent * 100, maalAntallSykemeldtIProsent * 100
+                    format.format(antallSykemeldtIprosent * 100), format.format(maalAntallSykemeldtIProsent * 100)
             );
             return;
         }
 
-        long antallSykemeldingerAOpprette = Math.round(
+        long antallSykemeldingerAOpprette = (long) Math.ceil(
                 (maalAntallSykemeldtIProsent - antallSykemeldtIprosent) * aktiveArbeidsforhold.size()
         );
 

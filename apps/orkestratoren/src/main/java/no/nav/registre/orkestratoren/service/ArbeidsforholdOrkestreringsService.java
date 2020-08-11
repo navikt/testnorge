@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +28,7 @@ public class ArbeidsforholdOrkestreringsService {
     private final PersonConsumer personConsumer;
     private final StatistikkConsumer statistikkConsumer;
     private final ArbeidsforholdSyntetiseringsService arbeidsforholdSyntetiseringsService;
+    private final DecimalFormat format = new DecimalFormat("##.0");
 
     public void orkistrer(Reporting reporting) {
         LocalDate startDate = LocalDate.now();
@@ -80,17 +82,17 @@ public class ArbeidsforholdOrkestreringsService {
 
         if (antallPersonIArbeidsstyrkenIProsent >= antallArbeidstakereSomErIArbeidsstyrkenIProsent) {
             log.info("Oppretter ingen flere arbeidsforhold da antall i arbeidstyrken er {}% og målet er {}%.",
-                    antallPersonIArbeidsstyrkenIProsent * 100,
-                    antallArbeidstakereSomErIArbeidsstyrkenIProsent * 100
+                    format.format(antallPersonIArbeidsstyrkenIProsent * 100),
+                    format.format(antallArbeidstakereSomErIArbeidsstyrkenIProsent * 100)
             );
             reporting.info("Oppretter ingen flere arbeidsforhold da antall i arbeidstyrken er {}% og målet er {}%.",
-                    antallPersonIArbeidsstyrkenIProsent * 100,
-                    antallArbeidstakereSomErIArbeidsstyrkenIProsent * 100
+                    format.format(antallPersonIArbeidsstyrkenIProsent * 100),
+                    format.format(antallArbeidstakereSomErIArbeidsstyrkenIProsent * 100)
             );
             return;
         }
 
-        long antallSykemeldingerAOpprette = Math.round(
+        long antallSykemeldingerAOpprette = (long) Math.ceil(
                 (antallArbeidstakereSomErIArbeidsstyrkenIProsent - antallPersonIArbeidsstyrkenIProsent) * personerSomKanVaereIArbeidstyrken.size()
         );
 
