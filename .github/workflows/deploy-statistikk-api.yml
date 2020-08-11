@@ -1,8 +1,8 @@
 name: Deploy statistikk-api
 
 on:
-  branches: master
   push:
+    branches: master
     paths:
       - apps/statistikk-api/**
       - libs/testnorge-data-transfer-objects/**
