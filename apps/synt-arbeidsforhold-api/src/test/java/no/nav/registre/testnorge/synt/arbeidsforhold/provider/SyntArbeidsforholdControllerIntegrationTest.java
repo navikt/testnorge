@@ -21,6 +21,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.dto.statiskedataforvalter.v1.OrganisasjonDTO;
@@ -29,6 +32,7 @@ import no.nav.registre.testnorge.dto.synt.arbeidsforhold.v1.SyntArbeidsforholdDT
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.AnsettelsePeriodeDTO;
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.ArbeidsavtaleDTO;
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.ArbeidstakerDTO;
+import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.KodeverkDTO;
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.SyntDTO;
 import no.nav.registre.testnorge.test.JsonWiremockHelper;
 
@@ -90,6 +94,12 @@ class SyntArbeidsforholdControllerIntegrationTest {
 
         JsonWiremockHelper
                 .builder(objectMapper)
+                .withUrlPathMatching("/api/v1/kodeverk/Yrker/koder/betydninger")
+                .withResponseBody(createKodeverk(yrke))
+                .stubGet();
+
+        JsonWiremockHelper
+                .builder(objectMapper)
                 .withUrlPathMatching("/api/v1/arbeidsforhold")
                 .stubPost();
 
@@ -144,6 +154,13 @@ class SyntArbeidsforholdControllerIntegrationTest {
                 .withResponseBody(Collections.singletonList(new SyntDTO(generated)))
                 .stubPost();
 
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("/api/v1/kodeverk/Yrker/koder/betydninger")
+                .withResponseBody(createKodeverk(yrke))
+                .stubGet();
+
         JsonWiremockHelper
                 .builder(objectMapper)
                 .withUrlPathMatching("/api/v1/arbeidsforhold")
@@ -176,6 +193,71 @@ class SyntArbeidsforholdControllerIntegrationTest {
     }
 
 
+
+    @Test
+    @SneakyThrows
+    void should_change_invalid_yrke_with_valid_yrke_from_kodeverk() {
+        LocalDate foedselsdato = LocalDate.now().minusYears(26);
+        String ident = "12312012354";
+        LocalDate fom = foedselsdato.plusYears(18);
+        LocalDate tom = fom.plusYears(20);
+        String invalidYrke = "12345";
+        String validYrke = "54321";
+        String arbeidsforholdID = "12334532";
+
+        var generated = no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.SyntArbeidsforholdDTO
+                .builder()
+                .ansettelsesPeriode(AnsettelsePeriodeDTO.builder().fom(fom).tom(tom).build())
+                .arbeidsavtale(ArbeidsavtaleDTO.builder().stillingsprosent(100.0).yrke(invalidYrke).build())
+                .arbeidsforholdID(arbeidsforholdID)
+                .arbeidsforholdstype("ordinaertArbeidsforhold")
+                .arbeidstaker(ArbeidstakerDTO.builder().ident(ident).build())
+                .build();
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("/api/v1/generate/aareg")
+                .withResponseBody(Collections.singletonList(new SyntDTO(generated)))
+                .stubPost();
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("/api/v1/kodeverk/Yrker/koder/betydninger")
+                .withResponseBody(createKodeverk(validYrke))
+                .stubGet();
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("/api/v1/arbeidsforhold")
+                .stubPost();
+
+        var request = SyntArbeidsforholdDTO
+                .builder()
+                .foedselsdato(foedselsdato)
+                .ident(ident)
+                .build();
+
+        mvc.perform(post("/api/v1/synt-arbeidsforhold")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request))
+        ).andExpect(status().isCreated());
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withRequestBody(ArbeidsforholdDTO
+                        .builder()
+                        .fom(fom)
+                        .ident(ident)
+                        .tom(tom)
+                        .arbeidsforholdId(arbeidsforholdID)
+                        .orgnummer(ORGNUMMER)
+                        .stillingsprosent(100.0)
+                        .yrke(validYrke)
+                        .build())
+                .verifyPost();
+    }
+
+
     @AfterEach
     void cleanup() {
         WireMock.reset();
@@ -187,6 +269,11 @@ class SyntArbeidsforholdControllerIntegrationTest {
                 .withUrlPathMatching("/api/v1/organisasjons")
                 .withResponseBody(organisasjonListeDTO)
                 .stubGet();
+    }
+
+
+    private KodeverkDTO createKodeverk(String... koder) {
+        return new KodeverkDTO(Set.of(koder).stream().collect(Collectors.toMap(value -> value, value -> new Object[]{})));
     }
 
 

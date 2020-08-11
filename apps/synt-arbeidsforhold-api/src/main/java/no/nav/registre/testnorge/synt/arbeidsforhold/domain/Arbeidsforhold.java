@@ -15,8 +15,13 @@ public class Arbeidsforhold {
     Organisasjon organisasjon;
     LocalDate fom;
     LocalDate tom;
+    KodeverkSet kodeverk;
 
     public ArbeidsforholdDTO toDTO() {
+        String kode = kodeverk.contains(dto.getArbeidsavtale().getYrke())
+                ? dto.getArbeidsavtale().getYrke()
+                : kodeverk.getRandomKode();
+
         return ArbeidsforholdDTO
                 .builder()
                 .ident(dto.getArbeidstaker().getIdent())
@@ -24,7 +29,7 @@ public class Arbeidsforhold {
                 .tom(tom)
                 .orgnummer(organisasjon.getOrgnummer())
                 .stillingsprosent(dto.getArbeidsavtale().getStillingsprosent())
-                .yrke(dto.getArbeidsavtale().getYrke())
+                .yrke(kode)
                 .arbeidstidsordning(dto.getArbeidsavtale().getArbeidstidsordning())
                 .arbeidsforholdId(dto.getArbeidsforholdID())
                 .build();

@@ -5,3 +5,5 @@ consumers:
     url: https://testnorge-arbeidsforhold-api.nais.preprod.local
   statiske-data-forvalter:
     url: https://testnorge-statisk-data-forvalter.nais.preprod.local
+  kodeverk:
+    url: https://kodeverk.nais.preprod.local
