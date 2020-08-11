@@ -67,6 +67,12 @@ public class SykemeldingOrkestreringsService {
             return;
         }
 
+        reporting.info(
+                "Det er {}% aktive og målet er {}% sykemeldinger.",
+                format.format(antallSykemeldtIprosent * 100), format.format(maalAntallSykemeldtIProsent * 100)
+        );
+
+
         long antallSykemeldingerAOpprette = (long) Math.ceil(
                 (maalAntallSykemeldtIProsent - antallSykemeldtIprosent) * aktiveArbeidsforhold.size()
         );

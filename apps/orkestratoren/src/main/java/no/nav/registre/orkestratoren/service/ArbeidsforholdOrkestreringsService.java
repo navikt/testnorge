@@ -92,8 +92,15 @@ public class ArbeidsforholdOrkestreringsService {
             return;
         }
 
+
         long antallSykemeldingerAOpprette = (long) Math.ceil(
                 (antallArbeidstakereSomErIArbeidsstyrkenIProsent - antallPersonIArbeidsstyrkenIProsent) * personerSomKanVaereIArbeidstyrken.size()
+        );
+
+        reporting.info(
+                "Antall personer i arbeidstyrken er {}% og målet er {}%.",
+                format.format(antallPersonIArbeidsstyrkenIProsent * 100),
+                format.format(antallArbeidstakereSomErIArbeidsstyrkenIProsent * 100)
         );
 
         Set<PersonDTO> personerSomSkalOppretteArbeidsforhold = personerSomKanVaereIArbeidstyrken

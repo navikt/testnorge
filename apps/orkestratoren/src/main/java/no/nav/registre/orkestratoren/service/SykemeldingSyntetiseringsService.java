@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import no.nav.registre.orkestratoren.consumer.ArbeidsforholdConsumer;
@@ -25,9 +26,9 @@ public class SykemeldingSyntetiseringsService {
     private final SyntSykemeldingConsumer syntSykemeldingConsumer;
 
     public void syntentiser(Set<String> identer, LocalDate startDate, Reporting reporting) {
-        log.info("Syntentiserer {} ny(e) sykemelding(er) med start dato {}.", identer.size(), startDate.toString());
+        log.info("Syntentiserer {} nye sykemeldinger med start dato {}.", identer.size(), startDate.toString());
         reporting.info(
-                "Syntentiserer {} ny(e) sykemelding(er) med start dato {}.",
+                "Syntentiserer {} nye sykemeldinger med start dato {}.",
                 identer.size(), startDate.toString()
         );
 
@@ -53,9 +54,11 @@ public class SykemeldingSyntetiseringsService {
             }
         });
 
+        var count = new AtomicInteger();
         syntSykemeldingMap.forEach((ident, future) -> {
             try {
                 future.get();
+                count.incrementAndGet();
             } catch (Exception e) {
                 log.error("Klarte ikke å opprette synt sykemelding for {}.", ident, e);
                 reporting.error(
@@ -64,5 +67,15 @@ public class SykemeldingSyntetiseringsService {
                 );
             }
         });
+
+        if (count.get() < identer.size()) {
+            log.warn("Klarte bare å opprette {}/{} sykemeldinger.", count.get(), identer.size());
+            reporting.warn("Klarte bare å opprette {}/{} sykemeldinger.", count.get(), identer.size());
+        }
+
+        if (count.get() == identer.size()) {
+            log.info("Alle {} sykemeldinger opprettet.", count.get());
+            reporting.info("Alle {} sykemeldinger opprettet.", count.get());
+        }
     }
 }
