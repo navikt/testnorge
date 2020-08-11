@@ -1,8 +1,7 @@
 package no.nav.registre.testnorge.helsepersonell.consumer.command;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.concurrent.Callable;
 
@@ -13,22 +12,29 @@ public class GetPersondataCommand implements Callable<PersondataDTO> {
 
     private final String miljoe;
     private final String ident;
-    private final UriTemplate uriTemplate;
-    private final RestTemplate restTemplate;
+    private final WebClient webClient;
 
-    public GetPersondataCommand(String url, String ident, String miljoe, RestTemplate restTemplate) {
-        this.uriTemplate = new UriTemplate(url + "/v1/persondata?ident={ident}&miljoe={miljoe}");
+    public GetPersondataCommand(String ident, String miljoe, WebClient webClient) {
+        this.webClient = webClient;
         this.miljoe = miljoe;
         this.ident = ident;
-        this.restTemplate = restTemplate;
     }
 
     @Override
     public PersondataDTO call() {
         try {
             log.info("Henter persondata fra hodejegerern for ident {} i miljø {}", ident, miljoe);
-            return restTemplate.getForObject(uriTemplate.expand(ident, miljoe), PersondataDTO.class);
-        } catch (Exception e){
+            return webClient.get()
+                    .uri(builder ->
+                            builder.path("/v1/persondata")
+                                    .queryParam("ident", ident)
+                                    .queryParam("miljoe", miljoe)
+                                    .build()
+                    )
+                    .retrieve()
+                    .bodyToMono(PersondataDTO.class)
+                    .block();
+        } catch (Exception e) {
             log.error("Klarte ikke hente ut persondata fra hodejegerern for ident {} i miljø {}", ident, miljoe, e);
             throw e;
         }
