@@ -11,23 +11,23 @@ import java.net.URI;
 import java.util.concurrent.Callable;
 
 import no.nav.registre.testnorge.rapportering.consumer.dto.Message;
-import no.nav.registre.testnorge.rapportering.consumer.dto.Response;
+import no.nav.registre.testnorge.rapportering.consumer.dto.SlackResponse;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PublishMessageCommand implements Callable<Response> {
+public class PublishMessageCommand implements Callable<SlackResponse> {
     private final String token;
     private final String url;
     private final RestTemplate restTemplate;
     private final Message message;
 
     @Override
-    public Response call() {
+    public SlackResponse call() {
         var request = RequestEntity.post(URI.create(url))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(message);
-        var response = restTemplate.exchange(request, Response.class);
+        var response = restTemplate.exchange(request, SlackResponse.class);
 
         if (!response.getStatusCode().is2xxSuccessful() || !response.hasBody() || !response.getBody().getOk()) {
             throw new RuntimeException("Klarer ikke publisere meldinger til slack");

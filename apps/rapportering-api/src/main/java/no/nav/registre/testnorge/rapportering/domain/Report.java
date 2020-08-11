@@ -66,7 +66,7 @@ public class Report {
     }
 
     public Message toSlackMessage(String channel) {
-        var headerBlock = Block.from("*Rapport fra " + name + " (" + applicationName + ")*");
+        var headerBlock = Block.from("*Rapport fra: \"" + name + " (" + applicationName + ")\"*");
         var durationBlock = Block.from("(" + start.format(FORMATTER) + " - " + end.format(FORMATTER) + ")");
         var blocks = new ArrayList<Block>();
 
