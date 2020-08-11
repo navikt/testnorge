@@ -7,10 +7,12 @@ import java.time.LocalDate;
 
 import no.nav.registre.testnorge.dto.synt.arbeidsforhold.v1.SyntArbeidsforholdDTO;
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.ArbeidsforholdConsumer;
+import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.KodeverkConsumer;
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.StatiskeDataForvalterConsumer;
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.SyntArbeidsforholdConsumer;
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.AnsettelsePeriodeDTO;
 import no.nav.registre.testnorge.synt.arbeidsforhold.domain.Arbeidsforhold;
+import no.nav.registre.testnorge.synt.arbeidsforhold.domain.KodeverkSet;
 import no.nav.registre.testnorge.synt.arbeidsforhold.domain.Organisasjon;
 
 @Service
@@ -23,11 +25,16 @@ public class SyntArbeidsforholdService {
     private final SyntArbeidsforholdConsumer syntArbeidsforholdConsumer;
     private final ArbeidsforholdConsumer arbeidsforholdConsumer;
     private final StatiskeDataForvalterConsumer statiskeDataForvalterConsumer;
+    private final KodeverkConsumer kodeverkConsumer;
 
     public void genrate(SyntArbeidsforholdDTO dto) {
 
         Organisasjon organisasjon = statiskeDataForvalterConsumer.getRandomOrganisasjonWhichSupportsArbeidsforhold();
+
+        var yrkerKodeverk = kodeverkConsumer.getYrkerKodeverk();
         var generated = syntArbeidsforholdConsumer.genererArbeidsforhold(dto.getIdent());
+
+
         AnsettelsePeriodeDTO ansettelsesPeriode = generated.getAnsettelsesPeriode();
         LocalDate generatedFom = ansettelsesPeriode.getFom();
         LocalDate generatedTom = ansettelsesPeriode.getTom();
@@ -43,6 +50,7 @@ public class SyntArbeidsforholdService {
         Arbeidsforhold arbeidsforhold = Arbeidsforhold
                 .builder()
                 .dto(generated)
+                .kodeverk(yrkerKodeverk)
                 .organisasjon(organisasjon)
                 .fom(fom)
                 .tom(tom)
