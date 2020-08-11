@@ -26,6 +26,8 @@ import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
 import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
 import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
+import no.nav.dolly.bestilling.sykemelding.HelsepersonellConsumer;
+import no.nav.dolly.bestilling.sykemelding.domain.dto.LegeListeDTO;
 import no.nav.dolly.consumer.fastedatasett.DatasettType;
 import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
 import no.nav.dolly.consumer.identpool.IdentpoolConsumer;
@@ -54,6 +56,7 @@ public class OppslagController {
     private final IdentpoolConsumer identpoolConsumer;
     private final InntektsmeldingEnumService inntektsmeldingEnumService;
     private final TransaksjonMappingService transaksjonMappingService;
+    private final HelsepersonellConsumer helsepersonellConsumer;
 
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
@@ -87,6 +90,12 @@ public class OppslagController {
         return asList(SystemTyper.values()).stream()
                 .map(type -> SystemTyper.SystemBeskrivelse.builder().system(type.name()).beskrivelse(type.getBeskrivelse()).build())
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/leger")
+    @ApiOperation(value = "Hent liste med leger", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    public ResponseEntity<LegeListeDTO> getLeger() {
+        return helsepersonellConsumer.getLeger();
     }
 
     @GetMapping("/fastedatasett/{datasettype}")
