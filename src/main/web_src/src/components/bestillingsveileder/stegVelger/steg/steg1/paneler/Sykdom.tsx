@@ -23,16 +23,18 @@ SykdomPanel.heading = 'Sykdom'
 SykdomPanel.initialValues = ({ set, del, has }) => ({
 	sykemelding: {
 		label: 'Har sykemelding',
-		checked: has('sykdom.sykemelding'),
+		checked: has('sykemelding'),
 		add() {
-			set('sykdom.sykemelding', {
-				startDato: new Date(),
-				orgnummer: '',
-				arbeidsforholdId: ''
+			set('sykemelding', {
+				syntSykemelding: {
+					startDato: new Date(),
+					orgnummer: '',
+					arbeidsforholdId: ''
+				}
 			})
 		},
 		remove() {
-			del('sykdom.sykemelding')
+			del('sykemelding')
 		}
 	}
 })

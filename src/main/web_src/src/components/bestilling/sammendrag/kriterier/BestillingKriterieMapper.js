@@ -506,16 +506,27 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		data.push(inntektStub)
 	}
 
-	const sykemeldingKriterier = _get(bestillingData, 'sykdom.sykemelding')
+	const sykemeldingKriterier = _get(bestillingData, 'sykemelding')
 
 	if (sykemeldingKriterier) {
-		console.log('sykemeldingKriterier :>> ', sykemeldingKriterier)
 		const sykemelding = {
 			header: 'Sykemelding',
 			items: [
-				obj('Startdato', Formatters.formatDate(sykemeldingKriterier.startDato)),
-				obj('Organisasjonsnummer', sykemeldingKriterier.orgnummer),
-				obj('Arbeidsforhold-ID', sykemeldingKriterier.arbeidsforholdId),
+				obj(
+					'Startdato',
+					Formatters.formatDate(
+						sykemeldingKriterier.syntSykemelding && sykemeldingKriterier.syntSykemelding.startDato
+					)
+				),
+				obj(
+					'Organisasjonsnummer',
+					sykemeldingKriterier.syntSykemelding && sykemeldingKriterier.syntSykemelding.orgnummer
+				),
+				obj(
+					'Arbeidsforhold-ID',
+					sykemeldingKriterier.syntSykemelding &&
+						sykemeldingKriterier.syntSykemelding.arbeidsforholdId
+				),
 				obj(
 					'Trenger umiddelbar bistand',
 					sykemeldingKriterier.hasOwnProperty('umiddelbarBistand') &&

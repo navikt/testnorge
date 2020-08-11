@@ -43,7 +43,7 @@ export const erForste = (values, attributt) => {
 		'aareg',
 		'sigrunstub',
 		'inntektstub',
-		'sykdom',
+		'sykemelding',
 		'brregstub',
 		'pdlforvalter.falskIdentitet',
 		'pdlforvalter.utenlandskIdentifikasjonsnummer',

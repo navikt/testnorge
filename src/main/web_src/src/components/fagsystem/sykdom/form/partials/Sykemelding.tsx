@@ -34,9 +34,11 @@ const initialValuesPeriode = {
 }
 
 const initialValuesSyntSykemelding = {
-	startDato: new Date(),
-	orgnummer: '',
-	arbeidsforholdId: ''
+	syntSykemelding: {
+		startDato: new Date(),
+		orgnummer: '',
+		arbeidsforholdId: ''
+	}
 }
 
 const initialValuesSykemelding = {
@@ -71,7 +73,7 @@ const initialValuesSykemelding = {
 
 export const SykemeldingForm = ({ formikBag }: SykemeldingForm) => {
 	const [typeSykemelding, setTypeSykemelding] = useState(
-		formikBag.values.sykdom.sykemelding.hasOwnProperty('hovedDiagnose')
+		formikBag.values.sykemelding.hasOwnProperty('hovedDiagnose')
 			? 'detaljertSykemelding'
 			: 'syntSykemelding'
 	)
@@ -79,13 +81,11 @@ export const SykemeldingForm = ({ formikBag }: SykemeldingForm) => {
 	const handleToggleChange = event => {
 		setTypeSykemelding(event.target.value)
 		if (event.target.value === 'detaljertSykemelding') {
-			formikBag.setFieldValue('sykdom.sykemelding', initialValuesSykemelding)
-		} else formikBag.setFieldValue('sykdom.sykemelding', initialValuesSyntSykemelding)
+			formikBag.setFieldValue('sykemelding', initialValuesSykemelding)
+		} else formikBag.setFieldValue('sykemelding', initialValuesSyntSykemelding)
 	}
 
 	const handleDiagnoseChange = (v, path) => {
-		console.log('v :>> ', v)
-		console.log('path :>> ', path)
 		formikBag.setFieldValue(`${path}.diagnose`, v.label)
 	}
 
@@ -104,7 +104,7 @@ export const SykemeldingForm = ({ formikBag }: SykemeldingForm) => {
 
 	return (
 		<div className="toggle--wrapper">
-			<ToggleGruppe onChange={handleToggleChange} name="sykdom.sykemelding">
+			<ToggleGruppe onChange={handleToggleChange} name="sykemelding">
 				{toggleValues.map(val => (
 					<ToggleKnapp key={val.value} value={val.value} checked={typeSykemelding === val.value}>
 						{val.label}
@@ -113,13 +113,13 @@ export const SykemeldingForm = ({ formikBag }: SykemeldingForm) => {
 			</ToggleGruppe>
 			{typeSykemelding === 'syntSykemelding' && (
 				<div className="flexbox--flex-wrap">
-					<FormikDatepicker name="sykdom.sykemelding.startDato" label="Startdato" />
+					<FormikDatepicker name="sykemelding.syntSykemelding.startDato" label="Startdato" />
 					<OrganisasjonMedArbeidsforholdSelect
-						path="sykdom.sykemelding.orgnummer"
+						path="sykemelding.syntSykemelding.orgnummer"
 						label="Organisasjonsnummer"
 					/>
 					<FormikTextInput
-						name="sykdom.sykemelding.arbeidsforholdId"
+						name="sykemelding.syntSykemelding.arbeidsforholdId"
 						label="Arbeidsforhold-ID"
 						type="number"
 					/>
@@ -128,35 +128,35 @@ export const SykemeldingForm = ({ formikBag }: SykemeldingForm) => {
 			{typeSykemelding === 'detaljertSykemelding' && (
 				<div className="flexbox--wrap">
 					<div className="flexbox--flex-wrap">
-						<FormikDatepicker name="sykdom.sykemelding.startDato" label="Startdato" />
+						<FormikDatepicker name="sykemelding.startDato" label="Startdato" />
 						<FormikCheckbox
-							name="sykdom.sykemelding.umiddelbarBistand"
+							name="sykemelding.umiddelbarBistand"
 							label="Trenger umiddelbar bistand"
 							size="medium"
 							checkboxMargin
 						/>
 						<FormikCheckbox
-							name="sykdom.sykemelding.manglendeTilretteleggingPaaArbeidsplassen"
+							name="sykemelding.manglendeTilretteleggingPaaArbeidsplassen"
 							label="Manglende tilrettelegging på arbeidsplassen"
 							size="large"
 							checkboxMargin
 						/>
 					</div>
-					<Kategori title="Diagnose" vis="sykdom.sykemelding">
+					<Kategori title="Diagnose" vis="sykemelding">
 						<div className="flexbox--flex-wrap">
 							<FormikSelect
-								name="sykdom.sykemelding.hovedDiagnose.diagnosekode"
+								name="sykemelding.hovedDiagnose.diagnosekode"
 								label="Diagnose"
 								options={Options('diagnose')}
-								afterChange={v => handleDiagnoseChange(v, 'sykdom.sykemelding.hovedDiagnose')}
+								afterChange={v => handleDiagnoseChange(v, 'sykemelding.hovedDiagnose')}
 								size="xlarge"
 								isClearable={false}
 							/>
-							<FormikTextInput name="sykdom.sykemelding.hovedDiagnose.system" label="System" />
+							<FormikTextInput name="sykemelding.hovedDiagnose.system" label="System" />
 						</div>
 					</Kategori>
 					<FormikDollyFieldArray
-						name="sykdom.sykemelding.biDiagnoser"
+						name="sykemelding.biDiagnoser"
 						header="Bidiagnose"
 						newEntry={initialValuesDiagnose}
 					>
@@ -174,34 +174,24 @@ export const SykemeldingForm = ({ formikBag }: SykemeldingForm) => {
 							</>
 						)}
 					</FormikDollyFieldArray>
-					<Kategori title="Lege" vis="sykdom.sykemelding">
-						<FormikSelect
-							name="sykdom.sykemelding.lege"
-							label="Lege"
-							// options={legeOptions}
-							size="xlarge"
-							isClearable={false}
-						/>
+					<Kategori title="Lege" vis="sykemelding">
+						<FormikSelect name="sykemelding.lege" label="Lege" size="xlarge" isClearable={false} />
 					</Kategori>
-					<Kategori title="Arbeidsgiver" vis="sykdom.sykemelding">
+					<Kategori title="Arbeidsgiver" vis="sykemelding">
+						<FormikTextInput name="sykemelding.arbeidsgiver.navn" label="Navn" size="large" />
 						<FormikTextInput
-							name="sykdom.sykemelding.arbeidsgiver.navn"
-							label="Navn"
-							size="large"
-						/>
-						<FormikTextInput
-							name="sykdom.sykemelding.arbeidsgiver.yrkesbetegnelse"
+							name="sykemelding.arbeidsgiver.yrkesbetegnelse"
 							label="Yrkesbetegnelse"
 							size="large"
 						/>
 						<FormikTextInput
-							name="sykdom.sykemelding.arbeidsgiver.stillingsprosent"
+							name="sykemelding.arbeidsgiver.stillingsprosent"
 							label="Stillingsprosent"
 							type="number"
 						/>
 					</Kategori>
 					<FormikDollyFieldArray
-						name="sykdom.sykemelding.perioder"
+						name="sykemelding.perioder"
 						header="Periode"
 						newEntry={initialValuesPeriode}
 					>
@@ -218,6 +208,13 @@ export const SykemeldingForm = ({ formikBag }: SykemeldingForm) => {
 									name={`${path}.aktivitet.behandlingsdager`}
 									label="Antall behandlingsdager"
 									type="number"
+									disabled={
+										_get(formikBag.values, `${path}.aktivitet.aktivitet`) === '' ||
+										_get(formikBag.values, `${path}.aktivitet.aktivitet`) === null
+											? false
+											: true
+									}
+									// TODO: Oppdateres for sent, og funker ikke motsatt vei - fiks den!
 								/>
 								<FormikTextInput name={`${path}.aktivitet.grad`} label="Grad" type="number" />
 								<FormikCheckbox
@@ -228,24 +225,24 @@ export const SykemeldingForm = ({ formikBag }: SykemeldingForm) => {
 							</>
 						)}
 					</FormikDollyFieldArray>
-					<Kategori title="Detaljer" vis="sykdom.sykemelding">
+					<Kategori title="Detaljer" vis="sykemelding">
 						<FormikTextInput
-							name="sykdom.sykemelding.detaljer.tiltakNav"
+							name="sykemelding.detaljer.tiltakNav"
 							label="Tiltak fra Nav"
 							size="large"
 						/>
 						<FormikTextInput
-							name="sykdom.sykemelding.detaljer.tiltakArbeidsplass"
+							name="sykemelding.detaljer.tiltakArbeidsplass"
 							label="Tiltak på arbeidsplass"
 							size="large"
 						/>
 						<FormikTextInput
-							name="sykdom.sykemelding.detaljer.beskrivHensynArbeidsplassen"
+							name="sykemelding.detaljer.beskrivHensynArbeidsplassen"
 							label="Hensyn på arbeidsplass"
 							size="large"
 						/>
 						<FormikCheckbox
-							name="sykdom.sykemelding.detaljer.arbeidsforEtterEndtPeriode"
+							name="sykemelding.detaljer.arbeidsforEtterEndtPeriode"
 							label="Arbeidsfør etter endt periode"
 							size="medium"
 							checkboxMargin
