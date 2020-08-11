@@ -63,14 +63,13 @@ public class ArbeidsforholdOrkestreringsService {
         log.info("Henter ut personer mellom 15-74 år");
         reporting.info("Henter ut personer mellom 15-74 år");
         Set<PersonDTO> personerSomKanVaereIArbeidstyrken = personer.stream()
-                .filter(person -> person.getFoedselsdato().isAfter(LocalDateTime.now().minusYears(15)))
-                .filter(person -> person.getFoedselsdato().isBefore(LocalDateTime.now().plusMinutes(74)))
+                .filter(person -> person.getFoedselsdato().plusYears(15).isBefore(LocalDate.now()))
+                .filter(person -> person.getFoedselsdato().plusYears(74).isAfter(LocalDate.now()))
                 .collect(Collectors.toSet());
 
-
         if (personerSomKanVaereIArbeidstyrken.isEmpty()) {
-            log.warn("Fant ingen som kan være i arbeidssyrken, avslutter orkestreing.");
-            reporting.warn("Fant ingen som kan være i arbeidssyrken, avslutter orkestreing.");
+            log.warn("Fant ingen som kan være i arbeidsstyrken, avslutter orkestrering.");
+            reporting.warn("Fant ingen som kan være i arbeidsstyrken, avslutter orkestrering.");
             return;
         }
 

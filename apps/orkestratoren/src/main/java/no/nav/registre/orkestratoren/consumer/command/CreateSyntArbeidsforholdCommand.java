@@ -29,7 +29,7 @@ public class CreateSyntArbeidsforholdCommand implements Callable<Void> {
         var response = restTemplate.exchange(request, Void.class);
 
         if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new RuntimeException("Klarer ikke a hente å opprette arbeidsforhold for " + ident);
+            throw new RuntimeException("Klarer ikke å opprette arbeidsforhold for " + ident);
         } else {
             log.info("Arbeidsforhold opprettet for {}", ident);
         }

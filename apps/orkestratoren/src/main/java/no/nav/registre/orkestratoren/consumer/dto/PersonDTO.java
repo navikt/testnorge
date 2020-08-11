@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Value
 @Builder
@@ -15,5 +15,5 @@ import java.time.LocalDateTime;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PersonDTO {
     String ident;
-    LocalDateTime foedselsdato;
+    LocalDate foedselsdato;
 }
