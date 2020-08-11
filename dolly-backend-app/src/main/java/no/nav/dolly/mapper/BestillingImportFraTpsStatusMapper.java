@@ -28,10 +28,12 @@ public final class BestillingImportFraTpsStatusMapper {
 
         if (isNotBlank(bestilling.getTpsImport())) {
             bestilling.getProgresser().forEach(progress -> {
+                if (isNotBlank(progress.getTpsImportStatus())) {
                     String status =
                             progress.getTpsImportStatus().replaceAll("\\d{11}", "").replace("  ", " ");
                     String environ = bestilling.getKildeMiljoe();
                     checkAndUpdateStatus(statusEnvIdents, progress.getIdent(), environ, status);
+                }
             });
         }
 

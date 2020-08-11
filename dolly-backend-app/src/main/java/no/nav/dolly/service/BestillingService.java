@@ -31,6 +31,7 @@ import no.nav.dolly.domain.jpa.BestilteKriterier;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.RsDollyBestillingLeggTilPaaGruppe;
 import no.nav.dolly.domain.resultset.RsDollyImportFraTpsRequest;
 import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
@@ -98,8 +99,6 @@ public class BestillingService {
         bestilling.setSistOppdatert(now());
         bestilling.setUserId(getUserPrinciple());
         saveBestillingToDB(bestilling);
-        identRepository.deleteTestidentsByBestillingId(bestillingId);
-        bestillingProgressRepository.deleteByBestillingId(bestillingId);
         return bestilling;
     }
 
@@ -213,6 +212,23 @@ public class BestillingService {
                         .antallIdenter(request.getIdenter().size())
                         .bestKriterier(getBestKriterier(request))
                         .tpsImport(join(",", request.getIdenter()))
+                        .build());
+    }
+
+    @Transactional
+    public Bestilling saveBestilling(Long gruppeId, RsDollyBestillingLeggTilPaaGruppe request) {
+
+        Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
+        fixAaregAbstractClassProblem(request.getAareg());
+        fixPdlAbstractClassProblem(request.getPdlforvalter());
+        return saveBestillingToDB(
+                Bestilling.builder()
+                        .gruppe(gruppe)
+                        .miljoer(join(",", request.getEnvironments()))
+                        .sistOppdatert(now())
+                        .userId(getUserPrinciple())
+                        .antallIdenter(gruppe.getTestidenter().size())
+                        .bestKriterier(getBestKriterier(request))
                         .build());
     }
 

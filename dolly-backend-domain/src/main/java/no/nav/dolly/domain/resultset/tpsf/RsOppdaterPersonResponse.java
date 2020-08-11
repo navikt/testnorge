@@ -1,7 +1,9 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
-import java.util.List;
+import static java.util.Objects.isNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -19,6 +21,13 @@ import lombok.Setter;
 public class RsOppdaterPersonResponse {
 
     private List<IdentTuple> identTupler;
+
+    public List<IdentTuple> getIdentTupler() {
+        if (isNull(identTupler)) {
+            identTupler = new ArrayList<>();
+        }
+        return identTupler;
+    }
 
     @Getter
     @Setter
