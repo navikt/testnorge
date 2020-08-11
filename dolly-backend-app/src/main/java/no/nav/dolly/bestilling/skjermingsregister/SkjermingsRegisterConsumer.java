@@ -60,14 +60,14 @@ public class SkjermingsRegisterConsumer {
         logInfoSkjermingsMelding(callid, CONSUMER);
 
         return restTemplate.exchange(
-                RequestEntity.get(URI.create(providersProps.getSkjermingsRegister().getUrl() + SKJERMINGSREGISTER_URL + "/" + ident))
+                RequestEntity.get(URI.create(format("%s%s/%s", providersProps.getSkjermingsRegister().getUrl(), SKJERMINGSREGISTER_URL, ident)))
                         .header(AUTHORIZATION, stsOidcService.getIdToken(SYNTH_ENV))
                         .header(HEADER_NAV_CALL_ID, callid)
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER).build(),
                 SkjermingsDataResponse.class);
     }
 
-    @Timed(name = "providers", tags = { "operation", "skjerminsdata-opphoer" })
+    @Timed(name = "providers", tags = { "operation", "skjermingsdata-opphoer" })
     public ResponseEntity<String> putSkjerming(String ident) {
 
         String callid = getNavCallId();
@@ -82,7 +82,7 @@ public class SkjermingsRegisterConsumer {
                 String.class);
     }
 
-    @Timed(name = "providers", tags = { "operation", "skjerminsdata-slett" })
+    @Timed(name = "providers", tags = { "operation", "skjermingsdata-slett" })
     public ResponseEntity<String> deleteSkjerming(String fnr) {
 
         String callid = getNavCallId();

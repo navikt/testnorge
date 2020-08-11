@@ -54,48 +54,6 @@ public class SkjermingsRegisterClientTest {
     private RsDollyUtvidetBestilling bestilling;
     private TpsPerson person;
 
-    @Test
-    public void should_return_ok_for_get_aktiv_skjermet_eksisterer_allerede() {
-
-        BestillingProgress progress = new BestillingProgress();
-        when(skjermingsRegisterConsumer.postSkjerming(any())).thenReturn(new ResponseEntity<>(Collections.singletonList(response), HttpStatus.BAD_REQUEST));
-        when(skjermingsRegisterConsumer.getSkjerming(any())).thenReturn(new ResponseEntity<>(response, HttpStatus.OK));
-
-        skjermingsRegisterClient.gjenopprett(bestilling, person, progress, false);
-        assertThat(progress.getSkjermingsregisterStatus()).isNotNull().contains("eksisterer allerede i skjermingsregister");
-    }
-
-    @Test
-    public void should_return_created_for_post_aktiv_skjermet() {
-
-        ResponseEntity<List<SkjermingsDataResponse>> responseEntity;
-        when(skjermingsRegisterConsumer.postSkjerming(any())).thenReturn(responseEntity = new ResponseEntity<>(Collections.singletonList(response), HttpStatus.CREATED));
-
-        skjermingsRegisterClient.gjenopprett(bestilling, person, new BestillingProgress(), false);
-        assertThat(responseEntity.getStatusCode()).isNotNull().isEqualTo(HttpStatus.CREATED);
-    }
-
-    @Test
-    public void should_return_ok_for_put_tidligere_skjermet() {
-
-        person.getPersondetaljer().get(0).setEgenAnsattDatoTom(now().minusDays(1));
-        ResponseEntity<String> responseEntity;
-        when(skjermingsRegisterConsumer.putSkjerming(any())).thenReturn(responseEntity = new ResponseEntity<>("", HttpStatus.OK));
-
-        skjermingsRegisterClient.gjenopprett(bestilling, person, new BestillingProgress(), false);
-        assertThat(responseEntity.getStatusCode()).isNotNull().isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
-    public void should_return_empty_status_for_ikke_skjermet() {
-
-        person.getPersondetaljer().get(0).setEgenAnsattDatoFom(null);
-        BestillingProgress status = new BestillingProgress();
-
-        skjermingsRegisterClient.gjenopprett(bestilling, person, status, false);
-        assertThat(status.getSkjermingsregisterStatus()).isNotNull().isEmpty();
-    }
-
     @Before
     public void setUp() {
 
@@ -128,4 +86,47 @@ public class SkjermingsRegisterClientTest {
 
         when(mapperFacade.map(any(), any())).thenReturn(new SkjermingsDataRequest());
     }
+
+    @Test
+    public void should_return_ok_for_get_aktiv_skjermet_eksisterer_allerede() {
+
+        BestillingProgress progress = new BestillingProgress();
+        when(skjermingsRegisterConsumer.postSkjerming(any())).thenReturn(new ResponseEntity<>(Collections.singletonList(response), HttpStatus.BAD_REQUEST));
+        when(skjermingsRegisterConsumer.getSkjerming(any())).thenReturn(new ResponseEntity<>(response, HttpStatus.OK));
+
+        skjermingsRegisterClient.gjenopprett(bestilling, person, progress, false);
+        assertThat(progress.getSkjermingsregisterStatus()).isNotNull().isEqualTo("OK");
+    }
+
+    @Test
+    public void should_return_created_for_post_aktiv_skjermet() {
+
+        ResponseEntity<List<SkjermingsDataResponse>> responseEntity;
+        when(skjermingsRegisterConsumer.postSkjerming(any())).thenReturn(responseEntity = new ResponseEntity<>(Collections.singletonList(response), HttpStatus.CREATED));
+
+        skjermingsRegisterClient.gjenopprett(bestilling, person, new BestillingProgress(), false);
+        assertThat(responseEntity.getStatusCode()).isNotNull().isEqualTo(HttpStatus.CREATED);
+    }
+
+    @Test
+    public void should_return_ok_for_put_tidligere_skjermet() {
+
+        person.getPersondetaljer().get(0).setEgenAnsattDatoTom(now().minusDays(1));
+        ResponseEntity<String> responseEntity;
+        when(skjermingsRegisterConsumer.putSkjerming(any())).thenReturn(responseEntity = new ResponseEntity<>("", HttpStatus.OK));
+
+        skjermingsRegisterClient.gjenopprett(bestilling, person, new BestillingProgress(), false);
+        assertThat(responseEntity.getStatusCode()).isNotNull().isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    public void should_return_null_status_for_ikke_skjermet() {
+
+        person.getPersondetaljer().get(0).setEgenAnsattDatoFom(null);
+        BestillingProgress status = new BestillingProgress();
+
+        skjermingsRegisterClient.gjenopprett(bestilling, person, status, false);
+        assertThat(status.getSkjermingsregisterStatus()).isNull();
+    }
+
 }
