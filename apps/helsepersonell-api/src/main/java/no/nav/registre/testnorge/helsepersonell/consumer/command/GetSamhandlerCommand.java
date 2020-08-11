@@ -1,11 +1,9 @@
 package no.nav.registre.testnorge.helsepersonell.consumer.command;
 
-import java.util.concurrent.Callable;
-
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriTemplate;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.concurrent.Callable;
 
 import no.nav.registre.testnorge.dto.samhandlerregisteret.v1.SamhandlerDTO;
 import no.nav.registre.testnorge.helsepersonell.exception.IdentNotFoundException;
@@ -13,25 +11,26 @@ import no.nav.registre.testnorge.helsepersonell.exception.IdentNotFoundException
 @Slf4j
 public class GetSamhandlerCommand implements Callable<SamhandlerDTO[]> {
     private final String ident;
-    private final UriTemplate uriTemplate;
-    private final RestTemplate restTemplate;
+    private final WebClient webClient;
 
-    public GetSamhandlerCommand(String url, String ident, RestTemplate restTemplate) {
-        this.uriTemplate = new UriTemplate(url + "?ident={ident}");
-        this.restTemplate = restTemplate;
+    public GetSamhandlerCommand(String ident, WebClient webClient) {
         this.ident = ident;
+        this.webClient = webClient;
     }
 
     @Override
     public SamhandlerDTO[] call() {
         try {
             log.info("Henter samhandlerinformasjon for ident {}", ident);
+            SamhandlerDTO[] response = webClient.get().uri(builder -> builder
+                    .queryParam("ident", ident)
+                    .build()
+            ).retrieve().bodyToMono(SamhandlerDTO[].class).block();
 
-            SamhandlerDTO[] samhandlereDTOs = restTemplate.getForObject(uriTemplate.expand(ident), SamhandlerDTO[].class);
-            if (samhandlereDTOs == null || samhandlereDTOs.length == 0) {
+            if (response == null || response.length == 0) {
                 throw new IdentNotFoundException("Finer ikke ident " + ident + " i samhandlerregisteret.");
             }
-            return samhandlereDTOs;
+            return response;
         } catch (Exception e) {
             log.error("Feil ved henting av samhandlerinformasjon til ident {}", ident, e);
             throw e;
