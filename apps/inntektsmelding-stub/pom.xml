@@ -23,6 +23,10 @@
             <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-sleuth</artifactId>
+        </dependency>
+        <dependency>
             <artifactId>testnorge-core</artifactId>
             <groupId>no.nav.registre.testnorge</groupId>
         </dependency>
