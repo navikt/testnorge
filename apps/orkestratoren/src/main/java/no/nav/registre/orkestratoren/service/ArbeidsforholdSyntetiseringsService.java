@@ -24,7 +24,7 @@ public class ArbeidsforholdSyntetiseringsService {
 
         var futures = personer
                 .stream()
-                .map(value -> syntArbeidsforholdConsumer.createArbeidsforhold(value.getIdent(), value.getFoedselsdato().toLocalDate()))
+                .map(value -> syntArbeidsforholdConsumer.createArbeidsforhold(value.getIdent(), value.getFoedselsdato()))
                 .collect(Collectors.toList());
 
         int count = 0;
