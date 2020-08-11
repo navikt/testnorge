@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
+import java.time.LocalDate;
+
 @Value
 @Builder
 @AllArgsConstructor
@@ -15,7 +17,7 @@ public class PersonDTO {
     @JsonProperty(required = true)
     String ident;
     @JsonProperty
-    String foedselsdato;
+    LocalDate foedselsdato;
     @JsonProperty(required = true)
     String fornavn;
     @JsonProperty
