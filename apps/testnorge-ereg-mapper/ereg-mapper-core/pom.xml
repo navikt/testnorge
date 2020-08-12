@@ -16,7 +16,10 @@
             <artifactId>testnorge-core</artifactId>
             <groupId>no.nav.registre.testnorge</groupId>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-sleuth</artifactId>
+        </dependency>
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
