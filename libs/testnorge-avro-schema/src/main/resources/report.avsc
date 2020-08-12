@@ -20,6 +20,10 @@
          "type": "string"
       },
       {
+         "name":"traceId",
+         "type":[ "string", "null" ]
+      },
+      {
          "name":"entries",
          "type":{
             "type": "array",

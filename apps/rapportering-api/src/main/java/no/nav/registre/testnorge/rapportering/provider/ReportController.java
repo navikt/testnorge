@@ -4,6 +4,7 @@ package no.nav.registre.testnorge.rapportering.provider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,12 @@ public class ReportController {
     @PostMapping("publish")
     public ResponseEntity<HttpStatus> triggerReport() {
         service.publishAll();
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<HttpStatus> deleteReports() {
+        service.deleteAll();
         return ResponseEntity.ok().build();
     }
 }

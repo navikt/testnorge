@@ -10,6 +10,6 @@ import lombok.Value;
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
 public class Text {
-    String type = "mrkdwn";
+    String type;
     String text;
 }

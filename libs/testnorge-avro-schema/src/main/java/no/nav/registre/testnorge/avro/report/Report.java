@@ -14,8 +14,8 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class Report extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 5616231436741485167L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Report\",\"namespace\":\"no.nav.registre.testnorge.avro.report\",\"fields\":[{\"name\":\"applicationName\",\"type\":\"string\"},{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"start\",\"type\":\"string\"},{\"name\":\"end\",\"type\":\"string\"},{\"name\":\"entries\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"Entry\",\"fields\":[{\"name\":\"status\",\"type\":\"string\"},{\"name\":\"description\",\"type\":\"string\"},{\"name\":\"time\",\"type\":\"string\"}]}}}]}");
+  private static final long serialVersionUID = -5599127867984609992L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Report\",\"namespace\":\"no.nav.registre.testnorge.avro.report\",\"fields\":[{\"name\":\"applicationName\",\"type\":\"string\"},{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"start\",\"type\":\"string\"},{\"name\":\"end\",\"type\":\"string\"},{\"name\":\"traceId\",\"type\":[\"string\",\"null\"]},{\"name\":\"entries\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"Entry\",\"fields\":[{\"name\":\"status\",\"type\":\"string\"},{\"name\":\"description\",\"type\":\"string\"},{\"name\":\"time\",\"type\":\"string\"}]}}}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
@@ -75,6 +75,7 @@ public class Report extends org.apache.avro.specific.SpecificRecordBase implemen
    private java.lang.CharSequence name;
    private java.lang.CharSequence start;
    private java.lang.CharSequence end;
+   private java.lang.CharSequence traceId;
    private java.util.List<no.nav.registre.testnorge.avro.report.Entry> entries;
 
   /**
@@ -90,13 +91,15 @@ public class Report extends org.apache.avro.specific.SpecificRecordBase implemen
    * @param name The new value for name
    * @param start The new value for start
    * @param end The new value for end
+   * @param traceId The new value for traceId
    * @param entries The new value for entries
    */
-  public Report(java.lang.CharSequence applicationName, java.lang.CharSequence name, java.lang.CharSequence start, java.lang.CharSequence end, java.util.List<no.nav.registre.testnorge.avro.report.Entry> entries) {
+  public Report(java.lang.CharSequence applicationName, java.lang.CharSequence name, java.lang.CharSequence start, java.lang.CharSequence end, java.lang.CharSequence traceId, java.util.List<no.nav.registre.testnorge.avro.report.Entry> entries) {
     this.applicationName = applicationName;
     this.name = name;
     this.start = start;
     this.end = end;
+    this.traceId = traceId;
     this.entries = entries;
   }
 
@@ -109,7 +112,8 @@ public class Report extends org.apache.avro.specific.SpecificRecordBase implemen
     case 1: return name;
     case 2: return start;
     case 3: return end;
-    case 4: return entries;
+    case 4: return traceId;
+    case 5: return entries;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -122,7 +126,8 @@ public class Report extends org.apache.avro.specific.SpecificRecordBase implemen
     case 1: name = (java.lang.CharSequence)value$; break;
     case 2: start = (java.lang.CharSequence)value$; break;
     case 3: end = (java.lang.CharSequence)value$; break;
-    case 4: entries = (java.util.List<no.nav.registre.testnorge.avro.report.Entry>)value$; break;
+    case 4: traceId = (java.lang.CharSequence)value$; break;
+    case 5: entries = (java.util.List<no.nav.registre.testnorge.avro.report.Entry>)value$; break;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -196,6 +201,23 @@ public class Report extends org.apache.avro.specific.SpecificRecordBase implemen
   }
 
   /**
+   * Gets the value of the 'traceId' field.
+   * @return The value of the 'traceId' field.
+   */
+  public java.lang.CharSequence getTraceId() {
+    return traceId;
+  }
+
+
+  /**
+   * Sets the value of the 'traceId' field.
+   * @param value the value to set.
+   */
+  public void setTraceId(java.lang.CharSequence value) {
+    this.traceId = value;
+  }
+
+  /**
    * Gets the value of the 'entries' field.
    * @return The value of the 'entries' field.
    */
@@ -257,6 +279,7 @@ public class Report extends org.apache.avro.specific.SpecificRecordBase implemen
     private java.lang.CharSequence name;
     private java.lang.CharSequence start;
     private java.lang.CharSequence end;
+    private java.lang.CharSequence traceId;
     private java.util.List<no.nav.registre.testnorge.avro.report.Entry> entries;
 
     /** Creates a new Builder */
@@ -286,9 +309,13 @@ public class Report extends org.apache.avro.specific.SpecificRecordBase implemen
         this.end = data().deepCopy(fields()[3].schema(), other.end);
         fieldSetFlags()[3] = other.fieldSetFlags()[3];
       }
-      if (isValidValue(fields()[4], other.entries)) {
-        this.entries = data().deepCopy(fields()[4].schema(), other.entries);
+      if (isValidValue(fields()[4], other.traceId)) {
+        this.traceId = data().deepCopy(fields()[4].schema(), other.traceId);
         fieldSetFlags()[4] = other.fieldSetFlags()[4];
+      }
+      if (isValidValue(fields()[5], other.entries)) {
+        this.entries = data().deepCopy(fields()[5].schema(), other.entries);
+        fieldSetFlags()[5] = other.fieldSetFlags()[5];
       }
     }
 
@@ -314,9 +341,13 @@ public class Report extends org.apache.avro.specific.SpecificRecordBase implemen
         this.end = data().deepCopy(fields()[3].schema(), other.end);
         fieldSetFlags()[3] = true;
       }
-      if (isValidValue(fields()[4], other.entries)) {
-        this.entries = data().deepCopy(fields()[4].schema(), other.entries);
+      if (isValidValue(fields()[4], other.traceId)) {
+        this.traceId = data().deepCopy(fields()[4].schema(), other.traceId);
         fieldSetFlags()[4] = true;
+      }
+      if (isValidValue(fields()[5], other.entries)) {
+        this.entries = data().deepCopy(fields()[5].schema(), other.entries);
+        fieldSetFlags()[5] = true;
       }
     }
 
@@ -481,6 +512,46 @@ public class Report extends org.apache.avro.specific.SpecificRecordBase implemen
     }
 
     /**
+      * Gets the value of the 'traceId' field.
+      * @return The value.
+      */
+    public java.lang.CharSequence getTraceId() {
+      return traceId;
+    }
+
+
+    /**
+      * Sets the value of the 'traceId' field.
+      * @param value The value of 'traceId'.
+      * @return This builder.
+      */
+    public no.nav.registre.testnorge.avro.report.Report.Builder setTraceId(java.lang.CharSequence value) {
+      validate(fields()[4], value);
+      this.traceId = value;
+      fieldSetFlags()[4] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'traceId' field has been set.
+      * @return True if the 'traceId' field has been set, false otherwise.
+      */
+    public boolean hasTraceId() {
+      return fieldSetFlags()[4];
+    }
+
+
+    /**
+      * Clears the value of the 'traceId' field.
+      * @return This builder.
+      */
+    public no.nav.registre.testnorge.avro.report.Report.Builder clearTraceId() {
+      traceId = null;
+      fieldSetFlags()[4] = false;
+      return this;
+    }
+
+    /**
       * Gets the value of the 'entries' field.
       * @return The value.
       */
@@ -495,9 +566,9 @@ public class Report extends org.apache.avro.specific.SpecificRecordBase implemen
       * @return This builder.
       */
     public no.nav.registre.testnorge.avro.report.Report.Builder setEntries(java.util.List<no.nav.registre.testnorge.avro.report.Entry> value) {
-      validate(fields()[4], value);
+      validate(fields()[5], value);
       this.entries = value;
-      fieldSetFlags()[4] = true;
+      fieldSetFlags()[5] = true;
       return this;
     }
 
@@ -506,7 +577,7 @@ public class Report extends org.apache.avro.specific.SpecificRecordBase implemen
       * @return True if the 'entries' field has been set, false otherwise.
       */
     public boolean hasEntries() {
-      return fieldSetFlags()[4];
+      return fieldSetFlags()[5];
     }
 
 
@@ -516,7 +587,7 @@ public class Report extends org.apache.avro.specific.SpecificRecordBase implemen
       */
     public no.nav.registre.testnorge.avro.report.Report.Builder clearEntries() {
       entries = null;
-      fieldSetFlags()[4] = false;
+      fieldSetFlags()[5] = false;
       return this;
     }
 
@@ -529,7 +600,8 @@ public class Report extends org.apache.avro.specific.SpecificRecordBase implemen
         record.name = fieldSetFlags()[1] ? this.name : (java.lang.CharSequence) defaultValue(fields()[1]);
         record.start = fieldSetFlags()[2] ? this.start : (java.lang.CharSequence) defaultValue(fields()[2]);
         record.end = fieldSetFlags()[3] ? this.end : (java.lang.CharSequence) defaultValue(fields()[3]);
-        record.entries = fieldSetFlags()[4] ? this.entries : (java.util.List<no.nav.registre.testnorge.avro.report.Entry>) defaultValue(fields()[4]);
+        record.traceId = fieldSetFlags()[4] ? this.traceId : (java.lang.CharSequence) defaultValue(fields()[4]);
+        record.entries = fieldSetFlags()[5] ? this.entries : (java.util.List<no.nav.registre.testnorge.avro.report.Entry>) defaultValue(fields()[5]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
         throw e;
@@ -570,6 +642,14 @@ public class Report extends org.apache.avro.specific.SpecificRecordBase implemen
 
     out.writeString(this.end);
 
+    if (this.traceId == null) {
+      out.writeIndex(1);
+      out.writeNull();
+    } else {
+      out.writeIndex(0);
+      out.writeString(this.traceId);
+    }
+
     long size0 = this.entries.size();
     out.writeArrayStart();
     out.setItemCount(size0);
@@ -598,6 +678,13 @@ public class Report extends org.apache.avro.specific.SpecificRecordBase implemen
 
       this.end = in.readString(this.end instanceof Utf8 ? (Utf8)this.end : null);
 
+      if (in.readIndex() != 0) {
+        in.readNull();
+        this.traceId = null;
+      } else {
+        this.traceId = in.readString(this.traceId instanceof Utf8 ? (Utf8)this.traceId : null);
+      }
+
       long size0 = in.readArrayStart();
       java.util.List<no.nav.registre.testnorge.avro.report.Entry> a0 = this.entries;
       if (a0 == null) {
@@ -617,7 +704,7 @@ public class Report extends org.apache.avro.specific.SpecificRecordBase implemen
       }
 
     } else {
-      for (int i = 0; i < 5; i++) {
+      for (int i = 0; i < 6; i++) {
         switch (fieldOrder[i].pos()) {
         case 0:
           this.applicationName = in.readString(this.applicationName instanceof Utf8 ? (Utf8)this.applicationName : null);
@@ -636,6 +723,15 @@ public class Report extends org.apache.avro.specific.SpecificRecordBase implemen
           break;
 
         case 4:
+          if (in.readIndex() != 0) {
+            in.readNull();
+            this.traceId = null;
+          } else {
+            this.traceId = in.readString(this.traceId instanceof Utf8 ? (Utf8)this.traceId : null);
+          }
+          break;
+
+        case 5:
           long size0 = in.readArrayStart();
           java.util.List<no.nav.registre.testnorge.avro.report.Entry> a0 = this.entries;
           if (a0 == null) {

@@ -20,7 +20,7 @@ public class ReportAdapter {
         reportRepository.save(report.toModel());
     }
 
-    public List<Report> findAll(){
+    public List<Report> findAll() {
         return StreamSupport.stream(reportRepository.findAll().spliterator(), false)
                 .map(Report::new)
                 .collect(Collectors.toList());
@@ -28,5 +28,9 @@ public class ReportAdapter {
 
     public void delete(Long reportId) {
         reportRepository.deleteById(reportId);
+    }
+
+    public void deleteAll() {
+        reportRepository.deleteAll();
     }
 }

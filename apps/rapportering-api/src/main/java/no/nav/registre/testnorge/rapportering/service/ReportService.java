@@ -25,4 +25,9 @@ public class ReportService {
             adapter.delete(report.getId());
         }
     }
+
+    public void deleteAll() {
+        log.warn("Sletter alle rapporter...");
+        adapter.deleteAll();
+    }
 }

@@ -1,6 +1,8 @@
 package no.nav.registre.testnorge.rapportering.provider;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -58,7 +60,8 @@ class ReportControllerIntegrationTest {
                 "test report",
                 LocalDateTime.now(),
                 LocalDateTime.now().plusMinutes(25),
-                Collections.singletonList(entry)
+                Collections.singletonList(entry),
+                "trace-id"
         );
         reportRepository.save(report.toModel());
 
@@ -79,8 +82,30 @@ class ReportControllerIntegrationTest {
                 .withUrlPathMatching("/api/chat.postMessage")
                 .withRequestBody(report.toSlackMessage(channel))
                 .verifyPost();
-
     }
+
+    @Test
+    @SneakyThrows
+    void should_delete_reports(){
+        Entry entry = new Entry(EntryStatus.INFO, "some description", LocalDateTime.now());
+        Report report = new Report(
+                null,
+                "app_name",
+                "test report",
+                LocalDateTime.now(),
+                LocalDateTime.now().plusMinutes(25),
+                Collections.singletonList(entry),
+                null
+        );
+
+        reportRepository.save(report.toModel());
+        mvc.perform(delete("/api/v1/report"))
+                .andExpect(status().isOk());
+
+        assertThat(reportRepository.count()).isZero();
+    }
+
+
 
     @AfterEach
     void after(){
