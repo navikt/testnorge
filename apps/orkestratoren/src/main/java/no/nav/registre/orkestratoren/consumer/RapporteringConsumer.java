@@ -1,5 +1,6 @@
 package no.nav.registre.orkestratoren.consumer;
 
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,7 @@ public class RapporteringConsumer implements ReportConsumer {
 
     @Override
     public void send(no.nav.registre.testnorge.libs.reporting.domin.Report report) {
+        var traceId = MDC.getCopyOfContextMap().getOrDefault("traceId", null);
         kafkaTemplate.send(
                 topic,
                 Report.newBuilder()
@@ -35,6 +37,7 @@ public class RapporteringConsumer implements ReportConsumer {
                         .setStart(report.getStart().toString())
                         .setEnd(report.getEnd().toString())
                         .setName(report.getName())
+                        .setTraceId(traceId)
                         .setEntries(report.getEntries().stream().map(value -> Entry
                                 .newBuilder()
                                 .setDescription(value.getDescription())

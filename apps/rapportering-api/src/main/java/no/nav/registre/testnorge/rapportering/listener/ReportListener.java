@@ -18,7 +18,7 @@ import no.nav.registre.testnorge.rapportering.adapter.ReportAdapter;
 public class ReportListener {
     private final ReportAdapter adapter;
 
-    @KafkaListener(topics = "testnorge-rapportering-v1")
+    @KafkaListener(topics = "testnorge-rapportering-v2")
     public void register(@Payload Report report) {
         log.info("Ny rapport registert");
         adapter.save(new no.nav.registre.testnorge.rapportering.domain.Report(report));

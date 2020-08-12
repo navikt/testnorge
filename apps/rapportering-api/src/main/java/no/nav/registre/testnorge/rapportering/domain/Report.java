@@ -13,8 +13,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.dto.rapprtering.v1.EntryStatus;
+import no.nav.registre.testnorge.rapportering.consumer.dto.Attachment;
 import no.nav.registre.testnorge.rapportering.consumer.dto.Block;
+import no.nav.registre.testnorge.rapportering.consumer.dto.ButtonAction;
+import no.nav.registre.testnorge.rapportering.consumer.dto.Divider;
 import no.nav.registre.testnorge.rapportering.consumer.dto.Message;
+import no.nav.registre.testnorge.rapportering.consumer.dto.Section;
 import no.nav.registre.testnorge.rapportering.repository.model.ReportModel;
 
 @Value
@@ -29,6 +33,7 @@ public class Report {
     LocalDateTime start;
     LocalDateTime end;
     List<Entry> entries;
+    String traceId;
 
     public Report(ReportModel model) {
         id = model.getId();
@@ -37,6 +42,7 @@ public class Report {
         start = model.getStart().toLocalDateTime();
         end = model.getEnd().toLocalDateTime();
         entries = model.getEntrys().stream().map(Entry::new).collect(Collectors.toList());
+        traceId = model.getTraceId();
     }
 
 
@@ -49,6 +55,7 @@ public class Report {
         entries = report.getEntries() != null
                 ? report.getEntries().stream().map(Entry::new).collect(Collectors.toList())
                 : Collections.emptyList();
+        traceId = report.getTraceId() != null ? report.getTraceId().toString() : null;
     }
 
     public ReportModel toModel() {
@@ -62,26 +69,40 @@ public class Report {
                         ? entries.stream().map(Entry::toModel).collect(Collectors.toList())
                         : Collections.emptyList()
                 )
+                .traceId(traceId)
                 .build();
     }
 
     public Message toSlackMessage(String channel) {
-        var headerBlock = Block.from("*Rapport fra: \"" + name + " (" + applicationName + ")\"*");
-        var durationBlock = Block.from("(" + start.format(FORMATTER) + " - " + end.format(FORMATTER) + ")");
+        var headerBlock = Section.from("*Rapport fra: \"" + name + " (" + applicationName + ")\"*");
+        var durationBlock = Section.from("(" + start.format(FORMATTER) + " - " + end.format(FORMATTER) + ")");
         var blocks = new ArrayList<Block>();
+        var attachments = new ArrayList<Attachment>();
 
         blocks.add(headerBlock);
         blocks.add(durationBlock);
         blocks.addAll(entries.stream().map(
-                value -> Block.from(entryToText(value))
+                value -> Section.from(entryToText(value))
         ).collect(Collectors.toList()));
-        blocks.add(new Block("divider", null));
+
+        if (traceId != null) {
+            String url = createLogUrl();
+            attachments.add(new Attachment("Lenke til log " + url, new ButtonAction("Se log", url)));
+        }else {
+            blocks.add(new Divider());
+        }
         return Message
                 .builder()
                 .channel(channel)
                 .blocks(blocks)
+                .attachments(attachments)
                 .build();
     }
+
+    private String createLogUrl() {
+        return "https://logs.adeo.no/app/kibana#/discover?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-7d,to:now))&_a=(columns:!(message,envclass,level,application,host),filters:!(),interval:auto,query:(language:lucene,query:'x_traceId:" + traceId + "'),sort:!())";
+    }
+
 
     private String entryToText(Entry entry) {
         return getIcon(entry.getStatus()) + " " + entry.getDescription();

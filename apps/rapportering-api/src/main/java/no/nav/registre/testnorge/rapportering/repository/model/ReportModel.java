@@ -43,6 +43,9 @@ public class ReportModel {
     @Column(name = "name", nullable = false, updatable = false)
     private String name;
 
+    @Column(name = "trace_id", updatable = false)
+    private String traceId;
+
     @Column(name = "run_start", nullable = false, updatable = false)
     private Timestamp start;
 

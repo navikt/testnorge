@@ -42,7 +42,7 @@
         }
       ],
       "numPartitions": 10,
-      "topicName": "testnorge-rapportering-v1"
+      "topicName": "testnorge-rapportering-v2"
     }
   ]
 }
