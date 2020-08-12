@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.orkestratoren.consumer.SyntArbeidsforholdConsumer;
-import no.nav.registre.orkestratoren.consumer.dto.PersonDTO;
+import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
 import no.nav.registre.testnorge.libs.reporting.Reporting;
 
 @Slf4j

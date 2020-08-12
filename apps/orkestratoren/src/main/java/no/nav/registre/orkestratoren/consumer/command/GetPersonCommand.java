@@ -9,8 +9,8 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.util.concurrent.Callable;
 
-import no.nav.registre.orkestratoren.consumer.dto.PersonDTO;
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
 
 @Slf4j
 @DependencyOn("person-api")

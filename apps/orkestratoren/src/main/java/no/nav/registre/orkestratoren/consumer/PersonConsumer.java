@@ -14,8 +14,8 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import no.nav.registre.orkestratoren.consumer.command.GetPersonCommand;
-import no.nav.registre.orkestratoren.consumer.dto.PersonDTO;
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
 
 @Slf4j
 @Component
