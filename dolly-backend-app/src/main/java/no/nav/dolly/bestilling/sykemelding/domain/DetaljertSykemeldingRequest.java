@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.sykemelding.domain;
 import static java.util.Objects.isNull;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class DetaljertSykemeldingRequest {
     private Pasient pasient;
     private List<Periode> perioder;
     private Organisasjon sender;
-    private LocalDateTime startDato;
+    private LocalDate startDato;
     private Boolean umiddelbarBistand;
 
     public List<Diagnose> getBiDiagnoser() {
@@ -103,8 +102,8 @@ public class DetaljertSykemeldingRequest {
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     public static class Lege {
 
-        private String fornavn;
         private String etternavn;
+        private String fornavn;
         private String hprId;
         private String ident;
         private String mellomnavn;
@@ -133,7 +132,7 @@ public class DetaljertSykemeldingRequest {
 
         private Adresse adresse;
         private String etternavn;
-        private LocalDateTime foedselsdato;
+        private LocalDate foedselsdato;
         private String fornavn;
         private String ident;
         private String mellomnavn;

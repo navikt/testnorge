@@ -22,10 +22,29 @@ public class DetaljertSykemeldingMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(RsDetaljertSykemelding rsSykemelding, DetaljertSykemeldingRequest request, MappingContext context) {
 
+                        DetaljertSykemeldingRequest.Organisasjon organisasjon = DetaljertSykemeldingRequest.Organisasjon.builder()
+                                .adresse(DetaljertSykemeldingRequest.Adresse.builder()
+                                        .postnummer("6789")
+                                        .land("NOR")
+                                        .gate("Syntegaten")
+                                        .by("Synteby")
+                                        .build())
+                                .navn("Synt & Co.")
+                                .orgNr("123")
+                                .build();
+
                         if (isNull(rsSykemelding.getDetaljer())) {
                             request.setDetaljer(DetaljertSykemeldingRequest.Detaljer.builder()
                                     .arbeidsforEtterEndtPeriode(true)
                                     .build());
+                        }
+
+                        if (isNull(rsSykemelding.getMottaker())) {
+                            request.setMottaker(organisasjon);
+                        }
+
+                        if (isNull(rsSykemelding.getSender())) {
+                            request.setSender(organisasjon);
                         }
                     }
                 })

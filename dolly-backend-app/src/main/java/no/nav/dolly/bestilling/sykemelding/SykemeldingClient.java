@@ -18,14 +18,11 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
-import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingTransaksjon;
 import no.nav.dolly.bestilling.sykemelding.domain.SykemeldingTransaksjon;
 import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.sykemelding.RsDetaljertSykemelding;
-import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding.RsSyntSykemelding;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.domain.resultset.tpsf.adresse.BoGateadresse;
@@ -53,35 +50,12 @@ public class SykemeldingClient implements ClientRegister {
             StringBuilder status = new StringBuilder();
             try {
                 tpsfPersonCache.fetchIfEmpty(tpsPerson);
-                SyntSykemeldingRequest syntSykemeldingRequest = mapperFacade.map(bestilling.getSykemelding().getSyntSykemelding(), SyntSykemeldingRequest.class);
-                syntSykemeldingRequest.setIdent(tpsPerson.getHovedperson());
-
-                DetaljertSykemeldingRequest detaljertSykemeldingRequest = mapperFacade.map(bestilling.getSykemelding().getDetaljertSykemelding(), DetaljertSykemeldingRequest.class);
-                Person pasient = tpsPerson.getPerson(tpsPerson.getHovedperson());
-                BoGateadresse pasientAdresse = (BoGateadresse) pasient.getBoadresse().get(0);
-
-                // Denne skulle vi hente? detaljertSykemeldingRequest.getLege()
-
-                fyllRequestPasient(detaljertSykemeldingRequest, pasient, pasientAdresse);
 
                 if (!transaksjonMappingService.existAlready(SYKEMELDING, tpsPerson.getHovedperson(), null) || isOpprettEndre) {
 
-                    ResponseEntity<String> response = sykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest);
-                    if (response.hasBody()) {
-                        status.append("OK");
-                        RsSyntSykemelding syntSykemelding = bestilling.getSykemelding().getSyntSykemelding();
+                    postSyntSykemelding(bestilling, tpsPerson, status);
 
-                        saveTranskasjonId(syntSykemelding.getOrgnummer(), syntSykemelding.getArbeidsforholdId(), tpsPerson.getHovedperson());
-                    }
-
-                    ResponseEntity<String> responseDetaljert = sykemeldingConsumer.postDetaljertSykemelding(detaljertSykemeldingRequest);
-                    if (responseDetaljert.hasBody()) {
-                        status.append("OK");
-                        RsDetaljertSykemelding detaljertSykemelding = bestilling.getSykemelding().getDetaljertSykemelding();
-
-                        saveTranskasjonId(detaljertSykemelding.getStartDato(), detaljertSykemelding.getPasient(), detaljertSykemelding.getHovedDiagnose(), tpsPerson.getHovedperson());
-                    }
-
+                    postDetaljertSykemelding(bestilling, tpsPerson, status);
                 }
             } catch (RuntimeException e) {
 
@@ -91,15 +65,51 @@ public class SykemeldingClient implements ClientRegister {
         }
     }
 
+    @Override
+    public void release(List<String> identer) {
+
+    }
+
+    private void postDetaljertSykemelding(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, StringBuilder status) {
+        if (nonNull(bestilling.getSykemelding().getDetaljertSykemelding())) {
+            DetaljertSykemeldingRequest detaljertSykemeldingRequest = mapperFacade.map(bestilling.getSykemelding().getDetaljertSykemelding(), DetaljertSykemeldingRequest.class);
+            Person pasient = tpsPerson.getPerson(tpsPerson.getHovedperson());
+            BoGateadresse pasientBoAdresse = (BoGateadresse) pasient.getBoadresse().get(0);
+
+            fyllRequestPasient(detaljertSykemeldingRequest, pasient, pasientBoAdresse);
+
+            ResponseEntity<String> responseDetaljert = sykemeldingConsumer.postDetaljertSykemelding(detaljertSykemeldingRequest);
+            if (responseDetaljert.hasBody()) {
+                status.append("detaljert-sykemelding: OK");
+
+                saveTranskasjonId(detaljertSykemeldingRequest.getMottaker().getOrgNr(), detaljertSykemeldingRequest.getArbeidsgiver().getNavn(), tpsPerson.getHovedperson());
+            }
+        }
+    }
+
+    private void postSyntSykemelding(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, StringBuilder status) {
+        if (nonNull(bestilling.getSykemelding().getSyntSykemelding())) {
+            SyntSykemeldingRequest syntSykemeldingRequest = mapperFacade.map(bestilling.getSykemelding().getSyntSykemelding(), SyntSykemeldingRequest.class);
+            syntSykemeldingRequest.setIdent(tpsPerson.getHovedperson());
+            ResponseEntity<String> response = sykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest);
+
+            if (response.hasBody()) {
+                status.append("synt-sykemelding: OK");
+
+                saveTranskasjonId(syntSykemeldingRequest.getOrgnummer(), syntSykemeldingRequest.getArbeidsforholdId(), tpsPerson.getHovedperson());
+            }
+        }
+    }
+
     private void fyllRequestPasient(DetaljertSykemeldingRequest detaljertSykemeldingRequest, Person pasient, BoGateadresse pasientAdresse) {
         detaljertSykemeldingRequest.setPasient(DetaljertSykemeldingRequest.Pasient.builder()
                 .fornavn(pasient.getFornavn())
                 .etternavn(pasient.getEtternavn())
                 .mellomnavn(isNull(pasient.getMellomnavn()) ? null : pasient.getMellomnavn())
-                .foedselsdato(pasient.getFoedselsdato())
+                .foedselsdato(pasient.getFoedselsdato().toLocalDate())
                 .ident(pasient.getIdent())
                 .navKontor(pasient.getTknavn())
-                .telefon(isNull(pasient.getTelefonnummer_1()) ? null : pasient.getTelefonnummer_1())
+                .telefon(isNull(pasient.getTelefonnummer_1()) ? "12345678" : pasient.getTelefonnummer_1())
                 .adresse(DetaljertSykemeldingRequest.Adresse.builder()
                         .by(pasient.getBoadresse().get(0).getPostnr())
                         .gate(pasientAdresse.getGateadresse())
@@ -109,32 +119,13 @@ public class SykemeldingClient implements ClientRegister {
                 .build());
     }
 
-    @Override
-    public void release(List<String> identer) {
-
-    }
-
-    private void saveTranskasjonId(LocalDateTime startDato, RsDetaljertSykemelding.Pasient pasient, RsDetaljertSykemelding.Diagnose hovedDiagnose, String ident) {
-
-        transaksjonMappingService.save(TransaksjonMapping.builder()
-                .ident(ident)
-                .transaksjonId(toJson(DetaljertSykemeldingTransaksjon.builder()
-                        .hovedDiagnose(hovedDiagnose)
-                        .pasient(pasient)
-                        .startDato(startDato)
-                        .build()))
-                .datoEndret(LocalDateTime.now())
-                .system(SYKEMELDING.name())
-                .build());
-    }
-
-    private void saveTranskasjonId(String orgnummer, String arbeidsforholdsId, String ident) {
+    private void saveTranskasjonId(String orgnr, String arbeidsforholdsId, String ident) {
 
         transaksjonMappingService.save(
                 TransaksjonMapping.builder()
                         .ident(ident)
                         .transaksjonId(toJson(SykemeldingTransaksjon.builder()
-                                .orgnummer(orgnummer)
+                                .orgnummer(orgnr)
                                 .arbeidsforholdId(arbeidsforholdsId)))
                         .datoEndret(LocalDateTime.now())
                         .system(SYKEMELDING.name())

@@ -3,7 +3,6 @@ package no.nav.dolly.domain.resultset.sykemelding;
 import static java.util.Objects.isNull;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +54,7 @@ public class RsDetaljertSykemelding {
     private Organisasjon sender;
 
     @ApiModelProperty(position = 11)
-    private LocalDateTime startDato;
+    private LocalDate startDato;
 
     @ApiModelProperty(position = 12)
     private Boolean umiddelbarBistand;

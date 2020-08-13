@@ -27,7 +27,7 @@ public enum SystemTyper {
     INNTKMELD("Inntektsmelding (ALTINN/JOARK)"),
     BRREGSTUB("Brønnøysundregistrene (BRREGSTUB)"),
     DOKARKIV("Dokumentarkiv (JOARK)"),
-    SYKEMELDING("Testnorge Synt Sykemelding"),
+    SYKEMELDING("Testnorge Sykemelding"),
     TPSIMPORT("Import av identer (MINI-NORGE)"),
     SKJERMINGSREGISTER("NAV-ansatt Skjermingsregister");
 
