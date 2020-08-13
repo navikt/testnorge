@@ -3,6 +3,7 @@ export type Bestillingsdata = {
 	environments: Array<String>
 	tpsf?: {
 		egenAnsattDatoFom?: string
+		egenAnsattDatoTom?: string
 		spesreg?: string
 		relasjoner?: Relasjoner
 	}

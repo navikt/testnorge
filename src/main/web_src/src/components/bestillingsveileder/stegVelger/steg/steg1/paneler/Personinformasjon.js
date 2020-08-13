@@ -67,131 +67,146 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 
 PersoninformasjonPanel.heading = 'Personinformasjon'
 
-PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => ({
-	alder: {
-		label: 'Alder',
-		checked: has('tpsf.alder') || has('tpsf.foedtEtter') || has('tpsf.foedtFoer'),
-		add: () => set('tpsf.alder', Formatters.randomIntInRange(30, 60)),
-		remove: () => del(['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer'])
-	},
-	doedsdato: {
-		label: 'Dødsdato',
-		checked: has('tpsf.doedsdato'),
-		add: () => set('tpsf.doedsdato', null),
-		remove: () => del('tpsf.doedsdato')
-	},
-	statsborgerskap: {
-		label: 'Statsborgerskap',
-		checked: has('tpsf.statsborgerskap'),
-		add() {
-			setMulti(['tpsf.statsborgerskap', ''], ['tpsf.statsborgerskapRegdato', null])
+PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => {
+	const opts = useContext(BestillingsveilederContext)
+	const { personFoerLeggTil } = opts
+
+	return {
+		alder: {
+			label: 'Alder',
+			checked: has('tpsf.alder') || has('tpsf.foedtEtter') || has('tpsf.foedtFoer'),
+			add: () => set('tpsf.alder', Formatters.randomIntInRange(30, 60)),
+			remove: () => del(['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer'])
 		},
-		remove() {
-			del(['tpsf.statsborgerskap', 'tpsf.statsborgerskapRegdato'])
-		}
-	},
-	innvandretFraLand: {
-		label: 'Innvandret fra',
-		checked: has('tpsf.innvandretFraLand'),
-		add() {
-			setMulti(['tpsf.innvandretFraLand', ''], ['tpsf.innvandretFraLandFlyttedato', null])
+		doedsdato: {
+			label: 'Dødsdato',
+			checked: has('tpsf.doedsdato'),
+			add: () => set('tpsf.doedsdato', null),
+			remove: () => del('tpsf.doedsdato')
 		},
-		remove() {
-			del(['tpsf.innvandretFraLand', 'tpsf.innvandretFraLandFlyttedato'])
-		}
-	},
-	utvandretTilLand: {
-		label: 'Utvandret til',
-		checked: has('tpsf.utvandretTilLand'),
-		add() {
-			setMulti(['tpsf.utvandretTilLand', ''], ['tpsf.utvandretTilLandFlyttedato', null])
+		statsborgerskap: {
+			label: 'Statsborgerskap',
+			checked: has('tpsf.statsborgerskap'),
+			add() {
+				setMulti(['tpsf.statsborgerskap', ''], ['tpsf.statsborgerskapRegdato', null])
+			},
+			remove() {
+				del(['tpsf.statsborgerskap', 'tpsf.statsborgerskapRegdato'])
+			}
 		},
-		remove() {
-			del(['tpsf.utvandretTilLand', 'tpsf.utvandretTilLandFlyttedato'])
-		}
-	},
-	identHistorikk: {
-		label: 'Identhistorikk',
-		checked: has('tpsf.identHistorikk'),
-		add: () =>
-			set('tpsf.identHistorikk', [
-				{
-					foedtEtter: null,
-					foedtFoer: null,
-					identtype: null,
-					kjonn: null,
-					regdato: null
-				}
-			]),
-		remove: () => del('tpsf.identHistorikk')
-	},
-	kjonn: {
-		label: 'Kjønn',
-		checked: has('tpsf.kjonn'),
-		add: () => set('tpsf.kjonn', ''),
-		remove: () => del('tpsf.kjonn')
-	},
-	harMellomnavn: {
-		label: 'Har mellomnavn',
-		checked: has('tpsf.harMellomnavn'),
-		add: () => set('tpsf.harMellomnavn', true),
-		remove: () => del('tpsf.harMellomnavn')
-	},
-	sprakKode: {
-		label: 'Språk',
-		checked: has('tpsf.sprakKode'),
-		add: () => set('tpsf.sprakKode', ''),
-		remove: () => del('tpsf.sprakKode')
-	},
-	egenAnsattDatoFom: {
-		label: 'Egenansatt',
-		checked: has('tpsf.egenAnsattDatoFom'),
-		add: () => set('tpsf.egenAnsattDatoFom', new Date()),
-		remove: () => del('tpsf.egenAnsattDatoFom')
-	},
-	erForsvunnet: {
-		label: 'Forsvunnet',
-		checked: has('tpsf.erForsvunnet'),
-		add() {
-			setMulti(['tpsf.erForsvunnet', true], ['tpsf.forsvunnetDato', null])
+		innvandretFraLand: {
+			label: 'Innvandret fra',
+			checked: has('tpsf.innvandretFraLand'),
+			add() {
+				setMulti(['tpsf.innvandretFraLand', ''], ['tpsf.innvandretFraLandFlyttedato', null])
+			},
+			remove() {
+				del(['tpsf.innvandretFraLand', 'tpsf.innvandretFraLandFlyttedato'])
+			}
 		},
-		remove() {
-			del(['tpsf.erForsvunnet', 'tpsf.forsvunnetDato'])
-		}
-	},
-	harBankkontonr: {
-		label: 'Bankkontonummer',
-		checked: has('tpsf.harBankkontonr'),
-		add() {
-			setMulti(['tpsf.harBankkontonr', true], ['tpsf.bankkontonrRegdato', null])
+		utvandretTilLand: {
+			label: 'Utvandret til',
+			checked: has('tpsf.utvandretTilLand'),
+			add() {
+				setMulti(['tpsf.utvandretTilLand', ''], ['tpsf.utvandretTilLandFlyttedato', null])
+			},
+			remove() {
+				del(['tpsf.utvandretTilLand', 'tpsf.utvandretTilLandFlyttedato'])
+			}
 		},
-		remove() {
-			del(['tpsf.harBankkontonr', 'tpsf.bankkontonrRegdato'])
-		}
-	},
-	telefonnummer_1: {
-		label: 'Telefonnummer',
-		checked: has('tpsf.telefonnummer_1'),
-		add() {
-			setMulti(['tpsf.telefonLandskode_1', ''], ['tpsf.telefonnummer_1', ''])
+		identHistorikk: {
+			label: 'Identhistorikk',
+			checked: has('tpsf.identHistorikk'),
+			add: () =>
+				set('tpsf.identHistorikk', [
+					{
+						foedtEtter: null,
+						foedtFoer: null,
+						identtype: null,
+						kjonn: null,
+						regdato: null
+					}
+				]),
+			remove: () => del('tpsf.identHistorikk')
 		},
-		remove() {
-			del([
-				'tpsf.telefonLandskode_1',
-				'tpsf.telefonnummer_1',
-				'tpsf.telefonLandskode_2',
-				'tpsf.telefonnummer_2'
-			])
-		}
-	},
-	spesreg: {
-		label: 'Diskresjonskode',
-		checked: has('tpsf.spesreg') || has('tpsf.utenFastBopel'),
-		add() {
-			setMulti(['tpsf.spesreg', ''], ['tpsf.utenFastBopel', false])
+		kjonn: {
+			label: 'Kjønn',
+			checked: has('tpsf.kjonn'),
+			add: () => set('tpsf.kjonn', ''),
+			remove: () => del('tpsf.kjonn')
 		},
-		remove() {
-			del(['tpsf.spesreg', 'tpsf.utenFastBopel'])
+		harMellomnavn: {
+			label: 'Har mellomnavn',
+			checked: has('tpsf.harMellomnavn'),
+			add: () => set('tpsf.harMellomnavn', true),
+			remove: () => del('tpsf.harMellomnavn')
+		},
+		sprakKode: {
+			label: 'Språk',
+			checked: has('tpsf.sprakKode'),
+			add: () => set('tpsf.sprakKode', ''),
+			remove: () => del('tpsf.sprakKode')
+		},
+		egenAnsattDatoFom: {
+			label: 'Skjerming',
+			checked: has('tpsf.egenAnsattDatoFom'),
+			add() {
+				setMulti(
+					[
+						'tpsf.egenAnsattDatoFom',
+						_get(personFoerLeggTil, 'tpsf.egenAnsattDatoFom') || new Date()
+					],
+					['tpsf.egenAnsattDatoTom', undefined]
+				)
+			},
+			remove() {
+				del(['tpsf.egenAnsattDatoFom', 'tpsf.egenAnsattDatoTom'])
+			}
+		},
+		erForsvunnet: {
+			label: 'Forsvunnet',
+			checked: has('tpsf.erForsvunnet'),
+			add() {
+				setMulti(['tpsf.erForsvunnet', true], ['tpsf.forsvunnetDato', null])
+			},
+			remove() {
+				del(['tpsf.erForsvunnet', 'tpsf.forsvunnetDato'])
+			}
+		},
+		harBankkontonr: {
+			label: 'Bankkontonummer',
+			checked: has('tpsf.harBankkontonr'),
+			add() {
+				setMulti(['tpsf.harBankkontonr', true], ['tpsf.bankkontonrRegdato', null])
+			},
+			remove() {
+				del(['tpsf.harBankkontonr', 'tpsf.bankkontonrRegdato'])
+			}
+		},
+		telefonnummer_1: {
+			label: 'Telefonnummer',
+			checked: has('tpsf.telefonnummer_1'),
+			add() {
+				setMulti(['tpsf.telefonLandskode_1', ''], ['tpsf.telefonnummer_1', ''])
+			},
+			remove() {
+				del([
+					'tpsf.telefonLandskode_1',
+					'tpsf.telefonnummer_1',
+					'tpsf.telefonLandskode_2',
+					'tpsf.telefonnummer_2'
+				])
+			}
+		},
+		spesreg: {
+			label: 'Diskresjonskode',
+			checked: has('tpsf.spesreg') || has('tpsf.utenFastBopel'),
+			add() {
+				setMulti(['tpsf.spesreg', ''], ['tpsf.utenFastBopel', false])
+			},
+			remove() {
+				del(['tpsf.spesreg', 'tpsf.utenFastBopel'])
+			}
 		}
 	}
-})
+}

@@ -364,6 +364,25 @@ export const validation = {
 				innvandringUtvandringDatoTest(Yup.date().nullable())
 			),
 			sprakKode: ifPresent('$tpsf.sprakKode', requiredString),
+			egenAnsattDatoFom: ifPresent(
+				'$tpsf.egenAnsattDatoFom',
+				Yup.string().test(
+					'is-before-today',
+					'Dato kan ikke være etter dagens dato',
+					function validDate(dato) {
+						return isBefore(new Date(dato), new Date())
+					}
+				)
+			),
+			egenAnsattDatoTom: ifPresent(
+				'$tpsf.egenAnsattDatoTom',
+				Yup.string().test('is-after-dato-fom', 'Dato må være etter fra-dato', function validDate(
+					dato
+				) {
+					const values = this.options.context
+					return isAfter(new Date(dato), new Date(_get(values, 'tpsf.egenAnsattDatoFom')))
+				})
+			),
 			telefonLandskode_1: ifPresent('$tpsf.telefonLandskode_1', requiredString),
 			telefonnummer_1: ifPresent('$tpsf.telefonnummer_1', testTelefonnummer('1')),
 			telefonLandskode_2: ifPresent('$tpsf.telefonLandskode_2', requiredString).nullable(),

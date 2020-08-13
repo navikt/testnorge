@@ -31,6 +31,7 @@ export const erForste = (values, attributt) => {
 		'tpsf.sivilstand',
 		'tpsf.sprakKode',
 		'tpsf.egenAnsattDatoFom',
+		'tpsf.egenAnsattDatoTom',
 		'tpsf.spesreg',
 		'tpsf.erForsvunnet',
 		'tpsf.harBankkontonr',
