@@ -15,7 +15,7 @@
 
     <properties>
         <cxf.version>3.3.6</cxf.version>
-        <main-class>no.nav.brregstub.Launcher</main-class>
+        <main-class>no.nav.brregstub.ApplicationLauncher</main-class>
         <jaxws.maven.plugin.version>2.6</jaxws.maven.plugin.version>
     </properties>
 
@@ -108,13 +108,11 @@
                     <artifactId>log</artifactId>
                 </exclusion>
             </exclusions>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <dependency>

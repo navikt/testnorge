@@ -19,7 +19,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.time.LocalDate;
 import java.util.Map;
 
-import no.nav.brregstub.ApplicationConfig;
 import no.nav.brregstub.api.common.RsAdresse;
 import no.nav.brregstub.api.common.RsNavn;
 import no.nav.brregstub.api.v1.RolleTo;
@@ -28,7 +27,7 @@ import no.nav.brregstub.database.domene.Rolleoversikt;
 import no.nav.brregstub.database.repository.RolleoversiktRepository;
 
 @ActiveProfiles("local")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = { ApplicationConfig.class })
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class HentRolleoversiktControllerTest {
@@ -46,15 +45,15 @@ public class HentRolleoversiktControllerTest {
         var response = restTemplate.exchange(API_V_1_ROLLEUTSKRIFT,
                 HttpMethod.GET,
                 createHttpEntity("eksister ikke", null),
-                String.class);
+                String.class
+        );
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
     @DisplayName("GET rolleoversikt returnerer 400 hvis input mangler")
     public void skalKasteBadRequestHvisInputMangler() {
-        var response = restTemplate.getForEntity(API_V_1_ROLLEUTSKRIFT,
-                Map.class);
+        var response = restTemplate.getForEntity(API_V_1_ROLLEUTSKRIFT, Map.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 

@@ -1,8 +1,7 @@
 package no.nav.brregstub.endpoint.ws;
 
-import no.nav.brregstub.ApplicationConfig;
-import no.nav.brregstub.tjenestekontrakter.ws.ErFr;
-import no.nav.sbl.dialogarena.common.cxf.CXFClient;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,10 +12,11 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import no.nav.brregstub.tjenestekontrakter.ws.ErFr;
+import no.nav.sbl.dialogarena.common.cxf.CXFClient;
 
 @ActiveProfiles("local")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {ApplicationConfig.class})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class BrregEndpointTest {

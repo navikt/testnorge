@@ -1,6 +1,5 @@
 package no.nav.brregstub.endpoint.rs.v1;
 
-import no.nav.brregstub.ApplicationConfig;
 import no.nav.brregstub.api.common.RolleKode;
 import no.nav.brregstub.api.common.UnderstatusKode;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +18,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("local")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {ApplicationConfig.class})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class KodeControllerTest {

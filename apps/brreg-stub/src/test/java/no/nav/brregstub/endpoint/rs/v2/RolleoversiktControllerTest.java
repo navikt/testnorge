@@ -22,7 +22,6 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Map;
 
-import no.nav.brregstub.ApplicationConfig;
 import no.nav.brregstub.api.common.Egenskap;
 import no.nav.brregstub.api.common.RolleKode;
 import no.nav.brregstub.api.common.RsAdresse;
@@ -35,7 +34,7 @@ import no.nav.brregstub.database.repository.HentRolleRepository;
 import no.nav.brregstub.database.repository.RolleoversiktRepository;
 
 @ActiveProfiles("local")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = { ApplicationConfig.class })
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class RolleoversiktControllerTest {
