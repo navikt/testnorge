@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Value
@@ -13,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor(force = true)
 public class TpsPerson {
     String ident;
-    String foedselsdato;
+    LocalDateTime foedselsdato;
     String fornavn;
     String mellomnavn;
     String etternavn;

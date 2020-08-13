@@ -22,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
@@ -75,10 +76,9 @@ public class PersonControllerIntegrationTest {
                 .ident("12345678921")
                 .fornavn("Line")
                 .etternavn("Linesen")
-                .foedselsdato("1980-10-02")
+                .foedselsdato(LocalDateTime.parse("1980-10-02T00:00:00"))
                 .boadresse(boadresse)
                 .build();
-
 
         JsonWiremockHelper
                 .builder(objectMapper)
@@ -102,7 +102,7 @@ public class PersonControllerIntegrationTest {
                 .fornavn("Line")
                 .etternavn("Linesen")
                 .ident("12345678921")
-                .foedselsdato("1980-10-02")
+                .foedselsdato(LocalDate.parse("1980-10-02"))
                 .adresse(new AdresseDTO("Linegata 12", "2650", null, null))
                 .build();
 
@@ -131,7 +131,7 @@ public class PersonControllerIntegrationTest {
     @Test
     public void should_get_dtoPerson_from_pdl() throws Exception {
         Navn pdlNavn = new Navn("Line", null, "Linesen");
-        Foedsel foedsel = new Foedsel("1980-10-02");
+        Foedsel foedsel = new Foedsel(LocalDate.parse("1980-10-02"));
         Folkeregisteridentifikator folkeregisteridentifikator = new Folkeregisteridentifikator("12345678912", null, null);
         Bostedsadresse bostedsadresse = new Bostedsadresse(new Vegadresse("Linegata", "12", "2650", null));
         PdlPerson graphqlResponse = new PdlPerson(Collections.EMPTY_LIST,
@@ -172,7 +172,7 @@ public class PersonControllerIntegrationTest {
                 .fornavn("Line")
                 .etternavn("Linesen")
                 .ident("12345678912")
-                .foedselsdato("1980-10-02")
+                .foedselsdato(LocalDate.parse("1980-10-02"))
                 .adresse(new AdresseDTO("Linegata 12", "2650", null, null))
                 .build();
 

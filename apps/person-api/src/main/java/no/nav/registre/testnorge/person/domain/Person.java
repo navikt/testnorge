@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
@@ -22,7 +23,7 @@ import no.nav.registre.testnorge.person.consumer.dto.tpsf.TpsPerson;
 public class Person {
 
     private String ident;
-    private String foedselsdato;
+    private LocalDate foedselsdato;
     private String fornavn;
     private String mellomnavn;
     private String etternavn;
@@ -61,14 +62,12 @@ public class Person {
     }
 
     public Person(TpsPerson tpsPerson) {
-
         ident = tpsPerson.getIdent();
         fornavn = tpsPerson.getFornavn();
         mellomnavn = tpsPerson.getMellomnavn();
         etternavn = tpsPerson.getEtternavn();
-        foedselsdato = tpsPerson.getFoedselsdato();
+        foedselsdato = tpsPerson.getFoedselsdato().toLocalDate();
         adresse = !tpsPerson.getBoadresse().isEmpty() ? new Adresse(tpsPerson.getBoadresse().get(0)) : null;
-
     }
 
     public PersonDTO toDTO() {
