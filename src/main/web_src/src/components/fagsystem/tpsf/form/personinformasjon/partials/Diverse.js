@@ -18,13 +18,11 @@ export const Diverse = ({ formikBag }) => {
 	}
 	const opts = useContext(BestillingsveilederContext)
 	const { personFoerLeggTil } = opts
-	const harSkjerming = personFoerLeggTil
-		? personFoerLeggTil.tpsf.hasOwnProperty('egenAnsattDatoFom')
-			? personFoerLeggTil.tpsf.hasOwnProperty('egenAnsattDatoTom')
-				? isAfter(new Date(personFoerLeggTil.tpsf.egenAnsattDatoTom), new Date())
-				: true
-			: false
-		: false
+	const harSkjerming =
+		personFoerLeggTil &&
+		personFoerLeggTil.tpsf.hasOwnProperty('egenAnsattDatoFom') &&
+		personFoerLeggTil.tpsf.hasOwnProperty('egenAnsattDatoTom') &&
+		isAfter(new Date(personFoerLeggTil.tpsf.egenAnsattDatoTom), new Date())
 
 	return (
 		<React.Fragment>
