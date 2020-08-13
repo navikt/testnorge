@@ -10,7 +10,7 @@ public class Launcher {
     public static void main(String... args) {
 
         VaultUtil.setCloudVaultToken();
-        SpringApplication.run(ApplicationConfig.class, args);
+        SpringApplication.run(Launcher.class, args);
     }
 
 }
