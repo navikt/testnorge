@@ -8,7 +8,7 @@ import no.nav.brregstub.config.VaultUtil;
 @SpringBootApplication
 public class ApplicationLauncher {
 
-    public static void main(String... args) {
+    public static void main(String[] args) {
 
         if ("prod".equals(System.getProperty("spring.profiles.active"))) {
             VaultUtil.setCloudVaultToken();

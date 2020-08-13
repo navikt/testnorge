@@ -15,7 +15,6 @@
 
     <properties>
         <cxf.version>3.3.6</cxf.version>
-        <main-class>no.nav.brregstub.ApplicationLauncher</main-class>
         <jaxws.maven.plugin.version>2.6</jaxws.maven.plugin.version>
     </properties>
 
