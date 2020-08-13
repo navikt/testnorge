@@ -15,7 +15,6 @@
 
     <properties>
         <cxf.version>3.3.6</cxf.version>
-        <main-class>no.nav.brregstub.ApplicationLauncher</main-class>
         <jaxws.maven.plugin.version>2.6</jaxws.maven.plugin.version>
     </properties>
 
@@ -179,6 +178,21 @@
                                 </xsdOption>
                             </xsdOptions>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <fork>true</fork>
+                    <mainClass>no.nav.brregstub.ApplicationLauncher</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
