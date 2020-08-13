@@ -1,4 +1,5 @@
 import React from 'react'
+import _get from 'lodash/get'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { InstApi } from '~/service/Api'
 import { ArenaApi } from '~/service/Api'
@@ -6,8 +7,15 @@ import { PensjonApi } from '~/service/Api'
 import TilgjengeligeMiljoer from './TilgjengeligeMiljoer'
 
 export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
-	const { instdata, pdlforvalter, arenaforvalter, pensjonforvalter } = bestillingsdata
-	if (!instdata && !pdlforvalter && !arenaforvalter && !pensjonforvalter) return null
+	const { instdata, pdlforvalter, arenaforvalter, pensjonforvalter, udistub } = bestillingsdata
+	if (
+		!instdata &&
+		!pdlforvalter &&
+		!arenaforvalter &&
+		!pensjonforvalter &&
+		!_get(udistub, 'oppholdStatus')
+	)
+		return null
 
 	return (
 		<AlertStripeInfo>
@@ -49,6 +57,13 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 							endepunkt={PensjonApi.getTilgjengeligeMiljoer}
 							dollyEnvironments={dollyEnvironments}
 						/>
+					</li>
+				)}
+
+				{udistub && udistub.oppholdStatus && (
+					<li>
+						Oppholdsstatus i PDL: Q2 (Dersom du kun ønsker å sende oppholdsstatus til UDI-stub er
+						det ingen krav til valg av miljø.)
 					</li>
 				)}
 			</ul>
