@@ -32,9 +32,13 @@ public class InntektsmeldingConsumer {
 
     @Timed(name = "providers", tags = { "operation", "inntektsmelding_opprett" })
     public ResponseEntity postInntektsmelding(InntektsmeldingRequest inntekstsmelding) {
+
+        String callId = getNavCallId();
+        log.info("Inntektsmelding med callId {} sendt", callId);
+
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(providersProps.getInntektsmelding().getUrl() + POST_FMT_BLD))
-                        .header(HEADER_NAV_CALL_ID, getNavCallId())
+                        .header(HEADER_NAV_CALL_ID, callId)
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .body(inntekstsmelding), InntektsmeldingResponse.class);
     }

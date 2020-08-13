@@ -28,11 +28,23 @@ public class PdlOppholdMappingStrategy implements MappingStrategy {
                             opphold.setType(
                                     getOppholdType(person.getOppholdStatus().getEosEllerEFTABeslutningOmOppholdsrett()));
 
-                            if (nonNull(person.getOppholdStatus().getEosEllerEFTAOppholdstillatelsePeriode())) {
+                            if (nonNull(person.getOppholdStatus().getEosEllerEFTABeslutningOmOppholdsrettPeriode())) {
+                                opphold.setOppholdFra(
+                                        toLocalDate(person.getOppholdStatus().getEosEllerEFTABeslutningOmOppholdsrettPeriode().getFra()));
+                                opphold.setOppholdTil(
+                                        toLocalDate(person.getOppholdStatus().getEosEllerEFTABeslutningOmOppholdsrettPeriode().getTil()));
+
+                            } else if (nonNull(person.getOppholdStatus().getEosEllerEFTAOppholdstillatelsePeriode())) {
                                 opphold.setOppholdFra(
                                         toLocalDate(person.getOppholdStatus().getEosEllerEFTAOppholdstillatelsePeriode().getFra()));
                                 opphold.setOppholdTil(
                                         toLocalDate(person.getOppholdStatus().getEosEllerEFTAOppholdstillatelsePeriode().getTil()));
+
+                            } else if (nonNull(person.getOppholdStatus().getEosEllerEFTAVedtakOmVarigOppholdsrettPeriode())) {
+                                opphold.setOppholdFra(
+                                        toLocalDate(person.getOppholdStatus().getEosEllerEFTAVedtakOmVarigOppholdsrettPeriode().getFra()));
+                                opphold.setOppholdTil(
+                                        toLocalDate(person.getOppholdStatus().getEosEllerEFTAVedtakOmVarigOppholdsrettPeriode().getTil()));
                             }
                         }
                         opphold.setKilde(CONSUMER);
