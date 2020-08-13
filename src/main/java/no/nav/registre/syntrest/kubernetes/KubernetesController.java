@@ -78,20 +78,6 @@ public class KubernetesController {
                 .additionalInterceptors(new BasicAuthenticationInterceptor(github_username, github_password))
                 .build();
 
-        /*
-        this.authRestTemplate = restTemplateBuilder.requestFactory(() -> new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create()
-                .setRoutePlanner(new DefaultProxyRoutePlanner(new HttpHost(proxyUrl, proxyPort)))
-                .setSSLHostnameVerifier(new DefaultHostnameVerifier())
-                .setDefaultRequestConfig(RequestConfig.custom()
-                        .setConnectTimeout(TIMEOUT)
-                        .setSocketTimeout(TIMEOUT)
-                        .setConnectionRequestTimeout(TIMEOUT)
-                        .build())
-                .setMaxConnPerRoute(2000)
-                .setMaxConnTotal(5000)
-                .build())).build();
-        this.authRestTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(github_username, github_password));
-        */
         this.noAuthRestTemplate = restTemplateBuilder.requestFactory(() -> new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create()
                 .setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
                 .setSSLHostnameVerifier(new DefaultHostnameVerifier())
