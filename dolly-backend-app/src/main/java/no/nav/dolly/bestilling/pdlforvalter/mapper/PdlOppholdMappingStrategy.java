@@ -14,6 +14,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpphold;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpphold.OppholdType;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
+import no.nav.dolly.domain.resultset.udistub.model.opphold.RsUdiOppholdStatus;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdsrettType;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdstillatelse;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdstillatelseType;
@@ -31,44 +32,66 @@ public class PdlOppholdMappingStrategy implements MappingStrategy {
 
                         if (nonNull(person.getOppholdStatus())) {
 
-                            if (nonNull(person.getOppholdStatus().getEosEllerEFTABeslutningOmOppholdsrettPeriode())) {
-                                opphold.setType(
-                                        getOppholdType(person.getOppholdStatus().getEosEllerEFTABeslutningOmOppholdsrett()));
-                                opphold.setOppholdFra(
-                                        toLocalDate(person.getOppholdStatus().getEosEllerEFTABeslutningOmOppholdsrettPeriode().getFra()));
-                                opphold.setOppholdTil(
-                                        toLocalDate(person.getOppholdStatus().getEosEllerEFTABeslutningOmOppholdsrettPeriode().getTil()));
+                            if (nonNull(person.getOppholdStatus().getEosEllerEFTABeslutningOmOppholdsrett())) {
+                                copyBeslutningOmOppholdsrett(person.getOppholdStatus(), opphold);
 
-                            } else if (nonNull(person.getOppholdStatus().getEosEllerEFTAOppholdstillatelsePeriode())) {
-                                opphold.setType(
-                                        getOppholdType(person.getOppholdStatus().getEosEllerEFTAOppholdstillatelse()));
-                                opphold.setOppholdFra(
-                                        toLocalDate(person.getOppholdStatus().getEosEllerEFTAOppholdstillatelsePeriode().getFra()));
-                                opphold.setOppholdTil(
-                                        toLocalDate(person.getOppholdStatus().getEosEllerEFTAOppholdstillatelsePeriode().getTil()));
+                            } else if (nonNull(person.getOppholdStatus().getEosEllerEFTAOppholdstillatelse())) {
+                                copyOppholdstilatelse(person.getOppholdStatus(), opphold);
 
-                            } else if (nonNull(person.getOppholdStatus().getEosEllerEFTAVedtakOmVarigOppholdsrettPeriode())) {
-                                opphold.setType(
-                                        getOppholdType(person.getOppholdStatus().getEosEllerEFTAVedtakOmVarigOppholdsrett()));
-                                opphold.setOppholdFra(
-                                        toLocalDate(person.getOppholdStatus().getEosEllerEFTAVedtakOmVarigOppholdsrettPeriode().getFra()));
-                                opphold.setOppholdTil(
-                                        toLocalDate(person.getOppholdStatus().getEosEllerEFTAVedtakOmVarigOppholdsrettPeriode().getTil()));
+                            } else if (nonNull(person.getOppholdStatus().getEosEllerEFTAVedtakOmVarigOppholdsrett())) {
+                                copyVedtakOmVarigOppholdsrett(person.getOppholdStatus(), opphold);
 
                             } else if (nonNull(person.getOppholdStatus().getOppholdSammeVilkaar())) {
-                                opphold.setType(
-                                        getOppholdType(person.getOppholdStatus().getOppholdSammeVilkaar().getOppholdstillatelseType()));
-                                if (nonNull(person.getOppholdStatus().getOppholdSammeVilkaar().getOppholdSammeVilkaarPeriode())) {
-                                    opphold.setOppholdFra(
-                                            toLocalDate(person.getOppholdStatus().getOppholdSammeVilkaar().getOppholdSammeVilkaarPeriode().getFra()));
-                                    opphold.setOppholdTil(
-                                            toLocalDate(person.getOppholdStatus().getOppholdSammeVilkaar().getOppholdSammeVilkaarPeriode().getTil()));
-                                }
+                                copyOppholdSammeVilkaar(person.getOppholdStatus(), opphold);
                             }
                         }
                         opphold.setKilde(CONSUMER);
                     }
                 }).register();
+    }
+
+    private static void copyOppholdSammeVilkaar(RsUdiOppholdStatus oppholdStatus, PdlOpphold opphold) {
+
+        opphold.setType(getOppholdType(oppholdStatus.getOppholdSammeVilkaar().getOppholdstillatelseType()));
+        if (nonNull(oppholdStatus.getOppholdSammeVilkaar().getOppholdSammeVilkaarPeriode())) {
+            opphold.setOppholdFra(
+                    toLocalDate(oppholdStatus.getOppholdSammeVilkaar().getOppholdSammeVilkaarPeriode().getFra()));
+            opphold.setOppholdTil(
+                    toLocalDate(oppholdStatus.getOppholdSammeVilkaar().getOppholdSammeVilkaarPeriode().getTil()));
+        }
+    }
+
+    private static void copyVedtakOmVarigOppholdsrett(RsUdiOppholdStatus oppholdStatus, PdlOpphold opphold) {
+
+        opphold.setType(getOppholdType(oppholdStatus.getEosEllerEFTAVedtakOmVarigOppholdsrett()));
+        if (nonNull(oppholdStatus.getEosEllerEFTAVedtakOmVarigOppholdsrettPeriode())) {
+            opphold.setOppholdFra(
+                    toLocalDate(oppholdStatus.getEosEllerEFTAVedtakOmVarigOppholdsrettPeriode().getFra()));
+            opphold.setOppholdTil(
+                    toLocalDate(oppholdStatus.getEosEllerEFTAVedtakOmVarigOppholdsrettPeriode().getTil()));
+        }
+    }
+
+    private static void copyOppholdstilatelse(RsUdiOppholdStatus oppholdStatus, PdlOpphold opphold) {
+
+        opphold.setType(getOppholdType(oppholdStatus.getEosEllerEFTAOppholdstillatelse()));
+        if (nonNull(oppholdStatus.getEosEllerEFTAOppholdstillatelsePeriode())) {
+            opphold.setOppholdFra(
+                    toLocalDate(oppholdStatus.getEosEllerEFTAOppholdstillatelsePeriode().getFra()));
+            opphold.setOppholdTil(
+                    toLocalDate(oppholdStatus.getEosEllerEFTAOppholdstillatelsePeriode().getTil()));
+        }
+    }
+
+    private static void copyBeslutningOmOppholdsrett(RsUdiOppholdStatus oppholdStatus, PdlOpphold opphold) {
+
+        opphold.setType(getOppholdType(oppholdStatus.getEosEllerEFTABeslutningOmOppholdsrett()));
+        if (nonNull(oppholdStatus.getEosEllerEFTABeslutningOmOppholdsrettPeriode())) {
+            opphold.setOppholdFra(
+                    toLocalDate(oppholdStatus.getEosEllerEFTABeslutningOmOppholdsrettPeriode().getFra()));
+            opphold.setOppholdTil(
+                    toLocalDate(oppholdStatus.getEosEllerEFTABeslutningOmOppholdsrettPeriode().getTil()));
+        }
     }
 
     private static LocalDate toLocalDate(LocalDateTime timestamp) {
