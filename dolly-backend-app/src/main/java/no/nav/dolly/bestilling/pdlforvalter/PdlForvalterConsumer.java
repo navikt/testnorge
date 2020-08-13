@@ -6,10 +6,13 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.net.URI;
+import java.util.List;
+
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.RequiredArgsConstructor;
@@ -19,9 +22,9 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlInnflytting;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFolkeregisterpersonstatus;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlForeldreansvar;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlInnflytting;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
@@ -35,6 +38,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlUtflytting;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
+import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.Timed;
@@ -89,10 +93,14 @@ public class PdlForvalterConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_opprettPerson" })
-    public ResponseEntity postOpprettPerson(PdlOpprettPerson pdlNavn, String ident) {
+    public ResponseEntity postOpprettPerson(PdlOpprettPerson pdlNavn, String ident, List<IdentHistorikk> identHistorikk) {
 
+        String url = providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_OPPRETT_PERSON;
+        if (!identHistorikk.isEmpty()) {
+            url = leggTilIdenthistorikkIUrl(url, identHistorikk);
+        }
         return postRequest(
-                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_OPPRETT_PERSON,
+                url,
                 pdlNavn, ident, "opprett person");
     }
 
@@ -109,7 +117,7 @@ public class PdlForvalterConsumer {
 
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_KJOENN_URL,
-                pdlNavn, ident,  "kjønn");
+                pdlNavn, ident, "kjønn");
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_kontaktinfoDoedsbo" })
@@ -253,6 +261,14 @@ public class PdlForvalterConsumer {
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_OPPHOLD_URL,
                 opphold, ident, "opphold");
+    }
+
+    private String leggTilIdenthistorikkIUrl(String url, List<IdentHistorikk> identHistorikk) {
+        String completeUrl = url + "?";
+        for (IdentHistorikk person : identHistorikk) {
+            completeUrl = String.format("%s&historiskePersonidenter=%s", completeUrl, person.getIdent());
+        }
+        return completeUrl.replace("?&", "?");
     }
 
     private ResponseEntity postRequest(String url, Object body, String ident, String beskrivelse) {

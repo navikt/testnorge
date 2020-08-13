@@ -35,6 +35,7 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Person person, PdlOpprettPerson pdlOpprettPerson, MappingContext context) {
 
                         pdlOpprettPerson.setOpprettetIdent(person.getIdent());
+                        pdlOpprettPerson.setOpprettetIdentHistorikk(person.getIdentHistorikk());
                     }
                 })
                 .register();
@@ -77,8 +78,7 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Statsborgerskap statsborgerskap, PdlStatsborgerskap pdlStatsborgerskap, MappingContext context) {
 
-                        pdlStatsborgerskap.setLandkode(isNotBlank(statsborgerskap.getStatsborgerskap()) ?
-                                statsborgerskap.getStatsborgerskap() : "NOR");
+                        pdlStatsborgerskap.setLandkode(isNotBlank(statsborgerskap.getStatsborgerskap()) ? statsborgerskap.getStatsborgerskap() : "NOR");
                         pdlStatsborgerskap.setKilde(CONSUMER);
                     }
                 })

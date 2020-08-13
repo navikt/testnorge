@@ -9,6 +9,10 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +30,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
+import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.dolly.security.sts.StsOidcService;
@@ -126,7 +131,25 @@ public class PdlForvalterConsumerTest {
                 .andExpect(header(HEADER_NAV_PERSON_IDENT, IDENT))
                 .andRespond(withSuccess());
 
-        pdlForvalterConsumer.postOpprettPerson(PdlOpprettPerson.builder().opprettetIdent(IDENT).build(), IDENT);
+        pdlForvalterConsumer.postOpprettPerson(PdlOpprettPerson.builder().opprettetIdent(IDENT).build(), IDENT, Collections.emptyList());
+
+        verify(providersProps).getPdlForvalter();
+        verify(stsOidcService).getIdToken(anyString());
+    }
+
+    @Test
+    public void opprettPersonMedIdentHistorikk() {
+
+        server.expect(requestTo("http://pdl.nav.no/api/v1/bestilling/opprettperson?historiskePersonidenter=Person1&historiskePersonidenter=Person2"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(header(HEADER_NAV_PERSON_IDENT, IDENT))
+                .andRespond(withSuccess());
+
+        List<IdentHistorikk> identHistorikkList = new ArrayList<>();
+        identHistorikkList.add(new IdentHistorikk("Person1"));
+        identHistorikkList.add(new IdentHistorikk("Person2"));
+
+        pdlForvalterConsumer.postOpprettPerson(PdlOpprettPerson.builder().opprettetIdent(IDENT).build(), IDENT, identHistorikkList);
 
         verify(providersProps).getPdlForvalter();
         verify(stsOidcService).getIdToken(anyString());
