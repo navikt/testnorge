@@ -1,0 +1,577 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is JAX-WS RI 2.2.10-b140319.1121 svn-revision#7b34660d6bc70e587e8ec81a17e4d76af68816a6. -->
+<WL5G3N0:definitions xmlns="" xmlns:WL5G3N0="http://schemas.xmlsoap.org/wsdl/" xmlns:WL5G3N1="http://no/brreg/saksys/grunndata/ws" xmlns:WL5G3N2="http://schemas.xmlsoap.org/wsdl/soap/" name="ErFrServiceDefinitions"
+                     targetNamespace="http://no/brreg/saksys/grunndata/ws">
+    <WL5G3N0:types>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://no/brreg/saksys/grunndata/ws">
+            <xs:element name="hentRollerFdato">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="userid" type="xs:string"/>
+                        <xs:element name="password" type="xs:string"/>
+                        <xs:element name="orgnr" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentRollerFdatoResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentOpplTilknRegister">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="userid" type="xs:string"/>
+                        <xs:element name="password" type="xs:string"/>
+                        <xs:element name="orgnr" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentOpplTilknRegisterResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="sokEnhet">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="userid" type="xs:string"/>
+                        <xs:element name="password" type="xs:string"/>
+                        <xs:element name="searchRequest" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="sokEnhetResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentKonsern">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="userid" type="xs:string"/>
+                        <xs:element name="password" type="xs:string"/>
+                        <xs:element name="orgnr" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentKonsernResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentProkuraSignatur">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="userid" type="xs:string"/>
+                        <xs:element name="password" type="xs:string"/>
+                        <xs:element name="orgnr" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentProkuraSignaturResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentBasisdataMini">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="userid" type="xs:string"/>
+                        <xs:element name="password" type="xs:string"/>
+                        <xs:element name="orgnr" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentBasisdataMiniResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentRoller">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="userid" type="xs:string"/>
+                        <xs:element name="password" type="xs:string"/>
+                        <xs:element name="orgnr" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentRollerResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentEnBedriftVirksomhet">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="userid" type="xs:string"/>
+                        <xs:element name="password" type="xs:string"/>
+                        <xs:element name="orgnr" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentEnBedriftVirksomhetResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentBedrifterVirksomheter">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="userid" type="xs:string"/>
+                        <xs:element name="password" type="xs:string"/>
+                        <xs:element name="orgnr" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentBedrifterVirksomheterResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentSaerligeOpplysninger">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="userid" type="xs:string"/>
+                        <xs:element name="password" type="xs:string"/>
+                        <xs:element name="orgnr" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentSaerligeOpplysningerResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentProkuraSignaturFdato">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="userid" type="xs:string"/>
+                        <xs:element name="password" type="xs:string"/>
+                        <xs:element name="orgnr" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentProkuraSignaturFdatoResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentRolleutskrift">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="userid" type="xs:string"/>
+                        <xs:element name="password" type="xs:string"/>
+                        <xs:element name="requestId" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentRolleutskriftResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentBasisdata">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="userid" type="xs:string"/>
+                        <xs:element name="password" type="xs:string"/>
+                        <xs:element name="orgnr" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentBasisdataResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentBasisdataFdato">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="userid" type="xs:string"/>
+                        <xs:element name="password" type="xs:string"/>
+                        <xs:element name="orgnr" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentBasisdataFdatoResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentEndringslogg">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="userid" type="xs:string"/>
+                        <xs:element name="password" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentEndringsloggResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentKontaktdata">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="userid" type="xs:string"/>
+                        <xs:element name="password" type="xs:string"/>
+                        <xs:element name="orgnr" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="hentKontaktdataResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="return" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+    </WL5G3N0:types>
+    <WL5G3N0:message name="hentRollerFdato">
+        <WL5G3N0:part element="WL5G3N1:hentRollerFdato" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentRollerFdatoResponse">
+        <WL5G3N0:part element="WL5G3N1:hentRollerFdatoResponse" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentOpplTilknRegister">
+        <WL5G3N0:part element="WL5G3N1:hentOpplTilknRegister" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentOpplTilknRegisterResponse">
+        <WL5G3N0:part element="WL5G3N1:hentOpplTilknRegisterResponse" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="sokEnhet">
+        <WL5G3N0:part element="WL5G3N1:sokEnhet" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="sokEnhetResponse">
+        <WL5G3N0:part element="WL5G3N1:sokEnhetResponse" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentKonsern">
+        <WL5G3N0:part element="WL5G3N1:hentKonsern" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentKonsernResponse">
+        <WL5G3N0:part element="WL5G3N1:hentKonsernResponse" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentProkuraSignatur">
+        <WL5G3N0:part element="WL5G3N1:hentProkuraSignatur" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentProkuraSignaturResponse">
+        <WL5G3N0:part element="WL5G3N1:hentProkuraSignaturResponse" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentBasisdataMini">
+        <WL5G3N0:part element="WL5G3N1:hentBasisdataMini" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentBasisdataMiniResponse">
+        <WL5G3N0:part element="WL5G3N1:hentBasisdataMiniResponse" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentRoller">
+        <WL5G3N0:part element="WL5G3N1:hentRoller" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentRollerResponse">
+        <WL5G3N0:part element="WL5G3N1:hentRollerResponse" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentEnBedriftVirksomhet">
+        <WL5G3N0:part element="WL5G3N1:hentEnBedriftVirksomhet" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentEnBedriftVirksomhetResponse">
+        <WL5G3N0:part element="WL5G3N1:hentEnBedriftVirksomhetResponse" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentBedrifterVirksomheter">
+        <WL5G3N0:part element="WL5G3N1:hentBedrifterVirksomheter" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentBedrifterVirksomheterResponse">
+        <WL5G3N0:part element="WL5G3N1:hentBedrifterVirksomheterResponse" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentSaerligeOpplysninger">
+        <WL5G3N0:part element="WL5G3N1:hentSaerligeOpplysninger" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentSaerligeOpplysningerResponse">
+        <WL5G3N0:part element="WL5G3N1:hentSaerligeOpplysningerResponse" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentProkuraSignaturFdato">
+        <WL5G3N0:part element="WL5G3N1:hentProkuraSignaturFdato" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentProkuraSignaturFdatoResponse">
+        <WL5G3N0:part element="WL5G3N1:hentProkuraSignaturFdatoResponse" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentRolleutskrift">
+        <WL5G3N0:part element="WL5G3N1:hentRolleutskrift" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentRolleutskriftResponse">
+        <WL5G3N0:part element="WL5G3N1:hentRolleutskriftResponse" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentBasisdata">
+        <WL5G3N0:part element="WL5G3N1:hentBasisdata" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentBasisdataResponse">
+        <WL5G3N0:part element="WL5G3N1:hentBasisdataResponse" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentBasisdataFdato">
+        <WL5G3N0:part element="WL5G3N1:hentBasisdataFdato" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentBasisdataFdatoResponse">
+        <WL5G3N0:part element="WL5G3N1:hentBasisdataFdatoResponse" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentEndringslogg">
+        <WL5G3N0:part element="WL5G3N1:hentEndringslogg" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentEndringsloggResponse">
+        <WL5G3N0:part element="WL5G3N1:hentEndringsloggResponse" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentKontaktdata">
+        <WL5G3N0:part element="WL5G3N1:hentKontaktdata" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:message name="hentKontaktdataResponse">
+        <WL5G3N0:part element="WL5G3N1:hentKontaktdataResponse" name="parameters"/>
+    </WL5G3N0:message>
+    <WL5G3N0:portType name="ErFr">
+        <WL5G3N0:operation name="hentRollerFdato" parameterOrder="parameters">
+            <WL5G3N0:input message="WL5G3N1:hentRollerFdato"/>
+            <WL5G3N0:output message="WL5G3N1:hentRollerFdatoResponse"/>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentOpplTilknRegister" parameterOrder="parameters">
+            <WL5G3N0:input message="WL5G3N1:hentOpplTilknRegister"/>
+            <WL5G3N0:output message="WL5G3N1:hentOpplTilknRegisterResponse"/>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="sokEnhet" parameterOrder="parameters">
+            <WL5G3N0:input message="WL5G3N1:sokEnhet"/>
+            <WL5G3N0:output message="WL5G3N1:sokEnhetResponse"/>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentKonsern" parameterOrder="parameters">
+            <WL5G3N0:input message="WL5G3N1:hentKonsern"/>
+            <WL5G3N0:output message="WL5G3N1:hentKonsernResponse"/>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentProkuraSignatur" parameterOrder="parameters">
+            <WL5G3N0:input message="WL5G3N1:hentProkuraSignatur"/>
+            <WL5G3N0:output message="WL5G3N1:hentProkuraSignaturResponse"/>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentBasisdataMini" parameterOrder="parameters">
+            <WL5G3N0:input message="WL5G3N1:hentBasisdataMini"/>
+            <WL5G3N0:output message="WL5G3N1:hentBasisdataMiniResponse"/>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentRoller" parameterOrder="parameters">
+            <WL5G3N0:input message="WL5G3N1:hentRoller"/>
+            <WL5G3N0:output message="WL5G3N1:hentRollerResponse"/>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentEnBedriftVirksomhet" parameterOrder="parameters">
+            <WL5G3N0:input message="WL5G3N1:hentEnBedriftVirksomhet"/>
+            <WL5G3N0:output message="WL5G3N1:hentEnBedriftVirksomhetResponse"/>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentBedrifterVirksomheter" parameterOrder="parameters">
+            <WL5G3N0:input message="WL5G3N1:hentBedrifterVirksomheter"/>
+            <WL5G3N0:output message="WL5G3N1:hentBedrifterVirksomheterResponse"/>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentSaerligeOpplysninger" parameterOrder="parameters">
+            <WL5G3N0:input message="WL5G3N1:hentSaerligeOpplysninger"/>
+            <WL5G3N0:output message="WL5G3N1:hentSaerligeOpplysningerResponse"/>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentProkuraSignaturFdato" parameterOrder="parameters">
+            <WL5G3N0:input message="WL5G3N1:hentProkuraSignaturFdato"/>
+            <WL5G3N0:output message="WL5G3N1:hentProkuraSignaturFdatoResponse"/>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentRolleutskrift" parameterOrder="parameters">
+            <WL5G3N0:input message="WL5G3N1:hentRolleutskrift"/>
+            <WL5G3N0:output message="WL5G3N1:hentRolleutskriftResponse"/>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentBasisdata" parameterOrder="parameters">
+            <WL5G3N0:input message="WL5G3N1:hentBasisdata"/>
+            <WL5G3N0:output message="WL5G3N1:hentBasisdataResponse"/>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentBasisdataFdato" parameterOrder="parameters">
+            <WL5G3N0:input message="WL5G3N1:hentBasisdataFdato"/>
+            <WL5G3N0:output message="WL5G3N1:hentBasisdataFdatoResponse"/>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentEndringslogg" parameterOrder="parameters">
+            <WL5G3N0:input message="WL5G3N1:hentEndringslogg"/>
+            <WL5G3N0:output message="WL5G3N1:hentEndringsloggResponse"/>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentKontaktdata" parameterOrder="parameters">
+            <WL5G3N0:input message="WL5G3N1:hentKontaktdata"/>
+            <WL5G3N0:output message="WL5G3N1:hentKontaktdataResponse"/>
+        </WL5G3N0:operation>
+    </WL5G3N0:portType>
+    <WL5G3N0:binding name="ErFrServiceSoapBinding" type="WL5G3N1:ErFr">
+        <WL5G3N2:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <WL5G3N0:operation name="hentRollerFdato">
+            <WL5G3N2:operation style="document"/>
+            <WL5G3N0:input>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:input>
+            <WL5G3N0:output>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:output>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentOpplTilknRegister">
+            <WL5G3N2:operation style="document"/>
+            <WL5G3N0:input>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:input>
+            <WL5G3N0:output>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:output>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="sokEnhet">
+            <WL5G3N2:operation style="document"/>
+            <WL5G3N0:input>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:input>
+            <WL5G3N0:output>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:output>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentKonsern">
+            <WL5G3N2:operation style="document"/>
+            <WL5G3N0:input>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:input>
+            <WL5G3N0:output>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:output>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentProkuraSignatur">
+            <WL5G3N2:operation style="document"/>
+            <WL5G3N0:input>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:input>
+            <WL5G3N0:output>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:output>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentBasisdataMini">
+            <WL5G3N2:operation style="document"/>
+            <WL5G3N0:input>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:input>
+            <WL5G3N0:output>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:output>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentRoller">
+            <WL5G3N2:operation style="document"/>
+            <WL5G3N0:input>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:input>
+            <WL5G3N0:output>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:output>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentEnBedriftVirksomhet">
+            <WL5G3N2:operation style="document"/>
+            <WL5G3N0:input>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:input>
+            <WL5G3N0:output>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:output>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentBedrifterVirksomheter">
+            <WL5G3N2:operation style="document"/>
+            <WL5G3N0:input>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:input>
+            <WL5G3N0:output>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:output>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentSaerligeOpplysninger">
+            <WL5G3N2:operation style="document"/>
+            <WL5G3N0:input>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:input>
+            <WL5G3N0:output>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:output>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentProkuraSignaturFdato">
+            <WL5G3N2:operation style="document"/>
+            <WL5G3N0:input>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:input>
+            <WL5G3N0:output>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:output>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentRolleutskrift">
+            <WL5G3N2:operation style="document"/>
+            <WL5G3N0:input>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:input>
+            <WL5G3N0:output>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:output>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentBasisdata">
+            <WL5G3N2:operation style="document"/>
+            <WL5G3N0:input>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:input>
+            <WL5G3N0:output>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:output>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentBasisdataFdato">
+            <WL5G3N2:operation style="document"/>
+            <WL5G3N0:input>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:input>
+            <WL5G3N0:output>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:output>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentEndringslogg">
+            <WL5G3N2:operation style="document"/>
+            <WL5G3N0:input>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:input>
+            <WL5G3N0:output>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:output>
+        </WL5G3N0:operation>
+        <WL5G3N0:operation name="hentKontaktdata">
+            <WL5G3N2:operation style="document"/>
+            <WL5G3N0:input>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:input>
+            <WL5G3N0:output>
+                <WL5G3N2:body parts="parameters" use="literal"/>
+            </WL5G3N0:output>
+        </WL5G3N0:operation>
+    </WL5G3N0:binding>
+    <WL5G3N0:service name="ErFrService">
+        <WL5G3N0:port binding="WL5G3N1:ErFrServiceSoapBinding" name="ErFrSoapPort">
+            <WL5G3N2:address location="https://ws.brreg.no:443/grunndata/ErFr"/>
+        </WL5G3N0:port>
+    </WL5G3N0:service>
+</WL5G3N0:definitions>

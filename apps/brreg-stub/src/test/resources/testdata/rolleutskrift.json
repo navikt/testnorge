@@ -1,0 +1,65 @@
+{
+  "fnr": "010176100000",
+  "fodselsdato": "1976-01-01",
+  "navn": {
+    "navn1": "Navn",
+    "navn3": "Navnesen"
+  },
+  "adresse": {
+    "adresse1": "Dollyveien 1",
+    "postnr": "0576",
+    "poststed": "Oslo",
+    "landKode": "NO",
+    "kommunenr": "0301"
+  },
+  "enheter": [
+    {
+      "registreringsdato": "2020-01-01",
+      "rollebeskrivelse": "Innehaver",
+      "orgNr": 971524553,
+      "foretaksNavn": {
+        "navn1": "Jovial AS"
+      },
+      "forretningsAdresse": {
+        "adresse1": "Dollyveien 1",
+        "postnr": "0576",
+        "poststed": "Oslo",
+        "landKode": "NO",
+        "kommunenr": "0301"
+      },
+      "postAdresse": {
+        "adresse1": "Postadresseveien 1",
+        "postnr": "0576",
+        "poststed": "Oslo",
+        "landKode": "NO",
+        "kommunenr": "0301"
+      }
+    },
+    {
+      "registreringsdato": "2020-04-01",
+      "rollebeskrivelse": "Innehaver",
+      "orgNr": 99665544,
+      "foretaksNavn": {
+        "navn1": "Jalla AS"
+      },
+      "forretningsAdresse": {
+        "adresse1": "Dollyveien 1",
+        "postnr": "0576",
+        "poststed": "Oslo",
+        "landKode": "NO",
+        "kommunenr": "0301"
+      },
+      "postAdresse": {
+        "adresse1": "Postadresseveien 1",
+        "postnr": "0576",
+        "poststed": "Oslo",
+        "landKode": "NO",
+        "kommunenr": "0301"
+      }
+    }
+  ],
+  "hovedstatus": 0,
+  "understatuser": [
+    0,1180
+  ]
+}
