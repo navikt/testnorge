@@ -56,7 +56,6 @@ public class HentRolleoversiktControllerTest {
         var response = restTemplate.getForEntity(API_V_1_ROLLEUTSKRIFT,
                 Map.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody().get("message").toString()).contains("Missing request header 'Nav-Personident'");
     }
 
     @Test
@@ -97,7 +96,6 @@ public class HentRolleoversiktControllerTest {
         var responseDelete =
                 restTemplate.exchange(API_V_1_ROLLEUTSKRIFT, HttpMethod.DELETE, null, Map.class);
         assertThat(responseDelete.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(responseDelete.getBody().get("message").toString()).contains("Missing request header 'Nav-Personident'");
     }
 
     @Test

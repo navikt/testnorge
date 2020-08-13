@@ -64,10 +64,8 @@ public class RolleoversiktControllerTest {
     @Test
     @DisplayName("GET rolleoversikt returnerer 400 hvis input mangler")
     public void skalKasteBadRequestHvisInputMangler() {
-        var response = restTemplate.getForEntity(API_V_2_ROLLEUTSKRIFT,
-                Map.class);
+        var response = restTemplate.getForEntity(API_V_2_ROLLEUTSKRIFT, Map.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody().get("message").toString()).contains("Missing request header 'Nav-Personident'");
     }
 
     @Test
@@ -109,7 +107,6 @@ public class RolleoversiktControllerTest {
         var responseDelete =
                 restTemplate.exchange(API_V_2_ROLLEUTSKRIFT, HttpMethod.DELETE, null, Map.class);
         assertThat(responseDelete.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(responseDelete.getBody().get("message").toString()).contains("Missing request header 'Nav-Personident'");
     }
 
     @Test

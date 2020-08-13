@@ -90,5 +90,6 @@
         <module>synt-arbeidsforhold-api</module>
         <module>statistikk-api</module>
         <module>rapportering-api</module>
+        <module>brreg-stub</module>
     </modules>
 </project>
