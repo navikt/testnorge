@@ -49,7 +49,7 @@ public class SkjermingsRegisterConsumer {
                         .header(HEADER_NAV_CALL_ID, callid)
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .body(skjermingsDataRequest),
-                new ParameterizedTypeReference<List<SkjermingsDataResponse>>() {
+                new ParameterizedTypeReference<>() {
                 });
     }
 
