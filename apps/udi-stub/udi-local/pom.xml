@@ -14,7 +14,7 @@
     <dependencies>
 
         <dependency>
-            <groupId>no.nav.registre</groupId>
+            <groupId>no.nav.registre.testnorge</groupId>
             <artifactId>udi-core</artifactId>
             <version>${project.version}</version>
         </dependency>
