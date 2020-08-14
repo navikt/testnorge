@@ -23,7 +23,6 @@ public class BeskyttleseUnderBehandlingPersonConverterTest extends ConverterTest
 		SoknadOmBeskyttelseUnderBehandling result = beskyttleseUnderBehandlingConverter.convert(defaultTestPerson);
 		assertNotNull(result);
 		assertEquals(JaNeiUavklart.JA, result.getErUnderBehandling());
-		assertNull(result.getSoknadsdato());
 	}
 
 	@Test

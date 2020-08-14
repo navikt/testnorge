@@ -26,7 +26,6 @@ public class ArbeidsgangPersonConverterTest extends ConverterTestBase {
         Assertions.assertEquals(TEST_ARBEIDSADGANG, result.getHarArbeidsadgang());
         Assertions.assertEquals(TEST_ARBEIDOMGANGKATEGORI, result.getArbeidsOmfang());
         Assertions.assertEquals(TEST_ARBEIDSADGANG_TYPE, result.getTypeArbeidsadgang());
-        assertNull(result.getArbeidsadgangsPeriode());
     }
 
     @Test

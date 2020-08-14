@@ -46,11 +46,6 @@ public class AvgjorelsehistorikkPersonConverterTest extends ConverterTestBase {
         Assertions.assertEquals(DefaultTestData.TEST_KODEVERK_CODE.getKode(), avgjorelse.getUtfall().getVarighetKode().getKode());
         assertNull(avgjorelse.getUtfall().getGjeldendePeriode());
 
-        assertNull(avgjorelse.getAvgjorelseDato());
-        assertNull(avgjorelse.getEffektueringsDato());
-        assertNull(avgjorelse.getIverksettelseDato());
-        assertNull(avgjorelse.getUtreisefristDato());
-
         Assertions.assertEquals(DefaultTestData.TEST_ETAT, avgjorelse.getEtat());
         Assertions.assertEquals(DefaultTestData.TEST_SAKSNUMMER, avgjorelse.getSaksnummer());
 

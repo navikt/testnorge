@@ -91,5 +91,6 @@
         <module>statistikk-api</module>
         <module>rapportering-api</module>
         <module>brreg-stub</module>
+        <module>udi-stub</module>
     </modules>
 </project>

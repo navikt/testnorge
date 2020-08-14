@@ -38,11 +38,6 @@ public class IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumConverterTe
 		assertEquals(EOSellerEFTAGrunnlagskategoriOppholdsrett.FAMILIE, avslagEllerBortfall.getAvslagPaSoknadOmOppholdsrettRealitetsBehandlet().getAvslagsGrunnlagEOS());
 		assertEquals(EOSellerEFTAGrunnlagskategoriOppholdstillatelse.ARBEID, avslagEllerBortfall.getAvslagPaSoknadOmOppholdstillatelseRealitetsBehandlet().getAvslagsGrunnlagEOS());
 		assertEquals(OppholdsgrunnlagKategori.ARBEID, avslagEllerBortfall.getAvslagPaSoknadOmOppholdstillatelseRealitetsBehandlet().getAvslagsGrunnlagOvrig());
-		assertNull(avslagEllerBortfall.getTilbakeKall().getUtreiseFrist());
-		assertNull(avslagEllerBortfall.getTilbakeKall().getVirkningsDato());
-		assertNull(avslagEllerBortfall.getFormeltVedtak().getUtreiseFrist());
-		assertNull(avslagEllerBortfall.getAvgjorelsesDato());
-		assertNull(avslagEllerBortfall.getBortfallAvPOellerBOS().getVirkningsDato());
 	}
 
 	@Test

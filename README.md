@@ -70,7 +70,7 @@ Så kjør `mvn clean install`
 ![Deploy testnorge-populasjoner](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-populasjoner/badge.svg)
 ![Deploy hendelse-api](https://github.com/navikt/testnorge/workflows/Deploy%20hendelse-api/badge.svg)
 ![Deploy brreg-stub](https://github.com/navikt/testnorge/workflows/Deploy%20brreg-stub/badge.svg)
-
+![Deploy udi-stub](https://github.com/navikt/testnorge/workflows/Deploy%20udi-stub/badge.svg)
 
 ## Migrering inn i monorepo
 

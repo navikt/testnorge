@@ -24,13 +24,6 @@ public class PersonConverterTest extends ConverterTestBase {
 		HentPersonstatusResultat result = personUDIConverter.convert(defaultTestPerson);
 		assertNotNull(result);
 		assertEquals(TEST_PERSON_FNR, result.getForesporselsfodselsnummer());
-
-		assertNull(result.getArbeidsadgang());
-		assertNull(result.getAvgjorelsehistorikk());
-		assertNull(result.getGjeldendeOppholdsstatus());
-		assertNull(result.getGjeldendePerson());
-		assertNull(result.getSoknadOmBeskyttelseUnderBehandling());
-		assertNull(result.getUttrekkstidspunkt());
 	}
 
 	@Test

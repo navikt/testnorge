@@ -1,11 +1,13 @@
-name: Deploy to preprod-fss
+name: Deploy udi-stub
 
 on:
   push:
     branches: master
+    paths:
+      - apps/udi-stub/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/udi-stub:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/udi-stub-v2:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -25,23 +27,24 @@ jobs:
       - name: Compile
         env:
           GITHUB_USERNAME: token
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: mvn --settings maven-settings.xml compile
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+        run: mvn --projects :udi-cloud --also-make --settings maven-settings.xml compile
       - name: Test
-        run: mvn --settings maven-settings.xml test
+        run: mvn --projects :udi-cloud --also-make --settings maven-settings.xml test
       - name: Package
-        run: mvn --settings maven-settings.xml package -Dmaven.test.skip
-
+        run: mvn --projects :udi-cloud --also-make --settings maven-settings.xml package -Dmaven.test.skip
       - name: Build and publish Docker image
+        working-directory: apps/udi-stub/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker build --tag ${IMAGE} .
-          docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
-          docker push ${IMAGE}
-      - name: Deploy to nais default namespace
+          docker build --tag $IMAGE .
+          docker login docker.pkg.github.com -u $GITHUB_REPOSITORY -p $GITHUB_TOKEN
+          docker push $IMAGE
+      - name: Deploy to nais
+        timeout-minutes: 5
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-fss
-          RESOURCE: nais_default_namespace.yaml
+          RESOURCE: apps/udi-stub/nais.yaml
