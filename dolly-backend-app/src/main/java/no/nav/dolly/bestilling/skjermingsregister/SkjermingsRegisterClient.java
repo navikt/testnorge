@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.skjermingsregister;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 import java.util.List;
@@ -49,9 +50,9 @@ public class SkjermingsRegisterClient implements ClientRegister {
                             .person(person)
                             .build(),
                             SkjermingsDataRequest.class);
-                    if (isAlleredeSkjermet(person)) {
+                    if (isAlleredeSkjermet(person) && nonNull(bestilling.getTpsf().getEgenAnsattDatoTom())) {
                         skjermingsRegisterConsumer.putSkjerming(person.getIdent());
-                    } else {
+                    } else if (!isAlleredeSkjermet(person) && isNull(bestilling.getTpsf().getEgenAnsattDatoTom())) {
                         skjermingsRegisterConsumer.postSkjerming(List.of(skjermingsDataRequest));
                     }
                     status.append("OK");
