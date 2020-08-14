@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.skjermingsregister;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -53,7 +54,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
                     if (isAlleredeSkjermet(person) && nonNull(bestilling.getTpsf().getEgenAnsattDatoTom())) {
                         skjermingsRegisterConsumer.putSkjerming(person.getIdent());
                     } else if (!isAlleredeSkjermet(person) && isNull(bestilling.getTpsf().getEgenAnsattDatoTom())) {
-                        skjermingsRegisterConsumer.postSkjerming(List.of(skjermingsDataRequest));
+                        skjermingsRegisterConsumer.postSkjerming(Collections.singletonList(skjermingsDataRequest));
                     }
                     status.append("OK");
                 } catch (RuntimeException e) {
