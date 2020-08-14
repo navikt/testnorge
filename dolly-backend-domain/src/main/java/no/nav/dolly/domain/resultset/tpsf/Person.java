@@ -86,7 +86,7 @@ public class Person {
     public List<Relasjon> getRelasjoner() {
 
         if (isNull(relasjoner)) {
-            relasjoner = new ArrayList();
+            relasjoner = new ArrayList<>();
         }
         return relasjoner;
     }
@@ -94,7 +94,7 @@ public class Person {
     public List<Sivilstand> getSivilstander() {
 
         if (isNull(sivilstander)) {
-            sivilstander = new ArrayList();
+            sivilstander = new ArrayList<>();
         }
         return sivilstander;
     }
@@ -102,21 +102,21 @@ public class Person {
     public List<Statsborgerskap> getStatsborgerskap() {
 
         if (isNull(statsborgerskap)) {
-            statsborgerskap = new ArrayList();
+            statsborgerskap = new ArrayList<>();
         }
         return statsborgerskap;
     }
 
     public List<RsPostadresse> getPostadresse() {
         if (isNull(postadresse)) {
-            postadresse = new ArrayList();
+            postadresse = new ArrayList<>();
         }
         return postadresse;
     }
 
     public List<BoAdresse> getBoadresse() {
         if (isNull(boadresse)) {
-            boadresse = new ArrayList();
+            boadresse = new ArrayList<>();
         }
         return boadresse;
     }
