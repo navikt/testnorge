@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2013 (x64) (http://www.altova.com) by tael (Utlendingsdirektoratet) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://udi.no/Common/v2" xmlns:altova="http://www.altova.com/xml-schema-extensions" targetNamespace="http://udi.no/Common/v2" elementFormDefault="qualified">
+	<xs:annotation>
+		<xs:documentation>Felles typer for både interne og eksterne tjenester. Kun typer som er felles på tvers av flere tjenesteområder/domener skal legges her</xs:documentation>
+	</xs:annotation>
+	<xs:complexType name="ApenPeriode">
+		<xs:annotation>
+			<xs:documentation>Opplysninger om en periode der fra- og tildato kan være ukjent</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="FraDato" type="xs:dateTime" nillable="true"/>
+			<xs:element name="TilDato" type="xs:dateTime" nillable="true"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ApenTilPeriode">
+		<xs:annotation>
+			<xs:documentation>Opplysninger om en periode der tildato kan være ukjent</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="FraDato" type="xs:dateTime"/>
+			<xs:element name="TilDato" type="xs:dateTime" nillable="true"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Credentials">
+		<xs:sequence>
+			<xs:element name="Brukernavn" type="xs:string"/>
+			<xs:element name="Passord" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Fil">
+		<xs:annotation>
+			<xs:documentation>Generell type for </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="MIMEType" type="xs:string"/>
+			<xs:element name="Fildata" type="xs:base64Binary"/>
+			<xs:element name="Filnavn" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Kodeverk">
+		<xs:sequence>
+			<xs:element name="Kode" type="xs:string"/>
+			<xs:element name="Visningsnavn" type="xs:string"/>
+			<xs:element name="Type" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="KodeverkListe">
+		<xs:sequence>
+			<xs:element name="Kodeverk" type="Kodeverk" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Kodeverksdefinisjon">
+		<xs:sequence>
+			<xs:element name="Kode" type="xs:string"/>
+			<xs:element name="Visningsnavn" type="xs:string"/>
+			<xs:element name="Type" type="xs:string"/>
+			<xs:element name="Beskrivelse" type="xs:string" minOccurs="0"/>
+			<xs:element name="FraDato" type="xs:dateTime" nillable="true">
+				<xs:annotation>
+					<xs:documentation>Angir fra hvilken dato kodeelementet er tilgjengelig for registrering i applikasjonene</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="TilDato" type="xs:dateTime" nillable="true">
+				<xs:annotation>
+					<xs:documentation>Angir til hvilken dato kodeelementet er tilgjengelig for registrering i applikasjonene</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Kodeverksdefinisjoner">
+		<xs:sequence>
+			<xs:element name="Kodeverksdefinisjon" type="Kodeverksdefinisjon" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PingRequestType">
+		<xs:annotation>
+			<xs:documentation>Tomt pingkall</xs:documentation>
+		</xs:annotation>
+		<xs:sequence/>
+	</xs:complexType>
+	<xs:complexType name="PingResponseType">
+		<xs:annotation>
+			<xs:documentation>Ping forventes å returnere PONG</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Response" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="Ar">
+		<xs:annotation>
+			<xs:documentation>Heltall på 4 siffer</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:int">
+			<xs:minInclusive value="1000"/>
+			<xs:maxInclusive value="9999"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DUFNummer">
+		<xs:annotation>
+			<xs:documentation>DUFNr er 12 siffer</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9]{12}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Epostadresse">
+		<xs:annotation>
+			<xs:documentation>Gyldig epostadresse, f.eks. bruker@udi.no</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[^@]+@[^\.]+\..+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Fodselsnummer">
+		<xs:annotation>
+			<xs:documentation>Id-nummer med fast lengde som omfatter både fødselsnummer og d-nummer</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:length value="11"/>
+			<xs:pattern value="[0-9]{11}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Guid">
+		<xs:annotation>
+			<xs:documentation>Guid on one of the following formats: e1407b8b0af847f6ac1cc29a578b0001, 54358c41-598c-4ab0-bed9-cace788e979b, {f71db5cf-4de7-4a36-ab4f-fcd2af24ac1e} or (df1b9daf-9524-4b31-bab6-925fcb8dca3f)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="^([0-9a-fA-F]{32})|([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})|(\{[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\})|(\([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\))$"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Maned">
+		<xs:annotation>
+			<xs:documentation>Heltall mellom 1 og 12</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:int">
+			<xs:minInclusive value="1"/>
+			<xs:maxInclusive value="12"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Organisasjonsnummer">
+		<xs:annotation>
+			<xs:documentation>Ni-sifret registreringsnummer som identifiserer en organisasjon i enhetsregisteret ved Brønnøysundregistrene</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:length value="9"/>
+			<xs:pattern value="[0-9]{9}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Saksnummer">
+		<xs:annotation>
+			<xs:documentation>Saksnummer er på formatet "001" til "999"</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9]{3}"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
