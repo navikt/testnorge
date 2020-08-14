@@ -1,6 +1,6 @@
 package no.nav.dolly.bestilling.sykemelding.domain;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -19,5 +19,5 @@ public class SyntSykemeldingRequest {
     private String arbeidsforholdId;
     private String ident;
     private String orgnummer;
-    private LocalDate startDato;
+    private LocalDateTime startDato;
 }

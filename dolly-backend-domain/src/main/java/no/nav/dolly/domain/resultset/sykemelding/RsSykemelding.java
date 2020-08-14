@@ -34,9 +34,12 @@ public class RsSykemelding {
         private String arbeidsforholdId;
 
         @ApiModelProperty(position = 2)
-        private String orgnummer;
+        private String ident;
 
         @ApiModelProperty(position = 3)
+        private String orgnummer;
+
+        @ApiModelProperty(position = 4)
         private LocalDateTime startDato;
     }
 }

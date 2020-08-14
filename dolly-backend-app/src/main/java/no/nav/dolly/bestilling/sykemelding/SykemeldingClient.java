@@ -7,6 +7,7 @@ import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -82,7 +83,7 @@ public class SykemeldingClient implements ClientRegister {
             if (responseDetaljert.hasBody()) {
                 status.append("detaljert-sykemelding: OK");
 
-                saveTranskasjonId(detaljertSykemeldingRequest.getMottaker().getOrgNr(), detaljertSykemeldingRequest.getArbeidsgiver().getNavn(), tpsPerson.getHovedperson());
+                saveTranskasjonId(detaljertSykemeldingRequest.getMottaker().getOrgNr(), detaljertSykemeldingRequest.getArbeidsgiver().getNavn(), pasient.getIdent());
             }
         }
     }
@@ -90,13 +91,15 @@ public class SykemeldingClient implements ClientRegister {
     private void postSyntSykemelding(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, StringBuilder status) {
         if (nonNull(bestilling.getSykemelding().getSyntSykemelding())) {
             SyntSykemeldingRequest syntSykemeldingRequest = mapperFacade.map(bestilling.getSykemelding().getSyntSykemelding(), SyntSykemeldingRequest.class);
-            syntSykemeldingRequest.setIdent(tpsPerson.getHovedperson());
+            if (isNull(bestilling.getSykemelding().getSyntSykemelding().getIdent())) {
+                syntSykemeldingRequest.setIdent(tpsPerson.getHovedperson());
+            }
             ResponseEntity<String> response = sykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest);
 
-            if (response.hasBody()) {
+            if (response.getStatusCode().equals(HttpStatus.OK)) {
                 status.append("synt-sykemelding: OK");
 
-                saveTranskasjonId(syntSykemeldingRequest.getOrgnummer(), syntSykemeldingRequest.getArbeidsforholdId(), tpsPerson.getHovedperson());
+                saveTranskasjonId(syntSykemeldingRequest.getOrgnummer(), syntSykemeldingRequest.getArbeidsforholdId(), syntSykemeldingRequest.getIdent());
             }
         }
     }
@@ -109,7 +112,7 @@ public class SykemeldingClient implements ClientRegister {
                 .foedselsdato(pasient.getFoedselsdato().toLocalDate())
                 .ident(pasient.getIdent())
                 .navKontor(pasient.getTknavn())
-                .telefon(isNull(pasient.getTelefonnummer_1()) ? "12345678" : pasient.getTelefonnummer_1())
+                .telefon(isNull(pasient.getTelefonnummer_1()) ? null : pasient.getTelefonnummer_1())
                 .adresse(DetaljertSykemeldingRequest.Adresse.builder()
                         .by(pasient.getBoadresse().get(0).getPostnr())
                         .gate(pasientAdresse.getGateadresse())
