@@ -34,7 +34,6 @@ public class RsTestgruppeMedBestillingId extends RsTestgruppe {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class IdentBestilling {
 
         private String ident;

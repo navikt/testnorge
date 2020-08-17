@@ -79,7 +79,7 @@ public class RsBestillingStatus {
     public static class RsBestilling {
 
         private RsTpsfUtvidetBestilling tpsf;
-        private List<String> importFraTps;
+        private String importFraTps;
         private String kildeMiljoe;
 
         private RsPdldata pdlforvalter;
