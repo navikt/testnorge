@@ -4,12 +4,14 @@ import { useMount } from 'react-use'
 import _last from 'lodash/last'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import 'rc-tooltip/assets/bootstrap.css'
+import Etikett from 'nav-frontend-etiketter'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import PersonIBrukButtonConnector from '~/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
 import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
 import { WomanIconItem, ManIconItem } from '~/components/ui/icon/IconItem'
+import { ImportFraEtikett } from '~/components/ui/etikett'
 
 import Icon from '~/components/ui/icon/Icon'
 
@@ -93,13 +95,18 @@ export default function PersonListe({
 		},
 		{
 			text: 'Bestilling-ID',
-			width: '20',
+			width: '25',
 			dataField: 'bestillingId',
 			formatter: (cell, row) => {
 				const arr = row.bestillingId
 				let str = arr[0]
 				if (arr.length > 1) str = `${str} ...`
-				return str
+				return (
+					<>
+						{str}
+						<ImportFraEtikett importFra={row.importFra} type={'fokus'} venstreMargin />
+					</>
+				)
 			}
 		},
 		{
@@ -110,8 +117,16 @@ export default function PersonListe({
 			formatter: (cell, row) => <Icon kind={ikonTypeMap[cell]} title={cell} />
 		},
 		{
-			text: 'Kommentar',
-			width: '15',
+			text: 'Brukt',
+			width: '10',
+			dataField: 'ibruk',
+			formatter: (cell, row) => (
+				<PersonIBrukButtonConnector ident={row.ident} iLaastGruppe={iLaastGruppe} />
+			)
+		},
+		{
+			text: '',
+			width: '10',
 			dataField: 'harBeskrivelse',
 			centerItem: true,
 			formatter: (cell, row) => {
@@ -131,14 +146,6 @@ export default function PersonListe({
 					)
 				}
 			}
-		},
-		{
-			text: 'Brukt',
-			width: '10',
-			dataField: 'ibruk',
-			formatter: (cell, row) => (
-				<PersonIBrukButtonConnector ident={row.ident} iLaastGruppe={iLaastGruppe} />
-			)
 		}
 	]
 

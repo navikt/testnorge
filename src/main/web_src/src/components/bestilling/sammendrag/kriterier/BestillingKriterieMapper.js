@@ -977,5 +977,16 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		data.push(dokarkiv)
 	}
 
+	const importFraTps = bestillingData.importFraTps
+
+	if (importFraTps) {
+		const importData = {
+			header: 'Import',
+			items: [obj('Identer', importFraTps), obj('Importert fra', bestillingData.kildeMiljoe)]
+		}
+
+		data.push(importData)
+	}
+
 	return data
 }
