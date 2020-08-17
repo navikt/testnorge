@@ -17,8 +17,11 @@ import static no.nav.dolly.mapper.BestillingSkjermingsRegisterStatusMapper.build
 import static no.nav.dolly.mapper.BestillingSykemeldingStatusMapper.buildSykemeldingStatusMap;
 import static no.nav.dolly.mapper.BestillingTpsfStatusMapper.buildTpsfStatusMap;
 import static no.nav.dolly.mapper.BestillingUdiStubStatusMapper.buildUdiStubStatusMap;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -80,12 +83,16 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .dokarkiv(bestillingRequest.getDokarkiv())
                                 .sykemelding(bestillingRequest.getSykemelding())
                                 .tpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()))
-                                .importFraTps(newArrayList(bestilling.getTpsImport().split(",")))
+                                .importFraTps(mapTpsImport(bestilling.getTpsImport()))
                                 .kildeMiljoe(bestilling.getKildeMiljoe())
                                 .build());
                     }
                 })
                 .byDefault()
                 .register();
+    }
+
+    private static List<String> mapTpsImport(String tpsImport) {
+        return isNotBlank(tpsImport) ? newArrayList(tpsImport.split(",")) : Collections.emptyList();
     }
 }
