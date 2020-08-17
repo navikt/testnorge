@@ -11,6 +11,8 @@ import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import LegeSelect from './LegeSelect'
+import { ArbeidKodeverk } from '~/config/kodeverk'
 
 interface SykemeldingForm {
 	formikBag: FormikProps<{}>
@@ -91,6 +93,16 @@ export const SykemeldingForm = ({ formikBag }: SykemeldingForm) => {
 		formikBag.setFieldValue(`${path}.diagnose`, v.label)
 	}
 
+	const handleLegeChange = v => {
+		formikBag.setFieldValue('sykemelding.detaljertSykemelding.lege', {
+			etternavn: v.etternavn,
+			fornavn: v.fornavn,
+			hprId: v.hprId,
+			ident: v.fnr,
+			mellomnavn: v.mellomnavn
+		})
+	}
+
 	const toggleValues = [
 		{
 			value: 'syntSykemelding',
@@ -101,8 +113,6 @@ export const SykemeldingForm = ({ formikBag }: SykemeldingForm) => {
 			label: 'Lag detaljert sykemelding'
 		}
 	]
-
-	// const legeOptions = SelectOptionsOppslag.hentLeger()
 
 	return (
 		<div className="toggle--wrapper">
@@ -182,23 +192,24 @@ export const SykemeldingForm = ({ formikBag }: SykemeldingForm) => {
 						)}
 					</FormikDollyFieldArray>
 					<Kategori title="Lege" vis="sykemelding">
-						<FormikSelect
-							name="sykemelding.detaljertSykemelding.lege"
+						<LegeSelect
+							name="sykemelding.detaljertSykemelding.lege.ident"
 							label="Lege"
-							size="xlarge"
-							isClearable={false}
+							afterChange={v => handleLegeChange(v)}
 						/>
 					</Kategori>
 					<Kategori title="Arbeidsgiver" vis="sykemelding">
-						<FormikTextInput
-							name="sykemelding.detaljertSykemelding.arbeidsgiver.navn"
+						<OrganisasjonMedArbeidsforholdSelect
+							path="sykemelding.detaljertSykemelding.arbeidsgiver.navn"
 							label="Navn"
-							size="large"
 						/>
-						<FormikTextInput
+						<FormikSelect
 							name="sykemelding.detaljertSykemelding.arbeidsgiver.yrkesbetegnelse"
 							label="Yrkesbetegnelse"
-							size="large"
+							kodeverk={ArbeidKodeverk.Yrker}
+							size="xxlarge"
+							isClearable={false}
+							optionHeight={50}
 						/>
 						<FormikTextInput
 							name="sykemelding.detaljertSykemelding.arbeidsgiver.stillingsprosent"

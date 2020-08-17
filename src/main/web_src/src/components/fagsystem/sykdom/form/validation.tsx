@@ -80,13 +80,12 @@ export const validation = {
 							})
 						)
 					),
-					// Vis denne når lege-oppslag er klart
-					// lege: Yup.object({
-					// 	etternavn: requiredString,
-					// 	fornavn: requiredString,
-					// 	ident: requiredString,
-					// 	hprId: requiredString
-					// }),
+					lege: Yup.object({
+						etternavn: requiredString,
+						fornavn: requiredString,
+						ident: requiredString,
+						hprId: requiredString
+					}),
 					arbeidsgiver: Yup.object({
 						navn: requiredString,
 						stillingsprosent: requiredNumber.transform(num => (isNaN(num) ? undefined : num)),

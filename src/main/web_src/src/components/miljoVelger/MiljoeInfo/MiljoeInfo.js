@@ -6,8 +6,9 @@ import { PensjonApi } from '~/service/Api'
 import TilgjengeligeMiljoer from './TilgjengeligeMiljoer'
 
 export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
-	const { instdata, pdlforvalter, arenaforvalter, pensjonforvalter } = bestillingsdata
-	if (!instdata && !pdlforvalter && !arenaforvalter && !pensjonforvalter) return null
+	const { instdata, pdlforvalter, arenaforvalter, pensjonforvalter, sykemelding } = bestillingsdata
+	if (!instdata && !pdlforvalter && !arenaforvalter && !pensjonforvalter && !sykemelding)
+		return null
 
 	return (
 		<AlertStripeInfo>
@@ -51,6 +52,8 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 						/>
 					</li>
 				)}
+
+				{sykemelding && <li>Sykemelding: Q1</li>}
 			</ul>
 		</AlertStripeInfo>
 	)
