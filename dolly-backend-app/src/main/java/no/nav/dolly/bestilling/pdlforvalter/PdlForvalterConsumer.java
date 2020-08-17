@@ -70,6 +70,7 @@ public class PdlForvalterConsumer {
     private static final String PDL_BESTILLING_FORELDREANSVAR_URL = PDL_BESTILLING_URL + "/foreldreansvar";
     private static final String PDL_BESTILLING_OPPHOLD_URL = PDL_BESTILLING_URL + "/opphold";
     private static final String PDL_IDENTHISTORIKK_PARAMS = "?historiskePersonidenter=";
+    private static final String PDL_IDENTHISTORIKK_PARAMS_2 = "&historiskePersonidenter=";
     private static final String PDL_BESTILLING_FOLKEREGISTERPERSONSTATUS_URL = PDL_BESTILLING_URL + "/folkeregisterpersonstatus";
 
     private static final String PDL_BESTILLING_SLETTING_URL = "/api/v1/personident";
@@ -99,7 +100,7 @@ public class PdlForvalterConsumer {
                         (opprettPerson.getOpprettetIdentHistorikk().isEmpty() ? "" :
                                 PDL_IDENTHISTORIKK_PARAMS + opprettPerson.getOpprettetIdentHistorikk().stream()
                                         .map(IdentHistorikk::getIdent)
-                                        .collect(Collectors.joining(","))),
+                                        .collect(Collectors.joining(PDL_IDENTHISTORIKK_PARAMS_2))),
                 opprettPerson, ident, "opprett person");
     }
 

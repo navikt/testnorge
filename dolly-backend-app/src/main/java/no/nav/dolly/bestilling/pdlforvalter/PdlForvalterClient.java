@@ -206,7 +206,7 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void sendOpprettPerson(Person person) {
 
-        pdlForvalterConsumer.postOpprettPerson(mapperFacade.map(person, PdlOpprettPerson.class), person.getIdent(), person.getIdentHistorikk());
+        pdlForvalterConsumer.postOpprettPerson(mapperFacade.map(person, PdlOpprettPerson.class), person.getIdent());
     }
 
     private void sendNavn(Person person) {
