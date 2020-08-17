@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.skjermingsregister.domain.BestillingPersonWrapper;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataRequest;
-import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.mapper.MappingStrategy;
 
 @Slf4j
@@ -17,17 +17,18 @@ public class SkjermingsRegisterMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(Person.class, SkjermingsDataRequest.class)
-                .customize(new CustomMapper<Person, SkjermingsDataRequest>() {
+        factory.classMap(BestillingPersonWrapper.class, SkjermingsDataRequest.class)
+                .customize(new CustomMapper<BestillingPersonWrapper, SkjermingsDataRequest>() {
                     @Override
-                    public void mapAtoB(Person person, SkjermingsDataRequest request, MappingContext context) {
+                    public void mapAtoB(BestillingPersonWrapper wrapper, SkjermingsDataRequest request, MappingContext context) {
 
-                        request.setPersonident(person.getIdent());
-                        request.setSkjermetFra(person.getEgenAnsattDatoFom());
-                        request.setSkjermetTil(person.getEgenAnsattDatoTom());
+                        request.setPersonident(wrapper.getPerson().getIdent());
+                        request.setFornavn(wrapper.getPerson().getFornavn());
+                        request.setEtternavn(wrapper.getPerson().getEtternavn());
+                        request.setSkjermetFra(wrapper.getBestilling().getEgenAnsattDatoFom());
+                        request.setSkjermetTil(wrapper.getBestilling().getEgenAnsattDatoTom());
                     }
                 })
-                .byDefault()
                 .register();
     }
 }
