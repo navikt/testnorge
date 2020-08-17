@@ -6,8 +6,6 @@ import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.
 import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Component;
 
 import ma.glasnost.orika.CustomMapper;
@@ -23,7 +21,6 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.Statsborgerskap;
-import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
 import no.nav.dolly.mapper.MappingStrategy;
 
 @Component
@@ -38,7 +35,6 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Person person, PdlOpprettPerson pdlOpprettPerson, MappingContext context) {
 
                         pdlOpprettPerson.setOpprettetIdent(person.getIdent());
-                        pdlOpprettPerson.setHistoriskeIdenter(person.getIdentHistorikk().stream().map(IdentHistorikk::getIdent).collect(Collectors.toList()));
                     }
                 })
                 .register();
@@ -81,7 +77,8 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Statsborgerskap statsborgerskap, PdlStatsborgerskap pdlStatsborgerskap, MappingContext context) {
 
-                        pdlStatsborgerskap.setLandkode(isNotBlank(statsborgerskap.getStatsborgerskap()) ? statsborgerskap.getStatsborgerskap() : "NOR");
+                        pdlStatsborgerskap.setLandkode(isNotBlank(statsborgerskap.getStatsborgerskap()) ?
+                                statsborgerskap.getStatsborgerskap() : "NOR");
                         pdlStatsborgerskap.setKilde(CONSUMER);
                     }
                 })
