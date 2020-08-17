@@ -1,5 +1,8 @@
 package no.nav.dolly.bestilling.pdlforvalter.domain;
 
+import static java.util.Objects.isNull;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -7,7 +10,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
 
 @Getter
 @Setter
@@ -17,5 +19,12 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
 public class PdlOpprettPerson {
 
     private String opprettetIdent;
-    private List<IdentHistorikk> opprettetIdentHistorikk;
+    private List<String> historiskeIdenter;
+
+    public List<String> getHistoriskeIdenter() {
+        if (isNull(historiskeIdenter)) {
+            return new ArrayList<>();
+        }
+        return historiskeIdenter;
+    }
 }

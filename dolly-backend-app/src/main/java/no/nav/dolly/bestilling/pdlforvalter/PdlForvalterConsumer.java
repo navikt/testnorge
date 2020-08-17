@@ -6,11 +6,12 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.net.URI;
-import java.util.stream.Collectors;
+
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,6 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlUtflytting;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
-import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.Timed;
@@ -97,10 +97,7 @@ public class PdlForvalterConsumer {
 
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_OPPRETT_PERSON +
-                        (opprettPerson.getOpprettetIdentHistorikk().isEmpty() ? "" :
-                                PDL_IDENTHISTORIKK_PARAMS + opprettPerson.getOpprettetIdentHistorikk().stream()
-                                        .map(IdentHistorikk::getIdent)
-                                        .collect(Collectors.joining(PDL_IDENTHISTORIKK_PARAMS_2))),
+                        (opprettPerson.getHistoriskeIdenter().isEmpty() ? "" : PDL_IDENTHISTORIKK_PARAMS + String.join(PDL_IDENTHISTORIKK_PARAMS_2, opprettPerson.getHistoriskeIdenter())),
                 opprettPerson, ident, "opprett person");
     }
 
