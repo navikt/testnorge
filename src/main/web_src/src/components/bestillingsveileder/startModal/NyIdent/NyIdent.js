@@ -12,7 +12,7 @@ import { FormikSelect, DollySelect } from '~/components/ui/form/inputs/select/Se
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { ModalActions } from '../ModalActions'
+import ModalActionKnapper from '~/components/ui/modal/ModalActionKnapper'
 
 import './nyIdent.less'
 
@@ -95,10 +95,12 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 							</Button>
 						</div>
 					</div>
-					<ModalActions
+					<ModalActionKnapper
+						submitknapp="Start bestilling"
 						disabled={!formikBag.isValid || formikBag.isSubmitting}
 						onSubmit={formikBag.handleSubmit}
 						onAvbryt={onAvbryt}
+						center
 					/>
 				</div>
 			)}
