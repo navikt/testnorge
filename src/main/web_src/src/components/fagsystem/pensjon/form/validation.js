@@ -32,8 +32,8 @@ const innenforInntektsperiodeTest = (validation, validateFomBasedOnAge, validate
 					alder = calculate_age(new Date(values.personFoerLeggTil.tpsf.foedselsdato))
 				}
 
-				const foedtFoer = _get(values, 'tpsf.foedtFoer')
-				const foedtEtter = _get(values, 'tpsf.foedtEtter')
+				const foedtFoer = new Date(_get(values, 'tpsf.foedtFoer'))
+				const foedtEtter = new Date(_get(values, 'tpsf.foedtEtter'))
 
 				if (!_isNil(alder)) {
 					if (new Date().getFullYear() - alder + 18 > inntektFom) {
