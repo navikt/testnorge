@@ -72,6 +72,7 @@ public class SykemeldingClient implements ClientRegister {
     }
 
     private void postDetaljertSykemelding(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, StringBuilder status) {
+
         if (nonNull(bestilling.getSykemelding().getDetaljertSykemelding())) {
             DetaljertSykemeldingRequest detaljertSykemeldingRequest = mapperFacade.map(bestilling.getSykemelding().getDetaljertSykemelding(), DetaljertSykemeldingRequest.class);
             Person pasient = tpsPerson.getPerson(tpsPerson.getHovedperson());
@@ -89,11 +90,13 @@ public class SykemeldingClient implements ClientRegister {
     }
 
     private void postSyntSykemelding(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, StringBuilder status) {
+
         if (nonNull(bestilling.getSykemelding().getSyntSykemelding())) {
             SyntSykemeldingRequest syntSykemeldingRequest = mapperFacade.map(bestilling.getSykemelding().getSyntSykemelding(), SyntSykemeldingRequest.class);
             if (isNull(bestilling.getSykemelding().getSyntSykemelding().getIdent())) {
                 syntSykemeldingRequest.setIdent(tpsPerson.getHovedperson());
             }
+
             ResponseEntity<String> response = sykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest);
 
             if (response.getStatusCode().equals(HttpStatus.OK)) {
