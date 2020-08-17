@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -53,19 +52,24 @@ public class SkjermingsRegisterClientTest {
     private SkjermingsDataResponse response;
     private RsDollyUtvidetBestilling bestilling;
     private TpsPerson person;
+    private BestillingProgress progress;
+    private LocalDateTime yesterday;
 
     @Before
     public void setUp() {
 
-        LocalDateTime yesterday = now().minusDays(1);
+        yesterday = now().minusDays(1);
 
         response = SkjermingsDataResponse.builder()
                 .build();
+
+        progress = new BestillingProgress();
 
         bestilling = new RsDollyUtvidetBestilling();
         bestilling.setTpsf(RsTpsfUtvidetBestilling.builder()
                 .identtype(IdentType.FNR.name())
                 .build());
+        bestilling.getTpsf().setEgenAnsattDatoFom(yesterday);
 
         String etternavn = "Syntesen";
         String fornavn = "Synt";
@@ -90,34 +94,31 @@ public class SkjermingsRegisterClientTest {
     @Test
     public void should_return_created_for_post_aktiv_skjermet() {
 
-        ResponseEntity<List<SkjermingsDataResponse>> responseEntity;
-        when(skjermingsRegisterConsumer.postSkjerming(any())).thenReturn(responseEntity = new ResponseEntity<>(Collections.singletonList(response), HttpStatus.CREATED));
+        when(skjermingsRegisterConsumer.postSkjerming(any())).thenReturn(new ResponseEntity<>(Collections.singletonList(response), HttpStatus.CREATED));
         when(skjermingsRegisterConsumer.getSkjerming(any())).thenReturn(new ResponseEntity<>(response, HttpStatus.NOT_FOUND));
 
-        skjermingsRegisterClient.gjenopprett(bestilling, person, new BestillingProgress(), false);
-        assertThat(responseEntity.getStatusCode()).isNotNull().isEqualTo(HttpStatus.CREATED);
+        skjermingsRegisterClient.gjenopprett(bestilling, person, progress, false);
+        assertThat(progress.getSkjermingsregisterStatus()).isNotNull().isEqualTo("OK");
     }
 
     @Test
     public void should_return_ok_for_put_tidligere_skjermet() {
 
-        person.getPersondetaljer().get(0).setEgenAnsattDatoTom(now().minusDays(1));
-        ResponseEntity<String> responseEntity;
-        when(skjermingsRegisterConsumer.putSkjerming(any())).thenReturn(responseEntity = new ResponseEntity<>("", HttpStatus.OK));
+        bestilling.getTpsf().setEgenAnsattDatoTom(yesterday);
+        when(skjermingsRegisterConsumer.putSkjerming(any())).thenReturn(new ResponseEntity<>("", HttpStatus.OK));
         when(skjermingsRegisterConsumer.getSkjerming(any())).thenReturn(new ResponseEntity<>(response, HttpStatus.OK));
 
-        skjermingsRegisterClient.gjenopprett(bestilling, person, new BestillingProgress(), false);
-        assertThat(responseEntity.getStatusCode()).isNotNull().isEqualTo(HttpStatus.OK);
+        skjermingsRegisterClient.gjenopprett(bestilling, person, progress, false);
+        assertThat(progress.getSkjermingsregisterStatus()).isNotNull().isEqualTo("OK");
     }
 
     @Test
-    public void should_return_null_status_for_ikke_skjermet() {
+    public void should_return_empty_status_for_ikke_skjermet() {
 
         person.getPersondetaljer().get(0).setEgenAnsattDatoFom(null);
-        BestillingProgress status = new BestillingProgress();
 
-        skjermingsRegisterClient.gjenopprett(bestilling, person, status, false);
-        assertThat(status.getSkjermingsregisterStatus()).isNull();
+        skjermingsRegisterClient.gjenopprett(bestilling, person, progress, false);
+        assertThat(progress.getSkjermingsregisterStatus()).isEqualTo("null");
     }
 
 }
