@@ -1,7 +1,5 @@
 package no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.enums;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-
 public enum YtelseKodeListe implements AltinnEnum {
     SYKEPENGER("Sykepenger"),
     FORELDREPENGER("Foreldrepenger"),
@@ -16,7 +14,6 @@ public enum YtelseKodeListe implements AltinnEnum {
         this.value = value;
     }
 
-    @JsonValue
     public String getValue() {
         return value;
     }
