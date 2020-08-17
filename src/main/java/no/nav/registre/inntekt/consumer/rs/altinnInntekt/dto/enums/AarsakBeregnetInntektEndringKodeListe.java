@@ -11,7 +11,6 @@ public enum AarsakBeregnetInntektEndringKodeListe implements AltinnEnum {
     AarsakBeregnetInntektEndringKodeListe (String value) {
         this.value = value;
     }
-
     @JsonValue
     public String getValue() {
         return value;

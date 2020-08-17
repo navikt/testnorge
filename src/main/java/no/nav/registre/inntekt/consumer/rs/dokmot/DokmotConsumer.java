@@ -1,5 +1,6 @@
 package no.nav.registre.inntekt.consumer.rs.dokmot;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -55,25 +57,23 @@ public class DokmotConsumer {
                 .thenApply(response -> new ProsessertInntektDokument(inntektDokument, response));
     }
 
-    public List<ProsessertInntektDokument> opprettJournalpost(String miljoe, List<InntektDokument> inntektDokumentList, String navCallId) {
+    @SneakyThrows public List<ProsessertInntektDokument> opprettJournalpost(String miljoe, List<InntektDokument> inntektDokumentList, String navCallId) {
         log.info("Oppretter {} journalpost(er) i miljø {} for inntektsdokument(er). Nav-Call-Id: {}", inntektDokumentList.size(), miljoe, navCallId);
 
-        List<CompletableFuture<ProsessertInntektDokument>> completableDokmotList = new ArrayList<>();
+        List<CompletableFuture<ProsessertInntektDokument>> completableDokmotList = new ArrayList<>(inntektDokumentList.size());
         inntektDokumentList.forEach(inntektDokument -> completableDokmotList.add(opprettJournalpost(miljoe, inntektDokument, executorService, navCallId)));
 
-        List<ProsessertInntektDokument> responser = completableDokmotList.stream().map(future -> {
+        List<ProsessertInntektDokument> responserFraJoark = new ArrayList<>(inntektDokumentList.size());
+
+        for (var future : completableDokmotList) {
             try {
-                return future.get();
+                responserFraJoark.add(future.get());
             } catch (Exception e) {
                 log.error("Uventet feil ved opprettelse av journalpost i joark: ", e);
-                return null;
+                throw e;
             }
-        }).filter(Objects::nonNull).collect(Collectors.toList());
-
-        log.info("{} journalpost(er) ble opprettet i miljø {}.", responser.size(), miljoe);
-        if (responser.size() < inntektDokumentList.size()) {
-            log.warn("Bare {}/{} journalposter ble opprettet for Nav-Call-Id {}", responser.size(), inntektDokumentList.size(), navCallId);
         }
-        return responser;
+        log.info("{} journalpost(er) ble opprettet i miljø {}.", responserFraJoark.size(), miljoe);
+        return responserFraJoark;
     }
 }

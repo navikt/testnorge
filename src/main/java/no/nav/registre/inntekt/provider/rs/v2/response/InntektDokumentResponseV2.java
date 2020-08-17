@@ -1,18 +1,20 @@
-package no.nav.registre.inntekt.consumer.rs.dokmot.dto;
+package no.nav.registre.inntekt.provider.rs.v2.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
+import java.util.Set;
+
 @Value
 @RequiredArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class InntektDokumentResponse {
+public class InntektDokumentResponseV2 {
     @JsonProperty
-    private final String journalpostId;
+    String journalpostId;
     @JsonProperty
-    private final String dokumentInfoId;
+    Set<String> dokumentInfoIder;
     @JsonProperty
-    private final String xml;
+    String xml;
 }

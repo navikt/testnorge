@@ -8,8 +8,8 @@
   },
   "inntekter": [
     {
-      "ytelse": "OPPLAERINGSPENGER",
-      "aarsakTilInnsending": "NY",
+      "ytelse": "Opplaeringspenger",
+      "aarsakTilInnsending": "Ny",
       "arbeidsgiver": {
         "virksomhetsnummer": "123456789",
         "kontaktinformasjon": {
@@ -25,12 +25,12 @@
       },
       "opphoerAvNaturalytelseListe": [
         {
-          "naturalytelseType": "ELEKTRONISK_KOMMUNIKASJON",
+          "naturalytelseType": "elektroniskKommunikasjon",
           "fom": "1776-08-09",
           "beloepPrMnd": 6.02214076
         },
         {
-          "naturalytelseType": "AKSJER_GRUNNFONDSBEVIS_TIL_UNDERKURS",
+          "naturalytelseType": "aksjerGrunnfondsbevisTilUnderkurs",
           "fom": "2020-12-25",
           "beloepPrMnd": -3.14159265359
         }

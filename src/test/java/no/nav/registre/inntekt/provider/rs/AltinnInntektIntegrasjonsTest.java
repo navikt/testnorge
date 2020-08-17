@@ -12,6 +12,7 @@ import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsInntektsmeldin
 import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsKontaktinformasjon;
 import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsNaturalytelseDetaljer;
 
+import no.nav.registre.inntekt.provider.rs.v1.AltinnInntektControllerV1;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,7 +70,7 @@ public class AltinnInntektIntegrasjonsTest {
     protected WebApplicationContext context;
 
     @Autowired
-    private AltinnInntektController kontroller;
+    private AltinnInntektControllerV1 kontroller;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -101,7 +102,6 @@ public class AltinnInntektIntegrasjonsTest {
             System.err.println("Problemer med lasting av testressurser.");
             e.printStackTrace();
         }
-        /*mockServer = MockRestServiceServer.createServer(restTemplate);*/
     }
 
     @After
@@ -117,9 +117,10 @@ public class AltinnInntektIntegrasjonsTest {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/altinnInntekt/enkeltident?includeXml=true")
                 .content(satisfactoryJson)
+                .header("Nav-Call-Id", "test")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"fnr\":\"12345678910\",\"dokumenter\":[{\"journalpostId\":\"1\",\"dokumentInfoId\":\"2\",\"xml\":\"<dummyXml><title>My Dummy</title><content>This is a dummy xml object.</content></dummyXml>\"}]}"));
+                .andExpect(content().json("{\"fnr\":\"12345678910\",\"dokumenter\":[{\"journalpostId\":\"1\",\"dokumentInfoId\":\"2\"}]}"));
     }
 
     @Test
@@ -130,38 +131,12 @@ public class AltinnInntektIntegrasjonsTest {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/altinnInntekt/enkeltident")
                 .content(satisfactoryJson)
+                .header("Nav-Call-Id", "test")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\"fnr\":\"12345678910\",\"dokumenter\":[{\"journalpostId\":\"1\",\"dokumentInfoId\":\"2\"}]}"));
     }
 
-    @Test
-    public void noResponseDokmotContinueOnError() throws Exception {
-        stubForInntektsmelding();
-        stubForAuthorization();
-        stubForJournalpost();
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/altinnInntekt/enkeltident?continueOnError=true")
-                .content(satisfactoryJson)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json("{\"fnr\":\"12345678910\",\"dokumenter\":[{\"journalpostId\":\"1\",\"dokumentInfoId\":\"2\"}]}"));
-    }
-
-    @Test
-    public void noResponseDokmotFailOnError() {
-
-    }
-
-    @Test
-    public void responseWhenBadRequest() {
-
-    }
-
-    @Test
-    public void validerArbeidsforhold() {
-
-    }
 
     private void stubForInntektsmelding() {
         stubFor(post(urlEqualTo("/api/v2/inntektsmelding/2018/12/11"))
@@ -184,70 +159,6 @@ public class AltinnInntektIntegrasjonsTest {
                          .withHeader("Content-Type", "application/json")
                          .withBody("{\"journalpostId\": \"1\",\"journalstatus\":\"Ikke relevant\",\"melding\":\"Dokumentene er postet!\",\"journalpostferdigstilt\":true,\"dokumenter\":[{\"brevkode\":\"TEST BREVKODE\",\"dokumentInfoId\":\"2\",\"tittel\":\"TEST TITTEL\"}]}")));
 
-    }
-    private void stubForJournalpostToMeldinger() {
-        stubFor(post(urlEqualTo("/rest/journalpostapi/v1/journalpost"))
-                 .withHeader(AUTHORIZATION, containing("Bearer "))
-                 .willReturn(aResponse()
-                         .withStatus(200)
-                         .withHeader("Content-Type", "application/json")
-                         .withBody("{\"journalpostId\": \"1\",\"journalstatus\":\"Ikke relevant\",\"melding\":\"Dokumentene er postet!\",\"journalpostferdigstilt\":true,\"dokumenter\":[{\"brevkode\":\"TEST BREVKODE\",\"dokumentInfoId\":\"2\",\"tittel\":\"TEST TITTEL\"}, {\"brevkode\":\"Brevkode2\",\"dokumentInfoId\":\"3\",\"tittel\":\"Det andre dokumentet\"}]}")));
-    }
-    private void stubForJournalpostFeilet() {
-        stubFor(post(urlEqualTo("/rest/journalpostapi/v1/journalpost"))
-                 .withHeader(AUTHORIZATION, containing("Bearer "))
-                 .willReturn(aResponse()
-                         .withStatus(200)
-                         .withHeader("Content-Type", "application/json")));
-    }
-
-    private RsInntektsmelding getPassingMelding() {
-        return RsInntektsmelding.builder()
-                .ytelse(YtelseKodeListe.OPPLAERINGSPENGER)
-                .aarsakTilInnsending(AarsakInnsendingKodeListe.NY)
-                .arbeidstakerFnr("12345678910")
-                .naerRelasjon(false)
-                .avsendersystem(RsAvsendersystem.builder()
-                        .systemnavn("ORKESTRATOREN")
-                        .systemversjon("1")
-                        .innsendingstidspunkt(LocalDateTime.parse("2020-06-04T13:10:54.412443")) // OBS! 'get' can be LocalDateTime.now() if not set.
-                        .build())
-                .arbeidsgiver(RsArbeidsgiver.builder()
-                        .virksomhetsnummer("123456789")
-                        .kontaktinformasjon(RsKontaktinformasjon.builder()
-                                .kontaktinformasjonNavn("GREI BLEIE")
-                                .telefonnummer("81549300")
-                                .build()).build())
-                .arbeidsgiverPrivat(null)
-                .arbeidsforhold(RsArbeidsforhold.builder()
-                        .arbeidsforholdId("912a41#9$apEA1n")
-                        .foersteFravaersdag(null)
-                        .beregnetInntekt(RsInntekt.builder()
-                                .beloep(50783.0)
-                                .aarsakVedEndring(null)
-                                .build())
-                        .avtaltFerieListe(Collections.emptyList())
-                        .utsettelseAvForeldrepengerListe(Collections.emptyList())
-                        .graderingIForeldrepengerListe(Collections.emptyList())
-                        .build())
-                .refusjon(null)
-                .omsorgspenger(null)
-                .sykepengerIArbeidsgiverperioden(null)
-                .startdatoForeldrepengeperiode(null)
-                .opphoerAvNaturalytelseListe(Arrays.asList(
-                        RsNaturalytelseDetaljer.builder()
-                                .naturalytelseType(NaturalytelseKodeListe.ELEKTRONISK_KOMMUNIKASJON)
-                                .fom(LocalDate.parse("1776-08-09"))
-                                .beloepPrMnd(6.02214076)
-                                .build(),
-                        RsNaturalytelseDetaljer.builder()
-                                .naturalytelseType(NaturalytelseKodeListe.AKSJER_GRUNNFONDSBEVIS_TIL_UNDERKURS)
-                                .fom(LocalDate.parse("2020-12-25"))
-                                .beloepPrMnd(-3.14159265359)
-                                .build()))
-                .gjenopptakelseNaturalytelseListe(Collections.emptyList())
-                .pleiepengerPerioder(Collections.emptyList())
-                .build();
     }
 
 }

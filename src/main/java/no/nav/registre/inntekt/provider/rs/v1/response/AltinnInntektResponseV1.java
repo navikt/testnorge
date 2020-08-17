@@ -1,4 +1,4 @@
-package no.nav.registre.inntekt.provider.rs.response;
+package no.nav.registre.inntekt.provider.rs.v1.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.RequiredArgsConstructor;
@@ -6,13 +6,11 @@ import lombok.Value;
 
 import java.util.List;
 
-import no.nav.registre.inntekt.consumer.rs.dokmot.dto.InntektDokumentResponse;
-
 @Value
 @RequiredArgsConstructor
-public class AltinnInntektResponse {
+public class AltinnInntektResponseV1 {
     @JsonProperty
     private final String fnr;
     @JsonProperty
-    private final List<InntektDokumentResponse> dokumenter;
+    private final List<InntektDokumentResponseV1> dokumenter;
 }
