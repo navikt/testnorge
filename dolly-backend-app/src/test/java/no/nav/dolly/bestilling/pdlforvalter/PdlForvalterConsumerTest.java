@@ -9,6 +9,9 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -127,6 +130,24 @@ public class PdlForvalterConsumerTest {
                 .andRespond(withSuccess());
 
         pdlForvalterConsumer.postOpprettPerson(PdlOpprettPerson.builder().opprettetIdent(IDENT).build(), IDENT);
+
+        verify(providersProps).getPdlForvalter();
+        verify(stsOidcService).getIdToken(anyString());
+    }
+
+    @Test
+    public void opprettPersonMedIdentHistorikk() {
+
+        server.expect(requestTo("http://pdl.nav.no/api/v1/bestilling/opprettperson?historiskePersonidenter=Person1&historiskePersonidenter=Person2"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(header(HEADER_NAV_PERSON_IDENT, IDENT))
+                .andRespond(withSuccess());
+
+        List<String> identHistorikkList = new ArrayList<>();
+        identHistorikkList.add("Person1");
+        identHistorikkList.add("Person2");
+
+        pdlForvalterConsumer.postOpprettPerson(PdlOpprettPerson.builder().opprettetIdent(IDENT).historiskeIdenter(identHistorikkList).build(), IDENT);
 
         verify(providersProps).getPdlForvalter();
         verify(stsOidcService).getIdToken(anyString());

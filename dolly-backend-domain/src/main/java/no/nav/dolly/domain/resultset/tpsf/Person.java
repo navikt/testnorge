@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.tpsf.adresse.BoAdresse;
+import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
 import no.nav.dolly.domain.resultset.tpsf.adresse.MidlertidigAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 
@@ -29,6 +30,7 @@ public class Person {
 
     private Long personId;
     private String ident;
+    private List<IdentHistorikk> identHistorikk;
     private Integer alder;
     private String identtype;
     private String kjonn;
@@ -67,7 +69,14 @@ public class Person {
         return midlertidigAdresse;
     }
 
-    public List<InnvandretUtvandret> getIdentHistorikk() {
+    public List<IdentHistorikk> getIdentHistorikk() {
+        if (isNull(identHistorikk)) {
+            identHistorikk = new ArrayList<>();
+        }
+        return identHistorikk;
+    }
+
+    public List<InnvandretUtvandret> getInnvandretUtvandret() {
         if (isNull(innvandretUtvandret)) {
             innvandretUtvandret = new ArrayList<>();
         }
@@ -77,7 +86,7 @@ public class Person {
     public List<Relasjon> getRelasjoner() {
 
         if (isNull(relasjoner)) {
-            relasjoner = new ArrayList();
+            relasjoner = new ArrayList<>();
         }
         return relasjoner;
     }
@@ -85,7 +94,7 @@ public class Person {
     public List<Sivilstand> getSivilstander() {
 
         if (isNull(sivilstander)) {
-            sivilstander = new ArrayList();
+            sivilstander = new ArrayList<>();
         }
         return sivilstander;
     }
@@ -93,21 +102,21 @@ public class Person {
     public List<Statsborgerskap> getStatsborgerskap() {
 
         if (isNull(statsborgerskap)) {
-            statsborgerskap = new ArrayList();
+            statsborgerskap = new ArrayList<>();
         }
         return statsborgerskap;
     }
 
     public List<RsPostadresse> getPostadresse() {
         if (isNull(postadresse)) {
-            postadresse = new ArrayList();
+            postadresse = new ArrayList<>();
         }
         return postadresse;
     }
 
     public List<BoAdresse> getBoadresse() {
         if (isNull(boadresse)) {
-            boadresse = new ArrayList();
+            boadresse = new ArrayList<>();
         }
         return boadresse;
     }
