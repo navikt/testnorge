@@ -6,13 +6,11 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.net.URI;
-import java.util.List;
-
+import java.util.stream.Collectors;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
 import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.RequiredArgsConstructor;
@@ -71,6 +69,7 @@ public class PdlForvalterConsumer {
     private static final String PDL_BESTILLING_UTFLYTTING_URL = PDL_BESTILLING_URL + "/utflytting";
     private static final String PDL_BESTILLING_FORELDREANSVAR_URL = PDL_BESTILLING_URL + "/foreldreansvar";
     private static final String PDL_BESTILLING_OPPHOLD_URL = PDL_BESTILLING_URL + "/opphold";
+    private static final String PDL_IDENTHISTORIKK_PARAMS = "?historiskePersonidenter=";
     private static final String PDL_BESTILLING_FOLKEREGISTERPERSONSTATUS_URL = PDL_BESTILLING_URL + "/folkeregisterpersonstatus";
 
     private static final String PDL_BESTILLING_SLETTING_URL = "/api/v1/personident";
@@ -93,15 +92,15 @@ public class PdlForvalterConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_opprettPerson" })
-    public ResponseEntity<JsonNode> postOpprettPerson(PdlOpprettPerson pdlNavn, String ident, List<IdentHistorikk> identHistorikk) {
+    public ResponseEntity<JsonNode> postOpprettPerson(PdlOpprettPerson opprettPerson, String ident) {
 
-        String url = providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_OPPRETT_PERSON;
-        if (!identHistorikk.isEmpty()) {
-            url = leggTilIdenthistorikkIUrl(url, identHistorikk);
-        }
         return postRequest(
-                url,
-                pdlNavn, ident, "opprett person");
+                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_OPPRETT_PERSON +
+                        (opprettPerson.getOpprettetIdentHistorikk().isEmpty() ? "" :
+                                PDL_IDENTHISTORIKK_PARAMS + opprettPerson.getOpprettetIdentHistorikk().stream()
+                                        .map(IdentHistorikk::getIdent)
+                                        .collect(Collectors.joining(","))),
+                opprettPerson, ident, "opprett person");
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_navn" })
@@ -113,11 +112,11 @@ public class PdlForvalterConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_kjoenn" })
-    public ResponseEntity<JsonNode> postKjoenn(PdlKjoenn pdlNavn, String ident) {
+    public ResponseEntity<JsonNode> postKjoenn(PdlKjoenn pdlKjoenn, String ident) {
 
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_KJOENN_URL,
-                pdlNavn, ident, "kjønn");
+                pdlKjoenn, ident, "kjønn");
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_kontaktinfoDoedsbo" })
@@ -261,14 +260,6 @@ public class PdlForvalterConsumer {
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_OPPHOLD_URL,
                 opphold, ident, "opphold");
-    }
-
-    private String leggTilIdenthistorikkIUrl(String url, List<IdentHistorikk> identHistorikk) {
-        String completeUrl = url + "?";
-        for (IdentHistorikk person : identHistorikk) {
-            completeUrl = String.format("%s&historiskePersonidenter=%s", completeUrl, person.getIdent());
-        }
-        return completeUrl.replace("?&", "?");
     }
 
     private ResponseEntity<JsonNode> postRequest(String url, Object body, String ident, String beskrivelse) {
