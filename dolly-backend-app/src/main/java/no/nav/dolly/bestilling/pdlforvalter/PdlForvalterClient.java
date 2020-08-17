@@ -11,11 +11,13 @@ import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 import java.util.Iterator;
 import java.util.List;
+
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.RequiredArgsConstructor;
@@ -147,11 +149,7 @@ public class PdlForvalterClient implements ClientRegister {
                 }
             }
         }
-        tpsPerson.getPersondetaljer().forEach(person ->
-                person.getRelasjoner().forEach(relasjon ->
-                        relasjon.setPersonRelasjonTil(tpsPerson.getPerson(relasjon.getPersonRelasjonMed().getIdent()))
-                )
-        );
+        tpsPerson.getPersondetaljer().forEach(person -> person.getRelasjoner().forEach(relasjon -> relasjon.setPersonRelasjonTil(tpsPerson.getPerson(relasjon.getPersonRelasjonMed().getIdent()))));
     }
 
     private static boolean isKjonnUkjent(Relasjon relasjon, Iterator<RsPartnerRequest> partnere,
@@ -271,10 +269,8 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void sendStatsborgerskap(Person person) {
 
-        person.getStatsborgerskap().forEach(statsborgerskap ->
-                pdlForvalterConsumer.postStatsborgerskap(mapperFacade.map(statsborgerskap, PdlStatsborgerskap.class),
-                        person.getIdent())
-        );
+        person.getStatsborgerskap().forEach(statsborgerskap -> pdlForvalterConsumer.postStatsborgerskap(mapperFacade.map(statsborgerskap, PdlStatsborgerskap.class),
+                person.getIdent()));
     }
 
     private void sendFoedselsmelding(Person person) {
@@ -285,9 +281,7 @@ public class PdlForvalterClient implements ClientRegister {
     private void sendTelefonnummer(Person person) {
 
         PdlTelefonnummer telefonnumre = mapperFacade.map(person, PdlTelefonnummer.class);
-        telefonnumre.getTelfonnumre().forEach(telefonnummer ->
-                pdlForvalterConsumer.postTelefonnummer(telefonnummer, person.getIdent())
-        );
+        telefonnumre.getTelfonnumre().forEach(telefonnummer -> pdlForvalterConsumer.postTelefonnummer(telefonnummer, person.getIdent()));
     }
 
     private void sendOppholdsadresse(Person person) {
@@ -348,8 +342,7 @@ public class PdlForvalterClient implements ClientRegister {
                 utenlandskId.forEach(id -> {
                     id.setKilde(nullcheckSetDefaultValue(id.getKilde(), CONSUMER));
 
-                    ResponseEntity<JsonNode> response =
-                            pdlForvalterConsumer.postUtenlandskIdentifikasjonsnummer(id, ident);
+                    ResponseEntity<JsonNode> response = pdlForvalterConsumer.postUtenlandskIdentifikasjonsnummer(id, ident);
 
                     appendOkStatus(response.getBody(), status);
                 });
@@ -368,8 +361,7 @@ public class PdlForvalterClient implements ClientRegister {
             try {
                 appendName(KONTAKTINFORMASJON_DOEDSBO, status);
 
-                ResponseEntity<JsonNode> response =
-                        pdlForvalterConsumer.postKontaktinformasjonForDoedsbo(pdldata.getKontaktinformasjonForDoedsbo(), ident);
+                ResponseEntity<JsonNode> response = pdlForvalterConsumer.postKontaktinformasjonForDoedsbo(pdldata.getKontaktinformasjonForDoedsbo(), ident);
 
                 appendOkStatus(response.getBody(), status);
 
