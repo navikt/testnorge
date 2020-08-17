@@ -1,5 +1,6 @@
 package no.nav.dolly.mapper.strategy;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static no.nav.dolly.mapper.BestillingAaregStatusMapper.buildAaregStatusMap;
 import static no.nav.dolly.mapper.BestillingArenaforvalterStatusMapper.buildArenaStatusMap;
 import static no.nav.dolly.mapper.BestillingBrregStubStatusMapper.buildBrregStubStatusMap;
@@ -18,7 +19,6 @@ import static no.nav.dolly.mapper.BestillingTpsfStatusMapper.buildTpsfStatusMap;
 import static no.nav.dolly.mapper.BestillingUdiStubStatusMapper.buildUdiStubStatusMap;
 
 import java.util.Arrays;
-
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -80,7 +80,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .dokarkiv(bestillingRequest.getDokarkiv())
                                 .sykemelding(bestillingRequest.getSykemelding())
                                 .tpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()))
-                                .importFraTps(bestilling.getTpsImport().split(","))
+                                .importFraTps(newArrayList(bestilling.getTpsImport().split(",")))
                                 .kildeMiljoe(bestilling.getKildeMiljoe())
                                 .build());
                     }
