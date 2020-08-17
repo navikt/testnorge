@@ -1,18 +1,16 @@
 package no.nav.registre.inntekt.provider.rs;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.enums.AarsakInnsendingKodeListe;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.enums.NaturalytelseKodeListe;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.enums.YtelseKodeListe;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsArbeidsforhold;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsArbeidsgiver;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsAvsendersystem;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsInntekt;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsInntektsmelding;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsKontaktinformasjon;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsNaturalytelseDetaljer;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.containing;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.reset;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import no.nav.registre.inntekt.provider.rs.v1.AltinnInntektControllerV1;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,28 +24,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.containing;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.reset;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -58,34 +40,15 @@ public class AltinnInntektIntegrasjonsTest {
 
     @Value("${path.altinninntekt.satisfactory.json}")
     private String satisfactoryJsonPath;
-    @Value("${path.altinninntekt.failing.json}")
-    private String failingJsonPath;
-    @Value("${path.altininntektconsumer.satisfactory.json}")
-    private String satisfactoryAltinnInntektJsonPath;
-
-    @Value("${altinnInntekt.rest.api.url}")
-    private String altinnInntektUrl;
 
     @Autowired(required = false)
     protected WebApplicationContext context;
 
-    @Autowired
-    private AltinnInntektControllerV1 kontroller;
-
-    @Autowired
-    private RestTemplate restTemplate;
-    /*private MockRestServiceServer mockServer;*/
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    private String emptyRequestJson;
     private String satisfactoryJson;
-    private String satisfactoryAltinnInntektConsumerJson;
-    private String failingJson;
 
     private String loadResourceAsString(String fileName) throws IOException {
         return FileCopyUtils
@@ -96,8 +59,6 @@ public class AltinnInntektIntegrasjonsTest {
     public void setup() {
         try {
             satisfactoryJson = loadResourceAsString(satisfactoryJsonPath);
-            failingJson = loadResourceAsString(failingJsonPath);
-            satisfactoryAltinnInntektConsumerJson = loadResourceAsString(satisfactoryAltinnInntektJsonPath);
         } catch (IOException e) {
             System.err.println("Problemer med lasting av testressurser.");
             e.printStackTrace();
@@ -105,7 +66,7 @@ public class AltinnInntektIntegrasjonsTest {
     }
 
     @After
-    public void cleanup(){
+    public void cleanup() {
         reset();
     }
 
@@ -140,24 +101,26 @@ public class AltinnInntektIntegrasjonsTest {
 
     private void stubForInntektsmelding() {
         stubFor(post(urlEqualTo("/api/v2/inntektsmelding/2018/12/11"))
-                 .willReturn(aResponse()
-                         .withStatus(200)
-                         .withHeader("Content-Type", "text/xml")
-                         .withBody("<dummyXml><title>My Dummy</title><content>This is a dummy xml object.</content></dummyXml>")));
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/xml")
+                        .withBody("<dummyXml><title>My Dummy</title><content>This is a dummy xml object.</content></dummyXml>")));
     }
+
     private void stubForAuthorization() {
         stubFor(get(urlEqualTo("/?grant_type=client_credentials&scope=openid"))
-                 .withHeader(AUTHORIZATION, containing("Basic "))
-                 .willReturn(aResponse()
-                         .withStatus(200)));
+                .withHeader(AUTHORIZATION, containing("Basic "))
+                .willReturn(aResponse()
+                        .withStatus(200)));
     }
+
     private void stubForJournalpost() {
-         stubFor(post(urlEqualTo("/rest/journalpostapi/v1/journalpost"))
-                 .withHeader(AUTHORIZATION, containing("Bearer "))
-                 .willReturn(aResponse()
-                         .withStatus(200)
-                         .withHeader("Content-Type", "application/json")
-                         .withBody("{\"journalpostId\": \"1\",\"journalstatus\":\"Ikke relevant\",\"melding\":\"Dokumentene er postet!\",\"journalpostferdigstilt\":true,\"dokumenter\":[{\"brevkode\":\"TEST BREVKODE\",\"dokumentInfoId\":\"2\",\"tittel\":\"TEST TITTEL\"}]}")));
+        stubFor(post(urlEqualTo("/rest/journalpostapi/v1/journalpost"))
+                .withHeader(AUTHORIZATION, containing("Bearer "))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{\"journalpostId\": \"1\",\"journalstatus\":\"Ikke relevant\",\"melding\":\"Dokumentene er postet!\",\"journalpostferdigstilt\":true,\"dokumenter\":[{\"brevkode\":\"TEST BREVKODE\",\"dokumentInfoId\":\"2\",\"tittel\":\"TEST TITTEL\"}]}")));
 
     }
 

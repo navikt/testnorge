@@ -1,5 +1,7 @@
 package no.nav.registre.inntekt.config;
 
+import static net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils.isBlank;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -19,8 +21,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Configuration
 public class JsonMapperConfig {
