@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import no.nav.registre.inntekt.domain.RsInntekt;
+import no.nav.registre.inntekt.domain.inntektstub.RsInntekt;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DatoParserTest {

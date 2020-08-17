@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import no.nav.registre.inntekt.domain.RsInntekt;
+import no.nav.registre.inntekt.domain.inntektstub.RsInntekt;
 
 public class DatoParser {
 

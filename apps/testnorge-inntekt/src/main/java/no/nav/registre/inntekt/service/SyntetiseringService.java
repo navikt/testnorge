@@ -5,6 +5,14 @@ import static no.nav.registre.inntekt.utils.CommonConstants.TYPE_PERSON;
 import static no.nav.registre.inntekt.utils.DatoParser.finnSenesteInntekter;
 import static no.nav.registre.inntekt.utils.DatoParser.hentMaanedsnavnFraMaanedsnummer;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Organisasjon;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Person;
+import no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,25 +24,15 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import no.nav.registre.inntekt.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektSyntConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektstubV2Consumer;
 import no.nav.registre.inntekt.domain.IdentMedData;
 import no.nav.registre.inntekt.domain.InntektSaveInHodejegerenRequest;
-import no.nav.registre.inntekt.domain.RsInntekt;
-import no.nav.registre.inntekt.domain.RsInntektsinformasjonsType;
-import no.nav.registre.inntekt.exception.UgyldigArbeidsforholdException;
+import no.nav.registre.inntekt.domain.inntektstub.RsInntekt;
+import no.nav.registre.inntekt.domain.inntektstub.RsInntektsinformasjonsType;
 import no.nav.registre.inntekt.provider.rs.requests.SyntetiseringsRequest;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Organisasjon;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Person;
-import no.nav.registre.testnorge.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 
 @Slf4j
 @Service
@@ -239,12 +237,12 @@ public class SyntetiseringService {
 
         var arbeidsforholdet = AaregService.finnNyesteArbeidsforhold(arbeidsforhold);
         if (arbeidsforholdet == null) {
-            throw new UgyldigArbeidsforholdException("Fant ikke arbeidsforhold til ident " + ident);
+            throw new RuntimeException("Fant ikke arbeidsforhold til ident " + ident);
         }
 
         var opplysningspliktig = arbeidsforholdet.getOpplysningspliktig();
         if (opplysningspliktig == null) {
-            throw new UgyldigArbeidsforholdException("Fant ingen opplysningspliktig i arbeidsforholdet til ident " + ident);
+            throw new RuntimeException("Fant ingen opplysningspliktig i arbeidsforholdet til ident " + ident);
         }
 
         var type = opplysningspliktig.getType();

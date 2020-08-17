@@ -14,12 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 
-import no.nav.registre.inntekt.domain.RsInntekt;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.inntekt.domain.inntektstub.RsInntekt;
 
 @Slf4j
 @Component
-@DependencyOn(value = "syntrest", external = true)
 public class InntektSyntConsumer {
 
     private static final ParameterizedTypeReference<SortedMap<String, List<RsInntekt>>> RESPONSE_TYPE = new ParameterizedTypeReference<SortedMap<String, List<RsInntekt>>>() {
@@ -35,7 +33,7 @@ public class InntektSyntConsumer {
     }
 
     public SortedMap<String, List<RsInntekt>> hentSyntetiserteInntektsmeldinger(Map<String, List<RsInntekt>> identerMedInntekt) {
-        RequestEntity<Map<String, List<RsInntekt>>> postRequest = RequestEntity.post(url.expand()).body(identerMedInntekt);
+        RequestEntity postRequest = RequestEntity.post(url.expand()).body(identerMedInntekt);
         try {
             return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
         } catch (HttpStatusCodeException e) {

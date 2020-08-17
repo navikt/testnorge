@@ -1,26 +1,26 @@
 package no.nav.registre.inntekt.consumer.rs.dokmot;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
-
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import no.nav.registre.inntekt.consumer.rs.dokmot.command.OpprettJournalpostCommand;
 import no.nav.registre.inntekt.consumer.rs.dokmot.dto.DokmotRequest;
-import no.nav.registre.inntekt.domain.dokmot.InntektDokument;
-import no.nav.registre.inntekt.domain.dokmot.ProsessertInntektDokument;
-import no.nav.registre.inntekt.exception.UgyldigJournalpostException;
+import no.nav.registre.inntekt.consumer.rs.dokmot.dto.InntektDokument;
+import no.nav.registre.inntekt.consumer.rs.dokmot.dto.ProsessertInntektDokument;
 import no.nav.registre.inntekt.security.sts.StsOidcService;
 
 @Slf4j
@@ -44,43 +44,36 @@ public class DokmotConsumer {
         Runtime.getRuntime().addShutdownHook(new Thread(executorService::shutdown));
     }
 
-    private CompletableFuture<ProsessertInntektDokument> opprettJournalpost(String miljoe, InntektDokument inntektDokument, Executor executor) {
+    private CompletableFuture<ProsessertInntektDokument> opprettJournalpost(String miljoe, InntektDokument inntektDokument, Executor executor, String navCallId) {
         OpprettJournalpostCommand command = new OpprettJournalpostCommand(
                 restTemplate,
                 oidcService.getIdToken(miljoe),
                 url.expand(miljoe),
-                new DokmotRequest(inntektDokument)
+                new DokmotRequest(inntektDokument),
+                navCallId
         );
         return CompletableFuture
                 .supplyAsync(command::call, executor)
                 .thenApply(response -> new ProsessertInntektDokument(inntektDokument, response));
     }
-    public List<ProsessertInntektDokument> opprettJournalpost(String miljoe, List<InntektDokument> inntektDokumentList) {
-        return opprettJournalpost(miljoe, inntektDokumentList, false);
-    }
 
-    public List<ProsessertInntektDokument> opprettJournalpost(String miljoe, List<InntektDokument> inntektDokumentList, boolean continueOnError) {
-        log.info("Oppretter {} journalpost i miljo {} for inntekt dokument...", inntektDokumentList.size(), miljoe);
+    @SneakyThrows public List<ProsessertInntektDokument> opprettJournalpost(String miljoe, List<InntektDokument> inntektDokumentList, String navCallId) {
+        log.info("Oppretter {} journalpost(er) i miljø {} for inntektsdokument(er). Nav-Call-Id: {}", inntektDokumentList.size(), miljoe, navCallId);
 
-        List<CompletableFuture<ProsessertInntektDokument>> completableDokmotList = new ArrayList<>();
-        inntektDokumentList.forEach(inntektDokument -> completableDokmotList.add(opprettJournalpost(miljoe, inntektDokument, executorService)));
+        List<CompletableFuture<ProsessertInntektDokument>> completableDokmotList = new ArrayList<>(inntektDokumentList.size());
+        inntektDokumentList.forEach(inntektDokument -> completableDokmotList.add(opprettJournalpost(miljoe, inntektDokument, executorService, navCallId)));
 
-        List<ProsessertInntektDokument> responses = completableDokmotList.stream().map(future -> {
+        List<ProsessertInntektDokument> responserFraJoark = new ArrayList<>(inntektDokumentList.size());
+
+        for (var future : completableDokmotList) {
             try {
-                return future.get();
+                responserFraJoark.add(future.get());
             } catch (Exception e) {
-                log.error("Klarer ikke å opprette jornalpost.", e);
-                if(continueOnError){
-                    return null;
-                }
-                throw new UgyldigJournalpostException("Feil ved opprettelse av journalpost for inntektsmelding", e);
+                log.error("Uventet feil ved opprettelse av journalpost i joark: ", e);
+                throw e;
             }
-        }).filter(Objects::nonNull).collect(Collectors.toList());
-
-        log.info("{} journalpost opprettet i miljø {}.", responses.size(), miljoe);
-        if (responses.size() < inntektDokumentList.size()) {
-            log.error("Bare {}/{} journalposter opprettet", responses.size(), inntektDokumentList.size());
         }
-        return responses;
+        log.info("{} journalpost(er) ble opprettet i miljø {}.", responserFraJoark.size(), miljoe);
+        return responserFraJoark;
     }
 }
