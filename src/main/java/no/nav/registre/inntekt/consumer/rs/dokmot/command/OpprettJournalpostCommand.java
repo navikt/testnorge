@@ -22,12 +22,14 @@ public class OpprettJournalpostCommand implements Callable<DokmotResponse> {
     private final String token;
     private final URI url;
     private final DokmotRequest request;
+    private final String navCallId;
 
     @Override
     public DokmotResponse call() {
         try {
             DokmotResponse response = restTemplate.exchange(
                     RequestEntity.post(url)
+                            .header("Nav-Call-Id", navCallId)
                             .header(AUTHORIZATION, "Bearer " + token)
                             .contentType(MediaType.APPLICATION_JSON)
                             .body(this.request),

@@ -17,6 +17,6 @@ public class DokumentInfo {
     private String brevkode;
     @JsonProperty
     private String dokumentInfoId;
-    @JsonProperty("tittel")
-    private String titel;
+    @JsonProperty
+    private String tittel;
 }

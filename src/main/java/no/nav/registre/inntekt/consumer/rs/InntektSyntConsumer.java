@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 
-import no.nav.registre.inntekt.domain.RsInntekt;
+import no.nav.registre.inntekt.domain.inntektstub.RsInntekt;
 
 @Slf4j
 @Component

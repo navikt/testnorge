@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import no.nav.registre.inntekt.consumer.rs.TestnorgeAaregConsumer;
-import no.nav.registre.inntekt.utils.ValidationException;
+
+import javax.validation.ValidationException;
 
 @Service
 @RequiredArgsConstructor

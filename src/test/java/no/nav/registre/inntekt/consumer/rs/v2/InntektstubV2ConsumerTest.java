@@ -32,7 +32,7 @@ import java.util.Map;
 
 import no.nav.registre.inntekt.consumer.rs.ConsumerUtils;
 import no.nav.registre.inntekt.consumer.rs.InntektstubV2Consumer;
-import no.nav.registre.inntekt.domain.RsInntekt;
+import no.nav.registre.inntekt.domain.inntektstub.RsInntekt;
 
 @RunWith(SpringRunner.class)
 @RestClientTest({ InntektstubV2Consumer.class, ConsumerUtils.class })
