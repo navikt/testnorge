@@ -4,6 +4,10 @@ Adapter for inntekt
 Tilbyr endepunkter for å opprette et gitt antall syntetiske inntekter, AltinnInntektmedlinger.
 Arbeidsforholdene til inntektsmeldingene blir validert mot Aareg i miljø.
 
+### Altinn Inntekt
+Altinn inntekt gjør kall til [inntektsmelding-stub](https://github.com/navikt/testnorge/tree/master/apps/inntektsmelding-stub), som oversetter inntektsmeldinger basert på 
+[kodeverk](https://github.com/navikt/tjenestespesifikasjoner/tree/master/nav-altinn-inntektsmelding/src/main/xsd) og legger dem så inn i Joark.
+
 ## Swagger
 Swagger finnes under [/api](https://testnorge-inntekt.nais.preprod.local/api) -endepunktet til applikasjonen.
 
