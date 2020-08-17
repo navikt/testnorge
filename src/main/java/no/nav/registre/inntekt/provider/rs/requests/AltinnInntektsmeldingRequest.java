@@ -15,7 +15,7 @@ public class AltinnInntektsmeldingRequest {
     @JsonProperty
     private String miljoe;
     @JsonProperty
-    private String arbeidstakerFnr;
+    private String arbeidstakerFnr;  // TODO: ident! (i v2)
     @JsonProperty
     private RsJoarkMetadata joarkMetadata;
     @JsonProperty

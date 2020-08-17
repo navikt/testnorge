@@ -15,14 +15,13 @@ public class ProsessertInntektDokument {
     private final String dokumentInfoId;
     private final String xml;
 
+    // TODO: v2, endre dokumentInfoId til en liste som har alle dokumentInfoId'er tilknyttet journalposten.
     public ProsessertInntektDokument(InntektDokument dokument, DokmotResponse response) {
         List<DokumentInfo> dokumentInfoListe = response.getDokumenter();
 
         this.fnr = dokument.getArbeidstakerFnr();
         this.journalpostId = response.getJournalpostId();
-        this.dokumentInfoId = (dokumentInfoListe != null && !dokumentInfoListe.isEmpty())
-                ? dokumentInfoListe.get(0).getDokumentInfoId()
-                : null;
+        this.dokumentInfoId = dokumentInfoListe.get(0).getDokumentInfoId();
         this.xml = dokument.getXml();
     }
 }

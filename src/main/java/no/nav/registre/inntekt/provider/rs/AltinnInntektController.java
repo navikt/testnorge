@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -38,6 +39,8 @@ public class AltinnInntektController {
     @PostMapping(value = "/enkeltident")
     @ResponseBody
     public ResponseEntity<?> genererMeldingForIdent(
+            @RequestHeader("Nav-Call-Id") String navCallId,
+            @RequestHeader("Nav-Consumer-Id") String navConsuemrId,
             @RequestBody AltinnInntektsmeldingRequest dollyRequest,
             @RequestParam(value = "validerArbeidsfohrold", required = false, defaultValue = "false") Boolean validerArbeidsforhold,
             @RequestParam(value = "includeXml", required = false, defaultValue = "false") Boolean includeXml,
@@ -45,11 +48,7 @@ public class AltinnInntektController {
     ) {
         try {
             validerInntektsmelding(dollyRequest);
-            var altinnInntektMeldinger = altinnInntektService.lagAltinnMeldinger(dollyRequest, continueOnError, validerArbeidsforhold, includeXml);
-            var altinnInntektResponse = new AltinnInntektResponse(
-                    dollyRequest.getArbeidstakerFnr(),
-                    altinnInntektMeldinger
-            );
+            var altinnInntektResponse = altinnInntektService.utfoerAltinnInntektMeldingRequest(navCallId, dollyRequest, continueOnError, validerArbeidsforhold, includeXml);
             return ResponseEntity.ok(altinnInntektResponse);
         } catch (ValidationException e) {
             log.error("Feil ved laging av Altinn meldinger", e);

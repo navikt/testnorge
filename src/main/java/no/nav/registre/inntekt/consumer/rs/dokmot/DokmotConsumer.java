@@ -42,43 +42,38 @@ public class DokmotConsumer {
         Runtime.getRuntime().addShutdownHook(new Thread(executorService::shutdown));
     }
 
-    private CompletableFuture<ProsessertInntektDokument> opprettJournalpost(String miljoe, InntektDokument inntektDokument, Executor executor) {
+    private CompletableFuture<ProsessertInntektDokument> opprettJournalpost(String miljoe, InntektDokument inntektDokument, Executor executor, String navCallId) {
         OpprettJournalpostCommand command = new OpprettJournalpostCommand(
                 restTemplate,
                 oidcService.getIdToken(miljoe),
                 url.expand(miljoe),
-                new DokmotRequest(inntektDokument)
+                new DokmotRequest(inntektDokument),
+                navCallId
         );
         return CompletableFuture
                 .supplyAsync(command::call, executor)
                 .thenApply(response -> new ProsessertInntektDokument(inntektDokument, response));
     }
-    public List<ProsessertInntektDokument> opprettJournalpost(String miljoe, List<InntektDokument> inntektDokumentList) {
-        return opprettJournalpost(miljoe, inntektDokumentList, false);
-    }
 
-    public List<ProsessertInntektDokument> opprettJournalpost(String miljoe, List<InntektDokument> inntektDokumentList, boolean continueOnError) {
-        log.info("Oppretter {} journalpost i miljo {} for inntekt dokument...", inntektDokumentList.size(), miljoe);
+    public List<ProsessertInntektDokument> opprettJournalpost(String miljoe, List<InntektDokument> inntektDokumentList, String navCallId) {
+        log.info("Oppretter {} journalpost(er) i miljø {} for inntektsdokument(er). Nav-Call-Id: {}", inntektDokumentList.size(), miljoe, navCallId);
 
         List<CompletableFuture<ProsessertInntektDokument>> completableDokmotList = new ArrayList<>();
-        inntektDokumentList.forEach(inntektDokument -> completableDokmotList.add(opprettJournalpost(miljoe, inntektDokument, executorService)));
+        inntektDokumentList.forEach(inntektDokument -> completableDokmotList.add(opprettJournalpost(miljoe, inntektDokument, executorService, navCallId)));
 
-        List<ProsessertInntektDokument> responses = completableDokmotList.stream().map(future -> {
+        List<ProsessertInntektDokument> responser = completableDokmotList.stream().map(future -> {
             try {
                 return future.get();
             } catch (Exception e) {
-                log.error("Klarer ikke å opprette jornalpost.", e);
-                if(continueOnError){
-                    return null;
-                }
-                throw new RuntimeException("Feil ved opprettelse av journalpost for inntektsmelding", e);
+                log.error("Uventet feil ved opprettelse av journalpost i joark: ", e);
+                return null;
             }
         }).filter(Objects::nonNull).collect(Collectors.toList());
 
-        log.info("{} journalpost opprettet i miljø {}.", responses.size(), miljoe);
-        if (responses.size() < inntektDokumentList.size()) {
-            log.error("Bare {}/{} journalposter opprettet", responses.size(), inntektDokumentList.size());
+        log.info("{} journalpost(er) ble opprettet i miljø {}.", responser.size(), miljoe);
+        if (responser.size() < inntektDokumentList.size()) {
+            log.warn("Bare {}/{} journalposter ble opprettet for Nav-Call-Id {}", responser.size(), inntektDokumentList.size(), navCallId);
         }
-        return responses;
+        return responser;
     }
 }
