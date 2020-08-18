@@ -80,7 +80,7 @@ public class SykemeldingClient implements ClientRegister {
             fyllRequestPasient(detaljertSykemeldingRequest, pasient, pasientBoAdresse);
 
             ResponseEntity<String> responseDetaljert = sykemeldingConsumer.postDetaljertSykemelding(detaljertSykemeldingRequest);
-            if (responseDetaljert.hasBody()) {
+            if (responseDetaljert.getStatusCode().equals(HttpStatus.OK)) {
                 status.append("Sykemelding:OK");
 
                 saveTranskasjonId(detaljertSykemeldingRequest.getMottaker().getOrgNr(), detaljertSykemeldingRequest.getArbeidsgiver().getNavn(), pasient.getIdent());
