@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.sykemelding.domain.mapper;
+package no.nav.dolly.bestilling.sykemelding.mapper;
 
 import static java.util.Objects.isNull;
 
