@@ -1,3 +1,8 @@
+VAULT_SERVICEUSER_PATH: serviceuser/dev/srvdolly-preprod-env
+VAULT_APP_PATH: kv/preprod/fss/testnorge-hendelse-api/default
+VAULT_DATABASE_ADMIN_PATH: postgresql/preprod-fss/creds/testnorge-hendelse-admin
+VAULT_DATABASE_USER_PATH: postgresql/preprod-fss/creds/testnorge-hendelse-user
+
 spring.cloud.vault:
   host: vault.adeo.no
   port: 443

@@ -1,3 +1,8 @@
+VAULT_SERVICEUSER_PATH: dummy
+VAULT_APP_PATH: dummy
+VAULT_DATABASE_ADMIN_PATH: dummy
+VAULT_DATABASE_USER_PATH: dummy
+
 spring:
   cloud:
     vault:
