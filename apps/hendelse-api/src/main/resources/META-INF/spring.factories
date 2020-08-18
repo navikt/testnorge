@@ -1,0 +1,2 @@
+org.springframework.cloud.bootstrap.BootstrapConfiguration=\
+  no.nav.registre.testnorge.hendelse.util.NavVaultConfigurer
