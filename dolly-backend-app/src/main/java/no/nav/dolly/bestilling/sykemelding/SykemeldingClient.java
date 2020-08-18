@@ -55,14 +55,13 @@ public class SykemeldingClient implements ClientRegister {
                 if (!transaksjonMappingService.existAlready(SYKEMELDING, tpsPerson.getHovedperson(), null) || isOpprettEndre) {
 
                     postSyntSykemelding(bestilling, tpsPerson, status);
-
                     postDetaljertSykemelding(bestilling, tpsPerson, status);
                 }
             } catch (RuntimeException e) {
 
                 status.append(errorStatusDecoder.decodeRuntimeException(e));
             }
-            progress.setSykemeldingStatus(status.toString());
+            progress.setSykemeldingStatus(status.toString().contains("OK") ? "OK" : status.toString());
         }
     }
 
@@ -82,7 +81,7 @@ public class SykemeldingClient implements ClientRegister {
 
             ResponseEntity<String> responseDetaljert = sykemeldingConsumer.postDetaljertSykemelding(detaljertSykemeldingRequest);
             if (responseDetaljert.hasBody()) {
-                status.append("Sykemelding: OK");
+                status.append("Sykemelding:OK");
 
                 saveTranskasjonId(detaljertSykemeldingRequest.getMottaker().getOrgNr(), detaljertSykemeldingRequest.getArbeidsgiver().getNavn(), pasient.getIdent());
             }
@@ -93,14 +92,12 @@ public class SykemeldingClient implements ClientRegister {
 
         if (nonNull(bestilling.getSykemelding().getSyntSykemelding())) {
             SyntSykemeldingRequest syntSykemeldingRequest = mapperFacade.map(bestilling.getSykemelding().getSyntSykemelding(), SyntSykemeldingRequest.class);
-            if (isNull(bestilling.getSykemelding().getSyntSykemelding().getIdent())) {
-                syntSykemeldingRequest.setIdent(tpsPerson.getHovedperson());
-            }
+            syntSykemeldingRequest.setIdent(tpsPerson.getHovedperson());
 
             ResponseEntity<String> response = sykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest);
 
             if (response.getStatusCode().equals(HttpStatus.OK)) {
-                status.append("Sykemelding: OK");
+                status.append("Sykemelding:OK");
 
                 saveTranskasjonId(syntSykemeldingRequest.getOrgnummer(), syntSykemeldingRequest.getArbeidsforholdId(), syntSykemeldingRequest.getIdent());
             }
