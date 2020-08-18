@@ -9,6 +9,7 @@ import ResultatVisningConnecter from '~/pages/soekMiniNorge/search/ResultatVisni
 import { Innhold } from '../hodejegeren/types'
 import { VelgPerson } from './ImportTilDolly/VelgPerson'
 import { ImportTilDolly } from './ImportTilDolly/ImportTilDolly'
+import Button from '~/components/ui/button/Button'
 
 interface SearchResultVisningProps {
 	soekOptions: string
@@ -70,7 +71,7 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 			dataField: 'velg',
 			headerFormatter: (text: string, data: Array<Innhold>) => {
 				return (
-					<div
+					<Button
 						onClick={() =>
 							valgtePersoner.length < 1
 								? setValgtePersoner(data.map(person => person.personIdent.id))
@@ -78,7 +79,7 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 						}
 					>
 						{text}
-					</div>
+					</Button>
 				)
 			},
 			formatter: (cell: any, row: Innhold) => (
