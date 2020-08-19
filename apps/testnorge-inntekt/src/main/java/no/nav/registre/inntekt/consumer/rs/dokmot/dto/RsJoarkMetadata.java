@@ -1,10 +1,8 @@
 package no.nav.registre.inntekt.consumer.rs.dokmot.dto;
 
 import io.swagger.annotations.ApiModel;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import no.nav.registre.inntekt.utils.IdGenerator;
 
 import java.util.Random;
 
