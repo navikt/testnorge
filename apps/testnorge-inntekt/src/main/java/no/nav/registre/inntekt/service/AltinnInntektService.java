@@ -38,7 +38,7 @@ public class AltinnInntektService {
                 .map(melding -> lagInntektDokument(melding, request.getArbeidstakerFnr(), request.getJoarkMetadata()))
                 .collect(Collectors.toList());
 
-        return dokmotConsumer.opprettJournalpostSynkront(request.getMiljoe(), dokumentListe, navCallId);
+        return dokmotConsumer.opprettJournalpost(request.getMiljoe(), dokumentListe, navCallId);
     }
 
     private InntektDokument lagInntektDokument(
