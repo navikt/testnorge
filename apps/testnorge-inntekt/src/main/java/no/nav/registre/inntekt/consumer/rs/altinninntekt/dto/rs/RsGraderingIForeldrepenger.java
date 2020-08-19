@@ -1,4 +1,4 @@
-package no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs;
+package no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.rs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
@@ -8,20 +8,18 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import java.time.LocalDate;
-
 @ApiModel
 @Builder
 @Value
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-public class RsPeriode {
+public class RsGraderingIForeldrepenger {
 
     @JsonProperty
-    @ApiModelProperty(value = "Dato fra og med", example = "YYYY-MM-DD")
-    private LocalDate fom;
+    @ApiModelProperty("Periode med foreldrepenger")
+    private RsPeriode periode;
     @JsonProperty
-    @ApiModelProperty(value = "Dato til og med", example = "YYYY-MM-DD")
-    private LocalDate tom;
+    @ApiModelProperty("Heltall med arbeidstidsprosent")
+    private Integer arbeidstidprosent;
 
 }

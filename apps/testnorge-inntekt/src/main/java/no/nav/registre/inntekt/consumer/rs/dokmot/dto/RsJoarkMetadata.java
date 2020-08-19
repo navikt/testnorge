@@ -14,18 +14,18 @@ public class RsJoarkMetadata {
     private static final Random RANDOM = new Random();
 
     // Default values:
-    private static final String JOURNALPOST_TYPE = "INNGAAENDE";
-    private static final String AVSENDER_MOTTAKER_ID_TYPE = "ORGNR";
-    private static final String BRUKER_ID_TYPE = "FNR";
-    private static final String TEMA = "FOR";
-    private static final String TITTEL = "Syntetisk Inntektsmelding";
-    private static final String KANAL = "ALTINN";
-    private static final String FILTYPE_XML = "XML";
-    private static final String FILTYPE_PDF = "PDF";
-    private static final String VARIANTFORMAT_ORIGINAL = "ORIGINAL";
-    private static final String VARIANTFORMAT_ARKIV = "ARKIV";
-    private static final String DOKUMENTER_BREVKODE = "4936";
-    private static final String DOKUMENTER_BERVKATEGORI = "ES";
+    private static final String DEFAULT_JOURNALPOST_TYPE = "INNGAAENDE";
+    private static final String DEFAULT_AVSENDER_MOTTAKER_ID_TYPE = "ORGNR";
+    private static final String DEFAULT_BRUKER_ID_TYPE = "FNR";
+    private static final String DEFAULT_TEMA = "FOR";
+    private static final String DEFAULT_TITTEL = "Syntetisk Inntektsmelding";
+    private static final String DEFAULT_KANAL = "ALTINN";
+    private static final String DEFAULT_FILTYPE_XML = "XML";
+    private static final String DEFAULT_FILTYPE_PDF = "PDF";
+    private static final String DEFAULT_VARIANTFORMAT_ORIGINAL = "ORIGINAL";
+    private static final String DEFAULT_VARIANTFORMAT_ARKIV = "ARKIV";
+    private static final String DEFAULT_DOKUMENTER_BREVKODE = "4936";
+    private static final String DEFAULT_DOKUMENTER_BERVKATEGORI = "ES";
 
     private String journalpostType;
     private String avsenderMottakerIdType;
@@ -42,23 +42,23 @@ public class RsJoarkMetadata {
     private String brevkategori;
 
     public RsJoarkMetadata() {
-        this.journalpostType = JOURNALPOST_TYPE;
-        this.avsenderMottakerIdType = AVSENDER_MOTTAKER_ID_TYPE;
-        this.brukerIdType = BRUKER_ID_TYPE;
-        this.tema = TEMA;
-        this.tittel = TITTEL;
-        this.kanal = KANAL;
+        this.journalpostType = DEFAULT_JOURNALPOST_TYPE;
+        this.avsenderMottakerIdType = DEFAULT_AVSENDER_MOTTAKER_ID_TYPE;
+        this.brukerIdType = DEFAULT_BRUKER_ID_TYPE;
+        this.tema = DEFAULT_TEMA;
+        this.tittel = DEFAULT_TITTEL;
+        this.kanal = DEFAULT_KANAL;
         this.eksternReferanseId = "AR" + randomNumber(7);
-        this.filtypeOriginal = FILTYPE_XML;
-        this.filtypeArkiv = FILTYPE_PDF;
-        this.variantformatOriginal = VARIANTFORMAT_ORIGINAL;
-        this.variantformatArkiv = VARIANTFORMAT_ARKIV;
-        this.brevkode = DOKUMENTER_BREVKODE;
-        this.brevkategori = DOKUMENTER_BERVKATEGORI;
+        this.filtypeOriginal = DEFAULT_FILTYPE_XML;
+        this.filtypeArkiv = DEFAULT_FILTYPE_PDF;
+        this.variantformatOriginal = DEFAULT_VARIANTFORMAT_ORIGINAL;
+        this.variantformatArkiv = DEFAULT_VARIANTFORMAT_ARKIV;
+        this.brevkode = DEFAULT_DOKUMENTER_BREVKODE;
+        this.brevkategori = DEFAULT_DOKUMENTER_BERVKATEGORI;
     }
 
     private static long randomNumber(int length) {
-        int min = (int)Math.pow(10, length-1);
-        return min + RANDOM.nextInt(min*9);
+        long min = (long) Math.pow(10, (length - 1));
+        return min + RANDOM.nextInt((int)(min * 9));
     }
 }

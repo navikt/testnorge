@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.enums.AltinnEnum;
+import no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.enums.AltinnEnum;
 
 import java.io.IOException;
 

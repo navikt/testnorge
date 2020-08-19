@@ -1,4 +1,4 @@
-package no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.enums;
+package no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.enums;
 
 public enum NaturalytelseKodeListe implements AltinnEnum {
     AKSJER_GRUNNFONDSBEVIS_TIL_UNDERKURS("aksjerGrunnfondsbevisTilUnderkurs"),

@@ -2,9 +2,9 @@ package no.nav.registre.inntekt.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.AltinnInntektConsumer;
+import no.nav.registre.inntekt.consumer.rs.altinninntekt.AltinnInntektConsumer;
 import no.nav.registre.inntekt.consumer.rs.dokmot.DokmotConsumer;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.RsInntektsmeldingRequest;
+import no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.RsInntektsmeldingRequest;
 import no.nav.registre.inntekt.consumer.rs.dokmot.dto.InntektDokument;
 import no.nav.registre.inntekt.consumer.rs.dokmot.dto.ProsessertInntektDokument;
 import no.nav.registre.inntekt.consumer.rs.dokmot.dto.RsJoarkMetadata;
@@ -60,7 +60,7 @@ public class AltinnInntektService {
                 .build();
     }
 
-    private String getVirksomhetsnavn(RsInntektsmeldingRequest inntekt) throws ValidationException {
+    private String getVirksomhetsnavn(RsInntektsmeldingRequest inntekt) {
         try {
             return inntekt.getArbeidsgiver().getKontaktinformasjon().getKontaktinformasjonNavn();
         } catch (NullPointerException ignored) {}
@@ -72,7 +72,7 @@ public class AltinnInntektService {
         }
     }
 
-    private String getVirksomhetsnummer(RsInntektsmeldingRequest inntekt) throws ValidationException{
+    private String getVirksomhetsnummer(RsInntektsmeldingRequest inntekt) {
         try {
             return inntekt.getArbeidsgiver().getVirksomhetsnummer();
         } catch (NullPointerException ignored) {}

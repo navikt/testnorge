@@ -1,59 +1,51 @@
-package no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto;
+package no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.rs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
+import no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.enums.AarsakInnsendingKodeListe;
+import no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.enums.YtelseKodeListe;
 
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.enums.AarsakInnsendingKodeListe;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.enums.YtelseKodeListe;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsArbeidsforhold;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsArbeidsgiver;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsArbeidsgiverPrivat;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsAvsendersystem;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsNaturalytelseDetaljer;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsOmsorgspenger;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsPeriode;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsRefusjon;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsSykepengerIArbeidsgiverperioden;
-
-/**
- * Skal være så å si et duplikat av RsInntektsmelding, men uten fnr da denne blir satt av
- * business logikk når hver melding skal lages.
- */
 @ApiModel
+@Builder
 @Value
+@AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class RsInntektsmeldingRequest {
+public class RsInntektsmelding {
 
     @JsonProperty
     @ApiModelProperty(required = true)
     private YtelseKodeListe ytelse;
-
     @JsonProperty
     @ApiModelProperty(required = true)
     private AarsakInnsendingKodeListe aarsakTilInnsending;
-
+    @JsonProperty
+    @Size(min = 11, max = 11)
+    @ApiModelProperty(value = "Arbeidstakers fødselsnummer", required = true)
+    private String arbeidstakerFnr;
     @JsonProperty
     @ApiModelProperty(value = "default = \'false\'", required = true)
     private boolean naerRelasjon;
-
     @JsonProperty
-    @ApiModelProperty
+    @ApiModelProperty(required = true)
     private RsAvsendersystem avsendersystem;
 
     @JsonProperty
-    @ApiModelProperty
+    @ApiModelProperty("For inntektsmeldingstype 201812 må enten arbeidsgiver eller arbeidsgiverPrivat være satt." +
+            "For inntektsmeldingstype 201809 må arbeidsgiver være satt.")
     private RsArbeidsgiver arbeidsgiver;
-
     @JsonProperty
-    @ApiModelProperty
+    @ApiModelProperty("For inntektsmeldingstype 201812 må enten arbeidsgiver eller arbeidsgiverPrivat være satt.")
     private RsArbeidsgiverPrivat arbeidsgiverPrivat;
 
     @JsonProperty
@@ -61,31 +53,25 @@ public class RsInntektsmeldingRequest {
     private RsArbeidsforhold arbeidsforhold;
 
     @JsonProperty
-    @ApiModelProperty
+    @ApiModelProperty()
     private RsRefusjon refusjon;
-
     @JsonProperty
-    @ApiModelProperty
+    @ApiModelProperty()
     private RsOmsorgspenger omsorgspenger;
-
     @JsonProperty
-    @ApiModelProperty
+    @ApiModelProperty()
     private RsSykepengerIArbeidsgiverperioden sykepengerIArbeidsgiverperioden;
-
     @JsonProperty
     @ApiModelProperty(example = "YYYY-MM-DD")
     private LocalDate startdatoForeldrepengeperiode;
-
     @JsonProperty
-    @ApiModelProperty
+    @ApiModelProperty()
     private List<RsNaturalytelseDetaljer> opphoerAvNaturalytelseListe;
-
     @JsonProperty
-    @ApiModelProperty
+    @ApiModelProperty()
     private List<RsNaturalytelseDetaljer> gjenopptakelseNaturalytelseListe;
-
     @JsonProperty
-    @ApiModelProperty
+    @ApiModelProperty()
     private List<RsPeriode> pleiepengerPerioder;
 
     public RsAvsendersystem getAvsendersystem() {
