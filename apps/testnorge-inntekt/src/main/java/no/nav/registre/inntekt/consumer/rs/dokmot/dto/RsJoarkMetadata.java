@@ -1,14 +1,20 @@
 package no.nav.registre.inntekt.consumer.rs.dokmot.dto;
 
 import io.swagger.annotations.ApiModel;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import no.nav.registre.inntekt.utils.IdGenerator;
+
+import java.util.Random;
 
 @ApiModel
 @Getter
 @Setter
 public class RsJoarkMetadata {
+
+    private static final Random RANDOM = new Random();
+
     // Default values:
     private static final String JOURNALPOST_TYPE = "INNGAAENDE";
     private static final String AVSENDER_MOTTAKER_ID_TYPE = "ORGNR";
@@ -44,12 +50,17 @@ public class RsJoarkMetadata {
         this.tema = TEMA;
         this.tittel = TITTEL;
         this.kanal = KANAL;
-        this.eksternReferanseId = "AR" + IdGenerator.randomNumberString(7);
+        this.eksternReferanseId = "AR" + randomNumber(7);
         this.filtypeOriginal = FILTYPE_XML;
         this.filtypeArkiv = FILTYPE_PDF;
         this.variantformatOriginal = VARIANTFORMAT_ORIGINAL;
         this.variantformatArkiv = VARIANTFORMAT_ARKIV;
         this.brevkode = DOKUMENTER_BREVKODE;
         this.brevkategori = DOKUMENTER_BERVKATEGORI;
+    }
+
+    private static long randomNumber(int length) {
+        int min = (int)Math.pow(10, length-1);
+        return min + RANDOM.nextInt(min*9);
     }
 }
