@@ -14,7 +14,7 @@ public class InputValidator {
 
     public enum INPUT_STRING_TYPE { MELDEGRUPPE, ENDRINGSKODE_NAV, ENDRINGSKODE }
 
-    private final static List<String> meldegrupper = new ArrayList<>(Arrays.asList("ATTF", "DAGP", "INDI", "ARBS", "FY"));
+    private final static List<String> meldegrupper = new ArrayList<>(Arrays.asList("ATTF", "DAGP", "INDIV", "ARBS", "FY"));
 
     private final static List<String> endringskoder = new ArrayList<>(Arrays.asList("0110", "0211", "0610", "0710", "1010",
             "1110", "1410", "1810", "2410", "2510", "2610", "2810", "2910", "3210", "3410", "3810", "3910", "4010",
