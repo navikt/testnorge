@@ -39,7 +39,6 @@ public class AltinnInntektService {
                 .collect(Collectors.toList());
 
         return dokmotConsumer.opprettJournalpost(request.getMiljoe(), dokumentListe, navCallId);
-
     }
 
     private InntektDokument lagInntektDokument(
