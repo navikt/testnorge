@@ -17,17 +17,9 @@ public class OrgnummerUtil {
     public static String generate(RestTemplate restTemplate) {
         String weights = "32765432";
         int random = ThreadLocalRandom.current().nextInt(80000000, 99999999);
-        int weightedSum = 0;
         String randomString = String.valueOf(random);
 
-        for (int index = 0; index < randomString.length(); index++) {
-            int vekt = Character.getNumericValue(weights.charAt(index));
-            int numericValue = Character.getNumericValue(randomString.charAt(index));
-
-            weightedSum += (vekt * numericValue);
-        }
-        int controlDigit = 11 - (weightedSum % 11);
-
+        int controlDigit = calculateControlDigit(weights, randomString);
         if (controlDigit == 1 || controlDigit < 0) {
             return generate(restTemplate);
         }
@@ -53,5 +45,15 @@ public class OrgnummerUtil {
 
     }
 
+    public static int calculateControlDigit(String weights, String randomString) {
+        int weightedSum = 0;
+        for (int index = 0; index < randomString.length(); index++) {
+            int vekt = Character.getNumericValue(weights.charAt(index));
+            int numericValue = Character.getNumericValue(randomString.charAt(index));
+
+            weightedSum += (vekt * numericValue);
+        }
+        return 11 - (weightedSum % 11);
+    }
 
 }
