@@ -92,5 +92,6 @@
         <module>rapportering-api</module>
         <module>brreg-stub</module>
         <module>udi-stub</module>
+        <module>syntrest</module>
     </modules>
 </project>
