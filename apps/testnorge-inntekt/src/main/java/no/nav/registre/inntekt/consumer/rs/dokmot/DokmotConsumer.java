@@ -39,8 +39,10 @@ public class DokmotConsumer {
         var resultater = new ArrayList<ProsessertInntektDokument>(inntektDokumenter.size());
 
         for (var inntektDokument : inntektDokumenter) {
+            log.info("Sender dokument til joark med eksternReferanseId: {}", inntektDokument.getMetadata().getEksternReferanseId());
             var command = new OpprettJournalpostCommand(restTemplate, oidcService.getIdToken(miljoe), url.expand(miljoe), new DokmotRequest(inntektDokument), navCallId);
             DokmotResponse respons = command.call();
+            log.info("Lagt inn dokument i joark med journalpostId: {} og eksternReferanseId: {}", respons.getJournalpostId(), inntektDokument.getMetadata().getEksternReferanseId());
             resultater.add(new ProsessertInntektDokument(inntektDokument, respons));
         }
 

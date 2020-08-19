@@ -3,6 +3,7 @@ package no.nav.registre.inntekt.consumer.rs.dokmot.dto;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
+import no.nav.registre.inntekt.utils.IdGenerator;
 
 @ApiModel
 @Getter
@@ -43,7 +44,7 @@ public class RsJoarkMetadata {
         this.tema = TEMA;
         this.tittel = TITTEL;
         this.kanal = KANAL;
-        this.eksternReferanseId = null;
+        this.eksternReferanseId = "AR" + IdGenerator.randomNumberString(7);
         this.filtypeOriginal = FILTYPE_XML;
         this.filtypeArkiv = FILTYPE_PDF;
         this.variantformatOriginal = VARIANTFORMAT_ORIGINAL;
