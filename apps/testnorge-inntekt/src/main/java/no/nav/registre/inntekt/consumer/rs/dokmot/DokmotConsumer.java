@@ -2,6 +2,7 @@ package no.nav.registre.inntekt.consumer.rs.dokmot;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.inntekt.consumer.rs.dokmot.dto.DokmotResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -75,5 +76,19 @@ public class DokmotConsumer {
         }
         log.info("{} journalpost(er) ble opprettet i miljø {}.", responserFraJoark.size(), miljoe);
         return responserFraJoark;
+    }
+
+    public List<ProsessertInntektDokument> opprettJournalpostSynkront(String miljoe, List<InntektDokument> inntektDokumenter, String navCallId) {
+        log.info("Oppretter {} journalpost(er) i miljø {} for inntektsdokument(er). Nav-Call-Id: {}", inntektDokumenter.size(), miljoe, navCallId);
+        var resultater = new ArrayList<ProsessertInntektDokument>(inntektDokumenter.size());
+
+        for (var inntektDokument : inntektDokumenter) {
+            var command = new OpprettJournalpostCommand(restTemplate, oidcService.getIdToken(miljoe), url.expand(miljoe), new DokmotRequest(inntektDokument), navCallId);
+            DokmotResponse respons = command.call();
+            resultater.add(new ProsessertInntektDokument(inntektDokument, respons));
+        }
+
+        log.info("{} journalpost(er) ble opprettet i miljø {}.", resultater.size(), miljoe);
+        return resultater;
     }
 }
