@@ -24,7 +24,6 @@ public class DokmotConsumer {
     private final UriTemplate url;
 
     public DokmotConsumer(
-            @Value("${dokmot.consumer.maxThreads}") Integer maxThreads,
             @Value("${dokmot.joark.rest.api.url}") String joarkUrl,
             RestTemplate restTemplate,
             StsOidcService oidcService

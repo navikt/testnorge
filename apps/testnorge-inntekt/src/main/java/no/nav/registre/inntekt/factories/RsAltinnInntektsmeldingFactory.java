@@ -1,9 +1,12 @@
 package no.nav.registre.inntekt.factories;
 
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.RsInntektsmeldingRequest;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsInntektsmelding;
+import no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.RsInntektsmeldingRequest;
+import no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.rs.RsInntektsmelding;
 
 public class RsAltinnInntektsmeldingFactory {
+
+    private RsAltinnInntektsmeldingFactory() {}
+
     public static RsInntektsmelding create(RsInntektsmeldingRequest request, String ident) {
         return RsInntektsmelding.builder()
                 .ytelse(request.getYtelse())

@@ -42,7 +42,7 @@ public class AltinnInntektControllerV2 {
         return ResponseEntity.ok(response);
     }
 
-    private void validerInntektsmelding(AltinnInntektsmeldingRequest dollyRequest) throws ValidationException {
+    private void validerInntektsmelding(AltinnInntektsmeldingRequest dollyRequest) {
         for (var inntekt : dollyRequest.getInntekter()) {
             var arbeidsgiver = inntekt.getArbeidsgiver();
             var arbeidsgiverPrivat = inntekt.getArbeidsgiverPrivat();

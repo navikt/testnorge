@@ -1,4 +1,4 @@
-package no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs;
+package no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.rs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.enums.BegrunnelseIngenEllerRedusertUtbetalingKodeListe;
+import no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.enums.BegrunnelseIngenEllerRedusertUtbetalingKodeListe;
 
 import java.util.List;
 

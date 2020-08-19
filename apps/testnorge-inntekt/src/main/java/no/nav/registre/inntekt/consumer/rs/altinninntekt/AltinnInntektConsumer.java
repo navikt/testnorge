@@ -1,4 +1,4 @@
-package no.nav.registre.inntekt.consumer.rs.altinnInntekt;
+package no.nav.registre.inntekt.consumer.rs.altinninntekt;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,7 +9,7 @@ import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs.RsInntektsmelding;
+import no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.rs.RsInntektsmelding;
 
 @Slf4j
 @Component
@@ -29,7 +29,7 @@ public class AltinnInntektConsumer {
 
     public String getInntektsmeldingXml201812(
             RsInntektsmelding inntektsmelding
-    ) throws RestClientResponseException {
+    ) {
         var postRequest = RequestEntity.post(urlMapper201812.expand())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(inntektsmelding);

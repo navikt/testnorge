@@ -1,4 +1,4 @@
-package no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.enums;
+package no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.enums;
 
 public enum AarsakBeregnetInntektEndringKodeListe implements AltinnEnum {
     TARIFFENDRING("Tariffendring"),

@@ -1,4 +1,4 @@
-package no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.rs;
+package no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.rs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
@@ -7,18 +7,20 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
-import no.nav.registre.inntekt.consumer.rs.altinnInntekt.dto.enums.AarsakBeregnetInntektEndringKodeListe;
+
+import java.time.LocalDate;
 
 @ApiModel
 @Builder
 @Value
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-public class RsInntekt {
+public class RsDelvisFravaer {
+
     @JsonProperty
-    @ApiModelProperty("Månedsinntekt")
-    private Double beloep;
+    @ApiModelProperty(example = "YYYY-MM-DD")
+    private LocalDate dato;
     @JsonProperty
-    @ApiModelProperty
-    private AarsakBeregnetInntektEndringKodeListe aarsakVedEndring;
+    @ApiModelProperty("Antall timer delvis fravær")
+    private Double timer;
 }
