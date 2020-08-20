@@ -26,6 +26,9 @@ import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
 import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
 import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
+import no.nav.dolly.bestilling.saf.SafConsumer;
+import no.nav.dolly.bestilling.saf.domain.SafRequest;
+import no.nav.dolly.bestilling.saf.domain.SafRequest.VariantFormat;
 import no.nav.dolly.consumer.fastedatasett.DatasettType;
 import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
 import no.nav.dolly.consumer.identpool.IdentpoolConsumer;
@@ -54,6 +57,7 @@ public class OppslagController {
     private final IdentpoolConsumer identpoolConsumer;
     private final InntektsmeldingEnumService inntektsmeldingEnumService;
     private final TransaksjonMappingService transaksjonMappingService;
+    private final SafConsumer safConsumer;
 
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
@@ -143,5 +147,12 @@ public class OppslagController {
     public List<TransaksjonMapping> getTransaksjonIder(@PathVariable SystemTyper system, @PathVariable String ident) {
 
         return transaksjonMappingService.getTransaksjonMapping(system, ident);
+    }
+
+    @GetMapping("/dokarkiv/{journalpostId}/{dokumentInfoId}/{variantFormat}")
+    @ApiOperation(value = "Henter dokumenter fra Joark", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    public ResponseEntity<String> getDokument(@PathVariable String journalpostId, @PathVariable String dokumentInfoId,
+                                              @PathVariable VariantFormat variantFormat, @RequestParam String miljoe) {
+        return safConsumer.getDokument(miljoe, new SafRequest(dokumentInfoId, journalpostId, variantFormat.name()));
     }
 }
