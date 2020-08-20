@@ -14,11 +14,11 @@ public class SykemeldingService {
     private final HendelseConsumer hendelseConsumer;
 
     public void send(Sykemelding sykemelding) {
+        syfoConsumer.send(sykemelding);
         hendelseConsumer.registerSykemeldingOpprettetHendelse(
                 sykemelding.getIdent(),
                 sykemelding.getFom(),
                 sykemelding.getTom()
         );
-        syfoConsumer.send(sykemelding);
     }
 }
