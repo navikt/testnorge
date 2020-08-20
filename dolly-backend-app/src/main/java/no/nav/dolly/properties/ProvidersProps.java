@@ -37,6 +37,7 @@ public class ProvidersProps {
     private Dokarkiv dokarkiv = new Dokarkiv();
     private SyntSykemelding syntSykemelding = new SyntSykemelding();
     private SkjermingsRegister skjermingsRegister = new SkjermingsRegister();
+    private Saf saf = new Saf();
 
     @Getter
     @Setter
@@ -253,6 +254,16 @@ public class ProvidersProps {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SkjermingsRegister {
+
+        private String url;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Saf {
 
         private String url;
     }
