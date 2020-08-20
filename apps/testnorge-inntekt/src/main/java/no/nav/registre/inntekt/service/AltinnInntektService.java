@@ -9,6 +9,7 @@ import no.nav.registre.inntekt.consumer.rs.dokmot.dto.InntektDokument;
 import no.nav.registre.inntekt.consumer.rs.dokmot.dto.ProsessertInntektDokument;
 import no.nav.registre.inntekt.consumer.rs.dokmot.dto.RsJoarkMetadata;
 import no.nav.registre.inntekt.factories.RsAltinnInntektsmeldingFactory;
+import no.nav.registre.inntekt.factories.RsJoarkMetadataFactory;
 import no.nav.registre.inntekt.provider.rs.requests.AltinnInntektsmeldingRequest;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +36,7 @@ public class AltinnInntektService {
 
         List<InntektDokument> dokumentListe = request.getInntekter()
                 .stream()
-                .map(melding -> lagInntektDokument(melding, request.getArbeidstakerFnr(), request.getJoarkMetadata()))
+                .map(melding -> lagInntektDokument(melding, request.getArbeidstakerFnr()))
                 .collect(Collectors.toList());
 
         return dokmotConsumer.opprettJournalpost(request.getMiljoe(), dokumentListe, navCallId);
@@ -43,8 +44,7 @@ public class AltinnInntektService {
 
     private InntektDokument lagInntektDokument(
             RsInntektsmeldingRequest rsInntektsmelding,
-            String ident,
-            RsJoarkMetadata metadata
+            String ident
     ) {
         var xmlString  = altinnInntektConsumer.getInntektsmeldingXml201812(RsAltinnInntektsmeldingFactory.create(rsInntektsmelding, ident));
         if (xmlString.equals("")) {
@@ -55,7 +55,7 @@ public class AltinnInntektService {
                 .datoMottatt(Date.from(rsInntektsmelding.getAvsendersystem().getInnsendingstidspunkt().atZone(ZoneId.systemDefault()).toInstant()))
                 .virksomhetsnavn(getVirksomhetsnavn(rsInntektsmelding))
                 .virksomhetsnummer(getVirksomhetsnummer(rsInntektsmelding))
-                .metadata(metadata)
+                .metadata(RsJoarkMetadataFactory.create(rsInntektsmelding))
                 .xml(xmlString)
                 .build();
     }
