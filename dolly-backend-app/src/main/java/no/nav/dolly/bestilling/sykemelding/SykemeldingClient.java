@@ -78,6 +78,7 @@ public class SykemeldingClient implements ClientRegister {
                     .sykemelding(bestilling.getSykemelding().getDetaljertSykemelding())
                     .build(),
                     DetaljertSykemeldingRequest.class);
+
             ResponseEntity<String> responseDetaljert = sykemeldingConsumer.postDetaljertSykemelding(detaljertSykemeldingRequest);
             if (responseDetaljert.getStatusCode().equals(HttpStatus.OK)) {
                 status.append("Sykemelding:OK");

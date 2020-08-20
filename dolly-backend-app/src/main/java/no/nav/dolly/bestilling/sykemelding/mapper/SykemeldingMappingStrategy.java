@@ -37,23 +37,19 @@ public class SykemeldingMappingStrategy implements MappingStrategy {
 
                         DetaljertSykemeldingRequest.Organisasjon organisasjon = DetaljertSykemeldingRequest.Organisasjon.builder()
                                 .adresse(DetaljertSykemeldingRequest.Adresse.builder()
-                                        .postnummer("6789")
+                                        .postnummer("0557")
                                         .land("NOR")
-                                        .gate("Syntegaten")
-                                        .by("Synteby")
+                                        .gate("Sannergata 2")
+                                        .by("Oslo")
                                         .build())
-                                .navn("Synt & Co.")
-                                .orgNr("123")
+                                .navn("Mini-Norge Legekontor")
+                                .orgNr("992741090")
                                 .build();
 
                         if (isNull(rsSykemelding.getDetaljer())) {
                             request.setDetaljer(DetaljertSykemeldingRequest.Detaljer.builder()
                                     .arbeidsforEtterEndtPeriode(true)
                                     .build());
-                        }
-
-                        if (isNull(rsSykemelding.getMottaker())) {
-                            request.setMottaker(organisasjon);
                         }
 
                         if (isNull(rsSykemelding.getSender())) {
@@ -68,7 +64,6 @@ public class SykemeldingMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<Person, DetaljertSykemeldingRequest>() {
                     @Override
                     public void mapAtoB(Person person, DetaljertSykemeldingRequest request, MappingContext context) {
-                        super.mapAtoB(person, request, context);
                         BoGateadresse pasientBoAdresse = (BoGateadresse) person.getBoadresse().get(0);
 
                         fyllRequestPasient(request, person, pasientBoAdresse);
