@@ -10,7 +10,7 @@ import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { SelectOptionsDiagnoser } from './SelectOptionsDiagnoser'
 import LegeSelect from './LegeSelect'
 import { ArbeidKodeverk } from '~/config/kodeverk'
 
@@ -66,7 +66,16 @@ const initialValuesDetaljertSykemelding = {
 			mellomnavn: ''
 		},
 		manglendeTilretteleggingPaaArbeidsplassen: false,
-		// mottaker: backend?
+		mottaker: {
+			navn: '',
+			orgNr: '',
+			adresse: {
+				by: '',
+				gate: '',
+				land: '',
+				postnummer: ''
+			}
+		},
 		// pasient: backend
 		perioder: [initialValuesPeriode],
 		// sender: backend?
@@ -90,7 +99,8 @@ export const SykemeldingForm = ({ formikBag }: SykemeldingForm) => {
 	}
 
 	const handleDiagnoseChange = (v, path) => {
-		formikBag.setFieldValue(`${path}.diagnose`, v.label)
+		formikBag.setFieldValue(`${path}.diagnose`, v.diagnoseNavn)
+		formikBag.setFieldValue(`${path}.system`, '2.16.578.1.12.4.1.1.7170')
 	}
 
 	const handleLegeChange = v => {
@@ -100,6 +110,21 @@ export const SykemeldingForm = ({ formikBag }: SykemeldingForm) => {
 			hprId: v.hprId,
 			ident: v.fnr,
 			mellomnavn: v.mellomnavn
+		})
+	}
+
+	const handleArbeidsgiverChange = v => {
+		console.log('v :>> ', v)
+		// formikBag.setFieldValue('sykemelding.detaljertSykemelding.arbeidsgiver.navn', v.navn)
+		formikBag.setFieldValue('sykemelding.detaljertSykemelding.mottaker', {
+			navn: v.navn,
+			orgNr: v.orgnr,
+			adresse: {
+				by: v.forretningsAdresse.poststed,
+				gate: v.forretningsAdresse.adresse,
+				land: v.forretningsAdresse.landkode,
+				postnummer: v.forretningsAdresse.postnr
+			}
 		})
 	}
 
@@ -159,17 +184,19 @@ export const SykemeldingForm = ({ formikBag }: SykemeldingForm) => {
 							<FormikSelect
 								name="sykemelding.detaljertSykemelding.hovedDiagnose.diagnosekode"
 								label="Diagnose"
-								options={Options('diagnose')}
+								// options={Options('diagnosekodeNy')}
+								options={SelectOptionsDiagnoser()}
+								// options={Diagnoser('ICPC2')}
 								afterChange={v =>
 									handleDiagnoseChange(v, 'sykemelding.detaljertSykemelding.hovedDiagnose')
 								}
 								size="xlarge"
 								isClearable={false}
 							/>
-							<FormikTextInput
+							{/* <FormikTextInput
 								name="sykemelding.detaljertSykemelding.hovedDiagnose.system"
 								label="System"
-							/>
+							/> */}
 						</div>
 					</Kategori>
 					<FormikDollyFieldArray
@@ -178,17 +205,15 @@ export const SykemeldingForm = ({ formikBag }: SykemeldingForm) => {
 						newEntry={initialValuesDiagnose}
 					>
 						{(path: string) => (
-							<>
-								<FormikSelect
-									name={`${path}.diagnosekode`}
-									label="Diagnose"
-									options={Options('diagnose')}
-									afterChange={v => handleDiagnoseChange(v, path)}
-									size="xlarge"
-									isClearable={false}
-								/>
-								<FormikTextInput name={`${path}.system`} label="System" />
-							</>
+							<FormikSelect
+								name={`${path}.diagnosekode`}
+								label="Diagnose"
+								options={SelectOptionsDiagnoser()}
+								afterChange={v => handleDiagnoseChange(v, path)}
+								size="xlarge"
+								isClearable={false}
+							/>
+							// {/* <FormikTextInput name={`${path}.system`} label="System" /> */}
 						)}
 					</FormikDollyFieldArray>
 					<Kategori title="Lege" vis="sykemelding">
@@ -202,6 +227,8 @@ export const SykemeldingForm = ({ formikBag }: SykemeldingForm) => {
 						<OrganisasjonMedArbeidsforholdSelect
 							path="sykemelding.detaljertSykemelding.arbeidsgiver.navn"
 							label="Navn"
+							afterChange={v => handleArbeidsgiverChange(v)}
+							valueNavn={true}
 						/>
 						<FormikSelect
 							name="sykemelding.detaljertSykemelding.arbeidsgiver.yrkesbetegnelse"

@@ -67,16 +67,16 @@ export const validation = {
 					startDato: requiredDate,
 					hovedDiagnose: Yup.object({
 						diagnose: requiredString,
-						diagnosekode: requiredString,
-						system: requiredString
+						diagnosekode: requiredString
+						// system: requiredString
 					}),
 					biDiagnoser: Yup.array().of(
 						ifPresent(
 							'$sykemelding.detaljertSykemelding.biDiagnoser[0].diagnose',
 							Yup.object({
 								diagnose: requiredString,
-								diagnosekode: requiredString,
-								system: requiredString
+								diagnosekode: requiredString
+								// system: requiredString
 							})
 						)
 					),

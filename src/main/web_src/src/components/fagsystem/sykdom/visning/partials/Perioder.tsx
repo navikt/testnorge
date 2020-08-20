@@ -1,0 +1,32 @@
+import React from 'react'
+import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { TitleValue } from '~/components/ui/titleValue/TitleValue'
+import Formatters from '~/utils/DataFormatter'
+
+export const Perioder = ({ data }) => {
+	if (!data || data.length === 0) return null
+
+	return (
+		<>
+			<h4>Perioder</h4>
+			<DollyFieldArray data={data} nested>
+				{(periode, idx) => (
+					<div key={idx} className="person-visning_content">
+						<TitleValue title="F.o.m. dato" value={Formatters.formatStringDates(periode.fom)} />
+						<TitleValue title="T.o.m. dato" value={Formatters.formatStringDates(periode.tom)} />
+						<TitleValue title="Aktivitet" value={periode.aktivitet.aktivitet} />
+						<TitleValue
+							title="Antall behandlingsdager"
+							value={periode.aktivitet.behandlingsdager}
+						/>
+						<TitleValue title="Grad" value={periode.aktivitet.grad} />
+						<TitleValue
+							title="Har reisetilskudd"
+							value={Formatters.oversettBoolean(periode.aktivitet.reisetilskudd)}
+						/>
+					</div>
+				)}
+			</DollyFieldArray>
+		</>
+	)
+}

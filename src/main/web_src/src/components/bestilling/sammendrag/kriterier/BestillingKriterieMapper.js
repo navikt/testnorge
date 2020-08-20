@@ -541,7 +541,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							'Diagnosekode',
 							_get(sykemeldingKriterier.detaljertSykemelding, 'hovedDiagnose.diagnosekode')
 						),
-						obj('System', _get(sykemeldingKriterier.detaljertSykemelding, 'hovedDiagnose.system')),
+						// obj('System', _get(sykemeldingKriterier.detaljertSykemelding, 'hovedDiagnose.system')),
 						obj(
 							'Antall registrerte bidiagnoser',
 							sykemeldingKriterier.detaljertSykemelding.biDiagnoser &&
