@@ -1,12 +1,16 @@
 package no.nav.registre.inntekt.consumer.rs.dokmot.dto;
 
 import io.swagger.annotations.ApiModel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @ApiModel
-@Value
 @Builder
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class RsJoarkMetadata {
 
     private String journalpostType;
