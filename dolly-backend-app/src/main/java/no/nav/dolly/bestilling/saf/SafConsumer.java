@@ -41,12 +41,11 @@ public class SafConsumer {
         log.info("Dokarkiv melding sendt, callId: {}, consumerId: {}, miljø: {}", callId, CONSUMER, environment);
 
         return restTemplate.exchange(
-                RequestEntity.post(URI.create(String.format("%s%s", providersProps.getSaf().getUrl().replace("$", environment),
+                RequestEntity.get(URI.create(String.format("%s%s", providersProps.getJoark().getUrl().replace("$", environment),
                         String.format("%s/%s/%s/%s", SAF_URL, request.getJournalpostId(), request.getDokumentInfoId(), request.getVariantFormat()))))
-                        .header(AUTHORIZATION, stsOidcService.getIdToken(environment.contains(PREPROD_ENV) ? PREPROD_ENV : TEST_ENV))
+                        .header(AUTHORIZATION,stsOidcService.getIdToken(environment.contains(PREPROD_ENV) ? PREPROD_ENV : TEST_ENV))
                         .header(HEADER_NAV_CALL_ID, callId)
-                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                        .body(request),
+                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER).build(),
                 String.class);
     }
 
