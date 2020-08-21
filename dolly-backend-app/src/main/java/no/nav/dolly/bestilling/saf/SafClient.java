@@ -89,7 +89,7 @@ public class SafClient implements ClientRegister {
         transaksjonMappingService.save(
                 TransaksjonMapping.builder()
                         .transaksjonId(toJson(JoarkTransaksjon.builder()
-                                .build())) // TODO FIKSE
+                                .build())) // TODO FIKSE HVIS TRENGS
                         .datoEndret(LocalDateTime.now())
                         .miljoe(miljoe)
                         .system(DOKARKIV.name())
