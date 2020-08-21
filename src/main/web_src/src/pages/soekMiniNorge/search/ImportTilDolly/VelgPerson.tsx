@@ -1,6 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react'
 import { Checkbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import useBoolean from '~/utils/hooks/useBoolean'
 import { Innhold } from '../../hodejegeren/types'
 
 interface VelgPerson {
@@ -13,7 +12,7 @@ export const VelgPerson = ({ personinfo, valgtePersoner, setValgtePersoner }: Ve
 	const gjeldendePerson = personinfo.personIdent.id
 	const avhuket = valgtePersoner.some(id => id === gjeldendePerson)
 
-	const handleOnChange = (avhuket: boolean) => {
+	const handleOnChange = () => {
 		if (avhuket) {
 			setValgtePersoner(valgtePersoner.filter(ident => ident !== personinfo.personIdent.id))
 		} else {
@@ -29,7 +28,7 @@ export const VelgPerson = ({ personinfo, valgtePersoner, setValgtePersoner }: Ve
 					title={'Marker'}
 					label={''}
 					checked={avhuket}
-					onChange={() => handleOnChange(avhuket)}
+					onChange={handleOnChange}
 				/>
 			}
 		</div>

@@ -16,7 +16,7 @@ const DOLLY_MILJOE = ['q2']
 export const ImportTilDollyModal = ({ valgtePersoner, onAvbryt }: ImportTilDollyModal) => {
 	const [valgtGruppe, setValgtGruppe] = useState('')
 	const [feilmelding, setFeilmelding] = useState('')
-	const [redirectToGruppe, setRedirect, ikkeRedirect] = useBoolean()
+	const [redirectToGruppe, setRedirect] = useBoolean()
 
 	const onSubmit = () => {
 		const request = {

@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
 import EksisterendeGruppeConnector from './EksisterendeGruppeConnector'
 import NyGruppe from './NyGruppe'
 

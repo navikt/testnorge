@@ -11,12 +11,8 @@ interface ImportFraEtikett {
 }
 
 const importType = (fra: string) => {
-	switch (fra) {
-		case 'TPS':
-			return 'Mini-Norge'
-		default:
-			'Ukjent'
-	}
+	if (fra === 'TPS') return 'Mini-Norge'
+	else return 'Ukjent'
 }
 
 const ImportFraEtikett = ({ importFra, type, venstreMargin }: ImportFraEtikett) => {

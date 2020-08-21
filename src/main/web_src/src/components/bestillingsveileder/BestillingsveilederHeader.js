@@ -1,5 +1,4 @@
 import React, { useContext } from 'react'
-import Etikett from 'nav-frontend-etiketter'
 import { Header } from '~/components/ui/header/Header'
 import Formatter from '~/utils/DataFormatter'
 import { BestillingsveilederContext } from './Bestillingsveileder'
