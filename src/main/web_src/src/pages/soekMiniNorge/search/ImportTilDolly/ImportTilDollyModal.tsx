@@ -44,7 +44,7 @@ export const ImportTilDollyModal = ({ valgtePersoner, onAvbryt }: ImportTilDolly
 			<h4>
 				Velg en testdatagruppe du ønsker å importere personen(e) til, eller opprett en ny
 				testdatagruppe. Du vil da finne personen(e) i valgt gruppe, og kan bruke Dolly til å gjøre
-				endringer på dem.
+				endringer på dem. Personen(e) ligger i Q2.
 			</h4>
 			<VelgGruppeToggle valgtGruppe={valgtGruppe} setValgtGruppe={setValgtGruppe} />
 			{feilmelding && <div className="error-message">{feilmelding}</div>}
