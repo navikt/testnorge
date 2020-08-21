@@ -102,11 +102,10 @@ public class SykemeldingMappingStrategy implements MappingStrategy {
                         .postnummer(getPostNrOgSted(pasientPostAdresse).substring(0, 3))
                         .build();
             }
-            StringBuilder gate = new StringBuilder(pasientPostAdresse.getPostLinje1())
-                    .append(nonNull(pasientPostAdresse.getPostLinje2()) ? ", " + pasientPostAdresse.getPostLinje2() : "")
-                    .append(nonNull(pasientPostAdresse.getPostLinje3()) ? ", " + pasientPostAdresse.getPostLinje3() : "");
             return Adresse.builder()
-                    .gate(gate.toString())
+                    .gate(String.format("%s%s%s", pasientPostAdresse.getPostLinje1(),
+                            nonNull(pasientPostAdresse.getPostLinje2()) ? ", " + pasientPostAdresse.getPostLinje2() : "",
+                            nonNull(pasientPostAdresse.getPostLinje3()) ? ", " + pasientPostAdresse.getPostLinje3() : ""))
                     .land(pasientPostAdresse.getPostLand())
                     .postnummer(getPostNrOgSted(pasientPostAdresse).substring(0, 3))
                     .build();
