@@ -60,7 +60,7 @@ public class SykemeldingClient implements ClientRegister {
 
                 status.append(errorStatusDecoder.decodeRuntimeException(e));
             }
-            progress.setSykemeldingStatus(status.toString().contains("OK") ? "OK" : status.toString());
+            progress.setSykemeldingStatus(status.toString());
         }
     }
 
@@ -81,7 +81,7 @@ public class SykemeldingClient implements ClientRegister {
 
             ResponseEntity<String> responseDetaljert = sykemeldingConsumer.postDetaljertSykemelding(detaljertSykemeldingRequest);
             if (responseDetaljert.getStatusCode().equals(HttpStatus.OK)) {
-                status.append("Sykemelding:OK");
+                status.append("OK");
 
                 saveTranskasjonId(detaljertSykemeldingRequest.getMottaker().getOrgNr(), detaljertSykemeldingRequest.getArbeidsgiver().getNavn(), pasient.getIdent());
             }
@@ -97,7 +97,7 @@ public class SykemeldingClient implements ClientRegister {
             ResponseEntity<String> response = sykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest);
 
             if (response.getStatusCode().equals(HttpStatus.OK)) {
-                status.append("Sykemelding:OK");
+                status.append("OK");
 
                 saveTranskasjonId(syntSykemeldingRequest.getOrgnummer(), syntSykemeldingRequest.getArbeidsforholdId(), syntSykemeldingRequest.getIdent());
             }

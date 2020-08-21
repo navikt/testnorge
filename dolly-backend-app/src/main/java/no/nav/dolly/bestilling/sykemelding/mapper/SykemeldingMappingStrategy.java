@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.sykemelding.mapper;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 import org.springframework.stereotype.Component;
 
@@ -9,9 +10,12 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.sykemelding.domain.BestillingPersonWrapper;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
+import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest.Pasient;
 import no.nav.dolly.domain.resultset.sykemelding.RsDetaljertSykemelding;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.adresse.BoGateadresse;
+import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
+import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.mapper.MappingStrategy;
 
 @Component
@@ -25,7 +29,10 @@ public class SykemeldingMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(BestillingPersonWrapper wrapper, DetaljertSykemeldingRequest request, MappingContext context) {
                         mapperFacade.map(wrapper.getSykemelding(), request);
-                        mapperFacade.map(wrapper.getPerson(), request);
+                        if (isNull(request.getPasient())) {
+                            request.setPasient(new Pasient());
+                        }
+                        mapperFacade.map(wrapper.getPerson(), request.getPasient());
                     }
                 })
                 .register();
@@ -60,34 +67,36 @@ public class SykemeldingMappingStrategy implements MappingStrategy {
                 .byDefault()
                 .register();
 
-        factory.classMap(Person.class, DetaljertSykemeldingRequest.class)
-                .customize(new CustomMapper<Person, DetaljertSykemeldingRequest>() {
+        factory.classMap(Person.class, Pasient.class)
+                .customize(new CustomMapper<Person, Pasient>() {
                     @Override
-                    public void mapAtoB(Person person, DetaljertSykemeldingRequest request, MappingContext context) {
-                        BoGateadresse pasientBoAdresse = (BoGateadresse) person.getBoadresse().get(0);
+                    public void mapAtoB(Person person, Pasient request, MappingContext context) {
 
-                        fyllRequestPasient(request, person, pasientBoAdresse);
+                        request.setNavKontor(person.getTknavn());
+                        request.setTelefon(person.getTelefonnummer_1());
+                        setRequestAdresse(person, request);
                     }
                 })
                 .byDefault()
                 .register();
     }
 
-    private void fyllRequestPasient(DetaljertSykemeldingRequest detaljertSykemeldingRequest, Person pasient, BoGateadresse pasientAdresse) {
-        detaljertSykemeldingRequest.setPasient(DetaljertSykemeldingRequest.Pasient.builder()
-                .fornavn(pasient.getFornavn())
-                .etternavn(pasient.getEtternavn())
-                .mellomnavn(isNull(pasient.getMellomnavn()) ? null : pasient.getMellomnavn())
-                .foedselsdato(pasient.getFoedselsdato().toLocalDate())
-                .ident(pasient.getIdent())
-                .navKontor(pasient.getTknavn())
-                .telefon(isNull(pasient.getTelefonnummer_1()) ? null : pasient.getTelefonnummer_1())
-                .adresse(DetaljertSykemeldingRequest.Adresse.builder()
-                        .by(pasient.getBoadresse().get(0).getPostnr())
-                        .gate(pasientAdresse.getGateadresse())
-                        .land(pasient.getStatsborgerskap().get(0).getStatsborgerskap())
-                        .postnummer(pasient.getBoadresse().get(0).getPostnr())
-                        .build())
+    private void setRequestAdresse(Person person, Pasient request) {
+        BoGateadresse pasientBoAdresse = null;
+        RsPostadresse pasientPostAdresse = null;
+        if (!person.getBoadresse().isEmpty()) {
+            pasientBoAdresse = (BoGateadresse) person.getBoadresse().get(0);
+        } else if (!person.getPostadresse().isEmpty()) {
+            pasientPostAdresse = person.getPostadresse().get(0);
+        } else {
+            throw new NotFoundException("Person må ha enten BoAdresse eller PostAdresse!");
+        }
+        request.setAdresse(DetaljertSykemeldingRequest.Adresse.builder()
+                .by(nonNull(pasientBoAdresse) ? pasientBoAdresse.getPostnr() : pasientPostAdresse.getPostLinje1())
+                .gate(nonNull(pasientBoAdresse) ? pasientBoAdresse.getGateadresse() : pasientPostAdresse.getPostLinje1())
+                .land(!person.getBoadresse().isEmpty() ? "NOR" : pasientPostAdresse.getPostLand())
+                .postnummer(nonNull(pasientBoAdresse) ? pasientBoAdresse.getPostnr() : pasientPostAdresse.getPostLinje1())
                 .build());
     }
+
 }

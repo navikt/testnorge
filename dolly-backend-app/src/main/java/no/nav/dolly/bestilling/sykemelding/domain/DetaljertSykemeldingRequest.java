@@ -75,7 +75,7 @@ public class DetaljertSykemeldingRequest {
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     public static class Diagnose {
 
-        private String diagnose;
+        private String dollyDiagnose;
         private String diagnosekode;
         private String system;
     }
@@ -161,7 +161,7 @@ public class DetaljertSykemeldingRequest {
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     public static class Aktivitet {
 
-        private AktivitetType aktivitet;
+        private AktivitetType dollyAktivitet;
         private Integer behandlingsdager;
         private Integer grad;
         private Boolean reisetilskudd;
