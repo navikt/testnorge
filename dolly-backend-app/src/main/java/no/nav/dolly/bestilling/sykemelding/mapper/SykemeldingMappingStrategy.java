@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.sykemelding.mapper;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 import org.springframework.stereotype.Component;
 
@@ -82,21 +81,26 @@ public class SykemeldingMappingStrategy implements MappingStrategy {
     }
 
     private void setRequestAdresse(Person person, Pasient request) {
-        BoGateadresse pasientBoAdresse = null;
-        RsPostadresse pasientPostAdresse = null;
         if (!person.getBoadresse().isEmpty()) {
-            pasientBoAdresse = (BoGateadresse) person.getBoadresse().get(0);
+            BoGateadresse pasientBoAdresse = (BoGateadresse) person.getBoadresse().get(0);
+            request.setAdresse(DetaljertSykemeldingRequest.Adresse.builder()
+                    .by(pasientBoAdresse.getPostnr())
+                    .gate(pasientBoAdresse.getGateadresse())
+                    .land("NOR")
+                    .postnummer(pasientBoAdresse.getPostnr())
+                    .build());
+
         } else if (!person.getPostadresse().isEmpty()) {
-            pasientPostAdresse = person.getPostadresse().get(0);
+            RsPostadresse pasientPostAdresse = person.getPostadresse().get(0);
+            request.setAdresse(DetaljertSykemeldingRequest.Adresse.builder()
+                    .by(pasientPostAdresse.getPostLinje1())
+                    .gate(pasientPostAdresse.getPostLinje1())
+                    .land(pasientPostAdresse.getPostLand())
+                    .postnummer(pasientPostAdresse.getPostLinje1())
+                    .build());
         } else {
             throw new NotFoundException("Person må ha enten BoAdresse eller PostAdresse!");
         }
-        request.setAdresse(DetaljertSykemeldingRequest.Adresse.builder()
-                .by(nonNull(pasientBoAdresse) ? pasientBoAdresse.getPostnr() : pasientPostAdresse.getPostLinje1())
-                .gate(nonNull(pasientBoAdresse) ? pasientBoAdresse.getGateadresse() : pasientPostAdresse.getPostLinje1())
-                .land(!person.getBoadresse().isEmpty() ? "NOR" : pasientPostAdresse.getPostLand())
-                .postnummer(nonNull(pasientBoAdresse) ? pasientBoAdresse.getPostnr() : pasientPostAdresse.getPostLinje1())
-                .build());
     }
 
 }
