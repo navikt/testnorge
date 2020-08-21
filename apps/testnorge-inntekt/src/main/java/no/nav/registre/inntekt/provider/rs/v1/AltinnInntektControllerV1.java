@@ -2,8 +2,6 @@ package no.nav.registre.inntekt.provider.rs.v1;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.inntekt.consumer.rs.dokmot.dto.ProsessertInntektDokument;
-import no.nav.registre.inntekt.provider.rs.v1.response.AltinnInntektResponseV1;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,12 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.registre.inntekt.provider.rs.requests.AltinnInntektsmeldingRequest;
-import no.nav.registre.inntekt.service.AltinnInntektService;
-
 import javax.validation.ValidationException;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import no.nav.registre.inntekt.consumer.rs.dokmot.dto.ProsessertInntektDokument;
+import no.nav.registre.inntekt.provider.rs.requests.AltinnInntektsmeldingRequest;
+import no.nav.registre.inntekt.provider.rs.v1.response.AltinnInntektResponseV1;
+import no.nav.registre.inntekt.service.AltinnInntektService;
 
 @Slf4j
 @RestController
@@ -33,8 +33,10 @@ public class AltinnInntektControllerV1 {
             @RequestHeader("Nav-Call-Id") String navCallId,
             @RequestBody AltinnInntektsmeldingRequest request
     ) {
+        log.info("Oppretter inntektsmelding for {} i {}.", request.getArbeidstakerFnr(), request.getMiljoe());
+
         validerInntektsmelding(request);
-        List<ProsessertInntektDokument> prosessertInntektDokuments = altinnInntektService.utfoerAltinnInntektMeldingRequest(navCallId, request);
+        List<ProsessertInntektDokument> prosessertInntektDokuments = altinnInntektService.opprettInntektsmelding(navCallId, request);
 
         var response = new AltinnInntektResponseV1(
                 request.getArbeidstakerFnr(),
