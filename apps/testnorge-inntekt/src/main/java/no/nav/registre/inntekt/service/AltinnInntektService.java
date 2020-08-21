@@ -30,7 +30,7 @@ public class AltinnInntektService {
     private final DokmotConsumer dokmotConsumer;
 
 
-    public List<ProsessertInntektDokument> utfoerAltinnInntektMeldingRequest(
+    public List<ProsessertInntektDokument> opprettInntektsmelding(
             String navCallId,
             AltinnInntektsmeldingRequest request
     ) {
@@ -48,6 +48,7 @@ public class AltinnInntektService {
             String ident
     ) {
         var xmlString  = altinnInntektConsumer.getInntektsmeldingXml201812(RsAltinnInntektsmeldingFactory.create(rsInntektsmelding, ident));
+        log.trace(xmlString);
 
         return InntektDokument.builder()
                 .arbeidstakerFnr(ident)
