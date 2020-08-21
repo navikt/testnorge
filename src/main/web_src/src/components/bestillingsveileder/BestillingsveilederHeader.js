@@ -31,7 +31,7 @@ export const BestillingsveilederHeader = () => {
 				)}
 				{opts.is.leggTil && opts.personFoerLeggTil.tpsf.importFra && (
 					<Header.TitleValue
-						title="Import fra"
+						title="Importert fra"
 						value={
 							<ImportFraEtikett type="fokus" importFra={opts.personFoerLeggTil.tpsf.importFra} />
 						}

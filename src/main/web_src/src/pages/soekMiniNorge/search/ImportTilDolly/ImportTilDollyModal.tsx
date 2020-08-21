@@ -26,8 +26,8 @@ export const ImportTilDollyModal = ({ valgtePersoner, onAvbryt }: ImportTilDolly
 		}
 
 		api.importerPersoner(valgtGruppe, request).then(response => {
-			if (!response.ok) {
-				const msg = response.statusText || 'Noe gikk galt'
+			if (response.error) {
+				const msg = response.message || 'Noe gikk galt'
 				setFeilmelding(msg)
 			} else {
 				setRedirect()
@@ -53,7 +53,7 @@ export const ImportTilDollyModal = ({ valgtePersoner, onAvbryt }: ImportTilDolly
 				submitTitle={valgtGruppe.length < 1 ? 'Velg en gruppe' : null}
 				disabled={valgtGruppe.length < 1}
 				onAvbryt={onAvbryt}
-				onSubmit={() => onSubmit()}
+				onSubmit={onSubmit}
 				center
 			/>
 		</div>

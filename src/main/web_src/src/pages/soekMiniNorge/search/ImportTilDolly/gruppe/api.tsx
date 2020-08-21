@@ -19,7 +19,7 @@ export const api = {
 				if (!response.ok) {
 					throw new Error(response.statusText)
 				}
-				return response
+				return response.json()
 			})
 			.catch(error => {
 				console.error(error)

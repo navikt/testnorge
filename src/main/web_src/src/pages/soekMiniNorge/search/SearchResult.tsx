@@ -72,11 +72,20 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 			headerFormatter: (text: string, data: Array<Innhold>) => {
 				return (
 					<Button
-						onClick={() =>
-							valgtePersoner.length < 1
-								? setValgtePersoner(data.map(person => person.personIdent.id))
-								: setValgtePersoner([])
-						}
+						onClick={() => {
+							const alleValgtPaaSiden = data.every(person =>
+								valgtePersoner.includes(person.personIdent.id)
+							)
+							alleValgtPaaSiden
+								? setValgtePersoner(
+										valgtePersoner.filter(
+											personId => !data.some(person => person.personIdent.id === personId)
+										)
+								  )
+								: setValgtePersoner(
+										valgtePersoner.concat(data.map(person => person.personIdent.id))
+								  )
+						}}
 					>
 						{text}
 					</Button>
