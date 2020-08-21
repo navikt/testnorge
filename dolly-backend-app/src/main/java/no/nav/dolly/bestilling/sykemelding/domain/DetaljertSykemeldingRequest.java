@@ -23,9 +23,9 @@ import lombok.Setter;
 public class DetaljertSykemeldingRequest {
 
     private Arbeidsgiver arbeidsgiver;
-    private List<Diagnose> biDiagnoser;
+    private List<DollyDiagnose> biDiagnoser;
     private Detaljer detaljer;
-    private Diagnose hovedDiagnose;
+    private DollyDiagnose hovedDiagnose;
     private Lege lege;
     private Boolean manglendeTilretteleggingPaaArbeidsplassen;
     private Organisasjon mottaker;
@@ -35,7 +35,7 @@ public class DetaljertSykemeldingRequest {
     private LocalDate startDato;
     private Boolean umiddelbarBistand;
 
-    public List<Diagnose> getBiDiagnoser() {
+    public List<DollyDiagnose> getBiDiagnoser() {
         if (isNull(biDiagnoser)) {
             biDiagnoser = new ArrayList<>();
         }
@@ -73,9 +73,9 @@ public class DetaljertSykemeldingRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-    public static class Diagnose {
+    public static class DollyDiagnose {
 
-        private String dollyDiagnose;
+        private String diagnose;
         private String diagnosekode;
         private String system;
     }
@@ -148,7 +148,7 @@ public class DetaljertSykemeldingRequest {
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     public static class Periode {
 
-        private Aktivitet aktivitet;
+        private DollyAktivitet aktivitet;
         private LocalDate fom;
         private LocalDate tom;
     }
@@ -159,9 +159,9 @@ public class DetaljertSykemeldingRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-    public static class Aktivitet {
+    public static class DollyAktivitet {
 
-        private AktivitetType dollyAktivitet;
+        private AktivitetType aktivitet;
         private Integer behandlingsdager;
         private Integer grad;
         private Boolean reisetilskudd;

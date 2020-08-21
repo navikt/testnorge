@@ -9,8 +9,10 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.sykemelding.domain.BestillingPersonWrapper;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
+import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest.Adresse;
+import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest.Organisasjon;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest.Pasient;
-import no.nav.dolly.domain.resultset.sykemelding.RsDetaljertSykemelding;
+import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding.RsDetaljertSykemelding;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.adresse.BoGateadresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
@@ -41,8 +43,8 @@ public class SykemeldingMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(RsDetaljertSykemelding rsSykemelding, DetaljertSykemeldingRequest request, MappingContext context) {
 
-                        DetaljertSykemeldingRequest.Organisasjon organisasjon = DetaljertSykemeldingRequest.Organisasjon.builder()
-                                .adresse(DetaljertSykemeldingRequest.Adresse.builder()
+                        Organisasjon organisasjon = Organisasjon.builder()
+                                .adresse(Adresse.builder()
                                         .postnummer("0557")
                                         .land("NOR")
                                         .gate("Sannergata 2")
@@ -69,35 +71,34 @@ public class SykemeldingMappingStrategy implements MappingStrategy {
         factory.classMap(Person.class, Pasient.class)
                 .customize(new CustomMapper<Person, Pasient>() {
                     @Override
-                    public void mapAtoB(Person person, Pasient request, MappingContext context) {
+                    public void mapAtoB(Person person, Pasient pasient, MappingContext context) {
 
-                        request.setNavKontor(person.getTknavn());
-                        request.setTelefon(person.getTelefonnummer_1());
-                        setRequestAdresse(person, request);
+                        pasient.setNavKontor(person.getTknavn());
+                        pasient.setTelefon(person.getTelefonnummer_1());
+                        pasient.setAdresse(getAdresse(person));
                     }
                 })
                 .byDefault()
                 .register();
     }
 
-    private void setRequestAdresse(Person person, Pasient request) {
+    private Adresse getAdresse(Person person) {
         if (!person.getBoadresse().isEmpty()) {
             BoGateadresse pasientBoAdresse = (BoGateadresse) person.getBoadresse().get(0);
-            request.setAdresse(DetaljertSykemeldingRequest.Adresse.builder()
+            return Adresse.builder()
                     .by(pasientBoAdresse.getPostnr())
                     .gate(pasientBoAdresse.getGateadresse())
                     .land("NOR")
                     .postnummer(pasientBoAdresse.getPostnr())
-                    .build());
+                    .build();
 
         } else if (!person.getPostadresse().isEmpty()) {
             RsPostadresse pasientPostAdresse = person.getPostadresse().get(0);
-            request.setAdresse(DetaljertSykemeldingRequest.Adresse.builder()
-                    .by(pasientPostAdresse.getPostLinje1())
+            return Adresse.builder()
                     .gate(pasientPostAdresse.getPostLinje1())
                     .land(pasientPostAdresse.getPostLand())
                     .postnummer(pasientPostAdresse.getPostLinje1())
-                    .build());
+                    .build();
         } else {
             throw new NotFoundException("Person må ha enten BoAdresse eller PostAdresse!");
         }
