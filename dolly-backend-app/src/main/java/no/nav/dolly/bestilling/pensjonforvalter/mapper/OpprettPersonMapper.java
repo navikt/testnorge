@@ -26,6 +26,7 @@ public class OpprettPersonMapper implements MappingStrategy {
                     @Override
                     public void mapAtoB(Person person, OpprettPersonRequest opprettPersonRequest, MappingContext context) {
 
+                        opprettPersonRequest.setFnr(person.getIdent());
                         opprettPersonRequest.setFodselsDato(convertDate(person.getFoedselsdato()));
                         opprettPersonRequest.setDodsDato(convertDate(person.getDoedsdato()));
                         opprettPersonRequest.setUtvandringsDato(convertDate(person.getUtvandretTilLandFlyttedato()));

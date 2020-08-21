@@ -77,13 +77,15 @@ public class PensjonforvalterClient implements ClientRegister {
 
         try {
             tpsfPersonCache.fetchIfEmpty(tpsPerson);
-            OpprettPersonRequest opprettPersonRequest =
-                    mapperFacade.map(tpsPerson.getPerson(tpsPerson.getHovedperson()), OpprettPersonRequest.class);
-            opprettPersonRequest.setFnr(tpsPerson.getHovedperson());
-            opprettPersonRequest.setMiljoer(newArrayList(miljoer));
-
-            decodeStatus(pensjonforvalterConsumer.opprettPerson(opprettPersonRequest), status);
-
+            tpsPerson.getPersondetaljer().forEach(person -> {
+                OpprettPersonRequest opprettPersonRequest =
+                        mapperFacade.map(person, OpprettPersonRequest.class);
+                opprettPersonRequest.setMiljoer(newArrayList(miljoer));
+                PensjonforvalterResponse response = pensjonforvalterConsumer.opprettPerson(opprettPersonRequest);
+                if (tpsPerson.getHovedperson().equals(person.getIdent())) {
+                    decodeStatus(response, status);
+                }
+            });
         } catch (RuntimeException e) {
 
             status.append(errorStatusDecoder.decodeRuntimeException(e));
