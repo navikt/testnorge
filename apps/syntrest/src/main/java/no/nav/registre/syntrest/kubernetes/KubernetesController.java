@@ -21,6 +21,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 import org.yaml.snakeyaml.Yaml;
@@ -207,6 +208,7 @@ public class KubernetesController {
 
     private Optional<String> getApplicationTag(String appName) {
         String apiUrl = "https://api.github.com/graphql";
+
         QueryObject query = QueryObject.builder().query(getCorrectTagQuery(appName)).build();
 
         try {
@@ -218,7 +220,6 @@ public class KubernetesController {
                 log.info("Deploying {}, version: {}", appName, tag);
                 return Optional.of(tag);
             }
-
         } catch (Exception e) {
             log.warn("An exception occurred trying to retrieve application tag: {}", e.getMessage());
         }
@@ -229,9 +230,9 @@ public class KubernetesController {
 
     private String getCorrectTagQuery(String appName) {
         if (appsFlyttetTilGithub.contains(appName)) {
-            return "query {repository(owner:\"navikt\", name:\"testnorge-syntetiseringspakker\") {registryPackages(name:\"" + getCorrectGithubPackageName(appName) + "\" last:1) {nodes {latestVersion{version}} }}}";
+            return "query {repository(owner:\"navikt\", name:\"testnorge-syntetiseringspakker\") {packages(names:[\"" + getCorrectGithubPackageName(appName) + "\"] last:1) {nodes {latestVersion{version}} }}}";
         } else {
-            return "query {repository(owner:\"navikt\", name:\"synt\") {registryPackages(name:\"" + appName + "\" last:1) {nodes {latestVersion{version}} }}}";
+            return "query {repository(owner:\"navikt\", name:\"synt\") {packages(names:[\"" + appName + "\"] last:1) {nodes {latestVersion{version}} }}}";
         }
     }
 

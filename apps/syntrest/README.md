@@ -114,3 +114,7 @@ Kjør så ApplicationStarter med følgende argumenter:
  - -Dspring.profiles.active=dev
  - -DGITHUB_USERNAME=[github brukernavn, kan finnes i syntrest secrets i vault]
  - -DGITHUB_PASSWORD=[github passord, kan finnes i syntrest secrets i vault]
+
+## Kubeconfig
+I vault er det lagret en kubeconfig fil som syntrest bruker til å kunne deploye/shutdown appene. Hvis denne filen må 
+lages på nytt må dette gjøres for team synt.

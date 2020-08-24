@@ -31,7 +31,7 @@ public class SyntConsumer {
         try {
             applicationManager.startApplication(this);
         } catch (ApiException | InterruptedException e) {
-            log.error("Could not start synth package {}.", this.appName);
+            log.error("Could not start synth package {}: {}", this.appName, e.getMessage());
             return null;
         }
 
