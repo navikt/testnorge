@@ -1,7 +1,7 @@
 package no.nav.dolly.bestilling.sykemelding.mapper;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import org.springframework.stereotype.Component;
 
@@ -84,42 +84,43 @@ public class SykemeldingMappingStrategy implements MappingStrategy {
     }
 
     private Adresse getAdresse(Person person) {
+
         if (!person.getBoadresse().isEmpty()) {
             BoGateadresse pasientBoAdresse = (BoGateadresse) person.getBoadresse().get(0);
             return Adresse.builder()
-                    .by(pasientBoAdresse.getPostnr())
                     .gate(pasientBoAdresse.getGateadresse())
                     .land("NOR")
                     .postnummer(pasientBoAdresse.getPostnr())
                     .build();
-
         } else if (!person.getPostadresse().isEmpty()) {
             RsPostadresse pasientPostAdresse = person.getPostadresse().get(0);
-            if (pasientPostAdresse.isNorsk()) {
-                return Adresse.builder()
-                        .gate(pasientPostAdresse.getPostLinje1())
-                        .land(pasientPostAdresse.getPostLand())
-                        .postnummer(getPostNrOgSted(pasientPostAdresse).substring(0, 3))
-                        .build();
-            }
-            return Adresse.builder()
-                    .gate(String.format("%s%s%s", pasientPostAdresse.getPostLinje1(),
-                            nonNull(pasientPostAdresse.getPostLinje2()) ? ", " + pasientPostAdresse.getPostLinje2() : "",
-                            nonNull(pasientPostAdresse.getPostLinje3()) ? ", " + pasientPostAdresse.getPostLinje3() : ""))
+            Adresse adresse = Adresse.builder()
+                    .gate(getGyldigPostlinje(pasientPostAdresse))
                     .land(pasientPostAdresse.getPostLand())
-                    .postnummer(getPostNrOgSted(pasientPostAdresse).substring(0, 3))
                     .build();
+            if (pasientPostAdresse.isNorsk()) {
+                adresse.setBy(getPostNrOgSted(pasientPostAdresse).substring(4).trim());
+                adresse.setPostnummer(getPostNrOgSted(pasientPostAdresse).substring(0, 4));
+            }
+            return adresse;
         } else {
             throw new NotFoundException("Person må ha enten BoAdresse eller PostAdresse!");
         }
     }
 
+    private String getGyldigPostlinje(RsPostadresse pasientPostAdresse) {
+
+        return String.format("%s%s%s", pasientPostAdresse.getPostLinje1(),
+                !isBlank(pasientPostAdresse.getPostLinje2()) ? ", " + pasientPostAdresse.getPostLinje2() : "",
+                !isBlank(pasientPostAdresse.getPostLinje3()) ? ", " + pasientPostAdresse.getPostLinje3() : "");
+    }
+
     private String getPostNrOgSted(RsPostadresse postadresse) {
 
-        if (nonNull(postadresse.getPostLinje3())) {
+        if (!isBlank(postadresse.getPostLinje3())) {
             return postadresse.getPostLinje3();
         }
-        if (nonNull(postadresse.getPostLinje2())) {
+        if (!isBlank(postadresse.getPostLinje2())) {
             return postadresse.getPostLinje2();
         }
         return postadresse.getPostLinje1();
