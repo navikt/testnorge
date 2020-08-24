@@ -2,15 +2,12 @@ package no.nav.dolly.bestilling.sykemelding;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
-import static org.apache.cxf.common.util.PropertyUtils.isTrue;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -55,26 +52,22 @@ public class SykemeldingClient implements ClientRegister {
 
                 if (!transaksjonMappingService.existAlready(SYKEMELDING, tpsPerson.getHovedperson(), null) || isOpprettEndre) {
 
-                    boolean syntOk = postSyntSykemelding(bestilling, tpsPerson);
-                    boolean detaljertOk = postDetaljertSykemelding(bestilling, tpsPerson);
+                    if (postSyntSykemelding(bestilling, tpsPerson)) {
+                        RsSyntSykemelding syntSykemelding = bestilling.getSykemelding().getSyntSykemelding();
+                        saveTranskasjonId(syntSykemelding.getOrgnummer(), syntSykemelding.getArbeidsforholdId(), progress.getBestillingId(), tpsPerson.getHovedperson());
 
-                    if (isTrue(syntOk) || isTrue(detaljertOk)) {
-                        progress.setSykemeldingStatus("OK");
-
-                        if (isTrue(syntOk)) {
-                            RsSyntSykemelding syntSykemelding = bestilling.getSykemelding().getSyntSykemelding();
-                            saveTranskasjonId(syntSykemelding.getOrgnummer(), syntSykemelding.getArbeidsforholdId(), progress.getBestillingId(), tpsPerson.getHovedperson());
-                        } else {
-                            RsDetaljertSykemelding detaljertSykemelding = bestilling.getSykemelding().getDetaljertSykemelding();
-                            saveTranskasjonId(detaljertSykemelding.getMottaker().getOrgNr(), "1", progress.getBestillingId(), tpsPerson.getHovedperson());
-                        }
+                    } else if (postDetaljertSykemelding(bestilling, tpsPerson)) {
+                        RsDetaljertSykemelding detaljertSykemelding = bestilling.getSykemelding().getDetaljertSykemelding();
+                        saveTranskasjonId(detaljertSykemelding.getMottaker().getOrgNr(), "1", progress.getBestillingId(), tpsPerson.getHovedperson());
                     }
+                    progress.setSykemeldingStatus("OK");
                 }
             } catch (RuntimeException e) {
 
                 progress.setSykemeldingStatus(errorStatusDecoder.decodeRuntimeException(e));
             }
         }
+
     }
 
     @Override
@@ -87,13 +80,13 @@ public class SykemeldingClient implements ClientRegister {
         if (nonNull(bestilling.getSykemelding().getDetaljertSykemelding())) {
             Person pasient = tpsPerson.getPerson(tpsPerson.getHovedperson());
             DetaljertSykemeldingRequest detaljertSykemeldingRequest = mapperFacade.map(BestillingPersonWrapper.builder()
-                    .person(pasient)
-                    .sykemelding(bestilling.getSykemelding().getDetaljertSykemelding())
-                    .build(),
+                            .person(pasient)
+                            .sykemelding(bestilling.getSykemelding().getDetaljertSykemelding())
+                            .build(),
                     DetaljertSykemeldingRequest.class);
 
             ResponseEntity<String> responseDetaljert = sykemeldingConsumer.postDetaljertSykemelding(detaljertSykemeldingRequest);
-            return responseDetaljert.getStatusCode().equals(HttpStatus.OK);
+            return HttpStatus.OK.equals(responseDetaljert.getStatusCode());
         }
         return false;
     }
@@ -105,7 +98,7 @@ public class SykemeldingClient implements ClientRegister {
             syntSykemeldingRequest.setIdent(tpsPerson.getHovedperson());
 
             ResponseEntity<String> response = sykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest);
-            return response.getStatusCode().equals(HttpStatus.OK);
+            return HttpStatus.OK.equals(response.getStatusCode());
         }
         return false;
     }
