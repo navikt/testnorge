@@ -198,7 +198,7 @@ public class KubernetesController {
 
         Map<String, Object> spec = (Map) manifestFile.get("spec");
         String imageBase = spec.get("image").toString();
-        String latestImage = imageBase.replace("latest", "517b39952a77b496e3f9b38ad4778786ca67cda8");
+        String latestImage = imageBase.replace("latest", getApplicationTag(appName).orElse("latest"));
         spec.put("image", latestImage);
 
         return manifestFile;
