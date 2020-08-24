@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.sykemelding;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
+import static org.apache.cxf.common.util.PropertyUtils.isTrue;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,6 +25,8 @@ import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
+import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding.RsDetaljertSykemelding;
+import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding.RsSyntSykemelding;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
@@ -47,20 +50,38 @@ public class SykemeldingClient implements ClientRegister {
 
         if (nonNull(bestilling.getSykemelding())) {
 
-            StringBuilder status = new StringBuilder();
             try {
                 tpsfPersonCache.fetchIfEmpty(tpsPerson);
 
                 if (!transaksjonMappingService.existAlready(SYKEMELDING, tpsPerson.getHovedperson(), null) || isOpprettEndre) {
 
-                    postSyntSykemelding(bestilling, tpsPerson, progress, status);
-                    postDetaljertSykemelding(bestilling, tpsPerson, progress, status);
+                    boolean syntOk = postSyntSykemelding(bestilling, tpsPerson);
+                    boolean detaljertOk = postDetaljertSykemelding(bestilling, tpsPerson);
+
+                    if (isTrue(syntOk) || isTrue(detaljertOk)) {
+                        progress.setSykemeldingStatus("OK");
+
+                        if (isTrue(syntOk)) {
+                            RsSyntSykemelding syntSykemelding = bestilling.getSykemelding().getSyntSykemelding();
+                            saveTranskasjonId(
+                                    syntSykemelding.getOrgnummer(),
+                                    syntSykemelding.getArbeidsforholdId(),
+                                    progress.getBestillingId(),
+                                    tpsPerson.getHovedperson());
+                        } else {
+                            RsDetaljertSykemelding detaljertSykemelding = bestilling.getSykemelding().getDetaljertSykemelding();
+                            saveTranskasjonId(
+                                    detaljertSykemelding.getMottaker().getOrgNr(),
+                                    "1",
+                                    progress.getBestillingId(),
+                                    tpsPerson.getHovedperson());
+                        }
+                    }
                 }
             } catch (RuntimeException e) {
 
-                status.append(errorStatusDecoder.decodeRuntimeException(e));
+                progress.setSykemeldingStatus(errorStatusDecoder.decodeRuntimeException(e));
             }
-            progress.setSykemeldingStatus(status.toString());
         }
     }
 
@@ -69,7 +90,7 @@ public class SykemeldingClient implements ClientRegister {
 
     }
 
-    private void postDetaljertSykemelding(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, StringBuilder status) {
+    private boolean postDetaljertSykemelding(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson) {
 
         if (nonNull(bestilling.getSykemelding().getDetaljertSykemelding())) {
             Person pasient = tpsPerson.getPerson(tpsPerson.getHovedperson());
@@ -80,28 +101,21 @@ public class SykemeldingClient implements ClientRegister {
                     DetaljertSykemeldingRequest.class);
 
             ResponseEntity<String> responseDetaljert = sykemeldingConsumer.postDetaljertSykemelding(detaljertSykemeldingRequest);
-            if (responseDetaljert.getStatusCode().equals(HttpStatus.OK)) {
-                status.append("OK");
-
-                saveTranskasjonId(detaljertSykemeldingRequest.getMottaker().getOrgNr(), detaljertSykemeldingRequest.getArbeidsgiver().getNavn(), progress.getBestillingId(), pasient.getIdent());
-            }
+            return responseDetaljert.getStatusCode().equals(HttpStatus.OK);
         }
+        return false;
     }
 
-    private void postSyntSykemelding(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, StringBuilder status) {
+    private boolean postSyntSykemelding(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson) {
 
         if (nonNull(bestilling.getSykemelding().getSyntSykemelding())) {
             SyntSykemeldingRequest syntSykemeldingRequest = mapperFacade.map(bestilling.getSykemelding().getSyntSykemelding(), SyntSykemeldingRequest.class);
             syntSykemeldingRequest.setIdent(tpsPerson.getHovedperson());
 
             ResponseEntity<String> response = sykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest);
-
-            if (response.getStatusCode().equals(HttpStatus.OK)) {
-                status.append("OK");
-
-                saveTranskasjonId(syntSykemeldingRequest.getOrgnummer(), syntSykemeldingRequest.getArbeidsforholdId(), progress.getBestillingId(), syntSykemeldingRequest.getIdent());
-            }
+            return response.getStatusCode().equals(HttpStatus.OK);
         }
+        return false;
     }
 
     private void saveTranskasjonId(String orgnr, String arbeidsforholdsId, Long bestillingsId, String ident) {
