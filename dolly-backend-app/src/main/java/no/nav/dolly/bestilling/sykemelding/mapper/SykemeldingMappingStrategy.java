@@ -1,7 +1,7 @@
 package no.nav.dolly.bestilling.sykemelding.mapper;
 
 import static java.util.Objects.isNull;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import org.springframework.stereotype.Component;
 
@@ -111,16 +111,16 @@ public class SykemeldingMappingStrategy implements MappingStrategy {
     private String getGyldigPostlinje(RsPostadresse pasientPostAdresse) {
 
         return String.format("%s%s%s", pasientPostAdresse.getPostLinje1(),
-                !isBlank(pasientPostAdresse.getPostLinje2()) ? ", " + pasientPostAdresse.getPostLinje2() : "",
-                !isBlank(pasientPostAdresse.getPostLinje3()) ? ", " + pasientPostAdresse.getPostLinje3() : "");
+                isNotBlank(pasientPostAdresse.getPostLinje2()) ? ", " + pasientPostAdresse.getPostLinje2() : "",
+                isNotBlank(pasientPostAdresse.getPostLinje3()) ? ", " + pasientPostAdresse.getPostLinje3() : "");
     }
 
     private String getPostNrOgSted(RsPostadresse postadresse) {
 
-        if (!isBlank(postadresse.getPostLinje3())) {
+        if (isNotBlank(postadresse.getPostLinje3())) {
             return postadresse.getPostLinje3();
         }
-        if (!isBlank(postadresse.getPostLinje2())) {
+        if (isNotBlank(postadresse.getPostLinje2())) {
             return postadresse.getPostLinje2();
         }
         return postadresse.getPostLinje1();
