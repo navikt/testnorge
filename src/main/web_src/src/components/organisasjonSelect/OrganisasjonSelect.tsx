@@ -7,7 +7,7 @@ export type OrganisasjonSelectProps = {
 	path: string
 	label: string
 	isClearable?: boolean
-	afterChange?: any
+	afterChange?: Function
 	valueNavn?: boolean
 	filter?: (value: EregResponse) => boolean
 }

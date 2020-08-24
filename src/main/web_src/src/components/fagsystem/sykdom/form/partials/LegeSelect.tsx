@@ -1,6 +1,4 @@
 import React from 'react'
-import _get from 'lodash/get'
-import _has from 'lodash/has'
 import LoadableComponent, { Feilmelding } from '~/components/ui/loading/LoadableComponent'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'

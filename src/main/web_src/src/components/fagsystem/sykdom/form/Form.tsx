@@ -6,16 +6,24 @@ import { erForste } from '~/components/ui/form/formUtils'
 import { SykemeldingForm } from './partials/Sykemelding'
 import { validation } from './validation'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
+import { FormikProps } from 'formik'
+
+interface SykdomForm {
+	formikBag: FormikProps<{}>
+}
 
 const sykdomAttributt = 'sykemelding'
 
-export const SykdomForm = ({ formikBag }) => (
+export const SykdomForm = ({ formikBag }: SykdomForm) => (
+	// @ts-ignore
 	<Vis attributt={sykdomAttributt}>
 		<Panel
 			heading="Sykemelding"
 			hasErrors={panelError(formikBag, sykdomAttributt)}
 			iconType="sykdom"
+			// @ts-ignore
 			startOpen={() => erForste(formikBag.values, sykdomAttributt)}
+			informasjonstekst="Om du velger å generere en sykemelding automatisk, vil du få en syntetisk sykemelding hvor alle verdier blir satt for deg."
 		>
 			{!formikBag.values.hasOwnProperty('aareg') && (
 				<>

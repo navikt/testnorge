@@ -6,9 +6,11 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { Bidiagnoser } from './partials/Bidiagnoser'
 import { Perioder } from './partials/Perioder'
 import { ArbeidKodeverk } from '~/config/kodeverk'
+import JournalpostidVisning from '~/components/journalpostid/journalpostidVisning'
 
 interface SykemeldingVisning {
 	data: Array<Sykemelding>
+	ident: string
 }
 
 type Sykemelding = {
@@ -23,39 +25,32 @@ type Bestilling = {
 	sykemelding?: Array<Sykemelding>
 }
 
-export const SykemeldingVisning = ({ data }: SykemeldingVisning) => {
+export const SykemeldingVisning = ({ data, ident }: SykemeldingVisning) => {
 	// Viser foreløpig bestillingsdata
 	if (!data || data.length < 1 || !data[0]) return null
-	// console.log('data :>> ', data)
 	return (
 		<div>
 			<SubOverskrift label="Sykemelding" iconKind="sykdom" />
 			{data.map((bestilling, idx) => {
 				const syntSykemelding = _get(bestilling, 'syntSykemelding')
 				const detaljertSykemelding = _get(bestilling, 'detaljertSykemelding')
-				console.log('syntSykemelding :>> ', syntSykemelding)
-				console.log('detaljertSykemelding :>> ', detaljertSykemelding)
 				return syntSykemelding ? (
 					<div className="person-visning_content" key={idx}>
 						<TitleValue
 							title="Startdato"
-							value={Formatters.formatStringDates(_get(bestilling, 'syntSykemelding.startDato'))}
+							value={Formatters.formatDate(syntSykemelding.startDato)}
 						/>
-						<TitleValue
-							title="Organisasjonsnummer"
-							value={_get(bestilling, 'syntSykemelding.orgnummer')}
-						/>
-						<TitleValue
-							title="Arbeidsforhold-ID"
-							value={_get(bestilling, 'syntSykemelding.arbeidsforholdId')}
-						/>
+						<TitleValue title="Organisasjonsnummer" value={syntSykemelding.orgnummer} />
+						<TitleValue title="Arbeidsforhold-ID" value={syntSykemelding.arbeidsforholdId} />
+						{/* Vent med å vise denne til backend er klar */}
+						{/* <JournalpostidVisning system="SYKEMELDING" ident={ident} /> */}
 					</div>
 				) : detaljertSykemelding ? (
-					<>
-						<div className="person-visning_content" key={idx}>
+					<React.Fragment key={idx}>
+						<div className="person-visning_content">
 							<TitleValue
 								title="Startdato"
-								value={Formatters.formatDate(detaljertSykemelding.startDato)}
+								value={Formatters.formatStringDates(detaljertSykemelding.startDato)}
 							/>
 							<TitleValue
 								title="Trenger umiddelbar bistand"
@@ -76,7 +71,6 @@ export const SykemeldingVisning = ({ data }: SykemeldingVisning) => {
 									title="Diagnosekode"
 									value={detaljertSykemelding.hovedDiagnose.diagnosekode}
 								/>
-								{/* <TitleValue title="System" value={detaljertSykemelding.hovedDiagnose.system} /> */}
 							</div>
 						</>
 						<Bidiagnoser data={detaljertSykemelding.biDiagnoser} />
@@ -100,7 +94,7 @@ export const SykemeldingVisning = ({ data }: SykemeldingVisning) => {
 								<TitleValue
 									title="Yrkesbetegnelse"
 									value={detaljertSykemelding.arbeidsgiver.yrkesbetegnelse}
-									// kodeverk={ArbeidKodeverk.Arbeidstidsordninger}
+									kodeverk={ArbeidKodeverk.Yrker}
 								/>
 								<TitleValue
 									title="Stillingsprosent"
@@ -132,7 +126,9 @@ export const SykemeldingVisning = ({ data }: SykemeldingVisning) => {
 								/>
 							</div>
 						</>
-					</>
+						{/* Vent med å vise denne til backend er klar */}
+						{/* <JournalpostidVisning system="SYKEMELDING" ident={ident} /> */}
+					</React.Fragment>
 				) : null
 			})}
 		</div>

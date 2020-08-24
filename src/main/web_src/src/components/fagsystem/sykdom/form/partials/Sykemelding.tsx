@@ -18,6 +18,35 @@ interface SykemeldingForm {
 	formikBag: FormikProps<{}>
 }
 
+type Diagnose = {
+	diagnose: string
+	diagnosekode: string
+	system: string
+}
+
+type DiagnoseSelect = {
+	diagnoseNavn: string
+}
+
+type LegeSelect = {
+	etternavn: string
+	fnr: string
+	fornavn: string
+	hprId: string
+	mellomnavn?: string
+}
+
+type ArbeidsgiverSelect = {
+	forretningsAdresse: {
+		adresse: string
+		landkode: string
+		postnr: string
+		poststed: string
+	}
+	navn: string
+	orgnr: string
+}
+
 const initialValuesDiagnose = {
 	diagnose: '',
 	diagnosekode: '',
@@ -26,7 +55,7 @@ const initialValuesDiagnose = {
 
 const initialValuesPeriode = {
 	aktivitet: {
-		aktivitet: '',
+		aktivitet: null as string,
 		behandlingsdager: 0,
 		grad: 0,
 		reisetilskudd: false
@@ -50,7 +79,7 @@ const initialValuesDetaljertSykemelding = {
 			stillingsprosent: 100,
 			yrkesbetegnelse: ''
 		},
-		biDiagnoser: [],
+		biDiagnoser: [] as Array<Diagnose>,
 		detaljer: {
 			arbeidsforEtterEndtPeriode: false,
 			beskrivHensynArbeidsplassen: '',
@@ -76,9 +105,7 @@ const initialValuesDetaljertSykemelding = {
 				postnummer: ''
 			}
 		},
-		// pasient: backend
 		perioder: [initialValuesPeriode],
-		// sender: backend?
 		startDato: new Date(),
 		umiddelbarBistand: false
 	}
@@ -86,24 +113,24 @@ const initialValuesDetaljertSykemelding = {
 
 export const SykemeldingForm = ({ formikBag }: SykemeldingForm) => {
 	const [typeSykemelding, setTypeSykemelding] = useState(
-		formikBag.values.sykemelding.hasOwnProperty('detaljertSykemelding')
+		_get(formikBag.values, 'sykemelding').hasOwnProperty('detaljertSykemelding')
 			? 'detaljertSykemelding'
 			: 'syntSykemelding'
 	)
 
-	const handleToggleChange = event => {
+	const handleToggleChange = (event: React.ChangeEvent<any>) => {
 		setTypeSykemelding(event.target.value)
 		if (event.target.value === 'detaljertSykemelding') {
 			formikBag.setFieldValue('sykemelding', initialValuesDetaljertSykemelding)
 		} else formikBag.setFieldValue('sykemelding', initialValuesSyntSykemelding)
 	}
 
-	const handleDiagnoseChange = (v, path) => {
+	const handleDiagnoseChange = (v: DiagnoseSelect, path: string) => {
 		formikBag.setFieldValue(`${path}.diagnose`, v.diagnoseNavn)
 		formikBag.setFieldValue(`${path}.system`, '2.16.578.1.12.4.1.1.7170')
 	}
 
-	const handleLegeChange = v => {
+	const handleLegeChange = (v: LegeSelect) => {
 		formikBag.setFieldValue('sykemelding.detaljertSykemelding.lege', {
 			etternavn: v.etternavn,
 			fornavn: v.fornavn,
@@ -113,9 +140,7 @@ export const SykemeldingForm = ({ formikBag }: SykemeldingForm) => {
 		})
 	}
 
-	const handleArbeidsgiverChange = v => {
-		console.log('v :>> ', v)
-		// formikBag.setFieldValue('sykemelding.detaljertSykemelding.arbeidsgiver.navn', v.navn)
+	const handleArbeidsgiverChange = (v: ArbeidsgiverSelect) => {
 		formikBag.setFieldValue('sykemelding.detaljertSykemelding.mottaker', {
 			navn: v.navn,
 			orgNr: v.orgnr,
@@ -184,19 +209,13 @@ export const SykemeldingForm = ({ formikBag }: SykemeldingForm) => {
 							<FormikSelect
 								name="sykemelding.detaljertSykemelding.hovedDiagnose.diagnosekode"
 								label="Diagnose"
-								// options={Options('diagnosekodeNy')}
 								options={SelectOptionsDiagnoser()}
-								// options={Diagnoser('ICPC2')}
-								afterChange={v =>
+								afterChange={(v: DiagnoseSelect) =>
 									handleDiagnoseChange(v, 'sykemelding.detaljertSykemelding.hovedDiagnose')
 								}
 								size="xlarge"
 								isClearable={false}
 							/>
-							{/* <FormikTextInput
-								name="sykemelding.detaljertSykemelding.hovedDiagnose.system"
-								label="System"
-							/> */}
 						</div>
 					</Kategori>
 					<FormikDollyFieldArray
@@ -209,25 +228,24 @@ export const SykemeldingForm = ({ formikBag }: SykemeldingForm) => {
 								name={`${path}.diagnosekode`}
 								label="Diagnose"
 								options={SelectOptionsDiagnoser()}
-								afterChange={v => handleDiagnoseChange(v, path)}
+								afterChange={(v: DiagnoseSelect) => handleDiagnoseChange(v, path)}
 								size="xlarge"
 								isClearable={false}
 							/>
-							// {/* <FormikTextInput name={`${path}.system`} label="System" /> */}
 						)}
 					</FormikDollyFieldArray>
 					<Kategori title="Lege" vis="sykemelding">
 						<LegeSelect
 							name="sykemelding.detaljertSykemelding.lege.ident"
 							label="Lege"
-							afterChange={v => handleLegeChange(v)}
+							afterChange={(v: LegeSelect) => handleLegeChange(v)}
 						/>
 					</Kategori>
 					<Kategori title="Arbeidsgiver" vis="sykemelding">
 						<OrganisasjonMedArbeidsforholdSelect
 							path="sykemelding.detaljertSykemelding.arbeidsgiver.navn"
 							label="Navn"
-							afterChange={v => handleArbeidsgiverChange(v)}
+							afterChange={(v: ArbeidsgiverSelect) => handleArbeidsgiverChange(v)}
 							valueNavn={true}
 						/>
 						<FormikSelect
@@ -262,13 +280,6 @@ export const SykemeldingForm = ({ formikBag }: SykemeldingForm) => {
 									name={`${path}.aktivitet.behandlingsdager`}
 									label="Antall behandlingsdager"
 									type="number"
-									disabled={
-										_get(formikBag.values, `${path}.aktivitet.aktivitet`) === '' ||
-										_get(formikBag.values, `${path}.aktivitet.aktivitet`) === null
-											? false
-											: true
-									}
-									// TODO: Oppdateres for sent, og funker ikke motsatt vei - fiks den!
 								/>
 								<FormikTextInput name={`${path}.aktivitet.grad`} label="Grad" type="number" />
 								<FormikCheckbox

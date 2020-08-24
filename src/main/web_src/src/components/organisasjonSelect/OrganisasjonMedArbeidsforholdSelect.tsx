@@ -4,7 +4,7 @@ import { OrganisasjonSelect } from './OrganisasjonSelect'
 type OrganisasjonMedArbeidsforholdSelect = {
 	path: string
 	label: string
-	afterChange?: any
+	afterChange?: Function
 	valueNavn?: boolean
 }
 
