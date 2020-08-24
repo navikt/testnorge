@@ -5,9 +5,13 @@ import { Attributt, AttributtKategori } from '../Attributt'
 export const UdiPanel = ({ stateModifier }) => {
 	const sm = stateModifier(UdiPanel.initialValues)
 
+	const infoTekst =
+		'All informasjon blir lagt i UDI-stub. Oppholdsstatus går i tillegg til PDL dersom miljø Q2 velges i siste steg.'
+
 	return (
 		<Panel
 			heading={UdiPanel.heading}
+			informasjonstekst={infoTekst}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="udi"

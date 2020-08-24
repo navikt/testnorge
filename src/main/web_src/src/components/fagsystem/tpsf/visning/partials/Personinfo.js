@@ -1,4 +1,5 @@
 import React from 'react'
+import { isBefore, addDays } from 'date-fns'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
@@ -78,7 +79,17 @@ export const Personinfo = ({ data, visTittel = true }) => {
 					value={data.tknavn ? `${data.tknr} - ${data.tknavn}` : data.tknr}
 					size="medium"
 				/>
-				{data.egenAnsattDatoFom && <TitleValue title="Egenansatt" value="JA" />}
+				{data.egenAnsattDatoFom && (
+					<TitleValue
+						title="Har skjerming"
+						value={
+							data.egenAnsattDatoTom &&
+							isBefore(new Date(data.egenAnsattDatoTom), addDays(new Date(), -1))
+								? 'NEI'
+								: 'JA'
+						}
+					/>
+				)}
 			</div>
 		</div>
 	)

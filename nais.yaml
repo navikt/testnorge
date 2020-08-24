@@ -13,6 +13,7 @@ spec:
   ingresses:
     - https://dolly.nais.preprod.local
     - https://dolly.nais-dev-fss.adeo.no
+    - https://dolly.dev.adeo.no
   liveness:
     path: /internal/isAlive
     initialDelay: 20
