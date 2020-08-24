@@ -21,13 +21,13 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 import org.yaml.snakeyaml.Yaml;
 
 import java.net.ProxySelector;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -52,6 +52,8 @@ public class KubernetesController {
     private String deleteApplicaitonUrl;
     private RestTemplate noAuthRestTemplate;
     private RestTemplate authRestTemplate;
+
+    private final List<String> appsFlyttetTilGithub = Arrays.asList("synthdata-sam", "synthdata-frikort");
 
     public KubernetesController(RestTemplateBuilder restTemplateBuilder,
                                 CustomObjectsApi customObjectsApi,
@@ -201,16 +203,17 @@ public class KubernetesController {
 
         Map<String, Object> spec = (Map) manifestFile.get("spec");
         String imageBase = spec.get("image").toString();
-        String latestImage = imageBase.replace("latest", getApplicaitonTag(appName).orElse("latest"));
+        String latestImage = imageBase.replace("latest", getApplicationTag(appName).orElse("latest"));
         spec.put("image", latestImage);
 
         return manifestFile;
     }
 
 
-    private Optional<String> getApplicaitonTag(String appName) {
+    private Optional<String> getApplicationTag(String appName) {
         String apiUrl = "https://api.github.com/graphql";
-        QueryObject query = QueryObject.builder().query("query {repository(owner:\"navikt\", name:\"synt\") {packages(names:[\"" + appName + "\"] last:1) {nodes {latestVersion{version}} }}}").build();
+
+        QueryObject query = QueryObject.builder().query(getCorrectTagQuery(appName)).build();
 
         try {
             RequestEntity requestLatestTag = RequestEntity.post(new UriTemplate(apiUrl).expand()).header("Content-Type", "application/json").body(query);
@@ -221,13 +224,26 @@ public class KubernetesController {
                 log.info("Deploying {}, version: {}", appName, tag);
                 return Optional.of(tag);
             }
-
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.warn("An exception occurred trying to retrieve application tag: {}", e.getMessage());
         }
 
         log.warn("Could not find tag for application {}.", appName);
         return Optional.empty();
+    }
+
+    private String getCorrectTagQuery(String appName) {
+        if (appsFlyttetTilGithub.contains(appName)) {
+            return "query {repository(owner:\"navikt\", name:\"testnorge-syntetiseringspakker\") {packages(names:[\"" + getCorrectGithubPackageName(appName) + "\"] last:1) {nodes {latestVersion{version}} }}}";
+        } else {
+            return "query {repository(owner:\"navikt\", name:\"synt\") {packages(names:[\"" + appName + "\"] last:1) {nodes {latestVersion{version}} }}}";
+        }
+    }
+
+    private String getCorrectGithubPackageName(String appName) {
+        int bindestrekIndex = appName.lastIndexOf("-");
+        String app = appName.substring(bindestrekIndex);
+        return "synt" + app;
     }
 
 }
