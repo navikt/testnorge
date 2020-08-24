@@ -37,6 +37,7 @@ public class HelsepersonellAdapter {
                     }
                 })
                 .flatMap(Collection::stream)
+                .distinct()
                 .collect(Collectors.toList());
     }
 
@@ -45,13 +46,14 @@ public class HelsepersonellAdapter {
         List<Samhandler> samhandlere = getSamhandlere(leger)
                 .stream()
                 .filter(Samhandler::isMulighetForAaLageSykemelding)
+                .distinct()
                 .collect(Collectors.toList());
 
         return new LegeListe(samhandlere.stream()
                 .map(samhandler -> new Lege(
                         samhandler,
-                        hodejegerenConsumer.getPersondata(samhandler.getIdent()))
-                )
+                        hodejegerenConsumer.getPersondata(samhandler.getIdent())))
+                .distinct()
                 .collect(Collectors.toList())
         );
     }

@@ -14,7 +14,7 @@ import no.nav.registre.testnorge.helsepersonell.adapter.HelsepersonellAdapter;
 
 
 @RestController
-@RequestMapping("/api/v1/helsepersonell")
+@RequestMapping("/api/v1/helsepersonell/helseewew")
 public class HelsepersonellController {
 
     private final HelsepersonellAdapter adapter;
@@ -39,7 +39,7 @@ public class HelsepersonellController {
         var leger = adapter.getLeger();
         return ResponseEntity
                 .ok()
-                .cacheControl(cacheControl)
+//                .cacheControl(cacheControl)
                 .body(leger.toDTO());
     }
 }
