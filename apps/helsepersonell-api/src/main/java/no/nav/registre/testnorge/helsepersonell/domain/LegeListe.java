@@ -15,6 +15,7 @@ public class LegeListe {
         return new LegeListeDTO(leger.stream()
                 .map(Lege::toDTO)
                 .filter(Objects::nonNull)
+                .distinct()
                 .collect(Collectors.toList())
         );
     }
