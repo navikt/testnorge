@@ -63,18 +63,10 @@ public class SykemeldingClient implements ClientRegister {
 
                         if (isTrue(syntOk)) {
                             RsSyntSykemelding syntSykemelding = bestilling.getSykemelding().getSyntSykemelding();
-                            saveTranskasjonId(
-                                    syntSykemelding.getOrgnummer(),
-                                    syntSykemelding.getArbeidsforholdId(),
-                                    progress.getBestillingId(),
-                                    tpsPerson.getHovedperson());
+                            saveTranskasjonId(syntSykemelding.getOrgnummer(), syntSykemelding.getArbeidsforholdId(), progress.getBestillingId(), tpsPerson.getHovedperson());
                         } else {
                             RsDetaljertSykemelding detaljertSykemelding = bestilling.getSykemelding().getDetaljertSykemelding();
-                            saveTranskasjonId(
-                                    detaljertSykemelding.getMottaker().getOrgNr(),
-                                    "1",
-                                    progress.getBestillingId(),
-                                    tpsPerson.getHovedperson());
+                            saveTranskasjonId(detaljertSykemelding.getMottaker().getOrgNr(), "1", progress.getBestillingId(), tpsPerson.getHovedperson());
                         }
                     }
                 }
