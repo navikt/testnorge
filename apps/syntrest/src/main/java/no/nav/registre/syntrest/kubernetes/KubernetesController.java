@@ -210,7 +210,7 @@ public class KubernetesController {
 
     private Optional<String> getApplicaitonTag(String appName) {
         String apiUrl = "https://api.github.com/graphql";
-        QueryObject query = QueryObject.builder().query("query {repository(owner:\"navikt\", name:\"synt\") {registryPackages(name:\"" + appName + "\" last:1) {nodes {latestVersion{version}} }}}").build();
+        QueryObject query = QueryObject.builder().query("query {repository(owner:\"navikt\", name:\"synt\") {packages(names:[\"" + appName + "\"] last:1) {nodes {latestVersion{version}} }}}").build();
 
         try {
             RequestEntity requestLatestTag = RequestEntity.post(new UriTemplate(apiUrl).expand()).header("Content-Type", "application/json").body(query);
@@ -222,8 +222,6 @@ public class KubernetesController {
                 return Optional.of(tag);
             }
 
-        } catch(ResourceAccessException e) {
-            log.warn("Could not access github to retrieve tag {}", e.getMessage());
         }catch (Exception e) {
             log.warn("An exception occurred trying to retrieve application tag: {}", e.getMessage());
         }
