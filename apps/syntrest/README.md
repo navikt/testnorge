@@ -106,7 +106,6 @@ De filene som må endres når man legger til synt-pakkene er:
    _Lager en legeerklæring for hvert objekt i forespørselen. Returnerer et map med_
    _key=personnummer for pasienten, value=xml for legeerklæringen_
 
-
 ## Lokal kjøring
 Oppdater `kube-config-path` i `application-dev.properties` til din lokale kubeconfigs path.
 Kjør så ApplicationStarter med følgende argumenter:
@@ -115,3 +114,7 @@ Kjør så ApplicationStarter med følgende argumenter:
  - -Dspring.profiles.active=dev
  - -DGITHUB_USERNAME=[github brukernavn, kan finnes i syntrest secrets i vault]
  - -DGITHUB_PASSWORD=[github passord, kan finnes i syntrest secrets i vault]
+
+## Kubeconfig
+I vault er det lagret en kubeconfig fil som syntrest bruker til å kunne deploye/shutdown appene. Hvis denne filen må 
+lages på nytt må dette gjøres for team synt.

@@ -6,7 +6,7 @@ metadata:
   labels:
     team: synt
 spec:
-  image: "docker.pkg.github.com/navikt/synt/synthdata-sam:latest"
+  image: "docker.pkg.github.com/navikt/testnorge-syntetiseringspakker/synt-sam:latest"
   port: 8080
   liveness:
     path: /internal/isAlive
@@ -28,9 +28,9 @@ spec:
   resources:
     requests:
       cpu: 200m
-      memory: 20000Mi
+      memory: 30000Mi
     limits:
       cpu: 500m
-      memory: 21000Mi
+      memory: 31000Mi
   ingresses:
     - "https://nais-synthdata-sam.nais.preprod.local"

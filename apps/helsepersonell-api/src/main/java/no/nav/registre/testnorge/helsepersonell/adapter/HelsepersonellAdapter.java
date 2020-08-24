@@ -50,8 +50,8 @@ public class HelsepersonellAdapter {
         return new LegeListe(samhandlere.stream()
                 .map(samhandler -> new Lege(
                         samhandler,
-                        hodejegerenConsumer.getPersondata(samhandler.getIdent()))
-                )
+                        hodejegerenConsumer.getPersondata(samhandler.getIdent())))
+                .distinct()
                 .collect(Collectors.toList())
         );
     }
