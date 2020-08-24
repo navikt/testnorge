@@ -106,6 +106,7 @@ De filene som må endres når man legger til synt-pakkene er:
    _Lager en legeerklæring for hvert objekt i forespørselen. Returnerer et map med_
    _key=personnummer for pasienten, value=xml for legeerklæringen_
 
+
 ## Lokal kjøring
 Oppdater `kube-config-path` i `application-dev.properties` til din lokale kubeconfigs path.
 Kjør så ApplicationStarter med følgende argumenter:
