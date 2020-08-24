@@ -21,6 +21,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 import org.yaml.snakeyaml.Yaml;
@@ -221,8 +222,10 @@ public class KubernetesController {
                 return Optional.of(tag);
             }
 
-        } catch (Exception e) {
-            log.warn("An exception occured trying to retrieve application tag: {}", e.getMessage());
+        } catch(ResourceAccessException e) {
+            log.warn("Could not access github to retrieve tag {}", e.getMessage());
+        }catch (Exception e) {
+            log.warn("An exception occurred trying to retrieve application tag: {}", e.getMessage());
         }
 
         log.warn("Could not find tag for application {}.", appName);
