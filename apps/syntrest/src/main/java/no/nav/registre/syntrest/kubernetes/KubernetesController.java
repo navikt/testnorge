@@ -221,10 +221,9 @@ public class KubernetesController {
                 log.info("Deploying {}, version: {}", appName, tag);
                 return Optional.of(tag);
             }
-
-        } catch(ResourceAccessException e) {
-            log.warn("Could not access github to retrieve tag {}", e.getMessage());
+            
         }catch (Exception e) {
+            e.printStackTrace();
             log.warn("An exception occurred trying to retrieve application tag: {}", e.getMessage());
         }
 
