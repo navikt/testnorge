@@ -41,7 +41,7 @@ public class SafClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-//      TODO Trengs client, eller skal det gå gjennom dokarkiv?
+        // TODO Trengs client, eller skal det gå gjennom dokarkiv?
 
         if (nonNull(bestilling.getDokarkiv())) {
 
@@ -60,7 +60,6 @@ public class SafClient implements ClientRegister {
                                     .append(environment)
                                     .append(":OK");
 
-//                            saveTranskasjonId(response, environment);
                         }
 
                     } catch (RuntimeException e) {
@@ -75,7 +74,6 @@ public class SafClient implements ClientRegister {
                     }
                 }
             });
-            progress.setDokarkivStatus(status.length() > 0 ? status.substring(1) : null);
         }
     }
 

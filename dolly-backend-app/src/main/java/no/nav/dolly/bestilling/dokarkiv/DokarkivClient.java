@@ -22,6 +22,7 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.dolly.bestilling.dokarkiv.domain.JoarkTransaksjon;
+import no.nav.dolly.bestilling.saf.SafConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -37,6 +38,7 @@ import no.nav.dolly.service.TransaksjonMappingService;
 public class DokarkivClient implements ClientRegister {
 
     private final DokarkivConsumer dokarkivConsumer;
+    private final SafConsumer safConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
     private final TransaksjonMappingService transaksjonMappingService;
@@ -76,8 +78,8 @@ public class DokarkivClient implements ClientRegister {
         try {
             ResponseEntity<DokarkivResponse> response = dokarkivConsumer.postDokarkiv(environment, dokarkivRequest);
             if (response.hasBody()) {
-                status.append(isNotBlank(status) ? ',' : "");
-                status.append(environment)
+                status.append(isNotBlank(status.toString()) ? ',' : "")
+                        .append(environment)
                         .append(":OK");
 
                 saveTranskasjonId(requireNonNull(response.getBody()), tpsPerson.getHovedperson(), environment);
@@ -85,7 +87,7 @@ public class DokarkivClient implements ClientRegister {
 
         } catch (RuntimeException e) {
 
-            status.append(',')
+            status.append(isNotBlank(status.toString()) ? ',' : "")
                     .append(environment)
                     .append(':')
                     .append(errorStatusDecoder.decodeRuntimeException(e));
