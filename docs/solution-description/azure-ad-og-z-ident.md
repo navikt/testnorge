@@ -14,10 +14,10 @@ parent: Løsningsbeskrivelser
 
 ## Problemstilling
 
-I dagens Dolly applikasjon brukes Z-bruker opprettet via ida portalen til innlogging i Dolly. Dette er et system som er opprettet av NAV for å styretilgangskontroll i NAV. Dolly har ikke det samme behovet i vårt system. Vi har ikke brukt for å bestemme tilgang til vert enkelt system. (Det kan være vi skal skille mellom noen brukere, 
-men da kun på funksjonalitet i Dolly, ikke enkelte underliggerne systemer.)
+I dagens Dolly-applikasjon brukes Z-bruker opprettet via IDA-portalen til innlogging i Dolly. Dette er et system som er opprettet av NAV for å styre tilgangskontroll i NAV. Dolly har ikke det samme behovet i vårt system. Vi har ikke bruk for å bestemme tilgang til hvert enkelt system. (Det kan være vi skal skille mellom noen brukere, 
+men da kun på funksjonalitet i Dolly, ikke enkelte underliggende systemer.)
 
-Disse z-brukerne, fra vårt perspektiv, er ikke personligere brukere. Da vi ikke henter ut eiere og vi vet at de deles mellom personer i NAV. Derfor mister vi kontrollen på hvem som har opprettet brukeren. Prosessen for å opprette brukerne er også kompleks (se https://navikt.github.io/dolly-frontend/). Dette betyr også at vi heller ikke kan gi personlig tilbakemelding dirkete fra Dolly.
+Disse z-brukerne, fra vårt perspektiv, er ikke personligeere brukere. Vi henter ikke ut eiere og vi vet at de deles mellom personer i NAV. Derfor mister vi kontrollen på hvem som har opprettet brukeren. Prosessen for å opprette brukere er også kompleks (se https://navikt.github.io/dolly-frontend/). Dette betyr også at vi heller ikke kan gi personlige tilbakemelding dirkete fra Dolly.
 
 Videre planene for Dolly er å kunne tilby eksterne brukere tilgang til Dolly. Med Z-bruker må vi også kunne dele ut til eksterne partnere, noe som jeg er svert usikker på at NAV ønsker. 
 
@@ -25,33 +25,32 @@ Videre planene for Dolly er å kunne tilby eksterne brukere tilgang til Dolly. M
 
 https://github.com/navikt/freg-security
 
-Dette er en pakke som har blitt opprettet for å håntere sikkerheten likt i team registeret. Dette vil jeg anse som legacy og vi brude bytte til en fast standard for autenisering av brukere og endepunker.
+Dette er en pakke som har blitt opprettet for å håndtere sikkerheten likt i Team Registre. Dette vil jeg anse som legacy og vi burde bytte til en fast standard for autentisering av brukere og endepunker.
 
 ## Løsnigsforslag
 
-Løsingen vil være å vi ta i bruk AzureAD når vi skal håndtere innlogging til ansatte i NAV. Dette medfører at det blir samme innlogging som alle andre systemer med tilgangs kontroll via AzureAD (mail, confluents, slack, osv..).
+Løsingen vil være å vi ta i bruk AzureAD når vi skal håndtere innlogging til ansatte i NAV. Dette medfører at det blir samme innlogging som alle andre systemer med tilgangskontroll via AzureAD (mail, confluents, slack, osv..).
 
 ![Azure Innlogging](solution-description/assets/login-azure.png)
 
-*Vi har også et behov for eksterene skal kunne få tilgang til Dolly. Da kan vi opprette gjeste kontroer i Azure.*
+*Vi har også et behov for eksterene skal kunne få tilgang til Dolly. Da kan vi opprette gjestekontoer i Azure.*
 
 ### Implemtasjon
 
-Siden secrets i Azure ikke håndteres av Vualt må vi brukere team namespace i kubernestes klusteret for de appene som som skal ha personlige sikkerhetsmekanismer. I praksis vil det bety at Dolly appene (frontend og backend) må ligge i dette namespacet. Noe som betyr at vi må bruke ingressene til andre apper utenfor (noe som kan medføre treghet). 
+Siden secrets i Azure ikke håndteres av Vualt må vi brukere team namespace i kubernestes klusteret for de appene som som skal ha personligee sikkerhetsmekanismer. I praksis vil det bety at Dolly appene (frontend og backend) må ligge i dette namespacet. Noe som betyr at vi må bruke ingressene til andre apper utenfor (noe som kan medføre treghet). 
 
-Får å støtte utvikler miljø og produksjon i samme namespace oppretter vi 4 apper i det namespace
+Får å støtte utviklermiljø og produksjon i samme namespace oppretter vi 4 apper i det namespace
 ```
 dolly-frontend-dev
 Dolly-frontend-prod
 Dolly-backend-dev
 Dolly-backend-prod
 ```
-Alle andre underliggerne systemer må vi da bruker system token for å kommunisere med eller legge det i samme namespace.  (I fremtiden vil jeg legge alle våre apper i dette namespacet)
+For alle andre underliggende systemer må vi da bruke systemtoken for å kommunisere med eller legge det i samme namespace. (I fremtiden vil jeg legge alle våre apper i dette namespacet)
 
-De er kun Dolly frontend som skal håndtere innloggingen via AzureAd. Og Dolly backend tar imot access_tokens i via [OAuth 2.0 On-Behaf-of]( https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow).
+Det er kun Dolly frontend som skal håndtere innloggingen via AzureAd. Og Dolly backend tar imot access_tokens via [OAuth 2.0 On-Behaf-of]( https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow).
 
-Med `access_tokene`, som brukes i komunikasjoen fra frontend til backend, vill backend kunne benytte epost eller annen personlig identifikator istede for Z-bruker. 
-
+Med access_tokene, som brukes i kommunikasjon fra frontend til backend, vil backend kunne benytte epost eller annen personlig identifikator istedenfor Z-bruker
 ```
 {
     aud: "<client_id for API B>",
@@ -73,15 +72,15 @@ Med `access_tokene`, som brukes i komunikasjoen fra frontend til backend, vill b
 }
 ```
 
-Det betyr at vi kan bruke dagens mekanismer for å hente ut epost i stede for Z-bruker i Dolly. 
+Det betyr at vi kan bruke dagens mekanismer for å hente ut epost istedenfor for Z-bruker i Dolly. 
 
-I Dolly frontend vil vi nå ha mulighet til å hente ut personlig informasjon om brukeren. Som epost, nav osv... som vil hjelpe oss til bedre feilsøkning og være et steg i å kunne hjelpe personer utenfor NAV.
+I Dolly frontend vil vi nå ha mulighet til å hente ut personlige informasjon om brukeren. Som epost, navn osv... som vil hjelpe oss til bedre feilsøkning, og være et steg i å kunne hjelpe personer utenfor NAV.
 
 ### Migererig fra Z-Bruker
 
-I en periode vil vi legge til funksjonalitet for å kunne kopiere en Z-bruker over til din personlige bruker. På den måten vil ingen miste allerede opprettete brukere. 
+I en periode vil vi legge til funksjonalitet for å kunne kopiere en Z-bruker over til din personlige bruker. På den måten vil ingen miste allerede opprettede brukere.
 
 TODO: Skisser er under utvikling
 
-## Resureser
+## Ressurser
 https://security.labs.nais.io/
