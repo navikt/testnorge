@@ -1,12 +1,6 @@
 package no.nav.registre.hodejegeren.service;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -16,7 +10,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import no.nav.registre.hodejegeren.logging.Level;
 import no.nav.registre.hodejegeren.logging.LogEvent;
@@ -36,6 +36,7 @@ import no.nav.registre.testnorge.domain.dto.namespacetps.TpsPersonDokumentType;
 @Service
 public class HistorikkService {
 
+    private static final int INCREASE_IN_NUMBER_OF_RESULTS = 100;
     private final SyntHistorikkRepository syntHistorikkRepository;
     private final MongoTemplate mongoTemplate;
     private final LogService logService;
@@ -79,13 +80,15 @@ public class HistorikkService {
                     .build()));
 
         }
-        query.limit(pageSize);
+        query.limit(pageSize * INCREASE_IN_NUMBER_OF_RESULTS);
         query.skip((long) pageNumber * pageSize);
-        List<SyntHistorikk> results = new ArrayList<>(mongoTemplate.find(query, SyntHistorikk.class));
 
+
+        List<SyntHistorikk> results = new ArrayList<>(mongoTemplate.find(query, SyntHistorikk.class));
         results.forEach(historikk -> historikk.getKilder().removeIf(kilde -> !kilder.contains(kilde.getNavn())));
 
-        return results;
+        Collections.shuffle(results);
+        return results.stream().limit(pageSize).collect(Collectors.toList());
     }
 
     public Set<String> hentIdsMedKilder(List<String> kilder) {
