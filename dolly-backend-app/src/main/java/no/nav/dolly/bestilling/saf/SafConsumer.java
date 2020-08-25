@@ -9,6 +9,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import java.net.URI;
 import java.util.UUID;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.saf.domain.SafMetadataRequest;
 import no.nav.dolly.bestilling.saf.domain.SafRequest;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.properties.ProvidersProps;
@@ -27,6 +29,7 @@ import no.nav.dolly.security.sts.StsOidcService;
 public class SafConsumer {
 
     private static final String SAF_URL = "/rest/hentdokument";
+    private static final String SAF_GRAPHQL_URL = "/graphql";
     private static final String PREPROD_ENV = "q";
     private static final String TEST_ENV = "t";
 
@@ -46,6 +49,22 @@ public class SafConsumer {
                         .header(AUTHORIZATION,stsOidcService.getIdToken(environment.contains(PREPROD_ENV) ? PREPROD_ENV : TEST_ENV))
                         .header(HEADER_NAV_CALL_ID, callId)
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER).build(),
+                String.class);
+    }
+
+    @Timed(name = "providers", tags = { "operation", "hent-dokument" })
+    public ResponseEntity<String> getMetadata(String environment, SafMetadataRequest request) {
+
+        String callId = getNavCallId();
+        log.info("SafMetadataRequest sendt, callId: {}, consumerId: {}, miljø: {}", callId, CONSUMER, environment);
+
+        return restTemplate.exchange(
+                RequestEntity.post(URI.create(String.format("%s%s", providersProps.getJoark().getUrl().replace("$", "q1"),
+                        SAF_GRAPHQL_URL)))
+                        .header(AUTHORIZATION,stsOidcService.getIdToken(environment.contains(PREPROD_ENV) ? PREPROD_ENV : TEST_ENV))
+                        .header(HEADER_NAV_CALL_ID, callId)
+                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                        .contentType(MediaType.APPLICATION_JSON).build(),
                 String.class);
     }
 
