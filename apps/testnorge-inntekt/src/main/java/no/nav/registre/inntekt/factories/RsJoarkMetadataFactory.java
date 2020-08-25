@@ -1,18 +1,17 @@
 package no.nav.registre.inntekt.factories;
 
+import static java.util.Objects.nonNull;
+
+import java.util.Map;
+
 import no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.RsInntektsmeldingRequest;
 import no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.enums.YtelseKodeListe;
 import no.nav.registre.inntekt.consumer.rs.dokmot.dto.RsJoarkMetadata;
 
-import java.util.Map;
-import java.util.Random;
-
-import static java.util.Objects.nonNull;
-
 public class RsJoarkMetadataFactory {
-    private RsJoarkMetadataFactory() {}
+    private RsJoarkMetadataFactory() {
+    }
 
-    private static final Random RANDOM = new Random();
     private static final Map<YtelseKodeListe, String> ytelseMap = Map.of(
             YtelseKodeListe.FORELDREPENGER, "FOR",
             YtelseKodeListe.SVANGERSKAPSPENGER, "FOR",
@@ -21,7 +20,6 @@ public class RsJoarkMetadataFactory {
             YtelseKodeListe.OPPLAERINGSPENGER, "OMS",
             YtelseKodeListe.SYKEPENGER, "SYK");
 
-    // Default values:
     private static final String DEFAULT_JOURNALPOST_TYPE = "INNGAAENDE";
     private static final String DEFAULT_BRUKER_ID_TYPE = "FNR";
     private static final String DEFAULT_TITTEL = "Syntetisk Inntektsmelding";
@@ -33,7 +31,7 @@ public class RsJoarkMetadataFactory {
     private static final String DEFAULT_DOKUMENTER_BREVKODE = "4936";
     private static final String DEFAULT_DOKUMENTER_BERVKATEGORI = "ES";
 
-    public static RsJoarkMetadata create(RsInntektsmeldingRequest inntektsmelding) {
+    public static RsJoarkMetadata create(RsInntektsmeldingRequest inntektsmelding, Long id) {
         return RsJoarkMetadata.builder()
                 .journalpostType(DEFAULT_JOURNALPOST_TYPE)
                 .avsenderMottakerIdType(nonNull(inntektsmelding.getArbeidsgiver()) ? "ORGNR" : "FNR")
@@ -41,7 +39,7 @@ public class RsJoarkMetadataFactory {
                 .tema(ytelseMap.get(inntektsmelding.getYtelse()))
                 .tittel(DEFAULT_TITTEL)
                 .kanal(DEFAULT_KANAL)
-                .eksternReferanseId("AR" + randomNumber(7))
+                .eksternReferanseId("AR" + padLeftZeros(String.valueOf(id), 7))
                 .filtypeOriginal(DEFAULT_FILTYPE_XML)
                 .filtypeArkiv(DEFAULT_FILTYPE_PDF)
                 .variantformatOriginal(DEFAULT_VARIANTFORMAT_ORIGINAL)
@@ -51,8 +49,15 @@ public class RsJoarkMetadataFactory {
                 .build();
     }
 
-    private static long randomNumber(int length) {
-        long min = (long) Math.pow(10, (length - 1));
-        return min + RANDOM.nextInt((int)(min * 9));
+    private static String padLeftZeros(String inputString, int length) {
+        if (inputString.length() >= length) {
+            return inputString;
+        }
+        StringBuilder sb = new StringBuilder();
+        while (sb.length() < length - inputString.length()) {
+            sb.append('0');
+        }
+        sb.append(inputString);
+        return sb.toString();
     }
 }

@@ -1,17 +1,10 @@
 package no.nav.registre.inntekt.service;
 
+import static java.util.Objects.nonNull;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.inntekt.consumer.rs.altinninntekt.AltinnInntektConsumer;
-import no.nav.registre.inntekt.consumer.rs.dokmot.DokmotConsumer;
-import no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.RsInntektsmeldingRequest;
-import no.nav.registre.inntekt.consumer.rs.dokmot.dto.InntektDokument;
-import no.nav.registre.inntekt.consumer.rs.dokmot.dto.ProsessertInntektDokument;
-import no.nav.registre.inntekt.factories.RsAltinnInntektsmeldingFactory;
-import no.nav.registre.inntekt.factories.RsJoarkMetadataFactory;
-import no.nav.registre.inntekt.provider.rs.requests.AltinnInntektsmeldingRequest;
 import org.springframework.stereotype.Service;
-
 
 import javax.validation.ValidationException;
 import java.time.ZoneId;
@@ -19,7 +12,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.nonNull;
+import no.nav.registre.inntekt.consumer.rs.altinninntekt.AltinnInntektConsumer;
+import no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.RsInntektsmeldingRequest;
+import no.nav.registre.inntekt.consumer.rs.dokmot.DokmotConsumer;
+import no.nav.registre.inntekt.consumer.rs.dokmot.dto.InntektDokument;
+import no.nav.registre.inntekt.consumer.rs.dokmot.dto.ProsessertInntektDokument;
+import no.nav.registre.inntekt.factories.RsAltinnInntektsmeldingFactory;
+import no.nav.registre.inntekt.factories.RsJoarkMetadataFactory;
+import no.nav.registre.inntekt.provider.rs.requests.AltinnInntektsmeldingRequest;
+import no.nav.registre.inntekt.repository.InntektsmedlingRepository;
+import no.nav.registre.inntekt.repository.model.InntektsmeldingModel;
 
 @Slf4j
 @Service
@@ -28,7 +30,7 @@ public class AltinnInntektService {
 
     private final AltinnInntektConsumer altinnInntektConsumer;
     private final DokmotConsumer dokmotConsumer;
-
+    private final InntektsmedlingRepository repository;
 
     public List<ProsessertInntektDokument> opprettInntektsmelding(
             String navCallId,
@@ -47,15 +49,16 @@ public class AltinnInntektService {
             RsInntektsmeldingRequest rsInntektsmelding,
             String ident
     ) {
-        var xmlString  = altinnInntektConsumer.getInntektsmeldingXml201812(RsAltinnInntektsmeldingFactory.create(rsInntektsmelding, ident));
+        var xmlString = altinnInntektConsumer.getInntektsmeldingXml201812(RsAltinnInntektsmeldingFactory.create(rsInntektsmelding, ident));
         log.trace(xmlString);
+        InntektsmeldingModel model = repository.save(new InntektsmeldingModel(xmlString, ident));
 
         return InntektDokument.builder()
                 .arbeidstakerFnr(ident)
                 .datoMottatt(Date.from(rsInntektsmelding.getAvsendersystem().getInnsendingstidspunkt().atZone(ZoneId.systemDefault()).toInstant()))
                 .virksomhetsnavn(getVirksomhetsnavn(rsInntektsmelding))
                 .virksomhetsnummer(getVirksomhetsnummer(rsInntektsmelding))
-                .metadata(RsJoarkMetadataFactory.create(rsInntektsmelding))
+                .metadata(RsJoarkMetadataFactory.create(rsInntektsmelding, model.getId()))
                 .xml(xmlString)
                 .build();
     }

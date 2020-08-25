@@ -1,5 +1,10 @@
 package no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.enums;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import no.nav.registre.inntekt.utils.JsonYtelseKodeListeDeserializer;
+
+@JsonDeserialize(using = JsonYtelseKodeListeDeserializer.class)
 public enum YtelseKodeListe implements AltinnEnum {
     SYKEPENGER("Sykepenger"),
     FORELDREPENGER("Foreldrepenger"),
@@ -10,7 +15,7 @@ public enum YtelseKodeListe implements AltinnEnum {
 
     private String value;
 
-    YtelseKodeListe (String value) {
+    YtelseKodeListe(String value) {
         this.value = value;
     }
 

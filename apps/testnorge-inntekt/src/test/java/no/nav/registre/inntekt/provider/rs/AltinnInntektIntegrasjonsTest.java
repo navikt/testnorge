@@ -108,7 +108,7 @@ public class AltinnInntektIntegrasjonsTest {
     }
 
     private void stubForAuthorization() {
-        stubFor(get(urlEqualTo("/?grant_type=client_credentials&scope=openid"))
+        stubFor(get(urlEqualTo("/token/?grant_type=client_credentials&scope=openid"))
                 .withHeader(AUTHORIZATION, containing("Basic "))
                 .willReturn(aResponse()
                         .withStatus(200)));
