@@ -1,10 +1,10 @@
 package no.nav.registre.testnorge.test;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.matching;
@@ -119,7 +119,7 @@ public class JsonWiremockHelper {
         stubFor(mappingBuilder);
     }
 
-    private void updateMappingBuilder(MappingBuilder mappingBuilder){
+    private void updateMappingBuilder(MappingBuilder mappingBuilder) {
         queryParamMap.forEach((name, value) -> mappingBuilder.withQueryParam(name, equalTo(value)));
 
         if (requestBody != null) {

@@ -9,3 +9,5 @@
 
 # production
 *frontend/build/
+
+*.DS_Store
