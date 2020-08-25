@@ -50,7 +50,7 @@ public class TpsfPersonCache {
         if (!personer.isEmpty()) {
             return TpsPerson.builder()
                     .persondetaljer(personer)
-                    .hovedperson(personer.get(0).getIdent())
+                    .hovedperson(identer.getIdentTupler().get(0).getIdent())
                     .partnere(personer.get(0).getRelasjoner().stream()
                             .filter(Relasjon::isPartner)
                             .map(Relasjon::getPersonRelasjonMed)

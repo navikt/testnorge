@@ -1,22 +1,20 @@
 package no.nav.dolly.bestilling.sykemelding.domain;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding.RsDetaljertSykemelding;
+import no.nav.dolly.domain.resultset.tpsf.Person;
 
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(value = JsonInclude.Include.NON_NULL)
-public class SykemeldingTransaksjon {
+public class BestillingPersonWrapper {
 
-    private String orgnummer;
-    private String arbeidsforholdId;
-    private Long bestillingsId;
+    private Person person;
+    private RsDetaljertSykemelding sykemelding;
 }

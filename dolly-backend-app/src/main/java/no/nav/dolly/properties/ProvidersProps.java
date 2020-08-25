@@ -37,6 +37,8 @@ public class ProvidersProps {
     private Dokarkiv dokarkiv = new Dokarkiv();
     private SyntSykemelding syntSykemelding = new SyntSykemelding();
     private SkjermingsRegister skjermingsRegister = new SkjermingsRegister();
+    private DetaljertSykemelding detaljertSykemelding = new DetaljertSykemelding();
+    private Helsepersonell helsepersonell = new Helsepersonell();
     private Joark joark = new Joark();
 
     @Getter
@@ -254,6 +256,26 @@ public class ProvidersProps {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SkjermingsRegister {
+
+        private String url;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DetaljertSykemelding {
+
+        private String url;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Helsepersonell {
 
         private String url;
     }

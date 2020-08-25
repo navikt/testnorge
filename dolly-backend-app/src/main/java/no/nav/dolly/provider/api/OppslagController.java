@@ -29,6 +29,8 @@ import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
 import no.nav.dolly.bestilling.saf.SafConsumer;
 import no.nav.dolly.bestilling.saf.domain.SafRequest;
 import no.nav.dolly.bestilling.saf.domain.SafRequest.VariantFormat;
+import no.nav.dolly.bestilling.sykemelding.HelsepersonellConsumer;
+import no.nav.dolly.bestilling.sykemelding.domain.dto.LegeListeDTO;
 import no.nav.dolly.consumer.fastedatasett.DatasettType;
 import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
 import no.nav.dolly.consumer.identpool.IdentpoolConsumer;
@@ -57,6 +59,7 @@ public class OppslagController {
     private final IdentpoolConsumer identpoolConsumer;
     private final InntektsmeldingEnumService inntektsmeldingEnumService;
     private final TransaksjonMappingService transaksjonMappingService;
+    private final HelsepersonellConsumer helsepersonellConsumer;
     private final SafConsumer safConsumer;
 
     @Cacheable(CACHE_KODEVERK)
@@ -91,6 +94,12 @@ public class OppslagController {
         return asList(SystemTyper.values()).stream()
                 .map(type -> SystemTyper.SystemBeskrivelse.builder().system(type.name()).beskrivelse(type.getBeskrivelse()).build())
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/helsepersonell/leger")
+    @ApiOperation(value = "Hent liste med leger", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    public ResponseEntity<LegeListeDTO> getLeger() {
+        return helsepersonellConsumer.getLeger();
     }
 
     @GetMapping("/fastedatasett/{datasettype}")
