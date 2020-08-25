@@ -80,7 +80,7 @@ I Dolly frontend vil vi nå ha mulighet til å hente ut personlige informasjon o
 
 I en periode vil vi legge til funksjonalitet for å kunne kopiere en Z-bruker over til din personlige bruker. På den måten vil ingen miste allerede opprettede brukere.
 
-*Skisser er under utvikling*
+[Prototype](https://invis.io/ENXCGRI6XD8#/429665609_Innlogging_Personlig_ident_1)
 
 ## Ressurser
-(https://security.labs.nais.io/)[https://security.labs.nais.io/]
+[https://security.labs.nais.io/](https://security.labs.nais.io/)
