@@ -36,7 +36,7 @@ import no.nav.registre.testnorge.domain.dto.namespacetps.TpsPersonDokumentType;
 @Service
 public class HistorikkService {
 
-    private final static int INCREASE_IN_NUMBER_OF_RESULTS = 100;
+    private static final int INCREASE_IN_NUMBER_OF_RESULTS = 100;
     private final SyntHistorikkRepository syntHistorikkRepository;
     private final MongoTemplate mongoTemplate;
     private final LogService logService;
