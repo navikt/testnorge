@@ -4,6 +4,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -59,35 +60,39 @@ public class DokarkivClient implements ClientRegister {
             bestilling.getEnvironments().forEach(environment -> {
 
                 if (!transaksjonMappingService.existAlready(DOKARKIV, tpsPerson.getHovedperson(), environment) || isOpprettEndre) {
-                    try {
-                        ResponseEntity<DokarkivResponse> response = dokarkivConsumer.postDokarkiv(environment, dokarkivRequest);
-                        if (response.hasBody()) {
-                            status.append(',')
-                                    .append(environment)
-                                    .append(":OK");
-
-                            saveTranskasjonId(requireNonNull(response.getBody()), tpsPerson.getHovedperson(), environment);
-                        }
-
-                    } catch (RuntimeException e) {
-
-                        status.append(',')
-                                .append(environment)
-                                .append(':')
-                                .append(errorStatusDecoder.decodeRuntimeException(e));
-
-                        log.error("Feilet å legge inn person: {} til Dokarkiv miljø: {}",
-                                dokarkivRequest.getBruker().getId(), environment, e);
-                    }
+                    postDokarkiv(tpsPerson, status, dokarkivRequest, environment);
                 }
             });
-            progress.setDokarkivStatus(status.length() > 0 ? status.substring(1) : null);
+            progress.setDokarkivStatus(status.length() > 0 ? status.toString() : null);
         }
     }
 
     @Override
     public void release(List<String> identer) {
 
+    }
+
+    private void postDokarkiv(TpsPerson tpsPerson, StringBuilder status, DokarkivRequest dokarkivRequest, String environment) {
+        try {
+            ResponseEntity<DokarkivResponse> response = dokarkivConsumer.postDokarkiv(environment, dokarkivRequest);
+            if (response.hasBody()) {
+                status.append(isNotBlank(status) ? ',' : "");
+                status.append(environment)
+                        .append(":OK");
+
+                saveTranskasjonId(requireNonNull(response.getBody()), tpsPerson.getHovedperson(), environment);
+            }
+
+        } catch (RuntimeException e) {
+
+            status.append(',')
+                    .append(environment)
+                    .append(':')
+                    .append(errorStatusDecoder.decodeRuntimeException(e));
+
+            log.error("Feilet å legge inn person: {} til Dokarkiv miljø: {}",
+                    dokarkivRequest.getBruker().getId(), environment, e);
+        }
     }
 
     private void saveTranskasjonId(DokarkivResponse response, String ident, String miljoe) {
