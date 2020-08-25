@@ -31,7 +31,7 @@ Dette er en pakke som har blitt opprettet for å håndtere sikkerheten likt i Te
 
 Løsingen vil være å vi ta i bruk AzureAD når vi skal håndtere innlogging til ansatte i NAV. Dette medfører at det blir samme innlogging som alle andre systemer med tilgangskontroll via AzureAD (mail, confluents, slack, osv..).
 
-![Azure Innlogging](solution-description/assets/login-azure.png)
+![Azure Innlogging](assets/logon-azure.png)
 
 *Vi har også et behov for eksterene skal kunne få tilgang til Dolly. Da kan vi opprette gjestekontoer i Azure.*
 
@@ -42,9 +42,9 @@ Siden secrets i Azure ikke håndteres av Vualt må vi brukere team namespace i k
 Får å støtte utviklermiljø og produksjon i samme namespace oppretter vi 4 apper i det namespace
 ```
 dolly-frontend-dev
-Dolly-frontend-prod
-Dolly-backend-dev
-Dolly-backend-prod
+dolly-frontend-prod
+dolly-backend-dev
+dolly-backend-prod
 ```
 For alle andre underliggende systemer må vi da bruke systemtoken for å kommunisere med eller legge det i samme namespace. (I fremtiden vil jeg legge alle våre apper i dette namespacet)
 
@@ -80,7 +80,7 @@ I Dolly frontend vil vi nå ha mulighet til å hente ut personlige informasjon o
 
 I en periode vil vi legge til funksjonalitet for å kunne kopiere en Z-bruker over til din personlige bruker. På den måten vil ingen miste allerede opprettede brukere.
 
-TODO: Skisser er under utvikling
+*Skisser er under utvikling*
 
 ## Ressurser
 https://security.labs.nais.io/
