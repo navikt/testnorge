@@ -20,11 +20,15 @@ public class TransaksjonMappingService {
 
     private final TransaksjonMappingRepository transaksjonMappingRepository;
 
-    public List<TransaksjonMapping> getTransaksjonMapping(SystemTyper system, String ident) {
+    public List<TransaksjonMapping> getTransaksjonMappingIdent(String system, String ident) {
 
-        return isNotBlank(system.name()) ?
-                transaksjonMappingRepository.findAllBySystemAndIdent(system.name(), ident).orElse(emptyList()) :
-                transaksjonMappingRepository.findAllByIdent(ident).orElse(emptyList());
+        return isNotBlank(system) ? transaksjonMappingRepository.findAllBySystemAndIdent(system, ident).orElse(emptyList()) : transaksjonMappingRepository.findAllByIdent(ident).orElse(emptyList());
+    }
+
+    public List<TransaksjonMapping> getTransaksjonMappingBestilling(String system, Long bestillingId) {
+
+        return isNotBlank(system) ? transaksjonMappingRepository.findAllBySystemAndBestillingId(system, bestillingId).orElse(emptyList())
+                : transaksjonMappingRepository.findAllByBestillingId(bestillingId).orElse(emptyList());
     }
 
     public boolean existAlready(SystemTyper system, String ident, String miljoe) {

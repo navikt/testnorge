@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.aareg.AaregConsumer;
@@ -147,10 +148,17 @@ public class OppslagController {
         return inntektsmeldingEnumService.getEnumType(enumtype);
     }
 
-    @GetMapping("/transaksjonid/{system}/{ident}")
+    @GetMapping("/transaksjonidident/{ident}")
     @ApiOperation(value = "Henter transaksjon IDer for ident", authorizations = { @Authorization(value = "Bearer token fra bruker") })
-    public List<TransaksjonMapping> getTransaksjonIder(@PathVariable SystemTyper system, @PathVariable String ident) {
+    public List<TransaksjonMapping> getTransaksjonIderIdent(@ApiParam(value = "System kan hentes ut fra /api/v1/systemer") @RequestParam(required = false) String system, @PathVariable String ident) {
 
-        return transaksjonMappingService.getTransaksjonMapping(system, ident);
+        return transaksjonMappingService.getTransaksjonMappingIdent(system, ident);
+    }
+
+    @GetMapping("/transaksjonidbestilling/{bestillingId}")
+    @ApiOperation(value = "Henter transaksjon IDer for bestillingId", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    public List<TransaksjonMapping> getTransaksjonIderBestilling(@ApiParam(value = "System kan hentes ut fra /api/v1/systemer") @RequestParam(required = false) String system, @PathVariable Long bestillingId) {
+
+        return transaksjonMappingService.getTransaksjonMappingBestilling(system, bestillingId);
     }
 }

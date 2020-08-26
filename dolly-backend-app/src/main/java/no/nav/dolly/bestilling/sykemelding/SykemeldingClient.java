@@ -56,11 +56,11 @@ public class SykemeldingClient implements ClientRegister {
 
                     if (postSyntSykemelding(bestilling, tpsPerson)) {
                         RsSyntSykemelding syntSykemelding = bestilling.getSykemelding().getSyntSykemelding();
-                        saveTranskasjonId(syntSykemelding.getOrgnummer(), syntSykemelding.getArbeidsforholdId(), progress.getBestillingId(), tpsPerson.getHovedperson());
+                        saveTransaksjonId(syntSykemelding.getOrgnummer(), syntSykemelding.getArbeidsforholdId(), progress.getBestillingId(), tpsPerson.getHovedperson());
 
                     } else if (postDetaljertSykemelding(bestilling, tpsPerson)) {
                         RsDetaljertSykemelding detaljertSykemelding = bestilling.getSykemelding().getDetaljertSykemelding();
-                        saveTranskasjonId(detaljertSykemelding.getMottaker().getOrgNr(), "1", progress.getBestillingId(), tpsPerson.getHovedperson());
+                        saveTransaksjonId(detaljertSykemelding.getMottaker().getOrgNr(), null, progress.getBestillingId(), tpsPerson.getHovedperson());
                     }
                     progress.setSykemeldingStatus("OK");
                 }
@@ -82,9 +82,9 @@ public class SykemeldingClient implements ClientRegister {
         if (nonNull(bestilling.getSykemelding().getDetaljertSykemelding())) {
             Person pasient = tpsPerson.getPerson(tpsPerson.getHovedperson());
             DetaljertSykemeldingRequest detaljertSykemeldingRequest = mapperFacade.map(BestillingPersonWrapper.builder()
-                            .person(pasient)
-                            .sykemelding(bestilling.getSykemelding().getDetaljertSykemelding())
-                            .build(),
+                    .person(pasient)
+                    .sykemelding(bestilling.getSykemelding().getDetaljertSykemelding())
+                    .build(),
                     DetaljertSykemeldingRequest.class);
 
             ResponseEntity<String> responseDetaljert = sykemeldingConsumer.postDetaljertSykemelding(detaljertSykemeldingRequest);
@@ -105,7 +105,7 @@ public class SykemeldingClient implements ClientRegister {
         return false;
     }
 
-    private void saveTranskasjonId(String orgnr, String arbeidsforholdsId, Long bestillingsId, String ident) {
+    private void saveTransaksjonId(String orgnr, String arbeidsforholdsId, Long bestillingsId, String ident) {
 
         transaksjonMappingService.save(
                 TransaksjonMapping.builder()

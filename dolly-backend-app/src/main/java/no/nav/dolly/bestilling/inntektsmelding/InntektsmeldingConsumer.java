@@ -7,6 +7,7 @@ import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 
 import java.net.URI;
 import java.util.UUID;
+
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -30,8 +31,12 @@ public class InntektsmeldingConsumer {
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
 
+    private static String getNavCallId() {
+        return format("%s %s", CONSUMER, UUID.randomUUID().toString());
+    }
+
     @Timed(name = "providers", tags = { "operation", "inntektsmelding_opprett" })
-    public ResponseEntity postInntektsmelding(InntektsmeldingRequest inntekstsmelding) {
+    public ResponseEntity<InntektsmeldingResponse> postInntektsmelding(InntektsmeldingRequest inntekstsmelding) {
 
         String callId = getNavCallId();
         log.info("Inntektsmelding med callId {} sendt", callId);
@@ -40,10 +45,7 @@ public class InntektsmeldingConsumer {
                 RequestEntity.post(URI.create(providersProps.getInntektsmelding().getUrl() + POST_FMT_BLD))
                         .header(HEADER_NAV_CALL_ID, callId)
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                        .body(inntekstsmelding), InntektsmeldingResponse.class);
-    }
-
-    private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID().toString());
+                        .body(inntekstsmelding),
+                InntektsmeldingResponse.class);
     }
 }
