@@ -31,10 +31,6 @@ public class InntektsmeldingConsumer {
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
 
-    private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID().toString());
-    }
-
     @Timed(name = "providers", tags = { "operation", "inntektsmelding_opprett" })
     public ResponseEntity<InntektsmeldingResponse> postInntektsmelding(InntektsmeldingRequest inntekstsmelding) {
 
@@ -47,5 +43,9 @@ public class InntektsmeldingConsumer {
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .body(inntekstsmelding),
                 InntektsmeldingResponse.class);
+    }
+
+    private static String getNavCallId() {
+        return format("%s %s", CONSUMER, UUID.randomUUID().toString());
     }
 }

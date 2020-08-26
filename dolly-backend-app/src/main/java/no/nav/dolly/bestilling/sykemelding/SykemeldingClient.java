@@ -105,12 +105,12 @@ public class SykemeldingClient implements ClientRegister {
         return false;
     }
 
-    private void saveTransaksjonId(String orgnr, String arbeidsforholdsId, Long bestillingsId, String ident) {
+    private void saveTransaksjonId(String orgnr, String arbeidsforholdsId, Long bestillingId, String ident) {
 
         transaksjonMappingService.save(
                 TransaksjonMapping.builder()
                         .ident(ident)
-                        .bestillingId(bestillingsId)
+                        .bestillingId(bestillingId)
                         .transaksjonId(toJson(SykemeldingTransaksjon.builder()
                                 .orgnummer(orgnr)
                                 .arbeidsforholdId(arbeidsforholdsId).build()))

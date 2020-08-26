@@ -148,17 +148,12 @@ public class OppslagController {
         return inntektsmeldingEnumService.getEnumType(enumtype);
     }
 
-    @GetMapping("/transaksjonidident/{ident}")
-    @ApiOperation(value = "Henter transaksjon IDer for ident", authorizations = { @Authorization(value = "Bearer token fra bruker") })
-    public List<TransaksjonMapping> getTransaksjonIderIdent(@ApiParam(value = "System kan hentes ut fra /api/v1/systemer") @RequestParam(required = false) String system, @PathVariable String ident) {
+    @GetMapping("/transaksjonid")
+    @ApiOperation(value = "Henter transaksjon IDer for ident og bestillingId", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    public List<TransaksjonMapping> getTransaksjonIderIdent(@ApiParam(value = "System kan hentes ut fra /api/v1/systemer") @RequestParam(required = false) String system,
+            @ApiParam(value = "Ident (f.eks FNR) på person knyttet til en bestilling") @RequestParam(required = false) String ident,
+            @ApiParam(value = "En ID som identifiserer en bestilling mot Dolly") @RequestParam(required = false) Long bestillingid) {
 
-        return transaksjonMappingService.getTransaksjonMappingIdent(system, ident);
-    }
-
-    @GetMapping("/transaksjonidbestilling/{bestillingId}")
-    @ApiOperation(value = "Henter transaksjon IDer for bestillingId", authorizations = { @Authorization(value = "Bearer token fra bruker") })
-    public List<TransaksjonMapping> getTransaksjonIderBestilling(@ApiParam(value = "System kan hentes ut fra /api/v1/systemer") @RequestParam(required = false) String system, @PathVariable Long bestillingId) {
-
-        return transaksjonMappingService.getTransaksjonMappingBestilling(system, bestillingId);
+        return transaksjonMappingService.getTransaksjonMapping(system, ident, bestillingid);
     }
 }
