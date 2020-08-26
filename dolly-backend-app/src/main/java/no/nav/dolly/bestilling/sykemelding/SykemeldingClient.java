@@ -5,9 +5,11 @@ import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -58,7 +60,7 @@ public class SykemeldingClient implements ClientRegister {
 
                     } else if (postDetaljertSykemelding(bestilling, tpsPerson)) {
                         RsDetaljertSykemelding detaljertSykemelding = bestilling.getSykemelding().getDetaljertSykemelding();
-                        saveTranskasjonId(detaljertSykemelding.getMottaker().getOrgNr(), null, progress.getBestillingId(), tpsPerson.getHovedperson());
+                        saveTranskasjonId(detaljertSykemelding.getMottaker().getOrgNr(), "1", progress.getBestillingId(), tpsPerson.getHovedperson());
                     }
                     progress.setSykemeldingStatus("OK");
                 }
@@ -108,10 +110,10 @@ public class SykemeldingClient implements ClientRegister {
         transaksjonMappingService.save(
                 TransaksjonMapping.builder()
                         .ident(ident)
+                        .bestillingId(bestillingsId)
                         .transaksjonId(toJson(SykemeldingTransaksjon.builder()
                                 .orgnummer(orgnr)
-                                .arbeidsforholdId(arbeidsforholdsId)
-                                .bestillingsId(bestillingsId).build()))
+                                .arbeidsforholdId(arbeidsforholdsId).build()))
                         .datoEndret(LocalDateTime.now())
                         .system(SYKEMELDING.name())
                         .build());
