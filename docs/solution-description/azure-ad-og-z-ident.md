@@ -46,7 +46,7 @@ dolly-frontend-prod
 dolly-backend-dev
 dolly-backend-prod
 ```
-For alle andre underliggende systemer må vi da bruke systemtoken for å kommunisere med eller legge det i samme namespace. (I fremtiden vil jeg legge alle våre apper i dette namespacet)
+(I fremtiden vil jeg legge alle våre apper i dette namespacet)
 
 Det er kun Dolly frontend som skal håndtere innloggingen via AzureAd. Og Dolly backend tar imot access_tokens via [OAuth 2.0 On-Behaf-of]( https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow).
 
