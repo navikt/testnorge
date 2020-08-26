@@ -48,6 +48,7 @@ module.exports = {
 	resolve: {
 		alias: {
 			'~': path.resolve(__dirname, 'src'),
+			"@": path.resolve(__dirname, "src"),
 			lessVars: path.resolve(__dirname, 'src/styles/variables.less'),
 			lessUtils: path.resolve(__dirname, 'src/styles/utils.less')
 		},
