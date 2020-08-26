@@ -1,14 +1,10 @@
 import React from 'react'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
+import { Diagnose } from '~/components/fagsystem/sykdom/SykemeldingTypes'
 
 type Bidiagnoser = {
 	data: Array<Diagnose>
-}
-
-type Diagnose = {
-	diagnose: string
-	diagnosekode: string
 }
 
 export const Bidiagnoser = ({ data }: Bidiagnoser) => {

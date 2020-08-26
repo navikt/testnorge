@@ -3,7 +3,7 @@ import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
 import { erForste } from '~/components/ui/form/formUtils'
-import { SykemeldingForm } from './partials/Sykemelding'
+import { Sykemelding } from './partials/Sykemelding'
 import { validation } from './validation'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { FormikProps } from 'formik'
@@ -27,15 +27,16 @@ export const SykdomForm = ({ formikBag }: SykdomForm) => (
 		>
 			{!formikBag.values.hasOwnProperty('aareg') && (
 				<>
-					<AlertStripeInfo>
-						{
-							'Personen må ha et arbeidsforhold knyttet til den samme virksomheten som du velger i sykemeldingen. Det kan du legge til ved å gå tilbake til forrige side og huke av for Arbeidsforhold (Aareg).'
-						}
+					{/* 
+					// @ts-ignore */}
+					<AlertStripeInfo style={{ marginBottom: '20px' }}>
+						Personen må ha et arbeidsforhold knyttet til den samme virksomheten som du velger i
+						sykemeldingen. Det kan du legge til ved å gå tilbake til forrige side og huke av for
+						Arbeidsforhold (Aareg).
 					</AlertStripeInfo>
-					<br></br>
 				</>
 			)}
-			<SykemeldingForm formikBag={formikBag} />
+			<Sykemelding formikBag={formikBag} />
 		</Panel>
 	</Vis>
 )

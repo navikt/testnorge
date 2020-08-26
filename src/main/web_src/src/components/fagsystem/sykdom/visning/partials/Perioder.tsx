@@ -2,22 +2,10 @@ import React from 'react'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
+import { Periode } from '~/components/fagsystem/sykdom/SykemeldingTypes'
 
 type Perioder = {
 	data: Array<Periode>
-}
-
-type Periode = {
-	fom: string
-	tom: string
-	aktivitet: Aktivitet
-}
-
-type Aktivitet = {
-	aktivitet: string
-	behandlingsdager: number
-	grad: number
-	reisetilskudd: boolean
 }
 
 export const Perioder = ({ data }: Perioder) => {

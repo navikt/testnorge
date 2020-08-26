@@ -4,16 +4,7 @@ import { FormikProps } from 'formik'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { SyntSykemelding } from './SyntSykemelding'
 import { DetaljertSykemelding } from './DetaljertSykemelding'
-
-interface SykemeldingForm {
-	formikBag: FormikProps<{}>
-}
-
-type Diagnose = {
-	diagnose: string
-	diagnosekode: string
-	system: string
-}
+import { SykemeldingForm, Diagnose } from '~/components/fagsystem/sykdom/SykemeldingTypes'
 
 const initialValuesSyntSykemelding = {
 	syntSykemelding: {
@@ -77,7 +68,7 @@ const initialValuesDetaljertSykemelding = {
 	}
 }
 
-export const SykemeldingForm = ({ formikBag }: SykemeldingForm) => {
+export const Sykemelding = ({ formikBag }: SykemeldingForm) => {
 	const [typeSykemelding, setTypeSykemelding] = useState(
 		_get(formikBag.values, 'sykemelding').hasOwnProperty('detaljertSykemelding')
 			? 'detaljertSykemelding'

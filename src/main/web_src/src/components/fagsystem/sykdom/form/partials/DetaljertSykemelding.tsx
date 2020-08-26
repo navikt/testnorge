@@ -1,5 +1,4 @@
 import React from 'react'
-import { FormikProps } from 'formik'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
@@ -11,32 +10,10 @@ import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSe
 import { SelectOptionsDiagnoser } from './SelectOptionsDiagnoser'
 import LegeSelect from './LegeSelect'
 import { ArbeidKodeverk } from '~/config/kodeverk'
-
-interface SykemeldingForm {
-	formikBag: FormikProps<{}>
-}
+import { SykemeldingForm, Lege, Arbeidsgiver } from '~/components/fagsystem/sykdom/SykemeldingTypes'
 
 type DiagnoseSelect = {
 	diagnoseNavn: string
-}
-
-type LegeSelect = {
-	etternavn: string
-	fnr: string
-	fornavn: string
-	hprId: string
-	mellomnavn?: string
-}
-
-type ArbeidsgiverSelect = {
-	forretningsAdresse: {
-		adresse: string
-		landkode: string
-		postnr: string
-		poststed: string
-	}
-	navn: string
-	orgnr: string
 }
 
 const initialValuesDiagnose = {
@@ -57,12 +34,14 @@ const initialValuesPeriode = {
 }
 
 export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
+	const diagnoseSystem = '2.16.578.1.12.4.1.1.7170'
+
 	const handleDiagnoseChange = (v: DiagnoseSelect, path: string) => {
 		formikBag.setFieldValue(`${path}.diagnose`, v.diagnoseNavn)
-		formikBag.setFieldValue(`${path}.system`, '2.16.578.1.12.4.1.1.7170')
+		formikBag.setFieldValue(`${path}.system`, diagnoseSystem)
 	}
 
-	const handleLegeChange = (v: LegeSelect) => {
+	const handleLegeChange = (v: Lege) => {
 		formikBag.setFieldValue('sykemelding.detaljertSykemelding.lege', {
 			etternavn: v.etternavn,
 			fornavn: v.fornavn,
@@ -72,7 +51,7 @@ export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 		})
 	}
 
-	const handleArbeidsgiverChange = (v: ArbeidsgiverSelect) => {
+	const handleArbeidsgiverChange = (v: Arbeidsgiver) => {
 		formikBag.setFieldValue('sykemelding.detaljertSykemelding.mottaker', {
 			navn: v.navn,
 			orgNr: v.orgnr,
@@ -136,14 +115,14 @@ export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 				<LegeSelect
 					name="sykemelding.detaljertSykemelding.lege.ident"
 					label="Lege"
-					afterChange={(v: LegeSelect) => handleLegeChange(v)}
+					afterChange={(v: Lege) => handleLegeChange(v)}
 				/>
 			</Kategori>
 			<Kategori title="Arbeidsgiver" vis="sykemelding">
 				<OrganisasjonMedArbeidsforholdSelect
 					path="sykemelding.detaljertSykemelding.arbeidsgiver.navn"
 					label="Navn"
-					afterChange={(v: ArbeidsgiverSelect) => handleArbeidsgiverChange(v)}
+					afterChange={(v: Arbeidsgiver) => handleArbeidsgiverChange(v)}
 					valueNavn={true}
 				/>
 				<FormikSelect
