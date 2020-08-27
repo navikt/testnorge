@@ -5,9 +5,11 @@ import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -54,11 +56,11 @@ public class SykemeldingClient implements ClientRegister {
 
                     if (postSyntSykemelding(bestilling, tpsPerson)) {
                         RsSyntSykemelding syntSykemelding = bestilling.getSykemelding().getSyntSykemelding();
-                        saveTranskasjonId(syntSykemelding.getOrgnummer(), syntSykemelding.getArbeidsforholdId(), progress.getBestillingId(), tpsPerson.getHovedperson());
+                        saveTransaksjonId(syntSykemelding.getOrgnummer(), syntSykemelding.getArbeidsforholdId(), progress.getBestillingId(), tpsPerson.getHovedperson());
 
                     } else if (postDetaljertSykemelding(bestilling, tpsPerson)) {
                         RsDetaljertSykemelding detaljertSykemelding = bestilling.getSykemelding().getDetaljertSykemelding();
-                        saveTranskasjonId(detaljertSykemelding.getMottaker().getOrgNr(), null, progress.getBestillingId(), tpsPerson.getHovedperson());
+                        saveTransaksjonId(detaljertSykemelding.getMottaker().getOrgNr(), null, progress.getBestillingId(), tpsPerson.getHovedperson());
                     }
                     progress.setSykemeldingStatus("OK");
                 }
@@ -80,9 +82,9 @@ public class SykemeldingClient implements ClientRegister {
         if (nonNull(bestilling.getSykemelding().getDetaljertSykemelding())) {
             Person pasient = tpsPerson.getPerson(tpsPerson.getHovedperson());
             DetaljertSykemeldingRequest detaljertSykemeldingRequest = mapperFacade.map(BestillingPersonWrapper.builder()
-                            .person(pasient)
-                            .sykemelding(bestilling.getSykemelding().getDetaljertSykemelding())
-                            .build(),
+                    .person(pasient)
+                    .sykemelding(bestilling.getSykemelding().getDetaljertSykemelding())
+                    .build(),
                     DetaljertSykemeldingRequest.class);
 
             ResponseEntity<String> responseDetaljert = sykemeldingConsumer.postDetaljertSykemelding(detaljertSykemeldingRequest);
@@ -103,15 +105,15 @@ public class SykemeldingClient implements ClientRegister {
         return false;
     }
 
-    private void saveTranskasjonId(String orgnr, String arbeidsforholdsId, Long bestillingsId, String ident) {
+    private void saveTransaksjonId(String orgnr, String arbeidsforholdsId, Long bestillingId, String ident) {
 
         transaksjonMappingService.save(
                 TransaksjonMapping.builder()
                         .ident(ident)
+                        .bestillingId(bestillingId)
                         .transaksjonId(toJson(SykemeldingTransaksjon.builder()
                                 .orgnummer(orgnr)
-                                .arbeidsforholdId(arbeidsforholdsId)
-                                .bestillingsId(bestillingsId).build()))
+                                .arbeidsforholdId(arbeidsforholdsId).build()))
                         .datoEndret(LocalDateTime.now())
                         .system(SYKEMELDING.name())
                         .build());
