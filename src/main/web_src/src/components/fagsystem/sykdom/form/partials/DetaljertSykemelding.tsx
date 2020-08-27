@@ -33,12 +33,12 @@ const initialValuesPeriode = {
 	tom: ''
 }
 
-export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
-	const diagnoseSystem = '2.16.578.1.12.4.1.1.7170'
+const KODESYSTEM = '2.16.578.1.12.4.1.1.7170'
 
+export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 	const handleDiagnoseChange = (v: DiagnoseSelect, path: string) => {
 		formikBag.setFieldValue(`${path}.diagnose`, v.diagnoseNavn)
-		formikBag.setFieldValue(`${path}.system`, diagnoseSystem)
+		formikBag.setFieldValue(`${path}.system`, KODESYSTEM)
 	}
 
 	const handleLegeChange = (v: Lege) => {

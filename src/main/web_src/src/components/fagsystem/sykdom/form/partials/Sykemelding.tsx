@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { get as _get } from 'lodash'
-import { FormikProps } from 'formik'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { SyntSykemelding } from './SyntSykemelding'
 import { DetaljertSykemelding } from './DetaljertSykemelding'
@@ -68,27 +67,32 @@ const initialValuesDetaljertSykemelding = {
 	}
 }
 
+enum SykemeldingTyper {
+	detaljert = 'DETALJERT',
+	synt = 'SYNT'
+}
+
 export const Sykemelding = ({ formikBag }: SykemeldingForm) => {
 	const [typeSykemelding, setTypeSykemelding] = useState(
 		_get(formikBag.values, 'sykemelding').hasOwnProperty('detaljertSykemelding')
-			? 'detaljertSykemelding'
-			: 'syntSykemelding'
+			? SykemeldingTyper.detaljert
+			: SykemeldingTyper.synt
 	)
 
 	const handleToggleChange = (event: React.ChangeEvent<any>) => {
 		setTypeSykemelding(event.target.value)
-		if (event.target.value === 'detaljertSykemelding') {
+		if (event.target.value === SykemeldingTyper.detaljert) {
 			formikBag.setFieldValue('sykemelding', initialValuesDetaljertSykemelding)
 		} else formikBag.setFieldValue('sykemelding', initialValuesSyntSykemelding)
 	}
 
 	const toggleValues = [
 		{
-			value: 'syntSykemelding',
+			value: SykemeldingTyper.synt,
 			label: 'Generer sykemelding automatisk'
 		},
 		{
-			value: 'detaljertSykemelding',
+			value: SykemeldingTyper.detaljert,
 			label: 'Lag detaljert sykemelding'
 		}
 	]
@@ -102,8 +106,10 @@ export const Sykemelding = ({ formikBag }: SykemeldingForm) => {
 					</ToggleKnapp>
 				))}
 			</ToggleGruppe>
-			{typeSykemelding === 'syntSykemelding' && <SyntSykemelding />}
-			{typeSykemelding === 'detaljertSykemelding' && <DetaljertSykemelding formikBag={formikBag} />}
+			{typeSykemelding === SykemeldingTyper.synt && <SyntSykemelding />}
+			{typeSykemelding === SykemeldingTyper.detaljert && (
+				<DetaljertSykemelding formikBag={formikBag} />
+			)}
 		</div>
 	)
 }
