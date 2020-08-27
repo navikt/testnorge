@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.rapportering.config;
+package no.nav.registre.testnorge.common.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

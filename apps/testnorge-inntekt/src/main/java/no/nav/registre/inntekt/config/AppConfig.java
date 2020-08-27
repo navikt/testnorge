@@ -9,12 +9,18 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.registere.testnorge.core.ApplicationCoreConfig;
+import no.nav.registre.testnorge.common.config.FlywayConfiguration;
+import no.nav.registre.testnorge.common.config.VaultHikariConfiguration;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 
 @EnableJpaAuditing
 @Configuration
-@Import(ApplicationCoreConfig.class)
+@Import(value = {
+        ApplicationCoreConfig.class,
+        VaultHikariConfiguration.class,
+        FlywayConfiguration.class
+})
 @DependencyOn("testnorge-hodejegeren")
 public class AppConfig {
 
