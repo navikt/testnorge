@@ -82,6 +82,7 @@ public class DokarkivClient implements ClientRegister {
                         .append(environment)
                         .append(":OK");
 
+                System.out.println(safConsumer.getMetadata(environment, tpsPerson.getHovedperson()));
                 saveTranskasjonId(requireNonNull(response.getBody()), tpsPerson.getHovedperson(), environment);
             }
 

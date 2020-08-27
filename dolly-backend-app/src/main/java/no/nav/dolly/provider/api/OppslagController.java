@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
@@ -163,5 +165,11 @@ public class OppslagController {
     public ResponseEntity<String> getDokument(@PathVariable String journalpostId, @PathVariable String dokumentInfoId,
                                               @PathVariable VariantFormat variantFormat, @RequestParam String miljoe) {
         return safConsumer.getDokument(miljoe, new SafRequest(dokumentInfoId, journalpostId, variantFormat.name()));
+    }
+
+    @GetMapping("/dokarkiv/{ident}")
+    @ApiOperation(value = "Henter metadata fra Joark", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    public ResponseEntity<JsonNode> getMetadata(@PathVariable String journalpostId, @RequestParam(required = false) String miljoe) {
+        return safConsumer.getMetadata(miljoe, journalpostId);
     }
 }

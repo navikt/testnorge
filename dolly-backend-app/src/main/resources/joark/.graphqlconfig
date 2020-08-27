@@ -1,6 +1,6 @@
 {
   "name": "saf-api",
-  "schemaPath": "saf-api-schema.graphql",
+  "schemaPath": "saf-api-sdl.graphqls",
   "extensions": {
     "endpoints": {
       "SAF GraphQL Endpoint": {
