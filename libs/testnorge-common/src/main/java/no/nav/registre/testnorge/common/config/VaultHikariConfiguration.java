@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.rapportering.config;
+package no.nav.registre.testnorge.common.config;
 
 import static org.springframework.vault.core.lease.domain.RequestedSecret.rotating;
 

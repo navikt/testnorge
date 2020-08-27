@@ -8,11 +8,17 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.registere.testnorge.core.ApplicationCoreConfig;
+import no.nav.registre.testnorge.common.config.FlywayConfiguration;
+import no.nav.registre.testnorge.common.config.VaultHikariConfiguration;
 
 @Configuration
 @EnableJpaAuditing
 @EnableJpaRepositories(basePackages = "no.nav.registre.sdforvalter.database.repository")
-@Import(ApplicationCoreConfig.class)
+@Import(value = {
+        ApplicationCoreConfig.class,
+        VaultHikariConfiguration.class,
+        FlywayConfiguration.class
+})
 public class AppConfig {
 
     @Bean
