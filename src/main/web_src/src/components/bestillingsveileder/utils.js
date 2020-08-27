@@ -13,7 +13,8 @@ const rootPaths = [
 	'udistub',
 	'inntektsmelding',
 	'brregstub',
-	'dokarkiv'
+	'dokarkiv',
+	'sykemelding'
 ]
 
 export const harAvhukedeAttributter = values => {

@@ -6,10 +6,15 @@ import { Organisasjon } from './types'
 
 type OrganisasjonLoaderProps = {
 	filter?: (response: EregResponse) => boolean
+	valueNavn?: boolean
 	render: (list: Organisasjon[], feilmelding: Feilmelding) => JSX.Element
 }
 
-export const OrganisasjonLoader = ({ filter = () => true, render }: OrganisasjonLoaderProps) => {
+export const OrganisasjonLoader = ({
+	filter = () => true,
+	render,
+	valueNavn = false
+}: OrganisasjonLoaderProps) => {
 	const formatLabel = (response: EregResponse) =>
 		`${response.orgnr} (${response.enhetstype}) - ${response.navn}`
 	const onFetch = () =>
@@ -23,8 +28,9 @@ export const OrganisasjonLoader = ({ filter = () => true, render }: Organisasjon
 					})
 					.filter(filter)
 					.map((response: EregResponse) => ({
-						value: response.orgnr,
+						value: valueNavn ? response.navn : response.orgnr,
 						label: formatLabel(response),
+						orgnr: response.orgnr,
 						juridiskEnhet: response.juridiskEnhet,
 						navn: response.navn,
 						forretningsAdresse: response.forretningsAdresse,
