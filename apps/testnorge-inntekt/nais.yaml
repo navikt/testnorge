@@ -34,3 +34,4 @@ spec:
   image: {{ image }}
   ingresses:
     - "https://testnorge-inntekt.nais.preprod.local"
+    - "https://testnorge-inntekt.dev.adeo.no"
