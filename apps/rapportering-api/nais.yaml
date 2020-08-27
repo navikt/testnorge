@@ -36,3 +36,4 @@ spec:
       memory: 5000Mi
   ingresses:
     - "https://testnorge-rapportering-api.nais.preprod.local"
+    - "https://testnorge-rapportering-api.dev.adeo.no"
