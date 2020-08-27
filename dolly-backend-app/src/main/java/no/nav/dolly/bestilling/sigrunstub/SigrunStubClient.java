@@ -7,6 +7,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -22,22 +23,23 @@ public class SigrunStubClient implements ClientRegister {
     private final SigrunStubConsumer sigrunStubConsumer;
     private final SigrunStubResponseHandler sigrunStubResponseHandler;
     private final ErrorStatusDecoder errorStatusDecoder;
+    private final MapperFacade mapperFacade;
 
     @Override public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!bestilling.getSigrunstub().isEmpty()) {
             try {
-                for (OpprettSkattegrunnlag request : bestilling.getSigrunstub()) {
-                    request.setPersonidentifikator(tpsPerson.getHovedperson());
-                }
+                List<OpprettSkattegrunnlag> skattegrunnlag = mapperFacade.mapAsList(bestilling.getSigrunstub(), OpprettSkattegrunnlag.class);
+                skattegrunnlag.forEach(inntektsaar ->
+                        inntektsaar.setPersonidentifikator(tpsPerson.getHovedperson()));
 
                 if (!isOpprettEndre) {
-                    deleteExistingSkattegrunnlag(bestilling.getSigrunstub().get(0).getPersonidentifikator());
+                    deleteExistingSkattegrunnlag(tpsPerson.getHovedperson());
                 }
 
                 progress.setSigrunstubStatus(
                         sigrunStubResponseHandler.extractResponse(
-                                sigrunStubConsumer.createSkattegrunnlag(bestilling.getSigrunstub())));
+                                sigrunStubConsumer.createSkattegrunnlag(skattegrunnlag)));
 
             } catch (RuntimeException e) {
                 progress.setSigrunstubStatus(errorStatusDecoder.decodeRuntimeException(e));

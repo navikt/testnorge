@@ -19,7 +19,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingResponse;
-import no.nav.dolly.bestilling.saf.SafConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -37,7 +36,6 @@ public class InntektsmeldingClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final TransaksjonMappingService transaksjonMappingService;
     private final ObjectMapper objectMapper;
-    private final SafConsumer safConsumer;
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -52,7 +50,7 @@ public class InntektsmeldingClient implements ClientRegister {
                 inntektsmeldingRequest.setMiljoe(environment);
                 postInntektsmelding(isOpprettEndre ||
                         !transaksjonMappingService.existAlready(INNTKMELD, tpsPerson.getHovedperson(), environment),
-                        inntektsmeldingRequest, status);
+                        inntektsmeldingRequest, progress.getBestillingId(), status);
             });
 
             progress.setInntektsmeldingStatus(status.length() > 1 ? status.substring(1) : null);
@@ -65,7 +63,7 @@ public class InntektsmeldingClient implements ClientRegister {
         // Inntektsmelding mangler pt. sletting
     }
 
-    private void postInntektsmelding(boolean isSendMelding, InntektsmeldingRequest inntektsmeldingRequest, StringBuilder status) {
+    private void postInntektsmelding(boolean isSendMelding, InntektsmeldingRequest inntektsmeldingRequest, Long bestillingid, StringBuilder status) {
 
         try {
             if (isSendMelding) {
@@ -74,14 +72,14 @@ public class InntektsmeldingClient implements ClientRegister {
                 if (response.hasBody()) {
                     transaksjonMappingService.saveAll(
                             response.getBody().getDokumenter().stream()
-                                    .map(dokument ->
-                                            TransaksjonMapping.builder()
-                                                    .ident(inntektsmeldingRequest.getArbeidstakerFnr())
-                                                    .transaksjonId(toJson(dokument))
-                                                    .datoEndret(LocalDateTime.now())
-                                                    .miljoe(inntektsmeldingRequest.getMiljoe())
-                                                    .system(INNTKMELD.name())
-                                                    .build())
+                                    .map(dokument -> TransaksjonMapping.builder()
+                                            .ident(inntektsmeldingRequest.getArbeidstakerFnr())
+                                            .bestillingId(bestillingid)
+                                            .transaksjonId(toJson(dokument))
+                                            .datoEndret(LocalDateTime.now())
+                                            .miljoe(inntektsmeldingRequest.getMiljoe())
+                                            .system(INNTKMELD.name())
+                                            .build())
                                     .collect(Collectors.toList()));
                 }
             }

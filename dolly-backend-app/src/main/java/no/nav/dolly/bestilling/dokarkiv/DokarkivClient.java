@@ -4,7 +4,6 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,7 +21,6 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.dolly.bestilling.dokarkiv.domain.JoarkTransaksjon;
-import no.nav.dolly.bestilling.saf.SafConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -38,7 +36,6 @@ import no.nav.dolly.service.TransaksjonMappingService;
 public class DokarkivClient implements ClientRegister {
 
     private final DokarkivConsumer dokarkivConsumer;
-    private final SafConsumer safConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
     private final TransaksjonMappingService transaksjonMappingService;
@@ -62,10 +59,29 @@ public class DokarkivClient implements ClientRegister {
             bestilling.getEnvironments().forEach(environment -> {
 
                 if (!transaksjonMappingService.existAlready(DOKARKIV, tpsPerson.getHovedperson(), environment) || isOpprettEndre) {
-                    postDokarkiv(tpsPerson, status, dokarkivRequest, environment);
+                    try {
+                        ResponseEntity<DokarkivResponse> response = dokarkivConsumer.postDokarkiv(environment, dokarkivRequest);
+                        if (response.hasBody()) {
+                            status.append(',')
+                                    .append(environment)
+                                    .append(":OK");
+
+                            saveTransaksjonId(requireNonNull(response.getBody()), tpsPerson.getHovedperson(), progress.getBestillingId(), environment);
+                        }
+
+                    } catch (RuntimeException e) {
+
+                        status.append(',')
+                                .append(environment)
+                                .append(':')
+                                .append(errorStatusDecoder.decodeRuntimeException(e));
+
+                        log.error("Feilet å legge inn person: {} til Dokarkiv miljø: {}",
+                                dokarkivRequest.getBruker().getId(), environment, e);
+                    }
                 }
             });
-            progress.setDokarkivStatus(status.length() > 0 ? status.toString() : null);
+            progress.setDokarkivStatus(status.length() > 0 ? status.substring(1) : null);
         }
     }
 
@@ -74,35 +90,12 @@ public class DokarkivClient implements ClientRegister {
 
     }
 
-    private void postDokarkiv(TpsPerson tpsPerson, StringBuilder status, DokarkivRequest dokarkivRequest, String environment) {
-        try {
-            ResponseEntity<DokarkivResponse> response = dokarkivConsumer.postDokarkiv(environment, dokarkivRequest);
-            if (response.hasBody()) {
-                status.append(isNotBlank(status.toString()) ? ',' : "")
-                        .append(environment)
-                        .append(":OK");
-
-                System.out.println(safConsumer.getMetadata(environment, tpsPerson.getHovedperson()));
-                saveTranskasjonId(requireNonNull(response.getBody()), tpsPerson.getHovedperson(), environment);
-            }
-
-        } catch (RuntimeException e) {
-
-            status.append(isNotBlank(status.toString()) ? ',' : "")
-                    .append(environment)
-                    .append(':')
-                    .append(errorStatusDecoder.decodeRuntimeException(e));
-
-            log.error("Feilet å legge inn person: {} til Dokarkiv miljø: {}",
-                    dokarkivRequest.getBruker().getId(), environment, e);
-        }
-    }
-
-    private void saveTranskasjonId(DokarkivResponse response, String ident, String miljoe) {
+    private void saveTransaksjonId(DokarkivResponse response, String ident, Long bestillingId, String miljoe) {
 
         transaksjonMappingService.save(
                 TransaksjonMapping.builder()
                         .ident(ident)
+                        .bestillingId(bestillingId)
                         .transaksjonId(toJson(JoarkTransaksjon.builder()
                                 .journalpostId(response.getJournalpostId())
                                 .dokumentInfoId(response.getDokumenter().get(0).getDokumentInfoId())
