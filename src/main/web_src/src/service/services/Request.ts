@@ -12,8 +12,9 @@ export default class Request {
 	static post(url: string, data?: object, responseType?: ResponseType) {
 		if (responseType === ResponseType.TEXT) {
 			return api.fetchText(url, { method: 'POST' }, data).then(response => ({ data: response }))
-		} else
+		} else {
 			return api.fetchJson(url, { method: 'POST' }, data).then(response => ({ data: response }))
+		}
 	}
 
 	static put(url: string, data?: object) {
