@@ -1,6 +1,6 @@
 import config from '~/config'
 import Request from '~/service/services/Request'
-import ConfigService from '~/service/Config'
+import { ResponseType } from '~/service/services/Request'
 
 const getTpsfUrl = () => `${config.services.proxyBackend}/tpsf`
 const getKontaktinfoUrl = () => `${config.services.proxyBackend}/kontaktinfo`
@@ -59,6 +59,6 @@ export default {
 	getExcelForIdenter(userArray) {
 		if (!userArray) return
 		const endpoint = `${getTpsfUrl()}/dolly/testdata/excel`
-		return Request.post(endpoint, userArray)
+		return Request.post(endpoint, userArray, ResponseType.TEXT)
 	}
 }
