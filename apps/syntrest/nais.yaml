@@ -32,3 +32,4 @@ spec:
   image: {{ image }}
   ingresses:
     - "https://syntrest.nais.preprod.local"
+    - "https://syntrest.dev.adeo.no"
