@@ -6,10 +6,8 @@ import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -50,7 +48,7 @@ public class InntektsmeldingClient implements ClientRegister {
                 inntektsmeldingRequest.setMiljoe(environment);
                 postInntektsmelding(isOpprettEndre ||
                         !transaksjonMappingService.existAlready(INNTKMELD, tpsPerson.getHovedperson(), environment),
-                        inntektsmeldingRequest, progress.getBestillingId(), status);
+                        inntektsmeldingRequest, status);
             });
 
             progress.setInntektsmeldingStatus(status.length() > 1 ? status.substring(1) : null);
@@ -63,7 +61,7 @@ public class InntektsmeldingClient implements ClientRegister {
         // Inntektsmelding mangler pt. sletting
     }
 
-    private void postInntektsmelding(boolean isSendMelding, InntektsmeldingRequest inntektsmeldingRequest, Long bestillingid, StringBuilder status) {
+    private void postInntektsmelding(boolean isSendMelding, InntektsmeldingRequest inntektsmeldingRequest, StringBuilder status) {
 
         try {
             if (isSendMelding) {
@@ -72,15 +70,16 @@ public class InntektsmeldingClient implements ClientRegister {
                 if (response.hasBody()) {
                     transaksjonMappingService.saveAll(
                             response.getBody().getDokumenter().stream()
-                                    .map(dokument -> TransaksjonMapping.builder()
-                                            .ident(inntektsmeldingRequest.getArbeidstakerFnr())
-                                            .bestillingId(bestillingid)
-                                            .transaksjonId(toJson(dokument))
-                                            .datoEndret(LocalDateTime.now())
-                                            .miljoe(inntektsmeldingRequest.getMiljoe())
-                                            .system(INNTKMELD.name())
-                                            .build())
-                                    .collect(Collectors.toList()));
+                                    .map(dokument ->
+                                            TransaksjonMapping.builder()
+                                                    .ident(inntektsmeldingRequest.getArbeidstakerFnr())
+                                                    .transaksjonId(toJson(dokument))
+                                                    .datoEndret(LocalDateTime.now())
+                                                    .miljoe(inntektsmeldingRequest.getMiljoe())
+                                                    .system(INNTKMELD.name())
+                                                    .build())
+                                    .collect(Collectors.toList())
+                    );
                 }
             }
 

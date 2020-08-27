@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.aareg.AaregConsumer;
@@ -39,7 +38,6 @@ import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import no.nav.dolly.service.InntektsmeldingEnumService;
-import no.nav.dolly.service.InntektsmeldingEnumService.EnumTypes;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
 
@@ -144,17 +142,15 @@ public class OppslagController {
 
     @GetMapping("/inntektsmelding/{enumtype}")
     @ApiOperation(value = "Henter enumtyper for inntektsmelding", authorizations = { @Authorization(value = "Bearer token fra bruker") })
-    public List<String> getInntektsmeldingeTyper(@PathVariable EnumTypes enumtype) {
+    public List<String> getInntektsmeldingeTyper(@PathVariable InntektsmeldingEnumService.EnumTypes enumtype) {
 
         return inntektsmeldingEnumService.getEnumType(enumtype);
     }
 
-    @GetMapping("/transaksjonid")
-    @ApiOperation(value = "Henter transaksjon IDer for ident og bestillingId", authorizations = { @Authorization(value = "Bearer token fra bruker") })
-    public List<TransaksjonMapping> getTransaksjonIderIdent(@ApiParam(value = "System kan hentes ut fra /api/v1/systemer") @RequestParam(required = false) String system,
-            @ApiParam(value = "Ident (f.eks FNR) på person knyttet til en bestilling") @RequestParam(required = false) String ident,
-            @ApiParam(value = "En ID som identifiserer en bestilling mot Dolly") @RequestParam(required = false) Long bestillingId) {
+    @GetMapping("/transaksjonid/{system}/{ident}")
+    @ApiOperation(value = "Henter transaksjon IDer for ident", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    public List<TransaksjonMapping> getTransaksjonIder(@PathVariable SystemTyper system, @PathVariable String ident) {
 
-        return transaksjonMappingService.getTransaksjonMapping(system, ident, bestillingId);
+        return transaksjonMappingService.getTransaksjonMapping(system, ident);
     }
 }
