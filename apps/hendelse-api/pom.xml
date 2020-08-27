@@ -13,7 +13,7 @@
 
     <dependencies>
         <dependency>
-            <artifactId>testnorge-common</artifactId>
+            <artifactId>testnorge-database</artifactId>
             <groupId>no.nav.registre.testnorge</groupId>
         </dependency>
         <dependency>

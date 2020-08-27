@@ -32,6 +32,7 @@ jobs:
       - name: Release with maven
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
         run: |
           echo Release started by $GITHUB_ACTOR
 

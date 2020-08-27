@@ -21,6 +21,7 @@
         <module>testnorge-common-command</module>
         <module>testnorge-avro-schema</module>
         <module>testnorge-reporting</module>
+        <module>testnorge-database</module>
     </modules>
 
 

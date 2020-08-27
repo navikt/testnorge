@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.common.config;
+package no.nav.registre.testnorge.database.config;
 
 import static org.springframework.vault.core.lease.domain.RequestedSecret.rotating;
 
@@ -34,7 +34,7 @@ public class VaultHikariConfiguration implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         container.setLeaseEndpoints(LeaseEndpoints.SysLeases);
-        RequestedSecret secret = rotating(props.getBackend() + "/creds/" + props.getRole());
+        RequestedSecret secret = RequestedSecret.rotating(props.getBackend() + "/creds/" + props.getRole());
         container.addLeaseListener(leaseEvent -> {
             if ((leaseEvent.getSource() == secret) && (leaseEvent instanceof SecretLeaseCreatedEvent)) {
                 log.info("Roterer brukernavn/passord for : {}", leaseEvent.getSource().getPath());

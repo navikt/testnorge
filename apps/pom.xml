@@ -29,6 +29,11 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <artifactId>testnorge-database</artifactId>
+                <groupId>no.nav.registre.testnorge</groupId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <artifactId>testnorge-data-transfer-objects</artifactId>
                 <groupId>no.nav.registre.testnorge</groupId>
                 <version>${project.version}</version>

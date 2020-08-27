@@ -19,7 +19,7 @@
         </dependency>
         <dependency>
             <groupId>no.nav.registre.testnorge</groupId>
-            <artifactId>testnorge-common</artifactId>
+            <artifactId>testnorge-database</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
