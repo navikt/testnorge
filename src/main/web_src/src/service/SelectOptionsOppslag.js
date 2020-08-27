@@ -7,7 +7,7 @@ import _isNil from 'lodash/isNil'
 const uri = `${config.services.dollyBackend}`
 
 export const SelectOptionsOppslag = {
-	hentOrgnr: () => Api.fetchJson(`${uri}/orgnummer`, 'GET'),
+	hentOrgnr: () => Api.fetchJson(`${uri}/orgnummer`, { method: 'GET' }),
 
 	hentLeger: () => Api.fetchJson(`${uri}/helsepersonell/leger`, 'GET'),
 
@@ -28,7 +28,7 @@ export const SelectOptionsOppslag = {
 	},
 
 	hentInntektsmeldingOptions: enumtype =>
-		Api.fetchJson(`${uri}/inntektsmelding/${enumtype}`, 'GET'),
+		Api.fetchJson(`${uri}/inntektsmelding/${enumtype}`, { method: 'GET' }),
 
 	hentArbeidsforholdstyperInntektstub: () => {
 		const arbeidsforholdstyper = useAsync(async () => {

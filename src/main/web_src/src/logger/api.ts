@@ -14,6 +14,10 @@ const uri = `${config.services.dollyBackend}`
 
 export default {
 	log: (event: LogEvent): void => {
-		Api.fetch(`${uri}/logg`, 'POST', event)
+		Api.fetch(
+			`${uri}/logg`,
+			{ method: 'POST', headers: { 'Content-Type': 'application/json' } },
+			event
+		)
 	}
 }
