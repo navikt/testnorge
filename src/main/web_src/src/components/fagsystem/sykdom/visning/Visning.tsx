@@ -12,9 +12,6 @@ export const SykemeldingVisning = ({ data }: Sykemelding) => {
 		<div>
 			<SubOverskrift label="Sykemelding" iconKind="sykdom" />
 			{data.map((bestilling: SykemeldingSynt | SykemeldingDetaljert, idx: number) => {
-				console.log('bestilling :>> ', bestilling)
-				// TODO: Hente bestillingsinfo fra transaksjonslog når backend er klar
-
 				const syntSykemelding = _get(bestilling, 'syntSykemelding')
 				const detaljertSykemelding = _get(bestilling, 'detaljertSykemelding')
 
