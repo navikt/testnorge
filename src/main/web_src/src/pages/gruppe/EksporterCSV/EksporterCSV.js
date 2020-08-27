@@ -30,7 +30,10 @@ export const EksporterCSV = ({ identer, gruppeId }) => {
 		Logger.log({ event: 'Eksporterer til excel' })
 		const identListe = identer.map(ident => ident.ident)
 		const { data } = await TpsfApi.getExcelForIdenter(identListe)
-		downloadCsvString(gruppeId, data)
+
+		const decodedData = decodeURIComponent(escape(data))
+
+		downloadCsvString(gruppeId, decodedData)
 		setLoading(false)
 	}
 
