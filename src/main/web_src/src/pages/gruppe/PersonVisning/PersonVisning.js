@@ -15,7 +15,8 @@ import {
 	UdiVisning,
 	InntektsmeldingVisning,
 	BrregVisning,
-	DokarkivVisning
+	DokarkivVisning,
+	SykemeldingVisning
 } from '~/components/fagsystem'
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
@@ -47,6 +48,10 @@ export const PersonVisning = ({
 			<InntektstubVisning liste={data.inntektstub} loading={loading.inntektstub} />
 			<InntektsmeldingVisning
 				liste={InntektsmeldingVisning.filterValues(bestillingsListe)}
+				ident={ident.ident}
+			/>
+			<SykemeldingVisning
+				data={SykemeldingVisning.filterValues(bestillingsListe)}
 				ident={ident.ident}
 			/>
 			<BrregVisning data={data.brregstub} loading={loading.brregstub} />

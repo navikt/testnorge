@@ -15,6 +15,7 @@ import { InstForm } from '~/components/fagsystem/inst/form/Form'
 import { UdistubForm } from '~/components/fagsystem/udistub/form/Form'
 import { PensjonForm } from '~/components/fagsystem/pensjon/form/Form'
 import { DokarkivForm } from '~/components/fagsystem/dokarkiv/form/Form'
+import { SykdomForm } from '~/components/fagsystem/sykdom/form/Form'
 
 export const Steg2 = ({ formikBag }) => {
 	if (!harAvhukedeAttributter(formikBag.values)) {
@@ -33,6 +34,7 @@ export const Steg2 = ({ formikBag }) => {
 			<PensjonForm formikBag={formikBag} />
 			<InntektstubForm formikBag={formikBag} />
 			<InntektsmeldingForm formikBag={formikBag} />
+			<SykdomForm formikBag={formikBag} />
 			<BrregstubForm formikBag={formikBag} />
 			<PdlfForm formikBag={formikBag} />
 			<InstForm formikBag={formikBag} />
@@ -54,6 +56,7 @@ Steg2.validation = Yup.object({
 	...PensjonForm.validation,
 	...InntektstubForm.validation,
 	...InntektsmeldingForm.validation,
+	...SykdomForm.validation,
 	...BrregstubForm.validation,
 	...InstForm.validation,
 	...KrrstubForm.validation,

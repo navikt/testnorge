@@ -16,6 +16,6 @@ export default {
 
 	getPerson(ident) {
 		const endpoint = `${getBrregstubUrl()}/rolleoversikt`
-		return Request.get(endpoint, { headers: { 'Nav-Personident': ident } })
+		return Request.get(endpoint, { 'Nav-Personident': ident })
 	}
 }

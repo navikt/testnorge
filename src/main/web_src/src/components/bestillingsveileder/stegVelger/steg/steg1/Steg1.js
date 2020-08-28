@@ -13,6 +13,7 @@ import { ArenaPanel } from './paneler/Arena'
 import { UdiPanel } from './paneler/Udi'
 import { BrregPanel } from './paneler/Brreg'
 import { DokarkivPanel } from './paneler/Dokarkiv'
+import { SykdomPanel } from './paneler/Sykdom'
 
 export const Steg1 = ({ stateModifier }) => {
 	const opts = useContext(BestillingsveilederContext)
@@ -23,6 +24,7 @@ export const Steg1 = ({ stateModifier }) => {
 		AdressePanel,
 		FamilierelasjonPanel,
 		ArbeidInntektPanel,
+		SykdomPanel,
 		BrregPanel,
 		IdentifikasjonPanel,
 		KontaktDoedsboPanel,
@@ -44,6 +46,7 @@ export const Steg1 = ({ stateModifier }) => {
 			<AdressePanel stateModifier={stateModifier} />
 			<FamilierelasjonPanel stateModifier={stateModifier} />
 			<ArbeidInntektPanel stateModifier={stateModifier} />
+			<SykdomPanel stateModifier={stateModifier} />
 			<BrregPanel stateModifier={stateModifier} />
 			<IdentifikasjonPanel stateModifier={stateModifier} />
 			<KontaktDoedsboPanel stateModifier={stateModifier} />

@@ -71,6 +71,7 @@ export default function PersonListe({
 							mouseLeaveDelay={0.1}
 						>
 							<div
+								className="icon"
 								onClick={event => {
 									event.stopPropagation()
 								}}

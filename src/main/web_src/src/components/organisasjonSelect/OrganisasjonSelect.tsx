@@ -7,16 +7,21 @@ export type OrganisasjonSelectProps = {
 	path: string
 	label: string
 	isClearable?: boolean
+	afterChange?: Function
+	valueNavn?: boolean
 	filter?: (value: EregResponse) => boolean
 }
 
 export const OrganisasjonSelect = ({
 	path,
 	label,
+	afterChange = null,
+	valueNavn = false,
 	filter = () => true
 }: OrganisasjonSelectProps) => (
 	<OrganisasjonLoader
 		filter={filter}
+		valueNavn={valueNavn}
 		render={(liste, feilmelding) => (
 			<FormikSelect
 				name={path}
@@ -27,6 +32,7 @@ export const OrganisasjonSelect = ({
 				isClearable={false}
 				optionHeight={50}
 				feil={feilmelding}
+				afterChange={afterChange}
 			/>
 		)}
 	/>

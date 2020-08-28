@@ -7,12 +7,20 @@ import { PensjonApi } from '~/service/Api'
 import TilgjengeligeMiljoer from './TilgjengeligeMiljoer'
 
 export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
-	const { instdata, pdlforvalter, arenaforvalter, pensjonforvalter, udistub } = bestillingsdata
+	const {
+		instdata,
+		pdlforvalter,
+		arenaforvalter,
+		pensjonforvalter,
+		sykemelding,
+		udistub
+	} = bestillingsdata
 	if (
 		!instdata &&
 		!pdlforvalter &&
 		!arenaforvalter &&
 		!pensjonforvalter &&
+		!sykemelding &&
 		!_get(udistub, 'oppholdStatus')
 	)
 		return null
@@ -59,6 +67,8 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 						/>
 					</li>
 				)}
+
+				{sykemelding && <li>Sykemelding: Både Q1 og Q2 må velges</li>}
 
 				{udistub && udistub.oppholdStatus && (
 					<li>
