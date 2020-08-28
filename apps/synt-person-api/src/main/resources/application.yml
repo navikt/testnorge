@@ -1,0 +1,7 @@
+application:
+  version: @application.version@
+  name: synt-person-api
+
+consumers.syntrest.url: https://syntrest.dev.adeo.no/api
+consumers.identpool.url: https://ident-pool.nais.preprod.local/api
+consumers.personapi.url: https://testnorge-person-api.dev.adeo.no/api
