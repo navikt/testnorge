@@ -171,9 +171,9 @@ public class OppslagController {
         return safConsumer.getDokument(miljoe, new SafRequest(dokumentInfoId, journalpostId, variantFormat.name()));
     }
 
-    @GetMapping("/dokarkiv/{ident}")
+    @GetMapping("/dokarkiv/{journalpostId}")
     @ApiOperation(value = "Henter metadata fra Joark", authorizations = { @Authorization(value = "Bearer token fra bruker") })
-    public ResponseEntity<JsonNode> getMetadata(@PathVariable String journalpostId, @RequestParam(required = false) String miljoe) {
+    public ResponseEntity<JsonNode> getMetadata(@PathVariable Long journalpostId, @RequestParam(required = false) String miljoe) {
         return safConsumer.getMetadata(miljoe, journalpostId);
     }
 }

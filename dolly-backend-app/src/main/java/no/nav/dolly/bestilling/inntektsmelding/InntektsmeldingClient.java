@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.inntektsmelding;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,6 +20,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingResponse;
+import no.nav.dolly.bestilling.saf.SafConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -32,6 +34,7 @@ import no.nav.dolly.service.TransaksjonMappingService;
 public class InntektsmeldingClient implements ClientRegister {
 
     private final InntektsmeldingConsumer inntektsmeldingConsumer;
+    private final SafConsumer safConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
     private final TransaksjonMappingService transaksjonMappingService;
@@ -53,7 +56,7 @@ public class InntektsmeldingClient implements ClientRegister {
                         inntektsmeldingRequest, progress.getBestillingId(), status);
             });
 
-            progress.setInntektsmeldingStatus(status.length() > 1 ? status.substring(1) : null);
+            progress.setInntektsmeldingStatus(status.toString());
         }
     }
 
@@ -63,7 +66,7 @@ public class InntektsmeldingClient implements ClientRegister {
         // Inntektsmelding mangler pt. sletting
     }
 
-    private void postInntektsmelding(boolean isSendMelding, InntektsmeldingRequest inntektsmeldingRequest, Long bestillingid, StringBuilder status) {
+    private void postInntektsmelding(boolean isSendMelding, InntektsmeldingRequest inntektsmeldingRequest, Long bestillingId, StringBuilder status) {
 
         try {
             if (isSendMelding) {
@@ -72,25 +75,27 @@ public class InntektsmeldingClient implements ClientRegister {
                 if (response.hasBody()) {
                     transaksjonMappingService.saveAll(
                             response.getBody().getDokumenter().stream()
-                                    .map(dokument -> TransaksjonMapping.builder()
+                                    .map(dokument ->
+                                            TransaksjonMapping.builder()
                                             .ident(inntektsmeldingRequest.getArbeidstakerFnr())
-                                            .bestillingId(bestillingid)
+                                            .bestillingId(bestillingId)
                                             .transaksjonId(toJson(dokument))
                                             .datoEndret(LocalDateTime.now())
                                             .miljoe(inntektsmeldingRequest.getMiljoe())
                                             .system(INNTKMELD.name())
                                             .build())
-                                    .collect(Collectors.toList()));
+                                    .collect(Collectors.toList())
+                    );
                 }
             }
 
-            status.append(',')
+            status.append(isNotBlank(status) ? ',' : "")
                     .append(inntektsmeldingRequest.getMiljoe())
                     .append(":OK");
 
         } catch (RuntimeException re) {
 
-            status.append(',')
+            status.append(isNotBlank(status) ? ',' : "")
                     .append(inntektsmeldingRequest.getMiljoe())
                     .append(':')
                     .append(errorStatusDecoder.decodeRuntimeException(re));

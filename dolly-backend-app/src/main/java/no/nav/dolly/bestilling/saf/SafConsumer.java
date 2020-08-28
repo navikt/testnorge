@@ -67,7 +67,7 @@ public class SafConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "hent-metadata" })
-    public ResponseEntity<JsonNode> getMetadata(String environment, String journalpostId) {
+    public ResponseEntity<JsonNode> getMetadata(String environment, Long journalpostId) {
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("journalpostId", journalpostId);

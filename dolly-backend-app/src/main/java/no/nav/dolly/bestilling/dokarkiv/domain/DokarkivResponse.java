@@ -18,7 +18,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class DokarkivResponse {
 
-    private String journalpostId;
+    private Long journalpostId;
     private boolean journalpostferdigstilt;
     private List<DokumentInfo> dokumenter;
 
