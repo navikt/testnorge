@@ -3,7 +3,7 @@ import { Formik, Form } from 'formik'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import * as yup from 'yup'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { api } from './api'
+import { DollyApi } from '~/service/Api'
 
 interface NyGruppe {
 	setValgtGruppe: React.Dispatch<React.SetStateAction<string>>
@@ -32,12 +32,16 @@ export default ({ setValgtGruppe }: NyGruppe) => {
 	const [feilmelding, setFeilmelding] = useState('')
 
 	const onHandleSubmit = async (values: any) => {
-		await api.opprettGruppe(values.navn, values.hensikt).then(response => {
+		await DollyApi.createGruppe({
+			navn: values.navn,
+			hensikt: values.hensikt
+		}).then((response: any) => {
 			if (response.error) {
 				setFeilmelding('Noe gikk galt under oppretting av gruppe: ' + response.error)
 			}
-			setValgtGruppe(response.id)
-			setNyGruppe(`${response.id} - ${response.navn}`)
+			const { data } = response
+			setValgtGruppe(data.id)
+			setNyGruppe(`${data.id} - ${data.navn}`)
 		})
 	}
 	return (

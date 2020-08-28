@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Redirect } from 'react-router-dom'
-import { api } from './gruppe/api'
+import { DollyApi } from '~/service/Api'
 import { VelgGruppeToggle } from './gruppe/VelgGruppeToggle'
 import ModalActionKnapper from '~/components/ui/modal/ModalActionKnapper'
 import useBoolean from '~/utils/hooks/useBoolean'
@@ -25,7 +25,7 @@ export const ImportTilDollyModal = ({ valgtePersoner, onAvbryt }: ImportTilDolly
 			environments: DOLLY_MILJOE
 		}
 
-		api.importerPersoner(valgtGruppe, request).then(response => {
+		DollyApi.importerPersoner(valgtGruppe, request).then((response: any) => {
 			if (response.error) {
 				const msg = response.message || 'Noe gikk galt'
 				setFeilmelding(msg)
