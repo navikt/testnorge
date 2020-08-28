@@ -1074,7 +1074,10 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	if (importFraTps) {
 		const importData = {
 			header: 'Import',
-			items: [obj('Identer', importFraTps), obj('Importert fra', bestillingData.kildeMiljoe)]
+			items: [
+				obj('Identer', Formatters.arrayToString(importFraTps)),
+				obj('Importert fra', bestillingData.kildeMiljoe.toUpperCase())
+			]
 		}
 
 		data.push(importData)
