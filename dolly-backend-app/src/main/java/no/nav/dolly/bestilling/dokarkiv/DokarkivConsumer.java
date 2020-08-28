@@ -41,7 +41,6 @@ public class DokarkivConsumer {
 
         String callId = getNavCallId();
         log.info("Dokarkiv melding sendt, callId: {}, consumerId: {}, miljø: {}", callId, CONSUMER, environment);
-        log.info(stsOidcService.getIdToken(TEST_ENV));
 
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(providersProps.getDokarkiv().getUrl().replace("$", environment) + DOKARKIV_URL + FORSOEK_FERDIGSTILL))
