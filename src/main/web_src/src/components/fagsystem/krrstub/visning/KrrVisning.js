@@ -1,15 +1,16 @@
 import React from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
+import {TitleValue} from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
-import { Historikk } from '~/components/ui/historikk/Historikk'
+import {Historikk} from '~/components/ui/historikk/Historikk'
 
 export const Visning = ({ data }) => {
 	return (
 		<>
 			<TitleValue title="Mobilnummer" value={data.mobil} />
 			<TitleValue title="E-post" value={data.epost} />
+			<TitleValue title="Språk" value={data.spraak} />
 			<TitleValue
 				title="Reservert mot digitalkommunikasjon"
 				value={Formatters.oversettBoolean(data.reservert)}

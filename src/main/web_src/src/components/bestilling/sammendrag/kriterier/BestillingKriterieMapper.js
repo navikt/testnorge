@@ -4,12 +4,7 @@ import _dropRight from 'lodash/dropRight'
 import _takeRight from 'lodash/takeRight'
 import _isEmpty from 'lodash/isEmpty'
 import Formatters from '~/utils/DataFormatter'
-import {
-	PersoninformasjonKodeverk,
-	AdresseKodeverk,
-	SigrunKodeverk,
-	ArbeidKodeverk
-} from '~/config/kodeverk'
+import {AdresseKodeverk, ArbeidKodeverk, PersoninformasjonKodeverk, SigrunKodeverk} from '~/config/kodeverk'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -629,6 +624,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			items: [
 				obj('Mobilnummer', krrKriterier.mobil),
 				obj('Epost', krrKriterier.epost),
+				obj('Språk', krrKriterier.spraak),
 				{
 					label: 'RESERVERT MOT DIGITALKOMMUNIKASJON',
 					value: krrKriterier.reservert ? 'JA' : 'NEI',
