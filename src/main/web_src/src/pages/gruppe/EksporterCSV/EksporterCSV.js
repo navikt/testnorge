@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { format } from 'date-fns'
-import { TpsfApi } from '~/service/Api'
 import Button from '~/components/ui/button/Button'
 import Logger from '~/logger'
+import api from '@/api'
+import config from '~/config'
 
 import './EksporterCSV.less'
 
@@ -29,7 +30,7 @@ export const EksporterCSV = ({ identer, gruppeId }) => {
 		setLoading(true)
 		Logger.log({ event: 'Eksporterer til excel' })
 		const identListe = identer.map(ident => ident.ident)
-		const { data } = await TpsfApi.getExcelForIdenter(identListe)
+		const data = await hentCsvFil(identListe)
 
 		const decodedData = decodeURIComponent(escape(data))
 
@@ -47,4 +48,16 @@ export const EksporterCSV = ({ identer, gruppeId }) => {
 			EKSPORTER TIL EXCEL
 		</Button>
 	)
+}
+
+const getTpsfUrl = () => `${config.services.proxyBackend}/tpsf`
+
+const hentCsvFil = body => {
+	return api
+		.fetch(
+			`${getTpsfUrl()}/dolly/testdata/excel`,
+			{ method: 'POST', headers: { 'Content-Type': 'application/json' } },
+			body
+		)
+		.then(response => response.text())
 }
