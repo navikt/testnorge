@@ -32,3 +32,4 @@ spec:
       memory: 5000Mi
   ingresses:
     - "https://testnorge-person-api-u2.nais.preprod.local"
+    - "https://testnorge-person-api-u2.dev.adeo.no"
