@@ -4,7 +4,12 @@ import _dropRight from 'lodash/dropRight'
 import _takeRight from 'lodash/takeRight'
 import _isEmpty from 'lodash/isEmpty'
 import Formatters from '~/utils/DataFormatter'
-import {AdresseKodeverk, ArbeidKodeverk, PersoninformasjonKodeverk, SigrunKodeverk} from '~/config/kodeverk'
+import {
+	AdresseKodeverk,
+	ArbeidKodeverk,
+	PersoninformasjonKodeverk,
+	SigrunKodeverk
+} from '~/config/kodeverk'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner

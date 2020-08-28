@@ -1,9 +1,9 @@
 import React from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import {TitleValue} from '~/components/ui/titleValue/TitleValue'
+import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
-import {Historikk} from '~/components/ui/historikk/Historikk'
+import { Historikk } from '~/components/ui/historikk/Historikk'
 
 export const Visning = ({ data }) => {
 	return (
