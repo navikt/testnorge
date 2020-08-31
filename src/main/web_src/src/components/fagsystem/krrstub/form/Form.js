@@ -8,6 +8,7 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import Panel from '~/components/ui/panel/Panel'
 import { erForste } from '~/components/ui/form/formUtils'
 import { panelError } from '~/components/ui/form/formUtils'
+import { PersoninformasjonKodeverk } from '~/config/kodeverk'
 
 const krrAttributt = 'krrstub'
 
@@ -22,7 +23,12 @@ export const KrrstubForm = ({ formikBag }) => (
 			<div className="flexbox--flex-wrap">
 				<FormikTextInput name="krrstub.epost" label="E-post" />
 				<FormikTextInput name="krrstub.mobil" label="Mobilnummer" type="number" />
-				<FormikTextInput name="krrstub.spraak" label="Språk" />
+				<FormikSelect
+					name="krrstub.spraak"
+					label="Språk"
+					size="large"
+					options={Options('spraaktype')}
+				/>
 				<FormikSelect
 					name="krrstub.registrert"
 					label="Registrert i DKIF"

@@ -629,7 +629,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			items: [
 				obj('Mobilnummer', krrKriterier.mobil),
 				obj('Epost', krrKriterier.epost),
-				obj('Språk', krrKriterier.spraak),
+				obj('Språk', Formatters.showLabel('spraaktype', krrKriterier.spraak)),
 				{
 					label: 'RESERVERT MOT DIGITALKOMMUNIKASJON',
 					value: krrKriterier.reservert ? 'JA' : 'NEI',
