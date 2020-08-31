@@ -34,3 +34,4 @@ spec:
       memory: 1500Mi
   ingresses:
     - "https://nais-synthdata-arena-bisys.nais.preprod.local"
+    - "https://nais-synthdata-arena-bisys.dev.adeo.no"

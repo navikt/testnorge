@@ -34,3 +34,4 @@ spec:
       memory: 2100Mi
   ingresses:
     - "https://nais-synthdata-nav.nais.preprod.local"
+    - "https://synthdata-nav.dev.adeo.no"

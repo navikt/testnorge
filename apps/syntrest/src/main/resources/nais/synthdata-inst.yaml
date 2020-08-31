@@ -34,3 +34,4 @@ spec:
       memory: 5500Mi
   ingresses:
     - "https://nais-synthdata-inst.nais.preprod.local"
+    - "https://nais-synthdata-inst.dev.adeo.no"
