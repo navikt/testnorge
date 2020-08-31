@@ -115,6 +115,10 @@ export default {
 		return Request.delete(Endpoints.slettPerson(ident))
 	},
 
+	importerPersoner: (gruppeId, request) => {
+		return Request.post(Endpoints.gruppeBestillingImport(gruppeId), request)
+	},
+
 	//* Oppslag
 	getEnhetByTknr(tknr) {
 		return Request.get(Endpoints.enhetByTknr(tknr))

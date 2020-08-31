@@ -25,13 +25,18 @@ const antallIdenterOpprettetPaaBestilling = status => {
 	let identerOpprettet = []
 	if (status.length) {
 		const tpsf = status.find(f => f.id === 'TPSF')
-		if (tpsf) {
-			tpsf.statuser.forEach(stat => {
+		const importFraTps = status.find(f => f.id === 'TPSIMPORT')
+
+		const addOpprettedeIdenter = system => {
+			system.statuser.forEach(stat => {
 				stat.detaljert.forEach(miljo => {
 					identerOpprettet = identerOpprettet.concat(miljo.identer)
 				})
 			})
 		}
+
+		if (tpsf) addOpprettedeIdenter(tpsf)
+		if (importFraTps) addOpprettedeIdenter(importFraTps)
 	}
 
 	// Kun unike identer
