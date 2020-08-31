@@ -8,7 +8,6 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import Panel from '~/components/ui/panel/Panel'
 import { erForste } from '~/components/ui/form/formUtils'
 import { panelError } from '~/components/ui/form/formUtils'
-import { PersoninformasjonKodeverk } from '~/config/kodeverk'
 
 const krrAttributt = 'krrstub'
 

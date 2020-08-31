@@ -1,6 +1,5 @@
 import config from '~/config'
 import Request from '~/service/services/Request'
-import ConfigService from '~/service/Config'
 
 const getTpsfUrl = () => `${config.services.proxyBackend}/tpsf`
 const getKontaktinfoUrl = () => `${config.services.proxyBackend}/kontaktinfo`
