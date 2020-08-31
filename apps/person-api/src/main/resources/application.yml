@@ -13,3 +13,6 @@ system:
     threads: 5
   tpsf:
     tpsForvalterenUrl: https://tps-forvalteren.nais.preprod.local/api
+
+logging:
+  config: "classpath:logback.xml"
