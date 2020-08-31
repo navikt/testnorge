@@ -8,7 +8,7 @@ import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 
 public interface ClientRegister {
 
-    void gjenopprett(final RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre);
+    void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre);
 
     void release(List<String> identer);
 }
