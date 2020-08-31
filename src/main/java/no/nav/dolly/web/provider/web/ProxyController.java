@@ -111,7 +111,7 @@ public class ProxyController {
         HttpHeaders headers = proxyService.copyHeaders(request);
         headers.add("Nav-Personident",  body.split("=")[0]);
 
-        return proxyService.proxyRequest(null, HttpMethod.GET, headers, requestURL);
+        return proxyService.proxyRequest(body, HttpMethod.GET, headers, requestURL);
     }
 
     @RequestMapping("/proxy/sigrun/**")
