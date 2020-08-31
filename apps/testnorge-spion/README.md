@@ -11,6 +11,8 @@ Kjør ApplicationStarter med følgende argumenter:
 - -Djavax.net.ssl.trustStore=[path til lokal truststore]
 - -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
 - -Dspring.profiles.active=dev
+
+## Fjern?
 - -Davspillergruppe.id=[avspillergruppe id]
 - -Davspillergruppe.miljoe=[avspillergruppe miljø]
 - -Dkafka.brokers.url=[url for kafka brokers]
