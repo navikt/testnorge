@@ -11,7 +11,7 @@ import no.nav.registre.syntrest.domain.aap.AAP115Melding;
 import no.nav.registre.syntrest.domain.aap.AAPMelding;
 import no.nav.registre.syntrest.domain.aareg.Arbeidsforholdsmelding;
 import no.nav.registre.syntrest.domain.bisys.Barnebidragsmelding;
-import no.nav.registre.syntrest.domain.eia.Historikk;
+import no.nav.registre.syntrest.domain.elsam.Historikk;
 import no.nav.registre.syntrest.domain.frikort.FrikortKvittering;
 import no.nav.registre.syntrest.domain.inst.Institusjonsmelding;
 import no.nav.registre.syntrest.domain.medl.Medlemskapsmelding;
@@ -57,7 +57,7 @@ public class SyntController {
     private final SyntConsumer tpConsumer;
     private final SyntConsumer tpsConsumer;
     private final SyntConsumer frikortConsumer;
-    private final SyntConsumer eiaConsumer;
+    private final SyntConsumer elsamConsumer;
 
 
     ///////////// URLs //////////////
@@ -89,8 +89,8 @@ public class SyntController {
     private String tpsUrl;
     @Value("${synth-frikort-url}")
     private String frikortUrl;
-    @Value("${synth-eia-url}")
-    private String eiaUrl;
+    @Value("${synth-elsam-url}")
+    private String elsamUrl;
 
 
     @PostMapping("/aareg")
@@ -332,9 +332,9 @@ public class SyntController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/eia")
+    @PostMapping("/elsam")
     @ApiOperation(value = "Generer sykemelding-historie", notes = "Lager en sykemeldings-historie per person som blir sendt inn. ")
-    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-eia"})
+    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-elsam"})
     public ResponseEntity<Map<String, Historikk>> generateSykemeldingHistorikk(
             @ApiParam(value = "Fnr for personen som skal ha sykemeldinger. Startdato for sykemeldingene.", required = true, example = "")
             @RequestBody Map<String, String> fnrStartdatoMap
@@ -342,7 +342,7 @@ public class SyntController {
         InputValidator.validateInput(new ArrayList<>(fnrStartdatoMap.keySet()));
 
         Map<String, Historikk> response = (Map<String, Historikk>)
-                eiaConsumer.synthesizeData(UriExpander.createRequestEntity(eiaUrl, fnrStartdatoMap));
+                elsamConsumer.synthesizeData(UriExpander.createRequestEntity(elsamUrl, fnrStartdatoMap));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);

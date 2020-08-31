@@ -5,7 +5,7 @@ import no.nav.registre.syntrest.domain.aap.AAP115Melding;
 import no.nav.registre.syntrest.domain.aap.AAPMelding;
 import no.nav.registre.syntrest.domain.aareg.Arbeidsforholdsmelding;
 import no.nav.registre.syntrest.domain.bisys.Barnebidragsmelding;
-import no.nav.registre.syntrest.domain.eia.Historikk;
+import no.nav.registre.syntrest.domain.elsam.Historikk;
 import no.nav.registre.syntrest.domain.frikort.FrikortKvittering;
 import no.nav.registre.syntrest.domain.inst.Institusjonsmelding;
 import no.nav.registre.syntrest.domain.medl.Medlemskapsmelding;
@@ -54,7 +54,7 @@ public class SyntControllerTest {
     private String tpUrl = "dummy/generate_tp/{numToGenerate}";
     private String tpsUrl = "dummy/generate_tps/{numToGenerate}/{endringskode}";
     private String frikortUrl = "dummy/generate_frikort";
-    private String eiaUrl = "dummy/generate_eia/history_json";
+    private String elsamUrl = "dummy/generate_elsam/history_json";
 
     @InjectMocks
     private SyntController syntController;
@@ -335,8 +335,8 @@ public class SyntControllerTest {
     }
 
     @Test
-    public void eiaTest() throws NoSuchFieldException {
-        FieldSetter.setField(syntController, syntController.getClass().getDeclaredField("eiaUrl"), eiaUrl);
+    public void elsamTest() throws NoSuchFieldException {
+        FieldSetter.setField(syntController, syntController.getClass().getDeclaredField("elsamUrl"), elsamUrl);
         Map<String, String> fnrStartDatoMap = new HashMap<>();
         fnrStartDatoMap.put("12345678910", "2019-01-31");
         fnrStartDatoMap.put("10987651233", "2018-12-31");

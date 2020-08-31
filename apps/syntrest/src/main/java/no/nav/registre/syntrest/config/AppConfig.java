@@ -193,13 +193,7 @@ public class AppConfig {
 
     @Bean
     @DependsOn({"applicationManager", "restTemplate"})
-    SyntConsumer eiaConsumer() {
-        return new SyntConsumer(applicationManager(), "synthdata-eia");
+    SyntConsumer elsamConsumer() {
+        return new SyntConsumer(applicationManager(), "synthdata-elsam");
     }
-
-//    @Bean
-//    @DependsOn({"applicationManager"})
-//    SyntConsumer Consumer() {
-//        return new SyntConsumer(applicationManager(), );
-//    }
 }
