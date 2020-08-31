@@ -10,7 +10,7 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 
 import com.ibm.mq.jms.MQQueue;
-import com.ibm.msg.client.wmq.v6.jms.internal.JMSC;
+import com.ibm.msg.client.wmq.compat.jms.internal.JMSC;
 import org.springframework.retry.annotation.Retryable;
 
 public class DefaultMessageQueue implements MessageQueue {

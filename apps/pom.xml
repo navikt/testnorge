@@ -98,5 +98,6 @@
         <module>brreg-stub</module>
         <module>udi-stub</module>
         <module>syntrest</module>
+        <module>ident-pool</module>
     </modules>
 </project>
