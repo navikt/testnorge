@@ -7,13 +7,21 @@ Testnorge-spion tilbyr endepunkt for å lage syntetiske vedtak og legge dem på 
 Swagger finnes under [/api](https://testnorge-spion.nais.preprod.local/api) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
+### Utviklerimage
 Kjør ApplicationStarter med følgende argumenter:
-- -Djavax.net.ssl.trustStore=[path til lokal truststore]
-- -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
-- -Dspring.profiles.active=dev
-- -Davspillergruppe.id=[avspillergruppe id]
-- -Davspillergruppe.miljoe=[avspillergruppe miljø]
-- -Dkafka.brokers.url=[url for kafka brokers]
-- -Dkafka.schema.registry.url=[url for kafka schema registry]
-- -Dserviceuser.spion.password=[passord til servicebruker]
-- -Dserviceuser.spion.username=[brukernavn til servicebruker]
+```
+-Djavax.net.ssl.trustStore=[path til lokal truststore]
+-Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
+-Dspring.cloud.vault.token=[Kopier token fra vault]
+-Dspring.profile.active=dev
+ ```
+### Utenfor utviklerimage
+#### Windows
+Ha BIG-IP Edge Client kjørende og kjør ApplicationStarter med samme argumenter som for utviklerimage.
+#### Mac
+Ha Nav-Tunnel kjørende og kjør ApplicationStarter med samme argumenter som for utviklerimage og legg til følgende argumenter:
+```
+-DsocksProxyHost=127.0.0.1
+-DsocksProxyPort=14122
+-DsocksNonProxyHosts=127.0.0.1|dl.bintray.com|repo.maven.apache.org|maven.adeo.no|packages.confluent.io|confluent.io|maven.xwiki.org|maven.repository.redhat.com
+```
