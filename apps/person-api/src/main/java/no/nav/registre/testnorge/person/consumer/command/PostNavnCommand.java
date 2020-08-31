@@ -1,10 +1,13 @@
 package no.nav.registre.testnorge.person.consumer.command;
 
+import static org.reflections.Reflections.log;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
@@ -28,11 +31,16 @@ public class PostNavnCommand implements Callable<HendelseDTO> {
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.add(PdlHeaders.NAV_PERSONIDENT, person.getIdent());
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + token);
-        return restTemplate.exchange(
+        ResponseEntity<HendelseDTO> exchange = restTemplate.exchange(
                 url + "/api/v1/bestilling/navn",
                 HttpMethod.POST,
                 new HttpEntity<>(new NavnDTO(person), headers),
                 HendelseDTO.class
-        ).getBody();
+        );
+        if (!exchange.getStatusCode().is2xxSuccessful()) {
+            log.info("Noe gikk galt under opprett navn {}", exchange.getStatusCode());
+            throw new RuntimeException();
+        }
+        return exchange.getBody();
     }
 }

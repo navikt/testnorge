@@ -16,8 +16,8 @@ public class PdlPersonAdapter implements PersonAdapter {
     private final PdlApiConsumer pdlApiConsumer;
 
     @Override
-    public void createPerson(Person person) {
-        consumer.createPerson(person);
+    public String createPerson(Person person) {
+        return consumer.createPerson(person);
     }
 
     @Override
