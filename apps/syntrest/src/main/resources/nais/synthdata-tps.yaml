@@ -34,3 +34,4 @@ spec:
       memory: 600Mi
   ingresses:
     - "https://nais-synthdata-tps.nais.preprod.local"
+    - "https://nais-synthdata-tps.dev.adeo.no"

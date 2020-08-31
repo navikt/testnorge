@@ -34,3 +34,4 @@ spec:
       memory: 1100Mi
   ingresses:
     - "https://nais-synthdata-popp.nais.preprod.local"
+    - "https://nais-synthdata-popp.dev.adeo.no"

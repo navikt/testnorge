@@ -34,3 +34,4 @@ spec:
       memory: 1500Mi
   ingresses:
     - "https://nais-synthdata-frikort.nais.preprod.local"
+    - "https://nais-synthdata-frikort.dev.adeo.no"
