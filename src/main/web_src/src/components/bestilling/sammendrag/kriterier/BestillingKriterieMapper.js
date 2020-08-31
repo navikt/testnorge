@@ -1070,5 +1070,19 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		data.push(dokarkiv)
 	}
 
+	const importFraTps = bestillingData.importFraTps
+
+	if (importFraTps) {
+		const importData = {
+			header: 'Import',
+			items: [
+				obj('Identer', Formatters.arrayToString(importFraTps)),
+				obj('Importert fra', bestillingData.kildeMiljoe.toUpperCase())
+			]
+		}
+
+		data.push(importData)
+	}
+
 	return data
 }

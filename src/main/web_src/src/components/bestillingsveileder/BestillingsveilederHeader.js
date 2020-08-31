@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import { Header } from '~/components/ui/header/Header'
 import Formatter from '~/utils/DataFormatter'
 import { BestillingsveilederContext } from './Bestillingsveileder'
+import { ImportFraEtikett } from '~/components/ui/etikett'
 
 export const BestillingsveilederHeader = () => {
 	const opts = useContext(BestillingsveilederContext)
@@ -26,6 +27,14 @@ export const BestillingsveilederHeader = () => {
 				)}
 				{opts.is.leggTil && (
 					<Header.TitleValue title="Legg til på person" value={opts.personFoerLeggTil.tpsf.ident} />
+				)}
+				{opts.is.leggTil && opts.personFoerLeggTil.tpsf.importFra && (
+					<Header.TitleValue
+						title="Importert fra"
+						value={
+							<ImportFraEtikett type="fokus" importFra={opts.personFoerLeggTil.tpsf.importFra} />
+						}
+					/>
 				)}
 			</div>
 		</Header>

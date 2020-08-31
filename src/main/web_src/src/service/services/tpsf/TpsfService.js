@@ -53,11 +53,5 @@ export default {
 	getTilgjengligeMiljoer() {
 		const endpoint = `${getTpsfUrl()}/environments`
 		return Request.get(endpoint)
-	},
-
-	getExcelForIdenter(userArray) {
-		if (!userArray) return
-		const endpoint = `${getTpsfUrl()}/dolly/testdata/excel`
-		return Request.post(endpoint, userArray)
 	}
 }
