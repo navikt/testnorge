@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.frikort.consumer.rs.FrikortSyntetisererenConsumer;
 import no.nav.registre.frikort.consumer.rs.response.SyntFrikortResponse;
 import no.nav.registre.frikort.domain.xml.Egenandelskode;
-import no.nav.registre.frikort.exception.UgyldigSamhandlerdataException;
+import no.nav.registre.frikort.exceptions.UgyldigSamhandlerdataException;
 import no.nav.registre.frikort.provider.rs.response.SyntetiserFrikortResponse;
 import no.nav.registre.frikort.provider.rs.response.SyntetiserFrikortResponse.LeggPaaKoeStatus;
 import no.nav.registre.frikort.service.KonverteringService;
@@ -144,7 +144,10 @@ public class ServiceUtils {
 
     private void validerEgenandeler(List<SyntFrikortResponse> egenandeler) {
         settGyldigeDatoer(egenandeler);
-        settGyldigEgenandelskodeOgBeloep(egenandeler);
+        var gyldigeEgenandeler = filtrerGyldigEgenandelskodeOgBeloep(egenandeler);
+        if (gyldigeEgenandeler.size() != egenandeler.size()) {
+            log.warn("{}/{} hadde gyldig egenandelkode og beløp.", egenandeler.size(), gyldigeEgenandeler.size());
+        }
         settGyldigBeloepGittSamhandlertypekode(egenandeler);
     }
 
@@ -161,8 +164,9 @@ public class ServiceUtils {
         }
     }
 
-    private void settGyldigEgenandelskodeOgBeloep(List<SyntFrikortResponse> egenandeler) {
-        var egenandelIterator = egenandeler.iterator();
+    private List<SyntFrikortResponse> filtrerGyldigEgenandelskodeOgBeloep(List<SyntFrikortResponse> egenandeler) {
+        var gyldigeEgenandeler = new ArrayList<>(egenandeler);
+        var egenandelIterator = gyldigeEgenandeler.iterator();
         while (egenandelIterator.hasNext()) {
             var egenandel = egenandelIterator.next();
             if (egenandel.getEgenandelsbelop() == null) {
@@ -176,14 +180,15 @@ public class ServiceUtils {
                 egenandel.setEgenandelsats(0.0);
             }
             if (Egenandelskode.F == egenandelskode && egenandel.getEgenandelsats() <= 0) {
-                log.error("Ugyldig kombinasjon: egenandelskode 'F' og sats {}", egenandel.getEgenandelsats());
+                log.info("Ugyldig kombinasjon: egenandelskode 'F' og sats {}, fjernes.", egenandel.getEgenandelsats());
                 egenandelIterator.remove();
             }
             if (Egenandelskode.C == egenandelskode && (egenandel.getEgenandelsats() <= 0 || egenandel.getEgenandelsbelop() <= 0)) {
-                log.error("Ugyldig kombinasjon: egenandelskode 'C' og sats {}  med beløp {}", egenandel.getEgenandelsats(), egenandel.getEgenandelsbelop());
+                log.info("Ugyldig kombinasjon: egenandelskode 'C' og sats {}  med beløp {}, fjernes.", egenandel.getEgenandelsats(), egenandel.getEgenandelsbelop());
                 egenandelIterator.remove();
             }
         }
+        return gyldigeEgenandeler;
     }
 
     private void settGyldigBeloepGittSamhandlertypekode(
