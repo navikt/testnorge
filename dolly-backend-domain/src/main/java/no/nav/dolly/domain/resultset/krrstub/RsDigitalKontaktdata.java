@@ -1,6 +1,7 @@
 package no.nav.dolly.domain.resultset.krrstub;
 
 import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -21,4 +22,5 @@ public class RsDigitalKontaktdata {
     private String mobil;
     private String epost;
     private boolean registrert;
+    private String spraak;
 }
