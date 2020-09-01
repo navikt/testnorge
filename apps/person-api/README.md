@@ -2,7 +2,7 @@
 API for person.
 
 ## Swagger
-Swagger finnes under [/api](https://testnorge-person-api.nais.preprod.local/api) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnorge-person-api.nais.preprod.local/swagger) -endepunktet til applikasjonen.
  
 ## Lokal kjøring
   

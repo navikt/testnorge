@@ -9,28 +9,38 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDate;
-import java.time.Month;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Collections;
 
 import no.nav.registre.testnorge.dto.person.v1.AdresseDTO;
 import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.synt.person.consumer.dto.SyntPersonDTO;
 import no.nav.registre.testnorge.test.JsonWiremockHelper;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @TestPropertySource(locations = "classpath:application-test.properties")
 class SyntPersonControllerIntegraiontestTest {
 
@@ -39,6 +49,28 @@ class SyntPersonControllerIntegraiontestTest {
 
     @Autowired
     private MockMvc mvc;
+
+    @BeforeEach
+    void setup() throws Exception {
+        JwtAuthenticationToken authentication = Mockito.mock(JwtAuthenticationToken.class);
+        Mockito.when(authentication.getCredentials())
+                .thenReturn(Jwt
+                        .withTokenValue("dummy_token")
+                        .expiresAt(LocalDateTime.now(ZoneOffset.UTC).plusHours(1).toInstant(ZoneOffset.UTC))
+                        .header("dummy", "dummy")
+                        .build()
+                );
+
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/oauth2/v2.0/token")
+                .withResponseBody(new AccessToken("dummy_token"))
+                .stubPost();
+    }
 
     @Test
     void should_create_synt_person() throws Exception {

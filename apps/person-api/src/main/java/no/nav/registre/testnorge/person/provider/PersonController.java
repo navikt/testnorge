@@ -1,5 +1,7 @@
 package no.nav.registre.testnorge.person.provider;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +29,7 @@ public class PersonController {
     private final PersonService service;
 
     @PostMapping
+    @ApiOperation(value = "Oppretter person", authorizations = @Authorization(value = "Bearer"))
     public ResponseEntity<Object> createPerson(
             @RequestBody PersonDTO personDTO
     ) {
@@ -42,6 +45,7 @@ public class PersonController {
     }
 
     @GetMapping("/{ident}")
+    @ApiOperation(value = "Henter person", authorizations = @Authorization(value = "Bearer"))
     public ResponseEntity<?> getPerson(
             @RequestHeader Persondatasystem persondatasystem,
             @RequestHeader(required = false) String miljoe,

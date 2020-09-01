@@ -1,16 +1,16 @@
-name: Deploy person-api dev
+name: Deploy person-api
 
 on:
   push:
+    branches: master
     paths:
       - apps/person-api/**
-      - libs/testnorge-core/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/person-api:${{ github.sha }}
 
 jobs:
-  build-jar:
+  build_and_deploy:
     name: Build and deploy
     runs-on: ubuntu-latest
     steps:
@@ -33,6 +33,7 @@ jobs:
         run: mvn --projects :person-api --also-make --settings maven-settings.xml test
       - name: Package
         run: mvn --projects :person-api --also-make --settings maven-settings.xml package -Dmaven.test.skip
+
       - name: Build and publish Docker image
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -40,14 +41,10 @@ jobs:
           docker build --tag ${IMAGE} . -f ./apps/person-api/Dockerfile
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}
-  deploy-t2:
-    name: "Deploy person-api t2"
-    needs: build-jar
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: nais/deploy/actions/deploy@v1
+      - name: Deploy to nais
+        timeout-minutes: 5
+        uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/person-api/nais-t2.yml
+          RESOURCE: apps/person-api/config.yaml

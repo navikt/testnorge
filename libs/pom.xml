@@ -22,6 +22,7 @@
         <module>testnorge-avro-schema</module>
         <module>testnorge-reporting</module>
         <module>testnorge-database</module>
+        <module>testnorge-oauth2</module>
     </modules>
 
 

@@ -46,4 +46,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/synt-person-api/application-dev.yaml
+          RESOURCE: apps/synt-person-api/config.dev.yaml
