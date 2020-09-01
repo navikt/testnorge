@@ -51,14 +51,3 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
           RESOURCE: apps/person-api/nais-t2.yml
-  deploy-u2:
-    name: "Deploy person-api u2"
-    needs: build-jar
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-          CLUSTER: dev-fss
-          RESOURCE: apps/person-api/nais-u2.yml
