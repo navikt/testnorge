@@ -71,6 +71,7 @@ Så kjør `mvn clean install`
 ![Deploy hendelse-api](https://github.com/navikt/testnorge/workflows/Deploy%20hendelse-api/badge.svg)
 ![Deploy brreg-stub](https://github.com/navikt/testnorge/workflows/Deploy%20brreg-stub/badge.svg)
 ![Deploy udi-stub](https://github.com/navikt/testnorge/workflows/Deploy%20udi-stub/badge.svg)
+![Deploy synt-person-api](https://github.com/navikt/testnorge/workflows/Deploy%20synt-person-api%20prod/badge.svg)
 
 ## Migrering inn i monorepo
 
