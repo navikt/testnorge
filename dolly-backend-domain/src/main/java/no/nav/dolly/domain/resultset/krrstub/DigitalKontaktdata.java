@@ -26,9 +26,11 @@ public class DigitalKontaktdata {
         private boolean registrert;
         private String mobil;
         private String epost;
+        private String spraak;
 
         private ZonedDateTime epostOppdatert;
         private ZonedDateTime epostVerifisert;
         private ZonedDateTime mobilOppdatert;
         private ZonedDateTime mobilVerifisert;
+        private ZonedDateTime spraakOppdatert;
 }

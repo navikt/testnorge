@@ -7,6 +7,7 @@ import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_PERSON_IDENT;
 
 import java.net.URI;
 import java.util.UUID;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class KrrstubConsumer {
     private final ProvidersProps providersProps;
 
     @Timed(name = "providers", tags = { "operation", "krrstub_getKontaktdata" })
-    public ResponseEntity getDigitalKontaktdata(String ident) {
+    public ResponseEntity<DigitalKontaktdata[]> getDigitalKontaktdata(String ident) {
 
         return restTemplate.exchange(
                 RequestEntity.get(URI.create(providersProps.getKrrStub().getUrl() + PERSON_DIGITAL_KONTAKT_URL))
