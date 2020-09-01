@@ -5,10 +5,10 @@ import _takeRight from 'lodash/takeRight'
 import _isEmpty from 'lodash/isEmpty'
 import Formatters from '~/utils/DataFormatter'
 import {
-	PersoninformasjonKodeverk,
 	AdresseKodeverk,
-	SigrunKodeverk,
-	ArbeidKodeverk
+	ArbeidKodeverk,
+	PersoninformasjonKodeverk,
+	SigrunKodeverk
 } from '~/config/kodeverk'
 
 // TODO: Flytte til selector?
@@ -629,6 +629,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			items: [
 				obj('Mobilnummer', krrKriterier.mobil),
 				obj('Epost', krrKriterier.epost),
+				obj('Språk', Formatters.showLabel('spraaktype', krrKriterier.spraak)),
 				{
 					label: 'RESERVERT MOT DIGITALKOMMUNIKASJON',
 					value: krrKriterier.reservert ? 'JA' : 'NEI',

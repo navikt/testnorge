@@ -6,8 +6,8 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import Panel from '~/components/ui/panel/Panel'
-import { panelError } from '~/components/ui/form/formUtils'
 import { erForste } from '~/components/ui/form/formUtils'
+import { panelError } from '~/components/ui/form/formUtils'
 
 const krrAttributt = 'krrstub'
 
@@ -22,6 +22,7 @@ export const KrrstubForm = ({ formikBag }) => (
 			<div className="flexbox--flex-wrap">
 				<FormikTextInput name="krrstub.epost" label="E-post" />
 				<FormikTextInput name="krrstub.mobil" label="Mobilnummer" type="number" />
+				<FormikSelect name="krrstub.spraak" label="Språk" options={Options('spraaktype')} />
 				<FormikSelect
 					name="krrstub.registrert"
 					label="Registrert i DKIF"
@@ -39,6 +40,7 @@ KrrstubForm.validation = {
 		epost: '',
 		gyldigFra: Yup.date().nullable(),
 		mobil: Yup.string().matches(/^[0-9]*$/, 'Ugyldig mobilnummer'),
+		spraak: '',
 		registrert: '',
 		reservert: ''
 	})

@@ -109,7 +109,7 @@ public class ProxyController {
 
         String requestURL = createURL(request, krrUrl + API_URI, PROXY_URI + "/krr");
         HttpHeaders headers = proxyService.copyHeaders(request);
-        headers.add("Nav-Personident",  body.split("=")[0]);
+        headers.add("Nav-Personident",  body.split("=")[0].replace("\"", ""));
 
         return proxyService.proxyRequest(null, HttpMethod.GET, headers, requestURL);
     }
