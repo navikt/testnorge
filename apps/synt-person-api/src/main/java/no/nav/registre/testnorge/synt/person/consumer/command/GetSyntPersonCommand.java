@@ -24,7 +24,7 @@ public class GetSyntPersonCommand implements Callable<SyntPersonDTO> {
         ).retrieve().bodyToMono(SyntPersonDTO[].class).block();
 
         if (response == null || response.length == 0) {
-            throw new RuntimeException("Klarete ikke å opprette person fra syntrest");
+            throw new RuntimeException("Klarte ikke å opprette person fra syntrest");
         }
         log.info("Syntetisk person generert.");
         return response[0];

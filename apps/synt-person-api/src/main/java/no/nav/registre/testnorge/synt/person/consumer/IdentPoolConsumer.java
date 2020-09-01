@@ -8,7 +8,7 @@ import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.synt.person.consumer.command.GetIdentCommand;
 
 @Component
-@DependencyOn("indet-pool")
+@DependencyOn("ident-pool")
 public class IdentPoolConsumer {
     private final WebClient webClient;
     private final String applicationName;

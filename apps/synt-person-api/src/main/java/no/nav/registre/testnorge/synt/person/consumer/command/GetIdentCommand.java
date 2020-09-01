@@ -14,18 +14,19 @@ import no.nav.registre.testnorge.synt.person.consumer.command.model.CreateIdentR
 @Slf4j
 @RequiredArgsConstructor
 public class GetIdentCommand implements Callable<String> {
+    private static final int MAX_YEARS = 90;
+
     private final WebClient webClient;
     private final String applicationName;
 
     @Override
     public String call() {
-
         log.info("Henter ident fra ident pool");
 
         var request = CreateIdentRequest
                 .builder()
                 .antall(1)
-                .foedtEtter(LocalDate.now().minusYears(90))
+                .foedtEtter(LocalDate.now().minusYears(MAX_YEARS))
                 .foedtFoer(LocalDate.now())
                 .identtype("FNR")
                 .rekvirertAv(applicationName)

@@ -34,10 +34,10 @@ public class SyntPersonDTO {
         String shortYear = chars.get(4) + chars.get(5);
         String month = chars.get(2) + chars.get(3);
         String day = chars.get(0) + chars.get(1);
-        int century = getCentury();
+        int numberOfHundredYears =  getNumberOfHundredYears();
 
-        var thisCentury = LocalDate.parse(century + shortYear + "-" + month + "-" + day);
-        var lastCentury = LocalDate.parse((century - 1) + shortYear + "-" + month + "-" + day);
+        var thisCentury = LocalDate.parse(numberOfHundredYears + shortYear + "-" + month + "-" + day);
+        var lastCentury = LocalDate.parse((numberOfHundredYears - 1) + shortYear + "-" + month + "-" + day);
 
         if (thisCentury.isAfter(LocalDate.now())) {
             return lastCentury;
@@ -45,9 +45,7 @@ public class SyntPersonDTO {
         return thisCentury;
     }
 
-    private static int getCentury() {
-        LocalDate now = LocalDate.now();
-        String year = String.valueOf(now.getYear());
-        return Integer.parseInt((String.valueOf(year.charAt(0)) + year.charAt(1)));
+    private static int getNumberOfHundredYears() {
+        return (int) Math.floor(LocalDate.now().getYear() / 100.0);
     }
 }
