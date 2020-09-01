@@ -37,7 +37,6 @@ public class DigitalKontaktMappingStrategy implements MappingStrategy {
                         }
                         if (nonNull(digitalKontaktdata.getSpraak())) {
                             kontaktdataRequest.setSpraakOppdatert(getDato(digitalKontaktdata));
-                            kontaktdataRequest.setSpraak(digitalKontaktdata.getSpraak().toLowerCase());
                         }
                     }
 
