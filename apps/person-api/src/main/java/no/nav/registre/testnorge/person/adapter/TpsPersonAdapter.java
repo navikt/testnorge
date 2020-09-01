@@ -13,8 +13,8 @@ public class TpsPersonAdapter implements PersonAdapter {
 
     @Override
     public String createPerson(Person person) {
-        //Kommer
-        return null;
+        //TODO
+        throw new UnsupportedOperationException();
     }
 
     @Override
