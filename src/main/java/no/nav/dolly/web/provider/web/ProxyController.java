@@ -109,9 +109,12 @@ public class ProxyController {
 
         String requestURL = createURL(request, krrUrl + API_URI, PROXY_URI + "/krr");
         HttpHeaders headers = proxyService.copyHeaders(request);
-        headers.add("Nav-Personident",  body.split("=")[0]);
+        headers.add("Nav-Personident",  body.split("=")[0].replace("\"", ""));
+        headers.add("Nav-Call-Id", "Dolly Frontend-backend Proxy");
+        headers.add("Nav-Consumer-Id", "Dolly");
 
-        return proxyService.proxyRequest(body, HttpMethod.GET, headers, requestURL);
+        ResponseEntity responseEntity = proxyService.proxyRequest(null, HttpMethod.GET, headers, requestURL);
+        return responseEntity;
     }
 
     @RequestMapping("/proxy/sigrun/**")
