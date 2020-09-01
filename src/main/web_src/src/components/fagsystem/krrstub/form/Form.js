@@ -22,12 +22,7 @@ export const KrrstubForm = ({ formikBag }) => (
 			<div className="flexbox--flex-wrap">
 				<FormikTextInput name="krrstub.epost" label="E-post" />
 				<FormikTextInput name="krrstub.mobil" label="Mobilnummer" type="number" />
-				<FormikSelect
-					name="krrstub.spraak"
-					label="Språk"
-					size="large"
-					options={Options('spraaktype')}
-				/>
+				<FormikSelect name="krrstub.spraak" label="Språk" options={Options('spraaktype')} />
 				<FormikSelect
 					name="krrstub.registrert"
 					label="Registrert i DKIF"
