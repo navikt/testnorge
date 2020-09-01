@@ -9,9 +9,8 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import Loading from '~/components/ui/loading/Loading'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import DataFormatter from '~/utils/DataFormatter'
 import { requiredDate } from '~/utils/YupValidations'
-import DisplayFormikState from '~/utils/DisplayFormikState'
+import Logger from '@/logger'
 
 export default class SendFoedselsmelding extends PureComponent {
 	state = {
@@ -46,6 +45,8 @@ export default class SendFoedselsmelding extends PureComponent {
 		})
 
 	_onSubmit = (values, { resetForm }) => {
+		Logger.log({ event: 'Send foedselsmelding' })
+
 		let success_envs = []
 
 		this.setState(
