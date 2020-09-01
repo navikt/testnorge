@@ -54,6 +54,7 @@ export const InntektstubForm = ({ formikBag }: InntektstubForm) => (
 					header="Inntektsinformasjon"
 					newEntry={initialValues}
 					hjelpetekst={infotekst}
+					canBeEmpty={false}
 				>
 					{(path: string) => <InntektsinformasjonForm path={path} formikBag={formikBag} />}
 				</FormikDollyFieldArray>
