@@ -30,12 +30,13 @@ public class PersonController {
     public ResponseEntity<Object> createPerson(
             @RequestBody PersonDTO personDTO
     ) {
-        service.createPerson(new Person(personDTO));
+        Person person = new Person(personDTO);
+        String ident = service.createPerson(person);
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{ident}")
-                .buildAndExpand(personDTO.getIdent())
+                .buildAndExpand(ident)
                 .toUri();
         return ResponseEntity.created(uri).build();
     }

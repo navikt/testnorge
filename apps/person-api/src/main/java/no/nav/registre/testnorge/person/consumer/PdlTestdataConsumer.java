@@ -7,13 +7,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Arrays;
 
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.person.consumer.command.PostAdresseCommand;
@@ -31,40 +25,36 @@ public class PdlTestdataConsumer {
     private final StsOidcTokenService tokenService;
     private final String pdlTestdataUrl;
     private final RestTemplate restTemplate;
-    private final Executor executor;
 
     public PdlTestdataConsumer(
             StsOidcTokenService tokenService,
             @Value("${system.pdl.pdlTestdataUrl}") String pdlTestdataUrl,
-            @Value("${system.pdl.threads}") Integer threads,
             RestTemplateBuilder restTemplateBuilder
     ) {
         this.tokenService = tokenService;
         this.pdlTestdataUrl = pdlTestdataUrl;
         this.restTemplate = restTemplateBuilder.build();
-        this.executor = Executors.newFixedThreadPool(threads);
     }
 
-    public void createPerson(Person person) {
+    public String createPerson(Person person) {
         String token = tokenService.getIdToken();
         log.info("Oppretter person med ident {} i PDL", person.getIdent());
 
-        List<? extends CompletableFuture<?>> results = Stream.of(
+        var commaneds = Arrays.asList(
                 new PostOpprettPersonCommand(restTemplate, pdlTestdataUrl, person.getIdent(), token),
                 new PostNavnCommand(restTemplate, pdlTestdataUrl, person, token),
                 new PostAdresseCommand(restTemplate, pdlTestdataUrl, person, token)
-        ).map(callable -> CompletableFuture.supplyAsync(() -> {
-                    try {
-                        return callable.call();
-                    } catch (Exception e) {
-                        log.error("Klarer ikke å utfløre kall til PDL", e);
-                        return null;
-                    }
-                }, executor
-        )).collect(Collectors.toList());
+        );
 
-        if (results.stream().anyMatch(Objects::isNull)) {
-            throw new PdlCreatePersonException("Feil ved innsendelse til PDL testdata");
+        for (var command : commaneds) {
+            try {
+                command.call();
+            } catch (Exception e) {
+                log.error("Klarer ikke å utfløre kall til PDL", e);
+                throw new PdlCreatePersonException("Feil ved innsendelse til PDL testdata");
+            }
         }
+
+        return person.getIdent();
     }
 }

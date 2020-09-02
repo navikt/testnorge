@@ -30,14 +30,12 @@ public class Person {
     private Adresse adresse;
 
     public Person(PersonDTO dto) {
-        Person.builder()
-                .ident(dto.getIdent())
-                .foedselsdato(dto.getFoedselsdato())
-                .fornavn(dto.getFornavn())
-                .mellomnavn(dto.getMellomnavn())
-                .etternavn(dto.getEtternavn())
-                .adresse(dto.getAdresse() != null ? new Adresse(dto.getAdresse()) : null)
-                .build();
+        ident = dto.getIdent();
+        foedselsdato = dto.getFoedselsdato();
+        fornavn = dto.getFornavn();
+        mellomnavn = dto.getMellomnavn();
+        etternavn = dto.getEtternavn();
+        adresse = dto.getAdresse() != null ? new Adresse(dto.getAdresse()) : null;
     }
 
     public Person(PdlPerson pdlPerson) {

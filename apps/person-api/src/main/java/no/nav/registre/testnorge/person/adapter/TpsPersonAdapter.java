@@ -12,8 +12,9 @@ public class TpsPersonAdapter implements PersonAdapter {
     private final TpsForvalterenConsumer tpsForvalterenConsumer;
 
     @Override
-    public void createPerson(Person person) {
-        //Kommer
+    public String createPerson(Person person) {
+        //TODO
+        throw new UnsupportedOperationException();
     }
 
     @Override
