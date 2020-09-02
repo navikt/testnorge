@@ -22,7 +22,7 @@ class Aktivitet {
     }
 
 
-    static LocalDate getFom(XMLHelseOpplysningerArbeidsuforhet.Aktivitet xml){
+    static LocalDate getFom(XMLHelseOpplysningerArbeidsuforhet.Aktivitet xml) {
         return xml.getPeriode()
                 .stream()
                 .map(XMLHelseOpplysningerArbeidsuforhet.Aktivitet.Periode::getPeriodeFOMDato)
@@ -36,6 +36,16 @@ class Aktivitet {
                 .map(XMLHelseOpplysningerArbeidsuforhet.Aktivitet.Periode::getPeriodeTOMDato)
                 .max(LocalDate::compareTo)
                 .orElseThrow();
+    }
+
+    static LocalDate getFomIArbeid(XMLHelseOpplysningerArbeidsuforhet.Aktivitet xml) {
+        LocalDate tom = getTom(xml);
+        return xml.getPeriode()
+                .stream()
+                .filter(periode -> periode.getAktivitetIkkeMulig() == null && periode.getAvventendeSykmelding() == null)
+                .map(XMLHelseOpplysningerArbeidsuforhet.Aktivitet.Periode::getPeriodeFOMDato)
+                .min(LocalDate::compareTo)
+                .orElse(tom);
     }
 
     XMLHelseOpplysningerArbeidsuforhet.Aktivitet getXmlObject() {
