@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,6 @@ import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.dolly.bestilling.dokarkiv.domain.JoarkTransaksjon;
 import no.nav.dolly.bestilling.saf.SafConsumer;
-import no.nav.dolly.bestilling.saf.domain.SafRequest;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -70,13 +68,6 @@ public class DokarkivClient implements ClientRegister {
                             status.append(isNotBlank(status) ? ',' : "")
                                     .append(environment)
                                     .append(":OK");
-
-                            //TODO Håndtere metadata
-                            ResponseEntity<JsonNode> metadata = safConsumer.getMetadata(environment, requireNonNull(response.getBody()).getJournalpostId());
-                            log.info(metadata.toString());
-                            // INNTEKTSMELD
-                            log.info(safConsumer.getDokument("q1",
-                                    new SafRequest("485261215", "467043682", "ORIGINAL")).toString());
 
                             saveTransaksjonId(requireNonNull(response.getBody()), tpsPerson.getHovedperson(), progress.getBestillingId(), environment);
                         }

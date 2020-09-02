@@ -81,7 +81,6 @@ public class SafConsumer {
             log.error("Lesing av query ressurs feilet");
         }
 
-        String idToken = stsOidcService.getIdToken(PREPROD_ENV);
         GraphQLRequest graphQLRequest = GraphQLRequest.builder()
                 .query(query)
                 .variables(variables)
@@ -93,7 +92,7 @@ public class SafConsumer {
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(String.format("%s%s", providersProps.getJoark().getUrl().replace("$", "q1"),
                         SAF_GRAPHQL_URL)))
-                        .header(AUTHORIZATION,stsOidcService.getIdToken(environment.contains(PREPROD_ENV) ? PREPROD_ENV : TEST_ENV))
+                        .header(AUTHORIZATION, stsOidcService.getIdToken(environment.contains(PREPROD_ENV) ? PREPROD_ENV : TEST_ENV))
                         .header(HEADER_NAV_CALL_ID, callId)
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .contentType(MediaType.APPLICATION_JSON)
