@@ -53,7 +53,8 @@ public class KubernetesController {
     private RestTemplate noAuthRestTemplate;
     private RestTemplate authRestTemplate;
 
-    private final List<String> appsFlyttetTilGithub = Arrays.asList("synthdata-sam", "synthdata-frikort");
+    private final List<String> appsFlyttetTilGithub = Arrays.asList("synthdata-sam", "synthdata-frikort",
+            "synthdata-arena-meldekort", "synthdata-arena-bisys");
 
     public KubernetesController(RestTemplateBuilder restTemplateBuilder,
                                 CustomObjectsApi customObjectsApi,
