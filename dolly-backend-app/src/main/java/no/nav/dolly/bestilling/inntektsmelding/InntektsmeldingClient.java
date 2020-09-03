@@ -20,7 +20,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingResponse;
-import no.nav.dolly.bestilling.saf.SafConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -34,7 +33,6 @@ import no.nav.dolly.service.TransaksjonMappingService;
 public class InntektsmeldingClient implements ClientRegister {
 
     private final InntektsmeldingConsumer inntektsmeldingConsumer;
-    private final SafConsumer safConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
     private final TransaksjonMappingService transaksjonMappingService;
@@ -75,8 +73,7 @@ public class InntektsmeldingClient implements ClientRegister {
                 if (response.hasBody()) {
                     transaksjonMappingService.saveAll(
                             response.getBody().getDokumenter().stream()
-                                    .map(dokument ->
-                                            TransaksjonMapping.builder()
+                                    .map(dokument -> TransaksjonMapping.builder()
                                             .ident(inntektsmeldingRequest.getArbeidstakerFnr())
                                             .bestillingId(bestillingId)
                                             .transaksjonId(toJson(dokument))
@@ -84,8 +81,7 @@ public class InntektsmeldingClient implements ClientRegister {
                                             .miljoe(inntektsmeldingRequest.getMiljoe())
                                             .system(INNTKMELD.name())
                                             .build())
-                                    .collect(Collectors.toList())
-                    );
+                                    .collect(Collectors.toList()));
                 }
             }
 

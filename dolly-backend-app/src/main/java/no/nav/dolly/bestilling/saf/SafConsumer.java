@@ -22,9 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.CharStreams;
 
 import lombok.RequiredArgsConstructor;
@@ -44,12 +42,10 @@ public class SafConsumer {
     private static final String SAF_GRAPHQL_URL = "/graphql";
     private static final String PREPROD_ENV = "q";
     private static final String TEST_ENV = "t";
-    private static final String BRUKER_TYPE = "FNR";
 
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
     private final StsOidcService stsOidcService;
-    private final ObjectMapper objectMapper;
 
     @Timed(name = "providers", tags = { "operation", "hent-dokument" })
     public ResponseEntity<String> getDokument(String environment, SafRequest request) {
@@ -58,7 +54,7 @@ public class SafConsumer {
         log.info("Dokarkiv melding sendt, callId: {}, consumerId: {}, miljø: {}", callId, CONSUMER, environment);
 
         return restTemplate.exchange(
-                RequestEntity.get(URI.create(String.format("%s%s", providersProps.getJoark().getUrl().replace("$", environment),
+                RequestEntity.get(URI.create(String.format("%s%s", providersProps.getSaf().getUrl().replace("$", environment),
                         String.format("%s/%s/%s/%s", SAF_URL, request.getJournalpostId(), request.getDokumentInfoId(), request.getVariantFormat()))))
                         .header(AUTHORIZATION, stsOidcService.getIdToken(environment.contains(PREPROD_ENV) ? PREPROD_ENV : TEST_ENV))
                         .header(HEADER_NAV_CALL_ID, callId)
@@ -90,7 +86,7 @@ public class SafConsumer {
         log.info("SafMetadataRequest sendt, callId: {}, consumerId: {}, miljø: {}", callId, CONSUMER, environment);
 
         return restTemplate.exchange(
-                RequestEntity.post(URI.create(String.format("%s%s", providersProps.getJoark().getUrl().replace("$", "q1"),
+                RequestEntity.post(URI.create(String.format("%s%s", providersProps.getSaf().getUrl().replace("$", "q1"),
                         SAF_GRAPHQL_URL)))
                         .header(AUTHORIZATION, stsOidcService.getIdToken(environment.contains(PREPROD_ENV) ? PREPROD_ENV : TEST_ENV))
                         .header(HEADER_NAV_CALL_ID, callId)
@@ -98,16 +94,6 @@ public class SafConsumer {
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(graphQLRequest),
                 JsonNode.class);
-    }
-
-    private String toJson(Object object) {
-
-        try {
-            return objectMapper.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
-            log.error("Feilet å konvertere transaksjonsId for dokarkiv", e);
-        }
-        return null;
     }
 
     private static String getNavCallId() {
