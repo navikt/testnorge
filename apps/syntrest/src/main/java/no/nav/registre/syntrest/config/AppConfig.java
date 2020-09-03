@@ -31,7 +31,7 @@ import java.util.concurrent.ScheduledExecutorService;
 @Slf4j
 public class AppConfig {
 
-    private static final int TIMEOUT = 120_000;
+    private static final int TIMEOUT = 180_000;
     private final int EXECUTOR_POOL_SIZE = 4;
     @Value("${kube-config-path}")
     private String kubeConfigPath;
