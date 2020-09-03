@@ -53,6 +53,7 @@ export const PersonVisning = ({
 			<SykemeldingVisning
 				data={SykemeldingVisning.filterValues(bestillingsListe)}
 				ident={ident.ident}
+				bestillingId={ident.bestillingId}
 			/>
 			<BrregVisning data={data.brregstub} loading={loading.brregstub} />
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />

@@ -8,7 +8,8 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 
 interface JournalpostId {
 	system: string
-	ident: string
+	ident?: string
+	bestillingsid?: number
 }
 
 type Response = {
@@ -16,11 +17,14 @@ type Response = {
 	transaksjonId: string
 }
 
-export default ({ system, ident }: JournalpostId) => (
+export default ({ system, ident, bestillingsid }: JournalpostId) => (
 	<LoadableComponent
 		onFetch={() =>
-			DollyApi.getTransaksjonid(system, ident).then(
+			DollyApi.getTransaksjonid(system, ident, bestillingsid).then(
 				({ data }): Array<Response> =>
+					// {
+					// 	console.log('data :>> ', data)
+					// }
 					data.map((id: Response) => ({
 						transaksjonId: id.transaksjonId,
 						miljoe: id.miljoe.toUpperCase()

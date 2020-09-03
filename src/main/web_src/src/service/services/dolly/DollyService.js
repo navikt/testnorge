@@ -136,7 +136,10 @@ export default {
 		return Request.get(Endpoints.getPersonnavn())
 	},
 
-	getTransaksjonid(system, ident) {
-		return Request.get(Endpoints.getTransaksjonsid(system, ident))
+	getTransaksjonid(system, ident, bestillingsid) {
+		return Request.get(Endpoints.getTransaksjonsid(system, ident, bestillingsid))
 	}
+	// getTransaksjonid(bestillingId, system, ident) {
+	// 	return Request.get(Endpoints.getTransaksjonsid(bestillingId, system, ident))
+	// }
 }

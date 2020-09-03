@@ -3,6 +3,7 @@ import _get from 'lodash/get'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import JournalpostidVisning from '~/components/journalpostid/journalpostidVisning'
+import { GyldigeBestillinger } from '~/components/transaksjonid/GyldigeBestillinger'
 
 interface DokarkivVisning {
 	data: Array<Dokarkiv>
@@ -28,28 +29,42 @@ type Bestilling = {
 
 export const DokarkivVisning = ({ data, ident }: DokarkivVisning) => {
 	// Viser foreløpig bestillingsdata
-	if (!data || data.length < 1 || !data[0]) return null
-
+	if (!data || data.length < 1) return null
+	const gyldigeBestillinger = GyldigeBestillinger(data, 'DOKARKIV', ident)
 	return (
 		<div>
 			<SubOverskrift label="Dokumenter" iconKind="dokarkiv" />
-			{data.map((dokument, idx) => {
+			{gyldigeBestillinger.map((dokument, idx) => {
+				// if (!dokument.erGjenopprettet) {
 				return (
-					<div className="person-visning_content" key={idx}>
-						<TitleValue title="Kanal" value={dokument.kanal} />
-						<TitleValue title="Brevkode" value={_get(dokument, 'dokumenter[0].brevkode')} />
-						<TitleValue title="Tittel" value={_get(dokument, 'dokumenter[0].tittel')} />
-						<TitleValue title="Tema" value={dokument.tema} />
-						<TitleValue title="Journalførende enhet" value={dokument.journalfoerendeEnhet} />
-					</div>
+					<>
+						<div className="person-visning_content" key={idx}>
+							<TitleValue title="Kanal" value={_get(dokument, 'data.dokarkiv.kanal')} />
+							<TitleValue
+								title="Brevkode"
+								value={_get(dokument, 'data.dokarkiv.dokumenter[0].brevkode')}
+							/>
+							<TitleValue
+								title="Tittel"
+								value={_get(dokument, 'data.dokarkiv.dokumenter[0].tittel')}
+							/>
+							<TitleValue title="Tema" value={_get(dokument, 'data.dokarkiv.tema')} />
+							<TitleValue
+								title="Journalførende enhet"
+								value={_get(dokument, 'data.dokarkiv.journalfoerendeEnhet')}
+							/>
+						</div>
+						<JournalpostidVisning system="DOKARKIV" bestillingsid={dokument.id} />
+						{/* <JournalpostidVisning system="DOKARKIV" ident={ident} bestillingsid={dokument.id} /> */}
+					</>
 				)
+				// }
 			})}
-			<JournalpostidVisning system="DOKARKIV" ident={ident} />
 		</div>
 	)
 }
 
 DokarkivVisning.filterValues = (bestillinger: Array<Bestilling>) => {
 	if (!bestillinger) return null
-	return bestillinger.map((bestilling: any) => bestilling.dokarkiv)
+	return bestillinger.filter((bestilling: any) => bestilling.data.dokarkiv)
 }

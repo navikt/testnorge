@@ -132,7 +132,7 @@ InntektsmeldingVisning.filterValues = (bestillinger: Array<Bestilling>) => {
 	if (!bestillinger) return false
 
 	return bestillinger
-		.map((bestilling: any) => bestilling.inntektsmelding)
+		.map((bestilling: any) => bestilling.data.inntektsmelding)
 		.filter(
 			(inntektsmelding: Inntektsmelding) =>
 				inntektsmelding && !tomBestilling(inntektsmelding.inntekter)

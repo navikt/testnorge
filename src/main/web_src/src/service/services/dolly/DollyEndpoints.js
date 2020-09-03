@@ -127,7 +127,10 @@ export default class DollyEndpoints {
 		return `${uri}/personnavn`
 	}
 
-	static getTransaksjonsid(system, ident) {
-		return `${uri}/transaksjonid/${system}/${ident}`
+	static getTransaksjonsid(system, ident, bestillingsid) {
+		if (bestillingsid) {
+			return `${uri}/transaksjonid?system=${system}&bestillingId=${bestillingsid}`
+		} else return `${uri}/transaksjonid?ident=${ident}&system=${system}`
+		// // return `${uri}/transaksjonid/${system}/${ident}`
 	}
 }
