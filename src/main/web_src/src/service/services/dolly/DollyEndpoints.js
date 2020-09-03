@@ -12,6 +12,7 @@ const openamBase = `${uri}/openam`
 const personoppslagBase = `${uri}/pdlperson`
 const fasteOrgnummerBase = `${uri}/orgnummer`
 const fasteDatasettBase = `${uri}/fastedatasett`
+const dokarkivBase = `${uri}/dokarkiv`
 
 export default class DollyEndpoints {
 	static gruppe() {
@@ -68,6 +69,14 @@ export default class DollyEndpoints {
 
 	static kodeverkByNavn(kodeverkNavn) {
 		return `${kodeverkBase}/${kodeverkNavn}`
+	}
+
+	static dokarkivMetadata(journalpostId, env) {
+		return `${dokarkivBase}/${journalpostId}?miljoe=${env}`
+	}
+
+	static dokarkivDokument(journalpostId, dokumentinfoId, env) {
+		return `${dokarkivBase}/${journalpostId}/${dokumentinfoId}/ORIGINAL?miljoe=${env}`
 	}
 
 	static bestillinger(gruppeId) {

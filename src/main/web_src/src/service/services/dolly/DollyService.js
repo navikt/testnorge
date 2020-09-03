@@ -142,5 +142,14 @@ export default {
 
 	getTransaksjonid(system, ident) {
 		return Request.get(Endpoints.getTransaksjonsid(system, ident))
+	},
+
+	//* Joark
+	getDokarkivMetadata(journalpostId, miljoe) {
+		return Request.get(Endpoints.dokarkivMetadata(journalpostId, miljoe))
+	},
+
+	getDokarkivDokument(journalpostId, dokumentinfoId, miljoe) {
+		return Request.get(Endpoints.dokarkivDokument(journalpostId, dokumentinfoId, miljoe))
 	}
 }
