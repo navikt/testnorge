@@ -160,16 +160,17 @@ public class OppslagController {
         return transaksjonMappingService.getTransaksjonMapping(system, ident);
     }
 
-    @GetMapping("/dokarkiv/{journalpostId}/{dokumentInfoId}/{variantFormat}")
-    @ApiOperation(value = "Henter dokumenter fra Joark", authorizations = { @Authorization(value = "Bearer token fra bruker") })
-    public ResponseEntity<String> getDokument(@PathVariable String journalpostId, @PathVariable String dokumentInfoId,
-                                              @PathVariable VariantFormat variantFormat, @RequestParam String miljoe) {
-        return safConsumer.getDokument(miljoe, new SafRequest(dokumentInfoId, journalpostId, variantFormat.name()));
+    @GetMapping("/inntektsmelding/{journalpostId}/{dokumentInfoId}")
+    @ApiOperation(value = "Henter dokumentinformasjon for inntektsmelding fra Joark", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    public List<JsonNode> getInntektsmeldingDokumentinfo(@PathVariable String journalpostId, @PathVariable String dokumentInfoId,
+                                  @RequestParam VariantFormat variantFormat,
+                                  @RequestParam String miljoe) {
+        return safConsumer.getInntektsmeldingDokumentinfo(miljoe, new SafRequest(dokumentInfoId, journalpostId, variantFormat.name()));
     }
 
     @GetMapping("/dokarkiv/{journalpostId}")
-    @ApiOperation(value = "Henter metadata fra Joark", authorizations = { @Authorization(value = "Bearer token fra bruker") })
-    public ResponseEntity<JsonNode> getMetadata(@PathVariable Long journalpostId, @RequestParam(required = false) String miljoe) {
-        return safConsumer.getMetadata(miljoe, journalpostId);
+    @ApiOperation(value = "Henter dokumentinformasjon for dokarkiv fra Joark", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    public ResponseEntity<JsonNode> getDokarkivDokumentinfo(@PathVariable Long journalpostId, @RequestParam(required = false) String miljoe) {
+        return safConsumer.getDokarkivDokumentinfo(miljoe, journalpostId);
     }
 }

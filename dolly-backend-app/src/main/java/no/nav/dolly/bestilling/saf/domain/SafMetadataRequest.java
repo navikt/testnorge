@@ -12,20 +12,20 @@ public class SafMetadataRequest {
 
     SafMetadataRequest(String brukerId, String brukerType, String foerste) {
         query = String.format("{" +
-                "query {\n" +
-                "  dokumentoversiktBruker(brukerId: {id: \"%s\", type: %s}, foerste: %s) {\n" +
-                "    journalposter {\n" +
-                "      journalpostId\n" +
-                "      tittel\n" +
-                "      journalposttype\n" +
-                "      journalstatus\n" +
-                "      tema\n" +
-                "      dokumenter {\n" +
-                "        dokumentInfoId\n" +
-                "        tittel\n" +
-                "      }\n" +
-                "    }\n" +
-                "  }\n" +
+                "query {%n" +
+                "  dokumentoversiktBruker(brukerId: {id: \"%s\", type: %s}, foerste: %s) {%n" +
+                "    journalposter {%n" +
+                "      journalpostId%n" +
+                "      tittel%n" +
+                "      journalposttype%n" +
+                "      journalstatus%n" +
+                "      tema%n" +
+                "      dokumenter {%n" +
+                "        dokumentInfoId%n" +
+                "        tittel%n" +
+                "      }%n" +
+                "    }%n" +
+                "  }%n" +
                 "}}", brukerId, brukerType, foerste);
     }
 }
