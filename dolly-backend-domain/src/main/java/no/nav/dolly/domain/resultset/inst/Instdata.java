@@ -24,6 +24,8 @@ public class Instdata {
     private LocalDate forventetSluttdato;
     private InstdataInstitusjonstype institusjonstype;
     private InstdataKategori kategori;
+
+    @EqualsAndHashCode.Exclude
     private InstdataKilde kilde;
 
     @EqualsAndHashCode.Exclude
