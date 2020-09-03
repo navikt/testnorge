@@ -117,6 +117,7 @@ public class ServiceUtils {
         if (validerEgenandeler) {
             var alleEgenandeler = new ArrayList<SyntFrikortResponse>();
             egenandeler.values().forEach(alleEgenandeler::addAll);
+            // egenandeler.values().stream().filter().collect(Collectors.toCollection())
             validerEgenandeler(alleEgenandeler);
         }
         return egenandeler;
@@ -180,11 +181,11 @@ public class ServiceUtils {
                 egenandel.setEgenandelsats(0.0);
             }
             if (Egenandelskode.F == egenandelskode && egenandel.getEgenandelsats() <= 0) {
-                log.info("Ugyldig kombinasjon: egenandelskode 'F' og sats {}, fjernes.", egenandel.getEgenandelsats());
+                log.info("Ugyldig kombinasjon: egenandelskode 'F' og sats {}", egenandel.getEgenandelsats());
                 egenandelIterator.remove();
             }
             if (Egenandelskode.C == egenandelskode && (egenandel.getEgenandelsats() <= 0 || egenandel.getEgenandelsbelop() <= 0)) {
-                log.info("Ugyldig kombinasjon: egenandelskode 'C' og sats {}  med beløp {}, fjernes.", egenandel.getEgenandelsats(), egenandel.getEgenandelsbelop());
+                log.info("Ugyldig kombinasjon: egenandelskode 'C' og sats {}  med beløp {}", egenandel.getEgenandelsats(), egenandel.getEgenandelsbelop());
                 egenandelIterator.remove();
             }
         }
