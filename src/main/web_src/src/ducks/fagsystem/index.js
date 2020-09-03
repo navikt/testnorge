@@ -354,6 +354,7 @@ export const selectPersonListe = state => {
 			ident,
 			identNr: tpsfIdent.ident,
 			bestillingId: ident.bestillingId,
+			importFra: tpsfIdent.importFra,
 			identtype: tpsfIdent.identtype,
 			navn: `${tpsfIdent.fornavn} ${mellomnavn} ${tpsfIdent.etternavn}`,
 			kjonn: Formatters.kjonn(tpsfIdent.kjonn, tpsfIdent.alder),

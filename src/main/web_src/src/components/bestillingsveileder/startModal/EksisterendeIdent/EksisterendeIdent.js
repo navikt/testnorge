@@ -6,7 +6,7 @@ import Alertstripe from 'nav-frontend-alertstriper'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { TpsfApi } from '~/service/Api'
 import Loading from '~/components/ui/loading/Loading'
-import { ModalActions } from '../ModalActions'
+import ModalActionKnapper from '~/components/ui/modal/ModalActionKnapper'
 import Icon from '~/components/ui/icon/Icon'
 
 import './eksisterendeIdent.less'
@@ -80,7 +80,14 @@ export const EksisterendeIdent = ({ onAvbryt, onSubmit }) => {
 				</React.Fragment>
 			)}
 
-			{finnesGyldige && <ModalActions onAvbryt={onAvbryt} onSubmit={_onSubmit} />}
+			{finnesGyldige && (
+				<ModalActionKnapper
+					submitknapp="Start bestilling"
+					onSubmit={_onSubmit}
+					onAvbryt={onAvbryt}
+					center
+				/>
+			)}
 		</div>
 	)
 }

@@ -115,6 +115,10 @@ export default {
 		return Request.delete(Endpoints.slettPerson(ident))
 	},
 
+	importerPersoner: (gruppeId, request) => {
+		return Request.post(Endpoints.gruppeBestillingImport(gruppeId), request)
+	},
+
 	//* Oppslag
 	getEnhetByTknr(tknr) {
 		return Request.get(Endpoints.enhetByTknr(tknr))
@@ -138,8 +142,16 @@ export default {
 
 	getTransaksjonid(system, ident, bestillingsid) {
 		return Request.get(Endpoints.getTransaksjonsid(system, ident, bestillingsid))
+		// getTransaksjonid(system, ident) {
+		// 	return Request.get(Endpoints.getTransaksjonsid(system, ident))
+	},
+
+	//* Joark
+	getDokarkivMetadata(journalpostId, miljoe) {
+		return Request.get(Endpoints.dokarkivMetadata(journalpostId, miljoe))
+	},
+
+	getDokarkivDokument(journalpostId, dokumentinfoId, miljoe) {
+		return Request.get(Endpoints.dokarkivDokument(journalpostId, dokumentinfoId, miljoe))
 	}
-	// getTransaksjonid(bestillingId, system, ident) {
-	// 	return Request.get(Endpoints.getTransaksjonsid(bestillingId, system, ident))
-	// }
 }

@@ -4,6 +4,8 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import JournalpostidVisning from '~/components/journalpostid/journalpostidVisning'
 import { GyldigeBestillinger } from '~/components/transaksjonid/GyldigeBestillinger'
+import { useAsync } from 'react-use'
+import { DollyApi } from '~/service/Api'
 
 interface DokarkivVisning {
 	data: Array<Dokarkiv>
@@ -28,6 +30,14 @@ type Bestilling = {
 }
 
 export const DokarkivVisning = ({ data, ident }: DokarkivVisning) => {
+	// const dok = useAsync(async () => {
+	// 	const response = await DollyApi.getDokarkivMetadata('467045396', 'q1')
+	// 	return response.data
+	// }, [])
+
+	// const bestillinger = dok.value
+	// console.log('bestillinger :>> ', bestillinger)
+
 	// Viser foreløpig bestillingsdata
 	if (!data || data.length < 1) return null
 	const gyldigeBestillinger = GyldigeBestillinger(data, 'DOKARKIV', ident)

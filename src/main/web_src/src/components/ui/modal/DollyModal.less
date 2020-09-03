@@ -23,14 +23,15 @@
 	}
 
 	&_buttons {
-		margin: 20px 0 10px 0;
 		display: flex;
+		justify-content: flex-end;
+		padding: 20px 0 0;
 
-		:first-child {
-			margin-left: auto;
+		&--center {
+			justify-content: center;
 		}
-		:not(:last-child) {
-			margin-right: 5px;
+		button {
+			margin: 0 10px;
 		}
 	}
 	.feilcontainer {

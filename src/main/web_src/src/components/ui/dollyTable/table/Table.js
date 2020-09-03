@@ -15,6 +15,13 @@ const getColumnValue = (row, column) => {
 	return column.formatter ? column.formatter(value, row) : value
 }
 
+const getColumnHeader = (cell, data) => {
+	if (cell.headerFormatter) {
+		return cell.headerFormatter(cell.text, data)
+	} else {
+		return cell.text
+	}
+}
 // Setter rowKey til en verdi dersom datasett har et unikt felt
 // Fallback til row index
 const getRowKey = (row, columns) => {
@@ -40,7 +47,7 @@ export default function Table({ data, iconItem, columns, onRowClick, header = tr
 			{header && (
 				<div className={headerClass}>
 					{columns.map((cell, idx) => (
-						<Column key={idx} width={cell.width} value={cell.text} />
+						<Column key={idx} width={cell.width} value={getColumnHeader(cell, data)} />
 					))}
 					{onExpand && <Column />}
 				</div>

@@ -9,6 +9,7 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { requiredDate } from '~/utils/YupValidations'
+import Logger from '~/logger'
 
 export default class SendDoedsmelding extends PureComponent {
 	state = {
@@ -40,6 +41,8 @@ export default class SendDoedsmelding extends PureComponent {
 		})
 
 	_onSubmit = (values, { resetForm }) => {
+		Logger.log({ event: 'Send doesmelding' })
+
 		const body = values
 		let success_envs = []
 		let error_envs = []

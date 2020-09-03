@@ -1,8 +1,4 @@
 import React, { useState } from 'react'
-// @ts-ignore
-import Tooltip from 'rc-tooltip'
-// @ts-ignore
-import { CopyToClipboard } from 'react-copy-to-clipboard'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
@@ -10,10 +6,10 @@ import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { HodejegerenApi } from '~/service/Api'
 import { ManIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
 import ResultatVisningConnecter from '~/pages/soekMiniNorge/search/ResultatVisning/ResultatVisningConnecter'
-import { Feedback } from '~/components/feedback'
 import { Innhold } from '../hodejegeren/types'
+import { VelgPerson } from './ImportTilDolly/VelgPerson'
+import { ImportTilDolly } from './ImportTilDolly/ImportTilDolly'
 import Button from '~/components/ui/button/Button'
-import Icon from '~/components/ui/icon/Icon'
 
 interface SearchResultVisningProps {
 	soekOptions: string
@@ -23,6 +19,8 @@ interface SearchResultVisningProps {
 }
 
 export const SearchResult = (props: SearchResultVisningProps) => {
+	const [valgtePersoner, setValgtePersoner] = useState([])
+
 	if (!props.searchActive) {
 		return <ContentContainer>Ingen søk er gjort</ContentContainer>
 	}
@@ -30,48 +28,21 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 		return <ContentContainer>Vennligst fyll inn en eller flere verdier å søke på.</ContentContainer>
 	}
 
-	const [showFeedback, setShowFeedback] = useState(props.searchActive)
-
 	const columns = [
 		{
 			text: 'Ident',
-			width: '40',
+			width: '20',
 			dataField: 'personIdent.id',
-			unique: true,
-			formatter: (cell: string, row: Innhold) => (
-				<div className="identnummer-cell">
-					{row.personIdent.id}
-					<CopyToClipboard text={row.personIdent.id}>
-						<Tooltip
-							overlay={'Kopier'}
-							placement="top"
-							destroyTooltipOnHide={true}
-							mouseEnterDelay={0}
-							mouseLeaveDelay={0.1}
-						>
-							<div
-								onClick={event => {
-									event.stopPropagation()
-								}}
-							>
-								{
-									// @ts-ignore
-									<Icon kind="copy" size={15} />
-								}
-							</div>
-						</Tooltip>
-					</CopyToClipboard>
-				</div>
-			)
+			unique: true
 		},
 		{
 			text: 'Type',
-			width: '20',
+			width: '10',
 			dataField: 'personIdent.type'
 		},
 		{
 			text: 'Navn',
-			width: '50',
+			width: '30',
 			dataField: 'navn.fornavn',
 			formatter: (cell: string, row: Innhold) => {
 				return row.navn.fornavn + ' ' + row.navn.slektsnavn
@@ -79,12 +50,12 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 		},
 		{
 			text: 'Kjønn',
-			width: '20',
+			width: '10',
 			dataField: 'personInfo.kjoenn'
 		},
 		{
 			text: 'Alder',
-			width: '30',
+			width: '10',
 			dataField: 'personInfo.datoFoedt',
 			formatter: (cell: Date, row: Innhold) => {
 				const foedselsdato = new Date(row.personInfo.datoFoedt)
@@ -93,6 +64,40 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 
 				return Math.abs(age_dt.getUTCFullYear() - 1970)
 			}
+		},
+		{
+			text: 'Velg alle',
+			width: '15',
+			dataField: 'velg',
+			headerFormatter: (text: string, data: Array<Innhold>) => {
+				return (
+					<Button
+						onClick={() => {
+							const alleValgtPaaSiden = data.every(person =>
+								valgtePersoner.includes(person.personIdent.id)
+							)
+							alleValgtPaaSiden
+								? setValgtePersoner(
+										valgtePersoner.filter(
+											personId => !data.some(person => person.personIdent.id === personId)
+										)
+								  )
+								: setValgtePersoner(
+										valgtePersoner.concat(data.map(person => person.personIdent.id))
+								  )
+						}}
+					>
+						{text}
+					</Button>
+				)
+			},
+			formatter: (cell: any, row: Innhold) => (
+				<VelgPerson
+					personinfo={row}
+					valgtePersoner={valgtePersoner}
+					setValgtePersoner={setValgtePersoner}
+				/>
+			)
 		}
 	]
 
@@ -100,41 +105,23 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 		<LoadableComponent
 			onFetch={() => HodejegerenApi.soek(props.soekOptions, props.antallResultat)}
 			render={(data: Array<Innhold>) => {
-				return (
-					<div>
-						{!data ? (
-							<ContentContainer>Søket gav ingen resultater.</ContentContainer>
-						) : (
-							<DollyTable
-								data={data}
-								columns={columns}
-								pagination
-								iconItem={(bruker: Innhold) =>
-									bruker.personInfo.kjoenn === 'M' ? <ManIconItem /> : <WomanIconItem />
-								}
-								onExpand={(bruker: Innhold) => (
-									<ResultatVisningConnecter personId={bruker.personIdent.id} data={bruker} />
-								)}
-							/>
-						)}
-						{showFeedback && (
-							<div className="feedback-container">
-								<div className="feedback-container__close-button">
-									<Button
-										kind="remove-circle"
-										onClick={() =>
-											// @ts-ignore
-											setShowFeedback(false)
-										}
-									/>
-								</div>
-								<Feedback
-									label="Hvordan var din opplevelse med bruk av Søk i Mini-Norge?"
-									feedbackFor="Bruk av Søk i Mini Norge"
-								/>
-							</div>
-						)}
-					</div>
+				return !data ? (
+					<ContentContainer>Søket gav ingen resultater.</ContentContainer>
+				) : (
+					<>
+						<DollyTable
+							data={data}
+							columns={columns}
+							pagination
+							iconItem={(bruker: Innhold) =>
+								bruker.personInfo.kjoenn === 'M' ? <ManIconItem /> : <WomanIconItem />
+							}
+							onExpand={(bruker: Innhold) => (
+								<ResultatVisningConnecter personId={bruker.personIdent.id} data={bruker} />
+							)}
+						/>
+						<ImportTilDolly valgtePersoner={valgtePersoner} />
+					</>
 				)
 			}}
 		/>

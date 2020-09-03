@@ -119,6 +119,14 @@ const selectOptions: SelectOptions = {
 		{ value: 'VARIG', label: 'VARIG - Varig tilpasset innsats' }
 	],
 
+	//KRRSTUB
+	spraaktype: [
+		{ value: 'nb', label: 'Norsk Bokmål' },
+		{ value: 'nn', label: 'Norsk Nynorsk' },
+		{ value: 'en', label: 'Engelsk' },
+		{ value: 'se', label: 'Nordsamisk' }
+	],
+
 	// INST
 	institusjonstype: [
 		{ value: 'AS', label: 'Alders- og sykehjem' },

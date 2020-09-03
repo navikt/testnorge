@@ -9,7 +9,7 @@ const uri = `${config.services.dollyBackend}`
 export const SelectOptionsOppslag = {
 	hentOrgnr: () => Api.fetchJson(`${uri}/orgnummer`, { method: 'GET' }),
 
-	hentLeger: () => Api.fetchJson(`${uri}/helsepersonell/leger`, 'GET'),
+	hentLeger: () => Api.fetchJson(`${uri}/helsepersonell/leger`, { method: 'GET' }),
 
 	hentPersonnavn: () => {
 		const navnInfo = useAsync(async () => {
@@ -52,6 +52,22 @@ export const SelectOptionsOppslag = {
 			return response
 		}, [BrregstubApi.getUnderstatus])
 		return understatusInfo
+	},
+
+	hentDokumentFraJoark: () => {
+		const dokument = useAsync(async () => {
+			const response = await DollyApi.getDokarkivDokument()
+			return response
+		}, [DollyApi.getDokarkivDokument])
+		return dokument
+	},
+
+	hentMetadataFraJoark: () => {
+		const metadata = useAsync(async () => {
+			const response = await DollyApi.getDokarkivMetadata()
+			return response
+		}, [DollyApi.getDokarkivMetadata])
+		return metadata
 	}
 }
 
