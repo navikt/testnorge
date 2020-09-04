@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class KubernetesController {
 
-    private static final int TIMEOUT = 180_000;
+    private static final int TIMEOUT = 240_000;
     private final String GROUP = "nais.io";
     private final String VERSION = "v1alpha1";
     private final String NAMESPACE = "q2";
