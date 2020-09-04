@@ -1,8 +1,6 @@
 import { createActions } from 'redux-actions'
 import { LOCATION_CHANGE } from 'connected-react-router'
 import _get from 'lodash/get'
-import _set from 'lodash/set'
-import _merge from 'lodash/merge'
 import _last from 'lodash/last'
 import _isEmpty from 'lodash/isEmpty'
 import {
@@ -308,12 +306,15 @@ export const sokSelector = (items, searchStr) => {
 
 	const query = searchStr.toLowerCase()
 	return items.filter(item => {
-		return Object.values(item).some(v =>
-			v
+		return Object.values(item).some(v => {
+			if (v == null) {
+				v = ''
+			}
+			return v
 				.toString()
 				.toLowerCase()
 				.includes(query)
-		)
+		})
 	})
 }
 
