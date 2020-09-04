@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.saf.domain;
+package no.nav.dolly.consumer.saf.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

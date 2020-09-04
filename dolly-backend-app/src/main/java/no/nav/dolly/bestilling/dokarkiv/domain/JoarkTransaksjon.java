@@ -13,6 +13,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class JoarkTransaksjon {
 
-    private Long journalpostId;
+    private String journalpostId;
     private String dokumentInfoId;
 }

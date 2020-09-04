@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.saf;
+package no.nav.dolly.consumer.saf;
 
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
@@ -13,7 +13,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -31,8 +30,8 @@ import com.google.common.io.CharStreams;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.saf.domain.SafRequest;
 import no.nav.dolly.consumer.pdlperson.GraphQLRequest;
+import no.nav.dolly.consumer.saf.domain.SafRequest;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.dolly.security.sts.StsOidcService;
@@ -54,24 +53,13 @@ public class SafConsumer {
     @Timed(name = "providers", tags = { "operation", "hent-inntektsmelding-dokumentinfo" })
     public List<JsonNode> getInntektsmeldingDokumentinfo(String environment, SafRequest request) {
 
-        String callId = getNavCallId();
-        log.info("Dokarkiv melding sendt, callId: {}, consumerId: {}, miljø: {}", callId, CONSUMER, environment);
-
-        ResponseEntity<JsonNode> node = sendJoarkMetadataQuery(environment, Long.decode(request.getJournalpostId()), "saf/safquery-inntektsmelding.graphql");
-
-        ResponseEntity<String> xml = restTemplate.exchange(
-                RequestEntity.get(URI.create(String.format("%s%s", providersProps.getJoark().getUrl().replace("$", environment),
-                        String.format("%s/%s/%s/%s", SAF_URL, request.getJournalpostId(), request.getDokumentInfoId(), request.getVariantFormat()))))
-                        .header(AUTHORIZATION, stsOidcService.getIdToken(environment.contains(PREPROD_ENV) ? PREPROD_ENV : TEST_ENV))
-                        .header(HEADER_NAV_CALL_ID, callId)
-                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER).build(),
-                String.class);
-
-        return getSamletDokumentinfo(node, xml);
+        return getSamletDokumentinfo(
+                sendJoarkMetadataQuery(environment, request.getJournalpostId(), "saf/safquery-inntektsmelding.graphql"),
+                sendJoarkDokumentQuery(environment, request));
     }
 
     @Timed(name = "providers", tags = { "operation", "hent-dokarkiv-dokumentinfo" })
-    public ResponseEntity<JsonNode> getDokarkivDokumentinfo(String environment, Long journalpostId) {
+    public ResponseEntity<JsonNode> getDokarkivDokumentinfo(String environment, String journalpostId) {
 
         return sendJoarkMetadataQuery(environment, journalpostId, "saf/safquery-dokarkiv.graphql");
     }
@@ -92,9 +80,21 @@ public class SafConsumer {
         return samletJson;
     }
 
-    private ResponseEntity<JsonNode> sendJoarkMetadataQuery(String environment, Long journalpostId, String graphqlFile) {
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("journalpostId", journalpostId);
+    private ResponseEntity<String> sendJoarkDokumentQuery(String environment, SafRequest request) {
+
+        String callId = getNavCallId();
+        log.info("SafDokumentRequest melding sendt, callId: {}, consumerId: {}, miljø: {}", callId, CONSUMER, environment);
+
+        return restTemplate.exchange(
+                RequestEntity.get(URI.create(String.format("%s%s/%s/%s/%s", providersProps.getJoark().getUrl(), SAF_URL,
+                        request.getJournalpostId(), request.getDokumentInfoId(), request.getVariantFormat()).replace("$", environment)))
+                        .header(AUTHORIZATION, stsOidcService.getIdToken(environment.contains(PREPROD_ENV) ? PREPROD_ENV : TEST_ENV))
+                        .header(HEADER_NAV_CALL_ID, callId)
+                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER).build(),
+                String.class);
+    }
+
+    private ResponseEntity<JsonNode> sendJoarkMetadataQuery(String environment, String journalpostId, String graphqlFile) {
 
         String query = null;
         InputStream queryStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(graphqlFile);
@@ -107,14 +107,14 @@ public class SafConsumer {
 
         GraphQLRequest graphQLRequest = GraphQLRequest.builder()
                 .query(query)
-                .variables(variables)
+                .variables(Map.of("journalpostId", journalpostId))
                 .build();
 
         String callId = getNavCallId();
         log.info("SafMetadataRequest sendt, callId: {}, consumerId: {}, miljø: {}", callId, CONSUMER, environment);
 
         return restTemplate.exchange(
-                RequestEntity.post(URI.create(String.format("%s%s", providersProps.getJoark().getUrl().replace("$", "q1"),
+                RequestEntity.post(URI.create(String.format("%s%s", providersProps.getJoark().getUrl().replace("$", environment),
                         SAF_GRAPHQL_URL)))
                         .header(AUTHORIZATION, stsOidcService.getIdToken(environment.contains(PREPROD_ENV) ? PREPROD_ENV : TEST_ENV))
                         .header(HEADER_NAV_CALL_ID, callId)
