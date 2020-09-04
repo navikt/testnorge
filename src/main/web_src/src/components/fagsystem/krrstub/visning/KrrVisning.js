@@ -12,7 +12,7 @@ export const Visning = ({ data }) => {
 			<TitleValue title="E-post" value={data.epost} />
 			<TitleValue
 				title="Språk"
-				value={Formatters.showLabel('spraaktype', data.spraak.replace(' ', ''))}
+				value={data.spraak && Formatters.showLabel('spraaktype', data.spraak.replace(' ', ''))}
 			/>
 			<TitleValue
 				title="Reservert mot digitalkommunikasjon"
