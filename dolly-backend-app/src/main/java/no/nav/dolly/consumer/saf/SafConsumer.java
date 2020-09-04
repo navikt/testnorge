@@ -82,14 +82,11 @@ public class SafConsumer {
 
     private ResponseEntity<String> sendJoarkDokumentQuery(String environment, SafRequest request) {
 
-        String callId = getNavCallId();
-        log.info("SafDokumentRequest melding sendt, callId: {}, consumerId: {}, miljø: {}", callId, CONSUMER, environment);
-
         return restTemplate.exchange(
-                RequestEntity.get(URI.create(String.format("%s%s/%s/%s/%s", providersProps.getJoark().getUrl(), SAF_URL,
-                        request.getJournalpostId(), request.getDokumentInfoId(), request.getVariantFormat()).replace("$", environment)))
+                RequestEntity.get(URI.create(String.format("%s%s/%s/%s/%s", providersProps.getJoark().getUrl().replace("$", environment), SAF_URL,
+                        request.getJournalpostId(), request.getDokumentInfoId(), request.getVariantFormat())))
                         .header(AUTHORIZATION, stsOidcService.getIdToken(environment.contains(PREPROD_ENV) ? PREPROD_ENV : TEST_ENV))
-                        .header(HEADER_NAV_CALL_ID, callId)
+                        .header(HEADER_NAV_CALL_ID, getNavCallId("SafDokumentRequest", environment))
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER).build(),
                 String.class);
     }
@@ -110,21 +107,21 @@ public class SafConsumer {
                 .variables(Map.of("journalpostId", journalpostId))
                 .build();
 
-        String callId = getNavCallId();
-        log.info("SafMetadataRequest sendt, callId: {}, consumerId: {}, miljø: {}", callId, CONSUMER, environment);
-
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(String.format("%s%s", providersProps.getJoark().getUrl().replace("$", environment),
                         SAF_GRAPHQL_URL)))
                         .header(AUTHORIZATION, stsOidcService.getIdToken(environment.contains(PREPROD_ENV) ? PREPROD_ENV : TEST_ENV))
-                        .header(HEADER_NAV_CALL_ID, callId)
+                        .header(HEADER_NAV_CALL_ID, getNavCallId("SafMetadataRequest", environment))
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(graphQLRequest),
                 JsonNode.class);
     }
 
-    private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID().toString());
+    private static String getNavCallId(String message, String environment) {
+
+        String callId = format("%s %s", CONSUMER, UUID.randomUUID().toString());
+        log.info("{} sendt, callId: {}, consumerId: {}, miljø: {}", message, callId, CONSUMER.replaceAll("[\r\n]",""), environment);
+        return callId;
     }
 }
