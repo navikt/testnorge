@@ -43,8 +43,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
         if (nonNull(bestilling.getTpsf()) && nonNull(bestilling.getTpsf().getEgenAnsattDatoFom())) {
 
             StringBuilder status = new StringBuilder();
-            tpsPerson.getPersondetaljer().forEach(person -> {
-
+            for (Person person : tpsPerson.getPersondetaljer()) {
                 try {
                     SkjermingsDataRequest skjermingsDataRequest = mapperFacade.map(BestillingPersonWrapper.builder()
                             .bestilling(bestilling.getTpsf())
@@ -59,8 +58,9 @@ public class SkjermingsRegisterClient implements ClientRegister {
                 } catch (RuntimeException e) {
                     status.append(errorStatusDecoder.decodeRuntimeException(e));
                     log.error("Feilet å skjerme person med ident: {}", person.getIdent(), e);
+                    break;
                 }
-            });
+            }
             progress.setSkjermingsregisterStatus(isNotBlank(status) ? status.toString() : "OK");
         }
     }
