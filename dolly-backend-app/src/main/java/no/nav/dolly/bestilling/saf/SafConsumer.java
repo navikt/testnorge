@@ -84,7 +84,7 @@ public class SafConsumer {
             }
             if (xml.hasBody()) {
                 XmlMapper xmlMapper = new XmlMapper();
-                samletJson.add((xmlMapper.readTree(requireNonNull(xml.getBody()).getBytes())));
+                samletJson.add(xmlMapper.readTree(xml.getBody()));
             }
         } catch (IOException e) {
             log.error("Json samling av dokument og metadata feilet: " + e);
