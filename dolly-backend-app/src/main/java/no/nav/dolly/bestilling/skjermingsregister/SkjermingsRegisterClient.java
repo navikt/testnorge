@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.skjermingsregister;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.List;
 
@@ -42,8 +43,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
         if (nonNull(bestilling.getTpsf()) && nonNull(bestilling.getTpsf().getEgenAnsattDatoFom())) {
 
             StringBuilder status = new StringBuilder();
-            tpsPerson.getPersondetaljer().forEach(person -> {
-
+            for (Person person : tpsPerson.getPersondetaljer()) {
                 try {
                     SkjermingsDataRequest skjermingsDataRequest = mapperFacade.map(BestillingPersonWrapper.builder()
                             .bestilling(bestilling.getTpsf())
@@ -55,13 +55,13 @@ public class SkjermingsRegisterClient implements ClientRegister {
                     } else if (!isAlleredeSkjermet(person) && isNull(bestilling.getTpsf().getEgenAnsattDatoTom())) {
                         skjermingsRegisterConsumer.postSkjerming(List.of(skjermingsDataRequest));
                     }
-                    status.append("OK");
                 } catch (RuntimeException e) {
                     status.append(errorStatusDecoder.decodeRuntimeException(e));
                     log.error("Feilet å skjerme person med ident: {}", person.getIdent(), e);
+                    break;
                 }
-            });
-            progress.setSkjermingsregisterStatus(status.toString());
+            }
+            progress.setSkjermingsregisterStatus(isNotBlank(status) ? status.toString() : "OK");
         }
     }
 
