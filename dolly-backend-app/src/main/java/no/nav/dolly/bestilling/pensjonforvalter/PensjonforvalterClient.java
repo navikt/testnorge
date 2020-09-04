@@ -8,6 +8,7 @@ import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeErrorStatus;
 
 import java.util.List;
 import java.util.Set;
+
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;

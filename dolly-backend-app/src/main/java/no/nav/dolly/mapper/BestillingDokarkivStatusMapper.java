@@ -31,7 +31,7 @@ public final class BestillingDokarkivStatusMapper {
                 newArrayList(progress.getDokarkivStatus().split(",")).forEach(status -> {
                     String[] environErrMsg = status.split(":", 2);
                     String environ = environErrMsg[0];
-                    String errMsg = environErrMsg.length > 1 ? environErrMsg[1].trim().replaceAll("&", ",") : "";
+                    String errMsg = environErrMsg.length > 1 ? environErrMsg[1].trim().replace('&', ',') : "";
                     checkAndUpdateStatus(statusEnvIdents, progress.getIdent(), environ, errMsg);
                 });
             }

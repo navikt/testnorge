@@ -4,6 +4,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -62,7 +63,7 @@ public class DokarkivClient implements ClientRegister {
                     try {
                         ResponseEntity<DokarkivResponse> response = dokarkivConsumer.postDokarkiv(environment, dokarkivRequest);
                         if (response.hasBody()) {
-                            status.append(',')
+                            status.append(isNotBlank(status) ? ',' : "")
                                     .append(environment)
                                     .append(":OK");
 
@@ -71,7 +72,7 @@ public class DokarkivClient implements ClientRegister {
 
                     } catch (RuntimeException e) {
 
-                        status.append(',')
+                        status.append(isNotBlank(status) ? ',' : "")
                                 .append(environment)
                                 .append(':')
                                 .append(errorStatusDecoder.decodeRuntimeException(e));
@@ -81,7 +82,7 @@ public class DokarkivClient implements ClientRegister {
                     }
                 }
             });
-            progress.setDokarkivStatus(status.length() > 0 ? status.substring(1) : null);
+            progress.setDokarkivStatus(status.toString());
         }
     }
 

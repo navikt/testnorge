@@ -165,6 +165,10 @@
             <groupId>no.nav.freg</groupId>
             <artifactId>metrics-spring</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

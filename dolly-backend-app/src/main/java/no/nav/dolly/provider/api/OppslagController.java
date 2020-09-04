@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
@@ -35,6 +37,9 @@ import no.nav.dolly.consumer.identpool.IdentpoolConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.consumer.saf.SafConsumer;
+import no.nav.dolly.consumer.saf.domain.SafRequest;
+import no.nav.dolly.consumer.saf.domain.SafRequest.VariantFormat;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
@@ -59,6 +64,7 @@ public class OppslagController {
     private final InntektsmeldingEnumService inntektsmeldingEnumService;
     private final TransaksjonMappingService transaksjonMappingService;
     private final HelsepersonellConsumer helsepersonellConsumer;
+    private final SafConsumer safConsumer;
 
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
@@ -156,5 +162,19 @@ public class OppslagController {
             @ApiParam(value = "En ID som identifiserer en bestilling mot Dolly") @RequestParam(required = false) Long bestillingId) {
 
         return transaksjonMappingService.getTransaksjonMapping(system, ident, bestillingId);
+    }
+
+    @GetMapping("/inntektsmelding/{journalpostId}/{dokumentInfoId}")
+    @ApiOperation(value = "Henter dokumentinformasjon for inntektsmelding fra Joark", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    public List<JsonNode> getInntektsmeldingDokumentinfo(@PathVariable String journalpostId, @PathVariable String dokumentInfoId,
+            @RequestParam VariantFormat variantFormat,
+            @RequestParam String miljoe) {
+        return safConsumer.getInntektsmeldingDokumentinfo(miljoe, new SafRequest(dokumentInfoId, journalpostId, variantFormat.name()));
+    }
+
+    @GetMapping("/dokarkiv/{journalpostId}")
+    @ApiOperation(value = "Henter dokumentinformasjon for dokarkiv fra Joark", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    public ResponseEntity<JsonNode> getDokarkivDokumentinfo(@PathVariable String journalpostId, @RequestParam(required = false) String miljoe) {
+        return safConsumer.getDokarkivDokumentinfo(miljoe, journalpostId);
     }
 }

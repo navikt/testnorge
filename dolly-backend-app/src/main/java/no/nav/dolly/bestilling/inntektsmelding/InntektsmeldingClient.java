@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.inntektsmelding;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -53,7 +54,7 @@ public class InntektsmeldingClient implements ClientRegister {
                         inntektsmeldingRequest, progress.getBestillingId(), status);
             });
 
-            progress.setInntektsmeldingStatus(status.length() > 1 ? status.substring(1) : null);
+            progress.setInntektsmeldingStatus(status.toString());
         }
     }
 
@@ -84,13 +85,13 @@ public class InntektsmeldingClient implements ClientRegister {
                 }
             }
 
-            status.append(',')
+            status.append(isNotBlank(status) ? ',' : "")
                     .append(inntektsmeldingRequest.getMiljoe())
                     .append(":OK");
 
         } catch (RuntimeException re) {
 
-            status.append(',')
+            status.append(isNotBlank(status) ? ',' : "")
                     .append(inntektsmeldingRequest.getMiljoe())
                     .append(':')
                     .append(errorStatusDecoder.decodeRuntimeException(re));

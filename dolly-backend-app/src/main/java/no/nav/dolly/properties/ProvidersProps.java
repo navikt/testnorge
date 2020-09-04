@@ -39,6 +39,7 @@ public class ProvidersProps {
     private SkjermingsRegister skjermingsRegister = new SkjermingsRegister();
     private DetaljertSykemelding detaljertSykemelding = new DetaljertSykemelding();
     private Helsepersonell helsepersonell = new Helsepersonell();
+    private Joark joark = new Joark();
 
     @Getter
     @Setter
@@ -275,6 +276,16 @@ public class ProvidersProps {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Helsepersonell {
+
+        private String url;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Joark {
 
         private String url;
     }
