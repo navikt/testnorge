@@ -2,12 +2,15 @@ package no.nav.dolly.bestilling.inntektsmelding;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -51,7 +54,7 @@ public class InntektsmeldingClient implements ClientRegister {
                         inntektsmeldingRequest, status);
             });
 
-            progress.setInntektsmeldingStatus(status.length() > 1 ? status.substring(1) : null);
+            progress.setInntektsmeldingStatus(status.toString());
         }
     }
 
@@ -70,26 +73,24 @@ public class InntektsmeldingClient implements ClientRegister {
                 if (response.hasBody()) {
                     transaksjonMappingService.saveAll(
                             response.getBody().getDokumenter().stream()
-                                    .map(dokument ->
-                                            TransaksjonMapping.builder()
-                                                    .ident(inntektsmeldingRequest.getArbeidstakerFnr())
-                                                    .transaksjonId(toJson(dokument))
-                                                    .datoEndret(LocalDateTime.now())
-                                                    .miljoe(inntektsmeldingRequest.getMiljoe())
-                                                    .system(INNTKMELD.name())
-                                                    .build())
-                                    .collect(Collectors.toList())
-                    );
+                                    .map(dokument -> TransaksjonMapping.builder()
+                                            .ident(inntektsmeldingRequest.getArbeidstakerFnr())
+                                            .transaksjonId(toJson(dokument))
+                                            .datoEndret(LocalDateTime.now())
+                                            .miljoe(inntektsmeldingRequest.getMiljoe())
+                                            .system(INNTKMELD.name())
+                                            .build())
+                                    .collect(Collectors.toList()));
                 }
             }
 
-            status.append(',')
+            status.append(isNotBlank(status) ? ',' : "")
                     .append(inntektsmeldingRequest.getMiljoe())
                     .append(":OK");
 
         } catch (RuntimeException re) {
 
-            status.append(',')
+            status.append(isNotBlank(status) ? ',' : "")
                     .append(inntektsmeldingRequest.getMiljoe())
                     .append(':')
                     .append(errorStatusDecoder.decodeRuntimeException(re));

@@ -1,0 +1,15 @@
+{
+  "name": "saf-api",
+  "schemaPath": "saf-api-sdl.graphqls",
+  "extensions": {
+    "endpoints": {
+      "SAF GraphQL Endpoint": {
+        "url": "https://saf-q1.nais.preprod.local/graphql",
+        "headers": {
+          "user-agent": ""
+        },
+        "introspect": false
+      }
+    }
+  }
+}
