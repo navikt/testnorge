@@ -121,7 +121,7 @@ public class SafConsumer {
     private static String getNavCallId(String message, String environment) {
 
         String callId = format("%s %s", CONSUMER, UUID.randomUUID().toString());
-        log.info("{} sendt, callId: {}, consumerId: {}, miljø: {}", message, callId, CONSUMER.replaceAll("[\r\n]",""), environment);
+        log.info("{} sendt, callId: {}, consumerId: {}, miljø: {}", message, callId, CONSUMER, environment);
         return callId;
     }
 }
