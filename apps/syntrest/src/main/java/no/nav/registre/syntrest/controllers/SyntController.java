@@ -204,8 +204,9 @@ public class SyntController {
     ) {
         InputValidator.validateInput(numToGenerate);
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.MELDEGRUPPE, meldegruppe);
-        String url = Objects.isNull(arbeidstimer) ? arenaMeldekortUrl :
-                arenaMeldekortUrl + "?arbeidstimer=" + arbeidstimer;
+        String url = Objects.isNull(arbeidstimer)
+                ? arenaMeldekortUrl
+                : arenaMeldekortUrl + "?arbeidstimer=" + arbeidstimer;
 
         List<String> response = (List<String>)
                 meldekortConsumer.synthesizeData(UriExpander.createRequestEntity(url, meldegruppe, numToGenerate));
