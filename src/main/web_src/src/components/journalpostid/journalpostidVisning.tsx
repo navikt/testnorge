@@ -18,31 +18,44 @@ type Response = {
 
 export default ({ system, ident }: JournalpostId) => (
 	<LoadableComponent
-		onFetch={() =>
-			DollyApi.getTransaksjonid(system, ident).then(
-				({ data }): Array<Response> =>
-					data.map((id: Response) => ({
-						transaksjonId: id.transaksjonId,
-						miljoe: id.miljoe.toUpperCase()
-					}))
+		onFetch={() => {
+			try {
+				return DollyApi.getTransaksjonid(system, ident).then(
+					({ data }): Array<Response> =>
+						data.map((id: Response) => ({
+							transaksjonId: id.transaksjonId,
+							miljoe: id.miljoe.toUpperCase()
+						}))
+				)
+			} catch (error) {}
+		}}
+		render={(data: Array<Response>, feilmelding) => {
+			if (feilmelding != null) {
+				return (
+					<DollyFieldArray data={feilmelding} header="Feil" nested>
+						<div>
+							<TitleValue title="Feilmelding" value={feilmelding} />
+						</div>
+					</DollyFieldArray>
+				)
+			}
+			return (
+				data &&
+				data.length > 0 && (
+					<DollyFieldArray data={data} header="Journalpost-Id" nested>
+						{(id: Response, idx: number) => {
+							const transaksjonId = JSON.parse(id.transaksjonId)
+							return (
+								<div key={idx} className="person-visning_content">
+									<TitleValue title="Miljø" value={id.miljoe} />
+									<TitleValue title="Journalpost-id" value={transaksjonId.journalpostId} />
+									<TitleValue title="Dokumentinfo-id" value={transaksjonId.dokumentInfoId} />
+								</div>
+							)
+						}}
+					</DollyFieldArray>
+				)
 			)
-		}
-		render={(data: Array<Response>) =>
-			data &&
-			data.length > 0 && (
-				<DollyFieldArray data={data} header="Journalpost-Id" nested>
-					{(id: Response, idx: number) => {
-						const transaksjonId = JSON.parse(id.transaksjonId)
-						return (
-							<div key={idx} className="person-visning_content">
-								<TitleValue title="Miljø" value={id.miljoe} />
-								<TitleValue title="Journalpost-id" value={transaksjonId.journalpostId} />
-								<TitleValue title="Dokumentinfo-id" value={transaksjonId.dokumentInfoId} />
-							</div>
-						)
-					}}
-				</DollyFieldArray>
-			)
-		}
+		}}
 	/>
 )
