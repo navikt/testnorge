@@ -1,13 +1,17 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnorge-synt-person-api-prod
+  name: testnorge-synt-person-api
   namespace: dolly
   labels:
     team: dolly
 spec:
   image: {{ image }}
+  azure:
+    application:
+      enabled: true
   port: 8080
+  webproxy: true
   liveness:
     path: /internal/isAlive
     initialDelay: 4

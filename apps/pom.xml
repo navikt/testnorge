@@ -54,6 +54,11 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <artifactId>testnorge-oauth2</artifactId>
+                <groupId>no.nav.registre.testnorge</groupId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <artifactId>testnorge-testing</artifactId>
                 <groupId>no.nav.registre.testnorge</groupId>
                 <version>${project.version}</version>

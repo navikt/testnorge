@@ -11,13 +11,16 @@ import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.SecurityScheme;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -41,6 +44,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .paths(PathSelectors.ant("/api/**"))
                 .build()
                 .apiInfo(apiInfo())
+                .securitySchemes(securitySchemes())
                 .produces(contentTypeJson)
                 .consumes(contentTypeJson)
                 .useDefaultResponseMessages(false);
@@ -56,9 +60,14 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .build();
     }
 
+    private static List<? extends SecurityScheme> securitySchemes() {
+        return Collections.singletonList(new ApiKey("Bearer", "Authorization", "header"));
+    }
+
+
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/api").setViewName("redirect:/swagger-ui.html");
+        registry.addViewController("/swagger").setViewName("redirect:/swagger-ui.html");
     }
 }

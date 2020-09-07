@@ -1,10 +1,14 @@
 package no.nav.registre.orkestratoren.consumer;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.MediaType;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
+import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Objects;
 import java.util.Set;
@@ -13,31 +17,53 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import no.nav.registre.orkestratoren.consumer.command.GetPersonCommand;
+import no.nav.registre.orkestratoren.consumer.credential.PersonApiClientCredential;
+import no.nav.registre.testnorge.common.command.GetPersonCommand;
 import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
+import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 
 @Slf4j
 @Component
 @DependencyOn("person-api")
 public class PersonConsumer {
-
-    private final RestTemplate restTemplate;
-    private final String url;
+    private final WebClient webClient;
+    private final ClientCredential clientCredential;
+    private final AccessTokenService accessTokenService;
     private final Executor executor;
 
     public PersonConsumer(
-            RestTemplateBuilder restTemplateBuilder,
-            @Value("${consumers.person.url}") String url,
-            @Value("${consumers.person.threads}") Integer threads
+            @Value("${consumers.person.url}") String baseUrl,
+            ObjectMapper objectMapper, @Value("${consumers.person.threads}") Integer threads,
+            PersonApiClientCredential clientCredential,
+            AccessTokenService accessTokenService
     ) {
-        this.restTemplate = restTemplateBuilder.build();
-        this.url = url;
+        this.clientCredential = clientCredential;
+        this.accessTokenService = accessTokenService;
+        ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
+                .codecs(config -> {
+                    config.defaultCodecs()
+                            .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper, MediaType.APPLICATION_JSON));
+                    config.defaultCodecs()
+                            .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
+                }).build();
+
+        this.webClient = WebClient
+                .builder()
+                .exchangeStrategies(jacksonStrategy)
+                .baseUrl(baseUrl)
+                .build();
         this.executor = Executors.newFixedThreadPool(threads);
     }
 
     private CompletableFuture<PersonDTO> getPerson(String ident) {
-        return CompletableFuture.supplyAsync(() -> new GetPersonCommand(restTemplate, url, ident).call(), executor);
+        AccessToken accessToken = accessTokenService.generateToken(clientCredential);
+        return CompletableFuture.supplyAsync(
+                () -> new GetPersonCommand(webClient, ident, accessToken.getTokenValue()).call(),
+                executor
+        );
     }
 
     public Set<PersonDTO> getPersoner(Set<String> identer) {

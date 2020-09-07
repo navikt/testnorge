@@ -50,10 +50,10 @@ import no.nav.registre.testnorge.test.JsonWiremockHelper;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureWireMock(port = 0)
-@AutoConfigureMockMvc
 @TestPropertySource(
         locations = "classpath:application-test.properties"
 )
+@AutoConfigureMockMvc(addFilters = false)
 public class PersonControllerIntegrationTest {
 
     @Autowired

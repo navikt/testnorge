@@ -2,12 +2,16 @@ apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: testnorge-person-api
-  namespace: t2
+  namespace: dolly
   labels:
     team: dolly
 spec:
   image: {{ image }}
   port: 8080
+  webproxy: true
+  azure:
+    application:
+      enabled: true
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -31,5 +35,4 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://testnorge-person-api-t2.nais.preprod.local"
-    - "https://testnorge-person-api-t2.dev.adeo.no"
+    - "https://testnorge-person-api.dev.adeo.no"

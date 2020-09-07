@@ -22,7 +22,7 @@ public class PersonService {
 
             for (var ident : identer) {
                 try {
-                    personConsumer.leggTilIdentIPdl(PersonDTO.builder().ident(ident).build());
+                    personConsumer.createPerson(PersonDTO.builder().ident(ident).build());
                 } catch (HttpStatusCodeException e) {
                     log.error("Kunne ikke legge følgende ident til i PDL: {}", ident, e);
                 }
