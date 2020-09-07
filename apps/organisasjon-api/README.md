@@ -2,7 +2,7 @@
 API for organsiasjoner.
 
 ### Swagger
-Swagger finnes under [/api](https://testnorge-organisasjon-api.nais.preprod.local/api) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnorge-organisasjon-api.nais.preprod.local/swagger) -endepunktet til applikasjonen.
 
 ### Lokal kjøring
 Kjør OrganisasjonApiApplicationStarter med følgende argumenter:
