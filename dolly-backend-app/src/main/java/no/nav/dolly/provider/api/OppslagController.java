@@ -40,11 +40,11 @@ import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.consumer.saf.SafConsumer;
 import no.nav.dolly.consumer.saf.domain.SafRequest;
 import no.nav.dolly.consumer.saf.domain.SafRequest.VariantFormat;
-import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import no.nav.dolly.service.InntektsmeldingEnumService;
 import no.nav.dolly.service.InntektsmeldingEnumService.EnumTypes;
+import no.nav.dolly.service.RsTransaksjonMapping;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
 
@@ -157,7 +157,7 @@ public class OppslagController {
 
     @GetMapping("/transaksjonid")
     @ApiOperation(value = "Henter transaksjon IDer for ident og bestillingId", authorizations = { @Authorization(value = "Bearer token fra bruker") })
-    public List<TransaksjonMapping> getTransaksjonIderIdent(@ApiParam(value = "System kan hentes ut fra /api/v1/systemer") @RequestParam(required = false) String system,
+    public List<RsTransaksjonMapping> getTransaksjonIderIdent(@ApiParam(value = "System kan hentes ut fra /api/v1/systemer") @RequestParam(required = false) String system,
             @ApiParam(value = "Ident (f.eks FNR) på person knyttet til en bestilling") @RequestParam(required = false) String ident,
             @ApiParam(value = "En ID som identifiserer en bestilling mot Dolly") @RequestParam(required = false) Long bestillingId) {
 
