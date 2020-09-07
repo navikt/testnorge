@@ -4,17 +4,17 @@ import _get from 'lodash/get'
 import _last from 'lodash/last'
 import _isEmpty from 'lodash/isEmpty'
 import {
-	DollyApi,
-	TpsfApi,
-	SigrunApi,
-	KrrApi,
-	ArenaApi,
-	InstApi,
-	UdiApi,
-	PensjonApi,
 	AaregApi,
+	ArenaApi,
+	BrregstubApi,
+	DollyApi,
 	InntektstubApi,
-	BrregstubApi
+	InstApi,
+	KrrApi,
+	PensjonApi,
+	SigrunApi,
+	TpsfApi,
+	UdiApi
 } from '~/service/Api'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { selectIdentById } from '~/ducks/gruppe'
@@ -305,17 +305,14 @@ export const sokSelector = (items, searchStr) => {
 	if (!searchStr) return items
 
 	const query = searchStr.toLowerCase()
-	return items.filter(item => {
-		return Object.values(item).some(v => {
-			if (v == null) {
-				v = ''
-			}
-			return v
+	return items.filter(item =>
+		Object.values(item).some(v =>
+			(v || '')
 				.toString()
 				.toLowerCase()
 				.includes(query)
-		})
-	})
+		)
+	)
 }
 
 const hentPersonStatus = (ident, bestillingStatus) => {
