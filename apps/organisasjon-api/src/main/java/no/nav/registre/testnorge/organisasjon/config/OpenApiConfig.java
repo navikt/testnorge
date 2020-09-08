@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import no.nav.registere.testnorge.core.config.ApplicationProperties;
+
 @Configuration
 public class OpenApiConfig implements WebMvcConfigurer {
 

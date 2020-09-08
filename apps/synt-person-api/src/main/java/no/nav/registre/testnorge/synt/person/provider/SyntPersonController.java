@@ -1,7 +1,5 @@
 package no.nav.registre.testnorge.synt.person.provider;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +15,6 @@ public class SyntPersonController {
     private final SyntPersonService service;
 
     @PostMapping
-    @ApiOperation(value = "Oppretter en syntetisk person", authorizations = @Authorization(value = "Bearer"))
     public ResponseEntity<?> createSyntPerson() {
         service.createSyntPerson();
         return ResponseEntity.ok().build();

@@ -9,11 +9,9 @@ spring:
           #The client_id of this application
           accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
   application:
-    name: person-api
-
-application:
-  version: @application.version@
-  name: person-api
+    version: @application.version@
+    name: synt-person-api
+    desciption: API for opprettelse av personer
 
 system:
   pdl:
