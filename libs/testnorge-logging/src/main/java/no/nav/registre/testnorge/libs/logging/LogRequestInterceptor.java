@@ -21,6 +21,7 @@ public abstract class LogRequestInterceptor extends HandlerInterceptorAdapter {
                 contextMap.put(HttpHeaders.CONTENT_TYPE, request.getContentType());
                 contextMap.put(HttpHeaders.HOST, request.getHeader(HttpHeaders.HOST));
                 contextMap.put(HttpHeaders.ORIGIN, request.getHeader(HttpHeaders.ORIGIN));
+                contextMap.put("URI", request.getRequestURI());
                 MDC.setContextMap(contextMap);
                 log.trace("[Registered request]");
             } catch (Exception e) {
