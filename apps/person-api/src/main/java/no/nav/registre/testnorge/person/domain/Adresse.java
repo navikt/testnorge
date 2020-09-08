@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.Arrays;
 import java.util.List;
 
-import no.nav.registre.testnorge.dto.person.v1.AdresseDTO;
+import no.nav.registre.testnorge.libs.dto.person.v1.AdresseDTO;
 import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.Vegadresse;
 import no.nav.registre.testnorge.person.consumer.dto.tpsf.Boadresse;
 
@@ -42,7 +42,7 @@ public class Adresse {
     }
 
     public AdresseDTO toDto() {
-        return no.nav.registre.testnorge.dto.person.v1.AdresseDTO.builder()
+        return AdresseDTO.builder()
                 .gatenavn(gatenavn)
                 .postnummer(postnummer)
                 .poststed(poststed)

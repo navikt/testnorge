@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.registre.testnorge.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.registre.testnorge.organisasjon.consumer.EregConsumer;
 
 @RestController

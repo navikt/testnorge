@@ -5,7 +5,7 @@ import lombok.Value;
 
 import java.time.LocalDate;
 
-import no.nav.registre.testnorge.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.SyntArbeidsforholdDTO;
 
 @Value

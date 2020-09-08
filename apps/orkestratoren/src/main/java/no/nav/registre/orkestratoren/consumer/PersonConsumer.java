@@ -18,9 +18,9 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import no.nav.registre.orkestratoren.consumer.credential.PersonApiClientCredential;
-import no.nav.registre.testnorge.common.command.GetPersonCommand;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
+import no.nav.registre.testnorge.libs.common.command.GetPersonCommand;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;

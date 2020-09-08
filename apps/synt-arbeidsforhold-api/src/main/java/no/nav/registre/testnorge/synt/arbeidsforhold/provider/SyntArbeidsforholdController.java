@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.registre.testnorge.dto.synt.arbeidsforhold.v1.SyntArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.synt.arbeidsforhold.v1.SyntArbeidsforholdDTO;
 import no.nav.registre.testnorge.synt.arbeidsforhold.service.SyntArbeidsforholdService;
 
 @RestController

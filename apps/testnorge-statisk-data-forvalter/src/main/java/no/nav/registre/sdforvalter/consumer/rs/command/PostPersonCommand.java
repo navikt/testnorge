@@ -9,8 +9,8 @@ import lombok.RequiredArgsConstructor;
 
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 import no.nav.registre.sdforvalter.exception.FeilVedOpprettelseException;
-import no.nav.registre.testnorge.dto.person.v1.AdresseDTO;
-import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
+import no.nav.registre.testnorge.libs.dto.person.v1.AdresseDTO;
+import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
 
 @RequiredArgsConstructor
 public class PostPersonCommand implements Callable<ResponseEntity<String>> {

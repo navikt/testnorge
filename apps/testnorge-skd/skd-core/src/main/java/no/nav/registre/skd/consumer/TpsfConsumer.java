@@ -7,7 +7,7 @@ import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
 import no.nav.registre.skd.consumer.requests.SlettSkdmeldingerRequest;
 import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;

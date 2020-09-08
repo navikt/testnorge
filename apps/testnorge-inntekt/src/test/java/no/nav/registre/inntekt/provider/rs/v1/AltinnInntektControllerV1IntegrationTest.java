@@ -32,7 +32,7 @@ import no.nav.registre.inntekt.consumer.rs.dokmot.dto.RsJoarkMetadata;
 import no.nav.registre.inntekt.provider.rs.requests.AltinnInntektsmeldingRequest;
 import no.nav.registre.inntekt.repository.InntektsmedlingRepository;
 import no.nav.registre.inntekt.repository.model.InntektsmeldingModel;
-import no.nav.registre.testnorge.test.JsonWiremockHelper;
+import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

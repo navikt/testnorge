@@ -15,7 +15,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 
-import no.nav.registere.testnorge.core.config.ApplicationProperties;
+import no.nav.registre.testnorge.libs.core.config.ApplicationProperties;
 
 @Configuration
 @Import(ApplicationProperties.class)

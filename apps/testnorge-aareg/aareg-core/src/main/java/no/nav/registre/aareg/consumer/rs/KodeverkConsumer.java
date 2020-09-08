@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import no.nav.registre.aareg.consumer.rs.response.KodeverkResponse;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
 @DependencyOn(value = "kodeverk", external = true)

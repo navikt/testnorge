@@ -10,7 +10,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.helsepersonell.consumer.command.GetAlleIdenterCommand;
 import no.nav.registre.testnorge.helsepersonell.consumer.command.GetPersondataCommand;
 import no.nav.registre.testnorge.helsepersonell.domain.Persondata;

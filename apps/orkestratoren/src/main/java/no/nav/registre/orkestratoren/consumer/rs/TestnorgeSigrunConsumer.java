@@ -16,7 +16,7 @@ import java.util.List;
 
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteSkattegrunnlagResponse;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
 @DependencyOn("testnorge-sigrun")

@@ -13,7 +13,7 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.List;
 
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
 @DependencyOn("testnorge-tp")

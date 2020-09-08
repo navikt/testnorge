@@ -8,11 +8,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.registere.testnorge.core.config.ApplicationCoreConfig;
-import no.nav.registre.testnorge.database.config.FlywayConfiguration;
-import no.nav.registre.testnorge.database.config.VaultHikariConfiguration;
+import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
+import no.nav.registre.testnorge.libs.database.config.FlywayConfiguration;
+import no.nav.registre.testnorge.libs.database.config.VaultHikariConfiguration;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @EnableJpaAuditing
 @Configuration

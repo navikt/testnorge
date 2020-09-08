@@ -21,7 +21,7 @@ import javax.persistence.TemporalType;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import no.nav.registre.testnorge.dto.rapprtering.v1.EntryStatus;
+import no.nav.registre.testnorge.libs.dto.rapprtering.v1.EntryStatus;
 
 @Entity
 @Table(name = "entry")

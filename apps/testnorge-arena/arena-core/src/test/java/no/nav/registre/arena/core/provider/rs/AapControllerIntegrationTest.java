@@ -18,7 +18,7 @@ import no.nav.registre.arena.core.provider.rs.request.SyntetiserArenaRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
-import no.nav.registre.testnorge.test.JsonWiremockHelper;
+import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 
 import org.junit.Before;
 import org.junit.Test;

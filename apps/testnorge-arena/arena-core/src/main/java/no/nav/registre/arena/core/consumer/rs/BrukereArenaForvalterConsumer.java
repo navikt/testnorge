@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.arena.core.consumer.rs.util.ArbeidssoekerCacheUtil;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyBruker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;

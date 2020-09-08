@@ -26,7 +26,7 @@ import no.nav.registre.sdforvalter.consumer.rs.request.ereg.EregMapperRequest;
 import no.nav.registre.sdforvalter.database.model.EregModel;
 import no.nav.registre.sdforvalter.database.repository.EregRepository;
 import no.nav.registre.sdforvalter.domain.Ereg;
-import no.nav.registre.testnorge.test.JsonWiremockHelper;
+import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

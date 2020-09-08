@@ -22,7 +22,7 @@ import no.nav.registre.inst.consumer.rs.InstSyntetisererenConsumer;
 import no.nav.registre.inst.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Service

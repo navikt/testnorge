@@ -11,8 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
@@ -26,15 +24,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Collections;
 
-import no.nav.registre.testnorge.dto.person.v1.AdresseDTO;
-import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
+import no.nav.registre.testnorge.libs.dto.person.v1.AdresseDTO;
+import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.synt.person.consumer.dto.SyntPersonDTO;
-import no.nav.registre.testnorge.test.JsonWiremockHelper;
+import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 
 
 @RunWith(SpringRunner.class)

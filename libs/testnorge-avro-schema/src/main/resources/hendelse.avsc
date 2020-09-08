@@ -1,7 +1,7 @@
 {
    "type":"record",
    "name":"Hendelse",
-   "namespace":"no.nav.registre.testnorge.avro.hendelse",
+   "namespace":"no.nav.registre.testnorge.libs.avro.hendelse",
    "fields":[
       {
          "name":"ident",

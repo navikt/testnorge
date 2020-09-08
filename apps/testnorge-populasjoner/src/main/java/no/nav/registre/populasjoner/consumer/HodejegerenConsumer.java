@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component

@@ -19,7 +19,7 @@ import java.util.Set;
 import no.nav.registre.orkestratoren.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.orkestratoren.consumer.utils.PersondokumentConverter;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component

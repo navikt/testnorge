@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.tp.Forhold;
 import no.nav.registre.tp.FulltForhold;
 import no.nav.registre.tp.IdentMedData;

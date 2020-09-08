@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.orkestratoren.consumer.ArbeidsforholdConsumer;
 import no.nav.registre.orkestratoren.consumer.SyntSykemeldingConsumer;
-import no.nav.registre.testnorge.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.libs.reporting.Reporting;
 
 @Slf4j

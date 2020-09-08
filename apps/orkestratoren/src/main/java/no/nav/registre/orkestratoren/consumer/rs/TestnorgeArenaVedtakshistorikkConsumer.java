@@ -8,7 +8,7 @@ import org.springframework.web.util.UriTemplate;
 
 import no.nav.registre.orkestratoren.consumer.utils.ArenaConsumerUtils;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
 @DependencyOn("testnorge-aareg")

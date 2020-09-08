@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.LinkedList;
 import java.util.List;
 
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.tp.database.models.TYtelse;
 
 @Slf4j

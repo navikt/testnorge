@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.person.consumer.command.PostAdresseCommand;
 import no.nav.registre.testnorge.person.consumer.command.PostNavnCommand;
 import no.nav.registre.testnorge.person.consumer.command.PostOpprettPersonCommand;

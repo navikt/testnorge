@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 import no.nav.registre.sdforvalter.consumer.rs.request.ereg.EregMapperRequest;
 import no.nav.registre.sdforvalter.domain.Ereg;
 import no.nav.registre.sdforvalter.domain.EregListe;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j

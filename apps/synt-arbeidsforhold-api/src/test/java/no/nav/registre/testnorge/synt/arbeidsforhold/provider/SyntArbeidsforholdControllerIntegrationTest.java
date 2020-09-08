@@ -21,20 +21,19 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
-import no.nav.registre.testnorge.dto.statiskedataforvalter.v1.OrganisasjonDTO;
-import no.nav.registre.testnorge.dto.statiskedataforvalter.v1.OrganisasjonListeDTO;
-import no.nav.registre.testnorge.dto.synt.arbeidsforhold.v1.SyntArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.statiskedataforvalter.v1.OrganisasjonDTO;
+import no.nav.registre.testnorge.libs.dto.statiskedataforvalter.v1.OrganisasjonListeDTO;
+import no.nav.registre.testnorge.libs.dto.synt.arbeidsforhold.v1.SyntArbeidsforholdDTO;
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.AnsettelsePeriodeDTO;
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.ArbeidsavtaleDTO;
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.ArbeidstakerDTO;
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.KodeverkDTO;
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.SyntDTO;
-import no.nav.registre.testnorge.test.JsonWiremockHelper;
+import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

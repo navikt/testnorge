@@ -10,9 +10,9 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.registre.skd.consumer.credential.PersonApiClientCredential;
-import no.nav.registre.testnorge.common.command.CreatePersonCommand;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
+import no.nav.registre.testnorge.libs.common.command.CreatePersonCommand;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;

@@ -18,7 +18,7 @@ import java.util.List;
 
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteArbeidsforholdResponse;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component

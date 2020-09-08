@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import no.nav.registre.sdforvalter.consumer.rs.request.SkdRequest;
 import no.nav.registre.sdforvalter.consumer.rs.response.SkdResponse;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component

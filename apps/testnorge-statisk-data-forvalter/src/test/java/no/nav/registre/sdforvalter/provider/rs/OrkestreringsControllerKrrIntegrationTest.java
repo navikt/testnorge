@@ -22,7 +22,7 @@ import no.nav.registre.sdforvalter.consumer.rs.request.KrrRequest;
 import no.nav.registre.sdforvalter.database.model.KrrModel;
 import no.nav.registre.sdforvalter.database.repository.KrrRepository;
 import no.nav.registre.sdforvalter.domain.Krr;
-import no.nav.registre.testnorge.test.JsonWiremockHelper;
+import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 
 
 @RunWith(SpringRunner.class)

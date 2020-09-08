@@ -20,7 +20,7 @@ import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 
-import no.nav.registre.testnorge.avro.report.Report;
+import no.nav.registre.testnorge.libs.avro.report.Report;
 
 @EnableKafka
 @Configuration

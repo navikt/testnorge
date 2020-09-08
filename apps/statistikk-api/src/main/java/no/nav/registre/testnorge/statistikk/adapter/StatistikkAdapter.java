@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.dto.statistikk.v1.StatistikkType;
+import no.nav.registre.testnorge.libs.dto.statistikk.v1.StatistikkType;
 import no.nav.registre.testnorge.statistikk.domain.Statistikk;
 import no.nav.registre.testnorge.statistikk.repository.StatistikkRepository;
 import no.nav.registre.testnorge.statistikk.repository.model.StatistikkModel;

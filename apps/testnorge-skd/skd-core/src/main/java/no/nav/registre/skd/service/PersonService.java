@@ -3,7 +3,7 @@ package no.nav.registre.skd.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.skd.consumer.PersonConsumer;
-import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
+import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 

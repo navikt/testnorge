@@ -2,7 +2,6 @@ package no.nav.registre.sdforvalter.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -14,8 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import no.nav.registre.sdforvalter.domain.status.ereg.Organisasjon;
-import no.nav.registre.testnorge.common.command.GetOrganisasjonCommand;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.common.command.GetOrganisasjonCommand;
 
 @Slf4j
 @Component

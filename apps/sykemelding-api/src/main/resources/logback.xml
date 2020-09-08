@@ -26,12 +26,6 @@
         </root>
     </springProfile>
 
-    <logger name="no.nav.registre.testnorge.common.log.RequestLogger">
-        <level value="TRACE"/>
-    </logger>
-    <logger name="no.nav.registre.testnorge.common.log.ResponseLogger">
-        <level value="TRACE"/>
-    </logger>
     <logger name="no.nav.registre.testnorge.sykemelding.consumer.SyfoConsumer">
         <level value="TRACE"/>
     </logger>

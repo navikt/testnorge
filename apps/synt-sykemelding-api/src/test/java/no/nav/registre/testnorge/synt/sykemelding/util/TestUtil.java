@@ -1,10 +1,10 @@
 package no.nav.registre.testnorge.synt.sykemelding.util;
 
-import no.nav.registre.testnorge.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
-import no.nav.registre.testnorge.dto.helsepersonell.v1.LegeDTO;
-import no.nav.registre.testnorge.dto.helsepersonell.v1.LegeListeDTO;
-import no.nav.registre.testnorge.dto.hodejegeren.v1.PersondataDTO;
-import no.nav.registre.testnorge.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.LegeDTO;
+import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.LegeListeDTO;
+import no.nav.registre.testnorge.libs.dto.hodejegeren.v1.PersondataDTO;
+import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntDiagnoserDTO;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntSykemeldingDTO;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntSykemeldingHistorikkDTO;

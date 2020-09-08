@@ -17,7 +17,7 @@ import no.nav.registre.sam.domain.database.TSamMelding;
 import no.nav.registre.sam.domain.database.TSamVedtak;
 import no.nav.registre.sam.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
