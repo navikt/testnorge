@@ -53,7 +53,6 @@
         <java.version>11</java.version>
         <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
         <freg-security-oidc.version>2c24d35d</freg-security-oidc.version>
-        <freg.property.version>1.2.0</freg.property.version>
         <springfox.version>2.9.2</springfox.version>
         <jdbc.ojdbc.version>18.3.0.0</jdbc.ojdbc.version>
         <jdbc.ucp.version>12.2.0.1</jdbc.ucp.version>
@@ -177,12 +176,6 @@
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-frontend-jaxws</artifactId>
                 <version>${cxf.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>no.nav.freg</groupId>
-                <artifactId>freg-property-reader</artifactId>
-                <version>${freg.property.version}</version>
             </dependency>
 		</dependencies>
 

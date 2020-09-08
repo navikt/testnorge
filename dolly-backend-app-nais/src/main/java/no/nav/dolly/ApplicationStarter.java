@@ -4,8 +4,6 @@ import java.util.Map;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
-import no.nav.fregpropertyreader.PropertyReader;
-
 public class ApplicationStarter extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
