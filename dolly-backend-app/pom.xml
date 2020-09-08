@@ -24,11 +24,6 @@
         </dependency>
 
         <dependency>
-            <groupId>no.nav.tjenester</groupId>
-            <artifactId>kodeverk-api-v1</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
@@ -132,11 +127,6 @@
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-frontend-jaxws</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>no.nav.modig</groupId>
-            <artifactId>modig-security-ws</artifactId>
         </dependency>
 
         <dependency>

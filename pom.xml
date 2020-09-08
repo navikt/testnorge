@@ -55,13 +55,11 @@
         <freg-security-oidc.version>2c24d35d</freg-security-oidc.version>
         <freg.property.version>1.2.0</freg.property.version>
         <springfox.version>2.9.2</springfox.version>
-        <kodeverk.version>1.2</kodeverk.version>
         <jdbc.ojdbc.version>18.3.0.0</jdbc.ojdbc.version>
         <jdbc.ucp.version>12.2.0.1</jdbc.ucp.version>
         <jdbc.ons.version>12.2.0.1</jdbc.ons.version>
         <orika.version>1.5.4</orika.version>
         <cxf.version>3.3.4</cxf.version>
-        <modig-security.version>3.0.6</modig-security.version>
         <ehcache-core.version>2.6.11</ehcache-core.version>
         <commons-collections4.version>4.1</commons-collections4.version>
         <jettison.version>1.4.0</jettison.version>
@@ -128,12 +126,6 @@
             </dependency>
 
             <dependency>
-                <groupId>no.nav.tjenester</groupId>
-                <artifactId>kodeverk-api-v1</artifactId>
-                <version>${kodeverk.version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger2</artifactId>
                 <version>${springfox.version}</version>
@@ -185,12 +177,6 @@
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-frontend-jaxws</artifactId>
                 <version>${cxf.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>no.nav.modig</groupId>
-                <artifactId>modig-security-ws</artifactId>
-                <version>${modig-security.version}</version>
             </dependency>
 
             <dependency>

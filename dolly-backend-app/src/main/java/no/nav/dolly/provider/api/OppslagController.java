@@ -35,6 +35,7 @@ import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
 import no.nav.dolly.consumer.identpool.IdentpoolConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
+import no.nav.dolly.consumer.kodeverk.domain.GetKodeverkKoderBetydningerResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.consumer.saf.SafConsumer;
 import no.nav.dolly.consumer.saf.domain.SafRequest;
@@ -45,7 +46,6 @@ import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import no.nav.dolly.logging.LogExceptions;
 import no.nav.dolly.service.InntektsmeldingEnumService;
 import no.nav.dolly.service.TransaksjonMappingService;
-import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
 
 @RestController
 @RequiredArgsConstructor
