@@ -13,7 +13,7 @@
         </root>
     </springProfile>
 
-    <springProfile name="local">
+    <springProfile name="dev">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
                 <pattern>
@@ -26,4 +26,8 @@
             <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>
+
+    <logger name="no.nav.registre.testnorge.libs.logging.LogRequestInterceptor">
+        <level value="TRACE"/>
+    </logger>
 </configuration>

@@ -9,4 +9,7 @@
     <root level="INFO">
         <appender-ref ref="stdout_json"/>
     </root>
+    <logger name="no.nav.registre.testnorge.libs.logging.LogRequestInterceptor">
+        <level value="TRACE"/>
+    </logger>
 </configuration>

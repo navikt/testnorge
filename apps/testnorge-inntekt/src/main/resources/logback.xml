@@ -30,4 +30,7 @@
     <logger name="no.nav.registre.inntekt.service.AltinnInntektService">
         <level value="TRACE"/>
     </logger>
+    <logger name="no.nav.registre.testnorge.libs.logging.LogRequestInterceptor">
+        <level value="TRACE"/>
+    </logger>
 </configuration>
