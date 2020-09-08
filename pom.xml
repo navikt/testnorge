@@ -51,7 +51,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
-        <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
+        <spring-cloud.version>2.2.3.RELEASE</spring-cloud.version>
         <freg-security-oidc.version>2c24d35d</freg-security-oidc.version>
         <springfox.version>2.9.2</springfox.version>
         <jdbc.ojdbc.version>19.7.0.0</jdbc.ojdbc.version>
@@ -60,8 +60,6 @@
         <ehcache-core.version>2.6.11</ehcache-core.version>
         <commons-collections4.version>4.1</commons-collections4.version>
         <jettison.version>1.4.0</jettison.version>
-        <spring-cloud-contract.version>2.2.0.RELEASE</spring-cloud-contract.version>
-        <wiremock.version>2.24.0</wiremock.version>
         <freg-security-test-oidc-tools.version>2c24d35d</freg-security-test-oidc-tools.version>
         <sonar.exclusions>**/dolly/domain/**, **/dolly/regression/**, **/dolly/exceptions/**,**/main/dolly-web/**,
             **/dolly/testdata/builder/**
