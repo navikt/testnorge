@@ -15,17 +15,17 @@ public class LogExceptionsMethodInterceptor implements MethodInterceptor {
         try {
             return mi.proceed();
         } catch (Throwable e) { // NOSONAR - Thrown by interface
-            no.nav.tps.forvalteren.common.java.logging.LogExceptions logExceptions = findAnnotation(mi);
+            LogExceptions logExceptions = findAnnotation(mi);
             logException(logExceptions, e);
             throw e;
         }
     }
 
-    private no.nav.tps.forvalteren.common.java.logging.LogExceptions findAnnotation(MethodInvocation mi) {
-        return mi.getMethod().getAnnotation(no.nav.tps.forvalteren.common.java.logging.LogExceptions.class);
+    private LogExceptions findAnnotation(MethodInvocation mi) {
+        return mi.getMethod().getAnnotation(LogExceptions.class);
     }
 
-    private void logException(no.nav.tps.forvalteren.common.java.logging.LogExceptions le, Throwable e) {
+    private void logException(LogExceptions le, Throwable e) {
         if (arrayContainsExceptionType(le.functional(), e)) {
             log.error(e.getClass().getSimpleName() + " - " + e.getMessage()); // NOSONAR - Only need general info, not stacktrace
         } else if (!arrayContainsExceptionType(le.ignored(), e)) {

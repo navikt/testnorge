@@ -66,9 +66,7 @@
         <commons-collections4.version>4.1</commons-collections4.version>
         <jettison.version>1.4.0</jettison.version>
         <spring-cloud-contract.version>2.2.0.RELEASE</spring-cloud-contract.version>
-        <fasit-util.version>3.1.2</fasit-util.version>
         <wiremock.version>2.24.0</wiremock.version>
-        <freg-metrics.version>1.0.0</freg-metrics.version>
         <freg-security-test-oidc-tools.version>2c24d35d</freg-security-test-oidc-tools.version>
         <sonar.exclusions>**/dolly/domain/**, **/dolly/regression/**, **/dolly/exceptions/**,**/main/dolly-web/**,
             **/dolly/testdata/builder/**
@@ -193,18 +191,6 @@
                 <groupId>no.nav.modig</groupId>
                 <artifactId>modig-security-ws</artifactId>
                 <version>${modig-security.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>no.nav.freg</groupId>
-                <artifactId>metrics-spring</artifactId>
-                <version>${freg-metrics.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>no.nav.freg</groupId>
-                <artifactId>metrics-annotations</artifactId>
-                <version>${freg-metrics.version}</version>
             </dependency>
 
             <dependency>
