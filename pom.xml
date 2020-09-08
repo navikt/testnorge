@@ -17,6 +17,27 @@
 	<name>dolly-backend</name>
 	<description>Applikasjon for oppretting av testpersoner</description>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <url>https://github.com/navikt/dolly-backend.git</url>
+        </repository>
+    </distributionManagement>
+
+    <scm>
+        <developerConnection>scm:git:git@github.com:navikt/dolly-backend.git</developerConnection>
+        <connection>scm:git:git@github.com:navikt/dolly-backend.git</connection>
+        <url>https://github.com/navikt/dolly-backend</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <repositories>
+        <repository>
+            <id>github-package-registry-navikt</id>
+            <url>https://maven.pkg.github.com/navikt/maven-release</url>
+        </repository>
+    </repositories>
+
     <modules>
         <module>dolly-backend-app</module>
         <module>dolly-backend-domain</module>
@@ -31,9 +52,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
         <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
-        <freg-security-oidc.version>3.5.0</freg-security-oidc.version>
+        <freg-security-oidc.version>2c24d35d</freg-security-oidc.version>
         <freg.property.version>1.2.0</freg.property.version>
-        <freg-spring-boot-starters.version>2.1.0</freg-spring-boot-starters.version>
         <springfox.version>2.9.2</springfox.version>
         <kodeverk.version>1.2</kodeverk.version>
         <jdbc.ojdbc.version>18.3.0.0</jdbc.ojdbc.version>
@@ -49,7 +69,7 @@
         <fasit-util.version>3.1.2</fasit-util.version>
         <wiremock.version>2.24.0</wiremock.version>
         <freg-metrics.version>1.0.0</freg-metrics.version>
-        <freg-security-test-oidc-tools.version>3.2.0</freg-security-test-oidc-tools.version>
+        <freg-security-test-oidc-tools.version>2c24d35d</freg-security-test-oidc-tools.version>
         <sonar.exclusions>**/dolly/domain/**, **/dolly/regression/**, **/dolly/exceptions/**,**/main/dolly-web/**,
             **/dolly/testdata/builder/**
         </sonar.exclusions>
@@ -107,12 +127,6 @@
                 <groupId>no.nav.freg</groupId>
                 <artifactId>freg-security-oidc</artifactId>
                 <version>${freg-security-oidc.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>no.nav.freg</groupId>
-                <artifactId>freg-spring-boot-starter-log-exceptions</artifactId>
-                <version>${freg-spring-boot-starters.version}</version>
             </dependency>
 
             <dependency>

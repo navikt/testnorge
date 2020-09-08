@@ -32,6 +32,7 @@ import no.nav.dolly.domain.MalbestillingNavn;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
+import no.nav.dolly.logging.LogExceptions;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.MalBestillingService;
 
@@ -47,6 +48,7 @@ public class BestillingController {
     private final DollyBestillingService dollyBestillingService;
     private final GjenopprettBestillingService gjenopprettBestillingService;
 
+    @LogExceptions
     @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/{bestillingId}")
     @ApiOperation(value = "Hent Bestilling med bestillingsId", authorizations = { @Authorization(value = "Bearer token fra bruker") })
@@ -54,6 +56,7 @@ public class BestillingController {
         return mapperFacade.map(bestillingService.fetchBestillingById(bestillingId), RsBestillingStatus.class);
     }
 
+    @LogExceptions
     @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/gruppe/{gruppeId}")
     @ApiOperation(value = "Hent Bestillinger tilhørende en gruppe med gruppeId", authorizations = { @Authorization(value = "Bearer token fra bruker") })
@@ -61,6 +64,7 @@ public class BestillingController {
         return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId), RsBestillingStatus.class);
     }
 
+    @LogExceptions
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @DeleteMapping("/stop/{bestillingId}")
     @ApiOperation(value = "Stopp en Bestilling med bestillingsId", authorizations = { @Authorization(value = "Bearer token fra bruker") })
@@ -69,6 +73,7 @@ public class BestillingController {
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
+    @LogExceptions
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @PostMapping("/gjenopprett/{bestillingId}")
     @ApiOperation(value = "Gjenopprett en bestilling med bestillingsId, for en liste med miljoer", authorizations = { @Authorization(value = "Bearer token fra bruker") })
@@ -78,6 +83,7 @@ public class BestillingController {
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
+    @LogExceptions
     @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/malbestilling")
     @ApiOperation(value = "Hent mal-bestilling", authorizations = { @Authorization(value = "Bearer token fra bruker") })
@@ -86,6 +92,7 @@ public class BestillingController {
         return malBestillingService.getMalBestillinger();
     }
 
+    @LogExceptions
     @DeleteMapping("/malbestilling/{id}")
     @ApiOperation(value = "Slett mal-bestilling", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public void deleteMalBestilling(@PathVariable Long id) {
@@ -93,6 +100,7 @@ public class BestillingController {
         bestillingService.redigerBestilling(id, null);
     }
 
+    @LogExceptions
     @PutMapping("/malbestilling/{id}")
     @ApiOperation(value = "Rediger mal-bestilling", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public void redigerMalBestilling(@PathVariable Long id, @RequestBody MalbestillingNavn malbestillingNavn) {

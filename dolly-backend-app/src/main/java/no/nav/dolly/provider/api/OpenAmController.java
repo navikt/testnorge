@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsOpenAmResponse;
 import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.logging.LogExceptions;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.service.OpenAmService;
 
@@ -33,6 +34,7 @@ public class OpenAmController {
     private final OpenAmService openAmService;
     private final BestillingRepository bestillingRepository;
 
+    @LogExceptions
     @CacheEvict(value = CACHE_BESTILLING, allEntries = true)
     @PostMapping("/bestilling/{bestillingId}")
     @Transactional

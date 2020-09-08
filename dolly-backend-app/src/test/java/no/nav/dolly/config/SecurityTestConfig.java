@@ -4,9 +4,7 @@ import static java.lang.String.format;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import no.nav.freg.security.oidc.idp.Idp;
-import no.nav.freg.security.oidc.idp.registry.IdpRegistry;
-import no.nav.freg.security.test.oidc.tools.RsaKey;
+import java.io.IOException;
 import org.jose4j.http.SimpleGet;
 import org.jose4j.http.SimpleResponse;
 import org.jose4j.jwk.RsaJsonWebKey;
@@ -16,7 +14,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
-import java.io.IOException;
+import no.nav.freg.security.oidc.idp.Idp;
+import no.nav.freg.security.oidc.idp.registry.IdpRegistry;
+import no.nav.freg.security.test.oidc.tools.RsaKey;
 
 @Configuration
 public class SecurityTestConfig {
