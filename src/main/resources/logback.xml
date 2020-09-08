@@ -39,4 +39,8 @@
         <appender-ref ref="auditLogger"/>
     </logger>
 
+
+    <logger name="no.nav.dolly.web.logging.LogRequestInterceptor">
+        <level value="TRACE"/>
+    </logger>
 </configuration>
