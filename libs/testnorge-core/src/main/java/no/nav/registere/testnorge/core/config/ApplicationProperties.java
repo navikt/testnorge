@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.organisasjon.config;
+package no.nav.registere.testnorge.core.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

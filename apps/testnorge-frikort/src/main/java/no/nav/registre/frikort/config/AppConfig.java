@@ -14,7 +14,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.util.Random;
 
-import no.nav.registere.testnorge.core.ApplicationCoreConfig;
+import no.nav.registere.testnorge.core.config.ApplicationCoreConfig;
 import no.nav.registre.frikort.domain.xml.Egenandelsmelding;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 

@@ -1,4 +1,4 @@
-package no.nav.registere.testnorge.core;
+package no.nav.registere.testnorge.core.config;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +12,7 @@ import no.nav.registre.testnorge.common.filter.TransactionFilter;
 import no.nav.registre.testnorge.dependencyanalysis.provider.DependenciesController;
 
 @Configuration
-@Import({InternalController.class, DependenciesController.class})
+@Import({InternalController.class, DependenciesController.class, ApplicationProperties.class})
 public class ApplicationCoreConfig {
 
     @Bean

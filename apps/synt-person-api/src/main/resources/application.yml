@@ -1,6 +1,7 @@
-application:
+spring.application:
   version: @application.version@
   name: synt-person-api
+  desciption: API for opprettelse av syntetiske personer
 
 consumers.syntrest.url: https://syntrest.dev.adeo.no/api
 consumers.identpool.url: https://ident-pool.dev.adeo.no/api

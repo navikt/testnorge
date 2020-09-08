@@ -6,7 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
-import no.nav.registere.testnorge.core.ApplicationCoreConfig;
+import no.nav.registere.testnorge.core.config.ApplicationCoreConfig;
 
 @Slf4j
 @SpringBootApplication
