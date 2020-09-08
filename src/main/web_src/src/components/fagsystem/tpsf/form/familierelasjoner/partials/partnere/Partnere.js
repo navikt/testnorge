@@ -74,6 +74,7 @@ export const Partnere = ({ formikBag, personFoerLeggTil }) => (
 			)
 			const kanOppretteNyPartner = sjekkKanOppretteNyPartner(partnere, formikBag)
 			const addNewEntry = () => arrayHelpers.push(initialValues)
+			if (!partnere) return null
 
 			return (
 				<DollyFieldArrayWrapper header="Partner">

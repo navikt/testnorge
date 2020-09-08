@@ -21,6 +21,7 @@ const Statsborgerskap = ({ statsborgerskap }) => (
 
 export const Nasjonalitet = ({ data, visTittel = true }) => {
 	const { statsborgerskap, sprakKode, innvandretUtvandret } = data
+	if (!data) return null
 
 	return (
 		<div>

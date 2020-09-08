@@ -34,6 +34,8 @@ export const Sivilstand = ({
 				_has(formikBag.errors, basePath) || tomSisteSivilstand(formikBag, basePath)
 
 			const addNewEntry = () => arrayHelpers.push(initialValues)
+			if (!sivilstander) return null
+
 			return (
 				<DollyFieldArrayWrapper header="Forhold" nested>
 					{sivilstander.map((sivilstand, idx) => {

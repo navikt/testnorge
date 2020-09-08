@@ -7,7 +7,8 @@ interface LoadableComponent {
 }
 
 export type Feilmelding = {
-	feilmelding?: string
+	feilmelding?: string[]
+	feilDetaljert?: string[]
 }
 
 const LoadableComponent = ({ onFetch, render }: LoadableComponent) => {
@@ -21,6 +22,7 @@ const LoadableComponent = ({ onFetch, render }: LoadableComponent) => {
 				setLoading(false)
 			})
 			.catch((error: any) => {
+				setData(error)
 				setError(error)
 				setLoading(false)
 			})
@@ -29,13 +31,15 @@ const LoadableComponent = ({ onFetch, render }: LoadableComponent) => {
 	if (loading) {
 		return <Loading />
 	}
-	const feilmelding: Feilmelding = error
+	const feil: Feilmelding = error
 		? {
-				feilmelding:
-					'Noe gikk galt ved henting av valg. Ta kontakt med team Dolly hvis ikke en refresh av siden hjelper.'
+				feilmelding: [
+					'Noe gikk galt med henting og visning av dette elementet, kontakt Team Dolly'
+				],
+				feilDetaljert: [error.toString()]
 		  }
 		: null
 
-	return render(data, feilmelding)
+	return render(data, feil)
 }
 export default LoadableComponent

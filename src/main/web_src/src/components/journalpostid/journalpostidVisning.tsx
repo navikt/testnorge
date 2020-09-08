@@ -3,8 +3,10 @@ import _get from 'lodash/get'
 import _has from 'lodash/has'
 import { DollyApi } from '~/service/Api'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import LoadableComponent from '~/components/ui/loading/LoadableComponent'
+import LoadableComponent, { Feilmelding } from '~/components/ui/loading/LoadableComponent'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
+import { ErrorMessage, FastField } from 'formik'
+import { FormikField } from '~/components/ui/form/FormikField'
 
 interface JournalpostId {
 	system: string
@@ -19,42 +21,41 @@ type Response = {
 export default ({ system, ident }: JournalpostId) => (
 	<LoadableComponent
 		onFetch={() => {
-			try {
-				return DollyApi.getTransaksjonid(system, ident).then(
-					({ data }): Array<Response> =>
-						data.map((id: Response) => ({
-							transaksjonId: id.transaksjonId,
-							miljoe: id.miljoe.toUpperCase()
-						}))
-				)
-			} catch (error) {}
+			return DollyApi.getTransaksjonid(system, ident).then(
+				({ data }): Array<Response> => {
+					return data.map((id: Response) => ({
+						transaksjonId: id.transaksjonId,
+						miljoe: id.miljoe
+					}))
+				}
+			)
 		}}
-		render={(data: Array<Response>, feilmelding) => {
-			if (feilmelding != null) {
+		render={(data: Array<Response>, feil) => {
+			if (feil) {
 				return (
-					<DollyFieldArray data={feilmelding} header="Feil" nested>
-						<div>
-							<TitleValue title="Feilmelding" value={feilmelding} />
-						</div>
+					<DollyFieldArray data={feil.feilmelding} header="Journalpost-Id" nested>
+						{() => (
+							<div className="person-visning_content">
+								<TitleValue title="Feil" value={feil.feilmelding} />
+								<TitleValue title="Detaljert Feil" value={feil.feilDetaljert} />
+							</div>
+						)}
 					</DollyFieldArray>
 				)
 			}
 			return (
-				data &&
-				data.length > 0 && (
-					<DollyFieldArray data={data} header="Journalpost-Id" nested>
-						{(id: Response, idx: number) => {
-							const transaksjonId = JSON.parse(id.transaksjonId)
-							return (
-								<div key={idx} className="person-visning_content">
-									<TitleValue title="Miljø" value={id.miljoe} />
-									<TitleValue title="Journalpost-id" value={transaksjonId.journalpostId} />
-									<TitleValue title="Dokumentinfo-id" value={transaksjonId.dokumentInfoId} />
-								</div>
-							)
-						}}
-					</DollyFieldArray>
-				)
+				<DollyFieldArray data={data} header="Journalpost-Id" nested>
+					{(id: Response, idx: number) => {
+						const transaksjonId = JSON.parse(id.transaksjonId)
+						return (
+							<div key={idx} className="person-visning_content">
+								<TitleValue title="Miljø" value={id.miljoe} />
+								<TitleValue title="Journalpost-id" value={transaksjonId.journalpostId} />
+								<TitleValue title="Dokumentinfo-id" value={transaksjonId.dokumentInfoId} />
+							</div>
+						)
+					}}
+				</DollyFieldArray>
 			)
 		}}
 	/>
