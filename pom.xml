@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.3.3.RELEASE</version>
+		<version>2.2.4.RELEASE</version>
 	</parent>
 
 	<groupId>no.nav.dolly-backend</groupId>
@@ -54,6 +54,9 @@
         <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
         <freg-security-oidc.version>2c24d35d</freg-security-oidc.version>
         <springfox.version>2.9.2</springfox.version>
+        <jdbc.ojdbc.version>18.3.0.0</jdbc.ojdbc.version>
+        <jdbc.ucp.version>12.2.0.1</jdbc.ucp.version>
+        <jdbc.ons.version>12.2.0.1</jdbc.ons.version>
         <orika.version>1.5.4</orika.version>
         <cxf.version>3.3.4</cxf.version>
         <ehcache-core.version>2.6.11</ehcache-core.version>
@@ -131,6 +134,24 @@
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger-ui</artifactId>
                 <version>${springfox.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.oracle.jdbc</groupId>
+                <artifactId>ojdbc8</artifactId>
+                <version>${jdbc.ojdbc.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.oracle</groupId>
+                <artifactId>ucp</artifactId>
+                <version>${jdbc.ucp.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.oracle</groupId>
+                <artifactId>ons</artifactId>
+                <version>${jdbc.ons.version}</version>
             </dependency>
 
 			<dependency>
