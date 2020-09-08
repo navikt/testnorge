@@ -1,16 +1,16 @@
 package no.nav.registre.testnorge.sykemelding.provider;
 
-import no.nav.registre.testnorge.dto.sykemelding.v1.AdresseDTO;
-import no.nav.registre.testnorge.dto.sykemelding.v1.Aktivitet;
-import no.nav.registre.testnorge.dto.sykemelding.v1.AktivitetDTO;
-import no.nav.registre.testnorge.dto.sykemelding.v1.ArbeidsgiverDTO;
-import no.nav.registre.testnorge.dto.sykemelding.v1.DetaljerDTO;
-import no.nav.registre.testnorge.dto.sykemelding.v1.DiagnoseDTO;
-import no.nav.registre.testnorge.dto.sykemelding.v1.LegeDTO;
-import no.nav.registre.testnorge.dto.sykemelding.v1.OrganisasjonDTO;
-import no.nav.registre.testnorge.dto.sykemelding.v1.PasientDTO;
-import no.nav.registre.testnorge.dto.sykemelding.v1.PeriodeDTO;
-import no.nav.registre.testnorge.dto.sykemelding.v1.SykemeldingDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.AdresseDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.Aktivitet;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.AktivitetDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.ArbeidsgiverDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.DetaljerDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.DiagnoseDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.LegeDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.OrganisasjonDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.PasientDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.PeriodeDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.SykemeldingDTO;
 import no.nav.registre.testnorge.sykemelding.consumer.HendelseConsumer;
 import no.nav.registre.testnorge.sykemelding.consumer.SyfoConsumer;
 import no.nav.registre.testnorge.sykemelding.domain.ApplicationInfo;

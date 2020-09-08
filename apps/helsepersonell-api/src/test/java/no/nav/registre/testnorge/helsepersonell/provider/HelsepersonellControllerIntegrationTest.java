@@ -23,12 +23,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import no.nav.registre.testnorge.dto.helsepersonell.v1.LegeDTO;
-import no.nav.registre.testnorge.dto.helsepersonell.v1.LegeListeDTO;
-import no.nav.registre.testnorge.dto.hodejegeren.v1.PersondataDTO;
-import no.nav.registre.testnorge.dto.samhandlerregisteret.v1.IdentDTO;
-import no.nav.registre.testnorge.dto.samhandlerregisteret.v1.SamhandlerDTO;
-import no.nav.registre.testnorge.test.JsonWiremockHelper;
+import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.LegeDTO;
+import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.LegeListeDTO;
+import no.nav.registre.testnorge.libs.dto.hodejegeren.v1.PersondataDTO;
+import no.nav.registre.testnorge.libs.dto.samhandlerregisteret.v1.IdentDTO;
+import no.nav.registre.testnorge.libs.dto.samhandlerregisteret.v1.SamhandlerDTO;
+import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

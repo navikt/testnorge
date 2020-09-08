@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.dto.statiskedataforvalter.v1.OrganisasjonDTO;
-import no.nav.registre.testnorge.dto.statiskedataforvalter.v1.OrganisasjonListeDTO;
+import no.nav.registre.testnorge.libs.dto.statiskedataforvalter.v1.OrganisasjonDTO;
+import no.nav.registre.testnorge.libs.dto.statiskedataforvalter.v1.OrganisasjonListeDTO;
 import no.nav.registre.testnorge.synt.arbeidsforhold.domain.Organisasjon;
 
 @Slf4j

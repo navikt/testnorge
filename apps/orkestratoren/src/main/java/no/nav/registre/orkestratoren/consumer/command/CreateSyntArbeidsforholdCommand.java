@@ -9,8 +9,8 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.dto.synt.arbeidsforhold.v1.SyntArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dto.synt.arbeidsforhold.v1.SyntArbeidsforholdDTO;
 
 @Slf4j
 @DependencyOn("synt-arbeidsforhold-api")

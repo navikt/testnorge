@@ -21,8 +21,8 @@ public class Adresse {
         this.poststed = dto.getPoststed();
     }
 
-    public no.nav.registre.testnorge.dto.organisasjon.v1.AdresseDTO toDTO() {
-        return no.nav.registre.testnorge.dto.organisasjon.v1.AdresseDTO.builder()
+    public no.nav.registre.testnorge.libs.dto.organisasjon.v1.AdresseDTO toDTO() {
+        return no.nav.registre.testnorge.libs.dto.organisasjon.v1.AdresseDTO.builder()
                 .kommunenummer(kommunenummer)
                 .adresselinje1(adresselinje1)
                 .adresselinje2(adresselinje2)

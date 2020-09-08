@@ -8,8 +8,8 @@ import no.kith.xmlstds.felleskomponent1.XMLTeleCom;
 import no.kith.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpplysningerArbeidsuforhet;
 import no.kith.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLNavnType;
 
-import no.nav.registre.testnorge.dto.sykemelding.v1.LegeDTO;
-import no.nav.registre.testnorge.dto.sykemelding.v1.PasientDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.LegeDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.PasientDTO;
 
 public class Pasient {
 

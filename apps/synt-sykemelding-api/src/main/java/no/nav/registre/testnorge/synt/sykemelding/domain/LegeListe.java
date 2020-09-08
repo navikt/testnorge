@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.dto.helsepersonell.v1.LegeListeDTO;
+import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.LegeListeDTO;
 
 @Slf4j
 public class LegeListe {

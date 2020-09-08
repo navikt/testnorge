@@ -21,8 +21,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
-import no.nav.registre.testnorge.dto.hendelse.v1.HendelseDTO;
-import no.nav.registre.testnorge.dto.hendelse.v1.HendelseType;
+import no.nav.registre.testnorge.libs.dto.hendelse.v1.HendelseDTO;
+import no.nav.registre.testnorge.libs.dto.hendelse.v1.HendelseType;
 import no.nav.registre.testnorge.hendelse.repository.HendelseRepository;
 import no.nav.registre.testnorge.hendelse.repository.model.HendelseModel;
 

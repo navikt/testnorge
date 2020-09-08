@@ -8,8 +8,8 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
-import no.nav.registre.testnorge.dto.hendelse.v1.HendelseDTO;
-import no.nav.registre.testnorge.dto.hendelse.v1.HendelseType;
+import no.nav.registre.testnorge.libs.dto.hendelse.v1.HendelseDTO;
+import no.nav.registre.testnorge.libs.dto.hendelse.v1.HendelseType;
 import no.nav.registre.testnorge.hendelse.repository.model.HendelseModel;
 
 
@@ -29,7 +29,7 @@ public class Hendelse {
         type = model.getHendelse();
     }
 
-    public Hendelse(no.nav.registre.testnorge.avro.hendelse.Hendelse avro) {
+    public Hendelse(no.nav.registre.testnorge.libs.avro.hendelse.Hendelse avro) {
         ident = avro.getIdent().toString();
         fom = LocalDate.parse(avro.getFom());
         tom = avro.getTom() != null ? LocalDate.parse(avro.getTom()) : null;

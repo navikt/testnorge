@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <artifactId>testnorge-core</artifactId>
-            <groupId>no.nav.registre.testnorge</groupId>
+            <groupId>no.nav.registre.testnorge.libs</groupId>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -34,7 +34,7 @@
         </dependency>
         <dependency>
             <artifactId>testnorge-data-transfer-objects</artifactId>
-            <groupId>no.nav.registre.testnorge</groupId>
+            <groupId>no.nav.registre.testnorge.libs</groupId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -72,7 +72,7 @@
         </dependency>
         <dependency>
             <artifactId>testnorge-avro-schema</artifactId>
-            <groupId>no.nav.registre.testnorge</groupId>
+            <groupId>no.nav.registre.testnorge.libs</groupId>
         </dependency>
 
         <dependency>
@@ -92,7 +92,7 @@
         </dependency>
         <dependency>
             <artifactId>testnorge-testing</artifactId>
-            <groupId>no.nav.registre.testnorge</groupId>
+            <groupId>no.nav.registre.testnorge.libs</groupId>
             <scope>test</scope>
         </dependency>
         <dependency>

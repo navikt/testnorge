@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.avro.report.Entry;
-import no.nav.registre.testnorge.avro.report.Report;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyType;
+import no.nav.registre.testnorge.libs.avro.report.Entry;
+import no.nav.registre.testnorge.libs.avro.report.Report;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyType;
 import no.nav.registre.testnorge.libs.reporting.ReportConsumer;
 
 @Component

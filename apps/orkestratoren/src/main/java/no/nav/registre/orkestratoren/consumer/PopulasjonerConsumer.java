@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Set;
 
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component

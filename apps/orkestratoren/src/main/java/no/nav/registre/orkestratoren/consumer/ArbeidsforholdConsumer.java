@@ -13,7 +13,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import no.nav.registre.orkestratoren.consumer.command.GetArbeidsforholdCommand;
-import no.nav.registre.testnorge.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
 
 
 @Slf4j

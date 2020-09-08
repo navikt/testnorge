@@ -5,7 +5,7 @@ import static java.lang.Math.floor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyBruker;

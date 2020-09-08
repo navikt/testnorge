@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.tss.consumer.rs.response.Response110;
 import no.nav.registre.tss.consumer.rs.response.Response910;
 import no.nav.registre.tss.consumer.rs.response.TssMessage;

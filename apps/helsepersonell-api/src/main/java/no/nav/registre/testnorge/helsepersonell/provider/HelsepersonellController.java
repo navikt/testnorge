@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.concurrent.TimeUnit;
 
-import no.nav.registre.testnorge.dto.helsepersonell.v1.LegeListeDTO;
+import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.LegeListeDTO;
 import no.nav.registre.testnorge.helsepersonell.adapter.HelsepersonellAdapter;
 
 

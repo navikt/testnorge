@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.exception.UgyldigIdentResponseException;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j

@@ -4,7 +4,7 @@ import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.sigrun.PoppSyntetisererenResponse;
 import no.nav.registre.sigrun.consumer.rs.responses.SigrunSkattegrunnlagResponse;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;

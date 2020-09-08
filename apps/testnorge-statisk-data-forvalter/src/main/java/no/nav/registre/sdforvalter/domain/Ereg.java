@@ -14,7 +14,7 @@ import java.util.Map;
 
 import no.nav.registre.sdforvalter.consumer.rs.request.ereg.EregMapperRequest;
 import no.nav.registre.sdforvalter.database.model.EregModel;
-import no.nav.registre.testnorge.dto.statiskedataforvalter.v1.OrganisasjonDTO;
+import no.nav.registre.testnorge.libs.dto.statiskedataforvalter.v1.OrganisasjonDTO;
 
 
 @Value

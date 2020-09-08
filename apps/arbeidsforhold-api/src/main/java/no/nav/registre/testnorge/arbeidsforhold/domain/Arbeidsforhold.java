@@ -42,7 +42,7 @@ public class Arbeidsforhold {
         ident = dto.getArbeidstaker().getOffentligIdent();
     }
 
-    public Arbeidsforhold(no.nav.registre.testnorge.dto.arbeidsforhold.v1.ArbeidsforholdDTO dto) {
+    public Arbeidsforhold(no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO dto) {
         arbeidsforholdId = dto.getArbeidsforholdId();
         orgnummer = dto.getOrgnummer();
         stillingsprosent = dto.getStillingsprosent();
@@ -53,8 +53,8 @@ public class Arbeidsforhold {
         ident = dto.getIdent();
     }
 
-    public no.nav.registre.testnorge.dto.arbeidsforhold.v1.ArbeidsforholdDTO toDTO() {
-        return no.nav.registre.testnorge.dto.arbeidsforhold.v1.ArbeidsforholdDTO
+    public no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO toDTO() {
+        return no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO
                 .builder()
                 .arbeidsforholdId(arbeidsforholdId)
                 .orgnummer(orgnummer)

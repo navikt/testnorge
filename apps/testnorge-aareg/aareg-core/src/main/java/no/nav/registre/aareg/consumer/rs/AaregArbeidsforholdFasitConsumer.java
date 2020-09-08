@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.fasit.FasitApiConsumer;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
 @RequiredArgsConstructor

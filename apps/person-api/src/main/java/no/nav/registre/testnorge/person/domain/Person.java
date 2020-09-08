@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
+import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
 import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.Foedsel;
 import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.Folkeregisteridentifikator;
 import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.HentPerson;

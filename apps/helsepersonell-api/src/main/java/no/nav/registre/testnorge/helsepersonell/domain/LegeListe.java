@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.helsepersonell.domain;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.registre.testnorge.dto.helsepersonell.v1.LegeListeDTO;
+import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.LegeListeDTO;
 
 import java.util.List;
 import java.util.Objects;

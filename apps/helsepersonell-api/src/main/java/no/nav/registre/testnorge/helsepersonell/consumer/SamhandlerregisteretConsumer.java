@@ -12,7 +12,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.helsepersonell.consumer.command.GetSamhandlerCommand;
 import no.nav.registre.testnorge.helsepersonell.domain.Samhandler;
 

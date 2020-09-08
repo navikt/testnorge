@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.registere.testnorge.core.config.ApplicationProperties;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.core.config.ApplicationProperties;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.synt.person.consumer.command.GetIdentCommand;
 
 @Component

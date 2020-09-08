@@ -2,7 +2,7 @@ package no.nav.registre.testnorge.sykemelding.config;
 
 import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
-import no.nav.registre.testnorge.avro.hendelse.Hendelse;
+import no.nav.registre.testnorge.libs.avro.hendelse.Hendelse;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.config.SaslConfigs;

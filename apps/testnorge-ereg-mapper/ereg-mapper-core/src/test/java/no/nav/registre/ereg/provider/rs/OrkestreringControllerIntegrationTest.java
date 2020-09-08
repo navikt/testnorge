@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import no.nav.registre.ereg.config.TestConfig;
 import no.nav.registre.ereg.consumer.rs.request.JenkinsCrumbRequest;
-import no.nav.registre.testnorge.test.JsonWiremockHelper;
+import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

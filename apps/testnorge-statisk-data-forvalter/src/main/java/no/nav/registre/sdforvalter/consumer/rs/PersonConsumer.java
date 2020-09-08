@@ -18,7 +18,7 @@ import no.nav.registre.sdforvalter.consumer.rs.command.PostPersonCommand;
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
 import no.nav.registre.sdforvalter.exception.UgyldigIdentException;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component

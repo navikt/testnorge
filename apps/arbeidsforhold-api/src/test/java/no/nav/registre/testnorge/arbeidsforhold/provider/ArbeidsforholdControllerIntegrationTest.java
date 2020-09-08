@@ -9,9 +9,9 @@ import no.nav.registre.testnorge.arbeidsforhold.consumer.dto.ArbeidsavtaleDTO;
 import no.nav.registre.testnorge.arbeidsforhold.consumer.dto.ArbeidsgiverDTO;
 import no.nav.registre.testnorge.arbeidsforhold.consumer.dto.ArbeidstakerDTO;
 import no.nav.registre.testnorge.arbeidsforhold.consumer.dto.PeriodeDTO;
-import no.nav.registre.testnorge.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.arbeidsforhold.domain.Arbeidsforhold;
-import no.nav.registre.testnorge.test.JsonWiremockHelper;
+import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 
 import org.junit.Before;
 import org.junit.Test;

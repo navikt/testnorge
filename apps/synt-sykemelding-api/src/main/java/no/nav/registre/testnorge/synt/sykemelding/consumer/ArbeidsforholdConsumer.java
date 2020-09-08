@@ -6,8 +6,8 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.command.GetArbeidsforholdCommand;
 
 @Component

@@ -16,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntSykemeldingHistorikkDTO;
 import no.nav.registre.testnorge.synt.sykemelding.exception.GenererSykemeldingerException;
 

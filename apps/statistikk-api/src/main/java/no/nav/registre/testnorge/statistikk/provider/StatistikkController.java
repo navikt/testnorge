@@ -14,8 +14,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.dto.statistikk.v1.StatistikkDTO;
-import no.nav.registre.testnorge.dto.statistikk.v1.StatistikkType;
+import no.nav.registre.testnorge.libs.dto.statistikk.v1.StatistikkDTO;
+import no.nav.registre.testnorge.libs.dto.statistikk.v1.StatistikkType;
 import no.nav.registre.testnorge.statistikk.adapter.StatistikkAdapter;
 import no.nav.registre.testnorge.statistikk.domain.Statistikk;
 

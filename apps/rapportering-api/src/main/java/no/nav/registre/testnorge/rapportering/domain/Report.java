@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.dto.rapprtering.v1.EntryStatus;
+import no.nav.registre.testnorge.libs.dto.rapprtering.v1.EntryStatus;
 import no.nav.registre.testnorge.rapportering.consumer.dto.Attachment;
 import no.nav.registre.testnorge.rapportering.consumer.dto.Block;
 import no.nav.registre.testnorge.rapportering.consumer.dto.ButtonAction;
@@ -46,7 +46,7 @@ public class Report {
     }
 
 
-    public Report(no.nav.registre.testnorge.avro.report.Report report) {
+    public Report(no.nav.registre.testnorge.libs.avro.report.Report report) {
         id = null;
         applicationName = report.getApplicationName().toString();
         name = report.getName().toString();

@@ -10,9 +10,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
-import no.nav.registre.testnorge.test.JsonWiremockHelper;
+import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;

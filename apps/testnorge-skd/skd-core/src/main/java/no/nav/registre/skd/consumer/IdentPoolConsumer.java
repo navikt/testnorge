@@ -23,7 +23,7 @@ import java.util.Objects;
 
 import no.nav.registre.skd.consumer.requests.HentIdenterRequest;
 import no.nav.registre.skd.consumer.response.Navn;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component

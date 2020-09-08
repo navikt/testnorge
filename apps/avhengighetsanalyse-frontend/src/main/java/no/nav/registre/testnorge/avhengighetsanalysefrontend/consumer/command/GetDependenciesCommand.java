@@ -5,7 +5,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.dto.dependencyanalysis.v1.ApplicationDependenciesDTO;
+import no.nav.registre.testnorge.libs.dto.dependencyanalysis.v1.ApplicationDependenciesDTO;
 
 public class GetDependenciesCommand implements Callable<ApplicationDependenciesDTO> {
     private final String url;

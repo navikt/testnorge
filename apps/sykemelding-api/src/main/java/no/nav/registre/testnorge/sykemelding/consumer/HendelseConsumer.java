@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import no.nav.registre.testnorge.avro.hendelse.Hendelse;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyType;
-import no.nav.registre.testnorge.dto.hendelse.v1.HendelseType;
+import no.nav.registre.testnorge.libs.avro.hendelse.Hendelse;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyType;
+import no.nav.registre.testnorge.libs.dto.hendelse.v1.HendelseType;
 
 @Component
 @DependencyOn(value = "hendelse-api", type = DependencyType.QUEUE)

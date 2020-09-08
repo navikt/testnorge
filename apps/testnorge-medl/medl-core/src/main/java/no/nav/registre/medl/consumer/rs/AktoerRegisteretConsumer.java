@@ -23,8 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.medl.consumer.rs.response.AktoerResponse;
 import no.nav.registre.medl.consumer.rs.response.IdaResponse;
-import no.nav.registre.testnorge.dependencyanalysis.DependenciesOn;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependenciesOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j

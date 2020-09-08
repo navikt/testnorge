@@ -11,8 +11,8 @@ import org.springframework.web.client.RestTemplate;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.dto.helsepersonell.v1.LegeListeDTO;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.LegeListeDTO;
 import no.nav.registre.testnorge.synt.sykemelding.domain.LegeListe;
 import no.nav.registre.testnorge.synt.sykemelding.exception.LegerNotFoundException;
 

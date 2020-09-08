@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.synt.person.consumer.command.GetSyntPersonCommand;
 import no.nav.registre.testnorge.synt.person.consumer.dto.SyntPersonDTO;
 

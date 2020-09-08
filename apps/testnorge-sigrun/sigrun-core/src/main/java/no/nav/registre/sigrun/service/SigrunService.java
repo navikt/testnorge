@@ -20,7 +20,7 @@ import no.nav.registre.sigrun.consumer.rs.responses.SigrunSkattegrunnlagResponse
 import no.nav.registre.sigrun.provider.rs.requests.SyntetiserSigrunRequest;
 import no.nav.registre.sigrun.provider.rs.responses.SletteGrunnlagResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Service
 @Slf4j

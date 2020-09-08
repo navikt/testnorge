@@ -12,7 +12,7 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTil
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
-import no.nav.registre.testnorge.test.JsonWiremockHelper;
+import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 
 import org.junit.Before;
 import org.junit.Test;

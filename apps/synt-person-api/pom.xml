@@ -14,11 +14,11 @@
     <dependencies>
         <dependency>
             <artifactId>testnorge-core</artifactId>
-            <groupId>no.nav.registre.testnorge</groupId>
+            <groupId>no.nav.registre.testnorge.libs</groupId>
         </dependency>
         <dependency>
             <artifactId>testnorge-oauth2</artifactId>
-            <groupId>no.nav.registre.testnorge</groupId>
+            <groupId>no.nav.registre.testnorge.libs</groupId>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -38,7 +38,7 @@
         </dependency>
         <dependency>
             <artifactId>testnorge-data-transfer-objects</artifactId>
-            <groupId>no.nav.registre.testnorge</groupId>
+            <groupId>no.nav.registre.testnorge.libs</groupId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -77,7 +77,7 @@
         </dependency>
         <dependency>
             <artifactId>testnorge-common-command</artifactId>
-            <groupId>no.nav.registre.testnorge</groupId>
+            <groupId>no.nav.registre.testnorge.libs</groupId>
         </dependency>
         <dependency>
             <groupId>org.hibernate.validator</groupId>
@@ -85,7 +85,7 @@
         </dependency>
         <dependency>
             <artifactId>testnorge-testing</artifactId>
-            <groupId>no.nav.registre.testnorge</groupId>
+            <groupId>no.nav.registre.testnorge.libs</groupId>
             <scope>test</scope>
         </dependency>
         <dependency>

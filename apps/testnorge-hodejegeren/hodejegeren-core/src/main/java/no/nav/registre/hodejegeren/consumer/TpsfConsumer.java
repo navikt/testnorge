@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
