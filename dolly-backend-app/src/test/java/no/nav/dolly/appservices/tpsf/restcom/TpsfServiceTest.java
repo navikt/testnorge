@@ -3,8 +3,8 @@ package no.nav.dolly.appservices.tpsf.restcom;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static no.nav.dolly.domain.resultset.IdentType.FNR;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.eq;
@@ -95,7 +95,7 @@ public class TpsfServiceTest {
     }
 
     @Test(expected = TpsfException.class)
-    public void opprettPersonerTpsf_hvisTpsfKasterExceptionSaaKastesTpsfException() throws Exception{
+    public void opprettPersonerTpsf_hvisTpsfKasterExceptionSaaKastesTpsfException() throws Exception {
 
         RestTemplateFailure failure = RestTemplateFailure.builder().error("tekst").status("feil").message("melding").build();
 

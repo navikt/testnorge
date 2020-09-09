@@ -3,9 +3,9 @@ package no.nav.dolly.consumer.kodeverk;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
-import static org.junit.Assert.assertThat;
 
 import java.time.LocalDate;
 import java.util.Arrays;
