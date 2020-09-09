@@ -1,6 +1,5 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { AttributtVelger } from './attributtVelger/AttributtVelger'
-import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { PersoninformasjonPanel } from './paneler/Personinformasjon'
 import { AdressePanel } from './paneler/Adresse'
 import { IdentifikasjonPanel } from './paneler/Identifikasjon'
@@ -16,9 +15,6 @@ import { DokarkivPanel } from './paneler/Dokarkiv'
 import { SykdomPanel } from './paneler/Sykdom'
 
 export const Steg1 = ({ stateModifier }) => {
-	const opts = useContext(BestillingsveilederContext)
-	const leggTil = opts.is.leggTil
-
 	const checked = [
 		PersoninformasjonPanel,
 		AdressePanel,
