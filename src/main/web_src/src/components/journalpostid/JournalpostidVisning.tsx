@@ -30,19 +30,22 @@ export default ({ system, ident }: JournalpostId) => (
 				}
 			)
 		}}
-		render={(data: Array<Response>, feil) => {
-			if (feil) {
-				return (
-					<DollyFieldArray data={feil.feilmelding} header="Journalpost-Id" nested>
-						{() => (
-							<div className="person-visning_content">
-								<TitleValue title="Feil" value={feil.feilmelding} />
-								<TitleValue title="Detaljert Feil" value={feil.feilDetaljert} />
-							</div>
-						)}
-					</DollyFieldArray>
-				)
-			}
+		renderOnError={error => {
+			return (
+				<DollyFieldArray data={[error]} header="Journalpost-Id" nested>
+					{() => (
+						<div className="person-visning_content">
+							<TitleValue
+								title="Feil"
+								value={'Noe gikk feil ved henting av JournalpostId, kontakt team Dolly!'}
+							/>
+							<TitleValue title="Detaljert Feil" value={error} />
+						</div>
+					)}
+				</DollyFieldArray>
+			)
+		}}
+		render={(data: Array<Response>) => {
 			return (
 				<DollyFieldArray data={data} header="Journalpost-Id" nested>
 					{(id: Response, idx: number) => {

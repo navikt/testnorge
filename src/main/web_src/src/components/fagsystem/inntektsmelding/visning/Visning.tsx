@@ -15,7 +15,7 @@ import RefusjonVisning from './partials/refusjonVisning'
 import SykepengerVisning from './partials/sykepengerVisning'
 import PleiepengerVisning from './partials/pleiepengerVisning'
 import NaturalytelseVisning from './partials/naturalytelseVisning'
-import JournalpostidVisning from '~/components/journalpostid/journalpostidVisning'
+import JournalpostidVisning from '~/components/journalpostid/JournalpostidVisning'
 
 interface InntektsmeldingVisning {
 	liste: Array<Inntektsmelding>
