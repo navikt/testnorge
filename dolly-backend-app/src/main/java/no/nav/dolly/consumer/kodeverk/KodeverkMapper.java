@@ -2,15 +2,15 @@ package no.nav.dolly.consumer.kodeverk;
 
 import static java.util.Objects.nonNull;
 
-import no.nav.dolly.domain.resultset.kodeverk.KodeAdjusted;
-import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
-import no.nav.tjenester.kodeverk.api.v1.Betydning;
-import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
+
+import no.nav.dolly.consumer.kodeverk.domain.Betydning;
+import no.nav.dolly.domain.resultset.kodeverk.KodeAdjusted;
+import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 
 /***
  * Mapper fra Betydninger i Kodeverkapp til Kodeverkobjekter som er lett for frontend å bruke

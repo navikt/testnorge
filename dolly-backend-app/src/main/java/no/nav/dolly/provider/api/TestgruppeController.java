@@ -4,7 +4,6 @@ import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
 import java.util.List;
-
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
@@ -70,13 +69,13 @@ public class TestgruppeController {
     @PutMapping(value = "/{gruppeId}/laas")
     @ApiOperation(value = "Oppdater testgruppe Laas", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public RsTestgruppe oppdaterTestgruppeLaas(@PathVariable("gruppeId") Long gruppeId,
-                                               Boolean erLaast,
-                                               String laastBeskrivelse) {
+            Boolean erLaast,
+            String laastBeskrivelse) {
         Testgruppe gruppe = testgruppeService.oppdaterTestgruppeMedLaas(gruppeId, erLaast, laastBeskrivelse);
         return mapperFacade.map(gruppe, RsTestgruppe.class);
     }
 
-    @CacheEvict(value = {CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_GRUPPE }, allEntries = true)
     @PostMapping
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)
@@ -110,7 +109,7 @@ public class TestgruppeController {
         testgruppeService.deleteGruppeById(gruppeId);
     }
 
-    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling")
     @ApiOperation(value = "Opprett berikede testpersoner basert på fødselsdato, kjønn og identtype", authorizations = { @Authorization(value = "Bearer token fra bruker") })
@@ -122,7 +121,7 @@ public class TestgruppeController {
     }
 
     @ApiOperation(value = "Opprett berikede testpersoner basert på eskisterende identer", authorizations = { @Authorization(value = "Bearer token fra bruker") })
-    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling/fraidenter")
     public RsBestillingStatus opprettIdentBestillingFraIdenter(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingFraIdenterRequest request) {
@@ -134,7 +133,7 @@ public class TestgruppeController {
     }
 
     @ApiOperation(value = "Importere testpersoner fra TPS og legg til berikning non-TPS artifacter", authorizations = { @Authorization(value = "Bearer token fra bruker") })
-    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling/importFraTps")
     public RsBestillingStatus importAvIdenterBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyImportFraTpsRequest request) {
@@ -146,7 +145,7 @@ public class TestgruppeController {
     }
 
     @ApiOperation(value = "Legg til berikning på alle i gruppe", authorizations = { @Authorization(value = "Bearer token fra bruker") })
-    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{gruppeId}/leggtilpaagruppe")
     public RsBestillingStatus endreGruppeLeggTil(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingLeggTilPaaGruppe request) {

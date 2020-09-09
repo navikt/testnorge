@@ -1,21 +1,21 @@
 package no.nav.dolly.appservices.tpsf.service;
 
 import static java.util.Collections.singletonList;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
 
-import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.tpsf.SendSkdMeldingTilTpsResponse;
-import no.nav.dolly.exceptions.TpsfException;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.HashMap;
-import java.util.Map;
+import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.tpsf.SendSkdMeldingTilTpsResponse;
+import no.nav.dolly.exceptions.TpsfException;
 
 public class TpsfResponseHandlerTest {
 

@@ -9,9 +9,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
@@ -42,9 +40,6 @@ public class KrrstubConsumerTest {
     private static Authentication authentication;
 
     private MockRestServiceServer server;
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @Autowired
     private RestTemplate restTemplate;
@@ -91,12 +86,10 @@ public class KrrstubConsumerTest {
         verify(providersProps).getKrrStub();
     }
 
-    @Test
+    @Test(expected = RuntimeException.class)
     public void createDigitalKontaktdata_Feilet() {
 
         when(providersProps.getKrrStub()).thenThrow(HttpClientErrorException.class);
-
-        expectedException.expect(RuntimeException.class);
 
         krrStubConsumer.createDigitalKontaktdata(DigitalKontaktdata.builder()
                 .epost(EPOST)

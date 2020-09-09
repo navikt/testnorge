@@ -17,6 +17,27 @@
 	<name>dolly-backend</name>
 	<description>Applikasjon for oppretting av testpersoner</description>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <url>https://github.com/navikt/dolly-backend.git</url>
+        </repository>
+    </distributionManagement>
+
+    <scm>
+        <developerConnection>scm:git:git@github.com:navikt/dolly-backend.git</developerConnection>
+        <connection>scm:git:git@github.com:navikt/dolly-backend.git</connection>
+        <url>https://github.com/navikt/dolly-backend</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <repositories>
+        <repository>
+            <id>github-package-registry-navikt</id>
+            <url>https://maven.pkg.github.com/navikt/maven-release</url>
+        </repository>
+    </repositories>
+
     <modules>
         <module>dolly-backend-app</module>
         <module>dolly-backend-domain</module>
@@ -30,26 +51,15 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
-        <spring-cloud.version>2.2.0.RELEASE</spring-cloud.version>
-        <freg-security-oidc.version>3.5.0</freg-security-oidc.version>
-        <freg.property.version>1.2.0</freg.property.version>
-        <freg-spring-boot-starters.version>2.1.0</freg-spring-boot-starters.version>
+        <spring-cloud.version>2.2.3.RELEASE</spring-cloud.version>
+        <freg-security-oidc.version>2c24d35d</freg-security-oidc.version>
         <springfox.version>2.9.2</springfox.version>
-        <kodeverk.version>1.2</kodeverk.version>
-        <jdbc.ojdbc.version>18.3.0.0</jdbc.ojdbc.version>
-        <jdbc.ucp.version>12.2.0.1</jdbc.ucp.version>
-        <jdbc.ons.version>12.2.0.1</jdbc.ons.version>
+        <jdbc.ojdbc.version>19.7.0.0</jdbc.ojdbc.version>
         <orika.version>1.5.4</orika.version>
         <cxf.version>3.3.4</cxf.version>
-        <modig-security.version>3.0.6</modig-security.version>
         <ehcache-core.version>2.6.11</ehcache-core.version>
-        <commons-collections4.version>4.1</commons-collections4.version>
         <jettison.version>1.4.0</jettison.version>
-        <spring-cloud-contract.version>2.2.0.RELEASE</spring-cloud-contract.version>
-        <fasit-util.version>3.1.2</fasit-util.version>
-        <wiremock.version>2.24.0</wiremock.version>
-        <freg-metrics.version>1.0.0</freg-metrics.version>
-        <freg-security-test-oidc-tools.version>3.2.0</freg-security-test-oidc-tools.version>
+        <freg-security-test-oidc-tools.version>2c24d35d</freg-security-test-oidc-tools.version>
         <sonar.exclusions>**/dolly/domain/**, **/dolly/regression/**, **/dolly/exceptions/**,**/main/dolly-web/**,
             **/dolly/testdata/builder/**
         </sonar.exclusions>
@@ -87,12 +97,6 @@
             <artifactId>ehcache-core</artifactId>
             <version>${ehcache-core.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
-            <version>${commons-collections4.version}</version>
-        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -110,18 +114,6 @@
             </dependency>
 
             <dependency>
-                <groupId>no.nav.freg</groupId>
-                <artifactId>freg-spring-boot-starter-log-exceptions</artifactId>
-                <version>${freg-spring-boot-starters.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>no.nav.tjenester</groupId>
-                <artifactId>kodeverk-api-v1</artifactId>
-                <version>${kodeverk.version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger2</artifactId>
                 <version>${springfox.version}</version>
@@ -134,21 +126,9 @@
             </dependency>
 
             <dependency>
-                <groupId>com.oracle.jdbc</groupId>
+                <groupId>com.oracle.database.jdbc</groupId>
                 <artifactId>ojdbc8</artifactId>
                 <version>${jdbc.ojdbc.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.oracle</groupId>
-                <artifactId>ucp</artifactId>
-                <version>${jdbc.ucp.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.oracle</groupId>
-                <artifactId>ons</artifactId>
-                <version>${jdbc.ons.version}</version>
             </dependency>
 
 			<dependency>
@@ -163,41 +143,17 @@
                 <version>${jettison.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-spring-boot-starter-jaxws</artifactId>
-                <version>${cxf.version}</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>org.apache.cxf</groupId>-->
+<!--                <artifactId>cxf-spring-boot-starter-jaxws</artifactId>-->
+<!--                <version>${cxf.version}</version>-->
+<!--            </dependency>-->
 
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-frontend-jaxws</artifactId>
-                <version>${cxf.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>no.nav.modig</groupId>
-                <artifactId>modig-security-ws</artifactId>
-                <version>${modig-security.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>no.nav.freg</groupId>
-                <artifactId>metrics-spring</artifactId>
-                <version>${freg-metrics.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>no.nav.freg</groupId>
-                <artifactId>metrics-annotations</artifactId>
-                <version>${freg-metrics.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>no.nav.freg</groupId>
-                <artifactId>freg-property-reader</artifactId>
-                <version>${freg.property.version}</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>org.apache.cxf</groupId>-->
+<!--                <artifactId>cxf-rt-frontend-jaxws</artifactId>-->
+<!--                <version>${cxf.version}</version>-->
+<!--            </dependency>-->
 		</dependencies>
 
 	</dependencyManagement>

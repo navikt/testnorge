@@ -1,13 +1,13 @@
 package no.nav.dolly.service;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.BestillingProgressRepository;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -15,9 +15,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.BestillingProgressRepository;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BestillingProgressServiceTest {

@@ -3,18 +3,14 @@ package no.nav.dolly.consumer.kodeverk;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
-import no.nav.dolly.exceptions.KodeverkException;
-import no.nav.dolly.properties.ProvidersProps;
-import no.nav.tjenester.kodeverk.api.v1.GetKodeverkKoderBetydningerResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +24,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import no.nav.dolly.consumer.kodeverk.domain.GetKodeverkKoderBetydningerResponse;
+import no.nav.dolly.exceptions.KodeverkException;
+import no.nav.dolly.properties.ProvidersProps;
 
 @RunWith(MockitoJUnitRunner.class)
 public class KodeverkConsumerTest {

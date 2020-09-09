@@ -1,18 +1,13 @@
 package no.nav.dolly.service;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.common.TestidentBuilder;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.entity.testident.RsTestident;
-import no.nav.dolly.exceptions.ConstraintViolationException;
-import no.nav.dolly.repository.IdentRepository;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,8 +17,13 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import java.util.Arrays;
-import java.util.List;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.common.TestidentBuilder;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.entity.testident.RsTestident;
+import no.nav.dolly.exceptions.ConstraintViolationException;
+import no.nav.dolly.repository.IdentRepository;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IdentServiceTest {

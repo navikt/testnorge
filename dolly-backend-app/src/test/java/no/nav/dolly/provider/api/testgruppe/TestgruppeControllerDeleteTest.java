@@ -2,7 +2,7 @@ package no.nav.dolly.provider.api.testgruppe;
 
 import static java.lang.String.format;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.LinkedHashMap;
 import org.junit.jupiter.api.DisplayName;
@@ -44,21 +44,21 @@ public class TestgruppeControllerDeleteTest extends TestgruppeTestBase {
     @Test
     @DisplayName("Fjerner TestIdent fra Testgruppe")
     public void deleteTestident() {
-//        Testgruppe testgruppe = dataFactory.createTestgruppe("Testgruppe");
-//
-//        List<String> idents = testgruppe.getTestidenter().stream()
-//                .map(Testident::getIdent)
-//                .collect(Collectors.toList());
-//
-//        sendRequest()
-//                .to(HttpMethod.DELETE, "/api/v1/ident/" + idents.get(0))
-//                .andExpect(HttpStatus.OK, LinkedHashMap.class);
-//
-//        RsTestgruppeMedBestillingId resp = sendRequest()
-//                .to(HttpMethod.GET, ENDPOINT_BASE_URI + "/" + testgruppe.getId())
-//                .andExpect(HttpStatus.OK, RsTestgruppeMedBestillingId.class);
-//
-//        assertThat(resp.getIdenter().size(), is(2));
+        //        Testgruppe testgruppe = dataFactory.createTestgruppe("Testgruppe");
+        //
+        //        List<String> idents = testgruppe.getTestidenter().stream()
+        //                .map(Testident::getIdent)
+        //                .collect(Collectors.toList());
+        //
+        //        sendRequest()
+        //                .to(HttpMethod.DELETE, "/api/v1/ident/" + idents.get(0))
+        //                .andExpect(HttpStatus.OK, LinkedHashMap.class);
+        //
+        //        RsTestgruppeMedBestillingId resp = sendRequest()
+        //                .to(HttpMethod.GET, ENDPOINT_BASE_URI + "/" + testgruppe.getId())
+        //                .andExpect(HttpStatus.OK, RsTestgruppeMedBestillingId.class);
+        //
+        //        assertThat(resp.getIdenter().size(), is(2));
     }
 
     @Test
