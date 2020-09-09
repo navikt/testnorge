@@ -1,15 +1,16 @@
 package no.nav.dolly.sts;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -28,8 +29,6 @@ import no.nav.dolly.security.sts.StsOidcService;
 public class StsOidcServiceTest {
 
     private static final String ENV = "u1";
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @Mock
     private RestTemplate restTemplate;
@@ -54,10 +53,10 @@ public class StsOidcServiceTest {
     @Test
     public void getIdToken_sikkerhetsTokenKunneIkkeFornyes() {
 
-        expectedException.expect(DollyFunctionalException.class);
-        expectedException.expectMessage("Sikkerhet-token kunne ikke fornyes");
+        DollyFunctionalException dfe = assertThrows(
+                DollyFunctionalException.class, (() -> stsOidcService.getIdToken(ENV)));
 
-        stsOidcService.getIdToken(ENV);
+        assertThat(dfe.getMessage(), is(equalTo("Sikkerhet-token kunne ikke fornyes")));
     }
 
     @Test
