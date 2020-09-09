@@ -13,18 +13,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import no.nav.registre.testnorge.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
-import no.nav.registre.testnorge.dto.helsepersonell.v1.LegeListeDTO;
-import no.nav.registre.testnorge.dto.hodejegeren.v1.PersondataDTO;
-import no.nav.registre.testnorge.dto.organisasjon.v1.OrganisasjonDTO;
-import no.nav.registre.testnorge.dto.sykemelding.v1.SykemeldingDTO;
-import no.nav.registre.testnorge.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
+import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.LegeListeDTO;
+import no.nav.registre.testnorge.libs.dto.hodejegeren.v1.PersondataDTO;
+import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.SykemeldingDTO;
+import no.nav.registre.testnorge.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntSykemeldingHistorikkDTO;
 import no.nav.registre.testnorge.synt.sykemelding.domain.Arbeidsforhold;
 import no.nav.registre.testnorge.synt.sykemelding.domain.Lege;
 import no.nav.registre.testnorge.synt.sykemelding.domain.Person;
 import no.nav.registre.testnorge.synt.sykemelding.domain.Sykemelding;
-import no.nav.registre.testnorge.test.JsonWiremockHelper;
+import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 
 import org.junit.Before;
 import org.junit.jupiter.api.AfterEach;

@@ -1,7 +1,7 @@
 {
    "type":"record",
    "name":"Report",
-   "namespace":"no.nav.registre.testnorge.avro.report",
+   "namespace":"no.nav.registre.testnorge.libs.avro.report",
    "fields":[
       {
          "name":"applicationName",

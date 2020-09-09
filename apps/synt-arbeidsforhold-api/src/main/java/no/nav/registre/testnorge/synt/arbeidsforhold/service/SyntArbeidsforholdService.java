@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
-import no.nav.registre.testnorge.dto.synt.arbeidsforhold.v1.SyntArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.synt.arbeidsforhold.v1.SyntArbeidsforholdDTO;
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.ArbeidsforholdConsumer;
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.KodeverkConsumer;
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.StatiskeDataForvalterConsumer;

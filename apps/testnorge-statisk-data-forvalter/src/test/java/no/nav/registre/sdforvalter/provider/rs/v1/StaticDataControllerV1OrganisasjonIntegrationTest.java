@@ -35,7 +35,7 @@ import no.nav.registre.sdforvalter.database.model.OpprinnelseModel;
 import no.nav.registre.sdforvalter.database.repository.EregRepository;
 import no.nav.registre.sdforvalter.database.repository.GruppeRepository;
 import no.nav.registre.sdforvalter.database.repository.OpprinnelseRepository;
-import no.nav.registre.testnorge.test.JsonWiremockHelper;
+import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureWireMock(port = 0)

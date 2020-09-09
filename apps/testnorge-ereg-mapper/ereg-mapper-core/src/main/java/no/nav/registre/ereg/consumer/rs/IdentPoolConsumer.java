@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.ereg.consumer.rs.response.NameResponse;
 import no.nav.registre.ereg.exception.UgyldigEregResponseException;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component

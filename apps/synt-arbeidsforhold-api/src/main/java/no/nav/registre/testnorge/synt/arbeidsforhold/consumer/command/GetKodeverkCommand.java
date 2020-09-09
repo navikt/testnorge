@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Callable;
 
-import no.nav.registere.testnorge.core.headers.NavHeaders;
+import no.nav.registre.testnorge.libs.core.headers.NavHeaders;
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.KodeverkDTO;
 
 @RequiredArgsConstructor

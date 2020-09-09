@@ -7,7 +7,7 @@ import static no.nav.registre.arena.core.consumer.rs.util.Headers.NAV_CONSUMER_I
 
 import lombok.extern.slf4j.Slf4j;
 
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;

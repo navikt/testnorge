@@ -5,11 +5,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,7 +15,7 @@ import no.nav.registre.sdforvalter.consumer.rs.request.aareg.AaregRequest;
 import no.nav.registre.sdforvalter.consumer.rs.request.aareg.Arbeidsforhold;
 import no.nav.registre.sdforvalter.consumer.rs.response.AaregResponse;
 import no.nav.registre.sdforvalter.domain.AaregListe;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component

@@ -22,7 +22,7 @@
             <artifactId>testnorge-consumers</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.registre.testnorge</groupId>
+            <groupId>no.nav.registre.testnorge.libs</groupId>
             <artifactId>testnorge-domain</artifactId>
         </dependency>
         <dependency>

@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 import no.nav.registre.medl.consumer.rs.response.MedlSyntResponse;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j

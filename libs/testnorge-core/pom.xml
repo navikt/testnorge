@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>libs</artifactId>
-        <groupId>no.nav.registre.testnorge</groupId>
+        <groupId>no.nav.registre.testnorge.libs</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -13,13 +13,18 @@
 
     <dependencies>
         <dependency>
-            <groupId>no.nav.registre.testnorge</groupId>
-            <artifactId>testnorge-common</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <artifactId>testnorge-dependency-analysis</artifactId>
-            <groupId>no.nav.registre.testnorge</groupId>
+            <groupId>no.nav.registre.testnorge.libs</groupId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>testnorge-logging</artifactId>
+            <groupId>no.nav.registre.testnorge.libs</groupId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

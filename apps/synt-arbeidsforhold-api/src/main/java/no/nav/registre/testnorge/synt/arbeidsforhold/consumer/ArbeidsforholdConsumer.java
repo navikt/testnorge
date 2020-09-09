@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 
-import no.nav.registre.testnorge.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.synt.arbeidsforhold.domain.Arbeidsforhold;
 
 @Slf4j

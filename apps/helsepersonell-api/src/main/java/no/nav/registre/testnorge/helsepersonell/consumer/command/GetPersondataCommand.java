@@ -5,7 +5,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.dto.hodejegeren.v1.PersondataDTO;
+import no.nav.registre.testnorge.libs.dto.hodejegeren.v1.PersondataDTO;
 
 @Slf4j
 public class GetPersondataCommand implements Callable<PersondataDTO> {

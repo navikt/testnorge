@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import no.nav.registre.orkestratoren.consumer.HendelseConsumer;
 import no.nav.registre.orkestratoren.consumer.PopulasjonerConsumer;
 import no.nav.registre.orkestratoren.consumer.StatistikkConsumer;
-import no.nav.registre.testnorge.dto.hendelse.v1.HendelseDTO;
+import no.nav.registre.testnorge.libs.dto.hendelse.v1.HendelseDTO;
 import no.nav.registre.testnorge.libs.reporting.Reporting;
 
 @Slf4j

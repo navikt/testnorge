@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import no.nav.registre.testnorge.organisasjon.consumer.dto.DetaljerDTO;
 import no.nav.registre.testnorge.organisasjon.consumer.dto.NavnDTO;
 import no.nav.registre.testnorge.organisasjon.consumer.dto.OrganisasjonDTO;
-import no.nav.registre.testnorge.test.JsonWiremockHelper;
+import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 
 import org.junit.Before;
 import org.junit.jupiter.api.AfterEach;

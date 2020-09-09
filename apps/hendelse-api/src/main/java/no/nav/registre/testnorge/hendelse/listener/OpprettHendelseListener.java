@@ -7,7 +7,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
-import no.nav.registre.testnorge.avro.hendelse.Hendelse;
+import no.nav.registre.testnorge.libs.avro.hendelse.Hendelse;
 import no.nav.registre.testnorge.hendelse.adapter.HendelseAdapter;
 
 

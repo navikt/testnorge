@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class KubernetesController {
 
-    private static final int TIMEOUT = 120_000;
+    private static final int TIMEOUT = 240_000;
     private final String GROUP = "nais.io";
     private final String VERSION = "v1alpha1";
     private final String NAMESPACE = "q2";
@@ -53,7 +53,8 @@ public class KubernetesController {
     private RestTemplate noAuthRestTemplate;
     private RestTemplate authRestTemplate;
 
-    private final List<String> appsFlyttetTilGithub = Arrays.asList("synthdata-sam", "synthdata-frikort");
+    private final List<String> appsFlyttetTilGithub = Arrays.asList("synthdata-sam", "synthdata-frikort",
+            "synthdata-arena-meldekort", "synthdata-arena-bisys");
 
     public KubernetesController(RestTemplateBuilder restTemplateBuilder,
                                 CustomObjectsApi customObjectsApi,

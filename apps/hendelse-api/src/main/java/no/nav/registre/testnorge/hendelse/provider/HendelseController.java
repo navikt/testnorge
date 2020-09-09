@@ -12,8 +12,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.dto.hendelse.v1.HendelseDTO;
-import no.nav.registre.testnorge.dto.hendelse.v1.HendelseType;
+import no.nav.registre.testnorge.libs.dto.hendelse.v1.HendelseDTO;
+import no.nav.registre.testnorge.libs.dto.hendelse.v1.HendelseType;
 import no.nav.registre.testnorge.hendelse.adapter.HendelseAdapter;
 import no.nav.registre.testnorge.hendelse.domain.Hendelse;
 

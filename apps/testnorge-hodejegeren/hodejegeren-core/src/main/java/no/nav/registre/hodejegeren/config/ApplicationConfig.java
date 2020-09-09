@@ -7,7 +7,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.util.Random;
 
-import no.nav.registere.testnorge.core.ApplicationCoreConfig;
+import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
 
 @Configuration
 @EnableAsync

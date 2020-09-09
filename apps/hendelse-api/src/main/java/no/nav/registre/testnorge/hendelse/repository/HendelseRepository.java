@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.sql.Date;
 import java.util.List;
 
-import no.nav.registre.testnorge.dto.hendelse.v1.HendelseType;
+import no.nav.registre.testnorge.libs.dto.hendelse.v1.HendelseType;
 import no.nav.registre.testnorge.hendelse.repository.model.HendelseModel;
 
 public interface HendelseRepository extends JpaRepository<HendelseModel, Long> {

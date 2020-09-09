@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.avhengighetsanalysefrontend.config.DependenciesProperties;
 import no.nav.registre.testnorge.avhengighetsanalysefrontend.consumer.command.GetDependenciesCommand;
-import no.nav.registre.testnorge.dto.dependencyanalysis.v1.ApplicationDependenciesDTO;
+import no.nav.registre.testnorge.libs.dto.dependencyanalysis.v1.ApplicationDependenciesDTO;
 
 @Slf4j
 @Component

@@ -158,7 +158,7 @@ public class SyntControllerTest {
 
         when(consumer.synthesizeData(any(RequestEntity.class))).thenReturn(expectedResponse);
 
-        ResponseEntity<List<String>> listResponseEntity = syntController.generateMeldekort("ATTF", numToGenerate);
+        ResponseEntity<List<String>> listResponseEntity = syntController.generateMeldekort("ATTF", numToGenerate, null);
         verify(consumer).synthesizeData(any(RequestEntity.class));
         assertThat(listResponseEntity.getBody(), equalTo(expectedResponse));
     }
@@ -171,7 +171,7 @@ public class SyntControllerTest {
         expectedResponse.add("<XML/>");
         expectedResponse.add("<XML/>");
 
-        ResponseEntity<List<String>> listResponseEntity = syntController.generateMeldekort("Feil", numToGenerate);
+        ResponseEntity<List<String>> listResponseEntity = syntController.generateMeldekort("Feil", numToGenerate, null);
         verify(consumer).synthesizeData(any(RequestEntity.class));
         assertThat(listResponseEntity.getBody(), equalTo(expectedResponse));
     }

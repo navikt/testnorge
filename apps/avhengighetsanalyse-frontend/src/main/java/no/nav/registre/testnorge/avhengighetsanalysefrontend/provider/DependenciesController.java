@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Set;
 
-import no.nav.registre.testnorge.dto.dependencyanalysis.v1.ApplicationDependenciesDTO;
+import no.nav.registre.testnorge.libs.dto.dependencyanalysis.v1.ApplicationDependenciesDTO;
 import no.nav.registre.testnorge.avhengighetsanalysefrontend.consumer.DependencyConsumer;
 
 @RestController

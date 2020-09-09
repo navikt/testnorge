@@ -27,7 +27,7 @@ import no.nav.registre.sdforvalter.consumer.rs.request.SkdRequest;
 import no.nav.registre.sdforvalter.consumer.rs.response.SkdResponse;
 import no.nav.registre.sdforvalter.database.model.TpsIdentModel;
 import no.nav.registre.sdforvalter.database.repository.TpsIdenterRepository;
-import no.nav.registre.testnorge.test.JsonWiremockHelper;
+import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

@@ -38,8 +38,8 @@ public class Organisasjon {
         }
     }
 
-    public no.nav.registre.testnorge.dto.organisasjon.v1.OrganisasjonDTO toDTO(){
-        return no.nav.registre.testnorge.dto.organisasjon.v1.OrganisasjonDTO.builder()
+    public no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO toDTO(){
+        return no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO.builder()
                 .navn(navn)
                 .enhetType(enhetType)
                 .orgnummer(orgnummer)

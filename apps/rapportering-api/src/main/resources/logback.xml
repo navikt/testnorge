@@ -10,12 +10,6 @@
         <root level="INFO">
             <appender-ref ref="stdout_json"/>
         </root>
-        <logger name="no.nav.registre.testnorge.common.log.RequestLog">
-            <level value="TRACE" />
-        </logger>
-        <logger name="no.nav.registre.testnorge.common.log.ResponseLog">
-            <level value="TRACE" />
-        </logger>
     </springProfile>
 
     <springProfile name="dev">
@@ -32,10 +26,7 @@
         </root>
     </springProfile>
 
-    <logger name="no.nav.registre.testnorge.common.log.RequestLog">
-        <level value="TRACE" />
-    </logger>
-    <logger name="no.nav.registre.testnorge.common.log.ResponseLog">
-        <level value="TRACE" />
+    <logger name="no.nav.registre.testnorge.libs.logging.LogRequestInterceptor">
+        <level value="TRACE"/>
     </logger>
 </configuration>

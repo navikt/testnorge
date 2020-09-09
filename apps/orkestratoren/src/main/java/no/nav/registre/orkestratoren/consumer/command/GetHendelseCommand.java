@@ -13,9 +13,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.dto.hendelse.v1.HendelseDTO;
-import no.nav.registre.testnorge.dto.hendelse.v1.HendelseType;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dto.hendelse.v1.HendelseDTO;
+import no.nav.registre.testnorge.libs.dto.hendelse.v1.HendelseType;
 
 @Slf4j
 @DependencyOn("hendelse-api")

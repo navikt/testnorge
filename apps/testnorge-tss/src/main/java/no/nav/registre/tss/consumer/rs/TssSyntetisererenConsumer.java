@@ -1,6 +1,6 @@
 package no.nav.registre.tss.consumer.rs;
 
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.tss.consumer.rs.response.TssMessage;
 import no.nav.registre.tss.domain.Samhandler;
 import org.springframework.beans.factory.annotation.Value;

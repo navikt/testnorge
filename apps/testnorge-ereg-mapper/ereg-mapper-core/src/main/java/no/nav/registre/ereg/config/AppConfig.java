@@ -7,7 +7,7 @@ import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.registere.testnorge.core.ApplicationCoreConfig;
+import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
 
 
 @Configuration

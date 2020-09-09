@@ -8,7 +8,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
-import no.nav.registre.testnorge.avro.report.Report;
+import no.nav.registre.testnorge.libs.avro.report.Report;
 import no.nav.registre.testnorge.rapportering.adapter.ReportAdapter;
 
 @Slf4j

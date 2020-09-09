@@ -6,7 +6,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.person.consumer.command.GetTpsPersonCommand;
 import no.nav.registre.testnorge.person.consumer.dto.tpsf.PersonMiljoeResponse;
 import no.nav.registre.testnorge.person.domain.Person;

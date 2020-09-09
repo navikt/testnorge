@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.2.RELEASE</version>
+        <version>2.3.3.RELEASE</version>
     </parent>
 
     <groupId>no.nav.registre.testnorge</groupId>
@@ -70,6 +70,7 @@
         <commons-csv.version>1.8</commons-csv.version>
         <testnorge-consumers.version>1.12.0-RELEASE</testnorge-consumers.version>
         <starter-webflux.version>2.3.2.RELEASE</starter-webflux.version>
+        <springdoc-openapi.version>1.4.6</springdoc-openapi.version>
     </properties>
 
     <dependencyManagement>
@@ -100,6 +101,11 @@
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger-ui</artifactId>
                 <version>${springfox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-ui</artifactId>
+                <version>${springdoc-openapi.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.oracle.database.jdbc</groupId>

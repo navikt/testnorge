@@ -9,8 +9,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.synt.person.consumer.command.CreatePersonCommand;
+import no.nav.registre.testnorge.libs.common.command.CreatePersonCommand;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
+import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.registre.testnorge.synt.person.consumer.credential.PersonApiClientCredential;
 import no.nav.registre.testnorge.synt.person.domain.Person;
 
 
@@ -18,8 +22,18 @@ import no.nav.registre.testnorge.synt.person.domain.Person;
 @DependencyOn("person-api")
 public class PersonApiConsumer {
     private final WebClient webClient;
+    private final ClientCredential clientCredential;
+    private final AccessTokenService accessTokenService;
 
-    public PersonApiConsumer(@Value("${consumers.personapi.url}") String url, ObjectMapper objectMapper) {
+    public PersonApiConsumer(
+            @Value("${consumers.personapi.url}") String url,
+            ObjectMapper objectMapper,
+            PersonApiClientCredential clientCredential,
+            AccessTokenService accessTokenService
+    ) {
+        this.clientCredential = clientCredential;
+        this.accessTokenService = accessTokenService;
+
         ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
                 .codecs(config -> {
                     config.defaultCodecs()
@@ -36,6 +50,7 @@ public class PersonApiConsumer {
     }
 
     public void createPerson(Person person) {
-        new CreatePersonCommand(webClient, person).run();
+        AccessToken accessToken = accessTokenService.generateToken(clientCredential);
+        new CreatePersonCommand(webClient, person.toDTO(), accessToken.getTokenValue()).run();
     }
 }

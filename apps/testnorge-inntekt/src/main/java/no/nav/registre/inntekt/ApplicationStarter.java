@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import no.nav.registere.testnorge.core.util.VaultUtil;
+import no.nav.registre.testnorge.libs.core.util.VaultUtil;
 
 @Slf4j
 @SpringBootApplication

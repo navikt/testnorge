@@ -5,9 +5,9 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.registre.testnorge.common.command.GetOrganisasjonCommand;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.registre.testnorge.libs.common.command.GetOrganisasjonCommand;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 
 @Component
 @DependencyOn("organisasjon-api")

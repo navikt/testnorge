@@ -1,38 +1,56 @@
 package no.nav.registre.skd.consumer;
 
-import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
+import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriTemplate;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import no.nav.registre.skd.consumer.credential.PersonApiClientCredential;
+import no.nav.registre.testnorge.libs.common.command.CreatePersonCommand;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
+import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 
 
 @Component
-@Slf4j
 @DependencyOn("person-api")
 public class PersonConsumer {
-
-    private final UriTemplate serverUrl;
-
-    private final RestTemplate restTemplate;
+    private final WebClient webClient;
+    private final ClientCredential clientCredential;
+    private final AccessTokenService accessTokenService;
 
     public PersonConsumer(
-            @Value("${person.rest.api.url}") String personApiUrl,
-            RestTemplate restTemplate
+            @Value("${person.rest.api.url}") String url,
+            ObjectMapper objectMapper,
+            PersonApiClientCredential clientCredential,
+            AccessTokenService accessTokenService
     ) {
-        this.serverUrl = new UriTemplate(personApiUrl + "/v1/person");
-        this.restTemplate = restTemplate;
+        this.clientCredential = clientCredential;
+        this.accessTokenService = accessTokenService;
+
+        ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
+                .codecs(config -> {
+                    config.defaultCodecs()
+                            .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper, MediaType.APPLICATION_JSON));
+                    config.defaultCodecs()
+                            .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
+                }).build();
+
+        this.webClient = WebClient
+                .builder()
+                .exchangeStrategies(jacksonStrategy)
+                .baseUrl(url)
+                .build();
     }
 
-    public ResponseEntity<String> leggTilIdentIPdl(PersonDTO person) {
-        var postRequest = RequestEntity.post(serverUrl.expand()).body(person);
-        return restTemplate.exchange(postRequest, String.class);
+    public void createPerson(PersonDTO person) {
+        AccessToken accessToken = accessTokenService.generateToken(clientCredential);
+        new CreatePersonCommand(webClient, person, accessToken.getTokenValue()).run();
     }
-
 }

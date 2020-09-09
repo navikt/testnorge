@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.dto.person.v1.AdresseDTO;
-import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
+import no.nav.registre.testnorge.libs.dto.person.v1.AdresseDTO;
+import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
 import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.Bostedsadresse;
 import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.Data;
 import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.Foedsel;
@@ -45,15 +45,15 @@ import no.nav.registre.testnorge.person.consumer.dto.tpsf.Boadresse;
 import no.nav.registre.testnorge.person.consumer.dto.tpsf.IdentMiljoeRequest;
 import no.nav.registre.testnorge.person.consumer.dto.tpsf.PersonMiljoeResponse;
 import no.nav.registre.testnorge.person.consumer.dto.tpsf.TpsPerson;
-import no.nav.registre.testnorge.test.JsonWiremockHelper;
+import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureWireMock(port = 0)
-@AutoConfigureMockMvc
 @TestPropertySource(
         locations = "classpath:application-test.properties"
 )
+@AutoConfigureMockMvc(addFilters = false)
 public class PersonControllerIntegrationTest {
 
     @Autowired

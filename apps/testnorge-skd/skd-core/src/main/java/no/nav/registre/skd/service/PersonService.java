@@ -3,7 +3,7 @@ package no.nav.registre.skd.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.skd.consumer.PersonConsumer;
-import no.nav.registre.testnorge.dto.person.v1.PersonDTO;
+import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 
@@ -22,7 +22,7 @@ public class PersonService {
 
             for (var ident : identer) {
                 try {
-                    personConsumer.leggTilIdentIPdl(PersonDTO.builder().ident(ident).build());
+                    personConsumer.createPerson(PersonDTO.builder().ident(ident).build());
                 } catch (HttpStatusCodeException e) {
                     log.error("Kunne ikke legge følgende ident til i PDL: {}", ident, e);
                 }

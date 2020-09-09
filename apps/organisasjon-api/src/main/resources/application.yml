@@ -1,10 +1,8 @@
 spring:
   application:
     name: organisasjon-api
-
-application:
-  version: @application.version@
-  name: organisasjon-api
+    version: @application.version@
+    description: "Testnorge organisasjoner API"
 
 ereg:
   url: https://modapp-{miljo}.adeo.no/ereg/api/v1/

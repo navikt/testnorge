@@ -2,7 +2,7 @@
 API for syntetisering av personer
 
 ### Swagger
-Swagger finnes under [/api](https://testnorge-synt-person-api.dev.adeo.no/api) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnorge-synt-person-api.dev.adeo.no/swagger) -endepunktet til applikasjonen.
 
 ### Lokal kjøring
 Kjør SyntSykemeldingApiApplicationStarter med følgende argumenter:

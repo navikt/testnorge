@@ -198,12 +198,18 @@ public class SyntController {
             @ApiParam(value = "Meldegruppe", required = true)
             @PathVariable String meldegruppe,
             @ApiParam(value = "Antall meldinger", required = true)
-            @RequestParam int numToGenerate
+            @RequestParam int numToGenerate,
+            @ApiParam(value = "Verdi som vil overskrive alle ArbeidetTimerSum i meldekort")
+            @RequestParam(required = false) Double arbeidstimer
     ) {
         InputValidator.validateInput(numToGenerate);
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.MELDEGRUPPE, meldegruppe);
+        String url = Objects.isNull(arbeidstimer)
+                ? arenaMeldekortUrl
+                : arenaMeldekortUrl + "?arbeidstimer=" + arbeidstimer;
+
         List<String> response = (List<String>)
-                meldekortConsumer.synthesizeData(UriExpander.createRequestEntity(arenaMeldekortUrl, meldegruppe, numToGenerate));
+                meldekortConsumer.synthesizeData(UriExpander.createRequestEntity(url, meldegruppe, numToGenerate));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);

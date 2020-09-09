@@ -27,13 +27,10 @@
         </root>
     </springProfile>
 
-    <logger name="no.nav.registre.testnorge.common.log.RequestLog">
-        <level value="TRACE"/>
-    </logger>
-    <logger name="no.nav.registre.testnorge.common.log.ResponseLog">
-        <level value="TRACE"/>
-    </logger>
     <logger name="no.nav.registre.testnorge.hendelse.adapter.HendelseAdapter">
+        <level value="TRACE"/>
+    </logger>
+    <logger name="no.nav.registre.testnorge.libs.logging.LogRequestInterceptor">
         <level value="TRACE"/>
     </logger>
 </configuration>
