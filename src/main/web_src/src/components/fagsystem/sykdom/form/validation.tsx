@@ -8,7 +8,8 @@ export const validation = {
 			syntSykemelding: ifPresent(
 				'$sykemelding.syntSykemelding',
 				Yup.object({
-					startDato: requiredDate
+					startDato: requiredDate,
+					orgnummer: requiredString
 				})
 			),
 			detaljertSykemelding: ifPresent(
