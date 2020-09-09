@@ -14,9 +14,6 @@ public class ApplicationStarter {
         if ("prod".equals(System.getProperty("spring.profiles.active"))) {
             VaultUtil.initCloudVaultToken();
         }
-
-        log.info(System.getProperty("spring.profiles.active"));
-        log.info(System.getProperty("spring.cloud.vault.token"));
         SpringApplication.run(ApplicationStarter.class, args);
     }
 }

@@ -1,7 +1,9 @@
-application:
+spring.application:
   version: @application.version@
   name: synt-sykemelding-api
+  description: Api for opprettelse av syntetsike sykemeldinger
 
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
 consumers:
   hodejegeren:
@@ -12,7 +14,9 @@ consumers:
     url: http://synthdata-elsam.q2.svc.nais.local
   sykemelding:
     url: http://testnorge-sykemelding-api.default.svc.nais.local
-  organisasjon:
-    url: http://testnorge-organisasjon-api.default.svc.nais.local
+  organisasjonapi:
+    client_id: ${ORGANISASJON_API_CLIENT_ID}
+    client_secret: ${ORGANISASJON_API_CLIENT_SECRET}
+    url: https://testnorge-organisasjon-api.dev.adeo.no
   arbeidsforhold:
     url: http://testnorge-arbeidsforhold-api.default.svc.nais.local

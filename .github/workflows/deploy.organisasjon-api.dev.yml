@@ -1,8 +1,7 @@
-name: Deploy organisasjon-api
+name: Deploy organisasjon-api-dev
 
 on:
   push:
-    branches: master
     paths:
       - apps/organisasjon-api/**
       - libs/testnorge-core/**
@@ -48,4 +47,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/organisasjon-api/config.yml
+          RESOURCE: apps/organisasjon-api/config.dev.yml
