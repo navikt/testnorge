@@ -30,7 +30,6 @@ import no.nav.dolly.domain.resultset.RsIdentBeskrivelse;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.testperson.IdentAttributesResponse;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.logging.LogExceptions;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.PersonService;
@@ -46,7 +45,6 @@ public class TestpersonController {
     private final IdentService identService;
     private final PersonService personService;
 
-    @LogExceptions
     @ApiOperation(value = "Legge til egenskaper på person/endre person i TPS og øvrige systemer", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     @PutMapping("/{ident}/leggtilpaaperson")
     @ResponseStatus(HttpStatus.OK)
@@ -58,7 +56,6 @@ public class TestpersonController {
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
-    @LogExceptions
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @ApiOperation(value = "Endre status beskrivelse på testperson", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     @PutMapping("/{ident}/beskrivelse")
@@ -68,7 +65,6 @@ public class TestpersonController {
         return mapperFacade.map(identService.save(ident, beskrivelse.getBeskrivelse()), IdentAttributesResponse.class);
     }
 
-    @LogExceptions
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @ApiOperation(value = "Endre status \"i-bruk\" på testperson", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     @PutMapping("/{ident}/ibruk")
@@ -78,7 +74,6 @@ public class TestpersonController {
         return mapperFacade.map(identService.save(ident, iBruk), IdentAttributesResponse.class);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Koble eksisterende personer i Dolly ", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     @PutMapping("/{ident}/relasjon")
     @ResponseStatus(HttpStatus.OK)
@@ -92,7 +87,6 @@ public class TestpersonController {
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Slett test ident", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @Transactional

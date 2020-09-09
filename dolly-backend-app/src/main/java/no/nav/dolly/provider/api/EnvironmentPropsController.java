@@ -10,7 +10,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.resultset.RsDollyProps;
-import no.nav.dolly.logging.LogExceptions;
 import no.nav.dolly.properties.ProvidersProps;
 
 @CrossOrigin
@@ -21,7 +20,6 @@ public class EnvironmentPropsController {
 
     private final ProvidersProps providersProps;
 
-    @LogExceptions
     @GetMapping
     @ApiOperation(value = "Hent URL til applikasjonene er integrert mot", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public RsDollyProps getEnvironmentProps() {

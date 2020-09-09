@@ -38,7 +38,6 @@ import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
-import no.nav.dolly.logging.LogExceptions;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.TestgruppeService;
 
@@ -56,7 +55,6 @@ public class TestgruppeController {
     private final OpprettPersonerByKriterierService opprettPersonerByKriterierService;
     private final OpprettPersonerFraIdenterMedKriterierService opprettPersonerFraIdenterMedKriterierService;
 
-    @LogExceptions
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @Transactional
     @PutMapping(value = "/{gruppeId}")
@@ -66,7 +64,6 @@ public class TestgruppeController {
         return mapperFacade.map(gruppe, RsTestgruppeMedBestillingId.class);
     }
 
-    @LogExceptions
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @Transactional
     @PutMapping(value = "/{gruppeId}/laas")
@@ -78,7 +75,6 @@ public class TestgruppeController {
         return mapperFacade.map(gruppe, RsTestgruppe.class);
     }
 
-    @LogExceptions
     @CacheEvict(value = { CACHE_GRUPPE }, allEntries = true)
     @PostMapping
     @Transactional
@@ -89,7 +85,6 @@ public class TestgruppeController {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppe.getId()), RsTestgruppeMedBestillingId.class);
     }
 
-    @LogExceptions
     @Cacheable(CACHE_GRUPPE)
     @GetMapping("/{gruppeId}")
     @ApiOperation(value = "Hent testgruppe", authorizations = { @Authorization(value = "Bearer token fra bruker") })
@@ -97,7 +92,6 @@ public class TestgruppeController {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppeMedBestillingId.class);
     }
 
-    @LogExceptions
     @Cacheable(CACHE_GRUPPE)
     @GetMapping
     @ApiOperation(value = "Hent testgrupper", authorizations = { @Authorization(value = "Bearer token fra bruker") })
@@ -106,7 +100,6 @@ public class TestgruppeController {
         return mapperFacade.mapAsList(testgruppeService.getTestgruppeByBrukerId(brukerId), RsTestgruppe.class);
     }
 
-    @LogExceptions
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @Transactional
     @DeleteMapping("/{gruppeId}")
@@ -116,7 +109,6 @@ public class TestgruppeController {
         testgruppeService.deleteGruppeById(gruppeId);
     }
 
-    @LogExceptions
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling")
@@ -128,7 +120,6 @@ public class TestgruppeController {
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Opprett berikede testpersoner basert på eskisterende identer", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
@@ -141,7 +132,6 @@ public class TestgruppeController {
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Importere testpersoner fra TPS og legg til berikning non-TPS artifacter", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
@@ -154,7 +144,6 @@ public class TestgruppeController {
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
-    @LogExceptions
     @ApiOperation(value = "Legg til berikning på alle i gruppe", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @ResponseStatus(HttpStatus.OK)

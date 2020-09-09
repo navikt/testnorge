@@ -24,7 +24,6 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
-import no.nav.dolly.logging.LogExceptions;
 import no.nav.dolly.service.BrukerService;
 
 @Transactional
@@ -36,7 +35,6 @@ public class BrukerController {
     private final BrukerService brukerService;
     private final MapperFacade mapperFacade;
 
-    @LogExceptions
     @Cacheable(CACHE_BRUKER)
     @GetMapping("/{brukerId}")
     @ApiOperation(value = "Hent Bruker med brukerId", authorizations = { @Authorization(value = "Bearer token fra bruker") })
@@ -45,7 +43,6 @@ public class BrukerController {
         return mapperFacade.map(bruker, RsBrukerAndGruppeId.class);
     }
 
-    @LogExceptions
     @GetMapping("/current")
     @ApiOperation(value = "Hent pålogget Bruker", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public RsBruker getCurrentBruker() {
@@ -53,7 +50,6 @@ public class BrukerController {
         return mapperFacade.map(bruker, RsBruker.class);
     }
 
-    @LogExceptions
     @Cacheable(CACHE_BRUKER)
     @GetMapping
     @ApiOperation(value = "Hent alle Brukerne", authorizations = { @Authorization(value = "Bearer token fra bruker") })
@@ -61,7 +57,6 @@ public class BrukerController {
         return mapperFacade.mapAsList(brukerService.fetchBrukere(), RsBrukerAndGruppeId.class);
     }
 
-    @LogExceptions
     @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
     @PutMapping("/leggTilFavoritt")
     @ApiOperation(value = "Legg til Favoritt-testgruppe til pålogget Bruker", authorizations = { @Authorization(value = "Bearer token fra bruker") })
@@ -69,7 +64,6 @@ public class BrukerController {
         return mapperFacade.map(brukerService.leggTilFavoritt(request.getGruppeId()), RsBruker.class);
     }
 
-    @LogExceptions
     @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
     @PutMapping("/fjernFavoritt")
     @ApiOperation(value = "Fjern Favoritt-testgruppe fra pålogget Bruker", authorizations = { @Authorization(value = "Bearer token fra bruker") })
