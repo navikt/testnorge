@@ -7,6 +7,7 @@ import LoadableComponent, { Feilmelding } from '~/components/ui/loading/Loadable
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { ErrorMessage, FastField } from 'formik'
 import { FormikField } from '~/components/ui/form/FormikField'
+import Icon from '~/components/ui/icon/Icon'
 
 interface JournalpostId {
 	system: string
@@ -35,11 +36,13 @@ export default ({ system, ident }: JournalpostId) => (
 				<DollyFieldArray data={[error]} header="Journalpost-Id" nested>
 					{() => (
 						<div className="person-visning_content">
-							<TitleValue
-								title="Feil"
-								value={'Noe gikk feil ved henting av JournalpostId, kontakt team Dolly!'}
-							/>
-							<TitleValue title="Detaljert Feil" value={error} />
+							<TitleValue>
+								<Icon kind="report-problem-triangle" size={48} />
+							</TitleValue>
+							<TitleValue title="Info">
+								{'Noe gikk feil ved henting av JournalpostId, kontakt team Dolly!'}
+							</TitleValue>
+							<TitleValue title="Detaljert Feil">{error}</TitleValue>
 						</div>
 					)}
 				</DollyFieldArray>

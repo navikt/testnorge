@@ -24,6 +24,7 @@ const LoadableComponent = ({ onFetch, render, renderOnError }: LoadableComponent
 			})
 	}, [])
 
+	console.log(error)
 	if (error) {
 		return renderOnError ? (
 			renderOnError(error.toString())
