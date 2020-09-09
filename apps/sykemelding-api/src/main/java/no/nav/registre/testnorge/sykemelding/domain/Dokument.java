@@ -13,12 +13,13 @@ class Dokument {
 
         var aktivitet = new Aktivitet(dto.getPerioder(), dto.getManglendeTilretteleggingPaaArbeidsplassen());
         var fom = Aktivitet.getFom(aktivitet.getXmlObject());
+        var fomIArbeid = Aktivitet.getFomIArbeid(aktivitet.getXmlObject());
 
         var pasient = new Pasient(dto.getPasient(), dto.getLege());
         var arbeidsgiver = new Arbeidsgiver(dto.getArbeidsgiver());
         var medisinskVurdering = new MedisinskVurdering(fom, dto.getHovedDiagnose(), dto.getBiDiagnoser());
 
-        var prognose = new Prognose(fom, dto.getDetaljer());
+        var prognose = new Prognose(fomIArbeid, dto.getDetaljer());
         var lege = new Lege(dto.getLege());
 
         xmlHelseOpplysningerArbeidsuforhet = new XMLHelseOpplysningerArbeidsuforhet()
