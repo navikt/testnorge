@@ -4,8 +4,9 @@ metadata:
   name: dolly-backend
   namespace: t2
   labels:
-    team: registre
+    team: dolly
 spec:
+  image: {{ image }}
   replicas:
     min: 1
     max: 2

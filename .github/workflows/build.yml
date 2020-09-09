@@ -32,3 +32,10 @@ jobs:
           USERNAME: token
           TOKEN: ${{ secrets.NAV_TOKEN }}
         run: mvn --settings maven-settings.xml package -Dmaven.test.skip
+      - name: Analyse code with SonarCloud
+        env:
+          GITHUB_USERNAME: token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_LOGIN: ${{ secrets.SONAR_TOKEN }}
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+        run: mvn --settings maven-settings.xml sonar:sonar
