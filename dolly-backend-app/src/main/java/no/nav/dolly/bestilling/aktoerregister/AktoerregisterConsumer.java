@@ -6,7 +6,7 @@ import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_PERSON_IDENTER;
-import static org.apache.cxf.helpers.HttpHeaderHelper.AUTHORIZATION;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.net.URI;
 import java.util.Map;

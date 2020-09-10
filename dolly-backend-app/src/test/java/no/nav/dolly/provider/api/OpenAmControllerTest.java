@@ -16,9 +16,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
@@ -41,9 +39,6 @@ public class OpenAmControllerTest {
     private static final String MILJOE1 = "t0";
     private static final String MILJOE2 = "t1";
     private static final Long BESTILLING_ID = 1L;
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @Mock
     private OpenAmService openAmService;

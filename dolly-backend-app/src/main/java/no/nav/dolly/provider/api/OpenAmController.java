@@ -6,7 +6,6 @@ import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;

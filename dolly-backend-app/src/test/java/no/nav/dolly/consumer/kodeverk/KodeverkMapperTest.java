@@ -3,22 +3,21 @@ package no.nav.dolly.consumer.kodeverk;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
-import static org.junit.Assert.assertThat;
-
-import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
-import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
-import no.nav.tjenester.kodeverk.api.v1.Beskrivelse;
-import no.nav.tjenester.kodeverk.api.v1.Betydning;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.junit.Before;
+import org.junit.Test;
+
+import no.nav.dolly.consumer.kodeverk.domain.Beskrivelse;
+import no.nav.dolly.consumer.kodeverk.domain.Betydning;
+import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 
 public class KodeverkMapperTest {
 
