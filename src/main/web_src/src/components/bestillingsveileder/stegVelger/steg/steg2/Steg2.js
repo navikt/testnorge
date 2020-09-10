@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import * as Yup from 'yup'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { harAvhukedeAttributter } from '~/components/bestillingsveileder/utils'
+import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { TpsfForm } from '~/components/fagsystem/tpsf/form/Form'
 import { KrrstubForm } from '~/components/fagsystem/krrstub/form/Form'
 import { SigrunstubForm } from '~/components/fagsystem/sigrunstub/form/Form'
@@ -18,12 +19,15 @@ import { DokarkivForm } from '~/components/fagsystem/dokarkiv/form/Form'
 import { SykdomForm } from '~/components/fagsystem/sykdom/form/Form'
 
 export const Steg2 = ({ formikBag }) => {
+	const opts = useContext(BestillingsveilederContext)
+	const leggTil = opts.is.leggTil
+
 	if (!harAvhukedeAttributter(formikBag.values)) {
-		return (
-			<AlertStripeInfo>
-				Du har ikke valgt noen egenskaper. Dolly oppretter personer med tilfeldige verdier.
-			</AlertStripeInfo>
-		)
+		const message = leggTil
+			? 'Du har ikke lagt til flere egenskaper. Dolly vil opprette den samme personen i miljøene du velger i neste steg.'
+			: 'Du har ikke valgt noen egenskaper. Dolly oppretter personer med tilfeldige verdier.'
+
+		return <AlertStripeInfo>{message}</AlertStripeInfo>
 	}
 
 	return (
