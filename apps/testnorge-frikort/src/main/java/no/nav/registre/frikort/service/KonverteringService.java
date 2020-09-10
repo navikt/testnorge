@@ -2,6 +2,7 @@ package no.nav.registre.frikort.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.frikort.consumer.rs.response.SyntFrikortResponseDTO;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBException;
@@ -14,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import no.nav.registre.frikort.consumer.rs.response.SyntFrikortResponse;
 import no.nav.registre.frikort.domain.xml.Borger;
 import no.nav.registre.frikort.domain.xml.Egenandel;
 import no.nav.registre.frikort.domain.xml.EgenandelListe;
@@ -32,7 +32,7 @@ public class KonverteringService {
     private final Random rand;
 
     public List<String> konverterEgenandelerTilXmlString(
-            Map<String, List<SyntFrikortResponse>> egenandeler,
+            Map<String, List<SyntFrikortResponseDTO>> egenandeler,
             List<PersondataResponse> samhandlerePersondata
     ) throws JAXBException {
         try {
@@ -51,7 +51,7 @@ public class KonverteringService {
     }
 
     private List<Egenandelsmelding> lagEgenandelsmeldingListe(
-            Map<String, List<SyntFrikortResponse>> egenandeler,
+            Map<String, List<SyntFrikortResponseDTO>> egenandeler,
             List<PersondataResponse> samhandlerePersondata
     ) {
         var egenandelsmeldingListe = new ArrayList<Egenandelsmelding>();
@@ -79,7 +79,7 @@ public class KonverteringService {
     }
 
     private EgenandelListe lagEgenandelsListe(
-            SyntFrikortResponse res,
+            SyntFrikortResponseDTO res,
             String id
     ) {
         var egenandelListe = new ArrayList<Egenandel>();
@@ -103,7 +103,7 @@ public class KonverteringService {
     }
 
     private SamhandlerListe lagSamhandlerListe(
-            SyntFrikortResponse res,
+            SyntFrikortResponseDTO res,
             EgenandelListe listeAvEgenandeler,
             List<PersondataResponse> samhandlerePersondata
     ) {
