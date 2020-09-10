@@ -1,13 +1,16 @@
 package no.nav.dolly.bestilling.sykemelding;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -34,6 +37,8 @@ import no.nav.dolly.service.TransaksjonMappingService;
 @Service
 @RequiredArgsConstructor
 public class SykemeldingClient implements ClientRegister {
+
+    private static final String STANDARD_ARBEIDSFORHOLD_ID = "1";
 
     private final SykemeldingConsumer sykemeldingConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
@@ -80,9 +85,9 @@ public class SykemeldingClient implements ClientRegister {
         if (nonNull(bestilling.getSykemelding().getDetaljertSykemelding())) {
             Person pasient = tpsPerson.getPerson(tpsPerson.getHovedperson());
             DetaljertSykemeldingRequest detaljertSykemeldingRequest = mapperFacade.map(BestillingPersonWrapper.builder()
-                            .person(pasient)
-                            .sykemelding(bestilling.getSykemelding().getDetaljertSykemelding())
-                            .build(),
+                    .person(pasient)
+                    .sykemelding(bestilling.getSykemelding().getDetaljertSykemelding())
+                    .build(),
                     DetaljertSykemeldingRequest.class);
 
             ResponseEntity<String> responseDetaljert = sykemeldingConsumer.postDetaljertSykemelding(detaljertSykemeldingRequest);
@@ -96,6 +101,9 @@ public class SykemeldingClient implements ClientRegister {
         if (nonNull(bestilling.getSykemelding().getSyntSykemelding())) {
             SyntSykemeldingRequest syntSykemeldingRequest = mapperFacade.map(bestilling.getSykemelding().getSyntSykemelding(), SyntSykemeldingRequest.class);
             syntSykemeldingRequest.setIdent(tpsPerson.getHovedperson());
+            if (isNull(syntSykemeldingRequest.getArbeidsforholdId())) {
+                syntSykemeldingRequest.setArbeidsforholdId(STANDARD_ARBEIDSFORHOLD_ID);
+            }
 
             ResponseEntity<String> response = sykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest);
             return HttpStatus.OK.equals(response.getStatusCode());
