@@ -2,7 +2,7 @@ apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
   name: dolly-backend
-  namespace: u2
+  namespace: dev
   labels:
     team: dolly
 spec:
@@ -12,7 +12,7 @@ spec:
     max: 2
   port: 8080
   ingresses:
-    - https://dolly-backend-u2.nais.preprod.local
+    - https://dolly-backend-dev.nais.preprod.local
   liveness:
     path: /internal/isAlive
     initialDelay: 20

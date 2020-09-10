@@ -2,7 +2,7 @@ name: Deploy dev u2
 
 on:
   push:
-    branches: master
+    branches: paalogging-vha-azure-ad
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/dolly-backend:${{ github.sha }}
@@ -50,4 +50,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: nais_dev-fss_u2_template.yaml
+          RESOURCE: nais_dev-fss_dev_template.yaml
