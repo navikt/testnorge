@@ -6,6 +6,10 @@ metadata:
   labels:
     team: dolly
 spec:
+  webproxy: true
+  azure:
+    application:
+      enabled: true
   image: {{ image }}
   replicas:
     min: 1
