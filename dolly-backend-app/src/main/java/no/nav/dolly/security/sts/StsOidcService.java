@@ -27,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.properties.CredentialsProps;
 import no.nav.dolly.properties.Environment;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @Service
 @RequiredArgsConstructor

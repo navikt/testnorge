@@ -67,10 +67,10 @@
             <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- FREG SECURITY -->
+
         <dependency>
-            <groupId>no.nav.freg</groupId>
-            <artifactId>freg-security-oidc</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
         </dependency>
 
         <dependency>
