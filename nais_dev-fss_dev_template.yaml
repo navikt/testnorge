@@ -1,8 +1,8 @@
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-  name: dolly-backend
-  namespace: dev
+  name: dolly-backend-dev
+  namespace: dolly
   labels:
     team: dolly
 spec:
@@ -12,7 +12,7 @@ spec:
     max: 2
   port: 8080
   ingresses:
-    - https://dolly-backend-dev.nais.preprod.local
+    - https://dolly-backend-dev.dev.adeo.no
   liveness:
     path: /internal/isAlive
     initialDelay: 20
@@ -36,7 +36,7 @@ spec:
   vault:
     enabled: true
     paths:
-      - kvPath: /kv/preprod/fss/dolly-backend/u2
+      - kvPath: /kv/preprod/fss/dolly-backend-dev/dolly
         mountPath: /var/run/secrets/nais.io/vault
       - kvPath: /oracle/data/dev/creds/dolly_u2-user
         mountPath: /var/run/secrets/nais.io/db
