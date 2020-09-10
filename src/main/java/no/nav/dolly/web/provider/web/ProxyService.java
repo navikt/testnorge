@@ -2,25 +2,22 @@ package no.nav.dolly.web.provider.web;
 
 import static java.lang.String.format;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.Enumeration;
-import java.util.UUID;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.codec.EncodingException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import lombok.RequiredArgsConstructor;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.Enumeration;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -37,8 +34,8 @@ public class ProxyService {
             HttpHeaders headers,
             String requestUrl) {
 
-        OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + auth.getIdToken());
+        //OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
+        //headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + auth.getIdToken());
 
         if (headers.get(NAV_CALL_ID) == null) {
             headers.add(NAV_CALL_ID, String.valueOf(UUID.randomUUID()));

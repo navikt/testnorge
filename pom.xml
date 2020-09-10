@@ -26,7 +26,6 @@
         <sonar-maven-plugin.version>3.7.0.1746</sonar-maven-plugin.version>
         <jsoup.version>1.11.3</jsoup.version>
         <logstash-logback-encoder.version>6.0</logstash-logback-encoder.version>
-        <freg-security-oidc.version>2c24d35d</freg-security-oidc.version>
         <spring-cloud-dependencies.version>Hoxton.SR6</spring-cloud-dependencies.version>
         <commons-lang3.version>3.11</commons-lang3.version>
         <papertrailapp.version>1.0.0</papertrailapp.version>
@@ -83,14 +82,17 @@
             <version>${jsoup.version}</version>
         </dependency>
         <dependency>
-            <groupId>no.nav.freg</groupId>
-            <artifactId>freg-security-oidc</artifactId>
-            <version>${freg-security-oidc.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${commons-lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-client</artifactId>
         </dependency>
     </dependencies>
 

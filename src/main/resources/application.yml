@@ -1,26 +1,25 @@
+dolly.url: ${DOLLY_URL}
+
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 server:
   use-forward-headers: true
 
-app:
-  name: dolly
-  securedPath: /**
-  ignoredPaths: /internal/**
-
-freg:
-  security.oidc:
-    idp:
-      openAm:
-        loginUrl: ${freg.security.oidc.idp.openAm.hostUrl}/oauth2/authorize
-        authorizationUrl: ${freg.security.oidc.idp.openAm.hostUrl}/oauth2/access_token
-    auth:
-      securedPath: ${app.securedPath}
-      ignoredPaths: ${app.ignoredPaths}
-      codeFlow:
-        enabled: true
-        login-path: /dolly/login
-      idToken:
-        refresh-on-seconds-left: 300
-        cookie-enabled: true
-        header-enabled: false
-        validation:
-          type: refreshing
+spring:
+  cloud:
+    vault:
+      enabled: false
+  security:
+    oauth2:
+      client:
+        registration:
+          aad:
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_SECRET}
+            authorization-grant-type: authorization_code
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            scope: openid, ${CLIENT_ID}/.default
+        provider:
+          aad:
+            authorization-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/authorize
+            token-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/token
+            jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
