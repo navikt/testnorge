@@ -39,8 +39,8 @@ import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 @TestPropertySource(locations = "classpath:application-test.properties")
 class HelsepersonellControllerIntegrationTest {
 
-    @Value("${avspillingsgruppe.leger.id}")
-    private Integer legerAvspillergruppeId;
+    @Value("${avspillingsgruppe.helsepersonell.id}")
+    private Integer helsepersonellAvspillergruppeId;
 
     @Autowired
     private MockMvc mvc;
@@ -53,13 +53,13 @@ class HelsepersonellControllerIntegrationTest {
 
         String firstPersonIdent = "12125678903";
         String secondPersonIdent = "09126543211";
-        List<String> leger = Arrays.asList(firstPersonIdent, secondPersonIdent);
+        List<String> helsepersonell = Arrays.asList(firstPersonIdent, secondPersonIdent);
 
 
         JsonWiremockHelper
                 .builder(objectMapper)
-                .withUrlPathMatching("(.*)/v1/alle-identer/" + legerAvspillergruppeId)
-                .withResponseBody(leger)
+                .withUrlPathMatching("(.*)/v1/alle-identer/" + helsepersonellAvspillergruppeId)
+                .withResponseBody(helsepersonell)
                 .stubGet();
 
         JsonWiremockHelper

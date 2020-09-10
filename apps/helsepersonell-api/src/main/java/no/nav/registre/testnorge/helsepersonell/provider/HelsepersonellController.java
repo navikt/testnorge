@@ -18,22 +18,22 @@ import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.HelsepersonellListeD
 public class HelsepersonellController {
 
     private final HelsepersonellAdapter adapter;
-    private final Integer legerCacheHours;
+    private final Integer helsepersonellCacheHours;
 
 
     public HelsepersonellController(
             HelsepersonellAdapter adapter,
-            @Value("${helsepersonell.controller.leger.cache.hours}") Integer legerCacheHours
+            @Value("${helsepersonell.controller.cache.hours}") Integer helsepersonellCacheHours
     ) {
         this.adapter = adapter;
-        this.legerCacheHours = legerCacheHours;
+        this.helsepersonellCacheHours = helsepersonellCacheHours;
     }
 
     @GetMapping
     public ResponseEntity<HelsepersonellListeDTO> getHelsepersonell() {
 
         var cacheControl
-                = CacheControl.maxAge(legerCacheHours, TimeUnit.HOURS)
+                = CacheControl.maxAge(helsepersonellCacheHours, TimeUnit.HOURS)
                 .noTransform()
                 .mustRevalidate();
         var helsepersonell = adapter.getHelsepersonell();

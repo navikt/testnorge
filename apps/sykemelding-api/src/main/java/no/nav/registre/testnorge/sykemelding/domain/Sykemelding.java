@@ -44,7 +44,7 @@ public class Sykemelding {
         head.getMsgInfo().setGenDate(LocalDateTime.now());
         head.getMsgInfo().setMsgId(UUID.randomUUID().toString());
 
-        updateOrganisation(head.getMsgInfo().getSender().getOrganisation(), dto.getSender(), dto.getLege());
+        updateOrganisation(head.getMsgInfo().getSender().getOrganisation(), dto.getSender(), dto.getHelsepersonell());
         updateOrganisation(head.getMsgInfo().getReceiver().getOrganisation(), dto.getMottaker());
         updatePatient(head.getMsgInfo().getPatient(), dto.getPasient());
         var dokument = new Dokument(dto, applicationInfo);
@@ -56,7 +56,7 @@ public class Sykemelding {
 
         var xmlMottakenhetBlokk = getXMLMottakenhetBlokk();
         xmlMottakenhetBlokk.setEdiLoggId(UUID.randomUUID().toString());
-        xmlMottakenhetBlokk.setAvsenderFnrFraDigSignatur(dto.getLege().getIdent());
+        xmlMottakenhetBlokk.setAvsenderFnrFraDigSignatur(dto.getHelsepersonell().getIdent());
         xmlMottakenhetBlokk.setMottattDatotid(
                 DatatypeFactory.newInstance().newXMLGregorianCalendar(
                         GregorianCalendar.from(dto.getStartDato().atStartOfDay(ZoneId.systemDefault()))

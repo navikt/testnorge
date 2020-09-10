@@ -21,8 +21,8 @@ public class HelsepersonellListe {
     }
 
     public Helsepersonell getRandomLege() {
-        var lege = list.get(random.nextInt(list.size()));
-        log.info("Valgt tilfeldig lege {}", lege.getIdent());
-        return lege;
+        var helsepersonell = list.get(random.nextInt(list.size()));
+        log.info("Valgt tilfeldig helsepersonell {}", helsepersonell.getIdent());
+        return helsepersonell;
     }
 }

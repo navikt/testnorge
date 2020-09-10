@@ -28,14 +28,14 @@ public class HelsepersonellConsumer {
     }
 
     @SneakyThrows
-    public HelsepersonellListe hentLeger() {
-        log.info("Henter leger...");
+    public HelsepersonellListe hentHelsepersonell() {
+        log.info("Henter helsepersonell...");
         var dto = restTemplate.exchange(RequestEntity.get(new URI(url)).build(), HelsepersonellListeDTO.class).getBody();
 
         if (dto == null) {
-            throw new LegerNotFoundException("Klarer ikke å hente leger fra helsepersonell-api");
+            throw new LegerNotFoundException("Klarer ikke å hente helsepersonell fra helsepersonell-api");
         }
-        log.info("{} leger hentet", dto.getHelsepersonell().size());
+        log.info("{} helsepersonell hentet", dto.getHelsepersonell().size());
         return new HelsepersonellListe(dto);
     }
 }

@@ -121,7 +121,7 @@ public class Sykemelding {
                 .arbeidsgiver(arbeidsgiverDTO)
                 .biDiagnoser(biDiagnoser)
                 .hovedDiagnose(hovedDiagnose)
-                .lege(helsepersonell.toDTO())
+                .helsepersonell(helsepersonell.toDTO())
                 .mottaker(mottaker)
                 .pasient(pasient)
                 .perioder(perioder)

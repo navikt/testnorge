@@ -27,7 +27,7 @@ public class HodejegerenConsumer {
     public HodejegerenConsumer(
             @Value("${hodejegeren.api.url}") String url,
             @Value("${hodejegeren.api.threads}") Integer threads,
-            @Value("${avspillingsgruppe.leger.id}") Long helsepersonellAvspillingsgruppeId
+            @Value("${avspillingsgruppe.helsepersonell.id}") Long helsepersonellAvspillingsgruppeId
     ) {
         this.webClient = WebClient.builder().baseUrl(url).build();
         this.executor = Executors.newFixedThreadPool(threads);
