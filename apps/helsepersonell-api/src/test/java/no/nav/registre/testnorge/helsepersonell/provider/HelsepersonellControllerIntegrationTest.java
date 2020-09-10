@@ -23,12 +23,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.LegeDTO;
-import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.LegeListeDTO;
+import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.HelsepersonellDTO;
+import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
 import no.nav.registre.testnorge.libs.dto.hodejegeren.v1.PersondataDTO;
 import no.nav.registre.testnorge.libs.dto.samhandlerregisteret.v1.IdentDTO;
 import no.nav.registre.testnorge.libs.dto.samhandlerregisteret.v1.SamhandlerDTO;
 import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -48,7 +49,7 @@ class HelsepersonellControllerIntegrationTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void should_get_leger_with_hpr_id() throws Exception {
+    void should_get_helsepersonell_with_hpr_id() throws Exception {
 
         String firstPersonIdent = "12125678903";
         String secondPersonIdent = "09126543211";
@@ -137,17 +138,17 @@ class HelsepersonellControllerIntegrationTest {
                 .stubGet();
 
 
-        String json = mvc.perform(get("/api/v1/helsepersonell/leger")
+        String json = mvc.perform(get("/api/v1/helsepersonell")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
-        LegeListeDTO actual = objectMapper.readValue(json, LegeListeDTO.class);
+        HelsepersonellListeDTO actual = objectMapper.readValue(json, HelsepersonellListeDTO.class);
 
-        assertThat(actual.getLeger()).containsOnly(
-                LegeDTO.builder().fornavn("Hans").etternavn("Hansen").fnr(firstPersonIdent).hprId("54321").build(),
-                LegeDTO.builder().fornavn("Berg").mellomnavn("Skog").etternavn("Fjell").fnr(secondPersonIdent).hprId("12345").build()
+        assertThat(actual.getHelsepersonell()).containsOnly(
+                HelsepersonellDTO.builder().fornavn("Hans").etternavn("Hansen").fnr(firstPersonIdent).hprId("54321").samhandlerType("LE").build(),
+                HelsepersonellDTO.builder().fornavn("Berg").mellomnavn("Skog").etternavn("Fjell").fnr(secondPersonIdent).hprId("12345").samhandlerType("LE").build()
         );
     }
 

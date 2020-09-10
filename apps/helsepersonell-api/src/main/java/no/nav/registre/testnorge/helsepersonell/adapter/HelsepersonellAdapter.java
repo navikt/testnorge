@@ -12,8 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.testnorge.helsepersonell.consumer.HodejegerenConsumer;
 import no.nav.registre.testnorge.helsepersonell.consumer.SamhandlerregisteretConsumer;
-import no.nav.registre.testnorge.helsepersonell.domain.Lege;
-import no.nav.registre.testnorge.helsepersonell.domain.LegeListe;
+import no.nav.registre.testnorge.helsepersonell.domain.Helsepersonell;
+import no.nav.registre.testnorge.helsepersonell.domain.HelsepersonellListe;
 import no.nav.registre.testnorge.helsepersonell.domain.Samhandler;
 import no.nav.registre.testnorge.helsepersonell.exception.UgyldigSamhandlerException;
 
@@ -33,22 +33,22 @@ public class HelsepersonellAdapter {
                         return value.get();
                     } catch (Exception e) {
                         log.error("Klarer ikke å hente samhandler", e);
-                        throw new UgyldigSamhandlerException("Feil ved opprettelse av lege");
+                        throw new UgyldigSamhandlerException("Feil ved opprettelse av helsepersonell");
                     }
                 })
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
 
-    public LegeListe getLeger() {
-        Set<String> leger = hodejegerenConsumer.getLeger();
-        List<Samhandler> samhandlere = getSamhandlere(leger)
+    public HelsepersonellListe getHelsepersonell() {
+        Set<String> helsepersonell = hodejegerenConsumer.getHelsepersonell();
+        List<Samhandler> samhandlere = getSamhandlere(helsepersonell)
                 .stream()
                 .filter(Samhandler::isMulighetForAaLageSykemelding)
                 .collect(Collectors.toList());
 
-        return new LegeListe(samhandlere.stream()
-                .map(samhandler -> new Lege(
+        return new HelsepersonellListe(samhandlere.stream()
+                .map(samhandler -> new Helsepersonell(
                         samhandler,
                         hodejegerenConsumer.getPersondata(samhandler.getIdent())))
                 .distinct()

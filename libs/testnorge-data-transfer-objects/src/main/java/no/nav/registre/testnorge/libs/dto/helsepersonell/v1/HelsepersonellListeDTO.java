@@ -10,7 +10,7 @@ import java.util.List;
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class LegeListeDTO {
+public class HelsepersonellListeDTO {
     @JsonProperty
-    private final List<LegeDTO> leger;
+    private final List<HelsepersonellDTO> helsepersonell;
 }

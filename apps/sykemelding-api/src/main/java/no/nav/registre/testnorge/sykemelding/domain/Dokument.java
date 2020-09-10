@@ -20,7 +20,7 @@ class Dokument {
         var medisinskVurdering = new MedisinskVurdering(fom, dto.getHovedDiagnose(), dto.getBiDiagnoser());
 
         var prognose = new Prognose(fomIArbeid, dto.getDetaljer());
-        var lege = new Lege(dto.getLege());
+        var lege = new Helsepersonell(dto.getLege());
 
         xmlHelseOpplysningerArbeidsuforhet = new XMLHelseOpplysningerArbeidsuforhet()
                 .withSyketilfelleStartDato(dto.getStartDato())

@@ -2,6 +2,16 @@ package no.nav.registre.testnorge.sykemelding.domain;
 
 import lombok.SneakyThrows;
 import lombok.ToString;
+
+import javax.xml.datatype.DatatypeFactory;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.UUID;
+
 import no.nav.helse.eiFellesformat.XMLEIFellesformat;
 import no.nav.helse.eiFellesformat.XMLMottakenhetBlokk;
 import no.nav.helse.msgHead.XMLAddress;
@@ -12,21 +22,12 @@ import no.nav.helse.msgHead.XMLMsgHead;
 import no.nav.helse.msgHead.XMLOrganisation;
 import no.nav.helse.msgHead.XMLPatient;
 import no.nav.registre.testnorge.libs.dto.sykemelding.v1.AdresseDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.LegeDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.HelsepersonellDTO;
 import no.nav.registre.testnorge.libs.dto.sykemelding.v1.OrganisasjonDTO;
 import no.nav.registre.testnorge.libs.dto.sykemelding.v1.PasientDTO;
 import no.nav.registre.testnorge.libs.dto.sykemelding.v1.SykemeldingDTO;
 import no.nav.registre.testnorge.sykemelding.util.JAXBSykemeldingConverter;
 import no.nav.registre.testnorge.sykemelding.util.StaticResourceLoader;
-
-import javax.xml.datatype.DatatypeFactory;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.UUID;
 
 @ToString
 public class Sykemelding {
@@ -84,18 +85,18 @@ public class Sykemelding {
         }
     }
 
-    private void updateOrganisation(XMLOrganisation organisation, OrganisasjonDTO dto, LegeDTO legeDTO) {
+    private void updateOrganisation(XMLOrganisation organisation, OrganisasjonDTO dto, HelsepersonellDTO helsepersonellDTO) {
         organisation.setOrganisationName(dto.getNavn());
 
-        if (legeDTO != null) {
+        if (helsepersonellDTO != null) {
             XMLHealthcareProfessional healthcareProfessional = organisation.getHealthcareProfessional();
-            healthcareProfessional.setFamilyName(legeDTO.getEtternavn());
-            healthcareProfessional.setGivenName(legeDTO.getFornavn());
-            healthcareProfessional.setMiddleName(legeDTO.getMellomnavn());
+            healthcareProfessional.setFamilyName(helsepersonellDTO.getEtternavn());
+            healthcareProfessional.setGivenName(helsepersonellDTO.getFornavn());
+            healthcareProfessional.setMiddleName(helsepersonellDTO.getMellomnavn());
             XMLIdent hpr = getXMLIdent(healthcareProfessional.getIdent(), "HPR");
-            hpr.setId(legeDTO.getHprId());
+            hpr.setId(helsepersonellDTO.getHprId());
             XMLIdent fnr = getXMLIdent(healthcareProfessional.getIdent(), "FNR");
-            fnr.setId(legeDTO.getIdent());
+            fnr.setId(helsepersonellDTO.getIdent());
             organisation.setHealthcareProfessional(healthcareProfessional);
         }
 

@@ -1,19 +1,18 @@
 package no.nav.registre.testnorge.synt.sykemelding.consumer;
 
-import java.net.URI;
-
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import java.net.URI;
 
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.LegeListeDTO;
-import no.nav.registre.testnorge.synt.sykemelding.domain.LegeListe;
+import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
+import no.nav.registre.testnorge.synt.sykemelding.domain.HelsepersonellListe;
 import no.nav.registre.testnorge.synt.sykemelding.exception.LegerNotFoundException;
 
 @Slf4j
@@ -25,18 +24,18 @@ public class HelsepersonellConsumer {
 
     public HelsepersonellConsumer(RestTemplateBuilder restTemplateBuilder, @Value("${consumers.helsepersonell.url}") String url) {
         this.restTemplate = restTemplateBuilder.build();
-        this.url = url + "/api/v1/helsepersonell/leger";
+        this.url = url + "/api/v1/helsepersonell";
     }
 
     @SneakyThrows
-    public LegeListe hentLeger() {
+    public HelsepersonellListe hentLeger() {
         log.info("Henter leger...");
-        var dto = restTemplate.exchange(RequestEntity.get(new URI(url)).build(), LegeListeDTO.class).getBody();
+        var dto = restTemplate.exchange(RequestEntity.get(new URI(url)).build(), HelsepersonellListeDTO.class).getBody();
 
         if (dto == null) {
             throw new LegerNotFoundException("Klarer ikke å hente leger fra helsepersonell-api");
         }
-        log.info("{} leger hentet", dto.getLeger().size());
-        return new LegeListe(dto);
+        log.info("{} leger hentet", dto.getHelsepersonell().size());
+        return new HelsepersonellListe(dto);
     }
 }

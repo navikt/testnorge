@@ -1,22 +1,23 @@
 package no.nav.registre.testnorge.synt.sykemelding.util;
 
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
-import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.LegeDTO;
-import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.LegeListeDTO;
-import no.nav.registre.testnorge.libs.dto.hodejegeren.v1.PersondataDTO;
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
-import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntDiagnoserDTO;
-import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntSykemeldingDTO;
-import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntSykemeldingHistorikkDTO;
 
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.HelsepersonellDTO;
+import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
+import no.nav.registre.testnorge.libs.dto.hodejegeren.v1.PersondataDTO;
+import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntDiagnoserDTO;
+import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntSykemeldingDTO;
+import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntSykemeldingHistorikkDTO;
+
 public class TestUtil {
 
-    public static PersondataDTO getTestPersonDataDTO(String ident){
+    public static PersondataDTO getTestPersonDataDTO(String ident) {
         return PersondataDTO.builder()
                 .fornavn("Hans")
                 .mellomnavn("Ole")
@@ -25,7 +26,7 @@ public class TestUtil {
                 .build();
     }
 
-    public static ArbeidsforholdDTO getTestArbeidsforholdDTO(String arbeidsforholdId, String orgnr){
+    public static ArbeidsforholdDTO getTestArbeidsforholdDTO(String arbeidsforholdId, String orgnr) {
         return ArbeidsforholdDTO.builder()
                 .arbeidsforholdId(arbeidsforholdId)
                 .orgnummer(orgnr)
@@ -34,7 +35,7 @@ public class TestUtil {
                 .build();
     }
 
-    public static OrganisasjonDTO getTestOrganisasjonDTO(String orgnr){
+    public static OrganisasjonDTO getTestOrganisasjonDTO(String orgnr) {
         return OrganisasjonDTO.builder()
                 .enhetType("Type")
                 .orgnummer(orgnr)
@@ -43,7 +44,7 @@ public class TestUtil {
                 .build();
     }
 
-    public static Map<String, SyntSykemeldingHistorikkDTO> getTestHistorikk(String ident){
+    public static Map<String, SyntSykemeldingHistorikkDTO> getTestHistorikk(String ident) {
         var resultat = new HashMap<String, SyntSykemeldingHistorikkDTO>();
         resultat.put(ident, getTestSyntSykemeldingHistorikkDTO());
 
@@ -51,7 +52,7 @@ public class TestUtil {
     }
 
 
-    public static SyntSykemeldingHistorikkDTO getTestSyntSykemeldingHistorikkDTO(){
+    public static SyntSykemeldingHistorikkDTO getTestSyntSykemeldingHistorikkDTO() {
         var diagnose = SyntDiagnoserDTO.builder()
                 .diagnose("Diagnose")
                 .diagnosekode("Kode")
@@ -73,8 +74,8 @@ public class TestUtil {
                 .build();
     }
 
-    public static LegeListeDTO getTestLegeListeDTO(){
-        return new LegeListeDTO(Collections.singletonList(LegeDTO.builder().fornavn("Lege")
+    public static HelsepersonellListeDTO getTestLegeListeDTO() {
+        return new HelsepersonellListeDTO(Collections.singletonList(HelsepersonellDTO.builder().fornavn("Lege")
                 .mellomnavn("L.")
                 .etternavn("Legesen")
                 .fnr("123")

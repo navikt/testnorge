@@ -1,36 +1,19 @@
 package no.nav.registre.testnorge.synt.sykemelding.provider;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
-
 import static no.nav.registre.testnorge.synt.sykemelding.util.TestUtil.getTestArbeidsforholdDTO;
 import static no.nav.registre.testnorge.synt.sykemelding.util.TestUtil.getTestHistorikk;
 import static no.nav.registre.testnorge.synt.sykemelding.util.TestUtil.getTestLegeListeDTO;
-import static no.nav.registre.testnorge.synt.sykemelding.util.TestUtil.getTestPersonDataDTO;
 import static no.nav.registre.testnorge.synt.sykemelding.util.TestUtil.getTestOrganisasjonDTO;
-
+import static no.nav.registre.testnorge.synt.sykemelding.util.TestUtil.getTestPersonDataDTO;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
-import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.LegeListeDTO;
-import no.nav.registre.testnorge.libs.dto.hodejegeren.v1.PersondataDTO;
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.SykemeldingDTO;
-import no.nav.registre.testnorge.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
-import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntSykemeldingHistorikkDTO;
-import no.nav.registre.testnorge.synt.sykemelding.domain.Arbeidsforhold;
-import no.nav.registre.testnorge.synt.sykemelding.domain.Lege;
-import no.nav.registre.testnorge.synt.sykemelding.domain.Person;
-import no.nav.registre.testnorge.synt.sykemelding.domain.Sykemelding;
-import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
-
 import org.junit.Before;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.runner.RunWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -43,6 +26,19 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.Map;
+
+import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
+import no.nav.registre.testnorge.libs.dto.hodejegeren.v1.PersondataDTO;
+import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.SykemeldingDTO;
+import no.nav.registre.testnorge.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
+import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
+import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntSykemeldingHistorikkDTO;
+import no.nav.registre.testnorge.synt.sykemelding.domain.Arbeidsforhold;
+import no.nav.registre.testnorge.synt.sykemelding.domain.Helsepersonell;
+import no.nav.registre.testnorge.synt.sykemelding.domain.Person;
+import no.nav.registre.testnorge.synt.sykemelding.domain.Sykemelding;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -67,7 +63,7 @@ public class SyntSykemeldingControllerIntegrationTest {
     private static final String arbeidsforholdUrl = "(.*)/arbeidsforhold/api/v1/arbeidsforhold/" + ident + "/" + orgnr + "/" + arbeidsforholdId;
     private static final String organisasjonUrl = "(.*)/organisasjon/api/v1/organisasjoner/" + orgnr;
     private static final String historikkUrl = "(.*)/synt/api/v1/generate_sykmeldings_history_json";
-    private static final String helsepersonellUrl = "(.*)/helsepersonell/api/v1/helsepersonell/leger";
+    private static final String helsepersonellUrl = "(.*)/helsepersonell/api/v1/helsepersonell";
     private static final String sykemeldingUrl = "(.*)/sykemelding/api/v1/sykemeldinger";
 
     private SyntSykemeldingDTO dto;
@@ -76,11 +72,11 @@ public class SyntSykemeldingControllerIntegrationTest {
     private OrganisasjonDTO organisasjonResponse;
     private Map<String, LocalDate> historikkRequest = Map.of(ident, LocalDate.now());
     private Map<String, SyntSykemeldingHistorikkDTO> historikkResponse;
-    private LegeListeDTO helsepersonellResponse;
+    private HelsepersonellListeDTO helsepersonellResponse;
     private SykemeldingDTO sykemeldingRequest;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         dto = SyntSykemeldingDTO.builder()
                 .arbeidsforholdId(arbeidsforholdId)
                 .ident(ident)
@@ -104,7 +100,7 @@ public class SyntSykemeldingControllerIntegrationTest {
                 new Person(hodejegerenResponse),
                 historikkResponse.get(ident),
                 dto,
-                new Lege(helsepersonellResponse.getLeger().get(0)),
+                new Helsepersonell(helsepersonellResponse.getHelsepersonell().get(0)),
                 arbeidsforhold).toDTO();
     }
 

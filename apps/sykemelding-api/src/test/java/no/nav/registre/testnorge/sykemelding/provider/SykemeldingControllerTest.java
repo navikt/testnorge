@@ -1,21 +1,9 @@
 package no.nav.registre.testnorge.sykemelding.provider;
 
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.AdresseDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.Aktivitet;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.AktivitetDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.ArbeidsgiverDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.DetaljerDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.DiagnoseDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.LegeDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.OrganisasjonDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.PasientDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.PeriodeDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.SykemeldingDTO;
-import no.nav.registre.testnorge.sykemelding.consumer.HendelseConsumer;
-import no.nav.registre.testnorge.sykemelding.consumer.SyfoConsumer;
-import no.nav.registre.testnorge.sykemelding.domain.ApplicationInfo;
-import no.nav.registre.testnorge.sykemelding.domain.Sykemelding;
-import no.nav.registre.testnorge.sykemelding.service.SykemeldingService;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,15 +15,28 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.time.LocalDate;
 import java.util.Collections;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.AdresseDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.Aktivitet;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.AktivitetDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.ArbeidsgiverDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.DetaljerDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.DiagnoseDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.HelsepersonellDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.OrganisasjonDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.PasientDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.PeriodeDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.SykemeldingDTO;
+import no.nav.registre.testnorge.sykemelding.consumer.HendelseConsumer;
+import no.nav.registre.testnorge.sykemelding.consumer.SyfoConsumer;
+import no.nav.registre.testnorge.sykemelding.domain.ApplicationInfo;
+import no.nav.registre.testnorge.sykemelding.domain.Sykemelding;
+import no.nav.registre.testnorge.sykemelding.service.SykemeldingService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SykemeldingControllerTest {
 
     @Mock
-    private  ApplicationInfo applicationInfo;
+    private ApplicationInfo applicationInfo;
 
     @Mock
     private SyfoConsumer syfoConsumer;
@@ -75,7 +76,7 @@ public class SykemeldingControllerTest {
                         .navKontor("navKontor")
                         .telefon("99999999")
                         .build(),
-                LegeDTO.builder()
+                HelsepersonellDTO.builder()
                         .fornavn("lege")
                         .etternavn("legesen")
                         .ident("1111118372")

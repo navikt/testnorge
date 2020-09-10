@@ -31,6 +31,10 @@ public class Samhandler {
         return getIdentByKode("HPR");
     }
 
+    public String getSamhandlerType() {
+        return dto.getKode();
+    }
+
     public boolean isMulighetForAaLageSykemelding() {
         return SAMHANDLER_KODE_MED_MULIGHET_TIL_AA_LAGE_SYKEMELDING.contains(dto.getKode());
     }
