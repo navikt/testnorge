@@ -61,10 +61,8 @@
         <jettison.version>1.4.0</jettison.version>
         <freg-security-test-oidc-tools.version>2c24d35d</freg-security-test-oidc-tools.version>
         <logstash-logback-encoder.version>6.3</logstash-logback-encoder.version>
+        <jacoco.version>0.8.5</jacoco.version>
         <sonar-maven-plugin.version>3.7.0.1746</sonar-maven-plugin.version>
-        <sonar.exclusions>**/dolly/domain/**, **/dolly/regression/**, **/dolly/exceptions/**,**/main/dolly-web/**,
-            **/dolly/testdata/builder/**
-        </sonar.exclusions>
         <sonar.projectKey>navikt_dolly-backend</sonar.projectKey>
         <sonar.projectName>dolly-backend</sonar.projectName>
         <sonar.organization>navit</sonar.organization>
@@ -151,9 +149,31 @@
 		</dependencies>
 	</dependencyManagement>
 
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco.version}</version>
+                </plugin>
                 <plugin>
                     <groupId>org.sonarsource.scanner.maven</groupId>
                     <artifactId>sonar-maven-plugin</artifactId>
