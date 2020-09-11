@@ -65,6 +65,21 @@ public class SyntFrikortResponseDTO {
     private final String merknader;
     private final Samhandlertypekode samhandlertypekode;
 
+    public SyntFrikortResponseDTO(SyntFrikortResponse response) {
+        this.datoMottatt = response.getDatoMottatt();
+        this.datoTjeneste = response.getDatoTjeneste();
+        this.egenandelsats = response.getEgenandelsats();
+        this.egenandelsbelop = response.getEgenandelsbelop();
+        this.betalt = response.getBetalt();
+        this.datoTjenestestart = response.getDatoTjenestestart();
+        this.egenandelskode = response.getEgenandelskode();
+        this.enkeltregningsstatuskode = response.getEnkeltregningsstatuskode();
+        this.innsendingstypekode = response.getInnsendingstypekode();
+        this.kildesystemkode = response.getKildesystemkode();
+        this.merknader = response.getMerknader();
+        this.samhandlertypekode = response.getSamhandlertypekode();
+    }
+
     public SyntFrikortResponseDTO(SyntFrikortResponse response, boolean valider, Random rand) {
         if (valider) {
             // sett gyldige datoer

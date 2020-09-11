@@ -2,6 +2,7 @@ package no.nav.registre.frikort.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.frikort.consumer.rs.response.SyntFrikortResponseDTO;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBException;
@@ -40,7 +41,9 @@ public class IdentService {
             boolean leggPaaKoe
     ) throws JAXBException {
         var samhandlerePersondata = serviceUtils.hentSamhandlere();
-        var egenandelMap = egenandeler.stream().collect(Collectors.toMap(EgenandelRequest::getIdent, EgenandelRequest::getEgenandeler, (a, b) -> b));
+        Map<String, List<SyntFrikortResponseDTO>> egenandelMap = egenandeler.stream()
+                .collect(Collectors.toMap(EgenandelRequest::getIdent, e -> e.getEgenandeler().stream()
+                        .map(SyntFrikortResponseDTO::new).collect(Collectors.toList())));
         return serviceUtils.konverterTilXMLOgLeggPaaKoe(egenandelMap, samhandlerePersondata, leggPaaKoe);
     }
 
@@ -48,7 +51,7 @@ public class IdentService {
         return Collections.singletonList("q2");
     }
 
-    public Map<String, List<SyntFrikortResponse>> hentSyntetiskeEgenandeler(int antallEgenandeler, boolean validerEgenandeler) {
+    public Map<String, List<SyntFrikortResponseDTO>> hentSyntetiskeEgenandeler(int antallEgenandeler, boolean validerEgenandeler) {
         Map<String, Integer> identMap = new HashMap<>();
         for (int i = 0; i < antallEgenandeler; i++) {
             identMap.put("IDENT_" + (i + 1), 1);
