@@ -97,7 +97,6 @@ export default class BestillingProgresjon extends PureComponent {
 			this.props.bestilling.bestilling.sykemelding != null &&
 			this.props.bestilling.bestilling.sykemelding.syntSykemelding != null
 		const { antallLevert } = this.state
-		console.log(sykemelding)
 
 		// Percent
 		let percent = (100 / total) * antallLevert
