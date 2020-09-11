@@ -1,8 +1,9 @@
-dolly.url: ${DOLLY_URL}
-
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 server:
   use-forward-headers: true
+
+access.scopes:
+  - api://${DOLLY_BACKEND_CLIENT_ID}/.default
 
 spring:
   cloud:

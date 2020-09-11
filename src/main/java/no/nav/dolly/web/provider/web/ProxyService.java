@@ -12,12 +12,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.UUID;
+
+import no.nav.dolly.web.security.TokenService;
+import no.nav.dolly.web.security.domain.AccessToken;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +29,7 @@ public class ProxyService {
     private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
     private static final String CONTENT_TYPE = "Content-Type";
     private final RestTemplate proxyRestTemplate;
+    private final TokenService tokenService;
 
     public ResponseEntity proxyRequest(
             String body,
@@ -34,8 +37,8 @@ public class ProxyService {
             HttpHeaders headers,
             String requestUrl) {
 
-        //OidcTokenAuthentication auth = (OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication();
-        //headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + auth.getIdToken());
+        AccessToken accessToken = tokenService.getAccessToken();
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken.getTokenValue());
 
         if (headers.get(NAV_CALL_ID) == null) {
             headers.add(NAV_CALL_ID, String.valueOf(UUID.randomUUID()));
@@ -80,14 +83,5 @@ public class ProxyService {
             }
         }
         return headers;
-    }
-
-    private Cookie getIdTokenCookie(HttpServletRequest request) {
-        for (Cookie c : request.getCookies()) {
-            if (c.getName().equals("ID_token")) {
-                return c;
-            }
-        }
-        return null;
     }
 }

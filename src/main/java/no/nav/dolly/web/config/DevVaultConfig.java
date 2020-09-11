@@ -7,5 +7,5 @@ import org.springframework.vault.annotation.VaultPropertySource;
 @Configuration
 @Profile("dev")
 @VaultPropertySource(value = "kv/preprod/fss/dolly-frontend-dev/dev", ignoreSecretNotFound = false)
-public class VaultConfig {
+public class DevVaultConfig {
 }
