@@ -25,6 +25,7 @@ export enum Tema {
 export type Inntektsmelding = {
 	joarkMetadata: { tema: string }
 	inntekter: Array<Inntekt>
+	id?: number
 }
 
 export type Inntekt = {
