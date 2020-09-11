@@ -3,6 +3,7 @@ package no.nav.registre.testnorge.libs.oauth2.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
 
@@ -12,13 +13,13 @@ import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
 public class AccessTokenService {
     private final AuthenticationTokenResolver authenticationTokenResolver;
     private final ClientCredentialGenerateAccessTokenService clientCredentialGenerateAccessTokenService;
+    private final OnBehalfOfGenerateAccessTokenService onBehalfOfGenerateAccessTokenService;
 
-    public AccessToken generateToken(ClientCredential clientCredential) {
+    public AccessToken generateToken(ClientCredential clientCredential, AccessScopes accessScopes) {
         if (authenticationTokenResolver.isClientCredentials()) {
-            return clientCredentialGenerateAccessTokenService.generateToken(clientCredential);
+            return clientCredentialGenerateAccessTokenService.generateToken(clientCredential, accessScopes);
         } else {
-            //TODO Legg til støtte for OAuth 2.0 On-Behalf-Of
-            throw new UnsupportedOperationException("OAuth 2.0 On-Behalf-Of flow not supported");
+            return onBehalfOfGenerateAccessTokenService.generateToken(clientCredential, accessScopes);
         }
     }
 

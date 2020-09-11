@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.registre.testnorge.libs.common.command.CreatePersonCommand;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
@@ -50,7 +51,10 @@ public class PersonApiConsumer {
     }
 
     public void createPerson(Person person) {
-        AccessToken accessToken = accessTokenService.generateToken(clientCredential);
+        AccessToken accessToken = accessTokenService.generateToken(
+                clientCredential,
+                new AccessScopes("api://" + clientCredential.getClientId() + "/.default")
+        );
         new CreatePersonCommand(webClient, person.toDTO(), accessToken.getTokenValue()).run();
     }
 }

@@ -13,6 +13,7 @@ import no.nav.registre.skd.consumer.credential.PersonApiClientCredential;
 import no.nav.registre.testnorge.libs.common.command.CreatePersonCommand;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
@@ -50,7 +51,10 @@ public class PersonConsumer {
     }
 
     public void createPerson(PersonDTO person) {
-        AccessToken accessToken = accessTokenService.generateToken(clientCredential);
+        AccessToken accessToken = accessTokenService.generateToken(
+                clientCredential,
+                new AccessScopes("api://" + clientCredential.getClientId() + "/.default")
+        );
         new CreatePersonCommand(webClient, person, accessToken.getTokenValue()).run();
     }
 }

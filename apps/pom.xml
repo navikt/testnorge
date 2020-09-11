@@ -99,5 +99,6 @@
         <module>udi-stub</module>
         <module>syntrest</module>
         <module>synt-person-api</module>
+        <module>profil-api</module>
     </modules>
 </project>

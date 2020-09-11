@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,15 +20,16 @@ import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
 
 @Slf4j
 @Service
-public class ClientCredentialGenerateAccessTokenService {
+public class OnBehalfOfGenerateAccessTokenService {
     private final WebClient webClient;
     private final AuthenticationTokenResolver tokenResolver;
 
-    public ClientCredentialGenerateAccessTokenService(
+    public OnBehalfOfGenerateAccessTokenService(
             @Value("${http.proxy:#{null}}") String proxyHost,
             @Value("${AAD_ISSUER_URI}") String issuerUrl,
-            AuthenticationTokenResolver tokenResolver
+            SecureAuthenticationTokenResolver tokenResolver
     ) {
+
         WebClient.Builder builder = WebClient
                 .builder()
                 .baseUrl(issuerUrl + "/oauth2/v2.0/token")
@@ -56,21 +58,23 @@ public class ClientCredentialGenerateAccessTokenService {
             throw new RuntimeException("Kan ikke opprette accessToken uten clients");
         }
         tokenResolver.verifyAuthentication();
-
-        log.info("Henter OAuth2 access token fra client credential...");
+        JwtAuthenticationToken jwtAuthenticationToken = tokenResolver.jwtAuthenticationToken();
 
         var body = BodyInserters
                 .fromFormData("scope", String.join(" ", accessScopes.getScopes()))
                 .with("client_id", clientCredential.getClientId())
                 .with("client_secret", clientCredential.getClientSecret())
-                .with("grant_type", "client_credentials");
+                .with("assertion", jwtAuthenticationToken.getToken().getTokenValue())
+                .with("requested_token_use", "on_behalf_of")
+                .with("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
 
         AccessToken token = webClient.post()
                 .body(body)
                 .retrieve()
                 .bodyToMono(AccessToken.class)
                 .block();
-        log.info("OAuth2 access token hentet.");
+
+        log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow");
         return token;
     }
 }
