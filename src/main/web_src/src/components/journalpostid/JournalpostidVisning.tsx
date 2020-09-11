@@ -8,6 +8,7 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { ErrorMessage, FastField } from 'formik'
 import { FormikField } from '~/components/ui/form/FormikField'
 import Icon from '~/components/ui/icon/Icon'
+import { ErrorComponent } from '~/components/ui/loading/ErrorComponent'
 
 interface JournalpostId {
 	system: string
@@ -32,21 +33,7 @@ export default ({ system, ident }: JournalpostId) => (
 			)
 		}}
 		renderOnError={error => {
-			return (
-				<DollyFieldArray data={[error]} header="Journalpost-Id" nested>
-					{() => (
-						<div className="person-visning_content">
-							<TitleValue>
-								<Icon kind="report-problem-triangle" size={48} />
-							</TitleValue>
-							<TitleValue title="Info">
-								{'Noe gikk feil ved henting av JournalpostId, kontakt team Dolly!'}
-							</TitleValue>
-							<TitleValue title="Detaljert Feil">{error}</TitleValue>
-						</div>
-					)}
-				</DollyFieldArray>
-			)
+			return <ErrorComponent errorMessage={error} feilKomponent={'JournalpostidVisning'} />
 		}}
 		render={(data: Array<Response>) => {
 			return (

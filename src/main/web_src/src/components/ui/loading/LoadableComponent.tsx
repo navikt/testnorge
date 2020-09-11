@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Loading from './Loading'
-import { Error } from './Error'
+import { ErrorComponent } from './ErrorComponent'
 
 interface LoadableComponent {
 	onFetch: any
@@ -18,18 +18,17 @@ const LoadableComponent = ({ onFetch, render, renderOnError }: LoadableComponent
 				setData(response)
 				setLoading(false)
 			})
-			.catch((error: any) => {
+			.catch(error => {
 				setError(error)
 				setLoading(false)
 			})
 	}, [])
 
-	console.log(error)
 	if (error) {
 		return renderOnError ? (
 			renderOnError(error.toString())
 		) : (
-			<Error errorMessage={error.toString()} />
+			<ErrorComponent errorMessage={error.toString()} />
 		)
 	}
 

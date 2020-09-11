@@ -2,6 +2,7 @@ import React from 'react'
 import LoadableComponent, { Feilmelding } from '~/components/ui/loading/LoadableComponent'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { ErrorComponent } from '~/components/ui/loading/ErrorComponent'
 
 interface LegeSelect {
 	name: string
@@ -35,7 +36,10 @@ export default ({ name, label, afterChange }: LegeSelect) => {
 					}))
 				)
 			}
-			render={(data: Array<Option>, feilmelding: Feilmelding) => {
+			renderOnError={error => {
+				return <ErrorComponent errorMessage={error} feilKomponent={'LegeSelect'} />
+			}}
+			render={(data: Array<Option>) => {
 				return (
 					<FormikSelect
 						name={name}
@@ -45,7 +49,6 @@ export default ({ name, label, afterChange }: LegeSelect) => {
 						size="xxlarge"
 						afterChange={afterChange}
 						isClearable={false}
-						feil={feilmelding}
 					/>
 				)
 			}}

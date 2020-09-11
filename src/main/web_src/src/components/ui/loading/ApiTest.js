@@ -21,12 +21,7 @@ export const api = {
 }
 
 export const FeiletApi = () => {
-	return (
-		<LoadableComponent
-			onFetch={() => api.sendMedFeil()}
-			render={(data, feilmelding) => render(data)}
-		/>
-	)
+	return <LoadableComponent onFetch={() => api.sendMedFeil()} render={data => render(data)} />
 }
 export const SuksessApi = () => {
 	return <LoadableComponent onFetch={() => api.send()} render={data => render(data)} />
