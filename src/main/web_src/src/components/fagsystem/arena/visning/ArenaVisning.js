@@ -29,6 +29,7 @@ export const ArenaVisning = ({ data, bestillinger, loading }) => {
 	const sortedData = Array.isArray(data.arbeidsokerList)
 		? data.arbeidsokerList.slice().reverse()
 		: data.arbeidsokerList
+
 	const arenaBestillinger = bestillinger.filter(bestilling =>
 		bestilling.data.hasOwnProperty('arenaforvalter')
 	)

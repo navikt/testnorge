@@ -26,10 +26,10 @@ interface InntektsmeldingVisning {
 
 type EnkelInntektsmelding = {
 	bestilling: BestillingData
-	data: Array<journalpost>
+	data: Array<Journalpost>
 }
 
-type transaksjonId = {
+type TransaksjonId = {
 	miljoe: string
 	transaksjonId: {
 		journalpostId: string
@@ -38,11 +38,11 @@ type transaksjonId = {
 	bestillingId: string
 }
 
-type dokumentinfo = {
+type Dokumentinfo = {
 	data: Array<any>
 }
 
-type journalpost = {
+type Journalpost = {
 	bestillingId: number
 	miljoe: string
 	journalpost: {
@@ -76,14 +76,14 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisning)
 			<LoadableComponent
 				onFetch={() =>
 					DollyApi.getTransaksjonid('INNTKMELD', ident)
-						.then(({ data }: { data: Array<transaksjonId> }) => {
-							return data.map((bestilling: transaksjonId) => {
+						.then(({ data }: { data: Array<TransaksjonId> }) => {
+							return data.map((bestilling: TransaksjonId) => {
 								return DollyApi.getInntektsmeldingDokumentinfo(
 									bestilling.transaksjonId.journalpostId,
 									bestilling.transaksjonId.dokumentInfoId,
 									bestilling.miljoe
 								)
-									.then((response: dokumentinfo) => {
+									.then((response: Dokumentinfo) => {
 										return {
 											bestillingId: bestilling.bestillingId,
 											miljoe: bestilling.miljoe,
@@ -98,7 +98,7 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisning)
 							return Promise.all(data)
 						})
 				}
-				render={(data: Array<journalpost>) => {
+				render={(data: Array<Journalpost>) => {
 					if (data && data.length > 0) {
 						const gyldigeBestillinger = liste.filter(bestilling =>
 							data.find(x => x.bestillingId === bestilling.id)
@@ -190,8 +190,7 @@ const EnkelInntektsmeldingVisning = ({ bestilling, data }: EnkelInntektsmelding)
 				)}
 			</DollyFieldArray>
 			<DollyFieldArray data={journalpostidPaaBestilling} header="Journalpost-ID" nested>
-				{(id: journalpost, idx: number) => {
-					console.log('id :>> ', id)
+				{(id: Journalpost, idx: number) => {
 					const [viserSkjemainnhold, vis, skjul] = useBoolean(false)
 					return (
 						<div key={idx} className="person-visning_content">

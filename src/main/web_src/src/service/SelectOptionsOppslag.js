@@ -52,22 +52,6 @@ export const SelectOptionsOppslag = {
 			return response
 		}, [BrregstubApi.getUnderstatus])
 		return understatusInfo
-	},
-
-	hentDokumentFraJoark: () => {
-		const dokument = useAsync(async () => {
-			const response = await DollyApi.getDokarkivDokument()
-			return response
-		}, [DollyApi.getDokarkivDokument])
-		return dokument
-	},
-
-	hentMetadataFraJoark: () => {
-		const metadata = useAsync(async () => {
-			const response = await DollyApi.getDokarkivMetadata()
-			return response
-		}, [DollyApi.getDokarkivMetadata])
-		return metadata
 	}
 }
 
