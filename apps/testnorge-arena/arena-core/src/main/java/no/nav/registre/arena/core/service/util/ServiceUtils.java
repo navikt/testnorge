@@ -7,9 +7,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,6 +23,10 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.io.Resources;
 
 import no.nav.registre.arena.core.consumer.rs.AktoerRegisteretConsumer;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
@@ -60,10 +67,26 @@ public class ServiceUtils {
     public static final String AKTIVITETSFASE_VURDERING_FOR_UFOERE = "UVUP";
     public static final String AKTIVITETSFASE_SYKEPENGEERSTATNING = "SPE";
 
+    private static final Map<String, List<KodeMedSannsynlighet>> aktivitestsfaserMedInnsats;
+
     private final HodejegerenConsumer hodejegerenConsumer;
     private final BrukereService brukereService;
     private final AktoerRegisteretConsumer aktoerRegisteretConsumer;
     private final Random rand;
+
+    static {
+        aktivitestsfaserMedInnsats = new HashMap<>();
+        URL resourceAktivitetkoder = Resources.getResource("aktfaste_til_innsats.json");
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            Map<String, List<KodeMedSannsynlighet>> map = objectMapper.readValue(resourceAktivitetkoder, new TypeReference<>() {
+            });
+            aktivitestsfaserMedInnsats.putAll(map);
+        } catch (IOException e) {
+            log.error("Kunne ikke laste inn innsatskoder.", e);
+        }
+    }
+
 
     public List<String> getLevende(
             Long avspillergruppeId,
@@ -152,20 +175,8 @@ public class ServiceUtils {
     }
 
     private Kvalifiseringsgrupper velgKvalifiseringsgruppeBasertPaaAktivitetsfase(String aktivitetsfase) {
-        switch (aktivitetsfase) {
-        case AKTIVITETSFASE_UNDER_ARBEIDSAVKLARING:
-            return rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VARIG;
-        case AKTIVITETSFASE_ARBEIDSUTPROEVING:
-            return Kvalifiseringsgrupper.BATT;
-        case AKTIVITETSFASE_FERDIG_AVKLART:
-            return rand.nextBoolean() ? Kvalifiseringsgrupper.BFORM : Kvalifiseringsgrupper.IKVAL;
-        case AKTIVITETSFASE_VURDERING_FOR_UFOERE:
-            return rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VARIG;
-        case AKTIVITETSFASE_SYKEPENGEERSTATNING:
-            return rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VURDI;
-        default:
-            throw new ArbeidssoekerException("Ukjent aktivitetsfase " + aktivitetsfase);
-        }
+        var innsats = velgKodeBasertPaaSannsynlighet(aktivitestsfaserMedInnsats.get(aktivitetsfase)).getKode();
+        return Kvalifiseringsgrupper.valueOf(innsats);
     }
 
     private List<String> filtrerIdenterUtenAktoerId(
