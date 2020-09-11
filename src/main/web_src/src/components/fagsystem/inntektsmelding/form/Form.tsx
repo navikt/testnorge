@@ -4,7 +4,8 @@ import _get from 'lodash/get'
 import _has from 'lodash/has'
 import Panel from '~/components/ui/panel/Panel'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { erForste, panelError } from '~/components/ui/form/formUtils'
+import { panelError } from '~/components/ui/form/formUtils'
+import { erForste } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
@@ -12,15 +13,15 @@ import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFiel
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import {
-	ifPresent,
-	messages,
 	requiredDate,
+	requiredString,
 	requiredNumber,
-	requiredString
+	messages,
+	ifPresent
 } from '~/utils/YupValidations'
 import { FormikProps } from 'formik'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
-import { Inntekt, Kodeverk, Ytelser } from '../InntektsmeldingTypes'
+import { Kodeverk, Ytelser, Inntekt } from '../InntektsmeldingTypes'
 import InntektsmeldingSelect from './partials/InntektsmeldingSelect'
 import InntektsmeldingYtelseSelect from './partials/InntektsmeldingYtelseSelect'
 import OmsorgspengerForm from './partials/omsorgspengerForm'
@@ -74,8 +75,7 @@ export const initialValues = (type: string) => ({
 
 const inntektsmeldingAttributt = 'inntektsmelding'
 const informasjonstekst = 'Personen må ha et arbeidsforhold knyttet til den valgte virksomheten.'
-const alertinformasjontekst =
-	'Personen må ha et arbeidsforhold knyttet til den samme virksomheten som du velger i inntektsmeldingen. Det kan du legge ved å gå tilbake til forrige side og huke av for Arbeidsforhold (Aareg).'
+const alertinformasjontekst = `Personen må ha et arbeidsforhold knyttet til den samme virksomheten som du velger i inntektsmeldingen. Det kan du legge ved å gå tilbake til forrige side og huke av for Arbeidsforhold (Aareg).`
 
 export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 	const [typeArbeidsgiver, setTypeArbeidsgiver] = useState(
