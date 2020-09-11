@@ -5,7 +5,7 @@ import { panelError } from '~/components/ui/form/formUtils'
 import { erForste } from '~/components/ui/form/formUtils'
 import { Sykemelding } from './partials/Sykemelding'
 import { validation } from './validation'
-import { AlertStripeInfo } from 'nav-frontend-alertstriper'
+import { AlertStripeAdvarsel, AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { FormikProps } from 'formik'
 
 interface SykdomForm {
@@ -29,13 +29,17 @@ export const SykdomForm = ({ formikBag }: SykdomForm) => (
 				<>
 					{/* 
 					// @ts-ignore */}
-					<AlertStripeInfo style={{ marginBottom: '20px' }}>
+					<AlertStripeAdvarsel style={{ marginBottom: '20px' }}>
 						Personen må ha et arbeidsforhold knyttet til den samme virksomheten som du velger i
 						sykemeldingen. Det kan du legge til ved å gå tilbake til forrige side og huke av for
 						Arbeidsforhold (Aareg).
-					</AlertStripeInfo>
+					</AlertStripeAdvarsel>
 				</>
 			)}
+			<AlertStripeInfo style={{ marginBottom: '20px' }}>
+				Syntetisk sykemelding behandler en stor mengde data for å opprette realistiske sykemeldinger
+				og kan derfor medføre litt lenger bestillingstid
+			</AlertStripeInfo>
 			<Sykemelding formikBag={formikBag} />
 		</Panel>
 	</Vis>
