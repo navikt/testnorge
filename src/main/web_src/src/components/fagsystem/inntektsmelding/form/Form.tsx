@@ -75,7 +75,7 @@ export const initialValues = (type: string) => ({
 
 const inntektsmeldingAttributt = 'inntektsmelding'
 const informasjonstekst = 'Personen må ha et arbeidsforhold knyttet til den valgte virksomheten.'
-const alertinformasjontekst = `Personen må ha et arbeidsforhold knyttet til den samme virksomheten som du velger i inntektsmeldingen. Det kan du legge ved å gå tilbake til forrige side og huke av for Arbeidsforhold (Aareg).`
+const alertinformasjontekst = 'Personen må ha et arbeidsforhold knyttet til den samme virksomheten som du velger i inntektsmeldingen. Det kan du legge ved å gå tilbake til forrige side og huke av for Arbeidsforhold (Aareg). <br/><br/> Syntetisk sykemelding behandler en stor mengde data og kan derfor medføre litt lenger bestillingstid'
 
 export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 	const [typeArbeidsgiver, setTypeArbeidsgiver] = useState(

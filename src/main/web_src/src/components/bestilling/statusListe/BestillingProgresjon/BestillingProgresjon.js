@@ -93,7 +93,11 @@ export default class BestillingProgresjon extends PureComponent {
 
 	calculateStatus = () => {
 		const total = this.props.bestilling.antallIdenter
+		const sykemelding =
+			this.props.bestilling.bestilling.sykemelding != null &&
+			this.props.bestilling.bestilling.sykemelding.syntSykemelding != null
 		const { antallLevert } = this.state
+		console.log(sykemelding)
 
 		// Percent
 		let percent = (100 / total) * antallLevert
@@ -104,7 +108,10 @@ export default class BestillingProgresjon extends PureComponent {
 
 		if (antallLevert === total) text = `Ferdigstiller bestilling`
 
-		const title = percent === 100 ? 'FERDIG' : 'AKTIV BESTILLING'
+		const aktivBestilling = sykemelding
+			? 'AKTIV BESTILLING (Syntetisert sykemelding behandler mye data og kan derfor ta litt tid)'
+			: 'AKTIV BESTILLING'
+		const title = percent === 100 ? 'FERDIG' : aktivBestilling
 
 		return {
 			percent,
