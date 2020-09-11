@@ -125,7 +125,7 @@ public class ServiceUtils {
     }
 
     public static boolean harUgyldigKombinasjon(SyntFrikortResponse response, boolean validerEgenandeler) {
-        if (validerEgenandeler) {
+        if (!validerEgenandeler) {
             return false;
         }
         if (Egenandelskode.F == response.getEgenandelskode() && response.getEgenandelsats() <= 0) {
