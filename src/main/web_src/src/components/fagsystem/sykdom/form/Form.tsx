@@ -5,7 +5,7 @@ import { panelError } from '~/components/ui/form/formUtils'
 import { erForste } from '~/components/ui/form/formUtils'
 import { Sykemelding } from './partials/Sykemelding'
 import { validation } from './validation'
-import { AlertStripeAdvarsel, AlertStripeInfo } from 'nav-frontend-alertstriper'
+import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { FormikProps } from 'formik'
 import { AlertAaregRequired } from '~/components/ui/brukerAlert/AlertAaregRequired'
 
