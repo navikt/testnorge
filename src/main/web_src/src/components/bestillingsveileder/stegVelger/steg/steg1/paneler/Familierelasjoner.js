@@ -51,6 +51,7 @@ FamilierelasjonPanel.initialValues = ({ set, del, has, opts }) => ({
 					borHos: '',
 					erAdoptert: false,
 					alder: Formatters.randomIntInRange(0, 17),
+					doedsdato: '',
 					spesreg: '',
 					utenFastBopel: false,
 					statsborgerskap: '',
@@ -73,6 +74,7 @@ const defaultPartner = opts => {
 			sivilstander: [{ sivilstand: '', sivilstandRegdato: '' }],
 			harFellesAdresse: true,
 			alder: Formatters.randomIntInRange(30, 60),
+			doedsdato: '',
 			spesreg: '',
 			utenFastBopel: false,
 			statsborgerskap: '',
@@ -80,9 +82,21 @@ const defaultPartner = opts => {
 		}
 	]
 
+	// TODO: Må funke for flere enn én partner? Eller kanskje ikke?
+	const eksisterendePartner = [
+		{
+			ident: _get(opts, 'personFoerLeggTil.tpsf.relasjoner[0].personRelasjonMed.ident'),
+			doedsdato: '',
+			sivilstander: []
+		}
+	]
+
+	console.log('opts :>> ', opts)
+
 	const harEksisterendePartner = _get(opts, 'personFoerLeggTil.tpsf.relasjoner', []).some(
 		relasjon => relasjon.relasjonTypeNavn === 'PARTNER'
 	)
 
-	return harEksisterendePartner ? [] : fullPartner
+	// return harEksisterendePartner ? [] : fullPartner
+	return harEksisterendePartner ? eksisterendePartner : fullPartner
 }

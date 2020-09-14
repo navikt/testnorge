@@ -18,6 +18,7 @@ const initialValues = {
 	borHos: '',
 	erAdoptert: false,
 	alder: Formatters.randomIntInRange(0, 17),
+	doedsdato: '',
 	spesreg: '',
 	utenFastBopel: false,
 	statsborgerskap: '',
@@ -35,7 +36,9 @@ export const initialValuesDoedfoedt = {
 	doedsdato: ''
 }
 
-export const Barn = ({ formikBag }) => {
+export const Barn = ({ formikBag, personFoerLeggTil }) => {
+	console.log('personFoerLeggTil :>> ', personFoerLeggTil)
+
 	const handleIdenttypeChange = (path, ident, isDoedfoedt) => {
 		if (ident.value === 'FDAT') {
 			formikBag.setFieldValue(`${path}`, initialValuesDoedfoedt)

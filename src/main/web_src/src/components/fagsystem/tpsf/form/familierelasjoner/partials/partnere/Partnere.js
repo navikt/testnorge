@@ -20,6 +20,7 @@ const initialValues = {
 	sivilstander: [{ sivilstand: '', sivilstandRegdato: '' }],
 	harFellesAdresse: false,
 	alder: Formatters.randomIntInRange(30, 60),
+	doedsdato: '',
 	spesreg: '',
 	utenFastBopel: false,
 	statsborgerskap: '',
@@ -90,6 +91,10 @@ export const Partnere = ({ formikBag, personFoerLeggTil }) => (
 						const showRemove = isLast && idx > 0 && c.ny
 						const clickRemove = () => arrayHelpers.remove(formikIdx)
 						const vurderFjernePartner = () => !c.ny && arrayHelpers.remove(formikIdx)
+						console.log('personFoerLeggTil :>> ', personFoerLeggTil)
+						console.log('c :>> ', c)
+						console.log('formikPath :>> ', formikPath)
+
 						return (
 							<DollyFaBlokk
 								key={idx}

@@ -50,9 +50,14 @@ export default ({ path, formikBag, partner, ...rest }: PartnerForm) => (
 				<Alder basePath={path} formikBag={formikBag} title="Alder" />
 			</>
 		) : (
-			<h4>
-				{partner.fornavn} {partner.etternavn} ({partner.ident})
-			</h4>
+			<>
+				<h4>
+					{partner.fornavn} {partner.etternavn} ({partner.ident})
+				</h4>
+				<div className="alder-component">
+					<FormikDatepicker name={`${path}.doedsdato`} label="Dødsdato" />
+				</div>
+			</>
 		)}
 		<Sivilstand
 			sivilstander={partner.sivilstander}

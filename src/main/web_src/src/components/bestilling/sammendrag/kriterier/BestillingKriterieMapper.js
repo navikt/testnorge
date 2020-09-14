@@ -308,7 +308,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Bor sammen', Formatters.oversettBoolean(item.harFellesAdresse)),
 						obj(
 							'Sivilstand',
-							sisteSivilstand[0].sivilstand,
+							sisteSivilstand.length > 0 && sisteSivilstand[0].sivilstand,
 							PersoninformasjonKodeverk.Sivilstander
 						),
 						obj('Tidligere sivilstander', Formatters.arrayToString(tidligereSivilstander))
