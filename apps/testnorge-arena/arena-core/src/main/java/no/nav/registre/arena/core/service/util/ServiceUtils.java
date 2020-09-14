@@ -12,7 +12,6 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -61,10 +60,6 @@ public class ServiceUtils {
     private static final int PAGE_SIZE = 10;
     private static final String RELASJON_BARN = "BARN";
 
-    public static final String AKTIVITETSFASE_UNDER_ARBEIDSAVKLARING = "UA";
-    public static final String AKTIVITETSFASE_ARBEIDSUTPROEVING = "AU";
-    public static final String AKTIVITETSFASE_FERDIG_AVKLART = "FA";
-    public static final String AKTIVITETSFASE_VURDERING_FOR_UFOERE = "UVUP";
     public static final String AKTIVITETSFASE_SYKEPENGEERSTATNING = "SPE";
 
     private static final Map<String, List<KodeMedSannsynlighet>> aktivitestsfaserMedInnsats;
@@ -76,10 +71,10 @@ public class ServiceUtils {
 
     static {
         aktivitestsfaserMedInnsats = new HashMap<>();
-        URL resourceAktivitetkoder = Resources.getResource("aktfaste_til_innsats.json");
+        URL resourceInnsatser = Resources.getResource("aktfaste_til_innsats.json");
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            Map<String, List<KodeMedSannsynlighet>> map = objectMapper.readValue(resourceAktivitetkoder, new TypeReference<>() {
+            Map<String, List<KodeMedSannsynlighet>> map = objectMapper.readValue(resourceInnsatser, new TypeReference<>() {
             });
             aktivitestsfaserMedInnsats.putAll(map);
         } catch (IOException e) {
@@ -175,8 +170,12 @@ public class ServiceUtils {
     }
 
     private Kvalifiseringsgrupper velgKvalifiseringsgruppeBasertPaaAktivitetsfase(String aktivitetsfase) {
-        var innsats = velgKodeBasertPaaSannsynlighet(aktivitestsfaserMedInnsats.get(aktivitetsfase)).getKode();
-        return Kvalifiseringsgrupper.valueOf(innsats);
+        if (aktivitestsfaserMedInnsats.containsKey(aktivitetsfase)){
+            var innsats = velgKodeBasertPaaSannsynlighet(aktivitestsfaserMedInnsats.get(aktivitetsfase)).getKode();
+            return Kvalifiseringsgrupper.valueOf(innsats);
+        }else{
+            throw new ArbeidssoekerException("Ukjent aktivitetsfase " + aktivitetsfase);
+        }
     }
 
     private List<String> filtrerIdenterUtenAktoerId(
