@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Loading from './Loading'
-import { ErrorComponent } from './ErrorComponent'
+import { DollyErrorAlert } from './DollyErrorAlert'
 
 interface LoadableComponent {
 	onFetch: any
@@ -19,17 +19,14 @@ const LoadableComponent = ({ onFetch, render, renderOnError }: LoadableComponent
 				setLoading(false)
 			})
 			.catch((error: Error) => {
+				console.error(error.stack)
 				setError(error)
 				setLoading(false)
 			})
 	}, [])
 
 	if (error) {
-		return renderOnError ? (
-			renderOnError(error.toString())
-		) : (
-			<ErrorComponent errorMessage={error.toString()} />
-		)
+		return renderOnError ? renderOnError(error) : <DollyErrorAlert error={error} />
 	}
 
 	if (loading) {

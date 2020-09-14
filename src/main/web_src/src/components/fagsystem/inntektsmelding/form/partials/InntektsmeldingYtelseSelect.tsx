@@ -7,7 +7,7 @@ import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import Formatters from '~/utils/DataFormatter'
 import { FormikProps } from 'formik'
 import { Ytelser, Tema } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
-import { ErrorComponent } from '~/components/ui/loading/ErrorComponent'
+import { DollyErrorAlert } from '~/components/ui/loading/DollyErrorAlert'
 
 interface InntektsmeldingSelect {
 	path: string
@@ -50,9 +50,6 @@ export default ({
 					}))
 				)
 			}
-			renderOnError={error => {
-				return <ErrorComponent errorMessage={error} feilKomponent={'InntektsmeldingYtelseSelect'} />
-			}}
 			render={(data: Array<Option>) => (
 				<DollySelect
 					name={ytelsePath}

@@ -2,7 +2,7 @@ import React from 'react'
 import LoadableComponent, { Feilmelding } from '~/components/ui/loading/LoadableComponent'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
-import { ErrorComponent } from '~/components/ui/loading/ErrorComponent'
+import { DollyErrorAlert } from '~/components/ui/loading/DollyErrorAlert'
 
 interface LegeSelect {
 	name: string
@@ -36,22 +36,17 @@ export default ({ name, label, afterChange }: LegeSelect) => {
 					}))
 				)
 			}
-			renderOnError={error => {
-				return <ErrorComponent errorMessage={error} feilKomponent={'LegeSelect'} />
-			}}
-			render={(data: Array<Option>) => {
-				return (
-					<FormikSelect
-						name={name}
-						label={label}
-						options={data}
-						type="text"
-						size="xxlarge"
-						afterChange={afterChange}
-						isClearable={false}
-					/>
-				)
-			}}
+			render={(data: Array<Option>) => (
+				<FormikSelect
+					name={name}
+					label={label}
+					options={data}
+					type="text"
+					size="xxlarge"
+					afterChange={afterChange}
+					isClearable={false}
+				/>
+			)}
 		/>
 	)
 }

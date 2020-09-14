@@ -5,7 +5,7 @@ import LoadableComponent, { Feilmelding } from '~/components/ui/loading/Loadable
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import Formatters from '~/utils/DataFormatter'
-import { ErrorComponent } from '~/components/ui/loading/ErrorComponent'
+import { DollyErrorAlert } from '~/components/ui/loading/DollyErrorAlert'
 
 interface InntektsmeldingSelect {
 	path: string
@@ -28,12 +28,9 @@ export default ({ path, label, kodeverk, size = 'medium' }: InntektsmeldingSelec
 					response.map((value: string) => ({ value, label: Formatters.codeToNorskLabel(value) }))
 				)
 			}
-			renderOnError={error => {
-				return <ErrorComponent errorMessage={error} feilKomponent={'InntektsmeldingSelect'} />
-			}}
-			render={(data: Array<Option>) => {
-				return <FormikSelect name={path} label={label} options={data} type="text" size={size} />
-			}}
+			render={(data: Array<Option>) => (
+				<FormikSelect name={path} label={label} options={data} type="text" size={size} />
+			)}
 		/>
 	)
 }

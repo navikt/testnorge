@@ -10,7 +10,7 @@ import { Innhold } from '../hodejegeren/types'
 import { VelgPerson } from './ImportTilDolly/VelgPerson'
 import { ImportTilDolly } from './ImportTilDolly/ImportTilDolly'
 import Button from '~/components/ui/button/Button'
-import { ErrorComponent } from '~/components/ui/loading/ErrorComponent'
+import { DollyErrorAlert } from '~/components/ui/loading/DollyErrorAlert'
 
 interface SearchResultVisningProps {
 	soekOptions: string
@@ -105,9 +105,6 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 	return (
 		<LoadableComponent
 			onFetch={() => HodejegerenApi.soek(props.soekOptions, props.antallResultat)}
-			renderOnError={error => {
-				return <ErrorComponent errorMessage={error} feilKomponent={'SearchResult'} />
-			}}
 			render={(data: Array<Innhold>) => {
 				return !data ? (
 					<ContentContainer>Søket gav ingen resultater.</ContentContainer>
