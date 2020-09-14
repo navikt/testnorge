@@ -40,6 +40,16 @@ export const GateadresseDetaljert = ({ formikBag }: GateadresseDetaljert) => {
 		if (!gatenavn) return ''
 		return `${gatenavn} ${parseInt(husnr)}, ${postnr} ${poststed}`
 	}
+	const feilmelding = () => {
+		if (
+			!_get(formikBag.values, `${norskAdresse}.gatenavn`) &&
+			_has(formikBag.touched, `${norskAdresse}.gatenavn`)
+		) {
+			return {
+				feilmelding: _get(formikBag.errors, `${norskAdresse}.gatenavn`)
+			}
+		}
+	}
 
 	return (
 		<Kategori title="Midlertidig gateadresse">
@@ -60,6 +70,7 @@ export const GateadresseDetaljert = ({ formikBag }: GateadresseDetaljert) => {
 								readOnly
 								placeholder="Ingen valgt adresse"
 								title="Endre adressen i adressevelgeren over"
+								feil={feilmelding()}
 							/>
 						)
 					}}
