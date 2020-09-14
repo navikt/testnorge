@@ -71,7 +71,7 @@ public class ServiceUtils {
 
     static {
         aktivitestsfaserMedInnsats = new HashMap<>();
-        URL resourceInnsatser = Resources.getResource("aktfaste_til_innsats.json");
+        URL resourceInnsatser = Resources.getResource("aktfase_til_innsats.json");
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             Map<String, List<KodeMedSannsynlighet>> map = objectMapper.readValue(resourceInnsatser, new TypeReference<>() {
