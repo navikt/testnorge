@@ -20,7 +20,7 @@ export default function FagsystemStatus({ bestilling }) {
 			)
 		)
 			return iconTypes.avvik
-		// Avvik eller ErrorComponent
+		// Avvik eller Error
 		return statuser.some(status => status.melding === 'OK') ? iconTypes.avvik : iconTypes.feil
 	}
 
