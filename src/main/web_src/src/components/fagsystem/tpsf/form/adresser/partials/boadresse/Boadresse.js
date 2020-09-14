@@ -57,11 +57,7 @@ export const Boadresse = ({ formikBag }) => {
 			<div className="gateadresse">
 				<GyldigAdresseVelger settBoadresse={settBoadresse} formikBag={formikBag} />
 				<LoadableComponent
-					onFetch={() =>
-						DollyApi.getKodeverkByNavn(AdresseKodeverk.PostnummerUtenPostboks).then(response => {
-							throw new Error('Ugyldig verdi i kodeverk') //TODO FJERNE
-						})
-					}
+					onFetch={() => DollyApi.getKodeverkByNavn(AdresseKodeverk.PostnummerUtenPostboks)}
 					renderOnError={error => {
 						return <ErrorComponent errorMessage={error} feilKomponent={'BoAdresse'} />
 					}}

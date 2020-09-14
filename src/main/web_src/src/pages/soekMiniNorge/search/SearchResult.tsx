@@ -104,15 +104,7 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 
 	return (
 		<LoadableComponent
-			onFetch={() =>
-				HodejegerenApi.soek(props.soekOptions, props.antallResultat).then(response => {
-					if (response == null) {
-						//TODO FJERNE
-						throw new Error('Feil i request')
-					}
-					return response
-				})
-			}
+			onFetch={() => HodejegerenApi.soek(props.soekOptions, props.antallResultat)}
 			renderOnError={error => {
 				return <ErrorComponent errorMessage={error} feilKomponent={'SearchResult'} />
 			}}

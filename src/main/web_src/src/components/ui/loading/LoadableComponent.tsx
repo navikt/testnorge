@@ -4,7 +4,7 @@ import { ErrorComponent } from './ErrorComponent'
 
 interface LoadableComponent {
 	onFetch: any
-	renderOnError?: (error: any) => JSX.Element
+	renderOnError?: (error: Error) => JSX.Element
 	render: (data: any) => JSX.Element
 }
 
@@ -18,7 +18,7 @@ const LoadableComponent = ({ onFetch, render, renderOnError }: LoadableComponent
 				setData(response)
 				setLoading(false)
 			})
-			.catch(error => {
+			.catch((error: Error) => {
 				setError(error)
 				setLoading(false)
 			})
