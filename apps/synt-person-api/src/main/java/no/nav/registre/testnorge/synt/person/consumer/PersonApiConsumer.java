@@ -14,7 +14,7 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
 import no.nav.registre.testnorge.synt.person.consumer.credential.PersonApiClientCredential;
 import no.nav.registre.testnorge.synt.person.domain.Person;
 
@@ -24,16 +24,15 @@ import no.nav.registre.testnorge.synt.person.domain.Person;
 public class PersonApiConsumer {
     private final WebClient webClient;
     private final ClientCredential clientCredential;
-    private final AccessTokenService accessTokenService;
+    private final ClientCredentialGenerateAccessTokenService clientCredentialGenerateAccessTokenService;
 
     public PersonApiConsumer(
             @Value("${consumers.personapi.url}") String url,
             ObjectMapper objectMapper,
             PersonApiClientCredential clientCredential,
-            AccessTokenService accessTokenService
-    ) {
+            ClientCredentialGenerateAccessTokenService clientCredentialGenerateAccessTokenService) {
         this.clientCredential = clientCredential;
-        this.accessTokenService = accessTokenService;
+        this.clientCredentialGenerateAccessTokenService = clientCredentialGenerateAccessTokenService;
 
         ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
                 .codecs(config -> {
@@ -51,7 +50,7 @@ public class PersonApiConsumer {
     }
 
     public void createPerson(Person person) {
-        AccessToken accessToken = accessTokenService.generateToken(
+        AccessToken accessToken = clientCredentialGenerateAccessTokenService.generateToken(
                 clientCredential,
                 new AccessScopes("api://" + clientCredential.getClientId() + "/.default")
         );

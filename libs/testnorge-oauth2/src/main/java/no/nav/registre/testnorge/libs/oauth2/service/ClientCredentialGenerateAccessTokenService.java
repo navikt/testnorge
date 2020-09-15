@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -51,7 +52,12 @@ public class ClientCredentialGenerateAccessTokenService {
         this.webClient = builder.build();
     }
 
-    public AccessToken generateToken(ClientCredential clientCredential, AccessScopes accessScopes) {
+    public AccessToken generateToken(ClientCredential remoteClientCredential, AccessScopes accessScopes) {
+
+        if (!tokenResolver.isClientCredentials()) {
+            throw new BadCredentialsException("Kan ikke gjennomfore opprette Client Credentials fra On Behalf Of.");
+        }
+
         if (accessScopes.getScopes().isEmpty()) {
             throw new RuntimeException("Kan ikke opprette accessToken uten clients");
         }
@@ -61,8 +67,8 @@ public class ClientCredentialGenerateAccessTokenService {
 
         var body = BodyInserters
                 .fromFormData("scope", String.join(" ", accessScopes.getScopes()))
-                .with("client_id", clientCredential.getClientId())
-                .with("client_secret", clientCredential.getClientSecret())
+                .with("client_id", remoteClientCredential.getClientId())
+                .with("client_secret", remoteClientCredential.getClientSecret())
                 .with("grant_type", "client_credentials");
 
         AccessToken token = webClient.post()

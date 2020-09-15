@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -54,6 +55,9 @@ public class OnBehalfOfGenerateAccessTokenService {
     }
 
     public AccessToken generateToken(ClientCredential clientCredential, AccessScopes accessScopes) {
+        if (tokenResolver.isClientCredentials()) {
+            throw new BadCredentialsException("Kan ikke gjennomfore On Behalf of fra Client Credentials.");
+        }
         if (accessScopes.getScopes().isEmpty()) {
             throw new RuntimeException("Kan ikke opprette accessToken uten clients");
         }
