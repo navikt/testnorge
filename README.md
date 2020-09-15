@@ -3,7 +3,6 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=navikt_dolly-backend&metric=coverage)](https://sonarcloud.io/dashboard?id=navikt_dolly-backend)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=navikt_dolly-backend&metric=ncloc)](https://sonarcloud.io/dashboard?id=navikt_dolly-backend)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=navikt_dolly-backend&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=navikt_dolly-backend)
-[![tag](https://img.shields.io/github/v/tag/navikt/dolly-backend)](https://github.com/navikt/dolly-backend/releases)
 
 # dolly-backend
 
@@ -40,3 +39,5 @@ Så kjør `mvn clean install`
 ## Deploy status
 
 ![Deploy dev t1](https://github.com/navikt/dolly-backend/workflows/Deploy%20dev%20t1/badge.svg)
+![Deploy dev u2](https://github.com/navikt/dolly-backend/workflows/Deploy%20dev%20u2/badge.svg)
+![Deploy dev default](https://github.com/navikt/dolly-backend/workflows/Deploy%20dev%20default/badge.svg)
