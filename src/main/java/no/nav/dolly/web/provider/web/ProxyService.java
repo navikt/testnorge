@@ -31,11 +31,12 @@ public class ProxyService {
     private final RestTemplate proxyRestTemplate;
     private final TokenService tokenService;
 
-    public ResponseEntity proxyRequest(
+    public <T> ResponseEntity proxyRequest(
             String body,
             HttpMethod method,
             HttpHeaders headers,
-            String requestUrl) {
+            String requestUrl,
+            Class<T> returnClazz) {
 
         AccessToken accessToken = tokenService.getAccessToken();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken.getTokenValue());
@@ -51,7 +52,7 @@ public class ProxyService {
 
         HttpEntity<String> httpEntity = new HttpEntity<>(body, headers);
         try {
-            return proxyRestTemplate.exchange(decodeUrl(requestUrl), method, httpEntity, String.class);
+            return proxyRestTemplate.exchange(decodeUrl(requestUrl), method, httpEntity, returnClazz);
 
         } catch (HttpClientErrorException exception) {
             return ResponseEntity.status(exception.getStatusCode())
@@ -59,6 +60,16 @@ public class ProxyService {
                     .body(exception.getResponseBodyAsString());
         }
     }
+
+
+    public ResponseEntity proxyRequest(
+            String body,
+            HttpMethod method,
+            HttpHeaders headers,
+            String requestUrl) {
+        return proxyRequest(body, method, headers, requestUrl, String.class);
+    }
+
 
     private String decodeUrl(String requestUrl) {
         try {

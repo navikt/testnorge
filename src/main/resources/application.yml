@@ -3,7 +3,7 @@ server:
   use-forward-headers: true
 
 access.scopes:
-  - api://${DOLLY_BACKEND_CLIENT_ID}/.default
+  - ${PROFIL_API_SCOPE}
 
 spring:
   cloud:

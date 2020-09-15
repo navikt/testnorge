@@ -32,6 +32,9 @@ public class ProxyController {
     @Value("${fagsystem.arena.url}")
     private String arenaUrl;
 
+    @Value("${fagsystem.profil.url}")
+    private String profilUrl;
+
     @Value("${fagsystem.instdata.url}")
     private String instUrl;
 
@@ -88,6 +91,32 @@ public class ProxyController {
 
         return proxyService.proxyRequest(body, method, headers, requestURL);
     }
+
+    @RequestMapping("/proxy/profil/profil/bilde")
+    public ResponseEntity<byte[]> profilBildeProxy(
+            @RequestBody(required = false) String body,
+            HttpMethod method,
+            HttpServletRequest request) throws UnsupportedEncodingException {
+
+        String requestURL = createURL(request, profilUrl + API_URI, PROXY_URI + "/profil");
+        HttpHeaders headers = proxyService.copyHeaders(request);
+
+        return proxyService.proxyRequest(body, method, headers, requestURL, byte[].class);
+    }
+
+    @RequestMapping("/proxy/profil/**")
+    public ResponseEntity<String> profilProxy(
+            @RequestBody(required = false) String body,
+            HttpMethod method,
+            HttpServletRequest request) throws UnsupportedEncodingException {
+
+        String requestURL = createURL(request, profilUrl + API_URI, PROXY_URI + "/profil");
+        HttpHeaders headers = proxyService.copyHeaders(request);
+
+        return proxyService.proxyRequest(body, method, headers, requestURL);
+    }
+
+
 
     @RequestMapping("/proxy/inst/**")
     public ResponseEntity<String> instProxy(
