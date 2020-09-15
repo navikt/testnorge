@@ -2,120 +2,60 @@ import React from 'react'
 import _get from 'lodash/get'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import { DollyApi } from '~/service/Api'
-import LoadableComponent from '~/components/ui/loading/LoadableComponent'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import JournalpostidVisning from '~/components/journalpostid/journalpostidVisning'
 
 interface DokarkivVisning {
+	data: Array<Dokarkiv>
 	ident: string
 }
 
-type Dokument = {
-	brevkode: string
-	dokumentInfoId: string
-	journalfoerendeEnhet: string
-	journalpostId: string
+type Dokarkiv = {
+	dokumenter: Array<Dokument>
+	journalfoerendeEnhet?: string
 	kanal: string
-	miljoe: string
 	tema: string
 	tittel: string
 }
 
-type EnkeltDokument = {
-	dokument: Dokument
+type Dokument = {
+	brevkode: string
+	tittel: string
 }
 
-type TransaksjonId = {
-	transaksjonId: {
-		journalpostId: string
-	}
-	miljoe: string
+type Bestilling = {
+	dokarkiv?: Array<Dokarkiv>
 }
 
-type Dokumentinfo = {
-	data: {
-		data: {
-			journalpost: {
-				kanalnavn: string
-				dokumenter: Array<Dokument>
-				temanavn: string
-				journalfoerendeEnhet: string
-				journalpostId: string
-			}
-		}
-	}
-}
-
-export const DokarkivVisning = ({ ident }: DokarkivVisning) => {
-	// Viser data fra Joark Dokumentinfo
+export const DokarkivVisning = ({ data, ident }: DokarkivVisning) => {
+	// Viser foreløpig bestillingsdata
+	if (!data || data.length < 1) return null
 	return (
 		<div>
-			<LoadableComponent
-				onFetch={() =>
-					DollyApi.getTransaksjonid('DOKARKIV', ident)
-						.then(({ data }: { data: Array<TransaksjonId> }) => {
-							return data.map((bestilling: TransaksjonId) => {
-								return DollyApi.getDokarkivDokumentinfo(
-									bestilling.transaksjonId.journalpostId,
-									bestilling.miljoe
-								)
-									.then((response: Dokumentinfo) => {
-										const journalpost = response.data.data.journalpost
-										return {
-											kanal: journalpost.kanalnavn,
-											brevkode: journalpost.dokumenter[0].brevkode,
-											tittel: journalpost.dokumenter[0].tittel,
-											tema: journalpost.temanavn,
-											journalfoerendeEnhet: journalpost.journalfoerendeEnhet,
-											journalpostId: journalpost.journalpostId,
-											dokumentInfoId: journalpost.dokumenter[0].dokumentInfoId,
-											miljoe: bestilling.miljoe
-										}
-									})
-									.catch(error => console.error(error))
-							})
-						})
-						.then((data: Array<Promise<any>>) => {
-							return Promise.all(data)
-						})
-				}
-				render={(data: Array<Dokument>) =>
-					data &&
-					data.length > 0 && (
-						<>
-							<SubOverskrift label="Dokumenter" iconKind="dokarkiv" />
-							{data.length > 1 ? (
-								<DollyFieldArray data={data} nested>
-									{(dokument: Dokument, idx: number) => (
-										<div key={idx} className="person-visning_content">
-											<EnkelDokarkivVisning dokument={dokument} />
-										</div>
-									)}
-								</DollyFieldArray>
-							) : (
-								<div className="person-visning_content">
-									<EnkelDokarkivVisning dokument={data[0]} />
-								</div>
-							)}
-						</>
-					)
-				}
-			/>
+			<SubOverskrift label="Dokumenter" iconKind="dokarkiv" />
+			{data.map((dokument, idx) => {
+				if (!dokument) return null
+				return (
+					<div className="person-visning_content" key={idx}>
+						<TitleValue title="Kanal" value={_get(dokument, 'dokarkiv.kanal')} />
+						<TitleValue
+							title="Brevkode"
+							value={_get(dokument, 'dokarkiv.dokumenter[0].brevkode')}
+						/>
+						<TitleValue title="Tittel" value={_get(dokument, 'dokarkiv.dokumenter[0].tittel')} />
+						<TitleValue title="Tema" value={_get(dokument, 'dokarkiv.tema')} />
+						<TitleValue
+							title="Journalførende enhet"
+							value={_get(dokument, 'dokarkiv.journalfoerendeEnhet')}
+						/>
+					</div>
+				)
+			})}
+			<JournalpostidVisning system="DOKARKIV" ident={ident} />
 		</div>
 	)
 }
 
-const EnkelDokarkivVisning = ({ dokument }: EnkeltDokument) => {
-	return (
-		<>
-			<TitleValue title="Kanal" value={dokument.kanal} />
-			<TitleValue title="Brevkode" value={dokument.brevkode} />
-			<TitleValue title="Tittel" value={dokument.tittel} />
-			<TitleValue title="Tema" value={dokument.tema} />
-			<TitleValue title="Journalførende enhet" value={dokument.journalfoerendeEnhet} />
-			<TitleValue title="Journalpost-ID" value={dokument.journalpostId} />
-			<TitleValue title="Dokumentinfo-ID" value={dokument.dokumentInfoId} />
-			<TitleValue title="Miljø" value={dokument.miljoe} />
-		</>
-	)
+DokarkivVisning.filterValues = (bestillinger: Array<Bestilling>) => {
+	if (!bestillinger) return null
+	return bestillinger.filter((bestilling: any) => bestilling.dokarkiv)
 }

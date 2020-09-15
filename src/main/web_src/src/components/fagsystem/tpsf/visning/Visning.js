@@ -34,7 +34,7 @@ export const TpsfVisning = ({ data }) => {
 TpsfVisning.filterValues = (data, bestillingsListe) => {
 	// Innvandret/ Utvandret
 	const foersteBestilling = bestillingsListe[bestillingsListe.length - 1]
-	const harFoedselsinnvandring = !_has(foersteBestilling, 'data.tpsf.innvandretFraLand')
+	const harFoedselsinnvandring = !_has(foersteBestilling, 'tpsf.innvandretFraLand')
 	//Voksne personer i Dolly "fødes" ved hjelp av en innvandringsmelding. Vil ikke vise den
 	if (harFoedselsinnvandring)
 		data = {
