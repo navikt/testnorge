@@ -24,7 +24,7 @@ public class ProfilController {
         return ResponseEntity.ok(profil.toDTO());
     }
 
-    @GetMapping(value = "/image", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = "/bilde", produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<byte[]> getImage() {
         byte[] image = azureAdProfileConsumer.getProfilImage();
         return ResponseEntity.ok(image);
