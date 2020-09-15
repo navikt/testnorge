@@ -24,7 +24,7 @@ public class HelsepersonellConsumer {
 
     public HelsepersonellConsumer(RestTemplateBuilder restTemplateBuilder, @Value("${consumers.helsepersonell.url}") String url) {
         this.restTemplate = restTemplateBuilder.build();
-        this.url = url + "/api/v1/helsepersonell";
+        this.url = url + "/api/v1/helsepersonell/leger";
     }
 
     @SneakyThrows
@@ -35,7 +35,7 @@ public class HelsepersonellConsumer {
         if (dto == null) {
             throw new LegerNotFoundException("Klarer ikke å hente helsepersonell fra helsepersonell-api");
         }
-        log.info("{} helsepersonell hentet", dto.getHelsepersonell().size());
+        log.info("{} helsepersonell hentet", dto.getLeger().size());
         return new HelsepersonellListe(dto);
     }
 }

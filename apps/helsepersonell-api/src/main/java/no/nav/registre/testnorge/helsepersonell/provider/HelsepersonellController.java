@@ -29,7 +29,7 @@ public class HelsepersonellController {
         this.helsepersonellCacheHours = helsepersonellCacheHours;
     }
 
-    @GetMapping
+    @GetMapping("/leger")
     public ResponseEntity<HelsepersonellListeDTO> getHelsepersonell() {
 
         var cacheControl

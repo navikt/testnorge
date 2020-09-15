@@ -63,7 +63,7 @@ public class SyntSykemeldingControllerIntegrationTest {
     private static final String arbeidsforholdUrl = "(.*)/arbeidsforhold/api/v1/arbeidsforhold/" + ident + "/" + orgnr + "/" + arbeidsforholdId;
     private static final String organisasjonUrl = "(.*)/organisasjon/api/v1/organisasjoner/" + orgnr;
     private static final String historikkUrl = "(.*)/synt/api/v1/generate_sykmeldings_history_json";
-    private static final String helsepersonellUrl = "(.*)/helsepersonell/api/v1/helsepersonell";
+    private static final String helsepersonellUrl = "(.*)/helsepersonell/api/v1/helsepersonell/leger";
     private static final String sykemeldingUrl = "(.*)/sykemelding/api/v1/sykemeldinger";
 
     private SyntSykemeldingDTO dto;
@@ -100,7 +100,7 @@ public class SyntSykemeldingControllerIntegrationTest {
                 new Person(hodejegerenResponse),
                 historikkResponse.get(ident),
                 dto,
-                new Helsepersonell(helsepersonellResponse.getHelsepersonell().get(0)),
+                new Helsepersonell(helsepersonellResponse.getLeger().get(0)),
                 arbeidsforhold).toDTO();
     }
 

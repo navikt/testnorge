@@ -12,5 +12,5 @@ import java.util.List;
 @NoArgsConstructor(force = true)
 public class HelsepersonellListeDTO {
     @JsonProperty
-    private final List<HelsepersonellDTO> helsepersonell;
+    private final List<HelsepersonellDTO> leger;
 }

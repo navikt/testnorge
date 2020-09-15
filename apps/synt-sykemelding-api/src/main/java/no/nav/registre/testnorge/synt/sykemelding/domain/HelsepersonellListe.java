@@ -14,7 +14,7 @@ public class HelsepersonellListe {
     private final Random random = new Random();
 
     public HelsepersonellListe(HelsepersonellListeDTO dto) {
-        list = dto.getHelsepersonell()
+        list = dto.getLeger()
                 .stream()
                 .map(Helsepersonell::new)
                 .collect(Collectors.toList());

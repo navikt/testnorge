@@ -138,7 +138,7 @@ class HelsepersonellControllerIntegrationTest {
                 .stubGet();
 
 
-        String json = mvc.perform(get("/api/v1/helsepersonell")
+        String json = mvc.perform(get("/api/v1/helsepersonell/leger")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn()
                 .getResponse()
@@ -146,7 +146,7 @@ class HelsepersonellControllerIntegrationTest {
 
         HelsepersonellListeDTO actual = objectMapper.readValue(json, HelsepersonellListeDTO.class);
 
-        assertThat(actual.getHelsepersonell()).containsOnly(
+        assertThat(actual.getLeger()).containsOnly(
                 HelsepersonellDTO.builder().fornavn("Hans").etternavn("Hansen").fnr(firstPersonIdent).hprId("54321").samhandlerType("LE").build(),
                 HelsepersonellDTO.builder().fornavn("Berg").mellomnavn("Skog").etternavn("Fjell").fnr(secondPersonIdent).hprId("12345").samhandlerType("LE").build()
         );
