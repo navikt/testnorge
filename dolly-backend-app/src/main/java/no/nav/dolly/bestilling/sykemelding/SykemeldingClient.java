@@ -59,11 +59,11 @@ public class SykemeldingClient implements ClientRegister {
 
                     if (postSyntSykemelding(bestilling, tpsPerson)) {
                         RsSyntSykemelding syntSykemelding = bestilling.getSykemelding().getSyntSykemelding();
-                        saveTransaksjonId(syntSykemelding.getOrgnummer(), syntSykemelding.getArbeidsforholdId(), progress.getBestillingId(), tpsPerson.getHovedperson());
+                        saveTranskasjonId(syntSykemelding.getOrgnummer(), syntSykemelding.getArbeidsforholdId(), progress.getBestillingId(), tpsPerson.getHovedperson());
 
                     } else if (postDetaljertSykemelding(bestilling, tpsPerson)) {
                         RsDetaljertSykemelding detaljertSykemelding = bestilling.getSykemelding().getDetaljertSykemelding();
-                        saveTransaksjonId(detaljertSykemelding.getMottaker().getOrgNr(), null, progress.getBestillingId(), tpsPerson.getHovedperson());
+                        saveTranskasjonId(detaljertSykemelding.getMottaker().getOrgNr(), null, progress.getBestillingId(), tpsPerson.getHovedperson());
                     }
                     progress.setSykemeldingStatus("OK");
                 }
@@ -111,15 +111,15 @@ public class SykemeldingClient implements ClientRegister {
         return false;
     }
 
-    private void saveTransaksjonId(String orgnr, String arbeidsforholdsId, Long bestillingId, String ident) {
+    private void saveTranskasjonId(String orgnr, String arbeidsforholdsId, Long bestillingsId, String ident) {
 
         transaksjonMappingService.save(
                 TransaksjonMapping.builder()
                         .ident(ident)
-                        .bestillingId(bestillingId)
                         .transaksjonId(toJson(SykemeldingTransaksjon.builder()
                                 .orgnummer(orgnr)
-                                .arbeidsforholdId(arbeidsforholdsId).build()))
+                                .arbeidsforholdId(arbeidsforholdsId)
+                                .bestillingsId(bestillingsId).build()))
                         .datoEndret(LocalDateTime.now())
                         .system(SYKEMELDING.name())
                         .build());

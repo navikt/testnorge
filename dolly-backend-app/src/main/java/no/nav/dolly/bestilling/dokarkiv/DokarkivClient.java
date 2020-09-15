@@ -67,7 +67,7 @@ public class DokarkivClient implements ClientRegister {
                                     .append(environment)
                                     .append(":OK");
 
-                            saveTransaksjonId(requireNonNull(response.getBody()), tpsPerson.getHovedperson(), progress.getBestillingId(), environment);
+                            saveTranskasjonId(requireNonNull(response.getBody()), tpsPerson.getHovedperson(), environment);
                         }
 
                     } catch (RuntimeException e) {
@@ -91,12 +91,11 @@ public class DokarkivClient implements ClientRegister {
 
     }
 
-    private void saveTransaksjonId(DokarkivResponse response, String ident, Long bestillingId, String miljoe) {
+    private void saveTranskasjonId(DokarkivResponse response, String ident, String miljoe) {
 
         transaksjonMappingService.save(
                 TransaksjonMapping.builder()
                         .ident(ident)
-                        .bestillingId(bestillingId)
                         .transaksjonId(toJson(JoarkTransaksjon.builder()
                                 .journalpostId(response.getJournalpostId())
                                 .dokumentInfoId(response.getDokumenter().get(0).getDokumentInfoId())
