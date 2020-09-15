@@ -6,14 +6,14 @@ import no.kith.xmlstds.felleskomponent1.XMLIdent;
 import no.kith.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpplysningerArbeidsuforhet;
 import no.kith.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLNavnType;
 
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.LegeDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.HelsepersonellDTO;
 
-class Lege {
+class Helsepersonell {
 
-    private final XMLHelseOpplysningerArbeidsuforhet.Behandler xmlLege;
+    private final XMLHelseOpplysningerArbeidsuforhet.Behandler xmlHelsepersonell;
 
-    Lege(LegeDTO dto) {
-        xmlLege = new XMLHelseOpplysningerArbeidsuforhet.Behandler()
+    Helsepersonell(HelsepersonellDTO dto) {
+        xmlHelsepersonell = new XMLHelseOpplysningerArbeidsuforhet.Behandler()
                 .withAdresse(new XMLAddress())
                 .withNavn(new XMLNavnType()
                         .withFornavn(dto.getFornavn())
@@ -29,6 +29,6 @@ class Lege {
     }
 
     XMLHelseOpplysningerArbeidsuforhet.Behandler getXmlObject() {
-        return xmlLege;
+        return xmlHelsepersonell;
     }
 }

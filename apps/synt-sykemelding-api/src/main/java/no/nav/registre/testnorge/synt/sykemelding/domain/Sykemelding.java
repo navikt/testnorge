@@ -25,7 +25,7 @@ public class Sykemelding {
     private final Person pasient;
     private final SyntSykemeldingHistorikkDTO historikk;
     private final SyntSykemeldingDTO syntSykemelding;
-    private final Lege lege;
+    private final Helsepersonell helsepersonell;
     private final Arbeidsforhold arbeidsforhold;
 
 
@@ -85,7 +85,7 @@ public class Sykemelding {
                 .fornavn(this.pasient.getFornvan())
                 .mellomnavn(this.pasient.getMellomnavn())
                 .etternavn(this.pasient.getEtternavn())
-                .foedselsdato(this.pasient.getFoedselsdato())
+//                .foedselsdato(this.pasient.getFoedselsdato())
                 .navKontor("ST.HANSHAUGEN")
                 .build();
         var perioder = sykemeldinger
@@ -121,7 +121,7 @@ public class Sykemelding {
                 .arbeidsgiver(arbeidsgiverDTO)
                 .biDiagnoser(biDiagnoser)
                 .hovedDiagnose(hovedDiagnose)
-                .lege(lege.toDTO())
+                .helsepersonell(helsepersonell.toDTO())
                 .mottaker(mottaker)
                 .pasient(pasient)
                 .perioder(perioder)

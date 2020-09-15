@@ -32,10 +32,10 @@ public class SykemeldingService {
                 dto.getIdent(),
                 dto.getStartDato()
         );
-        var legeListe = helsepersonellConsumer.hentLeger();
+        var helsepersonellListe = helsepersonellConsumer.hentHelsepersonell();
 
         sykemeldingConsumer.opprettSykemelding(
-                new Sykemelding(pasient, historikk, dto, legeListe.getRandomLege(), arbeidsforhold)
+                new Sykemelding(pasient, historikk, dto, helsepersonellListe.getRandomLege(), arbeidsforhold)
         );
     }
 }

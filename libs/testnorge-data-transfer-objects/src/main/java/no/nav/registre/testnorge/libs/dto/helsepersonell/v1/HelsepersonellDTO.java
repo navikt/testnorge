@@ -12,7 +12,7 @@ import lombok.Value;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 @EqualsAndHashCode
-public class LegeDTO {
+public class HelsepersonellDTO {
     @JsonProperty
     private String fnr;
     @JsonProperty
@@ -23,4 +23,6 @@ public class LegeDTO {
     private String etternavn;
     @JsonProperty
     private String hprId;
+    @JsonProperty
+    private String samhandlerType;
 }

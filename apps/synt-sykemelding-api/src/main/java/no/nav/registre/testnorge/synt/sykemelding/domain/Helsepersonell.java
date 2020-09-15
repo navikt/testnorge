@@ -1,11 +1,12 @@
 package no.nav.registre.testnorge.synt.sykemelding.domain;
 
-import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.LegeDTO;
 
-public class Lege {
-    private LegeDTO dto;
+import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.HelsepersonellDTO;
 
-    public Lege(LegeDTO dto) {
+public class Helsepersonell {
+    private HelsepersonellDTO dto;
+
+    public Helsepersonell(HelsepersonellDTO dto) {
         this.dto = dto;
     }
 
@@ -13,14 +14,15 @@ public class Lege {
         return dto.getFnr();
     }
 
-    public no.nav.registre.testnorge.libs.dto.sykemelding.v1.LegeDTO toDTO() {
-        return no.nav.registre.testnorge.libs.dto.sykemelding.v1.LegeDTO
+    public no.nav.registre.testnorge.libs.dto.sykemelding.v1.HelsepersonellDTO toDTO() {
+        return no.nav.registre.testnorge.libs.dto.sykemelding.v1.HelsepersonellDTO
                 .builder()
                 .ident(getIdent())
                 .fornavn(dto.getFornavn())
                 .mellomnavn(dto.getMellomnavn())
                 .etternavn(dto.getEtternavn())
                 .hprId(dto.getHprId())
+                .samhandlerType(dto.getSamhandlerType())
                 .build();
     }
 }

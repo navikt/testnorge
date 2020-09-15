@@ -15,12 +15,12 @@ class Dokument {
         var fom = Aktivitet.getFom(aktivitet.getXmlObject());
         var fomIArbeid = Aktivitet.getFomIArbeid(aktivitet.getXmlObject());
 
-        var pasient = new Pasient(dto.getPasient(), dto.getLege());
+        var pasient = new Pasient(dto.getPasient(), dto.getHelsepersonell());
         var arbeidsgiver = new Arbeidsgiver(dto.getArbeidsgiver());
         var medisinskVurdering = new MedisinskVurdering(fom, dto.getHovedDiagnose(), dto.getBiDiagnoser());
 
         var prognose = new Prognose(fomIArbeid, dto.getDetaljer());
-        var lege = new Lege(dto.getLege());
+        var helsepersonell = new Helsepersonell(dto.getHelsepersonell());
 
         xmlHelseOpplysningerArbeidsuforhet = new XMLHelseOpplysningerArbeidsuforhet()
                 .withSyketilfelleStartDato(dto.getStartDato())
@@ -38,7 +38,7 @@ class Dokument {
                         new XMLHelseOpplysningerArbeidsuforhet.KontaktMedPasient()
                                 .withBehandletDato(fom.atStartOfDay())
                 )
-                .withBehandler(lege.getXmlObject())
+                .withBehandler(helsepersonell.getXmlObject())
                 .withAvsenderSystem(new XMLHelseOpplysningerArbeidsuforhet.AvsenderSystem()
                         .withSystemNavn(applicationInfo.getName())
                         .withSystemVersjon(applicationInfo.getVersion())
