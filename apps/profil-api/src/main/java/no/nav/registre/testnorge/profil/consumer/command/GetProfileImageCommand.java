@@ -23,7 +23,7 @@ public class GetProfileImageCommand implements Callable<byte[]> {
     public byte[] call() {
         return webClient
                 .get()
-                .uri(builder -> builder.path("/v1.0/me/photos/120x120/$value").build())
+                .uri(builder -> builder.path("/v1.0/me/photos/240x240/$value").build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .retrieve()
                 .onStatus(
