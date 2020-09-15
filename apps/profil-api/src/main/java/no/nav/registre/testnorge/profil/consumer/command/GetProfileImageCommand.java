@@ -23,12 +23,14 @@ public class GetProfileImageCommand implements Callable<ByteArrayResource> {
     public ByteArrayResource call() {
         return webClient
                 .get()
-                .uri(builder -> builder.path("/v1.0/me/photo/120x120/$value").build())
+                .uri(builder -> builder.path("/v1.0/me/photos/120x120/$value").build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .retrieve()
                 .onStatus(
                         HttpStatus::isError,
-                        clientResponse -> clientResponse.bodyToMono(String.class).map(IllegalStateException::new)
+                        clientResponse -> clientResponse
+                                .bodyToMono(String.class)
+                                .map(IllegalStateException::new)
                 )
                 .bodyToMono(ByteArrayResource.class)
                 .block();
