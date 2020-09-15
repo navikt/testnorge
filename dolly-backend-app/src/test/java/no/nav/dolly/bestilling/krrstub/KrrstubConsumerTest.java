@@ -25,19 +25,17 @@ import org.springframework.web.client.RestTemplate;
 
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.properties.ProvidersProps;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+import no.nav.dolly.security.sts.OidcTokenAuthentication;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @RestClientTest(KrrstubConsumer.class)
 public class KrrstubConsumerTest {
 
-    private static final String CURRENT_BRUKER_IDENT = "user";
     private static final String EPOST = "morro.pa@landet.no";
     private static final String MOBIL = "11111111";
     private static final boolean RESVERT = true;
     private static final String BASE_URL = "baseUrl";
-    private static Authentication authentication;
 
     private MockRestServiceServer server;
 
@@ -49,18 +47,6 @@ public class KrrstubConsumerTest {
 
     @Autowired
     private KrrstubConsumer krrStubConsumer;
-
-    @BeforeClass
-    public static void beforeClass() {
-        authentication = SecurityContextHolder.getContext().getAuthentication();
-        SecurityContextHolder.getContext().setAuthentication(
-                new OidcTokenAuthentication(CURRENT_BRUKER_IDENT, null, null));
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
 
     @Before
     public void setup() {

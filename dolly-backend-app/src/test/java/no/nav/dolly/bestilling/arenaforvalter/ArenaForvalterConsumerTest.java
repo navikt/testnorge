@@ -25,15 +25,11 @@ import org.springframework.web.client.RestTemplate;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
 import no.nav.dolly.properties.ProvidersProps;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
-
+import no.nav.dolly.security.sts.OidcTokenAuthentication;
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @RestClientTest(ArenaForvalterConsumer.class)
 public class ArenaForvalterConsumerTest {
-
-    private static final String STANDARD_PRINCIPAL = "brukernavn";
-    private static final String STANDARD_IDTOKEN = "idtoken";
 
     private static final String IDENT = "12423353";
     private static final String ENV = "u2";
@@ -48,14 +44,6 @@ public class ArenaForvalterConsumerTest {
 
     @Autowired
     private ArenaForvalterConsumer arenaForvalterConsumer;
-
-    @BeforeClass
-    public static void beforeClass() {
-
-        SecurityContextHolder.getContext().setAuthentication(
-                new OidcTokenAuthentication(STANDARD_PRINCIPAL, STANDARD_IDTOKEN, null)
-        );
-    }
 
     @Before
     public void setup() {

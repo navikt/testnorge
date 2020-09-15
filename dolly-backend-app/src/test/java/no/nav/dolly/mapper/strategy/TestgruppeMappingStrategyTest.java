@@ -21,12 +21,11 @@ import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testident.RsTestident;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+import no.nav.dolly.security.sts.OidcTokenAuthentication;
 
 public class TestgruppeMappingStrategyTest {
 
     private static final String STANDARD_PRINCIPAL = "brukernavn";
-    private static final String STANDARD_IDTOKEN = "idtoken";
 
     private MapperFacade mapper;
 
@@ -34,7 +33,7 @@ public class TestgruppeMappingStrategyTest {
     public static void beforeClass() {
 
         SecurityContextHolder.getContext().setAuthentication(
-                new OidcTokenAuthentication(STANDARD_PRINCIPAL, null, STANDARD_IDTOKEN, null, null)
+                new OidcTokenAuthentication(STANDARD_PRINCIPAL, null, null, null, null)
         );
     }
 

@@ -30,16 +30,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.properties.ProvidersProps;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+import no.nav.dolly.security.sts.OidcTokenAuthentication;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @RestClientTest(SigrunStubConsumer.class)
 public class SigrunStubConsumerTest {
 
-    private static final String standardPrincipal = "BRUKERNAVN";
-    private static final String standardIdtoken = "idtoken";
-    private static final String standardEierHeaderName = "testdataEier";
     private static final String IDENT = "111111111";
 
     private MockRestServiceServer server;
@@ -54,13 +51,6 @@ public class SigrunStubConsumerTest {
     private SigrunStubConsumer sigrunStubConsumer;
 
     private OpprettSkattegrunnlag skattegrunnlag;
-
-    @BeforeClass
-    public static void setupSecurity() {
-        SecurityContextHolder.getContext().setAuthentication(
-                new OidcTokenAuthentication(standardPrincipal, null, standardIdtoken, null, null)
-        );
-    }
 
     @Before
     public void setup() {
@@ -81,8 +71,6 @@ public class SigrunStubConsumerTest {
         server.expect(requestTo("https://localhost:8080/api/v1/lignetinntekt"))
                 .andExpect(method(HttpMethod.POST))
                 .andExpect(content().string(asJsonString(singletonList(skattegrunnlag))))
-                .andExpect(header(standardEierHeaderName, standardPrincipal))
-                .andExpect(header(HttpHeaders.AUTHORIZATION, "Bearer " + standardIdtoken))
                 .andRespond(withSuccess("{}", MediaType.APPLICATION_JSON));
 
         sigrunStubConsumer.createSkattegrunnlag(singletonList(skattegrunnlag));
@@ -94,8 +82,6 @@ public class SigrunStubConsumerTest {
         server.expect(requestTo("https://localhost:8080/api/v1/lignetinntekt"))
                 .andExpect(method(HttpMethod.POST))
                 .andExpect(content().string(asJsonString(singletonList(skattegrunnlag))))
-                .andExpect(header(standardEierHeaderName, standardPrincipal))
-                .andExpect(header(HttpHeaders.AUTHORIZATION, "Bearer " + standardIdtoken))
                 .andRespond(withBadRequest());
 
         sigrunStubConsumer.createSkattegrunnlag(singletonList(skattegrunnlag));
@@ -106,7 +92,6 @@ public class SigrunStubConsumerTest {
 
         server.expect(requestTo("https://localhost:8080/api/v1/slett"))
                 .andExpect(method(HttpMethod.DELETE))
-                .andExpect(header(HttpHeaders.AUTHORIZATION, "Bearer " + standardIdtoken))
                 .andExpect(header("personidentifikator", IDENT))
                 .andRespond(withSuccess());
 

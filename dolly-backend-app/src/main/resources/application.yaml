@@ -8,11 +8,6 @@ APP_VERSION: ${application.version}
 #### APP DB ####
 ? app.datasource.onsHosts
 
-#### NEW FREG-SECURITY #####
-freg.security.oidc.auth:
-  securedPath: /**
-  ignoredPaths: /internal/**,/api,/sysdoc/**,/swagger-ui.html,/swagger-resources/**,/swagger/**,/webjars/**
-
 springfox:
   documentation:
     swagger:
@@ -33,7 +28,13 @@ spring:
     allow-bean-definition-overriding: true
   datasource:
     driver-class-name: oracle.jdbc.OracleDriver
-
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          #The client_id of this application
+          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
 
 management:
   endpoints:

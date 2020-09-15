@@ -7,6 +7,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.LinkedHashMap;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
@@ -15,6 +17,7 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 
 @DisplayName("PUT /api/v1/gruppe")
+@EnableAutoConfiguration(exclude = SecurityAutoConfiguration.class)
 class TestgruppeControllerPutTest extends TestgruppeTestBase {
 
     @Test

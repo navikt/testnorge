@@ -51,14 +51,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
-        <spring-cloud.version>2.2.3.RELEASE</spring-cloud.version>
+        <spring-cloud.version>2.2.4.RELEASE</spring-cloud.version>
         <springfox.version>2.9.2</springfox.version>
         <jdbc.ojdbc.version>19.7.0.0</jdbc.ojdbc.version>
         <orika.version>1.5.4</orika.version>
         <cxf.version>3.3.4</cxf.version>
         <ehcache-core.version>2.6.11</ehcache-core.version>
         <jettison.version>1.4.0</jettison.version>
-        <freg-security-test-oidc-tools.version>2c24d35d</freg-security-test-oidc-tools.version>
         <logstash-logback-encoder.version>6.3</logstash-logback-encoder.version>
         <papertrailapp.version>1.0.0</papertrailapp.version>
         <jacoco.version>0.8.5</jacoco.version>
@@ -88,6 +87,12 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-vault-config</artifactId>
+            <version>${spring-cloud.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-contract-wiremock</artifactId>
             <version>${spring-cloud.version}</version>
         </dependency>
 

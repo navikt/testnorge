@@ -25,10 +25,12 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
@@ -44,6 +46,7 @@ import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.properties.ProvidersProps;
 
 @Ignore
+@ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @RestClientTest(TpsfService.class)
 public class TpsfServiceTest {
@@ -69,6 +72,8 @@ public class TpsfServiceTest {
 
     @Before
     public void setup() {
+
+        standardTpsfBestilling.setIdenttype(FNR);
 
         when(providersProps.getTpsf())
                 .thenReturn(ProvidersProps.Tpsf.builder()

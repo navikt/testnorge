@@ -34,7 +34,7 @@ import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingKontrollRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
+import no.nav.dolly.security.sts.OidcTokenAuthentication;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BestillingServiceTest {

@@ -40,7 +40,6 @@ public class SigrunStubConsumer {
     public void deleteSkattegrunnlag(String ident) {
 
         restTemplate.exchange(RequestEntity.delete(URI.create(providersProps.getSigrunStub().getUrl() + SIGRUN_STUB_DELETE_GRUNNLAG))
-                        .header(AUTHORIZATION, getUserIdToken())
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .header("personidentifikator", ident)
@@ -53,10 +52,8 @@ public class SigrunStubConsumer {
 
         return restTemplate.exchange(RequestEntity.post(URI.create(providersProps.getSigrunStub().getUrl() + SIGRUN_STUB_OPPRETT_GRUNNLAG))
                         .header(ACCEPT, APPLICATION_JSON_VALUE)
-                        .header(AUTHORIZATION, getUserIdToken())
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                        .header("testdataEier", getUserPrinciple())
                         .body(request),
                 Object.class);
     }
