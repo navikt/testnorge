@@ -1,4 +1,4 @@
-name: Deploy profile-api
+name: Deploy profil-api
 
 on:
   push:

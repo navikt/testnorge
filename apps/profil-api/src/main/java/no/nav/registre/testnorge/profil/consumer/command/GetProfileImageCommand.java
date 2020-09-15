@@ -23,7 +23,7 @@ public class GetProfileImageCommand implements Callable<ByteArrayResource> {
     public ByteArrayResource call() {
         return webClient
                 .get()
-                .uri(builder -> builder.path("/v1.0/me/photo/$value").build())
+                .uri(builder -> builder.path("/v1.0/me/photo/120x120/$value").build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .retrieve()
                 .bodyToMono(ByteArrayResource.class)

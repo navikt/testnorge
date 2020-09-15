@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.ProxyProvider;
@@ -46,6 +47,7 @@ public class AzureAdProfileConsumer {
             log.info("Setter opp proxy host {} for Azure Ad", proxyHost);
             var uri = URI.create(proxyHost);
 
+
             HttpClient httpClient = HttpClient
                     .create()
                     .tcpConfiguration(tcpClient -> tcpClient.proxy(proxy -> proxy
@@ -55,7 +57,14 @@ public class AzureAdProfileConsumer {
                     ));
             builder.clientConnector(new ReactorClientHttpConnector(httpClient));
         }
-        this.webClient = builder.baseUrl(url).build();
+        this.webClient = builder
+                .baseUrl(url)
+                .exchangeStrategies(ExchangeStrategies.builder()
+                        .codecs(configurer -> configurer
+                                .defaultCodecs()
+                                .maxInMemorySize(16 * 1024 * 1024))
+                        .build())
+                .build();
     }
 
     public Profil getProfil() {
