@@ -86,13 +86,11 @@ export const DokarkivVisning = ({ ident }: DokarkivVisning) => {
 							<SubOverskrift label="Dokumenter" iconKind="dokarkiv" />
 							{data.length > 1 ? (
 								<DollyFieldArray data={data} nested>
-									{(dokument: Dokument, idx: number) => {
-										return (
-											<div key={idx} className="person-visning_content">
-												<EnkelDokarkivVisning dokument={dokument} />
-											</div>
-										)
-									}}
+									{(dokument: Dokument, idx: number) => (
+										<div key={idx} className="person-visning_content">
+											<EnkelDokarkivVisning dokument={dokument} />
+										</div>
+									)}
 								</DollyFieldArray>
 							) : (
 								<div className="person-visning_content">
