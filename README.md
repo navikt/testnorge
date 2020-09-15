@@ -39,3 +39,5 @@ Så kjør `mvn clean install`
 ## Deploy status
 
 ![Deploy dev t1](https://github.com/navikt/dolly-backend/workflows/Deploy%20dev%20t1/badge.svg)
+![Deploy dev u2](https://github.com/navikt/dolly-backend/workflows/Deploy%20dev%20u2/badge.svg)
+![Deploy dev default](https://github.com/navikt/dolly-backend/workflows/Deploy%20dev%20default/badge.svg)
