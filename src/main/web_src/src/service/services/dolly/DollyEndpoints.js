@@ -12,6 +12,8 @@ const openamBase = `${uri}/openam`
 const personoppslagBase = `${uri}/pdlperson`
 const fasteOrgnummerBase = `${uri}/orgnummer`
 const fasteDatasettBase = `${uri}/fastedatasett`
+const dokarkivBase = `${uri}/dokarkiv`
+const inntektsmeldingBase = `${uri}/inntektsmelding`
 
 export default class DollyEndpoints {
 	static gruppe() {
@@ -68,6 +70,14 @@ export default class DollyEndpoints {
 
 	static kodeverkByNavn(kodeverkNavn) {
 		return `${kodeverkBase}/${kodeverkNavn}`
+	}
+
+	static inntektsmeldingDokumentinfo(journalpostId, dokumentinfoId, env) {
+		return `${inntektsmeldingBase}/${journalpostId}/${dokumentinfoId}?miljoe=${env.toLowerCase()}&variantFormat=ORIGINAL`
+	}
+
+	static dokarkivDokumentinfo(journalpostId, env) {
+		return `${dokarkivBase}/${journalpostId}?miljoe=${env}`
 	}
 
 	static bestillinger(gruppeId) {
@@ -131,7 +141,9 @@ export default class DollyEndpoints {
 		return `${uri}/personnavn`
 	}
 
-	static getTransaksjonsid(system, ident) {
-		return `${uri}/transaksjonid/${system}/${ident}`
+	static getTransaksjonsid(system, ident, bestillingsid) {
+		if (bestillingsid) {
+			return `${uri}/transaksjonid?system=${system}&bestillingId=${bestillingsid}`
+		} else return `${uri}/transaksjonid?ident=${ident}&system=${system}`
 	}
 }

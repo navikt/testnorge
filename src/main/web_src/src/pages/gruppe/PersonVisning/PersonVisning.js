@@ -51,7 +51,7 @@ export const PersonVisning = ({
 				ident={ident.ident}
 			/>
 			<SykemeldingVisning
-				data={SykemeldingVisning.filterValues(bestillingsListe)}
+				data={SykemeldingVisning.filterValues(bestillingsListe, ident.ident)}
 				ident={ident.ident}
 			/>
 			<BrregVisning data={data.brregstub} loading={loading.brregstub} />
@@ -66,7 +66,7 @@ export const PersonVisning = ({
 				data={UdiVisning.filterValues(data.udistub, bestilling.bestilling.udistub)}
 				loading={loading.udistub}
 			/>
-			<DokarkivVisning data={DokarkivVisning.filterValues(bestillingsListe)} ident={ident.ident} />
+			<DokarkivVisning ident={ident.ident} />
 			<TidligereBestillinger ids={ident.bestillingId} />
 			<BeskrivelseConnector ident={ident} iLaastGruppe={iLaastGruppe} />
 			<div className="person-visning_actions">

@@ -25,6 +25,7 @@ export enum Tema {
 export type Inntektsmelding = {
 	joarkMetadata: { tema: string }
 	inntekter: Array<Inntekt>
+	id?: number
 }
 
 export type Inntekt = {
@@ -112,4 +113,46 @@ export type Sykepenger = {
 export type Periode = {
 	fom?: string
 	tom?: string
+}
+
+export type EnkelInntektsmelding = {
+	bestilling: BestillingData
+	data: Array<Journalpost>
+}
+
+export type TransaksjonId = {
+	miljoe: string
+	transaksjonId: {
+		journalpostId: string
+		dokumentInfoId: string
+	}
+	bestillingId: string
+}
+
+export type Dokumentinfo = {
+	data: Array<any>
+}
+
+export type Journalpost = {
+	bestillingId: number
+	miljoe: string
+	journalpost: {
+		dokumenter: Array<any>
+		journalpostId: string
+	}
+	skjemainnhold: Inntekt
+}
+
+export type BestillingData = {
+	data: {
+		inntektsmelding?: {
+			inntekter: Array<Inntekt>
+		}
+	}
+	erGjenopprettet: boolean
+	id: number
+}
+
+export type Bestilling = {
+	inntektsmelding?: Array<Inntektsmelding>
 }

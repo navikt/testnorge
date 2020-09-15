@@ -63,10 +63,14 @@ export const getBestillingById = (state, id) => state.bestillingStatuser.byId[id
 export const getBestillingsListe = (state, IDer) => {
 	const bestillingsListe = []
 	for (let i = 0; i < IDer.length; i++) {
-		const bestilling = state.bestillingStatuser.byId[IDer[i]].bestilling
-		const suksessMiloer = successMiljoSelector(state.bestillingStatuser.byId[IDer[i]].status)
+		const bestilling = {
+			data: state.bestillingStatuser.byId[IDer[i]].bestilling,
+			id: IDer[i],
+			erGjenopprettet: state.bestillingStatuser.byId[IDer[i]].hasOwnProperty('opprettetFraId')
+		}
+		const suksessMiljoer = successMiljoSelector(state.bestillingStatuser.byId[IDer[i]].status)
 		// Arena-bestillinger brukes i personvisning, skal derfor ikke returnere Arena-bestillinger som har feilet
-		if (!bestilling.hasOwnProperty('arenaforvalter') || suksessMiloer.hasOwnProperty('ARENA')) {
+		if (!bestilling.hasOwnProperty('arenaforvalter') || suksessMiljoer.hasOwnProperty('ARENA')) {
 			bestillingsListe.push(bestilling)
 		}
 	}

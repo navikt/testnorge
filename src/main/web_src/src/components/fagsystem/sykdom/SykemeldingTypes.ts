@@ -15,6 +15,7 @@ export type SykemeldingSynt = {
 		arbeidsforholdId: string
 	}
 	idx: number
+	erGjenopprettet?: boolean
 }
 
 export type SykemeldingDetaljert = {
@@ -30,6 +31,7 @@ export type SykemeldingDetaljert = {
 		perioder: Array<Periode>
 	}
 	idx: number
+	erGjenopprettet?: boolean
 }
 
 export type Diagnose = {
