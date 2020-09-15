@@ -37,7 +37,7 @@ public class OnBehalfOfGenerateAccessTokenService {
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
 
         if (proxyHost != null) {
-            log.info("Setter opp proxy host {} for Client Credentials", proxyHost);
+            log.info("Setter opp proxy host {} for OAuth 2.0 On-Behalf-Of Flow", proxyHost);
             var uri = URI.create(proxyHost);
 
             HttpClient httpClient = HttpClient
