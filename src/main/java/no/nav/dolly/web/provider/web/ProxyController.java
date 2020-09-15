@@ -109,9 +109,8 @@ public class ProxyController {
 
         String requestURL = createURL(request, krrUrl + API_URI, PROXY_URI + "/krr");
         HttpHeaders headers = proxyService.copyHeaders(request);
-        headers.add("Nav-Personident",  body.split("=")[0].replace("\"", ""));
 
-        return proxyService.proxyRequest(null, HttpMethod.GET, headers, requestURL);
+        return proxyService.proxyRequest(null, method, headers, requestURL);
     }
 
     @RequestMapping("/proxy/sigrun/**")
@@ -122,9 +121,8 @@ public class ProxyController {
 
         String requestURL = createURL(request, sigrunUrl + API_URI, PROXY_URI + "/sigrun");
         HttpHeaders headers = proxyService.copyHeaders(request);
-        headers.add("personidentifikator", body.split("=")[0]);
 
-        return proxyService.proxyRequest(null, HttpMethod.GET, headers, requestURL);
+        return proxyService.proxyRequest(null, method, headers, requestURL);
     }
 
     @RequestMapping("/proxy/tpsf/**")
