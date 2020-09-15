@@ -14,13 +14,13 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 @Slf4j
 @DependencyOn(value = "azure-ad", external = true)
 @RequiredArgsConstructor
-public class GetProfileImageCommand implements Callable<ByteArrayResource> {
+public class GetProfileImageCommand implements Callable<byte[]> {
 
     private final WebClient webClient;
     private final String accessToken;
 
     @Override
-    public ByteArrayResource call() {
+    public byte[] call() {
         return webClient
                 .get()
                 .uri(builder -> builder.path("/v1.0/me/photos/120x120/$value").build())
@@ -32,7 +32,7 @@ public class GetProfileImageCommand implements Callable<ByteArrayResource> {
                                 .bodyToMono(String.class)
                                 .map(IllegalStateException::new)
                 )
-                .bodyToMono(ByteArrayResource.class)
+                .bodyToMono(byte[].class)
                 .block();
     }
 }

@@ -75,8 +75,7 @@ public class AzureAdProfileConsumer {
 
     public byte[] getProfilImage() {
         AccessToken accessToken = accessTokenService.generateToken(clientCredential, accessScopes);
-        ByteArrayResource resource = new GetProfileImageCommand(webClient, accessToken.getTokenValue()).call();
-        return resource.getByteArray();
+        return new GetProfileImageCommand(webClient, accessToken.getTokenValue()).call();
     }
 
 }
