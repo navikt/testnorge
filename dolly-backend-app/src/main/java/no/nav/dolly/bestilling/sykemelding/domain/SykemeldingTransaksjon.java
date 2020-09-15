@@ -18,5 +18,4 @@ public class SykemeldingTransaksjon {
 
     private String orgnummer;
     private String arbeidsforholdId;
-    private Long bestillingsId;
 }
