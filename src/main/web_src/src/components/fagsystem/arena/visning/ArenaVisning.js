@@ -31,17 +31,17 @@ export const ArenaVisning = ({ data, bestillinger, loading }) => {
 		: data.arbeidsokerList
 
 	const arenaBestillinger = bestillinger.filter(bestilling =>
-		bestilling.hasOwnProperty('arenaforvalter')
+		bestilling.data.hasOwnProperty('arenaforvalter')
 	)
 
 	const visningData = []
 
 	// Arenaforvalternen returnerer veldig lite informasjon, bruker derfor data fra bestillingen i tillegg
 	sortedData.forEach((info, idx) => {
-		if (_get(arenaBestillinger, `[${idx}].arenaforvalter`) !== undefined) {
+		if (_get(arenaBestillinger, `[${idx}].data.arenaforvalter`) !== undefined) {
 			const { kvalifiseringsgruppe, inaktiveringDato, aap115, aap } = arenaBestillinger[
 				idx
-			].arenaforvalter
+			].data.arenaforvalter
 			visningData.push({
 				brukertype: info.servicebehov ? 'Med servicebehov' : 'Uten servicebehov',
 				servicebehov: servicebehovKodeTilBeskrivelse(kvalifiseringsgruppe),
