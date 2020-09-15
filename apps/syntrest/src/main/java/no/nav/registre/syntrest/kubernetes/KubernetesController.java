@@ -243,8 +243,8 @@ public class KubernetesController {
 
     private String getCorrectGithubPackageName(String appName) {
         int bindestrekIndex = appName.lastIndexOf("-");
-        String app = appName.substring(bindestrekIndex);
-        return "synt" + app;
+        String app = appName.substring(bindestrekIndex + 1);
+        return "synt_" + app;
     }
 
 }
