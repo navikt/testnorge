@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.concurrent.Callable;
 
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.profil.consumer.dto.ProfileDTO;
 
 @Slf4j
 @DependencyOn(value = "azure-ad", external = true)
@@ -26,6 +26,10 @@ public class GetProfileImageCommand implements Callable<ByteArrayResource> {
                 .uri(builder -> builder.path("/v1.0/me/photo/120x120/$value").build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .retrieve()
+                .onStatus(
+                        HttpStatus::isError,
+                        clientResponse -> clientResponse.bodyToMono(String.class).map(IllegalStateException::new)
+                )
                 .bodyToMono(ByteArrayResource.class)
                 .block();
     }
