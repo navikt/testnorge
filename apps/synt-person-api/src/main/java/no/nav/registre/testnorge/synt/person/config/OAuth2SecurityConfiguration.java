@@ -15,9 +15,9 @@ import no.nav.registre.testnorge.libs.oauth2.config.OAuth2ResourceServerConfigur
 @EnableWebSecurity
 @Configuration
 @Profile({"prod", "dev"})
-public class SecurityConfiguration extends OAuth2ResourceServerConfiguration {
+public class OAuth2SecurityConfiguration extends OAuth2ResourceServerConfiguration {
 
-    public SecurityConfiguration(
+    public OAuth2SecurityConfiguration(
             OAuth2ResourceServerProperties oAuth2ResourceServerProperties,
             @Value("${spring.security.oauth2.resourceserver.jwt.accepted-audience}") List<String> acceptedAudience
     ) {

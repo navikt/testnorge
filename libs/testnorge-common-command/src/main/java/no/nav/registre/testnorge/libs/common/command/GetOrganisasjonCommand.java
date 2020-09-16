@@ -3,10 +3,9 @@ package no.nav.registre.testnorge.libs.common.command;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.RequestEntity;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.reactive.function.client.WebClient;
 
-import java.net.URI;
 import java.util.concurrent.Callable;
 
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
@@ -16,27 +15,25 @@ import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 @RequiredArgsConstructor
 @DependencyOn("organisasjon-api")
 public class GetOrganisasjonCommand implements Callable<OrganisasjonDTO> {
-    private final RestTemplate restTemplate;
-    private final String url;
+    private final WebClient webClient;
+    private final String accessToken;
     private final String orgnummer;
     private final String miljo;
 
     @SneakyThrows
     @Override
     public OrganisasjonDTO call() {
-        log.info("Henter org {}", orgnummer);
-        var response = restTemplate.exchange(
-                RequestEntity.get(new URI(url + "/api/v1/organisasjoner/" + orgnummer)).header("miljo", this.miljo).build(),
-                OrganisasjonDTO.class
-        );
-
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            log.error(
-                    "Klarer ikke å hente organsiasjon {}. Response kode {}.",
-                    orgnummer,
-                    response.getStatusCodeValue()
-            );
-        }
-        return response.getBody();
+        log.info("Henter organiasjon med orgnummer {}.", orgnummer);
+        return webClient
+                .get()
+                .uri(builder -> builder
+                        .path("/api/v1/organisasjoner/{orgnummer}")
+                        .build(orgnummer)
+                )
+                .header("miljo", miljo)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .retrieve()
+                .bodyToMono(OrganisasjonDTO.class)
+                .block();
     }
 }

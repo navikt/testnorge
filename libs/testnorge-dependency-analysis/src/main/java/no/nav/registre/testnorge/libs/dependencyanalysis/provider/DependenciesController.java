@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.libs.dependencyanalysis.provider;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,7 @@ public class DependenciesController {
     }
 
     @GetMapping
+    @Operation(hidden = true)
     public ResponseEntity<ApplicationDependenciesDTO> get() {
         var analyze = dependencyAnalysis.analyze();
         return ResponseEntity.ok(analyze.toDTO());

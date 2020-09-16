@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Pattern;
@@ -30,6 +31,7 @@ import no.nav.registre.testnorge.libs.dto.statiskedataforvalter.v1.OrganisasjonD
 import no.nav.registre.testnorge.libs.dto.statiskedataforvalter.v1.OrganisasjonListeDTO;
 
 @Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/organisasjons")
 public class OrganisasjonControllerV1 {

@@ -2,7 +2,7 @@
 API for syntetisering av sykemeldinger
 
 ### Swagger
-Swagger finnes under [/api](https://testnorge-synt-sykemelding-api.nais.preprod.local/api) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnorge-synt-sykemelding-api.dev.adeo.no/swagger) -endepunktet til applikasjonen.
 
 ### Lokal kjøring
 Kjør SyntSykemeldingApiApplicationStarter med følgende argumenter:
