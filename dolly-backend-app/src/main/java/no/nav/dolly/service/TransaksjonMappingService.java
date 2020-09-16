@@ -1,22 +1,23 @@
 package no.nav.dolly.service;
 
-import static java.util.Collections.emptyList;
-import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
-import java.util.Collection;
-import java.util.List;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
-
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import static java.util.Collections.emptyList;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
@@ -27,18 +28,20 @@ public class TransaksjonMappingService {
 
     public List<RsTransaksjonMapping> getTransaksjonMapping(String system, String ident, Long bestillingId) {
 
-        List<TransaksjonMapping> transaksjonMappingList;
+        List<TransaksjonMapping> transaksjonMappingList = new ArrayList<>();
 
-        if (nonNull(ident)) {
-            transaksjonMappingList = isNotBlank(system) ? transaksjonMappingRepository.findAllBySystemAndIdent(system, ident).orElse(emptyList())
-                    : transaksjonMappingRepository.findAllByIdent(ident).orElse(emptyList());
-        } else if (nonNull(bestillingId)) {
-            transaksjonMappingList = isNotBlank(system) ? transaksjonMappingRepository.findAllBySystemAndBestillingId(system, bestillingId).orElse(emptyList())
-                    : transaksjonMappingRepository.findAllByBestillingId(bestillingId).orElse(emptyList());
-        } else {
+        if (isNull(ident) && isNull(bestillingId)) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Søket trenger enten Ident eller BestillingId");
         }
-        return mapperFacade.mapAsList(transaksjonMappingList, RsTransaksjonMapping.class);
+        if (nonNull(bestillingId)) {
+            transaksjonMappingList = isNotBlank(system) ? transaksjonMappingRepository.findAllBySystemAndBestillingId(system, bestillingId).orElse(emptyList())
+                    : transaksjonMappingRepository.findAllByBestillingId(bestillingId).orElse(emptyList());
+        }
+        if (nonNull(ident) && transaksjonMappingList.isEmpty()) {
+            transaksjonMappingList = isNotBlank(system) ? transaksjonMappingRepository.findAllBySystemAndIdent(system, ident).orElse(emptyList())
+                    : transaksjonMappingRepository.findAllByIdent(ident).orElse(emptyList());
+        }
+        return transaksjonMappingList.isEmpty() ? new ArrayList<>() : mapperFacade.mapAsList(transaksjonMappingList, RsTransaksjonMapping.class);
     }
 
     public boolean existAlready(SystemTyper system, String ident, String miljoe) {
