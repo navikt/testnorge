@@ -5,16 +5,17 @@
  */
 package no.nav.registre.testnorge.libs.avro.hendelse;
 
-import org.apache.avro.message.BinaryMessageDecoder;
-import org.apache.avro.message.BinaryMessageEncoder;
-import org.apache.avro.message.SchemaStore;
+import org.apache.avro.generic.GenericArray;
 import org.apache.avro.specific.SpecificData;
 import org.apache.avro.util.Utf8;
+import org.apache.avro.message.BinaryMessageEncoder;
+import org.apache.avro.message.BinaryMessageDecoder;
+import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class Hendelse extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -3955270608198737932L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Hendelse\",\"namespace\":\"no.nav.registre.testnorge.avro.hendelse\",\"fields\":[{\"name\":\"ident\",\"type\":\"string\"},{\"name\":\"fom\",\"type\":\"string\"},{\"name\":\"tom\",\"type\":[\"string\",\"null\"]},{\"name\":\"type\",\"type\":\"string\"}]}");
+  private static final long serialVersionUID = -7979723841682644202L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Hendelse\",\"namespace\":\"no.nav.registre.testnorge.libs.avro.hendelse\",\"fields\":[{\"name\":\"ident\",\"type\":\"string\"},{\"name\":\"fom\",\"type\":\"string\"},{\"name\":\"tom\",\"type\":[\"string\",\"null\"]},{\"name\":\"type\",\"type\":\"string\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
@@ -70,10 +71,10 @@ public class Hendelse extends org.apache.avro.specific.SpecificRecordBase implem
     return DECODER.decode(b);
   }
 
-  @Deprecated public java.lang.CharSequence ident;
-  @Deprecated public java.lang.CharSequence fom;
-  @Deprecated public java.lang.CharSequence tom;
-  @Deprecated public java.lang.CharSequence type;
+   private java.lang.CharSequence ident;
+   private java.lang.CharSequence fom;
+   private java.lang.CharSequence tom;
+   private java.lang.CharSequence type;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -105,7 +106,7 @@ public class Hendelse extends org.apache.avro.specific.SpecificRecordBase implem
     case 1: return fom;
     case 2: return tom;
     case 3: return type;
-    default: throw new org.apache.avro.AvroRuntimeException("Bad index");
+    default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
 
@@ -117,7 +118,7 @@ public class Hendelse extends org.apache.avro.specific.SpecificRecordBase implem
     case 1: fom = (java.lang.CharSequence)value$; break;
     case 2: tom = (java.lang.CharSequence)value$; break;
     case 3: type = (java.lang.CharSequence)value$; break;
-    default: throw new org.apache.avro.AvroRuntimeException("Bad index");
+    default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
 
@@ -193,8 +194,8 @@ public class Hendelse extends org.apache.avro.specific.SpecificRecordBase implem
    * Creates a new Hendelse RecordBuilder.
    * @return A new Hendelse RecordBuilder
    */
-  public static Hendelse.Builder newBuilder() {
-    return new Hendelse.Builder();
+  public static no.nav.registre.testnorge.libs.avro.hendelse.Hendelse.Builder newBuilder() {
+    return new no.nav.registre.testnorge.libs.avro.hendelse.Hendelse.Builder();
   }
 
   /**
@@ -202,11 +203,11 @@ public class Hendelse extends org.apache.avro.specific.SpecificRecordBase implem
    * @param other The existing builder to copy.
    * @return A new Hendelse RecordBuilder
    */
-  public static Hendelse.Builder newBuilder(Hendelse.Builder other) {
+  public static no.nav.registre.testnorge.libs.avro.hendelse.Hendelse.Builder newBuilder(no.nav.registre.testnorge.libs.avro.hendelse.Hendelse.Builder other) {
     if (other == null) {
-      return new Hendelse.Builder();
+      return new no.nav.registre.testnorge.libs.avro.hendelse.Hendelse.Builder();
     } else {
-      return new Hendelse.Builder(other);
+      return new no.nav.registre.testnorge.libs.avro.hendelse.Hendelse.Builder(other);
     }
   }
 
@@ -215,11 +216,11 @@ public class Hendelse extends org.apache.avro.specific.SpecificRecordBase implem
    * @param other The existing instance to copy.
    * @return A new Hendelse RecordBuilder
    */
-  public static Hendelse.Builder newBuilder(Hendelse other) {
+  public static no.nav.registre.testnorge.libs.avro.hendelse.Hendelse.Builder newBuilder(no.nav.registre.testnorge.libs.avro.hendelse.Hendelse other) {
     if (other == null) {
-      return new Hendelse.Builder();
+      return new no.nav.registre.testnorge.libs.avro.hendelse.Hendelse.Builder();
     } else {
-      return new Hendelse.Builder(other);
+      return new no.nav.registre.testnorge.libs.avro.hendelse.Hendelse.Builder(other);
     }
   }
 
@@ -244,7 +245,7 @@ public class Hendelse extends org.apache.avro.specific.SpecificRecordBase implem
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(Hendelse.Builder other) {
+    private Builder(no.nav.registre.testnorge.libs.avro.hendelse.Hendelse.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.ident)) {
         this.ident = data().deepCopy(fields()[0].schema(), other.ident);
@@ -268,7 +269,7 @@ public class Hendelse extends org.apache.avro.specific.SpecificRecordBase implem
      * Creates a Builder by copying an existing Hendelse instance
      * @param other The existing instance to copy.
      */
-    private Builder(Hendelse other) {
+    private Builder(no.nav.registre.testnorge.libs.avro.hendelse.Hendelse other) {
       super(SCHEMA$);
       if (isValidValue(fields()[0], other.ident)) {
         this.ident = data().deepCopy(fields()[0].schema(), other.ident);
@@ -302,7 +303,7 @@ public class Hendelse extends org.apache.avro.specific.SpecificRecordBase implem
       * @param value The value of 'ident'.
       * @return This builder.
       */
-    public Hendelse.Builder setIdent(java.lang.CharSequence value) {
+    public no.nav.registre.testnorge.libs.avro.hendelse.Hendelse.Builder setIdent(java.lang.CharSequence value) {
       validate(fields()[0], value);
       this.ident = value;
       fieldSetFlags()[0] = true;
@@ -322,7 +323,7 @@ public class Hendelse extends org.apache.avro.specific.SpecificRecordBase implem
       * Clears the value of the 'ident' field.
       * @return This builder.
       */
-    public Hendelse.Builder clearIdent() {
+    public no.nav.registre.testnorge.libs.avro.hendelse.Hendelse.Builder clearIdent() {
       ident = null;
       fieldSetFlags()[0] = false;
       return this;
@@ -342,7 +343,7 @@ public class Hendelse extends org.apache.avro.specific.SpecificRecordBase implem
       * @param value The value of 'fom'.
       * @return This builder.
       */
-    public Hendelse.Builder setFom(java.lang.CharSequence value) {
+    public no.nav.registre.testnorge.libs.avro.hendelse.Hendelse.Builder setFom(java.lang.CharSequence value) {
       validate(fields()[1], value);
       this.fom = value;
       fieldSetFlags()[1] = true;
@@ -362,7 +363,7 @@ public class Hendelse extends org.apache.avro.specific.SpecificRecordBase implem
       * Clears the value of the 'fom' field.
       * @return This builder.
       */
-    public Hendelse.Builder clearFom() {
+    public no.nav.registre.testnorge.libs.avro.hendelse.Hendelse.Builder clearFom() {
       fom = null;
       fieldSetFlags()[1] = false;
       return this;
@@ -382,7 +383,7 @@ public class Hendelse extends org.apache.avro.specific.SpecificRecordBase implem
       * @param value The value of 'tom'.
       * @return This builder.
       */
-    public Hendelse.Builder setTom(java.lang.CharSequence value) {
+    public no.nav.registre.testnorge.libs.avro.hendelse.Hendelse.Builder setTom(java.lang.CharSequence value) {
       validate(fields()[2], value);
       this.tom = value;
       fieldSetFlags()[2] = true;
@@ -402,7 +403,7 @@ public class Hendelse extends org.apache.avro.specific.SpecificRecordBase implem
       * Clears the value of the 'tom' field.
       * @return This builder.
       */
-    public Hendelse.Builder clearTom() {
+    public no.nav.registre.testnorge.libs.avro.hendelse.Hendelse.Builder clearTom() {
       tom = null;
       fieldSetFlags()[2] = false;
       return this;
@@ -422,7 +423,7 @@ public class Hendelse extends org.apache.avro.specific.SpecificRecordBase implem
       * @param value The value of 'type'.
       * @return This builder.
       */
-    public Hendelse.Builder setType(java.lang.CharSequence value) {
+    public no.nav.registre.testnorge.libs.avro.hendelse.Hendelse.Builder setType(java.lang.CharSequence value) {
       validate(fields()[3], value);
       this.type = value;
       fieldSetFlags()[3] = true;
@@ -442,7 +443,7 @@ public class Hendelse extends org.apache.avro.specific.SpecificRecordBase implem
       * Clears the value of the 'type' field.
       * @return This builder.
       */
-    public Hendelse.Builder clearType() {
+    public no.nav.registre.testnorge.libs.avro.hendelse.Hendelse.Builder clearType() {
       type = null;
       fieldSetFlags()[3] = false;
       return this;

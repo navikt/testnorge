@@ -7,7 +7,7 @@ consumers:
     url: https://nais-synthdata-elsam.nais.preprod.local
   sykemelding:
     url: http://testnorge-sykemelding-api.nais.preprod.local
-  organisasjon:
-    url: http://testnorge-organisasjon-api.nais.preprod.local
   arbeidsforhold:
     url: http://testnorge-arbeidsforhold-api.nais.preprod.local
+  organisasjonapi:
+    url: https://testnorge-organisasjon-api-dev.dev.adeo.no

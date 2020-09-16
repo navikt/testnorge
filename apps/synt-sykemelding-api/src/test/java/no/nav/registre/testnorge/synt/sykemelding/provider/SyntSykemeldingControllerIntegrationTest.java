@@ -9,22 +9,44 @@ import static no.nav.registre.testnorge.synt.sykemelding.util.TestUtil.getTestPe
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.hodejegeren.v1.PersondataDTO;
+import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.SykemeldingDTO;
+import no.nav.registre.testnorge.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
+import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntSykemeldingHistorikkDTO;
+import no.nav.registre.testnorge.synt.sykemelding.domain.Arbeidsforhold;
+import no.nav.registre.testnorge.synt.sykemelding.domain.Person;
+import no.nav.registre.testnorge.synt.sykemelding.domain.Sykemelding;
+import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.runner.RunWith;
+
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Map;
 
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
@@ -70,13 +92,32 @@ public class SyntSykemeldingControllerIntegrationTest {
     private PersondataDTO hodejegerenResponse;
     private ArbeidsforholdDTO arbeidsforholdResponse;
     private OrganisasjonDTO organisasjonResponse;
-    private Map<String, LocalDate> historikkRequest = Map.of(ident, LocalDate.now());
+    private final Map<String, LocalDate> historikkRequest = Map.of(ident, LocalDate.now());
     private Map<String, SyntSykemeldingHistorikkDTO> historikkResponse;
     private HelsepersonellListeDTO helsepersonellResponse;
     private SykemeldingDTO sykemeldingRequest;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
+
+        JwtAuthenticationToken authentication = Mockito.mock(JwtAuthenticationToken.class);
+        Mockito.when(authentication.getCredentials())
+                .thenReturn(Jwt
+                        .withTokenValue("dummy_token")
+                        .expiresAt(LocalDateTime.now(ZoneOffset.UTC).plusHours(1).toInstant(ZoneOffset.UTC))
+                        .header("dummy", "dummy")
+                        .build()
+                );
+
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/oauth2/v2.0/token")
+                .withResponseBody(new AccessToken("dummy_token"))
+                .stubPost();
         dto = SyntSykemeldingDTO.builder()
                 .arbeidsforholdId(arbeidsforholdId)
                 .ident(ident)

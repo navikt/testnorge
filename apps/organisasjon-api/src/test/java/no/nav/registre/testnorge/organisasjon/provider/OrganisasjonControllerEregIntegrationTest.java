@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @TestPropertySource(locations = "classpath:application-test.properties")
 public class OrganisasjonControllerEregIntegrationTest {
 

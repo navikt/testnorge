@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.libs.core.provider;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class InternalController {
 
     @GetMapping("/isAlive")
+    @Operation(hidden = true)
     public ResponseEntity<HttpStatus> isAlive() {
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/isReady")
+    @Operation(hidden = true)
     public ResponseEntity<HttpStatus> isReady() {
         return ResponseEntity.ok().build();
     }
