@@ -36,7 +36,7 @@ import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 @TestPropertySource(
         locations = { "classpath:application-test.properties" }
 )
-public class IdentControllerSyntFrikortIntegrationTest {
+public class IdentControllerSyntrestIntegrationTest {
 
     @Autowired
     private MockMvc mvc;
@@ -48,7 +48,7 @@ public class IdentControllerSyntFrikortIntegrationTest {
     private final String samhandlerIdent = "01010101010";
 
     @Test
-    public void shouldGetResponseFromSyntFrikort() throws Exception {
+    public void shouldGetResponseFromSyntrest() throws Exception {
         var request = IdentRequest.builder()
                 .identer(Collections.singletonList(IdentMedAntallFrikort.builder()
                         .ident(testIdent)
@@ -83,7 +83,7 @@ public class IdentControllerSyntFrikortIntegrationTest {
 
         JsonWiremockHelper
                 .builder(objectMapper)
-                .withUrlPathMatching("/synt-frikort/api/v1/generate")
+                .withUrlPathMatching("/syntrest/api/v1/generate/frikort")
                 .withRequestBody(syntRequest)
                 .withResponseBody(syntResponse)
                 .stubPost();
@@ -107,7 +107,7 @@ public class IdentControllerSyntFrikortIntegrationTest {
 
         JsonWiremockHelper
                 .builder(objectMapper)
-                .withUrlPathMatching("/synt-frikort/api/v1/generate")
+                .withUrlPathMatching("/syntrest/api/v1/generate/frikort")
                 .withRequestBody(syntRequest)
                 .verifyPost();
     }
