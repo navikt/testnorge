@@ -22,8 +22,10 @@ import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.consumer.saf.SafConsumer;
 import no.nav.dolly.consumer.saf.domain.SafRequest;
 import no.nav.dolly.consumer.saf.domain.SafRequest.VariantFormat;
+import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
+import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.InntektsmeldingEnumService;
 import no.nav.dolly.service.InntektsmeldingEnumService.EnumTypes;
 import no.nav.dolly.service.RsTransaksjonMapping;
@@ -44,6 +46,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
 
 @RestController
@@ -62,6 +65,7 @@ public class OppslagController {
     private final InntektsmeldingEnumService inntektsmeldingEnumService;
     private final TransaksjonMappingService transaksjonMappingService;
     private final HelsepersonellConsumer helsepersonellConsumer;
+    private final BestillingProgressService bestillingProgressService;
     private final SafConsumer safConsumer;
 
     @Cacheable(CACHE_KODEVERK)
@@ -160,7 +164,14 @@ public class OppslagController {
             @ApiParam(value = "Ident (f.eks FNR) på person knyttet til en bestilling") @RequestParam String ident,
             @ApiParam(value = "System kan hentes ut fra /api/v1/systemer") @RequestParam(required = false) String system) {
 
-        return transaksjonMappingService.getTransaksjonMapping(system, ident, bestillingId);
+        BestillingProgress progress = null;
+        if (nonNull(bestillingId)) {
+            List<BestillingProgress> bestillingProgresses = bestillingProgressService.fetchBestillingProgressByBestillingId(bestillingId);
+            if (!bestillingProgresses.isEmpty()) {
+                progress = bestillingProgresses.get(0);
+            }
+        }
+        return transaksjonMappingService.getTransaksjonMapping(system, ident, bestillingId, progress);
     }
 
     @GetMapping("/inntektsmelding/{journalpostId}/{dokumentInfoId}")

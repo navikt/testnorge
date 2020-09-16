@@ -2,6 +2,7 @@ package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
@@ -24,20 +25,25 @@ import static net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils.
 public class TransaksjonMappingService {
 
     private final TransaksjonMappingRepository transaksjonMappingRepository;
+    private final BestillingProgressService bestillingProgressService;
     private final MapperFacade mapperFacade;
 
-    public List<RsTransaksjonMapping> getTransaksjonMapping(String system, String ident, Long bestillingId) {
+    public List<RsTransaksjonMapping> getTransaksjonMapping(String system, String ident, Long bestillingId, BestillingProgress progress) {
 
         if (isNull(ident) && isNull(bestillingId)) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Søket trenger enten Ident eller BestillingId");
         }
         List<TransaksjonMapping> transaksjonMappingList =
                 transaksjonMappingRepository.findAllByBestillingIdAndIdent(bestillingId, ident).orElse(emptyList());
-        return mapperFacade.mapAsList(
+        List<RsTransaksjonMapping> rsTransaksjonMappings = mapperFacade.mapAsList(
                 transaksjonMappingList.stream()
                         .filter(transaksjon -> isNotBlank(system) ? transaksjon.getSystem().equals(system) : true)
                         .collect(Collectors.toList()),
                 RsTransaksjonMapping.class);
+        if (nonNull(progress)) {
+            rsTransaksjonMappings.forEach(transaksjon -> transaksjon.setFeil(progress.getFeil()));
+        }
+        return rsTransaksjonMappings;
     }
 
     public boolean existAlready(SystemTyper system, String ident, String miljoe) {

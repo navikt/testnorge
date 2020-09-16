@@ -17,6 +17,7 @@ public class RsTransaksjonMapping {
     private String miljoe;
     private TransaksjonId transaksjonId;
     private LocalDateTime datoEndret;
+    private String feil;
 
     @Data
     @JsonInclude(JsonInclude.Include.NON_NULL)

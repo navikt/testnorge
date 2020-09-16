@@ -24,5 +24,6 @@ public interface BestillingProgressRepository extends Repository<BestillingProgr
     @Modifying
     int deleteByIdent(String ident);
 
+    @Query("")
     List<BestillingProgress> findByIdent(String ident);
 }

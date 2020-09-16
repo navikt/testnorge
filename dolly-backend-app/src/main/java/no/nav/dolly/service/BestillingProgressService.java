@@ -30,4 +30,8 @@ public class BestillingProgressService {
     public List<BestillingProgress> fetchBestillingProgressByBestillingId(Long bestillingsId) {
         return bestillingProgressRepository.findByBestillingId(bestillingsId);
     }
+
+    public List<BestillingProgress> fetchBestillingProgressByIdent(String ident) {
+        return bestillingProgressRepository.findByIdent(ident);
+    }
 }
