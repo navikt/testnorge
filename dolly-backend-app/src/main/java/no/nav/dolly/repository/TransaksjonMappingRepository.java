@@ -15,7 +15,8 @@ public interface TransaksjonMappingRepository extends Repository<TransaksjonMapp
 
     Optional<List<TransaksjonMapping>> findAllBySystemAndIdent(String system, String ident);
 
-    @Query(value = "from TransaksjonMapping t where (t.bestillingId is null or " +
+    @Query(value = "from TransaksjonMapping t where (:bestillingId is null or " +
+            "t.bestillingId is null or " +
             "(t.bestillingId is not null and t.bestillingId=:bestillingId)) and " +
             "t.ident=:ident")
     Optional<List<TransaksjonMapping>> findAllByBestillingIdAndIdent(Long bestillingId, String ident);
