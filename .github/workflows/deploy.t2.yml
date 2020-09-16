@@ -2,7 +2,7 @@ name: Deploy dev t2
 
 on:
   push:
-    branches: feature/REG-5715-dolly-2.0-backend
+    branches: dolly-T2-backend
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/dolly-backend:${{ github.sha }}

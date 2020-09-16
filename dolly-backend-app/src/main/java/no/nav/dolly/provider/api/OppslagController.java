@@ -157,7 +157,7 @@ public class OppslagController {
     @ApiOperation(value = "Henter transaksjon IDer for bestillingId, ident og system", authorizations = {@Authorization(value = "Bearer token fra bruker")})
     public List<RsTransaksjonMapping> getTransaksjonIderIdent(
             @ApiParam(value = "En ID som identifiserer en bestilling mot Dolly") @RequestParam(required = false) Long bestillingId,
-            @ApiParam(value = "Ident (f.eks FNR) på person knyttet til en bestilling") @RequestParam(required = false) String ident,
+            @ApiParam(value = "Ident (f.eks FNR) på person knyttet til en bestilling") @RequestParam String ident,
             @ApiParam(value = "System kan hentes ut fra /api/v1/systemer") @RequestParam(required = false) String system) {
 
         return transaksjonMappingService.getTransaksjonMapping(system, ident, bestillingId);
