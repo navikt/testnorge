@@ -22,7 +22,7 @@ import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import no.nav.registre.frikort.consumer.rs.FrikortSyntetisererenConsumer;
+import no.nav.registre.frikort.consumer.rs.SyntrestConsumer;
 import no.nav.registre.frikort.consumer.rs.response.SyntFrikortResponse;
 import no.nav.registre.frikort.domain.xml.Egenandelskode;
 import no.nav.registre.frikort.exception.UgyldigSamhandlerdataException;
@@ -43,7 +43,7 @@ public class ServiceUtils {
     private static final Long AVSPILLERGRUPPE_SAMHANDLERE = 100001163L;
     private static final String MILJOE_SAMHANDLERE = "q2";
 
-    private final FrikortSyntetisererenConsumer frikortSyntetisererenConsumer;
+    private final SyntrestConsumer syntrestConsumer;
     private final KonverteringService konverteringService;
     private final MqService mqService;
     private final HodejegerenConsumer hodejegerenConsumer;
@@ -106,7 +106,7 @@ public class ServiceUtils {
             paginertMap.put(entry.getKey(), entry.getValue());
             if (parsedSize == PAGE_SIZE || counter == identMap.size()) {
                 try {
-                    egenandeler.putAll(frikortSyntetisererenConsumer.hentSyntetiskeEgenandelerFraSyntRest(paginertMap));
+                    egenandeler.putAll(syntrestConsumer.hentSyntetiskeEgenandelerFraSyntRest(paginertMap));
                 } catch (Exception e) {
                     log.error("Kunne ikke opprette syntetiske egenandeler på identer. Fortsetter med neste batch.", e);
                 }
