@@ -6,21 +6,22 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.registre.testnorge.libs.common.command.GetOrganisasjonCommand;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.credential.OrganisasjonApiClientCredential;
 
 @Component
 public class OrganisasjonConsumer {
     private final WebClient webClient;
     private final ClientCredential clientCredential;
-    private final AccessTokenService accessTokenService;
+    private final ClientCredentialGenerateAccessTokenService accessTokenService;
 
     public OrganisasjonConsumer(
             @Value("${consumers.organisasjonapi.url}") String url,
             OrganisasjonApiClientCredential clientCredential,
-            AccessTokenService accessTokenService
+            ClientCredentialGenerateAccessTokenService accessTokenService
     ) {
 
         this.clientCredential = clientCredential;
@@ -34,7 +35,10 @@ public class OrganisasjonConsumer {
     }
 
     public OrganisasjonDTO getOrganisasjon(String orgnummer) {
-        AccessToken accessToken = accessTokenService.generateToken(clientCredential);
+        AccessToken accessToken = accessTokenService.generateToken(
+                clientCredential,
+                new AccessScopes("api://" + clientCredential.getClientId() + "/.default")
+        );
         return new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, "q1").call();
     }
 }
