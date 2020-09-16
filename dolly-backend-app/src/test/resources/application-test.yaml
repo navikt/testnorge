@@ -13,8 +13,6 @@ sts:
 
 dolly.environment.name: dummy
 
-AAD_ISSUER_URI: nada
-
 spring:
   datasource:
     url: jdbc:h2:mem:dollyDB
