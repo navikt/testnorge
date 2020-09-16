@@ -53,14 +53,14 @@ public class ClientCredentialGenerateAccessTokenService {
     }
 
     public AccessToken generateToken(ClientCredential remoteClientCredential, AccessScopes accessScopes) {
-
         if (!tokenResolver.isClientCredentials()) {
-            throw new BadCredentialsException("Kan ikke gjennomfore opprette Client Credentials fra On Behalf Of.");
+            throw new BadCredentialsException("Kan ikke gjennomfore OnBehalfOf-flow fra Client Credentials.");
         }
 
         if (accessScopes.getScopes().isEmpty()) {
-            throw new RuntimeException("Kan ikke opprette accessToken uten clients");
+            throw new RuntimeException("Kan ikke opprette accessToken uten scopes (clienter).");
         }
+
         tokenResolver.verifyAuthentication();
 
         log.info("Henter OAuth2 access token fra client credential...");
