@@ -329,7 +329,6 @@ public class SyntController {
             @ApiParam(value = "Map der key=fødselsnummer og value er antall kvitteringer man ønsker å lage for denne identen.", required = true)
             @RequestBody Map<String, Integer> fnrAntMeldingMap
     ) {
-        InputValidator.validateInput(new ArrayList<>(fnrAntMeldingMap.keySet()));
         fnrAntMeldingMap.forEach((key, value) -> InputValidator.validateInput(value));
         Map<String, List<FrikortKvittering>> response = (Map<String, List<FrikortKvittering>>)
                 frikortConsumer.synthesizeData(UriExpander.createRequestEntity(frikortUrl, fnrAntMeldingMap));
