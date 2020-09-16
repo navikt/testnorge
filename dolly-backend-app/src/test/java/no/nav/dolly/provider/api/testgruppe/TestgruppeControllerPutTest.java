@@ -6,6 +6,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.LinkedHashMap;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,6 +32,7 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 import no.nav.dolly.security.sts.OidcTokenAuthentication;
 
+@Disabled
 @DisplayName("PUT /api/v1/gruppe")
 @EnableAutoConfiguration(exclude = {SecurityAutoConfiguration.class,
         OAuth2ResourceServerAutoConfiguration.class,

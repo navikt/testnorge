@@ -17,6 +17,7 @@ public class ApplicationStarter extends SpringBootServletInitializer {
         new SpringApplicationBuilder()
                 .sources(ApplicationConfig.class)
                 .properties(properties)
+                .profiles("prod")
                 .run(args);
     }
 }

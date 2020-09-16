@@ -9,6 +9,8 @@ import static org.hamcrest.Matchers.hasProperty;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration;
@@ -26,6 +28,7 @@ import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 
+@Disabled
 @DisplayName("GET /api/v1/gruppe")
 @EnableAutoConfiguration(exclude = { SecurityAutoConfiguration.class,
         OAuth2ResourceServerAutoConfiguration.class,

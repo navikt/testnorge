@@ -4,6 +4,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration;
@@ -16,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 
+@Disabled
 @DisplayName("POST /api/v1/gruppe")
 @EnableAutoConfiguration(exclude = { SecurityAutoConfiguration.class,
         OAuth2ResourceServerAutoConfiguration.class,
