@@ -1,11 +1,11 @@
 package no.nav.dolly.repository;
 
-import java.util.List;
-import java.util.Optional;
-
+import no.nav.dolly.domain.jpa.TransaksjonMapping;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 
-import no.nav.dolly.domain.jpa.TransaksjonMapping;
+import java.util.List;
+import java.util.Optional;
 
 public interface TransaksjonMappingRepository extends Repository<TransaksjonMapping, Long> {
 
@@ -15,7 +15,8 @@ public interface TransaksjonMappingRepository extends Repository<TransaksjonMapp
 
     Optional<List<TransaksjonMapping>> findAllBySystemAndIdent(String system, String ident);
 
-    Optional<List<TransaksjonMapping>> findAllByBestillingId(Long bestillingId);
-
-    Optional<List<TransaksjonMapping>> findAllBySystemAndBestillingId(String system, Long bestillingId);
+    @Query(value = "from TransaksjonMapping t where (t.bestillingId is null or " +
+            "(t.bestillingId is not null and t.bestillingId=:bestillingId)) and " +
+            "(t.ident is null or (t.ident is not null and t.ident=:ident))")
+    Optional<List<TransaksjonMapping>> findAllByBestillingIdAndIdent(Long bestillingId, String ident);
 }

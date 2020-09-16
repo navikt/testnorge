@@ -10,14 +10,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
@@ -28,20 +28,16 @@ public class TransaksjonMappingService {
 
     public List<RsTransaksjonMapping> getTransaksjonMapping(String system, String ident, Long bestillingId) {
 
-        List<TransaksjonMapping> transaksjonMappingList = new ArrayList<>();
-
         if (isNull(ident) && isNull(bestillingId)) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Søket trenger enten Ident eller BestillingId");
         }
-        if (nonNull(bestillingId)) {
-            transaksjonMappingList = isNotBlank(system) ? transaksjonMappingRepository.findAllBySystemAndBestillingId(system, bestillingId).orElse(emptyList())
-                    : transaksjonMappingRepository.findAllByBestillingId(bestillingId).orElse(emptyList());
-        }
-        if (nonNull(ident) && transaksjonMappingList.isEmpty()) {
-            transaksjonMappingList = isNotBlank(system) ? transaksjonMappingRepository.findAllBySystemAndIdent(system, ident).orElse(emptyList())
-                    : transaksjonMappingRepository.findAllByIdent(ident).orElse(emptyList());
-        }
-        return transaksjonMappingList.isEmpty() ? new ArrayList<>() : mapperFacade.mapAsList(transaksjonMappingList, RsTransaksjonMapping.class);
+        List<TransaksjonMapping> transaksjonMappingList =
+                transaksjonMappingRepository.findAllByBestillingIdAndIdent(bestillingId, ident).orElse(emptyList());
+        return mapperFacade.mapAsList(
+                transaksjonMappingList.stream()
+                        .filter(transaksjon -> isNotBlank(system) ? transaksjon.getSystem().equals(system) : true)
+                        .collect(Collectors.toList()),
+                RsTransaksjonMapping.class);
     }
 
     public boolean existAlready(SystemTyper system, String ident, String miljoe) {
