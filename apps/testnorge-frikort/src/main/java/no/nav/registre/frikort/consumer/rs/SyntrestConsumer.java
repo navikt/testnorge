@@ -42,7 +42,7 @@ public class SyntrestConsumer {
             return restTemplate.exchange(postRequest, new ParameterizedTypeReference<Map<String, List<SyntFrikortResponse>>>() {
             }).getBody();
         } catch (Exception e) {
-            log.error("Uventet feil ved henting av syntetiske egenandeler fra synt-frikort.", e);
+            log.error("Uventet feil ved henting av syntetiske egenandeler fra syntrest.", e);
             throw e;
         }
     }
