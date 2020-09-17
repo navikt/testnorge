@@ -19,14 +19,14 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
-@DependencyOn(value = "nais-synthdata-frikort", external = true)
-public class FrikortSyntetisererenConsumer {
+@DependencyOn(value = "syntrest", external = true)
+public class SyntrestConsumer {
 
     private RestTemplate restTemplate;
     private String syntServerUrl;
 
-    public FrikortSyntetisererenConsumer(
-            @Value("${synthdata.frikort.url}") String syntServerUrl,
+    public SyntrestConsumer(
+            @Value("${syntrest.api.url}") String syntServerUrl,
             RestTemplate restTemplate
     ) {
         this.syntServerUrl = syntServerUrl;
@@ -34,7 +34,7 @@ public class FrikortSyntetisererenConsumer {
     }
 
     public Map<String, List<SyntFrikortResponse>> hentSyntetiskeEgenandelerFraSyntRest(Map<String, Integer> request) {
-        var postRequest = RequestEntity.post(URI.create(syntServerUrl + "/api/v1/generate"))
+        var postRequest = RequestEntity.post(URI.create(syntServerUrl + "/v1/generate/frikort"))
                 .header(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .body(request);
 
@@ -42,7 +42,7 @@ public class FrikortSyntetisererenConsumer {
             return restTemplate.exchange(postRequest, new ParameterizedTypeReference<Map<String, List<SyntFrikortResponse>>>() {
             }).getBody();
         } catch (Exception e) {
-            log.error("Uventet feil ved henting av syntetiske egenandeler fra synt-frikort.", e);
+            log.error("Uventet feil ved henting av syntetiske egenandeler fra syntrest.", e);
             throw e;
         }
     }
