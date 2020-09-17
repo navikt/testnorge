@@ -19,6 +19,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils.isNotBlank;
+import static no.nav.dolly.domain.resultset.SystemTyper.*;
 
 @Service
 @RequiredArgsConstructor
@@ -39,14 +40,15 @@ public class TransaksjonMappingService {
                         .filter(transaksjon -> isNotBlank(system) ? transaksjon.getSystem().equals(system) : true)
                         .collect(Collectors.toList()),
                 RsTransaksjonMapping.class);
-            rsTransaksjonMappings.forEach(transaksjon -> transaksjon.setFeil(nonNull(progress) ? hentSystemFeil(progress,system): ""));
+            rsTransaksjonMappings.forEach(transaksjon -> transaksjon.setFeil(nonNull(progress) ? hentSystemFeilFraBestillingProgress(progress,system): null));
         return rsTransaksjonMappings;
     }
 
-    private String hentSystemFeil(BestillingProgress progress, String system) {
-        if (system.equals("SYKEMELDING")) return progress.getSykemeldingStatus();
-        if (system.equals("DOKARKIV")) return progress.getDokarkivStatus();
-        if (system.equals("INNTEKTSMELDING")) return progress.getInntektsmeldingStatus();
+    private String hentSystemFeilFraBestillingProgress(BestillingProgress progress, String system) {
+        if (isNull(system) && isNull(progress)) return null;
+        if (system.equals(SYKEMELDING.name())) return progress.getSykemeldingStatus();
+        if (system.equals(DOKARKIV.name())) return progress.getDokarkivStatus();
+        if (system.equals(INNTKMELD.name())) return progress.getInntektsmeldingStatus();
         return progress.getFeil();
     }
 
