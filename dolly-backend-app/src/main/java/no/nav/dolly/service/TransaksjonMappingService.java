@@ -40,9 +40,7 @@ public class TransaksjonMappingService {
                         .filter(transaksjon -> isNotBlank(system) ? transaksjon.getSystem().equals(system) : true)
                         .collect(Collectors.toList()),
                 RsTransaksjonMapping.class);
-        if (nonNull(progress)) {
-            rsTransaksjonMappings.forEach(transaksjon -> transaksjon.setFeil(progress.getFeil()));
-        }
+            rsTransaksjonMappings.forEach(transaksjon -> transaksjon.setFeil(nonNull(progress) ? progress.getFeil() : ""));
         return rsTransaksjonMappings;
     }
 
