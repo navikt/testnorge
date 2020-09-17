@@ -165,7 +165,7 @@ public class OppslagController {
             @ApiParam(value = "System kan hentes ut fra /api/v1/systemer") @RequestParam(required = false) String system) {
 
         BestillingProgress progress = null;
-        if (nonNull(bestillingId)) {
+        if (nonNull(bestillingId) && nonNull(system)) {
             List<BestillingProgress> bestillingProgresses = bestillingProgressService.fetchBestillingProgressByBestillingId(bestillingId);
             if (!bestillingProgresses.isEmpty()) {
                 progress = bestillingProgresses.get(0);

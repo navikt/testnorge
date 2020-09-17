@@ -25,7 +25,6 @@ import static net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils.
 public class TransaksjonMappingService {
 
     private final TransaksjonMappingRepository transaksjonMappingRepository;
-    private final BestillingProgressService bestillingProgressService;
     private final MapperFacade mapperFacade;
 
     public List<RsTransaksjonMapping> getTransaksjonMapping(String system, String ident, Long bestillingId, BestillingProgress progress) {
@@ -40,8 +39,15 @@ public class TransaksjonMappingService {
                         .filter(transaksjon -> isNotBlank(system) ? transaksjon.getSystem().equals(system) : true)
                         .collect(Collectors.toList()),
                 RsTransaksjonMapping.class);
-            rsTransaksjonMappings.forEach(transaksjon -> transaksjon.setFeil(nonNull(progress) ? progress.getFeil() : ""));
+            rsTransaksjonMappings.forEach(transaksjon -> transaksjon.setFeil(nonNull(progress) ? hentSystemFeil(progress,system): ""));
         return rsTransaksjonMappings;
+    }
+
+    private String hentSystemFeil(BestillingProgress progress, String system) {
+        if (system.equals("SYKEMELDING")) return progress.getSykemeldingStatus();
+        if (system.equals("DOKARKIV")) return progress.getDokarkivStatus();
+        if (system.equals("INNTEKTSMELDING")) return progress.getInntektsmeldingStatus();
+        return progress.getFeil();
     }
 
     public boolean existAlready(SystemTyper system, String ident, String miljoe) {
