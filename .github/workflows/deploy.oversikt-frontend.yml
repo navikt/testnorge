@@ -28,7 +28,6 @@ jobs:
           node-version: "12.x"
       - name: Install js libs
         run: |
-          ls
           npm ci
         working-directory: apps/oversikt-frontend/src/main/js
       - name: Build js
@@ -37,7 +36,7 @@ jobs:
         working-directory: apps/oversikt-frontend/src/main/js
       - name: Move js build
         run: |
-          mv build ../main/resources/static
+          mv build ../resources/static
         working-directory: apps/oversikt-frontend/src/main/js
       - name: Compile
         env:
