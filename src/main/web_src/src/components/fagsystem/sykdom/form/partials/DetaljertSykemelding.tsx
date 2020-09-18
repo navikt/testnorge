@@ -8,9 +8,13 @@ import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
 import { SelectOptionsDiagnoser } from './SelectOptionsDiagnoser'
-import LegeSelect from './LegeSelect'
+import HelsepersonellSelect from './HelsepersonellSelect'
 import { ArbeidKodeverk } from '~/config/kodeverk'
-import { SykemeldingForm, Lege, Arbeidsgiver } from '~/components/fagsystem/sykdom/SykemeldingTypes'
+import {
+	SykemeldingForm,
+	Helsepersonell,
+	Arbeidsgiver
+} from '~/components/fagsystem/sykdom/SykemeldingTypes'
 
 type DiagnoseSelect = {
 	diagnoseNavn: string
@@ -41,8 +45,8 @@ export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 		formikBag.setFieldValue(`${path}.system`, KODESYSTEM)
 	}
 
-	const handleLegeChange = (v: Lege) => {
-		formikBag.setFieldValue('sykemelding.detaljertSykemelding.lege', {
+	const handleLegeChange = (v: Helsepersonell) => {
+		formikBag.setFieldValue('sykemelding.detaljertSykemelding.helsepersonell', {
 			etternavn: v.etternavn,
 			fornavn: v.fornavn,
 			hprId: v.hprId,
@@ -111,11 +115,11 @@ export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 					/>
 				)}
 			</FormikDollyFieldArray>
-			<Kategori title="Lege" vis="sykemelding">
-				<LegeSelect
-					name="sykemelding.detaljertSykemelding.lege.ident"
-					label="Lege"
-					afterChange={(v: Lege) => handleLegeChange(v)}
+			<Kategori title="Helsepersonell" vis="sykemelding">
+				<HelsepersonellSelect
+					name="sykemelding.detaljertSykemelding.helsepersonell.ident"
+					label="Helsepersonell"
+					afterChange={(v: Helsepersonell) => handleLegeChange(v)}
 				/>
 			</Kategori>
 			<Kategori title="Arbeidsgiver" vis="sykemelding">

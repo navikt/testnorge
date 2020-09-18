@@ -3,7 +3,7 @@ import LoadableComponent, { Feilmelding } from '~/components/ui/loading/Loadable
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 
-interface LegeSelect {
+interface HelsepersonellSelect {
 	name: string
 	label: string
 	afterChange: Function
@@ -19,19 +19,19 @@ type Option = {
 	hprId: string
 }
 
-export default ({ name, label, afterChange }: LegeSelect) => {
+export default ({ name, label, afterChange }: HelsepersonellSelect) => {
 	return (
 		<LoadableComponent
 			onFetch={() =>
-				SelectOptionsOppslag.hentLeger().then(response =>
-					response.leger.map((lege: Option) => ({
-						value: lege.fnr,
-						label: `${lege.fnr} - ${lege.fornavn} ${lege.mellomnavn} ${lege.etternavn}`,
-						fnr: lege.fnr,
-						fornavn: lege.fornavn,
-						mellomnavn: lege.mellomnavn,
-						etternavn: lege.etternavn,
-						hprId: lege.hprId
+				SelectOptionsOppslag.hentHelsepersonell().then(response =>
+					response.helsepersonell.map((helsepersonell: Option) => ({
+						value: helsepersonell.fnr,
+						label: `${helsepersonell.fnr} - ${helsepersonell.fornavn} ${helsepersonell.mellomnavn} ${helsepersonell.etternavn}`,
+						fnr: helsepersonell.fnr,
+						fornavn: helsepersonell.fornavn,
+						mellomnavn: helsepersonell.mellomnavn,
+						etternavn: helsepersonell.etternavn,
+						hprId: helsepersonell.hprId
 					}))
 				)
 			}

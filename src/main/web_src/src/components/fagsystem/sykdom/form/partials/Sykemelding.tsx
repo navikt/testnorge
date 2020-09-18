@@ -32,7 +32,7 @@ const initialValuesDetaljertSykemelding = {
 			diagnosekode: '',
 			system: ''
 		},
-		lege: {
+		helsepersonell: {
 			etternavn: '',
 			fornavn: '',
 			hprId: '',

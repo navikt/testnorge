@@ -25,7 +25,7 @@ export type SykemeldingDetaljert = {
 		manglendeTilretteleggingPaaArbeidsplassen: boolean
 		hovedDiagnose: Diagnose
 		biDiagnoser: Array<Diagnose>
-		lege: Lege
+		helsepersonell: Helsepersonell
 		arbeidsgiver: Arbeidsgiver
 		detaljer: Detaljer
 		perioder: Array<Periode>
@@ -40,7 +40,7 @@ export type Diagnose = {
 	system?: string
 }
 
-export type Lege = {
+export type Helsepersonell = {
 	fornavn: string
 	mellomnavn?: string
 	etternavn: string
