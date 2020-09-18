@@ -19,7 +19,10 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils.isNotBlank;
-import static no.nav.dolly.domain.resultset.SystemTyper.*;
+import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
+import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
+import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
+import static org.apache.http.util.TextUtils.isBlank;
 
 @Service
 @RequiredArgsConstructor
@@ -37,19 +40,11 @@ public class TransaksjonMappingService {
                 transaksjonMappingRepository.findAllByBestillingIdAndIdent(bestillingId, ident).orElse(emptyList());
         List<RsTransaksjonMapping> rsTransaksjonMappings = mapperFacade.mapAsList(
                 transaksjonMappingList.stream()
-                        .filter(transaksjon -> isNotBlank(system) ? transaksjon.getSystem().equals(system) : true)
+                        .filter(transaksjon -> isBlank(system) || transaksjon.getSystem().equals(system))
                         .collect(Collectors.toList()),
                 RsTransaksjonMapping.class);
-            rsTransaksjonMappings.forEach(transaksjon -> transaksjon.setFeil(nonNull(progress) ? hentSystemFeilFraBestillingProgress(progress,system): null));
+        rsTransaksjonMappings.forEach(transaksjon -> transaksjon.setFeil(nonNull(progress) ? hentSystemFeilFraBestillingProgress(progress, system) : null));
         return rsTransaksjonMappings;
-    }
-
-    private String hentSystemFeilFraBestillingProgress(BestillingProgress progress, String system) {
-        if (isNull(system) && isNull(progress)) return null;
-        if (system.equals(SYKEMELDING.name())) return progress.getSykemeldingStatus();
-        if (system.equals(DOKARKIV.name())) return progress.getDokarkivStatus();
-        if (system.equals(INNTKMELD.name())) return progress.getInntektsmeldingStatus();
-        return progress.getFeil();
     }
 
     public boolean existAlready(SystemTyper system, String ident, String miljoe) {
@@ -69,5 +64,21 @@ public class TransaksjonMappingService {
     public void save(TransaksjonMapping entry) {
 
         transaksjonMappingRepository.save(entry);
+    }
+
+    private String hentSystemFeilFraBestillingProgress(BestillingProgress progress, String system) {
+        if (isNull(system) || isNull(progress)) {
+            return null;
+        }
+        if (system.equals(SYKEMELDING.name())) {
+            return progress.getSykemeldingStatus();
+        }
+        if (system.equals(DOKARKIV.name())) {
+            return progress.getDokarkivStatus();
+        }
+        if (system.equals(INNTKMELD.name())) {
+            return progress.getInntektsmeldingStatus();
+        }
+        return progress.getFeil();
     }
 }
