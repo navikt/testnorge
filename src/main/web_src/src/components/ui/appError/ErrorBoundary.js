@@ -16,7 +16,7 @@ export class ErrorBoundary extends React.Component {
 
 	componentDidCatch(error, info) {
 		Logger.error({
-			event: `Gobal React feil: ${error.message}`,
+			event: `Global React feil: ${error.message}`,
 			message: error.message + info.componentStack,
 			uuid: window.uuid
 		})
