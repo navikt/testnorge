@@ -1,0 +1,18 @@
+.frame {
+    min-width: 1024px;
+    background-color: #55828B;
+}
+
+.container {
+    display: flex;
+}
+
+.container--left {
+    width: 20%;
+    background-color: #87BBA2;
+}
+
+.container--right {
+    width: 80%;
+    background-color: #C9E4CA;
+}

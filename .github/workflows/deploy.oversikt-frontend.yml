@@ -23,6 +23,21 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '11.x'
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+      - name: Install js libs
+        run: |
+          npm ci
+        working-directory: apps/oversikt-frontend/src/frontend
+      - name: Build js
+        run: |
+          npm run build
+        working-directory: apps/oversikt-frontend/src/frontend
+      - name: Move js build
+        run: |
+          mv build ../main/resources/static
+        working-directory: apps/oversikt-frontend/src/frontend
       - name: Compile
         env:
           GITHUB_USERNAME: token
