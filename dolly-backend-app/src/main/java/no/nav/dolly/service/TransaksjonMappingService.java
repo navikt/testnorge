@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils.isNotBlank;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
 import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
@@ -43,7 +42,7 @@ public class TransaksjonMappingService {
                         .filter(transaksjon -> isBlank(system) || transaksjon.getSystem().equals(system))
                         .collect(Collectors.toList()),
                 RsTransaksjonMapping.class);
-        rsTransaksjonMappings.forEach(transaksjon -> transaksjon.setFeil(nonNull(progress) ? hentSystemFeilFraBestillingProgress(progress, system) : null));
+        rsTransaksjonMappings.forEach(transaksjon -> transaksjon.setStatus(nonNull(progress) ? hentSystemFeilFraBestillingProgress(progress, system) : null));
         return rsTransaksjonMappings;
     }
 
@@ -70,15 +69,16 @@ public class TransaksjonMappingService {
         if (isNull(system) || isNull(progress)) {
             return null;
         }
+        String status = "";
         if (system.equals(SYKEMELDING.name())) {
-            return progress.getSykemeldingStatus();
+            status = progress.getSykemeldingStatus();
+        } else if (system.equals(DOKARKIV.name())) {
+            status = progress.getDokarkivStatus();
+        } else if (system.equals(INNTKMELD.name())) {
+            status = progress.getInntektsmeldingStatus();
+        } else {
+            return progress.getFeil();
         }
-        if (system.equals(DOKARKIV.name())) {
-            return progress.getDokarkivStatus();
-        }
-        if (system.equals(INNTKMELD.name())) {
-            return progress.getInntektsmeldingStatus();
-        }
-        return progress.getFeil();
+        return status.contains("OK") ? "OK" : status;
     }
 }
