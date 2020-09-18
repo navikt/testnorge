@@ -4,7 +4,7 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { SyntSykemelding } from './partials/SyntSykemelding'
 import { DetaljertSykemelding } from './partials/DetaljertSykemelding'
 import { Sykemelding, SykemeldingSynt, SykemeldingDetaljert } from '../SykemeldingTypes'
-import { GyldigeBestillinger } from '~/components/transaksjonid/GyldigeBestillinger'
+import { erGyldig } from '~/components/transaksjonid/GyldigeBestillinger'
 
 export const SykemeldingVisning = ({ data }: Sykemelding) => {
 	// Viser foreløpig bestillingsdata
@@ -14,9 +14,10 @@ export const SykemeldingVisning = ({ data }: Sykemelding) => {
 		<div>
 			<SubOverskrift label="Sykemelding" iconKind="sykdom" />
 			{data.map((bestilling: SykemeldingSynt | SykemeldingDetaljert, idx: number) => {
-				const syntSykemelding = _get(bestilling, 'data.sykemelding.syntSykemelding')
-				const detaljertSykemelding = _get(bestilling, 'data.sykemelding.detaljertSykemelding')
 				if (!bestilling.erGjenopprettet) {
+					const syntSykemelding = _get(bestilling, 'data.sykemelding.syntSykemelding')
+					const detaljertSykemelding = _get(bestilling, 'data.sykemelding.detaljertSykemelding')
+
 					return syntSykemelding ? (
 						<SyntSykemelding sykemelding={syntSykemelding} idx={idx} />
 					) : detaljertSykemelding ? (
@@ -28,10 +29,11 @@ export const SykemeldingVisning = ({ data }: Sykemelding) => {
 	)
 }
 
-SykemeldingVisning.filterValues = (bestillinger: Array<Sykemelding>, ident: number) => {
+SykemeldingVisning.filterValues = (bestillinger: Array<Sykemelding>, ident: string) => {
 	if (!bestillinger) return null
 	const sykemeldingBestillinger = bestillinger.filter(
-		(bestilling: any) => bestilling.data.sykemelding
+		(bestilling: any) =>
+			bestilling.data.sykemelding && erGyldig(bestilling.id, 'SYKEMELDING', ident)
 	)
-	return GyldigeBestillinger(sykemeldingBestillinger, 'SYKEMELDING', ident)
+	return sykemeldingBestillinger
 }

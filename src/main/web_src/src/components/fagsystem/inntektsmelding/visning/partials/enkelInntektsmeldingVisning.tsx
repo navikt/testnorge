@@ -27,7 +27,9 @@ const getHeader = (data: Inntekt) => {
 
 export const EnkelInntektsmeldingVisning = ({ bestilling, data }: EnkelInntektsmelding) => {
 	// Sjekk om bestillingid i bestilling er i data
-	const journalpostidPaaBestilling = data.filter(id => id.bestillingId === bestilling.id)
+	const journalpostidPaaBestilling = data.filter(
+		id => id.bestillingId === bestilling.id || !id.bestillingId
+	)
 	return (
 		<>
 			<DollyFieldArray

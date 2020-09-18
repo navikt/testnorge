@@ -13,6 +13,7 @@ import {
 import { EnkelInntektsmeldingVisning } from './partials/enkelInntektsmeldingVisning'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { DollyApi } from '~/service/Api'
+import { erGyldig } from '~/components/transaksjonid/GyldigeBestillinger'
 
 interface InntektsmeldingVisning {
 	liste: Array<BestillingData>
@@ -53,9 +54,9 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisning)
 				render={(data: Array<Journalpost>) => {
 					if (data && data.length > 0) {
 						const gyldigeBestillinger = liste.filter(bestilling =>
-							data.find(x => x.bestillingId === bestilling.id)
+							data.find(x => (x && x.bestillingId ? x.bestillingId === bestilling.id : x))
 						)
-						if (gyldigeBestillinger) {
+						if (gyldigeBestillinger && gyldigeBestillinger.length > 0) {
 							return (
 								<>
 									<SubOverskrift label="Inntektsmelding (fra Altinn)" iconKind="inntektsmelding" />
@@ -66,12 +67,7 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisning)
 											}}
 										</DollyFieldArray>
 									) : (
-										data.find(x => x.bestillingId === gyldigeBestillinger[0].id) && (
-											<EnkelInntektsmeldingVisning
-												bestilling={gyldigeBestillinger[0]}
-												data={data}
-											/>
-										)
+										<EnkelInntektsmeldingVisning bestilling={gyldigeBestillinger[0]} data={data} />
 									)}
 								</>
 							)
@@ -83,12 +79,14 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisning)
 	)
 }
 
-InntektsmeldingVisning.filterValues = (bestillinger: Array<Bestilling>) => {
+InntektsmeldingVisning.filterValues = (bestillinger: Array<Bestilling>, ident: string) => {
 	if (!bestillinger) return false
 
 	return bestillinger.filter(
 		(bestilling: any) =>
-			bestilling.data.inntektsmelding && !tomBestilling(bestilling.data.inntektsmelding.inntekter)
+			bestilling.data.inntektsmelding &&
+			!tomBestilling(bestilling.data.inntektsmelding.inntekter) &&
+			erGyldig(bestilling.id, 'INNTKMELD', ident)
 	)
 }
 

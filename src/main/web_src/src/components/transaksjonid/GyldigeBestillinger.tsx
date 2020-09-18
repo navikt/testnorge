@@ -1,20 +1,24 @@
 import { useAsync } from 'react-use'
 import { DollyApi } from '~/service/Api'
 
-export const GyldigeBestillinger = (data: any, system: string, ident: string) => {
-	const transaksjonLog = useAsync(async () => {
-		const response = await DollyApi.getTransaksjonid(system, ident)
+type Bestilling = {
+	data: Array<BestillingData>
+}
+
+type BestillingData = {
+	status: string
+}
+
+export const erGyldig = (bestillingId: number, system: string, ident: string) => {
+	const finnBestilling = useAsync(async () => {
+		const response: Bestilling = await DollyApi.getTransaksjonid(system, ident, bestillingId)
 		return response.data
 	}, [])
-
-	const bestillinger: any = transaksjonLog.value
-	const gyldige: Array<any> = []
-
-	bestillinger &&
-		bestillinger.forEach((bestilling: any) => {
-			!gyldige.find(x => x.id === bestilling.bestillingId) &&
-				gyldige.push(data.find(y => y.id === bestilling.bestillingId))
-		})
-
-	return gyldige
+	const gyldig =
+		finnBestilling.value &&
+		finnBestilling.value.length > 0 &&
+		finnBestilling.value[0].status === 'OK'
+			? true
+			: false
+	return gyldig
 }

@@ -143,7 +143,7 @@ export default class DollyEndpoints {
 
 	static getTransaksjonsid(system, ident, bestillingsid) {
 		if (bestillingsid) {
-			return `${uri}/transaksjonid?system=${system}&bestillingId=${bestillingsid}`
+			return `${uri}/transaksjonid?system=${system}&ident=${ident}&bestillingId=${bestillingsid}`
 		} else return `${uri}/transaksjonid?ident=${ident}&system=${system}`
 	}
 }
