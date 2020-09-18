@@ -34,7 +34,7 @@ public class BestillingProgressServiceTest {
 
     @Test(expected = NotFoundException.class)
     public void bestillingProgressKasterExceptionHvisManIkkeFinnerProgress() throws Exception {
-        when(mockRepo.findByBestillingId(any())).thenReturn(null);
+        when(mockRepo.findByBestillingId(any())).thenReturn(Optional.empty());
         progressService.fetchBestillingProgressByBestillingsIdFromDB(null);
     }
 
