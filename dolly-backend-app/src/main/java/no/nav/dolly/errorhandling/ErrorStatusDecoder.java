@@ -1,19 +1,18 @@
 package no.nav.dolly.errorhandling;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.exceptions.TpsfException;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.dolly.exceptions.TpsfException;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -84,14 +83,12 @@ public class ErrorStatusDecoder {
                 }
 
             } else {
-                    builder.append(encodeErrorStatus(((HttpClientErrorException) e).getResponseBodyAsString()));
+                builder.append(encodeErrorStatus(((HttpClientErrorException) e).getResponseBodyAsString()));
             }
 
-        }
-        else if (e instanceof TpsfException) {
-            builder.append(e.getMessage());
-        }
-        else {
+        } else if (e instanceof TpsfException) {
+            builder.append(encodeErrorStatus(e.getMessage()));
+        } else {
 
             builder.append("Teknisk feil. Se logg!");
             log.error("Teknisk feil {} mottatt fra system", e.getMessage(), e);
@@ -104,7 +101,7 @@ public class ErrorStatusDecoder {
         return toBeEncoded
                 .replace("[\"", "")
                 .replace("\"]", "")
-                .replaceAll(",", ";")
-                .replaceAll(":", "=");
+                .replace(',', ';')
+                .replace(':', '=');
     }
 }
