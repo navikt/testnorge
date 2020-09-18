@@ -18,9 +18,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.client.RestTemplate;
 
-@SpringBootApplication(exclude = { SecurityAutoConfiguration.class,
-        OAuth2ResourceServerAutoConfiguration.class,
-        ManagementWebSecurityAutoConfiguration.class})
+@SpringBootApplication
 public class ApplicationConfig {
 
     private static final int TIMEOUT = 300_000;
