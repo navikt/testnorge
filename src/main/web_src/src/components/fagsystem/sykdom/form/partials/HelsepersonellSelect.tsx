@@ -3,7 +3,7 @@ import LoadableComponent, { Feilmelding } from '~/components/ui/loading/Loadable
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 
-interface LegeSelect {
+interface HelsepersonellSelect {
 	name: string
 	label: string
 	afterChange: Function
@@ -19,7 +19,7 @@ type Option = {
 	hprId: string
 }
 
-export default ({ name, label, afterChange }: LegeSelect) => {
+export default ({ name, label, afterChange }: HelsepersonellSelect) => {
 	return (
 		<LoadableComponent
 			onFetch={() =>

@@ -29,7 +29,7 @@ export const validation = {
 							})
 						)
 					),
-					lege: Yup.object({
+					helsepersonell: Yup.object({
 						etternavn: requiredString,
 						fornavn: requiredString,
 						ident: requiredString,
