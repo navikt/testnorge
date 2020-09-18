@@ -30,15 +30,15 @@ jobs:
         run: |
           ls
           npm ci
-        working-directory: ./apps/oversikt-frontend/src/frontend
+        working-directory: apps/oversikt-frontend/src/main/js
       - name: Build js
         run: |
           npm run build
-        working-directory: ./apps/oversikt-frontend/src/frontend
+        working-directory: apps/oversikt-frontend/src/main/js
       - name: Move js build
         run: |
           mv build ../main/resources/static
-        working-directory: ./apps/oversikt-frontend/src/frontend
+        working-directory: apps/oversikt-frontend/src/main/js
       - name: Compile
         env:
           GITHUB_USERNAME: token
