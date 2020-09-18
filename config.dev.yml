@@ -10,7 +10,7 @@ spec:
   azure:
     application:
       enabled: true
-      replyURLs: ["https://dolly-frontend-dev.dev.adeo.no/login/oauth2/code/aad", "https://dolly-frontend-dev.dev.adeo.no/oauth2/callback"]
+      replyURLs: ["https://dolly-frontend-dev.dev.adeo.no/login/oauth2/code/aad", "https://localhost:8020/login/oauth2/code/aad"]
   replicas:
     min: 1
     max: 2
