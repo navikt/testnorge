@@ -5,6 +5,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+import no.nav.dolly.exceptions.TpsfException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -85,7 +87,11 @@ public class ErrorStatusDecoder {
                     builder.append(encodeErrorStatus(((HttpClientErrorException) e).getResponseBodyAsString()));
             }
 
-        } else {
+        }
+        else if (e instanceof TpsfException) {
+            builder.append(e.getMessage());
+        }
+        else {
 
             builder.append("Teknisk feil. Se logg!");
             log.error("Teknisk feil {} mottatt fra system", e.getMessage(), e);
