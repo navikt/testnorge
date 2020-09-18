@@ -17,19 +17,17 @@ export const FetchAccessToken = ({name}) => {
             setLoading(false)
         })
     }
-
-    const getCopyButton = () => (
-        <CopyToClipboard text={accessToken}>
-            <Button color="secondary" onClick={() => setAccessToken(name)}>Copy</Button>
-        </CopyToClipboard>
-    )
     return (
-        <div>
+        <div className="fetch-access-token">
             <h2>{name}</h2>
             <p>Hent accessToken for OnBehalfOf-flow for {name}.</p>
-            <p className="access_token">{loading ? loading : accessToken ? accessToken : ""}</p>
+            <div>
+                <textarea className="access_token" disabled={true} value={loading ? "Laster token..." : accessToken ? accessToken : ""}/>
+            </div>
             <Button color="primary" onClick={() => onGetToken(name)}>Hent token</Button>
-            {accessToken ? getCopyButton() : null}
+            <CopyToClipboard text={accessToken}>
+                <Button color="secondary">Copy</Button>
+            </CopyToClipboard>
         </div>
     )
 }

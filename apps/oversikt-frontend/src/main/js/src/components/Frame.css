@@ -1,6 +1,7 @@
 .frame {
     min-width: 1024px;
     background-color: #55828B;
+    padding-bottom: 10px;
 }
 
 .container {

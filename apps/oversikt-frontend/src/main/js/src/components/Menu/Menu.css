@@ -2,3 +2,9 @@
     list-style-type:none;
     padding-left: 0;
 }
+
+li {
+    text-align: left;
+    padding-top: 7px;
+    padding-left: 10px;
+}

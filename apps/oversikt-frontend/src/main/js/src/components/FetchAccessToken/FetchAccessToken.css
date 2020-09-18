@@ -1,11 +1,11 @@
-.fetch-access-token {
-
+.fetch-access-token{
+    padding-bottom: 25px;
 }
 
 .access_token {
-    background-color: white;
-    margin: 0 120px;
-    min-height: 120px;
+    min-height: 200px;
+    min-width: 500px;
     text-align: left;
     padding: 5px;
+    resize: vertical;
 }
