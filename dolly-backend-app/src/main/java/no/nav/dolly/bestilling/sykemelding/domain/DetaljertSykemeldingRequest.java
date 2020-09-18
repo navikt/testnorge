@@ -26,7 +26,7 @@ public class DetaljertSykemeldingRequest {
     private List<DollyDiagnose> biDiagnoser;
     private Detaljer detaljer;
     private DollyDiagnose hovedDiagnose;
-    private Lege lege;
+    private Helsepersonell helsepersonell;
     private Boolean manglendeTilretteleggingPaaArbeidsplassen;
     private Organisasjon mottaker;
     private Pasient pasient;
@@ -100,7 +100,7 @@ public class DetaljertSykemeldingRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-    public static class Lege {
+    public static class Helsepersonell {
 
         private String etternavn;
         private String fornavn;
