@@ -42,22 +42,26 @@ FamilierelasjonPanel.initialValues = ({ set, del, has, opts }) => ({
 		label: 'Har barn',
 		checked: has('tpsf.relasjoner.barn'),
 		add() {
-			set('tpsf.relasjoner.barn', [
-				{
-					identtype: 'FNR',
-					kjonn: '',
-					barnType: '',
-					partnerNr: null,
-					borHos: '',
-					erAdoptert: false,
-					alder: Formatters.randomIntInRange(0, 17),
-					doedsdato: '',
-					spesreg: '',
-					utenFastBopel: false,
-					statsborgerskap: '',
-					statsborgerskapRegdato: ''
-				}
-			])
+			set(
+				'tpsf.relasjoner.barn',
+				defaultBarn(opts)
+				// [
+				// 	{
+				// 		identtype: 'FNR',
+				// 		kjonn: '',
+				// 		barnType: '',
+				// 		partnerNr: null,
+				// 		borHos: '',
+				// 		erAdoptert: false,
+				// 		alder: Formatters.randomIntInRange(0, 17),
+				// 		doedsdato: null,
+				// 		spesreg: '',
+				// 		utenFastBopel: false,
+				// 		statsborgerskap: '',
+				// 		statsborgerskapRegdato: ''
+				// 	}
+				// ]
+			)
 		},
 		remove() {
 			del('tpsf.relasjoner.barn')
@@ -74,7 +78,7 @@ const defaultPartner = opts => {
 			sivilstander: [{ sivilstand: '', sivilstandRegdato: '' }],
 			harFellesAdresse: true,
 			alder: Formatters.randomIntInRange(30, 60),
-			doedsdato: '',
+			doedsdato: null,
 			spesreg: '',
 			utenFastBopel: false,
 			statsborgerskap: '',
@@ -82,11 +86,12 @@ const defaultPartner = opts => {
 		}
 	]
 
-	// TODO: Må funke for flere enn én partner? Eller kanskje ikke?
+	// TODO: Må funke for flere enn én partner? Eller kanskje ikke? Holder med eksisterende
 	const eksisterendePartner = [
 		{
 			ident: _get(opts, 'personFoerLeggTil.tpsf.relasjoner[0].personRelasjonMed.ident'),
-			doedsdato: '',
+			doedsdato:
+				_get(opts, 'personFoerLeggTil.tpsf.relasjoner[0].personRelasjonMed.doedsdato') || null,
 			sivilstander: []
 		}
 	]
@@ -99,4 +104,39 @@ const defaultPartner = opts => {
 
 	// return harEksisterendePartner ? [] : fullPartner
 	return harEksisterendePartner ? eksisterendePartner : fullPartner
+}
+
+const defaultBarn = opts => {
+	const fullBarn = [
+		{
+			identtype: 'FNR',
+			kjonn: '',
+			barnType: '',
+			partnerNr: null,
+			borHos: '',
+			erAdoptert: false,
+			alder: Formatters.randomIntInRange(0, 17),
+			doedsdato: null,
+			spesreg: '',
+			utenFastBopel: false,
+			statsborgerskap: '',
+			statsborgerskapRegdato: ''
+		}
+	]
+
+	console.log('opts :>> ', opts)
+	const harEksisterendeBarn = _get(opts, 'personFoerLeggTil.tpsf.relasjoner', []).some(
+		relasjon => relasjon.relasjonTypeNavn === 'FOEDSEL'
+	)
+
+	// TODO: Må skille partnere og barn. Kanskje filtrere relasjoner på relasjonTypeNavn?
+	// TODO: Må funke på flere enn ett barn!!
+	const eksisterendeBarn = [
+		{
+			ident: _get(opts, 'personFoerLeggTil.tpsf.relasjoner[0].personRelasjonMed.ident'),
+			doedsdato:
+				_get(opts, 'personFoerLeggTil.tpsf.relasjoner[0].personRelasjonMed.doedsdato') || null
+		}
+	]
+	return harEksisterendeBarn ? eksisterendeBarn : fullBarn
 }

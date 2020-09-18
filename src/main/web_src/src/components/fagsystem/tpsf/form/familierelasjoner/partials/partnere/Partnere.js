@@ -20,7 +20,7 @@ const initialValues = {
 	sivilstander: [{ sivilstand: '', sivilstandRegdato: '' }],
 	harFellesAdresse: false,
 	alder: Formatters.randomIntInRange(30, 60),
-	doedsdato: '',
+	doedsdato: null,
 	spesreg: '',
 	utenFastBopel: false,
 	statsborgerskap: '',

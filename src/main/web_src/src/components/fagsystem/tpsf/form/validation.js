@@ -293,10 +293,11 @@ const barn = Yup.array()
 		Yup.object({
 			identtype: Yup.string(),
 			kjonn: Yup.string().nullable(),
-			barnType: requiredString,
+			barnType: ifPresent('$tpsf.relasjoner.barn[0].barnType', requiredString),
 			partnerNr: Yup.number().nullable(),
+			// TODO: Må muligens tilpasse denne nå som vi har med dødsdato
 			borHos: Yup.mixed().when('doedsdato', {
-				is: val => val === undefined,
+				is: val => val === undefined || val === null,
 				then: requiredString
 			}),
 			erAdoptert: Yup.boolean(),
@@ -320,11 +321,14 @@ const barn = Yup.array()
 			boadresse: Yup.object({
 				kommunenr: Yup.string().nullable()
 			}),
-			foedselsdato: Yup.mixed().when('borHos', {
-				is: val => val === undefined,
-				then: requiredDate
-			}),
-			doedsdato: Yup.date()
+			foedselsdato: ifPresent(
+				'$tpsf.relasjoner.barn[0].foedselsdato',
+				Yup.mixed().when('borHos', {
+					is: val => val === undefined,
+					then: requiredDate
+				})
+			),
+			doedsdato: Yup.date().nullable()
 		})
 	)
 	.nullable()
