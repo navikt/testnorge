@@ -164,14 +164,7 @@ public class OppslagController {
             @ApiParam(value = "Ident (f.eks FNR) på person knyttet til en bestilling") @RequestParam String ident,
             @ApiParam(value = "System kan hentes ut fra /api/v1/systemer") @RequestParam(required = false) String system) {
 
-        BestillingProgress progress = null;
-        if (nonNull(bestillingId) && nonNull(system)) {
-            List<BestillingProgress> bestillingProgresses = bestillingProgressService.fetchBestillingProgressByBestillingId(bestillingId);
-            if (!bestillingProgresses.isEmpty()) {
-                progress = bestillingProgresses.get(0);
-            }
-        }
-        return transaksjonMappingService.getTransaksjonMapping(system, ident, bestillingId, progress);
+        return transaksjonMappingService.getTransaksjonMapping(system, ident, bestillingId);
     }
 
     @GetMapping("/inntektsmelding/{journalpostId}/{dokumentInfoId}")

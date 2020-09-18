@@ -5,12 +5,14 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.SystemTyper;
+import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils.isNotBlank;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
 import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
@@ -28,9 +31,12 @@ import static org.apache.http.util.TextUtils.isBlank;
 public class TransaksjonMappingService {
 
     private final TransaksjonMappingRepository transaksjonMappingRepository;
+    private final BestillingProgressService bestillingProgressService;
     private final MapperFacade mapperFacade;
 
-    public List<RsTransaksjonMapping> getTransaksjonMapping(String system, String ident, Long bestillingId, BestillingProgress progress) {
+    public List<RsTransaksjonMapping> getTransaksjonMapping(String system, String ident, Long bestillingId) {
+
+        final List<BestillingProgress> progress = bestillingProgressService.fetchBestillingProgressByBestillingId(bestillingId);
 
         if (isNull(ident) && isNull(bestillingId)) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Søket trenger enten Ident eller BestillingId");
@@ -42,7 +48,7 @@ public class TransaksjonMappingService {
                         .filter(transaksjon -> isBlank(system) || transaksjon.getSystem().equals(system))
                         .collect(Collectors.toList()),
                 RsTransaksjonMapping.class);
-        rsTransaksjonMappings.forEach(transaksjon -> transaksjon.setStatus(nonNull(progress) ? hentSystemFeilFraBestillingProgress(progress, system) : null));
+        rsTransaksjonMappings.forEach(transaksjon -> transaksjon.setStatus(!progress.isEmpty() ? hentSystemFeilFraBestillingProgress(progress, system) : null));
         return rsTransaksjonMappings;
     }
 
@@ -65,19 +71,17 @@ public class TransaksjonMappingService {
         transaksjonMappingRepository.save(entry);
     }
 
-    private String hentSystemFeilFraBestillingProgress(BestillingProgress progress, String system) {
-        if (isNull(system) || isNull(progress)) {
-            return null;
-        }
+    private String hentSystemFeilFraBestillingProgress(List<BestillingProgress> progress, String system) {
+
         String status = "";
-        if (system.equals(SYKEMELDING.name())) {
-            status = progress.getSykemeldingStatus();
-        } else if (system.equals(DOKARKIV.name())) {
-            status = progress.getDokarkivStatus();
-        } else if (system.equals(INNTKMELD.name())) {
-            status = progress.getInntektsmeldingStatus();
+        if (SYKEMELDING.name().equals(system)) {
+            status = progress.get(0).getSykemeldingStatus();
+        } else if (DOKARKIV.name().equals(system)) {
+            status = progress.get(0).getDokarkivStatus();
+        } else if (INNTKMELD.name().equals(system)) {
+            status = progress.get(0).getInntektsmeldingStatus();
         } else {
-            return progress.getFeil();
+            return progress.get(0).getFeil();
         }
         return status.contains("OK") ? "OK" : status;
     }
