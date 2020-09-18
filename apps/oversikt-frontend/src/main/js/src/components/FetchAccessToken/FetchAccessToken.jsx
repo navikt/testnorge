@@ -18,9 +18,7 @@ export const FetchAccessToken = ({name}) => {
         })
     }
     return (
-        <div className="fetch-access-token">
-            <h2>{name}</h2>
-            <p>Hent accessToken for OnBehalfOf-flow for {name}.</p>
+        <div>
             <div>
                 <textarea className="access_token" disabled={true} value={loading ? "Laster token..." : accessToken ? accessToken : ""}/>
             </div>

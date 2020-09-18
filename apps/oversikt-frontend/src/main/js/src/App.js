@@ -1,10 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 import {Frame} from "./components/Frame";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
-import Page from "./components/Page";
+import AccessTokenPage from "./components/AccessTokenPage";
 import Menu from "./components/Menu";
 import {fetchApplications} from "./api";
+import {Page} from "./components/Page/Page";
 
 
 function App() {
@@ -26,7 +27,13 @@ function App() {
                     <Router>
                         <Switch>
                             <Route path="/app/:name">
-                                <Page/>
+                                <AccessTokenPage/>
+                            </Route>
+                            <Route path="/">
+                                <Page
+                                    title={"Velg en applikasjon"}
+                                    paragraph="For å kunne teste OnBehalfOf-flow fra Azure AD må applikasjonene ha en frontend."
+                                />
                             </Route>
                         </Switch>
                     </Router>
