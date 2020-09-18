@@ -31,6 +31,7 @@ class AuthenticationTokenResolver {
                 clientRegistrationId,
                 oAuth2AuthenticationToken.getName()
         );
+
         return client.getAccessToken();
     }
 }
