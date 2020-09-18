@@ -18,7 +18,6 @@ import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.UUID;
 
-import no.nav.dolly.web.security.TokenService;
 import no.nav.dolly.web.security.domain.AccessToken;
 
 @Service
@@ -29,16 +28,14 @@ public class ProxyService {
     private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
     private static final String CONTENT_TYPE = "Content-Type";
     private final RestTemplate proxyRestTemplate;
-    private final TokenService tokenService;
 
     public <T> ResponseEntity proxyRequest(
+            AccessToken accessToken,
             String body,
             HttpMethod method,
             HttpHeaders headers,
             String requestUrl,
             Class<T> returnClazz) {
-
-        AccessToken accessToken = tokenService.getAccessToken();
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken.getTokenValue());
 
         if (headers.get(NAV_CALL_ID) == null) {
@@ -63,11 +60,12 @@ public class ProxyService {
 
 
     public ResponseEntity proxyRequest(
+            AccessToken accessToken,
             String body,
             HttpMethod method,
             HttpHeaders headers,
             String requestUrl) {
-        return proxyRequest(body, method, headers, requestUrl, String.class);
+        return proxyRequest(accessToken, body, method, headers, requestUrl, String.class);
     }
 
 

@@ -3,6 +3,7 @@ package no.nav.dolly.web.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import no.nav.dolly.web.security.domain.AccessScopes;
 import no.nav.dolly.web.security.domain.AccessToken;
 
 @Service
@@ -10,7 +11,7 @@ import no.nav.dolly.web.security.domain.AccessToken;
 public class TokenService {
     final OnBehalfOfGenerateAccessTokenService behalfOfGenerateAccessTokenService;
 
-    public AccessToken getAccessToken() {
-        return behalfOfGenerateAccessTokenService.generateToken();
+    public AccessToken getAccessToken(AccessScopes accessScopes) {
+        return behalfOfGenerateAccessTokenService.generateToken(accessScopes);
     }
 }

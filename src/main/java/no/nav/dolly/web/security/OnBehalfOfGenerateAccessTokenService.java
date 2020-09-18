@@ -14,9 +14,9 @@ import reactor.netty.tcp.ProxyProvider;
 
 import java.net.URI;
 
+import no.nav.dolly.web.security.domain.AccessScopes;
 import no.nav.dolly.web.security.domain.AccessToken;
 import no.nav.dolly.web.security.domain.ClientCredential;
-import no.nav.dolly.web.security.domain.AccessScopes;
 import no.nav.dolly.web.security.domain.DollyFrontendClientCredential;
 
 
@@ -26,17 +26,14 @@ class OnBehalfOfGenerateAccessTokenService {
     private final WebClient webClient;
     private final AuthenticationTokenResolver tokenResolver;
     private final ClientCredential clientCredential;
-    private final AccessScopes accessScopes;
 
     public OnBehalfOfGenerateAccessTokenService(
             @Value("${http.proxy:#{null}}") String proxyHost,
             @Value("${AAD_ISSUER_URI}") String issuerUrl,
             DollyFrontendClientCredential clientCredential,
-            AuthenticationTokenResolver tokenResolver,
-            AccessScopes accessScopes
+            AuthenticationTokenResolver tokenResolver
     ) {
         this.clientCredential = clientCredential;
-        this.accessScopes = accessScopes;
 
         WebClient.Builder builder = WebClient
                 .builder()
@@ -61,7 +58,7 @@ class OnBehalfOfGenerateAccessTokenService {
         this.webClient = builder.build();
     }
 
-    public AccessToken generateToken() {
+    public AccessToken generateToken(AccessScopes accessScopes) {
         if (accessScopes.getScopes().isEmpty()) {
             throw new RuntimeException("Kan ikke opprette accessToken uten clients");
         }

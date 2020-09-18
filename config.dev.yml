@@ -10,6 +10,9 @@ spec:
   azure:
     application:
       enabled: true
+      replyURLs:
+        - https://dolly-frontend-dev.dev.adeo.no/login/oauth2/code/aad
+        - https://dolly-frontend-dev.dev.adeo.no/oauth2/callback
   replicas:
     min: 1
     max: 2
@@ -37,6 +40,11 @@ spec:
       cpu: 1500m
       memory: 2048Mi
   image: {{ image }}
+  env:
+    - name: TESTNORGE_PROFIL_API_CLIENT_ID
+      value: 4f6035c0-610d-43ea-a80b-76d214428769
+    - name: DOLLY_BACKEND_API_CLIENT_ID
+      value: f0174d28-cb33-44f9-a7b5-09e52582e601
   vault:
     enabled: true
     paths:

@@ -1,16 +1,16 @@
 package no.nav.dolly.web.security.domain;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import lombok.Value;
 
+import java.util.Collections;
 import java.util.List;
 
-@Getter
-@Setter
-@Configuration
-@ConfigurationProperties(prefix = "access")
+@Value
 public class AccessScopes {
-    private List<String> scopes;
+
+    public AccessScopes(String scope) {
+        this.scopes = Collections.singletonList("api://" + scope + "/.default");
+    }
+
+    List<String> scopes;
 }

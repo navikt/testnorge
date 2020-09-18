@@ -2,8 +2,10 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 server:
   use-forward-headers: true
 
-access.scopes:
-  - ${PROFIL_API_SCOPE}
+
+applications:
+  testnorge-profil-api: ${TESTNORGE_PROFIL_API_CLIENT_ID}
+  dolly-backend: ${DOLLY_BACKEND_API_CLIENT_ID}
 
 spring:
   cloud:
