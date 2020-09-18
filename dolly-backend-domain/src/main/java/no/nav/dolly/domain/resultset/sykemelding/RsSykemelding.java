@@ -67,7 +67,7 @@ public class RsSykemelding {
         private DollyDiagnose hovedDiagnose;
 
         @ApiModelProperty(position = 5)
-        private Lege lege;
+        private Helsepersonell helsepersonell;
 
         @ApiModelProperty(position = 6)
         private Boolean manglendeTilretteleggingPaaArbeidsplassen;
@@ -172,7 +172,7 @@ public class RsSykemelding {
         @NoArgsConstructor
         @AllArgsConstructor
         @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-        public static class Lege {
+        public static class Helsepersonell {
 
             @ApiModelProperty(position = 1)
             private String fornavn;
