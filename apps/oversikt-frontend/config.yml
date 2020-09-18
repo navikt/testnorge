@@ -12,6 +12,9 @@ spec:
   azure:
     application:
       enabled: true
+      replyURLs:
+       - "https://testnorge-oversikt-frontend.dev.adeo.no/login/oauth2/code/aad"
+       - "http://localhost:8080/login/oauth2/code/aad"
   liveness:
     path: /internal/isAlive
     initialDelay: 4
