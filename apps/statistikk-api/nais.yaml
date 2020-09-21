@@ -35,3 +35,4 @@ spec:
   webproxy: true
   ingresses:
     - "https://testnorge-statistikk-api.nais.preprod.local"
+    - "https://testnorge-statistikk-api.dev.adeo.no"

@@ -32,3 +32,4 @@ spec:
   ingresses:
     - "https://testnorge-ereg-mapper.nais.preprod.local"
     - "https://testnorge-ereg-mapper.dev-fss.nais.io"
+    - "https://testnorge-ereg-mapper.dev.adeo.no"

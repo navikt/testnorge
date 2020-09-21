@@ -35,3 +35,4 @@ spec:
       memory: 5000Mi
   ingresses:
     - "https://testnorge-frikort.nais.preprod.local"
+    - "https://testnorge-frikort.dev.adeo.no"

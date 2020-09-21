@@ -31,3 +31,4 @@ spec:
   image: {{ image }}
   ingresses:
     - "https://testnorge-token-provider.nais.preprod.local"
+    - "https://testnorge-token-provider.dev.adeo.no"
