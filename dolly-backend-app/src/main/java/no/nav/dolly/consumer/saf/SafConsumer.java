@@ -1,11 +1,22 @@
 package no.nav.dolly.consumer.saf;
 
-import static java.lang.String.format;
-import static java.util.Objects.requireNonNull;
-import static no.nav.dolly.domain.CommonKeys.CONSUMER;
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.google.common.io.CharStreams;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.consumer.pdlperson.GraphQLRequest;
+import no.nav.dolly.consumer.saf.domain.SafRequest;
+import no.nav.dolly.metrics.Timed;
+import no.nav.dolly.properties.ProvidersProps;
+import no.nav.dolly.security.sts.StsOidcService;
+import org.apache.http.Consts;
+import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import springfox.documentation.spring.web.json.Json;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,24 +28,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.http.Consts;
-import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.google.common.io.CharStreams;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.consumer.pdlperson.GraphQLRequest;
-import no.nav.dolly.consumer.saf.domain.SafRequest;
-import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.properties.ProvidersProps;
-import no.nav.dolly.security.sts.StsOidcService;
+import static java.lang.String.format;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
+import static no.nav.dolly.domain.CommonKeys.CONSUMER;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
+import static org.apache.http.util.TextUtils.isBlank;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
 @Service
@@ -50,15 +52,20 @@ public class SafConsumer {
     private final ProvidersProps providersProps;
     private final StsOidcService stsOidcService;
 
-    @Timed(name = "providers", tags = { "operation", "hent-inntektsmelding-dokumentinfo" })
-    public List<JsonNode> getInntektsmeldingDokumentinfo(String environment, SafRequest request) {
+    @Timed(name = "providers", tags = {"operation", "hent-inntektsmelding-dokumentinfo"})
+    public List<JsonNode> getInntektsmeldingDokumentinfo(String environment, String journalpostId, String dokumentinfoId, String variantformat) {
+
+        ResponseEntity<JsonNode> joarkMetadata = sendJoarkMetadataQuery(environment, journalpostId, "saf/safquery-inntektsmelding.graphql");
+        if (isBlank(dokumentinfoId) && joarkMetadata.hasBody()) {
+            dokumentinfoId = joarkMetadata.getBody().findValue("dokumentInfoId").asText();
+        }
 
         return getSamletDokumentinfo(
-                sendJoarkMetadataQuery(environment, request.getJournalpostId(), "saf/safquery-inntektsmelding.graphql"),
-                sendJoarkDokumentQuery(environment, request));
+                joarkMetadata,
+                sendJoarkDokumentQuery(environment, new SafRequest(dokumentinfoId, journalpostId, variantformat)));
     }
 
-    @Timed(name = "providers", tags = { "operation", "hent-dokarkiv-dokumentinfo" })
+    @Timed(name = "providers", tags = {"operation", "hent-dokarkiv-dokumentinfo"})
     public ResponseEntity<JsonNode> getDokarkivDokumentinfo(String environment, String journalpostId) {
 
         return sendJoarkMetadataQuery(environment, journalpostId, "saf/safquery-dokarkiv.graphql");
@@ -70,7 +77,7 @@ public class SafConsumer {
             if (node.hasBody()) {
                 samletJson.add(node.getBody());
             }
-            if (xml.hasBody()) {
+            if (nonNull(xml) && xml.hasBody()) {
                 XmlMapper xmlMapper = new XmlMapper();
                 samletJson.add(xmlMapper.readTree(xml.getBody()));
             }
@@ -82,6 +89,9 @@ public class SafConsumer {
 
     private ResponseEntity<String> sendJoarkDokumentQuery(String environment, SafRequest request) {
 
+        if (isNull(request.getDokumentInfoId())) {
+           return null;
+        }
         return restTemplate.exchange(
                 RequestEntity.get(URI.create(String.format("%s%s/%s/%s/%s", providersProps.getJoark().getUrl().replace("$", environment), SAF_URL,
                         request.getJournalpostId(), request.getDokumentInfoId(), request.getVariantFormat())))

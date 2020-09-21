@@ -20,7 +20,6 @@ import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.kodeverk.domain.GetKodeverkKoderBetydningerResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.consumer.saf.SafConsumer;
-import no.nav.dolly.consumer.saf.domain.SafRequest;
 import no.nav.dolly.consumer.saf.domain.SafRequest.VariantFormat;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
@@ -163,12 +162,12 @@ public class OppslagController {
         return transaksjonMappingService.getTransaksjonMapping(system, ident, bestillingId);
     }
 
-    @GetMapping("/inntektsmelding/{journalpostId}/{dokumentInfoId}")
+    @GetMapping("/inntektsmelding/{journalpostId}/{miljoe}")
     @ApiOperation(value = "Henter dokumentinformasjon for inntektsmelding fra Joark", authorizations = {@Authorization(value = "Bearer token fra bruker")})
-    public List<JsonNode> getInntektsmeldingDokumentinfo(@PathVariable String journalpostId, @PathVariable String dokumentInfoId,
+    public List<JsonNode> getInntektsmeldingDokumentinfo(@PathVariable String journalpostId, @RequestParam(required = false) String dokumentInfoId,
                                                          @RequestParam VariantFormat variantFormat,
-                                                         @RequestParam String miljoe) {
-        return safConsumer.getInntektsmeldingDokumentinfo(miljoe, new SafRequest(dokumentInfoId, journalpostId, variantFormat.name()));
+                                                         @PathVariable String miljoe) {
+        return safConsumer.getInntektsmeldingDokumentinfo(miljoe, journalpostId, dokumentInfoId, variantFormat.name());
     }
 
     @GetMapping("/dokarkiv/{journalpostId}")
