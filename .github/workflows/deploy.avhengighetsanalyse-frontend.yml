@@ -30,15 +30,15 @@ jobs:
       - name: Install js libs
         run: |
           npm ci
-        working-directory: ./apps/avhengighetsanalyse-frontend/src/frontend
+        working-directory: ./apps/avhengighetsanalyse-frontend/src/main/js
       - name: Build js
         run: |
           npm run build
-        working-directory: ./apps/avhengighetsanalyse-frontend/src/frontend
+        working-directory: ./apps/avhengighetsanalyse-frontend/src/main/js
       - name: Move js build
         run: |
-          mv build ../main/resources/static
-        working-directory: ./apps/avhengighetsanalyse-frontend/src/frontend
+          mv build ../resources/static
+        working-directory: ./apps/avhengighetsanalyse-frontend/src/main/js
       - name: Compile
         env:
           GITHUB_USERNAME: token
@@ -49,16 +49,17 @@ jobs:
       - name: Package
         run: mvn --projects :avhengighetsanalyse-frontend --also-make --settings maven-settings.xml package -Dmaven.test.skip
       - name: Build and publish Docker image
+        working-directory: ./apps/avhengighetsanalyse-frontend/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker build --tag ${IMAGE} . -f ./apps/avhengighetsanalyse-frontend/Dockerfile
-          docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
-          docker push ${IMAGE}
+          docker build --tag $IMAGE .
+          docker login docker.pkg.github.com -u $GITHUB_REPOSITORY -p $GITHUB_TOKEN
+          docker push $IMAGE
       - name: Deploy to nais
         timeout-minutes: 5
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/avhengighetsanalyse-frontend/nais.yaml
+          RESOURCE: apps/avhengighetsanalyse-frontend/config.yml
