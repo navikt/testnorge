@@ -24,7 +24,7 @@ export const fetchDependencies = () => _fetch("/api/v1/dependencies", "GET")
         data.forEach(app => {
             application.set(app.applicationName, {
                 id: app.applicationName,
-                name: app.applicationName
+                name: app.applicationName,
             });
             app.dependencies.forEach(dependency => application.set(dependency.name,{
                 id: dependency.name,

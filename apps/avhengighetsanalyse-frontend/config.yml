@@ -2,11 +2,18 @@ apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: testnorge-avhengighetsanalyse-frontend
-  namespace: default
+  namespace: dolly
   labels:
     team: dolly
 spec:
   port: 8080
+  webproxy: true
+  azure:
+    application:
+      enabled: true
+      replyURLs:
+        - "https://testnorge-avhengighetsanalyse-frontend.dev.adeo.no/login/oauth2/code/aad"
+        - "http://localhost:8080/login/oauth2/code/aad"
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
