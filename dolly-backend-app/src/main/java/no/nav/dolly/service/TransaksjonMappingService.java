@@ -12,15 +12,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-import static net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils.isNotBlank;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
 import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
@@ -38,7 +35,7 @@ public class TransaksjonMappingService {
 
         final List<BestillingProgress> progress = bestillingProgressService.fetchBestillingProgressByBestillingId(bestillingId);
 
-        if (isNull(ident) && isNull(bestillingId)) {
+        if (isBlank(ident) && isNull(bestillingId)) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Søket trenger enten Ident eller BestillingId");
         }
         List<TransaksjonMapping> transaksjonMappingList =
@@ -81,8 +78,8 @@ public class TransaksjonMappingService {
         } else if (INNTKMELD.name().equals(system)) {
             status = progress.get(0).getInntektsmeldingStatus();
         } else {
-            return progress.get(0).getFeil();
+            status = progress.get(0).getFeil();
         }
-        return status.contains("OK") ? "OK" : status;
+        return isBlank(status) || status.contains("OK") ? "OK" : status;
     }
 }
