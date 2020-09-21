@@ -129,11 +129,11 @@ public class ServiceUtils {
             return false;
         }
         if (Egenandelskode.F == response.getEgenandelskode() && response.getEgenandelsats() <= 0) {
-            log.info("Ugyldig kombinasjon: egenandelskode 'F' og sats {}", response.getEgenandelsats());
+            log.warn("Ugyldig kombinasjon: egenandelskode 'F' og sats {}", response.getEgenandelsats());
             return true;
         }
         if (Egenandelskode.C == response.getEgenandelskode() && (response.getEgenandelsats() <= 0 || response.getEgenandelsbelop() <= 0)) {
-            log.info("Ugyldig kombinasjon: egenandelskode 'C' og sats {}  med beløp {}", response.getEgenandelsats(), response.getEgenandelsbelop());
+            log.warn("Ugyldig kombinasjon: egenandelskode 'C' og sats {}  med beløp {}", response.getEgenandelsats(), response.getEgenandelsbelop());
             return true;
         }
         return false;

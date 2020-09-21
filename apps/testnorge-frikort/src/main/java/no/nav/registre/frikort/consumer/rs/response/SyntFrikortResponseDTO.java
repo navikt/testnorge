@@ -86,7 +86,7 @@ public class SyntFrikortResponseDTO {
             var datoMottatt = response.getDatoMottatt();
             var datoTjeneste = response.getDatoTjeneste();
             if (ChronoUnit.WEEKS.between(datoMottatt, LocalDateTime.now()) > 12) {
-                datoMottatt = LocalDateTime.now().minusWeeks(rand.nextInt(6)).minusWeeks(1);
+                datoMottatt = LocalDateTime.now().minusWeeks(rand.nextInt(6) + 1L);
                 datoTjeneste = datoMottatt.minusDays(rand.nextInt(7));
             }
             this.datoMottatt = datoMottatt;
@@ -109,10 +109,10 @@ public class SyntFrikortResponseDTO {
             // sett gyldige beloper gitt samhandlertypekode
             var maksBeloep = SAMHANDLERTYPE_MAKS_BELOEP.get(response.getSamhandlertypekode().toString());
             if (egenandelsbelop > maksBeloep) {
-                egenandelsbelop = maksBeloep * .9;
+                egenandelsbelop = maksBeloep * 0.9;
             }
             if (egenandelsats > maksBeloep) {
-                egenandelsats = maksBeloep * .9;
+                egenandelsats = maksBeloep * 0.9;
             }
 
             this.egenandelsbelop = egenandelsbelop;
