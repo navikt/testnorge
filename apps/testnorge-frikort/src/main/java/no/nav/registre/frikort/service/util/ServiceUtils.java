@@ -2,8 +2,6 @@ package no.nav.registre.frikort.service.util;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBException;
 
+import no.nav.registre.frikort.consumer.rs.response.SyntFrikortResponseDTO;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -25,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.frikort.consumer.rs.SyntrestConsumer;
 import no.nav.registre.frikort.consumer.rs.response.SyntFrikortResponse;
 import no.nav.registre.frikort.domain.xml.Egenandelskode;
-import no.nav.registre.frikort.exception.UgyldigSamhandlerdataException;
+import no.nav.registre.frikort.exceptions.UgyldigSamhandlerdataException;
 import no.nav.registre.frikort.provider.rs.response.SyntetiserFrikortResponse;
 import no.nav.registre.frikort.provider.rs.response.SyntetiserFrikortResponse.LeggPaaKoeStatus;
 import no.nav.registre.frikort.service.KonverteringService;
@@ -73,7 +72,7 @@ public class ServiceUtils {
     }
 
     public List<SyntetiserFrikortResponse> konverterTilXMLOgLeggPaaKoe(
-            Map<String, List<SyntFrikortResponse>> egenandeler,
+            Map<String, List<SyntFrikortResponseDTO>> egenandeler,
             List<PersondataResponse> samhandlerePersondata,
             boolean leggPaaKoe
     )
@@ -92,7 +91,7 @@ public class ServiceUtils {
         return opprettedeEgenandeler;
     }
 
-    public Map<String, List<SyntFrikortResponse>> hentSyntetiskeEgenandelerPaginert(
+    public Map<String, List<SyntFrikortResponseDTO>> hentSyntetiskeEgenandelerPaginert(
             Map<String, Integer> identMap,
             boolean validerEgenandeler
     ) {
@@ -114,12 +113,30 @@ public class ServiceUtils {
                 parsedSize = 0;
             }
         }
-        if (validerEgenandeler) {
-            var alleEgenandeler = new ArrayList<SyntFrikortResponse>();
-            egenandeler.values().forEach(alleEgenandeler::addAll);
-            validerEgenandeler(alleEgenandeler);
+
+        return egenandeler.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue().stream()
+                                .filter(e -> !harUgyldigKombinasjon(e, validerEgenandeler))
+                                .map(response -> new SyntFrikortResponseDTO(response, validerEgenandeler, rand))
+                                .collect(Collectors.toList())
+                ));
+    }
+
+    public static boolean harUgyldigKombinasjon(SyntFrikortResponse response, boolean validerEgenandeler) {
+        if (!validerEgenandeler) {
+            return false;
         }
-        return egenandeler;
+        if (Egenandelskode.F == response.getEgenandelskode() && response.getEgenandelsats() <= 0) {
+            log.warn("Ugyldig kombinasjon: egenandelskode 'F' og sats {}", response.getEgenandelsats());
+            return true;
+        }
+        if (Egenandelskode.C == response.getEgenandelskode() && (response.getEgenandelsats() <= 0 || response.getEgenandelsbelop() <= 0)) {
+            log.warn("Ugyldig kombinasjon: egenandelskode 'C' og sats {}  med beløp {}", response.getEgenandelsats(), response.getEgenandelsbelop());
+            return true;
+        }
+        return false;
     }
 
     public List<PersondataResponse> hentSamhandlere() {
@@ -140,63 +157,5 @@ public class ServiceUtils {
             throw new UgyldigSamhandlerdataException("Kunne ikke hente noen samhandlere");
         }
         return samhandlerePersondata;
-    }
-
-    private void validerEgenandeler(List<SyntFrikortResponse> egenandeler) {
-        settGyldigeDatoer(egenandeler);
-        settGyldigEgenandelskodeOgBeloep(egenandeler);
-        settGyldigBeloepGittSamhandlertypekode(egenandeler);
-    }
-
-    private void settGyldigeDatoer(List<SyntFrikortResponse> egenandeler) {
-        for (var egenandel : egenandeler) {
-            var datoMottatt = egenandel.getDatoMottatt();
-            var datoTjeneste = egenandel.getDatoTjeneste();
-            if (ChronoUnit.WEEKS.between(datoMottatt, LocalDateTime.now()) > 12) {
-                datoMottatt = LocalDateTime.now().minusWeeks(rand.nextInt(6)).minusWeeks(1);
-                datoTjeneste = datoMottatt.minusDays(rand.nextInt(7));
-            }
-            egenandel.setDatoMottatt(datoMottatt);
-            egenandel.setDatoTjeneste(datoTjeneste);
-        }
-    }
-
-    private void settGyldigEgenandelskodeOgBeloep(List<SyntFrikortResponse> egenandeler) {
-        var egenandelIterator = egenandeler.iterator();
-        while (egenandelIterator.hasNext()) {
-            var egenandel = egenandelIterator.next();
-            if (egenandel.getEgenandelsbelop() == null) {
-                egenandel.setEgenandelsbelop(egenandel.getEgenandelsats());
-            }
-            var egenandelskode = egenandel.getEgenandelskode();
-            if (Egenandelskode.C != egenandelskode) {
-                egenandel.setEgenandelsbelop(0.0);
-            }
-            if (Egenandelskode.F != egenandelskode && Egenandelskode.C != egenandelskode) {
-                egenandel.setEgenandelsats(0.0);
-            }
-            if (Egenandelskode.F == egenandelskode && egenandel.getEgenandelsats() <= 0) {
-                log.error("Ugyldig kombinasjon: egenandelskode 'F' og sats {}", egenandel.getEgenandelsats());
-                egenandelIterator.remove();
-            }
-            if (Egenandelskode.C == egenandelskode && (egenandel.getEgenandelsats() <= 0 || egenandel.getEgenandelsbelop() <= 0)) {
-                log.error("Ugyldig kombinasjon: egenandelskode 'C' og sats {}  med beløp {}", egenandel.getEgenandelsats(), egenandel.getEgenandelsbelop());
-                egenandelIterator.remove();
-            }
-        }
-    }
-
-    private void settGyldigBeloepGittSamhandlertypekode(
-            List<SyntFrikortResponse> egenandeler
-    ) {
-        for (var egenandel : egenandeler) {
-            var maksBeloep = SAMHANDLERTYPE_MAKS_BELOEP.get(egenandel.getSamhandlertypekode().toString());
-            if (egenandel.getEgenandelsbelop() > maksBeloep) {
-                egenandel.setEgenandelsbelop(maksBeloep * 0.9);
-            }
-            if (egenandel.getEgenandelsats() > maksBeloep) {
-                egenandel.setEgenandelsats(maksBeloep * 0.9);
-            }
-        }
     }
 }

@@ -1,4 +1,4 @@
-package no.nav.registre.frikort.exception;
+package no.nav.registre.frikort.exceptions;
 
 public class UgyldigEgenandelskodeException extends RuntimeException {
 
