@@ -10,6 +10,7 @@ import static no.nav.registre.skd.service.utilities.IdentUtility.getFoedselsdato
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.opprettKopiAvSkdMelding;
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.putEktefellePartnerFnrInnIMelding;
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.putFnrInnIMelding;
+import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.korrigerUtenFastBosted;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -371,6 +372,9 @@ public class EksisterendeIdenterService {
 
             if (ident != null) {
                 putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), ident);
+                if ("UTENFASTBOSTED".equals(((RsMeldingstype1Felter) meldinger.get(i)).getAdresse1())) {
+                    korrigerUtenFastBosted((RsMeldingstype1Felter) meldinger.get(i));
+                }
                 oppdaterBolk(brukteIdenterIDenneBolken, Collections.singletonList(ident));
             }
         }
