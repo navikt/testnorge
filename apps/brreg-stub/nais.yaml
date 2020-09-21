@@ -30,3 +30,4 @@ spec:
   ingresses:
     - "https://brreg-stub.nais.preprod.local"
     - "https://brreg-stub.dev-fss.nais.io"
+    - "https://brreg-stub.dev.adeo.no"

@@ -33,3 +33,4 @@ spec:
   ingresses:
     - "https://testnorge-skd.nais.preprod.local"
     - "https://testnorge-skd.dev-fss.nais.io"
+    - "https://testnorge-skd.dev.adeo.no"
