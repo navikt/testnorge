@@ -73,7 +73,10 @@ export default class DollyEndpoints {
 	}
 
 	static inntektsmeldingDokumentinfo(journalpostId, dokumentinfoId, env) {
-		return `${inntektsmeldingBase}/${journalpostId}/${dokumentinfoId}?miljoe=${env.toLowerCase()}&variantFormat=ORIGINAL`
+		if (dokumentinfoId) {
+			return `${inntektsmeldingBase}/${journalpostId}/${env.toLowerCase()}?dokumentInfoId=${dokumentinfoId}&variantFormat=ORIGINAL`
+		} else
+			return `${inntektsmeldingBase}/${journalpostId}/${env.toLowerCase()}?variantFormat=ORIGINAL`
 	}
 
 	static dokarkivDokumentinfo(journalpostId, env) {
