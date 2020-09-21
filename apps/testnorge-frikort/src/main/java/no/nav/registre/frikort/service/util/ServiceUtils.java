@@ -130,7 +130,7 @@ public class ServiceUtils {
         }
         if (Egenandelskode.F == response.getEgenandelskode() && response.getEgenandelsats() <= 0) {
             log.info("Ugyldig kombinasjon: egenandelskode 'F' og sats {}", response.getEgenandelsats());
-            return false;
+            return true;
         }
         if (Egenandelskode.C == response.getEgenandelskode() && (response.getEgenandelsats() <= 0 || response.getEgenandelsbelop() <= 0)) {
             log.info("Ugyldig kombinasjon: egenandelskode 'C' og sats {}  med beløp {}", response.getEgenandelsats(), response.getEgenandelsbelop());
