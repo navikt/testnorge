@@ -10,6 +10,11 @@ public class RedigereSkdmeldingerUtility {
 
     private static final String STATSBORGER_KODE_NORGE = "000";
 
+    public static void korrigerUtenFastBosted(RsMeldingstype1Felter melding) {
+        melding.setAdresse1("UTEN FAST BOSTED");
+        melding.setGateGaard("0000");
+    }
+    
     public static void putFnrInnIMelding(RsMeldingstype1Felter melding, String fnr) {
         melding.setFodselsdato(fnr.substring(0, 6));
         melding.setPersonnummer(fnr.substring(6));
