@@ -40,3 +40,7 @@ dependencies:
     - https://udi-stub.dev.adeo.no/dependencies
     - https://brreg-stub.dev.adeo.no/dependencies
   threads: 6
+
+spring:
+  main:
+    banner-mode: off
