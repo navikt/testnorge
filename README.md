@@ -11,7 +11,7 @@
 ## Avhenighetsanalyse
 
 **Kan kun brukes fra utviklerimage**
-https://testnorge-avhengighetsanalyse-frontend.nais.preprod.local/
+https://testnorge-avhengighetsanalyse-frontend.dev.adeo.no/
 
 ## Kjør lokalt
 
