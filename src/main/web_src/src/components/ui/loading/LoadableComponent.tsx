@@ -26,8 +26,7 @@ const LoadableComponent = ({ onFetch, render, renderOnError }: LoadableComponent
 				setUuid(Uuid())
 				Logger.error({
 					event: error.stack,
-					message: 'Error i LoadableComponent onFetch',
-					uuid: uuid // UUID her og i render er forskjellige?
+					message: 'Error i LoadableComponent onFetch'
 				})
 				setError(error)
 				setLoading(false)
@@ -35,7 +34,7 @@ const LoadableComponent = ({ onFetch, render, renderOnError }: LoadableComponent
 	}, [])
 
 	if (error) {
-		return renderOnError ? renderOnError(error) : <DollyErrorAlert error={error} uuid={uuid} />
+		return renderOnError ? renderOnError(error) : <DollyErrorAlert error={error} />
 	}
 
 	if (loading) {
