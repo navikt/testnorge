@@ -55,7 +55,8 @@ public class KubernetesController {
 
     private final List<String> appsFlyttetTilGithub = Arrays.asList("synthdata-sam", "synthdata-frikort",
             "synthdata-arena-meldekort", "synthdata-arena-bisys", "synthdata-aareg", "synthdata-medl",
-            "synthdata-nav", "synthdata-tps", "synthdata-arena-aap", "synthdata-popp", "synthdata-tp");
+            "synthdata-nav", "synthdata-tps", "synthdata-arena-aap", "synthdata-popp", "synthdata-tp",
+            "synthdata-inst");
 
     public KubernetesController(RestTemplateBuilder restTemplateBuilder,
                                 CustomObjectsApi customObjectsApi,
