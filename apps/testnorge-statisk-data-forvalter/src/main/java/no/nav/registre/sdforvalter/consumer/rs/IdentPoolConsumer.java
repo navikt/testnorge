@@ -28,7 +28,7 @@ public class IdentPoolConsumer {
     public FiktiveNavnDTO getFiktivtNavn() {
         FiktiveNavnDTO[] response = webClient
                 .get()
-                .uri(builder -> builder.path("/v1/fiktive-navn/tilfeldig").queryParam("antall", 1).build())
+                .uri(builder -> builder.path("/api/v1/fiktive-navn/tilfeldig").queryParam("antall", 1).build())
                 .retrieve()
                 .bodyToMono(FiktiveNavnDTO[].class)
                 .block();

@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,7 +56,7 @@ public class FileController {
     }
 
     @Operation(summary = "Legg til organisasjoner i Team Dollys database")
-    @PostMapping(path = "/ereg", consumes = "multipart/form-data")
+    @PostMapping(path = "/ereg", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<HttpStatus> importEreg(@RequestParam("file") MultipartFile file) throws IOException {
         List<Ereg> list = EregCsvConverter.inst().read(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
         eregAdapter.save(new EregListe(list));
@@ -74,9 +75,9 @@ public class FileController {
     }
 
     @Operation(summary = "Legg til personer i Team Dollys database")
-    @PostMapping(path = "/tpsIdenter", consumes = "multipart/form-data")
+    @PostMapping(path = "/tpsIdenter", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> importTpsIdenter(@RequestParam("file") MultipartFile file,
-                                              @Parameter(description = "Hvis fornavn eller etternavn er blanke i csv-fila, får personene tilfeldige navn")
+                                              @Parameter(description = "Hvis true settes tilfeldig navn på personer uten fornavn og etternavn")
                                               @RequestParam(name = "Generer manglende navn", defaultValue = "false") Boolean genererManglendeNavn) throws IOException {
         List<TpsIdent> list = TpsIdentCsvConverter.inst().read(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
 

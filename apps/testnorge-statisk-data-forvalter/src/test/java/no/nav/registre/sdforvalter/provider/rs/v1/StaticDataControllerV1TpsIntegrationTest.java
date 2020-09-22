@@ -54,7 +54,7 @@ public class StaticDataControllerV1TpsIntegrationTest {
         TpsIdentModel tpsIdentModel = createIdentModel("01010101011", "Petter", "Petterson", altinn);
         tpsIdenterRepository.save(tpsIdentModel);
 
-        String json = mvc.perform(get("/api/v1/faste-data/tps/")
+        String json = mvc.perform(get("/api/v1/faste-data/tps?genererManglendeNavn=false")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -68,7 +68,7 @@ public class StaticDataControllerV1TpsIntegrationTest {
     @Test
     public void shouldAddTpsIdentSetToDatabase() throws Exception {
         TpsIdent tpsIdent = createIdent("01010101011", "Petter", "Petterson");
-        mvc.perform(post("/api/v1/faste-data/tps/")
+        mvc.perform(post("/api/v1/faste-data/tps?genererManglendeNavn=false")
                 .content(objectMapper.writeValueAsString(createTpsIdenter(tpsIdent)))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -82,7 +82,7 @@ public class StaticDataControllerV1TpsIntegrationTest {
         final TpsIdent hans = createIdent("01010101011", "Hans", "Hansen");
         final TpsIdent petter = createIdent("01010101021", "Petter", "Petterson", altinn);
 
-        mvc.perform(post("/api/v1/faste-data/tps/")
+        mvc.perform(post("/api/v1/faste-data/tps?genererManglendeNavn=false")
                 .content(objectMapper.writeValueAsString(createTpsIdenter(hans, petter)))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
