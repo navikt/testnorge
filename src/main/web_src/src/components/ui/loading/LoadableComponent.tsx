@@ -33,9 +33,9 @@ const LoadableComponent = ({ onFetch, render, renderOnError }: LoadableComponent
 			})
 	}, [])
 
-	if (error) {
-		return renderOnError ? renderOnError(error) : <DollyErrorAlert error={error} />
-	}
+	// if (error) {
+	// 	return renderOnError ? renderOnError(error) : <DollyErrorAlert error={error} />
+	// }
 
 	if (loading) {
 		return <Loading />

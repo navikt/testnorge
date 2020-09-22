@@ -8,7 +8,7 @@ export const DollyErrorAlert = error => {
 			Noe gikk galt under visning av elementet. Vennligst kontakt Team Dolly på {dollySlack} dersom
 			problemet vedvarer etter en refresh
 			<br />
-			<q>{error.toString()}</q>
+			<q>{error.message}</q>
 		</AlertStripeInfo>
 	)
 }

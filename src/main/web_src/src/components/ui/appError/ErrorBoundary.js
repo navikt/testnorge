@@ -2,7 +2,7 @@ import React from 'react'
 import { AppError } from './AppError'
 import Logger from '~/logger'
 
-export class ErrorBoundary extends React.Component {
+export class ErrorBoundary extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
