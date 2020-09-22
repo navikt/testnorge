@@ -150,7 +150,8 @@ public class SafConsumer {
         } catch (HttpClientErrorException error) {
             if (HttpStatus.NOT_FOUND.equals(error.getStatusCode())) {
                 try {
-                    return objectMapper.readTree("{\"feil\":\"SAF endepunkt for: " + environment + " ikke funnet\"}");
+                    return objectMapper.readTree("{\"feil\":\"SAF endepunkt for " + environment +
+                            " ikke funnet. Henting av dokumenter for dette miljøet støttes derfor ikke.\"}");
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
