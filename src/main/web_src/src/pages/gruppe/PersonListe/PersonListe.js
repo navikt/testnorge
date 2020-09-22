@@ -1,7 +1,6 @@
 import React from 'react'
 import Tooltip from 'rc-tooltip'
 import { useMount } from 'react-use'
-import _last from 'lodash/last'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import 'rc-tooltip/assets/bootstrap.css'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
