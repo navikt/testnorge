@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 
 import no.nav.registre.testnorge.libs.core.util.VaultUtil;
 
-@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
+@SpringBootApplication
 public class OpprettPersonPdlApplicationStarter {
     public static void main(String[] args) {
         if ("prod".equals(System.getProperty("spring.profiles.active"))) {
