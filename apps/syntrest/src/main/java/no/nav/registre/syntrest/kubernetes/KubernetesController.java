@@ -27,7 +27,6 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.net.ProxySelector;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -53,10 +52,6 @@ public class KubernetesController {
     private RestTemplate noAuthRestTemplate;
     private RestTemplate authRestTemplate;
 
-    private final List<String> appsFlyttetTilGithub = Arrays.asList("synthdata-sam", "synthdata-frikort",
-            "synthdata-arena-meldekort", "synthdata-arena-bisys", "synthdata-aareg", "synthdata-medl",
-            "synthdata-nav", "synthdata-tps", "synthdata-arena-aap", "synthdata-popp", "synthdata-tp",
-            "synthdata-inst", "synthdata-inntekt");
 
     public KubernetesController(RestTemplateBuilder restTemplateBuilder,
                                 CustomObjectsApi customObjectsApi,
@@ -236,11 +231,7 @@ public class KubernetesController {
     }
 
     private String getCorrectTagQuery(String appName) {
-        if (appsFlyttetTilGithub.contains(appName)) {
-            return "query {repository(owner:\"navikt\", name:\"testnorge-syntetiseringspakker\") {packages(names:[\"" + getCorrectGithubPackageName(appName) + "\"] last:1) {nodes {latestVersion{version}} }}}";
-        } else {
-            return "query {repository(owner:\"navikt\", name:\"synt\") {packages(names:[\"" + appName + "\"] last:1) {nodes {latestVersion{version}} }}}";
-        }
+        return "query {repository(owner:\"navikt\", name:\"testnorge-syntetiseringspakker\") {packages(names:[\"" + getCorrectGithubPackageName(appName) + "\"] last:1) {nodes {latestVersion{version}} }}}";
     }
 
     private String getCorrectGithubPackageName(String appName) {

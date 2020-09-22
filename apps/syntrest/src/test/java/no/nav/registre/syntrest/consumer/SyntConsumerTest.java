@@ -10,7 +10,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -35,8 +34,6 @@ public class SyntConsumerTest {
     @MockBean
     private RestTemplate restTemplate;
 
-    private static RequestEntity request;
-    private static final String numberUrl = "generateNumbers/{numToGenerate}";
     private static final String numberAndCodeUrl = "generateNumberAndConde/{code}/{number}";
 
     @InjectMocks
@@ -44,7 +41,6 @@ public class SyntConsumerTest {
 
     @Before
     public void setup() {
-        request = new RequestEntity(HttpMethod.GET, new UriTemplate("dummy").expand());
         testConsumer = new SyntConsumer(applicationManager, "test-consumer");
         MockitoAnnotations.initMocks(this);
     }
