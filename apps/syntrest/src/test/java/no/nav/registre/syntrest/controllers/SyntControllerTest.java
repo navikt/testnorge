@@ -41,8 +41,6 @@ public class SyntControllerTest {
     private SyntConsumer consumer;
 
     private String aaregUrl = "dummy/generate_aareg";
-    private String aap115Url = "dummy/generate_arena_aap/11_5/{numToGenerate}";
-    private String aapUrl = "dummy/generate_arena_aap/ny_rettighet/{numToGenerate}";
     private String bisysUrl = "dummy/generate_bisys/{numToGenerate}";
     private String instUrl = "dummy/generate_inst/{numToGenerate}";
     private String medlUrl = "dummy/generate_medl/{numToGenerate}";
@@ -74,34 +72,6 @@ public class SyntControllerTest {
         assertThat(listResponseEntity.getBody(), equalTo(expectedResponse));
     }
 
-    @Test
-    public void aap115Test() throws NoSuchFieldException {
-        FieldSetter.setField(syntController, syntController.getClass().getDeclaredField("aap115Url"), aap115Url);
-        int numToGenerate = 2;
-        List<AAP115Melding> expectedResponse = new ArrayList<>(2);
-        expectedResponse.add(new AAP115Melding());
-        expectedResponse.add(new AAP115Melding());
-
-        when(consumer.synthesizeData(any(RequestEntity.class))).thenReturn(expectedResponse);
-
-        ResponseEntity<List<AAP115Melding>> listResponseEntity = syntController.generateAAP11_5(numToGenerate);
-        verify(consumer).synthesizeData(any(RequestEntity.class));
-        assertThat(listResponseEntity.getBody(), equalTo(expectedResponse));
-    }
-    @Test
-    public void aapNyRettighetTest() throws NoSuchFieldException {
-        FieldSetter.setField(syntController, syntController.getClass().getDeclaredField("aapUrl"), aapUrl);
-        int numToGenerate = 2;
-        List<AAPMelding> expectedResponse = new ArrayList<>(2);
-        expectedResponse.add(new AAPMelding());
-        expectedResponse.add(new AAPMelding());
-
-        when(consumer.synthesizeData(any(RequestEntity.class))).thenReturn(expectedResponse);
-
-        ResponseEntity<List<AAPMelding>> listResponseEntity = syntController.generateAAPNyRettighet(numToGenerate);
-        verify(consumer).synthesizeData(any(RequestEntity.class));
-        assertThat(listResponseEntity.getBody(), equalTo(expectedResponse));
-    }
 
     @Test
     public void bisysTest() throws NoSuchFieldException {
@@ -334,20 +304,20 @@ public class SyntControllerTest {
         assertThat(mapResponseEntity.getBody(), equalTo(expectedResponse));
     }
 
-    @Test
-    public void elsamTest() throws NoSuchFieldException {
-        FieldSetter.setField(syntController, syntController.getClass().getDeclaredField("elsamUrl"), elsamUrl);
-        Map<String, String> fnrStartDatoMap = new HashMap<>();
-        fnrStartDatoMap.put("12345678910", "2019-01-31");
-        fnrStartDatoMap.put("10987651233", "2018-12-31");
-        Map<String, Historikk> expectedResponse = new HashMap<>();
-        expectedResponse.put("12345678910", new Historikk());
-        expectedResponse.put("10987651233", new Historikk());
-
-        when(consumer.synthesizeData(any(RequestEntity.class))).thenReturn(expectedResponse);
-
-        ResponseEntity<Map<String, Historikk>> mapResponseEntity = syntController.generateSykemeldingHistorikk(fnrStartDatoMap);
-        verify(consumer).synthesizeData(any(RequestEntity.class));
-        assertThat(mapResponseEntity.getBody(), equalTo(expectedResponse));
-    }
+//    @Test
+//    public void elsamTest() throws NoSuchFieldException {
+//        FieldSetter.setField(syntController, syntController.getClass().getDeclaredField("elsamUrl"), elsamUrl);
+//        Map<String, String> fnrStartDatoMap = new HashMap<>();
+//        fnrStartDatoMap.put("12345678910", "2019-01-31");
+//        fnrStartDatoMap.put("10987651233", "2018-12-31");
+//        Map<String, Historikk> expectedResponse = new HashMap<>();
+//        expectedResponse.put("12345678910", new Historikk());
+//        expectedResponse.put("10987651233", new Historikk());
+//
+//        when(consumer.synthesizeData(any(RequestEntity.class))).thenReturn(expectedResponse);
+//
+//        ResponseEntity<Map<String, Historikk>> mapResponseEntity = syntController.generateSykemeldingHistorikk(fnrStartDatoMap);
+//        verify(consumer).synthesizeData(any(RequestEntity.class));
+//        assertThat(mapResponseEntity.getBody(), equalTo(expectedResponse));
+//    }
 }
