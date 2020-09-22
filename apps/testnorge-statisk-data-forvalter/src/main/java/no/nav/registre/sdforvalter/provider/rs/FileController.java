@@ -1,6 +1,7 @@
 package no.nav.registre.sdforvalter.provider.rs;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -75,6 +76,7 @@ public class FileController {
     @Operation(summary = "Legg til personer i Team Dollys database")
     @PostMapping(path = "/tpsIdenter", consumes = "multipart/form-data")
     public ResponseEntity<?> importTpsIdenter(@RequestParam("file") MultipartFile file,
+                                              @Parameter(description = "Hvis fornavn eller etternavn er blanke i csv-fila, får personene tilfeldige navn")
                                               @RequestParam(name = "Generer manglende navn", defaultValue = "false") Boolean genererManglendeNavn) throws IOException {
         List<TpsIdent> list = TpsIdentCsvConverter.inst().read(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
 

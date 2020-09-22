@@ -1,5 +1,6 @@
 package no.nav.registre.sdforvalter.provider.rs.v1;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +40,7 @@ public class StaticDataControllerV1 {
 
     @PostMapping("/tps")
     public ResponseEntity<TpsIdentListe> createTps(@RequestBody TpsIdentListe liste,
+                                                   @Parameter(description = "Hvis fornavn eller etternavn er blanke, får personene tilfeldige navn")
                                                    @RequestParam(name = "genererManglendeNavn", required = false) Boolean genererManglendeNavn) {
         return ResponseEntity.ok(identService.save(liste, genererManglendeNavn));
     }
