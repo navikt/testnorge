@@ -42,7 +42,7 @@ public class BrukerService {
     public Bruker leggTilFavoritt(Long gruppeId) {
         Testgruppe grupper = fetchTestgruppe(gruppeId);
 
-        Bruker bruker = fetchBruker(getUserId());
+        Bruker bruker = fetchOrCreateBruker(getUserId());
         bruker.getFavoritter().addAll(singleton(grupper));
         return brukerRepository.save(bruker);
     }
@@ -50,7 +50,7 @@ public class BrukerService {
     public Bruker fjernFavoritt(Long gruppeIDer) {
         Testgruppe testgruppe = fetchTestgruppe(gruppeIDer);
 
-        Bruker bruker = fetchBruker(getUserId());
+        Bruker bruker = fetchOrCreateBruker(getUserId());
         bruker.getFavoritter().remove(testgruppe);
         testgruppe.getFavorisertAv().remove(bruker);
 
