@@ -172,7 +172,7 @@ public class OppslagController {
 
     @GetMapping("/dokarkiv/{journalpostId}")
     @ApiOperation(value = "Henter dokumentinformasjon for dokarkiv fra Joark", authorizations = {@Authorization(value = "Bearer token fra bruker")})
-    public ResponseEntity<JsonNode> getDokarkivDokumentinfo(@PathVariable String journalpostId, @RequestParam(required = false) String miljoe) {
+    public JsonNode getDokarkivDokumentinfo(@PathVariable String journalpostId, @RequestParam(required = false) String miljoe) {
         return safConsumer.getDokarkivDokumentinfo(miljoe, journalpostId);
     }
 }
