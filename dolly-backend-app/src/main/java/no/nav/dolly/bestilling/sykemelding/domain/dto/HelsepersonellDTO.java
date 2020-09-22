@@ -1,15 +1,19 @@
 package no.nav.dolly.bestilling.sykemelding.domain.dto;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
 @Value
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-public class LegeListeDTO {
-    List<LegeDTO> leger;
+@Builder
+public class HelsepersonellDTO {
+    String fnr;
+    String fornavn;
+    String mellomnavn;
+    String etternavn;
+    String hprId;
+    String samhandlerType;
 }
-
