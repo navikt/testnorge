@@ -37,11 +37,16 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisning)
 									bestilling.miljoe
 								)
 									.then((response: Dokumentinfo) => {
-										return {
-											bestillingId: bestilling.bestillingId,
-											miljoe: bestilling.miljoe,
-											journalpost: response.data[0].data.journalpost,
-											skjemainnhold: response.data[1].Skjemainnhold
+										if (response) {
+											if (response.data[0].feil) {
+												return response.data[0]
+											}
+											return {
+												bestillingId: bestilling.bestillingId,
+												miljoe: bestilling.miljoe,
+												journalpost: response.data[0].data.journalpost,
+												skjemainnhold: response.data[1].Skjemainnhold
+											}
 										}
 									})
 									.catch(error => console.error(error))

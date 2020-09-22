@@ -30,6 +30,7 @@ export const EnkelInntektsmeldingVisning = ({ bestilling, data }: EnkelInntektsm
 	const journalpostidPaaBestilling = data.filter(
 		id => id.bestillingId === bestilling.id || !id.bestillingId
 	)
+
 	return (
 		<>
 			<DollyFieldArray
@@ -87,6 +88,10 @@ export const EnkelInntektsmeldingVisning = ({ bestilling, data }: EnkelInntektsm
 			<DollyFieldArray data={journalpostidPaaBestilling} header="Journalpost-ID" nested>
 				{(id: Journalpost, idx: number) => {
 					const [viserSkjemainnhold, vis, skjul] = useBoolean(false)
+
+					if (id.feil) {
+						return <p style={{ margin: 0 }}>{id.feil}</p>
+					}
 					return (
 						<div key={idx} className="person-visning_content">
 							<TitleValue title="Miljø" value={id.miljoe.toUpperCase()} />

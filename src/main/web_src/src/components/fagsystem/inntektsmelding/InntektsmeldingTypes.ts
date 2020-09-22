@@ -134,13 +134,14 @@ export type Dokumentinfo = {
 }
 
 export type Journalpost = {
-	bestillingId: number
-	miljoe: string
-	journalpost: {
+	bestillingId?: number
+	miljoe?: string
+	journalpost?: {
 		dokumenter: Array<any>
 		journalpostId: string
 	}
-	skjemainnhold: Inntekt
+	skjemainnhold?: Inntekt
+	feil: string
 }
 
 export type BestillingData = {

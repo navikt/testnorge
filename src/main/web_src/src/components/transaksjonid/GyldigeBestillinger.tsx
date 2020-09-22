@@ -14,11 +14,10 @@ export const erGyldig = (bestillingId: number, system: string, ident: string) =>
 		const response: Bestilling = await DollyApi.getTransaksjonid(system, ident, bestillingId)
 		return response.data
 	}, [])
-	const gyldig =
+
+	return (
 		finnBestilling.value &&
 		finnBestilling.value.length > 0 &&
 		finnBestilling.value[0].status === 'OK'
-			? true
-			: false
-	return gyldig
+	)
 }

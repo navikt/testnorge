@@ -11,14 +11,15 @@ interface DokarkivVisning {
 }
 
 type Dokument = {
-	brevkode: string
-	dokumentInfoId: string
-	journalfoerendeEnhet: string
-	journalpostId: string
-	kanal: string
-	miljoe: string
-	tema: string
-	tittel: string
+	brevkode?: string
+	dokumentInfoId?: string
+	journalfoerendeEnhet?: string
+	journalpostId?: string
+	kanal?: string
+	miljoe?: string
+	tema?: string
+	tittel?: string
+	feil?: string
 }
 
 type EnkeltDokument = {
@@ -34,7 +35,7 @@ type TransaksjonId = {
 
 type Dokumentinfo = {
 	data: {
-		data: {
+		data?: {
 			journalpost: {
 				kanalnavn: string
 				dokumenter: Array<Dokument>
@@ -43,6 +44,7 @@ type Dokumentinfo = {
 				journalpostId: string
 			}
 		}
+		feil?: string
 	}
 }
 
@@ -60,16 +62,21 @@ export const DokarkivVisning = ({ ident }: DokarkivVisning) => {
 									bestilling.miljoe
 								)
 									.then((response: Dokumentinfo) => {
-										const journalpost = response.data.data.journalpost
-										return {
-											kanal: journalpost.kanalnavn,
-											brevkode: journalpost.dokumenter[0].brevkode,
-											tittel: journalpost.dokumenter[0].tittel,
-											tema: journalpost.temanavn,
-											journalfoerendeEnhet: journalpost.journalfoerendeEnhet,
-											journalpostId: journalpost.journalpostId,
-											dokumentInfoId: journalpost.dokumenter[0].dokumentInfoId,
-											miljoe: bestilling.miljoe
+										if (response) {
+											if (response.data.feil) {
+												return response.data
+											}
+											const journalpost = response.data.data.journalpost
+											return {
+												kanal: journalpost.kanalnavn,
+												brevkode: journalpost.dokumenter[0].brevkode,
+												tittel: journalpost.dokumenter[0].tittel,
+												tema: journalpost.temanavn,
+												journalfoerendeEnhet: journalpost.journalfoerendeEnhet,
+												journalpostId: journalpost.journalpostId,
+												dokumentInfoId: journalpost.dokumenter[0].dokumentInfoId,
+												miljoe: bestilling.miljoe
+											}
 										}
 									})
 									.catch(error => console.error(error))
@@ -106,16 +113,21 @@ export const DokarkivVisning = ({ ident }: DokarkivVisning) => {
 }
 
 const EnkelDokarkivVisning = ({ dokument }: EnkeltDokument) => {
-	return (
-		<>
-			<TitleValue title="Kanal" value={dokument.kanal} />
-			<TitleValue title="Brevkode" value={dokument.brevkode} />
-			<TitleValue title="Tittel" value={dokument.tittel} />
-			<TitleValue title="Tema" value={dokument.tema} />
-			<TitleValue title="Journalførende enhet" value={dokument.journalfoerendeEnhet} />
-			<TitleValue title="Journalpost-ID" value={dokument.journalpostId} />
-			<TitleValue title="Dokumentinfo-ID" value={dokument.dokumentInfoId} />
-			<TitleValue title="Miljø" value={dokument.miljoe} />
-		</>
-	)
+	if (dokument) {
+		if (dokument.feil) {
+			return <p style={{ margin: 0 }}>{dokument.feil}</p>
+		}
+		return (
+			<>
+				<TitleValue title="Kanal" value={dokument.kanal} />
+				<TitleValue title="Brevkode" value={dokument.brevkode} />
+				<TitleValue title="Tittel" value={dokument.tittel} />
+				<TitleValue title="Tema" value={dokument.tema} />
+				<TitleValue title="Journalførende enhet" value={dokument.journalfoerendeEnhet} />
+				<TitleValue title="Journalpost-ID" value={dokument.journalpostId} />
+				<TitleValue title="Dokumentinfo-ID" value={dokument.dokumentInfoId} />
+				<TitleValue title="Miljø" value={dokument.miljoe} />
+			</>
+		)
+	}
 }
