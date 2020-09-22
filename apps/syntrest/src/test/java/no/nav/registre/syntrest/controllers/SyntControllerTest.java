@@ -1,11 +1,8 @@
 package no.nav.registre.syntrest.controllers;
 
 import no.nav.registre.syntrest.consumer.SyntConsumer;
-import no.nav.registre.syntrest.domain.aap.AAP115Melding;
-import no.nav.registre.syntrest.domain.aap.AAPMelding;
 import no.nav.registre.syntrest.domain.aareg.Arbeidsforholdsmelding;
 import no.nav.registre.syntrest.domain.bisys.Barnebidragsmelding;
-import no.nav.registre.syntrest.domain.elsam.Historikk;
 import no.nav.registre.syntrest.domain.frikort.FrikortKvittering;
 import no.nav.registre.syntrest.domain.inst.Institusjonsmelding;
 import no.nav.registre.syntrest.domain.medl.Medlemskapsmelding;
@@ -52,7 +49,6 @@ public class SyntControllerTest {
     private String tpUrl = "dummy/generate_tp/{numToGenerate}";
     private String tpsUrl = "dummy/generate_tps/{numToGenerate}/{endringskode}";
     private String frikortUrl = "dummy/generate_frikort";
-    private String elsamUrl = "dummy/generate_elsam/history_json";
 
     @InjectMocks
     private SyntController syntController;
@@ -304,20 +300,4 @@ public class SyntControllerTest {
         assertThat(mapResponseEntity.getBody(), equalTo(expectedResponse));
     }
 
-//    @Test
-//    public void elsamTest() throws NoSuchFieldException {
-//        FieldSetter.setField(syntController, syntController.getClass().getDeclaredField("elsamUrl"), elsamUrl);
-//        Map<String, String> fnrStartDatoMap = new HashMap<>();
-//        fnrStartDatoMap.put("12345678910", "2019-01-31");
-//        fnrStartDatoMap.put("10987651233", "2018-12-31");
-//        Map<String, Historikk> expectedResponse = new HashMap<>();
-//        expectedResponse.put("12345678910", new Historikk());
-//        expectedResponse.put("10987651233", new Historikk());
-//
-//        when(consumer.synthesizeData(any(RequestEntity.class))).thenReturn(expectedResponse);
-//
-//        ResponseEntity<Map<String, Historikk>> mapResponseEntity = syntController.generateSykemeldingHistorikk(fnrStartDatoMap);
-//        verify(consumer).synthesizeData(any(RequestEntity.class));
-//        assertThat(mapResponseEntity.getBody(), equalTo(expectedResponse));
-//    }
 }

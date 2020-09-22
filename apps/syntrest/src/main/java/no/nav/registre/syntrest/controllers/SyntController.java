@@ -54,7 +54,6 @@ public class SyntController {
     private final SyntConsumer tpConsumer;
     private final SyntConsumer tpsConsumer;
     private final SyntConsumer frikortConsumer;
-    private final SyntConsumer elsamConsumer;
 
 
     ///////////// URLs //////////////
@@ -82,8 +81,6 @@ public class SyntController {
     private String tpsUrl;
     @Value("${synth-frikort-url}")
     private String frikortUrl;
-    @Value("${synth-elsam-url}")
-    private String elsamUrl;
 
 
     @PostMapping("/aareg")
@@ -299,24 +296,6 @@ public class SyntController {
 
         return ResponseEntity.ok(response);
     }
-
-
-//    @PostMapping("/elsam")
-//    @ApiOperation(value = "Generer sykemelding-historie", notes = "Lager en sykemeldings-historie per person som blir sendt inn. ")
-//    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-elsam"})
-//    public ResponseEntity<Map<String, Historikk>> generateSykemeldingHistorikk(
-//            @ApiParam(value = "Fnr for personen som skal ha sykemeldinger. Startdato for sykemeldingene.", required = true, example = "")
-//            @RequestBody Map<String, String> fnrStartdatoMap
-//    ) {
-//        InputValidator.validateInput(new ArrayList<>(fnrStartdatoMap.keySet()));
-//
-//        Map<String, Historikk> response = (Map<String, Historikk>)
-//                elsamConsumer.synthesizeData(UriExpander.createRequestEntity(elsamUrl, fnrStartdatoMap));
-//        doResponseValidation(response);
-//
-//        return ResponseEntity.ok(response);
-//    }
-
 
     private void doResponseValidation(Object response) {
         if (Objects.isNull(response)) {

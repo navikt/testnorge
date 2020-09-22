@@ -184,10 +184,4 @@ public class AppConfig {
     SyntConsumer frikortConsumer() {
         return new SyntConsumer(applicationManager(), "synthdata-frikort");
     }
-
-    @Bean
-    @DependsOn({"applicationManager", "restTemplate"})
-    SyntConsumer elsamConsumer() {
-        return new SyntConsumer(applicationManager(), "synthdata-elsam");
-    }
 }
