@@ -1,0 +1,26 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+CLIENT_ID: 568d8ca9-8b52-4473-ac3e-21865893419c
+
+applications:
+  testnorge-profil-api-dev: 4f6035c0-610d-43ea-a80b-76d214428769
+  dolly-backend-dev: f0174d28-cb33-44f9-a7b5-09e52582e601
+
+spring:
+  cloud:
+    vault:
+      enabled: false
+  security:
+    oauth2:
+      client:
+        registration:
+          aad:
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_SECRET}
+            authorization-grant-type: authorization_code
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            scope: openid, ${CLIENT_ID}/.default
+        provider:
+          aad:
+            authorization-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/authorize
+            token-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/token
+            jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys

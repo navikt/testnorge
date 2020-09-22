@@ -5,5 +5,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 public interface AuthenticationTokenResolver {
     JwtAuthenticationToken jwtAuthenticationToken();
     boolean isClientCredentials();
+    String getOid();
     void verifyAuthentication();
 }
