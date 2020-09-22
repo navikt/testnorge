@@ -1,24 +1,8 @@
 package no.nav.dolly.provider.api;
 
-import static java.util.Arrays.asList;
-import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
-
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
-
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.aareg.AaregConsumer;
@@ -36,13 +20,30 @@ import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.kodeverk.domain.GetKodeverkKoderBetydningerResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.consumer.saf.SafConsumer;
-import no.nav.dolly.consumer.saf.domain.SafRequest;
 import no.nav.dolly.consumer.saf.domain.SafRequest.VariantFormat;
-import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import no.nav.dolly.service.InntektsmeldingEnumService;
+import no.nav.dolly.service.InntektsmeldingEnumService.EnumTypes;
+import no.nav.dolly.service.RsTransaksjonMapping;
 import no.nav.dolly.service.TransaksjonMappingService;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static java.util.Arrays.asList;
+import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
 
 @RestController
 @RequiredArgsConstructor
@@ -97,7 +98,7 @@ public class OppslagController {
     }
 
     @GetMapping("/helsepersonell")
-    @ApiOperation(value = "Hent liste med helsepersonell", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @ApiOperation(value = "Hent liste med helsepersonell", authorizations = {@Authorization(value = "Bearer token fra bruker")})
     public ResponseEntity<HelsepersonellListeDTO> getHelsepersonell() {
         return helsepersonellConsumer.getHelsepersonell();
     }
