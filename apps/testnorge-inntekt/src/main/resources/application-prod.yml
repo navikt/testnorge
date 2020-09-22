@@ -30,3 +30,5 @@ spring:
     hikari:
       maximum-pool-size: 3
       minimum-idle: 0
+  main:
+    banner-mode: off
