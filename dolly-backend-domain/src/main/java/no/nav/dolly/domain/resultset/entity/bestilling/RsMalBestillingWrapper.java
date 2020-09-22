@@ -18,6 +18,8 @@ import no.nav.dolly.domain.resultset.aareg.RsAaregArbeidsforhold;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
@@ -56,7 +58,7 @@ public class RsMalBestillingWrapper {
         private Long id;
         private String malNavn;
         private RsBestilling bestilling;
-        private String brukerId;
+        private RsBrukerAndGruppeId bruker;
     }
 
     @Getter
