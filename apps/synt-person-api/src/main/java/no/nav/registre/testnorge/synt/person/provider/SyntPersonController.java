@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
 import no.nav.registre.testnorge.synt.person.service.SyntPersonService;
 
 @RestController
@@ -15,8 +16,7 @@ public class SyntPersonController {
     private final SyntPersonService service;
 
     @PostMapping
-    public ResponseEntity<?> createSyntPerson() {
-        service.createSyntPerson();
-        return ResponseEntity.ok().build();
+    public ResponseEntity<PersonDTO> createSyntPerson() {
+        return ResponseEntity.ok(service.createSyntPerson().toDTO());
     }
 }

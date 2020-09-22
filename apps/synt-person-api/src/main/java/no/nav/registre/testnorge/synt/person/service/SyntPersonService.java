@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import no.nav.registre.testnorge.synt.person.consumer.IdentPoolConsumer;
-import no.nav.registre.testnorge.synt.person.consumer.PersonApiConsumer;
 import no.nav.registre.testnorge.synt.person.consumer.SyntrestConsumer;
 import no.nav.registre.testnorge.synt.person.consumer.dto.SyntPersonDTO;
 import no.nav.registre.testnorge.synt.person.domain.Person;
@@ -13,12 +12,11 @@ import no.nav.registre.testnorge.synt.person.domain.Person;
 @RequiredArgsConstructor
 public class SyntPersonService {
     private final IdentPoolConsumer identPoolConsumer;
-    private final PersonApiConsumer personApiConsumer;
     private final SyntrestConsumer syntrestConsumer;
 
-    public void createSyntPerson() {
+    public Person createSyntPerson() {
         String ident = identPoolConsumer.getIdent();
         SyntPersonDTO syntPerson = syntrestConsumer.createSyntPerson();
-        personApiConsumer.createPerson(new Person(syntPerson, ident));
+        return new Person(syntPerson, ident);
     }
 }
