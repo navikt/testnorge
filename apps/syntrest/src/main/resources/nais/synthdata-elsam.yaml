@@ -33,6 +33,5 @@ spec:
       cpu: 500m
       memory: 18000Mi
   ingresses:
-    - "https://nais-synthdata-eia.nais.preprod.local"
-    - "https://nais-synthdata-eia.dev.adeo.no"
+    - "https://nais-synthdata-elsam.nais.preprod.local"
     - "https://nais-synthdata-elsam.dev.adeo.no"
