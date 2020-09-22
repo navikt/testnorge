@@ -60,6 +60,6 @@ public class MalBestillingService {
 
     private static String resolveId(Bruker bruker) {
 
-        return isNotBlank(bruker.getBrukerId()) ? bruker.getBrukerId() : bruker.getNavIdent();
+        return isNotBlank(bruker.getBrukernavn()) ? bruker.getBrukernavn() : bruker.getNavIdent();
     }
 }
