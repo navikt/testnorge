@@ -101,5 +101,6 @@
         <module>synt-person-api</module>
         <module>profil-api</module>
         <module>opprett-person-pdl</module>
+        <module>oversikt-frontend</module>
     </modules>
 </project>
