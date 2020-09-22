@@ -1,22 +1,20 @@
-﻿apiVersion: "nais.io/v1alpha1"
+apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnorge-profil-api-dev
+  name: testnorge-oversikt-frontend
   namespace: dolly
   labels:
     team: dolly
 spec:
   image: {{ image }}
+  port: 8080
+  webproxy: true
   azure:
     application:
       enabled: true
-  port: 8080
-  webproxy: true
-  accessPolicy:
-    inbound:
-      rules:
-        - application: dolly-frontend-dev
-        - application: testnorge-oversikt-frontend
+      replyURLs:
+       - "https://testnorge-oversikt-frontend.dev.adeo.no/login/oauth2/code/aad"
+       - "http://localhost:8080/login/oauth2/code/aad"
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -40,4 +38,4 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://testnorge-profil-api-dev.dev.adeo.no"
+    - "https://testnorge-oversikt-frontend.dev.adeo.no"
