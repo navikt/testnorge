@@ -60,7 +60,7 @@ public class BestillingServiceTest {
     private TestgruppeRepository testgruppeRepository;
 
     @Mock
-    private BrukerRepository brukerRepository;
+    private BrukerService brukerService;
 
     @InjectMocks
     private BestillingService bestillingService;
@@ -119,7 +119,7 @@ public class BestillingServiceTest {
         int antallIdenter = 4;
 
         when(testgruppeRepository.findById(gruppeId)).thenReturn(Optional.of(gruppe));
-        when(brukerRepository.findBrukerByBrukerId(BRUKERID)).thenReturn(Optional.of(new Bruker()));
+        when(brukerService.fetchOrCreateBruker(BRUKERID)).thenReturn(new Bruker());
 
         bestillingService.saveBestilling(gruppeId, RsDollyBestilling.builder().environments(miljoer).build(),
                 RsTpsfUtvidetBestilling.builder().build(), antallIdenter, null);
@@ -138,7 +138,7 @@ public class BestillingServiceTest {
     public void cancelBestilling_OK() {
 
         when(bestillingRepository.findById(BEST_ID)).thenReturn(Optional.of(Bestilling.builder().build()));
-        when(brukerRepository.findBrukerByBrukerId(BRUKERID)).thenReturn(Optional.of(new Bruker()));
+        when(brukerService.fetchOrCreateBruker(BRUKERID)).thenReturn(new Bruker());
         bestillingService.cancelBestilling(1L);
 
         verify(bestillingKontrollRepository).findByBestillingId(BEST_ID);
@@ -159,7 +159,7 @@ public class BestillingServiceTest {
                 .gruppe(Testgruppe.builder()
                         .testidenter(newHashSet(asList(Testident.builder().build()))).build())
                 .ferdig(true).build()));
-        when(brukerRepository.findBrukerByBrukerId(BRUKERID)).thenReturn(Optional.of(new Bruker()));
+        when(brukerService.fetchOrCreateBruker(BRUKERID)).thenReturn(new Bruker());
 
         bestillingService.createBestillingForGjenopprett(BEST_ID, singletonList("u1"));
 
