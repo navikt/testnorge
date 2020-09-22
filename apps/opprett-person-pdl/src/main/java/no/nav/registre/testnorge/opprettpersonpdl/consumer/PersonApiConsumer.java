@@ -49,6 +49,7 @@ public class PersonApiConsumer {
                 .build();
     }
 
+
     public void createPerson(Person person) {
         AccessToken accessToken = clientCredentialGenerateAccessTokenService.generateToken(
                 clientCredential,
