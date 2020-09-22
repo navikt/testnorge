@@ -1,7 +1,6 @@
 # testnorge-oversikt-frontend
 
-Appliaksjon for bruk av Team Dolly til å kunne genere personlige tokens til brukt i apper som ikke støtter Client Credential (service brukere).
-
+Appliaksjon for bruk av Team Dolly til å kunne genere personlige tokens til bruk i apper som ikke støtter Client Credential (service brukere).
 Det er kun team dolly som bruker denne appen. 
 
 Lenke https://testnorge-oversikt-frontend.dev.adeo.no/ 
