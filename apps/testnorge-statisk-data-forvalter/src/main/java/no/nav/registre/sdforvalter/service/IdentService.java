@@ -8,8 +8,10 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.sdforvalter.adapter.TpsIdenterAdapter;
 import no.nav.registre.sdforvalter.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.sdforvalter.consumer.rs.IdentPoolConsumer;
 import no.nav.registre.sdforvalter.consumer.rs.SkdConsumer;
 import no.nav.registre.sdforvalter.consumer.rs.TpConsumer;
+import no.nav.registre.sdforvalter.domain.TpsIdent;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
 
 @Service
@@ -18,18 +20,21 @@ public class IdentService {
     private final HodejegerenConsumer hodejegerenConsumer;
     private final SkdConsumer skdConsumer;
     private final TpConsumer tpConsumer;
+    private final IdentPoolConsumer identPoolConsumer;
     private final Long staticDataPlaygroup;
 
     public IdentService(
             TpsIdenterAdapter tpsIdenterAdapter,
             HodejegerenConsumer hodejegerenConsumer,
             SkdConsumer skdConsumer,
+            IdentPoolConsumer identPoolConsumer,
             TpConsumer tpConsumer, @Value("${tps.statisk.avspillergruppeId}") Long staticDataPlaygroup
     ) {
         this.tpsIdenterAdapter = tpsIdenterAdapter;
         this.hodejegerenConsumer = hodejegerenConsumer;
         this.skdConsumer = skdConsumer;
         this.tpConsumer = tpConsumer;
+        this.identPoolConsumer = identPoolConsumer;
         this.staticDataPlaygroup = staticDataPlaygroup;
     }
 
@@ -51,5 +56,30 @@ public class IdentService {
         */
         Set<String> livingFnrs = hodejegerenConsumer.getLivingFnrs(staticDataPlaygroup, environment);
         tpConsumer.send(livingFnrs, environment);
+    }
+
+    public TpsIdentListe save(TpsIdentListe liste, Boolean genererManglendeNavn) {
+        var tpsIdentListe = genererManglendeNavn ? leggTilNavn(liste) : liste;
+
+        return tpsIdenterAdapter.save(tpsIdentListe);
+    }
+
+    private TpsIdentListe leggTilNavn(TpsIdentListe liste) {
+        var tpsIdentListe = liste.stream().map(ident -> {
+            if (ident.getLastName() == null || ident.getFirstName() == null) {
+                var navn = identPoolConsumer.getFiktivtNavn();
+                return TpsIdent.builder()
+                        .fnr(ident.getFnr())
+                        .firstName(navn.getFornavn())
+                        .lastName(navn.getEtternavn())
+                        .address(ident.getAddress())
+                        .postNr(ident.getPostNr())
+                        .city(ident.getCity())
+                        .build();
+            } else {
+                return ident;
+            }
+        }).collect(Collectors.toList());
+        return new TpsIdentListe(tpsIdentListe);
     }
 }

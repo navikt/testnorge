@@ -25,6 +25,7 @@ import no.nav.registre.sdforvalter.domain.Ereg;
 import no.nav.registre.sdforvalter.domain.EregListe;
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
+import no.nav.registre.sdforvalter.service.IdentService;
 
 @RestController
 @RequestMapping("/api/v1/faste-data/file")
@@ -33,6 +34,7 @@ public class FileController {
 
     private final EregAdapter eregAdapter;
     private final TpsIdenterAdapter tpsIdenterAdapter;
+    private final IdentService identService;
 
     @GetMapping("/ereg")
     public void exportEreg(@RequestParam(name = "gruppe", required = false) String gruppe, HttpServletResponse response) throws IOException {
@@ -44,7 +46,7 @@ public class FileController {
         EregCsvConverter.inst().write(response.getWriter(), eregListe.getListe());
     }
 
-    @PostMapping("/ereg")
+    @PostMapping(path = "/ereg", consumes = "multipart/form-data")
     public ResponseEntity<HttpStatus> importEreg(@RequestParam("file") MultipartFile file) throws IOException {
         List<Ereg> list = EregCsvConverter.inst().read(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
         eregAdapter.save(new EregListe(list));
@@ -61,10 +63,12 @@ public class FileController {
         TpsIdentCsvConverter.inst().write(response.getWriter(), tpsIdentListe.getListe());
     }
 
-    @PostMapping("/tpsIdenter")
-    public ResponseEntity<?> importTpsIdenter(@RequestParam("file") MultipartFile file) throws IOException {
+    @PostMapping(path = "/tpsIdenter", consumes = "multipart/form-data")
+    public ResponseEntity<?> importTpsIdenter(@RequestParam("file") MultipartFile file,
+                                              @RequestParam(name = "Generer manglende navn", defaultValue = "false") Boolean genererManglendeNavn) throws IOException {
         List<TpsIdent> list = TpsIdentCsvConverter.inst().read(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
-        tpsIdenterAdapter.save(new TpsIdentListe(list));
+
+        identService.save(new TpsIdentListe(list), genererManglendeNavn);
         return ResponseEntity.ok().build();
     }
 }
