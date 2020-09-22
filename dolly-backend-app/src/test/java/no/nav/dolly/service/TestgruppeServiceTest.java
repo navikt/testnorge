@@ -19,6 +19,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.apache.http.entity.ContentType;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,7 +30,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 import no.nav.dolly.common.TestidentBuilder;
 import no.nav.dolly.domain.jpa.Bruker;
@@ -43,10 +47,13 @@ import no.nav.dolly.security.sts.OidcTokenAuthentication;
 @RunWith(MockitoJUnitRunner.class)
 public class TestgruppeServiceTest {
 
+    private final static String BRUKERID = "123";
+    private final static String BRUKERNAVN = "BRUKER";
+    private final static String EPOST = "@@@@";
+
     private static final long GROUP_ID = 1L;
     private static final String IDENT_ONE = "1";
     private static final String IDENT_TWO = "2";
-    private static final String standardPrincipal = "PRINC";
 
     @Mock
     private TestgruppeRepository testgruppeRepository;
@@ -73,9 +80,12 @@ public class TestgruppeServiceTest {
 
     @BeforeClass
     public static void establishSecurity() {
-        SecurityContextHolder.getContext().setAuthentication(
-                new OidcTokenAuthentication(standardPrincipal, null, null, null, null)
-        );
+        SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(Jwt.withTokenValue("test")
+                .claim("oid", BRUKERID)
+                .claim("name", BRUKERNAVN)
+                .claim("epost", EPOST)
+                .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON)
+                .build()));
     }
 
     @Before
@@ -94,7 +104,7 @@ public class TestgruppeServiceTest {
         RsOpprettEndreTestgruppe rsTestgruppe = mock(RsOpprettEndreTestgruppe.class);
         Bruker bruker = mock(Bruker.class);
 
-        when(brukerService.fetchBruker(standardPrincipal)).thenReturn(bruker);
+        when(brukerService.fetchBruker(BRUKERID)).thenReturn(bruker);
 
         testgruppeService.opprettTestgruppe(rsTestgruppe);
 
@@ -134,12 +144,12 @@ public class TestgruppeServiceTest {
 
         Bruker bruker = Bruker.builder()
                 .favoritter(newHashSet(asList(tg1, tg2, tg3)))
-                .brukerId(standardPrincipal)
+                .navIdent(BRUKERID)
                 .build();
 
         when(brukerService.fetchBruker(any())).thenReturn(bruker);
 
-        List<Testgruppe> grupper = testgruppeService.fetchTestgrupperByBrukerId(standardPrincipal);
+        List<Testgruppe> grupper = testgruppeService.fetchTestgrupperByBrukerId(BRUKERID);
 
         assertThat(grupper, hasItem(hasProperty("id", equalTo(1L))));
         assertThat(grupper, hasItem(hasProperty("id", equalTo(2L))));
@@ -198,7 +208,7 @@ public class TestgruppeServiceTest {
         RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettEndreTestgruppe.builder().hensikt("test").navn("navn").build();
 
         when(testgruppeRepository.findById(anyLong())).thenReturn(Optional.of(testGruppe));
-        when(brukerService.fetchBruker(anyString())).thenReturn(Bruker.builder().brukerId("brukerId").build());
+        when(brukerService.fetchBruker(anyString())).thenReturn(Bruker.builder().navIdent("brukerId").build());
         testgruppeService.oppdaterTestgruppe(GROUP_ID, rsOpprettEndreTestgruppe);
         verify(testgruppeRepository).save(testGruppe);
     }

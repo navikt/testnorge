@@ -1,11 +1,20 @@
 package no.nav.dolly.service;
 
+import static java.lang.String.format;
+import static no.nav.dolly.util.CurrentAuthentication.getUserId;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.NonTransientDataAccessException;
+import org.springframework.stereotype.Service;
+
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -15,14 +24,6 @@ import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.NonTransientDataAccessException;
-import org.springframework.stereotype.Service;
-
-import static java.lang.String.format;
-import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +36,7 @@ public class TestgruppeService {
     private final PersonService personService;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
-        Bruker bruker = brukerService.fetchBruker(getLoggedInNavIdent());
+        Bruker bruker = brukerService.fetchBruker(getUserId());
 
         return saveGruppeTilDB(Testgruppe.builder()
                 .navn(rsTestgruppe.getNavn())
@@ -107,7 +108,7 @@ public class TestgruppeService {
 
         testgruppe.setHensikt(endreGruppe.getHensikt());
         testgruppe.setNavn(endreGruppe.getNavn());
-        testgruppe.setSistEndretAv(brukerService.fetchBruker(getLoggedInNavIdent()));
+        testgruppe.setSistEndretAv(brukerService.fetchBruker(getUserId()));
         testgruppe.setDatoEndret(LocalDate.now());
 
         return saveGruppeTilDB(testgruppe);

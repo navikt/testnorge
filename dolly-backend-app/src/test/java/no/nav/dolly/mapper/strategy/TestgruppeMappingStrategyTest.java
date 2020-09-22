@@ -8,10 +8,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+import org.apache.http.entity.ContentType;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.common.TestidentBuilder;
@@ -25,16 +29,20 @@ import no.nav.dolly.security.sts.OidcTokenAuthentication;
 
 public class TestgruppeMappingStrategyTest {
 
-    private static final String STANDARD_PRINCIPAL = "brukernavn";
+    private final static String BRUKERID = "123";
+    private final static String BRUKERNAVN = "BRUKER";
+    private final static String EPOST = "@@@@";
 
     private MapperFacade mapper;
 
     @BeforeClass
-    public static void beforeClass() {
-
-        SecurityContextHolder.getContext().setAuthentication(
-                new OidcTokenAuthentication(STANDARD_PRINCIPAL, null, null, null, null)
-        );
+    public static void setup() {
+        SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(Jwt.withTokenValue("test")
+                .claim("oid", BRUKERID)
+                .claim("name", BRUKERNAVN)
+                .claim("epost", EPOST)
+                .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON)
+                .build()));
     }
 
     @Before
@@ -44,7 +52,7 @@ public class TestgruppeMappingStrategyTest {
 
     @Test
     public void mappingFromTestgruppeToRsTestgruppe() {
-        Bruker bruker = Bruker.builder().brukerId("ident").build();
+        Bruker bruker = Bruker.builder().navIdent("ident").build();
         Testident testident = TestidentBuilder.builder().ident("1").build().convertToRealTestident();
         Set<Testident> identer = newHashSet(singletonList(testident));
 
@@ -66,8 +74,8 @@ public class TestgruppeMappingStrategyTest {
         assertThat(rs.getDatoEndret().getYear(), is(2000));
         assertThat(rs.getDatoEndret().getMonthValue(), is(1));
         assertThat(rs.getDatoEndret().getDayOfMonth(), is(1));
-        assertThat(rs.getOpprettetAvNavIdent(), is(bruker.getBrukerId()));
-        assertThat(rs.getSistEndretAvNavIdent(), is(bruker.getBrukerId()));
+        assertThat(rs.getOpprettetAvBrukerId(), is(bruker.getBrukerId()));
+        assertThat(rs.getSistEndretAvBrukerId(), is(bruker.getBrukerId()));
 
         assertThat(rsIdenter.size(), is(1));
         assertThat(rsIdenter.get(0).getIdent(), is("1"));

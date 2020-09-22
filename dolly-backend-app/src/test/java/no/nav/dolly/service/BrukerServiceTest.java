@@ -16,15 +16,20 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
-import org.junit.Before;
+import org.apache.http.entity.ContentType;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -32,12 +37,13 @@ import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
-import no.nav.dolly.security.sts.OidcTokenAuthentication;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BrukerServiceTest {
 
-    private final static String navIdent = "BRUKER";
+    private final static String BRUKERID = "123";
+    private final static String BRUKERNAVN = "BRUKER";
+    private final static String EPOST = "@@@@";
 
     @Mock
     private BrukerRepository brukerRepository;
@@ -48,29 +54,34 @@ public class BrukerServiceTest {
     @InjectMocks
     private BrukerService brukerService;
 
-    @Before
-    public void setup() {
-        SecurityContextHolder.getContext().setAuthentication(new OidcTokenAuthentication(navIdent, null, null, null, null));
+    @BeforeClass
+    public static void setup() {
+        SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(Jwt.withTokenValue("test")
+                .claim("oid", BRUKERID)
+                .claim("name", BRUKERNAVN)
+                .claim("epost", EPOST)
+                .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON)
+                .build()));
     }
 
     @Test
     public void fetchBruker_kasterIkkeExceptionOgReturnererBrukerHvisBrukerErFunnet() {
-        when(brukerRepository.findBrukerByBrukerId(any())).thenReturn(new Bruker());
+        when(brukerRepository.findBrukerByBrukerId(any())).thenReturn(Optional.of(new Bruker()));
         Bruker b = brukerService.fetchBruker("test");
         assertThat(b, is(notNullValue()));
     }
 
     @Test(expected = NotFoundException.class)
     public void fetchBruker_kasterExceptionHvisIngenBrukerFunnet() {
-        when(brukerRepository.findBrukerByBrukerId(any())).thenReturn(null);
-        Bruker b = brukerService.fetchBruker("test");
+        when(brukerRepository.findBrukerByBrukerId(any())).thenReturn(Optional.empty());
+        Bruker b = brukerService.fetchBruker(BRUKERID);
         assertThat(b, is(notNullValue()));
     }
 
     @Test
     public void getBruker_KallerRepoHentBrukere() {
         brukerService.fetchBrukere();
-        verify(brukerRepository).findAllByOrderByBrukerId();
+        verify(brukerRepository).findAllByOrderById();
     }
 
     @Test
@@ -89,10 +100,10 @@ public class BrukerServiceTest {
     public void leggTilFavoritter_medGrupperIDer() {
         Long ID = 1L;
         Testgruppe testgruppe = Testgruppe.builder().navn("gruppe").hensikt("hen").build();
-        Bruker bruker = Bruker.builder().brukerId(navIdent).favoritter(new HashSet<>()).build();
+        Bruker bruker = Bruker.builder().brukerId(BRUKERID).favoritter(new HashSet<>()).build();
 
         when(testgruppeRepository.findById(ID)).thenReturn(ofNullable(testgruppe));
-        when(brukerRepository.findBrukerByBrukerId(navIdent)).thenReturn(bruker);
+        when(brukerRepository.findBrukerByBrukerId(BRUKERID)).thenReturn(Optional.of(bruker));
         when(brukerRepository.save(bruker)).thenReturn(bruker);
 
         Bruker hentetBruker = brukerService.leggTilFavoritt(ID);
@@ -115,12 +126,12 @@ public class BrukerServiceTest {
         Testgruppe testgruppe2 = Testgruppe.builder().navn("gruppe2").hensikt("hen2").build();
         Set<Testgruppe> favoritter = newHashSet(asList(testgruppe, testgruppe2));
 
-        Bruker bruker = Bruker.builder().brukerId(navIdent).favoritter(favoritter).build();
+        Bruker bruker = Bruker.builder().brukerId(BRUKERID).favoritter(favoritter).build();
         testgruppe.setFavorisertAv(newHashSet(singletonList(bruker)));
         testgruppe2.setFavorisertAv(newHashSet(singletonList(bruker)));
 
         when(testgruppeRepository.findById(ID)).thenReturn(ofNullable(testgruppe));
-        when(brukerRepository.findBrukerByBrukerId(navIdent)).thenReturn(bruker);
+        when(brukerRepository.findBrukerByBrukerId(BRUKERID)).thenReturn(Optional.of(bruker));
         when(brukerRepository.save(bruker)).thenReturn(bruker);
 
         Bruker hentetBruker = brukerService.fjernFavoritt(ID);
@@ -143,7 +154,7 @@ public class BrukerServiceTest {
 
         brukerService.fetchBrukere();
 
-        verify(brukerRepository).findAllByOrderByBrukerId();
+        verify(brukerRepository).findAllByOrderById();
     }
 
     @Test

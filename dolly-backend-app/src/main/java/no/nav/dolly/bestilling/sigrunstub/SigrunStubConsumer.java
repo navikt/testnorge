@@ -3,10 +3,7 @@ package no.nav.dolly.bestilling.sigrunstub;
 import static java.lang.String.format;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.security.sts.StsOidcService.getUserIdToken;
-import static no.nav.dolly.security.sts.StsOidcService.getUserPrinciple;
 import static org.springframework.http.HttpHeaders.ACCEPT;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.net.URI;

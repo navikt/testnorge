@@ -1,6 +1,7 @@
 package no.nav.dolly.repository;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
@@ -12,11 +13,11 @@ public interface BrukerRepository extends Repository<Bruker, Long> {
 
     Bruker save(Bruker bruker);
 
-    Bruker findBrukerByBrukerId(String navIdent);
+    List<Bruker> findAllByOrderById();
 
-    List<Bruker> findByBrukerIdInOrderByBrukerId(List<String> navIdenter);
+    Optional<Bruker> findBrukerByBrukerId(String brukerId);
 
-    List<Bruker> findAllByOrderByBrukerId();
+    Optional<Bruker> findBrukerByNavIdent(String navIdent);
 
     @Modifying
     @Query(value = "delete from T_BRUKER_FAVORITTER where gruppe_id = :groupId", nativeQuery = true)

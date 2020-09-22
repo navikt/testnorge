@@ -68,15 +68,10 @@ public class PdlPersonConsumer {
 
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(providersProps.getPdlPerson().getUrl() + GRAPHQL_URL))
-                .header(AUTHORIZATION, resolveToken())
                 .header(HEADER_NAV_CONSUMER_TOKEN, stsOidcService.getIdToken(PREPROD_ENV))
                 .header(HEADER_NAV_CALL_ID, "Dolly: " + UUID.randomUUID().toString())
                 .header(TEMA, GEN.name())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(graphQLRequest), JsonNode.class);
-    }
-
-    private String resolveToken() {
-        return PREPROD_ENV.equals(environment) ? StsOidcService.getUserIdToken() : stsOidcService.getIdToken(PREPROD_ENV);
     }
 }

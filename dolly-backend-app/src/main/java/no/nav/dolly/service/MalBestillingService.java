@@ -30,15 +30,15 @@ public class MalBestillingService {
 
             RsMalBestillingWrapper.RsMalBestilling malBestilling = RsMalBestillingWrapper.RsMalBestilling.builder()
                     .malNavn(bestilling.getMalBestillingNavn())
-                    .brukerId(bestilling.getUserId())
+                    .brukerId(bestilling.getBruker().getBrukerId())
                     .id(bestilling.getId())
                     .bestilling(mapperFacade.map(bestilling, RsMalBestillingWrapper.RsBestilling.class))
                     .build();
 
-            malBestillingWrapper.getMalbestillinger().putIfAbsent(getUserId(bestilling.getUserId()),
+            malBestillingWrapper.getMalbestillinger().putIfAbsent(getUserId(bestilling.getBruker().getBrukerId()),
                     new TreeSet(Comparator.comparing(RsMalBestillingWrapper.RsMalBestilling::getMalNavn)
                             .thenComparing(RsMalBestillingWrapper.RsMalBestilling::getId)));
-            malBestillingWrapper.getMalbestillinger().get(getUserId(bestilling.getUserId())).add(malBestilling);
+            malBestillingWrapper.getMalbestillinger().get(getUserId(bestilling.getBruker().getBrukerId())).add(malBestilling);
         });
 
         return malBestillingWrapper;

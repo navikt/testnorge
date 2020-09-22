@@ -9,7 +9,6 @@ import static org.hamcrest.Matchers.hasProperty;
 
 import java.util.LinkedHashMap;
 import java.util.List;
-import org.junit.Ignore;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +31,7 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestilling
 @DisplayName("GET /api/v1/gruppe")
 @EnableAutoConfiguration(exclude = { SecurityAutoConfiguration.class,
         OAuth2ResourceServerAutoConfiguration.class,
-        ManagementWebSecurityAutoConfiguration.class})
+        ManagementWebSecurityAutoConfiguration.class })
 class TestgruppeControllerGetTest extends TestgruppeTestBase {
 
     private static final ParameterizedTypeReference<List<RsTestgruppe>> expectedResponseRsTestgruppe = new ParameterizedTypeReference<List<RsTestgruppe>>() {
@@ -48,11 +47,11 @@ class TestgruppeControllerGetTest extends TestgruppeTestBase {
         Testgruppe testgruppe2 = dataFactory.createTestgruppe("gruppe2", annenBruker);
         Testgruppe testgruppe3 = dataFactory.createTestgruppe("gruppe3", annenBruker);
 
-        dataFactory.addToBrukerFavourites(bruker.getBrukerId(), testgruppe.getId());
-        dataFactory.addToBrukerFavourites(bruker.getBrukerId(), testgruppe2.getId());
-        dataFactory.addToBrukerFavourites(bruker.getBrukerId(), testgruppe3.getId());
+        dataFactory.addToBrukerFavourites(bruker.getNavIdent(), testgruppe.getId());
+        dataFactory.addToBrukerFavourites(bruker.getNavIdent(), testgruppe2.getId());
+        dataFactory.addToBrukerFavourites(bruker.getNavIdent(), testgruppe3.getId());
 
-        String url = UriComponentsBuilder.fromUriString(ENDPOINT_BASE_URI).queryParam("brukerId", bruker.getBrukerId()).toUriString();
+        String url = UriComponentsBuilder.fromUriString(ENDPOINT_BASE_URI).queryParam("brukerId", bruker.getNavIdent()).toUriString();
         List<RsTestgruppe> resp = sendRequest()
                 .to(HttpMethod.GET, url)
                 .andExpectList(HttpStatus.OK, expectedResponseRsTestgruppe);
@@ -61,16 +60,16 @@ class TestgruppeControllerGetTest extends TestgruppeTestBase {
 
         assertThat(resp, hasItem(both(
                 hasProperty("navn", equalTo("gruppe2"))).and(
-                hasProperty("opprettetAvNavIdent", equalTo(annenBruker.getBrukerId())))
+                hasProperty("opprettetAvNavIdent", equalTo(annenBruker.getNavIdent())))
         ));
 
         assertThat(resp, hasItem(both(
                 hasProperty("navn", equalTo("gruppe3"))).and(
-                hasProperty("opprettetAvNavIdent", equalTo(annenBruker.getBrukerId())))
+                hasProperty("opprettetAvNavIdent", equalTo(annenBruker.getNavIdent())))
         ));
 
         //Cleanup
-        dataFactory.clearFavourites(bruker.getBrukerId());
+        dataFactory.clearFavourites(bruker.getNavIdent());
     }
 
     @Test

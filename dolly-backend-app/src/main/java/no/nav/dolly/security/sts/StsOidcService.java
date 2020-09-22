@@ -15,10 +15,12 @@ import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -43,16 +45,6 @@ public class StsOidcService {
 
     private Map<Environment, String> idToken = new EnumMap<>(Environment.class);
     private Map<Environment, LocalDateTime> expiry = new EnumMap<>(Environment.class);
-
-    public static String getUserIdToken() {
-        return "Bearer " + (nonNull(SecurityContextHolder.getContext().getAuthentication()) ?
-                ((OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication()).getIdToken() : "");
-    }
-
-    public static String getUserPrinciple() {
-        String principal = ((OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication()).getPrincipal();
-        return isNotBlank(principal) ? principal.toUpperCase() : "";
-    }
 
     public String getIdToken(String environment) {
 

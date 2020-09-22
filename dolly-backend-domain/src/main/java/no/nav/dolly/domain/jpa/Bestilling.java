@@ -87,8 +87,9 @@ public class Bestilling {
     @Column(name = "IDENT")
     private String ident;
 
-    @Column(name = "USER_ID")
-    private String userId;
+    @ManyToOne
+    @JoinColumn(name = "BRUKER_ID", nullable = false)
+    private Bruker bruker;
 
     @Column(name = "TPS_IMPORT")
     private String tpsImport;

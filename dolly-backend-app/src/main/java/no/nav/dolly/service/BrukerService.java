@@ -1,9 +1,9 @@
 package no.nav.dolly.service;
 
-import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
+import static java.util.Collections.singleton;
+import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
+import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
@@ -25,34 +25,32 @@ public class BrukerService {
     private final BrukerRepository brukerRepository;
     private final TestgruppeRepository testgruppeRepository;
 
-    public Bruker fetchBruker(String navIdent) {
-        Bruker bruker = brukerRepository.findBrukerByBrukerId(navIdent.toUpperCase());
-        if (bruker == null) {
-            throw new NotFoundException("Bruker ikke funnet");
-        }
-        return bruker;
+    public Bruker fetchBruker(String brukerId) {
+        return brukerRepository.findBrukerByBrukerId(brukerId)
+                .orElseGet(() -> brukerRepository.findBrukerByNavIdent(brukerId)
+                        .orElseThrow(() -> new NotFoundException("Bruker ikke funnet")));
     }
 
-    public Bruker fetchOrCreateBruker(String navIdent) {
+    public Bruker fetchOrCreateBruker(String brukerId) {
         try {
-            return fetchBruker(navIdent);
+            return fetchBruker(brukerId);
         } catch (NotFoundException e) {
-            return brukerRepository.save(Bruker.builder().brukerId(navIdent.toUpperCase()).build());
+            return brukerRepository.save(getAuthUser());
         }
     }
 
     public Bruker leggTilFavoritt(Long gruppeId) {
         Testgruppe grupper = fetchTestgruppe(gruppeId);
 
-        Bruker bruker = fetchBruker(getLoggedInNavIdent());
-        bruker.getFavoritter().addAll(new HashSet<>(Collections.singleton(grupper)));
+        Bruker bruker = fetchBruker(getUserId());
+        bruker.getFavoritter().addAll(singleton(grupper));
         return brukerRepository.save(bruker);
     }
 
     public Bruker fjernFavoritt(Long gruppeIDer) {
         Testgruppe testgruppe = fetchTestgruppe(gruppeIDer);
 
-        Bruker bruker = fetchBruker(getLoggedInNavIdent());
+        Bruker bruker = fetchBruker(getUserId());
         bruker.getFavoritter().remove(testgruppe);
         testgruppe.getFavorisertAv().remove(bruker);
 
@@ -61,7 +59,7 @@ public class BrukerService {
     }
 
     public List<Bruker> fetchBrukere() {
-        return brukerRepository.findAllByOrderByBrukerId();
+        return brukerRepository.findAllByOrderById();
     }
 
     public int sletteBrukerFavoritterByGroupId(Long groupId) {

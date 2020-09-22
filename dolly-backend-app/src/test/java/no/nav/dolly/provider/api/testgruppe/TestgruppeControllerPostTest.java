@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.Ignore;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,7 +42,7 @@ class TestgruppeControllerPostTest extends TestgruppeTestBase {
         assertThat(resp.getId(), is(notNullValue()));
         assertThat(resp.getNavn(), is("mingruppe"));
         assertThat(resp.getHensikt(), is("hensikt"));
-        assertThat(resp.getOpprettetAvNavIdent(), is("NAVIDENT"));
+        assertThat(resp.getOpprettetAvBrukerId(), is("NAVIDENT"));
     }
 
     /*

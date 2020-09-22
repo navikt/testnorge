@@ -7,9 +7,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
-import static no.nav.dolly.security.sts.StsOidcService.getUserIdToken;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.io.IOException;
 import java.net.URI;
@@ -116,7 +114,6 @@ public class TpsfService {
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(format("%s%s%s", providersProps.getTpsf().getUrl(), TPSF_UPDATE_PERSON_URL, ident)))
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(AUTHORIZATION, getUserIdToken())
                 .body(tpsfBestilling), RsOppdaterPersonResponse.class).getBody();
     }
 
@@ -126,7 +123,6 @@ public class TpsfService {
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(format("%s%s%s", providersProps.getTpsf().getUrl(), TPSF_PERSON_RELASJON, ident)))
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(AUTHORIZATION, getUserIdToken())
                 .body(tpsfBestilling), List.class).getBody();
     }
 
@@ -136,7 +132,6 @@ public class TpsfService {
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(providersProps.getTpsf().getUrl() + TPSF_IMPORTER_PERSON))
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(AUTHORIZATION, getUserIdToken())
                 .body(tpsfImportPersonRequest), Person.class).getBody();
     }
 

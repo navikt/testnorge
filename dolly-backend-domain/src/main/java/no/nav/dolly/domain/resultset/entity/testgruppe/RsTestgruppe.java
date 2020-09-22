@@ -21,8 +21,8 @@ public class RsTestgruppe {
     private Long id;
     private String navn;
     private String hensikt;
-    private String opprettetAvNavIdent;
-    private String sistEndretAvNavIdent;
+    private String opprettetAvBrukerId;
+    private String sistEndretAvBrukerId;
 
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate datoEndret;

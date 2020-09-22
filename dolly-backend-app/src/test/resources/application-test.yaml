@@ -29,13 +29,6 @@ spring:
       enabled: true
       path: /h2
 
-#### NEW FREG-SECURITY #####
-freg.security.oidc:
-  idp:
-    openAm:
-      issuerUrl: http://openAmIssuerUrl
-      jwksUrl: http://openAmJwksUrl
-
 providers:
   tpsf:
     url: http://localhost:${wiremock.server.port}/tpsf

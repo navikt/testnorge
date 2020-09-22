@@ -61,7 +61,7 @@ public class TestdataFactory {
     }
 
     public Bruker createBruker(String brukerId) {
-        Bruker bruker = Bruker.builder().brukerId(brukerId).build();
+        Bruker bruker = Bruker.builder().navIdent(brukerId).build();
         return brukerTestRepository.save(bruker);
     }
 

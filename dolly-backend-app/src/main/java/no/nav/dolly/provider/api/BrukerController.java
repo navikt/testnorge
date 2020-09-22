@@ -2,7 +2,7 @@ package no.nav.dolly.provider.api;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
-import static no.nav.dolly.security.sts.StsOidcService.getUserPrinciple;
+import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 
 import java.util.List;
 import org.springframework.cache.annotation.CacheEvict;
@@ -46,7 +46,7 @@ public class BrukerController {
     @GetMapping("/current")
     @ApiOperation(value = "Hent pålogget Bruker", authorizations = { @Authorization(value = "Bearer token fra bruker") })
     public RsBruker getCurrentBruker() {
-        Bruker bruker = brukerService.fetchOrCreateBruker(getUserPrinciple());
+        Bruker bruker = brukerService.fetchOrCreateBruker(getUserId());
         return mapperFacade.map(bruker, RsBruker.class);
     }
 
