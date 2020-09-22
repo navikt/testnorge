@@ -121,12 +121,6 @@ public class AppConfig {
 
     @Bean
     @DependsOn({"applicationManager", "restTemplate"})
-    SyntConsumer aapConsumer() {
-        return new SyntConsumer(applicationManager(), "synthdata-arena-aap");
-    }
-
-    @Bean
-    @DependsOn({"applicationManager", "restTemplate"})
     SyntConsumer bisysConsumer() {
         return new SyntConsumer(applicationManager(), "synthdata-arena-bisys");
     }
