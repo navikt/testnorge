@@ -33,5 +33,3 @@ spec:
     limits:
       cpu: 500m
       memory: 5000Mi
-  ingresses:
-    - "https://testnorge-opprett-person-pdl.dev.adeo.no"
