@@ -29,6 +29,7 @@ spec:
     limits:
       cpu: 500m
       memory: 2048Mi
+  image: {{ image }}
   ingresses:
     - "https://testnorge-bisys.nais.preprod.local"
     - "https://testnorge-bisys.dev.adeo.no"
