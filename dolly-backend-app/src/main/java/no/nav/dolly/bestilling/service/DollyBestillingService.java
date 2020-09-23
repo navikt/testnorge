@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
+import no.nav.dolly.service.BestillingProgressService;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -67,7 +69,7 @@ public class DollyBestillingService {
     private final TpsfService tpsfService;
     private final TpsfPersonCache tpsfPersonCache;
     private final IdentService identService;
-    private final BestillingProgressRepository bestillingProgressRepository;
+    private final BestillingProgressService bestillingProgressService;
     private final BestillingService bestillingService;
     private final MapperFacade mapperFacade;
     private final CacheManager cacheManager;
@@ -202,7 +204,7 @@ public class DollyBestillingService {
     }
 
     protected void oppdaterProgress(Bestilling bestilling, BestillingProgress progress) {
-        bestillingProgressRepository.save(progress);
+        bestillingProgressService.save(progress);
         bestilling.setSistOppdatert(now());
         bestillingService.saveBestillingToDB(bestilling);
         clearCache();

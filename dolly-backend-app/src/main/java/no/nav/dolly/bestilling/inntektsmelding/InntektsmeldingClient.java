@@ -51,7 +51,7 @@ public class InntektsmeldingClient implements ClientRegister {
                 inntektsmeldingRequest.setMiljoe(environment);
                 postInntektsmelding(isOpprettEndre ||
                         !transaksjonMappingService.existAlready(INNTKMELD, tpsPerson.getHovedperson(), environment),
-                        inntektsmeldingRequest, status);
+                        inntektsmeldingRequest, progress.getBestillingId(), status);
             });
 
             progress.setInntektsmeldingStatus(status.toString());
@@ -64,7 +64,7 @@ public class InntektsmeldingClient implements ClientRegister {
         // Inntektsmelding mangler pt. sletting
     }
 
-    private void postInntektsmelding(boolean isSendMelding, InntektsmeldingRequest inntektsmeldingRequest, StringBuilder status) {
+    private void postInntektsmelding(boolean isSendMelding, InntektsmeldingRequest inntektsmeldingRequest, Long bestillingid, StringBuilder status) {
 
         try {
             if (isSendMelding) {
@@ -75,6 +75,7 @@ public class InntektsmeldingClient implements ClientRegister {
                             response.getBody().getDokumenter().stream()
                                     .map(dokument -> TransaksjonMapping.builder()
                                             .ident(inntektsmeldingRequest.getArbeidstakerFnr())
+                                            .bestillingId(bestillingid)
                                             .transaksjonId(toJson(dokument))
                                             .datoEndret(LocalDateTime.now())
                                             .miljoe(inntektsmeldingRequest.getMiljoe())
