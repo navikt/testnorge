@@ -1,5 +1,8 @@
-
-application.version: @application.version@
+spring:
+  application:
+    name: testnorge-bisys
+    version: @application.version@
+    description: Testnorge-Bisys er adapteren mellom orkestratoren og bisys for opprettelse av syntetiske bistandsmeldinger.
 
 
 management.endpoints.web.base-path: /internal
@@ -23,7 +26,7 @@ INNTEKT_BM_EGNE_OPPLYSNINGER: 400000
 INNTEKT_BP_EGNE_OPPLYSNINGER: 5000000
     
 SYNTBISYS_USERNAME: z991656
-SYNTBISYS_PASSWORD: Sjalabais8
+SYNTBISYS_PASSWORD: dummy
 USE_HISTORICAL_MOTTATTDATO: 0
 
 SYNTREST_REST_API: http://localhost:${wiremock.server.port}/synthdata-bisys/api

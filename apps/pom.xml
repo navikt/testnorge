@@ -102,5 +102,6 @@
         <module>profil-api</module>
         <module>opprett-person-pdl</module>
         <module>oversikt-frontend</module>
+        <module>testnorge-bisys</module>
     </modules>
 </project>

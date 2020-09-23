@@ -31,3 +31,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnorge-bisys.nais.preprod.local"
+    - "https://testnorge-bisys.dev.adeo.no"
