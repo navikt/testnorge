@@ -3,9 +3,6 @@ package no.nav.dolly.consumer.saf;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeCreator;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.common.io.CharStreams;
 import lombok.RequiredArgsConstructor;
@@ -16,14 +13,12 @@ import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.dolly.security.sts.StsOidcService;
 import org.apache.http.Consts;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import springfox.documentation.spring.web.json.Json;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,6 +40,9 @@ import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 import static org.apache.http.util.TextUtils.isBlank;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @Slf4j
 @Service
@@ -106,7 +104,7 @@ public class SafConsumer {
     private String sendJoarkDokumentQuery(String environment, SafRequest request) {
 
         if (isNull(request.getDokumentInfoId())) {
-           return null;
+            return null;
         }
         try {
             return restTemplate.exchange(
@@ -116,8 +114,8 @@ public class SafConsumer {
                             .header(HEADER_NAV_CALL_ID, getNavCallId("SafDokumentRequest", environment))
                             .header(HEADER_NAV_CONSUMER_ID, CONSUMER).build(),
                     String.class).getBody();
-        } catch(HttpClientErrorException e) {
-                return null;
+        } catch (HttpClientErrorException e) {
+            return null;
         }
     }
 
@@ -138,37 +136,45 @@ public class SafConsumer {
                 .build();
 
 
-        try{
-        ResponseEntity<JsonNode> response = restTemplate.exchange(
-                RequestEntity.post(URI.create(format("%s%s", providersProps.getJoark().getUrl().replace("$", environment),
-                        SAF_GRAPHQL_URL)))
-                        .header(AUTHORIZATION, stsOidcService.getIdToken(environment.contains(PREPROD_ENV) ? PREPROD_ENV : TEST_ENV))
-                        .header(HEADER_NAV_CALL_ID, getNavCallId("SafMetadataRequest", environment))
-                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(graphQLRequest),
-                JsonNode.class);
+        try {
+            ResponseEntity<JsonNode> response = restTemplate.exchange(
+                    RequestEntity.post(URI.create(format("%s%s", providersProps.getJoark().getUrl().replace("$", environment),
+                            SAF_GRAPHQL_URL)))
+                            .header(AUTHORIZATION, stsOidcService.getIdToken(environment.contains(PREPROD_ENV) ? PREPROD_ENV : TEST_ENV))
+                            .header(HEADER_NAV_CALL_ID, getNavCallId("SafMetadataRequest", environment))
+                            .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(graphQLRequest),
+                    JsonNode.class);
 
             return response.getBody();
 
         } catch (HttpClientErrorException error) {
-            if (HttpStatus.NOT_FOUND.equals(error.getStatusCode())) {
-                try {
-                    return objectMapper.readTree("{\"feil\":\"SAF endepunkt for " + environment +
-                            " ikke funnet. Henting av dokumenter for dette miljøet støttes derfor ikke.\"}");
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                }
+            if (NOT_FOUND.equals(error.getStatusCode())) {
+                return lagJsonFeilmelding(
+                        "SAF endepunkt for " + environment + " ikke funnet.");
             }
-            if (HttpStatus.FORBIDDEN.equals(error.getStatusCode())) {
-                try {
-                    return objectMapper.readTree("{\"feil\":\"Manglende tilgang i SAF til å lese dokument.\"}");
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                }
+            if (FORBIDDEN.equals(error.getStatusCode())) {
+                return lagJsonFeilmelding(
+                        "Manglende tilgang i SAF til å lese dokument.");
+            }
+            if (UNAUTHORIZED.equals(error.getStatusCode())) {
+                return lagJsonFeilmelding(
+                        "Token ikke godtatt av SAF.");
             }
         }
         return objectMapper.createObjectNode();
+    }
+
+    private JsonNode lagJsonFeilmelding(String feilmelding) {
+
+        final String KONSEKVENS_FOR_BRUKER = "Henting av dokumenter for dette miljøet støttes derfor ikke";
+        try {
+            return objectMapper.readTree(String.format("{\"feil\":\"%s %s\"}", feilmelding, KONSEKVENS_FOR_BRUKER));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private static String getNavCallId(String message, String environment) {
