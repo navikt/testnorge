@@ -24,6 +24,8 @@ spring:
             authorization-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/authorize
             token-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/token
             jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+  main:
+    banner-mode: off
 
 dependencies:
   urls:
@@ -63,7 +65,3 @@ dependencies:
     - https://udi-stub.dev.adeo.no/dependencies
     - https://brreg-stub.dev.adeo.no/dependencies
   threads: 6
-
-spring:
-  main:
-    banner-mode: off
