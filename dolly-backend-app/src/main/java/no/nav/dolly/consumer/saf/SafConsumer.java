@@ -35,6 +35,7 @@ import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
+import static net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils.isNotBlank;
 import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
@@ -91,7 +92,7 @@ public class SafConsumer {
             if (nonNull(node)) {
                 samletJson.add(node);
             }
-            if (nonNull(xml)) {
+            if (isNotBlank(xml)) {
                 XmlMapper xmlMapper = new XmlMapper();
                 samletJson.add(xmlMapper.readTree(xml));
             }
@@ -103,7 +104,7 @@ public class SafConsumer {
 
     private String sendJoarkDokumentQuery(String environment, SafRequest request) {
 
-        if (isNull(request.getDokumentInfoId())) {
+        if (isNotBlank(request.getDokumentInfoId())) {
             return null;
         }
         try {
