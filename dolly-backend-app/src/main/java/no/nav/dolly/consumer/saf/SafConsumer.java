@@ -87,15 +87,15 @@ public class SafConsumer {
         return sendJoarkMetadataQuery(environment, journalpostId, GRAPHQL_DOKARKIV);
     }
 
-    private List<JsonNode> getSamletDokumentinfo(JsonNode node, ResponseEntity<String> xml) {
+    private List<JsonNode> getSamletDokumentinfo(JsonNode node, String xml) {
         List<JsonNode> samletJson = new ArrayList<>();
         try {
             if (nonNull(node)) {
                 samletJson.add(node);
             }
-            if (nonNull(xml) && xml.hasBody()) {
+            if (nonNull(xml)) {
                 XmlMapper xmlMapper = new XmlMapper();
-                samletJson.add(xmlMapper.readTree(xml.getBody()));
+                samletJson.add(xmlMapper.readTree(xml));
             }
         } catch (IOException e) {
             log.error("Json samling av dokument og metadata feilet: " + e);
@@ -103,18 +103,22 @@ public class SafConsumer {
         return samletJson;
     }
 
-    private ResponseEntity<String> sendJoarkDokumentQuery(String environment, SafRequest request) {
+    private String sendJoarkDokumentQuery(String environment, SafRequest request) {
 
         if (isNull(request.getDokumentInfoId())) {
            return null;
         }
-        return restTemplate.exchange(
-                RequestEntity.get(URI.create(String.format("%s%s/%s/%s/%s", providersProps.getJoark().getUrl().replace("$", environment), SAF_URL,
-                        request.getJournalpostId(), request.getDokumentInfoId(), request.getVariantFormat())))
-                        .header(AUTHORIZATION, stsOidcService.getIdToken(environment.contains(PREPROD_ENV) ? PREPROD_ENV : TEST_ENV))
-                        .header(HEADER_NAV_CALL_ID, getNavCallId("SafDokumentRequest", environment))
-                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER).build(),
-                String.class);
+        try {
+            return restTemplate.exchange(
+                    RequestEntity.get(URI.create(String.format("%s%s/%s/%s/%s", providersProps.getJoark().getUrl().replace("$", environment), SAF_URL,
+                            request.getJournalpostId(), request.getDokumentInfoId(), request.getVariantFormat())))
+                            .header(AUTHORIZATION, stsOidcService.getIdToken(environment.contains(PREPROD_ENV) ? PREPROD_ENV : TEST_ENV))
+                            .header(HEADER_NAV_CALL_ID, getNavCallId("SafDokumentRequest", environment))
+                            .header(HEADER_NAV_CONSUMER_ID, CONSUMER).build(),
+                    String.class).getBody();
+        } catch(HttpClientErrorException e) {
+                return null;
+        }
     }
 
     private JsonNode sendJoarkMetadataQuery(String environment, String journalpostId, String graphqlFile) {
@@ -152,6 +156,13 @@ public class SafConsumer {
                 try {
                     return objectMapper.readTree("{\"feil\":\"SAF endepunkt for " + environment +
                             " ikke funnet. Henting av dokumenter for dette miljøet støttes derfor ikke.\"}");
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (HttpStatus.FORBIDDEN.equals(error.getStatusCode())) {
+                try {
+                    return objectMapper.readTree("{\"feil\":\"Manglende tilgang i SAF til å lese dokument.\"}");
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
