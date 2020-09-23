@@ -45,7 +45,7 @@ public class AppConfig {
     @Value("${INNTEKT_BP_EGNE_OPPLYSNINGER:0}")
     private int inntektBpEgneOpplysninger;
 
-    @Value("${KODE_UNNT_FORSK}")
+    @Value("${KODE_UNNT_FORSK:}")
     private String kodeUnntForsk;
 
     @Value("${SAKSBEHANDLER_ROLLE}")
