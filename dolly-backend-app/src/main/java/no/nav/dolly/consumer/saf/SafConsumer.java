@@ -67,11 +67,11 @@ public class SafConsumer {
     public List<JsonNode> getInntektsmeldingDokumentinfo(String environment, String journalpostId, String dokumentinfoId, String variantformat) {
 
         JsonNode joarkMetadata = sendJoarkMetadataQuery(environment, journalpostId, GRAPHQL_INNTEKTSMELDING);
-        if (joarkMetadata.has("feil")) {
+        if (nonNull(joarkMetadata) && joarkMetadata.has("feil")) {
             return Collections.singletonList(joarkMetadata);
         }
 
-        if (isBlank(dokumentinfoId)) {
+        if (isBlank(dokumentinfoId) && nonNull(joarkMetadata)) {
             JsonNode joarkMetadataValue = joarkMetadata.findValue("dokumentInfoId");
             dokumentinfoId = isNull(joarkMetadataValue) ? null : joarkMetadataValue.asText();
         }
