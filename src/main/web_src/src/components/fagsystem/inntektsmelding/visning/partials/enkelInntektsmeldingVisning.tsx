@@ -87,11 +87,13 @@ export const EnkelInntektsmeldingVisning = ({ bestilling, data }: EnkelInntektsm
 			</DollyFieldArray>
 			<DollyFieldArray data={journalpostidPaaBestilling} header="Journalpost-ID" nested>
 				{(id: Journalpost, idx: number) => {
-					const [viserSkjemainnhold, vis, skjul] = useBoolean(false)
-
 					if (id.feil) {
 						return <p style={{ margin: 0 }}>{id.feil}</p>
 					}
+
+					const [viserSkjemainnhold, vis, skjul] = useBoolean(false)
+					const feilmelding = 'Kan ikke hente dokument fra SAF.'
+
 					return (
 						<div key={idx} className="person-visning_content">
 							<TitleValue title="Miljø" value={id.miljoe.toUpperCase()} />
@@ -115,7 +117,7 @@ export const EnkelInntektsmeldingVisning = ({ bestilling, data }: EnkelInntektsm
 									className="person-visning_content"
 									style={{ whiteSpace: 'pre', color: '#59514B' }}
 								>
-									{JSON.stringify(id.skjemainnhold, null, 4)}
+									{id.skjemainnhold ? JSON.stringify(id.skjemainnhold, null, 4) : feilmelding}
 								</div>
 							)}
 						</div>
