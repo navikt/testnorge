@@ -1,0 +1,17 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    version: @application.version@
+    name: opprett-person-pdl
+
+consumers:
+  personapi:
+    url: https://testnorge-person-api.dev.adeo.no
+    client_id: 607ab2ee-2473-4bfd-8d48-03a7aaceeda6
+    client_secret: ${PERSON_API_CLIENT_SECRET}
+
+kafka:
+  bootstrapservers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
+  schemaregistryservers: http://kafka-schema-registry.tpa.svc.nais.local:8081
+  groupid: testnorge-opprett-person-pdl-v1

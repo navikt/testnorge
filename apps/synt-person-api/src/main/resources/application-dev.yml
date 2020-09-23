@@ -1,4 +1,4 @@
-consumers.personapi.url: https://testnorge-person-api-dev.dev.adeo.no/api
+consumers.personapi.url: https://testnorge-person-api-dev.dev.adeo.no
 
 spring:
   security:

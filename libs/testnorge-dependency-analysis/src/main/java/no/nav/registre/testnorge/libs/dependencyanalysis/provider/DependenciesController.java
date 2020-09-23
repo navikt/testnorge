@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyAnalysis;
 import no.nav.registre.testnorge.libs.dto.dependencyanalysis.v1.ApplicationDependenciesDTO;
 
-
 @RestController
 @RequestMapping("/dependencies")
 public class DependenciesController {

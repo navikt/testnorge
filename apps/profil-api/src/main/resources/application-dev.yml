@@ -1,5 +1,3 @@
-consumers.personapi.url: https://testnorge-person-api-dev.dev.adeo.no/api
-
 spring:
   security:
     oauth2:
