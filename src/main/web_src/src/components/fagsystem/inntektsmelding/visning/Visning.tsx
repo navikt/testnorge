@@ -45,7 +45,7 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisning)
 												bestillingId: bestilling.bestillingId,
 												miljoe: bestilling.miljoe,
 												journalpost: response.data[0].data.journalpost,
-												skjemainnhold: response.data[1].Skjemainnhold
+												skjemainnhold: response.data[1] && response.data[1].Skjemainnhold
 											}
 										}
 									})
