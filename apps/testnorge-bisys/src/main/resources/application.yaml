@@ -1,0 +1,38 @@
+
+application.version: @application.version@
+
+
+management.endpoints.web.base-path: /internal
+management.endpoints.web.exposure.include: prometheus
+
+--- 
+spring:
+  profiles: test, local-integration-test
+
+ANDEL_FORSORGING: 0.0
+BARN_REGISTRERT_PAA_ADRESSE: 0
+BESLAARSAK_KODE: OH3
+BISYS_URL: https://wasapp-q2.adeo.no/rtv-bidrag/Oppgaveliste.do
+ENHET: 4802
+GEBYR_BESLAARSAK_KODE_FRITATT_IKKE_SOKT: 1
+KODE_UNNT_FORSK:
+SAMVARSKLASSE: "00"
+SAKSBEHANDLER_ROLLE: TK_Behandler
+SIVILSTAND_BM: UGIFT
+INNTEKT_BM_EGNE_OPPLYSNINGER: 400000
+INNTEKT_BP_EGNE_OPPLYSNINGER: 5000000
+    
+SYNTBISYS_USERNAME: z991656
+SYNTBISYS_PASSWORD: Sjalabais8
+USE_HISTORICAL_MOTTATTDATO: 0
+
+SYNTREST_REST_API: http://localhost:${wiremock.server.port}/synthdata-bisys/api
+HODEJEGEREN_REST_API: http://localhost:${wiremock.server.port}/hodejegeren/api
+
+---
+spring:
+  profiles: local-integration-test
+  
+SYNTREST_REST_API: https://syntrest.nais.preprod.local/api
+HODEJEGEREN_REST_API: https://testnorge-hodejegeren.nais.preprod.local/api
+

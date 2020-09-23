@@ -1,0 +1,36 @@
+[
+  {
+    "BA": "27119626051",
+    "BA_ALDER": 182,
+    "BM": "28016226094",
+    "BP": "26124826941",
+    "FASTSATT_I": "",
+    "GEBYRFRITAK_BM": null,
+    "GEBYRFRITAK_BP": null,
+    "GODKJENT_BELOP": 0,
+    "INNBETALT": "",
+    "KRAVBELOP": 0,
+    "MOTTATT_DATO": "2018-01-27",
+    "SOKNADSTYPE": "FA",
+    "SOKNAD_FRA": "MO",
+    "SOKT_FRA": 6,
+    "SOKT_OM": "FO"
+  },
+    {
+    "BA": "27111726051",
+    "BA_ALDER": 182,
+    "BM": "24028226094",
+    "BP": "13128826941",
+    "FASTSATT_I": "",
+    "GEBYRFRITAK_BM": null,
+    "GEBYRFRITAK_BP": null,
+    "GODKJENT_BELOP": 0,
+    "INNBETALT": "",
+    "KRAVBELOP": 0,
+    "MOTTATT_DATO": "2019-01-27",
+    "SOKNADSTYPE": "FA",
+    "SOKNAD_FRA": "MO",
+    "SOKT_FRA": 6,
+    "SOKT_OM": "BI"
+  }
+]
