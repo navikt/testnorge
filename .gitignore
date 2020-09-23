@@ -11,3 +11,5 @@
 *frontend/build/
 
 *.DS_Store
+
+*apps/testnorge-bisys/c:/
