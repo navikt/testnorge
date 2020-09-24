@@ -42,6 +42,9 @@ public class NyttVedtakTiltak extends NyttVedtak {
     @JsonAlias({ "TILTAK_KARAKTERISTIKK", "tiltakskarakteristikk" })
     private String tiltakskarakteristikk;
 
+    @JsonAlias({ "tiltakAdminKode", "TILTAK_KARAKTERISTIKK", "tiltakskarakteristikk" })
+    private String tiltakAdminKode;
+
     @JsonAlias({ "AKTIVITETSKODE", "AKTIVITETKODE", "aktivitetkode" })
     private String aktivitetkode;
 
@@ -71,4 +74,10 @@ public class NyttVedtakTiltak extends NyttVedtak {
 
     @JsonAlias({ "TILTAKSKODE", "tiltakskode" })
     private String tiltakskode;
+
+    @JsonAlias({ "TILTAK_ID", "tiltakId" })
+    private Integer tiltakId;
+
+    @JsonAlias({ "FODSELSNR", "fodselsnr" })
+    private String fodselsnr;
 }

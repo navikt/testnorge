@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import no.nav.registre.arena.core.consumer.rs.TiltakArenaForvalterConsumer;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -58,6 +59,7 @@ public class VedtakshistorikkService {
 
     private final AapSyntConsumer aapSyntConsumer;
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
+    private final TiltakArenaForvalterConsumer tiltakArenaForvalterConsumer;
     private final ServiceUtils serviceUtils;
     private final RettighetAapService rettighetAapService;
     private final RettighetTiltakService rettighetTiltakService;
@@ -423,14 +425,22 @@ public class VedtakshistorikkService {
     ) {
         var tiltaksdeltakelse = vedtak.getTiltaksdeltakelse();
         if (tiltaksdeltakelse != null && !tiltaksdeltakelse.isEmpty()) {
-            var rettighetRequest = new RettighetTiltaksdeltakelseRequest(tiltaksdeltakelse);
-            rettighetRequest.setPersonident(personident);
-            rettighetRequest.setMiljoe(miljoe);
-            rettighetRequest.getNyeTiltaksdeltakelse().forEach(rettighet -> {
-                rettighet.setBegrunnelse(BEGRUNNELSE);
-                rettighet.setTiltakYtelse("J");
-            });
-            rettigheter.add(rettighetRequest);
+            tiltaksdeltakelse.forEach(deltakelse -> deltakelse.setTiltakYtelse("J"));
+
+            var nyeTiltakdeltakelser = tiltakArenaForvalterConsumer.finnTiltak(tiltaksdeltakelse);
+            if (!nyeTiltakdeltakelser.isEmpty()){
+                nyeTiltakdeltakelser.forEach(deltakelse -> {
+                    deltakelse.setFodselsnr(personident);
+                    deltakelse.setBegrunnelse(BEGRUNNELSE);
+                });
+
+                var rettighetRequest = new RettighetTiltaksdeltakelseRequest(nyeTiltakdeltakelser);
+
+                rettighetRequest.setPersonident(personident);
+                rettighetRequest.setMiljoe(miljoe);
+                rettigheter.add(rettighetRequest);
+            }
+            vedtak.setTiltaksdeltakelse(nyeTiltakdeltakelser);
         }
     }
 
