@@ -104,7 +104,7 @@ public class SafConsumer {
 
     private String sendJoarkDokumentQuery(String environment, SafRequest request) {
 
-        if (isNotBlank(request.getDokumentInfoId())) {
+        if (isBlank(request.getDokumentInfoId())) {
             return null;
         }
         try {
