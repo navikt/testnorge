@@ -9,11 +9,7 @@ import no.nav.registre.testnorge.libs.oauth2.service.OnBehalfOfGenerateAccessTok
 
 
 /**
- * Denne skal kun brukes for apper som er utenfor namespace dolly.
- * <p>
- * Denne skal aldri deployes til GCP
- * <p>
- * TODO Fjern når alle apper er over på namespace dolly
+ * Skal kun brukes til kafka apper som ikke har rest endepunker og apper utenfor GCP
  */
 @Configuration
 @Import({

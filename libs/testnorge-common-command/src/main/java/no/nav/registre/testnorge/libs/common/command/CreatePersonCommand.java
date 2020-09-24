@@ -23,7 +23,7 @@ public class CreatePersonCommand implements Runnable {
         log.info("Oppretter {}...", person.getIdent());
         webClient
                 .post()
-                .uri(builder -> builder.path("/v1/personer").build())
+                .uri(builder -> builder.path("/api/v1/personer").build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .body(BodyInserters.fromPublisher(Mono.just(person), PersonDTO.class))
                 .retrieve()
