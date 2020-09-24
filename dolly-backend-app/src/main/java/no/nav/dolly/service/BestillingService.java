@@ -44,7 +44,6 @@ import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingKontrollRepository;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 
@@ -63,7 +62,8 @@ public class BestillingService {
     private final BrukerService brukerService;
 
     public Bestilling fetchBestillingById(Long bestillingId) {
-        return bestillingRepository.findById(bestillingId).orElseThrow(() -> new NotFoundException(format("Fant ikke bestillingId %d", bestillingId)));
+        return bestillingRepository.findById(bestillingId)
+                .orElseThrow(() -> new NotFoundException(format("Fant ikke bestillingId %d", bestillingId)));
     }
 
     @Transactional
