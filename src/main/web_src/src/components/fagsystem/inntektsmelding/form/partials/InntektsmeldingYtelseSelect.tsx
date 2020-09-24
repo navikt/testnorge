@@ -1,13 +1,13 @@
 import React from 'react'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
-import LoadableComponent, { Feilmelding } from '~/components/ui/loading/LoadableComponent'
+import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import Formatters from '~/utils/DataFormatter'
 import { FormikProps } from 'formik'
 import { Ytelser, Tema } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
-import { DollyErrorAlert } from '~/components/ui/loading/DollyErrorAlert'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 interface InntektsmeldingSelect {
 	path: string
@@ -34,35 +34,32 @@ export default ({
 }: InntektsmeldingSelect) => {
 	const ytelsePath = `${path}.ytelse`
 
-	const feil = (feilmelding: Feilmelding) => {
-		if (_has(formikBag.touched, ytelsePath) && _get(formikBag.values, ytelsePath) === '')
-			return { feilmelding: 'Feltet er påkrevd' }
-		else return feilmelding
-	}
 	return (
-		<LoadableComponent
-			onFetch={() =>
-				SelectOptionsOppslag.hentInntektsmeldingOptions(kodeverk).then(response =>
-					response.map((value: string) => ({
-						value,
-						label: Formatters.codeToNorskLabel(value),
-						tema: findTema(value)
-					}))
-				)
-			}
-			render={(data: Array<Option>) => (
-				<DollySelect
-					name={ytelsePath}
-					label={label}
-					options={data}
-					type="text"
-					size={size}
-					value={_get(formikBag.values, ytelsePath)}
-					onChange={(e: Option) => setYtelseOgTema(e, formikBag, path, idx)}
-					isClearable={false}
-				/>
-			)}
-		/>
+		<ErrorBoundary>
+			<LoadableComponent
+				onFetch={() =>
+					SelectOptionsOppslag.hentInntektsmeldingOptions(kodeverk).then(response =>
+						response.map((value: string) => ({
+							value,
+							label: Formatters.codeToNorskLabel(value),
+							tema: findTema(value)
+						}))
+					)
+				}
+				render={(data: Array<Option>) => (
+					<DollySelect
+						name={ytelsePath}
+						label={label}
+						options={data}
+						type="text"
+						size={size}
+						value={_get(formikBag.values, ytelsePath)}
+						onChange={(e: Option) => setYtelseOgTema(e, formikBag, path, idx)}
+						isClearable={false}
+					/>
+				)}
+			/>
+		</ErrorBoundary>
 	)
 }
 

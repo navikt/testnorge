@@ -7,6 +7,7 @@ import { InntektVisning } from './partials/InntektVisning'
 import { FradragVisning } from './partials/FradragVisning'
 import { ForskuddstrekkVisning } from './partials/ForskuddstrekkVisning'
 import { ArbeidsforholdVisning } from './partials/ArbeidsforholdVisning'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 type InntekstubVisning = {
 	liste?: Array<Inntektsinformasjon>
@@ -39,29 +40,31 @@ export const InntektstubVisning = ({ liste, loading }: InntekstubVisning) => {
 	return (
 		<div>
 			<SubOverskrift label="A-ordningen (Inntektskomponenten)" iconKind="inntektstub" />
-			<DollyFieldArray
-				header="Inntektsinformasjon"
-				getHeader={getHeader}
-				data={sortedData}
-				expandable={sortedData.length > 1}
-			>
-				{(inntektsinformasjon: Inntektsinformasjon) => (
-					<React.Fragment>
-						<div className="person-visning_content">
-							<TitleValue title="År/måned" value={inntektsinformasjon.aarMaaned} />
-							<TitleValue title="Virksomhet (orgnr/id)" value={inntektsinformasjon.virksomhet} />
-							<TitleValue
-								title="Opplysningspliktig (orgnr/id)"
-								value={inntektsinformasjon.opplysningspliktig}
-							/>
-						</div>
-						<InntektVisning data={inntektsinformasjon.inntektsliste} />
-						<FradragVisning data={inntektsinformasjon.fradragsliste} />
-						<ForskuddstrekkVisning data={inntektsinformasjon.forskuddstrekksliste} />
-						<ArbeidsforholdVisning data={inntektsinformasjon.arbeidsforholdsliste} />
-					</React.Fragment>
-				)}
-			</DollyFieldArray>
+			<ErrorBoundary>
+				<DollyFieldArray
+					header="Inntektsinformasjon"
+					getHeader={getHeader}
+					data={sortedData}
+					expandable={sortedData.length > 1}
+				>
+					{(inntektsinformasjon: Inntektsinformasjon) => (
+						<React.Fragment>
+							<div className="person-visning_content">
+								<TitleValue title="År/måned" value={inntektsinformasjon.aarMaaned} />
+								<TitleValue title="Virksomhet (orgnr/id)" value={inntektsinformasjon.virksomhet} />
+								<TitleValue
+									title="Opplysningspliktig (orgnr/id)"
+									value={inntektsinformasjon.opplysningspliktig}
+								/>
+							</div>
+							<InntektVisning data={inntektsinformasjon.inntektsliste} />
+							<FradragVisning data={inntektsinformasjon.fradragsliste} />
+							<ForskuddstrekkVisning data={inntektsinformasjon.forskuddstrekksliste} />
+							<ArbeidsforholdVisning data={inntektsinformasjon.arbeidsforholdsliste} />
+						</React.Fragment>
+					)}
+				</DollyFieldArray>
+			</ErrorBoundary>
 		</div>
 	)
 }

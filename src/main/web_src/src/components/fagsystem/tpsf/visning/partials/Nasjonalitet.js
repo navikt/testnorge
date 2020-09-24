@@ -4,6 +4,7 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 const Statsborgerskap = ({ statsborgerskap }) => (
 	<div className="person-visning_content">
@@ -28,9 +29,11 @@ export const Nasjonalitet = ({ data, visTittel = true }) => {
 			{visTittel && <SubOverskrift label="Nasjonalitet" iconKind="nasjonalitet" />}
 			<div className="person-visning_content">
 				{statsborgerskap.length > 1 ? (
-					<DollyFieldArray data={statsborgerskap} header="Statsborgerskap" nested>
-						{(statsborgerskap, idx) => <Statsborgerskap statsborgerskap={statsborgerskap} />}
-					</DollyFieldArray>
+					<ErrorBoundary>
+						<DollyFieldArray data={statsborgerskap} header="Statsborgerskap" nested>
+							{(statsborgerskap, idx) => <Statsborgerskap statsborgerskap={statsborgerskap} />}
+						</DollyFieldArray>
+					</ErrorBoundary>
 				) : (
 					<Statsborgerskap statsborgerskap={statsborgerskap[0]} />
 				)}
@@ -38,29 +41,31 @@ export const Nasjonalitet = ({ data, visTittel = true }) => {
 			</div>
 
 			{innvandretUtvandret.length > 0 && (
-				<DollyFieldArray data={innvandretUtvandret} header={'Innvandret/utvandret'} nested>
-					{(id, idx) => (
-						<React.Fragment>
-							{innvandretUtvandret && (
-								<>
-									<TitleValue
-										title={
-											innvandretUtvandret[idx].innutvandret === 'UTVANDRET'
-												? 'Utvandret til'
-												: 'Innvandret fra'
-										}
-										kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-										value={innvandretUtvandret[idx].landkode}
-									/>
-									<TitleValue
-										title="Flyttedato"
-										value={Formatters.formatDate(innvandretUtvandret[idx].flyttedato)}
-									/>
-								</>
-							)}
-						</React.Fragment>
-					)}
-				</DollyFieldArray>
+				<ErrorBoundary>
+					<DollyFieldArray data={innvandretUtvandret} header={'Innvandret/utvandret'} nested>
+						{(id, idx) => (
+							<React.Fragment>
+								{innvandretUtvandret && (
+									<>
+										<TitleValue
+											title={
+												innvandretUtvandret[idx].innutvandret === 'UTVANDRET'
+													? 'Utvandret til'
+													: 'Innvandret fra'
+											}
+											kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
+											value={innvandretUtvandret[idx].landkode}
+										/>
+										<TitleValue
+											title="Flyttedato"
+											value={Formatters.formatDate(innvandretUtvandret[idx].flyttedato)}
+										/>
+									</>
+								)}
+							</React.Fragment>
+						)}
+					</DollyFieldArray>
+				</ErrorBoundary>
 			)}
 		</div>
 	)

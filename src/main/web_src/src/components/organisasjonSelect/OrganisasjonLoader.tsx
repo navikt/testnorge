@@ -3,6 +3,7 @@ import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { EregResponse } from '~/service/Responses'
 import { Organisasjon } from './types'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 type OrganisasjonLoaderProps = {
 	filter?: (response: EregResponse) => boolean
@@ -37,5 +38,9 @@ export const OrganisasjonLoader = ({
 						postadresse: response.postadresse
 					}))
 		)
-	return <LoadableComponent onFetch={onFetch} render={(list: Organisasjon[]) => render(list)} />
+	return (
+		<ErrorBoundary>
+			<LoadableComponent onFetch={onFetch} render={(list: Organisasjon[]) => render(list)} />
+		</ErrorBoundary>
+	)
 }

@@ -16,6 +16,7 @@ import SykepengerVisning from './partials/sykepengerVisning'
 import PleiepengerVisning from './partials/pleiepengerVisning'
 import NaturalytelseVisning from './partials/naturalytelseVisning'
 import JournalpostidVisning from '~/components/journalpostid/JournalpostidVisning'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 interface InntektsmeldingVisning {
 	liste: Array<Inntektsmelding>
@@ -61,11 +62,13 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisning)
 		<div>
 			<SubOverskrift label="Inntektsmelding (fra Altinn)" iconKind="inntektsmelding" />
 			{liste.length > 1 ? (
-				<DollyFieldArray header="Inntektsmeldinger" data={sortedListe} nested>
-					{(inntekter: Inntekter[]) => (
-						<EnkelInntektsmeldingVisning data={inntekter} ident={ident} />
-					)}
-				</DollyFieldArray>
+				<ErrorBoundary>
+					<DollyFieldArray header="Inntektsmeldinger" data={sortedListe} nested>
+						{(inntekter: Inntekter[]) => (
+							<EnkelInntektsmeldingVisning data={inntekter} ident={ident} />
+						)}
+					</DollyFieldArray>
+				</ErrorBoundary>
 			) : (
 				<EnkelInntektsmeldingVisning data={sortedListe[0]} ident={ident} />
 			)}
@@ -74,54 +77,61 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisning)
 }
 
 const EnkelInntektsmeldingVisning = ({ data, ident }: EnkelInntektsmelding) => (
-	<DollyFieldArray header="Inntekt" getHeader={getHeader} data={data} expandable={data.length > 1}>
-		{(inntekt: Inntekt, idx: number) => (
-			<>
-				<div className="person-visning_content" key={idx}>
-					<TitleValue
-						title="Årsak til innsending"
-						value={Formatters.codeToNorskLabel(inntekt.aarsakTilInnsending)}
+	<ErrorBoundary>
+		<DollyFieldArray
+			header="Inntekt"
+			getHeader={getHeader}
+			data={data}
+			expandable={data.length > 1}
+		>
+			{(inntekt: Inntekt, idx: number) => (
+				<>
+					<div className="person-visning_content" key={idx}>
+						<TitleValue
+							title="Årsak til innsending"
+							value={Formatters.codeToNorskLabel(inntekt.aarsakTilInnsending)}
+						/>
+						<TitleValue title="Ytelse" value={Formatters.codeToNorskLabel(inntekt.ytelse)} />
+						<TitleValue
+							title="Virksomhet (orgnr)"
+							value={inntekt.arbeidsgiver && inntekt.arbeidsgiver.orgnummer}
+						/>
+						<TitleValue
+							title="Opplysningspliktig virksomhet"
+							value={inntekt.arbeidsgiver && inntekt.arbeidsgiver.virksomhetsnummer}
+						/>
+						<TitleValue
+							title="Innsendingstidspunkt"
+							value={Formatters.formatDate(inntekt.avsendersystem.innsendingstidspunkt)}
+						/>
+						<TitleValue
+							title="Privat arbeidsgiver"
+							value={inntekt.arbeidsgiverPrivat && inntekt.arbeidsgiverPrivat.arbeidsgiverFnr}
+						/>
+						<TitleValue title="Har nær relasjon" value={inntekt.naerRelasjon} />
+						<TitleValue
+							title="Startdato foreldrepenger"
+							value={Formatters.formatDate(inntekt.startdatoForeldrepengeperiode)}
+						/>
+					</div>
+					<ArbeidsforholdVisning data={inntekt.arbeidsforhold} />
+					<OmsorgspengerVisning data={inntekt.omsorgspenger} />
+					<RefusjonVisning data={inntekt.refusjon} />
+					<SykepengerVisning data={inntekt.sykepengerIArbeidsgiverperioden} />
+					<PleiepengerVisning data={inntekt.pleiepengerPerioder} />
+					<NaturalytelseVisning
+						data={inntekt.gjenopptakelseNaturalytelseListe}
+						header="Gjenopptagekse av naturalytelse"
 					/>
-					<TitleValue title="Ytelse" value={Formatters.codeToNorskLabel(inntekt.ytelse)} />
-					<TitleValue
-						title="Virksomhet (orgnr)"
-						value={inntekt.arbeidsgiver && inntekt.arbeidsgiver.orgnummer}
+					<NaturalytelseVisning
+						data={inntekt.opphoerAvNaturalytelseListe}
+						header="Opphør av naturalytelse"
 					/>
-					<TitleValue
-						title="Opplysningspliktig virksomhet"
-						value={inntekt.arbeidsgiver && inntekt.arbeidsgiver.virksomhetsnummer}
-					/>
-					<TitleValue
-						title="Innsendingstidspunkt"
-						value={Formatters.formatDate(inntekt.avsendersystem.innsendingstidspunkt)}
-					/>
-					<TitleValue
-						title="Privat arbeidsgiver"
-						value={inntekt.arbeidsgiverPrivat && inntekt.arbeidsgiverPrivat.arbeidsgiverFnr}
-					/>
-					<TitleValue title="Har nær relasjon" value={inntekt.naerRelasjon} />
-					<TitleValue
-						title="Startdato foreldrepenger"
-						value={Formatters.formatDate(inntekt.startdatoForeldrepengeperiode)}
-					/>
-				</div>
-				<ArbeidsforholdVisning data={inntekt.arbeidsforhold} />
-				<OmsorgspengerVisning data={inntekt.omsorgspenger} />
-				<RefusjonVisning data={inntekt.refusjon} />
-				<SykepengerVisning data={inntekt.sykepengerIArbeidsgiverperioden} />
-				<PleiepengerVisning data={inntekt.pleiepengerPerioder} />
-				<NaturalytelseVisning
-					data={inntekt.gjenopptakelseNaturalytelseListe}
-					header="Gjenopptagekse av naturalytelse"
-				/>
-				<NaturalytelseVisning
-					data={inntekt.opphoerAvNaturalytelseListe}
-					header="Opphør av naturalytelse"
-				/>
-				<JournalpostidVisning system="INNTKMELD" ident={ident} />
-			</>
-		)}
-	</DollyFieldArray>
+					<JournalpostidVisning system="INNTKMELD" ident={ident} />
+				</>
+			)}
+		</DollyFieldArray>
+	</ErrorBoundary>
 )
 
 type Bestilling = {

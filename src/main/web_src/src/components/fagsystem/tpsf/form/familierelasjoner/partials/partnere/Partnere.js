@@ -13,6 +13,7 @@ import Formatters from '~/utils/DataFormatter'
 import { erOpprettNyPartnerGyldig } from './sivilstand/SivilstandOptions'
 import Partnerliste from './partnere/partnerliste'
 import PartnerForm from './partnere/partnerForm'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 const initialValues = {
 	identtype: 'FNR',
@@ -77,49 +78,51 @@ export const Partnere = ({ formikBag, personFoerLeggTil }) => (
 			if (!partnere) return null
 
 			return (
-				<DollyFieldArrayWrapper header="Partner">
-					{partnere.map((c, idx) => {
-						const formikIdx =
-							!c.ny && !oppdatertPartner
-								? idx - (partnereUtenomFormikBag - 1)
-								: idx - partnereUtenomFormikBag
+				<ErrorBoundary>
+					<DollyFieldArrayWrapper header="Partner">
+						{partnere.map((c, idx) => {
+							const formikIdx =
+								!c.ny && !oppdatertPartner
+									? idx - (partnereUtenomFormikBag - 1)
+									: idx - partnereUtenomFormikBag
 
-						const formikPath = `${path}[${formikIdx}]`
-						const isLast = idx === partnere.length - 1
+							const formikPath = `${path}[${formikIdx}]`
+							const isLast = idx === partnere.length - 1
 
-						// Det er kun mulig å slette siste forhold
-						const showRemove = isLast && idx > 0 && c.ny
-						const clickRemove = () => arrayHelpers.remove(formikIdx)
-						const vurderFjernePartner = () => !c.ny && arrayHelpers.remove(formikIdx)
-						return (
-							<DollyFaBlokk
-								key={idx}
-								idx={idx}
-								header="Partner"
-								handleRemove={showRemove && clickRemove}
-							>
-								<PartnerForm
-									path={formikPath}
-									formikBag={formikBag}
-									partner={c}
-									locked={idx !== partnere.length - 1}
-									minDatoSivilstand={sisteTidligereSivilstandRegdato(partnere)}
-									vurderFjernePartner={vurderFjernePartner}
-								/>
-							</DollyFaBlokk>
-						)
-					})}
-					<FieldArrayAddButton
-						hoverText={
-							!kanOppretteNyPartner
-								? 'Forhold med tidligere partner må avsluttes (skilt eller enke/-mann)'
-								: false
-						}
-						addEntryButtonText="Legg til ny partner"
-						onClick={addNewEntry}
-						disabled={!kanOppretteNyPartner}
-					/>
-				</DollyFieldArrayWrapper>
+							// Det er kun mulig å slette siste forhold
+							const showRemove = isLast && idx > 0 && c.ny
+							const clickRemove = () => arrayHelpers.remove(formikIdx)
+							const vurderFjernePartner = () => !c.ny && arrayHelpers.remove(formikIdx)
+							return (
+								<DollyFaBlokk
+									key={idx}
+									idx={idx}
+									header="Partner"
+									handleRemove={showRemove && clickRemove}
+								>
+									<PartnerForm
+										path={formikPath}
+										formikBag={formikBag}
+										partner={c}
+										locked={idx !== partnere.length - 1}
+										minDatoSivilstand={sisteTidligereSivilstandRegdato(partnere)}
+										vurderFjernePartner={vurderFjernePartner}
+									/>
+								</DollyFaBlokk>
+							)
+						})}
+						<FieldArrayAddButton
+							hoverText={
+								!kanOppretteNyPartner
+									? 'Forhold med tidligere partner må avsluttes (skilt eller enke/-mann)'
+									: false
+							}
+							addEntryButtonText="Legg til ny partner"
+							onClick={addNewEntry}
+							disabled={!kanOppretteNyPartner}
+						/>
+					</DollyFieldArrayWrapper>
+				</ErrorBoundary>
 			)
 		}}
 	</FieldArray>

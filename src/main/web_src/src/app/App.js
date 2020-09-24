@@ -1,22 +1,22 @@
 import React, { Component, Suspense } from 'react'
-import { Switch, Route } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import Header from '~/components/layout/header/Header'
 import Breadcrumb from '~/components/layout/breadcrumb/BreadcrumbWithHoc'
 import Loading from '~/components/ui/loading/Loading'
-import { AppError } from '~/components/ui/appError/AppError'
 import Toast from '~/components/ui/toast/Toast'
 import routes from '~/Routes'
 
 import './App.less'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export default class App extends Component {
 	state = {
-		bootError: false
+		error: null
 	}
 
 	async componentDidMount() {
 		await this.props.fetchConfig().catch(err => {
-			this.setState({ bootError: true })
+			this.setState({ error: err })
 		})
 		await this.props.getCurrentBruker()
 		await this.props.getEnvironments()
@@ -30,9 +30,13 @@ export default class App extends Component {
 	render() {
 		const { brukerData, applicationError, clearAllErrors, configReady } = this.props
 
-		if (this.state.bootError)
+		if (this.state.error)
 			return (
-				<AppError message="Problemer med å hente dolly config. Prøv å refresh siden (ctrl + R)." />
+				<ErrorBoundary
+					stackTrace={this.state.error.message}
+					error={'Problemer med å hente dolly config. Prøv å refresh siden (ctrl + R).'}
+					style={{ margin: '25px auto' }}
+				/>
 			)
 
 		if (!brukerData || !configReady) return <Loading label="laster dolly applikasjon" fullpage />

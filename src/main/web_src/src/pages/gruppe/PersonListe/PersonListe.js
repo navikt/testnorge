@@ -8,7 +8,7 @@ import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import PersonIBrukButtonConnector from '~/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
 import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
-import { WomanIconItem, ManIconItem } from '~/components/ui/icon/IconItem'
+import { ManIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
 import { ImportFraEtikett } from '~/components/ui/etikett'
 
 import Icon from '~/components/ui/icon/Icon'
@@ -59,7 +59,7 @@ export default function PersonListe({
 			unique: true,
 
 			formatter: (cell, row) => (
-				<div className="identnummer-cell">
+				<div className="idppentnummer-cell">
 					{row.identNr}
 					<CopyToClipboard text={row.identNr}>
 						<Tooltip

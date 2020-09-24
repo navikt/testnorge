@@ -8,6 +8,7 @@ import {
 } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { Inntekt, Fradrag, Forskudd, Arbeidsforhold } from './inntektstubTypes'
 import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinformasjonLister'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 interface InntektendringForm {
 	formikBag: FormikProps<{}>
@@ -40,27 +41,29 @@ export default ({ formikBag, path }: InntektendringForm) => {
 			{arrayHelpers => {
 				const addNewEntry = () => arrayHelpers.push(initialValues)
 				return (
-					<DollyFieldArrayWrapper>
-						{data.map((c: Inntektslister, idx: number) => {
-							const listePath = `${historikkPath}[${idx}]`
-							const clickRemove = () => arrayHelpers.remove(idx)
-							return (
-								<DollyFaBlokk
-									key={idx}
-									idx={idx}
-									hjelpetekst={hjelpetekst}
-									header={`Inntektsendring (versjon ${idx + 1})`}
-									handleRemove={clickRemove}
-								>
-									<InntektsinformasjonLister formikBag={formikBag} path={listePath} />
-								</DollyFaBlokk>
-							)
-						})}
-						<FieldArrayAddButton
-							addEntryButtonText="Inntektsendring (historikk)"
-							onClick={addNewEntry}
-						/>
-					</DollyFieldArrayWrapper>
+					<ErrorBoundary>
+						<DollyFieldArrayWrapper>
+							{data.map((c: Inntektslister, idx: number) => {
+								const listePath = `${historikkPath}[${idx}]`
+								const clickRemove = () => arrayHelpers.remove(idx)
+								return (
+									<DollyFaBlokk
+										key={idx}
+										idx={idx}
+										hjelpetekst={hjelpetekst}
+										header={`Inntektsendring (versjon ${idx + 1})`}
+										handleRemove={clickRemove}
+									>
+										<InntektsinformasjonLister formikBag={formikBag} path={listePath} />
+									</DollyFaBlokk>
+								)
+							})}
+							<FieldArrayAddButton
+								addEntryButtonText="Inntektsendring (historikk)"
+								onClick={addNewEntry}
+							/>
+						</DollyFieldArrayWrapper>
+					</ErrorBoundary>
 				)
 			}}
 		</FieldArray>

@@ -10,6 +10,7 @@ import { PermisjonPermitteringer } from './partials/PermisjonPermitteringer'
 import { AntallTimerForTimeloennet } from './partials/AntallTimerForTimeloennet'
 import { Utenlandsopphold } from './partials/Utenlandsopphold'
 import { ArbeidKodeverk } from '~/config/kodeverk'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 type AaregVisning = {
 	liste?: Array<Arbeidsforhold>
@@ -58,53 +59,55 @@ export const AaregVisning = ({ liste, loading }: AaregVisning) => {
 	return (
 		<div>
 			<SubOverskrift label="Arbeidsforhold" iconKind="arbeid" />
-			<DollyFieldArray
-				header="Arbeidsforhold"
-				getHeader={getHeader}
-				data={sortedData}
-				expandable={sortedData.length > 1}
-			>
-				{(arbeidsforhold: Arbeidsforhold) => (
-					<React.Fragment>
-						<div className="person-visning_content">
-							{arbeidsforhold.ansettelsesperiode && (
-								<TitleValue
-									title="Arbeidsforhold type"
-									value={arbeidsforhold.type}
-									kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
-								/>
-							)}
+			<ErrorBoundary>
+				<DollyFieldArray
+					header="Arbeidsforhold"
+					getHeader={getHeader}
+					data={sortedData}
+					expandable={sortedData.length > 1}
+				>
+					{(arbeidsforhold: Arbeidsforhold) => (
+						<React.Fragment>
+							<div className="person-visning_content">
+								{arbeidsforhold.ansettelsesperiode && (
+									<TitleValue
+										title="Arbeidsforhold type"
+										value={arbeidsforhold.type}
+										kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
+									/>
+								)}
 
-							{arbeidsforhold.ansettelsesperiode && arbeidsforhold.ansettelsesperiode.periode && (
-								<TitleValue
-									title="Startdato"
-									value={Formatters.formatStringDates(
-										arbeidsforhold.ansettelsesperiode.periode.fom
-									)}
-								/>
-							)}
-							{arbeidsforhold.ansettelsesperiode && arbeidsforhold.ansettelsesperiode.periode && (
-								<TitleValue
-									title="Sluttdato"
-									value={Formatters.formatStringDates(
-										arbeidsforhold.ansettelsesperiode.periode.tom
-									)}
-								/>
-							)}
-						</div>
+								{arbeidsforhold.ansettelsesperiode && arbeidsforhold.ansettelsesperiode.periode && (
+									<TitleValue
+										title="Startdato"
+										value={Formatters.formatStringDates(
+											arbeidsforhold.ansettelsesperiode.periode.fom
+										)}
+									/>
+								)}
+								{arbeidsforhold.ansettelsesperiode && arbeidsforhold.ansettelsesperiode.periode && (
+									<TitleValue
+										title="Sluttdato"
+										value={Formatters.formatStringDates(
+											arbeidsforhold.ansettelsesperiode.periode.tom
+										)}
+									/>
+								)}
+							</div>
 
-						<AntallTimerForTimeloennet data={arbeidsforhold.antallTimerForTimeloennet} />
+							<AntallTimerForTimeloennet data={arbeidsforhold.antallTimerForTimeloennet} />
 
-						<Arbeidsavtaler data={arbeidsforhold.arbeidsavtaler} />
+							<Arbeidsavtaler data={arbeidsforhold.arbeidsavtaler} />
 
-						<Arbeidsgiver data={arbeidsforhold.arbeidsgiver} />
+							<Arbeidsgiver data={arbeidsforhold.arbeidsgiver} />
 
-						<PermisjonPermitteringer data={arbeidsforhold.permisjonPermitteringer} />
+							<PermisjonPermitteringer data={arbeidsforhold.permisjonPermitteringer} />
 
-						<Utenlandsopphold data={arbeidsforhold.utenlandsopphold} />
-					</React.Fragment>
-				)}
-			</DollyFieldArray>
+							<Utenlandsopphold data={arbeidsforhold.utenlandsopphold} />
+						</React.Fragment>
+					)}
+				</DollyFieldArray>
+			</ErrorBoundary>
 		</div>
 	)
 }
