@@ -22,12 +22,18 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Value("${spring.security.oauth2.resourceserver.jwt.accepted-audience}")
-    private final List<String> acceptedAudience;
-    private final OAuth2ResourceServerProperties oAuth2ResourceServerProperties;
+    private OAuth2ResourceServerProperties oAuth2ResourceServerProperties;
+    private List<String> acceptedAudience;
+
+    public SecurityConfiguration(
+            OAuth2ResourceServerProperties oAuth2ResourceServerProperties,
+            @Value("${spring.security.oauth2.resourceserver.jwt.accepted-audience}") List<String> acceptedAudience) {
+
+        this.oAuth2ResourceServerProperties = oAuth2ResourceServerProperties;
+        this.acceptedAudience = acceptedAudience;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
