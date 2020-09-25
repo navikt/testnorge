@@ -1,12 +1,9 @@
 package no.nav.registre.bisys.consumer.ui;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.gargoylesoftware.htmlunit.WebClient;
-
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.morher.ui.connect.api.ApplicationDefinition;
 import net.morher.ui.connect.api.element.Label;
 import net.morher.ui.connect.api.listener.ActionLogger;
@@ -14,6 +11,10 @@ import net.morher.ui.connect.html.HtmlMapper;
 import net.morher.ui.connect.html.listener.WaitForJavaScriptListener;
 import net.morher.ui.connect.http.Browser;
 import net.morher.ui.connect.http.BrowserConfigurer;
+
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import no.nav.bidrag.ui.bisys.BisysApplication;
 import no.nav.bidrag.ui.bisys.BisysApplication.BisysPageTitle;
 import no.nav.bidrag.ui.bisys.common.BisysPage;
@@ -23,6 +24,8 @@ import no.nav.bidrag.ui.bisys.sak.Sak;
 import no.nav.registre.bisys.exception.BidragRequestProcessingException;
 import no.nav.registre.bisys.exception.BidragRequestRuntimeException;
 
+
+@Slf4j
 @AllArgsConstructor
 public class BisysUiSupport {
 
@@ -42,12 +45,12 @@ public class BisysUiSupport {
 
     /**
      * Opens Sak
-     * 
+     *
      * <code>
-     *  - Expected entry page: Sak
-     *  - Expected exit page: Sak
+     * - Expected entry page: Sak
+     * - Expected exit page: Sak
      * </code>
-     * 
+     *
      * @param bisys
      * @param saksnr
      * @throws BidragRequestProcessingException
@@ -67,7 +70,7 @@ public class BisysUiSupport {
     }
 
     public static BisysPageTitle checkCorrectActivePage(BisysApplication bisys,
-            BisysPageTitle expectedEntryPage) throws BidragRequestProcessingException {
+                                                        BisysPageTitle expectedEntryPage) throws BidragRequestProcessingException {
 
         BisysPageTitle activePage = getBisysPageReference(bisys);
 
@@ -99,12 +102,11 @@ public class BisysUiSupport {
     }
 
     /**
-     * 
      * <code>
-     *  - Expected entry page: Any page that contains header with link to Oppgaveliste 
-     *  - Expected exit page: Sak
+     * - Expected entry page: Any page that contains header with link to Oppgaveliste
+     * - Expected exit page: Sak
      * </code>
-     * 
+     *
      * @param bisys
      */
     public static void redirectToSak(BisysApplication bisys) {
@@ -122,7 +124,7 @@ public class BisysUiSupport {
 
     /**
      * Check if feedback matches predefined regex
-     * 
+     *
      * @param regex
      * @param feedback
      * @return
@@ -140,7 +142,7 @@ public class BisysUiSupport {
 
     /**
      * Logs on to Bisys.
-     * 
+     *
      * @param bisysUrl
      * @param saksbehandlerUid
      * @param saksbehandlerPwd
@@ -149,11 +151,13 @@ public class BisysUiSupport {
      * @return bisysApplication
      */
     public static BisysApplication bisysLogon(String bisysUrl, String saksbehandlerUid,
-            String saksbehandlerPwd, String rolleSaksbehandler, int enhet) {
+                                              String saksbehandlerPwd, String rolleSaksbehandler, int enhet) {
 
         BisysApplication bisys = openBrowser(bisysUrl);
 
         try {
+            log.info("Logger inn med brukernavn {}", saksbehandlerUid);
+
             bisys.openamLoginPage().signIn(saksbehandlerUid, saksbehandlerPwd);
 
             // TODO: Introdusere mapping mellom saksbehandlers NAV-kontor og synt.brukers tilknyttede enhet
