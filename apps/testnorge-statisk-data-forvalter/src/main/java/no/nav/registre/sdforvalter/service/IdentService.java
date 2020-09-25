@@ -75,6 +75,8 @@ public class IdentService {
                         .address(ident.getAddress())
                         .postNr(ident.getPostNr())
                         .city(ident.getCity())
+                        .gruppe(ident.getGruppe())
+                        .opprinnelse(ident.getOpprinnelse())
                         .build();
             } else {
                 return ident;
