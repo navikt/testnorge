@@ -12,11 +12,26 @@ export const AppError = ({ error, stackTrace, style }) => (
 			<Icon kind="report-problem-triangle" />
 			{'Ooops, dette var ikke planlagt...'}
 		</h1>
+		{error &&
+		error.toString().includes('dolly config') &&
+		window.location.href.includes('localhost') ? (
+			<div>
+				<h2>Lokal Utvikling</h2>
+				<pre>
+					Det ser ut til at du utvikler lokalt, forsøk å logge inn på:{' '}
+					<a
+						target={'_blank'}
+						href="https://isso-t.adeo.no/isso/oauth2/authorize?client_id=dolly-local-localhost&state=821ad368b1824bff9562a5359d218e56&nonce=014999e5-58f8-49c9-b072-697c7b202063&response_type=code&scope=openid&redirect_uri=http://localhost:8020/dolly/login"
+					>
+						Dolly T2
+					</a>
+				</pre>
+			</div>
+		) : null}
 		<h2>Feilmelding</h2>
 		<pre>
 			{error ? error.toString() : 'Det har skjedd en feil og vi er ikke helt sikre på hvorfor. '}
 		</pre>
-
 		{error && (
 			<div className={'flexbox--align-start flexbox--wrap'}>
 				<CopyToClipboard text={error.toString() + '\n' + stackTrace}>

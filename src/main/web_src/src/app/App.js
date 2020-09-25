@@ -33,8 +33,8 @@ export default class App extends Component {
 		if (this.state.error)
 			return (
 				<ErrorBoundary
-					stackTrace={this.state.error.message}
 					error={'Problemer med å hente dolly config. Prøv å refresh siden (ctrl + R).'}
+					stackTrace={this.state.error.stack}
 					style={{ margin: '25px auto' }}
 				/>
 			)

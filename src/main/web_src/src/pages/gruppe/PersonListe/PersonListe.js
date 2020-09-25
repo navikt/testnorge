@@ -12,6 +12,7 @@ import { ManIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
 import { ImportFraEtikett } from '~/components/ui/etikett'
 
 import Icon from '~/components/ui/icon/Icon'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -59,7 +60,7 @@ export default function PersonListe({
 			unique: true,
 
 			formatter: (cell, row) => (
-				<div className="idppentnummer-cell">
+				<div className="identnummer-cell">
 					{row.identNr}
 					<CopyToClipboard text={row.identNr}>
 						<Tooltip
@@ -113,7 +114,7 @@ export default function PersonListe({
 			width: '10',
 			dataField: 'status',
 
-			formatter: (cell, row) => <Icon kind={ikonTypeMap[cell]} title={cell} />
+			formatter: cell => <Icon kind={ikonTypeMap[cell]} title={cell} />
 		},
 		{
 			text: 'Brukt',
@@ -149,20 +150,22 @@ export default function PersonListe({
 	]
 
 	return (
-		<DollyTable
-			data={personListe}
-			columns={columns}
-			pagination
-			iconItem={bruker => (bruker.kjonn === 'MANN' ? <ManIconItem /> : <WomanIconItem />)}
-			onExpand={bruker => (
-				<PersonVisningConnector
-					personId={bruker.ident.ident}
-					bestillingId={bruker.ident.bestillingId[0]}
-					bestillingsIdListe={bruker.ident.bestillingId}
-					gruppeId={bruker.ident.gruppeId}
-					iLaastGruppe={iLaastGruppe}
-				/>
-			)}
-		/>
+		<ErrorBoundary>
+			<DollyTable
+				data={personListe}
+				columns={columns}
+				pagination
+				iconItem={bruker => (bruker.kjonn === 'MANN' ? <ManIconItem /> : <WomanIconItem />)}
+				onExpand={bruker => (
+					<PersonVisningConnector
+						personId={bruker.ident.ident}
+						bestillingId={bruker.ident.bestillingId[0]}
+						bestillingsIdListe={bruker.ident.bestillingId}
+						gruppeId={bruker.ident.gruppeId}
+						iLaastGruppe={iLaastGruppe}
+					/>
+				)}
+			/>
+		</ErrorBoundary>
 	)
 }

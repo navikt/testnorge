@@ -111,17 +111,19 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 						<ContentContainer>Søket gav ingen resultater.</ContentContainer>
 					) : (
 						<>
-							<DollyTable
-								data={data}
-								columns={columns}
-								pagination
-								iconItem={(bruker: Innhold) =>
-									bruker.personInfo.kjoenn === 'M' ? <ManIconItem /> : <WomanIconItem />
-								}
-								onExpand={(bruker: Innhold) => (
-									<ResultatVisningConnecter personId={bruker.personIdent.id} data={bruker} />
-								)}
-							/>
+							<ErrorBoundary>
+								<DollyTable
+									data={data}
+									columns={columns}
+									pagination
+									iconItem={(bruker: Innhold) =>
+										bruker.personInfo.kjoenn === 'M' ? <ManIconItem /> : <WomanIconItem />
+									}
+									onExpand={(bruker: Innhold) => (
+										<ResultatVisningConnecter personId={bruker.personIdent.id} data={bruker} />
+									)}
+								/>
+							</ErrorBoundary>
 							<ImportTilDolly valgtePersoner={valgtePersoner} />
 						</>
 					)

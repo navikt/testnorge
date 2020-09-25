@@ -5,13 +5,13 @@ import Logger from '~/logger'
 export class ErrorBoundary extends React.Component {
 	state = {
 		error: this.props.error,
-		errorInfo: null
+		stackTrace: this.props.stackTrace
 	}
 
 	componentDidCatch(error, info) {
 		this.setState({
 			error: error,
-			errorInfo: info
+			stackTrace: info.componentStack
 		})
 		Logger.error({
 			event: `Global React feil: ${error.message}`,
@@ -22,11 +22,11 @@ export class ErrorBoundary extends React.Component {
 
 	render() {
 		if (this.state.error) {
-			const { error, errorInfo } = this.state
+			const { error, stackTrace } = this.state
 			return (
 				<AppError
 					error={error || this.props.error || 'React:ErrorBoundary - Det har skjedd en render feil'}
-					stackTrace={errorInfo ? errorInfo.componentStack : 'Noe gikk galt'}
+					stackTrace={stackTrace || 'Noe gikk galt'}
 					style={this.props.style}
 				/>
 			)
