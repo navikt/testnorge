@@ -140,7 +140,7 @@ const midlertidigAdresse = Yup.object({
 export const sivilstander = Yup.array().of(
 	Yup.object({
 		sivilstand: Yup.string().required(messages.required),
-		sivilstandRegdato: Yup.string()
+		sivilstandRegdato: Yup.date()
 			.test(
 				'is-after-last',
 				'Dato må være etter tidligere forhold (eldste forhold settes først)',

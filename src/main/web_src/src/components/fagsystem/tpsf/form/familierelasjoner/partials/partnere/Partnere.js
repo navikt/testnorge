@@ -91,9 +91,10 @@ export const Partnere = ({ formikBag, personFoerLeggTil }) => (
 						const showRemove = isLast && idx > 0 && c.ny
 						const clickRemove = () => arrayHelpers.remove(formikIdx)
 						const vurderFjernePartner = () => !c.ny && arrayHelpers.remove(formikIdx)
-						console.log('personFoerLeggTil :>> ', personFoerLeggTil)
-						console.log('c :>> ', c)
-						console.log('formikPath :>> ', formikPath)
+						// console.log('c :>> ', c)
+						// console.log('formikIdx :>> ', formikIdx)
+						// console.log('formikPath :>> ', formikPath)
+						// console.log('vurderFjernePartner :>> ', vurderFjernePartner)
 
 						return (
 							<DollyFaBlokk

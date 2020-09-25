@@ -24,7 +24,7 @@ const initialValue = (basePath, formikBag) => {
 		: null
 }
 
-export const Alder = ({ basePath, formikBag, title }) => {
+export const Alder = ({ basePath, formikBag, title, handleDoed }) => {
 	const [alderType, setAlderType] = useState(initialValue(basePath, formikBag))
 	const paths = {
 		alder: `${basePath}.alder`,
@@ -89,7 +89,11 @@ export const Alder = ({ basePath, formikBag, title }) => {
 					<FormikDatepicker name={paths.foedtEtter} label="Født etter" />
 					<FormikDatepicker name={paths.foedtFoer} label="Født før" />
 					<Vis attributt={paths.doedsdato}>
-						<FormikDatepicker name={paths.doedsdato} label="Dødsdato" />
+						{handleDoed ? (
+							<FormikDatepicker name={paths.doedsdato} label="Dødsdato" onChange={handleDoed} />
+						) : (
+							<FormikDatepicker name={paths.doedsdato} label="Dødsdato" />
+						)}
 					</Vis>
 				</div>
 			</div>
