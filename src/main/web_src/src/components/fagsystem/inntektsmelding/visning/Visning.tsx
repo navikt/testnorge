@@ -2,150 +2,97 @@ import React from 'react'
 import _isEmpty from 'lodash/isEmpty'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
 import {
-	Inntektsmelding,
-	Inntekt
+	Inntekt,
+	TransaksjonId,
+	Dokumentinfo,
+	Journalpost,
+	Bestilling,
+	BestillingData
 } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
-import ArbeidsforholdVisning from './partials/arbeidsforholdVisning'
-import OmsorgspengerVisning from './partials/omsorgspengerVisning'
-import RefusjonVisning from './partials/refusjonVisning'
-import SykepengerVisning from './partials/sykepengerVisning'
-import PleiepengerVisning from './partials/pleiepengerVisning'
-import NaturalytelseVisning from './partials/naturalytelseVisning'
-import JournalpostidVisning from '~/components/journalpostid/JournalpostidVisning'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { EnkelInntektsmeldingVisning } from './partials/enkelInntektsmeldingVisning'
+import LoadableComponent from '~/components/ui/loading/LoadableComponent'
+import { DollyApi } from '~/service/Api'
+import { erGyldig } from '~/components/transaksjonid/GyldigeBestillinger'
 
 interface InntektsmeldingVisning {
-	liste: Array<Inntektsmelding>
+	liste: Array<BestillingData>
 	ident: string
-}
-
-type EnkelInntektsmelding = {
-	data: Array<Inntekt>
-	ident: string
-}
-
-const getHeader = (data: Inntekt) => {
-	const arbeidsgiver = data.arbeidsgiver
-		? data.arbeidsgiver.virksomhetsnummer
-		: data.arbeidsgiverPrivat
-		? data.arbeidsgiverPrivat.arbeidsgiverFnr
-		: ''
-	return `Inntekt (${arbeidsgiver})`
-}
-
-const getSortedListe = (liste: Inntektsmelding[]) => {
-	const sortedListe = []
-	for (let i = 0; i < liste.length; i++) {
-		sortedListe.push(
-			liste[i].inntekter.slice().sort(function(a: Inntekter, b: Inntekter) {
-				const datoA = new Date(a.avsendersystem.innsendingstidspunkt)
-				const datoB = new Date(b.avsendersystem.innsendingstidspunkt)
-
-				return datoA < datoB ? 1 : datoA > datoB ? -1 : 0
-			})
-		)
-	}
-	return sortedListe
 }
 
 export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisning) => {
 	//Viser data fra bestillingen
 	if (!liste || liste.length < 1) return null
 
-	const sortedListe = getSortedListe(liste)
-
 	return (
 		<div>
-			<SubOverskrift label="Inntektsmelding (fra Altinn)" iconKind="inntektsmelding" />
-			{liste.length > 1 ? (
-				<ErrorBoundary>
-					<DollyFieldArray header="Inntektsmeldinger" data={sortedListe} nested>
-						{(inntekter: Inntekter[]) => (
-							<EnkelInntektsmeldingVisning data={inntekter} ident={ident} />
-						)}
-					</DollyFieldArray>
-				</ErrorBoundary>
-			) : (
-				<EnkelInntektsmeldingVisning data={sortedListe[0]} ident={ident} />
-			)}
+			<LoadableComponent
+				onFetch={() =>
+					DollyApi.getTransaksjonid('INNTKMELD', ident)
+						.then(({ data }: { data: Array<TransaksjonId> }) => {
+							return data.map((bestilling: TransaksjonId) => {
+								return DollyApi.getInntektsmeldingDokumentinfo(
+									bestilling.transaksjonId.journalpostId,
+									bestilling.transaksjonId.dokumentInfoId,
+									bestilling.miljoe
+								)
+									.then((response: Dokumentinfo) => {
+										if (response) {
+											if (response.data[0].feil) {
+												return response.data[0]
+											}
+											return {
+												bestillingId: bestilling.bestillingId,
+												miljoe: bestilling.miljoe,
+												journalpost: response.data[0].data.journalpost,
+												skjemainnhold: response.data[1] && response.data[1].Skjemainnhold
+											}
+										}
+									})
+									.catch(error => console.error(error))
+							})
+						})
+						.then((data: Array<Promise<any>>) => {
+							return Promise.all(data)
+						})
+				}
+				render={(data: Array<Journalpost>) => {
+					if (data && data.length > 0) {
+						const gyldigeBestillinger = liste.filter(bestilling =>
+							data.find(x => (x && x.bestillingId ? x.bestillingId === bestilling.id : x))
+						)
+						if (gyldigeBestillinger && gyldigeBestillinger.length > 0) {
+							return (
+								<>
+									<SubOverskrift label="Inntektsmelding (fra Altinn)" iconKind="inntektsmelding" />
+									{gyldigeBestillinger.length > 1 ? (
+										<DollyFieldArray header="Inntektsmelding" data={gyldigeBestillinger} expandable>
+											{(inntekter: BestillingData) => {
+												return <EnkelInntektsmeldingVisning bestilling={inntekter} data={data} />
+											}}
+										</DollyFieldArray>
+									) : (
+										<EnkelInntektsmeldingVisning bestilling={gyldigeBestillinger[0]} data={data} />
+									)}
+								</>
+							)
+						} else return null
+					} else return null
+				}}
+			/>
 		</div>
 	)
 }
 
-const EnkelInntektsmeldingVisning = ({ data, ident }: EnkelInntektsmelding) => (
-	<ErrorBoundary>
-		<DollyFieldArray
-			header="Inntekt"
-			getHeader={getHeader}
-			data={data}
-			expandable={data.length > 1}
-		>
-			{(inntekt: Inntekt, idx: number) => (
-				<>
-					<div className="person-visning_content" key={idx}>
-						<TitleValue
-							title="Årsak til innsending"
-							value={Formatters.codeToNorskLabel(inntekt.aarsakTilInnsending)}
-						/>
-						<TitleValue title="Ytelse" value={Formatters.codeToNorskLabel(inntekt.ytelse)} />
-						<TitleValue
-							title="Virksomhet (orgnr)"
-							value={inntekt.arbeidsgiver && inntekt.arbeidsgiver.orgnummer}
-						/>
-						<TitleValue
-							title="Opplysningspliktig virksomhet"
-							value={inntekt.arbeidsgiver && inntekt.arbeidsgiver.virksomhetsnummer}
-						/>
-						<TitleValue
-							title="Innsendingstidspunkt"
-							value={Formatters.formatDate(inntekt.avsendersystem.innsendingstidspunkt)}
-						/>
-						<TitleValue
-							title="Privat arbeidsgiver"
-							value={inntekt.arbeidsgiverPrivat && inntekt.arbeidsgiverPrivat.arbeidsgiverFnr}
-						/>
-						<TitleValue title="Har nær relasjon" value={inntekt.naerRelasjon} />
-						<TitleValue
-							title="Startdato foreldrepenger"
-							value={Formatters.formatDate(inntekt.startdatoForeldrepengeperiode)}
-						/>
-					</div>
-					<ArbeidsforholdVisning data={inntekt.arbeidsforhold} />
-					<OmsorgspengerVisning data={inntekt.omsorgspenger} />
-					<RefusjonVisning data={inntekt.refusjon} />
-					<SykepengerVisning data={inntekt.sykepengerIArbeidsgiverperioden} />
-					<PleiepengerVisning data={inntekt.pleiepengerPerioder} />
-					<NaturalytelseVisning
-						data={inntekt.gjenopptakelseNaturalytelseListe}
-						header="Gjenopptagekse av naturalytelse"
-					/>
-					<NaturalytelseVisning
-						data={inntekt.opphoerAvNaturalytelseListe}
-						header="Opphør av naturalytelse"
-					/>
-					<JournalpostidVisning system="INNTKMELD" ident={ident} />
-				</>
-			)}
-		</DollyFieldArray>
-	</ErrorBoundary>
-)
-
-type Bestilling = {
-	inntektsmelding?: Array<Inntektsmelding>
-}
-
-InntektsmeldingVisning.filterValues = (bestillinger: Array<Bestilling>) => {
+InntektsmeldingVisning.filterValues = (bestillinger: Array<Bestilling>, ident: string) => {
 	if (!bestillinger) return false
 
-	return bestillinger
-		.map((bestilling: any) => bestilling.inntektsmelding)
-		.filter(
-			(inntektsmelding: Inntektsmelding) =>
-				inntektsmelding && !tomBestilling(inntektsmelding.inntekter)
-		)
+	return bestillinger.filter(
+		(bestilling: any) =>
+			bestilling.data.inntektsmelding &&
+			!tomBestilling(bestilling.data.inntektsmelding.inntekter) &&
+			erGyldig(bestilling.id, 'INNTKMELD', ident)
+	)
 }
 
 const tomBestilling = (inntekter: Array<Inntekt>) => {
