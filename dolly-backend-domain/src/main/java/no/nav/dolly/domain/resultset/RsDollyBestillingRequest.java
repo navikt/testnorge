@@ -1,6 +1,6 @@
 package no.nav.dolly.domain.resultset;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,10 +12,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RsDollyBestillingRequest extends RsDollyUtvidetBestilling {
 
-    @ApiModelProperty(
-            position = 1,
+    @Schema(
             required = true,
-            value = "Antall testpersoner som bestilles"
+            description = "Antall testpersoner som bestilles"
     )
     private int antall;
 }

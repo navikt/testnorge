@@ -69,6 +69,7 @@
         <!--suppress UnresolvedMavenProperty Ligger som secret i github-->
         <sonar.login>${SONAR_LOGIN}</sonar.login>
         <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
+        <springdoc-openapi.version>1.4.7</springdoc-openapi.version>
     </properties>
 
     <dependencies>
@@ -126,6 +127,12 @@
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger-ui</artifactId>
                 <version>${springfox.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-ui</artifactId>
+                <version>${springdoc-openapi.version}</version>
             </dependency>
 
             <dependency>

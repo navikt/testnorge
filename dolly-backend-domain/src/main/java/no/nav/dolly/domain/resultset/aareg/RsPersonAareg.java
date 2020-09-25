@@ -2,7 +2,7 @@ package no.nav.dolly.domain.resultset.aareg;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,15 +17,9 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsPersonAareg {
 
-    @ApiModelProperty(
-            value = "Personident/fødselsnummer",
-            position = 1
-    )
+    @Schema(description = "Personident/fødselsnummer")
     private String ident;
 
-    @ApiModelProperty(
-            value = "Gyldige verdier finnes i kodeverk 'Personidenter'",
-            position = 2
-    )
+    @Schema(description = "Gyldige verdier finnes i kodeverk 'Personidenter'")
     private String identtype;
 }

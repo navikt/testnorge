@@ -7,16 +7,14 @@ import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
 import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
-import org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.client.RestTemplate;
+
+import no.nav.dolly.config.ForkJoinWorkerThreadFactory;
 
 @SpringBootApplication
 public class ApplicationConfig {

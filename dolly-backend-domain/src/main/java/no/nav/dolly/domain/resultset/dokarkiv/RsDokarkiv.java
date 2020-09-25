@@ -4,10 +4,9 @@ import static java.util.Objects.isNull;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +18,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(value = JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RsDokarkiv {
 
     public enum JournalPostType {
@@ -32,29 +31,30 @@ public class RsDokarkiv {
         FNR, ORGNR, HPRNR, UTL_ORG
     }
 
-    @ApiModelProperty(position = 1, value = "Tittel som beskriver forsendelsen samlet, feks \"Søknad om dagpenger ved permittering\"")
+    @Schema(description = "Tittel som beskriver forsendelsen samlet, feks \"Søknad om dagpenger ved permittering\"")
     private String tittel;
 
-    @ApiModelProperty(position = 2)
     private JournalPostType journalpostType;
 
-    @ApiModelProperty(position = 3, value = "Temaet som forsendelsen tilhører, for eksempel “DAG” (Dagpenger)")
+    @Schema(description = "Temaet som forsendelsen tilhører, for eksempel “DAG” (Dagpenger)")
     private String tema;
 
-    @ApiModelProperty(position = 4, value = "Behandlingstema for forsendelsen, for eksempel ab0001 (Ordinære dagpenger).")
+    @Schema(description = "Behandlingstema for forsendelsen, for eksempel ab0001 (Ordinære dagpenger).")
     private String behandlingstema;
 
-    @ApiModelProperty(position = 5, value = "Kanalen som ble brukt ved innsending eller distribusjon. F.eks. NAV_NO, ALTINN eller EESSI.")
+    @Schema(description = "Kanalen som ble brukt ved innsending eller distribusjon. F.eks. NAV_NO, ALTINN eller EESSI.")
     private String kanal;
 
-    @ApiModelProperty(position = 6, value = "NAV-enheten som har journalført, eventuelt skal journalføre, forsendelsen. Ved automatisk journalføring uten mennesker involvert skal enhet settes til \"9999\".\n" +
-            "Konsument må sette journalfoerendeEnhet dersom tjenesten skal ferdigstille journalføringen.")
+    @Schema(description = "NAV-enheten som har journalført, eventuelt skal journalføre, forsendelsen. "
+            + "Ved automatisk journalføring uten mennesker involvert skal enhet settes til \"9999\".\n"
+            + "Konsument må sette journalfoerendeEnhet dersom tjenesten skal ferdigstille journalføringen.")
     private String journalfoerendeEnhet;
 
-    @ApiModelProperty(position = 7, value = "AvsenderMottaker")
+    @Schema(description = "AvsenderMottaker")
     private AvsenderMottaker avsenderMottaker;
 
-    @ApiModelProperty(position = 8, value = "Første dokument blir tilknyttet som hoveddokument på journalposten. Øvrige dokumenter tilknyttes som vedlegg. Rekkefølgen på vedlegg beholdes ikke ved uthenting av journalpost.")
+    @Schema(description = "Første dokument blir tilknyttet som hoveddokument på journalposten. "
+            + "Øvrige dokumenter tilknyttes som vedlegg. Rekkefølgen på vedlegg beholdes ikke ved uthenting av journalpost.")
     private List<Dokument> dokumenter;
 
     public List<Dokument> getDokumenter() {
@@ -69,17 +69,19 @@ public class RsDokarkiv {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class AvsenderMottaker {
 
-        @ApiModelProperty(position = 1, value = "Identifikatoren til avsender/mottaker. Dette er normalt et fødselsnummer eller organisasjonsnummer, men valideres ikke. Dersom det ønskes å nullstille denne verdien, kan den settes til en tom string.")
+        @Schema(description = "Identifikatoren til avsender/mottaker. "
+                + "Dette er normalt et fødselsnummer eller organisasjonsnummer, men valideres ikke. "
+                + "Dersom det ønskes å nullstille denne verdien, kan den settes til en tom string.")
         private String id;
 
-        @ApiModelProperty(position = 2, value = "Angir hvilken type identifikator som er benyttet i AvsenderMottaker.id.\n" +
+        @Schema(description = "Angir hvilken type identifikator som er benyttet i AvsenderMottaker.id.\n" +
                 "Påkrevd dersom id er satt. * FNR")
         private IdType idType;
 
-        @ApiModelProperty(position = 3, value = "Navnet til avsender/mottaker.\n" +
+        @Schema(description = "Navnet til avsender/mottaker.\n" +
                 "Navn på personbrukere skal lagres på formatet etternavn, fornavn mellomnavn")
         private String navn;
     }
@@ -89,19 +91,19 @@ public class RsDokarkiv {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class Dokument {
 
-        @ApiModelProperty(position = 1, value = "Dokumentets tittel, f.eks. \"Søknad om dagpenger ved permittering\".\n" +
+        @Schema(description = "Dokumentets tittel, f.eks. \"Søknad om dagpenger ved permittering\".\n" +
                 "Dokumentets tittel blir synlig i brukers journal på nav.no, samt i Gosys.")
         private String tittel;
 
-        @ApiModelProperty(position = 2, value = "Typen dokument. Brevkoden sier noe om dokumentets innhold og oppbygning.\n" +
+        @Schema(description = "Typen dokument. Brevkoden sier noe om dokumentets innhold og oppbygning.\n" +
                 "For inngående dokumenter kan brevkoden være en NAV-skjemaID f.eks. “NAV 04-01.04” eller en SED-id.\n" +
                 "Brevkode skal ikke settes for ustrukturert, uklassifisert dokumentasjon, f.eks. brukeropplastede vedlegg.")
         private String brevkode;
 
-        @ApiModelProperty(position = 3, value = "DokumentVariant")
+        @Schema(description = "DokumentVariant")
         private List<DokumentVariant> dokumentvarianter;
 
         public List<DokumentVariant> getDokumentvarianter() {
@@ -117,18 +119,20 @@ public class RsDokarkiv {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class DokumentVariant {
 
-        @ApiModelProperty(position = 1, value = "Filtypen til filen som følger, feks PDFA, JSON eller XML.")
+        @Schema(description = "Filtypen til filen som følger, feks PDFA, JSON eller XML.")
         private String filtype;
 
-        @ApiModelProperty(position = 2, value = "Selve dokumentet. Hvis filtype er PDF/XML, ved fysisk dokument brukes bytearray.")
+        @Schema(description = "Selve dokumentet. Hvis filtype er PDF/XML, ved fysisk dokument brukes bytearray.")
         private String fysiskDokument;
 
-        @ApiModelProperty(position = 3, value = "ARKIV brukes for dokumentvarianter i menneskelesbart format (for eksempel PDFA). Gosys og nav.no henter arkivvariant og viser denne til bruker.\n" +
-                "ORIGINAL skal brukes for dokumentvariant i maskinlesbart format (for eksempel XML og JSON) som brukes for automatisk saksbehandling\n" +
-                "Alle dokumenter må ha én variant med variantFormat ARKIV.")
+        @Schema(description = "ARKIV brukes for dokumentvarianter i menneskelesbart format (for eksempel PDFA). "
+                + "Gosys og nav.no henter arkivvariant og viser denne til bruker.\n"
+                + "ORIGINAL skal brukes for dokumentvariant i maskinlesbart format "
+                + "(for eksempel XML og JSON) som brukes for automatisk saksbehandling\n"
+                + "Alle dokumenter må ha én variant med variantFormat ARKIV.")
         private String variantformat;
     }
 }

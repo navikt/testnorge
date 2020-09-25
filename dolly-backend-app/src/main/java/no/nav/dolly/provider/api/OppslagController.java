@@ -18,8 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.aareg.AaregConsumer;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
@@ -64,32 +63,32 @@ public class OppslagController {
 
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
-    @ApiOperation(value = "Hent kodeverk etter kodeverkNavn", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Hent kodeverk etter kodeverkNavn")
     public KodeverkAdjusted fetchKodeverkByName(@PathVariable("kodeverkNavn") String kodeverkNavn) {
         GetKodeverkKoderBetydningerResponse response = kodeverkConsumer.fetchKodeverkByName(kodeverkNavn);
         return kodeverkMapper.mapBetydningToAdjustedKodeverk(kodeverkNavn, response.getBetydninger());
     }
 
     @GetMapping("/pdlperson/ident/{ident}")
-    @ApiOperation(value = "Hent person tilhørende ident fra pdlperson", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Hent person tilhørende ident fra pdlperson")
     public ResponseEntity pdlPerson(@PathVariable("ident") String ident) {
         return pdlPersonConsumer.getPdlPerson(ident);
     }
 
     @GetMapping("/inntektstub/{ident}")
-    @ApiOperation(value = "Hent inntekter tilhørende ident fra Inntektstub", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Hent inntekter tilhørende ident fra Inntektstub")
     public ResponseEntity inntektstub(@PathVariable String ident) {
         return inntektstubConsumer.getInntekter(ident);
     }
 
     @PostMapping("/inntektstub")
-    @ApiOperation(value = "Valider inntekt mot Inntektstub", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Valider inntekt mot Inntektstub")
     public ResponseEntity inntektstub(@RequestBody ValiderInntekt validerInntekt) {
         return inntektstubConsumer.validerInntekter(validerInntekt);
     }
 
     @GetMapping("/systemer")
-    @ApiOperation(value = "Hent liste med systemer og deres beskrivelser", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Hent liste med systemer og deres beskrivelser")
     public List<SystemTyper.SystemBeskrivelse> getSystemTyper() {
         return asList(SystemTyper.values()).stream()
                 .map(type -> SystemTyper.SystemBeskrivelse.builder().system(type.name()).beskrivelse(type.getBeskrivelse()).build())
@@ -97,69 +96,69 @@ public class OppslagController {
     }
 
     @GetMapping("/helsepersonell")
-    @ApiOperation(value = "Hent liste med helsepersonell", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Hent liste med helsepersonell")
     public ResponseEntity<HelsepersonellListeDTO> getHelsepersonell() {
         return helsepersonellConsumer.getHelsepersonell();
     }
 
     @GetMapping("/fastedatasett/{datasettype}")
-    @ApiOperation(value = "Hent faste datasett med beskrivelser", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Hent faste datasett med beskrivelser")
     public ResponseEntity getFasteDatasett(@PathVariable DatasettType datasettype) {
         return fasteDatasettConsumer.hentDatasett(datasettype);
     }
 
     @GetMapping("/fastedatasett/tps/{gruppe}")
-    @ApiOperation(value = "Hent faste datasett gruppe med beskrivelser", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Hent faste datasett gruppe med beskrivelser")
     public ResponseEntity getFasteDatasettGruppe(@PathVariable String gruppe) {
         return fasteDatasettConsumer.hentDatasettGruppe(gruppe);
     }
 
     @GetMapping("/aareg/arbeidsforhold")
-    @ApiOperation(value = "Hent arbeidsforhold fra aareg", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Hent arbeidsforhold fra aareg")
     public List<ArbeidsforholdResponse> getArbeidsforhold(@RequestParam String ident, @RequestParam String miljoe) {
         return aaregConsumer.hentArbeidsforhold(ident, miljoe);
     }
 
     @GetMapping("/orgnummer")
-    @ApiOperation(value = "Hent faste orgnummer", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Hent faste orgnummer")
     public ResponseEntity getOrgnummer() {
         return fasteDatasettConsumer.hentOrgnummer();
     }
 
     @GetMapping("/popp/inntekt/{ident}/{miljoe}")
-    @ApiOperation(value = "Hent inntekter fra POPP-register", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Hent inntekter fra POPP-register")
     public ResponseEntity getPoppInntekter(@PathVariable String ident, @PathVariable String miljoe) {
         return pensjonforvalterConsumer.getInntekter(ident, miljoe);
     }
 
     @GetMapping("/popp/miljoe")
-    @ApiOperation(value = "Hent tilgjengelige miljøer for POPP-register", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Hent tilgjengelige miljøer for POPP-register")
     public Set<String> getPoppMiljoer() {
         return pensjonforvalterConsumer.getMiljoer();
     }
 
     @GetMapping("/personnavn")
-    @ApiOperation(value = "Henter 10 syntetiske personnavn", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Henter 10 syntetiske personnavn")
     public ResponseEntity getPersonnavn() {
         return identpoolConsumer.getPersonnavn();
     }
 
     @GetMapping("/inntektsmelding/{enumtype}")
-    @ApiOperation(value = "Henter enumtyper for inntektsmelding", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Henter enumtyper for inntektsmelding")
     public List<String> getInntektsmeldingeTyper(@PathVariable InntektsmeldingEnumService.EnumTypes enumtype) {
 
         return inntektsmeldingEnumService.getEnumType(enumtype);
     }
 
     @GetMapping("/transaksjonid/{system}/{ident}")
-    @ApiOperation(value = "Henter transaksjon IDer for ident", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Henter transaksjon IDer for ident")
     public List<TransaksjonMapping> getTransaksjonIder(@PathVariable SystemTyper system, @PathVariable String ident) {
 
         return transaksjonMappingService.getTransaksjonMapping(system, ident);
     }
 
     @GetMapping("/inntektsmelding/{journalpostId}/{dokumentInfoId}")
-    @ApiOperation(value = "Henter dokumentinformasjon for inntektsmelding fra Joark", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Henter dokumentinformasjon for inntektsmelding fra Joark")
     public List<JsonNode> getInntektsmeldingDokumentinfo(@PathVariable String journalpostId, @PathVariable String dokumentInfoId,
             @RequestParam VariantFormat variantFormat,
             @RequestParam String miljoe) {
@@ -167,7 +166,7 @@ public class OppslagController {
     }
 
     @GetMapping("/dokarkiv/{journalpostId}")
-    @ApiOperation(value = "Henter dokumentinformasjon for dokarkiv fra Joark", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Henter dokumentinformasjon for dokarkiv fra Joark")
     public ResponseEntity<JsonNode> getDokarkivDokumentinfo(@PathVariable String journalpostId, @RequestParam(required = false) String miljoe) {
         return safConsumer.getDokarkivDokumentinfo(miljoe, journalpostId);
     }

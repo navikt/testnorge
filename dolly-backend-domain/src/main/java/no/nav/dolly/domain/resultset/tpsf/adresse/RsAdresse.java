@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,12 +23,10 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class RsAdresse {
 
-    public enum TilleggType {CO_NAVN, LEILIGHET_NR, SEKSJON_NR, BOLIG_NR }
+    public enum TilleggType {CO_NAVN, LEILIGHET_NR, SEKSJON_NR, BOLIG_NR}
 
-    @ApiModelProperty(
-            position = 1,
-            required = true,
-            value = "Angir adressetype, GATE eller MATR.\n" +
+    @Schema(required = true,
+            description = "Angir adressetype, GATE eller MATR.\n" +
                     "For gateadresse, inkluder: \n" +
                     " \"gateadresse\": \"string\" Forstås som gatenavn\n" +
                     " \"husnummer\": \"string\" * \n" +
@@ -38,27 +36,18 @@ public abstract class RsAdresse {
                     " \"gardsnr\": \"string\" *\n" +
                     " \"bruksnr\": \"string\" *\n" +
                     " \"festenr\": \"string\"\n" +
-                    " \"undernr\": \"string\""
-    )
+                    " \"undernr\": \"string\"")
     private String adressetype;
 
-    @ApiModelProperty(
-            position = 2,
-            value = "Postnummer på adresse"
-    )
+    @Schema(description = "Postnummer på adresse")
     private String postnr;
 
-    @ApiModelProperty(
-            position = 3,
-            required = true,
-            value = "Kommunenummer for adresse"
-    )
+    @Schema(required = true,
+            description = "Kommunenummer for adresse")
     private String kommunenr;
 
-    @ApiModelProperty(
-            position = 4,
-            dataType = "LocalDateTime",
-            value = "Flyttedato for adresse. Hvis tomt blir flyttedato identisk med fødselsdato"
+    @Schema(type = "LocalDateTime",
+            description = "Flyttedato for adresse. Hvis tomt blir flyttedato identisk med fødselsdato"
     )
     private LocalDateTime flyttedato;
 
@@ -72,16 +61,10 @@ public abstract class RsAdresse {
     @AllArgsConstructor
     public static class TilleggAdressetype {
 
-        @ApiModelProperty(
-                position = 1,
-                value = "Tilleggstype, ved CO_NAVN benyttes ikke \"nummer\" feltet"
-        )
+        @Schema(description = "Tilleggstype, ved CO_NAVN benyttes ikke \"nummer\" feltet")
         private TilleggType tilleggType;
 
-        @ApiModelProperty(
-                position = 2,
-                value = "Nummer for leilighet/seksjon/bolig"
-        )
+        @Schema(description = "Nummer for leilighet/seksjon/bolig")
         private Integer nummer;
     }
 }

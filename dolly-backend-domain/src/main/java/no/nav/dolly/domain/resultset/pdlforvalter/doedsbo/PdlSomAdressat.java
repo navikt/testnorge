@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,10 +20,8 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class PdlSomAdressat {
 
-    @ApiModelProperty(
-            position = 1,
-            required = true,
-            value = "AdressatType kan ha en følgende verdier: \n" + ""
+    @Schema(required = true,
+            description = "AdressatType kan ha en følgende verdier: \n" + ""
                     + "ADVOKAT, ORGANISASJON, PERSON_MEDID, PERSON_UTENID\n\n" +
 
                     "For advokat eller organisasjon settes:\n" +
@@ -53,8 +51,7 @@ public abstract class PdlSomAdressat {
                     "\"mellomnavn\": \"string\"\n" +
                     "},\n" +
                     "\"foedselsdato\": \"string($date-time)\"\n" +
-                    "}"
-    )
+                    "}")
     private String adressatType;
 
     public abstract String getAdressatType();

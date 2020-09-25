@@ -13,10 +13,11 @@ import java.util.Map;
  */
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class SendSkdMeldingTilTpsResponse {
+
     private String personId;
     private String skdmeldingstype;
     private Map<String, String> status; //Map<Environment, TPS respons statusmelding >

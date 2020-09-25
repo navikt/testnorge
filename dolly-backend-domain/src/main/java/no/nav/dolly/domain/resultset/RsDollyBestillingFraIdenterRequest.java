@@ -5,7 +5,7 @@ import static java.util.Objects.isNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,16 +18,12 @@ import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisMedSivilstandBestilling;
 @NoArgsConstructor
 public class RsDollyBestillingFraIdenterRequest extends RsDollyBestilling {
 
-    @ApiModelProperty(
-            position = -2,
+    @Schema(
             required = true,
-            value = "Liste av identer det skal opprettes testpersoner for"
+            description = "Liste av identer det skal opprettes testpersoner for"
     )
     private List<String> opprettFraIdenter;
 
-    @ApiModelProperty(
-            position = 2
-    )
     private RsTpsfBasisMedSivilstandBestilling tpsf;
 
     public List<String> getOpprettFraIdenter() {

@@ -2,7 +2,7 @@ package no.nav.dolly.domain.resultset.pensjon;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,10 +15,7 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PensjonData {
 
-    @ApiModelProperty(
-            value = "Inntekt i pensjonsopptjeningsregister (POPP)",
-            position = 1
-    )
+    @Schema(description = "Inntekt i pensjonsopptjeningsregister (POPP)")
     private PoppInntekt inntekt;
 
     @Getter
@@ -27,32 +24,20 @@ public class PensjonData {
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class PoppInntekt {
-        @ApiModelProperty(
-                value = "Fra og med år YYYY",
-                required = true,
-                position = 1
-        )
+        @Schema(required = true,
+                description = "Fra og med år YYYY")
         private Integer fomAar;
 
-        @ApiModelProperty(
-                value = "Til og med år YYYY",
-                required = true,
-                position = 2
-        )
+        @Schema(required = true,
+                description = "Til og med år YYYY")
         private Integer tomAar;
 
-        @ApiModelProperty(
-                value = "Beløp i hele kroner per år (i dagens verdi)",
-                required = true,
-                position = 3
-        )
+        @Schema(description = "Beløp i hele kroner per år (i dagens verdi)",
+                required = true)
         private Integer belop;
 
-        @ApiModelProperty(
-                value = "Når true reduseres tidligere års pensjon i forhold til dagens kroneverdi",
-                required = true,
-                position = 4
-        )
+        @Schema(description = "Når true reduseres tidligere års pensjon i forhold til dagens kroneverdi",
+                required = true)
         private Boolean redusertMedGrunnbelop;
     }
 }

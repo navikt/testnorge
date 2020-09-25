@@ -3,7 +3,7 @@ package no.nav.dolly.domain.resultset.aareg;
 import java.math.BigDecimal;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,15 +18,9 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsAntallTimerIPerioden {
 
-    @ApiModelProperty(
-            position = 1,
-            required = true
-    )
+    @Schema(required = true)
     private RsPeriode periode;
 
-    @ApiModelProperty(
-            position = 2,
-            required = true
-    )
+    @Schema(required = true)
     private BigDecimal antallTimer;
 }

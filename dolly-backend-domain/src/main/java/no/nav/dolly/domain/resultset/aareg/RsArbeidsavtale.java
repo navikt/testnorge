@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,40 +19,22 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsArbeidsavtale {
 
-    @ApiModelProperty(
-            value = "Gyldige verdier finnes i kodeverk 'Arbeidstidsordninger'",
-            dataType = "String",
-            required = true,
-            position = 1
-    )
+    @Schema(description = "Gyldige verdier finnes i kodeverk 'Arbeidstidsordninger'",
+            type = "String",
+            required = true)
     private String arbeidstidsordning;
 
-    @ApiModelProperty(
-            value = "Gyldige verdier finnes i kodeverk 'Yrker'",
-            dataType = "String",
-            required = true,
-            position = 3
-    )
+    @Schema(description = "Gyldige verdier finnes i kodeverk 'Yrker'",
+            type = "String",
+            required = true)
     private String yrke;
 
-    @ApiModelProperty(
-            position = 4
-    )
     private BigDecimal avtaltArbeidstimerPerUke;
 
-    @ApiModelProperty(
-            position = 5
-    )
     private BigDecimal stillingsprosent;
 
-    @ApiModelProperty(
-            position = 6
-    )
     private BigDecimal antallKonverterteTimer;
 
-    @ApiModelProperty(
-            dataType = "LocalDateTime",
-            position = 7
-    )
+    @Schema(type = "LocalDateTime")
     private LocalDateTime endringsdatoStillingsprosent;
 }

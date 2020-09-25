@@ -1,4 +1,4 @@
-package no.nav.dolly;
+package no.nav.dolly.config;
 
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinWorkerThread;

@@ -4,10 +4,8 @@ import static java.util.Objects.isNull;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,8 +20,6 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class InntektMultiplierWrapper {
 
-    @ApiModelProperty(
-            position = 3)
     private List<RsInntektsinformasjon> inntektsinformasjon;
 
     public List<RsInntektsinformasjon> getInntektsinformasjon() {

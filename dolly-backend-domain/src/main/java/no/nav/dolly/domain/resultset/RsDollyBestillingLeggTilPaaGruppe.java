@@ -1,6 +1,5 @@
 package no.nav.dolly.domain.resultset;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +12,5 @@ import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisMedSivilstandBestilling;
 @AllArgsConstructor
 public class RsDollyBestillingLeggTilPaaGruppe extends RsDollyBestilling {
 
-    @ApiModelProperty(
-            position = 1
-    )
     private RsTpsfBasisMedSivilstandBestilling tpsf;
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,7 +18,7 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class RsAktoer {
 
-    @ApiModelProperty(value = "Type av aktør ORG eller PERS\n" +
+    @Schema(description = "Type av aktør ORG eller PERS\n" +
             "For organisajon:\n" +
             "\"arbeidsgiver\":{\n" +
             "\"aktoertype\": \"ORG\",\n" +
