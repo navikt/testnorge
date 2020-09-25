@@ -28,4 +28,13 @@ public class NavnDTO {
         kilde = "DOLLY";
         master = "PDL";
     }
+
+    public NavnDTO(Person person, String kilde) {
+        fornavn = person.getFornavn();
+        etternavn = person.getEtternavn();
+        mellomnavn = person.getMellomnavn();
+        originaltNavn = new OriginaltNavnDTO(person);
+        this.kilde = kilde;
+        master = "PDL";
+    }
 }
