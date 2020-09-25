@@ -1,5 +1,4 @@
 import React from 'react'
-import _set from 'lodash/set'
 import _isEmpty from 'lodash/isEmpty'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'

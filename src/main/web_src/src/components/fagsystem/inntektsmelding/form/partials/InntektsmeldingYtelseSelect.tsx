@@ -1,6 +1,5 @@
 import React from 'react'
 import _get from 'lodash/get'
-import _has from 'lodash/has'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
