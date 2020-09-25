@@ -18,6 +18,7 @@ public class PostOpprettPersonCommand implements Callable<OpprettPersonDTO> {
     private final RestTemplate restTemplate;
     private final String url;
     private final String ident;
+    private final String kilde;
     private final String token;
 
     @Override
@@ -25,6 +26,7 @@ public class PostOpprettPersonCommand implements Callable<OpprettPersonDTO> {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.add(PdlHeaders.NAV_PERSONIDENT, ident);
+        headers.add(PdlHeaders.KILDE, kilde);
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + token);
         return restTemplate.exchange(
                 url + "/api/v1/bestilling/opprettperson",

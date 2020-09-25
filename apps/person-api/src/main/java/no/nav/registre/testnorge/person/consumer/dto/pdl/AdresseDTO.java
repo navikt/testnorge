@@ -22,4 +22,10 @@ public class AdresseDTO {
         kilde = "DOLLY";
         master = "PDL";
     }
+
+    public AdresseDTO(Person person, String kilde) {
+        vegadresse = new VegadresseDTO(person.getAdresse());
+        this.kilde = kilde;
+        master = "PDL";
+    }
 }

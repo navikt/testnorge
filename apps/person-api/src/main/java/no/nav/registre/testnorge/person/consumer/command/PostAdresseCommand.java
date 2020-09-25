@@ -21,6 +21,7 @@ public class PostAdresseCommand implements Callable<HendelseDTO> {
     private final RestTemplate restTemplate;
     private final String url;
     private final Person person;
+    private final String kilde;
     private final String token;
 
     @Override
@@ -32,7 +33,7 @@ public class PostAdresseCommand implements Callable<HendelseDTO> {
         return restTemplate.exchange(
                 url + "/api/v1/bestilling/bostedsadresse",
                 HttpMethod.POST,
-                new HttpEntity<>(new AdresseDTO(person), headers),
+                new HttpEntity<>(new AdresseDTO(person, kilde), headers),
                 HendelseDTO.class
         ).getBody();
     }
