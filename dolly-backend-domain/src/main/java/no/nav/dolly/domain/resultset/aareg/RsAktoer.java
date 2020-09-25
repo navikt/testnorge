@@ -18,17 +18,7 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class RsAktoer {
 
-    @Schema(description = "Type av aktør ORG eller PERS\n" +
-            "For organisajon:\n" +
-            "\"arbeidsgiver\":{\n" +
-            "\"aktoertype\": \"ORG\",\n" +
-            "\"orgnummer\": \"999999999\"\n" +
-            "}\n" +
-            "For person:\n" +
-            "\"arbeidsgiver\": {\n" +
-            "\"aktoertype\": \"PERS\",\n" +
-            "\"ident\": \"12345678901\",\n" +
-            "}",
+    @Schema(description = "Type av aktør er ORG eller PERS for organisasjon eller person",
             required = true)
 
     private String aktoertype;

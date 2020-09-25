@@ -18,7 +18,7 @@ dolly:
   api:
     v1:
       name: API versjon 1
-      description: Dolly er verktøyet som kloner GDPR testdata i ønsket miljø. </br>
+      description: Dolly er verktøyet som kloner GDPR testdata til ønsket miljø. </br>
                Opprett fiktive testpersoner med arbeidsforhold, inntekter, sykemelding og annet i hht testbehov.
       version: Dolly V2.0
       header:

@@ -26,17 +26,7 @@ public abstract class RsAdresse {
     public enum TilleggType {CO_NAVN, LEILIGHET_NR, SEKSJON_NR, BOLIG_NR}
 
     @Schema(required = true,
-            description = "Angir adressetype, GATE eller MATR.\n" +
-                    "For gateadresse, inkluder: \n" +
-                    " \"gateadresse\": \"string\" Forstås som gatenavn\n" +
-                    " \"husnummer\": \"string\" * \n" +
-                    " \"gatekode\": \"string\" * Hentes fra adressesøk\n" +
-                    "For matrikkeladresse inkluder:\n" +
-                    " \"mellomnavn\": \"string\" Forståes som gårdsnavn\n" +
-                    " \"gardsnr\": \"string\" *\n" +
-                    " \"bruksnr\": \"string\" *\n" +
-                    " \"festenr\": \"string\"\n" +
-                    " \"undernr\": \"string\"")
+            description = "Adressetype er GATE eller MATR for gate- eller matrikkeladresse")
     private String adressetype;
 
     @Schema(description = "Postnummer på adresse")
