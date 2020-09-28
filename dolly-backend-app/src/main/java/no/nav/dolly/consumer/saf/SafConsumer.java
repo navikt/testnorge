@@ -1,32 +1,30 @@
 package no.nav.dolly.consumer.saf;
 
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import org.apache.http.Consts;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.google.common.io.CharStreams;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -93,17 +91,24 @@ public class SafConsumer {
 
     private ResponseEntity<JsonNode> sendJoarkMetadataQuery(String environment, String journalpostId, String graphqlFile) {
 
-        String query = null;
-        InputStream queryStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(graphqlFile);
+        StringBuilder query = new StringBuilder();
+
         try {
-            Reader reader = new InputStreamReader(requireNonNull(queryStream), Consts.UTF_8);
-            query = CharStreams.toString(reader);
+            InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(graphqlFile);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(requireNonNull(inputStream), Consts.UTF_8));
+            String line = reader.readLine();
+            do {
+                query.append(line);
+            } while (nonNull(line = reader.readLine()));
+
+            inputStream.close();
+
         } catch (IOException e) {
             log.error("Lesing av query ressurs feilet");
         }
 
         GraphQLRequest graphQLRequest = GraphQLRequest.builder()
-                .query(query)
+                .query(query.toString())
                 .variables(Map.of("journalpostId", journalpostId))
                 .build();
 

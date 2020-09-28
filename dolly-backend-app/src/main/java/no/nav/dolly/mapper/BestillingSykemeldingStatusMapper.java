@@ -1,11 +1,11 @@
 package no.nav.dolly.mapper;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,19 +28,19 @@ public class BestillingSykemeldingStatusMapper {
                 if (statusMap.containsKey(progress.getSykemeldingStatus())) {
                     statusMap.get(progress.getSykemeldingStatus()).add(progress.getIdent());
                 } else {
-                    statusMap.put(progress.getSykemeldingStatus(), newArrayList(progress.getIdent()));
+                    statusMap.put(progress.getSykemeldingStatus(), new ArrayList(List.of(progress.getIdent())));
                 }
             }
         });
 
         return statusMap.isEmpty() ? emptyList()
                 : singletonList(RsStatusRapport.builder().id(SYKEMELDING).navn(SYKEMELDING.getBeskrivelse())
-                        .statuser(statusMap.entrySet().stream()
-                                .map(entry -> RsStatusRapport.Status.builder()
-                                        .melding(entry.getKey().replaceAll("=", ":"))
-                                        .identer(entry.getValue())
-                                        .build())
-                                .collect(Collectors.toList()))
-                        .build());
+                .statuser(statusMap.entrySet().stream()
+                        .map(entry -> RsStatusRapport.Status.builder()
+                                .melding(entry.getKey().replaceAll("=", ":"))
+                                .identer(entry.getValue())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build());
     }
 }

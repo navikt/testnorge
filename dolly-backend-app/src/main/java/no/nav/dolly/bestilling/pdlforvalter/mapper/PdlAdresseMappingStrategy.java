@@ -1,11 +1,11 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
@@ -89,7 +89,7 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(RsPostadresse postadresse, PostadresseIFrittFormat postadresseIFrittFormat, MappingContext context) {
 
-                        List<String> adresselinjer = newArrayList(postadresse.getPostLinje1());
+                        List<String> adresselinjer = new ArrayList(List.of(postadresse.getPostLinje1()));
                         if (Strings.isNotBlank(postadresse.getPostLinje2())) {
                             adresselinjer.add(postadresse.getPostLinje2());
                         }
@@ -124,7 +124,7 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
         return nonNull(dateTime) ? dateTime.toLocalDate() : null;
     }
 
-    private static Integer toNumeric(String number){
+    private static Integer toNumeric(String number) {
 
         return StringUtils.isNumeric(number) ? Integer.valueOf(number) : null;
     }

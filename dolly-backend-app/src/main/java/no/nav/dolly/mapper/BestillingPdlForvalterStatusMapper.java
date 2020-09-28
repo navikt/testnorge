@@ -1,6 +1,5 @@
 package no.nav.dolly.mapper;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.FALSK_IDENTITET;
@@ -35,7 +34,7 @@ public final class BestillingPdlForvalterStatusMapper {
 
         progressList.forEach(progress -> {
             if (nonNull(progress.getPdlforvalterStatus())) {
-                newArrayList(progress.getPdlforvalterStatus().split("\\$")).forEach(
+                List.of(progress.getPdlforvalterStatus().split("\\$")).forEach(
                         resolveStatus(msgStatusIdents, progress)
                 );
             }
@@ -55,7 +54,7 @@ public final class BestillingPdlForvalterStatusMapper {
                 .map(entry -> RsStatusRapport.builder().id(type).navn(type.getBeskrivelse())
                         .statuser(entry.getValue().entrySet().stream()
                                 .map(entry1 -> RsStatusRapport.Status.builder()
-                                        .melding(entry1.getKey().replaceAll(";",",").replaceAll("=",":"))
+                                        .melding(entry1.getKey().replaceAll(";", ",").replaceAll("=", ":"))
                                         .detaljert(singletonList(RsStatusRapport.Detaljert.builder()
                                                 .miljo("PDL")
                                                 .identer(entry1.getValue())

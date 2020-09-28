@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.tpsf;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -11,6 +10,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -103,7 +103,7 @@ public class TpsfService {
     public List<Person> hentTestpersoner(List<String> identer) {
         ResponseEntity<Object> response = postToTpsf(TPSF_HENT_PERSONER_URL, identer);
         if (isBodyNotNull(response)) {
-            return newArrayList(objectMapper.convertValue(response.getBody(), Person[].class));
+            return new ArrayList<>(List.of(objectMapper.convertValue(response.getBody(), Person[].class)));
         }
         return emptyList();
     }

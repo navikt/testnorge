@@ -1,8 +1,8 @@
 package no.nav.dolly.bestilling.service;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.nonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
@@ -60,7 +60,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
         if (nonNull(bestKriterier)) {
 
             CheckStatusResponse tilgjengeligeIdenter = tpsfService.checkEksisterendeIdenter(
-                    newArrayList(bestilling.getOpprettFraIdenter().split(",")));
+                    new ArrayList(List.of(bestilling.getOpprettFraIdenter().split(","))));
 
             dollyForkJoinPool.submit(() -> {
                 tilgjengeligeIdenter.getStatuser().parallelStream()
@@ -73,11 +73,11 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
 
                                     TpsfBestilling tpsfBestilling = nonNull(bestKriterier.getTpsf()) ?
                                             mapperFacade.map(bestKriterier.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
-                                    tpsfBestilling.setOpprettFraIdenter(newArrayList(identStatus.getIdent()));
+                                    tpsfBestilling.setOpprettFraIdenter(new ArrayList(List.of(identStatus.getIdent())));
                                     List<String> leverteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
 
-                                    sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(",")), leverteIdenter,
-                                            bestilling.getGruppe(), progress);
+                                    sendIdenterTilTPS(new ArrayList(List.of(bestilling.getMiljoer().split(","))),
+                                            leverteIdenter, bestilling.getGruppe(), progress);
 
                                     TpsPerson tpsPerson = buildTpsPerson(bestilling, leverteIdenter, null);
                                     gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, false);

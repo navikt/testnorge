@@ -1,6 +1,5 @@
 package no.nav.dolly.mapper;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
@@ -26,7 +25,7 @@ public final class BestillingArenaforvalterStatusMapper {
 
         progressList.forEach(progress -> {
             if (nonNull(progress.getArenaforvalterStatus())) {
-                newArrayList(progress.getArenaforvalterStatus().split(",")).forEach(
+                List.of(progress.getArenaforvalterStatus().split(",")).forEach(
                         entry -> {
                             String[] envStatus = entry.split("\\$");
                             String environment = envStatus[0];

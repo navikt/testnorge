@@ -1,7 +1,5 @@
 package no.nav.dolly.bestilling.pdlforvalter;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Lists.reverse;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.NORSK;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.UTENLANDSK;
@@ -9,15 +7,15 @@ import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 import static no.nav.dolly.domain.CommonKeys.SYNTH_ENV;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-
 import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.RequiredArgsConstructor;
@@ -135,8 +133,9 @@ public class PdlForvalterClient implements ClientRegister {
                     hovedperson.setKjonn(UKJENT);
                 }
                 if (nonNull(tpsfUtvidetBestilling.getRelasjoner())) {
-                    List partnereRequest = newArrayList(tpsfUtvidetBestilling.getRelasjoner().getPartnere());
-                    Iterator<RsPartnerRequest> partnere = reverse(partnereRequest).iterator();
+                    List partnereRequest = new ArrayList(List.of(tpsfUtvidetBestilling.getRelasjoner().getPartnere()));
+                    Collections.reverse(partnereRequest);
+                    Iterator<RsPartnerRequest> partnere = partnereRequest.iterator();
                     Iterator<RsBarnRequest> barn = tpsfUtvidetBestilling.getRelasjoner().getBarn().iterator();
                     hovedperson.getRelasjoner().forEach(relasjon -> {
                         if ((!isOpprettEndre ||

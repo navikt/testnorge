@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.service;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
@@ -72,7 +71,7 @@ public class ImportAvPersonerFraTpsService extends DollyBestillingService {
 
                                 progress.setTpsImportStatus(SUCCESS);
 
-                                sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(","))
+                                sendIdenterTilTPS(List.of(bestilling.getMiljoer().split(","))
                                         .stream().filter(miljoe -> !bestilling.getKildeMiljoe().equalsIgnoreCase(miljoe))
                                         .collect(toList()), singletonList(ident), bestilling.getGruppe(), progress);
 

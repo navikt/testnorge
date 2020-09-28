@@ -1,6 +1,5 @@
 package no.nav.dolly.mapper;
 
-import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -29,7 +28,7 @@ public class BestillingPdlForvalterStatusMapperTest {
     @Test
     public void buildPdldataStatusMap_emptyList() {
 
-        List<RsStatusRapport> resultat = BestillingPdlForvalterStatusMapper.buildPdldataStatusMap(newArrayList(BestillingProgress.builder().build()));
+        List<RsStatusRapport> resultat = BestillingPdlForvalterStatusMapper.buildPdldataStatusMap(List.of(BestillingProgress.builder().build()));
 
         assertThat(resultat, is(empty()));
     }
@@ -38,7 +37,7 @@ public class BestillingPdlForvalterStatusMapperTest {
     public void buildPdldataStatusMap_UtenlandsId() {
 
         List<RsStatusRapport> resultat = BestillingPdlForvalterStatusMapper.buildPdldataStatusMap(
-                newArrayList(BestillingProgress.builder()
+                List.of(BestillingProgress.builder()
                                 .pdlforvalterStatus(PDL_STATUS_OK)
                                 .ident(IDENT_1)
                                 .build(),
@@ -57,7 +56,7 @@ public class BestillingPdlForvalterStatusMapperTest {
     public void buildPdldataStatusMap_MultipleStatus() {
 
         List<RsStatusRapport> resultat = BestillingPdlForvalterStatusMapper.buildPdldataStatusMap(
-                newArrayList(BestillingProgress.builder()
+                List.of(BestillingProgress.builder()
                                 .pdlforvalterStatus(PDL_STATUS_OK)
                                 .ident(IDENT_1)
                                 .build(),

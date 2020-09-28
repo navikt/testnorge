@@ -1,9 +1,9 @@
 package no.nav.dolly.mapper;
 
-import static com.google.common.collect.Sets.newHashSet;
 import static java.lang.String.format;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,11 +34,11 @@ public class AbstractRsStatusMiljoeIdentForhold {
             if (statusEnvIdents.get(status).containsKey(environ)) {
                 statusEnvIdents.get(status).get(environ).add(ident);
             } else {
-                statusEnvIdents.get(status).put(environ, newHashSet(ident));
+                statusEnvIdents.get(status).put(environ, new HashSet(Set.of(ident)));
             }
         } else {
             Map envIdent = new HashMap();
-            envIdent.put(environ, newHashSet(ident));
+            envIdent.put(environ, new HashSet(Set.of(ident)));
             statusEnvIdents.put(status, envIdent);
         }
     }

@@ -1,6 +1,5 @@
 package no.nav.dolly.mapper;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.PENSJON_FORVALTER;
 import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.POPP_INNTEKTSREGISTER;
@@ -30,10 +29,10 @@ public final class BestillingPensjonforvalterStatusMapper {
 
         progressList.forEach(progress -> {
             if (nonNull(progress.getPensjonforvalterStatus())) {
-                newArrayList(progress.getPensjonforvalterStatus()
+                List.of(progress.getPensjonforvalterStatus()
                         .split("\\$")).forEach(meldingMiljoStatus -> {
                     String melding = meldingMiljoStatus.split("\\#")[0];
-                    newArrayList(meldingMiljoStatus.split("\\#")[1].split(",")).forEach(miljostatus -> {
+                    List.of(meldingMiljoStatus.split("\\#")[1].split(",")).forEach(miljostatus -> {
                         String[] miljoStatuser = miljostatus.split(":");
                         String miljoe = miljoStatuser.length > 1 ? miljoStatuser[0] : null;
                         if (nonNull(miljoe) && miljoe.length() == 2) {
@@ -60,17 +59,17 @@ public final class BestillingPensjonforvalterStatusMapper {
                 if (msgStatusIdents.get(melding).get(status).containsKey(miljoe)) {
                     msgStatusIdents.get(melding).get(status).get(miljoe).add(ident);
                 } else {
-                    msgStatusIdents.get(melding).get(status).put(miljoe, newArrayList(ident));
+                    msgStatusIdents.get(melding).get(status).put(miljoe, new ArrayList(List.of(ident)));
                 }
             } else {
                 Map<String, List<String>> miljoeIdent = new HashMap();
-                miljoeIdent.put(miljoe, newArrayList(ident));
+                miljoeIdent.put(miljoe, new ArrayList(List.of(ident)));
                 msgStatusIdents.get(melding).put(status, miljoeIdent);
             }
         } else {
             Map<String, Map<String, List<String>>> statusMap = new HashMap();
             Map<String, List<String>> miljoeIdent = new HashMap();
-            miljoeIdent.put(miljoe, newArrayList(ident));
+            miljoeIdent.put(miljoe, new ArrayList(List.of(ident)));
             statusMap.put(status, miljoeIdent);
             msgStatusIdents.put(melding, statusMap);
         }
@@ -85,7 +84,7 @@ public final class BestillingPensjonforvalterStatusMapper {
                     .statuser(
                             meldStatusMiljoeIdents.get(clientid).entrySet().stream().map(entry ->
                                     RsStatusRapport.Status.builder()
-                                            .melding(entry.getKey().replaceAll("=", ":").replaceAll("&",","))
+                                            .melding(entry.getKey().replaceAll("=", ":").replaceAll("&", ","))
                                             .detaljert(entry.getValue().entrySet().stream().map(miljeStatus ->
                                                     RsStatusRapport.Detaljert.builder()
                                                             .miljo(miljeStatus.getKey())

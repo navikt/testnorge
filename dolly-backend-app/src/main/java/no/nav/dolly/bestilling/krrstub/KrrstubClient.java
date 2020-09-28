@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.krrstub;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.nonNull;
 
 import java.util.List;
@@ -62,7 +61,7 @@ public class KrrstubClient implements ClientRegister {
             ResponseEntity<DigitalKontaktdata[]> response = krrstubConsumer.getDigitalKontaktdata(ident);
 
             if (response.hasBody()) {
-                newArrayList(response.getBody()).forEach(dkif -> {
+                List.of(response.getBody()).forEach(dkif -> {
                     if (nonNull(dkif.getId())) {
                         krrstubConsumer.deleteDigitalKontaktdata(dkif.getId());
                     }

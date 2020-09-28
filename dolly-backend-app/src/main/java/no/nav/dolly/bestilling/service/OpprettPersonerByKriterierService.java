@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.service;
 
 import static java.util.Objects.nonNull;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
@@ -10,7 +11,6 @@ import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -77,7 +77,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                 TpsPerson tpsPerson = buildTpsPerson(bestilling, leverteIdenter, null);
                                 progress = new BestillingProgress(bestilling.getId(), tpsPerson.getHovedperson());
 
-                                sendIdenterTilTPS(Lists.newArrayList(bestilling.getMiljoer().split(",")),
+                                sendIdenterTilTPS(new ArrayList(List.of(bestilling.getMiljoer().split(","))),
                                         leverteIdenter, bestilling.getGruppe(), progress);
 
                                 gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, false);

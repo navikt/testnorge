@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 
@@ -21,7 +20,6 @@ import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
-import no.nav.dolly.metrics.Timed;
 
 @Slf4j
 @Service
@@ -83,7 +81,7 @@ public class ArenaForvalterClient implements ClientRegister {
             if (existingServicebruker.hasBody()) {
                 existingServicebruker.getBody().getArbeidsokerList().forEach(list -> {
                     if (nonNull(list.getMiljoe())) {
-                        newArrayList(list.getMiljoe().split(",")).forEach(
+                        List.of(list.getMiljoe().split(",")).forEach(
                                 environment -> arenaForvalterConsumer.deleteIdent(ident, environment));
                     }
                 });

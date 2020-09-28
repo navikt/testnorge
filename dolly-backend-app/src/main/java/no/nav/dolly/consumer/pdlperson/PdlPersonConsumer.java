@@ -1,14 +1,14 @@
 package no.nav.dolly.consumer.pdlperson;
 
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_TOKEN;
 import static no.nav.dolly.domain.resultset.pdlforvalter.TemaGrunnlag.GEN;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.io.CharStreams;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,17 +51,25 @@ public class PdlPersonConsumer {
         variables.put("ident", ident);
         variables.put("historikk", true);
 
-        String query = null;
-        InputStream queryStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("pdlperson/pdlquery.graphql");
+        StringBuilder query = new StringBuilder();
+
         try {
-            Reader reader = new InputStreamReader(queryStream, Consts.UTF_8);
-            query = CharStreams.toString(reader);
+            InputStream inputStream = Thread.currentThread().getContextClassLoader()
+                    .getResourceAsStream("pdlperson/pdlquery.graphql");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, Consts.UTF_8));
+            String line = reader.readLine();
+            do {
+                query.append(line);
+            } while (nonNull(line = reader.readLine()));
+
+            inputStream.close();
+
         } catch (IOException e) {
             log.error("Lesing av query ressurs feilet");
         }
 
         GraphQLRequest graphQLRequest = GraphQLRequest.builder()
-                .query(query)
+                .query(query.toString())
                 .variables(variables)
                 .build();
 

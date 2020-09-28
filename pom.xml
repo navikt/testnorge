@@ -52,7 +52,6 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
         <spring-cloud.version>2.2.4.RELEASE</spring-cloud.version>
-        <springfox.version>2.9.2</springfox.version>
         <jdbc.ojdbc.version>19.7.0.0</jdbc.ojdbc.version>
         <orika.version>1.5.4</orika.version>
         <cxf.version>3.3.4</cxf.version>
@@ -115,18 +114,6 @@
                 <groupId>net.logstash.logback</groupId>
                 <artifactId>logstash-logback-encoder</artifactId>
                 <version>${logstash-logback-encoder.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger2</artifactId>
-                <version>${springfox.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger-ui</artifactId>
-                <version>${springfox.version}</version>
             </dependency>
 
             <dependency>
