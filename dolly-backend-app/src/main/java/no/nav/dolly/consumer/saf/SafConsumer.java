@@ -1,8 +1,6 @@
 package no.nav.dolly.consumer.saf;
 
 import static java.lang.String.format;
-import static java.util.Objects.nonNull;
-import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.domain.CommonKeys.CONSUMER;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
@@ -10,14 +8,15 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.apache.http.Consts;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +27,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import no.nav.dolly.consumer.pdlperson.GraphQLRequest;
 import no.nav.dolly.consumer.saf.domain.SafRequest;
 import no.nav.dolly.metrics.Timed;
@@ -91,29 +91,6 @@ public class SafConsumer {
 
     private ResponseEntity<JsonNode> sendJoarkMetadataQuery(String environment, String journalpostId, String graphqlFile) {
 
-        StringBuilder query = new StringBuilder();
-
-        try {
-            InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(graphqlFile);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(requireNonNull(inputStream), Consts.UTF_8));
-            String line = reader.readLine();
-            do {
-                query.append(line);
-                query.append('\n');
-            } while (nonNull(line = reader.readLine()));
-
-            inputStream.close();
-            reader.close();
-
-        } catch (IOException e) {
-            log.error("Lesing av query ressurs feilet");
-        }
-
-        GraphQLRequest graphQLRequest = GraphQLRequest.builder()
-                .query(query.toString())
-                .variables(Map.of("journalpostId", journalpostId))
-                .build();
-
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(String.format("%s%s", providersProps.getJoark().getUrl().replace("$", environment),
                         SAF_GRAPHQL_URL)))
@@ -121,7 +98,10 @@ public class SafConsumer {
                         .header(HEADER_NAV_CALL_ID, getNavCallId("SafMetadataRequest", environment))
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(graphQLRequest),
+                        .body(GraphQLRequest.builder()
+                                .query(getQueryFromFile(graphqlFile))
+                                .variables(Map.of("journalpostId", journalpostId))
+                                .build()),
                 JsonNode.class);
     }
 
@@ -130,5 +110,17 @@ public class SafConsumer {
         String callId = format("%s %s", CONSUMER, UUID.randomUUID().toString());
         log.info("{} sendt, callId: {}, consumerId: {}, miljø: {}", message, callId, CONSUMER, environment);
         return callId;
+    }
+
+    private static String getQueryFromFile(String graphQlFile) {
+
+        val resource = new ClassPathResource(graphQlFile);
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), Consts.UTF_8))) {
+            return reader.lines().collect(Collectors.joining("\n"));
+
+        } catch (IOException e) {
+            log.error("Lesing av query ressurs feilet");
+            return null;
+        }
     }
 }
