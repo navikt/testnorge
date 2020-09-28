@@ -4,6 +4,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_TOKEN;
 import static no.nav.dolly.domain.resultset.pdlforvalter.TemaGrunnlag.GEN;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,7 +15,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import org.apache.http.Consts;
+import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -37,9 +40,6 @@ public class PdlPersonConsumer {
     private static final String GRAPHQL_URL = "/graphql";
     private static final String PREPROD_ENV = "q1";
 
-    @Value("${dolly.environment.name}")
-    private String environment;
-
     private final RestTemplate restTemplate;
     private final ProvidersProps providersProps;
     private final StsOidcService stsOidcService;
@@ -60,9 +60,11 @@ public class PdlPersonConsumer {
             String line = reader.readLine();
             do {
                 query.append(line);
+                query.append('\n');
             } while (nonNull(line = reader.readLine()));
 
             inputStream.close();
+            reader.close();
 
         } catch (IOException e) {
             log.error("Lesing av query ressurs feilet");
@@ -75,6 +77,7 @@ public class PdlPersonConsumer {
 
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(providersProps.getPdlPerson().getUrl() + GRAPHQL_URL))
+                .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
                 .header(HEADER_NAV_CONSUMER_TOKEN, stsOidcService.getIdToken(PREPROD_ENV))
                 .header(HEADER_NAV_CALL_ID, "Dolly: " + UUID.randomUUID().toString())
                 .header(TEMA, GEN.name())

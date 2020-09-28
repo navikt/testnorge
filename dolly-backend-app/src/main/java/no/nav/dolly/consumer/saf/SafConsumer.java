@@ -99,9 +99,11 @@ public class SafConsumer {
             String line = reader.readLine();
             do {
                 query.append(line);
+                query.append('\n');
             } while (nonNull(line = reader.readLine()));
 
             inputStream.close();
+            reader.close();
 
         } catch (IOException e) {
             log.error("Lesing av query ressurs feilet");

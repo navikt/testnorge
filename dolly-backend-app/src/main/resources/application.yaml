@@ -17,10 +17,10 @@ springfox:
 dolly:
   api:
     v1:
-      name: API versjon 1
+      name: Dolly V2.0
       description: Dolly er verktøyet som kloner GDPR testdata til ønsket miljø. </br>
                Opprett fiktive testpersoner med arbeidsforhold, inntekter, sykemelding og annet i hht testbehov.
-      version: Dolly V2.0
+      version: Versjon 1
       header:
         nav-consumer-id: Navn på applikasjon som gjør kallet
         nav-call-id: Unik identifikator, typisk UUID (128 bit)
