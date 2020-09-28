@@ -30,7 +30,7 @@ public class PersonController {
     @PostMapping
     public ResponseEntity<Object> createPerson(
             @RequestBody PersonDTO personDTO,
-            @RequestParam(required = false) String kilde
+            @RequestHeader(required = false) String kilde
     ) {
         Person person = new Person(personDTO);
         var pdlKilde = kilde == null ? "DOLLY" : kilde;
