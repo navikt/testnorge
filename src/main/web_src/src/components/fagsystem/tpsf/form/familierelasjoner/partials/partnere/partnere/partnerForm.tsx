@@ -18,27 +18,33 @@ interface PartnerForm {
 	partner: Partner
 	locked: boolean
 	minDatoSivilstand: string
-	vurderFjernePartner: () => void
 }
 
 export default ({ path, formikBag, partner, ...rest }: PartnerForm) => {
-	const handleDoedsdatoChange = dato => {
-		//TODO: Sivilstand blir ikke oppdatetrt første gang man velger dødsdato (kun vanlig bestilling)
+	const handleDoedsdatoChange = (dato: Date) => {
+		console.log('partner :>> ', partner)
 		const sivilstander = _get(formikBag.values, `${path}.sivilstander`)
 		const sisteSivilstand =
 			(sivilstander.length > 0 && sivilstander[sivilstander.length - 1].sivilstand) ||
 			partner.sivilstand ||
 			null
-		// console.log('sivilstander :>> ', sivilstander)
-		if (dato && sisteSivilstand === 'GIFT') {
+
+		if (dato) {
 			formikBag.setFieldValue(`${path}.doedsdato`, dato)
 
-			_get(formikBag.values, `${path}.sivilstander`).push({
-				sivilstand: 'ENKE',
-				sivilstandRegdato: dato
-			})
-		} else if (dato) {
-			formikBag.setFieldValue(`${path}.doedsdato`, dato)
+			if (sisteSivilstand === 'GIFT') {
+				_get(formikBag.values, `${path}.sivilstander`).push({
+					sivilstand: 'ENKE',
+					sivilstandRegdato: dato
+				})
+			} else if (sisteSivilstand === 'ENKE') {
+				formikBag.setFieldValue(`${path}.doedsdato`, dato)
+				sivilstander.length > 0 &&
+					formikBag.setFieldValue(`${path}.sivilstander[${sivilstander.length - 1}]`, {
+						sivilstand: 'ENKE',
+						sivilstandRegdato: dato
+					})
+			}
 		} else {
 			formikBag.setFieldValue(`${path}.doedsdato`, null)
 		}
@@ -87,7 +93,7 @@ export default ({ path, formikBag, partner, ...rest }: PartnerForm) => {
 						<FormikDatepicker
 							name={`${path}.doedsdato`}
 							label="Dødsdato"
-							onChange={dato => handleDoedsdatoChange(dato)}
+							onChange={(dato: Date) => handleDoedsdatoChange(dato)}
 						/>
 					</div>
 				</>

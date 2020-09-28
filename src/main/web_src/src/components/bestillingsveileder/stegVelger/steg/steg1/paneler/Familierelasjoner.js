@@ -42,26 +42,7 @@ FamilierelasjonPanel.initialValues = ({ set, del, has, opts }) => ({
 		label: 'Har barn',
 		checked: has('tpsf.relasjoner.barn'),
 		add() {
-			set(
-				'tpsf.relasjoner.barn',
-				defaultBarn(opts)
-				// [
-				// 	{
-				// 		identtype: 'FNR',
-				// 		kjonn: '',
-				// 		barnType: '',
-				// 		partnerNr: null,
-				// 		borHos: '',
-				// 		erAdoptert: false,
-				// 		alder: Formatters.randomIntInRange(0, 17),
-				// 		doedsdato: null,
-				// 		spesreg: '',
-				// 		utenFastBopel: false,
-				// 		statsborgerskap: '',
-				// 		statsborgerskapRegdato: ''
-				// 	}
-				// ]
-			)
+			set('tpsf.relasjoner.barn', defaultBarn(opts))
 		},
 		remove() {
 			del('tpsf.relasjoner.barn')
@@ -86,7 +67,6 @@ const defaultPartner = opts => {
 		}
 	]
 
-	// TODO: Må funke for flere enn én partner? Eller kanskje ikke? Holder med eksisterende
 	const eksisterendePartner = [
 		{
 			ident: _get(opts, 'personFoerLeggTil.tpsf.relasjoner[0].personRelasjonMed.ident'),
@@ -96,13 +76,10 @@ const defaultPartner = opts => {
 		}
 	]
 
-	console.log('opts :>> ', opts)
-
 	const harEksisterendePartner = _get(opts, 'personFoerLeggTil.tpsf.relasjoner', []).some(
 		relasjon => relasjon.relasjonTypeNavn === 'PARTNER'
 	)
 
-	// return harEksisterendePartner ? [] : fullPartner
 	return harEksisterendePartner ? eksisterendePartner : fullPartner
 }
 
@@ -124,19 +101,18 @@ const defaultBarn = opts => {
 		}
 	]
 
-	console.log('opts :>> ', opts)
-	const harEksisterendeBarn = _get(opts, 'personFoerLeggTil.tpsf.relasjoner', []).some(
-		relasjon => relasjon.relasjonTypeNavn === 'FOEDSEL'
-	)
+	const eksisterendeRelasjoner = _get(opts, 'personFoerLeggTil.tpsf.relasjoner')
+	const eksisterendeBarn =
+		eksisterendeRelasjoner &&
+		eksisterendeRelasjoner.filter(relasjon => relasjon.relasjonTypeNavn === 'FOEDSEL')
+	const eksisterendeBarnValues =
+		eksisterendeBarn &&
+		eksisterendeBarn.map(barn => ({
+			ident: barn.personRelasjonMed.ident,
+			doedsdato: barn.personRelasjonMed.doedsdato || null
+		}))
 
-	// TODO: Må skille partnere og barn. Kanskje filtrere relasjoner på relasjonTypeNavn?
-	// TODO: Må funke på flere enn ett barn!!
-	const eksisterendeBarn = [
-		{
-			ident: _get(opts, 'personFoerLeggTil.tpsf.relasjoner[0].personRelasjonMed.ident'),
-			doedsdato:
-				_get(opts, 'personFoerLeggTil.tpsf.relasjoner[0].personRelasjonMed.doedsdato') || null
-		}
-	]
-	return harEksisterendeBarn ? eksisterendeBarn : fullBarn
+	return eksisterendeBarnValues && eksisterendeBarnValues.length > 0
+		? eksisterendeBarnValues
+		: fullBarn
 }

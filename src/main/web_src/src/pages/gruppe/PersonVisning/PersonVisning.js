@@ -37,7 +37,7 @@ export const PersonVisning = ({
 	iLaastGruppe
 }) => {
 	useMount(fetchDataFraFagsystemer)
-	// console.log('data :>> ', data)
+
 	return (
 		<div className="person-visning">
 			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)} />

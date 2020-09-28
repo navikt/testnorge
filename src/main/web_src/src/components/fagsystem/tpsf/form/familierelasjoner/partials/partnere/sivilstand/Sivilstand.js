@@ -12,14 +12,7 @@ import SivilstandForm from './sivilstandForm'
 const isSivilstandNy = sivilstand => sivilstand.ny || !sivilstand.hasOwnProperty('ny')
 const initialValues = { sivilstand: '', sivilstandRegdato: '' }
 
-export const Sivilstand = ({
-	basePath,
-	formikBag,
-	locked,
-	sivilstander,
-	minDatoSivilstand,
-	vurderFjernePartner
-}) => (
+export const Sivilstand = ({ basePath, formikBag, locked, sivilstander, minDatoSivilstand }) => (
 	<FieldArray name={basePath}>
 		{arrayHelpers => {
 			const antallTidligereSivilstander = sivilstander.filter(
@@ -46,7 +39,6 @@ export const Sivilstand = ({
 						const showRemove = idx > 0 && isLast && !locked && ny
 						const clickRemove = () => {
 							arrayHelpers.remove(formikIdx)
-							// if (formikIdx === 0) vurderFjernePartner()
 						}
 						return (
 							<DollyFaBlokk

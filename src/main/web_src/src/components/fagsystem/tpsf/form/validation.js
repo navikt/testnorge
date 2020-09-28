@@ -141,6 +141,7 @@ export const sivilstander = Yup.array().of(
 	Yup.object({
 		sivilstand: Yup.string().required(messages.required),
 		sivilstandRegdato: Yup.date()
+			.transform((i, j) => (j === null || j === '' ? undefined : i))
 			.test(
 				'is-after-last',
 				'Dato må være etter tidligere forhold (eldste forhold settes først)',
@@ -295,11 +296,13 @@ const barn = Yup.array()
 			kjonn: Yup.string().nullable(),
 			barnType: ifPresent('$tpsf.relasjoner.barn[0].barnType', requiredString),
 			partnerNr: Yup.number().nullable(),
-			// TODO: Må muligens tilpasse denne nå som vi har med dødsdato
-			borHos: Yup.mixed().when('doedsdato', {
-				is: val => val === undefined || val === null,
-				then: requiredString
-			}),
+			borHos: ifPresent(
+				'$tpsf.relasjoner.barn[0].borHos',
+				Yup.mixed().when('doedsdato', {
+					is: val => val === undefined || val === null,
+					then: requiredString
+				})
+			),
 			erAdoptert: Yup.boolean(),
 			alder: Yup.number()
 				.transform(num => (isNaN(num) ? undefined : num))

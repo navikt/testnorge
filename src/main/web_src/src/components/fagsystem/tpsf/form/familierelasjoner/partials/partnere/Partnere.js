@@ -90,11 +90,6 @@ export const Partnere = ({ formikBag, personFoerLeggTil }) => (
 						// Det er kun mulig å slette siste forhold
 						const showRemove = isLast && idx > 0 && c.ny
 						const clickRemove = () => arrayHelpers.remove(formikIdx)
-						const vurderFjernePartner = () => !c.ny && arrayHelpers.remove(formikIdx)
-						// console.log('c :>> ', c)
-						// console.log('formikIdx :>> ', formikIdx)
-						// console.log('formikPath :>> ', formikPath)
-						// console.log('vurderFjernePartner :>> ', vurderFjernePartner)
 
 						return (
 							<DollyFaBlokk
@@ -109,7 +104,6 @@ export const Partnere = ({ formikBag, personFoerLeggTil }) => (
 									partner={c}
 									locked={idx !== partnere.length - 1}
 									minDatoSivilstand={sisteTidligereSivilstandRegdato(partnere)}
-									vurderFjernePartner={vurderFjernePartner}
 								/>
 							</DollyFaBlokk>
 						)
