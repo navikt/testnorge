@@ -22,7 +22,6 @@ interface PartnerForm {
 
 export default ({ path, formikBag, partner, ...rest }: PartnerForm) => {
 	const handleDoedsdatoChange = (dato: Date) => {
-		console.log('partner :>> ', partner)
 		const sivilstander = _get(formikBag.values, `${path}.sivilstander`)
 		const sisteSivilstand =
 			(sivilstander.length > 0 && sivilstander[sivilstander.length - 1].sivilstand) ||
