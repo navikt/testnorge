@@ -30,6 +30,7 @@ public class ProxyController {
 
     public static final String API_URI = "/api/v1";
     public static final String PROXY_URI = "/api/proxy";
+    private static final String DOLLY_BACKEND = "dolly-backend";
     private final TokenService tokenService;
     private final RemoteApplicationsProperties remoteApplicationsProperties;
 
@@ -84,7 +85,7 @@ public class ProxyController {
         String requestURL = createURL(request, dollyUrl + API_URI, API_URI );
         HttpHeaders headers = proxyService.copyHeaders(request);
 
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get("dolly-backend")));
+        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
         return proxyService.proxyRequest(accessToken, body, method, headers, requestURL);
     }
 
@@ -97,7 +98,7 @@ public class ProxyController {
         String requestURL = createURL(request, arenaUrl + API_URI, PROXY_URI + "/arena");
         HttpHeaders headers = proxyService.copyHeaders(request);
 
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get("dolly-backend")));
+        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
         return proxyService.proxyRequest(accessToken, body, method, headers, requestURL);
     }
 
@@ -138,7 +139,7 @@ public class ProxyController {
         String requestURL = createURL(request, instUrl + API_URI, PROXY_URI + "/inst");
         HttpHeaders headers = proxyService.copyHeaders(request);
 
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get("dolly-backend")));
+        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
         return proxyService.proxyRequest(accessToken, body, method, headers, requestURL);
     }
 
@@ -152,7 +153,7 @@ public class ProxyController {
         HttpHeaders headers = proxyService.copyHeaders(request);
         headers.add("Nav-Personident",  body.split("=")[0].replace("\"", ""));
 
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get("dolly-backend")));
+        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
         return proxyService.proxyRequest(accessToken, null, method, headers, requestURL);
     }
 
@@ -166,7 +167,7 @@ public class ProxyController {
         HttpHeaders headers = proxyService.copyHeaders(request);
         headers.add("personidentifikator", body.split("=")[0]);
 
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get("dolly-backend")));
+        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
         return proxyService.proxyRequest(accessToken, null, method, headers, requestURL);
     }
 
@@ -179,7 +180,7 @@ public class ProxyController {
         String requestURL = createURL(request, tpsfUrl + API_URI, PROXY_URI + "/tpsf");
         HttpHeaders headers = proxyService.copyHeaders(request);
 
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get("dolly-backend")));
+        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
         return proxyService.proxyRequest(accessToken, body, method, headers, requestURL);
     }
 
@@ -192,7 +193,7 @@ public class ProxyController {
         String requestURL = createURL(request, tpsfUrl + "/api", PROXY_URI + "/kontaktinfo");
         HttpHeaders headers = proxyService.copyHeaders(request);
 
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get("dolly-backend")));
+        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
         return proxyService.proxyRequest(accessToken, body, method, headers, requestURL);
     }
 
@@ -205,7 +206,7 @@ public class ProxyController {
         String requestURL = createURL(request, udiUrl + API_URI, PROXY_URI + "/udi");
         HttpHeaders headers = proxyService.copyHeaders(request);
 
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get("dolly-backend")));
+        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
         return proxyService.proxyRequest(accessToken, body, method, headers, requestURL);
     }
 
@@ -218,7 +219,7 @@ public class ProxyController {
         String requestURL = createURL(request, aaregUrl + API_URI, PROXY_URI + "/aareg");
         HttpHeaders headers = proxyService.copyHeaders(request);
 
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get("dolly-backend")));
+        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
         return proxyService.proxyRequest(accessToken, body, method, headers, requestURL);
     }
 
@@ -231,7 +232,7 @@ public class ProxyController {
         String requestURL = createURL(request, poppUrl + API_URI, PROXY_URI + "/popp");
         HttpHeaders headers = proxyService.copyHeaders(request);
 
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get("dolly-backend")));
+        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
         return proxyService.proxyRequest(accessToken, body, method, headers, requestURL);
     }
 
@@ -244,7 +245,7 @@ public class ProxyController {
         String requestURL = createURL(request, inntektstubUrl + "/api/v2", PROXY_URI + "/inntektstub");
         HttpHeaders headers = proxyService.copyHeaders(request);
 
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get("dolly-backend")));
+        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
         return proxyService.proxyRequest(accessToken, body, method, headers, requestURL);
     }
 
@@ -257,7 +258,7 @@ public class ProxyController {
         String requestURL = createURL(request, brregstubUrl + "/api/v2", PROXY_URI + "/brregstub");
         HttpHeaders headers = proxyService.copyHeaders(request);
 
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get("dolly-backend")));
+        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
         return proxyService.proxyRequest(accessToken, body, method, headers, requestURL);
     }
 
@@ -270,7 +271,7 @@ public class ProxyController {
         String requestURL = createURL(request, hodejegerenUrl + API_URI, PROXY_URI + "/hodejegeren");
         HttpHeaders headers = proxyService.copyHeaders(request);
 
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get("dolly-backend")));
+        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
         return proxyService.proxyRequest(accessToken, body, method, headers, requestURL);
     }
 

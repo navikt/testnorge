@@ -15,6 +15,7 @@ type Props = {
 
 export default ({ brukerData }: Props) => {
 	const location = useLocation()
+	console.log(brukerData)
 
 	return (
 		<header className="app-header">
@@ -50,7 +51,7 @@ export default ({ brukerData }: Props) => {
 			<div className="profil-area flexbox--all-center">
 				<NavLink to="/minside">
 					<Icon kind="user" size={25} />
-					{brukerData.brukerId}
+					{brukerData.brukernavn}
 				</NavLink>
 			</div>
 		</header>
