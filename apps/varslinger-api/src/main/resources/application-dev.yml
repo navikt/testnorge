@@ -1,0 +1,25 @@
+spring:
+  h2:
+    console:
+      enabled: true
+      path: /h2
+  flyway:
+    enabled: true
+  datasource:
+    url: jdbc:h2:mem:testdb?useUnicode=yes&characterEncoding=UTF-8
+    username: sa
+    password:
+    driverClassName: org.h2.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          #The client_id of this application
+          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
+  main:
+    banner-mode: off
