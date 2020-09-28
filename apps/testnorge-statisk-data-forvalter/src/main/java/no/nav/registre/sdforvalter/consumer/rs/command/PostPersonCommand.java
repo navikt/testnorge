@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
+import java.util.Collections;
 import java.util.concurrent.Callable;
 
 import no.nav.registre.sdforvalter.domain.TpsIdent;
@@ -37,8 +38,14 @@ public class PostPersonCommand implements Callable<ResponseEntity<String>> {
 
         var kilde = ident.getOpprinnelse();
         UriTemplate uriTemplate = new UriTemplate(url + "/api/v1/personer?kilde={kilde}");
+        var uriVariables = Collections.singletonMap("kilde", kilde);
 
-        var response = restTemplate.exchange(uriTemplate.expand(kilde), HttpMethod.POST, new HttpEntity<>(person),String.class);
+        var response = restTemplate.exchange(
+                uriTemplate.expand(uriVariables),
+                HttpMethod.POST,
+                new HttpEntity<>(person),
+                String.class
+        );
         if (!response.getStatusCode().is2xxSuccessful()) {
             throw new FeilVedOpprettelseException("Feil ved opprettelse av person " + ident.getFnr() + ". Status code: " + response.getStatusCodeValue());
         }
