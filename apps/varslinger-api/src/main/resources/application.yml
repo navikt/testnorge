@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: testnorge-varslinger-api
+    version: @application.version@
+    description: Applikasjon for å registere varslinger
