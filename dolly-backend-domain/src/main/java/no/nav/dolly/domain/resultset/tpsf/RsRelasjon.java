@@ -20,6 +20,13 @@ import lombok.Setter;
 public class RsRelasjon extends RsTpsfBasisBestilling{
 
     @ApiModelProperty(
+            position = 5,
+            dataType = "String",
+            value = "Ident (FNR/DNR/BOST). Feltet benyttes for legg-til/endre på person kun, ikke ny bestilling"
+    )
+    private String ident;
+
+    @ApiModelProperty(
             position = 6,
             value = "Identtype FNR/DNR/BOST, default er FNR"
     )
