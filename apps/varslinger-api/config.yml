@@ -9,6 +9,11 @@ spec:
   image: {{ image }}
   port: 8080
   webproxy: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: dolly-frontend
+        - application: testnorge-oversikt-frontend
   azure:
     application:
       enabled: true
