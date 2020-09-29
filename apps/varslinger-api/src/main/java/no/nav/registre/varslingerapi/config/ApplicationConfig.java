@@ -11,7 +11,7 @@ import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerCo
 
 @EnableJpaAuditing
 @Configuration
-@Import(value = {
+@Import({
         ApplicationCoreConfig.class,
         VaultHikariConfiguration.class,
         FlywayConfiguration.class,
