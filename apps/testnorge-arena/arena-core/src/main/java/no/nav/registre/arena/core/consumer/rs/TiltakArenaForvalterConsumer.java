@@ -41,6 +41,7 @@ public class TiltakArenaForvalterConsumer {
 
     public List<NyttVedtakTiltak> finnTiltak(List<NyttVedtakTiltak> tiltakdeltakelser) {
         var responses = new ArrayList<NyttVedtakTiltak>();
+        List<Integer> tiltaksIder = new ArrayList<>();
 
         var url = new UriTemplate(arenaForvalterServerUrl + "tiltaksdeltakelse/finn_tiltak");
 
@@ -55,13 +56,13 @@ public class TiltakArenaForvalterConsumer {
             } catch (HttpStatusCodeException e) {
                 log.error("Kunne ikke finne tiltak i arena-forvalteren.", e);
             }
-            if (response != null) {
+            if (response != null && response.getTiltakId() != null && !tiltaksIder.contains(response.getTiltakId())) {
+                tiltaksIder.add(response.getTiltakId());
                 responses.add(response);
             }
-
         }
 
-        return responses.stream().filter(response -> response.getTiltakId() != null).collect(Collectors.toList());
+        return responses;
     }
 
 }

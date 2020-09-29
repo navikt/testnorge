@@ -50,5 +50,15 @@
       "kode": "TILBUD",
       "sannsynlighet": 2
     }
+  ],
+  "AVSLUTTET_DELTAKER": [
+    {
+      "kode": "DELAVB",
+      "sannsynlighet": 101
+    },
+    {
+      "kode": "FULLF",
+      "sannsynlighet": 892
+    }
   ]
 }

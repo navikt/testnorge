@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.TiltakArenaForvalterConsumer;
+import org.apache.tomcat.jni.Local;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -64,7 +65,6 @@ public class VedtakshistorikkService {
     private final RettighetAapService rettighetAapService;
     private final RettighetTiltakService rettighetTiltakService;
 
-    private static final List<String> AVSLUTTENDE_DELTAKERSTATUSKODER = Arrays.asList("DELAVB", "FULLF");
     public static final String DELTAKERSTATUS_GJENNOMFOERES = "GJENN";
 
     public Map<String, List<NyttVedtakResponse>> genererVedtakshistorikk(
@@ -248,14 +248,14 @@ public class VedtakshistorikkService {
             tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, vedtaket.getFraDato());
             var genSaksopplysninger = vedtaket.getGenSaksopplysninger();
             for (var saksopplysning : genSaksopplysninger) {
-                if(isNullOrEmpty(saksopplysning.getVerdi())) {
+                if (isNullOrEmpty(saksopplysning.getVerdi())) {
                     continue;
                 }
                 if (GensakKoder.KDATO.equals(saksopplysning.getKode())
                         || GensakKoder.BTID.equals(saksopplysning.getKode())
                         || GensakKoder.UFTID.equals(saksopplysning.getKode())
                         || GensakKoder.YDATO.equals(saksopplysning.getKode())) {
-                            tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, LocalDate.parse(saksopplysning.getVerdi(), DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+                    tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, LocalDate.parse(saksopplysning.getVerdi(), DateTimeFormatter.ofPattern("dd-MM-yyyy")));
                 }
             }
         }
@@ -428,7 +428,8 @@ public class VedtakshistorikkService {
             tiltaksdeltakelse.forEach(deltakelse -> deltakelse.setTiltakYtelse("J"));
 
             var nyeTiltakdeltakelser = tiltakArenaForvalterConsumer.finnTiltak(tiltaksdeltakelse);
-            if (!nyeTiltakdeltakelser.isEmpty()){
+
+            if (!nyeTiltakdeltakelser.isEmpty()) {
                 nyeTiltakdeltakelser.forEach(deltakelse -> {
                     deltakelse.setFodselsnr(personident);
                     deltakelse.setBegrunnelse(BEGRUNNELSE);
@@ -479,14 +480,12 @@ public class VedtakshistorikkService {
             for (var deltakelse : tiltaksdeltakelser) {
                 if (shouldSetDeltakelseTilFullfoert(deltakelse)) {
                     var deltakerstatuskode = serviceUtils.velgKodeBasertPaaSannsynlighet(
-                            rettighetTiltakService.getVedtakMedStatuskoder().get("DELTAKER")).getKode();
+                            rettighetTiltakService.getVedtakMedStatuskoder().get("AVSLUTTET_DELTAKER")).getKode();
 
-                    if (AVSLUTTENDE_DELTAKERSTATUSKODER.contains(deltakerstatuskode)) {
-                        var rettighetRequest = rettighetTiltakService.opprettRettighetEndreDeltakerstatusRequest(personident, miljoe,
-                                deltakelse, deltakerstatuskode);
+                    var rettighetRequest = rettighetTiltakService.opprettRettighetEndreDeltakerstatusRequest(personident, miljoe,
+                            deltakelse, deltakerstatuskode);
 
-                        rettigheter.add(rettighetRequest);
-                    }
+                    rettigheter.add(rettighetRequest);
                 }
             }
         }
@@ -508,8 +507,13 @@ public class VedtakshistorikkService {
             String miljoe,
             List<RettighetRequest> rettigheter
     ) {
-        var tiltakspenger = vedtak.getTiltakspenger();
-        if (tiltakspenger != null && !tiltakspenger.isEmpty()) {
+        var tiltakspenger = vedtak.getTiltakspenger() != null ? vedtak.getTiltakspenger() : new ArrayList<NyttVedtakTiltak>();
+        var tiltaksdeltakelser = vedtak.getTiltaksdeltakelse();
+        tiltakspenger = tiltakspenger.stream()
+                .filter(tiltak -> harNoedvendigTiltakdeltakelse(tiltak, tiltaksdeltakelser))
+                .collect(Collectors.toList());
+
+        if (!tiltakspenger.isEmpty()) {
             var rettighetRequest = new RettighetTiltakspengerRequest(tiltakspenger);
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
@@ -518,20 +522,43 @@ public class VedtakshistorikkService {
         }
     }
 
+
     private void opprettVedtakBarnetillegg(
             Vedtakshistorikk vedtak,
             String personident,
             String miljoe,
             List<RettighetRequest> rettigheter
     ) {
-        var barnetillegg = vedtak.getBarnetillegg();
-        if (barnetillegg != null && !barnetillegg.isEmpty()) {
+        var barnetillegg = vedtak.getBarnetillegg() != null ? vedtak.getBarnetillegg() : new ArrayList<NyttVedtakTiltak>();
+        var tiltaksdeltakelser = vedtak.getTiltaksdeltakelse();
+        barnetillegg = barnetillegg.stream()
+                .filter(tillegg -> harNoedvendigTiltakdeltakelse(tillegg, tiltaksdeltakelser))
+                .collect(Collectors.toList());
+
+        if (!barnetillegg.isEmpty()) {
             var rettighetRequest = new RettighetTilleggsytelseRequest(barnetillegg);
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
             rettighetRequest.getNyeTilleggsytelser().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
             rettigheter.add(rettighetRequest);
         }
+    }
+
+    private boolean harNoedvendigTiltakdeltakelse(NyttVedtakTiltak vedtak, List<NyttVedtakTiltak> tiltakdeltakelser) {
+        if (tiltakdeltakelser != null && !tiltakdeltakelser.isEmpty()) {
+            var fraDato = vedtak.getFraDato();
+            var tilDato = vedtak.getTilDato();
+            for (var deltakelse : tiltakdeltakelser) {
+                var fraDatoDeltakelse = deltakelse.getFraDato();
+                var tilDatoDeltakelse = deltakelse.getTilDato();
+                if (fraDatoDeltakelse != null && tilDatoDeltakelse != null &&
+                        fraDato.isAfter(fraDatoDeltakelse.minusDays(1)) &&
+                        tilDato.isBefore(tilDatoDeltakelse.plusDays(1))) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void opprettVedtakTillegg(
