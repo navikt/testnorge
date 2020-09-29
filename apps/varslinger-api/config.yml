@@ -32,6 +32,9 @@ spec:
     max: 1
   vault:
     enabled: true
+    paths:
+      - kvPath: /serviceuser/data/dev/srvtestnorge
+        mountPath: /secret/serviceuser
   resources:
     requests:
       cpu: 200m
@@ -40,5 +43,4 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://testnorge-varslinger-api.nais.preprod.local"
     - "https://testnorge-varslinger-api.dev.adeo.no"
