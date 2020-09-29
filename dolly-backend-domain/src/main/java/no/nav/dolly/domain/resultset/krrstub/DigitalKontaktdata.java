@@ -26,6 +26,8 @@ public class DigitalKontaktdata {
         private boolean registrert;
         private String mobil;
         private String epost;
+        private String sdpAdresse;
+        private int sdpLeverandoer;
         private String spraak;
 
         private ZonedDateTime epostOppdatert;

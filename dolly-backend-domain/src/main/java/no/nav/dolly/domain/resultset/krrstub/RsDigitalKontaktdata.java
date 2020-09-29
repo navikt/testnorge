@@ -22,5 +22,7 @@ public class RsDigitalKontaktdata {
     private String mobil;
     private String epost;
     private boolean registrert;
+    private String sdpAdresse;
+    private int sdpLeverandoer;
     private String spraak;
 }
