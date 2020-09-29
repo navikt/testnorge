@@ -9,4 +9,6 @@ import no.nav.registre.varslingerapi.repository.model.MottattVarslingModel;
 public interface MottattVarslingRepository extends CrudRepository<MottattVarslingModel, Long> {
 
     List<MottattVarslingModel> findAllByBrukerObjectId(String objectId);
+
+    void deleteAllByBrukerObjectId(String objectId);
 }

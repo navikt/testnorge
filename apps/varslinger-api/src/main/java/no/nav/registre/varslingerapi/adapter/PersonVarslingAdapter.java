@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import no.nav.registre.testnorge.libs.avro.personinfo.PersonInfo;
 import no.nav.registre.testnorge.libs.oauth2.service.AuthenticationTokenResolver;
 import no.nav.registre.varslingerapi.domain.Varsling;
 import no.nav.registre.varslingerapi.repository.BrukerRepository;
@@ -82,5 +83,11 @@ public class PersonVarslingAdapter {
     public String get(String varslingId) {
         Optional<MottattVarslingModel> mottattVarsling = getMottattVarsling(varslingId);
         return mottattVarsling.map(mottatt -> mottatt.getVarsling().getVarslingId()).orElse(null);
+    }
+
+    public void delete(PersonInfo personInfo) {
+        var objectId = personInfo.getObjectId().toString();
+        mottattVarslingRepository.deleteAllByBrukerObjectId(objectId);
+        brukerRepository.deleteById(objectId);
     }
 }
