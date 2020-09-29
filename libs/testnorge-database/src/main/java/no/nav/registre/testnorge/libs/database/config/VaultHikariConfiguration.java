@@ -32,7 +32,10 @@ public class VaultHikariConfiguration implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         container.setLeaseEndpoints(LeaseEndpoints.SysLeases);
-        RequestedSecret secret = RequestedSecret.rotating(props.getBackend() + "/creds/" + props.getRole());
+        var secretPath = props.getBackend() + "/creds/" + props.getRole();
+        RequestedSecret secret = RequestedSecret.rotating(secretPath);
+        log.info("Setup vault lease for {}", secretPath);
+
         container.addLeaseListener(leaseEvent -> {
             if ((leaseEvent.getSource() == secret) && (leaseEvent instanceof SecretLeaseCreatedEvent)) {
                 log.info("Roterer brukernavn/passord for : {}", leaseEvent.getSource().getPath());

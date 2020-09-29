@@ -68,6 +68,8 @@
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
         </dependency>
+
+        <!--Database-->
         <dependency>
             <groupId>no.nav.registre.testnorge.libs</groupId>
             <artifactId>testnorge-database</artifactId>
@@ -83,6 +85,10 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
