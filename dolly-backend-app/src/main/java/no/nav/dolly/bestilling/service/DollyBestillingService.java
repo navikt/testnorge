@@ -9,6 +9,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.io.IOException;
@@ -51,7 +52,6 @@ import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsfRelasjonRequest;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.metrics.CounterCustomRegistry;
-import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TpsfPersonCache;
@@ -253,11 +253,11 @@ public class DollyBestillingService {
         }
     }
 
-    private String getHovedpersonAvBestillingsidenter(List<String> identer) {
+    private static String getHovedpersonAvBestillingsidenter(List<String> identer) {
         return identer.get(0); //Rask fix for å hente hoveperson i bestilling. Vet at den er første, men burde gjøre en sikrere sjekk
     }
 
-    private List<String> extraxtSuccessMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
+    private static List<String> extraxtSuccessMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
         Set<String> successMiljoer = new TreeSet();
 
         // Add successful messages
@@ -269,7 +269,7 @@ public class DollyBestillingService {
         return newArrayList(successMiljoer);
     }
 
-    private void removeUnsuccessfulMessages(String hovedperson, RsSkdMeldingResponse response, Set<String> successMiljoer) {
+    private static void removeUnsuccessfulMessages(String hovedperson, RsSkdMeldingResponse response, Set<String> successMiljoer) {
         for (SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()) {
             if (hovedperson.equals(sendSkdMldResponse.getPersonId())) {
                 for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
@@ -281,7 +281,7 @@ public class DollyBestillingService {
         }
     }
 
-    private void addSuccessfulMessages(String hovedperson, RsSkdMeldingResponse response, Set<String> successMiljoer) {
+    private static void addSuccessfulMessages(String hovedperson, RsSkdMeldingResponse response, Set<String> successMiljoer) {
         for (SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()) {
             if (hovedperson.equals(sendSkdMldResponse.getPersonId())) {
                 for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
@@ -293,7 +293,7 @@ public class DollyBestillingService {
         }
     }
 
-    private List<String> extraxtFailureMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
+    private static List<String> extraxtFailureMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
         Map<String, List<String>> failures = new TreeMap();
 
         addFeilmeldingSkdMeldinger(hovedperson, response.getSendSkdMeldingTilTpsResponsene(), failures);
@@ -306,35 +306,37 @@ public class DollyBestillingService {
         return errors;
     }
 
-    private void addFeilmeldingSkdMeldinger(String hovedperson, List<SendSkdMeldingTilTpsResponse> responseStatus, Map<String, List<String>> failures) {
+    private static void addFeilmeldingSkdMeldinger(String hovedperson, List<SendSkdMeldingTilTpsResponse> responseStatus, Map<String, List<String>> failures) {
         for (SendSkdMeldingTilTpsResponse response : responseStatus) {
             if (hovedperson.equals(response.getPersonId())) {
                 for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
                     if (isFaulty(entry.getValue()) && failures.containsKey(entry.getKey())) {
-                        failures.get(entry.getKey()).add(format(OUT_FMT, response.getSkdmeldingstype(), entry.getValue()));
+                        failures.get(entry.getKey()).add(format(OUT_FMT, response.getSkdmeldingstype(), encodeStatus(entry.getValue())));
                     } else if (isFaulty(entry.getValue())) {
-                        failures.put(entry.getKey(), newArrayList(format(OUT_FMT, response.getSkdmeldingstype(), entry.getValue())));
+                        failures.put(entry.getKey(), newArrayList(format(OUT_FMT, response.getSkdmeldingstype(),
+                                encodeStatus(entry.getValue()))));
                     }
                 }
             }
         }
     }
 
-    private void addFeilmeldingServicerutiner(String hovedperson, List<ServiceRoutineResponseStatus> responseStatus, Map<String, List<String>> failures) {
+    private static void addFeilmeldingServicerutiner(String hovedperson, List<ServiceRoutineResponseStatus> responseStatus, Map<String, List<String>> failures) {
         for (ServiceRoutineResponseStatus response : responseStatus) {
             if (hovedperson.equals(response.getPersonId())) {
                 for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
                     if (isFaulty(entry.getValue()) && failures.containsKey(entry.getKey())) {
-                        failures.get(entry.getKey()).add(format(OUT_FMT, response.getServiceRutinenavn(), entry.getValue()));
+                        failures.get(entry.getKey()).add(format(OUT_FMT, response.getServiceRutinenavn(), encodeStatus(entry.getValue())));
                     } else if (isFaulty(entry.getValue())) {
-                        failures.put(entry.getKey(), newArrayList(format(OUT_FMT, response.getServiceRutinenavn(), entry.getValue())));
+                        failures.put(entry.getKey(), newArrayList(format(OUT_FMT, response.getServiceRutinenavn(),
+                                encodeStatus(entry.getValue()))));
                     }
                 }
             }
         }
     }
 
-    private boolean isFaulty(String value) {
+    private static boolean isFaulty(String value) {
         return isNotBlank(value) && !SUCCESS.equals(value);
     }
 }
