@@ -59,7 +59,7 @@ export const Boadresse = ({ formikBag }) => {
 				<ErrorBoundary>
 					<LoadableComponent
 						onFetch={() => DollyApi.getKodeverkByNavn(AdresseKodeverk.PostnummerUtenPostboks)}
-						render={data => (
+						render={(data, feil) => (
 							<DollyTextInput
 								name="boadresse"
 								size="grow"
