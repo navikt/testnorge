@@ -10,6 +10,7 @@ import { useLocation } from 'react-use'
 type Props = {
 	brukerData: {
 		brukerId: string
+		brukernavn: string
 	}
 }
 
