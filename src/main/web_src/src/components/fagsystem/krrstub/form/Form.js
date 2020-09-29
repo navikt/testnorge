@@ -22,6 +22,8 @@ export const KrrstubForm = ({ formikBag }) => (
 			<div className="flexbox--flex-wrap">
 				<FormikTextInput name="krrstub.epost" label="E-post" />
 				<FormikTextInput name="krrstub.mobil" label="Mobilnummer" type="number" />
+				<FormikTextInput name="krrstub.sdpAdresse" label="SDP Adresse" />
+				<FormikTextInput name="krrstub.sdpLeverandoer" label="SDP leverandør" type="number" />
 				<FormikSelect name="krrstub.spraak" label="Språk" options={Options('spraaktype')} />
 				<FormikSelect
 					name="krrstub.registrert"
@@ -40,6 +42,8 @@ KrrstubForm.validation = {
 		epost: '',
 		gyldigFra: Yup.date().nullable(),
 		mobil: Yup.string().matches(/^[0-9]*$/, 'Ugyldig mobilnummer'),
+		sdpAdresse: '',
+		sdpLeverandoer: '',
 		spraak: '',
 		registrert: '',
 		reservert: ''

@@ -10,6 +10,8 @@ export const Visning = ({ data }) => {
 		<>
 			<TitleValue title="Mobilnummer" value={data.mobil} />
 			<TitleValue title="E-post" value={data.epost} />
+			<TitleValue title="SDP Adresse" value={data.sdpAdresse} />
+			<TitleValue title="SDP Leverandør" value={data.sdpLeverandoer} />
 			<TitleValue
 				title="Språk"
 				value={data.spraak && Formatters.showLabel('spraaktype', data.spraak.replace(' ', ''))}
