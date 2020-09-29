@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.libs.dto.varslingerapi.v1;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class VarslingDTO {
+    @JsonProperty(required = true)
     String varslingId;
+    @JsonProperty
     LocalDate fom;
+    @JsonProperty
     LocalDate tom;
 }

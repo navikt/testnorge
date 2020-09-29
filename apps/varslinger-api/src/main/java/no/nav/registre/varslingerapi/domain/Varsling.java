@@ -31,8 +31,17 @@ public class Varsling {
     }
 
     private static LocalDate toLocalDate(Date date) {
-        return date != null ? date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate() : null;
+        return date != null
+                ? date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+                : null;
     }
+
+    private static Date toDate(LocalDate localDate) {
+        return localDate != null
+                ? Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+                : null;
+    }
+
 
     public VarslingDTO toDTO() {
         return VarslingDTO
@@ -48,6 +57,8 @@ public class Varsling {
         return VarslingModel
                 .builder()
                 .varslingId(varslingId)
+                .fom(toDate(fom))
+                .tom(toDate(tom))
                 .build();
     }
 
