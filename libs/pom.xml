@@ -24,6 +24,7 @@
         <module>testnorge-reporting</module>
         <module>testnorge-database</module>
         <module>testnorge-oauth2</module>
+        <module>testnorge-logging</module>
     </modules>
 
 

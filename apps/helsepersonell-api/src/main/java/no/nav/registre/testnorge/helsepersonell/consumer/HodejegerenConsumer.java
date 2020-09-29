@@ -21,17 +21,17 @@ import no.nav.registre.testnorge.helsepersonell.domain.Persondata;
 public class HodejegerenConsumer {
     private static final String MILJOE = "q1";
     private final Executor executor;
-    private final Long legerAvspillingsgruppeId;
+    private final Long helsepersonellAvspillingsgruppeId;
     private final WebClient webClient;
 
     public HodejegerenConsumer(
             @Value("${hodejegeren.api.url}") String url,
             @Value("${hodejegeren.api.threads}") Integer threads,
-            @Value("${avspillingsgruppe.leger.id}") Long legerAvspillingsgruppeId
+            @Value("${avspillingsgruppe.helsepersonell.id}") Long helsepersonellAvspillingsgruppeId
     ) {
         this.webClient = WebClient.builder().baseUrl(url).build();
         this.executor = Executors.newFixedThreadPool(threads);
-        this.legerAvspillingsgruppeId = legerAvspillingsgruppeId;
+        this.helsepersonellAvspillingsgruppeId = helsepersonellAvspillingsgruppeId;
     }
 
     public CompletableFuture<Persondata> getPersondata(String ident) {
@@ -41,7 +41,7 @@ public class HodejegerenConsumer {
         );
     }
 
-    public Set<String> getLeger() {
-        return new GetAlleIdenterCommand(legerAvspillingsgruppeId, webClient).call();
+    public Set<String> getHelsepersonell() {
+        return new GetAlleIdenterCommand(helsepersonellAvspillingsgruppeId, webClient).call();
     }
 }

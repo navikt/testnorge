@@ -1,0 +1,41 @@
+@import '~nav-frontend-core/less/_variabler';
+
+.page-with-menu {
+  display: flex;
+  min-height: 600px;
+}
+
+.container--left {
+  display: flex;
+  padding-left: 20px;
+  flex-direction: column;
+  width: 250px;
+  border-right: solid 1px @navGra20;
+
+
+  h3 {
+    margin: 10px 0;
+    text-decoration: underline;
+  }
+
+  a {
+    font-size: 1.2em;
+    padding: 8px 0;
+  }
+
+  ul {
+    list-style-type: circle;
+    margin: 0 10px;
+    padding-left: 10px;
+  }
+
+  li {
+    text-align: left;
+    padding-left: 0;
+  }
+}
+
+.container--right {
+  margin-left: 50px;
+  width: auto;
+}

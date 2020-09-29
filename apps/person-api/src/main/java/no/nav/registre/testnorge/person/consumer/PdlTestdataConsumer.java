@@ -36,17 +36,17 @@ public class PdlTestdataConsumer {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public String createPerson(Person person) {
+    public String createPerson(Person person, String kilde) {
         String token = tokenService.getIdToken();
         log.info("Oppretter person med ident {} i PDL", person.getIdent());
 
-        var commaneds = Arrays.asList(
-                new PostOpprettPersonCommand(restTemplate, pdlTestdataUrl, person.getIdent(), token),
-                new PostNavnCommand(restTemplate, pdlTestdataUrl, person, token),
-                new PostAdresseCommand(restTemplate, pdlTestdataUrl, person, token)
+        var commands = Arrays.asList(
+                new PostOpprettPersonCommand(restTemplate, pdlTestdataUrl, person.getIdent(), kilde, token),
+                new PostNavnCommand(restTemplate, pdlTestdataUrl, person, kilde, token),
+                new PostAdresseCommand(restTemplate, pdlTestdataUrl, person, kilde, token)
         );
 
-        for (var command : commaneds) {
+        for (var command : commands) {
             try {
                 command.call();
             } catch (Exception e) {

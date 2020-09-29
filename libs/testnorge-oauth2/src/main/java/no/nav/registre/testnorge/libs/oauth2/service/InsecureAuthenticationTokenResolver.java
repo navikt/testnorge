@@ -17,6 +17,11 @@ public class InsecureAuthenticationTokenResolver implements AuthenticationTokenR
     }
 
     @Override
+    public String getOid() {
+        return null;
+    }
+
+    @Override
     public void verifyAuthentication() {
         //Ignored
     }

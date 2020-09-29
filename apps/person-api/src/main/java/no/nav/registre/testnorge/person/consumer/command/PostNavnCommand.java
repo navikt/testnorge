@@ -20,6 +20,7 @@ public class PostNavnCommand implements Callable<HendelseDTO> {
     private final RestTemplate restTemplate;
     private final String url;
     private final Person person;
+    private final String kilde;
     private final String token;
 
     @Override
@@ -31,7 +32,7 @@ public class PostNavnCommand implements Callable<HendelseDTO> {
         return restTemplate.exchange(
                 url + "/api/v1/bestilling/navn",
                 HttpMethod.POST,
-                new HttpEntity<>(new NavnDTO(person), headers),
+                new HttpEntity<>(new NavnDTO(person, kilde), headers),
                 HendelseDTO.class
         ).getBody();
     }

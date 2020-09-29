@@ -7,6 +7,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 
+/**
+ * Remove this call with AzureAd config
+ */
 @Slf4j
 @Configuration
 @Order(1)
@@ -21,4 +24,3 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable();
     }
 }
-

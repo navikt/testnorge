@@ -35,6 +35,7 @@ public class TpsIdenterAdapter extends FasteDataAdapter {
         if (list.isEmpty()) {
             return new TpsIdentListe();
         }
+
         return new TpsIdentListe(repository.saveAll(list
                 .stream()
                 .map(item -> new TpsIdentModel(item, getOppinnelse(item), getGruppe(item)))

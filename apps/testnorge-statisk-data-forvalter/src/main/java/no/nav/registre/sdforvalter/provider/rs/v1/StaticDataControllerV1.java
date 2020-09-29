@@ -1,5 +1,6 @@
 package no.nav.registre.sdforvalter.provider.rs.v1;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import no.nav.registre.sdforvalter.adapter.TpsIdenterAdapter;
 import no.nav.registre.sdforvalter.domain.AaregListe;
 import no.nav.registre.sdforvalter.domain.KrrListe;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
+import no.nav.registre.sdforvalter.service.IdentService;
 
 @Slf4j
 @RestController
@@ -24,6 +26,7 @@ import no.nav.registre.sdforvalter.domain.TpsIdentListe;
 @RequestMapping("/api/v1/faste-data")
 public class StaticDataControllerV1 {
 
+    private final IdentService identService;
     private final TpsIdenterAdapter tpsIdenterAdapter;
     private final EregAdapter eregAdapter;
     private final AaregAdapter aaregAdapter;
@@ -36,8 +39,10 @@ public class StaticDataControllerV1 {
     }
 
     @PostMapping("/tps")
-    public ResponseEntity<TpsIdentListe> createTps(@RequestBody TpsIdentListe liste) {
-        return ResponseEntity.ok(tpsIdenterAdapter.save(liste));
+    public ResponseEntity<TpsIdentListe> createTps(@RequestBody TpsIdentListe liste,
+                                                   @Parameter(description = "Hvis true settes tilfeldig navn på personer uten fornavn og etternavn")
+                                                   @RequestParam(name = "genererManglendeNavn", required = false) Boolean genererManglendeNavn) {
+        return ResponseEntity.ok(identService.save(liste, genererManglendeNavn));
     }
 
     @GetMapping("/aareg")

@@ -7,11 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.SyntConsumer;
 import no.nav.registre.syntrest.consumer.UriExpander;
-import no.nav.registre.syntrest.domain.aap.AAP115Melding;
-import no.nav.registre.syntrest.domain.aap.AAPMelding;
 import no.nav.registre.syntrest.domain.aareg.Arbeidsforholdsmelding;
 import no.nav.registre.syntrest.domain.bisys.Barnebidragsmelding;
-import no.nav.registre.syntrest.domain.elsam.Historikk;
 import no.nav.registre.syntrest.domain.frikort.FrikortKvittering;
 import no.nav.registre.syntrest.domain.inst.Institusjonsmelding;
 import no.nav.registre.syntrest.domain.medl.Medlemskapsmelding;
@@ -45,7 +42,6 @@ public class SyntController {
 
     ///////////// SYNT CONSUMERS //////////////
     private final SyntConsumer aaregConsumer;
-    private final SyntConsumer aapConsumer;
     private final SyntConsumer bisysConsumer;
     private final SyntConsumer instConsumer;
     private final SyntConsumer medlConsumer;
@@ -57,16 +53,11 @@ public class SyntController {
     private final SyntConsumer tpConsumer;
     private final SyntConsumer tpsConsumer;
     private final SyntConsumer frikortConsumer;
-    private final SyntConsumer elsamConsumer;
 
 
     ///////////// URLs //////////////
     @Value("${synth-aareg-url}")
     private String aaregUrl;
-    @Value("${synth-arena-aap-115-url}")
-    private String aap115Url;
-    @Value("${synth-arena-aap-nyRettighet-url}")
-    private String aapUrl;
     @Value("${synth-arena-bisys-url}")
     private String bisysUrl;
     @Value("${synth-inst-url}")
@@ -89,8 +80,6 @@ public class SyntController {
     private String tpsUrl;
     @Value("${synth-frikort-url}")
     private String frikortUrl;
-    @Value("${synth-elsam-url}")
-    private String elsamUrl;
 
 
     @PostMapping("/aareg")
@@ -103,36 +92,6 @@ public class SyntController {
         InputValidator.validateInput(fnrs);
         List<Arbeidsforholdsmelding> response = (List<Arbeidsforholdsmelding>)
                 aaregConsumer.synthesizeData(UriExpander.createRequestEntity(aaregUrl, fnrs));
-        doResponseValidation(response);
-
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/arena/aap/11_5")
-    @ApiOperation(value = "Aap115", notes = "Generer et antall AAP11_5 meldinger")
-    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-arena-aap"})
-    public ResponseEntity<List<AAP115Melding>> generateAAP11_5(
-            @ApiParam(value = "Antall AAP11_5 meldinger", required = true)
-            @RequestParam int numToGenerate
-    ) {
-        InputValidator.validateInput(numToGenerate);
-        List<AAP115Melding> response = (List<AAP115Melding>)
-                aapConsumer.synthesizeData(UriExpander.createRequestEntity(aap115Url, numToGenerate));
-        doResponseValidation(response);
-
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/arena/aap/nyRettighet")
-    @ApiOperation(value = "Ny Rettighet/AAP melding", notes = "Generer et antall nye rettigheter")
-    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-arena-aap"})
-    public ResponseEntity<List<AAPMelding>> generateAAPNyRettighet(
-            @ApiParam(value = "Antall AAP meldinger/nye rettigheter", required = true)
-            @RequestParam int numToGenerate
-    ) {
-        InputValidator.validateInput(numToGenerate);
-        List<AAPMelding> response = (List<AAPMelding>)
-                aapConsumer.synthesizeData(UriExpander.createRequestEntity(aapUrl, numToGenerate));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -329,7 +288,6 @@ public class SyntController {
             @ApiParam(value = "Map der key=fødselsnummer og value er antall kvitteringer man ønsker å lage for denne identen.", required = true)
             @RequestBody Map<String, Integer> fnrAntMeldingMap
     ) {
-        InputValidator.validateInput(new ArrayList<>(fnrAntMeldingMap.keySet()));
         fnrAntMeldingMap.forEach((key, value) -> InputValidator.validateInput(value));
         Map<String, List<FrikortKvittering>> response = (Map<String, List<FrikortKvittering>>)
                 frikortConsumer.synthesizeData(UriExpander.createRequestEntity(frikortUrl, fnrAntMeldingMap));
@@ -337,23 +295,6 @@ public class SyntController {
 
         return ResponseEntity.ok(response);
     }
-
-    @PostMapping("/elsam")
-    @ApiOperation(value = "Generer sykemelding-historie", notes = "Lager en sykemeldings-historie per person som blir sendt inn. ")
-    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-elsam"})
-    public ResponseEntity<Map<String, Historikk>> generateSykemeldingHistorikk(
-            @ApiParam(value = "Fnr for personen som skal ha sykemeldinger. Startdato for sykemeldingene.", required = true, example = "")
-            @RequestBody Map<String, String> fnrStartdatoMap
-    ) {
-        InputValidator.validateInput(new ArrayList<>(fnrStartdatoMap.keySet()));
-
-        Map<String, Historikk> response = (Map<String, Historikk>)
-                elsamConsumer.synthesizeData(UriExpander.createRequestEntity(elsamUrl, fnrStartdatoMap));
-        doResponseValidation(response);
-
-        return ResponseEntity.ok(response);
-    }
-
 
     private void doResponseValidation(Object response) {
         if (Objects.isNull(response)) {

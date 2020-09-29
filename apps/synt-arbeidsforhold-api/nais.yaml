@@ -32,3 +32,4 @@ spec:
       memory: 5000Mi
   ingresses:
     - "https://testnorge-synt-arbeidsforhold-api.nais.preprod.local"
+    - "https://testnorge-synt-arbeidsforhold-api.dev.adeo.no"

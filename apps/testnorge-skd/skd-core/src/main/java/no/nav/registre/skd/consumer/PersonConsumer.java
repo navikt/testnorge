@@ -13,9 +13,10 @@ import no.nav.registre.skd.consumer.credential.PersonApiClientCredential;
 import no.nav.registre.testnorge.libs.common.command.CreatePersonCommand;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
 
 
 @Component
@@ -23,13 +24,13 @@ import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 public class PersonConsumer {
     private final WebClient webClient;
     private final ClientCredential clientCredential;
-    private final AccessTokenService accessTokenService;
+    private final ClientCredentialGenerateAccessTokenService accessTokenService;
 
     public PersonConsumer(
             @Value("${person.rest.api.url}") String url,
             ObjectMapper objectMapper,
             PersonApiClientCredential clientCredential,
-            AccessTokenService accessTokenService
+            ClientCredentialGenerateAccessTokenService accessTokenService
     ) {
         this.clientCredential = clientCredential;
         this.accessTokenService = accessTokenService;
@@ -50,7 +51,10 @@ public class PersonConsumer {
     }
 
     public void createPerson(PersonDTO person) {
-        AccessToken accessToken = accessTokenService.generateToken(clientCredential);
+        AccessToken accessToken = accessTokenService.generateToken(
+                clientCredential,
+                new AccessScopes("api://" + clientCredential.getClientId() + "/.default")
+        );
         new CreatePersonCommand(webClient, person, accessToken.getTokenValue()).run();
     }
 }

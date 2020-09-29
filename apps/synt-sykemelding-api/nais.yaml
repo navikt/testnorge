@@ -8,6 +8,7 @@ metadata:
 spec:
   image: {{ image }}
   port: 8080
+  webproxy: true
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -32,3 +33,4 @@ spec:
       memory: 5000Mi
   ingresses:
     - "https://testnorge-synt-sykemelding-api.nais.preprod.local"
+    - "https://testnorge-synt-sykemelding-api.dev.adeo.no"

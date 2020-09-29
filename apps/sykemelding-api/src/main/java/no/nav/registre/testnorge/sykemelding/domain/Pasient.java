@@ -8,7 +8,7 @@ import no.kith.xmlstds.felleskomponent1.XMLTeleCom;
 import no.kith.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpplysningerArbeidsuforhet;
 import no.kith.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLNavnType;
 
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.LegeDTO;
+import no.nav.registre.testnorge.libs.dto.sykemelding.v1.HelsepersonellDTO;
 import no.nav.registre.testnorge.libs.dto.sykemelding.v1.PasientDTO;
 
 public class Pasient {
@@ -16,7 +16,7 @@ public class Pasient {
     private final XMLHelseOpplysningerArbeidsuforhet.Pasient xmlPasient;
 
 
-    Pasient(PasientDTO pasientDTO, LegeDTO legeDTO) {
+    Pasient(PasientDTO pasientDTO, HelsepersonellDTO helsepersonellDTO) {
         xmlPasient = new XMLHelseOpplysningerArbeidsuforhet.Pasient()
                 .withNavn(new XMLNavnType()
                         .withEtternavn(pasientDTO.getEtternavn())
@@ -34,7 +34,7 @@ public class Pasient {
                         .withTypeTelecom(new XMLCS().withV("HP").withDN("Hovedtelefon"))
                         .withTeleAddress(new XMLURL().withV("tel:" + pasientDTO.getTelefon()))
                 )
-                .withNavnFastlege(legeDTO.getFornavn() + " " + legeDTO.getEtternavn())
+                .withNavnFastlege(helsepersonellDTO.getFornavn() + " " + helsepersonellDTO.getEtternavn())
                 .withNAVKontor(pasientDTO.getNavKontor());
     }
 

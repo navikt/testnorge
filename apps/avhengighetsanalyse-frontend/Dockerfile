@@ -1,7 +1,7 @@
 FROM navikt/java:11
 LABEL maintainer="Team Registre"
 
-ADD apps/avhengighetsanalyse-frontend/target/app.jar /app/app.jar
+ADD /target/app.jar /app/app.jar
 
 ENV JAVA_OPTS="-Dspring.profiles.active=prod"
 

@@ -31,3 +31,4 @@ spec:
       memory: 1024Mi
   ingresses:
     - "https://testnorge-tss.nais.preprod.local"
+    - "https://testnorge-tss.dev.adeo.no"

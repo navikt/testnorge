@@ -1,34 +1,67 @@
-application:
-  name: "avhengighetsanalyse-frontend"
-  version: @application.version@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+CLIENT_ID: fed74251-7f43-4b6d-a838-11dbccda82c3
+
+spring:
+  application:
+    name: "avhengighetsanalyse-frontend"
+    version: @application.version@
+    description: App for visning av avhengigheter i testnorge
+  cloud:
+    vault:
+      enabled: false
+  security:
+    oauth2:
+      client:
+        registration:
+          aad:
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_SECRET}
+            authorization-grant-type: authorization_code
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            scope: openid, ${CLIENT_ID}/.default
+        provider:
+          aad:
+            authorization-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/authorize
+            token-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/token
+            jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+  main:
+    banner-mode: off
 
 dependencies:
   urls:
-    - http://testnorge-helsepersonell-api.default.svc.nais.local/dependencies
-    - http://testnorge-statisk-data-forvalter.default.svc.nais.local/dependencies
-    - http://orkestratoren.default.svc.nais.local/dependencies
-    - http://testnorge-tp.default.svc.nais.local/dependencies
-    - http://inntektsmelding-stub.default.svc.nais.local/dependencies
-    - http://testnorge-aareg.default.svc.nais.local/dependencies
-    - http://testnorge-aaregstub.default.svc.nais.local/dependencies
-    - http://testnorge-arena.default.svc.nais.local/dependencies
-    - http://testnorge-ereg-mapper.default.svc.nais.local/dependencies
-    - http://testnorge-frikort.default.svc.nais.local/dependencies
-    - http://testnorge-hodejegeren.default.svc.nais.local/dependencies
-    - http://testnorge-inntekt.default.svc.nais.local/dependencies
-    - http://testnorge-inst.default.svc.nais.local/dependencies
-    - http://testnorge-medl.default.svc.nais.local/dependencies
-    - http://testnorge-nav-endringsmeldinger.default.svc.nais.local/dependencies
-    - http://testnorge-sam.default.svc.nais.local/dependencies
-    - http://testnorge-sigrun.default.svc.nais.local/dependencies
-    - http://testnorge-skd.default.svc.nais.local/dependencies
-    - http://testnorge-spion.default.svc.nais.local/dependencies
-    - http://testnorge-token-provider.default.svc.nais.local/dependencies
-    - http://testnorge-tss.default.svc.nais.local/dependencies
-    - http://testnorge-person-api.default.svc.nais.local/dependencies
-    - http://testnorge-sykemelding-api.default.svc.nais.local/dependencies
-    - http://testnorge-organisasjon-api.default.svc.nais.local/dependencies
-    - http://testnorge-arbeidsforhold-api.default.svc.nais.local/dependencies
-    - http://testnorge-synt-sykemelding-api.default.svc.nais.local/dependencies
-    - http://testnorge-hendelse-api.default.svc.nais.local/dependencies
+    - https://testnorge-arbeidsforhold-api.dev.adeo.no/dependencies
+    - https://testnorge-helsepersonell-api.dev.adeo.no/dependencies
+    - https://testnorge-hendelse-api.dev.adeo.no/dependencies
+    - https://inntektsmelding-stub.dev.adeo.no/dependencies
+    - https://orkestratoren.dev.adeo.no/dependencies
+    - https://testnorge-organisasjon-api.dev.adeo.no/dependencies
+    - https://testnorge-person-api.dev.adeo.no/dependencies
+    - https://testnorge-profil-api.dev.adeo.no/dependencies
+    - https://testnorge-rapportering-api.dev.adeo.no/dependencies
+    - https://testnorge-statistikk-api.dev.adeo.no/dependencies
+    - https://testnorge-sykemelding-api.dev.adeo.no/dependencies
+    - https://testnorge-synt-arbeidsforhold-api.dev.adeo.no/dependencies
+    - https://testnorge-synt-person-api.dev.adeo.no/dependencies
+    - https://testnorge-synt-sykemelding-api.dev.adeo.no/dependencies
+    - https://testnorge-statisk-data-forvalter.dev.adeo.no/dependencies
+    - https://testnorge-aareg.dev.adeo.no/dependencies
+    - https://testnorge-aaregstub.dev.adeo.no/dependencies
+    - https://testnorge-arena.dev.adeo.no/dependencies
+    - https://testnorge-ereg-mapper.dev.adeo.no/dependencies
+    - https://testnorge-frikort.dev.adeo.no/dependencies
+    - https://testnorge-hodejegeren.dev.adeo.no/dependencies
+    - https://testnorge-inntekt.dev.adeo.no/dependencies
+    - https://testnorge-inst.dev.adeo.no/dependencies
+    - https://testnorge-medl.dev.adeo.no/dependencies
+    - https://testnorge-nav-endringsmeldinger.dev.adeo.no/dependencies
+    - https://testnorge-populasjoner.dev.adeo.no/dependencies
+    - https://testnorge-sam.dev.adeo.no/dependencies
+    - https://testnorge-sigrun.dev.adeo.no/dependencies
+    - https://testnorge-skd.dev.adeo.no/dependencies
+    - https://testnorge-spion.dev.adeo.no/dependencies
+    - https://testnorge-token-provider.dev.adeo.no/dependencies
+    - https://testnorge-tp.dev.adeo.no/dependencies
+    - https://testnorge-tss.dev.adeo.no/dependencies
+    - https://udi-stub.dev.adeo.no/dependencies
+    - https://brreg-stub.dev.adeo.no/dependencies
   threads: 6

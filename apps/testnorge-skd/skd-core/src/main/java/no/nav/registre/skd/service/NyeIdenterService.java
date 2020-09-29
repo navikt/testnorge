@@ -2,6 +2,7 @@ package no.nav.registre.skd.service;
 
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.opprettStatsborgerendringsmelding;
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.putFnrInnIMelding;
+import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.korrigerUtenFastBosted;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,9 @@ public class NyeIdenterService {
             putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), identer.get(i));
             if (Endringskoder.INNVANDRING.getAarsakskode().equals(meldinger.get(i).getAarsakskode())) {
                 meldinger.add(opprettStatsborgerendringsmelding((RsMeldingstype1Felter) meldinger.get(i)));
+            }
+            if ("UTENFASTBOSTED".equals(((RsMeldingstype1Felter) meldinger.get(i)).getAdresse1())) {
+                korrigerUtenFastBosted((RsMeldingstype1Felter) meldinger.get(i));
             }
         }
         return identer;

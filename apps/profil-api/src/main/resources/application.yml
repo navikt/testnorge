@@ -1,0 +1,11 @@
+spring.application:
+  version: @application.version@
+  name: profil-api
+  desciption: API for hente ut profil fra Azure Ad
+
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+access.scopes:
+  - https://graph.microsoft.com/.default
+
+api.azuread.url: https://graph.microsoft.com

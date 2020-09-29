@@ -21,21 +21,21 @@ public class SykemeldingService {
     private final ArbeidsforholdAdapter arbeidsforholdAdapter;
 
     public void opprettSykemelding(SyntSykemeldingDTO dto) {
-
         var pasient = hodejegerenConsumer.getPersondata(dto.getIdent());
         var arbeidsforhold = arbeidsforholdAdapter.getArbeidsforhold(
                 dto.getIdent(),
                 dto.getOrgnummer(),
                 dto.getArbeidsforholdId()
         );
+
         var historikk = historikkConsumer.genererSykemeldinger(
                 dto.getIdent(),
                 dto.getStartDato()
         );
-        var legeListe = helsepersonellConsumer.hentLeger();
+        var helsepersonellListe = helsepersonellConsumer.hentHelsepersonell();
 
         sykemeldingConsumer.opprettSykemelding(
-                new Sykemelding(pasient, historikk, dto, legeListe.getRandomLege(), arbeidsforhold)
+                new Sykemelding(pasient, historikk, dto, helsepersonellListe.getRandomLege(), arbeidsforhold)
         );
     }
 }

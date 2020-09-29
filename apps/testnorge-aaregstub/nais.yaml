@@ -31,3 +31,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnorge-aaregstub.nais.preprod.local"
+    - "https://testnorge-aaregstub.dev.adeo.no"

@@ -21,9 +21,10 @@ import no.nav.registre.orkestratoren.consumer.credential.PersonApiClientCredenti
 import no.nav.registre.testnorge.libs.common.command.GetPersonCommand;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
 
 @Slf4j
 @Component
@@ -31,14 +32,14 @@ import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 public class PersonConsumer {
     private final WebClient webClient;
     private final ClientCredential clientCredential;
-    private final AccessTokenService accessTokenService;
+    private final ClientCredentialGenerateAccessTokenService accessTokenService;
     private final Executor executor;
 
     public PersonConsumer(
             @Value("${consumers.person.url}") String baseUrl,
             ObjectMapper objectMapper, @Value("${consumers.person.threads}") Integer threads,
             PersonApiClientCredential clientCredential,
-            AccessTokenService accessTokenService
+            ClientCredentialGenerateAccessTokenService accessTokenService
     ) {
         this.clientCredential = clientCredential;
         this.accessTokenService = accessTokenService;
@@ -59,7 +60,10 @@ public class PersonConsumer {
     }
 
     private CompletableFuture<PersonDTO> getPerson(String ident) {
-        AccessToken accessToken = accessTokenService.generateToken(clientCredential);
+        AccessToken accessToken = accessTokenService.generateToken(
+                clientCredential,
+                new AccessScopes("api://" + clientCredential.getClientId() + "/.default")
+        );
         return CompletableFuture.supplyAsync(
                 () -> new GetPersonCommand(webClient, ident, accessToken.getTokenValue()).call(),
                 executor

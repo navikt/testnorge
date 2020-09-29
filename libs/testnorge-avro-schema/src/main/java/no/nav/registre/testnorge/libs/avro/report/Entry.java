@@ -5,6 +5,7 @@
  */
 package no.nav.registre.testnorge.libs.avro.report;
 
+import org.apache.avro.generic.GenericArray;
 import org.apache.avro.specific.SpecificData;
 import org.apache.avro.util.Utf8;
 import org.apache.avro.message.BinaryMessageEncoder;
@@ -13,8 +14,8 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class Entry extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 7399292871890382179L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Entry\",\"namespace\":\"no.nav.registre.testnorge.avro.report\",\"fields\":[{\"name\":\"status\",\"type\":\"string\"},{\"name\":\"description\",\"type\":\"string\"},{\"name\":\"time\",\"type\":\"string\"}]}");
+  private static final long serialVersionUID = 128894877207162283L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Entry\",\"namespace\":\"no.nav.registre.testnorge.libs.avro.report\",\"fields\":[{\"name\":\"status\",\"type\":\"string\"},{\"name\":\"description\",\"type\":\"string\"},{\"name\":\"time\",\"type\":\"string\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
@@ -171,8 +172,8 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
    * Creates a new Entry RecordBuilder.
    * @return A new Entry RecordBuilder
    */
-  public static Entry.Builder newBuilder() {
-    return new Entry.Builder();
+  public static no.nav.registre.testnorge.libs.avro.report.Entry.Builder newBuilder() {
+    return new no.nav.registre.testnorge.libs.avro.report.Entry.Builder();
   }
 
   /**
@@ -180,11 +181,11 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
    * @param other The existing builder to copy.
    * @return A new Entry RecordBuilder
    */
-  public static Entry.Builder newBuilder(Entry.Builder other) {
+  public static no.nav.registre.testnorge.libs.avro.report.Entry.Builder newBuilder(no.nav.registre.testnorge.libs.avro.report.Entry.Builder other) {
     if (other == null) {
-      return new Entry.Builder();
+      return new no.nav.registre.testnorge.libs.avro.report.Entry.Builder();
     } else {
-      return new Entry.Builder(other);
+      return new no.nav.registre.testnorge.libs.avro.report.Entry.Builder(other);
     }
   }
 
@@ -193,11 +194,11 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
    * @param other The existing instance to copy.
    * @return A new Entry RecordBuilder
    */
-  public static Entry.Builder newBuilder(Entry other) {
+  public static no.nav.registre.testnorge.libs.avro.report.Entry.Builder newBuilder(no.nav.registre.testnorge.libs.avro.report.Entry other) {
     if (other == null) {
-      return new Entry.Builder();
+      return new no.nav.registre.testnorge.libs.avro.report.Entry.Builder();
     } else {
-      return new Entry.Builder(other);
+      return new no.nav.registre.testnorge.libs.avro.report.Entry.Builder(other);
     }
   }
 
@@ -221,7 +222,7 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(Entry.Builder other) {
+    private Builder(no.nav.registre.testnorge.libs.avro.report.Entry.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.status)) {
         this.status = data().deepCopy(fields()[0].schema(), other.status);
@@ -241,7 +242,7 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
      * Creates a Builder by copying an existing Entry instance
      * @param other The existing instance to copy.
      */
-    private Builder(Entry other) {
+    private Builder(no.nav.registre.testnorge.libs.avro.report.Entry other) {
       super(SCHEMA$);
       if (isValidValue(fields()[0], other.status)) {
         this.status = data().deepCopy(fields()[0].schema(), other.status);
@@ -271,7 +272,7 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
       * @param value The value of 'status'.
       * @return This builder.
       */
-    public Entry.Builder setStatus(java.lang.CharSequence value) {
+    public no.nav.registre.testnorge.libs.avro.report.Entry.Builder setStatus(java.lang.CharSequence value) {
       validate(fields()[0], value);
       this.status = value;
       fieldSetFlags()[0] = true;
@@ -291,7 +292,7 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
       * Clears the value of the 'status' field.
       * @return This builder.
       */
-    public Entry.Builder clearStatus() {
+    public no.nav.registre.testnorge.libs.avro.report.Entry.Builder clearStatus() {
       status = null;
       fieldSetFlags()[0] = false;
       return this;
@@ -311,7 +312,7 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
       * @param value The value of 'description'.
       * @return This builder.
       */
-    public Entry.Builder setDescription(java.lang.CharSequence value) {
+    public no.nav.registre.testnorge.libs.avro.report.Entry.Builder setDescription(java.lang.CharSequence value) {
       validate(fields()[1], value);
       this.description = value;
       fieldSetFlags()[1] = true;
@@ -331,7 +332,7 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
       * Clears the value of the 'description' field.
       * @return This builder.
       */
-    public Entry.Builder clearDescription() {
+    public no.nav.registre.testnorge.libs.avro.report.Entry.Builder clearDescription() {
       description = null;
       fieldSetFlags()[1] = false;
       return this;
@@ -351,7 +352,7 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
       * @param value The value of 'time'.
       * @return This builder.
       */
-    public Entry.Builder setTime(java.lang.CharSequence value) {
+    public no.nav.registre.testnorge.libs.avro.report.Entry.Builder setTime(java.lang.CharSequence value) {
       validate(fields()[2], value);
       this.time = value;
       fieldSetFlags()[2] = true;
@@ -371,7 +372,7 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
       * Clears the value of the 'time' field.
       * @return This builder.
       */
-    public Entry.Builder clearTime() {
+    public no.nav.registre.testnorge.libs.avro.report.Entry.Builder clearTime() {
       time = null;
       fieldSetFlags()[2] = false;
       return this;

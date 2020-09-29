@@ -1,7 +1,6 @@
 package no.nav.registre.syntrest.kubernetes;
 
 import io.kubernetes.client.ApiException;
-import net.jodah.concurrentunit.Waiter;
 import no.nav.registre.syntrest.consumer.SyntConsumer;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,11 +15,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -49,14 +45,11 @@ public class ApplicationManagerTest {
     private ApplicationManager globalManager;
 
     private SyntConsumer syntConsumerFrikort;
-    private SyntConsumer syntConsumerMeldekort;
 
     @Before
     public void setUp() {
         globalManager = new ApplicationManager(kubernetesController, scheduledExecutorService);
         syntConsumerFrikort = new SyntConsumer(globalManager, "synthdata-frikort");
-        // Meldekort is reserved for only being deployed ONCE
-        syntConsumerMeldekort = new SyntConsumer(globalManager, "synthdata-meldekort");
     }
 
 

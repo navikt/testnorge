@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -13,6 +14,7 @@ import reactor.netty.tcp.ProxyProvider;
 
 import java.net.URI;
 
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
 
@@ -50,17 +52,23 @@ public class ClientCredentialGenerateAccessTokenService {
         this.webClient = builder.build();
     }
 
-    public AccessToken generateToken(ClientCredential clientCredential) {
-        tokenResolver.verifyAuthentication();
+    public AccessToken generateToken(ClientCredential remoteClientCredential, AccessScopes accessScopes) {
         if (!tokenResolver.isClientCredentials()) {
-            throw new RuntimeException("Jwt er ikke av typen client credentials.");
+            throw new BadCredentialsException("Kan ikke gjennomfore OnBehalfOf-flow fra Client Credentials.");
         }
+
+        if (accessScopes.getScopes().isEmpty()) {
+            throw new RuntimeException("Kan ikke opprette accessToken uten scopes (clienter).");
+        }
+
+        tokenResolver.verifyAuthentication();
+
         log.info("Henter OAuth2 access token fra client credential...");
 
         var body = BodyInserters
-                .fromFormData("scope", "api://" + clientCredential.getClientId() + "/.default")
-                .with("client_id", clientCredential.getClientId())
-                .with("client_secret", clientCredential.getClientSecret())
+                .fromFormData("scope", String.join(" ", accessScopes.getScopes()))
+                .with("client_id", remoteClientCredential.getClientId())
+                .with("client_secret", remoteClientCredential.getClientSecret())
                 .with("grant_type", "client_credentials");
 
         AccessToken token = webClient.post()

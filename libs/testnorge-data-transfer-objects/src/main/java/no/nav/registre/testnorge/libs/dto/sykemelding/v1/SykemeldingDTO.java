@@ -24,7 +24,7 @@ public class SykemeldingDTO {
     @JsonProperty
     private PasientDTO pasient;
     @JsonProperty
-    private LegeDTO lege;
+    private HelsepersonellDTO helsepersonell;
     @JsonProperty
     private ArbeidsgiverDTO arbeidsgiver;
     @JsonProperty

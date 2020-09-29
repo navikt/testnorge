@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.concurrent.TimeUnit;
 
-import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.LegeListeDTO;
 import no.nav.registre.testnorge.helsepersonell.adapter.HelsepersonellAdapter;
+import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
 
 
 @RestController
@@ -18,28 +18,28 @@ import no.nav.registre.testnorge.helsepersonell.adapter.HelsepersonellAdapter;
 public class HelsepersonellController {
 
     private final HelsepersonellAdapter adapter;
-    private final Integer legerCacheHours;
+    private final Integer helsepersonellCacheHours;
 
 
     public HelsepersonellController(
             HelsepersonellAdapter adapter,
-            @Value("${helsepersonell.controller.leger.cache.hours}") Integer legerCacheHours
+            @Value("${helsepersonell.controller.cache.hours}") Integer helsepersonellCacheHours
     ) {
         this.adapter = adapter;
-        this.legerCacheHours = legerCacheHours;
+        this.helsepersonellCacheHours = helsepersonellCacheHours;
     }
 
-    @GetMapping("/leger")
-    public ResponseEntity<LegeListeDTO> getLeger() {
+    @GetMapping
+    public ResponseEntity<HelsepersonellListeDTO> getHelsepersonell() {
 
         var cacheControl
-                = CacheControl.maxAge(legerCacheHours, TimeUnit.HOURS)
+                = CacheControl.maxAge(helsepersonellCacheHours, TimeUnit.HOURS)
                 .noTransform()
                 .mustRevalidate();
-        var leger = adapter.getLeger();
+        var helsepersonell = adapter.getHelsepersonell();
         return ResponseEntity
                 .ok()
                 .cacheControl(cacheControl)
-                .body(leger.toDTO());
+                .body(helsepersonell.toDTO());
     }
 }

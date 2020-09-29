@@ -102,7 +102,7 @@ public class SyntetiseringService {
         for (var endringskode : sorterteEndringskoder) {
             List<Long> ids = new ArrayList<>();
             try {
-                var syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(endringskode.getEndringskode(),
+                List<RsMeldingstype> syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(endringskode.getEndringskode(),
                         antallMeldingerPerEndringskode.get(endringskode.getEndringskode()));
                 validationService.logAndRemoveInvalidMessages(syntetiserteSkdmeldinger, endringskode);
 
@@ -117,7 +117,6 @@ public class SyntetiseringService {
                 } else {
                     eksisterendeIdenterService.behandleEksisterendeIdenter(syntetiserteSkdmeldinger, listerMedIdenter, endringskode, miljoe);
                 }
-
                 ids = lagreSkdEndringsmeldingerITpsf(endringskode, syntetiserteSkdmeldinger, genereringsOrdreRequest);
                 idsLagretITpsfMenIkkeTps.addAll(ids);
 

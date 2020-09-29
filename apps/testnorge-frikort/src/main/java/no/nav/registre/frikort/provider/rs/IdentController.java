@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.frikort.consumer.rs.response.SyntFrikortResponseDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,13 +58,13 @@ public class IdentController {
 
     @GetMapping("/syntetiskData")
     @ApiOperation(value = "Her kan man hente syntetiske egenandeler på json-format.")
-    public ResponseEntity<List<SyntFrikortResponse>> hentSyntetiskeEgenandeler(
+    public ResponseEntity<List<SyntFrikortResponseDTO>> hentSyntetiskeEgenandeler(
             @RequestParam Integer antallEgenandeler,
             @ApiParam(value = VALIDER_EGENANDEL_DESCRIPTION)
             @RequestParam(defaultValue = "true", required = false) boolean validerEgenandeler
     ) {
         var identerMedEgenandeler = identService.hentSyntetiskeEgenandeler(antallEgenandeler, validerEgenandeler);
-        var syntetiskeEgenandeler = new ArrayList<SyntFrikortResponse>();
+        var syntetiskeEgenandeler = new ArrayList<SyntFrikortResponseDTO>();
         identerMedEgenandeler.forEach((key, value) -> syntetiskeEgenandeler.addAll(value));
         return ResponseEntity.ok(syntetiskeEgenandeler);
     }
