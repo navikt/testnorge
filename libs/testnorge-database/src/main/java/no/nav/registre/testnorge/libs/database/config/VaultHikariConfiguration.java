@@ -1,7 +1,5 @@
 package no.nav.registre.testnorge.libs.database.config;
 
-import static org.springframework.vault.core.lease.domain.RequestedSecret.rotating;
-
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
