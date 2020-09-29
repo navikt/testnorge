@@ -50,7 +50,6 @@ public class PdlPersonConsumerTest {
 
     @Before
     public void setup() {
-        setField(pdlPersonConsumer, "environment", "t1");
         when(providersProps.getPdlPerson()).thenReturn(ProvidersProps.PdlPerson.builder().url("https://pdl-api.nais.preprod.local").build());
 
         server = MockRestServiceServer.createServer(restTemplate);
