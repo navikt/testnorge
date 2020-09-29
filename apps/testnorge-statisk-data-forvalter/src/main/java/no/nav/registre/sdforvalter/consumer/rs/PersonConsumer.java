@@ -1,72 +1,77 @@
 package no.nav.registre.sdforvalter.consumer.rs;
 
-import java.util.List;
-import java.util.Objects;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
+import org.springframework.http.codec.json.Jackson2JsonEncoder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import org.springframework.web.reactive.function.client.WebClient;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-
-import lombok.extern.slf4j.Slf4j;
-
-import no.nav.registre.sdforvalter.consumer.rs.command.PostPersonCommand;
-import no.nav.registre.sdforvalter.domain.TpsIdent;
+import no.nav.registre.sdforvalter.credentials.PersonApiClientCredential;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
-import no.nav.registre.sdforvalter.exception.UgyldigIdentException;
+import no.nav.registre.testnorge.libs.common.command.CreatePersonCommand;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
+import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
+import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
 
 @Slf4j
 @Component
 @DependencyOn("person-api")
 public class PersonConsumer {
 
-    private final RestTemplate restTemplate;
-    private final String url;
+    private final WebClient webClient;
+    private final ClientCredential clientCredential;
+    private final ClientCredentialGenerateAccessTokenService accessTokenService;
     private final Executor executor;
 
     public PersonConsumer(
-            RestTemplate restTemplate,
-            @Value("${person.api.url}") String url,
-            @Value("${person.api.threads}") Integer threads
+            @Value("${consumers.person.url}") String baseUrl,
+            ObjectMapper objectMapper, @Value("${consumers.person.threads}") Integer threads,
+            PersonApiClientCredential clientCredential,
+            ClientCredentialGenerateAccessTokenService accessTokenService
     ) {
-        this.restTemplate = restTemplate;
-        this.url = url;
+        this.clientCredential = clientCredential;
+        this.accessTokenService = accessTokenService;
+        ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
+                .codecs(config -> {
+                    config.defaultCodecs()
+                            .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper, MediaType.APPLICATION_JSON));
+                    config.defaultCodecs()
+                            .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
+                }).build();
+
+        this.webClient = WebClient
+                .builder()
+                .exchangeStrategies(jacksonStrategy)
+                .baseUrl(baseUrl)
+                .build();
         this.executor = Executors.newFixedThreadPool(threads);
     }
 
-    private CompletableFuture<ResponseEntity<String>> send(TpsIdent tpsIdent) {
-        return CompletableFuture.supplyAsync(
-                () -> new PostPersonCommand(restTemplate, url, tpsIdent).call(),
-                executor
+    public void opprettPersoner(TpsIdentListe identer) {
+        AccessToken accessToken = accessTokenService.generateToken(
+                clientCredential,
+                new AccessScopes("api://" + clientCredential.getClientId() + "/.default")
         );
-    }
 
-    public void send(TpsIdentListe liste) {
-        List<CompletableFuture<ResponseEntity<String>>> futures = liste
-                .getListe()
-                .stream()
-                .map(this::send)
-                .collect(Collectors.toList());
-
-        List<ResponseEntity<String>> responses = futures.stream().map(value -> {
-            try {
-                return value.get();
-            } catch (Exception e) {
-                log.error("Feil ved innsende til person API", e);
-                return null;
-            }
-        }).collect(Collectors.toList());
-
-        if (responses.stream().anyMatch(Objects::isNull)) {
-            throw new UgyldigIdentException("Klarer ikke å opprette alle identer");
-        }
-        if (responses.stream().map(value -> !value.getStatusCode().is2xxSuccessful()).findAny().isEmpty()) {
-            throw new UgyldigIdentException("Klarer ikke å opprette alle identer");
-        }
+        identer.stream().forEach(ident ->
+                CompletableFuture.supplyAsync(() -> {
+                    try {
+                        new CreatePersonCommand(webClient, ident.toDTO(), accessToken.getTokenValue(), ident.getOpprinnelse()).run();
+                    } catch (Exception e) {
+                        log.error("Kunne ikke opprette ident {}: {}", ident.getFnr(), e);
+                    }
+                    return null;
+                }, executor)
+        );
     }
 }
