@@ -83,7 +83,7 @@ public class VarslingerController {
         if (id == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(id);
     }
 
     @DeleteMapping("/person/ids/{varslingId}")
