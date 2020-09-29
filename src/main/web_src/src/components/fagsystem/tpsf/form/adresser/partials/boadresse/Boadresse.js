@@ -68,7 +68,7 @@ export const Boadresse = ({ formikBag }) => {
 								readOnly
 								placeholder="Ingen valgt adresse"
 								title="Endre adressen i adressevelgeren over"
-								feil={feilmelding()}
+								feil={feilmelding(feil)}
 							/>
 						)}
 					/>

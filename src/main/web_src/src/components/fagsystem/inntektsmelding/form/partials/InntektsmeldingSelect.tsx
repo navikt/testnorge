@@ -1,5 +1,5 @@
 import React from 'react'
-import LoadableComponent from '~/components/ui/loading/LoadableComponent'
+import LoadableComponent, { Feilmelding } from '~/components/ui/loading/LoadableComponent'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import Formatters from '~/utils/DataFormatter'
@@ -27,8 +27,15 @@ export default ({ path, label, kodeverk, size = 'medium' }: InntektsmeldingSelec
 						response.map((value: string) => ({ value, label: Formatters.codeToNorskLabel(value) }))
 					)
 				}
-				render={(data: Array<Option>) => (
-					<FormikSelect name={path} label={label} options={data} type="text" size={size} />
+				render={(data: Array<Option>, feilmelding: Feilmelding) => (
+					<FormikSelect
+						name={path}
+						label={label}
+						options={data}
+						type="text"
+						size={size}
+						feil={feilmelding}
+					/>
 				)}
 			/>
 		</ErrorBoundary>

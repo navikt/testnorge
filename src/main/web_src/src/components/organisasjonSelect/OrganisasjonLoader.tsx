@@ -1,5 +1,5 @@
 import * as React from 'react'
-import LoadableComponent from '~/components/ui/loading/LoadableComponent'
+import LoadableComponent, { Feilmelding } from '~/components/ui/loading/LoadableComponent'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { EregResponse } from '~/service/Responses'
 import { Organisasjon } from './types'
@@ -8,7 +8,7 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 type OrganisasjonLoaderProps = {
 	filter?: (response: EregResponse) => boolean
 	valueNavn?: boolean
-	render: (list: Organisasjon[]) => JSX.Element
+	render: (list: Organisasjon[], feilmelding: Feilmelding) => JSX.Element
 }
 
 export const OrganisasjonLoader = ({
@@ -40,7 +40,10 @@ export const OrganisasjonLoader = ({
 		)
 	return (
 		<ErrorBoundary>
-			<LoadableComponent onFetch={onFetch} render={(list: Organisasjon[]) => render(list)} />
+			<LoadableComponent
+				onFetch={onFetch}
+				render={(list: Organisasjon[], feilmelding: Feilmelding) => render(list, feilmelding)}
+			/>
 		</ErrorBoundary>
 	)
 }

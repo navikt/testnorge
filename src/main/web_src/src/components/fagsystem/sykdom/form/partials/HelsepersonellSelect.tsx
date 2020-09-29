@@ -1,5 +1,5 @@
 import React from 'react'
-import LoadableComponent from '~/components/ui/loading/LoadableComponent'
+import LoadableComponent, { Feilmelding } from '~/components/ui/loading/LoadableComponent'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
@@ -37,7 +37,7 @@ export default ({ name, label, afterChange }: HelsepersonellSelect) => {
 						}))
 					)
 				}
-				render={(data: Array<Option>) => (
+				render={(data: Array<Option>, feilmelding: Feilmelding) => (
 					<FormikSelect
 						name={name}
 						label={label}
@@ -46,6 +46,7 @@ export default ({ name, label, afterChange }: HelsepersonellSelect) => {
 						size="xxlarge"
 						afterChange={afterChange}
 						isClearable={false}
+						feil={feilmelding}
 					/>
 				)}
 			/>
