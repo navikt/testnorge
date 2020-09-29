@@ -33,13 +33,13 @@ public class ErrorStatusDecoder {
         if (errorMsg.contains("{")) {
 
             try {
-                builder.append(encodeErrorStatus((String) objectMapper.readValue(errorMsg, Map.class).get("message")));
+                builder.append(encodeStatus((String) objectMapper.readValue(errorMsg, Map.class).get("message")));
 
             } catch (IOException e) {
 
                 builder.append(errorStatus.value())
                         .append(" (")
-                        .append(encodeErrorStatus(errorStatus.getReasonPhrase()))
+                        .append(encodeStatus(errorStatus.getReasonPhrase()))
                         .append(')');
 
                 log.warn("Parsing av melding '{}' feilet", errorMsg, e);
@@ -47,7 +47,7 @@ public class ErrorStatusDecoder {
 
         } else {
 
-            builder.append(encodeErrorStatus(errorMsg));
+            builder.append(encodeStatus(errorMsg));
         }
 
         return builder.toString();
@@ -67,7 +67,7 @@ public class ErrorStatusDecoder {
                         builder.append("error=").append(status.get(ERROR)).append(';');
                     }
                     if (status.containsKey(MESSAGE) && isNotBlank((String) status.get(MESSAGE))) {
-                        builder.append("message=").append(encodeErrorStatus((String) status.get(MESSAGE))).append(';');
+                        builder.append("message=").append(encodeStatus((String) status.get(MESSAGE))).append(';');
                     }
                     if (status.containsKey(DETAILS) && status.get(DETAILS) instanceof List) {
                         StringBuilder meldinger = new StringBuilder("=");
@@ -75,21 +75,21 @@ public class ErrorStatusDecoder {
                         details.forEach(entry ->
                                 entry.forEach((key, value) ->
                                         meldinger.append(' ').append(key).append("= ").append(value)));
-                        builder.append("details=").append(encodeErrorStatus(meldinger.toString()));
+                        builder.append("details=").append(encodeStatus(meldinger.toString()));
                     }
 
                 } catch (IOException ioe) {
-                    builder.append(encodeErrorStatus(ioe.getMessage()));
+                    builder.append(encodeStatus(ioe.getMessage()));
                 }
 
             } else {
-                builder.append(encodeErrorStatus(((HttpClientErrorException) e).getResponseBodyAsString()));
+                builder.append(encodeStatus(((HttpClientErrorException) e).getResponseBodyAsString()));
             }
 
         } else if (e instanceof TpsfException) {
-            builder.append(encodeErrorStatus(e.getMessage()));
-        } else {
+            builder.append(encodeStatus(e.getMessage()));
 
+        } else {
             builder.append("Teknisk feil. Se logg!");
             log.error("Teknisk feil {} mottatt fra system", e.getMessage(), e);
         }
@@ -97,10 +97,11 @@ public class ErrorStatusDecoder {
         return builder.toString();
     }
 
-    public static String encodeErrorStatus(String toBeEncoded) {
+    public static String encodeStatus(String toBeEncoded) {
         return toBeEncoded
-                .replace("[\"", "")
-                .replace("\"]", "")
+                .replaceAll("\\[\\s", "")
+                .replace("[", "")
+                .replace("]", "")
                 .replace(',', ';')
                 .replace(':', '=');
     }
