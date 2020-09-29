@@ -153,18 +153,18 @@ public class ServiceUtils {
 
     private Kvalifiseringsgrupper velgKvalifiseringsgruppeBasertPaaAktivitetsfase(String aktivitetsfase) {
         switch (aktivitetsfase) {
-        case AKTIVITETSFASE_UNDER_ARBEIDSAVKLARING:
-            return rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VARIG;
-        case AKTIVITETSFASE_ARBEIDSUTPROEVING:
-            return Kvalifiseringsgrupper.BATT;
-        case AKTIVITETSFASE_FERDIG_AVKLART:
-            return rand.nextBoolean() ? Kvalifiseringsgrupper.BFORM : Kvalifiseringsgrupper.IKVAL;
-        case AKTIVITETSFASE_VURDERING_FOR_UFOERE:
-            return rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VARIG;
-        case AKTIVITETSFASE_SYKEPENGEERSTATNING:
-            return rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VURDI;
-        default:
-            throw new ArbeidssoekerException("Ukjent aktivitetsfase " + aktivitetsfase);
+            case AKTIVITETSFASE_UNDER_ARBEIDSAVKLARING:
+                return rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VARIG;
+            case AKTIVITETSFASE_ARBEIDSUTPROEVING:
+                return Kvalifiseringsgrupper.BATT;
+            case AKTIVITETSFASE_FERDIG_AVKLART:
+                return rand.nextBoolean() ? Kvalifiseringsgrupper.BFORM : Kvalifiseringsgrupper.IKVAL;
+            case AKTIVITETSFASE_VURDERING_FOR_UFOERE:
+                return rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VARIG;
+            case AKTIVITETSFASE_SYKEPENGEERSTATNING:
+                return rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VURDI;
+            default:
+                throw new ArbeidssoekerException("Ukjent aktivitetsfase " + aktivitetsfase);
         }
     }
 
@@ -259,7 +259,7 @@ public class ServiceUtils {
             var nyeBrukereResponse = brukereService
                     .sendArbeidssoekereTilArenaForvalter(new ArrayList<>(uregistrerteBrukere), miljoe, kvalifiseringsgruppe);
             List<String> feiledeIdenter = new ArrayList<>();
-            if (!nyeBrukereResponse.getNyBrukerFeilList().isEmpty()) {
+            if (nyeBrukereResponse != null && nyeBrukereResponse.getNyBrukerFeilList() != null && !nyeBrukereResponse.getNyBrukerFeilList().isEmpty()) {
                 nyeBrukereResponse.getNyBrukerFeilList().forEach(nyBrukerFeil -> {
                     log.error("Kunne ikke opprette ny bruker med fnr {} i arena: {}", nyBrukerFeil.getPersonident(), nyBrukerFeil.getMelding());
                     feiledeIdenter.add(nyBrukerFeil.getPersonident());
