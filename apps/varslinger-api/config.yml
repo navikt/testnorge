@@ -12,6 +12,7 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: dolly-frontend-dev
         - application: dolly-frontend
         - application: testnorge-oversikt-frontend
   azure:
