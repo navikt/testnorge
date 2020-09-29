@@ -27,7 +27,7 @@ public class DigitalKontaktdata {
         private String mobil;
         private String epost;
         private String sdpAdresse;
-        private int sdpLeverandoer;
+        private Integer sdpLeverandoer;
         private String spraak;
 
         private ZonedDateTime epostOppdatert;
