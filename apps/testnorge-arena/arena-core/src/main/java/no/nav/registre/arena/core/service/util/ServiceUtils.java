@@ -269,7 +269,7 @@ public class ServiceUtils {
             var nyeBrukereResponse = brukereService
                     .sendArbeidssoekereTilArenaForvalter(new ArrayList<>(uregistrerteBrukere), miljoe, kvalifiseringsgruppe);
             List<String> feiledeIdenter = new ArrayList<>();
-            if (!nyeBrukereResponse.getNyBrukerFeilList().isEmpty()) {
+            if (nyeBrukereResponse != null && nyeBrukereResponse.getNyBrukerFeilList() != null && !nyeBrukereResponse.getNyBrukerFeilList().isEmpty()) {
                 nyeBrukereResponse.getNyBrukerFeilList().forEach(nyBrukerFeil -> {
                     log.error("Kunne ikke opprette ny bruker med fnr {} i arena: {}", nyBrukerFeil.getPersonident(), nyBrukerFeil.getMelding());
                     feiledeIdenter.add(nyBrukerFeil.getPersonident());
