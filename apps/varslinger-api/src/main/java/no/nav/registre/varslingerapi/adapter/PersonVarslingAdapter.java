@@ -85,7 +85,7 @@ public class PersonVarslingAdapter {
         return mottattVarsling.map(mottatt -> mottatt.getVarsling().getVarslingId()).orElse(null);
     }
 
-    public void delete(PersonInfo personInfo) {
+    public void deleteAll(PersonInfo personInfo) {
         var objectId = personInfo.getObjectId().toString();
         mottattVarslingRepository.deleteAllByBrukerObjectId(objectId);
         brukerRepository.deleteById(objectId);

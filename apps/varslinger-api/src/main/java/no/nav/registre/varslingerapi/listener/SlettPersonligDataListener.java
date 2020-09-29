@@ -20,6 +20,6 @@ public class SlettPersonligDataListener {
     @KafkaListener(topics = "testnorge-slett-personlig-data-v1")
     public void register(@Payload PersonInfo personInfo) {
         log.info("Sletter personlig data for {}", personInfo.getObjectId());
-        personVarslingAdapter.delete(personInfo);
+        personVarslingAdapter.deleteAll(personInfo);
     }
 }
