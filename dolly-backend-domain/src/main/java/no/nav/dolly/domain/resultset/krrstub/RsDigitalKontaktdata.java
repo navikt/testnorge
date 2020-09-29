@@ -23,6 +23,6 @@ public class RsDigitalKontaktdata {
     private String epost;
     private boolean registrert;
     private String sdpAdresse;
-    private int sdpLeverandoer;
+    private Integer sdpLeverandoer;
     private String spraak;
 }

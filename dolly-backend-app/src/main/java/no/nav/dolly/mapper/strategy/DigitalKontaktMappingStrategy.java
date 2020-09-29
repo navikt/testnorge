@@ -26,9 +26,6 @@ public class DigitalKontaktMappingStrategy implements MappingStrategy {
 
                         kontaktdataRequest.setGyldigFra(getDato(digitalKontaktdata));
 
-                        if (digitalKontaktdata.getSdpLeverandoer()==0) {
-                            kontaktdataRequest.setSdpLeverandoer(null);
-                        }
                         if (nonNull(digitalKontaktdata.getMobil())) {
                             kontaktdataRequest.setMobilOppdatert(getDato(digitalKontaktdata));
                             kontaktdataRequest.setMobilVerifisert(getDato(digitalKontaktdata));
