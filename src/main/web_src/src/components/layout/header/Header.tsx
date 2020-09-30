@@ -16,7 +16,6 @@ type Props = {
 
 export default ({ brukerData }: Props) => {
 	const location = useLocation()
-	console.log(brukerData)
 
 	return (
 		<header className="app-header">
