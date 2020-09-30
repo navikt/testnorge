@@ -12,6 +12,7 @@ spring:
           accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
   flyway:
     locations: classpath:db/migration
+    enabled: true
   jpa:
     database: POSTGRESQL
     properties:
