@@ -94,9 +94,9 @@ public class TestgruppeController {
     @Cacheable(CACHE_GRUPPE)
     @GetMapping
     @Operation(description = "Hent testgrupper")
-    public List<RsTestgruppe> getTestgrupper(
+    public List<Testgruppe> getTestgrupper(
             @RequestParam(name = "brukerId", required = false) String brukerId) {
-        return mapperFacade.mapAsList(testgruppeService.getTestgruppeByBrukerId(brukerId), RsTestgruppe.class);
+        return testgruppeService.getTestgruppeByBrukerId(brukerId);
     }
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)

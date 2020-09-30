@@ -9,6 +9,8 @@ import static org.hamcrest.Matchers.hasProperty;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import org.apache.http.entity.ContentType;
+import org.junit.BeforeClass;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,8 +19,13 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import no.nav.dolly.domain.jpa.Bruker;
@@ -27,16 +34,19 @@ import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 
-@Disabled
 @DisplayName("GET /api/v1/gruppe")
-@EnableAutoConfiguration(exclude = { SecurityAutoConfiguration.class,
+@EnableAutoConfiguration(exclude = {
+        SecurityAutoConfiguration.class,
         OAuth2ResourceServerAutoConfiguration.class,
-        ManagementWebSecurityAutoConfiguration.class })
+        ManagementWebSecurityAutoConfiguration.class
+})
 class TestgruppeControllerGetTest extends TestgruppeTestBase {
 
-    private static final ParameterizedTypeReference<List<RsTestgruppe>> expectedResponseRsTestgruppe = new ParameterizedTypeReference<List<RsTestgruppe>>() {
-    };
+    private static final ParameterizedTypeReference<List<RsTestgruppe>> expectedResponseRsTestgruppe =
+            new ParameterizedTypeReference<List<RsTestgruppe>>() {
+            };
 
+    @Disabled
     @Test
     @DisplayName("Returnerer Testgrupper tilknyttet til brukerId gjennom favoritter og medlemskap")
     void shouldGetTestgrupperWithNavIdent() {
@@ -47,9 +57,9 @@ class TestgruppeControllerGetTest extends TestgruppeTestBase {
         Testgruppe testgruppe2 = dataFactory.createTestgruppe("gruppe2", annenBruker);
         Testgruppe testgruppe3 = dataFactory.createTestgruppe("gruppe3", annenBruker);
 
-        dataFactory.addToBrukerFavourites(bruker.getNavIdent(), testgruppe.getId());
-        dataFactory.addToBrukerFavourites(bruker.getNavIdent(), testgruppe2.getId());
-        dataFactory.addToBrukerFavourites(bruker.getNavIdent(), testgruppe3.getId());
+        dataFactory.addToBrukerFavourites(bruker.getBrukerId(), testgruppe.getId());
+        dataFactory.addToBrukerFavourites(bruker.getBrukerId(), testgruppe2.getId());
+        dataFactory.addToBrukerFavourites(bruker.getBrukerId(), testgruppe3.getId());
 
         String url = UriComponentsBuilder.fromUriString(ENDPOINT_BASE_URI).queryParam("brukerId", bruker.getNavIdent()).toUriString();
         List<RsTestgruppe> resp = sendRequest()
@@ -84,6 +94,7 @@ class TestgruppeControllerGetTest extends TestgruppeTestBase {
         assertThat(getErrMsg(resp), is("Gruppe med id 123 ble ikke funnet."));
     }
 
+    @Disabled
     @Test
     @DisplayName("Returnerer Testgruppe")
     void shouldReturnTestgruppe() {

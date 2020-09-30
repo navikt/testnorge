@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import no.nav.dolly.domain.resultset.RsDollyProps;
 import no.nav.dolly.provider.RestTestBase;
 
-@Disabled
 @DisplayName("GET /api/v1/config")
 @EnableAutoConfiguration(exclude = { SecurityAutoConfiguration.class,
         OAuth2ResourceServerAutoConfiguration.class,

@@ -4,5 +4,4 @@ import no.nav.dolly.provider.RestTestBase;
 
 abstract class TestgruppeTestBase extends RestTestBase {
     protected static final String ENDPOINT_BASE_URI = "/api/v1/gruppe";
-    protected static final String CURRENT_BRUKER_IDENT = "NAVident";
 }

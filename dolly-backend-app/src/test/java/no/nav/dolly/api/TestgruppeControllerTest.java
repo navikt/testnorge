@@ -24,6 +24,7 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.provider.api.TestgruppeController;
@@ -88,7 +89,7 @@ public class TestgruppeControllerTest {
         when(testgruppeService.fetchTestgruppeById(GRUPPE_ID)).thenReturn(new Testgruppe());
         when(mapperFacade.map(any(Testgruppe.class), eq(RsTestgruppeMedBestillingId.class))).thenReturn(testgruppeMedBestillingId);
 
-        RsTestgruppeMedBestillingId result = testgruppeController.getTestgruppe(GRUPPE_ID);
+        RsTestgruppe result = testgruppeController.getTestgruppe(GRUPPE_ID);
 
         assertThat(result.getId(), is(equalTo(GRUPPE_ID)));
 
