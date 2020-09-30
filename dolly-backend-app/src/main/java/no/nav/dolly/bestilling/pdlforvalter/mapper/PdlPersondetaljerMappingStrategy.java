@@ -3,7 +3,7 @@ package no.nav.dolly.bestilling.pdlforvalter.mapper;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.FORTROLIG;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.UGRADERT;
-import static no.nav.dolly.domain.CommonKeys.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.stream.Collectors;

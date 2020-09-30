@@ -1,6 +1,6 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
-import static no.nav.dolly.domain.CommonKeys.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 import org.springframework.stereotype.Component;

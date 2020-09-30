@@ -12,7 +12,7 @@ import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilsta
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand.SKILT_PARTNER;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand.UGIFT;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand.UOPPGITT;
-import static no.nav.dolly.domain.CommonKeys.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 
 import java.time.LocalDate;
 import org.springframework.stereotype.Component;

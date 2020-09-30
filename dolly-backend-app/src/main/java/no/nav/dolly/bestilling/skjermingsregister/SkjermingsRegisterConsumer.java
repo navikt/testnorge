@@ -1,16 +1,14 @@
 package no.nav.dolly.bestilling.skjermingsregister;
 
 import static java.lang.String.format;
-import static no.nav.dolly.domain.CommonKeys.CONSUMER;
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.domain.CommonKeys.SYNTH_ENV;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
-
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +28,7 @@ import no.nav.dolly.security.sts.StsOidcService;
 @RequiredArgsConstructor
 public class SkjermingsRegisterConsumer {
 
+    private static final String PREPROD = "q";
     private static final String SKJERMINGSREGISTER_URL = "/api/v1/skjermingdata";
     private static final String SKJERMINGOPPHOER_URL = SKJERMINGSREGISTER_URL + "/opphor/";
 
@@ -45,7 +44,7 @@ public class SkjermingsRegisterConsumer {
 
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(providersProps.getSkjermingsRegister().getUrl() + SKJERMINGSREGISTER_URL))
-                        .header(AUTHORIZATION, stsOidcService.getIdToken(SYNTH_ENV))
+                        .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD))
                         .header(HEADER_NAV_CALL_ID, callid)
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .body(skjermingsDataRequest),
@@ -61,7 +60,7 @@ public class SkjermingsRegisterConsumer {
 
         return restTemplate.exchange(
                 RequestEntity.get(URI.create(format("%s%s/%s", providersProps.getSkjermingsRegister().getUrl(), SKJERMINGSREGISTER_URL, ident)))
-                        .header(AUTHORIZATION, stsOidcService.getIdToken(SYNTH_ENV))
+                        .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD))
                         .header(HEADER_NAV_CALL_ID, callid)
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER).build(),
                 SkjermingsDataResponse.class);
@@ -75,7 +74,7 @@ public class SkjermingsRegisterConsumer {
 
         return restTemplate.exchange(
                 RequestEntity.put(URI.create(providersProps.getSkjermingsRegister().getUrl() + SKJERMINGOPPHOER_URL + ident))
-                        .header(AUTHORIZATION, stsOidcService.getIdToken(SYNTH_ENV))
+                        .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD))
                         .header(HEADER_NAV_CALL_ID, callid)
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .build(),
@@ -90,7 +89,7 @@ public class SkjermingsRegisterConsumer {
 
         return restTemplate.exchange(
                 RequestEntity.delete(URI.create(providersProps.getSkjermingsRegister().getUrl() + SKJERMINGSREGISTER_URL + "/" + fnr))
-                        .header(AUTHORIZATION, stsOidcService.getIdToken(SYNTH_ENV))
+                        .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD))
                         .header(HEADER_NAV_CALL_ID, callid)
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .build(),

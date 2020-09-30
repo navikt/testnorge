@@ -1,7 +1,7 @@
 package no.nav.dolly.consumer.pdlperson;
 
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_TOKEN;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_TOKEN;
 import static no.nav.dolly.domain.resultset.pdlforvalter.TemaGrunnlag.GEN;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 

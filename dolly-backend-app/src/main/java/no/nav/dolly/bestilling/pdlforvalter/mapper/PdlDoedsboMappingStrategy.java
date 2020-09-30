@@ -1,7 +1,7 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
 import static java.time.LocalDate.now;
-import static no.nav.dolly.domain.CommonKeys.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo.Adressat;
 import static no.nav.dolly.util.NullcheckUtil.blankcheckSetDefaultValue;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;

@@ -1,6 +1,6 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
-import static no.nav.dolly.domain.CommonKeys.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 
 import org.springframework.stereotype.Component;
 

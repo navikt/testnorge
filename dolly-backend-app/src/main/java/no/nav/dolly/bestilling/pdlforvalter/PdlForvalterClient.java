@@ -5,19 +5,19 @@ import static com.google.common.collect.Lists.reverse;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.NORSK;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.UTENLANDSK;
-import static no.nav.dolly.domain.CommonKeys.CONSUMER;
-import static no.nav.dolly.domain.CommonKeys.SYNTH_ENV;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.containsSynthEnv;
+import static no.nav.dolly.domain.CommonKeysAndUtils.getSynthEnv;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 import java.util.Iterator;
 import java.util.List;
-
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-
 import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.RequiredArgsConstructor;
@@ -79,11 +79,11 @@ public class PdlForvalterClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (bestilling.getEnvironments().contains(SYNTH_ENV) || nonNull(bestilling.getPdlforvalter())) {
+        if (containsSynthEnv(bestilling.getEnvironments()) || nonNull(bestilling.getPdlforvalter())) {
 
             StringBuilder status = new StringBuilder();
 
-            if (bestilling.getEnvironments().contains(SYNTH_ENV)) {
+            if (containsSynthEnv(bestilling.getEnvironments())) {
 
                 hentTpsPersondetaljer(tpsPerson, bestilling.getTpsf(), isOpprettEndre);
                 if (!isOpprettEndre) {
@@ -102,13 +102,13 @@ public class PdlForvalterClient implements ClientRegister {
 
                 status.append('$')
                         .append(PDL_FORVALTER)
-                        .append("&Feil: Bestilling ble ikke sendt til Persondataløsningen (PDL) da miljø '")
-                        .append(SYNTH_ENV)
-                        .append("' ikke er valgt");
+                        .append("&Feil: Bestilling ble ikke sendt til Persondataløsningen (PDL) da ingen av miljøene '")
+                        .append(getSynthEnv())
+                        .append("' er valgt");
             }
 
             if (status.length() > 1) {
-                progress.setPdlforvalterStatus(status.substring(1));
+                progress.setPdlforvalterStatus(encodeStatus(status.substring(1)));
             }
         }
     }
