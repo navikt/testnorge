@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.TiltakSyntConsumer;
@@ -44,7 +43,6 @@ public class RettighetTiltakService {
 
     private static final String RELASJON_MOR = "MORA";
     private static final String RELASJON_FAR = "FARA";
-    private static final List<String> IGNORED_DELTAKERSTATUSKODER = Arrays.asList("TILBUD", "AKTUELL", "VENTELISTE");
     public static final String DELTAKERSTATUS_GJENNOMFOERES = "GJENN";
 
     private final TiltakSyntConsumer tiltakSyntConsumer;
@@ -102,6 +100,7 @@ public class RettighetTiltakService {
         var innsendteEndringerDeltakerstatusGjennomfoert = endreDeltakerstatus(endretDeltakerstatusGjennomfoert);
         addResponses(responses, innsendteEndringerDeltakerstatusGjennomfoert);
 
+//      TODO:  Burde kanskje fjerne avsluttet del hvis det blir ønskelig å sende inn tiltakspenger etter på?
         var endretDeltakerstatusAvsluttet = hentRettigheterForEndreDeltakerstatus(miljoe, tiltaksdeltakelser, true);
         var innsendteEndringerDeltakerstatusAvsluttet = endreDeltakerstatus(endretDeltakerstatusAvsluttet);
         addResponses(responses, innsendteEndringerDeltakerstatusAvsluttet);

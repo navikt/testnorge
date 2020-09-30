@@ -16,7 +16,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +23,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.TiltakArenaForvalterConsumer;
-import org.apache.tomcat.jni.Local;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
