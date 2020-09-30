@@ -20,8 +20,6 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PdlKontaktadresse extends PdlAdresse {
 
-    private LocalDate gyldigFraOgMed;
-    private LocalDate gyldigTilOgMed;
     private PostadresseIFrittFormat postadresseIFrittFormat;
     private Postboksadresse postboksadresse;
     private UtenlandskAdresseIFrittFormat utenlandskAdresseIFrittFormat;

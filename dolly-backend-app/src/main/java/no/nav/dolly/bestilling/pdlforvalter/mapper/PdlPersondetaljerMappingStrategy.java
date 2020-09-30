@@ -1,11 +1,14 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.FORTROLIG;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.UGRADERT;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -82,6 +85,7 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Statsborgerskap statsborgerskap, PdlStatsborgerskap pdlStatsborgerskap, MappingContext context) {
 
                         pdlStatsborgerskap.setLandkode(isNotBlank(statsborgerskap.getStatsborgerskap()) ? statsborgerskap.getStatsborgerskap() : "NOR");
+                        pdlStatsborgerskap.setGyldigFom(getDato(statsborgerskap.getStatsborgerskapRegdato()));
                         pdlStatsborgerskap.setKilde(CONSUMER);
                     }
                 })
@@ -117,5 +121,10 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                 })
                 .byDefault()
                 .register();
+    }
+
+    public static LocalDate getDato(LocalDateTime dateTime) {
+
+        return nonNull(dateTime) ? dateTime.toLocalDate() : null;
     }
 }

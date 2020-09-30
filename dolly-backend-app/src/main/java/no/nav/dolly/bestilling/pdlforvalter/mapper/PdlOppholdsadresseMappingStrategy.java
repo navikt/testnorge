@@ -35,7 +35,7 @@ public class PdlOppholdsadresseMappingStrategy implements MappingStrategy {
                         oppholdsadresse.setOppholdAnnetSted(mapSpesReg(person.getSpesreg()));
 
                         if (!person.getBoadresse().isEmpty()) {
-                            oppholdsadresse.setOppholdsadressedato(
+                            oppholdsadresse.setGyldigFraOgMed(
                                     getDato(person.getBoadresse().get(0).getFlyttedato()));
 
                             if ("GATE".equals(person.getBoadresse().get(0).getAdressetype())) {

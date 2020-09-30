@@ -29,7 +29,7 @@ public class PdlBostedsadresseMappingStrategy implements MappingStrategy {
                         bostedadresse.setKilde(CONSUMER);
 
                         if (!person.getBoadresse().isEmpty()) {
-                            bostedadresse.setFlyttedato(getDato(person.getBoadresse().get(0).getFlyttedato()));
+                            bostedadresse.setGyldigFraOgMed(getDato(person.getBoadresse().get(0).getFlyttedato()));
 
                             if (person.isUtenFastBopel()) {
                                 bostedadresse.setUkjentBosted(PdlBostedadresse.UkjentBosted.builder()

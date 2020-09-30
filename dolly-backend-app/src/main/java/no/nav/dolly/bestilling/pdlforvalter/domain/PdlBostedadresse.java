@@ -17,7 +17,6 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PdlBostedadresse extends PdlAdresse {
 
-    private LocalDate flyttedato;
     private UkjentBosted ukjentBosted;
     private PdlMatrikkeladresse matrikkeladresse;
 
