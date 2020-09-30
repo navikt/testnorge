@@ -39,13 +39,13 @@ public class TiltakArenaForvalterConsumer {
         this.arenaForvalterServerUrl = arenaForvalterServerUrl;
     }
 
-    public List<NyttVedtakTiltak> finnTiltak(List<NyttVedtakTiltak> tiltakdeltakelser) {
+    public List<NyttVedtakTiltak> finnTiltak(List<NyttVedtakTiltak> tiltaksdeltakelser) {
         var responses = new ArrayList<NyttVedtakTiltak>();
         List<Integer> tiltaksIder = new ArrayList<>();
 
         var url = new UriTemplate(arenaForvalterServerUrl + "tiltaksdeltakelse/finn_tiltak");
 
-        for (NyttVedtak deltakelse: tiltakdeltakelser){
+        for (NyttVedtak deltakelse: tiltaksdeltakelser){
             var postRequest = RequestEntity.post(url.expand())
                     .header(CALL_ID, NAV_CALL_ID)
                     .header(CONSUMER_ID, NAV_CONSUMER_ID)

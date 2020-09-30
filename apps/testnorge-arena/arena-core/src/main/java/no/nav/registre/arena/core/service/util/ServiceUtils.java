@@ -5,6 +5,7 @@ import static no.nav.registre.arena.core.service.util.IdentUtils.hentFoedseldato
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -367,21 +368,6 @@ public class ServiceUtils {
                 .values();
     }
 
-    public Map<String, List<NyttVedtakResponse>> combineNyttVedtakResponseLists(
-            Map<String, List<NyttVedtakResponse>> firstResponses,
-            Map<String, List<NyttVedtakResponse>> secondResponses
-    ) {
-        if (!secondResponses.isEmpty()) {
-            for (var entry : firstResponses.entrySet()) {
-                String ident = entry.getKey();
-                if (secondResponses.get(ident) != null) {
-                    entry.getValue().addAll(secondResponses.get(ident));
-                }
-            }
-        }
-        return firstResponses;
-    }
-
     public void setDatoPeriodeVedtakInnenforMaxAntallMaaneder(
             NyttVedtak vedtak,
             int antallMaaneder
@@ -394,5 +380,32 @@ public class ServiceUtils {
                 vedtak.setTilDato(tilDatoLimit);
             }
         }
+    }
+
+    public boolean harNoedvendigTiltaksdeltakelse(NyttVedtakTiltak vedtak, List<NyttVedtakTiltak> tiltaksdeltakelser) {
+        if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
+            var fraDato = vedtak.getFraDato();
+            var tilDato = vedtak.getTilDato();
+            for (var deltakelse : tiltaksdeltakelser) {
+                var fraDatoDeltakelse = deltakelse.getFraDato();
+                var tilDatoDeltakelse = deltakelse.getTilDato();
+                if (fraDatoDeltakelse != null && tilDatoDeltakelse != null &&
+                        fraDato.isAfter(fraDatoDeltakelse.minusDays(1)) &&
+                        tilDato.isBefore(tilDatoDeltakelse.plusDays(1))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean harNoedvendigTiltaksdeltakelseRequests(NyttVedtakTiltak vedtak, List<RettighetRequest> requests) {
+        List<NyttVedtakTiltak> tiltaksdeltakelser = new ArrayList<>();
+
+        for (var request: requests){
+            tiltaksdeltakelser.addAll(request.getVedtakTiltak());
+        }
+
+        return harNoedvendigTiltaksdeltakelse(vedtak, tiltaksdeltakelser);
     }
 }

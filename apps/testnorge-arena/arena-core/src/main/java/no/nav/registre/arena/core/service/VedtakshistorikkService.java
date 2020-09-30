@@ -427,21 +427,21 @@ public class VedtakshistorikkService {
         if (tiltaksdeltakelse != null && !tiltaksdeltakelse.isEmpty()) {
             tiltaksdeltakelse.forEach(deltakelse -> deltakelse.setTiltakYtelse("J"));
 
-            var nyeTiltakdeltakelser = tiltakArenaForvalterConsumer.finnTiltak(tiltaksdeltakelse);
+            var nyeTiltaksdeltakelser = tiltakArenaForvalterConsumer.finnTiltak(tiltaksdeltakelse);
 
-            if (!nyeTiltakdeltakelser.isEmpty()) {
-                nyeTiltakdeltakelser.forEach(deltakelse -> {
+            if (!nyeTiltaksdeltakelser.isEmpty()) {
+                nyeTiltaksdeltakelser.forEach(deltakelse -> {
                     deltakelse.setFodselsnr(personident);
                     deltakelse.setBegrunnelse(BEGRUNNELSE);
                 });
 
-                var rettighetRequest = new RettighetTiltaksdeltakelseRequest(nyeTiltakdeltakelser);
+                var rettighetRequest = new RettighetTiltaksdeltakelseRequest(nyeTiltaksdeltakelser);
 
                 rettighetRequest.setPersonident(personident);
                 rettighetRequest.setMiljoe(miljoe);
                 rettigheter.add(rettighetRequest);
             }
-            vedtak.setTiltaksdeltakelse(nyeTiltakdeltakelser);
+            vedtak.setTiltaksdeltakelse(nyeTiltaksdeltakelser);
         }
     }
 
@@ -510,7 +510,7 @@ public class VedtakshistorikkService {
         var tiltakspenger = vedtak.getTiltakspenger() != null ? vedtak.getTiltakspenger() : new ArrayList<NyttVedtakTiltak>();
         var tiltaksdeltakelser = vedtak.getTiltaksdeltakelse();
         tiltakspenger = tiltakspenger.stream()
-                .filter(tiltak -> harNoedvendigTiltakdeltakelse(tiltak, tiltaksdeltakelser))
+                .filter(tiltak -> serviceUtils.harNoedvendigTiltaksdeltakelse(tiltak, tiltaksdeltakelser))
                 .collect(Collectors.toList());
 
         if (!tiltakspenger.isEmpty()) {
@@ -532,7 +532,7 @@ public class VedtakshistorikkService {
         var barnetillegg = vedtak.getBarnetillegg() != null ? vedtak.getBarnetillegg() : new ArrayList<NyttVedtakTiltak>();
         var tiltaksdeltakelser = vedtak.getTiltaksdeltakelse();
         barnetillegg = barnetillegg.stream()
-                .filter(tillegg -> harNoedvendigTiltakdeltakelse(tillegg, tiltaksdeltakelser))
+                .filter(tillegg -> serviceUtils.harNoedvendigTiltaksdeltakelse(tillegg, tiltaksdeltakelser))
                 .collect(Collectors.toList());
 
         if (!barnetillegg.isEmpty()) {
@@ -544,22 +544,7 @@ public class VedtakshistorikkService {
         }
     }
 
-    private boolean harNoedvendigTiltakdeltakelse(NyttVedtakTiltak vedtak, List<NyttVedtakTiltak> tiltakdeltakelser) {
-        if (tiltakdeltakelser != null && !tiltakdeltakelser.isEmpty()) {
-            var fraDato = vedtak.getFraDato();
-            var tilDato = vedtak.getTilDato();
-            for (var deltakelse : tiltakdeltakelser) {
-                var fraDatoDeltakelse = deltakelse.getFraDato();
-                var tilDatoDeltakelse = deltakelse.getTilDato();
-                if (fraDatoDeltakelse != null && tilDatoDeltakelse != null &&
-                        fraDato.isAfter(fraDatoDeltakelse.minusDays(1)) &&
-                        tilDato.isBefore(tilDatoDeltakelse.plusDays(1))) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+
 
     private void opprettVedtakTillegg(
             List<NyttVedtakTillegg> vedtak,
@@ -595,4 +580,5 @@ public class VedtakshistorikkService {
 
         return Collections.emptyList();
     }
+
 }
