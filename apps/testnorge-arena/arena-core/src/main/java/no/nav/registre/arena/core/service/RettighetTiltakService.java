@@ -322,10 +322,9 @@ public class RettighetTiltakService {
             List<String> identer,
             String miljoe
     ) {
-        var utvalgteIdenter = new ArrayList<>(identer);
         List<RettighetRequest> rettigheter = new ArrayList<>();
 
-        for (var ident : utvalgteIdenter) {
+        for (var ident : identer) {
             var syntetisertDeltakelser = tiltakSyntConsumer.opprettTiltaksdeltakelse(1);
             syntetisertDeltakelser.forEach(deltakelse -> deltakelse.setFodselsnr(ident));
             var nyeTiltaksdeltakelser =
@@ -336,7 +335,7 @@ public class RettighetTiltakService {
                 rettighet.setBegrunnelse(BEGRUNNELSE);
                 var rettighetRequest = new RettighetTiltaksdeltakelseRequest(Collections.singletonList(rettighet));
 
-                rettighetRequest.setPersonident(utvalgteIdenter.remove(utvalgteIdenter.size() - 1));
+                rettighetRequest.setPersonident(ident);
                 rettighetRequest.setMiljoe(miljoe);
 
                 rettigheter.add(rettighetRequest);
@@ -397,7 +396,7 @@ public class RettighetTiltakService {
         var tilDato = tiltaksdeltakelse.getTilDato();
 
         if (fraDato != null && fraDato.isBefore(LocalDate.now().plusDays(1))
-                && tilDato != null && tilDato.isAfter(LocalDate.now().minusDays(1))) {
+                && tilDato != null && tilDato.isBefore(LocalDate.now().plusDays(1))) {
             var deltakerstatus = serviceUtils.velgKodeBasertPaaSannsynlighet(
                     vedtakMedStatuskoder.get("AVSLUTTET_DELTAKER")).getKode();
 
