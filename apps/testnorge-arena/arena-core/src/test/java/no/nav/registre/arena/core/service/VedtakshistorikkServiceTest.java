@@ -12,6 +12,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static no.nav.registre.arena.core.consumer.rs.AapSyntConsumer.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
 import static no.nav.registre.arena.core.service.VedtakshistorikkService.DELTAKERSTATUS_GJENNOMFOERES;
 
+import no.nav.registre.arena.core.consumer.rs.TiltakArenaForvalterConsumer;
+import no.nav.registre.arena.core.service.util.KodeMedSannsynlighet;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
@@ -48,6 +50,9 @@ public class VedtakshistorikkServiceTest {
 
     @Mock
     private RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
+
+    @Mock
+    private TiltakArenaForvalterConsumer tiltakArenaForvalterConsumer;
 
     @Mock
     private RettighetAapService rettighetAapService;
@@ -89,8 +94,12 @@ public class VedtakshistorikkServiceTest {
         var nyRettighetFritakMeldekort = NyttVedtakAap.builder()
                 .build();
         var nyRettighetTiltaksdeltaklse = NyttVedtakTiltak.builder()
-                .tiltakskarakteristikk("IND").build();
+                .tiltakskarakteristikk("IND")
+                .tiltakAdminKode("IND")
+                .tiltakId(123)
+                .build();
         nyRettighetTiltaksdeltaklse.setFraDato(LocalDate.now());
+        nyRettighetTiltaksdeltaklse.setTilDato(LocalDate.now());
 
         aapRettigheter = new ArrayList<>(Collections.singletonList(nyRettighetAap));
         ungUfoerRettigheter = new ArrayList<>(Collections.singletonList(nyRettighetUngUfoer));
@@ -182,7 +191,7 @@ public class VedtakshistorikkServiceTest {
     }
 
     @Test
-    public void shouldOppretteVedtakshistorikkMedTiltaksdeltalse() {
+    public void shouldOppretteVedtakshistorikkMedTiltaksdeltakelse() {
 
         var nyRettighetTiltakdeltakelseResponse = NyttVedtakResponse.builder()
                 .feiledeRettigheter(new ArrayList<>())
@@ -203,6 +212,8 @@ public class VedtakshistorikkServiceTest {
         when(serviceUtils.opprettArbeidssoekerTiltak(anyList(), anyString()))
                 .thenReturn(Collections.emptyList());
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(responseAsMap);
+        when(tiltakArenaForvalterConsumer.finnTiltak(anyList())).thenReturn(tiltaksdeltakelseRettigheter);
+        when(serviceUtils.velgKodeBasertPaaSannsynlighet(anyList())).thenReturn(new KodeMedSannsynlighet("FULLF", 100));
 
         var response = vedtakshistorikkService.genererVedtakshistorikk(avspillergruppeId, miljoe, antallIdenter);
 
@@ -210,11 +221,13 @@ public class VedtakshistorikkServiceTest {
         verify(aapSyntConsumer).syntetiserVedtakshistorikk(antallIdenter);
         verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
         verify(rettighetTiltakService).getEndringerMedGyldigRekkefoelge(DELTAKERSTATUS_GJENNOMFOERES, tiltaksdeltakelseRettigheter.get(0));
+        verify(tiltakArenaForvalterConsumer).finnTiltak(anyList());
+        verify(serviceUtils).velgKodeBasertPaaSannsynlighet(anyList());
 
         assertThat(response.get(fnr1)).hasSize(2);
 
-        assertThat(response.get(fnr1).get(0).getFeiledeRettigheter()).hasSize(0);
-        assertThat(response.get(fnr1).get(1).getFeiledeRettigheter()).hasSize(0);
+        assertThat(response.get(fnr1).get(0).getFeiledeRettigheter()).isEmpty();
+        assertThat(response.get(fnr1).get(1).getFeiledeRettigheter()).isEmpty();
 
     }
 }
