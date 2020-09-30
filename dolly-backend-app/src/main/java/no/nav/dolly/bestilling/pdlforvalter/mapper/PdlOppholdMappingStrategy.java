@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.CommonKeys.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

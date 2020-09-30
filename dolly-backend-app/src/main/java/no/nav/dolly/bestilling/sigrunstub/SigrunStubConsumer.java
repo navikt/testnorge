@@ -1,8 +1,8 @@
 package no.nav.dolly.bestilling.sigrunstub;
 
 import static java.lang.String.format;
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.security.sts.StsOidcService.getUserIdToken;
 import static no.nav.dolly.security.sts.StsOidcService.getUserPrinciple;
 import static org.springframework.http.HttpHeaders.ACCEPT;

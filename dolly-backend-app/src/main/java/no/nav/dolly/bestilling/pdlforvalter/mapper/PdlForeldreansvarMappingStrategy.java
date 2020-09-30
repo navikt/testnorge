@@ -1,6 +1,6 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
-import static no.nav.dolly.domain.CommonKeys.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.resultset.tpsf.Relasjon.ROLLE.MOR;
 
 import org.springframework.stereotype.Component;

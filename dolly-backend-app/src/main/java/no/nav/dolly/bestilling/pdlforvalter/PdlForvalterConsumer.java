@@ -1,7 +1,7 @@
 package no.nav.dolly.bestilling.pdlforvalter;
 
 import static java.lang.String.format;
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_PERSON_IDENT;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 

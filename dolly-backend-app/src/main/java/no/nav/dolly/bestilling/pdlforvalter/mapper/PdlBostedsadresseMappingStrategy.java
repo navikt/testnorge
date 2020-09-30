@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
 import static no.nav.dolly.bestilling.pdlforvalter.mapper.PdlAdresseMappingStrategy.getCoadresse;
 import static no.nav.dolly.bestilling.pdlforvalter.mapper.PdlAdresseMappingStrategy.getDato;
-import static no.nav.dolly.domain.CommonKeys.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 
 import org.springframework.stereotype.Component;
 
@@ -29,7 +29,7 @@ public class PdlBostedsadresseMappingStrategy implements MappingStrategy {
                         bostedadresse.setKilde(CONSUMER);
 
                         if (!person.getBoadresse().isEmpty()) {
-                            bostedadresse.setFlyttedato(getDato(person.getBoadresse().get(0).getFlyttedato()));
+                            bostedadresse.setGyldigFraOgMed(getDato(person.getBoadresse().get(0).getFlyttedato()));
 
                             if (person.isUtenFastBopel()) {
                                 bostedadresse.setUkjentBosted(PdlBostedadresse.UkjentBosted.builder()

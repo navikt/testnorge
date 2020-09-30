@@ -1,9 +1,9 @@
 package no.nav.dolly.provider;
 
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.domain.CommonKeys.MDC_CALL_ID_KEY;
-import static no.nav.dolly.domain.CommonKeys.MDC_CONSUMER_ID_KEY;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.MDC_CALL_ID_KEY;
+import static no.nav.dolly.domain.CommonKeysAndUtils.MDC_CONSUMER_ID_KEY;
 
 import no.nav.dolly.exceptions.MissingHttpHeaderException;
 import org.slf4j.MDC;

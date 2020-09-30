@@ -1,7 +1,7 @@
 package no.nav.dolly.bestilling.aktoerregister;
 
 import static java.util.Objects.isNull;
-import static no.nav.dolly.domain.CommonKeys.SYNTH_ENV;
+import static no.nav.dolly.domain.CommonKeysAndUtils.containsSynthEnv;
 
 import java.util.List;
 import org.springframework.core.annotation.Order;
@@ -27,7 +27,7 @@ public class AktoerregisterClient implements ClientRegister {
 
     @Override public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (bestilling.getEnvironments().contains(SYNTH_ENV)) {
+        if (containsSynthEnv(bestilling.getEnvironments())) {
             int count = 0;
 
             try {

@@ -4,7 +4,7 @@ import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse.Ute
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse.Vegadresse;
 import static no.nav.dolly.bestilling.pdlforvalter.mapper.PdlAdresseMappingStrategy.getCoadresse;
 import static no.nav.dolly.bestilling.pdlforvalter.mapper.PdlAdresseMappingStrategy.getDato;
-import static no.nav.dolly.domain.CommonKeys.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
@@ -35,7 +35,7 @@ public class PdlOppholdsadresseMappingStrategy implements MappingStrategy {
                         oppholdsadresse.setOppholdAnnetSted(mapSpesReg(person.getSpesreg()));
 
                         if (!person.getBoadresse().isEmpty()) {
-                            oppholdsadresse.setOppholdsadressedato(
+                            oppholdsadresse.setGyldigFraOgMed(
                                     getDato(person.getBoadresse().get(0).getFlyttedato()));
 
                             if ("GATE".equals(person.getBoadresse().get(0).getAdressetype())) {
