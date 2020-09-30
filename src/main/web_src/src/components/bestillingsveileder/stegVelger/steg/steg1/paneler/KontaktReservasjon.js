@@ -34,8 +34,8 @@ KontaktReservasjonsPanel.initialValues = ({ set, del, has }) => ({
 				epost: '',
 				gyldigFra: new Date(),
 				mobil: '',
-				sdpAdresse: null,
-				sdpLeverandoer: null,
+				sdpAdresse: '',
+				sdpLeverandoer: '',
 				spraak: '',
 				registrert: true,
 				reservert: false
