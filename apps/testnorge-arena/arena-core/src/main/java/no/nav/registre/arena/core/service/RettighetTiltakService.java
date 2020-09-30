@@ -114,40 +114,35 @@ public class RettighetTiltakService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        Map<String, List<NyttVedtakResponse>> responses = new HashMap<>();
         List<KontoinfoResponse> identerMedKontonummer = new ArrayList<>();
         if (rand.nextBoolean()) {
             identerMedKontonummer = serviceUtils.getIdenterMedKontoinformasjon(avspillergruppeId, miljoe, antallNyeIdenter);
         }
         var utvalgteIdenter = serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
 
-        var tiltaksdeltakelser = hentRettigheterForTiltaksdeltakelse(utvalgteIdenter, miljoe);
-        var innsendteTiltaksdeltakelser = aktiverTiltaksdeltakelse(tiltaksdeltakelser, miljoe);
-        addResponses(responses, innsendteTiltaksdeltakelser);
+        var syntetiserteRettigheter = tiltakSyntConsumer.opprettTiltakspenger(antallNyeIdenter);
 
-        var endretDeltakerstatusGjennomfoert = hentRettigheterForEndreDeltakerstatus(miljoe, tiltaksdeltakelser, false);
-        var innsendteEndringerDeltakerstatusGjennomfoert = endreDeltakerstatus(endretDeltakerstatusGjennomfoert);
-        addResponses(responses, innsendteEndringerDeltakerstatusGjennomfoert);
+        List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
+        for (var syntetisertRettighet : syntetiserteRettigheter) {
+            syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
 
-        var rettigheter = hentRettigheterTiltakpenger(
-                miljoe,
-                antallNyeIdenter,
-                identerMedKontonummer,
-                utvalgteIdenter,
-                tiltaksdeltakelser);
+            if (!identerMedKontonummer.isEmpty()) {
+                syntetisertRettighet.setAlternativMottaker(ServiceUtils.buildForvalter(identerMedKontonummer.remove(identerMedKontonummer.size() - 1)));
+            }
+
+            var rettighetRequest = new RettighetTiltakspengerRequest(Collections.singletonList(syntetisertRettighet));
+
+            rettighetRequest.setPersonident(utvalgteIdenter.remove(utvalgteIdenter.size() - 1));
+            rettighetRequest.setMiljoe(miljoe);
+
+            rettigheter.add(rettighetRequest);
+        }
 
         var identerMedOpprettedeTiltak = rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
 
         serviceUtils.lagreIHodejegeren(identerMedOpprettedeTiltak);
 
-        addResponses(responses, identerMedOpprettedeTiltak);
-
-        var endretDeltakerstatusAvsluttet = hentRettigheterForEndreDeltakerstatus(miljoe, tiltaksdeltakelser, true);
-        var innsendteEndringerDeltakerstatusAvsluttet = endreDeltakerstatus(endretDeltakerstatusAvsluttet);
-
-        addResponses(responses, innsendteEndringerDeltakerstatusAvsluttet);
-
-        return responses;
+        return identerMedOpprettedeTiltak;
     }
 
 
@@ -156,37 +151,24 @@ public class RettighetTiltakService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        Map<String, List<NyttVedtakResponse>> responses = new HashMap<>();
-
         var utvalgteIdenter = finnIdenterMedBarn(avspillergruppeId, miljoe, antallNyeIdenter);
+        var syntetiserteRettigheter = tiltakSyntConsumer.opprettBarnetillegg(antallNyeIdenter);
 
-        var tiltaksdeltakelser = hentRettigheterForTiltaksdeltakelse(utvalgteIdenter, miljoe);
-        var innsendteTiltaksdeltakelser = aktiverTiltaksdeltakelse(tiltaksdeltakelser, miljoe);
-        addResponses(responses, innsendteTiltaksdeltakelser);
+        List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
+        for (var syntetisertRettighet : syntetiserteRettigheter) {
+            syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
+            var rettighetRequest = new RettighetTilleggsytelseRequest(Collections.singletonList(syntetisertRettighet));
 
-        var endretDeltakerstatusGjennomfoert = hentRettigheterForEndreDeltakerstatus(miljoe, tiltaksdeltakelser, false);
-        var innsendteEndringerDeltakerstatusGjennomfoert = endreDeltakerstatus(endretDeltakerstatusGjennomfoert);
-        addResponses(responses, innsendteEndringerDeltakerstatusGjennomfoert);
+            rettighetRequest.setPersonident(utvalgteIdenter.remove(utvalgteIdenter.size() - 1));
+            rettighetRequest.setMiljoe(miljoe);
 
-        var rettigheter = hentRettigheterTiltakpenger(
-                miljoe,
-                antallNyeIdenter,
-                new ArrayList<>(),
-                utvalgteIdenter,
-                tiltaksdeltakelser);
-
-        rettigheter.addAll(hentRettigheterBarnetillegg(miljoe, antallNyeIdenter, utvalgteIdenter, tiltaksdeltakelser));
-
+            rettigheter.add(rettighetRequest);
+        }
         var identerMedOpprettedeTiltak = rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
 
         serviceUtils.lagreIHodejegeren(identerMedOpprettedeTiltak);
 
-        var endretDeltakerstatusAvsluttet = hentRettigheterForEndreDeltakerstatus(miljoe, tiltaksdeltakelser, true);
-        var innsendteEndringerDeltakerstatusAvsluttet = endreDeltakerstatus(endretDeltakerstatusAvsluttet);
-
-        addResponses(responses, innsendteEndringerDeltakerstatusAvsluttet);
-
-        return responses;
+        return identerMedOpprettedeTiltak;
     }
 
     public RettighetEndreDeltakerstatusRequest opprettRettighetEndreDeltakerstatusRequest(
@@ -316,7 +298,6 @@ public class RettighetTiltakService {
         }
     }
 
-
     public Map<String, List<NyttVedtakResponse>> endreDeltakerstatus(
             List<RettighetRequest> rettigheter
     ) {
@@ -337,7 +318,6 @@ public class RettighetTiltakService {
             return new HashMap<>();
         }
     }
-
 
     private List<RettighetRequest> hentRettigheterForTiltaksdeltakelse(
             List<String> identer,
@@ -428,62 +408,6 @@ public class RettighetTiltakService {
             rettigheter.add(rettighetRequest);
         }
 
-
-        return rettigheter;
-    }
-
-    public List<RettighetRequest> hentRettigheterTiltakpenger(
-            String miljoe,
-            int antallNyeIdenter,
-            List<KontoinfoResponse> identerMedKontonummer,
-            List<String> utvalgteIdenter,
-            List<RettighetRequest> tiltaksdeltakelser
-    ) {
-        var syntetiserteRettigheter = tiltakSyntConsumer.opprettTiltakspenger(antallNyeIdenter);
-        syntetiserteRettigheter = syntetiserteRettigheter.stream()
-                .filter(tiltak -> serviceUtils.harNoedvendigTiltaksdeltakelseRequests(tiltak, tiltaksdeltakelser))
-                .collect(Collectors.toList());
-
-        List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
-        for (var syntetisertRettighet : syntetiserteRettigheter) {
-            syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
-
-            if (!identerMedKontonummer.isEmpty()) {
-                syntetisertRettighet.setAlternativMottaker(ServiceUtils.buildForvalter(identerMedKontonummer.remove(identerMedKontonummer.size() - 1)));
-            }
-
-            var rettighetRequest = new RettighetTiltakspengerRequest(Collections.singletonList(syntetisertRettighet));
-
-            rettighetRequest.setPersonident(utvalgteIdenter.remove(utvalgteIdenter.size() - 1));
-            rettighetRequest.setMiljoe(miljoe);
-
-            rettigheter.add(rettighetRequest);
-        }
-
-        return rettigheter;
-    }
-
-    public List<RettighetRequest> hentRettigheterBarnetillegg(
-            String miljoe,
-            int antallNyeIdenter,
-            List<String> utvalgteIdenter,
-            List<RettighetRequest> tiltaksdeltakelser
-    ) {
-        var syntetiserteRettigheter = tiltakSyntConsumer.opprettBarnetillegg(antallNyeIdenter);
-        syntetiserteRettigheter = syntetiserteRettigheter.stream()
-                .filter(tiltak -> serviceUtils.harNoedvendigTiltaksdeltakelseRequests(tiltak, tiltaksdeltakelser))
-                .collect(Collectors.toList());
-
-        List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
-        for (var syntetisertRettighet : syntetiserteRettigheter) {
-            syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
-            var rettighetRequest = new RettighetTilleggsytelseRequest(Collections.singletonList(syntetisertRettighet));
-
-            rettighetRequest.setPersonident(utvalgteIdenter.remove(utvalgteIdenter.size() - 1));
-            rettighetRequest.setMiljoe(miljoe);
-
-            rettigheter.add(rettighetRequest);
-        }
 
         return rettigheter;
     }

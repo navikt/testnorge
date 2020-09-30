@@ -398,14 +398,4 @@ public class ServiceUtils {
         }
         return false;
     }
-
-    public boolean harNoedvendigTiltaksdeltakelseRequests(NyttVedtakTiltak vedtak, List<RettighetRequest> requests) {
-        List<NyttVedtakTiltak> tiltaksdeltakelser = new ArrayList<>();
-
-        for (var request: requests){
-            tiltaksdeltakelser.addAll(request.getVedtakTiltak());
-        }
-
-        return harNoedvendigTiltaksdeltakelse(vedtak, tiltaksdeltakelser);
-    }
 }
