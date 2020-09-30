@@ -19,6 +19,7 @@ export default class App extends Component {
 			this.setState({ bootError: true })
 		})
 		await this.props.getCurrentBruker()
+		await this.props.getCurrentBrukerBilde()
 		await this.props.getEnvironments()
 	}
 
@@ -28,7 +29,7 @@ export default class App extends Component {
 	}
 
 	render() {
-		const { brukerData, applicationError, clearAllErrors, configReady } = this.props
+		const { brukerData, brukerBilde, applicationError, clearAllErrors, configReady } = this.props
 
 		if (this.state.bootError)
 			return (
@@ -38,7 +39,7 @@ export default class App extends Component {
 		if (!brukerData || !configReady) return <Loading label="laster dolly applikasjon" fullpage />
 		return (
 			<React.Fragment>
-				<Header brukerData={brukerData} />
+				<Header brukerData={brukerData} brukerBilde={brukerBilde} />
 				<Breadcrumb />
 				<main>
 					<Suspense fallback={<Loading label="Laster inn" />}>

@@ -9,11 +9,13 @@ import { useLocation } from 'react-use'
 
 type Props = {
 	brukerData: {
-		brukerId: string
+		visningsNavn: string
+		brukernavn: string
 	}
+	brukerBilde: any
 }
 
-export default ({ brukerData }: Props) => {
+export default ({ brukerData, brukerBilde }: Props) => {
 	const location = useLocation()
 
 	return (
@@ -49,8 +51,8 @@ export default ({ brukerData }: Props) => {
 
 			<div className="profil-area flexbox--all-center">
 				<NavLink to="/minside">
-					<Icon kind="user" size={25} />
-					{brukerData.brukerId}
+					<img alt="Profilbilde" src={brukerBilde && brukerBilde.url} />
+					{brukerData.visningsNavn}
 				</NavLink>
 			</div>
 		</header>
