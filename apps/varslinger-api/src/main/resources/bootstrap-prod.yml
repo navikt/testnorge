@@ -14,7 +14,7 @@ spring.cloud.vault:
     default-context: preprod/fss/testnorge-varslinger-api/dolly
   database:
     enabled: true
-    role: testnorge-varslinger-user
+    role: testnorge-varslinger-admin
     backend: postgresql/preprod-fss
     username-property: spring.datasource.username
     password-property: spring.datasource.password
