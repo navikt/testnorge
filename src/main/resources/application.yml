@@ -7,7 +7,7 @@ zuul:
   routes:
     dolly-backend:
       path: /api/v1/**
-      url: ${DOLLY_BACKEND_HOST}/api
+      url: ${DOLLY_BACKEND_HOST}/api/v1
       sensitiveHeaders: Cookie,Set-Cookie
     testnorge-profil-api:
       path: /api/testnorge-profil-api/**
