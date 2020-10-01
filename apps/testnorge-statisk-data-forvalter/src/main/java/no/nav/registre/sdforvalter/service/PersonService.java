@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,6 +29,7 @@ public class PersonService {
         Map<String, Person> personMap = personConsumer
                 .hentPersoner(identer)
                 .stream()
+                .filter(Objects::nonNull)
                 .collect(Collectors.toMap(Person::getFnr, person -> person));
 
         return new PersonStatusMap(

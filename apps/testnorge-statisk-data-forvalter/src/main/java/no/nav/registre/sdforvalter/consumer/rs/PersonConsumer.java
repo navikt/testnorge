@@ -87,7 +87,8 @@ public class PersonConsumer {
         var futures = identer.stream().map(ident -> hentPerson(ident, accessToken)).collect(Collectors.toList());
         for (CompletableFuture<Person> future : futures) {
             try {
-                personer.add(future.get());
+                Person person = future.get();
+                personer.add(person != null && person.getFnr() != null ? person : null);
             } catch (Exception e) {
                 log.error("Klarte ikke å hente ut person", e);
             }
