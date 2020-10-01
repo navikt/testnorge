@@ -65,6 +65,10 @@ export default {
 		return Request.get(Endpoints.brukerById())
 	},
 
+	getCurrentBruker() {
+		return Request.get(Endpoints.currentBruker())
+	},
+
 	addFavorite(groupId) {
 		return Request.put(Endpoints.addFavorite(), { gruppeId: groupId })
 	},

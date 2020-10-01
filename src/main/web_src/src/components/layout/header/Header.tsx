@@ -8,14 +8,14 @@ import Logger from '~/logger'
 import { useLocation } from 'react-use'
 
 type Props = {
-	brukerData: {
+	brukerProfil: {
 		visningsNavn: string
 		brukernavn: string
 	}
 	brukerBilde: any
 }
 
-export default ({ brukerData, brukerBilde }: Props) => {
+export default ({ brukerProfil, brukerBilde }: Props) => {
 	const location = useLocation()
 
 	return (
@@ -52,7 +52,7 @@ export default ({ brukerData, brukerBilde }: Props) => {
 			<div className="profil-area flexbox--all-center">
 				<NavLink to="/minside">
 					<img alt="Profilbilde" src={brukerBilde && brukerBilde.url} />
-					{brukerData.visningsNavn}
+					{brukerProfil && brukerProfil.visningsNavn}
 				</NavLink>
 			</div>
 		</header>

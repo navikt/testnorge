@@ -5,6 +5,7 @@ import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import FavoriteButtonConnector from '~/components/ui/button/FavoriteButton/FavoriteButtonConnector'
 import { GruppeIconItem } from '~/components/ui/icon/IconItem'
 import Icon from '~/components/ui/icon/Icon'
+import ImporterGrupper from './ImporterGrupper'
 
 export default function Liste({ items, history, searchActive, isFetching }) {
 	if (isFetching) return <Loading label="laster grupper" panel />
@@ -12,20 +13,7 @@ export default function Liste({ items, history, searchActive, isFetching }) {
 	if (!items || !items.length) {
 		return (
 			<ContentContainer>
-				{searchActive ? (
-					<p>Søket gav ingen resultater.</p>
-				) : (
-					<Fragment>
-						<p>Du har ingen testdatagrupper.</p>
-						<p>
-							For å se alle testdatagrupper, trykk på "Alle". Her kan du søke etter en spesifikk
-							testdatagruppe eller se om det er noen som er relevante for deg. Hvis du trykker på
-							stjerneikonet, legger du testdatagruppen til som en favoritt. Den vil da dukke opp
-							under "Mine" testdatagrupper.
-						</p>
-						<p>For å opprette en ny testdatagruppe, trykk på "Ny gruppe" knappen over.</p>
-					</Fragment>
-				)}
+				{searchActive ? <p>Søket gav ingen resultater.</p> : <ImporterGrupper />}
 			</ContentContainer>
 		)
 	}
