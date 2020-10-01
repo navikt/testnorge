@@ -1,0 +1,31 @@
+{
+  "fnr": "11021950000",
+  "relasjoner": [
+    {
+      "kortnavn": "SKATOLL ANSTENDIG",
+      "datoDo": "",
+      "typeRelBeskr": "Far til",
+      "mellomnavn": "",
+      "etternavn": "SKATOLL",
+      "adresseStatus": 0,
+      "adrStatusBeskr": "",
+      "spesregType": "",
+      "fornavn": "ANSTENDIG",
+      "fnrRelasjon": "16120680637",
+      "typeRelasjon": "FARA"
+    },
+    {
+      "kortnavn": "BØTTE UVIRKSOM VISSEN",
+      "datoDo": "",
+      "typeRelBeskr": "Mor til",
+      "mellomnavn": "VISSEN",
+      "etternavn": "BØTTE",
+      "adresseStatus": 0,
+      "adrStatusBeskr": "",
+      "spesregType": "",
+      "fornavn": "UVIRKSOM",
+      "fnrRelasjon": "11020681073",
+      "typeRelasjon": "MORA"
+    }
+  ]
+}

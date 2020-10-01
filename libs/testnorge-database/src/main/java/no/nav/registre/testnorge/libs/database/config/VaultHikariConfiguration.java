@@ -1,7 +1,5 @@
 package no.nav.registre.testnorge.libs.database.config;
 
-import static org.springframework.vault.core.lease.domain.RequestedSecret.rotating;
-
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -17,7 +15,7 @@ import java.util.Map;
 
 @Slf4j
 @Configuration
-@ConditionalOnProperty(value = "spring.cloud.vault.database.enabled")
+@ConditionalOnProperty("spring.cloud.vault.database.enabled")
 public class VaultHikariConfiguration implements InitializingBean {
 
     private final SecretLeaseContainer container;
@@ -34,7 +32,10 @@ public class VaultHikariConfiguration implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         container.setLeaseEndpoints(LeaseEndpoints.SysLeases);
-        RequestedSecret secret = RequestedSecret.rotating(props.getBackend() + "/creds/" + props.getRole());
+        var secretPath = props.getBackend() + "/creds/" + props.getRole();
+        RequestedSecret secret = RequestedSecret.rotating(secretPath);
+        log.info("Setup vault lease for {}", secretPath);
+
         container.addLeaseListener(leaseEvent -> {
             if ((leaseEvent.getSource() == secret) && (leaseEvent instanceof SecretLeaseCreatedEvent)) {
                 log.info("Roterer brukernavn/passord for : {}", leaseEvent.getSource().getPath());

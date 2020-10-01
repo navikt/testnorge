@@ -17,8 +17,8 @@ public class PersonService {
     private final PdlPersonAdapter pdlPersonAdapter;
     private final TpsPersonAdapter tpsPersonAdapter;
 
-    public String createPerson(Person person) {
-        return pdlPersonAdapter.createPerson(person);
+    public String createPerson(Person person, String kilde) {
+        return pdlPersonAdapter.createPerson(person, kilde);
     }
 
     public Person getPerson(String ident, String miljoe, Persondatasystem persondatasystem) {
