@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Slf4j
 @Configuration
-@ConditionalOnProperty(value = "spring.cloud.vault.database.enabled")
+@ConditionalOnProperty("spring.cloud.vault.database.enabled")
 public class VaultHikariConfiguration implements InitializingBean {
 
     private final SecretLeaseContainer container;

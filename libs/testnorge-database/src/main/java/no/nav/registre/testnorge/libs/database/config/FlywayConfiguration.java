@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Slf4j
 @Configuration
-@ConditionalOnProperty(value = {"spring.flyway.enabled", "spring.cloud.vault.database.enabled"})
+@ConditionalOnProperty("spring.cloud.vault.database.enabled")
 public class FlywayConfiguration {
 
     @Bean
