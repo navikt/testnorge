@@ -27,7 +27,7 @@ public class PersonVarslingAdapter {
 
     private BrukerModel getBruker() {
         if (authenticationTokenResolver.isClientCredentials()) {
-            throw new BadCredentialsException("Kan hente ut bruker fra en ikke personelig innlogging.");
+            throw new BadCredentialsException("Kan ikke hente ut bruker fra en ikke-personlig innlogging.");
         }
         var oid = authenticationTokenResolver.getOid();
         return brukerRepository
