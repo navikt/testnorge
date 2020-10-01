@@ -9,6 +9,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.ProxyProvider;
 
@@ -73,8 +74,13 @@ public class ClientCredentialGenerateAccessTokenService {
 
         AccessToken token = webClient.post()
                 .body(body)
-                .retrieve()
-                .bodyToMono(AccessToken.class)
+                .exchange()
+                .flatMap(clientResponse -> {
+                    if (clientResponse.statusCode().isError()) {
+                        return Mono.error(new RuntimeException("Fikk ikke hentet token"));
+                    }
+                    return clientResponse.bodyToMono(AccessToken.class);
+                })
                 .block();
         log.info("OAuth2 access token hentet.");
         return token;
