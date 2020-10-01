@@ -27,7 +27,7 @@ public class BrukerService {
 
     public Bruker fetchBruker(String brukerId) {
         return brukerRepository.findBrukerByBrukerId(brukerId)
-                .orElseGet(() -> brukerRepository.findBrukerByNavIdent(brukerId)
+                .orElseGet(() -> brukerRepository.findBrukerByNavIdent(brukerId.toUpperCase())
                         .orElseThrow(() -> new NotFoundException("Bruker ikke funnet")));
     }
 

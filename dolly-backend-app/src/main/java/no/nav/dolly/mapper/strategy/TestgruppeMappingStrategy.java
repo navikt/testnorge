@@ -23,8 +23,6 @@ public class TestgruppeMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Testgruppe testgruppe, RsTestgruppe rsTestgruppe, MappingContext context) {
                         rsTestgruppe.setAntallIdenter(testgruppe.getTestidenter().size());
                         rsTestgruppe.setAntallIBruk(((Long) testgruppe.getTestidenter().stream().filter(ident -> isTrue(ident.getIBruk())).count()).intValue()); //NOSONAR
-                        rsTestgruppe.setOpprettetAvBrukerId(testgruppe.getOpprettetAv().getBrukerId());
-                        rsTestgruppe.setSistEndretAvBrukerId(testgruppe.getSistEndretAv().getBrukerId());
                         rsTestgruppe.setFavorittIGruppen(!testgruppe.getFavorisertAv().isEmpty());
                         rsTestgruppe.setErEierAvGruppe(getUserId().equalsIgnoreCase(testgruppe.getOpprettetAv().getBrukerId()));
                         rsTestgruppe.setErLaast(isTrue(rsTestgruppe.getErLaast()));
