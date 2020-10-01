@@ -1,6 +1,5 @@
 package no.nav.registre.testnorge.libs.common.command;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;

@@ -10,12 +10,18 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import no.nav.registre.sdforvalter.credentials.PersonApiClientCredential;
+import no.nav.registre.sdforvalter.domain.TpsIdent;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
+import no.nav.registre.sdforvalter.exception.UgyldigIdentException;
 import no.nav.registre.testnorge.libs.common.command.CreatePersonCommand;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
@@ -63,15 +69,32 @@ public class PersonConsumer {
                 new AccessScopes("api://" + clientCredential.getClientId() + "/.default")
         );
 
-        identer.stream().forEach(ident ->
-                CompletableFuture.supplyAsync(() -> {
+        List<CompletableFuture<TpsIdent>> futures = identer.stream().map(ident -> CompletableFuture.supplyAsync(() -> {
                     try {
                         new CreatePersonCommand(webClient, ident.toDTO(), accessToken.getTokenValue(), ident.getOpprinnelse()).run();
+                        return ident;
                     } catch (Exception e) {
-                        log.error("Kunne ikke opprette ident {}: {}", ident.getFnr(), e);
+                        log.error("Kunne ikke opprette ident {}", ident.getFnr(), e);
+                        return null;
                     }
-                    return null;
                 }, executor)
-        );
+        ).collect(Collectors.toList());
+
+
+        List<TpsIdent> opprettedeIdenter = futures.stream().map(future -> {
+            try {
+                return future.get();
+            } catch (InterruptedException e) {
+                log.error("", e);
+                return null;
+            } catch (ExecutionException e) {
+                log.error("", e);
+                return null;
+            }
+        }).collect(Collectors.toList());
+
+        if (opprettedeIdenter.stream().anyMatch(Objects::isNull)) {
+            throw new UgyldigIdentException("Klarte ikke å opprette alle identer");
+        }
     }
 }
