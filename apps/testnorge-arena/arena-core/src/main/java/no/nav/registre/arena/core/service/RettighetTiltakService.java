@@ -349,51 +349,48 @@ public class RettighetTiltakService {
         for (var deltakelse : tiltaksdeltakelser) {
             var vedtakTiltak = deltakelse.getVedtakTiltak();
             for (var vedtak : vedtakTiltak) {
-                rettigheter.addAll(hentRettigheterForEndreDeltakerstatus(vedtak, miljoe));
+                var deltakerstatus = getDeltakerstatus(vedtak);
+                if (deltakerstatus != null) {
+                    List<String> endringer = getEndringerMedGyldigRekkefoelge(deltakerstatus, vedtak);
+
+                    for (var endring : endringer) {
+                        var rettighetRequest = opprettRettighetEndreDeltakerstatusRequest(vedtak.getFodselsnr(),
+                                miljoe, vedtak, endring);
+
+                        rettigheter.add(rettighetRequest);
+                    }
+                }
             }
         }
         return rettigheter;
     }
 
-    public List<RettighetRequest> hentRettigheterForEndreDeltakerstatus(
-            NyttVedtakTiltak tiltaksdeltakelse,
-            String miljoe
-    ) {
-        List<RettighetRequest> rettigheter = new ArrayList<>();
-
-        var fraDato = tiltaksdeltakelse.getFraDato();
-        var tilDato = tiltaksdeltakelse.getTilDato();
+    public String getDeltakerstatus(NyttVedtakTiltak tiltakdeltakelse){
+        String deltakerstatus = null;
+        var fraDato = tiltakdeltakelse.getFraDato();
+        var tilDato = tiltakdeltakelse.getTilDato();
         if (fraDato != null && fraDato.isBefore(LocalDate.now().plusDays(1))) {
-            var deltakerstatus = DELTAKERSTATUS_GJENNOMFOERES;
+            deltakerstatus = DELTAKERSTATUS_GJENNOMFOERES;
             if (tilDato != null && tilDato.isBefore(LocalDate.now().plusDays(1))) {
                 deltakerstatus = serviceUtils.velgKodeBasertPaaSannsynlighet(
                         vedtakMedStatuskoder.get("AVSLUTTET_DELTAKER")).getKode();
             }
-            List<String> endringer = getEndringerMedGyldigRekkefoelge(deltakerstatus, tiltaksdeltakelse);
-
-            for (var endring : endringer) {
-                var rettighetRequest = opprettRettighetEndreDeltakerstatusRequest(tiltaksdeltakelse.getFodselsnr(),
-                        miljoe, tiltaksdeltakelse, endring);
-
-                rettigheter.add(rettighetRequest);
-            }
         }
-
-        return rettigheter;
+        return deltakerstatus;
     }
 
 
     public List<String> getEndringerMedGyldigRekkefoelge(String deltakerstatuskode, NyttVedtakTiltak tiltaksdeltakelse) {
-        var tiltakskarakteristikk = tiltaksdeltakelse.getTiltakskarakteristikk();
+        var adminKode = tiltaksdeltakelse.getTiltakAdminKode();
         List<String> endringer = new ArrayList<>();
 
-        if (tiltakskarakteristikk.equals("AMO")) {
+        if (adminKode.equals("AMO")) {
             endringer.add("TILBUD");
             endringer.add("JATAKK");
         }
 
-        if (!deltakerstatuskode.equals("GJENN")) {
-            endringer.add("GJENN");
+        if (!deltakerstatuskode.equals(DELTAKERSTATUS_GJENNOMFOERES)) {
+            endringer.add(DELTAKERSTATUS_GJENNOMFOERES);
         }
         endringer.add(deltakerstatuskode);
 
