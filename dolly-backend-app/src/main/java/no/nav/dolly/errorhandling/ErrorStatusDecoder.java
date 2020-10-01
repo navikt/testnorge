@@ -86,11 +86,9 @@ public class ErrorStatusDecoder {
                 builder.append(encodeErrorStatus(((HttpClientErrorException) e).getResponseBodyAsString()));
             }
 
-        } else if (e instanceof TpsfException) {
-            builder.append(encodeErrorStatus(e.getMessage()));
         } else {
-
-            builder.append("Teknisk feil. Se logg!");
+            builder.append("Teknisk feil. Se logg! ");
+            builder.append(encodeErrorStatus(e.getMessage()));
             log.error("Teknisk feil {} mottatt fra system", e.getMessage(), e);
         }
 
