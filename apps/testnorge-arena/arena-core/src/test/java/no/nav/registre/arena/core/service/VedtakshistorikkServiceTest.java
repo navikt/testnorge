@@ -213,6 +213,7 @@ public class VedtakshistorikkServiceTest {
                 .thenReturn(Collections.emptyList());
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(responseAsMap);
         when(tiltakArenaForvalterConsumer.finnTiltak(anyList())).thenReturn(tiltaksdeltakelseRettigheter);
+        when(rettighetTiltakService.getVedtakMedStatuskoder()).thenReturn(Collections.singletonMap("AVSLUTTET_DELTAKER", Collections.emptyList()));
         when(serviceUtils.velgKodeBasertPaaSannsynlighet(anyList())).thenReturn(new KodeMedSannsynlighet("FULLF", 100));
 
         var response = vedtakshistorikkService.genererVedtakshistorikk(avspillergruppeId, miljoe, antallIdenter);

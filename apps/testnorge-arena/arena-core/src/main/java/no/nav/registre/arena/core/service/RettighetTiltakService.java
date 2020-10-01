@@ -96,14 +96,9 @@ public class RettighetTiltakService {
         var innsendteTiltaksdeltakelser = aktiverTiltaksdeltakelse(tiltaksdeltakelser, miljoe);
         addResponses(responses, innsendteTiltaksdeltakelser);
 
-        var endretDeltakerstatusGjennomfoert = hentRettigheterForEndreDeltakerstatus(miljoe, tiltaksdeltakelser, false);
-        var innsendteEndringerDeltakerstatusGjennomfoert = endreDeltakerstatus(endretDeltakerstatusGjennomfoert);
-        addResponses(responses, innsendteEndringerDeltakerstatusGjennomfoert);
-
-//      TODO:  Burde kanskje fjerne avsluttet del hvis det blir ønskelig å sende inn tiltakspenger etter på?
-        var endretDeltakerstatusAvsluttet = hentRettigheterForEndreDeltakerstatus(miljoe, tiltaksdeltakelser, true);
-        var innsendteEndringerDeltakerstatusAvsluttet = endreDeltakerstatus(endretDeltakerstatusAvsluttet);
-        addResponses(responses, innsendteEndringerDeltakerstatusAvsluttet);
+        var endretDeltakerstatus = hentRettigheterForEndreDeltakerstatus(miljoe, tiltaksdeltakelser);
+        var innsendteEndringerDeltakerstatus = endreDeltakerstatus(endretDeltakerstatus);
+        addResponses(responses, innsendteEndringerDeltakerstatus);
 
         return responses;
     }
@@ -346,8 +341,7 @@ public class RettighetTiltakService {
 
     private List<RettighetRequest> hentRettigheterForEndreDeltakerstatus(
             String miljoe,
-            List<RettighetRequest> tiltaksdeltakelser,
-            boolean erAvsluttet
+            List<RettighetRequest> tiltaksdeltakelser
 
     ) {
         List<RettighetRequest> rettigheter = new ArrayList<>();
@@ -355,25 +349,27 @@ public class RettighetTiltakService {
         for (var deltakelse : tiltaksdeltakelser) {
             var vedtakTiltak = deltakelse.getVedtakTiltak();
             for (var vedtak : vedtakTiltak) {
-                if (erAvsluttet) {
-                    rettigheter.addAll(hentRettigheterForEndreDeltakerstatusAvsluttet(vedtak, miljoe));
-                } else {
-                    rettigheter.addAll(hentRettigheterForEndreDeltakerstatusGjennomfoeres(vedtak, miljoe));
-                }
+                rettigheter.addAll(hentRettigheterForEndreDeltakerstatus(vedtak, miljoe));
             }
         }
         return rettigheter;
     }
 
-    public List<RettighetRequest> hentRettigheterForEndreDeltakerstatusGjennomfoeres(
+    public List<RettighetRequest> hentRettigheterForEndreDeltakerstatus(
             NyttVedtakTiltak tiltaksdeltakelse,
             String miljoe
     ) {
         List<RettighetRequest> rettigheter = new ArrayList<>();
 
         var fraDato = tiltaksdeltakelse.getFraDato();
+        var tilDato = tiltaksdeltakelse.getTilDato();
         if (fraDato != null && fraDato.isBefore(LocalDate.now().plusDays(1))) {
-            List<String> endringer = getEndringerMedGyldigRekkefoelge(DELTAKERSTATUS_GJENNOMFOERES, tiltaksdeltakelse);
+            var deltakerstatus = DELTAKERSTATUS_GJENNOMFOERES;
+            if (tilDato != null && tilDato.isBefore(LocalDate.now().plusDays(1))) {
+                deltakerstatus = serviceUtils.velgKodeBasertPaaSannsynlighet(
+                        vedtakMedStatuskoder.get("AVSLUTTET_DELTAKER")).getKode();
+            }
+            List<String> endringer = getEndringerMedGyldigRekkefoelge(deltakerstatus, tiltaksdeltakelse);
 
             for (var endring : endringer) {
                 var rettighetRequest = opprettRettighetEndreDeltakerstatusRequest(tiltaksdeltakelse.getFodselsnr(),
@@ -386,29 +382,6 @@ public class RettighetTiltakService {
         return rettigheter;
     }
 
-    public List<RettighetRequest> hentRettigheterForEndreDeltakerstatusAvsluttet(
-            NyttVedtakTiltak tiltaksdeltakelse,
-            String miljoe
-    ) {
-        List<RettighetRequest> rettigheter = new ArrayList<>();
-
-        var fraDato = tiltaksdeltakelse.getFraDato();
-        var tilDato = tiltaksdeltakelse.getTilDato();
-
-        if (fraDato != null && fraDato.isBefore(LocalDate.now().plusDays(1))
-                && tilDato != null && tilDato.isBefore(LocalDate.now().plusDays(1))) {
-            var deltakerstatus = serviceUtils.velgKodeBasertPaaSannsynlighet(
-                    vedtakMedStatuskoder.get("AVSLUTTET_DELTAKER")).getKode();
-
-            var rettighetRequest = opprettRettighetEndreDeltakerstatusRequest(tiltaksdeltakelse.getFodselsnr(),
-                    miljoe, tiltaksdeltakelse, deltakerstatus);
-
-            rettigheter.add(rettighetRequest);
-        }
-
-
-        return rettigheter;
-    }
 
     public List<String> getEndringerMedGyldigRekkefoelge(String deltakerstatuskode, NyttVedtakTiltak tiltaksdeltakelse) {
         var tiltakskarakteristikk = tiltaksdeltakelse.getTiltakskarakteristikk();

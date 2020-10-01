@@ -115,7 +115,7 @@ public class RettighetTiltakServiceTest {
 
         verify(tiltakSyntConsumer).opprettTiltaksdeltakelse(antallNyeIdenter);
         verify(serviceUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
-        verify(rettighetArenaForvalterConsumer, times(3)).opprettRettighet(anyList());
+        verify(rettighetArenaForvalterConsumer, times(2)).opprettRettighet(anyList());
         verify(tiltakArenaForvalterConsumer).finnTiltak(anyList());
         verify(serviceUtils).velgKodeBasertPaaSannsynlighet(anyList());
     }
