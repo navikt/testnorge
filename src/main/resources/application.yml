@@ -3,9 +3,25 @@ server:
   use-forward-headers: true
 
 
+zuul:
+  routes:
+    dolly-backend:
+      path: /api/v1/**
+      url: ${DOLLY_BACKEND_HOST}/api
+      sensitiveHeaders: Cookie,Set-Cookie
+    testnorge-profil-api:
+      path: /api/testnorge-profil-api/**
+      url: ${TESTNORGE_PROFIL_API_HOST}/api
+      sensitiveHeaders: Cookie,Set-Cookie
+    testnorge-varslinger-api:
+      path: /api/testnorge-varslinger-api/**
+      url: https://testnorge-varslinger-api.dev.adeo.no/api
+      sensitiveHeaders: Cookie,Set-Cookie
+
 applications:
   testnorge-profil-api: ${TESTNORGE_PROFIL_API_CLIENT_ID}
   dolly-backend: ${DOLLY_BACKEND_API_CLIENT_ID}
+  testnorge-varslinger-api: a1dca941-bdd5-4705-a1a4-04cf76473040
 
 spring:
   cloud:

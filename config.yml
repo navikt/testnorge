@@ -44,6 +44,10 @@ spec:
       value: 81d0a23d-20ef-49de-8761-2e7917bc9238
     - name: DOLLY_BACKEND_API_CLIENT_ID
       value: dummy
+    - name: DOLLY_BACKEND_HOST
+      value: https://dolly-backend-dev.dev.adeo.no
+    - name: TESTNORGE_PROFIL_API_HOST
+      value: https://testnorge-profil-api-dev.dev.adeo.no
   vault:
     enabled: true
     paths:
