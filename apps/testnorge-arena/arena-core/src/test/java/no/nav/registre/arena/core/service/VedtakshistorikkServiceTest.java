@@ -10,7 +10,7 @@ import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import static no.nav.registre.arena.core.consumer.rs.AapSyntConsumer.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
-import static no.nav.registre.arena.core.service.VedtakshistorikkService.DELTAKERSTATUS_GJENNOMFOERES;
+import static no.nav.registre.arena.core.service.util.ServiceUtils.DELTAKERSTATUS_GJENNOMFOERES;
 
 import no.nav.registre.arena.core.consumer.rs.TiltakArenaForvalterConsumer;
 import no.nav.registre.arena.core.service.util.KodeMedSannsynlighet;
