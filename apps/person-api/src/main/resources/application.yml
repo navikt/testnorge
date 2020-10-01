@@ -15,8 +15,8 @@ spring:
 
 system:
   pdl:
-    pdlTestdataUrl: https://pdl-testdata.nais.preprod.local
-    pdlApi: https://pdl-api.nais.preprod.local
+    pdlTestdataUrl: https://pdl-testdata.dev.adeo.no
+    pdlApi: https://pdl-api.dev.adeo.no
   tpsf:
     tpsForvalterenUrl: https://tps-forvalteren.nais.preprod.local/api
 

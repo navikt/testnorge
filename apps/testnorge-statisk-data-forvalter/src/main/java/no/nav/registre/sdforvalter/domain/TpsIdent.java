@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import no.nav.registre.sdforvalter.database.model.TpsIdentModel;
+import no.nav.registre.testnorge.libs.dto.person.v1.AdresseDTO;
+import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
 
 @Value
 @NoArgsConstructor(force = true)
@@ -49,5 +51,14 @@ public class TpsIdent extends FasteData {
         this.address = address;
         this.postNr = postNr;
         this.city = city;
+    }
+
+    public PersonDTO toDTO () {
+        return PersonDTO.builder()
+                .ident(fnr)
+                .fornavn(firstName)
+                .etternavn(lastName)
+                .adresse(address != null ? new AdresseDTO(address, postNr, city, null) : null)
+                .build();
     }
 }

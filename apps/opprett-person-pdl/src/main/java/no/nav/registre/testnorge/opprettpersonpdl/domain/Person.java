@@ -47,4 +47,8 @@ public class Person {
                 .build();
     }
 
+    public String toKommaseparerteTags() {
+        return String.join(",", tags);
+    }
+
 }

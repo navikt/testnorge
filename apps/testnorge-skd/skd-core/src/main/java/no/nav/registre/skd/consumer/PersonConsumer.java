@@ -55,6 +55,6 @@ public class PersonConsumer {
                 clientCredential,
                 new AccessScopes("api://" + clientCredential.getClientId() + "/.default")
         );
-        new CreatePersonCommand(webClient, person, accessToken.getTokenValue()).run();
+        new CreatePersonCommand(webClient, person, accessToken.getTokenValue(), null).run();
     }
 }
