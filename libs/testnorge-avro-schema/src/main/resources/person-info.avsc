@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "name": "PersonInfo",
+  "namespace": "no.nav.registre.testnorge.libs.avro.personinfo",
+  "fields": [
+    {
+      "name": "objectId",
+      "type": "string"
+    }
+  ]
+}

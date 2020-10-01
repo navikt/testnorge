@@ -103,5 +103,6 @@
         <module>opprett-person-pdl</module>
         <module>oversikt-frontend</module>
         <module>testnorge-bisys</module>
+        <module>varslinger-api</module>
     </modules>
 </project>
