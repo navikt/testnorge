@@ -1,16 +1,14 @@
-import config from '~/config'
 import Request from '~/service/services/Request'
 
-const getProfilUrl = () => `${config.services.proxyBackend}/profil`
+const profilUrl = 'api/testnorge-profil-api/v1/profil'
 
 export default {
 	getProfil() {
-		const endpoint = `${getProfilUrl()}/profil`
-		return Request.get(endpoint)
+		return Request.get(profilUrl)
 	},
 
 	getProfilBilde() {
-		const endpoint = `${getProfilUrl()}/profil/bilde`
+		const endpoint = `${profilUrl}/bilde`
 		return Request.getBilde(endpoint)
 	}
 }
