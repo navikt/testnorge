@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.person.consumer.command.PostAdresseCommand;
@@ -40,11 +42,16 @@ public class PdlTestdataConsumer {
         String token = tokenService.getIdToken();
         log.info("Oppretter person med ident {} i PDL", person.getIdent());
 
-        var commands = Arrays.asList(
-                new PostOpprettPersonCommand(restTemplate, pdlTestdataUrl, person.getIdent(), kilde, token),
-                new PostNavnCommand(restTemplate, pdlTestdataUrl, person, kilde, token),
-                new PostAdresseCommand(restTemplate, pdlTestdataUrl, person, kilde, token)
+        List<Callable<? extends Object>> commands = Arrays.asList(
+                new PostOpprettPersonCommand(restTemplate, pdlTestdataUrl, person.getIdent(), kilde, token)
         );
+
+        if (person.getFornavn() != null && person.getEtternavn() != null) {
+            commands.add(new PostNavnCommand(restTemplate, pdlTestdataUrl, person, kilde, token));
+        }
+        if (person.getAdresse() != null) {
+            commands.add(new PostAdresseCommand(restTemplate, pdlTestdataUrl, person, kilde, token));
+        }
 
         for (var command : commands) {
             try {
