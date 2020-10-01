@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import no.nav.registre.testnorge.person.adapter.PdlPersonAdapter;
 import no.nav.registre.testnorge.person.adapter.TpsPersonAdapter;
 import no.nav.registre.testnorge.person.domain.Person;
-import no.nav.registre.testnorge.person.domain.Persondatasystem;
+import no.nav.registre.testnorge.libs.dto.person.v1.Persondatasystem;
 
 @Service
 @Slf4j
