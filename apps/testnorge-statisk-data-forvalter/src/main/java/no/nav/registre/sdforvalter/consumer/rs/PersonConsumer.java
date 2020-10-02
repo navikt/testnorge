@@ -84,11 +84,8 @@ public class PersonConsumer {
         List<TpsIdent> opprettedeIdenter = futures.stream().map(future -> {
             try {
                 return future.get();
-            } catch (InterruptedException e) {
-                log.error("", e);
-                return null;
-            } catch (ExecutionException e) {
-                log.error("", e);
+            } catch (InterruptedException | ExecutionException e) {
+                log.error("Noe gikk galt ved henting av resultat fra tråd", e);
                 return null;
             }
         }).collect(Collectors.toList());
