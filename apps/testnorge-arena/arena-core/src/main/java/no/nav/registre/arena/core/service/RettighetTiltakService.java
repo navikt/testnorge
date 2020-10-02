@@ -9,6 +9,7 @@ import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.arena.core.consumer.rs.TiltakArenaForvalterConsumer;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeFinnTiltakResponse;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -90,7 +91,6 @@ public class RettighetTiltakService {
             int antallNyeIdenter
     ) {
         Map<String, List<NyttVedtakResponse>> responses = new HashMap<>();
-
         var utvalgteIdenter = serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
 
         var tiltaksdeltakelser = hentRettigheterForTiltaksdeltakelse(utvalgteIdenter, miljoe);
@@ -323,7 +323,6 @@ public class RettighetTiltakService {
         for (var ident : identer) {
             var syntetisertDeltakelser = tiltakSyntConsumer.opprettTiltaksdeltakelse(1);
             syntetisertDeltakelser.forEach(deltakelse -> deltakelse.setFodselsnr(ident));
-
             var nyeTiltaksdeltakelser = serviceUtils.finnTiltak(ident, miljoe, syntetisertDeltakelser);
 
             if (nyeTiltaksdeltakelser != null && !nyeTiltaksdeltakelser.isEmpty()) {

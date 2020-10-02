@@ -8,7 +8,6 @@ import static no.nav.registre.arena.core.consumer.rs.util.Headers.NAV_CONSUMER_I
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeFinnTiltakResponse;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -38,9 +37,8 @@ public class TiltakArenaForvalterConsumer {
         this.arenaForvalterServerUrl = arenaForvalterServerUrl;
     }
 
-    public List<NyttVedtakTiltak> finnTiltak(RettighetRequest rettighet) {
-        var responses = new ArrayList<NyttVedtakTiltak>();
-        List<Integer> tiltaksIder = new ArrayList<>();
+    public List<NyeFinnTiltakResponse> finnTiltak(RettighetRequest rettighet) {
+        var responses = new ArrayList<NyeFinnTiltakResponse>();
         var url = new UriTemplate(arenaForvalterServerUrl + rettighet.getArenaForvalterUrlPath());
 
         var postRequest = RequestEntity.post(url.expand())
@@ -54,15 +52,11 @@ public class TiltakArenaForvalterConsumer {
             log.error("Kunne ikke finne tiltak i arena-forvalteren.", e);
         }
 
-        if (response != null && response.getNyeFinntiltakFeilList().isEmpty()) {
-            for (var tiltak : response.getNyeFinnTiltak()){
-                var tiltakId = tiltak.getTiltakId();
-                if (tiltakId != null && !tiltaksIder.contains(tiltakId)) {
-                    tiltaksIder.add(tiltakId);
-                    responses.add(response.getNyeFinnTiltak().get(0));
-                }
-            }
+        if (response != null){
+            responses.add(response);
         }
+
         return responses;
+
     }
 }

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.arena.core.consumer.rs.TiltakArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetFinnTiltakRequest;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeFinnTiltakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import org.springframework.stereotype.Service;
 
@@ -404,15 +405,37 @@ public class ServiceUtils {
     }
 
     public List<NyttVedtakTiltak> finnTiltak(String personident, String miljoe, List<NyttVedtakTiltak> tiltaksdeltakelser){
-        List<NyttVedtakTiltak> responses = new ArrayList<>();
+        List<NyttVedtakTiltak> tiltak = new ArrayList<>();
+        List<Integer> tiltaksIder = new ArrayList<>();
         if (!tiltaksdeltakelser.isEmpty()){
             var rettighetRequest = new RettighetFinnTiltakRequest(tiltaksdeltakelser);
 
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
 
-            responses = tiltakArenaForvalterConsumer.finnTiltak(rettighetRequest);
+            var responses = tiltakArenaForvalterConsumer.finnTiltak(rettighetRequest);
+
+            tiltak = finnGyldigeTiltakUtenDuplikater(responses);
         }
-        return responses;
+        return tiltak;
+    }
+
+    private List<NyttVedtakTiltak> finnGyldigeTiltakUtenDuplikater(List<NyeFinnTiltakResponse> responses){
+        List<NyttVedtakTiltak> tiltak = new ArrayList<>();
+        List<Integer> tiltaksIder = new ArrayList<>();
+
+        for (var response: responses){
+            if (response != null && response.getNyeFinntiltakFeilList().isEmpty()) {
+                for (var finntiltak : response.getNyeFinnTiltak()){
+                    var tiltakId = finntiltak.getTiltakId();
+                    if (tiltakId != null && !tiltaksIder.contains(tiltakId)) {
+                        tiltaksIder.add(tiltakId);
+                        tiltak.add(finntiltak);
+                    }
+                }
+            }
+        }
+
+        return tiltak;
     }
 }
