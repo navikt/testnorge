@@ -18,8 +18,8 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -51,7 +51,7 @@ public class TiltakArenaForvalterConsumer {
         try {
             response = restTemplate.exchange(postRequest, NyeFinnTiltakResponse.class).getBody();
         } catch (HttpStatusCodeException e) {
-            log.error("Kunne ikke opprette rettighet i arena-forvalteren.", e);
+            log.error("Kunne ikke finne tiltak i arena-forvalteren.", e);
         }
 
         if (response != null && response.getNyeFinntiltakFeilList().isEmpty()) {
