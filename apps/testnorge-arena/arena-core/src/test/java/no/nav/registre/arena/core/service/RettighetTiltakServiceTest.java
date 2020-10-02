@@ -27,6 +27,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.times;
@@ -92,14 +93,14 @@ public class RettighetTiltakServiceTest {
         when(tiltakSyntConsumer.opprettTiltaksdeltakelse(antallNyeIdenter)).thenReturn(vedtak);
         when(serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
-        when(tiltakArenaForvalterConsumer.finnTiltak(anyList())).thenReturn(vedtak);
+        when(serviceUtils.finnTiltak(anyString(), anyString(), anyList())).thenReturn(vedtak);
 
         rettighetTiltakService.opprettTiltaksdeltakelse(avspillergruppeId, miljoe, antallNyeIdenter);
 
         verify(tiltakSyntConsumer).opprettTiltaksdeltakelse(antallNyeIdenter);
         verify(serviceUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(rettighetArenaForvalterConsumer, times(2)).opprettRettighet(anyList());
-        verify(tiltakArenaForvalterConsumer).finnTiltak(anyList());
+        verify(serviceUtils).finnTiltak(anyString(), anyString(), anyList());
     }
 
     @Test
@@ -108,7 +109,7 @@ public class RettighetTiltakServiceTest {
         when(tiltakSyntConsumer.opprettTiltaksdeltakelse(antallNyeIdenter)).thenReturn(vedtak);
         when(serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
-        when(tiltakArenaForvalterConsumer.finnTiltak(anyList())).thenReturn(vedtak);
+        when(serviceUtils.finnTiltak(anyString(), anyString(), anyList())).thenReturn(vedtak);
         when(serviceUtils.velgKodeBasertPaaSannsynlighet(anyList())).thenReturn(new KodeMedSannsynlighet("FULLF", 100));
 
         rettighetTiltakService.opprettTiltaksdeltakelse(avspillergruppeId, miljoe, antallNyeIdenter);
@@ -116,7 +117,7 @@ public class RettighetTiltakServiceTest {
         verify(tiltakSyntConsumer).opprettTiltaksdeltakelse(antallNyeIdenter);
         verify(serviceUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(rettighetArenaForvalterConsumer, times(2)).opprettRettighet(anyList());
-        verify(tiltakArenaForvalterConsumer).finnTiltak(anyList());
+        verify(serviceUtils).finnTiltak(anyString(), anyString(), anyList());
         verify(serviceUtils).velgKodeBasertPaaSannsynlighet(anyList());
     }
 

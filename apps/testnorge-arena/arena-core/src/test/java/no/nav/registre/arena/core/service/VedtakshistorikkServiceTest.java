@@ -212,7 +212,7 @@ public class VedtakshistorikkServiceTest {
         when(serviceUtils.opprettArbeidssoekerTiltak(anyList(), anyString()))
                 .thenReturn(Collections.emptyList());
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(responseAsMap);
-        when(tiltakArenaForvalterConsumer.finnTiltak(anyList())).thenReturn(tiltaksdeltakelseRettigheter);
+        when(serviceUtils.finnTiltak(anyString(), anyString(), anyList())).thenReturn(tiltaksdeltakelseRettigheter);
         when(rettighetTiltakService.getVedtakMedStatuskoder()).thenReturn(Collections.singletonMap("AVSLUTTET_DELTAKER", Collections.emptyList()));
         when(serviceUtils.velgKodeBasertPaaSannsynlighet(anyList())).thenReturn(new KodeMedSannsynlighet("FULLF", 100));
 
@@ -222,7 +222,7 @@ public class VedtakshistorikkServiceTest {
         verify(aapSyntConsumer).syntetiserVedtakshistorikk(antallIdenter);
         verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
         verify(rettighetTiltakService).getEndringerMedGyldigRekkefoelge(DELTAKERSTATUS_GJENNOMFOERES, tiltaksdeltakelseRettigheter.get(0));
-        verify(tiltakArenaForvalterConsumer).finnTiltak(anyList());
+        verify(serviceUtils).finnTiltak(anyString(), anyString(), anyList());
         verify(serviceUtils).velgKodeBasertPaaSannsynlighet(anyList());
 
         assertThat(response.get(fnr1)).hasSize(2);
