@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.TiltakArenaForvalterConsumer;
+import no.nav.registre.arena.core.consumer.rs.request.*;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -31,16 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.arena.core.consumer.rs.AapSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetAap115Request;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetAapRequest;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetFritakMeldekortRequest;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggRequest;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggsytelseRequest;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksdeltakelseRequest;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequest;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
 import no.nav.registre.arena.core.service.exception.VedtakshistorikkException;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
@@ -59,7 +50,6 @@ public class VedtakshistorikkService {
 
     private final AapSyntConsumer aapSyntConsumer;
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
-    private final TiltakArenaForvalterConsumer tiltakArenaForvalterConsumer;
     private final ServiceUtils serviceUtils;
     private final RettighetAapService rettighetAapService;
     private final RettighetTiltakService rettighetTiltakService;
@@ -425,7 +415,7 @@ public class VedtakshistorikkService {
         if (tiltaksdeltakelse != null && !tiltaksdeltakelse.isEmpty()) {
             tiltaksdeltakelse.forEach(deltakelse -> deltakelse.setTiltakYtelse("J"));
 
-            var nyeTiltaksdeltakelser = tiltakArenaForvalterConsumer.finnTiltak(tiltaksdeltakelse);
+            var nyeTiltaksdeltakelser = serviceUtils.finnTiltak(personident, miljoe, tiltaksdeltakelse);
 
             if (!nyeTiltaksdeltakelser.isEmpty()) {
                 nyeTiltaksdeltakelser.forEach(deltakelse -> {
@@ -442,6 +432,7 @@ public class VedtakshistorikkService {
             vedtak.setTiltaksdeltakelse(nyeTiltaksdeltakelser);
         }
     }
+
 
     private void opprettVedtakEndreDeltakerstatusTilGjennomfoeres(
             Vedtakshistorikk vedtak,
@@ -541,7 +532,6 @@ public class VedtakshistorikkService {
             rettigheter.add(rettighetRequest);
         }
     }
-
 
 
     private void opprettVedtakTillegg(

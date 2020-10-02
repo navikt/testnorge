@@ -323,8 +323,8 @@ public class RettighetTiltakService {
         for (var ident : identer) {
             var syntetisertDeltakelser = tiltakSyntConsumer.opprettTiltaksdeltakelse(1);
             syntetisertDeltakelser.forEach(deltakelse -> deltakelse.setFodselsnr(ident));
-            var nyeTiltaksdeltakelser =
-                    tiltakArenaForvalterConsumer.finnTiltak(syntetisertDeltakelser);
+
+            var nyeTiltaksdeltakelser = serviceUtils.finnTiltak(ident, miljoe, syntetisertDeltakelser);
 
             if (nyeTiltaksdeltakelser != null && !nyeTiltaksdeltakelser.isEmpty()) {
                 var rettighet = nyeTiltaksdeltakelser.get(0);

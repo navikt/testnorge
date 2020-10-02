@@ -6,7 +6,8 @@ import static no.nav.registre.arena.core.consumer.rs.util.Headers.NAV_CALL_ID;
 import static no.nav.registre.arena.core.consumer.rs.util.Headers.NAV_CONSUMER_ID;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeFinnTiltakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,9 +18,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 
 @Slf4j
@@ -39,30 +38,31 @@ public class TiltakArenaForvalterConsumer {
         this.arenaForvalterServerUrl = arenaForvalterServerUrl;
     }
 
-    public List<NyttVedtakTiltak> finnTiltak(List<NyttVedtakTiltak> tiltaksdeltakelser) {
+    public List<NyttVedtakTiltak> finnTiltak(RettighetRequest rettighet) {
         var responses = new ArrayList<NyttVedtakTiltak>();
         List<Integer> tiltaksIder = new ArrayList<>();
+        var url = new UriTemplate(arenaForvalterServerUrl + rettighet.getArenaForvalterUrlPath());
 
-        var url = new UriTemplate(arenaForvalterServerUrl + "tiltaksdeltakelse/finn_tiltak");
-
-        for (NyttVedtak deltakelse: tiltaksdeltakelser){
-            var postRequest = RequestEntity.post(url.expand())
-                    .header(CALL_ID, NAV_CALL_ID)
-                    .header(CONSUMER_ID, NAV_CONSUMER_ID)
-                    .body(deltakelse);
-            NyttVedtakTiltak response = null;
-            try {
-                response = restTemplate.exchange(postRequest, NyttVedtakTiltak.class).getBody();
-            } catch (HttpStatusCodeException e) {
-                log.error("Kunne ikke finne tiltak i arena-forvalteren.", e);
-            }
-            if (response != null && response.getTiltakId() != null && !tiltaksIder.contains(response.getTiltakId())) {
-                tiltaksIder.add(response.getTiltakId());
-                responses.add(response);
-            }
+        var postRequest = RequestEntity.post(url.expand())
+                .header(CALL_ID, NAV_CALL_ID)
+                .header(CONSUMER_ID, NAV_CONSUMER_ID)
+                .body(rettighet);
+        NyeFinnTiltakResponse response = null;
+        try {
+            response = restTemplate.exchange(postRequest, NyeFinnTiltakResponse.class).getBody();
+        } catch (HttpStatusCodeException e) {
+            log.error("Kunne ikke opprette rettighet i arena-forvalteren.", e);
         }
 
+        if (response != null && response.getNyeFinntiltakFeilList().isEmpty()) {
+            for (var tiltak : response.getNyeFinnTiltak()){
+                var tiltakId = tiltak.getTiltakId();
+                if (tiltakId != null && !tiltaksIder.contains(tiltakId)) {
+                    tiltaksIder.add(tiltakId);
+                    responses.add(response.getNyeFinnTiltak().get(0));
+                }
+            }
+        }
         return responses;
     }
-
 }

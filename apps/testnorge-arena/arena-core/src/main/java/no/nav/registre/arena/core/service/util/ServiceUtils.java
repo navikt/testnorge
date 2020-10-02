@@ -5,6 +5,8 @@ import static no.nav.registre.arena.core.service.util.IdentUtils.hentFoedseldato
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.arena.core.consumer.rs.TiltakArenaForvalterConsumer;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetFinnTiltakRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import org.springframework.stereotype.Service;
 
@@ -70,6 +72,7 @@ public class ServiceUtils {
     private final BrukereService brukereService;
     private final AktoerRegisteretConsumer aktoerRegisteretConsumer;
     private final Random rand;
+    private final TiltakArenaForvalterConsumer tiltakArenaForvalterConsumer;
 
     static {
         aktivitestsfaserMedInnsats = new HashMap<>();
@@ -398,5 +401,18 @@ public class ServiceUtils {
             }
         }
         return false;
+    }
+
+    public List<NyttVedtakTiltak> finnTiltak(String personident, String miljoe, List<NyttVedtakTiltak> tiltaksdeltakelser){
+        List<NyttVedtakTiltak> responses = new ArrayList<>();
+        if (!tiltaksdeltakelser.isEmpty()){
+            var rettighetRequest = new RettighetFinnTiltakRequest(tiltaksdeltakelser);
+
+            rettighetRequest.setPersonident(personident);
+            rettighetRequest.setMiljoe(miljoe);
+
+            responses = tiltakArenaForvalterConsumer.finnTiltak(rettighetRequest);
+        }
+        return responses;
     }
 }
