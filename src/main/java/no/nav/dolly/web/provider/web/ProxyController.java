@@ -17,11 +17,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
-import no.nav.dolly.web.config.RemoteApplicationsProperties;
-import no.nav.dolly.web.security.TokenService;
-import no.nav.dolly.web.security.domain.AccessScopes;
-import no.nav.dolly.web.security.domain.AccessToken;
-
 
 @RestController
 @RequiredArgsConstructor
@@ -39,9 +34,6 @@ public class ProxyController {
 
     @Value("${fagsystem.arena.url}")
     private String arenaUrl;
-
-    @Value("${fagsystem.profil.url}")
-    private String profilUrl;
 
     @Value("${fagsystem.instdata.url}")
     private String instUrl;
@@ -76,18 +68,6 @@ public class ProxyController {
 
     private final ProxyService proxyService;
 
-    @RequestMapping("/v1/**")
-    public ResponseEntity<String> dollyProxy(
-            @RequestBody(required = false) String body,
-            HttpMethod method,
-            HttpServletRequest request) throws UnsupportedEncodingException {
-
-        String requestURL = createURL(request, dollyUrl + API_URI, API_URI );
-        HttpHeaders headers = proxyService.copyHeaders(request);
-
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
-        return proxyService.proxyRequest(accessToken, body, method, headers, requestURL);
-    }
 
     @RequestMapping("/proxy/arena/**")
     public ResponseEntity<String> arenaProxy(
@@ -98,36 +78,8 @@ public class ProxyController {
         String requestURL = createURL(request, arenaUrl + API_URI, PROXY_URI + "/arena");
         HttpHeaders headers = proxyService.copyHeaders(request);
 
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
-        return proxyService.proxyRequest(accessToken, body, method, headers, requestURL);
+        return proxyService.proxyRequest(body, method, headers, requestURL);
     }
-
-    @RequestMapping("/proxy/profil/profil/bilde")
-    public ResponseEntity<byte[]> profilBildeProxy(
-            @RequestBody(required = false) String body,
-            HttpMethod method,
-            HttpServletRequest request) throws UnsupportedEncodingException {
-
-        String requestURL = createURL(request, profilUrl + API_URI, PROXY_URI + "/profil");
-        HttpHeaders headers = proxyService.copyHeaders(request);
-
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get("testnorge-profil-api")));
-        return proxyService.proxyRequest(accessToken, body, method, headers, requestURL, byte[].class);
-    }
-
-    @RequestMapping("/proxy/profil/**")
-    public ResponseEntity<String> profilProxy(
-            @RequestBody(required = false) String body,
-            HttpMethod method,
-            HttpServletRequest request) throws UnsupportedEncodingException {
-
-        String requestURL = createURL(request, profilUrl + API_URI, PROXY_URI + "/profil");
-        HttpHeaders headers = proxyService.copyHeaders(request);
-
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get("testnorge-profil-api")));
-        return proxyService.proxyRequest(accessToken, body, method, headers, requestURL);
-    }
-
 
 
     @RequestMapping("/proxy/inst/**")
@@ -139,8 +91,7 @@ public class ProxyController {
         String requestURL = createURL(request, instUrl + API_URI, PROXY_URI + "/inst");
         HttpHeaders headers = proxyService.copyHeaders(request);
 
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
-        return proxyService.proxyRequest(accessToken, body, method, headers, requestURL);
+        return proxyService.proxyRequest(body, method, headers, requestURL);
     }
 
     @RequestMapping("/proxy/krr/**")
@@ -151,10 +102,9 @@ public class ProxyController {
 
         String requestURL = createURL(request, krrUrl + API_URI, PROXY_URI + "/krr");
         HttpHeaders headers = proxyService.copyHeaders(request);
-        headers.add("Nav-Personident",  body.split("=")[0].replace("\"", ""));
+        headers.add("Nav-Personident", body.split("=")[0].replace("\"", ""));
 
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
-        return proxyService.proxyRequest(accessToken, null, method, headers, requestURL);
+        return proxyService.proxyRequest(null, method, headers, requestURL);
     }
 
     @RequestMapping("/proxy/sigrun/**")
@@ -167,8 +117,7 @@ public class ProxyController {
         HttpHeaders headers = proxyService.copyHeaders(request);
         headers.add("personidentifikator", body.split("=")[0]);
 
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
-        return proxyService.proxyRequest(accessToken, null, method, headers, requestURL);
+        return proxyService.proxyRequest(null, method, headers, requestURL);
     }
 
     @RequestMapping("/proxy/tpsf/**")
@@ -180,8 +129,7 @@ public class ProxyController {
         String requestURL = createURL(request, tpsfUrl + API_URI, PROXY_URI + "/tpsf");
         HttpHeaders headers = proxyService.copyHeaders(request);
 
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
-        return proxyService.proxyRequest(accessToken, body, method, headers, requestURL);
+        return proxyService.proxyRequest(body, method, headers, requestURL);
     }
 
     @RequestMapping("/proxy/kontaktinfo/**")
@@ -192,9 +140,7 @@ public class ProxyController {
 
         String requestURL = createURL(request, tpsfUrl + "/api", PROXY_URI + "/kontaktinfo");
         HttpHeaders headers = proxyService.copyHeaders(request);
-
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
-        return proxyService.proxyRequest(accessToken, body, method, headers, requestURL);
+        return proxyService.proxyRequest(body, method, headers, requestURL);
     }
 
     @RequestMapping("/proxy/udi/**")
@@ -205,9 +151,7 @@ public class ProxyController {
 
         String requestURL = createURL(request, udiUrl + API_URI, PROXY_URI + "/udi");
         HttpHeaders headers = proxyService.copyHeaders(request);
-
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
-        return proxyService.proxyRequest(accessToken, body, method, headers, requestURL);
+        return proxyService.proxyRequest(body, method, headers, requestURL);
     }
 
     @RequestMapping("/proxy/aareg/**")
@@ -219,8 +163,7 @@ public class ProxyController {
         String requestURL = createURL(request, aaregUrl + API_URI, PROXY_URI + "/aareg");
         HttpHeaders headers = proxyService.copyHeaders(request);
 
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
-        return proxyService.proxyRequest(accessToken, body, method, headers, requestURL);
+        return proxyService.proxyRequest(body, method, headers, requestURL);
     }
 
     @RequestMapping("/proxy/popp/**")
@@ -232,8 +175,7 @@ public class ProxyController {
         String requestURL = createURL(request, poppUrl + API_URI, PROXY_URI + "/popp");
         HttpHeaders headers = proxyService.copyHeaders(request);
 
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
-        return proxyService.proxyRequest(accessToken, body, method, headers, requestURL);
+        return proxyService.proxyRequest(body, method, headers, requestURL);
     }
 
     @RequestMapping("/proxy/inntektstub/**")
@@ -245,8 +187,7 @@ public class ProxyController {
         String requestURL = createURL(request, inntektstubUrl + "/api/v2", PROXY_URI + "/inntektstub");
         HttpHeaders headers = proxyService.copyHeaders(request);
 
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
-        return proxyService.proxyRequest(accessToken, body, method, headers, requestURL);
+        return proxyService.proxyRequest(body, method, headers, requestURL);
     }
 
     @RequestMapping("/proxy/brregstub/**")
@@ -258,8 +199,7 @@ public class ProxyController {
         String requestURL = createURL(request, brregstubUrl + "/api/v2", PROXY_URI + "/brregstub");
         HttpHeaders headers = proxyService.copyHeaders(request);
 
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
-        return proxyService.proxyRequest(accessToken, body, method, headers, requestURL);
+        return proxyService.proxyRequest(body, method, headers, requestURL);
     }
 
     @RequestMapping("/proxy/hodejegeren/**")
@@ -271,8 +211,7 @@ public class ProxyController {
         String requestURL = createURL(request, hodejegerenUrl + API_URI, PROXY_URI + "/hodejegeren");
         HttpHeaders headers = proxyService.copyHeaders(request);
 
-        AccessToken accessToken = tokenService.getAccessToken(new AccessScopes(remoteApplicationsProperties.get(DOLLY_BACKEND)));
-        return proxyService.proxyRequest(accessToken, body, method, headers, requestURL);
+        return proxyService.proxyRequest(body, method, headers, requestURL);
     }
 
     private static String createURL(HttpServletRequest request, String host, String splitUri)
