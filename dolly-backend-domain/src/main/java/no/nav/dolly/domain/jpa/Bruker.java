@@ -15,7 +15,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
@@ -23,8 +22,6 @@ import org.hibernate.annotations.Parameter;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -53,7 +50,7 @@ public class Bruker {
     @Column(name = "BRUKERNAVN")
     private String brukernavn;
 
-    @Column(name ="EPOST")
+    @Column(name = "EPOST")
     private String epost;
 
     @Column(name = "NAV_IDENT", length = 10)
