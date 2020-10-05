@@ -15,7 +15,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.http.entity.ContentType;
@@ -122,11 +125,11 @@ public class BrukerServiceTest {
     @Test
     public void fjernFavoritter_medGrupperIDer() {
         Long ID = 1L;
-        Testgruppe testgruppe = Testgruppe.builder().navn("gruppe").hensikt("hen").build();
-        Testgruppe testgruppe2 = Testgruppe.builder().navn("gruppe2").hensikt("hen2").build();
-        Set<Testgruppe> favoritter = newHashSet(asList(testgruppe, testgruppe2));
+        Bruker bruker = Bruker.builder().brukerId(BRUKERID).build();
+        Testgruppe testgruppe = Testgruppe.builder().navn("gruppe").id(ID).opprettetAv(bruker).hensikt("hen").build();
+        Testgruppe testgruppe2 = Testgruppe.builder().navn("gruppe2").id(2L).opprettetAv(bruker).hensikt("hen2").build();
+        bruker.getFavoritter().addAll(new ArrayList(List.of(testgruppe, testgruppe2)));
 
-        Bruker bruker = Bruker.builder().brukerId(BRUKERID).favoritter(favoritter).build();
         testgruppe.setFavorisertAv(newHashSet(singletonList(bruker)));
         testgruppe2.setFavorisertAv(newHashSet(singletonList(bruker)));
 
