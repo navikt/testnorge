@@ -14,10 +14,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.util.Collections.singleton;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -37,7 +42,10 @@ public class BrukerService {
 
     public Bruker fetchOrCreateBruker(String brukerId) {
         try {
-            return fetchBruker(brukerId);
+            Bruker bruker = fetchBruker(brukerId);
+            List<Bruker> brukere = brukerRepository.fetchEidAv(bruker);
+            bruker.getFavoritter().addAll(brukere.stream().map(Bruker::getFavoritter).flatMap(Collection::stream).collect(Collectors.toSet()));
+            return bruker;
         } catch (NotFoundException e) {
             return brukerRepository.save(getAuthUser());
         }
@@ -63,7 +71,13 @@ public class BrukerService {
     }
 
     public List<Bruker> fetchBrukere() {
-        return brukerRepository.findAllByOrderById();
+        List<Bruker> brukere = brukerRepository.findAllByOrderById();
+        Map<Long, Bruker> brukereMap = brukere.stream().collect(Collectors.toMap(bruker -> bruker.getId(), bruker-> bruker));
+        brukereMap.values().stream()
+                .filter(bruker -> nonNull(bruker.getEidAv()))
+                .map(bruker -> brukereMap.get(bruker.getEidAv().getId()).getFavoritter().addAll(bruker.getFavoritter()))
+                .collect(Collectors.toList());
+        return brukereMap.values().stream().filter(bruker -> isNull(bruker.getEidAv())).collect(Collectors.toList());
     }
 
     public int sletteBrukerFavoritterByGroupId(Long groupId) {

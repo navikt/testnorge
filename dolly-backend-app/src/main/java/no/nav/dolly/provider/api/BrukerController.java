@@ -13,6 +13,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +28,6 @@ import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 
-@Transactional
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/bruker", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -51,7 +51,8 @@ public class BrukerController {
         return mapperFacade.map(bruker, RsBruker.class);
     }
 
-    @GetMapping("/migrer/{brukerId}")
+    @Transactional
+    @PutMapping("/migrer/{brukerId}")
     @Operation(description = "Legg til Nav Ident på ny Azure bruker")
     public int leggTilIdentPaaNyBruker( @PathVariable String brukerId, @RequestParam Collection<String> navIdenter) {
         return brukerService.migrerBruker(navIdenter, brukerId);
@@ -64,6 +65,7 @@ public class BrukerController {
         return mapperFacade.mapAsList(brukerService.fetchBrukere(), RsBrukerAndGruppeId.class);
     }
 
+    @Transactional
     @CacheEvict(value = {CACHE_BRUKER, CACHE_GRUPPE}, allEntries = true)
     @PutMapping("/leggTilFavoritt")
     @Operation(description = "Legg til Favoritt-testgruppe til pålogget Bruker")
@@ -71,6 +73,7 @@ public class BrukerController {
         return mapperFacade.map(brukerService.leggTilFavoritt(request.getGruppeId()), RsBruker.class);
     }
 
+    @Transactional
     @CacheEvict(value = {CACHE_BRUKER, CACHE_GRUPPE}, allEntries = true)
     @PutMapping("/fjernFavoritt")
     @Operation(description = "Fjern Favoritt-testgruppe fra pålogget Bruker")

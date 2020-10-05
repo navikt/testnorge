@@ -88,7 +88,7 @@ public class SigrunStubConsumerTest {
     }
 
     @Test
-    public void deletSkattegrunnlag_Ok() {
+    public void deleteSkattegrunnlag_Ok() {
 
         server.expect(requestTo("https://localhost:8080/api/v1/slett"))
                 .andExpect(method(HttpMethod.DELETE))
