@@ -63,11 +63,12 @@ public class TestgruppeService {
 
     public Set<Testgruppe> fetchTestgrupperByBrukerId(String brukerId) {
         Bruker bruker = brukerService.fetchBruker(brukerId);
-        List<Bruker> eidAvBruker = brukerService.fetchEidAv(bruker.getId());
-        Set<Testgruppe> testgrupper = bruker.getFavoritter();
+        List<Bruker> eidAvBruker = brukerService.fetchEidAv(bruker);
+        eidAvBruker.add(bruker);
 
-        testgrupper.addAll(eidAvBruker.stream().map(Bruker::getTestgrupper).flatMap(Collection::stream).collect(Collectors.toSet()));
-        testgrupper.addAll(bruker.getTestgrupper());
+        Set<Testgruppe> testgrupper = eidAvBruker.stream().map(Bruker::getTestgrupper).flatMap(Collection::stream).collect(Collectors.toSet());
+        Set<Testgruppe> favoritter = eidAvBruker.stream().map(Bruker::getFavoritter).flatMap(Collection::stream).collect(Collectors.toSet());
+        testgrupper.addAll(favoritter);
 
         return testgrupper;
     }

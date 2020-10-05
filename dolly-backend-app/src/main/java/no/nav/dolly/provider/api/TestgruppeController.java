@@ -98,7 +98,7 @@ public class TestgruppeController {
     @Operation(description = "Hent testgrupper")
     public Set<RsTestgruppe> getTestgrupper(
             @RequestParam(name = "brukerId", required = false) String brukerId) {
-        return mapperFacade.mapAsList(testgruppeService.getTestgruppeByBrukerId(brukerId), RsTestgruppe.class);
+        return mapperFacade.mapAsSet(testgruppeService.getTestgruppeByBrukerId(brukerId), RsTestgruppe.class);
     }
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)

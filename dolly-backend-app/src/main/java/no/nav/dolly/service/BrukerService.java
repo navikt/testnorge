@@ -89,8 +89,8 @@ public class BrukerService {
         return brukerRepository.saveNavIdentToBruker(navIdenter, brukerId);
     }
 
-    public List<Bruker> fetchEidAv(Long id) {
-        return brukerRepository.fetchEidAv(id);
+    public List<Bruker> fetchEidAv(Bruker bruker) {
+        return brukerRepository.fetchEidAv(bruker);
     }
 
     private Testgruppe fetchTestgruppe(Long gruppeId) {

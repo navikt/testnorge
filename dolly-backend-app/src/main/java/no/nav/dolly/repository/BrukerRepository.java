@@ -34,6 +34,6 @@ public interface BrukerRepository extends Repository<Bruker, Long> {
     @Query(value = "delete from T_BRUKER_FAVORITTER where gruppe_id = :groupId", nativeQuery = true)
     int deleteBrukerFavoritterByGroupId(@Param("groupId") Long groupId);
 
-    @Query(value = "from Bruker b where b.eidAv = :id")
-    List<Bruker> fetchEidAv(@Param("id") Long id);
+    @Query(value = "from Bruker b where b.eidAv = :bruker")
+    List<Bruker> fetchEidAv(@Param("bruker") Bruker bruker);
 }
