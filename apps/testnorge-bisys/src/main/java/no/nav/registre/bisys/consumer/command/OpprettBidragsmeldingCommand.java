@@ -14,7 +14,7 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
 
 @Slf4j
-@DependencyOn("syntrest")
+@DependencyOn("bisys")
 @RequiredArgsConstructor
 public class OpprettBidragsmeldingCommand implements Runnable {
     private final WebClient webClient;
