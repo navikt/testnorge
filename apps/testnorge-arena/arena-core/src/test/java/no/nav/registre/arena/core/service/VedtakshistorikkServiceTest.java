@@ -186,45 +186,45 @@ public class VedtakshistorikkServiceTest {
         assertThat(response.get(fnr1).get(3).getFeiledeRettigheter()).hasSize(0);
     }
 
-//    @Test
-//    public void shouldOppretteVedtakshistorikkMedTiltaksdeltakelse() {
-//
-//        var nyRettighetTiltakdeltakelseResponse = NyttVedtakResponse.builder()
-//                .feiledeRettigheter(new ArrayList<>())
-//                .build();
-//
-//        var nyRettighetEndreDeltakelseResponse = NyttVedtakResponse.builder()
-//                .feiledeRettigheter(new ArrayList<>())
-//                .build();
-//
-//        var expectedResponsesFromArenaForvalter = Arrays.asList(
-//                nyRettighetTiltakdeltakelseResponse,
-//                nyRettighetEndreDeltakelseResponse
-//        );
-//        Map<String, List<NyttVedtakResponse>> responseAsMap = new HashMap<>();
-//        responseAsMap.put(fnr1, expectedResponsesFromArenaForvalter);
-//
-//        when(aapSyntConsumer.syntetiserVedtakshistorikk(antallIdenter)).thenReturn(vedtakshistorikkMedTiltakListe);
-//        when(serviceUtils.opprettArbeidssoekerTiltak(anyList(), anyString()))
-//                .thenReturn(Collections.emptyList());
-//        when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(responseAsMap);
-//        when(serviceUtils.finnTiltak(anyString(), anyString(), anyObject())).thenReturn(tiltaksdeltakelseRettigheter.get(0));
-//        when(rettighetTiltakService.getVedtakMedStatuskoder()).thenReturn(Collections.singletonMap("AVSLUTTET_DELTAKER", Collections.emptyList()));
-//        when(serviceUtils.velgKodeBasertPaaSannsynlighet(anyList())).thenReturn(new KodeMedSannsynlighet("FULLF", 100));
-//
-//        var response = vedtakshistorikkService.genererVedtakshistorikk(avspillergruppeId, miljoe, antallIdenter);
-//
-//        verify(serviceUtils).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(1), anyInt(), anyInt(), eq(miljoe));
-//        verify(aapSyntConsumer).syntetiserVedtakshistorikk(antallIdenter);
-//        verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
-//        verify(rettighetTiltakService).getEndringerMedGyldigRekkefoelge(DELTAKERSTATUS_GJENNOMFOERES, tiltaksdeltakelseRettigheter.get(0));
-//        verify(serviceUtils).finnTiltak(anyString(), anyString(), anyObject());
-//        verify(serviceUtils).velgKodeBasertPaaSannsynlighet(anyList());
-//
-//        assertThat(response.get(fnr1)).hasSize(2);
-//
-//        assertThat(response.get(fnr1).get(0).getFeiledeRettigheter()).isEmpty();
-//        assertThat(response.get(fnr1).get(1).getFeiledeRettigheter()).isEmpty();
-//
-//    }
+    @Test
+    public void shouldOppretteVedtakshistorikkMedTiltaksdeltakelse() {
+
+        var nyRettighetTiltakdeltakelseResponse = NyttVedtakResponse.builder()
+                .feiledeRettigheter(new ArrayList<>())
+                .build();
+
+        var nyRettighetEndreDeltakelseResponse = NyttVedtakResponse.builder()
+                .feiledeRettigheter(new ArrayList<>())
+                .build();
+
+        var expectedResponsesFromArenaForvalter = Arrays.asList(
+                nyRettighetTiltakdeltakelseResponse,
+                nyRettighetEndreDeltakelseResponse
+        );
+        Map<String, List<NyttVedtakResponse>> responseAsMap = new HashMap<>();
+        responseAsMap.put(fnr1, expectedResponsesFromArenaForvalter);
+
+        when(aapSyntConsumer.syntetiserVedtakshistorikk(antallIdenter)).thenReturn(vedtakshistorikkMedTiltakListe);
+        when(serviceUtils.opprettArbeidssoekerTiltak(anyList(), anyString()))
+                .thenReturn(Collections.emptyList());
+        when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(responseAsMap);
+        when(serviceUtils.finnTiltak(anyString(), anyString(), anyObject())).thenReturn(tiltaksdeltakelseRettigheter.get(0));
+        when(rettighetTiltakService.getVedtakMedStatuskoder()).thenReturn(Collections.singletonMap("AVSLUTTET_DELTAKER", Collections.emptyList()));
+        when(serviceUtils.velgKodeBasertPaaSannsynlighet(anyList())).thenReturn(new KodeMedSannsynlighet("FULLF", 100));
+
+        var response = vedtakshistorikkService.genererVedtakshistorikk(avspillergruppeId, miljoe, antallIdenter);
+
+        verify(serviceUtils).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(1), anyInt(), anyInt(), eq(miljoe));
+        verify(aapSyntConsumer).syntetiserVedtakshistorikk(antallIdenter);
+        verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
+        verify(rettighetTiltakService).getEndringerMedGyldigRekkefoelge(DELTAKERSTATUS_GJENNOMFOERES, tiltaksdeltakelseRettigheter.get(0));
+        verify(serviceUtils).finnTiltak(anyString(), anyString(), anyObject());
+        verify(serviceUtils).velgKodeBasertPaaSannsynlighet(anyList());
+
+        assertThat(response.get(fnr1)).hasSize(2);
+
+        assertThat(response.get(fnr1).get(0).getFeiledeRettigheter()).isEmpty();
+        assertThat(response.get(fnr1).get(1).getFeiledeRettigheter()).isEmpty();
+
+    }
 }

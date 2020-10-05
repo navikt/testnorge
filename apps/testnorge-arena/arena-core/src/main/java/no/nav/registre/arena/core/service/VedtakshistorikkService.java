@@ -23,8 +23,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import no.nav.registre.arena.core.consumer.rs.TiltakArenaForvalterConsumer;
-import no.nav.registre.arena.core.consumer.rs.request.*;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetAap115Request;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetAapRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetFritakMeldekortRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggsytelseRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksdeltakelseRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
+
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -157,7 +166,6 @@ public class VedtakshistorikkService {
         }
 
         List<RettighetRequest> rettigheter = new ArrayList<>();
-
         opprettVedtakAap115(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakAap(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakUngUfoer(vedtakshistorikk, personident, miljoe, rettigheter);
@@ -416,29 +424,30 @@ public class VedtakshistorikkService {
         var tiltaksdeltakelser = vedtak.getTiltaksdeltakelse();
         if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
             serviceUtils.opprettArbeidssoekerTiltakdeltakelse(personident, miljoe);
-            if (!rettigheter.isEmpty()) {
-                tiltaksdeltakelser.forEach(deltakelse -> {
-                    deltakelse.setFodselsnr(personident);
-                    deltakelse.setBegrunnelse(BEGRUNNELSE);
-                    deltakelse.setTiltakYtelse("J");
-                    var tiltak = serviceUtils.finnTiltak(personident, miljoe, deltakelse);
-                    if (tiltak != null) {
-                        deltakelse.setTiltakId(tiltak.getTiltakId());
-                    }
-                });
-
-                var nyeTiltaksdeltakelser = tiltaksdeltakelser.stream()
-                        .filter(deltakelse -> deltakelse.getTiltakId() != null).collect(Collectors.toList());
-
-                if (!nyeTiltaksdeltakelser.isEmpty()) {
-                    var rettighetRequest = new RettighetTiltaksdeltakelseRequest(nyeTiltaksdeltakelser);
-
-                    rettighetRequest.setPersonident(personident);
-                    rettighetRequest.setMiljoe(miljoe);
-                    rettigheter.add(rettighetRequest);
+            tiltaksdeltakelser.forEach(deltakelse -> {
+                deltakelse.setTiltakAdminKode(deltakelse.getTiltakskarakteristikk());
+                deltakelse.setFodselsnr(personident);
+                deltakelse.setBegrunnelse(BEGRUNNELSE);
+                deltakelse.setTiltakYtelse("J");
+            });
+            tiltaksdeltakelser.forEach(deltakelse -> {
+                var tiltak = serviceUtils.finnTiltak(personident, miljoe, deltakelse);
+                if (tiltak != null) {
+                    deltakelse.setTiltakId(tiltak.getTiltakId());
                 }
-                vedtak.setTiltaksdeltakelse(nyeTiltaksdeltakelser);
+            });
+
+            var nyeTiltaksdeltakelser = tiltaksdeltakelser.stream()
+                    .filter(deltakelse -> deltakelse.getTiltakId() != null).collect(Collectors.toList());
+
+            if (!nyeTiltaksdeltakelser.isEmpty()) {
+                var rettighetRequest = new RettighetTiltaksdeltakelseRequest(nyeTiltaksdeltakelser);
+
+                rettighetRequest.setPersonident(personident);
+                rettighetRequest.setMiljoe(miljoe);
+                rettigheter.add(rettighetRequest);
             }
+            vedtak.setTiltaksdeltakelse(nyeTiltaksdeltakelser);
         }
     }
 

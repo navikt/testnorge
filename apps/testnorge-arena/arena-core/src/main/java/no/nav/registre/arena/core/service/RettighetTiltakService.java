@@ -320,21 +320,25 @@ public class RettighetTiltakService {
         List<RettighetRequest> rettigheter = new ArrayList<>();
 
         for (var ident : identer) {
-            var syntetisertDeltakelse = tiltakSyntConsumer.opprettTiltaksdeltakelse(1).get(0);
-            syntetisertDeltakelse.setFodselsnr(ident);
+            var syntetisertDeltakelser = tiltakSyntConsumer.opprettTiltaksdeltakelse(1);
 
-            serviceUtils.opprettArbeidssoekerTiltakdeltakelse(ident, miljoe);
-            var nyTiltaksdeltakelse = serviceUtils.finnTiltak(ident, miljoe, syntetisertDeltakelse);
+            if (syntetisertDeltakelser != null && !syntetisertDeltakelser.isEmpty()) {
+                var deltakelse = syntetisertDeltakelser.get(0);
+                deltakelse.setFodselsnr(ident);
 
-            if (nyTiltaksdeltakelse != null && nyTiltaksdeltakelse.getTiltakId() != null) {
-                syntetisertDeltakelse.setTiltakId(nyTiltaksdeltakelse.getTiltakId());
-                syntetisertDeltakelse.setBegrunnelse(BEGRUNNELSE);
-                var rettighetRequest = new RettighetTiltaksdeltakelseRequest(Collections.singletonList(syntetisertDeltakelse));
+                serviceUtils.opprettArbeidssoekerTiltakdeltakelse(ident, miljoe);
+                var nyTiltaksdeltakelse = serviceUtils.finnTiltak(ident, miljoe, deltakelse);
 
-                rettighetRequest.setPersonident(ident);
-                rettighetRequest.setMiljoe(miljoe);
+                if (nyTiltaksdeltakelse != null && nyTiltaksdeltakelse.getTiltakId() != null) {
+                    deltakelse.setTiltakId(nyTiltaksdeltakelse.getTiltakId());
+                    deltakelse.setBegrunnelse(BEGRUNNELSE);
+                    var rettighetRequest = new RettighetTiltaksdeltakelseRequest(Collections.singletonList(deltakelse));
 
-                rettigheter.add(rettighetRequest);
+                    rettighetRequest.setPersonident(ident);
+                    rettighetRequest.setMiljoe(miljoe);
+
+                    rettigheter.add(rettighetRequest);
+                }
             }
         }
         return rettigheter;
@@ -343,7 +347,6 @@ public class RettighetTiltakService {
     private List<RettighetRequest> hentRettigheterForEndreDeltakerstatus(
             String miljoe,
             List<RettighetRequest> tiltaksdeltakelser
-
     ) {
         List<RettighetRequest> rettigheter = new ArrayList<>();
 
@@ -366,7 +369,7 @@ public class RettighetTiltakService {
         return rettigheter;
     }
 
-    public String getDeltakerstatus(NyttVedtakTiltak tiltakdeltakelse){
+    public String getDeltakerstatus(NyttVedtakTiltak tiltakdeltakelse) {
         String deltakerstatus = null;
         var fraDato = tiltakdeltakelse.getFraDato();
         var tilDato = tiltakdeltakelse.getTilDato();
