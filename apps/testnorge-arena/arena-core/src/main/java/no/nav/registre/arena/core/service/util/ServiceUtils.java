@@ -176,10 +176,10 @@ public class ServiceUtils {
     }
 
     private Kvalifiseringsgrupper velgKvalifiseringsgruppeBasertPaaAktivitetsfase(String aktivitetsfase) {
-        if (aktivitestsfaserMedInnsats.containsKey(aktivitetsfase)){
+        if (aktivitestsfaserMedInnsats.containsKey(aktivitetsfase)) {
             var innsats = velgKodeBasertPaaSannsynlighet(aktivitestsfaserMedInnsats.get(aktivitetsfase)).getKode();
             return Kvalifiseringsgrupper.valueOf(innsats);
-        }else{
+        } else {
             throw new ArbeidssoekerException("Ukjent aktivitetsfase " + aktivitetsfase);
         }
     }
@@ -284,6 +284,27 @@ public class ServiceUtils {
             rettigheter.removeIf(rettighet -> feiledeIdenter.contains(rettighet.getPersonident()));
         }
         return rettigheter;
+    }
+
+    public void opprettArbeidssoekerTiltakdeltakelse(
+            String ident,
+            String miljoe
+    ) {
+        var kvalifiseringsgruppe = rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM;
+        var identerIArena = brukereService.hentEksisterendeArbeidsoekerIdenter();
+        var uregistrertBruker = identerIArena.contains(ident);
+
+        if (uregistrertBruker) {
+            var nyeBrukereResponse = brukereService
+                    .sendArbeidssoekereTilArenaForvalter(Collections.singletonList(ident), miljoe, kvalifiseringsgruppe);
+            List<String> feiledeIdenter = new ArrayList<>();
+            if (nyeBrukereResponse != null && nyeBrukereResponse.getNyBrukerFeilList() != null && !nyeBrukereResponse.getNyBrukerFeilList().isEmpty()) {
+                nyeBrukereResponse.getNyBrukerFeilList().forEach(nyBrukerFeil -> {
+                    log.error("Kunne ikke opprette ny bruker med fnr {} i arena: {}", nyBrukerFeil.getPersonident(), nyBrukerFeil.getMelding());
+                    feiledeIdenter.add(nyBrukerFeil.getPersonident());
+                });
+            }
+        }
     }
 
     public List<String> getIdenterMedFoedselsmelding(
@@ -404,38 +425,19 @@ public class ServiceUtils {
         return false;
     }
 
-    public List<NyttVedtakTiltak> finnTiltak(String personident, String miljoe, List<NyttVedtakTiltak> tiltaksdeltakelser){
-        List<NyttVedtakTiltak> tiltak = new ArrayList<>();
-        List<Integer> tiltaksIder = new ArrayList<>();
-        if (!tiltaksdeltakelser.isEmpty()){
-            var rettighetRequest = new RettighetFinnTiltakRequest(tiltaksdeltakelser);
+    public NyttVedtakTiltak finnTiltak(String personident, String miljoe, NyttVedtakTiltak tiltaksdeltakelse) {
+        NyttVedtakTiltak tiltak = null;
+        var rettighetRequest = new RettighetFinnTiltakRequest(Collections.singletonList(tiltaksdeltakelse));
 
-            rettighetRequest.setPersonident(personident);
-            rettighetRequest.setMiljoe(miljoe);
-
-            var responses = tiltakArenaForvalterConsumer.finnTiltak(rettighetRequest);
-
-            tiltak = finnGyldigeTiltakUtenDuplikater(responses);
+        rettighetRequest.setPersonident(personident);
+        rettighetRequest.setMiljoe(miljoe);
+        var response = tiltakArenaForvalterConsumer.finnTiltak(rettighetRequest);
+        if (response != null &&  !response.getNyeFinnTiltak().isEmpty()) {
+            tiltak = response.getNyeFinnTiltak().get(0);
+        } else{
+            log.info("Fant ikke tiltak for tiltakdeltakelse.");
         }
         return tiltak;
     }
 
-    private List<NyttVedtakTiltak> finnGyldigeTiltakUtenDuplikater(List<NyeFinnTiltakResponse> responses){
-        List<NyttVedtakTiltak> tiltak = new ArrayList<>();
-        List<Integer> tiltaksIder = new ArrayList<>();
-
-        for (var response: responses){
-            if (response != null && response.getNyeFinntiltakFeilList().isEmpty()) {
-                for (var finntiltak : response.getNyeFinnTiltak()){
-                    var tiltakId = finntiltak.getTiltakId();
-                    if (tiltakId != null && !tiltaksIder.contains(tiltakId)) {
-                        tiltaksIder.add(tiltakId);
-                        tiltak.add(finntiltak);
-                    }
-                }
-            }
-        }
-
-        return tiltak;
-    }
 }

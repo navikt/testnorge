@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
-import no.nav.registre.arena.core.consumer.rs.TiltakArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.TiltakSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggRequest;
 import no.nav.registre.arena.core.service.util.KodeMedSannsynlighet;
@@ -27,7 +26,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.times;
@@ -42,9 +40,6 @@ public class RettighetTiltakServiceTest {
     private RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
 
     @Mock
-    private TiltakArenaForvalterConsumer tiltakArenaForvalterConsumer;
-
-    @Mock
     private ServiceUtils serviceUtils;
 
     @InjectMocks
@@ -54,7 +49,6 @@ public class RettighetTiltakServiceTest {
     private String miljoe = "t1";
     private int antallNyeIdenter = 1;
     private List<String> identer;
-    private Map<String, List<NyttVedtakResponse>> response;
     private NyttVedtakTiltak tiltakMedTilDatoFremITid;
     private NyttVedtakTiltak tiltakMedTilDatoLikDagens;
 
@@ -62,7 +56,7 @@ public class RettighetTiltakServiceTest {
     public void setUp() {
         identer = new ArrayList<>(Collections.singletonList("01010101010"));
 
-        response = new HashMap<>();
+        Map<String, List<NyttVedtakResponse>> response = new HashMap<>();
         response.put(identer.get(0),Collections.singletonList(new NyttVedtakResponse()));
         response.get(identer.get(0)).get(0).setFeiledeRettigheter(new ArrayList<>());
 
@@ -93,14 +87,14 @@ public class RettighetTiltakServiceTest {
         when(tiltakSyntConsumer.opprettTiltaksdeltakelse(antallNyeIdenter)).thenReturn(vedtak);
         when(serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
-        when(serviceUtils.finnTiltak(anyString(), anyString(), anyList())).thenReturn(vedtak);
+        when(serviceUtils.finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoFremITid)).thenReturn(tiltakMedTilDatoFremITid);
 
         rettighetTiltakService.opprettTiltaksdeltakelse(avspillergruppeId, miljoe, antallNyeIdenter);
 
         verify(tiltakSyntConsumer).opprettTiltaksdeltakelse(antallNyeIdenter);
         verify(serviceUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(rettighetArenaForvalterConsumer, times(2)).opprettRettighet(anyList());
-        verify(serviceUtils).finnTiltak(anyString(), anyString(), anyList());
+        verify(serviceUtils).finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoFremITid);
     }
 
     @Test
@@ -109,7 +103,7 @@ public class RettighetTiltakServiceTest {
         when(tiltakSyntConsumer.opprettTiltaksdeltakelse(antallNyeIdenter)).thenReturn(vedtak);
         when(serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
-        when(serviceUtils.finnTiltak(anyString(), anyString(), anyList())).thenReturn(vedtak);
+        when(serviceUtils.finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoLikDagens)).thenReturn(tiltakMedTilDatoLikDagens);
         when(serviceUtils.velgKodeBasertPaaSannsynlighet(anyList())).thenReturn(new KodeMedSannsynlighet("FULLF", 100));
 
         rettighetTiltakService.opprettTiltaksdeltakelse(avspillergruppeId, miljoe, antallNyeIdenter);
@@ -117,7 +111,7 @@ public class RettighetTiltakServiceTest {
         verify(tiltakSyntConsumer).opprettTiltaksdeltakelse(antallNyeIdenter);
         verify(serviceUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(rettighetArenaForvalterConsumer, times(2)).opprettRettighet(anyList());
-        verify(serviceUtils).finnTiltak(anyString(), anyString(), anyList());
+        verify(serviceUtils).finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoLikDagens);
         verify(serviceUtils).velgKodeBasertPaaSannsynlighet(anyList());
     }
 

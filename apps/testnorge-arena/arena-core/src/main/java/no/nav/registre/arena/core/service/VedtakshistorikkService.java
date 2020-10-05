@@ -173,6 +173,7 @@ public class VedtakshistorikkService {
         var senesteVedtak = finnSenesteVedtak(vedtakshistorikk.getAlleVedtak());
 
         List<RettighetRequest> rettighetRequests;
+
         if (senesteVedtak instanceof NyttVedtakAap) {
             rettighetRequests = serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe, ((NyttVedtakAap) senesteVedtak).getAktivitetsfase());
         } else if (senesteVedtak instanceof NyttVedtakTiltak) {
@@ -182,6 +183,7 @@ public class VedtakshistorikkService {
         } else {
             throw new VedtakshistorikkException("Ukjent vedtakstype: " + (senesteVedtak != null ? senesteVedtak.getClass() : null));
         }
+
 
         return rettighetArenaForvalterConsumer.opprettRettighet(rettighetRequests);
     }
@@ -411,25 +413,32 @@ public class VedtakshistorikkService {
             String miljoe,
             List<RettighetRequest> rettigheter
     ) {
-        var tiltaksdeltakelse = vedtak.getTiltaksdeltakelse();
-        if (tiltaksdeltakelse != null && !tiltaksdeltakelse.isEmpty()) {
-            tiltaksdeltakelse.forEach(deltakelse -> deltakelse.setTiltakYtelse("J"));
-
-            var nyeTiltaksdeltakelser = serviceUtils.finnTiltak(personident, miljoe, tiltaksdeltakelse);
-
-            if (!nyeTiltaksdeltakelser.isEmpty()) {
-                nyeTiltaksdeltakelser.forEach(deltakelse -> {
+        var tiltaksdeltakelser = vedtak.getTiltaksdeltakelse();
+        if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
+            serviceUtils.opprettArbeidssoekerTiltakdeltakelse(personident, miljoe);
+            if (!rettigheter.isEmpty()) {
+                tiltaksdeltakelser.forEach(deltakelse -> {
                     deltakelse.setFodselsnr(personident);
                     deltakelse.setBegrunnelse(BEGRUNNELSE);
+                    deltakelse.setTiltakYtelse("J");
+                    var tiltak = serviceUtils.finnTiltak(personident, miljoe, deltakelse);
+                    if (tiltak != null) {
+                        deltakelse.setTiltakId(tiltak.getTiltakId());
+                    }
                 });
 
-                var rettighetRequest = new RettighetTiltaksdeltakelseRequest(nyeTiltaksdeltakelser);
+                var nyeTiltaksdeltakelser = tiltaksdeltakelser.stream()
+                        .filter(deltakelse -> deltakelse.getTiltakId() != null).collect(Collectors.toList());
 
-                rettighetRequest.setPersonident(personident);
-                rettighetRequest.setMiljoe(miljoe);
-                rettigheter.add(rettighetRequest);
+                if (!nyeTiltaksdeltakelser.isEmpty()) {
+                    var rettighetRequest = new RettighetTiltaksdeltakelseRequest(nyeTiltaksdeltakelser);
+
+                    rettighetRequest.setPersonident(personident);
+                    rettighetRequest.setMiljoe(miljoe);
+                    rettigheter.add(rettighetRequest);
+                }
+                vedtak.setTiltaksdeltakelse(nyeTiltaksdeltakelser);
             }
-            vedtak.setTiltaksdeltakelse(nyeTiltaksdeltakelser);
         }
     }
 

@@ -17,8 +17,6 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @Component
@@ -37,8 +35,7 @@ public class TiltakArenaForvalterConsumer {
         this.arenaForvalterServerUrl = arenaForvalterServerUrl;
     }
 
-    public List<NyeFinnTiltakResponse> finnTiltak(RettighetRequest rettighet) {
-        var responses = new ArrayList<NyeFinnTiltakResponse>();
+    public NyeFinnTiltakResponse finnTiltak(RettighetRequest rettighet) {
         var url = new UriTemplate(arenaForvalterServerUrl + rettighet.getArenaForvalterUrlPath());
 
         var postRequest = RequestEntity.post(url.expand())
@@ -52,11 +49,7 @@ public class TiltakArenaForvalterConsumer {
             log.error("Kunne ikke finne tiltak i arena-forvalteren.", e);
         }
 
-        if (response != null){
-            responses.add(response);
-        }
-
-        return responses;
+        return response;
 
     }
 }
