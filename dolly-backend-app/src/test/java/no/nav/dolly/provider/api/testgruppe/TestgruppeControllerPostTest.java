@@ -42,7 +42,7 @@ class TestgruppeControllerPostTest extends TestgruppeTestBase {
         assertThat(resp.getId(), is(notNullValue()));
         assertThat(resp.getNavn(), is("mingruppe"));
         assertThat(resp.getHensikt(), is("hensikt"));
-        assertThat(resp.getOpprettetAvBrukerId(), is("NAVIDENT"));
+        assertThat(resp.getOpprettetAv().getBrukerId(), is("NAVIDENT"));
     }
 
     /*

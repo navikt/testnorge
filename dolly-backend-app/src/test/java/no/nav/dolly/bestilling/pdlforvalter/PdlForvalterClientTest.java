@@ -90,7 +90,7 @@ public class PdlForvalterClientTest {
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
         verify(pdlForvalterConsumer).postKontaktinformasjonForDoedsbo(any(PdlKontaktinformasjonForDoedsbo.class), eq(IDENT));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("PdlForvalter&OK$KontaktinformasjonForDoedsbo&OK, hendelseId: \"222\"")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("PdlForvalter&OK$KontaktinformasjonForDoedsbo&OK; hendelseId= \"222\"")));
     }
 
     @Test
@@ -114,7 +114,7 @@ public class PdlForvalterClientTest {
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
         verify(pdlForvalterConsumer).postKontaktinformasjonForDoedsbo(any(PdlKontaktinformasjonForDoedsbo.class), eq(IDENT));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("PdlForvalter&OK$KontaktinformasjonForDoedsbo&Feil: En feil har oppstått")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("PdlForvalter&OK$KontaktinformasjonForDoedsbo&Feil= En feil har oppstått")));
     }
 
     @Test
@@ -137,7 +137,7 @@ public class PdlForvalterClientTest {
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
         verify(pdlForvalterConsumer).postUtenlandskIdentifikasjonsnummer(any(PdlUtenlandskIdentifikasjonsnummer.class), eq(IDENT));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("PdlForvalter&OK$UtenlandskIdentifikasjonsnummer&OK, hendelseId: \"333\"")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("PdlForvalter&OK$UtenlandskIdentifikasjonsnummer&OK; hendelseId= \"333\"")));
     }
 
     @Test
@@ -161,7 +161,7 @@ public class PdlForvalterClientTest {
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
         verify(pdlForvalterConsumer).postUtenlandskIdentifikasjonsnummer(any(PdlUtenlandskIdentifikasjonsnummer.class), eq(IDENT));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("PdlForvalter&OK$UtenlandskIdentifikasjonsnummer&Feil: Opplysning er allerede innmeldt")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("PdlForvalter&OK$UtenlandskIdentifikasjonsnummer&Feil= Opplysning er allerede innmeldt")));
     }
 
     @Test
@@ -184,7 +184,7 @@ public class PdlForvalterClientTest {
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
         verify(pdlForvalterConsumer).postFalskIdentitet(any(PdlFalskIdentitet.class), eq(IDENT));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("PdlForvalter&OK$FalskIdentitet&OK, hendelseId: \"444\"")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("PdlForvalter&OK$FalskIdentitet&OK; hendelseId= \"444\"")));
     }
 
     @Test
@@ -208,7 +208,7 @@ public class PdlForvalterClientTest {
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
         verify(pdlForvalterConsumer).postFalskIdentitet(any(PdlFalskIdentitet.class), eq(IDENT));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("PdlForvalter&OK$FalskIdentitet&Feil: Falsk id er fake")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("PdlForvalter&OK$FalskIdentitet&Feil= Falsk id er fake")));
     }
 
     @Test
@@ -225,6 +225,6 @@ public class PdlForvalterClientTest {
         verifyNoInteractions(pdlForvalterConsumer);
 
         assertThat(progress.getPdlforvalterStatus(),
-                is(equalTo("PdlForvalter&Feil: Bestilling ble ikke sendt til Persondataløsningen (PDL) da miljø 'q2' ikke er valgt")));
+                is(equalTo("PdlForvalter&Feil= Bestilling ble ikke sendt til Persondataløsningen (PDL) da ingen av miljøene '{q1;q2}' er valgt")));
     }
 }

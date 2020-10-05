@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
+
+import no.nav.dolly.service.BestillingProgressService;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -35,22 +37,22 @@ public class GjenopprettBestillingService extends DollyBestillingService {
     private ErrorStatusDecoder errorStatusDecoder;
     private TpsfPersonCache tpsfPersonCache;
     private TpsfService tpsfService;
-    private BestillingProgressRepository bestillingProgressRepository;
+    private BestillingProgressService bestillingProgressService;
     private ForkJoinPool dollyForkJoinPool;
 
     public GjenopprettBestillingService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService, TpsfPersonCache tpsfPersonCache,
-            IdentService identService, BestillingProgressRepository bestillingProgressRepository,
+            IdentService identService, BestillingProgressService bestillingProgressService,
             BestillingService bestillingService, MapperFacade mapperFacade, CacheManager cacheManager,
             ObjectMapper objectMapper, List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
             ErrorStatusDecoder errorStatusDecoder, ForkJoinPool dollyForkJoinPool) {
-        super(tpsfResponseHandler, tpsfService, tpsfPersonCache, identService, bestillingProgressRepository, bestillingService,
+        super(tpsfResponseHandler, tpsfService, tpsfPersonCache, identService, bestillingProgressService, bestillingService,
                 mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry);
 
         this.bestillingService = bestillingService;
         this.errorStatusDecoder = errorStatusDecoder;
         this.tpsfPersonCache = tpsfPersonCache;
         this.tpsfService = tpsfService;
-        this.bestillingProgressRepository = bestillingProgressRepository;
+        this.bestillingProgressService = bestillingProgressService;
         this.dollyForkJoinPool = dollyForkJoinPool;
     }
 
@@ -61,7 +63,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
 
         if (nonNull(bestKriterier)) {
             dollyForkJoinPool.submit(() -> {
-                bestillingProgressRepository.findByBestillingId(bestilling.getOpprettetFraId()).parallelStream()
+                bestillingProgressService.fetchBestillingProgressByBestillingId(bestilling.getOpprettetFraId()).parallelStream()
                         .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
                         .map(gjenopprettFraProgress -> {
 

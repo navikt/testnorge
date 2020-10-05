@@ -6,6 +6,8 @@ import static java.util.stream.Collectors.toList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
+
+import no.nav.dolly.service.BestillingProgressService;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -39,11 +41,11 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
     private ForkJoinPool dollyForkJoinPool;
 
     public LeggTilPaaGruppeService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService, TpsfPersonCache tpsfPersonCache,
-            IdentService identService, BestillingProgressRepository bestillingProgressRepository,
+            IdentService identService, BestillingProgressService bestillingProgressService,
             BestillingService bestillingService, MapperFacade mapperFacade, CacheManager cacheManager,
             ObjectMapper objectMapper, List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
             ErrorStatusDecoder errorStatusDecoder, ForkJoinPool dollyForkJoinPool) {
-        super(tpsfResponseHandler, tpsfService, tpsfPersonCache, identService, bestillingProgressRepository,
+        super(tpsfResponseHandler, tpsfService, tpsfPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry);
 
         this.mapperFacade = mapperFacade;

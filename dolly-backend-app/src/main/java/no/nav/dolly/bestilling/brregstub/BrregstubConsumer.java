@@ -1,6 +1,6 @@
 package no.nav.dolly.bestilling.brregstub;
 
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_PERSON_IDENT;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
 
 import java.net.URI;
 import org.springframework.http.HttpStatus;

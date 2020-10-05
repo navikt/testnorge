@@ -18,6 +18,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RsRelasjon extends RsTpsfBasisBestilling {
 
+    @Schema(type = "String",
+            description = "Ident (FNR/DNR/BOST). Feltet benyttes for legg-til/endre på person kun, ikke ny bestilling")
+    private String ident;
+
     @Schema(description = "Identtype FNR/DNR/BOST, default er FNR")
     private String identtype;
 

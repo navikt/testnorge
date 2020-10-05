@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,10 +28,12 @@ import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.RsIdentBeskrivelse;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
+import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
 import no.nav.dolly.domain.testperson.IdentAttributesResponse;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
+import no.nav.dolly.service.NavigasjonService;
 import no.nav.dolly.service.PersonService;
 
 @RestController
@@ -43,6 +46,7 @@ public class TestpersonController {
     private final MapperFacade mapperFacade;
     private final IdentService identService;
     private final PersonService personService;
+    private final NavigasjonService navigasjonService;
 
     @Operation(description = "Legge til egenskaper på person/endre person i TPS og øvrige systemer")
     @PutMapping("/{ident}/leggtilpaaperson")
@@ -97,5 +101,13 @@ public class TestpersonController {
         }
         bestillingService.slettBestillingByTestIdent(ident);
         personService.recyclePersoner(singletonList(ident));
+    }
+
+    @Operation(description = "Naviger til ønsket testperson")
+    @Transactional
+    @GetMapping("/naviger/{ident}")
+    public RsWhereAmI navigerTilTestident(@PathVariable String ident) {
+
+        return navigasjonService.navigerTilIdent(ident);
     }
 }

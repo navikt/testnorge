@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlFolkeregisterpersonstatus.Folkeregisterpersonstatus;
-import static no.nav.dolly.domain.CommonKeys.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 
 import org.springframework.stereotype.Component;
 

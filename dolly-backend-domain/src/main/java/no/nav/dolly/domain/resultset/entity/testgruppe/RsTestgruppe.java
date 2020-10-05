@@ -10,6 +10,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 
 @Getter
 @Setter
@@ -21,8 +24,8 @@ public class RsTestgruppe {
     private Long id;
     private String navn;
     private String hensikt;
-    private String opprettetAvBrukerId;
-    private String sistEndretAvBrukerId;
+    private RsBrukerUtenFavoritter opprettetAv;
+    private RsBrukerUtenFavoritter sistEndretAv;
 
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate datoEndret;

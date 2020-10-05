@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.pensjonforvalter;
 
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeErrorStatus;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -113,7 +113,7 @@ public class PensjonforvalterClient implements ClientRegister {
         response.getStatus().forEach(status ->
                 pensjonStatus.append(status.getMiljo()).append(':')
                         .append(status.getResponse().getHttpStatus().getStatus() == 200 ? "OK" :
-                                "Feil= " + encodeErrorStatus(status.getResponse().getMessage()))
+                                "Feil= " + encodeStatus(status.getResponse().getMessage()))
                         .append(',')
         );
     }

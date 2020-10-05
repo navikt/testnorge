@@ -74,8 +74,8 @@ public class TestgruppeMappingStrategyTest {
         assertThat(rs.getDatoEndret().getYear(), is(2000));
         assertThat(rs.getDatoEndret().getMonthValue(), is(1));
         assertThat(rs.getDatoEndret().getDayOfMonth(), is(1));
-        assertThat(rs.getOpprettetAvBrukerId(), is(bruker.getBrukerId()));
-        assertThat(rs.getSistEndretAvBrukerId(), is(bruker.getBrukerId()));
+        assertThat(rs.getOpprettetAv().getBrukerId(), is(bruker.getBrukerId()));
+        assertThat(rs.getSistEndretAv().getBrukerId(), is(bruker.getBrukerId()));
 
         assertThat(rsIdenter.size(), is(1));
         assertThat(rsIdenter.get(0).getIdent(), is("1"));

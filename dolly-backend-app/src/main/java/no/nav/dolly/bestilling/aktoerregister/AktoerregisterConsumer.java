@@ -2,10 +2,10 @@ package no.nav.dolly.bestilling.aktoerregister;
 
 import static java.lang.String.format;
 import static java.util.Collections.emptyMap;
-import static no.nav.dolly.domain.CommonKeys.CONSUMER;
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_PERSON_IDENTER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENTER;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.net.URI;
