@@ -66,7 +66,7 @@ public class BrukerServiceTest {
 
     @Test
     public void fetchBruker_kasterIkkeExceptionOgReturnererBrukerHvisBrukerErFunnet() {
-        when(brukerRepository.findBrukerByBrukerId(any())).thenReturn(Optional.of(new Bruker()));
+        when(brukerRepository.findBrukerByBrukerId(any())).thenReturn(Optional.of(Bruker.builder().build()));
         Bruker b = brukerService.fetchBruker("test");
         assertThat(b, is(notNullValue()));
     }
@@ -93,7 +93,7 @@ public class BrukerServiceTest {
     @Test(expected = ConstraintViolationException.class)
     public void saveBrukerTilDB_kasterExceptionNarDBConstrainBrytes() {
         when(brukerRepository.save(any(Bruker.class))).thenThrow(DataIntegrityViolationException.class);
-        brukerService.saveBrukerTilDB(new Bruker());
+        brukerService.saveBrukerTilDB(Bruker.builder().build());
     }
 
     @Test

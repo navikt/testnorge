@@ -1,14 +1,5 @@
 package no.nav.dolly.service;
 
-import static java.util.Collections.singleton;
-import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
-import static no.nav.dolly.util.CurrentAuthentication.getUserId;
-
-import java.util.List;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.NonTransientDataAccessException;
-import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -17,6 +8,19 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.NonTransientDataAccessException;
+import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+import static java.lang.String.format;
+import static java.util.Collections.singleton;
+import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
+import static no.nav.dolly.util.CurrentAuthentication.getUserId;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Service
 @RequiredArgsConstructor
@@ -74,6 +78,19 @@ public class BrukerService {
         } catch (NonTransientDataAccessException e) {
             throw new DollyFunctionalException(e.getMessage(), e);
         }
+    }
+
+    public int migrerBruker(Collection<String> navIdenter, String brukerId) {
+        Optional<Bruker> bruker = brukerRepository.findBrukerByBrukerId(brukerId);
+        if (bruker.isPresent() && isTrue(bruker.get().getMigrert())) {
+            throw new DollyFunctionalException(format("Bruker %s er allerede migrert", bruker.get().getBrukernavn()));
+        }
+        brukerRepository.saveBrukerIdMigrert(brukerId);
+        return brukerRepository.saveNavIdentToBruker(navIdenter, brukerId);
+    }
+
+    public List<Bruker> fetchEidAv(Bruker bruker) {
+        return brukerRepository.fetchEidAv(bruker);
     }
 
     private Testgruppe fetchTestgruppe(Long gruppeId) {

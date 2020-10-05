@@ -149,7 +149,7 @@ public class TestgruppeServiceTest {
 
         when(brukerService.fetchBruker(any())).thenReturn(bruker);
 
-        List<Testgruppe> grupper = testgruppeService.fetchTestgrupperByBrukerId(BRUKERID);
+        Set<Testgruppe> grupper = testgruppeService.fetchTestgrupperByBrukerId(BRUKERID);
 
         assertThat(grupper, hasItem(hasProperty("id", equalTo(1L))));
         assertThat(grupper, hasItem(hasProperty("id", equalTo(2L))));
