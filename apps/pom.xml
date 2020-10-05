@@ -104,6 +104,5 @@
         <module>oversikt-frontend</module>
         <module>testnorge-bisys</module>
         <module>varslinger-api</module>
-        <module>synt-bidragsmelding-api</module>
     </modules>
 </project>

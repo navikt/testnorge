@@ -34,7 +34,7 @@ import java.io.InputStreamReader;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
-@AutoConfigureWireMock
+@AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
 public class AltinnInntektIntegrasjonsTest {
 
