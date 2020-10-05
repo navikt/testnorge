@@ -13,7 +13,7 @@ public interface BestillingProgressRepository extends Repository<BestillingProgr
 
     Optional<BestillingProgress> save(BestillingProgress bestillingProgress);
 
-    List<BestillingProgress> findByBestillingId(Long bestillingId);
+    Optional<List<BestillingProgress>> findByBestillingId(Long bestillingId);
 
     void deleteByBestillingId(Long bestillingId);
 
@@ -24,5 +24,6 @@ public interface BestillingProgressRepository extends Repository<BestillingProgr
     @Modifying
     int deleteByIdent(String ident);
 
+    @Query("")
     List<BestillingProgress> findByIdent(String ident);
 }

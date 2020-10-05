@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.aareg.AaregConsumer;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
@@ -35,12 +36,12 @@ import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.kodeverk.domain.GetKodeverkKoderBetydningerResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.consumer.saf.SafConsumer;
-import no.nav.dolly.consumer.saf.domain.SafRequest;
 import no.nav.dolly.consumer.saf.domain.SafRequest.VariantFormat;
-import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import no.nav.dolly.service.InntektsmeldingEnumService;
+import no.nav.dolly.service.InntektsmeldingEnumService.EnumTypes;
+import no.nav.dolly.service.RsTransaksjonMapping;
 import no.nav.dolly.service.TransaksjonMappingService;
 
 @RestController
@@ -145,29 +146,32 @@ public class OppslagController {
 
     @GetMapping("/inntektsmelding/{enumtype}")
     @Operation(description = "Henter enumtyper for inntektsmelding")
-    public List<String> getInntektsmeldingeTyper(@PathVariable InntektsmeldingEnumService.EnumTypes enumtype) {
+    public List<String> getInntektsmeldingeTyper(@PathVariable EnumTypes enumtype) {
 
         return inntektsmeldingEnumService.getEnumType(enumtype);
     }
 
-    @GetMapping("/transaksjonid/{system}/{ident}")
-    @Operation(description = "Henter transaksjon IDer for ident")
-    public List<TransaksjonMapping> getTransaksjonIder(@PathVariable SystemTyper system, @PathVariable String ident) {
+    @GetMapping("/transaksjonid")
+    @Operation(description = "Henter transaksjon IDer for bestillingId, ident og system")
+    public List<RsTransaksjonMapping> getTransaksjonIderIdent(
+            @Parameter(description = "En ID som identifiserer en bestilling mot Dolly") @RequestParam(required = false) Long bestillingId,
+            @Parameter(description = "Ident (f.eks FNR) på person knyttet til en bestilling") @RequestParam String ident,
+            @Parameter(description = "System kan hentes ut fra /api/v1/systemer") @RequestParam(required = false) String system) {
 
-        return transaksjonMappingService.getTransaksjonMapping(system, ident);
+        return transaksjonMappingService.getTransaksjonMapping(system, ident, bestillingId);
     }
 
-    @GetMapping("/inntektsmelding/{journalpostId}/{dokumentInfoId}")
+    @GetMapping("/inntektsmelding/{journalpostId}/{miljoe}")
     @Operation(description = "Henter dokumentinformasjon for inntektsmelding fra Joark")
-    public List<JsonNode> getInntektsmeldingDokumentinfo(@PathVariable String journalpostId, @PathVariable String dokumentInfoId,
+    public List<JsonNode> getInntektsmeldingDokumentinfo(@PathVariable String journalpostId, @RequestParam(required = false) String dokumentInfoId,
             @RequestParam VariantFormat variantFormat,
-            @RequestParam String miljoe) {
-        return safConsumer.getInntektsmeldingDokumentinfo(miljoe, new SafRequest(dokumentInfoId, journalpostId, variantFormat.name()));
+            @PathVariable String miljoe) {
+        return safConsumer.getInntektsmeldingDokumentinfo(miljoe, journalpostId, dokumentInfoId, variantFormat.name());
     }
 
     @GetMapping("/dokarkiv/{journalpostId}")
     @Operation(description = "Henter dokumentinformasjon for dokarkiv fra Joark")
-    public ResponseEntity<JsonNode> getDokarkivDokumentinfo(@PathVariable String journalpostId, @RequestParam(required = false) String miljoe) {
+    public JsonNode getDokarkivDokumentinfo(@PathVariable String journalpostId, @RequestParam(required = false) String miljoe) {
         return safConsumer.getDokarkivDokumentinfo(miljoe, journalpostId);
     }
 }

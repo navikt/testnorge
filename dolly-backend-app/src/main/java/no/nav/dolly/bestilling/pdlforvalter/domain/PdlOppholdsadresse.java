@@ -14,7 +14,6 @@ import lombok.Setter;
 public class PdlOppholdsadresse extends PdlAdresse {
 
     private OppholdAnnetSted oppholdAnnetSted;
-    private LocalDate oppholdsadressedato;
     private UtenlandskAdresse utenlandskAdresse;
     private PdlMatrikkeladresse matrikkeladresse;
 

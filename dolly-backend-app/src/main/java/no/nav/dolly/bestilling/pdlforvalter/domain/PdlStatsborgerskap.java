@@ -1,5 +1,7 @@
 package no.nav.dolly.bestilling.pdlforvalter.domain;
 
+import java.time.LocalDate;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,4 +17,6 @@ public class PdlStatsborgerskap {
 
     private String kilde;
     private String landkode;
+    private LocalDate gyldigFom;
+    private LocalDate gyldigTom;
 }

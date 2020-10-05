@@ -1,9 +1,9 @@
 package no.nav.dolly.bestilling.krrstub;
 
 import static java.lang.String.format;
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.domain.CommonKeys.HEADER_NAV_PERSON_IDENT;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
 
 import java.net.URI;
 import java.util.UUID;

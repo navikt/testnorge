@@ -1,7 +1,7 @@
 package no.nav.dolly.bestilling.sykemelding;
 
 import static java.lang.String.format;
-import static no.nav.dolly.domain.CommonKeys.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 
 import java.net.URI;
 import java.util.UUID;

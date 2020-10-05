@@ -3,7 +3,7 @@ package no.nav.dolly.bestilling.pdlforvalter.mapper;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.NORSK;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.UTENLANDSK;
 import static no.nav.dolly.bestilling.pdlforvalter.mapper.PdlAdresseMappingStrategy.getDato;
-import static no.nav.dolly.domain.CommonKeys.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.resultset.tpsf.adresse.MidlertidigAdresse.MidlertidigAdressetype.GATE;
 import static no.nav.dolly.domain.resultset.tpsf.adresse.MidlertidigAdresse.MidlertidigAdressetype.PBOX;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;

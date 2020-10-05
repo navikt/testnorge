@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.pdlforvalter.domain;
 
+import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -24,6 +25,8 @@ public abstract class PdlAdresse {
 
     private String adresseIdentifikatorFraMatrikkelen;
     private Adressegradering adressegradering;
+    private LocalDate gyldigFraOgMed;
+    private LocalDate gyldigTilOgMed;
     private String coAdressenavn;
     private String kilde;
     private Master master;
