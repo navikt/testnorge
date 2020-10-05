@@ -1,20 +1,5 @@
 package no.nav.dolly.service;
 
-import static java.lang.String.format;
-import static no.nav.dolly.util.CurrentAuthentication.getUserId;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.NonTransientDataAccessException;
-import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -24,6 +9,21 @@ import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.NonTransientDataAccessException;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static java.lang.String.format;
+import static no.nav.dolly.util.CurrentAuthentication.getUserId;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 @RequiredArgsConstructor
@@ -61,15 +61,15 @@ public class TestgruppeService {
         throw new NotFoundException("Finner ikke grupper basert på IDer : " + grupperIDer);
     }
 
-    public List<Testgruppe> fetchTestgrupperByBrukerId(String brukerId) {
+    public Set<Testgruppe> fetchTestgrupperByBrukerId(String brukerId) {
         Bruker bruker = brukerService.fetchBruker(brukerId);
+        List<Bruker> eidAvBruker = brukerService.fetchEidAv(bruker.getId());
         Set<Testgruppe> testgrupper = bruker.getFavoritter();
+
+        testgrupper.addAll(eidAvBruker.stream().map(Bruker::getTestgrupper).flatMap(Collection::stream).collect(Collectors.toSet()));
         testgrupper.addAll(bruker.getTestgrupper());
 
-        List<Testgruppe> unikeTestgrupper = new ArrayList<>(testgrupper);
-        unikeTestgrupper.sort((Testgruppe tg1, Testgruppe tg2) -> tg1.getNavn().compareToIgnoreCase(tg2.getNavn()));
-
-        return unikeTestgrupper;
+        return testgrupper;
     }
 
     public Testgruppe saveGruppeTilDB(Testgruppe testgruppe) {
@@ -114,7 +114,7 @@ public class TestgruppeService {
         return saveGruppeTilDB(testgruppe);
     }
 
-    public List<Testgruppe> getTestgruppeByBrukerId(String brukerId) {
+    public Set<Testgruppe> getTestgruppeByBrukerId(String brukerId) {
 
         return isBlank(brukerId) ? testgruppeRepository.findAllByOrderByNavn() : fetchTestgrupperByBrukerId(brukerId);
     }
