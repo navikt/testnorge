@@ -57,10 +57,10 @@ public class RettighetTiltakServiceTest {
         identer = new ArrayList<>(Collections.singletonList("01010101010"));
 
         Map<String, List<NyttVedtakResponse>> response = new HashMap<>();
-        response.put(identer.get(0),Collections.singletonList(new NyttVedtakResponse()));
+        response.put(identer.get(0), Collections.singletonList(new NyttVedtakResponse()));
         response.get(identer.get(0)).get(0).setFeiledeRettigheter(new ArrayList<>());
 
-        tiltakMedTilDatoFremITid= NyttVedtakTiltak.builder()
+        tiltakMedTilDatoFremITid = NyttVedtakTiltak.builder()
                 .tiltakId(123)
                 .tiltakAdminKode("IND")
                 .tiltakskarakteristikk("IND")
@@ -69,7 +69,7 @@ public class RettighetTiltakServiceTest {
         tiltakMedTilDatoFremITid.setFraDato(LocalDate.now().minusMonths(1));
         tiltakMedTilDatoFremITid.setTilDato(LocalDate.now().plusMonths(1));
 
-        tiltakMedTilDatoLikDagens= NyttVedtakTiltak.builder()
+        tiltakMedTilDatoLikDagens = NyttVedtakTiltak.builder()
                 .tiltakId(123)
                 .tiltakAdminKode("IND")
                 .tiltakskarakteristikk("IND")

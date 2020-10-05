@@ -1,6 +1,11 @@
 package no.nav.registre.arena.core.service;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -8,7 +13,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static no.nav.registre.arena.core.consumer.rs.AapSyntConsumer.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.DELTAKERSTATUS_GJENNOMFOERES;
 
-import no.nav.registre.arena.core.consumer.rs.TiltakArenaForvalterConsumer;
 import no.nav.registre.arena.core.service.util.KodeMedSannsynlighet;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
@@ -46,9 +50,6 @@ public class VedtakshistorikkServiceTest {
 
     @Mock
     private RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
-
-    @Mock
-    private TiltakArenaForvalterConsumer tiltakArenaForvalterConsumer;
 
     @Mock
     private RettighetAapService rettighetAapService;
@@ -148,11 +149,11 @@ public class VedtakshistorikkServiceTest {
                 .feiledeRettigheter(new ArrayList<>())
                 .build();
         var expectedResponsesFromArenaForvalter = Arrays.asList(
-                        nyRettighetAapResponse,
-                        nyRettighetUngUfoerResponse,
-                        nyRettighetTvungenForvaltningResponse,
-                        nyRettighetFritakMeldekortResponse
-                );
+                nyRettighetAapResponse,
+                nyRettighetUngUfoerResponse,
+                nyRettighetTvungenForvaltningResponse,
+                nyRettighetFritakMeldekortResponse
+        );
         Map<String, List<NyttVedtakResponse>> responseAsMap = new HashMap<>();
         responseAsMap.put(fnr1, expectedResponsesFromArenaForvalter);
 

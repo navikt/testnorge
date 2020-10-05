@@ -432,9 +432,9 @@ public class ServiceUtils {
         rettighetRequest.setPersonident(personident);
         rettighetRequest.setMiljoe(miljoe);
         var response = tiltakArenaForvalterConsumer.finnTiltak(rettighetRequest);
-        if (response != null &&  !response.getNyeFinnTiltak().isEmpty()) {
+        if (response != null && !response.getNyeFinnTiltak().isEmpty()) {
             tiltak = response.getNyeFinnTiltak().get(0);
-        } else{
+        } else {
             log.info("Fant ikke tiltak for tiltakdeltakelse.");
         }
         return tiltak;
