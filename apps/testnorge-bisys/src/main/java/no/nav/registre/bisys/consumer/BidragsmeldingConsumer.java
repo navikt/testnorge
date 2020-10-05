@@ -10,11 +10,11 @@ import no.nav.registre.bisys.consumer.command.OpprettBidragsmeldingCommand;
 import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
 
 @Component
-public class BidragsmedlingConsumer {
+public class BidragsmeldingConsumer {
 
     private final WebClient webClient;
 
-    public BidragsmedlingConsumer(@Value("${consumers.bidragsmelding.url}") String url) {
+    public BidragsmeldingConsumer(@Value("${consumers.bidragsmelding.url}") String url) {
         this.webClient = WebClient
                 .builder()
                 .baseUrl(url)

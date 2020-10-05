@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import no.nav.registre.bisys.consumer.BidragsmedlingConsumer;
+import no.nav.registre.bisys.consumer.BidragsmeldingConsumer;
 import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
 import no.nav.registre.bisys.exception.SyntetisertBidragsmeldingException;
 import no.nav.registre.bisys.provider.requests.SyntetiserBisysRequest;
@@ -22,7 +22,7 @@ import no.nav.registre.bisys.service.SyntetiseringService;
 public class SyntetiseringController {
 
     private final SyntetiseringService syntetiseringService;
-    private final BidragsmedlingConsumer bidragsmedlingConsumer;
+    private final BidragsmeldingConsumer bidragsmeldingConsumer;
 
     @Operation(summary = "Her kan man generere syntetiske bidragsmeldinger på personer i en gitt TPSF-avspillergruppe i et gitt miljø og lagre i Bisys UI.")
     @PostMapping(value = "/opprett")
@@ -30,6 +30,6 @@ public class SyntetiseringController {
             @RequestBody SyntetiserBisysRequest syntetiserBisysRequest
     ) throws SyntetisertBidragsmeldingException {
         List<SyntetisertBidragsmelding> syntetisertBidragsmeldinger = syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
-        bidragsmedlingConsumer.opprett(syntetisertBidragsmeldinger);
+        bidragsmeldingConsumer.opprett(syntetisertBidragsmeldinger);
     }
 }
