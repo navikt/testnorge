@@ -10,8 +10,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -21,9 +23,12 @@ import java.util.stream.Collectors;
 import no.nav.registre.sdforvalter.credentials.PersonApiClientCredential;
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
+import no.nav.registre.sdforvalter.domain.person.Person;
 import no.nav.registre.sdforvalter.exception.UgyldigIdentException;
 import no.nav.registre.testnorge.libs.common.command.CreatePersonCommand;
+import no.nav.registre.testnorge.libs.common.command.GetPersonCommand;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.libs.dto.person.v1.Persondatasystem;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
@@ -61,6 +66,34 @@ public class PersonConsumer {
                 .baseUrl(baseUrl)
                 .build();
         this.executor = Executors.newFixedThreadPool(threads);
+    }
+
+
+    private CompletableFuture<Person> hentPerson(String ident, AccessToken accessToken) {
+
+        var command = new GetPersonCommand(webClient, ident, accessToken.getTokenValue(), Persondatasystem.PDL, null);
+        return CompletableFuture.supplyAsync(
+                command::call,
+                executor
+        ).thenApply(Person::new);
+    }
+
+    public List<Person> hentPersoner(Set<String> identer) {
+        AccessToken accessToken = accessTokenService.generateToken(
+                clientCredential,
+                new AccessScopes("api://" + clientCredential.getClientId() + "/.default")
+        );
+        List<Person> personer = new ArrayList<>();
+        var futures = identer.stream().map(ident -> hentPerson(ident, accessToken)).collect(Collectors.toList());
+        for (CompletableFuture<Person> future : futures) {
+            try {
+                Person person = future.get();
+                personer.add(person != null && person.getFnr() != null ? person : null);
+            } catch (Exception e) {
+                log.error("Klarte ikke å hente ut person", e);
+            }
+        }
+        return personer;
     }
 
     public void opprettPersoner(TpsIdentListe identer) {

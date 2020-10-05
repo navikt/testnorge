@@ -27,7 +27,9 @@ public class TpsIdenterAdapter extends FasteDataAdapter {
 
     public TpsIdentListe fetchBy(String gruppe) {
         log.info("Henter tps identer med gruppe {}", gruppe);
-        return new TpsIdentListe(fetch().filterOnGruppe(gruppe));
+        var liste = new TpsIdentListe(fetch().filterOnGruppe(gruppe));
+        log.info("Fant {} person fra gruppe {}", liste.size(), gruppe);
+        return liste;
     }
 
     public TpsIdentListe save(TpsIdentListe liste) {

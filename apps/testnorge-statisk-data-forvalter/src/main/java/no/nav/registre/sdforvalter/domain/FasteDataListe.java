@@ -1,5 +1,6 @@
 package no.nav.registre.sdforvalter.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -30,6 +31,10 @@ public abstract class FasteDataListe<T extends FasteData> {
         iterable.forEach(item -> liste.add(item.toDomain()));
     }
 
+    @JsonIgnore
+    public int size(){
+         return liste.size();
+    }
 
     /**
      * Få alle elementer som ikke er i den andre listen.
