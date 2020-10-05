@@ -103,7 +103,7 @@ public class TestpersonController {
         personService.recyclePersoner(singletonList(ident));
     }
 
-    @ApiOperation(value = "Naviger til ønsket testperson", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Naviger til ønsket testperson")
     @Transactional
     @GetMapping("/naviger/{ident}")
     public RsWhereAmI navigerTilTestident(@PathVariable String ident) {
