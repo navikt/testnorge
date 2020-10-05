@@ -33,6 +33,7 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.mapper.MappingStrategy;
 
 @Slf4j
@@ -87,7 +88,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .importFraTps(mapTpsImport(bestilling.getTpsImport()))
                                 .kildeMiljoe(bestilling.getKildeMiljoe())
                                 .build());
-                        bestillingStatus.setBruker(mapperFacade.map(bestilling.getBruker(), RsBrukerAndGruppeId.class));
+                        bestillingStatus.setBruker(mapperFacade.map(bestilling.getBruker(), RsBrukerUtenFavoritter.class));
                     }
                 })
                 .exclude("bruker")

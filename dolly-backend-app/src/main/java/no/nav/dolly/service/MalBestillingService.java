@@ -19,6 +19,7 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +40,7 @@ public class MalBestillingService {
             RsMalBestillingWrapper.RsMalBestilling malBestilling = RsMalBestillingWrapper.RsMalBestilling.builder()
                     .malNavn(bestilling.getMalBestillingNavn())
                     .bruker(mapperFacade.map(nonNull(bestilling.getBruker()) ? bestilling.getBruker() :
-                            Bruker.builder().brukerId(COMMON).brukernavn(COMMON).build(), RsBrukerAndGruppeId.class))
+                            Bruker.builder().brukerId(COMMON).brukernavn(COMMON).build(), RsBrukerUtenFavoritter.class))
                     .id(bestilling.getId())
                     .bestilling(mapperFacade.map(bestilling, RsMalBestillingWrapper.RsBestilling.class))
                     .build();
@@ -60,6 +61,14 @@ public class MalBestillingService {
 
     private static String resolveId(Bruker bruker) {
 
-        return isNotBlank(bruker.getBrukernavn()) ? bruker.getBrukernavn() : bruker.getNavIdent();
+        if (nonNull(bruker.getEidAv())) {
+            return bruker.getEidAv().getBrukernavn();
+
+        } else if (isNotBlank(bruker.getBrukernavn())) {
+            return bruker.getBrukernavn();
+
+        } else {
+            return bruker.getNavIdent();
+        }
     }
 }

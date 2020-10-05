@@ -1,7 +1,10 @@
 package no.nav.dolly.mapper.strategy;
 
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
+import java.util.Objects;
+import java.util.spi.AbstractResourceBundleProvider;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +14,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.mapper.MappingStrategy;
 
 @Component
@@ -25,6 +29,22 @@ public class BrukerMappingStrategy implements MappingStrategy {
 
                         if (!bruker.getFavoritter().isEmpty()) {
                             rsBruker.setFavoritter(bruker.getFavoritter().stream().map(gruppe -> gruppe.getId().toString()).collect(toList()));
+                        }
+                    }
+                })
+                .byDefault()
+                .register();
+
+        factory.classMap(Bruker.class, RsBrukerUtenFavoritter.class)
+                .customize(new CustomMapper<Bruker, RsBrukerUtenFavoritter>() {
+                    @Override
+                    public void mapAtoB(Bruker bruker, RsBrukerUtenFavoritter rsBruker, MappingContext context) {
+
+                        if (nonNull(bruker.getEidAv())) {
+                            rsBruker.setBrukerId(bruker.getEidAv().getBrukerId());
+                            rsBruker.setBrukernavn(bruker.getEidAv().getBrukernavn());
+                            rsBruker.setEpost(bruker.getEidAv().getEpost());
+                            rsBruker.setNavIdent(null);
                         }
                     }
                 })
