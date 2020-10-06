@@ -4,6 +4,9 @@ server:
 
 zuul:
   routes:
+    controller:
+      path: /api/v1/logg
+      url: forward:/api/v1/logg
     dolly-backend:
       path: /api/v1/**
       url: ${DOLLY_BACKEND_HOST}/api/v1
