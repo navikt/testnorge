@@ -51,7 +51,7 @@ public class Tilbakemelding {
             case NEGATIVE:
                 return ":thumbsdown:";
             default:
-                return "ingen";
+                return "";
         }
     }
 }

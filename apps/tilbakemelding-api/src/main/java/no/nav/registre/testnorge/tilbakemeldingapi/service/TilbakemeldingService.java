@@ -11,7 +11,10 @@ public class TilbakemeldingService {
     private final SlackConsumer slackConsumer;
     private final String channel;
 
-    public TilbakemeldingService(SlackConsumer slackConsumer, @Value("${consumer.slack.channel}") String channel) {
+    public TilbakemeldingService(
+            SlackConsumer slackConsumer,
+            @Value("${consumer.slack.channel}") String channel
+    ) {
         this.slackConsumer = slackConsumer;
         this.channel = channel;
     }

@@ -29,7 +29,7 @@ public class ReportService {
 
     public void publishAll() {
         List<Report> reports = adapter.findAll();
-        log.info("Fant {} rapportert å publisere.", reports.size());
+        log.info("Fant {} rapporter å publisere.", reports.size());
         for (Report report : reports) {
             slackConsumer.publish(report.toSlackMessage(channel));
             adapter.delete(report.getId());
