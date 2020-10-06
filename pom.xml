@@ -30,6 +30,7 @@
         <commons-lang3.version>3.11</commons-lang3.version>
         <papertrailapp.version>1.0.0</papertrailapp.version>
         <logstash-logback-encoder.version>5.1</logstash-logback-encoder.version>
+        <testnorge-libs.version>2020.10.06-11.24-c4abd25161ae</testnorge-libs.version>
     </properties>
 
     <dependencyManagement>
@@ -50,6 +51,14 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Testnorge -->
+        <dependency>
+            <groupId>no.nav.registre.testnorge.libs</groupId>
+            <artifactId>testnorge-data-transfer-objects</artifactId>
+            <version>${testnorge-libs.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-sleuth</artifactId>
