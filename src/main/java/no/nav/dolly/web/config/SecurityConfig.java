@@ -29,7 +29,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .oauth2Client()
                 .and()
-                .oauth2Login();
+                .oauth2Login()
+                .and()
+                .csrf().disable();
     }
 
     @Bean
