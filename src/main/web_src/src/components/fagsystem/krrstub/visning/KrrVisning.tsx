@@ -6,6 +6,7 @@ import Loading from '~/components/ui/loading/Loading'
 import { Historikk } from '~/components/ui/historikk/Historikk'
 import { KrrApi } from '~/service/Api'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export const Visning = ({ data }) => {
 	return (
@@ -58,11 +59,13 @@ export const KrrVisning = ({ data, loading }) => {
 	const sortedData = Array.isArray(data) ? data.slice().reverse() : data
 
 	return (
-		<div>
-			<SubOverskrift label="Kontaktinformasjon og reservasjon" iconKind="krr" />
-			<div className="person-visning_content">
-				<Historikk component={Visning} data={sortedData} />
+		<ErrorBoundary>
+			<div>
+				<SubOverskrift label="Kontaktinformasjon og reservasjon" iconKind="krr" />
+				<div className="person-visning_content">
+					<Historikk component={Visning} data={sortedData} />
+				</div>
 			</div>
-		</div>
+		</ErrorBoundary>
 	)
 }
