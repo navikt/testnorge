@@ -5,7 +5,7 @@ spring:
   application:
     version: @application.version@
     name: tilbakemelding-api
-    description: App for innsendinger tilbakemeldinger. Tilbakemeldingene blir publisert i slack
+    description: App for innsending av tilbakemeldinger. Tilbakemeldingene blir publisert i slack
   security:
     oauth2:
       resourceserver:

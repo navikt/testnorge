@@ -1,5 +1,5 @@
 # testnorge-tilbakemelding-api
-App for innsendinger tilbakemeldinger. Tilbakemeldingene blir publisert i slack
+App for innsending av tilbakemeldinger. Tilbakemeldingene blir publisert i slack
 
 ## Swagger
 Swagger finnes under [/swagger](https://testnorge-tilbakemelding-api.dev.adeo.no/swagger) -endepunktet til applikasjonen.
