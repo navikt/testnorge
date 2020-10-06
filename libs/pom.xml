@@ -28,7 +28,6 @@
         <module>testnorge-slack</module>
     </modules>
 
-
     <build>
         <finalName>libs</finalName>
         <plugins>
