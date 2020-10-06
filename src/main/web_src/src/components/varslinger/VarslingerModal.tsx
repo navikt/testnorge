@@ -18,7 +18,6 @@ type Varsling = {
 }
 
 export const VarslingerModal = ({ varslinger, updateVarslingerBruker }: Varslinger) => {
-	console.log('varslinger :>> ', varslinger)
 	const [steg, setSteg] = useState(0)
 	const [modalOpen, setModalOpen] = useState(true)
 
