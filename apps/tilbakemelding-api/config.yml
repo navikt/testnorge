@@ -1,7 +1,7 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnorge-tilbakemeldinger-api
+  name: testnorge-tilbakemelding-api
   namespace: dolly
   labels:
     team: dolly
@@ -41,4 +41,4 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://testnorge-tilbakemeldinger-api.dev.adeo.no"
+    - "https://testnorge-tilbakemelding-api.dev.adeo.no"

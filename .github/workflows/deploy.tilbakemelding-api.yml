@@ -1,13 +1,13 @@
-name: Deploy tilbakemeldinger-api
+name: Deploy tilbakemelding-api
 
 on:
   push:
     paths:
-      - apps/tilbakemeldinger-api/**
+      - apps/tilbakemelding-api/**
       - libs/testnorge-core/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/tilbakemeldinger-api:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/tilbakemelding-api:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -28,13 +28,13 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: mvn --projects :tilbakemeldinger-api --also-make --settings maven-settings.xml compile
+        run: mvn --projects :tilbakemelding-api --also-make --settings maven-settings.xml compile
       - name: Test
-        run: mvn --projects :tilbakemeldinger-api --also-make --settings maven-settings.xml test
+        run: mvn --projects :tilbakemelding-api --also-make --settings maven-settings.xml test
       - name: Package
-        run: mvn --projects :tilbakemeldinger-api --also-make --settings maven-settings.xml package -Dmaven.test.skip
+        run: mvn --projects :tilbakemelding-api --also-make --settings maven-settings.xml package -Dmaven.test.skip
       - name: Build and publish Docker image
-        working-directory: apps/tilbakemeldinger-api/
+        working-directory: apps/tilbakemelding-api/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -47,4 +47,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/tilbakemeldinger-api/config.yml
+          RESOURCE: apps/tilbakemelding-api/config.yml
