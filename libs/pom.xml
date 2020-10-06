@@ -25,6 +25,7 @@
         <module>testnorge-database</module>
         <module>testnorge-oauth2</module>
         <module>testnorge-logging</module>
+        <module>testnorge-slack</module>
     </modules>
 
 

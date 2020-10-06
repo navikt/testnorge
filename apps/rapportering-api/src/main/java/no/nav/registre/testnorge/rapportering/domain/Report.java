@@ -13,12 +13,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.rapprtering.v1.EntryStatus;
-import no.nav.registre.testnorge.rapportering.consumer.dto.Attachment;
-import no.nav.registre.testnorge.rapportering.consumer.dto.Block;
-import no.nav.registre.testnorge.rapportering.consumer.dto.ButtonAction;
-import no.nav.registre.testnorge.rapportering.consumer.dto.Divider;
-import no.nav.registre.testnorge.rapportering.consumer.dto.Message;
-import no.nav.registre.testnorge.rapportering.consumer.dto.Section;
+import no.nav.registre.testnorge.libs.slack.dto.ActionAttachment;
+import no.nav.registre.testnorge.libs.slack.dto.Attachment;
+import no.nav.registre.testnorge.libs.slack.dto.Block;
+import no.nav.registre.testnorge.libs.slack.dto.ButtonAction;
+import no.nav.registre.testnorge.libs.slack.dto.Divider;
+import no.nav.registre.testnorge.libs.slack.dto.Message;
+import no.nav.registre.testnorge.libs.slack.dto.Section;
 import no.nav.registre.testnorge.rapportering.repository.model.ReportModel;
 
 @Value
@@ -87,8 +88,8 @@ public class Report {
 
         if (traceId != null) {
             String url = createLogUrl();
-            attachments.add(new Attachment("Lenke til log " + url, new ButtonAction("Se log", url)));
-        }else {
+            attachments.add(new ActionAttachment("Lenke til log " + url, new ButtonAction("Se log", url)));
+        } else {
             blocks.add(new Divider());
         }
         return Message

@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.rapportering.consumer.dto;
+package no.nav.registre.testnorge.libs.slack.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

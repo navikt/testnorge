@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.rapportering.consumer.dto;
+package no.nav.registre.testnorge.libs.slack.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -14,11 +14,11 @@ import java.util.List;
 @NoArgsConstructor(force = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @AllArgsConstructor
-public class Attachment {
+public class ActionAttachment implements Attachment {
     String fallback;
     List<Action> actions;
 
-    public Attachment(String fallback, Action... actions) {
+    public ActionAttachment(String fallback, Action... actions) {
         this.fallback = fallback;
         this.actions = Arrays.asList(actions);
     }
