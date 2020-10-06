@@ -37,8 +37,6 @@ public class SlackConsumer {
                     ));
             builder.clientConnector(new ReactorClientHttpConnector(httpClient));
         }
-
-
         webClient = builder
                 .baseUrl(baseUrl)
                 .build();

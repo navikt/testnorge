@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import no.nav.registre.testnorge.libs.dto.tilbakemeldingapi.v1.Rating;
 import no.nav.registre.testnorge.libs.dto.tilbakemeldingapi.v1.TilbakemeldingDTO;
-import no.nav.registre.testnorge.libs.slack.dto.ActionAttachment;
 import no.nav.registre.testnorge.libs.slack.dto.Attachment;
 import no.nav.registre.testnorge.libs.slack.dto.Block;
 import no.nav.registre.testnorge.libs.slack.dto.Divider;
@@ -24,7 +23,7 @@ public class Tilbakemelding {
     }
 
     public Message toSlackMessage(String channel) {
-        var ratingIcon = (rating != null ? " (" + getIcon(rating) + ")" : "");
+        var ratingIcon = (rating != null ? " " + getIcon(rating) + "" : "");
 
         var headerBlock = Section.from(
                 "*Tilbakemelding for: " + title + "*" + ratingIcon
