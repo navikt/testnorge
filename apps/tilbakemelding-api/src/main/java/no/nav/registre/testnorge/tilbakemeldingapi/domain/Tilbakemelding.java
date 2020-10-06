@@ -23,7 +23,7 @@ public class Tilbakemelding {
     }
 
     public Message toSlackMessage(String channel) {
-        var ratingIcon = (rating != null ? " " + getIcon(rating) + "" : "");
+        var ratingIcon = (rating != null ? " " + getIcon(rating) : "");
 
         var headerBlock = Section.from(
                 "*Tilbakemelding for: " + title + "*" + ratingIcon
