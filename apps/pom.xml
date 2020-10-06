@@ -110,6 +110,7 @@
         <module>testnorge-bisys</module>
         <module>varslinger-api</module>
         <module>tilbakemelding-api</module>
+        <module>person-export-api</module>
     </modules>
 
     <build>
