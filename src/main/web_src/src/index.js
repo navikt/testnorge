@@ -31,7 +31,7 @@ const root = document.getElementById('root')
 render(
 	<Provider store={store}>
 		<ConnectedRouter history={history}>
-			<ErrorBoundary error="React:GlobalErrorBoundary">
+			<ErrorBoundary>
 				<AppConnector />
 			</ErrorBoundary>
 		</ConnectedRouter>
