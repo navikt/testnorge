@@ -3,6 +3,8 @@ package no.nav.dolly.web.provider.web;
 import static java.lang.String.format;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.web.config.RemoteApplicationsProperties;
+import no.nav.dolly.web.security.TokenService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -25,12 +27,6 @@ public class ProxyController {
 
     public static final String API_URI = "/api/v1";
     public static final String PROXY_URI = "/api/proxy";
-    private static final String DOLLY_BACKEND = "dolly-backend";
-    private final TokenService tokenService;
-    private final RemoteApplicationsProperties remoteApplicationsProperties;
-
-    @Value("${dolly.url}")
-    private String dollyUrl;
 
     @Value("${fagsystem.arena.url}")
     private String arenaUrl;
