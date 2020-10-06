@@ -6,6 +6,7 @@ import Loading from '~/components/ui/loading/Loading'
 import { AppError } from '~/components/ui/appError/AppError'
 import Toast from '~/components/ui/toast/Toast'
 import routes from '~/Routes'
+import { VarslingerModal } from '~/components/varslinger/VarslingerModal'
 
 import './App.less'
 
@@ -20,6 +21,8 @@ export default class App extends Component {
 		})
 		await this.props.getCurrentBruker()
 		await this.props.getEnvironments()
+		await this.props.getVarslinger()
+		await this.props.getVarslingerBruker()
 	}
 
 	componentDidUpdate() {
@@ -28,7 +31,14 @@ export default class App extends Component {
 	}
 
 	render() {
-		const { brukerData, applicationError, clearAllErrors, configReady } = this.props
+		const {
+			brukerData,
+			applicationError,
+			clearAllErrors,
+			configReady,
+			varslinger,
+			updateVarslingerBruker
+		} = this.props
 
 		if (this.state.bootError)
 			return (
@@ -38,6 +48,12 @@ export default class App extends Component {
 		if (!brukerData || !configReady) return <Loading label="laster dolly applikasjon" fullpage />
 		return (
 			<React.Fragment>
+				{varslinger.length > 0 && (
+					<VarslingerModal
+						varslinger={varslinger}
+						updateVarslingerBruker={updateVarslingerBruker}
+					/>
+				)}
 				<Header brukerData={brukerData} />
 				<Breadcrumb />
 				<main>

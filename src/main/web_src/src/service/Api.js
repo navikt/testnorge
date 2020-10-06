@@ -10,6 +10,7 @@ import AaregService from './services/aareg/AaregService'
 import InntektstubService from './services/inntektstub/InntektstubService'
 import BrregstubService from './services/brregstub/BrregstubService'
 import HodejegerenService from '~/service/services/hodejegeren/HodejegerenService'
+import VarslingerService from './services/varslinger/VarslingerService'
 
 export const DollyApi = DollyService
 export const TpsfApi = TpsfService
@@ -23,6 +24,7 @@ export const AaregApi = AaregService
 export const InntektstubApi = InntektstubService
 export const BrregstubApi = BrregstubService
 export const HodejegerenApi = HodejegerenService
+export const VarslingerApi = VarslingerService
 
 export default {
 	DollyApi: DollyService,
@@ -36,5 +38,6 @@ export default {
 	AaregApi: AaregService,
 	InntektstubApi: InntektstubService,
 	HodejegerenApi: HodejegerenService,
-	BrregstubApi: BrregstubService
+	BrregstubApi: BrregstubService,
+	VarslingerApi: VarslingerService
 }
