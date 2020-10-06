@@ -425,7 +425,6 @@ public class VedtakshistorikkService {
         if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
             serviceUtils.opprettArbeidssoekerTiltakdeltakelse(personident, miljoe);
             tiltaksdeltakelser.forEach(deltakelse -> {
-                deltakelse.setTiltakAdminKode(deltakelse.getTiltakskarakteristikk());
                 deltakelse.setFodselsnr(personident);
                 deltakelse.setBegrunnelse(BEGRUNNELSE);
                 deltakelse.setTiltakYtelse("J");
