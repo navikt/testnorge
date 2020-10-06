@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { api } from './api'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
@@ -9,6 +9,7 @@ import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { MalIconItem } from '~/components/ui/icon/IconItem'
 import { EndreMalnavn } from './EndreMalnavn'
 import { slettMal } from './SlettMal'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export default ({ brukerId }) => {
 	const [loading, setLoading] = useState(true)
@@ -89,13 +90,15 @@ export default ({ brukerId }) => {
 			</div>
 			{maler.length > 0 ? (
 				malerFiltrert(maler, searchText).length > 0 ? (
-					<DollyTable
-						data={malerFiltrert(maler, searchText)}
-						columns={columns}
-						header={false}
-						iconItem={<MalIconItem />}
-						pagination
-					/>
+					<ErrorBoundary>
+						<DollyTable
+							data={malerFiltrert(maler, searchText)}
+							columns={columns}
+							header={false}
+							iconItem={<MalIconItem />}
+							pagination
+						/>
+					</ErrorBoundary>
 				) : (
 					<AlertStripeInfo>Ingen maler samsvarte med søket ditt</AlertStripeInfo>
 				)

@@ -5,6 +5,7 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export const SigrunstubVisning = ({ data, loading, visTittel = true }) => {
 	if (loading) return <Loading label="laster sigrunstub-data" />
@@ -19,36 +20,40 @@ export const SigrunstubVisning = ({ data, loading, visTittel = true }) => {
 			{visTittel && <SubOverskrift label="Skatteoppgjør (Sigrun)" iconKind="sigrun" />}
 			<div className="person-visning_content">
 				{grunnlag && (
-					<DollyFieldArray header="Fastlands-Norge" data={sortedData(data[0].grunnlag)} nested>
-						{(inntekt, idx) => (
-							<React.Fragment key={idx}>
-								<TitleValue title="Inntektsår" value={inntekt.inntektsaar} />
-								<TitleValue title="Tjeneste" value={inntekt.tjeneste} />
-								<TitleValue
-									title="Type inntekt"
-									value={inntekt.grunnlag}
-									kodeverk={inntekt.tjeneste}
-								/>
-								<TitleValue title="Beløp" value={inntekt.verdi} />
-							</React.Fragment>
-						)}
-					</DollyFieldArray>
+					<ErrorBoundary>
+						<DollyFieldArray header="Fastlands-Norge" data={sortedData(data[0].grunnlag)} nested>
+							{(inntekt, idx) => (
+								<React.Fragment key={idx}>
+									<TitleValue title="Inntektsår" value={inntekt.inntektsaar} />
+									<TitleValue title="Tjeneste" value={inntekt.tjeneste} />
+									<TitleValue
+										title="Type inntekt"
+										value={inntekt.grunnlag}
+										kodeverk={inntekt.tjeneste}
+									/>
+									<TitleValue title="Beløp" value={inntekt.verdi} />
+								</React.Fragment>
+							)}
+						</DollyFieldArray>
+					</ErrorBoundary>
 				)}
 				{svalbardGrunnlag && (
-					<DollyFieldArray header="Svalbard" data={sortedData(data[0].svalbardGrunnlag)} nested>
-						{(inntekt, idx) => (
-							<React.Fragment key={idx}>
-								<TitleValue title="Inntektsår" value={inntekt.inntektsaar} />
-								<TitleValue title="Tjeneste" value={inntekt.tjeneste} />
-								<TitleValue
-									title="Type inntekt"
-									value={inntekt.grunnlag}
-									kodeverk={inntekt.tjeneste}
-								/>
-								<TitleValue title="Beløp" value={inntekt.verdi} />
-							</React.Fragment>
-						)}
-					</DollyFieldArray>
+					<ErrorBoundary>
+						<DollyFieldArray header="Svalbard" data={sortedData(data[0].svalbardGrunnlag)} nested>
+							{(inntekt, idx) => (
+								<React.Fragment key={idx}>
+									<TitleValue title="Inntektsår" value={inntekt.inntektsaar} />
+									<TitleValue title="Tjeneste" value={inntekt.tjeneste} />
+									<TitleValue
+										title="Type inntekt"
+										value={inntekt.grunnlag}
+										kodeverk={inntekt.tjeneste}
+									/>
+									<TitleValue title="Beløp" value={inntekt.verdi} />
+								</React.Fragment>
+							)}
+						</DollyFieldArray>
+					</ErrorBoundary>
 				)}
 			</div>
 		</div>

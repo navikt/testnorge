@@ -8,6 +8,7 @@ import { AdresseKodeverk } from '~/config/kodeverk'
 import './Boadresse.less'
 import { DollyApi } from '~/service/Api'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export const Boadresse = ({ formikBag }) => {
 	const settBoadresse = adresse => {
@@ -55,10 +56,10 @@ export const Boadresse = ({ formikBag }) => {
 		<Kategori title="Gateadresse">
 			<div className="gateadresse">
 				<GyldigAdresseVelger settBoadresse={settBoadresse} formikBag={formikBag} />
-				<LoadableComponent
-					onFetch={() => DollyApi.getKodeverkByNavn(AdresseKodeverk.PostnummerUtenPostboks)}
-					render={(data, feil) => {
-						return (
+				<ErrorBoundary>
+					<LoadableComponent
+						onFetch={() => DollyApi.getKodeverkByNavn(AdresseKodeverk.PostnummerUtenPostboks)}
+						render={(data, feil) => (
 							<DollyTextInput
 								name="boadresse"
 								size="grow"
@@ -69,9 +70,9 @@ export const Boadresse = ({ formikBag }) => {
 								title="Endre adressen i adressevelgeren over"
 								feil={feilmelding(feil)}
 							/>
-						)
-					}}
-				/>
+						)}
+					/>
+				</ErrorBoundary>
 			</div>
 		</Kategori>
 	)

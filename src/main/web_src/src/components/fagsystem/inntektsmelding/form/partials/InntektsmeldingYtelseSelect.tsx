@@ -7,6 +7,7 @@ import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import Formatters from '~/utils/DataFormatter'
 import { FormikProps } from 'formik'
 import { Ytelser, Tema } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 interface InntektsmeldingSelect {
 	path: string
@@ -38,31 +39,34 @@ export default ({
 			return { feilmelding: 'Feltet er påkrevd' }
 		else return feilmelding
 	}
+
 	return (
-		<LoadableComponent
-			onFetch={() =>
-				SelectOptionsOppslag.hentInntektsmeldingOptions(kodeverk).then(response =>
-					response.map((value: string) => ({
-						value,
-						label: Formatters.codeToNorskLabel(value),
-						tema: findTema(value)
-					}))
-				)
-			}
-			render={(data: Array<Option>, feilmelding: Feilmelding) => (
-				<DollySelect
-					name={ytelsePath}
-					label={label}
-					options={data}
-					type="text"
-					size={size}
-					value={_get(formikBag.values, ytelsePath)}
-					onChange={(e: Option) => setYtelseOgTema(e, formikBag, path, idx)}
-					feil={feil(feilmelding)}
-					isClearable={false}
-				/>
-			)}
-		/>
+		<ErrorBoundary>
+			<LoadableComponent
+				onFetch={() =>
+					SelectOptionsOppslag.hentInntektsmeldingOptions(kodeverk).then(response =>
+						response.map((value: string) => ({
+							value,
+							label: Formatters.codeToNorskLabel(value),
+							tema: findTema(value)
+						}))
+					)
+				}
+				render={(data: Array<Option>, feilmelding: Feilmelding) => (
+					<DollySelect
+						name={ytelsePath}
+						label={label}
+						options={data}
+						type="text"
+						size={size}
+						value={_get(formikBag.values, ytelsePath)}
+						onChange={(e: Option) => setYtelseOgTema(e, formikBag, path, idx)}
+						feil={feil(feilmelding)}
+						isClearable={false}
+					/>
+				)}
+			/>
+		</ErrorBoundary>
 	)
 }
 

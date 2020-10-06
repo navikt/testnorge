@@ -2,6 +2,7 @@ import React from 'react'
 import LoadableComponent, { Feilmelding } from '~/components/ui/loading/LoadableComponent'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 interface HelsepersonellSelect {
 	name: string
@@ -21,22 +22,22 @@ type Option = {
 
 export default ({ name, label, afterChange }: HelsepersonellSelect) => {
 	return (
-		<LoadableComponent
-			onFetch={() =>
-				SelectOptionsOppslag.hentHelsepersonell().then(response =>
-					response.helsepersonell.map((helsepersonell: Option) => ({
-						value: helsepersonell.fnr,
-						label: `${helsepersonell.fnr} - ${helsepersonell.fornavn} ${helsepersonell.mellomnavn} ${helsepersonell.etternavn}`,
-						fnr: helsepersonell.fnr,
-						fornavn: helsepersonell.fornavn,
-						mellomnavn: helsepersonell.mellomnavn,
-						etternavn: helsepersonell.etternavn,
-						hprId: helsepersonell.hprId
-					}))
-				)
-			}
-			render={(data: Array<Option>, feilmelding: Feilmelding) => {
-				return (
+		<ErrorBoundary>
+			<LoadableComponent
+				onFetch={() =>
+					SelectOptionsOppslag.hentHelsepersonell().then(response =>
+						response.helsepersonell.map((helsepersonell: Option) => ({
+							value: helsepersonell.fnr,
+							label: `${helsepersonell.fnr} - ${helsepersonell.fornavn} ${helsepersonell.mellomnavn} ${helsepersonell.etternavn}`,
+							fnr: helsepersonell.fnr,
+							fornavn: helsepersonell.fornavn,
+							mellomnavn: helsepersonell.mellomnavn,
+							etternavn: helsepersonell.etternavn,
+							hprId: helsepersonell.hprId
+						}))
+					)
+				}
+				render={(data: Array<Option>, feilmelding: Feilmelding) => (
 					<FormikSelect
 						name={name}
 						label={label}
@@ -47,8 +48,8 @@ export default ({ name, label, afterChange }: HelsepersonellSelect) => {
 						isClearable={false}
 						feil={feilmelding}
 					/>
-				)
-			}}
-		/>
+				)}
+			/>
+		</ErrorBoundary>
 	)
 }
