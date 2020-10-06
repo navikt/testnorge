@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.rapportering.consumer.dto;
+package no.nav.registre.testnorge.libs.slack.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -11,9 +11,6 @@ import lombok.Value;
 @NoArgsConstructor(force = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @AllArgsConstructor
-public class ButtonAction implements Action {
-    String type = "button";
+public class TextAttachment implements Attachment {
     String text;
-    String url;
-    String style = "primary";
 }
