@@ -1,5 +1,5 @@
 import { useAsync } from 'react-use'
-import { DollyApi, BrregstubApi } from '~/service/Api'
+import { BrregstubApi, DollyApi, KrrApi } from '~/service/Api'
 import config from '~/config'
 import Api from '~/api'
 import _isNil from 'lodash/isNil'
@@ -10,6 +10,14 @@ export const SelectOptionsOppslag = {
 	hentOrgnr: () => Api.fetchJson(`${uri}/orgnummer`, { method: 'GET' }),
 
 	hentHelsepersonell: () => Api.fetchJson(`${uri}/helsepersonell`, 'GET'),
+
+	hentKrrLeverandoerer: () => {
+		const sdpLeverandoerer = useAsync(async () => {
+			const response = await KrrApi.getSdpLeverandoerListe()
+			return response
+		}, [KrrApi.getSdpLeverandoerListe])
+		return sdpLeverandoerer
+	},
 
 	hentPersonnavn: () => {
 		const navnInfo = useAsync(async () => {
@@ -107,6 +115,14 @@ SelectOptionsOppslag.formatOptions = (type, data) => {
 		const options = []
 		roller.forEach(rolle => {
 			options.push({ value: rolle[0], label: rolle[1] })
+		})
+		return options
+	} else if (type === 'sdpLeverandoer') {
+		const leverandoerer = data.value ? Object.entries(data.value.data) : []
+		const options = []
+		leverandoerer.forEach(leverandoer => {
+			data = leverandoer[1]
+			options.push({ value: parseInt(data.id), label: data.navn })
 		})
 		return options
 	}
