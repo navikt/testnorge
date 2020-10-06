@@ -34,7 +34,6 @@ export default ({ formikBag, path }: InntektendringForm) => {
 	}
 	const historikkPath = `${path}.historikk`
 	const data = _get(formikBag.values, historikkPath, [])
-	if (!data) return null
 
 	return (
 		<FieldArray name={historikkPath}>
