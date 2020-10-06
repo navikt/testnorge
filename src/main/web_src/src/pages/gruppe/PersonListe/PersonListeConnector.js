@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import _get from 'lodash/get'
 import { fetchTpsfPersoner, actions, sokSelector, selectPersonListe } from '~/ducks/fagsystem'
 import { createLoadingSelector } from '~/ducks/loading'
 import personListe from './PersonListe'

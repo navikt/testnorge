@@ -20,7 +20,6 @@ import {
 	ifPresent
 } from '~/utils/YupValidations'
 import { FormikProps } from 'formik'
-import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { Kodeverk, Ytelser, Inntekt } from '../InntektsmeldingTypes'
 import InntektsmeldingSelect from './partials/InntektsmeldingSelect'
 import InntektsmeldingYtelseSelect from './partials/InntektsmeldingYtelseSelect'
@@ -31,6 +30,7 @@ import RefusjonForm from './partials/refusjonForm'
 import ArbeidsforholdForm from './partials/arbeidsforholdForm'
 import NaturalytelseForm from './partials/naturalytelseForm'
 import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
+import { AlertAaregRequired } from '~/components/ui/brukerAlert/AlertAaregRequired'
 
 interface InntektsmeldingForm {
 	formikBag: FormikProps<{}>
@@ -75,7 +75,6 @@ export const initialValues = (type: string) => ({
 
 const inntektsmeldingAttributt = 'inntektsmelding'
 const informasjonstekst = 'Personen må ha et arbeidsforhold knyttet til den valgte virksomheten.'
-const alertinformasjontekst = `Personen må ha et arbeidsforhold knyttet til den samme virksomheten som du velger i inntektsmeldingen. Det kan du legge ved å gå tilbake til forrige side og huke av for Arbeidsforhold (Aareg).`
 
 export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 	const [typeArbeidsgiver, setTypeArbeidsgiver] = useState(
@@ -115,9 +114,8 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 				//@ts-ignore
 				startOpen={() => erForste(formikBag.values, [inntektsmeldingAttributt])}
 			>
-				{/* //TODO Vi må finne på en god løsning her! */}
 				{!_has(formikBag.values, 'aareg') && (
-					<AlertStripeInfo>{alertinformasjontekst}</AlertStripeInfo>
+					<AlertAaregRequired meldingSkjema="Inntektsmeldingen" />
 				)}
 
 				<DollySelect

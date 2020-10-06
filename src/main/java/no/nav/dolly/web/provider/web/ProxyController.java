@@ -74,7 +74,6 @@ public class ProxyController {
         return proxyService.proxyRequest(body, method, headers, requestURL);
     }
 
-
     @RequestMapping("/proxy/inst/**")
     public ResponseEntity<String> instProxy(
             @RequestBody(required = false) String body,
