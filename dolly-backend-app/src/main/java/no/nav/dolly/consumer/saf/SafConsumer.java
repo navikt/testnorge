@@ -136,6 +136,8 @@ public class SafConsumer {
                                     .build()),
                     JsonNode.class);
 
+            return response.getBody();
+
         } catch (HttpClientErrorException error) {
             if (NOT_FOUND.equals(error.getStatusCode())) {
                 return lagJsonFeilmelding(
