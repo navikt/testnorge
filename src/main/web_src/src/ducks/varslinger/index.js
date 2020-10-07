@@ -24,9 +24,6 @@ export default handleActions(
 		},
 		[onSuccess(getVarslingerBruker)](state, action) {
 			state.varslingerBrukerData = action.payload.data
-		},
-		[onSuccess(updateVarslingerBruker)](state, action) {
-			state.varslingerBrukerData = action.payload.data
 		}
 	},
 	initialState

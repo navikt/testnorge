@@ -14,6 +14,6 @@ export default {
 
 	updateVarslingerBruker(varslingId: string) {
 		const endpoint = `${varslingerlUrl}/person/ids/${varslingId}`
-		return Request.put(endpoint)
+		return Request.putWithoutResponse(endpoint)
 	}
 }
