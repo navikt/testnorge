@@ -8,6 +8,7 @@ import { AdresseKodeverk } from '~/config/kodeverk'
 import { GyldigAdresseVelger } from '../boadresse/GyldigAdresseVelger/GyldigAdresseVelger'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { DollyApi } from '~/service/Api'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 interface GateadresseDetaljert {
 	formikBag: FormikProps<{}>
@@ -39,7 +40,6 @@ export const GateadresseDetaljert = ({ formikBag }: GateadresseDetaljert) => {
 		if (!gatenavn) return ''
 		return `${gatenavn} ${parseInt(husnr)}, ${postnr} ${poststed}`
 	}
-
 	const feilmelding = () => {
 		if (
 			!_get(formikBag.values, `${norskAdresse}.gatenavn`) &&
@@ -55,10 +55,10 @@ export const GateadresseDetaljert = ({ formikBag }: GateadresseDetaljert) => {
 		<Kategori title="Midlertidig gateadresse">
 			<div className="gateadresse">
 				<GyldigAdresseVelger settBoadresse={settAdresse} formikBag={formikBag} />
-				<LoadableComponent
-					onFetch={() => DollyApi.getKodeverkByNavn(AdresseKodeverk.PostnummerUtenPostboks)}
-					render={() => {
-						return (
+				<ErrorBoundary>
+					<LoadableComponent
+						onFetch={() => DollyApi.getKodeverkByNavn(AdresseKodeverk.PostnummerUtenPostboks)}
+						render={() => (
 							<DollyTextInput
 								name="boadresse"
 								size="grow"
@@ -69,9 +69,9 @@ export const GateadresseDetaljert = ({ formikBag }: GateadresseDetaljert) => {
 								title="Endre adressen i adressevelgeren over"
 								feil={feilmelding()}
 							/>
-						)
-					}}
-				/>
+						)}
+					/>
+				</ErrorBoundary>
 			</div>
 		</Kategori>
 	)

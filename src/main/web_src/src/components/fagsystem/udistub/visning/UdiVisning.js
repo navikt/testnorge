@@ -6,6 +6,7 @@ import { Oppholdsstatus } from './partials/Oppholdsstatus'
 import { Arbeidsadgang } from './partials/Arbeidsadgang'
 import { Aliaser } from './partials/Aliaser'
 import { Annet } from './partials/Annet'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export const UdiVisning = ({ data, loading }) => {
 	if (loading) return <Loading label="Laster UDI-data" />
@@ -13,16 +14,18 @@ export const UdiVisning = ({ data, loading }) => {
 
 	return (
 		<div>
-			<SubOverskrift label="UDI" iconKind="udi" />
-			<div className="person-visning">
-				<Oppholdsstatus
-					oppholdsstatus={data.oppholdStatus}
-					oppholdstillatelse={data.harOppholdsTillatelse}
-				/>
-				<Arbeidsadgang arbeidsadgang={data.arbeidsadgang} />
-				<Aliaser aliaser={data.aliaser} />
-				<Annet data={data} />
-			</div>
+			<ErrorBoundary>
+				<SubOverskrift label="UDI" iconKind="udi" />
+				<div className="person-visning">
+					<Oppholdsstatus
+						oppholdsstatus={data.oppholdStatus}
+						oppholdstillatelse={data.harOppholdsTillatelse}
+					/>
+					<Arbeidsadgang arbeidsadgang={data.arbeidsadgang} />
+					<Aliaser aliaser={data.aliaser} />
+					<Annet data={data} />
+				</div>
+			</ErrorBoundary>
 		</div>
 	)
 }

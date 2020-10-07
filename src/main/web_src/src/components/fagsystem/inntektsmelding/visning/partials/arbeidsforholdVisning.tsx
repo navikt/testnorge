@@ -6,6 +6,7 @@ import {
 	Arbeidsforhold,
 	AvtaltFerie
 } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 interface ArbeidsforholdVisning {
 	data?: Arbeidsforhold
@@ -29,14 +30,16 @@ export default ({ data }: ArbeidsforholdVisning) => {
 					value={Formatters.formatDate(data.foersteFravaersdag)}
 				/>
 				{data.avtaltFerieListe && (
-					<DollyFieldArray data={data.avtaltFerieListe} header="Avtalt ferie" nested>
-						{(id: AvtaltFerie, idx: number) => (
-							<div className="person-visning_content" key={idx}>
-								<TitleValue title="Fra og med" value={Formatters.formatDate(id.fom)} />
-								<TitleValue title="Til og med" value={Formatters.formatDate(id.tom)} />
-							</div>
-						)}
-					</DollyFieldArray>
+					<ErrorBoundary>
+						<DollyFieldArray data={data.avtaltFerieListe} header="Avtalt ferie" nested>
+							{(id: AvtaltFerie, idx: number) => (
+								<div className="person-visning_content" key={idx}>
+									<TitleValue title="Fra og med" value={Formatters.formatDate(id.fom)} />
+									<TitleValue title="Til og med" value={Formatters.formatDate(id.tom)} />
+								</div>
+							)}
+						</DollyFieldArray>
+					</ErrorBoundary>
 				)}
 			</div>
 		</>
