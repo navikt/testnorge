@@ -343,23 +343,29 @@ export const selectPersonListe = state => {
 		.sort((a, b) => _last(b.bestillingId) - _last(a.bestillingId))
 		.filter(gruppeIdent => Object.keys(fagsystem.tpsf).includes(gruppeIdent.ident))
 
-	return identer.map(ident => {
-		const tpsfIdent = fagsystem.tpsf[ident.ident]
+	return identer
+		.filter(
+			ident =>
+				ident.bestillingId.length > 0 &&
+				state.bestillingStatuser.byId[ident.bestillingId[0]] != null
+		)
+		.map(ident => {
+			const tpsfIdent = fagsystem.tpsf[ident.ident]
 
-		const mellomnavn = tpsfIdent.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
+			const mellomnavn = tpsfIdent.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
 
-		return {
-			ident,
-			identNr: tpsfIdent.ident,
-			bestillingId: ident.bestillingId,
-			importFra: tpsfIdent.importFra,
-			identtype: tpsfIdent.identtype,
-			navn: `${tpsfIdent.fornavn} ${mellomnavn} ${tpsfIdent.etternavn}`,
-			kjonn: Formatters.kjonn(tpsfIdent.kjonn, tpsfIdent.alder),
-			alder: Formatters.formatAlder(tpsfIdent.alder, tpsfIdent.doedsdato),
-			status: hentPersonStatus(ident.ident, state.bestillingStatuser.byId[ident.bestillingId[0]])
-		}
-	})
+			return {
+				ident,
+				identNr: tpsfIdent.ident,
+				bestillingId: ident.bestillingId,
+				importFra: tpsfIdent.importFra,
+				identtype: tpsfIdent.identtype,
+				navn: `${tpsfIdent.fornavn} ${mellomnavn} ${tpsfIdent.etternavn}`,
+				kjonn: Formatters.kjonn(tpsfIdent.kjonn, tpsfIdent.alder),
+				alder: Formatters.formatAlder(tpsfIdent.alder, tpsfIdent.doedsdato),
+				status: hentPersonStatus(ident.ident, state.bestillingStatuser.byId[ident.bestillingId[0]])
+			}
+		})
 }
 
 export const selectDataForIdent = (state, ident) => {
