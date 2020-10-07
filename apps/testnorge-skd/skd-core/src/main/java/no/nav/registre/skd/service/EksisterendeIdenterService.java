@@ -50,7 +50,7 @@ public class EksisterendeIdenterService {
     private static final String IDENT = "ident";
     private static final String STATSBORGER_NORGE = "NORGE";
     private static final String SIVILSTANDSENDRING_AARSAKSKODE = "85";
-    private static final int ANTALL_FORSOEK_PER_AARSAK = 3;
+    private static final int ANTALL_FORSOEK_PER_AARSAK = 10;
     static final String RELASJON_FAR = "FARA";
     static final String RELASJON_MOR = "MORA";
     static final String DATO_DO = "datoDo";
@@ -154,6 +154,7 @@ public class EksisterendeIdenterService {
             Endringskoder endringskode,
             String environment
     ) {
+        log.info("Oppretter {} vigsler", meldinger.size());
         List<RsMeldingstype> meldingerForPartnere = new ArrayList<>();
 
         for (int i = 0; i < meldinger.size(); i++) {

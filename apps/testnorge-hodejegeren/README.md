@@ -25,3 +25,12 @@ Ha Nav-Tunnel kjørende og kjør LocalApplicationStarter med samme argumenter so
 - -DsocksProxyPort=14122
 - -DsocksNonProxyHosts=127.0.0.1|dl.bintray.com|repo.maven.apache.org|maven.adeo.no|packages.confluent.io|confluent.io|maven.xwiki.org|maven.repository.redhat.com
      
+#### Naisdevice
+Kjør LocalApplicationStarter med
+``` 
+-Dspring.cloud.vault.token=[Kopi av token fra vault]
+```
+i VM-options 
+
+**Notat:**  
+MongoDB nås ikke utenfor utviklerimage.
