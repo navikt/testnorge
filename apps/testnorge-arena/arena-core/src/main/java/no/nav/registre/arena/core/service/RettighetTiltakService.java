@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.arena.core.consumer.rs.TiltakArenaForvalterConsumer;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -48,7 +47,6 @@ public class RettighetTiltakService {
 
     private final TiltakSyntConsumer tiltakSyntConsumer;
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
-    private final TiltakArenaForvalterConsumer tiltakArenaForvalterConsumer;
     private final ServiceUtils serviceUtils;
     private final Random rand;
 
@@ -96,10 +94,11 @@ public class RettighetTiltakService {
         var innsendteTiltaksdeltakelser = aktiverTiltaksdeltakelse(tiltaksdeltakelser, miljoe);
         addResponses(responses, innsendteTiltaksdeltakelser);
 
-        var endretDeltakerstatus = hentRettigheterForEndreDeltakerstatus(miljoe, tiltaksdeltakelser);
-        var innsendteEndringerDeltakerstatus = endreDeltakerstatus(endretDeltakerstatus);
-        addResponses(responses, innsendteEndringerDeltakerstatus);
-
+        if (!responses.isEmpty() ) {
+            var endretDeltakerstatus = hentRettigheterForEndreDeltakerstatus(miljoe, tiltaksdeltakelser);
+            var innsendteEndringerDeltakerstatus = endreDeltakerstatus(endretDeltakerstatus);
+            addResponses(responses, innsendteEndringerDeltakerstatus);
+        }
         return responses;
     }
 

@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.arena.core.consumer.rs.TiltakArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetFinnTiltakRequest;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeFinnTiltakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import org.springframework.stereotype.Service;
 
@@ -292,7 +291,7 @@ public class ServiceUtils {
     ) {
         var kvalifiseringsgruppe = rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM;
         var identerIArena = brukereService.hentEksisterendeArbeidsoekerIdenter();
-        var uregistrertBruker = identerIArena.contains(ident);
+        var uregistrertBruker = !identerIArena.contains(ident);
 
         if (uregistrertBruker) {
             var nyeBrukereResponse = brukereService
@@ -412,13 +411,17 @@ public class ServiceUtils {
         if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
             var fraDato = vedtak.getFraDato();
             var tilDato = vedtak.getTilDato();
-            for (var deltakelse : tiltaksdeltakelser) {
-                var fraDatoDeltakelse = deltakelse.getFraDato();
-                var tilDatoDeltakelse = deltakelse.getTilDato();
-                if (fraDatoDeltakelse != null && tilDatoDeltakelse != null &&
-                        fraDato.isAfter(fraDatoDeltakelse.minusDays(1)) &&
-                        tilDato.isBefore(tilDatoDeltakelse.plusDays(1))) {
-                    return true;
+
+            if (fraDato != null) {
+                for (var deltakelse : tiltaksdeltakelser) {
+                    var fraDatoDeltakelse = deltakelse.getFraDato();
+                    var tilDatoDeltakelse = deltakelse.getTilDato();
+
+                    if ((fraDatoDeltakelse != null && fraDato.isAfter(fraDatoDeltakelse.minusDays(1))) &&
+                            (tilDato == null || tilDatoDeltakelse != null && tilDato.isBefore(tilDatoDeltakelse.plusDays(1)))) {
+                        return true;
+                    }
+
                 }
             }
         }
@@ -432,8 +435,8 @@ public class ServiceUtils {
         rettighetRequest.setPersonident(personident);
         rettighetRequest.setMiljoe(miljoe);
         var response = tiltakArenaForvalterConsumer.finnTiltak(rettighetRequest);
-        if (response != null && !response.getNyeFinnTiltak().isEmpty()) {
-            tiltak = response.getNyeFinnTiltak().get(0);
+        if (response != null && !response.getNyeRettigheterTiltak().isEmpty()) {
+            tiltak = response.getNyeRettigheterTiltak().get(0);
         } else {
             log.info("Fant ikke tiltak for tiltakdeltakelse.");
         }
