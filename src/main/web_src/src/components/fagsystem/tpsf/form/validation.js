@@ -289,6 +289,24 @@ const partnere = Yup.array()
 	)
 	.nullable()
 
+const requiredHvisIkkeDoed = path =>
+	ifPresent(
+		path,
+		Yup.mixed().when('doedsdato', {
+			is: val => val === undefined || val === null,
+			then: requiredString
+		})
+	)
+
+const requiredHvisDoedfoedt = path =>
+	ifPresent(
+		path,
+		Yup.mixed().when('identtype', {
+			is: val => val === 'FDAT',
+			then: requiredDate
+		})
+	)
+
 const barn = Yup.array()
 	.of(
 		Yup.object({
@@ -296,13 +314,7 @@ const barn = Yup.array()
 			kjonn: Yup.string().nullable(),
 			barnType: ifPresent('$tpsf.relasjoner.barn[0].barnType', requiredString),
 			partnerNr: Yup.number().nullable(),
-			borHos: ifPresent(
-				'$tpsf.relasjoner.barn[0].borHos',
-				Yup.mixed().when('doedsdato', {
-					is: val => val === undefined || val === null,
-					then: requiredString
-				})
-			),
+			borHos: requiredHvisIkkeDoed('$tpsf.relasjoner.barn[0].borHos'),
 			erAdoptert: Yup.boolean(),
 			alder: Yup.number()
 				.transform(num => (isNaN(num) ? undefined : num))
@@ -324,13 +336,7 @@ const barn = Yup.array()
 			boadresse: Yup.object({
 				kommunenr: Yup.string().nullable()
 			}),
-			foedselsdato: ifPresent(
-				'$tpsf.relasjoner.barn[0].foedselsdato',
-				Yup.mixed().when('borHos', {
-					is: val => val === undefined,
-					then: requiredDate
-				})
-			),
+			foedselsdato: requiredHvisDoedfoedt('$tpsf.relasjoner.barn[0].foedselsdato'),
 			doedsdato: Yup.date().nullable()
 		})
 	)
