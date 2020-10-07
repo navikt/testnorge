@@ -24,7 +24,8 @@ public class NyttVedtakResponse {
     private List<NyttVedtakAap> nyeRettigheterAap;
 
     @JsonAlias({
-            "nyeTiltaksdeltakelse", "nyeTiltakspenger", "nyeTilleggsytelser", "nyeEndreDeltakerstatus", "nyeTiltaksaktivitet"
+            "nyeTiltaksdeltakelse", "nyeTiltakspenger", "nyeTilleggsytelser", "nyeEndreDeltakerstatus",
+            "nyeTiltaksaktivitet", "nyeFinntiltakResponse"
     })
     private List<NyttVedtakTiltak> nyeRettigheterTiltak;
 
@@ -36,7 +37,8 @@ public class NyttVedtakResponse {
     @JsonAlias({
             "nyeAapFeilList", "nyeAap115FeilList", "nyeAaunguforFeilList", "nyeAatforFeilList", "nyeFritakFeilList",
             "nyeTiltaksdeltakelseFeilList", "nyeTiltakspengerFeilList", "nyeTilleggsytelserFeilList",
-            "nyeTilleggsstonadFeilList", "nyeEndreDeltakerstatusFeilList", "nyeTiltaksaktivitetFeilList"
+            "nyeTilleggsstonadFeilList", "nyeEndreDeltakerstatusFeilList", "nyeTiltaksaktivitetFeilList",
+            "nyeFinntiltakFeilList"
     })
     private List<NyttVedtakFeil> feiledeRettigheter;
 }
