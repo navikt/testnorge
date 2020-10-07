@@ -45,7 +45,8 @@ public class SecurityConfig implements HttpSecurityConfigurer {
                 "X-Requested-With",
                 "Nav-Personident",
                 "X-XSRF-TOKEN",
-                "Content-Type"
+                "Content-Type",
+                "personidentifikator"
         ));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);

@@ -15,6 +15,7 @@ export type SykemeldingSynt = {
 		arbeidsforholdId: string
 	}
 	idx: number
+	erGjenopprettet?: boolean
 }
 
 export type SykemeldingDetaljert = {
@@ -24,12 +25,13 @@ export type SykemeldingDetaljert = {
 		manglendeTilretteleggingPaaArbeidsplassen: boolean
 		hovedDiagnose: Diagnose
 		biDiagnoser: Array<Diagnose>
-		lege: Lege
+		helsepersonell: Helsepersonell
 		arbeidsgiver: Arbeidsgiver
 		detaljer: Detaljer
 		perioder: Array<Periode>
 	}
 	idx: number
+	erGjenopprettet?: boolean
 }
 
 export type Diagnose = {
@@ -38,7 +40,7 @@ export type Diagnose = {
 	system?: string
 }
 
-export type Lege = {
+export type Helsepersonell = {
 	fornavn: string
 	mellomnavn?: string
 	etternavn: string

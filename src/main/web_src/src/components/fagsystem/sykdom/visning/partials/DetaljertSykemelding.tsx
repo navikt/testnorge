@@ -31,16 +31,16 @@ export const DetaljertSykemelding = ({ sykemelding, idx }: SykemeldingDetaljert)
 			</>
 			<Bidiagnoser data={sykemelding.biDiagnoser} />
 			<>
-				<h4>Lege</h4>
+				<h4>Helsepersonell</h4>
 				<div className="person-visning_content">
 					<TitleValue
 						title="Navn"
-						value={`${sykemelding.lege.fornavn} ${
-							sykemelding.lege.mellomnavn ? sykemelding.lege.mellomnavn : ''
-						} ${sykemelding.lege.etternavn}`}
+						value={`${sykemelding.helsepersonell.fornavn} ${
+							sykemelding.helsepersonell.mellomnavn ? sykemelding.helsepersonell.mellomnavn : ''
+						} ${sykemelding.helsepersonell.etternavn}`}
 					/>
-					<TitleValue title="Ident" value={sykemelding.lege.ident} />
-					<TitleValue title="HPR-nummer" value={sykemelding.lege.hprId} />
+					<TitleValue title="Ident" value={sykemelding.helsepersonell.ident} />
+					<TitleValue title="HPR-nummer" value={sykemelding.helsepersonell.hprId} />
 				</div>
 			</>
 			<>

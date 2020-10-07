@@ -549,12 +549,18 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 								sykemeldingKriterier.detaljertSykemelding.biDiagnoser.length
 						),
 						obj(
-							'Lege navn',
-							sykemeldingKriterier.detaljertSykemelding.lege &&
-								`${sykemeldingKriterier.detaljertSykemelding.lege.fornavn} ${sykemeldingKriterier.detaljertSykemelding.lege.mellomnavn} ${sykemeldingKriterier.detaljertSykemelding.lege.etternavn}`
+							'Helsepersonell navn',
+							sykemeldingKriterier.detaljertSykemelding.helsepersonell &&
+								`${sykemeldingKriterier.detaljertSykemelding.helsepersonell.fornavn} ${sykemeldingKriterier.detaljertSykemelding.helsepersonell.mellomnavn} ${sykemeldingKriterier.detaljertSykemelding.helsepersonell.etternavn}`
 						),
-						obj('Lege ident', _get(sykemeldingKriterier.detaljertSykemelding, 'lege.ident')),
-						obj('Lege HPR-nummer', _get(sykemeldingKriterier.detaljertSykemelding, 'lege.hprId')),
+						obj(
+							'Helsepersonell ident',
+							_get(sykemeldingKriterier.detaljertSykemelding, 'helsepersonell.ident')
+						),
+						obj(
+							'HPR-nummer',
+							_get(sykemeldingKriterier.detaljertSykemelding, 'helsepersonell.hprId')
+						),
 						obj(
 							'Arbeidsgiver',
 							_get(sykemeldingKriterier.detaljertSykemelding, 'arbeidsgiver.navn')
@@ -630,6 +636,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			items: [
 				obj('Mobilnummer', krrKriterier.mobil),
 				obj('Epost', krrKriterier.epost),
+				obj('Adresse', krrKriterier.sdpAdresse),
+				obj('Leverandør', krrKriterier.sdpLeverandoer),
 				obj('Språk', Formatters.showLabel('spraaktype', krrKriterier.spraak)),
 				{
 					label: 'RESERVERT MOT DIGITALKOMMUNIKASJON',

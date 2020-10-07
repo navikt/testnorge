@@ -4,6 +4,7 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
 import { Historikk } from '~/components/ui/historikk/Historikk'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 type AlleMidlertidigeAdresser = {
 	midlertidigAdresse: Array<MidlertidigAdresse>
@@ -72,23 +73,25 @@ export const Adressevisning = ({ midlertidigAdresse }: Enkeltadresse) => {
 	)
 
 	return (
-		<>
-			<TitleValue title={Formatters.adressetypeToString(adressetype)} size="medium">
-				{adressetype === 'GATE' && gate}
-				{adressetype === 'STED' && sted}
-				{adressetype === 'PBOX' && postboks}
-				{adressetype === 'UTAD' && utland}
-				{postnr && (
-					<KodeverkConnector navn="Postnummer" value={postnr}>
-						{(v: PostnummerKodeverk, verdi: Postnummer) => (
-							<span>{verdi ? verdi.label : postnr}</span>
-						)}
-					</KodeverkConnector>
-				)}
-			</TitleValue>
-			<TitleValue title="Gyldig t.o.m." value={Formatters.formatDate(gyldigTom)} />
-			<TitleValue title="Tilleggsadresse" value={tilleggsadresse} />
-		</>
+		<ErrorBoundary>
+			<>
+				<TitleValue title={Formatters.adressetypeToString(adressetype)} size="medium">
+					{adressetype === 'GATE' && gate}
+					{adressetype === 'STED' && sted}
+					{adressetype === 'PBOX' && postboks}
+					{adressetype === 'UTAD' && utland}
+					{postnr && (
+						<KodeverkConnector navn="Postnummer" value={postnr}>
+							{(v: PostnummerKodeverk, verdi: Postnummer) => (
+								<span>{verdi ? verdi.label : postnr}</span>
+							)}
+						</KodeverkConnector>
+					)}
+				</TitleValue>
+				<TitleValue title="Gyldig t.o.m." value={Formatters.formatDate(gyldigTom)} />
+				<TitleValue title="Tilleggsadresse" value={tilleggsadresse} />
+			</>
+		</ErrorBoundary>
 	)
 }
 
@@ -96,17 +99,19 @@ export const MidlertidigAdresse = ({ midlertidigAdresse }: AlleMidlertidigeAdres
 	if (!midlertidigAdresse || midlertidigAdresse.length < 1) return null
 
 	return (
-		<>
-			<SubOverskrift label="Midlertidig adresse" iconKind="midlertidigAdresse" />
-			<div className="person-visning_content">
-				{/* 
+		<ErrorBoundary>
+			<>
+				<SubOverskrift label="Midlertidig adresse" iconKind="midlertidigAdresse" />
+				<div className="person-visning_content">
+					{/* 
             	// @ts-ignore */}
-				<Historikk
-					component={Adressevisning}
-					propName="midlertidigAdresse"
-					data={midlertidigAdresse}
-				/>
-			</div>
-		</>
+					<Historikk
+						component={Adressevisning}
+						propName="midlertidigAdresse"
+						data={midlertidigAdresse}
+					/>
+				</div>
+			</>
+		</ErrorBoundary>
 	)
 }

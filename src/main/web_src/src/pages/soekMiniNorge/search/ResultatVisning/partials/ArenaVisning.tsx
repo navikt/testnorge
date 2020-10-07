@@ -4,6 +4,7 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Loading from '~/components/ui/loading/Loading'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 type ArenaResponse = {
 	arbeidsokerList: [{ servicebehov?: string }]
@@ -36,9 +37,11 @@ export const ArenaVisning = ({ data, loading }: ArenaVisningProps) => {
 				<SubOverskrift label="Arena" />
 			}
 			<div className="person-visning_content">
-				<DollyFieldArray data={visningData} nested>
-					{(id: VisningData) => <TitleValue title="Brukertype" value={id.brukertype} />}
-				</DollyFieldArray>
+				<ErrorBoundary>
+					<DollyFieldArray data={visningData} nested>
+						{(id: VisningData) => <TitleValue title="Brukertype" value={id.brukertype} />}
+					</DollyFieldArray>
+				</ErrorBoundary>
 			</div>
 		</div>
 	)

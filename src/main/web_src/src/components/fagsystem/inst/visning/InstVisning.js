@@ -4,6 +4,7 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 const getSortedData = data => {
 	return Array.isArray(data)
@@ -25,21 +26,26 @@ export const InstVisning = ({ data, loading }) => {
 	return (
 		<div>
 			<SubOverskrift label="Institusjonsopphold" iconKind="institusjon" />
-			<DollyFieldArray data={sortedData} nested>
-				{(opphold, idx) => (
-					<div className="person-visning_content" key={idx}>
-						<TitleValue
-							title="Institusjonstype"
-							value={Formatters.showLabel('institusjonstype', opphold.institusjonstype)}
-						/>
-						<TitleValue title="Startdato" value={Formatters.formatStringDates(opphold.startdato)} />
-						<TitleValue
-							title="Sluttdato"
-							value={Formatters.formatStringDates(opphold.faktiskSluttdato)}
-						/>
-					</div>
-				)}
-			</DollyFieldArray>
+			<ErrorBoundary>
+				<DollyFieldArray data={sortedData} nested>
+					{(opphold, idx) => (
+						<div className="person-visning_content" key={idx}>
+							<TitleValue
+								title="Institusjonstype"
+								value={Formatters.showLabel('institusjonstype', opphold.institusjonstype)}
+							/>
+							<TitleValue
+								title="Startdato"
+								value={Formatters.formatStringDates(opphold.startdato)}
+							/>
+							<TitleValue
+								title="Sluttdato"
+								value={Formatters.formatStringDates(opphold.faktiskSluttdato)}
+							/>
+						</div>
+					)}
+				</DollyFieldArray>
+			</ErrorBoundary>
 		</div>
 	)
 }
