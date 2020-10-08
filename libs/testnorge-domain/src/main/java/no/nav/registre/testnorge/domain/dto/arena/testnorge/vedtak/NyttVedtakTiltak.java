@@ -86,4 +86,7 @@ public class NyttVedtakTiltak extends NyttVedtak {
 
     @JsonAlias({ "TILTAK_STATUS_KODE", "tiltakStatusKode" })
     private String tiltakStatusKode;
+
+    @JsonAlias({ "AVBRUDD_KODE", "avbruddKode" })
+    private String avbruddKode;
 }

@@ -296,11 +296,9 @@ public class ServiceUtils {
         if (uregistrertBruker) {
             var nyeBrukereResponse = brukereService
                     .sendArbeidssoekereTilArenaForvalter(Collections.singletonList(ident), miljoe, kvalifiseringsgruppe);
-            List<String> feiledeIdenter = new ArrayList<>();
             if (nyeBrukereResponse != null && nyeBrukereResponse.getNyBrukerFeilList() != null && !nyeBrukereResponse.getNyBrukerFeilList().isEmpty()) {
                 nyeBrukereResponse.getNyBrukerFeilList().forEach(nyBrukerFeil -> {
                     log.error("Kunne ikke opprette ny bruker med fnr {} i arena: {}", nyBrukerFeil.getPersonident(), nyBrukerFeil.getMelding());
-                    feiledeIdenter.add(nyBrukerFeil.getPersonident());
                 });
             }
         }
@@ -429,8 +427,18 @@ public class ServiceUtils {
     }
 
     public NyttVedtakTiltak finnTiltak(String personident, String miljoe, NyttVedtakTiltak tiltaksdeltakelse) {
+
+        var finnTiltak = NyttVedtakTiltak.builder()
+                .tiltakKode(tiltaksdeltakelse.getTiltakskode())
+                .tiltakProsentDeltid(tiltaksdeltakelse.getTiltakProsentDeltid())
+                .tiltakVedtak(tiltaksdeltakelse.getTiltakVedtak())
+                .tiltakYtelse(tiltaksdeltakelse.getTiltakYtelse())
+                .build();
+        finnTiltak.setFraDato(tiltaksdeltakelse.getFraDato());
+        finnTiltak.setTilDato(tiltaksdeltakelse.getTilDato());
+
         NyttVedtakTiltak tiltak = null;
-        var rettighetRequest = new RettighetFinnTiltakRequest(Collections.singletonList(tiltaksdeltakelse));
+        var rettighetRequest = new RettighetFinnTiltakRequest(Collections.singletonList(finnTiltak));
 
         rettighetRequest.setPersonident(personident);
         rettighetRequest.setMiljoe(miljoe);
