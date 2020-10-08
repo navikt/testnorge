@@ -1,9 +1,9 @@
-package no.nav.registre.sdforvalter.converter.csv;
+package no.nav.registre.testnorge.libs.csvconverter;
 
 import java.util.Map;
 
 @FunctionalInterface
-interface RowConverter<T> {
+public interface RowConverter<T> {
     /**
      * map key = header and value = cell
      */

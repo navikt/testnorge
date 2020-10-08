@@ -39,6 +39,12 @@
             <artifactId>hibernate-validator</artifactId>
         </dependency>
 
+        <!-- CSV -->
+        <dependency>
+            <groupId>no.nav.registre.testnorge.libs</groupId>
+            <artifactId>testnorge-csv-converter</artifactId>
+        </dependency>
+
         <!-- Logging -->
         <dependency>
             <groupId>net.logstash.logback</groupId>

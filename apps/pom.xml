@@ -59,6 +59,11 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>no.nav.registre.testnorge.libs</groupId>
+                <artifactId>testnorge-csv-converter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <artifactId>testnorge-testing</artifactId>
                 <groupId>no.nav.registre.testnorge.libs</groupId>
                 <version>${project.version}</version>

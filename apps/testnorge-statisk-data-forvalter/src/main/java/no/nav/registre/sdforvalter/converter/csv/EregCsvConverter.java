@@ -5,6 +5,10 @@ import java.util.Map;
 
 import no.nav.registre.sdforvalter.domain.Adresse;
 import no.nav.registre.sdforvalter.domain.Ereg;
+import no.nav.registre.testnorge.libs.csvconverter.CsvConverter;
+import no.nav.registre.testnorge.libs.csvconverter.CsvHeader;
+import no.nav.registre.testnorge.libs.csvconverter.ObjectConverter;
+import no.nav.registre.testnorge.libs.csvconverter.RowConverter;
 
 public class EregCsvConverter extends CsvConverter<Ereg> {
     static EregCsvConverter inst;
