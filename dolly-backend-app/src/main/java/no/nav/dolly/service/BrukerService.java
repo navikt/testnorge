@@ -124,7 +124,7 @@ public class BrukerService {
     }
 
     public int fjernMigreringAvBruker(String brukerId) {
-        brukerRepository.DeleteBrukerIdMigrert(brukerId);
+        brukerRepository.deleteBrukerIdMigrert(brukerId);
         return brukerRepository.deleteNavIdentToBruker(brukerId);
     }
 

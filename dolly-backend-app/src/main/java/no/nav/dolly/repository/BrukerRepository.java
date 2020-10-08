@@ -32,7 +32,7 @@ public interface BrukerRepository extends Repository<Bruker, Long> {
 
     @Modifying
     @Query(value = "update Bruker set migrert = null where brukerId = :brukerId")
-    int DeleteBrukerIdMigrert(@Param(value = "brukerId") String brukerId);
+    int deleteBrukerIdMigrert(@Param(value = "brukerId") String brukerId);
 
     Optional<Bruker> findBrukerByBrukerId(String brukerId);
 
