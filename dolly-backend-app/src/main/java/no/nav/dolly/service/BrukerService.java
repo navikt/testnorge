@@ -1,23 +1,5 @@
 package no.nav.dolly.service;
 
-import static java.lang.String.format;
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
-import static no.nav.dolly.util.CurrentAuthentication.getUserId;
-import static org.apache.commons.lang3.BooleanUtils.isFalse;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.NonTransientDataAccessException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -26,6 +8,22 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.NonTransientDataAccessException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static java.lang.String.format;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
+import static no.nav.dolly.util.CurrentAuthentication.getUserId;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 
 @Service
 @RequiredArgsConstructor
@@ -116,7 +114,7 @@ public class BrukerService {
     }
 
     public int migrerBruker(Collection<String> navIdenter, String brukerId) {
-        Bruker bruker = fetchOrCreateBruker(brukerId);
+        fetchOrCreateBruker(brukerId);
         brukerRepository.saveBrukerIdMigrert(brukerId);
         return brukerRepository.saveNavIdentToBruker(navIdenter, brukerId);
     }
