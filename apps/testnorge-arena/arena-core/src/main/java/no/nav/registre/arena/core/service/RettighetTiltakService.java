@@ -95,11 +95,10 @@ public class RettighetTiltakService {
         var innsendteTiltaksdeltakelser = aktiverTiltaksdeltakelse(rettigheter, miljoe);
         addResponses(responses, innsendteTiltaksdeltakelser);
 
-        if (!responses.isEmpty()) {
-            var endretDeltakerstatus = hentRettigheterForEndreDeltakerstatus(miljoe, tiltaksdeltakelser);
-            var innsendteEndringerDeltakerstatus = endreDeltakerstatus(endretDeltakerstatus);
-            addResponses(responses, innsendteEndringerDeltakerstatus);
-        }
+        var endretDeltakerstatus = hentRettigheterForEndreDeltakerstatus(miljoe, tiltaksdeltakelser);
+        var innsendteEndringerDeltakerstatus = endreDeltakerstatus(endretDeltakerstatus);
+        addResponses(responses, innsendteEndringerDeltakerstatus);
+
         return responses;
     }
 
