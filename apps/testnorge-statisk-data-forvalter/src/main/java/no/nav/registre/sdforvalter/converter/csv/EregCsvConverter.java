@@ -1,12 +1,18 @@
 package no.nav.registre.sdforvalter.converter.csv;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import no.nav.registre.sdforvalter.domain.Adresse;
 import no.nav.registre.sdforvalter.domain.Ereg;
 
 public class EregCsvConverter extends CsvConverter<Ereg> {
+    private static final String LIST_SPLITT_CHARACTER = ",";
+
     static EregCsvConverter inst;
 
     private EregCsvConverter() {
@@ -37,7 +43,8 @@ public class EregCsvConverter extends CsvConverter<Ereg> {
         POSTADRESSE_POSTNR("Postadresse postnr"),
         POSTADRESSE_KOMMUNENR("Postadresse kommunenr"),
         POSTADRESSE_LANDKODE("Postadresse landkode"),
-        POSTADRESSE_POSTSTED("Postadresse poststed");
+        POSTADRESSE_POSTSTED("Postadresse poststed"),
+        TAGS("Tags");
 
         private final String header;
 
@@ -79,6 +86,10 @@ public class EregCsvConverter extends CsvConverter<Ereg> {
                         .landkode(getString(map, Headers.POSTADRESSE_LANDKODE))
                         .poststed(getString(map, Headers.POSTADRESSE_POSTSTED))
                         .build()
+                )
+                .tags(getString(map, Headers.TAGS) == null
+                        ? Collections.emptySet()
+                        : Set.of(getString(map, Headers.TAGS).split(LIST_SPLITT_CHARACTER))
                 ).build();
     }
 
@@ -110,6 +121,7 @@ public class EregCsvConverter extends CsvConverter<Ereg> {
                 map.put(Headers.POSTADRESSE_LANDKODE.getValue(), postadresse.getLandkode());
                 map.put(Headers.POSTADRESSE_POSTSTED.getValue(), postadresse.getPoststed());
             }
+            map.put(Headers.TAGS.getValue(), String.join(LIST_SPLITT_CHARACTER, item.getTags()));
             return map;
         };
     }

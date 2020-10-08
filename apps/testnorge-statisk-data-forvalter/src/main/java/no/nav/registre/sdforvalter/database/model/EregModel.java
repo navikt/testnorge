@@ -77,6 +77,6 @@ public class EregModel extends FasteDataModel<Ereg> {
 
     @Override
     public Ereg toDomain() {
-        return new Ereg(this);
+        throw new UnsupportedOperationException("Ikke mulig å convertere til model");
     }
 }

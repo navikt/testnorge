@@ -18,10 +18,6 @@ public final class EregListe extends FasteDataListe<Ereg> {
         super(Arrays.asList(eregs));
     }
 
-    public EregListe(Iterable<EregModel> iterable) {
-        super(iterable);
-    }
-
     public EregListe(List<Ereg> liste) {
         super(liste);
     }

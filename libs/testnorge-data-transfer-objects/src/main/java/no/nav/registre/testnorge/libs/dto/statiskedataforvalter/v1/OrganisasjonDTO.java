@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import javax.validation.constraints.Pattern;
+import java.util.List;
 
 @Value
 @Builder
