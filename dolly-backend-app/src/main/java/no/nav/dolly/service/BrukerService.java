@@ -5,6 +5,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 import java.util.Collection;
@@ -56,7 +57,7 @@ public class BrukerService {
         Bruker bruker = fetchBruker(getUserId());
         List<Bruker> brukere = brukerRepository.fetchEidAv(bruker);
         brukere.add(bruker);
-        if (brukere.stream().map(bruker1 -> bruker1.getFavoritter())
+        if (brukere.stream().map(Bruker::getFavoritter)
                 .flatMap(Collection::stream)
                 .noneMatch(testgruppe -> testgruppe.getId().equals(gruppeId))) {
 
@@ -92,7 +93,7 @@ public class BrukerService {
 
     public List<Bruker> fetchBrukere() {
         List<Bruker> brukere = brukerRepository.findAllByOrderById();
-        Map<Long, Bruker> brukereMap = brukere.stream().collect(Collectors.toMap(bruker -> bruker.getId(), bruker -> bruker));
+        Map<Long, Bruker> brukereMap = brukere.stream().collect(Collectors.toMap(Bruker::getId, bruker -> bruker));
         brukereMap.values().stream()
                 .filter(bruker -> nonNull(bruker.getEidAv()))
                 .map(bruker -> brukereMap.get(bruker.getEidAv().getId()).getFavoritter().addAll(bruker.getFavoritter()))
@@ -116,16 +117,23 @@ public class BrukerService {
 
     public int migrerBruker(Collection<String> navIdenter, String brukerId) {
         Optional<Bruker> bruker = brukerRepository.findBrukerByBrukerId(brukerId);
-        if (bruker.isPresent() && isTrue(bruker.get().getMigrert())) {
-            throw new DollyFunctionalException(format("Bruker %s er allerede migrert", bruker.get().getBrukernavn()));
+        if (bruker.isEmpty()) {
+            throw new DollyFunctionalException("Bruker finnes ikke i DB");
         }
         brukerRepository.saveBrukerIdMigrert(brukerId);
         return brukerRepository.saveNavIdentToBruker(navIdenter, brukerId);
     }
 
     public int fjernMigreringAvBruker(String brukerId) {
+        Optional<Bruker> bruker = brukerRepository.findBrukerByBrukerId(brukerId);
+        if (bruker.isEmpty()) {
+            throw new DollyFunctionalException("Bruker finnes ikke i DB");
+        }
+        if (isFalse(bruker.get().getMigrert())) {
+            throw new DollyFunctionalException(format("Bruker %s er ikke migrert enda", bruker.get().getBrukernavn()));
+        }
         brukerRepository.deleteBrukerIdMigrert(brukerId);
-        return brukerRepository.deleteNavIdentToBruker(brukerId);
+        return brukerRepository.deleteNavIdentToBruker(bruker.get());
     }
 
     public List<Bruker> fetchEidAv(Bruker bruker) {

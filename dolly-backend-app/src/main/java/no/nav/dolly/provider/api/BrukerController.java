@@ -26,6 +26,7 @@ import java.util.List;
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
+import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,16 +52,22 @@ public class BrukerController {
     }
 
     @Transactional
-    @PutMapping("/migrer/{brukerId}")
+    @PutMapping("/migrer")
     @Operation(description = "Legg til Nav Ident på ny Azure bruker")
-    public int leggTilIdentPaaNyBruker(@PathVariable String brukerId, @RequestParam Collection<String> navIdenter) {
+    public int leggTilIdentPaaNyBruker(@RequestParam(required = false) String brukerId, @RequestParam Collection<String> navIdenter) {
+        if (isBlank(brukerId)) {
+            return brukerService.migrerBruker(navIdenter, getUserId());
+        }
         return brukerService.migrerBruker(navIdenter, brukerId);
     }
 
     @Transactional
-    @PutMapping("/fjernMigrering/{brukerId}")
+    @PutMapping("/fjernMigrering")
     @Operation(description = "Fjerner migrering av Azure bruker og denne brukerens relasjoner til Nav Identer")
-    public int fjernMigrering(@PathVariable String brukerId) {
+    public int fjernMigrering(@RequestParam(required = false) String brukerId) {
+        if (isBlank(brukerId)) {
+            return brukerService.fjernMigreringAvBruker(getUserId());
+        }
         return brukerService.fjernMigreringAvBruker(brukerId);
     }
 
