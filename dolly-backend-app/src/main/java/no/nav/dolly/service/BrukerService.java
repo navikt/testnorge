@@ -123,6 +123,11 @@ public class BrukerService {
         return brukerRepository.saveNavIdentToBruker(navIdenter, brukerId);
     }
 
+    public int fjernMigreringAvBruker(String brukerId) {
+        brukerRepository.DeleteBrukerIdMigrert(brukerId);
+        return brukerRepository.deleteNavIdentToBruker(brukerId);
+    }
+
     public List<Bruker> fetchEidAv(Bruker bruker) {
         return brukerRepository.fetchEidAv(bruker);
     }

@@ -13,7 +13,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -54,8 +53,15 @@ public class BrukerController {
     @Transactional
     @PutMapping("/migrer/{brukerId}")
     @Operation(description = "Legg til Nav Ident på ny Azure bruker")
-    public int leggTilIdentPaaNyBruker( @PathVariable String brukerId, @RequestParam Collection<String> navIdenter) {
+    public int leggTilIdentPaaNyBruker(@PathVariable String brukerId, @RequestParam Collection<String> navIdenter) {
         return brukerService.migrerBruker(navIdenter, brukerId);
+    }
+
+    @Transactional
+    @PutMapping("/fjernMigrering/{brukerId}")
+    @Operation(description = "Fjerner migrering av Azure bruker og denne brukerens relasjoner til Nav Identer")
+    public int fjernMigrering(@PathVariable String brukerId) {
+        return brukerService.fjernMigreringAvBruker(brukerId);
     }
 
     @Cacheable(CACHE_BRUKER)
