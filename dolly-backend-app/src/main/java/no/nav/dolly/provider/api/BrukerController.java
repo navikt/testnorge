@@ -55,20 +55,14 @@ public class BrukerController {
     @PutMapping("/migrer")
     @Operation(description = "Legg til Nav Ident på ny Azure bruker")
     public int leggTilIdentPaaNyBruker(@RequestParam(required = false) String brukerId, @RequestParam Collection<String> navIdenter) {
-        if (isBlank(brukerId)) {
-            return brukerService.migrerBruker(navIdenter, getUserId());
-        }
-        return brukerService.migrerBruker(navIdenter, brukerId);
+        return brukerService.migrerBruker(navIdenter, isBlank(brukerId) ? getUserId() : brukerId);
     }
 
     @Transactional
     @PutMapping("/fjernMigrering")
     @Operation(description = "Fjerner migrering av Azure bruker og denne brukerens relasjoner til Nav Identer")
     public int fjernMigrering(@RequestParam(required = false) String brukerId) {
-        if (isBlank(brukerId)) {
-            return brukerService.fjernMigreringAvBruker(getUserId());
-        }
-        return brukerService.fjernMigreringAvBruker(brukerId);
+        return brukerService.fjernMigreringAvBruker(isBlank(brukerId) ? getUserId() : brukerId);
     }
 
     @Cacheable(CACHE_BRUKER)

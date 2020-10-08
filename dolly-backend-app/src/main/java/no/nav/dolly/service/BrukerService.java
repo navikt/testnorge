@@ -116,24 +116,18 @@ public class BrukerService {
     }
 
     public int migrerBruker(Collection<String> navIdenter, String brukerId) {
-        Optional<Bruker> bruker = brukerRepository.findBrukerByBrukerId(brukerId);
-        if (bruker.isEmpty()) {
-            throw new DollyFunctionalException("Bruker finnes ikke i DB");
-        }
+        Bruker bruker = fetchOrCreateBruker(brukerId);
         brukerRepository.saveBrukerIdMigrert(brukerId);
         return brukerRepository.saveNavIdentToBruker(navIdenter, brukerId);
     }
 
     public int fjernMigreringAvBruker(String brukerId) {
-        Optional<Bruker> bruker = brukerRepository.findBrukerByBrukerId(brukerId);
-        if (bruker.isEmpty()) {
-            throw new DollyFunctionalException("Bruker finnes ikke i DB");
-        }
-        if (isFalse(bruker.get().getMigrert())) {
-            throw new DollyFunctionalException(format("Bruker %s er ikke migrert enda", bruker.get().getBrukernavn()));
+        Bruker bruker = fetchOrCreateBruker(brukerId);
+        if (isFalse(bruker.getMigrert())) {
+            throw new DollyFunctionalException(format("Bruker %s er ikke migrert enda", bruker.getBrukernavn()));
         }
         brukerRepository.deleteBrukerIdMigrert(brukerId);
-        return brukerRepository.deleteNavIdentToBruker(bruker.get());
+        return brukerRepository.deleteNavIdentToBruker(bruker);
     }
 
     public List<Bruker> fetchEidAv(Bruker bruker) {
