@@ -218,7 +218,7 @@ public class VedtakshistorikkServiceTest {
         verify(serviceUtils).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(1), anyInt(), anyInt(), eq(miljoe));
         verify(aapSyntConsumer).syntetiserVedtakshistorikk(antallIdenter);
         verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
-        verify(rettighetTiltakService).getEndringerMedGyldigRekkefoelge(DELTAKERSTATUS_GJENNOMFOERES, tiltaksdeltakelseRettigheter.get(0));
+        verify(rettighetTiltakService).getEndringerMedGyldigRekkefoelge(DELTAKERSTATUS_GJENNOMFOERES, tiltaksdeltakelseRettigheter.get(0).getTiltakAdminKode());
         verify(serviceUtils).finnTiltak(anyString(), anyString(), anyObject());
         verify(serviceUtils).velgKodeBasertPaaSannsynlighet(anyList());
 

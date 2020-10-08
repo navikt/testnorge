@@ -466,7 +466,7 @@ public class VedtakshistorikkService {
             for (var deltakelse : tiltaksdeltakelser) {
                 var fraDato = deltakelse.getFraDato();
                 if (fraDato != null && fraDato.isBefore(LocalDate.now().plusDays(1))) {
-                    List<String> endringer = rettighetTiltakService.getEndringerMedGyldigRekkefoelge(DELTAKERSTATUS_GJENNOMFOERES, "test");
+                    List<String> endringer = rettighetTiltakService.getEndringerMedGyldigRekkefoelge(DELTAKERSTATUS_GJENNOMFOERES, deltakelse.getTiltakAdminKode());
 
                     for (var endring : endringer) {
                         var rettighetRequest = rettighetTiltakService.opprettRettighetEndreDeltakerstatusRequest(personident, miljoe,
