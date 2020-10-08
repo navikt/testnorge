@@ -13,7 +13,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +26,7 @@ import java.util.List;
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
+import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @RestController
 @RequiredArgsConstructor
@@ -52,10 +52,17 @@ public class BrukerController {
     }
 
     @Transactional
-    @PutMapping("/migrer/{brukerId}")
+    @PutMapping("/migrer")
     @Operation(description = "Legg til Nav Ident på ny Azure bruker")
-    public int leggTilIdentPaaNyBruker( @PathVariable String brukerId, @RequestParam Collection<String> navIdenter) {
-        return brukerService.migrerBruker(navIdenter, brukerId);
+    public int leggTilIdentPaaNyBruker(@RequestParam(required = false) String brukerId, @RequestParam Collection<String> navIdenter) {
+        return brukerService.migrerBruker(navIdenter, isBlank(brukerId) ? getUserId() : brukerId);
+    }
+
+    @Transactional
+    @PutMapping("/fjernMigrering")
+    @Operation(description = "Fjerner migrering av Azure bruker og denne brukerens relasjoner til Nav Identer")
+    public int fjernMigrering(@RequestParam(required = false) String brukerId) {
+        return brukerService.fjernMigreringAvBruker(isBlank(brukerId) ? getUserId() : brukerId);
     }
 
     @Cacheable(CACHE_BRUKER)
