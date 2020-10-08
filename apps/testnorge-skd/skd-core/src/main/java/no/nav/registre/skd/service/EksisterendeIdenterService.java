@@ -59,6 +59,9 @@ public class EksisterendeIdenterService {
     static final String STATSBORGER = "statsborger";
 
     @Autowired
+    private no.nav.registre.skd.consumer.HodejegerenConsumerSkd hodejegerenConsumerSkd;
+
+    @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
 
     @Autowired
@@ -434,7 +437,7 @@ public class EksisterendeIdenterService {
             String environment,
             String fnr
     ) {
-        return new HashMap<>(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(endringskode.getEndringskode(), environment, fnr));
+        return hodejegerenConsumerSkd.getStatusQuoTilhoerendeEndringskode(endringskode.getEndringskode(), environment, fnr);
     }
 
     private RsMeldingstype1Felter opprettSivilstandsendringsmelding(
