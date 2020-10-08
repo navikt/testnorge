@@ -451,4 +451,16 @@ public class ServiceUtils {
         return tiltak;
     }
 
+    public NyttVedtakTiltak getTiltaksdeltakelse(NyttVedtakTiltak syntetiskDeltakelse){
+        var nyTiltaksdeltakelse = NyttVedtakTiltak.builder()
+                .lagOppgave(syntetiskDeltakelse.getLagOppgave())
+                .tiltakId(syntetiskDeltakelse.getTiltakId())
+                .build();
+        nyTiltaksdeltakelse.setBegrunnelse(BEGRUNNELSE);
+        nyTiltaksdeltakelse.setTilDato(syntetiskDeltakelse.getTilDato());
+        nyTiltaksdeltakelse.setFraDato(syntetiskDeltakelse.getFraDato());
+
+        return nyTiltaksdeltakelse;
+    }
+
 }

@@ -426,7 +426,6 @@ public class VedtakshistorikkService {
             serviceUtils.opprettArbeidssoekerTiltakdeltakelse(personident, miljoe);
             tiltaksdeltakelser.forEach(deltakelse -> {
                 deltakelse.setFodselsnr(personident);
-                deltakelse.setBegrunnelse(BEGRUNNELSE);
                 deltakelse.setTiltakYtelse("J");
             });
             tiltaksdeltakelser.forEach(deltakelse -> {
@@ -440,7 +439,12 @@ public class VedtakshistorikkService {
                     .filter(deltakelse -> deltakelse.getTiltakId() != null).collect(Collectors.toList());
 
             if (!nyeTiltaksdeltakelser.isEmpty()) {
-                var rettighetRequest = new RettighetTiltaksdeltakelseRequest(nyeTiltaksdeltakelser);
+                List<NyttVedtakTiltak> nyeVedtakRequests = new ArrayList<>();
+                for (var deltakelse : nyeTiltaksdeltakelser){
+                    nyeVedtakRequests.add(serviceUtils.getTiltaksdeltakelse(deltakelse));
+                }
+
+                var rettighetRequest = new RettighetTiltaksdeltakelseRequest(nyeVedtakRequests);
 
                 rettighetRequest.setPersonident(personident);
                 rettighetRequest.setMiljoe(miljoe);
@@ -462,7 +466,7 @@ public class VedtakshistorikkService {
             for (var deltakelse : tiltaksdeltakelser) {
                 var fraDato = deltakelse.getFraDato();
                 if (fraDato != null && fraDato.isBefore(LocalDate.now().plusDays(1))) {
-                    List<String> endringer = rettighetTiltakService.getEndringerMedGyldigRekkefoelge(DELTAKERSTATUS_GJENNOMFOERES, deltakelse);
+                    List<String> endringer = rettighetTiltakService.getEndringerMedGyldigRekkefoelge(DELTAKERSTATUS_GJENNOMFOERES, "test");
 
                     for (var endring : endringer) {
                         var rettighetRequest = rettighetTiltakService.opprettRettighetEndreDeltakerstatusRequest(personident, miljoe,

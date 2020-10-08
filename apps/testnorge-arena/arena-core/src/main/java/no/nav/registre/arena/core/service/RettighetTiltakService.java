@@ -331,13 +331,7 @@ public class RettighetTiltakService {
                     deltakelse.setFodselsnr(ident);
                     tiltaksdeltakelser.add(deltakelse);
 
-                    var nyTiltakdeltakelse = NyttVedtakTiltak.builder()
-                            .lagOppgave(deltakelse.getLagOppgave())
-                            .tiltakId(tiltak.getTiltakId())
-                            .build();
-                    nyTiltakdeltakelse.setBegrunnelse(BEGRUNNELSE);
-                    nyTiltakdeltakelse.setTilDato(deltakelse.getTilDato());
-                    nyTiltakdeltakelse.setFraDato(deltakelse.getFraDato());
+                    var nyTiltakdeltakelse = serviceUtils.getTiltaksdeltakelse(deltakelse);
 
                     var rettighetRequest = new RettighetTiltaksdeltakelseRequest(Collections.singletonList(nyTiltakdeltakelse));
 
