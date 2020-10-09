@@ -68,16 +68,15 @@ public class IdentService {
         var tpsIdentListe = liste.stream().map(ident -> {
             if (ident.getLastName() == null || ident.getFirstName() == null) {
                 var navn = identPoolConsumer.getFiktivtNavn();
-                return TpsIdent.builder()
-                        .fnr(ident.getFnr())
-                        .firstName(navn.getFornavn())
-                        .lastName(navn.getEtternavn())
-                        .address(ident.getAddress())
-                        .postNr(ident.getPostNr())
-                        .city(ident.getCity())
-                        .gruppe(ident.getGruppe())
-                        .opprinnelse(ident.getOpprinnelse())
-                        .build();
+                return new TpsIdent(ident.getFnr(),
+                        navn.getFornavn(),
+                        navn.getEtternavn(),
+                        ident.getAddress(),
+                        ident.getPostNr(),
+                        ident.getCity(),
+                        ident.getGruppe(),
+                        ident.getOpprinnelse(),
+                        ident.getTags());
             } else {
                 return ident;
             }

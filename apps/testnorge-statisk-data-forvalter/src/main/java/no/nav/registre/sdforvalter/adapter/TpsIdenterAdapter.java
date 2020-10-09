@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -64,7 +65,7 @@ public class TpsIdenterAdapter extends FasteDataAdapter {
             TpsIdentModel tpsIdentModel = tpsIdenterRepository.save(
                     new TpsIdentModel(tpsIdent, getOppinnelse(tpsIdent), getGruppe(tpsIdent))
             );
-            List<TagModel> tagModels = tpsIdent.getTags().stream().map(tagsAdapter::save).collect(Collectors.toList());
+            List<TagModel> tagModels = tpsIdent.getTags() == null ? Collections.emptyList() : tpsIdent.getTags().stream().map(tagsAdapter::save).collect(Collectors.toList());
             tagModels.forEach(tagModel -> tpsIdentTagAdapter.save(
                     new TpsIdentTagModel(null, tpsIdentModel, tagModel)
             ));
