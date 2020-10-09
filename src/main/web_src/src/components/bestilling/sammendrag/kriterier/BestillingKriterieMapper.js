@@ -636,6 +636,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			items: [
 				obj('Mobilnummer', krrKriterier.mobil),
 				obj('Epost', krrKriterier.epost),
+				obj('Adresse', krrKriterier.sdpAdresse),
+				obj('Leverandør', krrKriterier.sdpLeverandoer),
 				obj('Språk', Formatters.showLabel('spraaktype', krrKriterier.spraak)),
 				{
 					label: 'RESERVERT MOT DIGITALKOMMUNIKASJON',
