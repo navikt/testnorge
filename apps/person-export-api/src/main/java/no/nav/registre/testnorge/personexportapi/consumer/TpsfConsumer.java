@@ -8,7 +8,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -33,7 +32,6 @@ public class TpsfConsumer {
             @Value("${consumers.tps-forvalter.password}") String password,
             @Value("${consumers.tps-forvalter.url}") String baseUrl,
             @Value("${consumers.tps-forvalter.threads}") Integer threads
-
     ) {
         this.username = username;
         this.password = password;
@@ -75,8 +73,8 @@ public class TpsfConsumer {
 
     public List<Person> getPersoner(String avspillingsgruppe) {
         int numberOfPages = getNumberOfPages(avspillingsgruppe);
-
         log.info("Henter alle personer fra avspillingsgruppeid {} med {} antall isder.", avspillingsgruppe, numberOfPages);
+
         List<CompletableFuture<List<Person>>> futures = new ArrayList<>();
         for (int page = 0; page < numberOfPages; page++) {
             futures.add(getPersonFromPage(avspillingsgruppe, page, numberOfPages));
@@ -85,7 +83,8 @@ public class TpsfConsumer {
         for (CompletableFuture<List<Person>> future : futures) {
             try {
                 personer.addAll(future.get());
-            } catch (InterruptedException | ExecutionException e) {
+            } catch (Exception e) {
+                executorService.shutdown();
                 throw new RuntimeException("Klare ikke a hente ut alle personer.", e);
             }
         }
