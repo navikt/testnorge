@@ -427,15 +427,7 @@ public class ServiceUtils {
     }
 
     public NyttVedtakTiltak finnTiltak(String personident, String miljoe, NyttVedtakTiltak tiltaksdeltakelse) {
-
-        var finnTiltak = NyttVedtakTiltak.builder()
-                .tiltakKode(tiltaksdeltakelse.getTiltakskode())
-                .tiltakProsentDeltid(tiltaksdeltakelse.getTiltakProsentDeltid())
-                .tiltakVedtak(tiltaksdeltakelse.getTiltakVedtak())
-                .tiltakYtelse(tiltaksdeltakelse.getTiltakYtelse())
-                .build();
-        finnTiltak.setFraDato(tiltaksdeltakelse.getFraDato());
-        finnTiltak.setTilDato(tiltaksdeltakelse.getTilDato());
+        var finnTiltak = getVedtakForFinnTiltakRequest(tiltaksdeltakelse);
 
         NyttVedtakTiltak tiltak = null;
         var rettighetRequest = new RettighetFinnTiltakRequest(Collections.singletonList(finnTiltak));
@@ -444,6 +436,7 @@ public class ServiceUtils {
         rettighetRequest.setMiljoe(miljoe);
         var response = tiltakArenaForvalterConsumer.finnTiltak(rettighetRequest);
         if (response != null && !response.getNyeRettigheterTiltak().isEmpty()) {
+            log.info("Fant tiltak for tiltakdeltakelse.");
             tiltak = response.getNyeRettigheterTiltak().get(0);
         } else {
             log.info("Fant ikke tiltak for tiltakdeltakelse.");
@@ -451,7 +444,7 @@ public class ServiceUtils {
         return tiltak;
     }
 
-    public NyttVedtakTiltak getTiltaksdeltakelse(NyttVedtakTiltak syntetiskDeltakelse){
+    public NyttVedtakTiltak getVedtakForTiltaksdeltakelseRequest(NyttVedtakTiltak syntetiskDeltakelse) {
         var nyTiltaksdeltakelse = NyttVedtakTiltak.builder()
                 .lagOppgave(syntetiskDeltakelse.getLagOppgave())
                 .tiltakId(syntetiskDeltakelse.getTiltakId())
@@ -461,6 +454,18 @@ public class ServiceUtils {
         nyTiltaksdeltakelse.setFraDato(syntetiskDeltakelse.getFraDato());
 
         return nyTiltaksdeltakelse;
+    }
+
+    private NyttVedtakTiltak getVedtakForFinnTiltakRequest(NyttVedtakTiltak tiltaksdeltakelse) {
+        var vedtak = NyttVedtakTiltak.builder()
+                .tiltakKode(tiltaksdeltakelse.getTiltakskode())
+                .tiltakProsentDeltid(tiltaksdeltakelse.getTiltakProsentDeltid())
+                .tiltakVedtak(tiltaksdeltakelse.getTiltakVedtak())
+                .tiltakYtelse(tiltaksdeltakelse.getTiltakYtelse())
+                .build();
+        vedtak.setFraDato(tiltaksdeltakelse.getFraDato());
+        vedtak.setTilDato(tiltaksdeltakelse.getTilDato());
+        return vedtak;
     }
 
 }

@@ -440,8 +440,8 @@ public class VedtakshistorikkService {
 
             if (!nyeTiltaksdeltakelser.isEmpty()) {
                 List<NyttVedtakTiltak> nyeVedtakRequests = new ArrayList<>();
-                for (var deltakelse : nyeTiltaksdeltakelser){
-                    nyeVedtakRequests.add(serviceUtils.getTiltaksdeltakelse(deltakelse));
+                for (var deltakelse : nyeTiltaksdeltakelser) {
+                    nyeVedtakRequests.add(serviceUtils.getVedtakForTiltaksdeltakelseRequest(deltakelse));
                 }
 
                 var rettighetRequest = new RettighetTiltaksdeltakelseRequest(nyeVedtakRequests);

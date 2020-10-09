@@ -330,7 +330,7 @@ public class RettighetTiltakService {
                     deltakelse.setFodselsnr(ident);
                     tiltaksdeltakelser.add(deltakelse);
 
-                    var nyTiltakdeltakelse = serviceUtils.getTiltaksdeltakelse(deltakelse);
+                    var nyTiltakdeltakelse = serviceUtils.getVedtakForTiltaksdeltakelseRequest(deltakelse);
 
                     var rettighetRequest = new RettighetTiltaksdeltakelseRequest(Collections.singletonList(nyTiltakdeltakelse));
 
