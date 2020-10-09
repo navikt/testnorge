@@ -17,7 +17,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.kodeverk.domain.Betydning;
-import no.nav.dolly.consumer.kodeverk.domain.GetKodeverkKoderBetydningerResponse;
+import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -41,7 +41,7 @@ public class OppslagControllerTest {
     private KodeverkAdjusted kodeverkAdjusted;
 
     @Mock
-    private GetKodeverkKoderBetydningerResponse getKodeverkKoderBetydningerResponse;
+    private KodeverkBetydningerResponse getKodeverkKoderBetydningerResponse;
 
     @Test
     public void fetchKodeverkByName_happyPath() {

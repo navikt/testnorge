@@ -17,7 +17,7 @@ import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
 import no.nav.dolly.consumer.identpool.IdentpoolConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
-import no.nav.dolly.consumer.kodeverk.domain.GetKodeverkKoderBetydningerResponse;
+import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.consumer.saf.SafConsumer;
 import no.nav.dolly.consumer.saf.domain.SafRequest.VariantFormat;
@@ -67,7 +67,7 @@ public class OppslagController {
     @GetMapping("/kodeverk/{kodeverkNavn}")
     @ApiOperation(value = "Hent kodeverk etter kodeverkNavn", authorizations = {@Authorization(value = "Bearer token fra bruker")})
     public KodeverkAdjusted fetchKodeverkByName(@PathVariable("kodeverkNavn") String kodeverkNavn) {
-        GetKodeverkKoderBetydningerResponse response = kodeverkConsumer.fetchKodeverkByName(kodeverkNavn);
+        KodeverkBetydningerResponse response = kodeverkConsumer.fetchKodeverkByName(kodeverkNavn);
         return kodeverkMapper.mapBetydningToAdjustedKodeverk(kodeverkNavn, response.getBetydninger());
     }
 

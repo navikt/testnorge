@@ -197,7 +197,7 @@ public class PdlForvalterClient implements ClientRegister {
             status.append('&')
                     .append(errorStatusDecoder.decodeRuntimeException(e));
 
-        } catch (Error e) {
+        } catch (Exception e) {
 
             status.append("&Feil= Teknisk feil, se logg!");
             log.error(e.getMessage(), e);
