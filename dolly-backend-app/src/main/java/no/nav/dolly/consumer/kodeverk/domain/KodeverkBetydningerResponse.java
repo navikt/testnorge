@@ -31,7 +31,7 @@ public class KodeverkBetydningerResponse {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public class Betydning {
+    public static class Betydning {
 
         private LocalDate gyldigFra;
         private LocalDate gyldigTil;
@@ -49,7 +49,7 @@ public class KodeverkBetydningerResponse {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public class Beskrivelse {
+    public static class Beskrivelse {
 
         private String term;
         private String tekst;

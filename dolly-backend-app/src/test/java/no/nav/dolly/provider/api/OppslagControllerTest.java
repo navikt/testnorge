@@ -16,8 +16,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
-import no.nav.dolly.consumer.kodeverk.domain.Betydning;
 import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse;
+import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse.Betydning;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 
 @RunWith(MockitoJUnitRunner.class)
