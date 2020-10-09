@@ -62,7 +62,7 @@ public class TpsfConsumer {
                 () -> new GetTpsfMeldingerFromPageCommand(webClient, username, password, avspillingsgruppe, page).call(),
                 executorService
         ).thenApply(meldinger -> {
-            log.info("Har hentet {}/{} sider fra avsppillergruppeID {}", page + 1, numberOfPages, avspillingsgruppe);
+            log.info("Har hentet {}/{} sider fra avspillingsgruppeID {}", page + 1, numberOfPages, avspillingsgruppe);
             return meldinger
                     .stream()
                     .filter(value -> value.getPersonnummer() != null && value.getFodselsdato() != null)
@@ -73,7 +73,7 @@ public class TpsfConsumer {
 
     public List<Person> getPersoner(String avspillingsgruppe) {
         int numberOfPages = getNumberOfPages(avspillingsgruppe);
-        log.info("Henter alle personer fra avspillingsgruppeid {} med {} antall isder.", avspillingsgruppe, numberOfPages);
+        log.info("Henter alle personer fra avspillingsgruppeID {} med {} antall sider.", avspillingsgruppe, numberOfPages);
 
         List<CompletableFuture<List<Person>>> futures = new ArrayList<>();
         for (int page = 0; page < numberOfPages; page++) {

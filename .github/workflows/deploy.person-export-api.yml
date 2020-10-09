@@ -2,6 +2,7 @@ name: Deploy person-export-api
 
 on:
   push:
+    branches: master
     paths:
       - apps/person-export-api/**
       - libs/testnorge-core/**
