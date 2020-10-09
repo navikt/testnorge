@@ -52,4 +52,6 @@ public class RsTpsfUtvidetBestilling extends RsTpsfBasisMedSivilstandBestilling 
             position = 101
     )
     private List<RsIdenthistorikk> identHistorikk;
+
+    private RsVergemaalRequest vergemaal;
 }
