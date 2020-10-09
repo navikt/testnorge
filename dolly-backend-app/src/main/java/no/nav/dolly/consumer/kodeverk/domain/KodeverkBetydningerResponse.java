@@ -39,7 +39,7 @@ public class KodeverkBetydningerResponse {
 
         public Map<String, Beskrivelse> getBeskrivelser() {
             if (isNull(beskrivelser)) {
-                beskrivelser = new HashMap();
+                beskrivelser = new HashMap<>();
             }
             return beskrivelser;
         }
