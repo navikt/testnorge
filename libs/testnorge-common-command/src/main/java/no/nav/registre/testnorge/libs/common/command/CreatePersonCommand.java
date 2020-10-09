@@ -17,6 +17,7 @@ public class CreatePersonCommand implements Runnable {
     private final WebClient webClient;
     private final PersonDTO person;
     private final String accessToken;
+    private final String kilde;
 
     @Override
     public void run() {
@@ -25,6 +26,7 @@ public class CreatePersonCommand implements Runnable {
                 .post()
                 .uri(builder -> builder.path("/api/v1/personer").build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .header("kilde", kilde)
                 .body(BodyInserters.fromPublisher(Mono.just(person), PersonDTO.class))
                 .retrieve()
                 .bodyToMono(Void.class)

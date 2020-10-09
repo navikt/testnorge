@@ -12,15 +12,10 @@ import org.joda.time.format.DateTimeFormat;
 import io.micrometer.core.annotation.Timed;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknFraConstants;
 import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknGrKomConstants;
-import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknTypeConstants;
 import no.nav.bidrag.ui.bisys.soknad.Soknad;
 import no.nav.registre.bisys.consumer.rs.BisysSyntetisererenConsumer;
 import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
-import no.nav.registre.bisys.consumer.ui.BisysUiConsumer;
-import no.nav.registre.bisys.exception.BidragRequestProcessingException;
-import no.nav.registre.bisys.exception.BidragRequestRuntimeException;
 import no.nav.registre.bisys.exception.SyntetisertBidragsmeldingException;
 import no.nav.registre.bisys.provider.requests.SyntetiserBisysRequest;
 import no.nav.registre.bisys.service.utils.Barn;
@@ -43,8 +38,6 @@ public class SyntetiseringService {
     private HodejegerenConsumer hodejegerenConsumer;
 
     private BisysSyntetisererenConsumer bisysSyntetisererenConsumer;
-
-    private BisysUiConsumer bisysUiConsumer;
 
     private boolean useHistoricalMottattdato;
 
@@ -72,48 +65,6 @@ public class SyntetiseringService {
 
         } else {
             throw new SyntetisertBidragsmeldingException("Ingen identer funnet!");
-        }
-    }
-
-    public void processBidragsmeldinger(List<SyntetisertBidragsmelding> bidragsmeldinger) {
-
-        for (SyntetisertBidragsmelding bidragsmelding : bidragsmeldinger) {
-
-            boolean soktOmSupported = KodeSoknGrKomConstants.supportedKodeSoknGrKom().contains(bidragsmelding.getSoktOm());
-            boolean soknadstypeSupported = KodeSoknTypeConstants.supportedKodeSoknType().contains(bidragsmelding.getSoknadstype());
-            boolean soknadFraSupported = KodeSoknFraConstants.supportedKodeSoknFra().contains(bidragsmelding.getSoknadFra());
-
-            if (soktOmSupported && soknadstypeSupported && soknadFraSupported) {
-                runVedtak(bidragsmelding);
-            } else {
-                logErrorsAndThrowException(bidragsmelding, soktOmSupported, soknadstypeSupported, soknadFraSupported);
-            }
-        }
-    }
-
-    private void logErrorsAndThrowException(SyntetisertBidragsmelding bidragsmelding, boolean soktOmSupported, boolean soknadstypeSupported, boolean soknadFraSupported) {
-        if (!soktOmSupported) {
-            log.error("Søkt om: {}  støttes foreløpig ikke!", bidragsmelding.getSoktOm());
-        }
-
-        if (!soknadstypeSupported) {
-            log.error("Søknadstype: {} støttes foreløpig ikke!", bidragsmelding.getSoknadstype());
-        }
-
-        if (!soknadFraSupported) {
-            log.error("SoknadFra: {} støttes foreløpig ikke!", bidragsmelding.getSoknadFra());
-        }
-
-        throw new BidragRequestRuntimeException("Invalid input!");
-    }
-
-    private void runVedtak(SyntetisertBidragsmelding bidragsmelding) {
-        try {
-            bisysUiConsumer.createVedtak(bidragsmelding);
-            logProcessingCompletionStatus(ProcessingCompletionStatus.SUCCESS);
-
-        } catch (BidragRequestProcessingException e) {
-            logProcessingCompletionStatus(ProcessingCompletionStatus.FAILED);
         }
     }
 
@@ -297,11 +248,6 @@ public class SyntetiseringService {
 
     /**
      * Ensures that barn is old enough for 18-årsbidrag.
-     * 
-     * @param soktOm
-     * @param soktFra
-     * @param barnSelection
-     * @return
      */
     private Optional<Barn> findYoungAdultIfRequired(SyntetisertBidragsmelding bidragsmelding, String baFnr, List<Barn> barnSelection, LocalDate mottattdato) {
 
@@ -387,26 +333,5 @@ public class SyntetiseringService {
     @Timed(value = "bisys.resource.latency", extraTags = { "operation", "hodejegeren" })
     public RelasjonsResponse finnRelasjonerTilIdent(String ident, String miljoe) {
         return hodejegerenConsumer.getRelasjoner(ident, miljoe);
-    }
-
-    public static void logProcessingCompletionStatus(ProcessingCompletionStatus status) {
-
-        if (ProcessingCompletionStatus.SUCCESS.equals(status)) {
-            log.info("{}={} - {}", KIBANA_X_STATUS, status.toString(), status.description);
-        } else {
-            log.error("{}={} - {}", KIBANA_X_STATUS, status.toString(), status.description);
-
-        }
-    }
-
-    public enum ProcessingCompletionStatus {
-        SUCCESS("Bidragsmelding processed successfully!"), FAILED(
-                "Processing failed!");
-
-        private final String description;
-
-        ProcessingCompletionStatus(String status) {
-            this.description = status;
-        }
     }
 }

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -17,7 +16,7 @@ import java.net.URI;
 
 import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
 import no.nav.registre.testnorge.person.domain.Person;
-import no.nav.registre.testnorge.person.domain.Persondatasystem;
+import no.nav.registre.testnorge.libs.dto.person.v1.Persondatasystem;
 import no.nav.registre.testnorge.person.service.PersonService;
 
 @RestController
@@ -30,7 +29,7 @@ public class PersonController {
     @PostMapping
     public ResponseEntity<Object> createPerson(
             @RequestBody PersonDTO personDTO,
-            @RequestParam(required = false) String kilde
+            @RequestHeader(required = false) String kilde
     ) {
         Person person = new Person(personDTO);
         var pdlKilde = kilde == null ? "DOLLY" : kilde;

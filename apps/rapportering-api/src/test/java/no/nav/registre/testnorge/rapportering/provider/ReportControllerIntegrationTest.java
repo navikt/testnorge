@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 
 import no.nav.registre.testnorge.libs.dto.rapprtering.v1.EntryStatus;
-import no.nav.registre.testnorge.rapportering.consumer.dto.SlackResponse;
+import no.nav.registre.testnorge.libs.slack.dto.SlackResponse;
 import no.nav.registre.testnorge.rapportering.domain.Entry;
 import no.nav.registre.testnorge.rapportering.domain.Report;
 import no.nav.registre.testnorge.rapportering.repository.ReportRepository;

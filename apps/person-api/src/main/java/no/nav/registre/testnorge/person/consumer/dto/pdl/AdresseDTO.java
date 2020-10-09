@@ -16,15 +16,8 @@ public class AdresseDTO {
     String master;
     VegadresseDTO vegadresse;
 
-
-    public AdresseDTO(Person person) {
-        vegadresse = new VegadresseDTO(person.getAdresse());
-        kilde = "DOLLY";
-        master = "PDL";
-    }
-
     public AdresseDTO(Person person, String kilde) {
-        vegadresse = new VegadresseDTO(person.getAdresse());
+        vegadresse = person.getAdresse() == null ? null : new VegadresseDTO(person.getAdresse());
         this.kilde = kilde;
         master = "PDL";
     }

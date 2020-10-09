@@ -40,7 +40,7 @@ public class OrkestreringsController {
     @PostMapping(value = "/pdl/{miljoe}")
     public ResponseEntity<HttpStatus> initializePdlGruppe(@RequestParam(name = "gruppe") String gruppe) {
         TpsIdentListe liste = tpsIdenterAdapter.fetchBy(gruppe);
-        personConsumer.send(liste);
+        personConsumer.opprettPersoner(liste);
         return ResponseEntity.ok().build();
     }
 
