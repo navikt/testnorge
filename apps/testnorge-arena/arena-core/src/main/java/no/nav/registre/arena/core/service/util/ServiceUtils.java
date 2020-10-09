@@ -297,9 +297,9 @@ public class ServiceUtils {
             var nyeBrukereResponse = brukereService
                     .sendArbeidssoekereTilArenaForvalter(Collections.singletonList(ident), miljoe, kvalifiseringsgruppe);
             if (nyeBrukereResponse != null && nyeBrukereResponse.getNyBrukerFeilList() != null && !nyeBrukereResponse.getNyBrukerFeilList().isEmpty()) {
-                nyeBrukereResponse.getNyBrukerFeilList().forEach(nyBrukerFeil -> {
-                    log.error("Kunne ikke opprette ny bruker med fnr {} i arena: {}", nyBrukerFeil.getPersonident(), nyBrukerFeil.getMelding());
-                });
+                nyeBrukereResponse.getNyBrukerFeilList().forEach(nyBrukerFeil ->
+                        log.error("Kunne ikke opprette ny bruker med fnr {} i arena: {}", nyBrukerFeil.getPersonident(), nyBrukerFeil.getMelding())
+                );
             }
         }
     }
@@ -436,7 +436,6 @@ public class ServiceUtils {
         rettighetRequest.setMiljoe(miljoe);
         var response = tiltakArenaForvalterConsumer.finnTiltak(rettighetRequest);
         if (response != null && !response.getNyeRettigheterTiltak().isEmpty()) {
-            log.info("Fant tiltak for tiltakdeltakelse.");
             tiltak = response.getNyeRettigheterTiltak().get(0);
         } else {
             log.info("Fant ikke tiltak for tiltakdeltakelse.");
