@@ -7,7 +7,11 @@ consumers:
     url: https://tps-forvalteren.dev.adeo.no
     password: ${TPSF_PASSWORD}
     username: ${TPSF_USERNAME}
-    threads: 5
+    threads: 10
+  slack:
+    token: ${SLACK_TOKEN}
+    channel: ${SLACK_CHANNEL}
+    baseUrl: https://slack.com
 
 spring:
   application:

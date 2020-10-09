@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
+import no.nav.registre.testnorge.libs.core.config.ApplicationProperties;
 import no.nav.registre.testnorge.libs.slack.consumer.SlackConsumer;
 
 @Configuration
@@ -18,8 +19,9 @@ public class AppConfig {
     public SlackConsumer slackConsumer(
             @Value("${consumer.slack.token}") String token,
             @Value("${consumer.slack.baseUrl}") String baseUrl,
-            @Value("${http.proxy:#{null}}") String proxyHost
+            @Value("${http.proxy:#{null}}") String proxyHost,
+            ApplicationProperties properties
     ) {
-        return new SlackConsumer(token, baseUrl, proxyHost);
+        return new SlackConsumer(token, baseUrl, proxyHost, properties.getName());
     }
 }

@@ -45,6 +45,12 @@
             <artifactId>testnorge-csv-converter</artifactId>
         </dependency>
 
+        <!-- Slack -->
+        <dependency>
+            <artifactId>testnorge-slack</artifactId>
+            <groupId>no.nav.registre.testnorge.libs</groupId>
+        </dependency>
+
         <!-- Logging -->
         <dependency>
             <groupId>net.logstash.logback</groupId>

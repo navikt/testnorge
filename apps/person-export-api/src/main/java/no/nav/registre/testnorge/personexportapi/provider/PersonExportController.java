@@ -8,11 +8,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import no.nav.registre.testnorge.personexportapi.adapter.SlackAdapter;
 import no.nav.registre.testnorge.personexportapi.consumer.TpsfConsumer;
 import no.nav.registre.testnorge.personexportapi.converter.csv.NorskHelsenettPersonCsvConverter;
 import no.nav.registre.testnorge.personexportapi.domain.Person;
@@ -23,6 +26,7 @@ import no.nav.registre.testnorge.personexportapi.domain.Person;
 @RequestMapping("/api/v1/personer")
 public class PersonExportController {
     private final TpsfConsumer consumer;
+    private final SlackAdapter slackAdapter;
 
     @GetMapping(value = "/nhn/{avspillingsgruppe}")
     public void exportHelsenettFormat(@PathVariable("avspillingsgruppe") String avspillingsgruppe, HttpServletResponse response) throws IOException {
@@ -35,6 +39,17 @@ public class PersonExportController {
 
         List<Person> personer = consumer.getPersoner(avspillingsgruppe);
         log.info("Eksporterer {} personer til csv.", personer.size());
+
+
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        PrintWriter pw = new PrintWriter(byteStream);
+
+        NorskHelsenettPersonCsvConverter.inst().write(pw, personer);
+        slackAdapter.uploadFile(
+                byteStream.toByteArray(),
+                "testnorge-personer-nhn-" + LocalDateTime.now().toString() + ".csv"
+        );
+
         NorskHelsenettPersonCsvConverter.inst().write(response.getWriter(), personer);
     }
 }
