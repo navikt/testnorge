@@ -41,7 +41,7 @@ public class PdlVergemaalMappingStrategy implements MappingStrategy {
                                 .motpartsPersonident(person.getVergemaal().get(0).getVerge().getIdent())
                                 .navn(mapperFacade.map(person.getVergemaal().get(0).getVerge(), Personnavn.class))
                                 .omfang(getOmfang(person.getVergemaal().get(0).getMandatType()))
-                                .omfangetErInnenPersonligOmraade(isBlank(person.getVergemaal().get(0).getMandatType()))
+                                .omfangetErInnenPersonligOmraade(isBlank(person.getVergemaal().get(0).getMandatType()) ? true : null)
                                 .build());
                     }
                 })
