@@ -7,7 +7,7 @@ import { getCurrentBruker, getCurrentBrukerProfil, getCurrentBrukerBilde } from 
 import ConfigService from '~/service/Config'
 
 const mapStateToProps = state => {
-	console.log('state :>> ', state)
+	// console.log('state :>> ', state)
 	return {
 		router: state.router,
 		brukerData: state.bruker.brukerData,

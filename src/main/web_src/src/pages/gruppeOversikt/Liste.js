@@ -5,7 +5,7 @@ import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import FavoriteButtonConnector from '~/components/ui/button/FavoriteButton/FavoriteButtonConnector'
 import { GruppeIconItem } from '~/components/ui/icon/IconItem'
 import Icon from '~/components/ui/icon/Icon'
-import ImporterGrupper from './ImporterGrupper'
+import ImporterGrupperConnector from './ImporterGrupperConnector'
 
 export default function Liste({ items, history, searchActive, isFetching }) {
 	if (isFetching) return <Loading label="laster grupper" panel />
@@ -13,7 +13,7 @@ export default function Liste({ items, history, searchActive, isFetching }) {
 	if (!items || !items.length) {
 		return (
 			<ContentContainer>
-				{searchActive ? <p>Søket gav ingen resultater.</p> : <ImporterGrupper />}
+				{searchActive ? <p>Søket gav ingen resultater.</p> : <ImporterGrupperConnector />}
 			</ContentContainer>
 		)
 	}

@@ -1,21 +1,22 @@
 import React, { useState } from 'react'
+import * as yup from 'yup'
 import useBoolean from '~/utils/hooks/useBoolean'
 import { useAsync } from 'react-use'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import { DollyApi } from '~/service/Api'
-import { DollySelect } from '~/components/ui/form/inputs/select/Select'
+import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import { Formik, Form } from 'formik'
 
-export default function ImporterGrupper() {
-	const [ZIdent, setZIdent] = useState(null)
+export default function ImporterGrupper({ importZIdent, fetchMineGrupper }) {
 	const [isImportModalOpen, openImportModal, closeImportModal] = useBoolean(false)
+
 	const ZIdenter = useAsync(async () => {
 		const response = await DollyApi.getBrukere()
 		return response.data
 	}, [])
 
 	const getZIdentOptions = () => {
-		// console.log('ZIdenter.value :>> ', ZIdenter.value)
 		return ZIdenter.value.reduce(function(filtered, ident) {
 			if (ident.navIdent) {
 				filtered.push({ value: ident.navIdent, label: ident.navIdent })
@@ -26,9 +27,24 @@ export default function ImporterGrupper() {
 
 	const ZIdentOptions = ZIdenter.value ? getZIdentOptions() : []
 
+	const importerZIdenter = ({ identer }) => {
+		let request = identer[0]
+		if (identer.length > 1) {
+			for (let i = 1; i < identer.length; i++) {
+				request = request.concat(`&navIdenter=${identer[i]}`)
+			}
+		}
+		importZIdent(request)
+		closeImportModal()
+		// fetchMineGrupper()
+	}
+
+	const validation = yup.object().shape({
+		identer: yup.array().required('Velg minst én Z-ident')
+	})
+
 	return (
 		<>
-			{/* // <AlertStripeInfo> */}
 			<p>Du har for øyeblikket ingen testdatagrupper på denne brukerkontoen.</p>
 			<p>
 				Om dette er første gang du bruker din personlige brukerkonto kan du importere
@@ -39,28 +55,46 @@ export default function ImporterGrupper() {
 			<NavButton type="hoved" onClick={openImportModal} style={{ marginTop: '10px' }}>
 				Importer grupper
 			</NavButton>
-			{/* // </AlertStripeInfo> */}
 
 			<DollyModal isOpen={isImportModalOpen} closeModal={closeImportModal}>
 				<>
 					<h1>Importer testdatagrupper fra Z-ident</h1>
-					<DollySelect
-						name="ZIdent"
-						label="Z-ident"
-						isLoading={ZIdenter.loading}
-						options={ZIdentOptions}
-						size="medium"
-						onChange={e => setZIdent(e.value)}
-						value={ZIdent}
-						isClearable={false}
-					/>
-					<NavButton type="standard" onClick={closeImportModal} style={{ marginTop: '10px' }}>
-						Avbryt
-					</NavButton>
-					<NavButton type="hoved" onClick={closeImportModal} style={{ marginTop: '10px' }}>
-						Importer grupper
-					</NavButton>
-					{/* // TODO: Handle submit! */}
+					<p>Velg hvilke Z-identer du ønsker å importere.</p>
+					<p>OBS - vær klar over følgende:</p>
+					<ul>
+						<li>
+							Du kan importere så mange Z-brukere du ønsker. Har du flere Z-brukere vil altså alle
+							dataene fra disse kunne samles på din personlige brukerkonto.
+						</li>
+						<li>
+							Hver Z-bruker kan kun importeres av én personlig brukerkonto. Her er det førstemann
+							til mølla-prinsippet som gjelder, dvs. at når du importerer en Z-bruker vil ingen
+							andre kunne importere den samme.
+						</li>
+					</ul>
+
+					<Formik initialValues={{}} onSubmit={importerZIdenter} validationSchema={validation}>
+						{() => (
+							<Form>
+								<FormikSelect
+									name="identer"
+									label="Z-identer"
+									options={ZIdentOptions}
+									isLoading={ZIdenter.loading}
+									isMulti={true}
+									size="grow"
+									isClearable={false}
+									fastfield={false}
+								/>
+								<NavButton type="standard" onClick={closeImportModal}>
+									Avbryt
+								</NavButton>
+								<NavButton type="hoved" htmlType="submit">
+									Importer grupper
+								</NavButton>
+							</Form>
+						)}
+					</Formik>
 				</>
 			</DollyModal>
 		</>

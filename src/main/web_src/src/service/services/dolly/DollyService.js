@@ -77,6 +77,10 @@ export default {
 		return Request.put(Endpoints.removeFavorite(), { gruppeId: groupId })
 	},
 
+	importZIdent(ZIdenter) {
+		return Request.put(Endpoints.importZIdent(ZIdenter))
+	},
+
 	//* Kodeverk
 	getKodeverkByNavn(kodeverkNavn) {
 		return Request.get(Endpoints.kodeverkByNavn(kodeverkNavn))
