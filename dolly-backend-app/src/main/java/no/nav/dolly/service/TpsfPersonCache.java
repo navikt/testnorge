@@ -40,7 +40,8 @@ public class TpsfPersonCache {
 
         List<String> vergeIdenter = tpsPerson.getPersondetaljer().stream()
                 .filter(person -> !person.getVergemaal().isEmpty() && person.getVergemaal().stream()
-                        .noneMatch(vergemaal -> vergemaal.getVerge().getIdent().equals(person.getIdent())))
+                        .noneMatch(vergemaal -> tpsPerson.getPersondetaljer().stream()
+                                .anyMatch(person1 -> vergemaal.getVerge().getIdent().equals(person1.getIdent()))))
                 .map(Person::getVergemaal)
                 .flatMap(vergemaal -> vergemaal.stream().map(RsVergemaal::getVerge))
                 .map(RsSimplePerson::getIdent)
