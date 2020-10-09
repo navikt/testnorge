@@ -7,6 +7,7 @@ import DollyModal from '~/components/ui/modal/DollyModal'
 import { DollyApi } from '~/service/Api'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { Formik, Form } from 'formik'
+import './ImporterGrupper.less'
 
 export default function ImporterGrupper({ importZIdent, fetchMineGrupper }) {
 	const [isImportModalOpen, openImportModal, closeImportModal] = useBoolean(false)
@@ -56,11 +57,10 @@ export default function ImporterGrupper({ importZIdent, fetchMineGrupper }) {
 				Importer grupper
 			</NavButton>
 
-			<DollyModal isOpen={isImportModalOpen} closeModal={closeImportModal}>
-				<>
+			<DollyModal isOpen={isImportModalOpen} closeModal={closeImportModal} width="70%">
+				<div className="importer-grupper-modal">
 					<h1>Importer testdatagrupper fra Z-ident</h1>
-					<p>Velg hvilke Z-identer du ønsker å importere.</p>
-					<p>OBS - vær klar over følgende:</p>
+					<h3>Velg hvilke Z-brukere du ønsker å importere. Vær klar over følgende:</h3>
 					<ul>
 						<li>
 							Du kan importere så mange Z-brukere du ønsker. Har du flere Z-brukere vil altså alle
@@ -86,16 +86,22 @@ export default function ImporterGrupper({ importZIdent, fetchMineGrupper }) {
 									isClearable={false}
 									fastfield={false}
 								/>
-								<NavButton type="standard" onClick={closeImportModal}>
-									Avbryt
-								</NavButton>
-								<NavButton type="hoved" htmlType="submit">
-									Importer grupper
-								</NavButton>
+								<div className="import-buttons">
+									<NavButton
+										type="standard"
+										onClick={closeImportModal}
+										style={{ marginRight: '10px' }}
+									>
+										Avbryt
+									</NavButton>
+									<NavButton type="hoved" htmlType="submit">
+										Importer grupper
+									</NavButton>
+								</div>
 							</Form>
 						)}
 					</Formik>
-				</>
+				</div>
 			</DollyModal>
 		</>
 	)
