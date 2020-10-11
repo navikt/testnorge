@@ -136,7 +136,7 @@ public class PdlForvalterClient implements ClientRegister {
                     hovedperson.setKjonn(UKJENT);
                 }
                 if (nonNull(tpsfUtvidetBestilling.getRelasjoner())) {
-                    List partnereRequest = newArrayList(tpsfUtvidetBestilling.getRelasjoner().getPartnere());
+                    List<RsPartnerRequest> partnereRequest = newArrayList(tpsfUtvidetBestilling.getRelasjoner().getPartnere());
                     Iterator<RsPartnerRequest> partnere = reverse(partnereRequest).iterator();
                     Iterator<RsBarnRequest> barn = tpsfUtvidetBestilling.getRelasjoner().getBarn().iterator();
                     hovedperson.getRelasjoner().forEach(relasjon -> {
@@ -190,7 +190,7 @@ public class PdlForvalterClient implements ClientRegister {
 
         } catch (DollyFunctionalException e) {
 
-            status.append('&').append(e.getMessage().replaceAll(",", ";"));
+            status.append('&').append(e.getMessage().replace(',', ';').replace(':', '='));
 
         } catch (RuntimeException e) {
 
