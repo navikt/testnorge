@@ -2,8 +2,9 @@ package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.logging.log4j.util.Strings.isBlank;
 
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,7 @@ public class PdlVergemaalMappingStrategy implements MappingStrategy {
                                 .motpartsPersonident(person.getVergemaal().get(0).getVerge().getIdent())
                                 .navn(mapperFacade.map(person.getVergemaal().get(0).getVerge(), Personnavn.class))
                                 .omfang(getOmfang(person.getVergemaal().get(0).getMandatType()))
-                                .omfangetErInnenPersonligOmraade(isBlank(person.getVergemaal().get(0).getMandatType()) ? true : null)
+                                .omfangetErInnenPersonligOmraade(!"FIN".equals(person.getVergemaal().get(0).getMandatType()))
                                 .build());
                     }
                 })
