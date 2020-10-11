@@ -2,9 +2,7 @@ package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static org.apache.logging.log4j.util.Strings.isBlank;
 
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
