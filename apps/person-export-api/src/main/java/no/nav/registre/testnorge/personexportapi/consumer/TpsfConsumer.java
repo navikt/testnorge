@@ -65,7 +65,7 @@ public class TpsfConsumer {
             log.info("Har hentet {}/{} sider fra avspillingsgruppeID {}", page + 1, numberOfPages, avspillingsgruppe);
             return meldinger
                     .stream()
-                    .filter(value -> value.getPersonnummer() != null && value.getFodselsdato() != null)
+                    .filter(value -> value.isFoedsel() || value.isInnvandring())
                     .map(Person::new)
                     .collect(Collectors.toList());
         });
