@@ -14,7 +14,7 @@ spring.cloud.vault:
     default-context: preprod/fss/testnorge-statisk-data/default
   database:
     enabled: true
-    role: testnorge-statisk-data-user
+    role: testnorge-statisk-data-admin
     backend: postgresql/preprod-fss
     username-property: spring.datasource.username
     password-property: spring.datasource.password
