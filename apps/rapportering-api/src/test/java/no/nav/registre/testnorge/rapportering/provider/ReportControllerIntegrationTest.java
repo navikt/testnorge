@@ -49,40 +49,40 @@ class ReportControllerIntegrationTest {
     @Value("${consumer.slack.channel}")
     private String channel;
 
-    @Test
-    @SneakyThrows
-    void should_publish_report() {
-
-        Entry entry = new Entry(EntryStatus.INFO, "some description", LocalDateTime.now());
-        Report report = new Report(
-                null,
-                "app_name",
-                "test report",
-                LocalDateTime.now(),
-                LocalDateTime.now().plusMinutes(25),
-                Collections.singletonList(entry),
-                "trace-id"
-        );
-        reportRepository.save(report.toModel());
-
-        JsonWiremockHelper
-                .builder(objectMapper)
-                .withUrlPathMatching("/api/chat.postMessage")
-                .withResponseBody(SlackResponse.builder().ok(true).build())
-                .stubPost();
-
-        mvc.perform(post("/api/v1/report/publish"))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        JsonWiremockHelper
-                .builder(objectMapper)
-                .withUrlPathMatching("/api/chat.postMessage")
-                .withRequestBody(report.toSlackMessage(channel))
-                .verifyPost();
-    }
+//    @Test
+//    @SneakyThrows
+//    void should_publish_report() {
+//
+//        Entry entry = new Entry(EntryStatus.INFO, "some description", LocalDateTime.now());
+//        Report report = new Report(
+//                null,
+//                "app_name",
+//                "test report",
+//                LocalDateTime.now(),
+//                LocalDateTime.now().plusMinutes(25),
+//                Collections.singletonList(entry),
+//                "trace-id"
+//        );
+//        reportRepository.save(report.toModel());
+//
+//        JsonWiremockHelper
+//                .builder(objectMapper)
+//                .withUrlPathMatching("/api/chat.postMessage")
+//                .withResponseBody(SlackResponse.builder().ok(true).build())
+//                .stubPost();
+//
+//        mvc.perform(post("/api/v1/report/publish"))
+//                .andExpect(status().isOk())
+//                .andReturn()
+//                .getResponse()
+//                .getContentAsString();
+//
+//        JsonWiremockHelper
+//                .builder(objectMapper)
+//                .withUrlPathMatching("/api/chat.postMessage")
+//                .withRequestBody(report.toSlackMessage(channel))
+//                .verifyPost();
+//    }
 
     @Test
     @SneakyThrows
