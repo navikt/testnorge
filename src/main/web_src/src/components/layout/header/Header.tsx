@@ -12,7 +12,7 @@ type Props = {
 		visningsNavn: string
 		brukernavn: string
 	}
-	brukerBilde: any
+	brukerBilde: Response
 }
 
 export default ({ brukerProfil, brukerBilde }: Props) => {
