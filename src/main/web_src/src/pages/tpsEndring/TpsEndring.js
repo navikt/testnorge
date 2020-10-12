@@ -17,7 +17,17 @@ export default class TPSEndring extends PureComponent {
 					<ul>
 						<li>
 							<b>Sende fødselsmelding:</b> Gå til testdatagruppe og finn personen som skal være
-							forelder. Velg "Legg til relasjoner" og legg til barn.
+							forelder. Her finnes to alternativer:
+							<ul>
+								<li>
+									Velg "Legg til", og huk av for "Barn" i første steg. I neste steg kan et utvalg av
+									egenskaper velges for barnet.
+								</li>
+								<li>
+									Hvis barnet (og eventuelt den andre forelderen) allerede er opprettet i
+									testdatagruppen: Velg "Legg til relasjoner" og legg til barn.
+								</li>
+							</ul>
 						</li>
 						<li>
 							<b>Sende dødsmelding:</b> Gå til testdatagruppe og finn personen det skal sendes

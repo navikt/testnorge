@@ -2,24 +2,57 @@ import React from 'react'
 import Icon from '~/components/ui/icon/Icon'
 
 import './appError.less'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+import Tooltip from 'rc-tooltip'
+import 'rc-tooltip/assets/bootstrap.css'
 
-export const AppError = ({ title, message, error }) => (
-	<div className="application-error">
+export const AppError = ({ error, stackTrace, style }) => (
+	<div className="application-error" style={style}>
 		<h1>
 			<Icon kind="report-problem-triangle" />
-			{title || 'Ooops, dette var ikke planlagt...'}
+			{'Ooops, dette var ikke planlagt...'}
 		</h1>
 		<h2>Feilmelding</h2>
-		<pre>{message || 'Det har skjedd en feil og vi er ikke helt sikre på hvorfor. '}</pre>
-
+		<pre>
+			{error ? error.toString() : 'Det har skjedd en feil og vi er ikke helt sikre på hvorfor. '}
+		</pre>
 		{error && (
-			<React.Fragment>
-				<h2>Error</h2>
-				<pre>{JSON.stringify(error, null, 2)}</pre>
-			</React.Fragment>
+			<div className={'flexbox--align-start flexbox--wrap'}>
+				<CopyToClipboard text={error.toString() + '\n' + stackTrace}>
+					<Tooltip overlay={'Kopier'} placement={'top'} mouseEnterDelay={0} mouseLeaveDelay={0.1}>
+						<div
+							className="icon"
+							style={{ paddingTop: '8px' }}
+							onClick={event => {
+								event.stopPropagation()
+							}}
+						>
+							<Icon kind="copy" size={20} />
+						</div>
+					</Tooltip>
+				</CopyToClipboard>
+
+				<details style={{ whiteSpace: 'pre-wrap', padding: '10px' }}>
+					<summary>Detaljert Feilbeskrivelse</summary>
+					<p>
+						<br />
+						{error && error.toString()}
+						<br />
+						{stackTrace}
+					</p>
+				</details>
+			</div>
 		)}
 
 		<h2>Kontakt</h2>
-		<p>Dersom en refresh ikke hjelper, ta kontakt med Dolly-teamet i kanalen #dolly på Slack.</p>
+		<p>
+			Noe gikk galt under visning av elementet. <br />
+			Vennligst kontakt Team Dolly på slack kanalen{' '}
+			<b>
+				<a href="https://nav-it.slack.com/archives/CA3P9NGA2">#dolly</a>
+			</b>{' '}
+			<br />
+			med detaljene over (bruk kopier ikonet) dersom problemet vedvarer etter en refresh.
+		</p>
 	</div>
 )

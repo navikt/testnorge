@@ -1,6 +1,6 @@
 export type Bestillingsdata = {
 	antall: number
-	environments: Array<String>
+	environments: Array<string>
 	tpsf?: {
 		egenAnsattDatoFom?: string
 		egenAnsattDatoTom?: string

@@ -9,8 +9,7 @@ export const validation = {
 				'$sykemelding.syntSykemelding',
 				Yup.object({
 					startDato: requiredDate,
-					orgnummer: requiredString,
-					arbeidsforholdId: requiredNumber.transform(num => (isNaN(num) ? undefined : num))
+					orgnummer: requiredString
 				})
 			),
 			detaljertSykemelding: ifPresent(
@@ -30,7 +29,7 @@ export const validation = {
 							})
 						)
 					),
-					lege: Yup.object({
+					helsepersonell: Yup.object({
 						etternavn: requiredString,
 						fornavn: requiredString,
 						ident: requiredString,

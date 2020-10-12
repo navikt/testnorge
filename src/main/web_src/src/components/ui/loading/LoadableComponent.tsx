@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Loading from './Loading'
 
 interface LoadableComponent {
@@ -35,7 +35,6 @@ const LoadableComponent = ({ onFetch, render }: LoadableComponent) => {
 					'Noe gikk galt ved henting av valg. Ta kontakt med team Dolly hvis ikke en refresh av siden hjelper.'
 		  }
 		: null
-
 	return render(data, feilmelding)
 }
 export default LoadableComponent

@@ -6,6 +6,7 @@ import FavoriteButtonConnector from '~/components/ui/button/FavoriteButton/Favor
 import { GruppeIconItem } from '~/components/ui/icon/IconItem'
 import Icon from '~/components/ui/icon/Icon'
 import ImporterGrupperConnector from './ImporterGrupperConnector'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export default function Liste({ items, history, searchActive, isFetching }) {
 	if (isFetching) return <Loading label="laster grupper" panel />
@@ -74,12 +75,14 @@ export default function Liste({ items, history, searchActive, isFetching }) {
 		}
 	]
 	return (
-		<DollyTable
-			data={items}
-			columns={columns}
-			onRowClick={row => () => history.push(`gruppe/${row.id}`)}
-			iconItem={<GruppeIconItem />}
-			pagination
-		/>
+		<ErrorBoundary>
+			<DollyTable
+				data={items}
+				columns={columns}
+				onRowClick={row => () => history.push(`gruppe/${row.id}`)}
+				iconItem={<GruppeIconItem />}
+				pagination
+			/>
+		</ErrorBoundary>
 	)
 }

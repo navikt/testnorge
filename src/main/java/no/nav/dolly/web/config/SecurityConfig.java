@@ -30,7 +30,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .oauth2Client()
                 .and()
                 .oauth2Login()
-                .and().csrf().disable();
+                .and()
+                .csrf().disable();
     }
 
     @Bean
@@ -45,7 +46,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "X-Requested-With",
                 "Nav-Personident",
                 "X-XSRF-TOKEN",
-                "Content-Type"
+                "Content-Type",
+                "personidentifikator"
         ));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);

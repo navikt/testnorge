@@ -36,6 +36,41 @@ trykker på nedtrekksmenyen oppe til høyre, og trykker på "Copy token".
 Hvis du også kjører Dolly-backend lokalt og vil teste Dolly mot den lokale backend versjonen så må `dolly.url` i application-local.yml 
 settes til url-en for den lokale versjonen av dolly-backend (eks: `http://localhost:8080`)
 
+Legg dette i **din** maven settings.xml fil (bytt ut password med ditt Github-token):
+
+```
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <mirrors>
+    <mirror>
+      <id>NAV internal Nexus</id>
+      <mirrorOf>external:*,!nav-github-packages</mirrorOf>
+      <url>https://repo.adeo.no/repository/maven-public</url>
+    </mirror>
+  </mirrors>
+  <profiles>
+    <profile>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <repositories>
+        <repository>
+          <id>nav-github-packages</id>
+          <url>https://repo.adeo.no/repository/github-package-registry-navikt/</url>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+      <servers>
+        <server>
+            <id>nav-github-packages</id>
+            <username>token</username>
+            <password>...</password>
+        </server>
+    </servers>
+</settings>
+```
 ##### Bygge med maven utenfor utviklerimage:
 
 **NB: `navtunnel` må kjøre**
