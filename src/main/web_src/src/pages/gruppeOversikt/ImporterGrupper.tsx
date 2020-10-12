@@ -64,13 +64,6 @@ export default function ImporterGrupper({ importZIdent }: ImporterGrupper) {
 
 	return (
 		<>
-			<p>Du har for øyeblikket ingen testdatagrupper på denne brukerkontoen.</p>
-			<p>
-				Om dette er første gang du bruker din personlige brukerkonto kan du importere
-				testdatagrupper Z-brukeren(e) du har benyttet tidligere ved å trykke på knappen nedenfor. Du
-				kan når som helst importere testdatagrupper fra Z-brukere via Min side øverst til høyre.
-			</p>
-			<p>For å opprette en ny testdatagruppe, trykk på "Ny gruppe"-knappen over.</p>
 			<NavButton type="hoved" onClick={openImportModal} style={{ marginTop: '10px' }}>
 				Importer grupper
 			</NavButton>
