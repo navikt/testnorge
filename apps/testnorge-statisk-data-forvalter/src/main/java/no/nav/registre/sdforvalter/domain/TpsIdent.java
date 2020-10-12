@@ -8,7 +8,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import no.nav.registre.sdforvalter.database.model.TagModel;
 import no.nav.registre.sdforvalter.database.model.TpsIdentModel;
+import no.nav.registre.sdforvalter.database.model.TpsIdentTagModel;
 import no.nav.registre.testnorge.libs.dto.person.v1.AdresseDTO;
 import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
 
@@ -31,8 +37,10 @@ public class TpsIdent extends FasteData {
     private final String postNr;
     @JsonProperty("by")
     private final String city;
+    @JsonProperty
+    private final Set<String> tags;
 
-    public TpsIdent(TpsIdentModel model) {
+    public TpsIdent(TpsIdentModel model, List<TagModel> tagModels) {
         super(model);
         fnr = model.getFnr();
         firstName = model.getFirstName();
@@ -40,10 +48,11 @@ public class TpsIdent extends FasteData {
         address = model.getAddress();
         postNr = model.getPostNr();
         city = model.getCity();
+        tags = tagModels.stream().map(TagModel::getTag).collect(Collectors.toSet());
     }
 
     @Builder
-    public TpsIdent (String fnr, String firstName, String lastName, String address, String postNr, String city, String gruppe, String opprinnelse) {
+    public TpsIdent(String fnr, String firstName, String lastName, String address, String postNr, String city, String gruppe, String opprinnelse, Set<String> tags) {
         super(gruppe, opprinnelse);
         this.fnr = fnr;
         this.firstName = firstName;
@@ -51,9 +60,10 @@ public class TpsIdent extends FasteData {
         this.address = address;
         this.postNr = postNr;
         this.city = city;
+        this.tags = tags;
     }
 
-    public PersonDTO toDTO () {
+    public PersonDTO toDTO() {
         return PersonDTO.builder()
                 .ident(fnr)
                 .fornavn(firstName)

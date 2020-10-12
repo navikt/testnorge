@@ -18,6 +18,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import no.nav.registre.sdforvalter.database.model.OpprinnelseModel;
@@ -47,7 +48,6 @@ public class StaticDataControllerV1TpsIntegrationTest {
     @Autowired
     private OpprinnelseRepository opprinnelseRepository;
 
-
     @Test
     public void shouldGetTpsIdentSetWithOpprinnelse() throws Exception {
         OpprinnelseModel altinn = opprinnelseRepository.save(new OpprinnelseModel("Altinn"));
@@ -62,7 +62,7 @@ public class StaticDataControllerV1TpsIntegrationTest {
                 .getContentAsString();
 
         TpsIdentListe response = objectMapper.readValue(json, TpsIdentListe.class);
-        assertThat(response.getListe()).containsOnly(new TpsIdent(tpsIdentModel));
+        assertThat(response.getListe()).containsOnly(new TpsIdent(tpsIdentModel, new ArrayList<>()));
     }
 
     @Test
@@ -118,11 +118,11 @@ public class StaticDataControllerV1TpsIntegrationTest {
     }
 
     private TpsIdent createIdent(String fnr, String firstName, String lastName) {
-        return new TpsIdent(createIdentModel(fnr, firstName, lastName));
+        return new TpsIdent(createIdentModel(fnr, firstName, lastName), new ArrayList<>());
     }
 
     private TpsIdent createIdent(String fnr, String firstName, String lastName, Opprinnelse opprinnelse) {
-        return new TpsIdent(createIdentModel(fnr, firstName, lastName, new OpprinnelseModel(opprinnelse)));
+        return new TpsIdent(createIdentModel(fnr, firstName, lastName, new OpprinnelseModel(opprinnelse)), new ArrayList<>());
     }
 
     private TpsIdentListe createTpsIdenter(TpsIdent... tpsIdenter) {

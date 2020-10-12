@@ -50,6 +50,6 @@ public class TpsIdentModel extends FasteDataModel<TpsIdent> {
 
     @Override
     public TpsIdent toDomain() {
-        return new TpsIdent(this);
+        throw new UnsupportedOperationException("Ikke mulig å convertere til model");
     }
 }

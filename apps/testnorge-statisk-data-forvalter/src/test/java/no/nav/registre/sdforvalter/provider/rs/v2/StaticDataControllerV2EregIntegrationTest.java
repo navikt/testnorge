@@ -19,6 +19,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import no.nav.registre.sdforvalter.database.model.EregModel;
@@ -114,10 +115,10 @@ public class StaticDataControllerV2EregIntegrationTest {
 
         EregListe response = objectMapper.readValue(json, EregListe.class);
         assertThat(response.getListe()).containsOnly(
-                new Ereg(as),
-                new Ereg(bedr),
-                new Ereg(enk),
-                new Ereg(ans)
+                new Ereg(as, new ArrayList<>()),
+                new Ereg(bedr, new ArrayList<>()),
+                new Ereg(enk, new ArrayList<>()),
+                new Ereg(ans, new ArrayList<>())
         );
     }
 
@@ -137,7 +138,7 @@ public class StaticDataControllerV2EregIntegrationTest {
                 .getContentAsString();
 
         EregListe response = objectMapper.readValue(json, EregListe.class);
-        assertThat(response.getListe()).containsOnly(new Ereg(model));
+        assertThat(response.getListe()).containsOnly(new Ereg(model, new ArrayList<>()));
     }
 
     @Test
@@ -175,7 +176,7 @@ public class StaticDataControllerV2EregIntegrationTest {
                 .getContentAsString();
 
         EregListe response = objectMapper.readValue(json, EregListe.class);
-        assertThat(response.getListe()).containsOnly(new Ereg(eregModel));
+        assertThat(response.getListe()).containsOnly(new Ereg(eregModel, new ArrayList<>()));
     }
 
 
@@ -202,7 +203,7 @@ public class StaticDataControllerV2EregIntegrationTest {
                 .getContentAsString();
 
         EregListe response = objectMapper.readValue(json, EregListe.class);
-        assertThat(response.getListe()).containsOnly(new Ereg(eregWithGruppeModel));
+        assertThat(response.getListe()).containsOnly(new Ereg(eregWithGruppeModel, new ArrayList<>()));
     }
 
     @Test
@@ -276,14 +277,14 @@ public class StaticDataControllerV2EregIntegrationTest {
     }
 
     private Ereg createEreg(String orgnr, String enhetstype, String opprinnelse) {
-        return new Ereg(createEregModel(orgnr, enhetstype, new OpprinnelseModel(opprinnelse)));
+        return new Ereg(createEregModel(orgnr, enhetstype, new OpprinnelseModel(opprinnelse)), new ArrayList<>());
     }
 
     private Ereg createEreg(String orgnr, String enhetstype, Gruppe gruppe) {
-        return new Ereg(createEregModel(orgnr, enhetstype, null, new GruppeModel(null, gruppe.getKode(), gruppe.getBeskrivelse())));
+        return new Ereg(createEregModel(orgnr, enhetstype, null, new GruppeModel(null, gruppe.getKode(), gruppe.getBeskrivelse())), new ArrayList<>());
     }
 
     private Ereg createEreg(String orgnr, String enhetstype) {
-        return new Ereg(createEregModel(orgnr, enhetstype));
+        return new Ereg(createEregModel(orgnr, enhetstype), new ArrayList<>());
     }
 }

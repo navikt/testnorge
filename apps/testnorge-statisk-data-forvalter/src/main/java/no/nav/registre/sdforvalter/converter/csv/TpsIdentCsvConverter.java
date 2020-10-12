@@ -1,7 +1,10 @@
 package no.nav.registre.sdforvalter.converter.csv;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 import no.nav.registre.testnorge.libs.csvconverter.CsvConverter;
@@ -11,6 +14,7 @@ import no.nav.registre.testnorge.libs.csvconverter.RowConverter;
 
 public class TpsIdentCsvConverter extends CsvConverter<TpsIdent> {
 
+    private static final String LIST_SPLITT_CHARACTER = ",";
     static TpsIdentCsvConverter inst;
 
     private TpsIdentCsvConverter() {
@@ -32,7 +36,8 @@ public class TpsIdentCsvConverter extends CsvConverter<TpsIdent> {
         POST_NR("Postnummer"),
         CITY("Poststed"),
         GRUPPE("Gruppe"),
-        OPPRINNELSE("Opprinnelse");
+        OPPRINNELSE("Opprinnelse"),
+        TAGS("Tags");
 
         private final String header;
 
@@ -58,7 +63,10 @@ public class TpsIdentCsvConverter extends CsvConverter<TpsIdent> {
                 .city(getString(map, Headers.CITY))
                 .gruppe(getString(map, Headers.GRUPPE))
                 .opprinnelse(getString(map, Headers.OPPRINNELSE))
-                .build();
+                .tags(getString(map, Headers.TAGS) == null
+                        ? Collections.emptySet()
+                        : Set.of(getString(map, Headers.TAGS).split(LIST_SPLITT_CHARACTER))
+                ).build();
     }
 
     @Override
@@ -73,6 +81,7 @@ public class TpsIdentCsvConverter extends CsvConverter<TpsIdent> {
             map.put(Headers.CITY.getValue(), item.getCity());
             map.put(Headers.GRUPPE.getValue(), item.getGruppe());
             map.put(Headers.OPPRINNELSE.getValue(), item.getOpprinnelse());
+            map.put(Headers.TAGS.getValue(), String.join(LIST_SPLITT_CHARACTER, item.getTags()));
             return map;
         };
     }

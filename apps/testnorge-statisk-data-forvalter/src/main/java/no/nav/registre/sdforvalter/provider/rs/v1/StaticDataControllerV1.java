@@ -41,7 +41,7 @@ public class StaticDataControllerV1 {
     @PostMapping("/tps")
     public ResponseEntity<TpsIdentListe> createTps(@RequestBody TpsIdentListe liste,
                                                    @Parameter(description = "Hvis true settes tilfeldig navn på personer uten fornavn og etternavn")
-                                                   @RequestParam(name = "genererManglendeNavn", required = false) Boolean genererManglendeNavn) {
+                                                   @RequestParam(name = "genererManglendeNavn", required = false, defaultValue = "false") Boolean genererManglendeNavn) {
         return ResponseEntity.ok(identService.save(liste, genererManglendeNavn));
     }
 

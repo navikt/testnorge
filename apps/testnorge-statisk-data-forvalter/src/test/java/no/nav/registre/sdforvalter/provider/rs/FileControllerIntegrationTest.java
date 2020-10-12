@@ -19,12 +19,16 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
+import java.util.Set;
 
 import no.nav.registre.sdforvalter.database.model.GruppeModel;
 import no.nav.registre.sdforvalter.database.model.OpprinnelseModel;
 import no.nav.registre.sdforvalter.database.model.TpsIdentModel;
+import no.nav.registre.sdforvalter.database.repository.EregTagRepository;
 import no.nav.registre.sdforvalter.database.repository.GruppeRepository;
 import no.nav.registre.sdforvalter.database.repository.OpprinnelseRepository;
+import no.nav.registre.sdforvalter.database.repository.TagRepository;
+import no.nav.registre.sdforvalter.database.repository.TpsIdentTagRepository;
 import no.nav.registre.sdforvalter.database.repository.TpsIdenterRepository;
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 
@@ -46,6 +50,12 @@ public class FileControllerIntegrationTest {
     private GruppeRepository gruppeRepository;
     @Autowired
     private OpprinnelseRepository opprinnelseRepository;
+    @Autowired
+    private TagRepository tagRepository;
+    @Autowired
+    private EregTagRepository eregTagRepository;
+    @Autowired
+    private TpsIdentTagRepository tpsIdentTagRepository;
 
     @Before
     public void setup() {
@@ -58,8 +68,8 @@ public class FileControllerIntegrationTest {
 
     @Test
     public void should_save_one_ident_from_csv_to_tps_ident_database() throws Exception {
-        String csvInnhold = "FNR*;Fornavn;Etternavn;Adresse;Postnummer;Poststed;Gruppe;Opprinnelse\n" +
-                "12345678912;Dolly;Dollesen;Dollygata 2;9999;Dollyville;Gruppen;Test";
+        String csvInnhold = "FNR*;Fornavn;Etternavn;Adresse;Postnummer;Poststed;Gruppe;Opprinnelse;Tags\n" +
+                "12345678912;Dolly;Dollesen;Dollygata 2;9999;Dollyville;Gruppen;Test;OTP";
 
         TpsIdent expectedTpsPerson = TpsIdent.builder()
                 .fnr("12345678912")
@@ -68,6 +78,7 @@ public class FileControllerIntegrationTest {
                 .address("Dollygata 2")
                 .postNr("9999")
                 .city("Dollyville")
+                .tags(Set.of("OTP"))
                 .build();
         List<TpsIdentModel> expectedTpsIdenterListe = List.of(new TpsIdentModel(
                         expectedTpsPerson,
@@ -81,9 +92,9 @@ public class FileControllerIntegrationTest {
 
     @Test
     public void should_save_two_idents_from_csv_to_tps_ident_database() throws Exception {
-        String csvInnhold = "FNR*;Fornavn;Etternavn;Adresse;Postnummer;Poststed;Gruppe;Opprinnelse\n" +
-                "12345678910;Dolly;Dollesen;Dollygata 2;9999;Dollyville;Gruppen;Test\n" +
-                "12345678911;Donald;Dollesen;Dollygata 3;2222;Dollyby;Gruppen;Test";
+        String csvInnhold = "FNR*;Fornavn;Etternavn;Adresse;Postnummer;Poststed;Gruppe;Opprinnelse;Tags\n" +
+                "12345678910;Dolly;Dollesen;Dollygata 2;9999;Dollyville;Gruppen;Test;OTP\n" +
+                "12345678911;Donald;Dollesen;Dollygata 3;2222;Dollyby;Gruppen;Test;";
 
         TpsIdent expectedTpsPerson1 = TpsIdent.builder()
                 .fnr("12345678910")
@@ -92,6 +103,7 @@ public class FileControllerIntegrationTest {
                 .address("Dollygata 2")
                 .postNr("9999")
                 .city("Dollyville")
+                .tags(Set.of("OTP"))
                 .build();
         TpsIdent expectedTpsPerson2 = TpsIdent.builder()
                 .fnr("12345678911")
@@ -124,6 +136,9 @@ public class FileControllerIntegrationTest {
     @After
     public void cleanUp() {
         reset();
+        eregTagRepository.deleteAll();
+        tpsIdentTagRepository.deleteAll();
+        tagRepository.deleteAll();
         tpsIdenterRepository.deleteAll();
         opprinnelseRepository.deleteAll();
         gruppeRepository.deleteAll();

@@ -20,6 +20,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 import no.nav.registre.sdforvalter.consumer.rs.request.ereg.EregMapperRequest;
@@ -68,7 +69,7 @@ public class OrkestreringsControllerEregIntegrationTest {
         JsonWiremockHelper
                 .builder(objectMapper)
                 .withUrlPathMatching("(.*)/v1/orkestrering/opprett")
-                .withRequestBody(Collections.singletonList(new EregMapperRequest(new Ereg(model), false)))
+                .withRequestBody(Collections.singletonList(new EregMapperRequest(new Ereg(model, new ArrayList<>()), false)))
                 .stubPost();
     }
 

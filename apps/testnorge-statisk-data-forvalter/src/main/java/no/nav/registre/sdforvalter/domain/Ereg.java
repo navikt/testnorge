@@ -9,11 +9,16 @@ import lombok.ToString;
 import lombok.Value;
 import org.apache.logging.log4j.util.Strings;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import no.nav.registre.sdforvalter.consumer.rs.request.ereg.EregMapperRequest;
 import no.nav.registre.sdforvalter.database.model.EregModel;
+import no.nav.registre.sdforvalter.database.model.TagModel;
 import no.nav.registre.testnorge.libs.dto.statiskedataforvalter.v1.OrganisasjonDTO;
 
 
@@ -43,6 +48,8 @@ public class Ereg extends FasteData {
     private final Adresse forretningsAdresse;
     @JsonProperty
     private final Adresse postadresse;
+    @JsonProperty
+    private final Set<String> tags;
 
     @JsonProperty
     public boolean isKanHaArbeidsforhold() {
@@ -50,7 +57,7 @@ public class Ereg extends FasteData {
     }
 
     @Builder
-    public Ereg(String gruppe, String opprinnelse, String orgnr, String enhetstype, String navn, String redigertNavn, String epost, String internetAdresse, String naeringskode, String juridiskEnhet, Adresse forretningsAdresse, Adresse postadresse) {
+    public Ereg(String gruppe, String opprinnelse, String orgnr, String enhetstype, String navn, String redigertNavn, String epost, String internetAdresse, String naeringskode, String juridiskEnhet, Adresse forretningsAdresse, Adresse postadresse, Set<String> tags) {
         super(gruppe, opprinnelse);
         this.orgnr = orgnr;
         this.enhetstype = enhetstype;
@@ -62,9 +69,10 @@ public class Ereg extends FasteData {
         this.juridiskEnhet = juridiskEnhet;
         this.forretningsAdresse = forretningsAdresse;
         this.postadresse = postadresse;
+        this.tags = tags;
     }
 
-    public Ereg(EregModel model) {
+    public Ereg(EregModel model, List<TagModel> tagModels) {
         super(model);
         orgnr = model.getOrgnr();
         enhetstype = model.getEnhetstype();
@@ -76,6 +84,7 @@ public class Ereg extends FasteData {
         juridiskEnhet = model.getParent() != null ? model.getParent().getOrgnr() : null;
         forretningsAdresse = model.getForretningsAdresse() != null ? new Adresse(model.getForretningsAdresse()) : null;
         postadresse = model.getPostadresse() != null ? new Adresse(model.getPostadresse()) : null;
+        tags = tagModels.stream().map(TagModel::getTag).collect(Collectors.toSet());
     }
 
     public Ereg(OrganisasjonDTO dto) {
@@ -90,6 +99,7 @@ public class Ereg extends FasteData {
         juridiskEnhet = dto.getJuridiskEnhet();
         forretningsAdresse = new Adresse(dto.getForretningsAdresse());
         postadresse = new Adresse(dto.getPostadresse());
+        tags = new HashSet<>();
     }
 
     public Ereg(EregMapperRequest eregMapperRequest) {
@@ -97,7 +107,7 @@ public class Ereg extends FasteData {
 
         orgnr = eregMapperRequest.getOrgnr();
         enhetstype = eregMapperRequest.getEnhetstype();
-        if (eregMapperRequest.getNavn() != null){
+        if (eregMapperRequest.getNavn() != null) {
             navn = eregMapperRequest.getNavn().getNavneListe() != null
                     ? String.join(" ", eregMapperRequest.getNavn().getNavneListe())
                     : null;
@@ -127,6 +137,7 @@ public class Ereg extends FasteData {
         } else {
             juridiskEnhet = null;
         }
+        tags = new HashSet<>();
     }
 
     public OrganisasjonDTO toDTO() {
