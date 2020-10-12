@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
-import no.nav.dolly.consumer.kodeverk.domain.Betydning;
+import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse.Betydning;
 import no.nav.dolly.domain.resultset.kodeverk.KodeAdjusted;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 

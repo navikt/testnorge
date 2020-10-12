@@ -34,6 +34,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlTelefonnummer;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlUtflytting;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaal;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
@@ -69,6 +70,7 @@ public class PdlForvalterConsumer {
     private static final String PDL_BESTILLING_UTFLYTTING_URL = PDL_BESTILLING_URL + "/utflytting";
     private static final String PDL_BESTILLING_FORELDREANSVAR_URL = PDL_BESTILLING_URL + "/foreldreansvar";
     private static final String PDL_BESTILLING_OPPHOLD_URL = PDL_BESTILLING_URL + "/opphold";
+    private static final String PDL_BESTILLING_VERGEMAAL_URL = PDL_BESTILLING_URL + "/vergemaal";
     private static final String PDL_IDENTHISTORIKK_PARAMS = "?historiskePersonidenter=";
     private static final String PDL_IDENTHISTORIKK_PARAMS_2 = "&historiskePersonidenter=";
     private static final String PDL_BESTILLING_FOLKEREGISTERPERSONSTATUS_URL = PDL_BESTILLING_URL + "/folkeregisterpersonstatus";
@@ -258,6 +260,14 @@ public class PdlForvalterConsumer {
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_OPPHOLD_URL,
                 opphold, ident, "opphold");
+    }
+
+    @Timed(name = "providers", tags = { "operation", "pdl_vergemaal" })
+    public ResponseEntity<JsonNode> postVergemaal(PdlVergemaal vergemaal, String ident) {
+
+        return postRequest(
+                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_VERGEMAAL_URL,
+                vergemaal, ident, "vergemaal");
     }
 
     private ResponseEntity<JsonNode> postRequest(String url, Object body, String ident, String beskrivelse) {

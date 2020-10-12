@@ -2,14 +2,14 @@ package no.nav.dolly.bestilling.pensjonforvalter;
 
 import static java.lang.String.format;
 import static java.util.Collections.emptySet;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.net.URI;
 import java.util.Set;
-import java.util.UUID;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +49,7 @@ public class PensjonforvalterConsumer {
             ResponseEntity responseEntity = restTemplate.exchange(
                     RequestEntity.get(URI.create(providersProps.getPensjonforvalter().getUrl() + MILJOER_HENT_TILGJENGELIGE_URL))
                             .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
-                            .header(HEADER_NAV_CALL_ID, getCallId())
+                            .header(HEADER_NAV_CALL_ID, generateCallId())
                             .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                             .build(),
                     String[].class);
@@ -68,7 +68,7 @@ public class PensjonforvalterConsumer {
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(providersProps.getPensjonforvalter().getUrl() + PENSJON_OPPRETT_PERSON_URL))
                         .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
-                        .header(HEADER_NAV_CALL_ID, getCallId())
+                        .header(HEADER_NAV_CALL_ID, generateCallId())
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(opprettPersonRequest),
@@ -81,7 +81,7 @@ public class PensjonforvalterConsumer {
         return restTemplate.exchange(
                 RequestEntity.post(URI.create(providersProps.getPensjonforvalter().getUrl() + PENSJON_INNTEKT_URL))
                         .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
-                        .header(HEADER_NAV_CALL_ID, getCallId())
+                        .header(HEADER_NAV_CALL_ID, generateCallId())
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(lagreInntektRequest),
@@ -97,12 +97,8 @@ public class PensjonforvalterConsumer {
                                 providersProps.getPensjonforvalter().getUrl(),
                                 PENSJON_INNTEKT_URL, ident, miljoe)))
                         .header(AUTHORIZATION, stsOidcService.getIdToken(PREPROD_ENV))
-                        .header(HEADER_NAV_CALL_ID, getCallId())
+                        .header(HEADER_NAV_CALL_ID, generateCallId())
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .build(), JsonNode.class);
-    }
-
-    private static String getCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID().toString());
     }
 }

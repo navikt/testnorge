@@ -24,6 +24,7 @@ public class TpsPerson {
     private List<String> partnere;
     private List<String> barn;
     private List<String> nyePartnereOgBarn;
+    private List<String> verger;
 
     public List<String> getPartnere() {
         if (isNull(partnere)) {
@@ -37,6 +38,13 @@ public class TpsPerson {
             barn = new ArrayList();
         }
         return barn;
+    }
+
+    public List<String> getVerger() {
+        if (isNull(verger)) {
+            verger = new ArrayList<>();
+        }
+        return verger;
     }
 
     public List<Person> getPersondetaljer() {

@@ -1,13 +1,13 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
 import static java.lang.String.format;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.util.CallIdUtil.generateCallId;
 
 import java.net.URI;
 import java.util.List;
-import java.util.UUID;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,7 @@ public class ArenaForvalterConsumer {
     public ResponseEntity getIdent(String ident) {
         return restTemplate.exchange(RequestEntity.get(
                 URI.create(format("%s%s?filter-personident=%s", providersProps.getArenaForvalter().getUrl(), ARENAFORVALTER_BRUKER, ident)))
-                .header(HEADER_NAV_CALL_ID, getCallId())
+                .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .build(), ArenaArbeidssokerBruker.class);
     }
@@ -44,7 +44,7 @@ public class ArenaForvalterConsumer {
     public ResponseEntity deleteIdent(String ident, String environment) {
         return restTemplate.exchange(RequestEntity.delete(
                 URI.create(format("%s%s?miljoe=%s&personident=%s", providersProps.getArenaForvalter().getUrl(), ARENAFORVALTER_BRUKER, environment, ident)))
-                .header(HEADER_NAV_CALL_ID, getCallId())
+                .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .build(), JsonNode.class);
     }
@@ -53,7 +53,7 @@ public class ArenaForvalterConsumer {
     public ResponseEntity<ArenaNyeBrukereResponse> postArenadata(ArenaNyeBrukere arenaNyeBrukere) {
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(providersProps.getArenaForvalter().getUrl() + ARENAFORVALTER_BRUKER))
-                .header(HEADER_NAV_CALL_ID, getCallId())
+                .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .body(arenaNyeBrukere), ArenaNyeBrukereResponse.class);
     }
@@ -62,12 +62,8 @@ public class ArenaForvalterConsumer {
     public ResponseEntity<List> getEnvironments() {
         return restTemplate.exchange(RequestEntity.get(
                 URI.create(providersProps.getArenaForvalter().getUrl() + ARENAFORVALTER_ENVIRONMENTS))
-                .header(HEADER_NAV_CALL_ID, getCallId())
+                .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .build(), List.class);
-    }
-
-    private static String getCallId() {
-        return "Dolly: " + UUID.randomUUID().toString();
     }
 }
