@@ -457,10 +457,11 @@ public class ServiceUtils {
 
     private NyttVedtakTiltak getVedtakForFinnTiltakRequest(NyttVedtakTiltak tiltaksdeltakelse) {
         var vedtak = NyttVedtakTiltak.builder()
-                .tiltakKode(tiltaksdeltakelse.getTiltakskode())
+                .tiltakKode(tiltaksdeltakelse.getTiltakKode())
                 .tiltakProsentDeltid(tiltaksdeltakelse.getTiltakProsentDeltid())
                 .tiltakVedtak(tiltaksdeltakelse.getTiltakVedtak())
                 .tiltakYtelse(tiltaksdeltakelse.getTiltakYtelse())
+                .tiltakAdminKode(tiltaksdeltakelse.getTiltakAdminKode())
                 .build();
         vedtak.setFraDato(tiltaksdeltakelse.getFraDato());
         vedtak.setTilDato(tiltaksdeltakelse.getTilDato());
