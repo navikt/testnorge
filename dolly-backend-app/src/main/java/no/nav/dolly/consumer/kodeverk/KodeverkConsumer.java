@@ -54,7 +54,7 @@ public class KodeverkConsumer {
 
         try {
             return restTemplate.exchange(RequestEntity.get(
-                    URI.create(providersProps.getKodeverk().getUrl() + getKodeverksnavnUrl(kodeverk)))
+                    URI.create(providersProps.getKodeverk().getUrl() + getKodeverksnavnUrl(kodeverk.replace(" ", "%20"))))
                     .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                     .header(HEADER_NAV_CALL_ID, generateCallId())
                     .build(), KodeverkBetydningerResponse.class);
