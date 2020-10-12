@@ -43,6 +43,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlTelefonnummer;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlUtflytting;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaal;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
@@ -135,7 +136,7 @@ public class PdlForvalterClient implements ClientRegister {
                     hovedperson.setKjonn(UKJENT);
                 }
                 if (nonNull(tpsfUtvidetBestilling.getRelasjoner())) {
-                    List partnereRequest = new ArrayList(List.of(tpsfUtvidetBestilling.getRelasjoner().getPartnere()));
+                    List<RsPartnerRequest> partnereRequest = new ArrayList(List.of(tpsfUtvidetBestilling.getRelasjoner().getPartnere()));
                     Collections.reverse(partnereRequest);
                     Iterator<RsPartnerRequest> partnere = partnereRequest.iterator();
                     Iterator<RsBarnRequest> barn = tpsfUtvidetBestilling.getRelasjoner().getBarn().iterator();
@@ -184,17 +185,23 @@ public class PdlForvalterClient implements ClientRegister {
                 sendTelefonnummer(person);
                 sendDoedsfall(person);
                 sendOpphold(bestilling, person);
+                sendVergemaal(person);
             });
             status.append("&OK");
 
         } catch (DollyFunctionalException e) {
 
-            status.append('&').append(e.getMessage().replaceAll(",", ";"));
+            status.append('&').append(e.getMessage().replace(',', ';').replace(':', '='));
 
         } catch (RuntimeException e) {
 
             status.append('&')
                     .append(errorStatusDecoder.decodeRuntimeException(e));
+
+        } catch (Exception e) {
+
+            status.append("&Feil= Teknisk feil, se logg!");
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -330,6 +337,13 @@ public class PdlForvalterClient implements ClientRegister {
 
         if (person.isUtvandret()) {
             pdlForvalterConsumer.postUtflytting(mapperFacade.map(person, PdlUtflytting.class), person.getIdent());
+        }
+    }
+
+    private void sendVergemaal(Person person) {
+
+        if (!person.getVergemaal().isEmpty()) {
+            pdlForvalterConsumer.postVergemaal(mapperFacade.map(person, PdlVergemaal.class), person.getIdent());
         }
     }
 

@@ -110,4 +110,6 @@ public class TpsfBestilling {
     private String telefonLandskode_2;
 
     private String telefonnummer_2;
+
+    private RsVergemaalRequest vergemaal;
 }

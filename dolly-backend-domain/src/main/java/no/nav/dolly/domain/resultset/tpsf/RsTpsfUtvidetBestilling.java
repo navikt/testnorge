@@ -36,4 +36,6 @@ public class RsTpsfUtvidetBestilling extends RsTpsfBasisMedSivilstandBestilling 
     private String kjonn;
 
     private List<RsIdenthistorikk> identHistorikk;
+
+    private RsVergemaalRequest vergemaal;
 }

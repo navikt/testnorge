@@ -8,6 +8,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -63,6 +64,7 @@ public class Person {
     private List<MidlertidigAdresse> midlertidigAdresse;
     private LocalDateTime egenAnsattDatoFom;
     private LocalDateTime egenAnsattDatoTom;
+    private List<RsVergemaal> vergemaal;
 
     public List<MidlertidigAdresse> getMidlertidigAdresse() {
         if (isNull(midlertidigAdresse)) {
@@ -123,6 +125,14 @@ public class Person {
         return boadresse;
     }
 
+    public List<RsVergemaal> getVergemaal() {
+        if (isNull(vergemaal)) {
+            vergemaal = new ArrayList<>();
+        }
+        return vergemaal;
+    }
+
+    @JsonIgnore
     public boolean isSivilstandGift() {
 
         if (isNull(getSivilstand())) {
@@ -141,19 +151,23 @@ public class Person {
         }
     }
 
+    @JsonIgnore
     public boolean isMyndig() {
         return getAlder() >= MYNDIGHET_ALDER;
     }
 
+    @JsonIgnore
     public boolean hasOppholdsadresse() {
         return !getBoadresse().isEmpty() && !isUtenFastBopel() || hasUtenlandskAdresse();
     }
 
+    @JsonIgnore
     public boolean hasUtenlandskAdresse() {
         return !getPostadresse().isEmpty() && getPostadresse().get(0).isUtenlandsk() ||
                 (!getMidlertidigAdresse().isEmpty() && midlertidigAdresse.get(0).isUtenlandsk());
     }
 
+    @JsonIgnore
     public boolean hasNorskKontaktadresse() {
         return !getBoadresse().isEmpty() && !isUtenFastBopel() && getBoadresse().get(0).isGateadresse() ||
                 (!getPostadresse().isEmpty() && getPostadresse().get(0).isNorsk()) ||
@@ -161,18 +175,22 @@ public class Person {
                         !midlertidigAdresse.get(0).isStedadresse());
     }
 
+    @JsonIgnore
     public boolean isUtenFastBopel() {
         return isTrue(utenFastBopel) || "UFB".equals(getSpesreg());
     }
 
+    @JsonIgnore
     public boolean isDoedFoedt() {
         return "FDAT".equals(getIdenttype());
     }
 
+    @JsonIgnore
     public boolean isInnvandret() {
         return !getInnvandretUtvandret().isEmpty() && INNVANDRET == getInnvandretUtvandret().get(0).getInnutvandret();
     }
 
+    @JsonIgnore
     public boolean isUtvandret() {
         return !getInnvandretUtvandret().isEmpty() && UTVANDRET == getInnvandretUtvandret().get(0).getInnutvandret();
     }
