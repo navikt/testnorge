@@ -13,8 +13,6 @@ import java.util.concurrent.Callable;
 import no.nav.registre.testnorge.libs.slack.dto.Message;
 import no.nav.registre.testnorge.libs.slack.dto.SlackResponse;
 
-
-@Slf4j
 @RequiredArgsConstructor
 public class PublishMessageCommand implements Callable<SlackResponse> {
     private final WebClient webClient;

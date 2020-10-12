@@ -38,8 +38,8 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-csv</artifactId>
+            <groupId>no.nav.registre.testnorge.libs</groupId>
+            <artifactId>testnorge-csv-converter</artifactId>
         </dependency>
 
         <!-- LOMBOK -->

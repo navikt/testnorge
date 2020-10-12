@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.tilbakemeldingapi.config;
+package no.nav.registre.testnorge.personexportapi.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,11 +14,10 @@ import no.nav.registre.testnorge.libs.slack.consumer.SlackConsumer;
         ApplicationCoreConfig.class
 })
 public class AppConfig {
-
     @Bean
     public SlackConsumer slackConsumer(
-            @Value("${consumer.slack.token}") String token,
-            @Value("${consumer.slack.baseUrl}") String baseUrl,
+            @Value("${consumers.slack.token}") String token,
+            @Value("${consumers.slack.baseUrl}") String baseUrl,
             @Value("${http.proxy:#{null}}") String proxyHost,
             ApplicationProperties properties
     ) {

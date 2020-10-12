@@ -4,16 +4,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 import no.nav.registre.sdforvalter.domain.TpsIdent;
+import no.nav.registre.testnorge.libs.csvconverter.CsvConverter;
+import no.nav.registre.testnorge.libs.csvconverter.CsvHeader;
+import no.nav.registre.testnorge.libs.csvconverter.ObjectConverter;
+import no.nav.registre.testnorge.libs.csvconverter.RowConverter;
 
 public class TpsIdentCsvConverter extends CsvConverter<TpsIdent> {
 
     static TpsIdentCsvConverter inst;
 
-    private TpsIdentCsvConverter () {
+    private TpsIdentCsvConverter() {
 
     }
 
-    public static TpsIdentCsvConverter inst () {
+    public static TpsIdentCsvConverter inst() {
         if (inst == null) {
             inst = new TpsIdentCsvConverter();
         }
@@ -61,20 +65,20 @@ public class TpsIdentCsvConverter extends CsvConverter<TpsIdent> {
     protected ObjectConverter<TpsIdent> getObjectConverter() {
         return item -> {
             Map<String, Object> map = new HashMap<>();
-            map.put( Headers.FNR.getValue(), item.getFnr());
-            map.put ( Headers.FIRST_NAME.getValue(), item.getFirstName());
-            map.put( Headers.LAST_NAME.getValue(), item.getLastName());
-            map.put( Headers.ADDRESS.getValue(), item.getAddress());
-            map.put( Headers.POST_NR.getValue(), item.getPostNr());
-            map.put( Headers.CITY.getValue(), item.getCity());
-            map.put( Headers.GRUPPE.getValue(), item.getGruppe());
-            map.put( Headers.OPPRINNELSE.getValue(), item.getOpprinnelse());
+            map.put(Headers.FNR.getValue(), item.getFnr());
+            map.put(Headers.FIRST_NAME.getValue(), item.getFirstName());
+            map.put(Headers.LAST_NAME.getValue(), item.getLastName());
+            map.put(Headers.ADDRESS.getValue(), item.getAddress());
+            map.put(Headers.POST_NR.getValue(), item.getPostNr());
+            map.put(Headers.CITY.getValue(), item.getCity());
+            map.put(Headers.GRUPPE.getValue(), item.getGruppe());
+            map.put(Headers.OPPRINNELSE.getValue(), item.getOpprinnelse());
             return map;
         };
     }
 
     @Override
-    CsvHeader[] getHeaders() {
+    protected CsvHeader[] getHeaders() {
         return Headers.values();
     }
 }
