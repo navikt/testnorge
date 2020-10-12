@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import no.nav.registre.skd.consumer.HodejegerenConsumerSkd;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,6 +56,9 @@ public class SyntetiseringService {
 
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
+
+    @Autowired
+    private HodejegerenConsumerSkd hodejegerenConsumerSkd;
 
     @Autowired
     private TpsfConsumer tpsfConsumer;

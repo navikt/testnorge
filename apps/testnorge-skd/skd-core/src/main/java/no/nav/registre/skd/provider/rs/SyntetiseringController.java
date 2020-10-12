@@ -35,7 +35,7 @@ public class SyntetiseringController {
     @ApiOperation(value = "Her bestilles genererering av syntetiske meldinger for nye og eksisterende identer. "
             + "Disse meldingene lagres i angitt gruppe i TPSF. ", notes = "Eksisterende identer hentes fra avspillergruppen og status quo på disse hentes fra TPS i angitt miljø. " +
             "\n\nSpesialbehandlinger: \n\n" +
-            "\tVed bestilling av endringskode 0211, genereres tilhørende endringsmelding 3510.\n\n" +
+            "\tVed bestilling av endringskode 0211, genereres tilhørende endringsmelding 3510. Endringskode 0211 blir nå byttet ut med 5212 i stedet.\n\n" +
             "\tVed bestilling av endringskode 1110, genereres tilhørende endringsmelding 1110 til partner.\n\n" +
             "\tVed bestilling av endringskode 1410, genereres tilhørende endringsmelding 1410 til partner.\n\n" +
             "\tVed bestilling av endringskode 1810, genereres tilhørende endringsmelding 1810 til partner.\n\n" +

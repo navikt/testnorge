@@ -2,8 +2,8 @@ package no.nav.registre.skd.consumer;
 
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.skd.commands.HodejegerenHentRelasjonerCommand;
-import no.nav.registre.skd.commands.HodejegerenStatusQuoCommand;
+import no.nav.registre.skd.commands.hodejegeren.HentRelasjonerCommand;
+import no.nav.registre.skd.commands.hodejegeren.StatusQuoCommand;
 import no.nav.registre.skd.consumer.response.RelasjonsResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,10 +21,10 @@ public class HodejegerenConsumerSkd {
     }
 
     public Map<String, String> getStatusQuoTilhoerendeEndringskode(String endringskode, String miljoe, String ident) {
-        return new HodejegerenStatusQuoCommand(webClient, ident, endringskode, miljoe).call();
+        return new StatusQuoCommand(webClient, ident, endringskode, miljoe).call();
     }
 
     public RelasjonsResponse getRelasjoner(String fnr, String miljoe) {
-        return new HodejegerenHentRelasjonerCommand(webClient, fnr, miljoe).call();
+        return new HentRelasjonerCommand(webClient, fnr, miljoe).call();
     }
 }
