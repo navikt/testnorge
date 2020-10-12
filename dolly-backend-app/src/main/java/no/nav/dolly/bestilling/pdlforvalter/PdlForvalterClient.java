@@ -87,9 +87,7 @@ public class PdlForvalterClient implements ClientRegister {
             if (containsSynthEnv(bestilling.getEnvironments())) {
 
                 hentTpsPersondetaljer(tpsPerson, bestilling.getTpsf(), isOpprettEndre);
-                if (!isOpprettEndre) {
-                    sendDeleteIdent(tpsPerson);
-                }
+                sendDeleteIdent(tpsPerson);
                 sendPdlPersondetaljer(bestilling, tpsPerson, status, isOpprettEndre);
 
                 if (nonNull(bestilling.getPdlforvalter())) {
@@ -430,12 +428,6 @@ public class PdlForvalterClient implements ClientRegister {
 
     private static void appendOkStatus(JsonNode jsonNode, StringBuilder builder) {
         builder.append("&OK");
-        if (nonNull(jsonNode) && nonNull(jsonNode.get(HENDELSE_ID))) {
-            builder.append(", ")
-                    .append(HENDELSE_ID)
-                    .append(": ")
-                    .append(jsonNode.get(HENDELSE_ID));
-        }
     }
 
     private void appendErrorStatus(RuntimeException exception, StringBuilder builder) {

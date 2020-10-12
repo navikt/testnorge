@@ -4,6 +4,7 @@ import static java.util.Objects.isNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 
 @Getter
 @Setter
@@ -39,5 +41,16 @@ public class RsOppdaterPersonResponse {
         private String ident;
         private boolean lagtTil;
     }
-}
 
+    public static RsOppdaterPersonResponse getIdentResponse(List<String> identer) {
+
+        return RsOppdaterPersonResponse.builder()
+                .identTupler(identer.stream()
+                        .map(ident -> IdentTuple.builder()
+                                .ident(ident)
+                                .lagtTil(false)
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
+    }
+}
