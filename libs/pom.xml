@@ -26,6 +26,7 @@
         <module>testnorge-oauth2</module>
         <module>testnorge-logging</module>
         <module>testnorge-slack</module>
+        <module>testnorge-csv-converter</module>
     </modules>
 
     <build>

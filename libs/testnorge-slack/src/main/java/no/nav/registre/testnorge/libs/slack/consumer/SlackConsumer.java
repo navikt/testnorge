@@ -9,20 +9,24 @@ import reactor.netty.tcp.ProxyProvider;
 import java.net.URI;
 
 import no.nav.registre.testnorge.libs.slack.command.PublishMessageCommand;
+import no.nav.registre.testnorge.libs.slack.command.UploadFileCommand;
 import no.nav.registre.testnorge.libs.slack.dto.Message;
 import no.nav.registre.testnorge.libs.slack.dto.SlackResponse;
 
 @Slf4j
 public class SlackConsumer {
     private final String token;
+    private final String applicationName;
     private final WebClient webClient;
 
     public SlackConsumer(
             String token,
             String baseUrl,
-            String proxyHost
+            String proxyHost,
+            String applicationName
     ) {
         this.token = token;
+        this.applicationName = applicationName;
         var builder = WebClient.builder();
         if (proxyHost != null) {
             log.info("Setter opp proxy host {} for Slack api", proxyHost);
@@ -45,7 +49,14 @@ public class SlackConsumer {
     public void publish(Message message) {
         SlackResponse response = new PublishMessageCommand(webClient, token, message).call();
         if (!response.getOk()) {
-            throw new RuntimeException("Klarer ikke aa opprette slack melding");
+            throw new RuntimeException("Klarer ikke aa opprette slack melding ( error: " + response.getError() + " )");
+        }
+    }
+
+    public void uploadFile(byte[] file, String fileName, String channel) {
+        SlackResponse response = new UploadFileCommand(webClient, token, file, fileName, channel, applicationName).call();
+        if (!response.getOk()) {
+            throw new RuntimeException("Klarer ikke aa laste opp fil ( error: " + response.getError() + " )");
         }
     }
 }

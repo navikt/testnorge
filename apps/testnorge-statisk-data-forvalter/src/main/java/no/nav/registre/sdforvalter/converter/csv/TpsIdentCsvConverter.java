@@ -7,6 +7,10 @@ import java.util.Map;
 import java.util.Set;
 
 import no.nav.registre.sdforvalter.domain.TpsIdent;
+import no.nav.registre.testnorge.libs.csvconverter.CsvConverter;
+import no.nav.registre.testnorge.libs.csvconverter.CsvHeader;
+import no.nav.registre.testnorge.libs.csvconverter.ObjectConverter;
+import no.nav.registre.testnorge.libs.csvconverter.RowConverter;
 
 public class TpsIdentCsvConverter extends CsvConverter<TpsIdent> {
 
@@ -83,7 +87,7 @@ public class TpsIdentCsvConverter extends CsvConverter<TpsIdent> {
     }
 
     @Override
-    CsvHeader[] getHeaders() {
+    protected CsvHeader[] getHeaders() {
         return Headers.values();
     }
 }

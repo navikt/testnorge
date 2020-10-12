@@ -1,7 +1,5 @@
-package no.nav.registre.sdforvalter.converter.csv;
+package no.nav.registre.testnorge.libs.csvconverter;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
@@ -18,18 +16,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 
-@Slf4j
-abstract class CsvConverter<T> {
+public abstract class CsvConverter<T> {
     private static final char DELIMITER = ';';
 
-    @JsonIgnore
-    abstract RowConverter<T> getRowConverter();
+    protected abstract RowConverter<T> getRowConverter();
 
-    @JsonIgnore
-    abstract ObjectConverter<T> getObjectConverter();
+    protected abstract ObjectConverter<T> getObjectConverter();
 
-    @JsonIgnore
-    abstract CsvHeader[] getHeaders();
+    protected abstract CsvHeader[] getHeaders();
 
     public final void write(PrintWriter writer, List<T> rows) throws IOException {
         String[] headers = getHeadersAsString();
@@ -79,7 +73,7 @@ abstract class CsvConverter<T> {
         printer.println();
     }
 
-    final String getString(Map<String, Object> row, CsvHeader header) {
+    protected final String getString(Map<String, Object> row, CsvHeader header) {
         return getString(row.get(header.getValue()));
     }
 
