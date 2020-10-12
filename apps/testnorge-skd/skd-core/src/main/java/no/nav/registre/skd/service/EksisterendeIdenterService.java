@@ -23,6 +23,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Predicate;
 
+import no.nav.registre.skd.consumer.HodejegerenConsumerSkd;
+import no.nav.registre.skd.consumer.dto.Relasjon;
+import no.nav.registre.skd.consumer.response.RelasjonsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -35,8 +38,6 @@ import no.nav.registre.skd.exceptions.ManglendeInfoITpsException;
 import no.nav.registre.skd.exceptions.ManglerEksisterendeIdentException;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
-import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.testnorge.consumers.hodejegeren.response.RelasjonsResponse;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Service
@@ -59,10 +60,7 @@ public class EksisterendeIdenterService {
     static final String STATSBORGER = "statsborger";
 
     @Autowired
-    private no.nav.registre.skd.consumer.HodejegerenConsumerSkd hodejegerenConsumerSkd;
-
-    @Autowired
-    private HodejegerenConsumer hodejegerenConsumer;
+    private HodejegerenConsumerSkd hodejegerenConsumerSkd;
 
     @Autowired
     private FoedselService foedselService;
@@ -259,7 +257,7 @@ public class EksisterendeIdenterService {
         Map<String, String> barnMedFedre = new HashMap<>();
 
         for (String foedtIdent : foedteIdenter) {
-            var relasjonerTilBarn = hodejegerenConsumer.getRelasjoner(foedtIdent, environment);
+            var relasjonerTilBarn = hodejegerenConsumerSkd.getRelasjoner(foedtIdent, environment);
 
             if (relasjonerTilBarn.getRelasjoner().isEmpty()) {
                 continue;
@@ -296,7 +294,8 @@ public class EksisterendeIdenterService {
 
     private String hentMorFnrRelasjon(RelasjonsResponse relasjonerTilBarn) {
         String morFnr = "";
-        for (var relasjon : relasjonerTilBarn.getRelasjoner()) {
+        for (Relasjon relasjon : relasjonerTilBarn.getRelasjoner()) {
+
             if (RELASJON_FAR.equals(relasjon.getTypeRelasjon())) {
                 return null;
             }

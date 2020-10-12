@@ -26,6 +26,8 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.skd.consumer.HodejegerenConsumerSkd;
+import no.nav.registre.skd.consumer.dto.Relasjon;
+import no.nav.registre.skd.consumer.response.RelasjonsResponse;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -48,9 +50,6 @@ import no.nav.registre.skd.exceptions.ManglendeInfoITpsException;
 import no.nav.registre.skd.exceptions.ManglerEksisterendeIdentException;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
-import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.testnorge.consumers.hodejegeren.response.Relasjon;
-import no.nav.registre.testnorge.consumers.hodejegeren.response.RelasjonsResponse;
 
 @RunWith(MockitoJUnitRunner.class)
 @Slf4j
@@ -58,9 +57,6 @@ public class EksisterendeIdenterServiceTest {
 
     @Rule
     public final ExpectedException expectedException = ExpectedException.none();
-
-    @Mock
-    private HodejegerenConsumer hodejegerenConsumer;
 
     @Mock
     private HodejegerenConsumerSkd hodejegerenConsumerSkd;
@@ -262,13 +258,13 @@ public class EksisterendeIdenterServiceTest {
                 .fnr(foedteIdenter.get(0))
                 .relasjoner(new ArrayList<>(Collections.singletonList(relasjon)))
                 .build();
-        when(hodejegerenConsumer.getRelasjoner(foedteIdenter.get(0), environment)).thenReturn(relasjonsResponse);
+        when(hodejegerenConsumerSkd.getRelasjoner(foedteIdenter.get(0), environment)).thenReturn(relasjonsResponse);
 
         when(foedselService.findFar(eq(levendeIdenter.get(0)), eq(foedteIdenter.get(0)), eq(levendeIdenter), anyList())).thenReturn(levendeIdenter.get(1));
 
         eksisterendeIdenterService.behandleFarskapMedmorskap(meldinger, levendeIdenter, foedteIdenter, brukteIdenter, FARSKAP_MEDMORSKAP, environment);
 
-        verify(hodejegerenConsumer).getRelasjoner(foedteIdenter.get(0), environment);
+        verify(hodejegerenConsumerSkd).getRelasjoner(foedteIdenter.get(0), environment);
         verify(foedselService).findFar(eq(levendeIdenter.get(0)), eq(foedteIdenter.get(0)), eq(levendeIdenter), anyList());
         assertThat(((RsMeldingstype1Felter) meldinger.get(0)).getFodselsdato(), equalTo(foedteIdenter.get(0).substring(0, 6)));
         assertThat(((RsMeldingstype1Felter) meldinger.get(0)).getPersonnummer(), equalTo(foedteIdenter.get(0).substring(6)));
@@ -278,7 +274,7 @@ public class EksisterendeIdenterServiceTest {
     }
 
     /**
-     * Testscenario: HVIS metoden {@link HodejegerenConsumer#getStatusQuo} kaster
+     * Testscenario: HVIS metoden {@link HodejegerenConsumerSkd#getStatusQuoTilhoerendeEndringskode(String, String, String)} kaster
      * {@link ManglendeInfoITpsException} ved behandling av en ident, skal metoden
      * findExistingPersonStatusInTps prøve å finne en ny ident, og be om status quo på denne.
      */
