@@ -21,10 +21,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
-import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.service.BestillingProgressService;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -55,6 +51,7 @@ import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsfRelasjonRequest;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.metrics.CounterCustomRegistry;
+import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TpsfPersonCache;
@@ -163,9 +160,9 @@ public class DollyBestillingService {
     protected void gjenopprettNonTpsf(TpsPerson tpsPerson, RsDollyBestillingRequest bestKriterier,
             BestillingProgress progress, boolean isOpprettEndre) {
 
-            counterCustomRegistry.invoke(bestKriterier);
-            clientRegisters.forEach(clientRegister ->
-                    clientRegister.gjenopprett(bestKriterier, tpsPerson, progress, isOpprettEndre));
+        counterCustomRegistry.invoke(bestKriterier);
+        clientRegisters.forEach(clientRegister ->
+                clientRegister.gjenopprett(bestKriterier, tpsPerson, progress, isOpprettEndre));
     }
 
     protected TpsPerson buildTpsPerson(Bestilling bestilling, List<String> leverteIdenter, List<Person> personer) {
