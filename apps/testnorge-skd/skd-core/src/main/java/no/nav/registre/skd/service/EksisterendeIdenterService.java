@@ -50,13 +50,16 @@ public class EksisterendeIdenterService {
     private static final String IDENT = "ident";
     private static final String STATSBORGER_NORGE = "NORGE";
     private static final String SIVILSTANDSENDRING_AARSAKSKODE = "85";
-    private static final int ANTALL_FORSOEK_PER_AARSAK = 3;
+    private static final int ANTALL_FORSOEK_PER_AARSAK = 10;
     static final String RELASJON_FAR = "FARA";
     static final String RELASJON_MOR = "MORA";
     static final String DATO_DO = "datoDo";
     static final String FNR_RELASJON = "$..relasjon[?(@.typeRelasjon=='EKTE')].fnrRelasjon";
     static final String SIVILSTAND = "sivilstand";
     static final String STATSBORGER = "statsborger";
+
+    @Autowired
+    private no.nav.registre.skd.consumer.HodejegerenConsumerSkd hodejegerenConsumerSkd;
 
     @Autowired
     private HodejegerenConsumer hodejegerenConsumer;
@@ -154,6 +157,7 @@ public class EksisterendeIdenterService {
             Endringskoder endringskode,
             String environment
     ) {
+        log.info("Oppretter {} vigsler", meldinger.size());
         List<RsMeldingstype> meldingerForPartnere = new ArrayList<>();
 
         for (int i = 0; i < meldinger.size(); i++) {
@@ -433,7 +437,7 @@ public class EksisterendeIdenterService {
             String environment,
             String fnr
     ) {
-        return new HashMap<>(hodejegerenConsumer.getStatusQuoTilhoerendeEndringskode(endringskode.getEndringskode(), environment, fnr));
+        return hodejegerenConsumerSkd.getStatusQuoTilhoerendeEndringskode(endringskode.getEndringskode(), environment, fnr);
     }
 
     private RsMeldingstype1Felter opprettSivilstandsendringsmelding(
