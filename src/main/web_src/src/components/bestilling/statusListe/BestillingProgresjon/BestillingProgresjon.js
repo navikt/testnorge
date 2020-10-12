@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react'
+import React, { Fragment, PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { DollyApi } from '~/service/Api'
 import Loading from '~/components/ui/loading/Loading'
@@ -93,6 +93,9 @@ export default class BestillingProgresjon extends PureComponent {
 
 	calculateStatus = () => {
 		const total = this.props.bestilling.antallIdenter
+		const sykemelding =
+			this.props.bestilling.bestilling.sykemelding != null &&
+			this.props.bestilling.bestilling.sykemelding.syntSykemelding != null
 		const { antallLevert } = this.state
 
 		// Percent
@@ -104,7 +107,10 @@ export default class BestillingProgresjon extends PureComponent {
 
 		if (antallLevert === total) text = `Ferdigstiller bestilling`
 
-		const title = percent === 100 ? 'FERDIG' : 'AKTIV BESTILLING'
+		const aktivBestilling = sykemelding
+			? 'AKTIV BESTILLING (Syntetisert sykemelding behandler mye data og kan derfor ta litt tid)'
+			: 'AKTIV BESTILLING'
+		const title = percent === 100 ? 'FERDIG' : aktivBestilling
 
 		return {
 			percent,

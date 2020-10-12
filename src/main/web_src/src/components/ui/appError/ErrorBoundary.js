@@ -3,35 +3,34 @@ import { AppError } from './AppError'
 import Logger from '~/logger'
 
 export class ErrorBoundary extends React.Component {
-	constructor(props) {
-		super(props)
-		this.state = {
-			hasError: false
-		}
-	}
-
-	static getDerivedStateFromError(error) {
-		return { hasError: true }
+	state = {
+		error: this.props.error,
+		stackTrace: this.props.stackTrace
 	}
 
 	componentDidCatch(error, info) {
+		this.setState({
+			error: error,
+			stackTrace: info.componentStack
+		})
 		Logger.error({
-			event: `Gobal React feil: ${error.message}`,
+			event: `Global React feil: ${error.message}`,
 			message: error.message + info.componentStack,
 			uuid: window.uuid
 		})
 	}
 
 	render() {
-		const { children, error } = this.props
-		if (this.state.hasError) {
+		if (this.state.error) {
+			const { error, stackTrace } = this.state
 			return (
 				<AppError
-					message={error || 'React:ErrorBoundary - Det har skjedd en render feil'}
-					error={error}
+					error={error || this.props.error || 'React:ErrorBoundary - Det har skjedd en render feil'}
+					stackTrace={stackTrace || 'Noe gikk galt'}
+					style={this.props.style}
 				/>
 			)
 		}
-		return children
+		return this.props.children
 	}
 }

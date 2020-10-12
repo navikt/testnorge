@@ -4,6 +4,7 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 
 import { Barn } from './Barn'
 import { Partner } from './Partner'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 type RelasjonerProps = {
 	relasjoner: Array<Relasjon>
@@ -55,25 +56,31 @@ export const Relasjoner = ({ relasjoner }: RelasjonerProps) => {
 	return (
 		<React.Fragment>
 			<SubOverskrift label="Familierelasjoner" iconKind="relasjoner" />
-			<DollyFieldArray
-				data={partnere}
-				getHeader={getHeader('Partner')}
-				header="Partner"
-				expandable={partnere.length > 1}
-			>
-				{(partner: Relasjon, idx: number) => <Partner key={idx} data={partner.personRelasjonMed} />}
-			</DollyFieldArray>
+			<ErrorBoundary>
+				<DollyFieldArray
+					data={partnere}
+					getHeader={getHeader('Partner')}
+					header="Partner"
+					expandable={partnere.length > 1}
+				>
+					{(partner: Relasjon, idx: number) => (
+						<Partner key={idx} data={partner.personRelasjonMed} />
+					)}
+				</DollyFieldArray>
+			</ErrorBoundary>
 
-			<DollyFieldArray
-				data={barn}
-				getHeader={getHeader('Barn')}
-				header="Barn"
-				expandable={barn.length > 1}
-			>
-				{(barnet: Relasjon, idx: number) => (
-					<Barn key={idx} data={barnet.personRelasjonMed} type={barnet.relasjonTypeNavn} />
-				)}
-			</DollyFieldArray>
+			<ErrorBoundary>
+				<DollyFieldArray
+					data={barn}
+					getHeader={getHeader('Barn')}
+					header="Barn"
+					expandable={barn.length > 1}
+				>
+					{(barnet: Relasjon, idx: number) => (
+						<Barn key={idx} data={barnet.personRelasjonMed} type={barnet.relasjonTypeNavn} />
+					)}
+				</DollyFieldArray>
+			</ErrorBoundary>
 		</React.Fragment>
 	)
 }

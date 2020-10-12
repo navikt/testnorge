@@ -1,7 +1,6 @@
 import React from 'react'
 import Tooltip from 'rc-tooltip'
 import { useMount } from 'react-use'
-import _last from 'lodash/last'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import 'rc-tooltip/assets/bootstrap.css'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
@@ -9,10 +8,11 @@ import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import PersonIBrukButtonConnector from '~/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
 import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
-import { WomanIconItem, ManIconItem } from '~/components/ui/icon/IconItem'
+import { ManIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
 import { ImportFraEtikett } from '~/components/ui/etikett'
 
 import Icon from '~/components/ui/icon/Icon'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -114,7 +114,7 @@ export default function PersonListe({
 			width: '10',
 			dataField: 'status',
 
-			formatter: (cell, row) => <Icon kind={ikonTypeMap[cell]} title={cell} />
+			formatter: cell => <Icon kind={ikonTypeMap[cell]} title={cell} />
 		},
 		{
 			text: 'Brukt',
@@ -150,20 +150,22 @@ export default function PersonListe({
 	]
 
 	return (
-		<DollyTable
-			data={personListe}
-			columns={columns}
-			pagination
-			iconItem={bruker => (bruker.kjonn === 'MANN' ? <ManIconItem /> : <WomanIconItem />)}
-			onExpand={bruker => (
-				<PersonVisningConnector
-					personId={bruker.ident.ident}
-					bestillingId={bruker.ident.bestillingId[0]}
-					bestillingsIdListe={bruker.ident.bestillingId}
-					gruppeId={bruker.ident.gruppeId}
-					iLaastGruppe={iLaastGruppe}
-				/>
-			)}
-		/>
+		<ErrorBoundary>
+			<DollyTable
+				data={personListe}
+				columns={columns}
+				pagination
+				iconItem={bruker => (bruker.kjonn === 'MANN' ? <ManIconItem /> : <WomanIconItem />)}
+				onExpand={bruker => (
+					<PersonVisningConnector
+						personId={bruker.ident.ident}
+						bestillingId={bruker.ident.bestillingId[0]}
+						bestillingsIdListe={bruker.ident.bestillingId}
+						gruppeId={bruker.ident.gruppeId}
+						iLaastGruppe={iLaastGruppe}
+					/>
+				)}
+			/>
+		</ErrorBoundary>
 	)
 }

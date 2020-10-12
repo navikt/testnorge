@@ -3,6 +3,7 @@ import LoadableComponent, { Feilmelding } from '~/components/ui/loading/Loadable
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { EregResponse } from '~/service/Responses'
 import { Organisasjon } from './types'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 type OrganisasjonLoaderProps = {
 	filter?: (response: EregResponse) => boolean
@@ -38,9 +39,11 @@ export const OrganisasjonLoader = ({
 					}))
 		)
 	return (
-		<LoadableComponent
-			onFetch={onFetch}
-			render={(list: Organisasjon[], feilmelding: Feilmelding) => render(list, feilmelding)}
-		/>
+		<ErrorBoundary>
+			<LoadableComponent
+				onFetch={onFetch}
+				render={(list: Organisasjon[], feilmelding: Feilmelding) => render(list, feilmelding)}
+			/>
+		</ErrorBoundary>
 	)
 }
