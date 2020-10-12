@@ -1,6 +1,25 @@
 package no.nav.dolly.bestilling.pdlforvalter;
 
+import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.NORSK;
+import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.UTENLANDSK;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.containsSynthEnv;
+import static no.nav.dolly.domain.CommonKeysAndUtils.getSynthEnv;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import com.fasterxml.jackson.databind.JsonNode;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -24,6 +43,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlTelefonnummer;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlUtflytting;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaal;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
@@ -37,24 +57,6 @@ import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.service.TpsfPersonCache;
-import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
-import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.NORSK;
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.UTENLANDSK;
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.CommonKeysAndUtils.containsSynthEnv;
-import static no.nav.dolly.domain.CommonKeysAndUtils.getSynthEnv;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
-import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 @Slf4j
 @Order(1)
@@ -152,6 +154,13 @@ public class PdlForvalterClient implements ClientRegister {
         tpsPerson.getPersondetaljer().forEach(person -> person.getRelasjoner().forEach(relasjon -> relasjon.setPersonRelasjonTil(tpsPerson.getPerson(relasjon.getPersonRelasjonMed().getIdent()))));
     }
 
+    private static boolean isKjonnUkjent(Relasjon relasjon, Iterator<RsPartnerRequest> partnere,
+            Iterator<RsBarnRequest> barn) {
+
+        return relasjon.isPartner() && partnere.next().isKjonnUkjent() ||
+                relasjon.isBarn() && barn.next().isKjonnUkjent();
+    }
+
     private void sendPdlPersondetaljer(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, StringBuilder status, boolean isOpprettEndre) {
 
         status.append('$').append(PDL_FORVALTER);
@@ -176,17 +185,23 @@ public class PdlForvalterClient implements ClientRegister {
                 sendTelefonnummer(person);
                 sendDoedsfall(person);
                 sendOpphold(bestilling, person);
+                sendVergemaal(person);
             });
             status.append("&OK");
 
         } catch (DollyFunctionalException e) {
 
-            status.append('&').append(e.getMessage().replaceAll(",", ";"));
+            status.append('&').append(e.getMessage().replace(',', ';').replace(':', '='));
 
         } catch (RuntimeException e) {
 
             status.append('&')
                     .append(errorStatusDecoder.decodeRuntimeException(e));
+
+        } catch (Exception e) {
+
+            status.append("&Feil= Teknisk feil, se logg!");
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -325,6 +340,13 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
+    private void sendVergemaal(Person person) {
+
+        if (!person.getVergemaal().isEmpty()) {
+            pdlForvalterConsumer.postVergemaal(mapperFacade.map(person, PdlVergemaal.class), person.getIdent());
+        }
+    }
+
     private void sendUtenlandsid(Pdldata pdldata, String ident, StringBuilder status) {
 
         if (nonNull(pdldata) && nonNull(pdldata.getUtenlandskIdentifikasjonsnummer())) {
@@ -402,19 +424,6 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void appendErrorStatus(RuntimeException exception, StringBuilder builder) {
-
-        builder.append('&')
-                .append(errorStatusDecoder.decodeRuntimeException(exception));
-    }
-
-    private static boolean isKjonnUkjent(Relasjon relasjon, Iterator<RsPartnerRequest> partnere,
-                                         Iterator<RsBarnRequest> barn) {
-
-        return relasjon.isPartner() && partnere.next().isKjonnUkjent() ||
-                relasjon.isBarn() && barn.next().isKjonnUkjent();
-    }
-
     private static void appendName(String utenlandsIdentifikasjonsnummer, StringBuilder builder) {
         builder.append('$')
                 .append(utenlandsIdentifikasjonsnummer);
@@ -428,5 +437,11 @@ public class PdlForvalterClient implements ClientRegister {
                     .append(": ")
                     .append(jsonNode.get(HENDELSE_ID));
         }
+    }
+
+    private void appendErrorStatus(RuntimeException exception, StringBuilder builder) {
+
+        builder.append('&')
+                .append(errorStatusDecoder.decodeRuntimeException(exception));
     }
 }

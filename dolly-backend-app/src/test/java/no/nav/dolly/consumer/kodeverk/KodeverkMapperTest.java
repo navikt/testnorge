@@ -15,8 +15,8 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import no.nav.dolly.consumer.kodeverk.domain.Beskrivelse;
-import no.nav.dolly.consumer.kodeverk.domain.Betydning;
+import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse.Beskrivelse;
+import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse.Betydning;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 
 public class KodeverkMapperTest {

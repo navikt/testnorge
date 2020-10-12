@@ -1,14 +1,12 @@
 package no.nav.dolly.service;
 
 import static java.util.Collections.singletonList;
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -16,6 +14,8 @@ import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.Relasjon;
 import no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse;
+import no.nav.dolly.domain.resultset.tpsf.RsSimplePerson;
+import no.nav.dolly.domain.resultset.tpsf.RsVergemaal;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 
 @Service
@@ -27,16 +27,28 @@ public class TpsfPersonCache {
     public TpsPerson fetchIfEmpty(TpsPerson tpsPerson) {
 
         List<String> tpsfIdenter = new ArrayList<>();
-        Stream.of(singletonList(tpsPerson.getHovedperson()), tpsPerson.getPartnere(), tpsPerson.getBarn()).forEach(tpsfIdenter::addAll);
+        Stream.of(singletonList(tpsPerson.getHovedperson()), tpsPerson.getPartnere(), tpsPerson.getBarn(), tpsPerson.getVerger())
+                .forEach(tpsfIdenter::addAll);
 
-        AtomicBoolean notFound = new AtomicBoolean(false);
-        tpsfIdenter.forEach(ident -> {
-            if (isNull(tpsPerson.getPerson(ident))) {
-                notFound.set(true);
-            }
-        });
-        if (notFound.get()) {
-            tpsPerson.setPersondetaljer(tpsfService.hentTestpersoner(tpsfIdenter));
+        List<String> manglendeIdenter = tpsfIdenter.stream().filter(ident -> tpsPerson.getPersondetaljer().stream()
+                .noneMatch(person -> person.getIdent().equals(ident)))
+                .collect(Collectors.toList());
+
+        if (!manglendeIdenter.isEmpty()) {
+            tpsPerson.getPersondetaljer().addAll(tpsfService.hentTestpersoner(tpsfIdenter));
+        }
+
+        List<String> vergeIdenter = tpsPerson.getPersondetaljer().stream()
+                .filter(person -> !person.getVergemaal().isEmpty() && person.getVergemaal().stream()
+                        .noneMatch(vergemaal -> tpsPerson.getPersondetaljer().stream()
+                                .anyMatch(person1 -> vergemaal.getVerge().getIdent().equals(person1.getIdent()))))
+                .map(Person::getVergemaal)
+                .flatMap(vergemaal -> vergemaal.stream().map(RsVergemaal::getVerge))
+                .map(RsSimplePerson::getIdent)
+                .collect(Collectors.toList());
+
+        if (!vergeIdenter.isEmpty()) {
+            tpsPerson.getPersondetaljer().addAll(tpsfService.hentTestpersoner(vergeIdenter));
         }
 
         return tpsPerson;
@@ -65,6 +77,10 @@ public class TpsfPersonCache {
                     .nyePartnereOgBarn(identer.getIdentTupler().stream()
                             .filter(RsOppdaterPersonResponse.IdentTuple::isLagtTil)
                             .map(RsOppdaterPersonResponse.IdentTuple::getIdent)
+                            .collect(Collectors.toList()))
+                    .verger(personer.get(0).getVergemaal().stream()
+                            .map(RsVergemaal::getVerge)
+                            .map(RsSimplePerson::getIdent)
                             .collect(Collectors.toList()))
                     .build();
         }
