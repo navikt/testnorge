@@ -15,10 +15,8 @@ import java.util.Iterator;
 import java.util.List;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -87,9 +85,7 @@ public class PdlForvalterClient implements ClientRegister {
             if (containsSynthEnv(bestilling.getEnvironments())) {
 
                 hentTpsPersondetaljer(tpsPerson, bestilling.getTpsf(), isOpprettEndre);
-                if (!isOpprettEndre) {
-                    sendDeleteIdent(tpsPerson);
-                }
+                sendDeleteIdent(tpsPerson);
                 sendPdlPersondetaljer(bestilling, tpsPerson, status, isOpprettEndre);
 
                 if (nonNull(bestilling.getPdlforvalter())) {
@@ -355,12 +351,9 @@ public class PdlForvalterClient implements ClientRegister {
                 List<PdlUtenlandskIdentifikasjonsnummer> utenlandskId = pdldata.getUtenlandskIdentifikasjonsnummer();
                 utenlandskId.forEach(id -> {
                     id.setKilde(nullcheckSetDefaultValue(id.getKilde(), CONSUMER));
-
-                    ResponseEntity<JsonNode> response = pdlForvalterConsumer.postUtenlandskIdentifikasjonsnummer(id, ident);
-
-                    appendOkStatus(response.getBody(), status);
+                    pdlForvalterConsumer.postUtenlandskIdentifikasjonsnummer(id, ident);
                 });
-
+                appendOkStatus(status);
             } catch (RuntimeException exception) {
 
                 appendErrorStatus(exception, status);
@@ -374,10 +367,8 @@ public class PdlForvalterClient implements ClientRegister {
         if (nonNull(pdldata) && nonNull(pdldata.getKontaktinformasjonForDoedsbo())) {
             try {
                 appendName(KONTAKTINFORMASJON_DOEDSBO, status);
-
-                ResponseEntity<JsonNode> response = pdlForvalterConsumer.postKontaktinformasjonForDoedsbo(pdldata.getKontaktinformasjonForDoedsbo(), ident);
-
-                appendOkStatus(response.getBody(), status);
+                pdlForvalterConsumer.postKontaktinformasjonForDoedsbo(pdldata.getKontaktinformasjonForDoedsbo(), ident);
+                appendOkStatus(status);
 
             } catch (RuntimeException exception) {
 
@@ -392,10 +383,8 @@ public class PdlForvalterClient implements ClientRegister {
         if (nonNull(pdldata) && nonNull(pdldata.getFalskIdentitet())) {
             try {
                 appendName(FALSK_IDENTITET, status);
-
-                ResponseEntity<JsonNode> response = pdlForvalterConsumer.postFalskIdentitet(pdldata.getFalskIdentitet(), ident);
-
-                appendOkStatus(response.getBody(), status);
+                pdlForvalterConsumer.postFalskIdentitet(pdldata.getFalskIdentitet(), ident);
+                appendOkStatus(status);
 
             } catch (RuntimeException exception) {
 
@@ -428,14 +417,8 @@ public class PdlForvalterClient implements ClientRegister {
                 .append(utenlandsIdentifikasjonsnummer);
     }
 
-    private static void appendOkStatus(JsonNode jsonNode, StringBuilder builder) {
+    private static void appendOkStatus(StringBuilder builder) {
         builder.append("&OK");
-        if (nonNull(jsonNode) && nonNull(jsonNode.get(HENDELSE_ID))) {
-            builder.append(", ")
-                    .append(HENDELSE_ID)
-                    .append(": ")
-                    .append(jsonNode.get(HENDELSE_ID));
-        }
     }
 
     private void appendErrorStatus(RuntimeException exception, StringBuilder builder) {
