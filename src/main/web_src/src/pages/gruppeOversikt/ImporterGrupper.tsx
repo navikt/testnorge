@@ -8,17 +8,36 @@ import { DollyApi } from '~/service/Api'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { Formik, Form } from 'formik'
 import './ImporterGrupper.less'
+import { AsyncState } from 'react-use/lib/useAsync'
 
-export default function ImporterGrupper({ importZIdent, fetchMineGrupper }) {
+type ImporterGrupper = {
+	importZIdent: Function
+}
+
+type Identer = {
+	identer: Array<string>
+}
+
+type ZIdent = {
+	navIdent: string
+	favoritter: Array<string>
+}
+
+type SelectOptions = {
+	value: string
+	label: string
+}
+
+export default function ImporterGrupper({ importZIdent }: ImporterGrupper) {
 	const [isImportModalOpen, openImportModal, closeImportModal] = useBoolean(false)
 
-	const ZIdenter = useAsync(async () => {
+	const ZIdenter: AsyncState<any> = useAsync(async () => {
 		const response = await DollyApi.getBrukere()
 		return response.data
 	}, [])
 
 	const getZIdentOptions = () => {
-		return ZIdenter.value.reduce(function(filtered, ident) {
+		return ZIdenter.value.reduce(function(filtered: Array<SelectOptions>, ident: ZIdent) {
 			if (ident.navIdent) {
 				filtered.push({ value: ident.navIdent, label: ident.navIdent })
 			}
@@ -28,7 +47,7 @@ export default function ImporterGrupper({ importZIdent, fetchMineGrupper }) {
 
 	const ZIdentOptions = ZIdenter.value ? getZIdentOptions() : []
 
-	const importerZIdenter = ({ identer }) => {
+	const importerZIdenter = ({ identer }: Identer) => {
 		let request = identer[0]
 		if (identer.length > 1) {
 			for (let i = 1; i < identer.length; i++) {
@@ -37,7 +56,6 @@ export default function ImporterGrupper({ importZIdent, fetchMineGrupper }) {
 		}
 		importZIdent(request)
 		closeImportModal()
-		// fetchMineGrupper()
 	}
 
 	const validation = yup.object().shape({
@@ -73,6 +91,8 @@ export default function ImporterGrupper({ importZIdent, fetchMineGrupper }) {
 						</li>
 					</ul>
 
+					{/* 
+					// @ts-ignore */}
 					<Formik initialValues={{}} onSubmit={importerZIdenter} validationSchema={validation}>
 						{() => (
 							<Form>

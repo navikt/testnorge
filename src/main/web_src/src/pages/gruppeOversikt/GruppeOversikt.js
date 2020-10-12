@@ -15,9 +15,11 @@ export default function GruppeOversikt({
 	gruppeListe,
 	mineIds,
 	history,
-	searchActive
+	searchActive,
+	importerteZIdenter
 }) {
 	const [visning, setVisning] = useState('mine')
+	const [importerte, setImporterte] = useState(importerteZIdenter)
 	const [visNyGruppeState, visNyGruppe, skjulNyGruppe] = useBoolean(false)
 
 	useEffect(() => {
@@ -25,6 +27,11 @@ export default function GruppeOversikt({
 	}, [visning])
 
 	const byttVisning = event => setVisning(event.target.value)
+
+	if (importerteZIdenter !== importerte) {
+		fetchMineGrupper()
+		setImporterte(importerteZIdenter)
+	}
 
 	const items = visning === 'mine' ? gruppeListe.filter(v => mineIds.includes(v.id)) : gruppeListe
 

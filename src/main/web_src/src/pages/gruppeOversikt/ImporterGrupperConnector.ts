@@ -1,19 +1,12 @@
+//@ts-ignore
 import { connect } from 'react-redux'
-import { fetchMineGrupper } from '~/ducks/gruppe'
 import { actions } from '~/ducks/gruppe'
 import ImporterGrupper from './ImporterGrupper'
 
-const mapStateToProps = (state, ownProps) => {
-	// console.log('state :>> ', state)
+const mapDispatchToProps = (dispatch: React.Dispatch<React.SetStateAction<string>>) => {
 	return {
-		importerteZIdenter: state.gruppe.importerteZIdenter
-	}
-}
-const mapDispatchToProps = (dispatch, ownProps) => {
-	return {
-		importZIdent: ZIdent => dispatch(actions.importZIdent(ZIdent)),
-		fetchMineGrupper
+		importZIdent: (ZIdent: string) => dispatch(actions.importZIdent(ZIdent))
 	}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ImporterGrupper)
+export default connect(null, mapDispatchToProps)(ImporterGrupper)
