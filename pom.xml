@@ -17,6 +17,7 @@
     <modules>
         <module>apps</module>
         <module>libs</module>
+        <module>xsd</module>
     </modules>
     <licenses>
         <license>
