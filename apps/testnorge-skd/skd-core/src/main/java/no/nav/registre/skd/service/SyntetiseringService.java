@@ -2,6 +2,7 @@ package no.nav.registre.skd.service;
 
 import static no.nav.registre.skd.consumer.requests.HentIdenterRequest.IdentType.DNR;
 import static no.nav.registre.skd.consumer.requests.HentIdenterRequest.IdentType.FNR;
+import static no.nav.registre.skd.service.Endringskoder.ANNEN_TILGANG_TILDELDINGSKODE_2;
 import static no.nav.registre.skd.service.Endringskoder.FOEDSELSMELDING;
 import static no.nav.registre.skd.service.Endringskoder.FOEDSELSNUMMERKORREKSJON;
 import static no.nav.registre.skd.service.Endringskoder.INNVANDRING;
@@ -226,7 +227,7 @@ public class SyntetiseringService {
                     .append(e.getMessage())
                     .append(" - Endringskode: ")
                     .append(endringskode.getEndringskode());
-            if (Arrays.asList(INNVANDRING, FOEDSELSNUMMERKORREKSJON, TILDELING_DNUMMER, FOEDSELSMELDING).contains(endringskode)) {
+            if (Arrays.asList(INNVANDRING, ANNEN_TILGANG_TILDELDINGSKODE_2, FOEDSELSNUMMERKORREKSJON, TILDELING_DNUMMER, FOEDSELSMELDING).contains(endringskode)) {
                 message.append(" - Rekvirerte fødselsnumre i denne batchen: ");
                 for (var rs : syntetiserteSkdmeldinger) {
                     message.append(((RsMeldingstype1Felter) rs).getFodselsdato())
