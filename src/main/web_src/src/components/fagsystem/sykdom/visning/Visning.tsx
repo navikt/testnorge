@@ -3,7 +3,7 @@ import _get from 'lodash/get'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { SyntSykemelding } from './partials/SyntSykemelding'
 import { DetaljertSykemelding } from './partials/DetaljertSykemelding'
-import { Sykemelding, SykemeldingSynt, SykemeldingDetaljert } from '../SykemeldingTypes'
+import { Sykemelding, SykemeldingDetaljert, SykemeldingSynt } from '../SykemeldingTypes'
 import { erGyldig } from '~/components/transaksjonid/GyldigeBestillinger'
 
 export const SykemeldingVisning = ({ data }: Sykemelding) => {
@@ -19,9 +19,9 @@ export const SykemeldingVisning = ({ data }: Sykemelding) => {
 					const detaljertSykemelding = _get(bestilling, 'data.sykemelding.detaljertSykemelding')
 
 					return syntSykemelding ? (
-						<SyntSykemelding sykemelding={syntSykemelding} idx={idx} />
+						<SyntSykemelding sykemelding={syntSykemelding} idx={idx} key={idx} />
 					) : detaljertSykemelding ? (
-						<DetaljertSykemelding sykemelding={detaljertSykemelding} idx={idx} />
+						<DetaljertSykemelding sykemelding={detaljertSykemelding} idx={idx} key={idx} />
 					) : null
 				}
 			})}
@@ -31,9 +31,8 @@ export const SykemeldingVisning = ({ data }: Sykemelding) => {
 
 SykemeldingVisning.filterValues = (bestillinger: Array<Sykemelding>, ident: string) => {
 	if (!bestillinger) return null
-	const sykemeldingBestillinger = bestillinger.filter(
+	return bestillinger.filter(
 		(bestilling: any) =>
 			bestilling.data.sykemelding && erGyldig(bestilling.id, 'SYKEMELDING', ident)
 	)
-	return sykemeldingBestillinger
 }

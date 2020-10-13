@@ -42,7 +42,7 @@ export default function Gruppe({
 
 	const byttVisning = event => setVisning(event.target.value)
 
-	const identArray = Object.values(identer)
+	const identArray = Object.values(identer).filter(ident => ident.bestillingId.length > 0)
 
 	const startBestilling = values =>
 		history.push(`/gruppe/${match.params.gruppeId}/bestilling`, values)
