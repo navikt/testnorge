@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import no.nav.registre.skd.consumer.HodejegerenConsumerSkd;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,7 +59,7 @@ public class SyntetiseringServiceTest {
     private ValidationService validationService;
 
     @Mock
-    private HodejegerenConsumer hodejegerenConsumer;
+    private HodejegerenConsumerSkd hodejegerenConsumerSkd;
 
     @Mock
     private TpsfConsumer tpsfConsumer;

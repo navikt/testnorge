@@ -20,7 +20,7 @@ public class HentGifteCommand implements Callable<List<String>> {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/v1/gifte-identer/{avspillergruppeId}")
+                        .path("/v1/gifte-identer/")
                         .pathSegment(avspillergruppeId.toString())
                         .build())
                 .retrieve()

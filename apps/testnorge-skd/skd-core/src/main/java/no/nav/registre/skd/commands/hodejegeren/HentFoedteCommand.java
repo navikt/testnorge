@@ -19,21 +19,20 @@ public class HentFoedteCommand implements Callable<List<String>> {
 
     @Override
     public List<String> call() {
-        String minAlderParameter = (minAlder != null)
-                ? "minimumALder=" + minAlder.toString()
-                : "";
-        String maxAlderParameter = (maxAlder != null)
-                ? "maksimumAlder=" + maxAlder.toString()
-                : "";
-
         return webClient
                 .get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/v1/foedte-identer/")
-                        .pathSegment(avspillergruppeId.toString())
-                        .queryParam(minAlderParameter) /// TODO: CONDITIONAL QUERY PARAM
-                        .queryParam(maxAlderParameter)
-                        .build())
+                .uri(uriBuilder -> {
+                    uriBuilder.path("/v1/foedte-identer/").pathSegment(avspillergruppeId.toString());
+
+                    if (minAlder != null) {
+                        uriBuilder.queryParam("minimumAlder", minAlder.toString());
+                    }
+                    if (maxAlder != null) {
+                        uriBuilder.queryParam("maksimumAlder", maxAlder.toString());
+                    }
+
+                    return uriBuilder.build();
+                })
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
                 .block();

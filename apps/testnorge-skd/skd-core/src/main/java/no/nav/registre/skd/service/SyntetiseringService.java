@@ -55,9 +55,6 @@ public class SyntetiseringService {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
-    private HodejegerenConsumer hodejegerenConsumer;
-
-    @Autowired
     private HodejegerenConsumerSkd hodejegerenConsumerSkd;
 
     @Autowired
@@ -361,26 +358,26 @@ public class SyntetiseringService {
     private List<String> finnLevendeIdenter(
             Long avspillergruppeId
     ) {
-        return hodejegerenConsumer.getLevende(avspillergruppeId);
+        return hodejegerenConsumerSkd.getLevende(avspillergruppeId);
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "hodejegeren" })
     private List<String> finnDoedeOgUtvandredeIdenter(
             Long avspillergruppeId
     ) {
-        return hodejegerenConsumer.getDoedeOgUtvandrede(avspillergruppeId);
+        return hodejegerenConsumerSkd.getDoedeOgUtvandrede(avspillergruppeId);
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "hodejegeren" })
     private List<String> finnGifteIdenter(
             Long avspillergruppeId
     ) {
-        return hodejegerenConsumer.getGifte(avspillergruppeId);
+        return hodejegerenConsumerSkd.getGifte(avspillergruppeId);
     }
 
     private List<String> finnFoedteIdenter(
             Long avspillergruppeId
     ) {
-        return hodejegerenConsumer.getFoedte(avspillergruppeId, 0, 18);
+        return hodejegerenConsumerSkd.getFoedte(avspillergruppeId, 0, 18);
     }
 }
