@@ -6,6 +6,8 @@ import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.skd.consumer.HodejegerenConsumerSkd;
+import no.nav.registre.skd.consumer.response.RelasjonsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,9 +32,14 @@ public class FoedselService {
 
     private static final int MIN_FORELDER_ALDER = 16;
     private static final int MAKS_FORELDER_ALDER = 70;
+    private static final int MAKS_BARN = 33;
+    private static final String MILJOE = "q2";
 
     @Autowired
     private IdentPoolConsumer identPoolConsumer;
+
+    @Autowired
+    private HodejegerenConsumerSkd hodejegerenConsumerSkd;
 
     @Autowired
     private Random rand;
@@ -111,6 +118,7 @@ public class FoedselService {
         List<String> potensielleMoedre = new ArrayList<>(levendeIdenterINorge);
 
         potensielleMoedre.removeIf(potensiellMor -> !"02468".contains(String.valueOf(potensiellMor.charAt(8)))); // kvinner har partall på index 8 i FNR
+        potensielleMoedre.removeIf(potensiellMorFnr -> antallEksisterendeRelasjoner(potensiellMorFnr) > MAKS_BARN);
 
         if (potensielleMoedre.isEmpty()) {
             throw new ManglerEksisterendeIdentException("Kunne ikke finne mor til ident for SkdMelding med meldingsnummer "
@@ -140,6 +148,7 @@ public class FoedselService {
     ) {
         List<String> potensielleFedre = new ArrayList<>(levendeIdenterINorge);
         potensielleFedre.removeIf(potensiellFar -> !"13579".contains(String.valueOf(potensiellFar.charAt(8)))); // menn har oddetall på index 8 i FNR
+        potensielleFedre.removeIf(potensiellFarFnr -> antallEksisterendeRelasjoner(potensiellFarFnr) > MAKS_BARN);
         Collections.shuffle(potensielleFedre);
 
         var foedselsdatoTilMor = getFoedselsdatoFraFnr(morsFnr);
@@ -169,5 +178,10 @@ public class FoedselService {
             }
         }
         return null;
+    }
+
+    private int antallEksisterendeRelasjoner(String ident) {
+        RelasjonsResponse response = hodejegerenConsumerSkd.getRelasjoner(ident, MILJOE);
+        return response.getRelasjoner().size();
     }
 }
