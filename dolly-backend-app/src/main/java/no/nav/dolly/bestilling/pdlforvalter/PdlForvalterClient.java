@@ -397,9 +397,7 @@ public class PdlForvalterClient implements ClientRegister {
     private void sendDeleteIdent(TpsPerson tpsPerson) {
 
         try {
-            pdlForvalterConsumer.deleteIdent(tpsPerson.getHovedperson());
-            tpsPerson.getPartnere().forEach(pdlForvalterConsumer::deleteIdent);
-            tpsPerson.getBarn().forEach(pdlForvalterConsumer::deleteIdent);
+            tpsPerson.getPersondetaljer().forEach(person -> pdlForvalterConsumer.deleteIdent(person.getIdent()));
 
         } catch (HttpClientErrorException e) {
 
