@@ -20,6 +20,8 @@
 
     <properties>
         <springframework.cloud.version>2.1.2.RELEASE</springframework.cloud.version>
+        <mockwebserver.version>4.7.2</mockwebserver.version>
+        <okhttp.version>4.7.2</okhttp.version>
     </properties>
 
 

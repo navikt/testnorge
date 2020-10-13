@@ -5,13 +5,15 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import static no.nav.registre.arena.core.consumer.rs.AapSyntConsumer.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
-import static no.nav.registre.arena.core.service.VedtakshistorikkService.DELTAKERSTATUS_GJENNOMFOERES;
+import static no.nav.registre.arena.core.service.util.ServiceUtils.DELTAKERSTATUS_GJENNOMFOERES;
 
+import no.nav.registre.arena.core.service.util.KodeMedSannsynlighet;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
@@ -89,8 +91,12 @@ public class VedtakshistorikkServiceTest {
         var nyRettighetFritakMeldekort = NyttVedtakAap.builder()
                 .build();
         var nyRettighetTiltaksdeltaklse = NyttVedtakTiltak.builder()
-                .tiltakskarakteristikk("IND").build();
+                .tiltakskarakteristikk("IND")
+                .tiltakAdminKode("IND")
+                .tiltakId(123)
+                .build();
         nyRettighetTiltaksdeltaklse.setFraDato(LocalDate.now());
+        nyRettighetTiltaksdeltaklse.setTilDato(LocalDate.now());
 
         aapRettigheter = new ArrayList<>(Collections.singletonList(nyRettighetAap));
         ungUfoerRettigheter = new ArrayList<>(Collections.singletonList(nyRettighetUngUfoer));
@@ -143,11 +149,11 @@ public class VedtakshistorikkServiceTest {
                 .feiledeRettigheter(new ArrayList<>())
                 .build();
         var expectedResponsesFromArenaForvalter = Arrays.asList(
-                        nyRettighetAapResponse,
-                        nyRettighetUngUfoerResponse,
-                        nyRettighetTvungenForvaltningResponse,
-                        nyRettighetFritakMeldekortResponse
-                );
+                nyRettighetAapResponse,
+                nyRettighetUngUfoerResponse,
+                nyRettighetTvungenForvaltningResponse,
+                nyRettighetFritakMeldekortResponse
+        );
         Map<String, List<NyttVedtakResponse>> responseAsMap = new HashMap<>();
         responseAsMap.put(fnr1, expectedResponsesFromArenaForvalter);
 
@@ -182,7 +188,7 @@ public class VedtakshistorikkServiceTest {
     }
 
     @Test
-    public void shouldOppretteVedtakshistorikkMedTiltaksdeltalse() {
+    public void shouldOppretteVedtakshistorikkMedTiltaksdeltakelse() {
 
         var nyRettighetTiltakdeltakelseResponse = NyttVedtakResponse.builder()
                 .feiledeRettigheter(new ArrayList<>())
@@ -203,18 +209,23 @@ public class VedtakshistorikkServiceTest {
         when(serviceUtils.opprettArbeidssoekerTiltak(anyList(), anyString()))
                 .thenReturn(Collections.emptyList());
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(responseAsMap);
+        when(serviceUtils.finnTiltak(anyString(), anyString(), anyObject())).thenReturn(tiltaksdeltakelseRettigheter.get(0));
+        when(rettighetTiltakService.getVedtakMedStatuskoder()).thenReturn(Collections.singletonMap("AVSLUTTET_DELTAKER", Collections.emptyList()));
+        when(serviceUtils.velgKodeBasertPaaSannsynlighet(anyList())).thenReturn(new KodeMedSannsynlighet("FULLF", 100));
 
         var response = vedtakshistorikkService.genererVedtakshistorikk(avspillergruppeId, miljoe, antallIdenter);
 
         verify(serviceUtils).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(1), anyInt(), anyInt(), eq(miljoe));
         verify(aapSyntConsumer).syntetiserVedtakshistorikk(antallIdenter);
         verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
-        verify(rettighetTiltakService).getEndringerMedGyldigRekkefoelge(DELTAKERSTATUS_GJENNOMFOERES, tiltaksdeltakelseRettigheter.get(0));
+        verify(rettighetTiltakService).getEndringerMedGyldigRekkefoelge(DELTAKERSTATUS_GJENNOMFOERES, tiltaksdeltakelseRettigheter.get(0).getTiltakAdminKode());
+        verify(serviceUtils).finnTiltak(anyString(), anyString(), anyObject());
+        verify(serviceUtils).velgKodeBasertPaaSannsynlighet(anyList());
 
         assertThat(response.get(fnr1)).hasSize(2);
 
-        assertThat(response.get(fnr1).get(0).getFeiledeRettigheter()).hasSize(0);
-        assertThat(response.get(fnr1).get(1).getFeiledeRettigheter()).hasSize(0);
+        assertThat(response.get(fnr1).get(0).getFeiledeRettigheter()).isEmpty();
+        assertThat(response.get(fnr1).get(1).getFeiledeRettigheter()).isEmpty();
 
     }
 }
