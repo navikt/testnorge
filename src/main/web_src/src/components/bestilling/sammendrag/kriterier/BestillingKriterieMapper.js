@@ -711,9 +711,9 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					{
 						numberHeader: `Utenlandsk identifikasjonsnummer ${i + 1}`
 					},
-					obj('Utenlands-ID', uidr.identifikasjonsnummer),
+					obj('Utenlandsk ID', uidr.identifikasjonsnummer),
 					obj('Kilde', uidr.kilde),
-					obj('Utenlands-ID opphørt', Formatters.oversettBoolean(uidr.opphoert)),
+					obj('Utenlandsk ID opphørt', Formatters.oversettBoolean(uidr.opphoert)),
 					obj('Utstederland', uidr.utstederland, AdresseKodeverk.Utstederland)
 				])
 			})
