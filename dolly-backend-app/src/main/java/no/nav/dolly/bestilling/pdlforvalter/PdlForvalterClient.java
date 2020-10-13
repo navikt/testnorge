@@ -277,7 +277,9 @@ public class PdlForvalterClient implements ClientRegister {
     private void sendTelefonnummer(Person person) {
 
         PdlTelefonnummer telefonnumre = mapperFacade.map(person, PdlTelefonnummer.class);
-        telefonnumre.getTelfonnumre().forEach(telefonnummer -> pdlForvalterConsumer.postTelefonnummer(telefonnummer, person.getIdent()));
+        if (nonNull(telefonnumre)) {
+            telefonnumre.getTelfonnumre().forEach(telefonnummer -> pdlForvalterConsumer.postTelefonnummer(telefonnummer, person.getIdent()));
+        }
     }
 
     private void sendOppholdsadresse(Person person) {
