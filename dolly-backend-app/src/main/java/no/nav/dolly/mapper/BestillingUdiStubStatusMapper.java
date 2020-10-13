@@ -28,7 +28,7 @@ public final class BestillingUdiStubStatusMapper {
                 if (statusMap.containsKey(progress.getUdistubStatus())) {
                     statusMap.get(progress.getUdistubStatus()).add(progress.getIdent());
                 } else {
-                    statusMap.put(progress.getUdistubStatus(), new ArrayList(List.of(progress.getIdent())));
+                    statusMap.put(progress.getUdistubStatus(), new ArrayList<>(List.of(progress.getIdent())));
                 }
             }
         });

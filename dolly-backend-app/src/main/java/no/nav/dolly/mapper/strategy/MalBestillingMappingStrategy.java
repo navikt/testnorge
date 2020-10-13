@@ -29,7 +29,7 @@ public class MalBestillingMappingStrategy implements MappingStrategy {
 
                         RsDollyBestillingRequest bestillingRequest = jsonBestillingMapper.mapBestillingRequest(bestilling.getBestKriterier());
                         mapperFacade.map(bestillingRequest, malBestilling);
-                        malBestilling.setEnvironments(new ArrayList(List.of(bestilling.getMiljoer().split(","))));
+                        malBestilling.setEnvironments(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))));
                         malBestilling.setTpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()));
                     }
                 })

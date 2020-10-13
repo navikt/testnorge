@@ -32,14 +32,14 @@ public class RsSimpleRelasjoner {
 
     public List<RsPartnerRequest> getPartnere() {
         if (isNull(partnere)) {
-            partnere = new ArrayList();
+            partnere = new ArrayList<>();
         }
         return partnere;
     }
 
     public List<RsBarnRequest> getBarn() {
         if (isNull(barn)) {
-            barn = new ArrayList();
+            barn = new ArrayList<>();
         }
         return barn;
     }

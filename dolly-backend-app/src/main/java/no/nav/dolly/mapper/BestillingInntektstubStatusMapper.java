@@ -28,7 +28,7 @@ public final class BestillingInntektstubStatusMapper {
                 if (statusMap.containsKey(progress.getInntektstubStatus())) {
                     statusMap.get(progress.getInntektstubStatus()).add(progress.getIdent());
                 } else {
-                    statusMap.put(progress.getInntektstubStatus(), new ArrayList(List.of(progress.getIdent())));
+                    statusMap.put(progress.getInntektstubStatus(), new ArrayList<>(List.of(progress.getIdent())));
                 }
             }
         });

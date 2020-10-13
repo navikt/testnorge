@@ -44,7 +44,7 @@ public final class BestillingAaregStatusMapper {
                                         .detaljert(status.getValue().entrySet().stream().map(miljo ->
                                                 RsStatusRapport.Detaljert.builder()
                                                         .miljo(miljo.getKey())
-                                                        .identer(new ArrayList(miljo.getValue()))
+                                                        .identer(new ArrayList<>(miljo.getValue()))
                                                         .build())
                                                 .collect(Collectors.toList()))
                                         .build())

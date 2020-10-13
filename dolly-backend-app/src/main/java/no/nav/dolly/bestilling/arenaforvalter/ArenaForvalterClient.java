@@ -39,7 +39,7 @@ public class ArenaForvalterClient implements ClientRegister {
             ResponseEntity<List> envResponse = arenaForvalterConsumer.getEnvironments();
             List<String> environments = envResponse.hasBody() ? envResponse.getBody() : emptyList();
 
-            List<String> availEnvironments = new ArrayList(environments);
+            List<String> availEnvironments = new ArrayList<>(environments);
 
             availEnvironments.retainAll(bestilling.getEnvironments());
 
@@ -60,7 +60,7 @@ public class ArenaForvalterClient implements ClientRegister {
                 sendArenadata(arenaNyeBrukere, status);
             }
 
-            List<String> notSupportedEnvironments = new ArrayList(bestilling.getEnvironments());
+            List<String> notSupportedEnvironments = new ArrayList<>(bestilling.getEnvironments());
             notSupportedEnvironments.removeAll(environments);
             notSupportedEnvironments.forEach(environment ->
                     status.append(',')

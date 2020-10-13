@@ -7,8 +7,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
-
-import no.nav.dolly.service.BestillingProgressService;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -26,7 +24,7 @@ import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
-import no.nav.dolly.repository.BestillingProgressRepository;
+import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TpsfPersonCache;
@@ -79,7 +77,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                 TpsPerson tpsPerson = buildTpsPerson(bestilling, leverteIdenter, null);
                                 progress = new BestillingProgress(bestilling.getId(), tpsPerson.getHovedperson());
 
-                                sendIdenterTilTPS(new ArrayList(List.of(bestilling.getMiljoer().split(","))),
+                                sendIdenterTilTPS(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))),
                                         leverteIdenter, bestilling.getGruppe(), progress);
 
                                 gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, false);

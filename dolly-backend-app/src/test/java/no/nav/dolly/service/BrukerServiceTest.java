@@ -1,9 +1,7 @@
 package no.nav.dolly.service;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
-import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.both;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -15,12 +13,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import org.apache.http.entity.ContentType;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -128,10 +124,10 @@ public class BrukerServiceTest {
         Bruker bruker = Bruker.builder().brukerId(BRUKERID).build();
         Testgruppe testgruppe = Testgruppe.builder().navn("gruppe").id(ID).opprettetAv(bruker).hensikt("hen").build();
         Testgruppe testgruppe2 = Testgruppe.builder().navn("gruppe2").id(2L).opprettetAv(bruker).hensikt("hen2").build();
-        bruker.getFavoritter().addAll(new ArrayList(List.of(testgruppe, testgruppe2)));
+        bruker.getFavoritter().addAll(new ArrayList<>(List.of(testgruppe, testgruppe2)));
 
-        testgruppe.setFavorisertAv(newHashSet(singletonList(bruker)));
-        testgruppe2.setFavorisertAv(newHashSet(singletonList(bruker)));
+        testgruppe.setFavorisertAv(new HashSet<>(singletonList(bruker)));
+        testgruppe2.setFavorisertAv(new HashSet<>(singletonList(bruker)));
 
         when(testgruppeRepository.findById(ID)).thenReturn(ofNullable(testgruppe));
         when(brukerRepository.findBrukerByBrukerId(BRUKERID)).thenReturn(Optional.of(bruker));

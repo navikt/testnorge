@@ -4,7 +4,6 @@ import static java.util.Objects.isNull;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -24,7 +23,7 @@ public class RsTestgruppeMedBestillingId extends RsTestgruppe {
     public List<IdentBestilling> getIdenter() {
 
         if (isNull(identer)) {
-            identer = new ArrayList();
+            identer = new ArrayList<>();
         }
         return identer;
     }

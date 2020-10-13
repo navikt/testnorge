@@ -20,7 +20,7 @@ public class InntektsinformasjonWrapper {
 
     public List<Inntektsinformasjon> getInntektsinformasjon() {
         if (isNull(inntektsinformasjon)) {
-            inntektsinformasjon = new ArrayList();
+            inntektsinformasjon = new ArrayList<>();
         }
         return inntektsinformasjon;
     }

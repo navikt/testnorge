@@ -42,7 +42,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
         StringBuilder status = new StringBuilder();
 
-        Set bestilteMiljoer = new HashSet(bestilling.getEnvironments());
+        Set bestilteMiljoer = new HashSet<>(bestilling.getEnvironments());
         Set tilgjengeligeMiljoer = pensjonforvalterConsumer.getMiljoer();
         bestilteMiljoer.retainAll(tilgjengeligeMiljoer);
         if (!bestilteMiljoer.isEmpty()) {
@@ -80,7 +80,7 @@ public class PensjonforvalterClient implements ClientRegister {
             tpsPerson.getPersondetaljer().forEach(person -> {
                 OpprettPersonRequest opprettPersonRequest =
                         mapperFacade.map(person, OpprettPersonRequest.class);
-                opprettPersonRequest.setMiljoer(new ArrayList(miljoer));
+                opprettPersonRequest.setMiljoer(new ArrayList<>(miljoer));
                 PensjonforvalterResponse response = pensjonforvalterConsumer.opprettPerson(opprettPersonRequest);
                 if (tpsPerson.getHovedperson().equals(person.getIdent())) {
                     decodeStatus(response, status);
@@ -99,7 +99,7 @@ public class PensjonforvalterClient implements ClientRegister {
         try {
             LagreInntektRequest lagreInntektRequest = mapperFacade.map(pensjonData.getInntekt(), LagreInntektRequest.class);
             lagreInntektRequest.setFnr(tpsPerson.getHovedperson());
-            lagreInntektRequest.setMiljoer(new ArrayList(miljoer));
+            lagreInntektRequest.setMiljoer(new ArrayList<>(miljoer));
 
             decodeStatus(pensjonforvalterConsumer.lagreInntekt(lagreInntektRequest), status);
 

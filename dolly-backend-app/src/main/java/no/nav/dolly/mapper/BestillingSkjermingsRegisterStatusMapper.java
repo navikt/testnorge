@@ -28,7 +28,7 @@ public final class BestillingSkjermingsRegisterStatusMapper {
                 if (statusMap.containsKey(progress.getSkjermingsregisterStatus())) {
                     statusMap.get(progress.getSkjermingsregisterStatus()).add(progress.getIdent());
                 } else {
-                    statusMap.put(progress.getSkjermingsregisterStatus(), new ArrayList(List.of(progress.getIdent())));
+                    statusMap.put(progress.getSkjermingsregisterStatus(), new ArrayList<>(List.of(progress.getIdent())));
                 }
             }
         });
