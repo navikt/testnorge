@@ -4,9 +4,6 @@ import static java.util.Objects.isNull;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.Column;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -32,7 +29,7 @@ public class RsBruker {
 
     public List<RsTestgruppe> getFavoritter() {
         if (isNull(favoritter)) {
-            favoritter = new ArrayList();
+            favoritter = new ArrayList<>();
         }
         return favoritter;
     }

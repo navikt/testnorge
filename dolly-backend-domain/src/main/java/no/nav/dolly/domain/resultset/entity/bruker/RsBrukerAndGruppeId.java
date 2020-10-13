@@ -4,9 +4,7 @@ import static java.util.Objects.isNull;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,7 +28,7 @@ public class RsBrukerAndGruppeId {
 
     public List<String> getFavoritter() {
         if (isNull(favoritter)) {
-            favoritter = new ArrayList();
+            favoritter = new ArrayList<>();
         }
         return favoritter;
     }
