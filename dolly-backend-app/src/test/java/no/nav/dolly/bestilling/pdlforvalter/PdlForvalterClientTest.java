@@ -90,7 +90,7 @@ public class PdlForvalterClientTest {
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
         verify(pdlForvalterConsumer).postKontaktinformasjonForDoedsbo(any(PdlKontaktinformasjonForDoedsbo.class), eq(IDENT));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("PdlForvalter&OK$KontaktinformasjonForDoedsbo&OK; hendelseId= \"222\"")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("PdlForvalter&OK$KontaktinformasjonForDoedsbo&OK")));
     }
 
     @Test
@@ -137,7 +137,7 @@ public class PdlForvalterClientTest {
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
         verify(pdlForvalterConsumer).postUtenlandskIdentifikasjonsnummer(any(PdlUtenlandskIdentifikasjonsnummer.class), eq(IDENT));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("PdlForvalter&OK$UtenlandskIdentifikasjonsnummer&OK; hendelseId= \"333\"")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("PdlForvalter&OK$UtenlandskIdentifikasjonsnummer&OK")));
     }
 
     @Test
@@ -184,7 +184,7 @@ public class PdlForvalterClientTest {
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
         verify(pdlForvalterConsumer).postFalskIdentitet(any(PdlFalskIdentitet.class), eq(IDENT));
 
-        assertThat(progress.getPdlforvalterStatus(), is(equalTo("PdlForvalter&OK$FalskIdentitet&OK; hendelseId= \"444\"")));
+        assertThat(progress.getPdlforvalterStatus(), is(equalTo("PdlForvalter&OK$FalskIdentitet&OK")));
     }
 
     @Test
