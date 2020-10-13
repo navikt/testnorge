@@ -36,7 +36,7 @@ IdentifikasjonPanel.initialValues = ({ set, del, has }) => ({
 		}
 	},
 	utenlandskIdentifikasjonsnummer: {
-		label: 'Har utenlands-id',
+		label: 'Har utenlandsk ID',
 		checked: has('pdlforvalter.utenlandskIdentifikasjonsnummer'),
 		add: () =>
 			set('pdlforvalter.utenlandskIdentifikasjonsnummer', [
