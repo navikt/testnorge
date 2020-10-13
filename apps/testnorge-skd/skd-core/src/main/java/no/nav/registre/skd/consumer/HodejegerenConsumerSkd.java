@@ -11,6 +11,7 @@ import no.nav.registre.skd.commands.hodejegeren.StatusQuoCommand;
 import no.nav.registre.skd.consumer.response.RelasjonsResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
@@ -22,7 +23,14 @@ public class HodejegerenConsumerSkd {
     private final WebClient webClient;
 
     public HodejegerenConsumerSkd(@Value("${testnorge-hodejegeren.rest-api.url}") String url) {
-        this.webClient = WebClient.builder().baseUrl(url).build();
+        this.webClient = WebClient.builder()
+                .baseUrl(url)
+                .exchangeStrategies(ExchangeStrategies.builder()
+                        .codecs(configurer -> configurer
+                                .defaultCodecs()
+                                .maxInMemorySize(16 * 1024 * 1024))
+                        .build())
+                .build();
     }
 
     public Map<String, String> getStatusQuoTilhoerendeEndringskode(String endringskode, String miljoe, String ident) {
