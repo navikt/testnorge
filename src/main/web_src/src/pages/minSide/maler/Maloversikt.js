@@ -75,6 +75,7 @@ export default ({ brukerId }) => {
 
 	return (
 		<div className="maloversikt">
+			<hr />
 			<div className="flexbox--space">
 				<h2>Mine maler</h2>
 				<div className="searchfield-container skjemaelement searchField">
