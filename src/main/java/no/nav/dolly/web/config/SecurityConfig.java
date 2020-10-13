@@ -46,8 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "X-Requested-With",
                 "Nav-Personident",
                 "X-XSRF-TOKEN",
-                "Content-Type",
-                "personidentifikator"
+                "Content-Type"
         ));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);

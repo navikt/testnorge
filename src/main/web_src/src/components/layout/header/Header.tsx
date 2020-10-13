@@ -10,6 +10,7 @@ import { useLocation } from 'react-use'
 type Props = {
 	brukerData: {
 		brukerId: string
+		brukernavn: string
 	}
 }
 
@@ -50,7 +51,7 @@ export default ({ brukerData }: Props) => {
 			<div className="profil-area flexbox--all-center">
 				<NavLink to="/minside">
 					<Icon kind="user" size={25} />
-					{brukerData.brukerId}
+					{brukerData.brukernavn}
 				</NavLink>
 			</div>
 		</header>
