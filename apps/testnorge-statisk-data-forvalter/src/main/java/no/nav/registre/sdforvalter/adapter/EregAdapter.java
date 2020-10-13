@@ -39,17 +39,6 @@ public class EregAdapter extends FasteDataAdapter {
         this.tagsAdapter = tagsAdapter;
     }
 
-    private EregListe fetch() {
-        List<Ereg> list = StreamSupport
-                .stream(repository.findAll().spliterator(), false)
-                .map(value -> new Ereg(
-                        value,
-                        eregTagAdapter.findAllTagsBy(value.getOrgnr())
-                )).collect(Collectors.toList());
-
-        return new EregListe(list);
-    }
-
     private EregModel fetchModelByOrgnr(String orgnr) {
         return repository.findById(orgnr).orElseThrow(
                 () -> new HttpClientErrorException(
@@ -78,7 +67,14 @@ public class EregAdapter extends FasteDataAdapter {
 
     public EregListe fetchBy(String gruppe) {
         log.info("Henter ereg data med gruppe {}", gruppe);
-        return new EregListe(fetch().filterOnGruppe(gruppe));
+        List<EregModel> eregModels = repository.findByGruppeModel(getGruppe(gruppe));
+        List<Ereg> liste = eregModels.stream().map(eregModel -> {
+            List<TagModel> tagModels = eregTagAdapter.findAllTagsBy(eregModel.getOrgnr());
+            return new Ereg(eregModel, tagModels);
+        }).collect(Collectors.toList());
+
+        log.info("Fant {} orgnr fra gruppe {}", liste.size(), gruppe);
+        return new EregListe(liste);
     }
 
     public Ereg fetchByOrgnr(String orgnr) {

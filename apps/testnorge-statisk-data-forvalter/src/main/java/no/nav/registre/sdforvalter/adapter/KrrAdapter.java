@@ -27,8 +27,12 @@ public class KrrAdapter extends FasteDataAdapter {
     }
 
     public KrrListe fetchBy(String gruppe) {
-        log.info("Henter krr med gruppe {}", gruppe);
-        return new KrrListe(fetch().filterOnGruppe(gruppe));
+        log.info("Henter krrdata med gruppe {}", gruppe);
+        List<KrrModel> krrModels = repository.findByGruppeModel(getGruppe(gruppe));
+        List<Krr> liste = krrModels.stream().map(Krr::new).collect(Collectors.toList());
+
+        log.info("Fant {} krr-personer fra gruppe {}", liste.size(), gruppe);
+        return new KrrListe(liste);
     }
 
     public KrrListe save(KrrListe liste) {
