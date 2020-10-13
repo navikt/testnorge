@@ -35,7 +35,7 @@ public class EregTagModel extends AuditModel {
     @JoinColumn(name = "ORGNR")
     private EregModel ereg;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TAG")
     private TagModel tag;
 }
