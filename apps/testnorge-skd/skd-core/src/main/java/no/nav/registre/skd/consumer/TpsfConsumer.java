@@ -71,9 +71,7 @@ public class TpsfConsumer {
             Long gruppeId,
             List<RsMeldingstype> skdmeldinger
     ) {
-        if (log.isInfoEnabled()) {
-            log.info("Lagrer {} skd endringsmeldinger i tps-forvalteren med gruppe id {}", skdmeldinger.size(), gruppeId);
-        }
+        log.info("Lagrer {} skd endringsmeldinger i tps-forvalteren med gruppe id {}", skdmeldinger.size(), gruppeId);
         var postRequest = RequestEntity.post(uriTemplateSaveToTpsf.expand(gruppeId)).body(skdmeldinger);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
     }
