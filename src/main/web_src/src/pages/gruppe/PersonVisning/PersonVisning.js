@@ -69,7 +69,7 @@ export const PersonVisning = ({
 			<div className="person-visning_actions">
 				{!iLaastGruppe && (
 					<Button onClick={() => leggTilPaaPerson(data)} kind="add-circle">
-						LEGG TIL
+						LEGG TIL/ENDRE
 					</Button>
 				)}
 				{!iLaastGruppe && (

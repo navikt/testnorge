@@ -26,7 +26,10 @@ export const BestillingsveilederHeader = () => {
 					<Header.TitleValue title="Basert på mal" value={opts.mal.malNavn} />
 				)}
 				{opts.is.leggTil && (
-					<Header.TitleValue title="Legg til på person" value={opts.personFoerLeggTil.tpsf.ident} />
+					<Header.TitleValue
+						title="Legg til/endre på person"
+						value={opts.personFoerLeggTil.tpsf.ident}
+					/>
 				)}
 				{opts.is.leggTil && opts.personFoerLeggTil.tpsf.importFra && (
 					<Header.TitleValue

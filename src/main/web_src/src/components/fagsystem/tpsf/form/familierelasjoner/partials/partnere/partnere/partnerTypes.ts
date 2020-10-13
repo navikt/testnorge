@@ -5,6 +5,7 @@ export enum Relasjonstyper {
 export type Partner = {
 	ny?: boolean
 	sivilstander?: Array<Sivilstand>
+	sivilstand?: string
 	fornavn?: string
 	etternavn?: string
 	ident?: string

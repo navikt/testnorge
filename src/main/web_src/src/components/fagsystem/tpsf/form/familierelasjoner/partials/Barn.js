@@ -18,6 +18,7 @@ const initialValues = {
 	borHos: '',
 	erAdoptert: false,
 	alder: Formatters.randomIntInRange(0, 17),
+	doedsdato: null,
 	spesreg: '',
 	utenFastBopel: false,
 	statsborgerskap: '',
@@ -35,7 +36,7 @@ export const initialValuesDoedfoedt = {
 	doedsdato: ''
 }
 
-export const Barn = ({ formikBag }) => {
+export const Barn = ({ formikBag, personFoerLeggTil }) => {
 	const handleIdenttypeChange = (path, ident, isDoedfoedt) => {
 		if (ident.value === 'FDAT') {
 			formikBag.setFieldValue(`${path}`, initialValuesDoedfoedt)
@@ -70,7 +71,17 @@ export const Barn = ({ formikBag }) => {
 		<FormikDollyFieldArray name="tpsf.relasjoner.barn" header="Barn" newEntry={initialValues}>
 			{(path, idx) => {
 				const isDoedfoedt = _get(formikBag.values, `${path}.identtype`) === 'FDAT'
-				return (
+				const eksisterendeBarn = _get(formikBag.values, `${path}.ident`)
+				const aktuellRelasjon =
+					personFoerLeggTil &&
+					eksisterendeBarn &&
+					_get(personFoerLeggTil, 'tpsf.relasjoner').filter(
+						relasjon => relasjon.personRelasjonMed.ident === eksisterendeBarn
+					)
+				const fornavn = aktuellRelasjon && aktuellRelasjon[0].personRelasjonMed.fornavn
+				const etternavn = aktuellRelasjon && aktuellRelasjon[0].personRelasjonMed.etternavn
+
+				return !eksisterendeBarn ? (
 					<React.Fragment key={idx}>
 						<FormikSelect
 							name={`${path}.identtype`}
@@ -136,6 +147,15 @@ export const Barn = ({ formikBag }) => {
 							/>
 						)}
 					</React.Fragment>
+				) : (
+					<>
+						<h4>
+							{fornavn} {etternavn} ({eksisterendeBarn})
+						</h4>
+						<div className="alder-component">
+							<FormikDatepicker name={`${path}.doedsdato`} label="Dødsdato" />
+						</div>
+					</>
 				)
 			}}
 		</FormikDollyFieldArray>

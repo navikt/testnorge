@@ -29,7 +29,7 @@ export const Familierelasjoner = ({ formikBag }) => {
 					<Partnere formikBag={formikBag} personFoerLeggTil={opts.personFoerLeggTil} />
 				</Kategori>
 				<Kategori title="Barn" vis="tpsf.relasjoner.barn">
-					<Barn formikBag={formikBag} />
+					<Barn formikBag={formikBag} personFoerLeggTil={opts.personFoerLeggTil} />
 				</Kategori>
 			</Panel>
 		</Vis>

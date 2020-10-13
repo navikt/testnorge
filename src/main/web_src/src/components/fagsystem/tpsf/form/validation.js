@@ -140,7 +140,8 @@ const midlertidigAdresse = Yup.object({
 export const sivilstander = Yup.array().of(
 	Yup.object({
 		sivilstand: Yup.string().required(messages.required),
-		sivilstandRegdato: Yup.string()
+		sivilstandRegdato: Yup.date()
+			.transform((i, j) => (j === null || j === '' ? undefined : i))
 			.test(
 				'is-after-last',
 				'Dato må være etter tidligere forhold (eldste forhold settes først)',
@@ -288,17 +289,32 @@ const partnere = Yup.array()
 	)
 	.nullable()
 
+const requiredHvisIkkeDoed = path =>
+	ifPresent(
+		path,
+		Yup.mixed().when('doedsdato', {
+			is: val => val === undefined || val === null,
+			then: requiredString
+		})
+	)
+
+const requiredHvisDoedfoedt = path =>
+	ifPresent(
+		path,
+		Yup.mixed().when('identtype', {
+			is: val => val === 'FDAT',
+			then: requiredDate
+		})
+	)
+
 const barn = Yup.array()
 	.of(
 		Yup.object({
 			identtype: Yup.string(),
 			kjonn: Yup.string().nullable(),
-			barnType: requiredString,
+			barnType: ifPresent('$tpsf.relasjoner.barn[0].barnType', requiredString),
 			partnerNr: Yup.number().nullable(),
-			borHos: Yup.mixed().when('doedsdato', {
-				is: val => val === undefined,
-				then: requiredString
-			}),
+			borHos: requiredHvisIkkeDoed('$tpsf.relasjoner.barn[0].borHos'),
 			erAdoptert: Yup.boolean(),
 			alder: Yup.number()
 				.transform(num => (isNaN(num) ? undefined : num))
@@ -320,11 +336,8 @@ const barn = Yup.array()
 			boadresse: Yup.object({
 				kommunenr: Yup.string().nullable()
 			}),
-			foedselsdato: Yup.mixed().when('borHos', {
-				is: val => val === undefined,
-				then: requiredDate
-			}),
-			doedsdato: Yup.date()
+			foedselsdato: requiredHvisDoedfoedt('$tpsf.relasjoner.barn[0].foedselsdato'),
+			doedsdato: Yup.date().nullable()
 		})
 	)
 	.nullable()

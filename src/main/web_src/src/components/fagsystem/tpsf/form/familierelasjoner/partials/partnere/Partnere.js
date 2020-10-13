@@ -21,6 +21,7 @@ const initialValues = {
 	sivilstander: [{ sivilstand: '', sivilstandRegdato: '' }],
 	harFellesAdresse: false,
 	alder: Formatters.randomIntInRange(30, 60),
+	doedsdato: null,
 	spesreg: '',
 	utenFastBopel: false,
 	statsborgerskap: '',
@@ -91,13 +92,14 @@ export const Partnere = ({ formikBag, personFoerLeggTil }) => (
 							// Det er kun mulig å slette siste forhold
 							const showRemove = isLast && idx > 0 && c.ny
 							const clickRemove = () => arrayHelpers.remove(formikIdx)
-							const vurderFjernePartner = () => !c.ny && arrayHelpers.remove(formikIdx)
+
 							return (
 								<DollyFaBlokk
 									key={idx}
 									idx={idx}
 									header="Partner"
-									handleRemove={showRemove && clickRemove}
+									handleRemove={clickRemove}
+									showDeleteButton={showRemove}
 								>
 									<PartnerForm
 										path={formikPath}
@@ -105,7 +107,6 @@ export const Partnere = ({ formikBag, personFoerLeggTil }) => (
 										partner={c}
 										locked={idx !== partnere.length - 1}
 										minDatoSivilstand={sisteTidligereSivilstandRegdato(partnere)}
-										vurderFjernePartner={vurderFjernePartner}
 									/>
 								</DollyFaBlokk>
 							)

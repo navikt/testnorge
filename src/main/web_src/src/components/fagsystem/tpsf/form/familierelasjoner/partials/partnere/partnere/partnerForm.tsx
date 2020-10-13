@@ -1,5 +1,6 @@
 import React from 'react'
 import _isEmpty from 'lodash/isEmpty'
+import _get from 'lodash/get'
 import { FormikProps } from 'formik'
 import { AdresseKodeverk, PersoninformasjonKodeverk } from '~/config/kodeverk'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
@@ -17,48 +18,101 @@ interface PartnerForm {
 	partner: Partner
 	locked: boolean
 	minDatoSivilstand: string
-	vurderFjernePartner: () => void
 }
 
-export default ({ path, formikBag, partner, ...rest }: PartnerForm) => (
-	<>
-		{partner.ny ? (
-			<>
-				<FormikSelect
-					name={`${path}.identtype`}
-					label="Identtype"
-					options={Options('identtype')}
-					isClearable={false}
-				/>
-				<FormikSelect
-					name={`${path}.kjonn`}
-					label="Kjønn"
-					kodeverk={PersoninformasjonKodeverk.Kjoennstyper}
-				/>
-				<FormikCheckbox
-					name={`${path}.harFellesAdresse`}
-					label="Har felles adresse"
-					checkboxMargin
-				/>
-				<FormikSelect
-					name={`${path}.statsborgerskap`}
-					label="Statsborgerskap"
-					kodeverk={AdresseKodeverk.StatsborgerskapLand}
-				/>
-				<FormikDatepicker name={`${path}.statsborgerskapRegdato`} label="Statsborgerskap fra" />
-				<Diskresjonskoder basePath={path} formikBag={formikBag} />
-				<Alder basePath={path} formikBag={formikBag} title="Alder" />
-			</>
-		) : (
-			<h4>
-				{partner.fornavn} {partner.etternavn} ({partner.ident})
-			</h4>
-		)}
-		<Sivilstand
-			sivilstander={partner.sivilstander}
-			formikBag={formikBag}
-			basePath={`${path}.sivilstander`}
-			{...rest}
-		/>
-	</>
-)
+export default ({ path, formikBag, partner, ...rest }: PartnerForm) => {
+	const handleDoedsdatoChange = (dato: Date) => {
+		const sivilstander = _get(formikBag.values, `${path}.sivilstander`)
+		const sisteSivilstand =
+			(sivilstander.length > 0 && sivilstander[sivilstander.length - 1].sivilstand) ||
+			partner.sivilstand ||
+			null
+
+		if (dato) {
+			formikBag.setFieldValue(`${path}.doedsdato`, dato)
+
+			if (sisteSivilstand === 'GIFT') {
+				_get(formikBag.values, `${path}.sivilstander`).push({
+					sivilstand: 'ENKE',
+					sivilstandRegdato: dato
+				})
+			} else if (sisteSivilstand === 'ENKE') {
+				sivilstander.length > 0 &&
+					formikBag.setFieldValue(`${path}.sivilstander[${sivilstander.length - 1}]`, {
+						sivilstand: 'ENKE',
+						sivilstandRegdato: dato
+					})
+			} else if (sisteSivilstand === 'REPA') {
+				_get(formikBag.values, `${path}.sivilstander`).push({
+					sivilstand: 'GJPA',
+					sivilstandRegdato: dato
+				})
+			} else if (sisteSivilstand === 'GJPA') {
+				sivilstander.length > 0 &&
+					formikBag.setFieldValue(`${path}.sivilstander[${sivilstander.length - 1}]`, {
+						sivilstand: 'GJPA',
+						sivilstandRegdato: dato
+					})
+			}
+		} else {
+			formikBag.setFieldValue(`${path}.doedsdato`, null)
+		}
+	}
+
+	return (
+		<>
+			{partner.ny ? (
+				<>
+					<FormikSelect
+						name={`${path}.identtype`}
+						label="Identtype"
+						options={Options('identtype')}
+						isClearable={false}
+					/>
+					<FormikSelect
+						name={`${path}.kjonn`}
+						label="Kjønn"
+						kodeverk={PersoninformasjonKodeverk.Kjoennstyper}
+					/>
+					<FormikCheckbox
+						name={`${path}.harFellesAdresse`}
+						label="Har felles adresse"
+						checkboxMargin
+					/>
+					<FormikSelect
+						name={`${path}.statsborgerskap`}
+						label="Statsborgerskap"
+						kodeverk={AdresseKodeverk.StatsborgerskapLand}
+					/>
+					<FormikDatepicker name={`${path}.statsborgerskapRegdato`} label="Statsborgerskap fra" />
+					<Diskresjonskoder basePath={path} formikBag={formikBag} />
+					<Alder
+						basePath={path}
+						formikBag={formikBag}
+						title="Alder"
+						handleDoed={handleDoedsdatoChange}
+					/>
+				</>
+			) : (
+				<>
+					<h4>
+						{partner.fornavn} {partner.etternavn} ({partner.ident})
+					</h4>
+					<div className="alder-component">
+						<FormikDatepicker
+							name={`${path}.doedsdato`}
+							label="Dødsdato"
+							onChange={(dato: Date) => handleDoedsdatoChange(dato)}
+						/>
+					</div>
+				</>
+			)}
+			<Sivilstand
+				sivilstander={partner.sivilstander}
+				formikBag={formikBag}
+				basePath={`${path}.sivilstander`}
+				{...rest}
+			/>
+		</>
+	)
+}

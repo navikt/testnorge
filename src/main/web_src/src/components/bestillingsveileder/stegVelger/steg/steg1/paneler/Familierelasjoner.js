@@ -42,21 +42,7 @@ FamilierelasjonPanel.initialValues = ({ set, del, has, opts }) => ({
 		label: 'Har barn',
 		checked: has('tpsf.relasjoner.barn'),
 		add() {
-			set('tpsf.relasjoner.barn', [
-				{
-					identtype: 'FNR',
-					kjonn: '',
-					barnType: '',
-					partnerNr: null,
-					borHos: '',
-					erAdoptert: false,
-					alder: Formatters.randomIntInRange(0, 17),
-					spesreg: '',
-					utenFastBopel: false,
-					statsborgerskap: '',
-					statsborgerskapRegdato: ''
-				}
-			])
+			set('tpsf.relasjoner.barn', defaultBarn(opts))
 		},
 		remove() {
 			del('tpsf.relasjoner.barn')
@@ -73,6 +59,7 @@ const defaultPartner = opts => {
 			sivilstander: [{ sivilstand: '', sivilstandRegdato: '' }],
 			harFellesAdresse: true,
 			alder: Formatters.randomIntInRange(30, 60),
+			doedsdato: null,
 			spesreg: '',
 			utenFastBopel: false,
 			statsborgerskap: '',
@@ -80,9 +67,52 @@ const defaultPartner = opts => {
 		}
 	]
 
+	const eksisterendePartner = [
+		{
+			ident: _get(opts, 'personFoerLeggTil.tpsf.relasjoner[0].personRelasjonMed.ident'),
+			doedsdato:
+				_get(opts, 'personFoerLeggTil.tpsf.relasjoner[0].personRelasjonMed.doedsdato') || null,
+			sivilstander: []
+		}
+	]
+
 	const harEksisterendePartner = _get(opts, 'personFoerLeggTil.tpsf.relasjoner', []).some(
 		relasjon => relasjon.relasjonTypeNavn === 'PARTNER'
 	)
 
-	return harEksisterendePartner ? [] : fullPartner
+	return harEksisterendePartner ? eksisterendePartner : fullPartner
+}
+
+const defaultBarn = opts => {
+	const fullBarn = [
+		{
+			identtype: 'FNR',
+			kjonn: '',
+			barnType: '',
+			partnerNr: null,
+			borHos: '',
+			erAdoptert: false,
+			alder: Formatters.randomIntInRange(0, 17),
+			doedsdato: null,
+			spesreg: '',
+			utenFastBopel: false,
+			statsborgerskap: '',
+			statsborgerskapRegdato: ''
+		}
+	]
+
+	const eksisterendeRelasjoner = _get(opts, 'personFoerLeggTil.tpsf.relasjoner')
+	const eksisterendeBarn =
+		eksisterendeRelasjoner &&
+		eksisterendeRelasjoner.filter(relasjon => relasjon.relasjonTypeNavn === 'FOEDSEL')
+	const eksisterendeBarnValues =
+		eksisterendeBarn &&
+		eksisterendeBarn.map(barn => ({
+			ident: barn.personRelasjonMed.ident,
+			doedsdato: barn.personRelasjonMed.doedsdato || null
+		}))
+
+	return eksisterendeBarnValues && eksisterendeBarnValues.length > 0
+		? eksisterendeBarnValues
+		: fullBarn
 }
