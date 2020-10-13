@@ -23,4 +23,8 @@ abstract class FasteDataAdapter {
                 ? gruppeAdapter.fetchGruppe(fasteData.getGruppe())
                 : null;
     }
+
+    GruppeModel getGruppe(String gruppe) {
+        return gruppe != null ? gruppeAdapter.fetchGruppe(gruppe) : null;
+    }
 }
