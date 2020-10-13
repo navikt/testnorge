@@ -1,5 +1,4 @@
 import React from 'react'
-import { useMount } from 'react-use'
 import _orderBy from 'lodash/orderBy'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
@@ -9,6 +8,7 @@ import { BestillingIconItem } from '~/components/ui/icon/IconItem'
 
 import Icon from '~/components/ui/icon/Icon'
 import Spinner from '~/components/ui/loading/Spinner'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -64,7 +64,7 @@ export default function BestillingListe({
 			text: 'Status',
 			width: '10',
 			dataField: 'listedata[4]',
-			formatter: (cell, row) => {
+			formatter: cell => {
 				return cell === 'Pågår' ? (
 					<Spinner size={24} />
 				) : (
@@ -75,14 +75,16 @@ export default function BestillingListe({
 	]
 
 	return (
-		<DollyTable
-			data={sortedBestillinger}
-			columns={columns}
-			iconItem={<BestillingIconItem />}
-			onExpand={bestilling => (
-				<BestillingDetaljer bestilling={bestilling} iLaastGruppe={iLaastGruppe} />
-			)}
-			pagination
-		/>
+		<ErrorBoundary>
+			<DollyTable
+				data={sortedBestillinger}
+				columns={columns}
+				iconItem={<BestillingIconItem />}
+				onExpand={bestilling => (
+					<BestillingDetaljer bestilling={bestilling} iLaastGruppe={iLaastGruppe} />
+				)}
+				pagination
+			/>
+		</ErrorBoundary>
 	)
 }

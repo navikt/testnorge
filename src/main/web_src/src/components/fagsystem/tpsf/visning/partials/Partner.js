@@ -7,6 +7,7 @@ import { Historikk } from '~/components/ui/historikk/Historikk'
 import { PostadresseVisning } from './Postadresse'
 
 import { PersoninformasjonKodeverk } from '~/config/kodeverk'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export const Partner = ({ data }) => {
 	if (!data) return null
@@ -38,22 +39,24 @@ export const Partner = ({ data }) => {
 				)}
 			</div>
 			{data.sivilstander.length > 0 && (
-				<DollyFieldArray header="Forhold" data={data.sivilstander} nested>
-					{(forhold, idx) => (
-						<div key={idx} className="person-visning_content">
-							<TitleValue
-								title="Forhold til partner (sivilstand)"
-								kodeverk={PersoninformasjonKodeverk.Sivilstander}
-								value={forhold.sivilstand}
-								size="medium"
-							/>
-							<TitleValue
-								title="Sivilstand fra dato"
-								value={Formatters.formatDate(forhold.sivilstandRegdato)}
-							/>
-						</div>
-					)}
-				</DollyFieldArray>
+				<ErrorBoundary>
+					<DollyFieldArray header="Forhold" data={data.sivilstander} nested>
+						{(forhold, idx) => (
+							<div key={idx} className="person-visning_content">
+								<TitleValue
+									title="Forhold til partner (sivilstand)"
+									kodeverk={PersoninformasjonKodeverk.Sivilstander}
+									value={forhold.sivilstand}
+									size="medium"
+								/>
+								<TitleValue
+									title="Sivilstand fra dato"
+									value={Formatters.formatDate(forhold.sivilstandRegdato)}
+								/>
+							</div>
+						)}
+					</DollyFieldArray>
+				</ErrorBoundary>
 			)}
 		</React.Fragment>
 	)

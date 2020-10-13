@@ -6,6 +6,7 @@ import Hjelpetekst from '~/components/hjelpetekst'
 import ExpandableBlokk from './ExpandableBlokk'
 
 import './dollyFieldArray.less'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export const FieldArrayAddButton = ({
 	hoverText = null,
@@ -91,28 +92,30 @@ export const DollyFieldArray = ({
 	expandable = false,
 	getHeader = null
 }) => (
-	<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
-		{data.map((curr, idx) => {
-			return nested ? (
-				<DollyFaBlokkNested key={idx} idx={idx}>
-					{children(curr, idx)}
-				</DollyFaBlokkNested>
-			) : expandable ? (
-				<ExpandableBlokk
-					key={idx}
-					idx={idx}
-					getHeader={getHeader ? getHeader : () => header}
-					data={curr}
-				>
-					{children(curr, idx)}
-				</ExpandableBlokk>
-			) : (
-				<DollyFaBlokk key={idx} idx={idx} header={header} hjelpetekst={hjelpetekst}>
-					{children(curr, idx)}
-				</DollyFaBlokk>
-			)
-		})}
-	</DollyFieldArrayWrapper>
+	<ErrorBoundary>
+		<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
+			{data.map((curr, idx) => {
+				return nested ? (
+					<DollyFaBlokkNested key={idx} idx={idx}>
+						{children(curr, idx)}
+					</DollyFaBlokkNested>
+				) : expandable ? (
+					<ExpandableBlokk
+						key={idx}
+						idx={idx}
+						getHeader={getHeader ? getHeader : () => header}
+						data={curr}
+					>
+						{children(curr, idx)}
+					</ExpandableBlokk>
+				) : (
+					<DollyFaBlokk key={idx} idx={idx} header={header} hjelpetekst={hjelpetekst}>
+						{children(curr, idx)}
+					</DollyFaBlokk>
+				)
+			})}
+		</DollyFieldArrayWrapper>
+	</ErrorBoundary>
 )
 
 export const FormikDollyFieldArray = ({
@@ -131,35 +134,37 @@ export const FormikDollyFieldArray = ({
 			const values = _get(arrayHelpers.form.values, name, [])
 			const addNewEntry = () => arrayHelpers.push(newEntry)
 			return (
-				<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
-					{values.map((curr, idx) => {
-						const showDeleteButton = canBeEmpty === true ? true : values.length >= 2
-						const path = `${name}.${idx}`
-						const handleRemove = () => arrayHelpers.remove(idx)
-						return nested ? (
-							<DollyFaBlokkNested key={idx} idx={idx} handleRemove={handleRemove}>
-								{children(path, idx, curr)}
-							</DollyFaBlokkNested>
-						) : (
-							<DollyFaBlokk
-								key={idx}
-								idx={idx}
-								header={header}
-								hjelpetekst={hjelpetekst}
-								handleRemove={handleRemove}
-								showDeleteButton={showDeleteButton}
-							>
-								{children(path, idx, curr)}
-							</DollyFaBlokk>
-						)
-					})}
-					<FieldArrayAddButton
-						hoverText={title}
-						addEntryButtonText={header}
-						onClick={addNewEntry}
-						disabled={isFull}
-					/>
-				</DollyFieldArrayWrapper>
+				<ErrorBoundary>
+					<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
+						{values.map((curr, idx) => {
+							const showDeleteButton = canBeEmpty === true ? true : values.length >= 2
+							const path = `${name}.${idx}`
+							const handleRemove = () => arrayHelpers.remove(idx)
+							return nested ? (
+								<DollyFaBlokkNested key={idx} idx={idx} handleRemove={handleRemove}>
+									{children(path, idx, curr)}
+								</DollyFaBlokkNested>
+							) : (
+								<DollyFaBlokk
+									key={idx}
+									idx={idx}
+									header={header}
+									hjelpetekst={hjelpetekst}
+									handleRemove={handleRemove}
+									showDeleteButton={showDeleteButton}
+								>
+									{children(path, idx, curr)}
+								</DollyFaBlokk>
+							)
+						})}
+						<FieldArrayAddButton
+							hoverText={title}
+							addEntryButtonText={header}
+							onClick={addNewEntry}
+							disabled={isFull}
+						/>
+					</DollyFieldArrayWrapper>
+				</ErrorBoundary>
 			)
 		}}
 	</FieldArray>

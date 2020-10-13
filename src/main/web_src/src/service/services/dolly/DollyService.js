@@ -77,6 +77,10 @@ export default {
 		return Request.put(Endpoints.removeFavorite(), { gruppeId: groupId })
 	},
 
+	importZIdent(ZIdenter) {
+		return Request.put(Endpoints.importZIdent(ZIdenter))
+	},
+
 	//* Kodeverk
 	getKodeverkByNavn(kodeverkNavn) {
 		return Request.get(Endpoints.kodeverkByNavn(kodeverkNavn))
@@ -140,7 +144,16 @@ export default {
 		return Request.get(Endpoints.getPersonnavn())
 	},
 
-	getTransaksjonid(system, ident) {
-		return Request.get(Endpoints.getTransaksjonsid(system, ident))
+	getTransaksjonid(system, ident, bestillingsid) {
+		return Request.get(Endpoints.getTransaksjonsid(system, ident, bestillingsid))
+	},
+
+	//* Joark
+	getInntektsmeldingDokumentinfo(journalpostId, dokumentinfoId, miljoe) {
+		return Request.get(Endpoints.inntektsmeldingDokumentinfo(journalpostId, dokumentinfoId, miljoe))
+	},
+
+	getDokarkivDokumentinfo(journalpostId, miljoe) {
+		return Request.get(Endpoints.dokarkivDokumentinfo(journalpostId, miljoe))
 	}
 }

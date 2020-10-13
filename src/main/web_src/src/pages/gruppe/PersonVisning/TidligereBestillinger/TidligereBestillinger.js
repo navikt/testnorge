@@ -1,5 +1,4 @@
 import React from 'react'
-import Formatters from '~/utils/DataFormatter'
 
 import './TidligereBestillinger.less'
 

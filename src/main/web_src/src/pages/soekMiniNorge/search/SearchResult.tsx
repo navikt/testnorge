@@ -10,6 +10,7 @@ import { Innhold } from '../hodejegeren/types'
 import { VelgPerson } from './ImportTilDolly/VelgPerson'
 import { ImportTilDolly } from './ImportTilDolly/ImportTilDolly'
 import Button from '~/components/ui/button/Button'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 interface SearchResultVisningProps {
 	soekOptions: string
@@ -102,28 +103,32 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 	]
 
 	return (
-		<LoadableComponent
-			onFetch={() => HodejegerenApi.soek(props.soekOptions, props.antallResultat)}
-			render={(data: Array<Innhold>) => {
-				return !data ? (
-					<ContentContainer>Søket gav ingen resultater.</ContentContainer>
-				) : (
-					<>
-						<DollyTable
-							data={data}
-							columns={columns}
-							pagination
-							iconItem={(bruker: Innhold) =>
-								bruker.personInfo.kjoenn === 'M' ? <ManIconItem /> : <WomanIconItem />
-							}
-							onExpand={(bruker: Innhold) => (
-								<ResultatVisningConnecter personId={bruker.personIdent.id} data={bruker} />
-							)}
-						/>
-						<ImportTilDolly valgtePersoner={valgtePersoner} />
-					</>
-				)
-			}}
-		/>
+		<ErrorBoundary>
+			<LoadableComponent
+				onFetch={() => HodejegerenApi.soek(props.soekOptions, props.antallResultat)}
+				render={(data: Array<Innhold>) => {
+					return !data ? (
+						<ContentContainer>Søket gav ingen resultater.</ContentContainer>
+					) : (
+						<>
+							<ErrorBoundary>
+								<DollyTable
+									data={data}
+									columns={columns}
+									pagination
+									iconItem={(bruker: Innhold) =>
+										bruker.personInfo.kjoenn === 'M' ? <ManIconItem /> : <WomanIconItem />
+									}
+									onExpand={(bruker: Innhold) => (
+										<ResultatVisningConnecter personId={bruker.personIdent.id} data={bruker} />
+									)}
+								/>
+							</ErrorBoundary>
+							<ImportTilDolly valgtePersoner={valgtePersoner} />
+						</>
+					)
+				}}
+			/>
+		</ErrorBoundary>
 	)
 }

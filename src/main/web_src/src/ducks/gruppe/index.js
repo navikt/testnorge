@@ -24,7 +24,8 @@ export const actions = createActions(
 			})
 		],
 		updateIdentIbruk: DollyApi.updateIdentIbruk,
-		updateBeskrivelse: DollyApi.updateIdentBeskrivelse
+		updateBeskrivelse: DollyApi.updateIdentBeskrivelse,
+		importZIdent: DollyApi.importZIdent
 	},
 	{
 		prefix: 'gruppe' // String used to prefix each type
@@ -34,7 +35,8 @@ export const actions = createActions(
 const initialState = {
 	ident: {},
 	byId: {},
-	mineIds: []
+	mineIds: [],
+	importerteZIdenter: null
 }
 
 export default handleActions(
@@ -78,6 +80,9 @@ export default handleActions(
 		[onSuccess(actions.remove)](state, action) {
 			delete state.byId[action.meta.gruppeId]
 			state.mineIds = state.mineIds.filter(v => v !== action.meta.gruppeId)
+		},
+		[onSuccess(actions.importZIdent)](state, action) {
+			state.importerteZIdenter = action.payload.data
 		}
 	},
 	initialState

@@ -7,6 +7,7 @@ import {
 	DelvisFravaer,
 	Fravaer
 } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 interface OmsorgspengerVisning {
 	data?: Omsorgspenger
@@ -24,29 +25,33 @@ export default ({ data }: OmsorgspengerVisning) => {
 					value={Formatters.oversettBoolean(data.harUtbetaltPliktigeDager)}
 				/>
 				{data.delvisFravaersListe && (
-					<DollyFieldArray data={data.delvisFravaersListe} header="Delvis fravær">
-						{(id: DelvisFravaer) => (
-							<>
-								<div className="person-visning_content">
-									<TitleValue title="Dato" value={Formatters.formatDate(id.dato)} />
-									<TitleValue title="Timer" value={id.timer} />
-								</div>
-							</>
-						)}
-					</DollyFieldArray>
+					<ErrorBoundary>
+						<DollyFieldArray data={data.delvisFravaersListe} header="Delvis fravær">
+							{(id: DelvisFravaer) => (
+								<>
+									<div className="person-visning_content">
+										<TitleValue title="Dato" value={Formatters.formatDate(id.dato)} />
+										<TitleValue title="Timer" value={id.timer} />
+									</div>
+								</>
+							)}
+						</DollyFieldArray>
+					</ErrorBoundary>
 				)}
 
 				{data.fravaersPerioder && (
-					<DollyFieldArray data={data.fravaersPerioder} header="Fraværsperioder">
-						{(id: Fravaer) => (
-							<>
-								<div className="person-visning_content">
-									<TitleValue title="Fra og med dato" value={Formatters.formatDate(id.fom)} />
-									<TitleValue title="Til og med dato" value={Formatters.formatDate(id.tom)} />
-								</div>
-							</>
-						)}
-					</DollyFieldArray>
+					<ErrorBoundary>
+						<DollyFieldArray data={data.fravaersPerioder} header="Fraværsperioder">
+							{(id: Fravaer) => (
+								<>
+									<div className="person-visning_content">
+										<TitleValue title="Fra og med dato" value={Formatters.formatDate(id.fom)} />
+										<TitleValue title="Til og med dato" value={Formatters.formatDate(id.tom)} />
+									</div>
+								</>
+							)}
+						</DollyFieldArray>
+					</ErrorBoundary>
 				)}
 			</div>
 		</>

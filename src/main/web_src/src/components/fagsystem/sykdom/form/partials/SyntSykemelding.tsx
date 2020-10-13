@@ -21,7 +21,9 @@ export const SyntSykemelding = () => {
 				<Hjelpetekst hjelpetekstFor="Arbeidsforhold-ID">
 					Nummeret på arbeidsforholdet du ønsker å knytte sykemeldingen til. Når du har opprettet
 					arbeidsforhold i bestillingen ser du disse som en nummerert liste i
-					Arbeidsforhold-panelet.
+					Arbeidsforhold-panelet. <br />
+					<br />
+					La feltet være blankt for å bruke første gyldige arbeidsforhold
 				</Hjelpetekst>
 			</div>
 		</div>

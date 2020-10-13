@@ -4,6 +4,7 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { Sykepenger, Periode } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 interface SykepengerVisning {
 	data?: Sykepenger
@@ -21,16 +22,18 @@ export default ({ data }: SykepengerVisning) => {
 					value={Formatters.codeToNorskLabel(data.begrunnelseForReduksjonEllerIkkeUtbetalt)}
 				/>
 				{data.arbeidsgiverperiodeListe && (
-					<DollyFieldArray data={data.arbeidsgiverperiodeListe} header="Arbeidsgiverperioder">
-						{(id: Periode) => (
-							<>
-								<div className="person-visning_content">
-									<TitleValue title="Fra og med dato" value={Formatters.formatDate(id.fom)} />
-									<TitleValue title="Til og med dato" value={Formatters.formatDate(id.tom)} />
-								</div>
-							</>
-						)}
-					</DollyFieldArray>
+					<ErrorBoundary>
+						<DollyFieldArray data={data.arbeidsgiverperiodeListe} header="Arbeidsgiverperioder">
+							{(id: Periode) => (
+								<>
+									<div className="person-visning_content">
+										<TitleValue title="Fra og med dato" value={Formatters.formatDate(id.fom)} />
+										<TitleValue title="Til og med dato" value={Formatters.formatDate(id.tom)} />
+									</div>
+								</>
+							)}
+						</DollyFieldArray>
+					</ErrorBoundary>
 				)}
 			</div>
 		</>

@@ -7,6 +7,7 @@ import { Sykemelding } from './partials/Sykemelding'
 import { validation } from './validation'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { FormikProps } from 'formik'
+import { AlertAaregRequired } from '~/components/ui/brukerAlert/AlertAaregRequired'
 
 interface SykdomForm {
 	formikBag: FormikProps<{}>
@@ -26,16 +27,15 @@ export const SykdomForm = ({ formikBag }: SykdomForm) => (
 			informasjonstekst="Om du velger å generere en sykemelding automatisk, vil du få en syntetisk sykemelding hvor alle verdier blir satt for deg."
 		>
 			{!formikBag.values.hasOwnProperty('aareg') && (
-				<>
-					{/* 
-					// @ts-ignore */}
-					<AlertStripeInfo style={{ marginBottom: '20px' }}>
-						Personen må ha et arbeidsforhold knyttet til den samme virksomheten som du velger i
-						sykemeldingen. Det kan du legge til ved å gå tilbake til forrige side og huke av for
-						Arbeidsforhold (Aareg).
-					</AlertStripeInfo>
-				</>
+				<AlertAaregRequired meldingSkjema="Sykemeldingen" />
 			)}
+			{formikBag.values.sykemelding != null &&
+				formikBag.values.sykemelding.hasOwnProperty('syntSykemelding') && (
+					<AlertStripeInfo style={{ marginBottom: '20px' }}>
+						Syntetisk sykemelding behandler en stor mengde data for å opprette realistiske
+						sykemeldinger og kan derfor medføre litt lenger bestillingstid.
+					</AlertStripeInfo>
+				)}
 			<Sykemelding formikBag={formikBag} />
 		</Panel>
 	</Vis>

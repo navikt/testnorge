@@ -1,4 +1,5 @@
 import DollyService from './services/dolly/DollyService'
+import ProfilService from './services/profil/ProfilService'
 import TpsfService from './services/tpsf/TpsfService'
 import SigrunService from './services/sigrun/SigrunService'
 import KrrService from './services/krr/KrrService'
@@ -13,6 +14,7 @@ import HodejegerenService from '~/service/services/hodejegeren/HodejegerenServic
 import VarslingerService from './services/varslinger/VarslingerService'
 
 export const DollyApi = DollyService
+export const ProfilApi = ProfilService
 export const TpsfApi = TpsfService
 export const SigrunApi = SigrunService
 export const KrrApi = KrrService
@@ -28,6 +30,7 @@ export const VarslingerApi = VarslingerService
 
 export default {
 	DollyApi: DollyService,
+	ProfilApi: ProfilService,
 	TpsfApi: TpsfService,
 	SigrunApi: SigrunService,
 	KrrApi: KrrService,
