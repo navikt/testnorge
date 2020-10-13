@@ -168,7 +168,7 @@ public class StaticDataControllerV2EregIntegrationTest {
         EregModel eregModel = createEregModel("987654321", "BEDR", gruppeModel);
         eregRepository.save(eregModel);
 
-        String json = mvc.perform(get(EREG_API).param("Gruppe", gruppeModel.getKode())
+        String json = mvc.perform(get(EREG_API + "?gruppe=" + gruppeModel.getKode())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()
