@@ -20,6 +20,9 @@ import java.util.Map;
 @Slf4j
 @Component
 public class HodejegerenConsumerSkd {
+    private static final int MAX_ANTALL_MINI_NORGE = 10000000;
+    private static final int ANTALL_TEGN_I_IDENTIFIKASJONSNUMMER = 11;
+    private static final int MAX_BYTES_PER_TEGN = 4;
     private final WebClient webClient;
 
     public HodejegerenConsumerSkd(@Value("${testnorge-hodejegeren.rest-api.url}") String url) {
@@ -28,7 +31,7 @@ public class HodejegerenConsumerSkd {
                 .exchangeStrategies(ExchangeStrategies.builder()
                         .codecs(configurer -> configurer
                                 .defaultCodecs()
-                                .maxInMemorySize(16 * 1024 * 1024))
+                                .maxInMemorySize(MAX_ANTALL_MINI_NORGE * ANTALL_TEGN_I_IDENTIFIKASJONSNUMMER * MAX_BYTES_PER_TEGN))
                         .build())
                 .build();
     }
