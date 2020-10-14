@@ -42,7 +42,9 @@ export default function Gruppe({
 
 	const byttVisning = event => setVisning(event.target.value)
 
-	const identArray = Object.values(identer).filter(ident => ident.bestillingId.length > 0)
+	const identArray = Object.values(identer).filter(
+		ident => ident.bestillingId != null && ident.bestillingId.length > 0
+	)
 
 	const startBestilling = values =>
 		history.push(`/gruppe/${match.params.gruppeId}/bestilling`, values)
@@ -90,7 +92,7 @@ export default function Gruppe({
 							size={13}
 							kind={visning === VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
 						/>
-						{`Bestillinger (${countUnique(identArray.map(b => b.bestillingId).flat())})`}
+						{`Bestillinger (${countUnique(Object.values(identer))})`}
 					</ToggleKnapp>
 				</ToggleGruppe>
 

@@ -340,6 +340,7 @@ export const selectPersonListe = state => {
 
 	// Sortert etter bestillingsId
 	const identer = Object.values(gruppe.ident)
+		.filter(gruppeIdent => gruppeIdent.bestillingId != null && gruppeIdent.bestillingId.length > 0)
 		.sort((a, b) => _last(b.bestillingId) - _last(a.bestillingId))
 		.filter(gruppeIdent => Object.keys(fagsystem.tpsf).includes(gruppeIdent.ident))
 
