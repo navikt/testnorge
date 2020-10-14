@@ -6,6 +6,6 @@ import org.springframework.vault.annotation.VaultPropertySource;
 
 @Configuration
 @Profile("dev")
-@VaultPropertySource(value = "kv/preprod/fss/arbeidsforhold-export-api/dev", ignoreSecretNotFound = false)
+@VaultPropertySource(value = "kv/preprod/fss/testnorge-arbeidsforhold-export-api/dev", ignoreSecretNotFound = false)
 public class DevVaultConfig {
 }
