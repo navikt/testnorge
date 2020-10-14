@@ -52,7 +52,10 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 			<div className="profil-area flexbox--all-center">
 				<NavLink to="/minside">
 					<img alt="Profilbilde" src={brukerBilde && brukerBilde.url} />
-					{brukerProfil && brukerProfil.visningsNavn}
+					<div className="profil-navn">
+						<p className="min-side">MIN SIDE</p>
+						<p>{brukerProfil && brukerProfil.visningsNavn}</p>
+					</div>
 				</NavLink>
 			</div>
 		</header>
