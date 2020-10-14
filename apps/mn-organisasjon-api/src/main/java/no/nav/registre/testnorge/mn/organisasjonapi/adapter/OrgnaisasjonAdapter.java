@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.mn.organisasjonapi.adapter;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import no.nav.registre.testnorge.mn.organisasjonapi.domain.Organisasjon;
 import no.nav.registre.testnorge.mn.organisasjonapi.repository.OrgansiasjonRepository;
 import no.nav.registre.testnorge.mn.organisasjonapi.repository.model.OrganisasjonModel;
 
+@Component
 @RequiredArgsConstructor
 public class OrgnaisasjonAdapter {
     private final OrgansiasjonRepository repository;
