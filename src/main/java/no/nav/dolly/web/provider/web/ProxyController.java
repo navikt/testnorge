@@ -170,6 +170,7 @@ public class ProxyController {
 
         String requestURL = createURL(request, poppUrl + API_URI, PROXY_URI + "/popp");
         HttpHeaders headers = proxyService.copyHeaders(request);
+        headers.add(HttpHeaders.AUTHORIZATION, "Dolly");
 
         return proxyService.proxyRequest(body, method, headers, requestURL);
     }
