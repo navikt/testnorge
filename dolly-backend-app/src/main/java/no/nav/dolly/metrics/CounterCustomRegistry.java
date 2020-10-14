@@ -32,7 +32,7 @@ public class CounterCustomRegistry {
 
     public void invoke(RsDollyUtvidetBestilling bestilling) {
 
-        List<String> tags = new ArrayList();
+        List<String> tags = new ArrayList<>();
 
         if (nonNull(bestilling.getTpsf())) {
             addTag(tags, nonNull(bestilling.getTpsf().getEgenAnsattDatoFom()) &&

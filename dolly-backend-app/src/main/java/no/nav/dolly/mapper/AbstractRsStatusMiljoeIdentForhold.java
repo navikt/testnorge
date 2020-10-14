@@ -34,11 +34,11 @@ public class AbstractRsStatusMiljoeIdentForhold {
             if (statusEnvIdents.get(status).containsKey(environ)) {
                 statusEnvIdents.get(status).get(environ).add(ident);
             } else {
-                statusEnvIdents.get(status).put(environ, new HashSet(Set.of(ident)));
+                statusEnvIdents.get(status).put(environ, new HashSet<>(Set.of(ident)));
             }
         } else {
             Map envIdent = new HashMap();
-            envIdent.put(environ, new HashSet(Set.of(ident)));
+            envIdent.put(environ, new HashSet<>(Set.of(ident)));
             statusEnvIdents.put(status, envIdent);
         }
     }

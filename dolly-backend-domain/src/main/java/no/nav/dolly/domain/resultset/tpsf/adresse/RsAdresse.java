@@ -43,6 +43,11 @@ public abstract class RsAdresse {
 
     private TilleggAdressetype tilleggsadresse;
 
+    @Schema(maxLength = 5,
+            description = "Bolignummer består av bokstav H, L, U eller K etterfulgt av 4 sifre",
+            example = "H0101")
+    private String bolignr;
+
     public abstract String getAdressetype();
 
     @Getter

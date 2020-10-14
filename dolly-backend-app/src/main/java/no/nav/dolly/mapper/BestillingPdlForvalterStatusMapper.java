@@ -40,7 +40,7 @@ public final class BestillingPdlForvalterStatusMapper {
             }
         });
 
-        List<RsStatusRapport> statusRapporter = new ArrayList();
+        List<RsStatusRapport> statusRapporter = new ArrayList<>();
         statusRapporter.addAll(extractStatus(msgStatusIdents, KONTAKTINFORMASJON_DOEDSBO, PDL_DODSBO));
         statusRapporter.addAll(extractStatus(msgStatusIdents, UTENLANDS_IDENTIFIKASJONSNUMMER, PDL_UTENLANDSID));
         statusRapporter.addAll(extractStatus(msgStatusIdents, FALSK_IDENTITET, PDL_FALSKID));

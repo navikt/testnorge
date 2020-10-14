@@ -82,14 +82,14 @@ public class Testgruppe {
 
     public Set<Testident> getTestidenter() {
         if (isNull(testidenter)) {
-            testidenter = new HashSet();
+            testidenter = new HashSet<>();
         }
         return testidenter;
     }
 
     public Set<Bruker> getFavorisertAv() {
         if (isNull(favorisertAv)) {
-            favorisertAv = new HashSet();
+            favorisertAv = new HashSet<>();
         }
         return favorisertAv;
     }

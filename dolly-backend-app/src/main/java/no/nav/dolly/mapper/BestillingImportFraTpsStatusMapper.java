@@ -43,7 +43,7 @@ public final class BestillingImportFraTpsStatusMapper {
                                 .melding(status.getKey())
                                 .detaljert(status.getValue().entrySet().stream().map(envIdent -> RsStatusRapport.Detaljert.builder()
                                         .miljo(envIdent.getKey())
-                                        .identer(new ArrayList(envIdent.getValue()))
+                                        .identer(new ArrayList<>(envIdent.getValue()))
                                         .build())
                                         .collect(Collectors.toList()))
                                 .build())

@@ -44,7 +44,7 @@ public final class BestillingPensjonforvalterStatusMapper {
             }
         });
 
-        List<RsStatusRapport> statusRapporter = new ArrayList();
+        List<RsStatusRapport> statusRapporter = new ArrayList<>();
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, POPP_INNTEKTSREGISTER, PEN_INNTEKT));
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, PENSJON_FORVALTER, PEN_FORVALTER));
 
@@ -59,17 +59,17 @@ public final class BestillingPensjonforvalterStatusMapper {
                 if (msgStatusIdents.get(melding).get(status).containsKey(miljoe)) {
                     msgStatusIdents.get(melding).get(status).get(miljoe).add(ident);
                 } else {
-                    msgStatusIdents.get(melding).get(status).put(miljoe, new ArrayList(List.of(ident)));
+                    msgStatusIdents.get(melding).get(status).put(miljoe, new ArrayList<>(List.of(ident)));
                 }
             } else {
-                Map<String, List<String>> miljoeIdent = new HashMap();
-                miljoeIdent.put(miljoe, new ArrayList(List.of(ident)));
+                Map<String, List<String>> miljoeIdent = new HashMap<>();
+                miljoeIdent.put(miljoe, new ArrayList<>(List.of(ident)));
                 msgStatusIdents.get(melding).put(status, miljoeIdent);
             }
         } else {
-            Map<String, Map<String, List<String>>> statusMap = new HashMap();
+            Map<String, Map<String, List<String>>> statusMap = new HashMap<>();
             Map<String, List<String>> miljoeIdent = new HashMap();
-            miljoeIdent.put(miljoe, new ArrayList(List.of(ident)));
+            miljoeIdent.put(miljoe, new ArrayList<>(List.of(ident)));
             statusMap.put(status, miljoeIdent);
             msgStatusIdents.put(melding, statusMap);
         }

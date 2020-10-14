@@ -51,7 +51,7 @@ public final class BestillingTpsfStatusMapper {
                                         .detaljert(status.getValue().entrySet().stream()
                                                 .map(detaljert -> RsStatusRapport.Detaljert.builder()
                                                         .miljo(detaljert.getKey())
-                                                        .identer(new ArrayList(detaljert.getValue()))
+                                                        .identer(new ArrayList<>(detaljert.getValue()))
                                                         .build())
                                                 .collect(Collectors.toList()))
                                         .build())
@@ -66,11 +66,11 @@ public final class BestillingTpsfStatusMapper {
                 if (errorEnvIdents.get(status).containsKey(environ)) {
                     errorEnvIdents.get(status).get(environ).add(ident);
                 } else {
-                    errorEnvIdents.get(status).put(environ, new HashSet(Set.of(ident)));
+                    errorEnvIdents.get(status).put(environ, new HashSet<>(Set.of(ident)));
                 }
             } else {
                 Map<String, Set<String>> entry = new HashMap();
-                entry.put(environ, new HashSet(Set.of(ident)));
+                entry.put(environ, new HashSet<>(Set.of(ident)));
                 errorEnvIdents.put(status, entry);
             }
         }

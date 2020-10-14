@@ -22,7 +22,7 @@ public class PdlTelefonnummer {
 
     public List<Entry> getTelfonnumre() {
         if (isNull(telfonnumre)) {
-            telfonnumre = new ArrayList();
+            telfonnumre = new ArrayList<>();
         }
         return telfonnumre;
     }

@@ -1,6 +1,22 @@
 package no.nav.dolly.bestilling.pdlforvalter;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.NORSK;
+import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.UTENLANDSK;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.containsSynthEnv;
+import static no.nav.dolly.domain.CommonKeysAndUtils.getSynthEnv;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
+
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -38,24 +54,6 @@ import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.service.TpsfPersonCache;
-import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
-import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.NORSK;
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.UTENLANDSK;
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.CommonKeysAndUtils.containsSynthEnv;
-import static no.nav.dolly.domain.CommonKeysAndUtils.getSynthEnv;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
-import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 @Slf4j
 @Order(1)
@@ -86,9 +84,7 @@ public class PdlForvalterClient implements ClientRegister {
             if (containsSynthEnv(bestilling.getEnvironments())) {
 
                 hentTpsPersondetaljer(tpsPerson, bestilling.getTpsf(), isOpprettEndre);
-                if (!isOpprettEndre) {
-                    sendDeleteIdent(tpsPerson);
-                }
+                sendDeleteIdent(tpsPerson);
                 sendPdlPersondetaljer(bestilling, tpsPerson, status, isOpprettEndre);
 
                 if (nonNull(bestilling.getPdlforvalter())) {
@@ -281,7 +277,9 @@ public class PdlForvalterClient implements ClientRegister {
     private void sendTelefonnummer(Person person) {
 
         PdlTelefonnummer telefonnumre = mapperFacade.map(person, PdlTelefonnummer.class);
-        telefonnumre.getTelfonnumre().forEach(telefonnummer -> pdlForvalterConsumer.postTelefonnummer(telefonnummer, person.getIdent()));
+        if (nonNull(telefonnumre)) {
+            telefonnumre.getTelfonnumre().forEach(telefonnummer -> pdlForvalterConsumer.postTelefonnummer(telefonnummer, person.getIdent()));
+        }
     }
 
     private void sendOppholdsadresse(Person person) {
@@ -348,12 +346,9 @@ public class PdlForvalterClient implements ClientRegister {
                 List<PdlUtenlandskIdentifikasjonsnummer> utenlandskId = pdldata.getUtenlandskIdentifikasjonsnummer();
                 utenlandskId.forEach(id -> {
                     id.setKilde(nullcheckSetDefaultValue(id.getKilde(), CONSUMER));
-
-                    ResponseEntity<JsonNode> response = pdlForvalterConsumer.postUtenlandskIdentifikasjonsnummer(id, ident);
-
-                    appendOkStatus(response.getBody(), status);
+                    pdlForvalterConsumer.postUtenlandskIdentifikasjonsnummer(id, ident);
                 });
-
+                appendOkStatus(status);
             } catch (RuntimeException exception) {
 
                 appendErrorStatus(exception, status);
@@ -367,10 +362,8 @@ public class PdlForvalterClient implements ClientRegister {
         if (nonNull(pdldata) && nonNull(pdldata.getKontaktinformasjonForDoedsbo())) {
             try {
                 appendName(KONTAKTINFORMASJON_DOEDSBO, status);
-
-                ResponseEntity<JsonNode> response = pdlForvalterConsumer.postKontaktinformasjonForDoedsbo(pdldata.getKontaktinformasjonForDoedsbo(), ident);
-
-                appendOkStatus(response.getBody(), status);
+                pdlForvalterConsumer.postKontaktinformasjonForDoedsbo(pdldata.getKontaktinformasjonForDoedsbo(), ident);
+                appendOkStatus(status);
 
             } catch (RuntimeException exception) {
 
@@ -385,10 +378,8 @@ public class PdlForvalterClient implements ClientRegister {
         if (nonNull(pdldata) && nonNull(pdldata.getFalskIdentitet())) {
             try {
                 appendName(FALSK_IDENTITET, status);
-
-                ResponseEntity<JsonNode> response = pdlForvalterConsumer.postFalskIdentitet(pdldata.getFalskIdentitet(), ident);
-
-                appendOkStatus(response.getBody(), status);
+                pdlForvalterConsumer.postFalskIdentitet(pdldata.getFalskIdentitet(), ident);
+                appendOkStatus(status);
 
             } catch (RuntimeException exception) {
 
@@ -401,9 +392,7 @@ public class PdlForvalterClient implements ClientRegister {
     private void sendDeleteIdent(TpsPerson tpsPerson) {
 
         try {
-            pdlForvalterConsumer.deleteIdent(tpsPerson.getHovedperson());
-            tpsPerson.getPartnere().forEach(pdlForvalterConsumer::deleteIdent);
-            tpsPerson.getBarn().forEach(pdlForvalterConsumer::deleteIdent);
+            tpsPerson.getPersondetaljer().forEach(person -> pdlForvalterConsumer.deleteIdent(person.getIdent()));
 
         } catch (HttpClientErrorException e) {
 
@@ -423,7 +412,7 @@ public class PdlForvalterClient implements ClientRegister {
     }
 
     private static boolean isKjonnUkjent(Relasjon relasjon, Iterator<RsPartnerRequest> partnere,
-                                         Iterator<RsBarnRequest> barn) {
+            Iterator<RsBarnRequest> barn) {
 
         return relasjon.isPartner() && partnere.next().isKjonnUkjent() ||
                 relasjon.isBarn() && barn.next().isKjonnUkjent();
@@ -434,13 +423,7 @@ public class PdlForvalterClient implements ClientRegister {
                 .append(utenlandsIdentifikasjonsnummer);
     }
 
-    private static void appendOkStatus(JsonNode jsonNode, StringBuilder builder) {
+    private static void appendOkStatus(StringBuilder builder) {
         builder.append("&OK");
-        if (nonNull(jsonNode) && nonNull(jsonNode.get(HENDELSE_ID))) {
-            builder.append(", ")
-                    .append(HENDELSE_ID)
-                    .append(": ")
-                    .append(jsonNode.get(HENDELSE_ID));
-        }
     }
 }

@@ -66,7 +66,7 @@ public class InstdataClient implements ClientRegister {
                 });
             }
 
-            List<String> notSupportedEnvironments = new ArrayList(bestilling.getEnvironments());
+            List<String> notSupportedEnvironments = new ArrayList<>(bestilling.getEnvironments());
             notSupportedEnvironments.removeAll(availEnvironments);
             notSupportedEnvironments.forEach(environment ->
                     status.append(',')

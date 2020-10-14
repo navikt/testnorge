@@ -53,7 +53,7 @@ public class PensjonforvalterConsumer {
                             .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                             .build(),
                     String[].class);
-            return responseEntity.hasBody() ? new HashSet(Set.of((String[]) responseEntity.getBody())) : emptySet();
+            return responseEntity.hasBody() ? new HashSet<>(Set.of((String[]) responseEntity.getBody())) : emptySet();
 
         } catch (RuntimeException e) {
 

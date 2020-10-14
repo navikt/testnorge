@@ -24,7 +24,7 @@ public class InntektsmeldingResponse {
     public List<Dokument> getDokumenter() {
 
         if (isNull(dokumenter)) {
-            dokumenter = new ArrayList();
+            dokumenter = new ArrayList<>();
         }
         return dokumenter;
     }

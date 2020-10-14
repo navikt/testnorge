@@ -28,7 +28,7 @@ public class BestillingSykemeldingStatusMapper {
                 if (statusMap.containsKey(progress.getSykemeldingStatus())) {
                     statusMap.get(progress.getSykemeldingStatus()).add(progress.getIdent());
                 } else {
-                    statusMap.put(progress.getSykemeldingStatus(), new ArrayList(List.of(progress.getIdent())));
+                    statusMap.put(progress.getSykemeldingStatus(), new ArrayList<>(List.of(progress.getIdent())));
                 }
             }
         });

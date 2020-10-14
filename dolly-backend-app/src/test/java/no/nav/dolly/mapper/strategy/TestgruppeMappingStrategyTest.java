@@ -1,11 +1,11 @@
 package no.nav.dolly.mapper.strategy;
 
 import static java.util.Collections.singletonList;
-import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.http.entity.ContentType;
@@ -25,7 +25,6 @@ import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testident.RsTestident;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
-import no.nav.dolly.security.sts.OidcTokenAuthentication;
 
 public class TestgruppeMappingStrategyTest {
 
@@ -54,7 +53,7 @@ public class TestgruppeMappingStrategyTest {
     public void mappingFromTestgruppeToRsTestgruppe() {
         Bruker bruker = Bruker.builder().navIdent("ident").build();
         Testident testident = TestidentBuilder.builder().ident("1").build().convertToRealTestident();
-        Set<Testident> identer = newHashSet(singletonList(testident));
+        Set<Testident> identer = new HashSet<>(singletonList(testident));
 
         Testgruppe testgruppe = Testgruppe.builder()
                 .sistEndretAv(bruker)

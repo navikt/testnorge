@@ -1,6 +1,7 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.tpsf.InnvandretUtvandret.InnUtvandret.INNVANDRET;
 import static no.nav.dolly.domain.resultset.tpsf.InnvandretUtvandret.InnUtvandret.UTVANDRET;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -153,7 +154,7 @@ public class Person {
 
     @JsonIgnore
     public boolean isMyndig() {
-        return getAlder() >= MYNDIGHET_ALDER;
+        return nonNull(getAlder()) && getAlder() >= MYNDIGHET_ALDER;
     }
 
     @JsonIgnore

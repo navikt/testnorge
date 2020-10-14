@@ -74,14 +74,14 @@ public class Bruker {
 
     public Set<Testgruppe> getFavoritter() {
         if (isNull(favoritter)) {
-            favoritter = new HashSet();
+            favoritter = new HashSet<>();
         }
         return favoritter;
     }
 
     public Set<Testgruppe> getTestgrupper() {
         if (isNull(testgrupper)) {
-            testgrupper = new HashSet();
+            testgrupper = new HashSet<>();
         }
         return testgrupper;
     }

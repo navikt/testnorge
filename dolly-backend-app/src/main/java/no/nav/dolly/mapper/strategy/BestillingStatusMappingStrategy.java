@@ -32,7 +32,6 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.mapper.MappingStrategy;
 
@@ -97,6 +96,6 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
     }
 
     private static List<String> mapTpsImport(String tpsImport) {
-        return isNotBlank(tpsImport) ? new ArrayList(List.of(tpsImport.split(","))) : Collections.emptyList();
+        return isNotBlank(tpsImport) ? new ArrayList<>(List.of(tpsImport.split(","))) : Collections.emptyList();
     }
 }

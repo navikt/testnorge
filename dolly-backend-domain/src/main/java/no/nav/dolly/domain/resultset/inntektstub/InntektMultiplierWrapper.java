@@ -24,7 +24,7 @@ public class InntektMultiplierWrapper {
 
     public List<RsInntektsinformasjon> getInntektsinformasjon() {
         if (isNull(inntektsinformasjon)) {
-            inntektsinformasjon = new ArrayList();
+            inntektsinformasjon = new ArrayList<>();
         }
         return inntektsinformasjon;
     }

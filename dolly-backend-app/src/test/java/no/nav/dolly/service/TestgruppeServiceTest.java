@@ -2,7 +2,6 @@ package no.nav.dolly.service;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
@@ -16,7 +15,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.http.entity.ContentType;
@@ -43,7 +42,6 @@ import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
-import no.nav.dolly.security.sts.OidcTokenAuthentication;
 @RunWith(MockitoJUnitRunner.class)
 public class TestgruppeServiceTest {
 
@@ -91,7 +89,7 @@ public class TestgruppeServiceTest {
     @Before
     public void setup() {
 
-        Set gruppe = newHashSet(
+        Set gruppe = new HashSet<>(
                 asList(
                         TestidentBuilder.builder().ident(IDENT_ONE).build().convertToRealTestident(),
                         TestidentBuilder.builder().ident(IDENT_TWO).build().convertToRealTestident()
@@ -143,7 +141,7 @@ public class TestgruppeServiceTest {
         Testgruppe tg3 = Testgruppe.builder().id(3L).navn("test3").build();
 
         Bruker bruker = Bruker.builder()
-                .favoritter(newHashSet(asList(tg1, tg2, tg3)))
+                .favoritter(new HashSet<>(asList(tg1, tg2, tg3)))
                 .navIdent(BRUKERID)
                 .build();
 
@@ -188,13 +186,13 @@ public class TestgruppeServiceTest {
     @Test(expected = ConstraintViolationException.class)
     public void saveGrupper_kasterExceptionHvisDBConstraintErBrutt() {
         when(testgruppeRepository.saveAll(any())).thenThrow(DataIntegrityViolationException.class);
-        testgruppeService.saveGrupper(newHashSet(singletonList(new Testgruppe())));
+        testgruppeService.saveGrupper(new HashSet<>(singletonList(new Testgruppe())));
     }
 
     @Test(expected = DollyFunctionalException.class)
     public void saveGrupper_kasterDollyExceptionHvisDBConstraintErBrutt() {
         when(testgruppeRepository.saveAll(any())).thenThrow(nonTransientDataAccessException);
-        testgruppeService.saveGrupper(newHashSet(singletonList(new Testgruppe())));
+        testgruppeService.saveGrupper(new HashSet<>(singletonList(new Testgruppe())));
     }
 
     @Test(expected = NotFoundException.class)

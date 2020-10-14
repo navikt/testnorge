@@ -2,7 +2,6 @@ package no.nav.dolly.service;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -10,6 +9,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import org.apache.http.entity.ContentType;
@@ -38,7 +38,6 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingKontrollRepository;
 import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -157,7 +156,7 @@ public class BestillingServiceTest {
 
         when(bestillingRepository.findById(BEST_ID)).thenReturn(Optional.of(Bestilling.builder()
                 .gruppe(Testgruppe.builder()
-                        .testidenter(newHashSet(asList(Testident.builder().build()))).build())
+                        .testidenter(new HashSet<>(asList(Testident.builder().build()))).build())
                 .ferdig(true).build()));
         when(brukerService.fetchOrCreateBruker(BRUKERID)).thenReturn(Bruker.builder().build());
 
