@@ -1,7 +1,5 @@
 package no.nav.dolly.web.provider.web;
 
-import static java.lang.String.format;
-
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+
+import static java.lang.String.format;
 
 
 @RestController
@@ -58,6 +58,11 @@ public class ProxyController {
     @Value("${fagsystem.hodejegeren.url}")
     private String hodejegerenUrl;
 
+    @Value("${fagsystem.profil.url}")
+    private String profilUrl;
+
+    @Value("${fagsystem.varslinger.url}")
+    private String varslingerUrl;
 
     private final ProxyService proxyService;
 
@@ -200,6 +205,30 @@ public class ProxyController {
             HttpServletRequest request) throws UnsupportedEncodingException {
 
         String requestURL = createURL(request, hodejegerenUrl + API_URI, PROXY_URI + "/hodejegeren");
+        HttpHeaders headers = proxyService.copyHeaders(request);
+
+        return proxyService.proxyRequest(body, method, headers, requestURL);
+    }
+
+    @RequestMapping("/api/testnorge-profil-api/**")
+    public ResponseEntity<String> profilProxy(
+            @RequestBody(required = false) String body,
+            HttpMethod method,
+            HttpServletRequest request) throws UnsupportedEncodingException {
+
+        String requestURL = createURL(request, profilUrl + API_URI, PROXY_URI + "/profil");
+        HttpHeaders headers = proxyService.copyHeaders(request);
+
+        return proxyService.proxyRequest(body, method, headers, requestURL);
+    }
+
+    @RequestMapping("/api/testnorge-varslinger-api/**")
+    public ResponseEntity<String> varslingerProxy(
+            @RequestBody(required = false) String body,
+            HttpMethod method,
+            HttpServletRequest request) throws UnsupportedEncodingException {
+
+        String requestURL = createURL(request, varslingerUrl + API_URI, PROXY_URI + "/varslinger");
         HttpHeaders headers = proxyService.copyHeaders(request);
 
         return proxyService.proxyRequest(body, method, headers, requestURL);

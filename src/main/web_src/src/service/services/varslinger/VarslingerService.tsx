@@ -1,6 +1,6 @@
 import Request from '~/service/services/Request'
 
-const varslingerlUrl = 'api/testnorge-varslinger-api/v1/varslinger'
+const varslingerlUrl = '/api/testnorge-varslinger-api/v1/varslinger'
 
 export default {
 	getVarslinger() {
