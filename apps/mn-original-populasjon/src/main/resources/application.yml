@@ -15,12 +15,6 @@ spring:
     name: mn-original-populasjon
     desciption: API for opprettelse av populasjon til Mini-Norge
 
-#consumers:
-#  statistikk:
-#    url: https://testnorge-statistikk-api.nais.preprod.local
-#system:
-#  pdl:
-#    pdlTestdataUrl: https://pdl-testdata.nais.preprod.local
-#    pdlApi: https://pdl-api.nais.preprod.local
-#  tpsf:
-#    tpsForvalterenUrl: https://tps-forvalteren.nais.preprod.local/api
+consumer:
+  statistikk:
+    url: https://testnorge-statistikk-api.dev.adeo.no

@@ -1,9 +1,0 @@
-consumers:
-  statistikk:
-    url: https://testnorge-statistikk-api.dev.adeo.no
-system:
-  pdl:
-    pdlTestdataUrl: https://pdl-testdata.nais.preprod.local
-    pdlApi: https://pdl-api.nais.preprod.local
-  tpsf:
-    tpsForvalterenUrl: https://tps-forvalteren.nais.preprod.local/api
