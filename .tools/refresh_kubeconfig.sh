@@ -11,6 +11,10 @@ while getopts "d?:k:" opt; do
     esac
 done
 
+## Lager riktig KUBECONFIG system-variabel. 
+## Denne bør også settes i ~/.bash_profile eller ~/.zshrc ettersom hvilket shell en kjører
+export KUBECONFIG="$KUBECONFIGS_PATH/config"
+
 if [ $docker_update = true ]
 then
     echo "Updating kubectl..."
