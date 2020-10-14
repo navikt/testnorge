@@ -19,8 +19,6 @@ import org.springframework.security.oauth2.jwt.JwtDecoders;
 import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
-import lombok.RequiredArgsConstructor;
-
 @Profile("!test")
 @Configuration
 @EnableWebSecurity

@@ -10,8 +10,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 
 @Getter

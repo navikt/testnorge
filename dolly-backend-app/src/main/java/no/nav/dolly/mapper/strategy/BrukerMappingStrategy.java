@@ -3,16 +3,12 @@ package no.nav.dolly.mapper.strategy;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
-import java.util.Objects;
-import java.util.spi.AbstractResourceBundleProvider;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.mapper.MappingStrategy;

@@ -1,24 +1,18 @@
 package no.nav.dolly.service;
 
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.TreeSet;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 
 @Service

@@ -42,8 +42,8 @@ public class PensjonforvalterClient implements ClientRegister {
 
         StringBuilder status = new StringBuilder();
 
-        Set bestilteMiljoer = new HashSet<>(bestilling.getEnvironments());
-        Set tilgjengeligeMiljoer = pensjonforvalterConsumer.getMiljoer();
+        Set<String> bestilteMiljoer = new HashSet<>(bestilling.getEnvironments());
+        Set<String> tilgjengeligeMiljoer = pensjonforvalterConsumer.getMiljoer();
         bestilteMiljoer.retainAll(tilgjengeligeMiljoer);
         if (!bestilteMiljoer.isEmpty()) {
 
