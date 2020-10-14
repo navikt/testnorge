@@ -27,4 +27,3 @@ consumers:
   organisasjonapi:
     url: https://testnorge-organisasjon-api-dev.dev.adeo.no
     client_id: 32d4b32e-95d1-4e40-b594-304945a1a24a
-    client_secret: ${ORGANISASJON_API_CLIENT_SECRET}
