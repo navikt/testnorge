@@ -18,7 +18,7 @@ export KUBECONFIG="$KUBECONFIGS_PATH/config"
 if [ $docker_update = true ]
 then
     echo "Updating kubectl..."
-    curl -L "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/darwin/amd64/kubectl" -o /usr/local/bin/kubectl && chmod +x /usr/local/bin/kubectl
+    sudo curl -L "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/darwin/amd64/kubectl" -o /usr/local/bin/kubectl && chmod +x /usr/local/bin/kubectl
 fi
 
 echo "Updating kubeconfigs in $KUBECONFIGS_PATH..."
