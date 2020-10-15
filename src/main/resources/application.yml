@@ -11,11 +11,11 @@ zuul:
       sensitiveHeaders: Cookie,Set-Cookie
     testnorge-profil-api:
       path: /api/testnorge-profil-api/**
-      url: ${fagsystem.profil.url}/api/v1
+      url: https://testnorge-profil-api-dev.dev.adeo.no/api
       sensitiveHeaders: Cookie,Set-Cookie
     testnorge-varslinger-api:
       path: /api/testnorge-varslinger-api/**
-      url: ${fagsystem.varslinger.url}/api/v1
+      url: https://testnorge-varslinger-api.dev.adeo.no/api
       sensitiveHeaders: Cookie,Set-Cookie
 
 applications:
