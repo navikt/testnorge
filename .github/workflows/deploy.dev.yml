@@ -2,7 +2,7 @@ name: Deploy dev
 
 on:
   push:
-    branches: paalogging-vha-azure-ad
+    branches: master
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/dolly-backend:${{ github.sha }}
