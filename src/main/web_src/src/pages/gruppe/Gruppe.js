@@ -22,7 +22,7 @@ export default function Gruppe({
 	getBestillinger,
 	gruppe,
 	identer,
-	zBruker,
+	brukernavn,
 	isFetching,
 	isDeletingGruppe,
 	isLockingGruppe,
@@ -103,7 +103,7 @@ export default function Gruppe({
 				<BestillingsveilederModal
 					onSubmit={startBestilling}
 					onAvbryt={skjulStarBestilling}
-					zBruker={zBruker}
+					brukernavn={brukernavn}
 				/>
 			)}
 
