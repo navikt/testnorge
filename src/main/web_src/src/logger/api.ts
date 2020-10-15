@@ -13,7 +13,7 @@ interface LogEvent {
 export default {
 	log: (event: LogEvent): void => {
 		Api.fetch(
-			`/api/dolly-log`,
+			`/api/dolly-logg`,
 			{ method: 'POST', headers: { 'Content-Type': 'application/json' } },
 			event
 		)
