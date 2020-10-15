@@ -12,6 +12,12 @@
     <artifactId>arbeidsforhold-export-api</artifactId>
 
     <dependencies>
+        <!-- domain -->
+        <dependency>
+            <artifactId>arbeidsforhold-xsd</artifactId>
+            <groupId>no.nav.registre.testnorge.xsd</groupId>
+        </dependency>
+
         <!-- CORE -->
         <dependency>
             <artifactId>testnorge-core</artifactId>
@@ -38,6 +44,18 @@
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
         </dependency>
+
+
+        <!-- XML -->
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
+
 
         <!-- CSV -->
         <dependency>
