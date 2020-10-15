@@ -6,8 +6,6 @@ nav_order: 3
 
 # {{ page.title }}
 
----
-
 ## Hensikt, målgrupper og ansvar
 
 Syntetiske testdata skal brukes i utvikling og forvaltning av NAVs IT-løsninger. Ved unntaksvis bruk av produksjonsdata, gjelder spesielle sikkerhetstiltak. Disse føringene er sentrale for å minimere og sikre kontroll med bruken av persondata:
@@ -75,13 +73,13 @@ Unntak fra regelen om syntetiske data gjelder for oppgaver som bare kan løses v
 - Korrigering av datakvalitet
 - Spesialtester/engangstilfeller der kompliserte og sammensatte verdikjeder endres samtidig og må verifiseres på tvers
 - Større datakonvertering
-- Systemet/området skal saneres eller moderniseres i nær framtid. Unntak/dispensasjon skal være behandlet og spesifisert pr område i samarbeid med behandlingsansvarlig og ihht felles vurderingskriterier.\*
+- Systemet/området skal saneres eller moderniseres i nær framtid. Unntak/dispensasjon skal være behandlet og spesifisert pr område i samarbeid med behandlingsansvarlig og ihht felles vurderingskriterier. \*
 
 ### Oversikt over sikkerhetstiltak ved bruk av produksjonsdata
 
 Produktteamet har ansvaret for sikkerhetstiltak for egne områder/systemer ihht oversikt under:
 
-#### Begrensning i kopiering og bruk av produksjonsdata
+**Begrensning i kopiering og bruk av produksjonsdata**
 
 - Brukere med diskresjonskode 6 og 7 skal alltid fjernes ved kopi/uttrekk fra produksjon.
 - Brukere ansatt i NAV skal alltid fjernes ved kopi/uttrekk fra produksjon.
@@ -94,7 +92,7 @@ Produktteamets ansvar:
 - Teamet skal ha felles rutiner for når og hvordan persondata maskeres - i overgangsperiode før syntetiske data er tilgjengelig.
 - Teamet skal ha har felles rutiner som sikrer at teamets medlemmer ikke bruker data om seg selv eller egen familie
 
-#### Midlertidig lagring og tilgangskontroll til ekstraordinære produksjonskopier
+**Midlertidig lagring og tilgangskontroll til ekstraordinære produksjonskopier**
 
 Det er ekstraordinært behov for kopi av produksjonsdata til feilanalyse og korrigering av datakvalitet
 
@@ -111,7 +109,7 @@ Produktteamets ansvar:
 - Teamet skal ha felles filarkiv for produksjonskopier. Lagring skal tidsbegrenses. Normalt vil en maksgrense på 30 dager være dekkende.
 - Teamleder gir fast tilgang til filarkiv for ressurser som har oppgaver knyttet til håndtering av kritiske feil og andre hendelser som krever umiddelbar bruk av arkivet. Ressurser som har behov for å løses enkeltoppgaver, gis midlertidig tilgang.
 
-#### Tilgangskontroll og logging - i skyggemiljøer og spesialmiljøer med produksjonsdata
+**Tilgangskontroll og logging - i skyggemiljøer og spesialmiljøer med produksjonsdata**
 
 Skyggemiljøer er produksjonslike miljøer som brukes til bestemte formål. Tjenestlige behov og roller /oppgaver gir rammer for tilganger og bruk av skyggemiljøene:
 
@@ -125,7 +123,7 @@ Produktteamets ansvar:
 - Teamleder skal ha oversikt over hvem som har tilgang til miljøer med produksjonsdata.
 - Signerte taushetserklæringer gjelder generelt for alle i teamet.
 
-#### Kontroll av data fra eksterne samhandlere
+**Kontroll av data fra eksterne samhandlere**
 
 Integrasjonstester med eksterne samhandlere skal kun baseres på syntetiske testdata. Andre tester skal baseres på syntetiske stubber som simulerer eksterne kilder.
 For å hindre at reelle data fra eksterne samhandlere blandes sammen med syntetiske data, skal det gjennomføres jevnlige kontroller.
