@@ -2,8 +2,8 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 zuul:
   routes:
     controller:
-      path: /api/v1/logg
-      url: forward:/api/v1/logg
+      path: /api/logg
+      url: forward:/api/logg
       sensitiveHeaders: Cookie,Set-Cookie
     dolly-backend:
       path: /api/v1/**
