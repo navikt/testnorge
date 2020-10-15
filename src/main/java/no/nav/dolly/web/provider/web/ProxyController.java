@@ -58,12 +58,6 @@ public class ProxyController {
     @Value("${fagsystem.hodejegeren.url}")
     private String hodejegerenUrl;
 
-    @Value("${fagsystem.profil.url}")
-    private String profilUrl;
-
-    @Value("${fagsystem.varslinger.url}")
-    private String varslingerUrl;
-
     private final ProxyService proxyService;
 
 
