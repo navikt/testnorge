@@ -11,7 +11,7 @@ zuul:
       sensitiveHeaders: Cookie,Set-Cookie
     testnorge-profil-api:
       path: /api/testnorge-profil-api/**
-      url: https://testnorge-profil-api-dev.dev.adeo.no/api/v1
+      url: ${TESTNORGE_PROFIL_API_HOST}/api/v1
       sensitiveHeaders: Cookie,Set-Cookie
     testnorge-varslinger-api:
       path: /api/testnorge-varslinger-api/**
