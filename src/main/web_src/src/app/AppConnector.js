@@ -8,27 +8,20 @@ import { getVarslinger, getVarslingerBruker, updateVarslingerBruker } from '~/du
 import { createLoadingSelector } from '~/ducks/loading'
 import ConfigService from '~/service/Config'
 
-const loading = createLoadingSelector(getVarslingerBruker)
+const loadingVarslinger = createLoadingSelector(getVarslingerBruker)
 
-const mapStateToProps = state => {
-	const varslinger =
-		loading(state) === false && state.varslinger.varslingerData
-			? state.varslinger.varslingerData.filter(
-					varsel => !state.varslinger.varslingerBrukerData.includes(varsel.varslingId)
-			  )
-			: []
-
-	return {
-		router: state.router,
-		brukerData: state.bruker.brukerData,
-		brukerProfil: state.bruker.brukerProfil,
-		brukerBilde: state.bruker.brukerBilde,
-		varslinger: varslinger,
-		redirectTo: state.common.redirectTo,
-		applicationError: applicationErrorSelector(state),
-		configReady: ConfigService.verifyConfig()
-	}
-}
+const mapStateToProps = state => ({
+	router: state.router,
+	brukerData: state.bruker.brukerData,
+	brukerProfil: state.bruker.brukerProfil,
+	brukerBilde: state.bruker.brukerBilde,
+	varslinger: state.varslinger.varslingerData,
+	varslingerBruker: state.varslinger.varslingerBrukerData,
+	isLoadingVarslinger: loadingVarslinger(state),
+	redirectTo: state.common.redirectTo,
+	applicationError: applicationErrorSelector(state),
+	configReady: ConfigService.verifyConfig()
+})
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
 	onRedirect: url => dispatch(push(url)),
