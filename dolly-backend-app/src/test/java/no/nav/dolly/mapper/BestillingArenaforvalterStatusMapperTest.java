@@ -1,6 +1,5 @@
 package no.nav.dolly.mapper;
 
-import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -17,7 +16,7 @@ import no.nav.dolly.domain.resultset.RsStatusRapport;
 @RunWith(MockitoJUnitRunner.class)
 public class BestillingArenaforvalterStatusMapperTest {
 
-    private static final List<BestillingProgress> RUN_STATUS = newArrayList(
+    private static final List<BestillingProgress> RUN_STATUS = List.of(
             BestillingProgress.builder().ident("IDENT_1")
                     .arenaforvalterStatus("t4$OK,t3$Feil: Miljø ikke støttet")
                     .build()

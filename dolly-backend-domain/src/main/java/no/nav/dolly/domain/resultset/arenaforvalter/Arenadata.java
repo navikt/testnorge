@@ -2,10 +2,9 @@ package no.nav.dolly.domain.resultset.arenaforvalter;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,33 +19,18 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Arenadata {
 
-    @ApiModelProperty(
-            position = 1,
-            required = true
-    )
+    @Schema(required = true)
     private ArenaBrukertype arenaBrukertype;
 
-    @ApiModelProperty(
-            position = 2,
-            required = true
-    )
+    @Schema(required = true)
     private ArenaKvalifiseringsgruppe kvalifiseringsgruppe;
 
-    @ApiModelProperty(
-            position = 3,
-            dataType = "LocalDateTime"
-    )
+    @Schema(type = "LocalDateTime")
     private LocalDateTime inaktiveringDato;
 
-    @ApiModelProperty(
-            position = 4,
-            value = "Om rettigheten aap115 skal aktiveres på personen"
-    )
+    @Schema(description = "Om rettigheten aap115 skal aktiveres på personen")
     private List<RsArenaAap115> aap115;
 
-    @ApiModelProperty(
-            position = 5,
-            value = "Om rettigheten aap skal aktiveres på personen"
-    )
+    @Schema(description = "Om rettigheten aap skal aktiveres på personen")
     private List<RsArenaAap> aap;
 }

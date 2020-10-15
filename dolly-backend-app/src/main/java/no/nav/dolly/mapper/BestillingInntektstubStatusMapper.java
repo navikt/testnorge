@@ -1,11 +1,11 @@
 package no.nav.dolly.mapper;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTK;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +28,7 @@ public final class BestillingInntektstubStatusMapper {
                 if (statusMap.containsKey(progress.getInntektstubStatus())) {
                     statusMap.get(progress.getInntektstubStatus()).add(progress.getIdent());
                 } else {
-                    statusMap.put(progress.getInntektstubStatus(), newArrayList(progress.getIdent()));
+                    statusMap.put(progress.getInntektstubStatus(), new ArrayList<>(List.of(progress.getIdent())));
                 }
             }
         });

@@ -1,14 +1,5 @@
 package no.nav.dolly.service;
 
-import static no.nav.dolly.util.CurrentNavIdentFetcher.getLoggedInNavIdent;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.NonTransientDataAccessException;
-import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -17,6 +8,22 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.NonTransientDataAccessException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static java.lang.String.format;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
+import static no.nav.dolly.util.CurrentAuthentication.getUserId;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 
 @Service
 @RequiredArgsConstructor
@@ -25,43 +32,71 @@ public class BrukerService {
     private final BrukerRepository brukerRepository;
     private final TestgruppeRepository testgruppeRepository;
 
-    public Bruker fetchBruker(String navIdent) {
-        Bruker bruker = brukerRepository.findBrukerByBrukerId(navIdent.toUpperCase());
-        if (bruker == null) {
-            throw new NotFoundException("Bruker ikke funnet");
-        }
-        return bruker;
+    public Bruker fetchBruker(String brukerId) {
+        return brukerRepository.findBrukerByBrukerId(brukerId)
+                .orElseGet(() -> brukerRepository.findBrukerByNavIdent(brukerId.toUpperCase())
+                        .orElseThrow(() -> new NotFoundException("Bruker ikke funnet")));
     }
 
-    public Bruker fetchOrCreateBruker(String navIdent) {
+    public Bruker fetchOrCreateBruker(String brukerId) {
         try {
-            return fetchBruker(navIdent);
+            Bruker bruker = fetchBruker(brukerId);
+            List<Bruker> brukere = brukerRepository.fetchEidAv(bruker);
+            bruker.getFavoritter().addAll(brukere.stream().map(Bruker::getFavoritter).flatMap(Collection::stream).collect(Collectors.toSet()));
+            return bruker;
         } catch (NotFoundException e) {
-            return brukerRepository.save(Bruker.builder().brukerId(navIdent.toUpperCase()).build());
+            return brukerRepository.save(getAuthUser());
         }
     }
 
+    @Transactional
     public Bruker leggTilFavoritt(Long gruppeId) {
-        Testgruppe grupper = fetchTestgruppe(gruppeId);
 
-        Bruker bruker = fetchBruker(getLoggedInNavIdent());
-        bruker.getFavoritter().addAll(new HashSet<>(Collections.singleton(grupper)));
+        Bruker bruker = fetchBruker(getUserId());
+        List<Bruker> brukere = brukerRepository.fetchEidAv(bruker);
+        brukere.add(bruker);
+        if (brukere.stream().map(Bruker::getFavoritter)
+                .flatMap(Collection::stream)
+                .noneMatch(testgruppe -> testgruppe.getId().equals(gruppeId))) {
+
+            Testgruppe gruppe = fetchTestgruppe(gruppeId);
+            gruppe.getFavorisertAv().add(bruker);
+            bruker.getFavoritter().add(gruppe);
+        }
+
         return brukerRepository.save(bruker);
     }
 
-    public Bruker fjernFavoritt(Long gruppeIDer) {
-        Testgruppe testgruppe = fetchTestgruppe(gruppeIDer);
+    public Bruker fjernFavoritt(Long gruppeId) {
 
-        Bruker bruker = fetchBruker(getLoggedInNavIdent());
-        bruker.getFavoritter().remove(testgruppe);
-        testgruppe.getFavorisertAv().remove(bruker);
+        Bruker bruker = fetchBruker(getUserId());
+        Testgruppe gruppe = fetchTestgruppe(gruppeId);
 
-        saveGruppe(testgruppe);
+        List<Bruker> brukere = brukerRepository.fetchEidAv(bruker);
+        brukere.stream()
+                .filter(bruker1 -> gruppe.getFavorisertAv().stream().anyMatch(bruker2 -> bruker2.equals(bruker1)))
+                .map(bruker1 -> {
+                    gruppe.getFavorisertAv().remove(bruker1);
+                    bruker1.getFavoritter().remove(gruppe);
+                    brukerRepository.save(bruker1);
+                    return true;
+                })
+                .collect(Collectors.toList());
+
+        bruker.getFavoritter().remove(gruppe);
+        saveGruppe(gruppe);
+        gruppe.getFavorisertAv().remove(bruker);
         return brukerRepository.save(bruker);
     }
 
     public List<Bruker> fetchBrukere() {
-        return brukerRepository.findAllByOrderByBrukerId();
+        List<Bruker> brukere = brukerRepository.findAllByOrderById();
+        Map<Long, Bruker> brukereMap = brukere.stream().collect(Collectors.toMap(Bruker::getId, bruker -> bruker));
+        brukereMap.values().stream()
+                .filter(bruker -> nonNull(bruker.getEidAv()))
+                .map(bruker -> brukereMap.get(bruker.getEidAv().getId()).getFavoritter().addAll(bruker.getFavoritter()))
+                .collect(Collectors.toList());
+        return brukereMap.values().stream().filter(bruker -> isNull(bruker.getEidAv())).collect(Collectors.toList());
     }
 
     public int sletteBrukerFavoritterByGroupId(Long groupId) {
@@ -76,6 +111,25 @@ public class BrukerService {
         } catch (NonTransientDataAccessException e) {
             throw new DollyFunctionalException(e.getMessage(), e);
         }
+    }
+
+    public int migrerBruker(Collection<String> navIdenter, String brukerId) {
+        fetchOrCreateBruker(brukerId);
+        brukerRepository.saveBrukerIdMigrert(brukerId);
+        return brukerRepository.saveNavIdentToBruker(navIdenter, brukerId);
+    }
+
+    public int fjernMigreringAvBruker(String brukerId) {
+        Bruker bruker = fetchOrCreateBruker(brukerId);
+        if (isFalse(bruker.getMigrert())) {
+            throw new DollyFunctionalException(format("Bruker %s er ikke migrert enda", bruker.getBrukernavn()));
+        }
+        brukerRepository.deleteBrukerIdMigrert(brukerId);
+        return brukerRepository.deleteNavIdentToBruker(bruker);
+    }
+
+    public List<Bruker> fetchEidAv(Bruker bruker) {
+        return brukerRepository.fetchEidAv(bruker);
     }
 
     private Testgruppe fetchTestgruppe(Long gruppeId) {

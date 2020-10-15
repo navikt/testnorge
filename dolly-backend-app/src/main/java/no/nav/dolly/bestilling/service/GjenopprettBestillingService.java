@@ -1,9 +1,9 @@
 package no.nav.dolly.bestilling.service;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
@@ -73,8 +73,9 @@ public class GjenopprettBestillingService extends DollyBestillingService {
 
                                 if (!personer.isEmpty()) {
                                     TpsPerson tpsPerson = tpsfPersonCache.prepareTpsPersoner(personer.get(0));
-                                    sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(",")), tpsPerson.getPersondetaljer().
-                                            stream().map(Person::getIdent).collect(Collectors.toList()), bestilling.getGruppe(), progress);
+                                    sendIdenterTilTPS(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))),
+                                            tpsPerson.getPersondetaljer().
+                                                    stream().map(Person::getIdent).collect(Collectors.toList()), bestilling.getGruppe(), progress);
 
                                     gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, false);
                                 } else {

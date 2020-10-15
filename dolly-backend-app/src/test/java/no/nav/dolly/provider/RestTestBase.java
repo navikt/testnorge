@@ -1,18 +1,15 @@
 package no.nav.dolly.provider;
 
-import static no.nav.dolly.config.SecurityTestConfig.OPEN_AM_ISSUER_URL;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -22,30 +19,22 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import no.nav.dolly.common.TestdataFactory;
-import no.nav.freg.security.test.oidc.tools.JwtClaimsBuilder;
-import no.nav.freg.security.test.oidc.tools.OidcTestService;
 
-@DirtiesContext
 @ActiveProfiles("test")
+//@DirtiesContext
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ExtendWith(SpringExtension.class)
+//@ExtendWith(SpringExtension.class)
 public abstract class RestTestBase {
 
-    protected static final String NAV_IDENT = "NAVIDENT";
     private static final String DEFAULT_CALL_ID = "CallId_1337";
     private static final String DEFAULT_CONSUMER_ID = "TestCase";
     private static final String ERR_MSG_KEY = "message";
 
     @Autowired
     protected TestdataFactory dataFactory;
-
-    @Autowired
-    protected OidcTestService oidcTestService;
 
     @Autowired
     protected TestRestTemplate restTestTemplate;
@@ -67,23 +56,10 @@ public abstract class RestTestBase {
         return (String) resp.get(ERR_MSG_KEY);
     }
 
-    protected String createOidcToken() {
-        return oidcTestService.createOidc(
-                new JwtClaimsBuilder()
-                        .subject(NAV_IDENT)
-                        .audience("aud")
-                        .expiry(LocalDateTime.now().plusMinutes(10))
-                        .validFrom(LocalDateTime.now().minusMinutes(5))
-                        .azp("azp")
-                        .issuer(OPEN_AM_ISSUER_URL)
-                        .build());
-    }
-
     private EndpointRequestBuilder send(Object requestBody) {
         return new EndpointRequestBuilder(requestBody)
                 .withHeader(HEADER_NAV_CALL_ID, DEFAULT_CALL_ID)
-                .withHeader(HEADER_NAV_CONSUMER_ID, DEFAULT_CONSUMER_ID)
-                .withHeader(HttpHeaders.AUTHORIZATION, "Bearer " + createOidcToken());
+                .withHeader(HEADER_NAV_CONSUMER_ID, DEFAULT_CONSUMER_ID);
     }
 
     protected class EndpointRequestBuilder {

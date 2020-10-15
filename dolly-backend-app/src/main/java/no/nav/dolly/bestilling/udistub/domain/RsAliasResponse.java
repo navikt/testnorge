@@ -24,7 +24,7 @@ public class RsAliasResponse {
 
     public List<Persondata> getAliaser() {
         if (isNull(aliaser)) {
-            aliaser = new ArrayList();
+            aliaser = new ArrayList<>();
         }
         return aliaser;
     }

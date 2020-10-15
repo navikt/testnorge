@@ -3,7 +3,6 @@ package no.nav.dolly.provider.api;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.ArgumentMatchers.any;
@@ -13,6 +12,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import org.junit.Before;
@@ -65,7 +65,7 @@ public class OpenAmControllerTest {
                 Bestilling.builder()
                         .miljoer(format("%s,%s", MILJOE1, MILJOE2))
                         .gruppe(Testgruppe.builder()
-                                .testidenter(newHashSet(asList(Testident.builder().ident(IDENT1)
+                                .testidenter(new HashSet<>(asList(Testident.builder().ident(IDENT1)
                                                 .bestillingProgress(singletonList(BestillingProgress.builder().bestillingId(BESTILLING_ID).build()))
                                                 .build(),
                                         Testident.builder().ident(IDENT2)

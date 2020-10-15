@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.service;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
@@ -148,7 +147,7 @@ public class DollyBestillingService {
             if (nonNull(bestilling.getTpsfKriterier())) {
                 bestKriterier.setTpsf(objectMapper.readValue(bestilling.getTpsfKriterier(), RsTpsfUtvidetBestilling.class));
             }
-            bestKriterier.setEnvironments(newArrayList(bestilling.getMiljoer().split(",")));
+            bestKriterier.setEnvironments(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))));
             return bestKriterier;
 
         } catch (JsonProcessingException e) {
@@ -263,7 +262,7 @@ public class DollyBestillingService {
     }
 
     private static List<String> extraxtSuccessMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
-        Set<String> successMiljoer = new TreeSet();
+        Set<String> successMiljoer = new TreeSet<>();
 
         // Add successful messages
         addSuccessfulMessages(hovedperson, response, successMiljoer);
@@ -271,7 +270,7 @@ public class DollyBestillingService {
         // Remove unsuccessful messages
         removeUnsuccessfulMessages(hovedperson, response, successMiljoer);
 
-        return newArrayList(successMiljoer);
+        return new ArrayList<>(successMiljoer);
     }
 
     private static void removeUnsuccessfulMessages(String hovedperson, RsSkdMeldingResponse response, Set<String> successMiljoer) {
@@ -299,13 +298,13 @@ public class DollyBestillingService {
     }
 
     private static List<String> extraxtFailureMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
-        Map<String, List<String>> failures = new TreeMap();
+        Map<String, List<String>> failures = new TreeMap<>();
 
         addFeilmeldingSkdMeldinger(hovedperson, response.getSendSkdMeldingTilTpsResponsene(), failures);
 
         addFeilmeldingServicerutiner(hovedperson, response.getServiceRoutineStatusResponsene(), failures);
 
-        List<String> errors = newArrayList();
+        List<String> errors = new ArrayList<>();
         failures.keySet().forEach(miljoe -> errors.add(format(OUT_FMT, miljoe, join(" + ", failures.get(miljoe)))));
 
         return errors;
@@ -318,8 +317,8 @@ public class DollyBestillingService {
                     if (isFaulty(entry.getValue()) && failures.containsKey(entry.getKey())) {
                         failures.get(entry.getKey()).add(format(OUT_FMT, response.getSkdmeldingstype(), encodeStatus(entry.getValue())));
                     } else if (isFaulty(entry.getValue())) {
-                        failures.put(entry.getKey(), newArrayList(format(OUT_FMT, response.getSkdmeldingstype(),
-                                encodeStatus(entry.getValue()))));
+                        failures.put(entry.getKey(), new ArrayList<>(List.of(format(OUT_FMT, response.getSkdmeldingstype(),
+                                encodeStatus(entry.getValue())))));
                     }
                 }
             }
@@ -333,8 +332,8 @@ public class DollyBestillingService {
                     if (isFaulty(entry.getValue()) && failures.containsKey(entry.getKey())) {
                         failures.get(entry.getKey()).add(format(OUT_FMT, response.getServiceRutinenavn(), encodeStatus(entry.getValue())));
                     } else if (isFaulty(entry.getValue())) {
-                        failures.put(entry.getKey(), newArrayList(format(OUT_FMT, response.getServiceRutinenavn(),
-                                encodeStatus(entry.getValue()))));
+                        failures.put(entry.getKey(), new ArrayList<>(List.of(format(OUT_FMT, response.getServiceRutinenavn(),
+                                encodeStatus(entry.getValue())))));
                     }
                 }
             }

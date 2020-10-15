@@ -32,6 +32,8 @@ public abstract class BoAdresse {
 
     private String tilleggsadresse;
 
+    private String bolignr;
+
     public abstract String getAdressetype();
 
     public boolean isGateadresse() {

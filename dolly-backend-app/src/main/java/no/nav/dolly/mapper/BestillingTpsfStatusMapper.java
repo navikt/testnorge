@@ -1,13 +1,13 @@
 package no.nav.dolly.mapper;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.TPSF;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,12 +29,12 @@ public final class BestillingTpsfStatusMapper {
 
         progressList.forEach(progress -> {
             if (nonNull(progress.getTpsfSuccessEnv())) {
-                newArrayList(progress.getTpsfSuccessEnv().split(",")).forEach(environ ->
+                List.of(progress.getTpsfSuccessEnv().split(",")).forEach(environ ->
                         checkNUpdateStatus(errorEnvIdents, progress.getIdent(), environ, SUCCESS)
                 );
             }
             if (nonNull(progress.getFeil())) {
-                newArrayList(progress.getFeil().split(",")).forEach(error -> {
+                List.of(progress.getFeil().split(",")).forEach(error -> {
                     String[] environErrMsg = error.split(":", 2);
                     String environ = environErrMsg[0];
                     String errMsg = environErrMsg.length > 1 ? environErrMsg[1].trim().replaceAll("\\d{11}\\s", "") : "";
@@ -51,7 +51,7 @@ public final class BestillingTpsfStatusMapper {
                                         .detaljert(status.getValue().entrySet().stream()
                                                 .map(detaljert -> RsStatusRapport.Detaljert.builder()
                                                         .miljo(detaljert.getKey())
-                                                        .identer(newArrayList(detaljert.getValue()))
+                                                        .identer(new ArrayList<>(detaljert.getValue()))
                                                         .build())
                                                 .collect(Collectors.toList()))
                                         .build())
@@ -66,11 +66,11 @@ public final class BestillingTpsfStatusMapper {
                 if (errorEnvIdents.get(status).containsKey(environ)) {
                     errorEnvIdents.get(status).get(environ).add(ident);
                 } else {
-                    errorEnvIdents.get(status).put(environ, newHashSet(ident));
+                    errorEnvIdents.get(status).put(environ, new HashSet<>(Set.of(ident)));
                 }
             } else {
                 Map<String, Set<String>> entry = new HashMap();
-                entry.put(environ, newHashSet(ident));
+                entry.put(environ, new HashSet<>(Set.of(ident)));
                 errorEnvIdents.put(status, entry);
             }
         }

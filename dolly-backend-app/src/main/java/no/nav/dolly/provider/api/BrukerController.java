@@ -1,10 +1,13 @@
 package no.nav.dolly.provider.api;
 
-import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
-import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
-import static no.nav.dolly.security.sts.StsOidcService.getUserPrinciple;
-
-import java.util.List;
+import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
+import no.nav.dolly.service.BrukerService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
@@ -14,19 +17,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
-import lombok.RequiredArgsConstructor;
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
-import no.nav.dolly.service.BrukerService;
+import java.util.Collection;
+import java.util.List;
 
-@Transactional
+import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
+import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
+import static no.nav.dolly.util.CurrentAuthentication.getUserId;
+import static org.apache.logging.log4j.util.Strings.isBlank;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/bruker", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -37,36 +38,52 @@ public class BrukerController {
 
     @Cacheable(CACHE_BRUKER)
     @GetMapping("/{brukerId}")
-    @ApiOperation(value = "Hent Bruker med brukerId", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Hent Bruker med brukerId")
     public RsBrukerAndGruppeId getBrukerBybrukerId(@PathVariable("brukerId") String brukerId) {
         Bruker bruker = brukerService.fetchBruker(brukerId);
         return mapperFacade.map(bruker, RsBrukerAndGruppeId.class);
     }
 
     @GetMapping("/current")
-    @ApiOperation(value = "Hent pålogget Bruker", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Hent pålogget Bruker")
     public RsBruker getCurrentBruker() {
-        Bruker bruker = brukerService.fetchOrCreateBruker(getUserPrinciple());
+        Bruker bruker = brukerService.fetchOrCreateBruker(getUserId());
         return mapperFacade.map(bruker, RsBruker.class);
+    }
+
+    @Transactional
+    @PutMapping("/migrer")
+    @Operation(description = "Legg til Nav Ident på ny Azure bruker")
+    public int leggTilIdentPaaNyBruker(@RequestParam(required = false) String brukerId, @RequestParam Collection<String> navIdenter) {
+        return brukerService.migrerBruker(navIdenter, isBlank(brukerId) ? getUserId() : brukerId);
+    }
+
+    @Transactional
+    @PutMapping("/fjernMigrering")
+    @Operation(description = "Fjerner migrering av Azure bruker og denne brukerens relasjoner til Nav Identer")
+    public int fjernMigrering(@RequestParam(required = false) String brukerId) {
+        return brukerService.fjernMigreringAvBruker(isBlank(brukerId) ? getUserId() : brukerId);
     }
 
     @Cacheable(CACHE_BRUKER)
     @GetMapping
-    @ApiOperation(value = "Hent alle Brukerne", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Hent alle Brukerne")
     public List<RsBrukerAndGruppeId> getAllBrukere() {
         return mapperFacade.mapAsList(brukerService.fetchBrukere(), RsBrukerAndGruppeId.class);
     }
 
-    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
+    @Transactional
+    @CacheEvict(value = {CACHE_BRUKER, CACHE_GRUPPE}, allEntries = true)
     @PutMapping("/leggTilFavoritt")
-    @ApiOperation(value = "Legg til Favoritt-testgruppe til pålogget Bruker", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Legg til Favoritt-testgruppe til pålogget Bruker")
     public RsBruker leggTilFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
         return mapperFacade.map(brukerService.leggTilFavoritt(request.getGruppeId()), RsBruker.class);
     }
 
-    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
+    @Transactional
+    @CacheEvict(value = {CACHE_BRUKER, CACHE_GRUPPE}, allEntries = true)
     @PutMapping("/fjernFavoritt")
-    @ApiOperation(value = "Fjern Favoritt-testgruppe fra pålogget Bruker", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Fjern Favoritt-testgruppe fra pålogget Bruker")
     public RsBruker fjernFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
         return mapperFacade.map(brukerService.fjernFavoritt(request.getGruppeId()), RsBruker.class);
     }

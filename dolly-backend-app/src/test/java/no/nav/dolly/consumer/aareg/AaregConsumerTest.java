@@ -35,15 +35,11 @@ import no.nav.dolly.bestilling.aareg.domain.AaregOpprettRequest;
 import no.nav.dolly.bestilling.aareg.domain.AaregResponse;
 import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
 import no.nav.dolly.properties.ProvidersProps;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @RunWith(SpringRunner.class)
 @RestClientTest(AaregConsumer.class)
 @ActiveProfiles("test")
 public class AaregConsumerTest {
-
-    private static final String STANDARD_PRINCIPAL = "brukernavn";
-    private static final String STANDARD_IDTOKEN = "idtoken";
 
     @Autowired
     private AaregConsumer aaregConsumer;
@@ -86,10 +82,6 @@ public class AaregConsumerTest {
         slettResponse = AaregResponse.builder()
                 .statusPerMiljoe(status)
                 .build();
-
-        SecurityContextHolder.getContext().setAuthentication(
-                new OidcTokenAuthentication(STANDARD_PRINCIPAL, STANDARD_IDTOKEN, null)
-        );
     }
 
     @Test

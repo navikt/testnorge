@@ -3,7 +3,7 @@ package no.nav.dolly.domain.resultset.aareg;
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,18 +18,12 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsPeriode {
 
-    @ApiModelProperty(
-            value = "Dato fra-og-med",
-            dataType = "LocalDateTime",
-            required = true,
-            position = 1
-    )
+    @Schema(description = "Dato fra-og-med",
+            type = "LocalDateTime",
+            required = true)
     private LocalDateTime fom;
 
-    @ApiModelProperty(
-            value = "Dato til-og-med",
-            dataType = "LocalDateTime",
-            position = 2
-    )
+    @Schema(description = "Dato til-og-med",
+            type = "LocalDateTime")
     private LocalDateTime tom;
 }

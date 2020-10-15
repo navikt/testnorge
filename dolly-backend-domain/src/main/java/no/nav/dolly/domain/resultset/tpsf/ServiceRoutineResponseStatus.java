@@ -10,10 +10,11 @@ import java.util.Map;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class ServiceRoutineResponseStatus {
+
     private String personId;
     private String serviceRutinenavn;
     private Map<String, String> status; //Map<Environment, TPS respons statusmelding >

@@ -57,14 +57,14 @@ public class ArenaNyeBrukereResponse {
 
     public List<Bruker> getArbeidsokerList() {
         if (isNull(arbeidsokerList)) {
-            arbeidsokerList = new ArrayList();
+            arbeidsokerList = new ArrayList<>();
         }
         return arbeidsokerList;
     }
 
     public List<NyBrukerFeilV1> getNyBrukerFeilList() {
         if (isNull(nyBrukerFeilList)) {
-            nyBrukerFeilList = new ArrayList();
+            nyBrukerFeilList = new ArrayList<>();
         }
         return nyBrukerFeilList;
     }

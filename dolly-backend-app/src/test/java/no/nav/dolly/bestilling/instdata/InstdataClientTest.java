@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.instdata;
 
 import static java.util.Collections.singletonList;
-import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -11,6 +10,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -65,7 +65,7 @@ public class InstdataClientTest {
         when(instdataConsumer.getMiljoer()).thenReturn(new String[] { "u5" });
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
-        request.setInstdata(newArrayList(RsInstdata.builder().build()));
+        request.setInstdata(List.of(RsInstdata.builder().build()));
         request.setEnvironments(singletonList("t2"));
         instdataClient.gjenopprett(request, TPS_IDENT, progress, false);
 
@@ -78,13 +78,13 @@ public class InstdataClientTest {
         BestillingProgress progress = new BestillingProgress();
 
         when(instdataConsumer.getMiljoer()).thenReturn(new String[] { "q2" });
-        when(mapperFacade.mapAsList(anyList(), eq(Instdata.class))).thenReturn(newArrayList(Instdata.builder().build()));
+        when(mapperFacade.mapAsList(anyList(), eq(Instdata.class))).thenReturn(List.of(Instdata.builder().build()));
         when(instdataConsumer.getInstdata(IDENT, ENVIRONMENT)).thenReturn(ResponseEntity.ok(new Instdata[] {}));
         InstdataResponse[] instdataResponse = new InstdataResponse[] { InstdataResponse.builder().status(HttpStatus.CREATED).build() };
         when(instdataConsumer.postInstdata(anyList(), anyString())).thenReturn(ResponseEntity.ok(instdataResponse));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
-        request.setInstdata(newArrayList(RsInstdata.builder().build()));
+        request.setInstdata(List.of(RsInstdata.builder().build()));
         request.setEnvironments(singletonList("q2"));
         instdataClient.gjenopprett(request, TPS_IDENT, progress, false);
 

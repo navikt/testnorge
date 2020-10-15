@@ -1,12 +1,12 @@
 package no.nav.dolly.mapper;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.AAREG;
 import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.checkAndUpdateStatus;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +27,7 @@ public final class BestillingAaregStatusMapper {
 
         progressList.forEach(progress -> {
             if (nonNull(progress.getAaregStatus())) {
-                newArrayList(progress.getAaregStatus().split(",")).forEach(status -> {
+                List.of(progress.getAaregStatus().split(",")).forEach(status -> {
                     String[] environErrMsg = status.split(":");
                     String environ = environErrMsg[0];
                     String errMsg = environErrMsg.length > 1 ? environErrMsg[1].trim() : "";
@@ -44,7 +44,7 @@ public final class BestillingAaregStatusMapper {
                                         .detaljert(status.getValue().entrySet().stream().map(miljo ->
                                                 RsStatusRapport.Detaljert.builder()
                                                         .miljo(miljo.getKey())
-                                                        .identer(newArrayList(miljo.getValue()))
+                                                        .identer(new ArrayList<>(miljo.getValue()))
                                                         .build())
                                                 .collect(Collectors.toList()))
                                         .build())

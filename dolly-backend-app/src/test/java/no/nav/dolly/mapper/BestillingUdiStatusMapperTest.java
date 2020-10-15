@@ -1,6 +1,5 @@
 package no.nav.dolly.mapper;
 
-import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
@@ -17,7 +16,7 @@ import no.nav.dolly.domain.resultset.RsStatusRapport;
 @RunWith(MockitoJUnitRunner.class)
 public class BestillingUdiStatusMapperTest {
 
-    private static final List<BestillingProgress> ERROR_STATUS = newArrayList(
+    private static final List<BestillingProgress> ERROR_STATUS = List.of(
             BestillingProgress.builder().ident("IDENT_1")
                     .udistubStatus("OK")
                     .build(),

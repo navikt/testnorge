@@ -8,11 +8,6 @@ APP_VERSION: ${application.version}
 #### APP DB ####
 ? app.datasource.onsHosts
 
-#### NEW FREG-SECURITY #####
-freg.security.oidc.auth:
-  securedPath: /**
-  ignoredPaths: /internal/**,/api,/sysdoc/**,/swagger-ui.html,/swagger-resources/**,/swagger/**,/webjars/**
-
 springfox:
   documentation:
     swagger:
@@ -22,18 +17,26 @@ springfox:
 dolly:
   api:
     v1:
-      name: API versjon 1
-      description: Dolly er en kloningsklient for NAVs personopplysning. Bruk den til å opprette fiktive testpersoner med fiktive inntekter og arbeidsforhold.
+      name: Dolly V2.0
+      description: Dolly er verktøyet som kloner GDPR testdata til ønsket miljø. </br>
+               Opprett fiktive testpersoner med arbeidsforhold, inntekter, sykemelding og annet i hht testbehov.
+      version: Versjon 1
       header:
-        nav-consumer-id: En ID for systemet som gjør kallet, som regel servicebrukeren til applikasjonen.
-        nav-call-id: En ID som identifiserer kallkjeden som dette kallet er en del av.
+        nav-consumer-id: Navn på applikasjon som gjør kallet
+        nav-call-id: Unik identifikator, typisk UUID (128 bit)
 
 spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
     driver-class-name: oracle.jdbc.OracleDriver
-
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/v2.0
+          #The client_id of this application
+          accepted-audience: ${client.id}, api://${client.id}
 
 management:
   endpoints:

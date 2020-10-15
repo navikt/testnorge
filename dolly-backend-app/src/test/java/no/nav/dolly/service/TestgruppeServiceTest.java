@@ -2,7 +2,6 @@ package no.nav.dolly.service;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.assertj.core.util.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
@@ -16,9 +15,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import org.apache.http.entity.ContentType;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,7 +29,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 import no.nav.dolly.common.TestidentBuilder;
 import no.nav.dolly.domain.jpa.Bruker;
@@ -39,15 +42,16 @@ import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
-
 @RunWith(MockitoJUnitRunner.class)
 public class TestgruppeServiceTest {
+
+    private final static String BRUKERID = "123";
+    private final static String BRUKERNAVN = "BRUKER";
+    private final static String EPOST = "@@@@";
 
     private static final long GROUP_ID = 1L;
     private static final String IDENT_ONE = "1";
     private static final String IDENT_TWO = "2";
-    private static final String standardPrincipal = "PRINC";
 
     @Mock
     private TestgruppeRepository testgruppeRepository;
@@ -74,15 +78,18 @@ public class TestgruppeServiceTest {
 
     @BeforeClass
     public static void establishSecurity() {
-        SecurityContextHolder.getContext().setAuthentication(
-                new OidcTokenAuthentication(standardPrincipal, null, null, null, null)
-        );
+        SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(Jwt.withTokenValue("test")
+                .claim("oid", BRUKERID)
+                .claim("name", BRUKERNAVN)
+                .claim("epost", EPOST)
+                .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON)
+                .build()));
     }
 
     @Before
     public void setup() {
 
-        Set gruppe = newHashSet(
+        Set gruppe = new HashSet<>(
                 asList(
                         TestidentBuilder.builder().ident(IDENT_ONE).build().convertToRealTestident(),
                         TestidentBuilder.builder().ident(IDENT_TWO).build().convertToRealTestident()
@@ -95,7 +102,7 @@ public class TestgruppeServiceTest {
         RsOpprettEndreTestgruppe rsTestgruppe = mock(RsOpprettEndreTestgruppe.class);
         Bruker bruker = mock(Bruker.class);
 
-        when(brukerService.fetchBruker(standardPrincipal)).thenReturn(bruker);
+        when(brukerService.fetchBruker(BRUKERID)).thenReturn(bruker);
 
         testgruppeService.opprettTestgruppe(rsTestgruppe);
 
@@ -134,13 +141,13 @@ public class TestgruppeServiceTest {
         Testgruppe tg3 = Testgruppe.builder().id(3L).navn("test3").build();
 
         Bruker bruker = Bruker.builder()
-                .favoritter(newHashSet(asList(tg1, tg2, tg3)))
-                .brukerId(standardPrincipal)
+                .favoritter(new HashSet<>(asList(tg1, tg2, tg3)))
+                .navIdent(BRUKERID)
                 .build();
 
         when(brukerService.fetchBruker(any())).thenReturn(bruker);
 
-        List<Testgruppe> grupper = testgruppeService.fetchTestgrupperByBrukerId(standardPrincipal);
+        Set<Testgruppe> grupper = testgruppeService.fetchTestgrupperByBrukerId(BRUKERID);
 
         assertThat(grupper, hasItem(hasProperty("id", equalTo(1L))));
         assertThat(grupper, hasItem(hasProperty("id", equalTo(2L))));
@@ -179,13 +186,13 @@ public class TestgruppeServiceTest {
     @Test(expected = ConstraintViolationException.class)
     public void saveGrupper_kasterExceptionHvisDBConstraintErBrutt() {
         when(testgruppeRepository.saveAll(any())).thenThrow(DataIntegrityViolationException.class);
-        testgruppeService.saveGrupper(newHashSet(singletonList(new Testgruppe())));
+        testgruppeService.saveGrupper(new HashSet<>(singletonList(new Testgruppe())));
     }
 
     @Test(expected = DollyFunctionalException.class)
     public void saveGrupper_kasterDollyExceptionHvisDBConstraintErBrutt() {
         when(testgruppeRepository.saveAll(any())).thenThrow(nonTransientDataAccessException);
-        testgruppeService.saveGrupper(newHashSet(singletonList(new Testgruppe())));
+        testgruppeService.saveGrupper(new HashSet<>(singletonList(new Testgruppe())));
     }
 
     @Test(expected = NotFoundException.class)
@@ -199,7 +206,7 @@ public class TestgruppeServiceTest {
         RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettEndreTestgruppe.builder().hensikt("test").navn("navn").build();
 
         when(testgruppeRepository.findById(anyLong())).thenReturn(Optional.of(testGruppe));
-        when(brukerService.fetchBruker(anyString())).thenReturn(Bruker.builder().brukerId("brukerId").build());
+        when(brukerService.fetchBruker(anyString())).thenReturn(Bruker.builder().navIdent("brukerId").build());
         testgruppeService.oppdaterTestgruppe(GROUP_ID, rsOpprettEndreTestgruppe);
         verify(testgruppeRepository).save(testGruppe);
     }

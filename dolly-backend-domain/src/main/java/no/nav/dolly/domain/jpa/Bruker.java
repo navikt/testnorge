@@ -1,17 +1,24 @@
 package no.nav.dolly.domain.jpa;
 
 import static java.util.Objects.isNull;
+import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,8 +36,32 @@ import lombok.Setter;
 public class Bruker {
 
     @Id
-    @Column(name = "NAV_IDENT", length = 10)
+    @GeneratedValue(generator = "brukerIdGenerator")
+    @GenericGenerator(name = "brukerIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
+            @Parameter(name = "sequence_name", value = "T_BRUKER_SEQ"),
+            @Parameter(name = "initial_value", value = "1"),
+            @Parameter(name = "increment_size", value = "1")
+    })
+    private Long id;
+
+    @Column(name = "BRUKER_ID")
     private String brukerId;
+
+    @Column(name = "BRUKERNAVN")
+    private String brukernavn;
+
+    @Column(name = "EPOST")
+    private String epost;
+
+    @Column(name = "NAV_IDENT", length = 10)
+    private String navIdent;
+
+    @Column(name = "MIGRERT")
+    private Boolean migrert;
+
+    @ManyToOne
+    @JoinColumn(name = "EID_AV_ID")
+    private Bruker eidAv;
 
     @OneToMany(mappedBy = "opprettetAv")
     private Set<Testgruppe> testgrupper;
@@ -43,15 +74,47 @@ public class Bruker {
 
     public Set<Testgruppe> getFavoritter() {
         if (isNull(favoritter)) {
-            favoritter = new HashSet();
+            favoritter = new HashSet<>();
         }
         return favoritter;
     }
 
     public Set<Testgruppe> getTestgrupper() {
         if (isNull(testgrupper)) {
-            testgrupper = new HashSet();
+            testgrupper = new HashSet<>();
         }
         return testgrupper;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+
+        if (!(o instanceof Bruker))
+            return false;
+
+        Bruker bruker = (Bruker) o;
+
+        return new EqualsBuilder()
+                .append(getId(), bruker.getId())
+                .append(getBrukerId(), bruker.getBrukerId())
+                .append(getBrukernavn(), bruker.getBrukernavn())
+                .append(getEpost(), bruker.getEpost())
+                .append(getNavIdent(), bruker.getNavIdent())
+                .append(getMigrert(), bruker.getMigrert())
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(getId())
+                .append(getBrukerId())
+                .append(getBrukernavn())
+                .append(getEpost())
+                .append(getNavIdent())
+                .append(getMigrert())
+                .toHashCode();
     }
 }

@@ -1,10 +1,9 @@
 package no.nav.dolly.domain.resultset.inntektstub;
 
 import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,82 +20,45 @@ public class Inntekt {
 
     public enum InntektType {LOENNSINNTEKT, YTELSE_FRA_OFFENTLIGE, PENSJON_ELLER_TRYGD, NAERINGSINNTEKT}
 
-    @ApiModelProperty(
-            position = 1
-    )
     private InntektType inntektstype;
 
-    @ApiModelProperty(
-            position = 2
-    )
     private Double beloep;
 
-    @ApiModelProperty(
-            value = "Startdato på perioden inntekten var opptjent",
+    @Schema(description = "Startdato på perioden inntekten var opptjent",
             example = "yyyy-MM-dd",
-            dataType = "LocalDateTime",
-            position = 3
-    )
+            type = "LocalDateTime")
     private LocalDateTime startOpptjeningsperiode;
 
-    @ApiModelProperty(
-            value = "Sluttdato på perioden inntekten var opptjent",
+    @Schema(description = "Sluttdato på perioden inntekten var opptjent",
             example = "yyyy-MM-dd",
-            dataType = "LocalDateTime",
-            position = 4
-    )
+            type = "LocalDateTime")
     private LocalDateTime sluttOpptjeningsperiode;
 
-    @ApiModelProperty(
-            position = 5
-    )
     private Boolean inngaarIGrunnlagForTrekk;
 
-    @ApiModelProperty(
-            position = 6
-    )
     private Boolean utloeserArbeidsgiveravgift;
 
-    @ApiModelProperty(
-            value = "Gyldige verdier finnes i kodeverket 'Fordel'",
-            position = 7
-    )
+    @Schema(description = "Gyldige verdier finnes i kodeverket 'Fordel'")
     private String fordel;
 
-    @ApiModelProperty(
-            value = "Gyldige verdier finnes i kodeverket 'SkatteOgAvgiftsregel'",
-            position = 8
-    )
+    @Schema(description = "Gyldige verdier finnes i kodeverket 'SkatteOgAvgiftsregel'")
     private String skatteOgAvgiftsregel;
 
-    @ApiModelProperty(
-            value = "Gyldige verdier finnes i kodeverket 'LandkoderISO2'",
-            position = 9
-    )
+    @Schema(description = "Gyldige verdier finnes i kodeverket 'LandkoderISO2'")
     private String skattemessigBosattILand;
 
-    @ApiModelProperty(
-            value = "Gyldige verdier finnes i kodeverket 'LandkoderISO2'",
-            position = 10
-    )
+    @Schema(description = "Gyldige verdier finnes i kodeverket 'LandkoderISO2'")
     private String opptjeningsland;
 
-    @ApiModelProperty(
-            value = "Gyldige verdier avhenger av inntektstypen, og finnes i kodeverkene 'Loennsbeskrivelse', 'YtelseFraOffentligeBeskrivelse', 'PensjonEllerTrygdeBeskrivelse', 'Naeringsinntektsbeskrivelse'",
-            position = 11
-    )
+    @Schema(description = "Gyldige verdier avhenger av inntektstypen, og finnes i kodeverkene "
+            + "'Loennsbeskrivelse', 'YtelseFraOffentligeBeskrivelse', "
+            + "'PensjonEllerTrygdeBeskrivelse', 'Naeringsinntektsbeskrivelse'")
     private String beskrivelse;
 
-    @ApiModelProperty(
-            value = "OBS! kun ett av feltene i tilleggsinformasjon skal være satt",
-            position = 12
-    )
+    @Schema(description = "OBS! kun ett av feltene i tilleggsinformasjon skal være satt")
     private Tilleggsinformasjon tilleggsinformasjon;
 
-    @ApiModelProperty(
-            value = "F.eks. antall kilometer i kilometergodtgjørelsen",
-            position = 13
-    )
+    @Schema(description = "F.eks. antall kilometer i kilometergodtgjørelsen")
     private Double antall;
 }
 

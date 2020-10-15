@@ -9,6 +9,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.net.URI;
+import java.util.HashSet;
 import java.util.Set;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -16,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.collect.Sets;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +53,7 @@ public class PensjonforvalterConsumer {
                             .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                             .build(),
                     String[].class);
-            return responseEntity.hasBody() ? Sets.newHashSet((String[]) responseEntity.getBody()) : emptySet();
+            return responseEntity.hasBody() ? new HashSet<>(Set.of((String[]) responseEntity.getBody())) : emptySet();
 
         } catch (RuntimeException e) {
 

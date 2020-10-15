@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.instdata;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static org.springframework.http.HttpStatus.CREATED;
 
 import java.util.ArrayList;
@@ -38,9 +37,9 @@ public class InstdataClient implements ClientRegister {
         if (!bestilling.getInstdata().isEmpty()) {
 
             StringBuilder status = new StringBuilder();
-            List<String> availEnvironments = newArrayList(instdataConsumer.getMiljoer());
+            List<String> availEnvironments = new ArrayList<>(List.of(instdataConsumer.getMiljoer()));
 
-            List<String> environments = newArrayList(availEnvironments);
+            List<String> environments = new ArrayList<>(List.copyOf(availEnvironments));
             environments.retainAll(bestilling.getEnvironments());
 
             if (!environments.isEmpty()) {
@@ -67,7 +66,7 @@ public class InstdataClient implements ClientRegister {
                 });
             }
 
-            List<String> notSupportedEnvironments = new ArrayList(bestilling.getEnvironments());
+            List<String> notSupportedEnvironments = new ArrayList<>(bestilling.getEnvironments());
             notSupportedEnvironments.removeAll(availEnvironments);
             notSupportedEnvironments.forEach(environment ->
                     status.append(',')
@@ -96,7 +95,7 @@ public class InstdataClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        List<String> environments = newArrayList(instdataConsumer.getMiljoer());
+        List<String> environments = List.of(instdataConsumer.getMiljoer());
         environments.forEach(environment ->
                 identer.forEach(ident -> instdataConsumer.deleteInstdata(ident, environment))
         );

@@ -1,11 +1,11 @@
 package no.nav.dolly.mapper;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.BRREGSTUB;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +28,7 @@ public final class BestillingBrregStubStatusMapper {
                 if (statusMap.containsKey(progress.getBrregstubStatus())) {
                     statusMap.get(progress.getBrregstubStatus()).add(progress.getIdent());
                 } else {
-                    statusMap.put(progress.getBrregstubStatus(), newArrayList(progress.getIdent()));
+                    statusMap.put(progress.getBrregstubStatus(), new ArrayList<>(List.of(progress.getIdent())));
                 }
             }
         });

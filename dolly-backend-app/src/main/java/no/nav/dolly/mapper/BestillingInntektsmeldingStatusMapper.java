@@ -1,12 +1,12 @@
 package no.nav.dolly.mapper;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
 import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.checkAndUpdateStatus;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +28,7 @@ public final class BestillingInntektsmeldingStatusMapper {
 
         progressList.forEach(progress -> {
             if (nonNull(progress.getInntektsmeldingStatus())) {
-                newArrayList(progress.getInntektsmeldingStatus().split(",")).forEach(status -> {
+                List.of(progress.getInntektsmeldingStatus().split(",")).forEach(status -> {
                     String[] environErrMsg = status.split(":", 2);
                     String environ = environErrMsg[0];
                     String errMsg = environErrMsg.length > 1 ? environErrMsg[1].trim().replaceAll("&", ",") : "";
@@ -43,7 +43,7 @@ public final class BestillingInntektsmeldingStatusMapper {
                                 .melding(status.getKey())
                                 .detaljert(status.getValue().entrySet().stream().map(envIdent -> RsStatusRapport.Detaljert.builder()
                                         .miljo(envIdent.getKey())
-                                        .identer(newArrayList(envIdent.getValue()))
+                                        .identer(new ArrayList<>(envIdent.getValue()))
                                         .build())
                                         .collect(Collectors.toList()))
                                 .build())

@@ -5,7 +5,6 @@ import static java.util.Objects.isNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -18,6 +17,7 @@ import no.nav.dolly.domain.resultset.aareg.RsAaregArbeidsforhold;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
@@ -42,7 +42,7 @@ public class RsBestillingStatus {
     private Integer antallLevert;
     private boolean ferdig;
     private LocalDateTime sistOppdatert;
-    private String userId;
+    private RsBrukerUtenFavoritter bruker;
     private long gruppeId;
     private boolean stoppet;
     private String feil;

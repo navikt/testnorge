@@ -1,12 +1,13 @@
 package no.nav.dolly.bestilling.instdata;
 
-import static org.assertj.core.util.Lists.newArrayList;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -74,7 +75,7 @@ public class InstdataConsumerTest {
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withSuccess());
 
-        instdataConsumer.postInstdata(newArrayList(Instdata.builder().build()), ENVIRONMENT);
+        instdataConsumer.postInstdata(List.of(Instdata.builder().build()), ENVIRONMENT);
 
         verify(providersProps).getInstdata();
     }

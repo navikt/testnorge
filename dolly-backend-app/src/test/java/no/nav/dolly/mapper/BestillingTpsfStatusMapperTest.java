@@ -1,6 +1,5 @@
 package no.nav.dolly.mapper;
 
-import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -18,7 +17,7 @@ import no.nav.dolly.domain.resultset.RsStatusRapport;
 @RunWith(MockitoJUnitRunner.class)
 public class BestillingTpsfStatusMapperTest {
 
-    private static final List<BestillingProgress> ERROR_STATUS = newArrayList(
+    private static final List<BestillingProgress> ERROR_STATUS = List.of(
             BestillingProgress.builder().ident("IDENT_1")
                     .feil("u5: FEIL: Data om innvandring var ikke utfylt,t0: FEIL: Data om innvandring var ikke utfylt,t1: FEIL: Data om innvandring var ikke utfylt,q0: FEIL: Data om innvandring var ikke utfylt\n")
                     .build(),

@@ -14,6 +14,8 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.client.RestTemplate;
 
+import no.nav.dolly.config.ForkJoinWorkerThreadFactory;
+
 @SpringBootApplication
 public class ApplicationConfig {
 

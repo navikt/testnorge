@@ -1,7 +1,7 @@
 package no.nav.dolly.mapper.strategy;
 
-import static com.google.common.collect.Lists.newArrayList;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class MalBestillingMappingStrategy implements MappingStrategy {
 
                         RsDollyBestillingRequest bestillingRequest = jsonBestillingMapper.mapBestillingRequest(bestilling.getBestKriterier());
                         mapperFacade.map(bestillingRequest, malBestilling);
-                        malBestilling.setEnvironments(newArrayList(bestilling.getMiljoer().split(",")));
+                        malBestilling.setEnvironments(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))));
                         malBestilling.setTpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()));
                     }
                 })

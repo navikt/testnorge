@@ -2,7 +2,7 @@ package no.nav.dolly.domain.resultset;
 
 import java.util.List;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,18 +15,12 @@ import no.nav.dolly.domain.resultset.tpsf.RsRelasjoner;
 @AllArgsConstructor
 public class RsDollyRelasjonRequest {
 
-    @ApiModelProperty(
-            position = 1,
-            value = "Liste av miljøer bestilling(en) gjelder for",
-            required = true
-    )
+    @Schema(required = true,
+            description = "Liste av miljøer bestilling(en) gjelder for")
     private List<String> environments;
 
-    @ApiModelProperty(
-            position = 1,
-            value = "Identifikasjon av relasjoner som skal opprettes",
-            required = true
-    )
+    @Schema(required = true,
+            description = "Identifikasjon av relasjoner som skal opprettes")
     private Tpsf tpsf;
 
     @Getter

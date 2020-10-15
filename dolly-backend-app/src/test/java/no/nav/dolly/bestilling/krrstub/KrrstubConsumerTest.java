@@ -6,17 +6,13 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
@@ -25,19 +21,16 @@ import org.springframework.web.client.RestTemplate;
 
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.properties.ProvidersProps;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @RestClientTest(KrrstubConsumer.class)
 public class KrrstubConsumerTest {
 
-    private static final String CURRENT_BRUKER_IDENT = "user";
     private static final String EPOST = "morro.pa@landet.no";
     private static final String MOBIL = "11111111";
     private static final boolean RESVERT = true;
     private static final String BASE_URL = "baseUrl";
-    private static Authentication authentication;
 
     private MockRestServiceServer server;
 
@@ -49,18 +42,6 @@ public class KrrstubConsumerTest {
 
     @Autowired
     private KrrstubConsumer krrStubConsumer;
-
-    @BeforeClass
-    public static void beforeClass() {
-        authentication = SecurityContextHolder.getContext().getAuthentication();
-        SecurityContextHolder.getContext().setAuthentication(
-                new OidcTokenAuthentication(CURRENT_BRUKER_IDENT, null, null));
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
 
     @Before
     public void setup() {

@@ -1,9 +1,9 @@
 package no.nav.dolly.bestilling.service;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 
@@ -75,7 +75,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                                 RsOppdaterPersonResponse oppdaterPersonResponse = tpsfService.endreLeggTilPaaPerson(testident.getIdent(), tpsfBestilling);
                                 if (!oppdaterPersonResponse.getIdentTupler().isEmpty()) {
 
-                                    sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(",")),
+                                    sendIdenterTilTPS(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))),
                                             oppdaterPersonResponse.getIdentTupler().stream()
                                                     .map(RsOppdaterPersonResponse.IdentTuple::getIdent).collect(toList()), null, progress);
 

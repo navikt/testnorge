@@ -1,11 +1,11 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
@@ -45,6 +45,7 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
                         vegadresse.setKommunenummer(gateadresse.getKommunenr());
                         vegadresse.setPostnummer(gateadresse.getPostnr());
                         vegadresse.setAdressetillegsnavn(getTilleggsnavn(gateadresse));
+                        vegadresse.setBruksenhetsnummer(gateadresse.getBolignr());
                     }
                 })
                 .byDefault()
@@ -64,6 +65,7 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
                         matrikkeladresse.setPostnummer(rsMatrikkeladresse.getPostnr());
                         matrikkeladresse.setUndernummer(toNumeric(rsMatrikkeladresse.getUndernr()));
                         matrikkeladresse.setAdressetilleggsnavn(getTilleggsnavn(rsMatrikkeladresse));
+                        matrikkeladresse.setBruksenhetsnummer(rsMatrikkeladresse.getBolignr());
                     }
                 })
                 .register();
@@ -80,25 +82,30 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
                         vegadresse.setAdressetillegsnavn(Strings.isNotBlank(gateadresse.getTilleggsadresse()) &&
                                 !gateadresse.getTilleggsadresse().contains(CO_NAME) ?
                                 gateadresse.getTilleggsadresse() : null);
+                        vegadresse.setBruksenhetsnummer(gateadresse.getBolignr());
                     }
                 })
                 .register();
 
         factory.classMap(RsPostadresse.class, PostadresseIFrittFormat.class)
-                .customize(new CustomMapper<RsPostadresse, PostadresseIFrittFormat>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(RsPostadresse postadresse, PostadresseIFrittFormat postadresseIFrittFormat, MappingContext context) {
 
-                        List<String> adresselinjer = newArrayList(postadresse.getPostLinje1());
+                        List<String> adresselinjer = new ArrayList<>(List.of(postadresse.getPostLinje1()));
                         if (Strings.isNotBlank(postadresse.getPostLinje2())) {
                             adresselinjer.add(postadresse.getPostLinje2());
                         }
                         if (Strings.isNotBlank(postadresse.getPostLinje3())) {
                             adresselinjer.add(postadresse.getPostLinje3());
                         }
-                        postadresseIFrittFormat.setPostnummer(
-                                adresselinjer.stream().reduce((first, second) -> second).get().split(" ")[0]);
-                        adresselinjer.remove(adresselinjer.size() - 1);
+
+                        String postnummer = adresselinjer.stream().reduce((first, second) -> second).orElse(null);
+                        if (isNotBlank(postnummer)) {
+                            postadresseIFrittFormat.setPostnummer(postnummer.split(" ")[0]);
+                            adresselinjer.remove(adresselinjer.size() - 1);
+                        }
+
                         postadresseIFrittFormat.setAdresselinjer(adresselinjer);
                     }
                 })
@@ -124,7 +131,7 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
         return nonNull(dateTime) ? dateTime.toLocalDate() : null;
     }
 
-    private static Integer toNumeric(String number){
+    private static Integer toNumeric(String number) {
 
         return StringUtils.isNumeric(number) ? Integer.valueOf(number) : null;
     }

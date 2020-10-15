@@ -3,7 +3,7 @@ package no.nav.dolly.domain.resultset.arenaforvalter;
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,16 +18,10 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsArenaAap {
 
-    @ApiModelProperty(
-            position = 1,
-            required = true,
-            dataType = "LocalDateTime"
-    )
+    @Schema(required = true,
+            type = "LocalDateTime")
     private LocalDateTime fraDato;
 
-    @ApiModelProperty(
-            position = 2,
-            dataType = "LocalDateTime"
-    )
+    @Schema(type = "LocalDateTime")
     private LocalDateTime tilDato;
 }

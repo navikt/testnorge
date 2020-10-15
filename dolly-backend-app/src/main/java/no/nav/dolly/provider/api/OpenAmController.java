@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsOpenAmResponse;
@@ -35,7 +34,7 @@ public class OpenAmController {
     @CacheEvict(value = CACHE_BESTILLING, allEntries = true)
     @PostMapping("/bestilling/{bestillingId}")
     @Transactional
-    @ApiOperation(value = "Opprett identer i miljøer for identer tilhørende en Bestillings Testgruppe", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Opprett identer i miljøer for identer tilhørende en Bestillings Testgruppe")
     public List<RsOpenAmResponse> sendBestillingTilOpenAm(@RequestParam Long bestillingId) {
         Optional<Bestilling> bestillingOpt = bestillingRepository.findById(bestillingId);
         if (bestillingOpt.isPresent()) {

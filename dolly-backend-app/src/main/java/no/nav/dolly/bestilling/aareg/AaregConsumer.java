@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.aareg;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
@@ -8,6 +7,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
@@ -58,7 +58,7 @@ public class AaregConsumer {
                             .header(HEADER_NAV_CALL_ID, getNavCallId())
                             .build(), ArbeidsforholdResponse[].class);
 
-            return response.hasBody() ? newArrayList(response.getBody()) : emptyList();
+            return response.hasBody() ? new ArrayList<>(List.of(response.getBody())) : emptyList();
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 return emptyList();

@@ -3,10 +3,7 @@ package no.nav.dolly.bestilling.sigrunstub;
 import static java.lang.String.format;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.security.sts.StsOidcService.getUserIdToken;
-import static no.nav.dolly.security.sts.StsOidcService.getUserPrinciple;
 import static org.springframework.http.HttpHeaders.ACCEPT;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.net.URI;
@@ -40,7 +37,6 @@ public class SigrunStubConsumer {
     public void deleteSkattegrunnlag(String ident) {
 
         restTemplate.exchange(RequestEntity.delete(URI.create(providersProps.getSigrunStub().getUrl() + SIGRUN_STUB_DELETE_GRUNNLAG))
-                        .header(AUTHORIZATION, getUserIdToken())
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .header("personidentifikator", ident)
@@ -53,10 +49,8 @@ public class SigrunStubConsumer {
 
         return restTemplate.exchange(RequestEntity.post(URI.create(providersProps.getSigrunStub().getUrl() + SIGRUN_STUB_OPPRETT_GRUNNLAG))
                         .header(ACCEPT, APPLICATION_JSON_VALUE)
-                        .header(AUTHORIZATION, getUserIdToken())
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                        .header("testdataEier", getUserPrinciple())
                         .body(request),
                 Object.class);
     }

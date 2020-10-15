@@ -28,14 +28,14 @@ public class TpsPerson {
 
     public List<String> getPartnere() {
         if (isNull(partnere)) {
-            partnere = new ArrayList();
+            partnere = new ArrayList<>();
         }
         return partnere;
     }
 
     public List<String> getBarn() {
         if (isNull(barn)) {
-            barn = new ArrayList();
+            barn = new ArrayList<>();
         }
         return barn;
     }
@@ -49,7 +49,7 @@ public class TpsPerson {
 
     public List<Person> getPersondetaljer() {
         if (isNull(persondetaljer)) {
-            persondetaljer = new ArrayList();
+            persondetaljer = new ArrayList<>();
         }
         return persondetaljer;
     }

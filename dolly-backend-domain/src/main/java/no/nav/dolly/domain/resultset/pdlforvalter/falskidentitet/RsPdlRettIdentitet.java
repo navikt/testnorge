@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,10 +19,8 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class RsPdlRettIdentitet {
 
-    @ApiModelProperty(
-            position = 1,
-            required = true,
-            value = "identitetType kan en av følgende verdier:\n" +
+    @Schema(required = true,
+            description = "identitetType kan en av følgende verdier:\n" +
                     "UKJENT, ENTYDIG, OMTRENTLIG\n\n" +
                     "For identitet ukjent:\n" +
                     "  \"rettIdentitet\": {\n" +

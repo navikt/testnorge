@@ -1,18 +1,16 @@
 package no.nav.dolly.bestilling.tpsf;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
-import static no.nav.dolly.security.sts.StsOidcService.getUserIdToken;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -105,7 +103,7 @@ public class TpsfService {
     public List<Person> hentTestpersoner(List<String> identer) {
         ResponseEntity<Object> response = postToTpsf(TPSF_HENT_PERSONER_URL, identer);
         if (isBodyNotNull(response)) {
-            return newArrayList(objectMapper.convertValue(response.getBody(), Person[].class));
+            return new ArrayList<>(List.of(objectMapper.convertValue(response.getBody(), Person[].class)));
         }
         return emptyList();
     }
@@ -116,7 +114,6 @@ public class TpsfService {
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(format("%s%s%s", providersProps.getTpsf().getUrl(), TPSF_UPDATE_PERSON_URL, ident)))
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(AUTHORIZATION, getUserIdToken())
                 .body(tpsfBestilling), RsOppdaterPersonResponse.class).getBody();
     }
 
@@ -126,7 +123,6 @@ public class TpsfService {
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(format("%s%s%s", providersProps.getTpsf().getUrl(), TPSF_PERSON_RELASJON, ident)))
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(AUTHORIZATION, getUserIdToken())
                 .body(tpsfBestilling), List.class).getBody();
     }
 
@@ -136,7 +132,6 @@ public class TpsfService {
         return restTemplate.exchange(RequestEntity.post(
                 URI.create(providersProps.getTpsf().getUrl() + TPSF_IMPORTER_PERSON))
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(AUTHORIZATION, getUserIdToken())
                 .body(tpsfImportPersonRequest), Person.class).getBody();
     }
 

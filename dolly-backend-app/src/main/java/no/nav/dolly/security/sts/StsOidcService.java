@@ -2,10 +2,8 @@ package no.nav.dolly.security.sts;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.properties.Environment.PREPROD;
 import static no.nav.dolly.properties.Environment.TEST;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -18,7 +16,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -27,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.properties.CredentialsProps;
 import no.nav.dolly.properties.Environment;
-import no.nav.freg.security.oidc.auth.common.OidcTokenAuthentication;
 
 @Service
 @RequiredArgsConstructor
@@ -44,16 +40,6 @@ public class StsOidcService {
 
     private Map<Environment, String> idToken = new EnumMap<>(Environment.class);
     private Map<Environment, LocalDateTime> expiry = new EnumMap<>(Environment.class);
-
-    public static String getUserIdToken() {
-        return "Bearer " + (nonNull(SecurityContextHolder.getContext().getAuthentication()) ?
-                ((OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication()).getIdToken() : "");
-    }
-
-    public static String getUserPrinciple() {
-        String principal = ((OidcTokenAuthentication) SecurityContextHolder.getContext().getAuthentication()).getPrincipal();
-        return isNotBlank(principal) ? principal.toUpperCase() : "";
-    }
 
     public String getIdToken(String environment) {
 

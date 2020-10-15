@@ -4,10 +4,9 @@ import static java.util.Objects.isNull;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,34 +21,25 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RsSimpleRelasjoner {
 
-    @ApiModelProperty(
-        position = 1,
-        value = "Deprecated. Benytt partnere i stedet. Feltet er tilsted pga. bakover-kompabilitet."
-    )
+    @Schema(description = "Deprecated. Benytt partnere i stedet. Feltet er tilsted pga. bakover-kompabilitet.")
     private RsPartnerRequest partner;
 
-    @ApiModelProperty(
-            position = 2,
-            value = "Feltet beskriver liste av \"seriemonogame\" partnere med hovedperson. Siste forhold først, nr to er forrige partner etc"
-    )
+    @Schema(description = "Feltet beskriver liste av \"seriemonogame\" partnere med hovedperson. Siste forhold først, nr to er forrige partner etc")
     private List<RsPartnerRequest> partnere;
 
-    @ApiModelProperty(
-            position = 3,
-            value = "Liste av barn: mine/våre/dine i forhold til hovedperson og angitt partner"
-    )
+    @Schema(description = "Liste av barn: mine/våre/dine i forhold til hovedperson og angitt partner")
     private List<RsBarnRequest> barn;
 
     public List<RsPartnerRequest> getPartnere() {
         if (isNull(partnere)) {
-            partnere = new ArrayList();
+            partnere = new ArrayList<>();
         }
         return partnere;
     }
 
     public List<RsBarnRequest> getBarn() {
         if (isNull(barn)) {
-            barn = new ArrayList();
+            barn = new ArrayList<>();
         }
         return barn;
     }

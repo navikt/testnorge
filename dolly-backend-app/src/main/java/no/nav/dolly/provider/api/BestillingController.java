@@ -21,8 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
@@ -48,21 +47,21 @@ public class BestillingController {
 
     @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/{bestillingId}")
-    @ApiOperation(value = "Hent Bestilling med bestillingsId", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Hent Bestilling med bestillingsId")
     public RsBestillingStatus getBestillingById(@PathVariable("bestillingId") Long bestillingId) {
         return mapperFacade.map(bestillingService.fetchBestillingById(bestillingId), RsBestillingStatus.class);
     }
 
     @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/gruppe/{gruppeId}")
-    @ApiOperation(value = "Hent Bestillinger tilhørende en gruppe med gruppeId", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Hent Bestillinger tilhørende en gruppe med gruppeId")
     public List<RsBestillingStatus> getBestillinger(@PathVariable("gruppeId") Long gruppeId) {
         return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId), RsBestillingStatus.class);
     }
 
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @DeleteMapping("/stop/{bestillingId}")
-    @ApiOperation(value = "Stopp en Bestilling med bestillingsId", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Stopp en Bestilling med bestillingsId")
     public RsBestillingStatus stopBestillingProgress(@PathVariable("bestillingId") Long bestillingId) {
         Bestilling bestilling = bestillingService.cancelBestilling(bestillingId);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
@@ -70,7 +69,7 @@ public class BestillingController {
 
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @PostMapping("/gjenopprett/{bestillingId}")
-    @ApiOperation(value = "Gjenopprett en bestilling med bestillingsId, for en liste med miljoer", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Gjenopprett en bestilling med bestillingsId, for en liste med miljoer")
     public RsBestillingStatus gjenopprettBestilling(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "miljoer", required = false) String miljoer) {
         Bestilling bestilling = bestillingService.createBestillingForGjenopprett(bestillingId, nonNull(miljoer) ? asList(miljoer.split(",")) : emptyList());
         gjenopprettBestillingService.executeAsync(bestilling);
@@ -79,21 +78,21 @@ public class BestillingController {
 
     @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/malbestilling")
-    @ApiOperation(value = "Hent mal-bestilling", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Hent mal-bestilling")
     public RsMalBestillingWrapper getMalBestillinger() {
 
         return malBestillingService.getMalBestillinger();
     }
 
     @DeleteMapping("/malbestilling/{id}")
-    @ApiOperation(value = "Slett mal-bestilling", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Slett mal-bestilling")
     public void deleteMalBestilling(@PathVariable Long id) {
 
         bestillingService.redigerBestilling(id, null);
     }
 
     @PutMapping("/malbestilling/{id}")
-    @ApiOperation(value = "Rediger mal-bestilling", authorizations = { @Authorization(value = "Bearer token fra bruker") })
+    @Operation(description = "Rediger mal-bestilling")
     public void redigerMalBestilling(@PathVariable Long id, @RequestBody MalbestillingNavn malbestillingNavn) {
 
         bestillingService.redigerBestilling(id, malbestillingNavn.getMalNavn());

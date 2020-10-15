@@ -1,6 +1,5 @@
 package no.nav.dolly.mapper.strategy;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static no.nav.dolly.mapper.BestillingAaregStatusMapper.buildAaregStatusMap;
 import static no.nav.dolly.mapper.BestillingArenaforvalterStatusMapper.buildArenaStatusMap;
 import static no.nav.dolly.mapper.BestillingBrregStubStatusMapper.buildBrregStubStatusMap;
@@ -19,6 +18,7 @@ import static no.nav.dolly.mapper.BestillingTpsfStatusMapper.buildTpsfStatusMap;
 import static no.nav.dolly.mapper.BestillingUdiStubStatusMapper.buildUdiStubStatusMap;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -32,6 +32,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.mapper.MappingStrategy;
 
 @Slf4j
@@ -86,13 +87,15 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .importFraTps(mapTpsImport(bestilling.getTpsImport()))
                                 .kildeMiljoe(bestilling.getKildeMiljoe())
                                 .build());
+                        bestillingStatus.setBruker(mapperFacade.map(bestilling.getBruker(), RsBrukerUtenFavoritter.class));
                     }
                 })
+                .exclude("bruker")
                 .byDefault()
                 .register();
     }
 
     private static List<String> mapTpsImport(String tpsImport) {
-        return isNotBlank(tpsImport) ? newArrayList(tpsImport.split(",")) : Collections.emptyList();
+        return isNotBlank(tpsImport) ? new ArrayList<>(List.of(tpsImport.split(","))) : Collections.emptyList();
     }
 }

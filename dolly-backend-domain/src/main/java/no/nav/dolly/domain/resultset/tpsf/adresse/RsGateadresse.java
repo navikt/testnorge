@@ -3,7 +3,7 @@ package no.nav.dolly.domain.resultset.tpsf.adresse;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,24 +17,15 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsGateadresse extends RsAdresse {
 
-    @ApiModelProperty(
-            position = 1,
-            required = true,
-            value = "Gatenavn på adresse"
-    )
+    @Schema(required = true,
+            description = "Gatenavn på adresse")
     private String gateadresse;
 
-    @ApiModelProperty(
-            position = 2,
-            value = "Husnummer på adresse"
-    )
+    @Schema(description = "Husnummer på adresse")
     private String husnummer;
 
-    @ApiModelProperty(
-            position = 3,
-            required = true,
-            value = "Gatekode fra adressesøket"
-    )
+    @Schema(required = true,
+            description = "Gatekode fra adressesøket")
     private String gatekode;
 
     @Override

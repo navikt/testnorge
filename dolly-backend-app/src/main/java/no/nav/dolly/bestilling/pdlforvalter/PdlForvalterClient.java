@@ -1,7 +1,5 @@
 package no.nav.dolly.bestilling.pdlforvalter;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Lists.reverse;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.NORSK;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.UTENLANDSK;
@@ -11,6 +9,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.getSynthEnv;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.springframework.core.annotation.Order;
@@ -132,8 +131,9 @@ public class PdlForvalterClient implements ClientRegister {
                     hovedperson.setKjonn(UKJENT);
                 }
                 if (nonNull(tpsfUtvidetBestilling.getRelasjoner())) {
-                    List<RsPartnerRequest> partnereRequest = newArrayList(tpsfUtvidetBestilling.getRelasjoner().getPartnere());
-                    Iterator<RsPartnerRequest> partnere = reverse(partnereRequest).iterator();
+                    List<RsPartnerRequest> partnereRequest = tpsfUtvidetBestilling.getRelasjoner().getPartnere();
+                    Collections.reverse(partnereRequest);
+                    Iterator<RsPartnerRequest> partnere = partnereRequest.iterator();
                     Iterator<RsBarnRequest> barn = tpsfUtvidetBestilling.getRelasjoner().getBarn().iterator();
                     hovedperson.getRelasjoner().forEach(relasjon -> {
                         if ((!isOpprettEndre ||
@@ -147,13 +147,6 @@ public class PdlForvalterClient implements ClientRegister {
             }
         }
         tpsPerson.getPersondetaljer().forEach(person -> person.getRelasjoner().forEach(relasjon -> relasjon.setPersonRelasjonTil(tpsPerson.getPerson(relasjon.getPersonRelasjonMed().getIdent()))));
-    }
-
-    private static boolean isKjonnUkjent(Relasjon relasjon, Iterator<RsPartnerRequest> partnere,
-            Iterator<RsBarnRequest> barn) {
-
-        return relasjon.isPartner() && partnere.next().isKjonnUkjent() ||
-                relasjon.isBarn() && barn.next().isKjonnUkjent();
     }
 
     private void sendPdlPersondetaljer(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, StringBuilder status, boolean isOpprettEndre) {
@@ -412,6 +405,19 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
+    private void appendErrorStatus(RuntimeException exception, StringBuilder builder) {
+
+        builder.append('&')
+                .append(errorStatusDecoder.decodeRuntimeException(exception));
+    }
+
+    private static boolean isKjonnUkjent(Relasjon relasjon, Iterator<RsPartnerRequest> partnere,
+            Iterator<RsBarnRequest> barn) {
+
+        return relasjon.isPartner() && partnere.next().isKjonnUkjent() ||
+                relasjon.isBarn() && barn.next().isKjonnUkjent();
+    }
+
     private static void appendName(String utenlandsIdentifikasjonsnummer, StringBuilder builder) {
         builder.append('$')
                 .append(utenlandsIdentifikasjonsnummer);
@@ -419,11 +425,5 @@ public class PdlForvalterClient implements ClientRegister {
 
     private static void appendOkStatus(StringBuilder builder) {
         builder.append("&OK");
-    }
-
-    private void appendErrorStatus(RuntimeException exception, StringBuilder builder) {
-
-        builder.append('&')
-                .append(errorStatusDecoder.decodeRuntimeException(exception));
     }
 }

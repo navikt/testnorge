@@ -8,17 +8,15 @@ import static java.util.Collections.emptySet;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
-import static no.nav.dolly.security.sts.StsOidcService.getUserPrinciple;
+import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -61,9 +59,11 @@ public class BestillingService {
     private final BestillingProgressRepository bestillingProgressRepository;
     private final ObjectMapper objectMapper;
     private final TestgruppeRepository testgruppeRepository;
+    private final BrukerService brukerService;
 
     public Bestilling fetchBestillingById(Long bestillingId) {
-        return bestillingRepository.findById(bestillingId).orElseThrow(() -> new NotFoundException(format("Fant ikke bestillingId %d", bestillingId)));
+        return bestillingRepository.findById(bestillingId)
+                .orElseThrow(() -> new NotFoundException(format("Fant ikke bestillingId %d", bestillingId)));
     }
 
     @Transactional
@@ -98,7 +98,7 @@ public class BestillingService {
         bestilling.setStoppet(true);
         bestilling.setFerdig(true);
         bestilling.setSistOppdatert(now());
-        bestilling.setUserId(getUserPrinciple());
+        bestilling.setBruker(brukerService.fetchOrCreateBruker(getUserId()));
         saveBestillingToDB(bestilling);
         return bestilling;
     }
@@ -125,7 +125,7 @@ public class BestillingService {
                         .miljoer(join(",", request.getEnvironments()))
                         .tpsfKriterier(toJson(request.getTpsf()))
                         .bestKriterier("{}")
-                        .userId(getUserPrinciple())
+                        .bruker(brukerService.fetchOrCreateBruker(getUserId()))
                         .build());
     }
 
@@ -148,7 +148,7 @@ public class BestillingService {
                         .tpsfKriterier(toJson(request.getTpsf()))
                         .bestKriterier(getBestKriterier(request))
                         .malBestillingNavn(request.getMalBestillingNavn())
-                        .userId(getUserPrinciple())
+                        .bruker(brukerService.fetchOrCreateBruker(getUserId()))
                         .build());
     }
 
@@ -168,7 +168,7 @@ public class BestillingService {
                         .bestKriterier(getBestKriterier(request))
                         .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
                         .malBestillingNavn(request.getMalBestillingNavn())
-                        .userId(getUserPrinciple())
+                        .bruker(brukerService.fetchOrCreateBruker(getUserId()))
                         .build());
     }
 
@@ -192,7 +192,7 @@ public class BestillingService {
                         .opprettetFraId(bestillingId)
                         .tpsfKriterier(bestilling.getTpsfKriterier())
                         .bestKriterier(bestilling.getBestKriterier())
-                        .userId(getUserPrinciple())
+                        .bruker(brukerService.fetchOrCreateBruker(getUserId()))
                         .build());
     }
 
@@ -208,7 +208,7 @@ public class BestillingService {
                         .kildeMiljoe(request.getKildeMiljoe())
                         .miljoer(join(",", request.getEnvironments()))
                         .sistOppdatert(now())
-                        .userId(getUserPrinciple())
+                        .bruker(brukerService.fetchOrCreateBruker(getUserId()))
                         .antallIdenter(request.getIdenter().size())
                         .bestKriterier(getBestKriterier(request))
                         .tpsImport(join(",", request.getIdenter()))
@@ -226,7 +226,7 @@ public class BestillingService {
                         .gruppe(gruppe)
                         .miljoer(join(",", request.getEnvironments()))
                         .sistOppdatert(now())
-                        .userId(getUserPrinciple())
+                        .bruker(brukerService.fetchOrCreateBruker(getUserId()))
                         .antallIdenter(gruppe.getTestidenter().size())
                         .bestKriterier(getBestKriterier(request))
                         .build());

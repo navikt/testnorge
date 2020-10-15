@@ -1,13 +1,11 @@
 package no.nav.dolly.bestilling.service;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.nonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
-
-import no.nav.dolly.service.BestillingProgressService;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -25,7 +23,7 @@ import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
-import no.nav.dolly.repository.BestillingProgressRepository;
+import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TpsfPersonCache;
@@ -62,7 +60,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
         if (nonNull(bestKriterier)) {
 
             CheckStatusResponse tilgjengeligeIdenter = tpsfService.checkEksisterendeIdenter(
-                    newArrayList(bestilling.getOpprettFraIdenter().split(",")));
+                    new ArrayList<>(List.of(bestilling.getOpprettFraIdenter().split(","))));
 
             dollyForkJoinPool.submit(() -> {
                 tilgjengeligeIdenter.getStatuser().parallelStream()
@@ -75,11 +73,11 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
 
                                     TpsfBestilling tpsfBestilling = nonNull(bestKriterier.getTpsf()) ?
                                             mapperFacade.map(bestKriterier.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
-                                    tpsfBestilling.setOpprettFraIdenter(newArrayList(identStatus.getIdent()));
+                                    tpsfBestilling.setOpprettFraIdenter(new ArrayList<>(List.of(identStatus.getIdent())));
                                     List<String> leverteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
 
-                                    sendIdenterTilTPS(newArrayList(bestilling.getMiljoer().split(",")), leverteIdenter,
-                                            bestilling.getGruppe(), progress);
+                                    sendIdenterTilTPS(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))),
+                                            leverteIdenter, bestilling.getGruppe(), progress);
 
                                     TpsPerson tpsPerson = buildTpsPerson(bestilling, leverteIdenter, null);
                                     gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, false);

@@ -1,10 +1,16 @@
 package no.nav.dolly.mapper.strategy;
 
-import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.pdlforvalter.mapper.PdlFalskIdentitetMappingStrategy;
@@ -16,12 +22,6 @@ import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlRettIdentite
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.RsPdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.RsPdlRettIdentitetVedOpplysninger;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
-
-import java.time.LocalDateTime;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PdlFalskIdentitetMappingStrategyTest {
@@ -77,7 +77,7 @@ public class PdlFalskIdentitetMappingStrategyTest {
                                 .mellomnavn(MELLOMNAVN)
                                 .etternavn(ETTERNAVN)
                                 .build())
-                        .statsborgerskap(newArrayList(STSBRGSK_1, STSBRGSK_2))
+                        .statsborgerskap(List.of(STSBRGSK_1, STSBRGSK_2))
                         .build())
                 .build(), PdlFalskIdentitet.class);
 

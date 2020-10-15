@@ -36,7 +36,6 @@ public class TestgruppeMedBestillingIdMappingStrategy implements MappingStrategy
                         testgruppeMedBestillingId.setErLaast(isTrue(testgruppe.getErLaast()));
                     }
                 })
-                .byDefault()
                 .register();
     }
 }

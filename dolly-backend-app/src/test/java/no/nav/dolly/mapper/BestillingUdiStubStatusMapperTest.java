@@ -1,6 +1,5 @@
 package no.nav.dolly.mapper;
 
-import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
@@ -24,7 +23,7 @@ public class BestillingUdiStubStatusMapperTest {
     @Test
     public void buildUdiStubStatusMap() {
 
-        List<RsStatusRapport> result = BestillingUdiStubStatusMapper.buildUdiStubStatusMap(newArrayList(BestillingProgress.builder()
+        List<RsStatusRapport> result = BestillingUdiStubStatusMapper.buildUdiStubStatusMap(List.of(BestillingProgress.builder()
                         .ident(IDENT1)
                         .udistubStatus(ERROR_STATUS)
                         .build(),

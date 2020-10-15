@@ -2,7 +2,7 @@ package no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,31 +17,19 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PdlUtenlandskIdentifikasjonsnummer {
 
-    @ApiModelProperty(
-            position = 1,
-            required = true,
-            value = "Utenlandsk identifikasjonsnummer knyttet til personen"
-    )
+    @Schema(required = true,
+            description = "Utenlandsk identifikasjonsnummer knyttet til personen")
     private String identifikasjonsnummer;
 
-    @ApiModelProperty(
-            position = 2,
-            required = true,
-            value = "Dataens opprinnelse"
-    )
+    @Schema(required = true,
+            description = "Dataens opprinnelse")
     private String kilde;
 
-    @ApiModelProperty(
-            position = 3,
-            required = true,
-            value = "Er det utenlandske identifikasjonsnummeret opphørt?"
-    )
+    @Schema(required = true,
+            description = "Er det utenlandske identifikasjonsnummeret opphørt?")
     private Boolean opphoert;
 
-    @ApiModelProperty(
-            position = 4,
-            required = true,
-            value = "Land i hht kodeverk 'Landkoder'"
-    )
+    @Schema(required = true,
+            description = "Land i hht kodeverk 'Landkoder'")
     private String utstederland;
 }

@@ -1,6 +1,5 @@
 package no.nav.dolly.metrics;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.tpsf.adresse.AdresseNrInfo.AdresseNr.KOMMUNENR;
@@ -8,6 +7,7 @@ import static no.nav.dolly.domain.resultset.tpsf.adresse.AdresseNrInfo.AdresseNr
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +32,7 @@ public class CounterCustomRegistry {
 
     public void invoke(RsDollyUtvidetBestilling bestilling) {
 
-        List<String> tags = newArrayList();
+        List<String> tags = new ArrayList<>();
 
         if (nonNull(bestilling.getTpsf())) {
             addTag(tags, nonNull(bestilling.getTpsf().getEgenAnsattDatoFom()) &&

@@ -1,10 +1,9 @@
 package no.nav.dolly.domain.resultset.inntektstub;
 
 import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,7 +35,8 @@ public class Tilleggsinformasjon {
     @Setter
     @Builder
     @NoArgsConstructor
-    public static class BilOgBaat {}
+    public static class BilOgBaat {
+    }
 
     @Getter
     @Setter
@@ -52,7 +52,8 @@ public class Tilleggsinformasjon {
     @Setter
     @Builder
     @NoArgsConstructor
-    public static class DagmammaIEgenBolig {}
+    public static class DagmammaIEgenBolig {
+    }
 
     @Getter
     @Setter
@@ -61,18 +62,12 @@ public class Tilleggsinformasjon {
     @AllArgsConstructor
     public static class Periode {
 
-        @ApiModelProperty(
-                dataType = "LocalDateTime",
-                example = "yyyy-MM-dd",
-                position = 1
-        )
+        @Schema(type = "LocalDateTime",
+                example = "yyyy-MM-dd")
         private LocalDateTime startdato;
 
-        @ApiModelProperty(
-                dataType = "LocalDateTime",
-                example = "yyyy-MM-dd",
-                position = 2
-        )
+        @Schema(type = "LocalDateTime",
+                example = "yyyy-MM-dd")
         private LocalDateTime sluttdato;
     }
 
@@ -80,7 +75,8 @@ public class Tilleggsinformasjon {
     @Setter
     @Builder
     @NoArgsConstructor
-    public static class NorskKontinentalsokkel {}
+    public static class NorskKontinentalsokkel {
+    }
 
     @Getter
     @Setter
@@ -96,19 +92,22 @@ public class Tilleggsinformasjon {
     @Setter
     @Builder
     @NoArgsConstructor
-    public static class Livrente {}
+    public static class Livrente {
+    }
 
     @Getter
     @Setter
     @Builder
     @NoArgsConstructor
-    public static class LottOgPartInnenFiske {}
+    public static class LottOgPartInnenFiske {
+    }
 
     @Getter
     @Setter
     @Builder
     @NoArgsConstructor
-    public static class Nettoloennsordning {}
+    public static class Nettoloennsordning {
+    }
 
     @Getter
     @Setter
@@ -132,9 +131,7 @@ public class Tilleggsinformasjon {
     @AllArgsConstructor
     public static class ReiseKostOgLosji {
 
-        @ApiModelProperty(
-                position = 1,
-                value = "Verdier hentes fra kodeverk 'PersontypeForReiseKostLosji'"
+        @Schema(description = "Verdier hentes fra kodeverk 'PersontypeForReiseKostLosji'"
         )
         private String persontype;
     }
@@ -143,5 +140,6 @@ public class Tilleggsinformasjon {
     @Setter
     @Builder
     @NoArgsConstructor
-    public static class UtenlandskArtist {}
+    public static class UtenlandskArtist {
+    }
 }

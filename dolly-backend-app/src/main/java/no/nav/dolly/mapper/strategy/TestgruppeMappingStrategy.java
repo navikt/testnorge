@@ -1,6 +1,6 @@
 package no.nav.dolly.mapper.strategy;
 
-import static no.nav.dolly.security.sts.StsOidcService.getUserPrinciple;
+import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 import org.springframework.stereotype.Component;
@@ -23,10 +23,8 @@ public class TestgruppeMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Testgruppe testgruppe, RsTestgruppe rsTestgruppe, MappingContext context) {
                         rsTestgruppe.setAntallIdenter(testgruppe.getTestidenter().size());
                         rsTestgruppe.setAntallIBruk(((Long) testgruppe.getTestidenter().stream().filter(ident -> isTrue(ident.getIBruk())).count()).intValue()); //NOSONAR
-                        rsTestgruppe.setOpprettetAvNavIdent(testgruppe.getOpprettetAv().getBrukerId());
-                        rsTestgruppe.setSistEndretAvNavIdent(testgruppe.getSistEndretAv().getBrukerId());
                         rsTestgruppe.setFavorittIGruppen(!testgruppe.getFavorisertAv().isEmpty());
-                        rsTestgruppe.setErEierAvGruppe(getUserPrinciple().equalsIgnoreCase(testgruppe.getOpprettetAv().getBrukerId()));
+                        rsTestgruppe.setErEierAvGruppe(getUserId().equalsIgnoreCase(testgruppe.getOpprettetAv().getBrukerId()));
                         rsTestgruppe.setErLaast(isTrue(rsTestgruppe.getErLaast()));
                     }
                 })

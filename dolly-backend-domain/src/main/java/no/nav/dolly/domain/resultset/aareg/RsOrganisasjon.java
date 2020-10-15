@@ -2,7 +2,7 @@ package no.nav.dolly.domain.resultset.aareg;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,11 +17,8 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsOrganisasjon extends RsAktoer {
 
-    @ApiModelProperty(
-            value = "Organisasjonsnummer, må finnes i EREG",
-            required = true,
-            position = 1
-    )
+    @Schema(description = "Organisasjonsnummer, må finnes i EREG",
+            required = true)
     private String orgnummer;
 
     @Override

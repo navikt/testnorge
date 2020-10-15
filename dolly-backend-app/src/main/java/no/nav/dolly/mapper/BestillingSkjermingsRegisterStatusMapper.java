@@ -1,11 +1,11 @@
 package no.nav.dolly.mapper;
 
-import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.SKJERMINGSREGISTER;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,19 +28,19 @@ public final class BestillingSkjermingsRegisterStatusMapper {
                 if (statusMap.containsKey(progress.getSkjermingsregisterStatus())) {
                     statusMap.get(progress.getSkjermingsregisterStatus()).add(progress.getIdent());
                 } else {
-                    statusMap.put(progress.getSkjermingsregisterStatus(), newArrayList(progress.getIdent()));
+                    statusMap.put(progress.getSkjermingsregisterStatus(), new ArrayList<>(List.of(progress.getIdent())));
                 }
             }
         });
 
         return statusMap.isEmpty() ? emptyList()
                 : singletonList(RsStatusRapport.builder().id(SKJERMINGSREGISTER).navn(SKJERMINGSREGISTER.getBeskrivelse())
-                        .statuser(statusMap.entrySet().stream()
-                                .map(entry -> RsStatusRapport.Status.builder()
-                                        .melding(entry.getKey().replace('=', ':'))
-                                        .identer(entry.getValue())
-                                        .build())
-                                .collect(Collectors.toList()))
-                        .build());
+                .statuser(statusMap.entrySet().stream()
+                        .map(entry -> RsStatusRapport.Status.builder()
+                                .melding(entry.getKey().replace('=', ':'))
+                                .identer(entry.getValue())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build());
     }
 }
