@@ -8,6 +8,8 @@ import './varslingerModal.less'
 
 interface Varslinger {
 	varslinger: Array<Varsling>
+	varslingerBruker: Array<string>
+	isLoadingVarslinger: boolean
 	updateVarslingerBruker: Function
 }
 
@@ -17,12 +19,23 @@ type Varsling = {
 	varslingId: string
 }
 
-export const VarslingerModal = ({ varslinger, updateVarslingerBruker }: Varslinger) => {
+export const VarslingerModal = ({
+	varslinger,
+	varslingerBruker,
+	isLoadingVarslinger,
+	updateVarslingerBruker
+}: Varslinger) => {
 	const [steg, setSteg] = useState(0)
 	const [modalOpen, setModalOpen] = useState(true)
 
+	const usetteVarslinger =
+		isLoadingVarslinger === false &&
+		varslinger.length > 0 &&
+		varslinger.filter(varsel => !varslingerBruker.includes(varsel.varslingId))
+	if (!usetteVarslinger || usetteVarslinger.length < 1) return null
+
 	const currentDate = new Date()
-	const gyldigeVarslinger = varslinger.filter(
+	const gyldigeVarslinger = usetteVarslinger.filter(
 		varsling =>
 			(!varsling.fom && (!varsling.tom || isBefore(currentDate, new Date(varsling.tom)))) ||
 			(!varsling.tom && (!varsling.fom || isAfter(currentDate, new Date(varsling.fom)))) ||

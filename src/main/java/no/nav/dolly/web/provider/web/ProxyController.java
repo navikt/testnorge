@@ -1,7 +1,5 @@
 package no.nav.dolly.web.provider.web;
 
-import static java.lang.String.format;
-
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+
+import static java.lang.String.format;
 
 
 @RestController
@@ -57,7 +57,6 @@ public class ProxyController {
 
     @Value("${fagsystem.hodejegeren.url}")
     private String hodejegerenUrl;
-
 
     private final ProxyService proxyService;
 
@@ -165,6 +164,7 @@ public class ProxyController {
 
         String requestURL = createURL(request, poppUrl + API_URI, PROXY_URI + "/popp");
         HttpHeaders headers = proxyService.copyHeaders(request);
+        headers.add(HttpHeaders.AUTHORIZATION, "Dolly");
 
         return proxyService.proxyRequest(body, method, headers, requestURL);
     }
