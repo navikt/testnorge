@@ -2,6 +2,7 @@ package no.nav.dolly.web.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +38,9 @@ public class LogService {
 
     public void log(LogEvent event) {
         try {
-            tilbakemeldingConsumer.send(event.toTilbakemeldingDTO());
+            if (Strings.isNotBlank(event.getMessage())) {
+                tilbakemeldingConsumer.send(event.toTilbakemeldingDTO());
+            }
         } catch (Exception e) {
             log.error("Feil ved innsendelse til tilbakemelding consumer.", e);
         } finally {
