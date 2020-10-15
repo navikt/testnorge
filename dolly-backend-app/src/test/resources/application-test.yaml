@@ -11,8 +11,6 @@ sts:
       test: dummy
       preprod: dummy
 
-dolly.environment.name: dummy
-
 spring:
   datasource:
     url: jdbc:h2:mem:dollyDB
