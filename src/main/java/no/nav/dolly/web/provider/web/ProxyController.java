@@ -211,30 +211,6 @@ public class ProxyController {
         return proxyService.proxyRequest(body, method, headers, requestURL);
     }
 
-    @RequestMapping("/api/testnorge-profil-api/**")
-    public ResponseEntity<String> profilProxy(
-            @RequestBody(required = false) String body,
-            HttpMethod method,
-            HttpServletRequest request) throws UnsupportedEncodingException {
-
-        String requestURL = createURL(request, profilUrl + API_URI, PROXY_URI + "/profil");
-        HttpHeaders headers = proxyService.copyHeaders(request);
-
-        return proxyService.proxyRequest(body, method, headers, requestURL);
-    }
-
-    @RequestMapping("/api/testnorge-varslinger-api/**")
-    public ResponseEntity<String> varslingerProxy(
-            @RequestBody(required = false) String body,
-            HttpMethod method,
-            HttpServletRequest request) throws UnsupportedEncodingException {
-
-        String requestURL = createURL(request, varslingerUrl + API_URI, PROXY_URI + "/varslinger");
-        HttpHeaders headers = proxyService.copyHeaders(request);
-
-        return proxyService.proxyRequest(body, method, headers, requestURL);
-    }
-
     private static String createURL(HttpServletRequest request, String host, String splitUri)
             throws UnsupportedEncodingException {
 

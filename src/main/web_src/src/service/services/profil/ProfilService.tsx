@@ -1,6 +1,6 @@
 import Request from '~/service/services/Request'
 
-const getProfilUrl = '/api/testnorge-profil-api/v1'
+const getProfilUrl = '/api/testnorge-profil-api'
 
 export default {
 	getProfil() {
