@@ -17,8 +17,8 @@ export const VarslingerTekster = ({ varslingId }: VarslingId) => {
 			her
 		</a>
 	)
-	const vilkaar = (
-		<a href="https://confluence.adeo.no/pages/viewpage.action?pageId=313339435" target="_blank">
+	const retningslinjer = (
+		<a href="https://navikt.github.io/dolly-frontend/retningslinjer" target="_blank">
 			her
 		</a>
 	)
@@ -29,10 +29,41 @@ export const VarslingerTekster = ({ varslingId }: VarslingId) => {
 				<>
 					<h1>Velkommen til Dolly</h1>
 
-					<h2>Vilkår for bruk av Dolly</h2>
+					<h2>Prinsipper for bruk av Dolly</h2>
 					<p>
-						Før du tar i bruk Dolly ønsker vi at du leser og setter deg inn i brukervilkårene våre.
-						De finner du {vilkaar}, eller under Dokumentasjon i menyen.
+						Dolly selvbetjening brukes for å lage egne testdata til randtilfeller og spesialbehov.
+						Syntetiske personer gis egenskaper fra registre og fagsystemer - f.eks. sivilstand,
+						inntekt, statsborgerskap. Brukere av Dolly selvbetjening har selv ansvar for å følge
+						følgende prinsipper ved oppretting av syntetiske testdata:
+					</p>
+					<ul>
+						<li>
+							Dolly tilbyr et stort utvalg attributter som kan settes på en person. Selv om det kun
+							er syntetiske personer som blir laget i Dolly, finnes det allikevel en risiko for å
+							skape gjenkjennbare personer, ved å kombinere verdier som er svært spesifikke for en
+							ekte person. Derfor må du aldri ta utgangspunkt i reelle personer når du oppretter
+							syntetiske testpersoner - alle verdier som settes for å dekke behovet må være
+							tilfeldig valgt.
+						</li>
+						<li>
+							Når du er logget inn i Dolly har du tilgang til alle brukeres testdatagrupper og
+							testpersoner. Ikke gjør endringer på eller slett andres testdatagrupper eller
+							testpersoner uten at dette er avtalt med eier.
+						</li>
+						<li>
+							Dolly selvbetjening har personlig innlogging med Azure AD. Ikke del
+							påloggingsinformasjonen din med andre brukere. Brukere som mangler tilgang til Dolly
+							bes kontakte teamet for å få hjelp til å ordne dette.
+						</li>
+						<li>
+							Snakk med oss! Skulle det være noe, vil vi gjerne at du kontakter oss på #dolly på
+							Slack. Innspill, ønsker, meldinger om feil, osv. hjelper oss med å gjøre Dolly bedre,
+							og kommer alle brukerne til gode.
+						</li>
+					</ul>
+					<p>
+						Du kan lese mer om retningslinjer for bruk av testdata i NAV {retningslinjer}, eller
+						under Dokumentasjon i menyen.
 					</p>
 
 					<h2>Hjelp til å bruke Dolly</h2>
