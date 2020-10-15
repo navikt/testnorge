@@ -1,14 +1,15 @@
 import Request from '~/service/services/Request'
 
-const profilUrl = 'api/testnorge-profil-api/v1/profil'
+const getProfilUrl = '/api/testnorge-profil-api'
 
 export default {
 	getProfil() {
-		return Request.get(profilUrl)
+		const endpoint = getProfilUrl + '/profil'
+		return Request.get(endpoint)
 	},
 
 	getProfilBilde() {
-		const endpoint = `${profilUrl}/bilde`
+		const endpoint = getProfilUrl + '/profil/bilde'
 		return Request.getBilde(endpoint)
 	}
 }
