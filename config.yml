@@ -11,7 +11,10 @@ spec:
     application:
       enabled: true
       replyURLs:
-        - "https://dolly-frontend.dev.adeo.no/login/oauth2/code/aad"
+        - https://dolly-frontend.dev.adeo.no/login/oauth2/code/aad
+        - https://dolly.nais.preprod.local/login/oauth2/code/aad
+        - https://dolly.nais-dev-fss.adeo.no/login/oauth2/code/aad
+        - https://dolly.dev.adeo.no/login/oauth2/code/aad
   replicas:
     min: 1
     max: 2
