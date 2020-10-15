@@ -15,7 +15,7 @@ import no.nav.dolly.web.provider.web.dto.LogEventDTO;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/logg")
+@RequestMapping("/api/dolly-logg")
 @RequiredArgsConstructor
 public class LogController {
 
