@@ -12,7 +12,8 @@ const mapStateToProps = state => ({
 	searchActive: Boolean(state.search),
 	isFetching: loadingGrupper(state),
 	mineIds: state.gruppe.mineIds,
-	gruppeListe: _orderBy(sokSelectorGruppeOversikt(state), 'id', 'desc')
+	gruppeListe: _orderBy(sokSelectorGruppeOversikt(state), 'id', 'desc'),
+	importerteZIdenter: state.gruppe.importerteZIdenter
 })
 
 const mapDispatchToProps = {

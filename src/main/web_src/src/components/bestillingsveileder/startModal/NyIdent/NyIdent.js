@@ -1,14 +1,12 @@
 import React, { useState } from 'react'
 import { Formik } from 'formik'
 import * as yup from 'yup'
-import { useToggle } from 'react-use'
-import _get from 'lodash/get'
-import { useAsync } from 'react-use'
+import { useAsync, useToggle } from 'react-use'
 import { NavLink } from 'react-router-dom'
 import Button from '~/components/ui/button/Button'
 
 import { DollyApi } from '~/service/Api'
-import { FormikSelect, DollySelect } from '~/components/ui/form/inputs/select/Select'
+import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
@@ -39,7 +37,7 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 		return response.data
 	}, [])
 
-	const zIdentOptions = state.value ? getZIdentOptions(state.value.malbestillinger, zBruker) : []
+	const zIdentOptions = state.value ? getZIdentOptions(state.value.malbestillinger) : []
 	const malOptions = state.value ? getMalOptions(state.value.malbestillinger, zIdent) : []
 
 	const preSubmit = (values, formikBag) => {
@@ -70,7 +68,7 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 						<div>
 							<DollySelect
 								name="zIdent"
-								label="Z-ident"
+								label="Bruker"
 								isLoading={state.loading}
 								options={zIdentOptions}
 								size="medium"
@@ -108,10 +106,10 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 	)
 }
 
-const getZIdentOptions = (malbestillinger, zBruker) =>
+const getZIdentOptions = malbestillinger =>
 	Object.keys(malbestillinger).map(ident => ({
 		value: ident,
-		label: ident === zBruker ? `${ident} (din)` : ident
+		label: ident
 	}))
 
 const getMalOptions = (malbestillinger, zIdent) => {

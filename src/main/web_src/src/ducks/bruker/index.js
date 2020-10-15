@@ -1,11 +1,19 @@
-import { DollyApi } from '~/service/Api'
+import { DollyApi, ProfilApi } from '~/service/Api'
 import { createActions, combineActions } from 'redux-actions'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 import { onSuccess } from '~/ducks/utils/requestActions'
 
-export const { getCurrentBruker, addFavorite, removeFavorite } = createActions(
+export const {
+	getCurrentBruker,
+	getCurrentBrukerProfil,
+	getCurrentBrukerBilde,
+	addFavorite,
+	removeFavorite
+} = createActions(
 	{
 		getCurrentBruker: DollyApi.getCurrentBruker,
+		getCurrentBrukerProfil: ProfilApi.getProfil,
+		getCurrentBrukerBilde: ProfilApi.getProfilBilde,
 		addFavorite: DollyApi.addFavorite,
 		removeFavorite: DollyApi.removeFavorite
 	},
@@ -13,7 +21,9 @@ export const { getCurrentBruker, addFavorite, removeFavorite } = createActions(
 )
 
 const initialState = {
-	brukerData: null
+	brukerData: null,
+	brukerProfil: null,
+	brukerBilde: null
 }
 
 const successActions = combineActions(
@@ -26,6 +36,12 @@ export default handleActions(
 	{
 		[successActions](state, action) {
 			state.brukerData = action.payload.data
+		},
+		[onSuccess(getCurrentBrukerProfil)](state, action) {
+			state.brukerProfil = action.payload.data
+		},
+		[onSuccess(getCurrentBrukerBilde)](state, action) {
+			state.brukerBilde = action.payload.data
 		}
 	},
 	initialState

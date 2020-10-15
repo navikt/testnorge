@@ -1,4 +1,5 @@
 import DollyService from './services/dolly/DollyService'
+import ProfilService from './services/profil/ProfilService'
 import TpsfService from './services/tpsf/TpsfService'
 import SigrunService from './services/sigrun/SigrunService'
 import KrrService from './services/krr/KrrService'
@@ -10,8 +11,10 @@ import AaregService from './services/aareg/AaregService'
 import InntektstubService from './services/inntektstub/InntektstubService'
 import BrregstubService from './services/brregstub/BrregstubService'
 import HodejegerenService from '~/service/services/hodejegeren/HodejegerenService'
+import VarslingerService from './services/varslinger/VarslingerService'
 
 export const DollyApi = DollyService
+export const ProfilApi = ProfilService
 export const TpsfApi = TpsfService
 export const SigrunApi = SigrunService
 export const KrrApi = KrrService
@@ -23,9 +26,11 @@ export const AaregApi = AaregService
 export const InntektstubApi = InntektstubService
 export const BrregstubApi = BrregstubService
 export const HodejegerenApi = HodejegerenService
+export const VarslingerApi = VarslingerService
 
 export default {
 	DollyApi: DollyService,
+	ProfilApi: ProfilService,
 	TpsfApi: TpsfService,
 	SigrunApi: SigrunService,
 	KrrApi: KrrService,
@@ -36,5 +41,6 @@ export default {
 	AaregApi: AaregService,
 	InntektstubApi: InntektstubService,
 	HodejegerenApi: HodejegerenService,
-	BrregstubApi: BrregstubService
+	BrregstubApi: BrregstubService,
+	VarslingerApi: VarslingerService
 }

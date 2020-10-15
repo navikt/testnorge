@@ -11,12 +11,26 @@ module.exports = env =>
 		devServer: {
 			port: 3000,
 			contentBase: path.join(__dirname, 'public'),
-			historyApiFallback: true
+			historyApiFallback: true,
+			headers: {
+				'Access-Control-Allow-Origin': '*'
+			},
+			proxy: {
+				'/api': {
+					target: env.backend,
+					secure: false
+				},
+				'/oauth2': {
+					target: env.backend,
+					secure: false
+				},
+				'/login': {
+					target: env.backend,
+					secure: false
+				}
+			}
 		},
 		plugins: [
-			new webpack.EnvironmentPlugin({
-				BACKEND: env.backend
-			}),
 			new MiniCssExtractPlugin({
 				filename: '[name].css'
 			})
@@ -37,4 +51,4 @@ module.exports = env =>
 				}
 			]
 		}
-	});
+	})

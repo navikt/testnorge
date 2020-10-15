@@ -25,7 +25,7 @@ Modal.setAppElement('#root')
 
 export default class DollyModal extends PureComponent {
 	render() {
-		const { children, isOpen, closeModal, width } = this.props
+		const { children, isOpen, closeModal, noCloseButton, width } = this.props
 
 		if (width) customStyles.content.width = width
 
@@ -33,7 +33,7 @@ export default class DollyModal extends PureComponent {
 			<Modal isOpen={isOpen} shouldCloseOnEsc onRequestClose={closeModal} style={customStyles}>
 				<div className="dollymodal">
 					{children}
-					<Lukknapp onClick={closeModal} />
+					{!noCloseButton && <Lukknapp onClick={closeModal} />}
 				</div>
 			</Modal>
 		)

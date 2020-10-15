@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ForwardAndRedirectController {
 
 
-    @Value("${dolly.url}")
+    @Value("${DOLLY_BACKEND_HOST}")
     private String dollyUrl;
 
     @RequestMapping(value = {"/profil/**", "/team/**", "/gruppe/**", "/maler/**", "/tpsendring/**", "/soek/**"})

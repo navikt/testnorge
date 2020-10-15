@@ -1,7 +1,5 @@
 package no.nav.dolly.web.provider.web;
 
-import static java.lang.String.format;
-
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +15,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
+import static java.lang.String.format;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -25,10 +25,6 @@ public class ProxyController {
 
     public static final String API_URI = "/api/v1";
     public static final String PROXY_URI = "/api/proxy";
-
-    @Value("${dolly.url}")
-    private String dollyUrl;
-
     @Value("${fagsystem.arena.url}")
     private String arenaUrl;
 
@@ -62,20 +58,8 @@ public class ProxyController {
     @Value("${fagsystem.hodejegeren.url}")
     private String hodejegerenUrl;
 
-
     private final ProxyService proxyService;
 
-    @RequestMapping("/v1/**")
-    public ResponseEntity<String> dollyProxy(
-            @RequestBody(required = false) String body,
-            HttpMethod method,
-            HttpServletRequest request) throws UnsupportedEncodingException {
-
-        String requestURL = createURL(request, dollyUrl + API_URI, API_URI );
-        HttpHeaders headers = proxyService.copyHeaders(request);
-
-        return proxyService.proxyRequest(body, method, headers, requestURL);
-    }
 
     @RequestMapping("/proxy/arena/**")
     public ResponseEntity<String> arenaProxy(
@@ -88,6 +72,7 @@ public class ProxyController {
 
         return proxyService.proxyRequest(body, method, headers, requestURL);
     }
+
 
     @RequestMapping("/proxy/inst/**")
     public ResponseEntity<String> instProxy(
@@ -145,7 +130,6 @@ public class ProxyController {
 
         String requestURL = createURL(request, tpsfUrl + "/api", PROXY_URI + "/kontaktinfo");
         HttpHeaders headers = proxyService.copyHeaders(request);
-
         return proxyService.proxyRequest(body, method, headers, requestURL);
     }
 
@@ -157,7 +141,6 @@ public class ProxyController {
 
         String requestURL = createURL(request, udiUrl + API_URI, PROXY_URI + "/udi");
         HttpHeaders headers = proxyService.copyHeaders(request);
-
         return proxyService.proxyRequest(body, method, headers, requestURL);
     }
 
@@ -181,6 +164,7 @@ public class ProxyController {
 
         String requestURL = createURL(request, poppUrl + API_URI, PROXY_URI + "/popp");
         HttpHeaders headers = proxyService.copyHeaders(request);
+        headers.add(HttpHeaders.AUTHORIZATION, "Dolly");
 
         return proxyService.proxyRequest(body, method, headers, requestURL);
     }

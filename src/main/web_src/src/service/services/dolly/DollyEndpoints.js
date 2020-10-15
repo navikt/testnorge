@@ -68,6 +68,10 @@ export default class DollyEndpoints {
 		return `${brukerBase}/fjernFavoritt`
 	}
 
+	static importZIdent(ZIdenter) {
+		return `${brukerBase}/migrer?navIdenter=${ZIdenter}`
+	}
+
 	static kodeverkByNavn(kodeverkNavn) {
 		return `${kodeverkBase}/${kodeverkNavn}`
 	}

@@ -5,6 +5,7 @@ import Breadcrumb from '~/components/layout/breadcrumb/BreadcrumbWithHoc'
 import Loading from '~/components/ui/loading/Loading'
 import Toast from '~/components/ui/toast/Toast'
 import routes from '~/Routes'
+import { VarslingerModal } from '~/components/varslinger/VarslingerModal'
 
 import './App.less'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
@@ -19,7 +20,11 @@ export default class App extends Component {
 			this.setState({ error: err })
 		})
 		await this.props.getCurrentBruker()
+		await this.props.getCurrentBrukerProfil()
+		await this.props.getCurrentBrukerBilde()
 		await this.props.getEnvironments()
+		await this.props.getVarslinger()
+		await this.props.getVarslingerBruker()
 	}
 
 	componentDidUpdate() {
@@ -28,7 +33,18 @@ export default class App extends Component {
 	}
 
 	render() {
-		const { brukerData, applicationError, clearAllErrors, configReady } = this.props
+		const {
+			applicationError,
+			clearAllErrors,
+			configReady,
+			brukerData,
+			brukerProfil,
+			brukerBilde,
+			varslinger,
+			varslingerBruker,
+			isLoadingVarslinger,
+			updateVarslingerBruker
+		} = this.props
 
 		if (this.state.error)
 			return (
@@ -42,7 +58,13 @@ export default class App extends Component {
 		if (!brukerData || !configReady) return <Loading label="laster dolly applikasjon" fullpage />
 		return (
 			<React.Fragment>
-				<Header brukerData={brukerData} />
+				<VarslingerModal
+					varslinger={varslinger}
+					varslingerBruker={varslingerBruker}
+					isLoadingVarslinger={isLoadingVarslinger}
+					updateVarslingerBruker={updateVarslingerBruker}
+				/>
+				<Header brukerProfil={brukerProfil} brukerBilde={brukerBilde} />
 				<Breadcrumb />
 				<main>
 					<Suspense fallback={<Loading label="Laster inn" />}>

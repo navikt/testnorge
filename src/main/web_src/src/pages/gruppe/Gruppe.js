@@ -22,7 +22,7 @@ export default function Gruppe({
 	getBestillinger,
 	gruppe,
 	identer,
-	zBruker,
+	brukernavn,
 	isFetching,
 	isDeletingGruppe,
 	isLockingGruppe,
@@ -42,7 +42,9 @@ export default function Gruppe({
 
 	const byttVisning = event => setVisning(event.target.value)
 
-	const identArray = Object.values(identer)
+	const identArray = Object.values(identer).filter(
+		ident => ident.bestillingId != null && ident.bestillingId.length > 0
+	)
 
 	const startBestilling = values =>
 		history.push(`/gruppe/${match.params.gruppeId}/bestilling`, values)
@@ -90,7 +92,7 @@ export default function Gruppe({
 							size={13}
 							kind={visning === VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
 						/>
-						{`Bestillinger (${countUnique(identArray.map(b => b.bestillingId).flat())})`}
+						{`Bestillinger (${countUnique(Object.values(identer))})`}
 					</ToggleKnapp>
 				</ToggleGruppe>
 
@@ -101,7 +103,7 @@ export default function Gruppe({
 				<BestillingsveilederModal
 					onSubmit={startBestilling}
 					onAvbryt={skjulStarBestilling}
-					zBruker={zBruker}
+					brukernavn={brukernavn}
 				/>
 			)}
 

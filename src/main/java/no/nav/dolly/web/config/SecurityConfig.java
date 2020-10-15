@@ -1,12 +1,12 @@
 package no.nav.dolly.web.config;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.freg.security.oidc.auth.common.HttpSecurityConfigurer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -16,21 +16,22 @@ import java.util.Arrays;
 @Slf4j
 @Configuration
 @Order(1)
-public class SecurityConfig implements HttpSecurityConfigurer {
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${dolly.web.security.cors.origins:''}")
     private String[] allowedOrigins;
 
-    @Value("${security.frame.disable.localhost: false}")
-    private boolean disableFrameOptions;
-
     @Override
-    public void configure(HttpSecurity http) throws Exception {
-        http.cors();
-        http.csrf().disable();
-        if (disableFrameOptions) {
-            http.headers().frameOptions().disable();
-        }
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .anyRequest()
+                .fullyAuthenticated()
+                .and()
+                .oauth2Client()
+                .and()
+                .oauth2Login()
+                .and()
+                .csrf().disable();
     }
 
     @Bean
@@ -45,8 +46,7 @@ public class SecurityConfig implements HttpSecurityConfigurer {
                 "X-Requested-With",
                 "Nav-Personident",
                 "X-XSRF-TOKEN",
-                "Content-Type",
-                "personidentifikator"
+                "Content-Type"
         ));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);

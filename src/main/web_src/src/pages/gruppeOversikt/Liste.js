@@ -5,6 +5,7 @@ import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import FavoriteButtonConnector from '~/components/ui/button/FavoriteButton/FavoriteButtonConnector'
 import { GruppeIconItem } from '~/components/ui/icon/IconItem'
 import Icon from '~/components/ui/icon/Icon'
+import ImporterGrupperConnector from './ImporterGrupperConnector'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export default function Liste({ items, history, searchActive, isFetching }) {
@@ -16,16 +17,17 @@ export default function Liste({ items, history, searchActive, isFetching }) {
 				{searchActive ? (
 					<p>Søket gav ingen resultater.</p>
 				) : (
-					<Fragment>
-						<p>Du har ingen testdatagrupper.</p>
+					<>
+						<p>Du har for øyeblikket ingen testdatagrupper på denne brukerkontoen.</p>
 						<p>
-							For å se alle testdatagrupper, trykk på "Alle". Her kan du søke etter en spesifikk
-							testdatagruppe eller se om det er noen som er relevante for deg. Hvis du trykker på
-							stjerneikonet, legger du testdatagruppen til som en favoritt. Den vil da dukke opp
-							under "Mine" testdatagrupper.
+							Om dette er første gang du bruker din personlige brukerkonto kan du importere
+							testdatagrupper Z-brukeren(e) du har benyttet tidligere ved å trykke på knappen
+							nedenfor. Du kan når som helst importere testdatagrupper fra Z-brukere via Min side
+							øverst til høyre.
 						</p>
-						<p>For å opprette en ny testdatagruppe, trykk på "Ny gruppe" knappen over.</p>
-					</Fragment>
+						<p>For å opprette en ny testdatagruppe, trykk på "Ny gruppe"-knappen over.</p>
+						<ImporterGrupperConnector />
+					</>
 				)}
 			</ContentContainer>
 		)

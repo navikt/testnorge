@@ -42,7 +42,10 @@ export default function GruppeHeader({
 			</div>
 			<Header className={headerClass} icon={iconType}>
 				<div className="flexbox">
-					<Header.TitleValue title="Eier" value={gruppe.opprettetAvNavIdent} />
+					<Header.TitleValue
+						title="Eier"
+						value={gruppe.opprettetAv.brukernavn || gruppe.opprettetAv.navIdent}
+					/>
 					<Header.TitleValue title="Antall personer" value={identArray.length} />
 					<Header.TitleValue
 						title="Sist endret"

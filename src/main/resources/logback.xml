@@ -1,44 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-            <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
-                <exclude>java\.util\.concurrent\..*</exclude>
-                <exclude>org\.apache\.catalina\..*</exclude>
-                <exclude>org\.apache\.coyote\..*</exclude>
-                <exclude>org\.apache\.tomcat\..*</exclude>
-            </throwableConverter>
-            <fieldNames>
-                <version>[ignore]</version>
-                <levelValue>[ignore]</levelValue>
-            </fieldNames>
-        </encoder>
-    </appender>
+    <springProfile name="prod">
+        <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <customFields>{"log_type":"default"}</customFields>
+            </encoder>
+        </appender>
 
-    <root level="INFO">
-        <appender-ref ref="stdout_json"/>
-    </root>
+        <root level="INFO">
+            <appender-ref ref="stdout_json"/>
+        </root>
+    </springProfile>
 
-    <appender name="auditLogger" class="com.papertrailapp.logback.Syslog4jAppender">
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSSS} [%-5level] %msg%n</pattern>
-        </layout>
-        <syslogConfig class="org.productivity.java.syslog4j.impl.net.tcp.TCPNetSyslogConfig">
-            <host>audit.nais</host> <!-- remote system to log to -->
-            <port>6514</port> <!-- remote port to log to -->
-            <ident>dolly</ident> <!-- program name to log as -->
-            <maxMessageLength>128000</maxMessageLength> <!-- max log message length in bytes -->
-        </syslogConfig>
-    </appender>
-
-    <logger name="no.nav.freg.security" level="INFO"/>
-    <logger name="no.nav.dollyweb" level="INFO"/>
-    <logger name="org.springframework" level="INFO"/>
-
-    <logger name="auditLogger" level="INFO" additivity="false">
-        <appender-ref ref="auditLogger"/>
-    </logger>
-
+    <springProfile name="dev">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>
+                    %d{HH:mm:ss.SSS} | %5p | %logger{25} | %m%n
+                </pattern>
+                <charset>utf8</charset>
+            </encoder>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
 
     <logger name="no.nav.dolly.web.logging.LogRequestInterceptor">
         <level value="TRACE"/>

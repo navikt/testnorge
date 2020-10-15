@@ -1,16 +1,23 @@
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-  name: dolly
-  namespace: default
+  name: dolly-frontend
+  namespace: dolly
   labels:
-    team: registre
+    team: dolly
 spec:
+  webproxy: true
+  azure:
+    application:
+      enabled: true
+      replyURLs:
+        - "https://dolly-frontend.dev.adeo.no/login/oauth2/code/aad"
   replicas:
-    min: 2
+    min: 1
     max: 2
   port: 8080
   ingresses:
+    - https://dolly-frontend.dev.adeo.no
     - https://dolly.nais.preprod.local
     - https://dolly.nais-dev-fss.adeo.no
     - https://dolly.dev.adeo.no
@@ -35,8 +42,17 @@ spec:
       cpu: 1500m
       memory: 2048Mi
   image: {{ image }}
+  env:
+    - name: TESTNORGE_PROFIL_API_CLIENT_ID
+      value: 81d0a23d-20ef-49de-8761-2e7917bc9238
+    - name: DOLLY_BACKEND_API_CLIENT_ID
+      value: 787eb670-2731-49b4-8be1-2385990370a9
+    - name: DOLLY_BACKEND_HOST
+      value: https://dolly-backend.dev.adeo.no
+    - name: TESTNORGE_PROFIL_API_HOST
+      value: https://testnorge-profil-api.dev.adeo.no
   vault:
     enabled: true
     paths:
-      - kvPath: /kv/preprod/fss/dolly/default
+      - kvPath: /kv/preprod/fss/dolly-frontend/dolly
         mountPath: /var/run/secrets/nais.io/vault
