@@ -18,7 +18,11 @@ public class SyntPersonService {
 
     public void createSyntPerson() {
         String ident = identPoolConsumer.getIdent();
-        SyntPersonDTO syntPerson = syntrestConsumer.createSyntPerson();
+        SyntPersonDTO syntPerson = getSyntPerson("1");
         personApiConsumer.createPerson(new Person(syntPerson, ident));
+    }
+
+    public SyntPersonDTO getSyntPerson(String antall) {
+        return syntrestConsumer.createSyntPerson(antall);
     }
 }

@@ -12,6 +12,7 @@ import no.nav.registre.testnorge.synt.person.consumer.dto.SyntPersonDTO;
 @RequiredArgsConstructor
 public class GetSyntPersonCommand implements Callable<SyntPersonDTO> {
     private final WebClient webClient;
+    private final String antall;
     private static final String INNVANDRING = "0211";
 
     @Override
@@ -19,7 +20,7 @@ public class GetSyntPersonCommand implements Callable<SyntPersonDTO> {
         log.info("Genererer ny syntetisk person fra syntrest...");
         SyntPersonDTO[] response = webClient.get().uri(builder -> builder
                 .path("/v1/generate/tps/{type}")
-                .queryParam("numToGenerate", "1")
+                .queryParam("numToGenerate", antall)
                 .build(INNVANDRING)
         ).retrieve().bodyToMono(SyntPersonDTO[].class).block();
 

@@ -20,7 +20,7 @@ public class SyntrestConsumer {
                 .build();
     }
 
-    public SyntPersonDTO createSyntPerson() {
-        return new GetSyntPersonCommand(webClient).call();
+    public SyntPersonDTO createSyntPerson(String antall) {
+        return new GetSyntPersonCommand(webClient, antall).call();
     }
 }
