@@ -41,6 +41,8 @@ export default class App extends Component {
 			brukerProfil,
 			brukerBilde,
 			varslinger,
+			varslingerBruker,
+			isLoadingVarslinger,
 			updateVarslingerBruker
 		} = this.props
 
@@ -56,12 +58,12 @@ export default class App extends Component {
 		if (!brukerData || !configReady) return <Loading label="laster dolly applikasjon" fullpage />
 		return (
 			<React.Fragment>
-				{varslinger.length > 0 && (
-					<VarslingerModal
-						varslinger={varslinger}
-						updateVarslingerBruker={updateVarslingerBruker}
-					/>
-				)}
+				<VarslingerModal
+					varslinger={varslinger}
+					varslingerBruker={varslingerBruker}
+					isLoadingVarslinger={isLoadingVarslinger}
+					updateVarslingerBruker={updateVarslingerBruker}
+				/>
 				<Header brukerProfil={brukerProfil} brukerBilde={brukerBilde} />
 				<Breadcrumb />
 				<main>
