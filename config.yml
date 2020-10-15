@@ -18,6 +18,9 @@ spec:
   port: 8080
   ingresses:
     - https://dolly-frontend.dev.adeo.no
+    - https://dolly.nais.preprod.local
+    - https://dolly.nais-dev-fss.adeo.no
+    - https://dolly.dev.adeo.no
   liveness:
     path: /internal/isAlive
     initialDelay: 20
@@ -43,11 +46,11 @@ spec:
     - name: TESTNORGE_PROFIL_API_CLIENT_ID
       value: 81d0a23d-20ef-49de-8761-2e7917bc9238
     - name: DOLLY_BACKEND_API_CLIENT_ID
-      value: dummy
+      value: 787eb670-2731-49b4-8be1-2385990370a9
     - name: DOLLY_BACKEND_HOST
-      value: https://dolly-backend-dev.dev.adeo.no
+      value: https://dolly-backend.dev.adeo.no
     - name: TESTNORGE_PROFIL_API_HOST
-      value: https://testnorge-profil-api-dev.dev.adeo.no
+      value: https://testnorge-profil-api.dev.adeo.no
   vault:
     enabled: true
     paths:
