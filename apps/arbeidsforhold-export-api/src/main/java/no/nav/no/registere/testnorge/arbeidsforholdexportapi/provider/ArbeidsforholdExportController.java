@@ -30,7 +30,7 @@ public class ArbeidsforholdExportController {
 
         response.setContentType("text/csv");
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-        response.setHeader("Content-Disposition", "attachment; filename=arbeidesforhold-syntentisering-" + LocalDateTime.now().toString() + ".csv");
+        response.setHeader("Content-Disposition", "attachment; filename=arbeidesforhold-syntentisering-" + LocalDateTime.now() + ".csv");
         ArbeidsforholdSyntentiseringCsvConverter.inst().write(response.getWriter(), list.toArbeidsforhold());
         return ResponseEntity.ok().build();
     }

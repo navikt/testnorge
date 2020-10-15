@@ -25,15 +25,21 @@ public class ArbeidsforholdSyntentiseringCsvConverter extends CsvConverter<Arbei
 
     private enum Headers implements CsvHeader {
         RAPPORTERINGSMAANED("RAPPORTERINGSMÅNED"),
+        IDENT("IDENT"),
         OPPLYSNINGSPLIKTIG("OPPLYSNINGSPLIKTIG"),
         VIRKSOMHET("VIRKSOMHET"),
         ARBEIDSFORHOLD_ID("ARBEIDSFORHOLD_ID"),
         ARBEIDSFORHOLD_TYPE("ARBEIDSFORHOLD_TYPE"),
-        YRKESKODE("YRKESKODE"),
-        STILLINGSPROSENT("STILLINGSPROSENT"),
         STARTDATO("STARTDATO"),
         SLUTTDATO("SLUTTDATO"),
-        IDENT("IDENT");
+        ANTALL_TIMER_PER_UKE_SOM_EN_FULL_STILLING_TILSVARER("ANTALL_TIMER_PER_UKE_SOM_EN_FULL_STILLING_TILSVARER"),
+        AVLOENNINGSTYPE("AVLOENNINGSTYPE"),
+        YRKE("YRKE"),
+        ARBEIDSORDING("ARBEIDSORDING"),
+        STILLINGSPROSENT("STILLINGSPROSENT"),
+        SISTE_LOENNSENDRINGSDATO("SISTE_LOENNSENDRINGSDATO"),
+        SISTE_DATO_FOR_STILLINGSPROSENTENDRING("SISTE_DATO_FOR_STILLINGSPROSENTENDRING"),
+        ANTALL_PERMISJONER("ANTALL_PERMISJONER");
 
         private final String header;
 
@@ -57,15 +63,21 @@ public class ArbeidsforholdSyntentiseringCsvConverter extends CsvConverter<Arbei
         return arbeidsforhold -> {
             Map<String, Object> map = new HashMap<>();
             map.put(Headers.RAPPORTERINGSMAANED.getValue(), arbeidsforhold.getKalendermaaned());
+            map.put(Headers.IDENT.getValue(), arbeidsforhold.getIdent());
             map.put(Headers.OPPLYSNINGSPLIKTIG.getValue(), arbeidsforhold.getOpplysningspliktigOrgnummer());
             map.put(Headers.VIRKSOMHET.getValue(), arbeidsforhold.getVirksomhetOrgnummer());
             map.put(Headers.ARBEIDSFORHOLD_ID.getValue(), arbeidsforhold.getArbeidsforholdId());
             map.put(Headers.ARBEIDSFORHOLD_TYPE.getValue(), arbeidsforhold.getArbeidsforholdType());
-            map.put(Headers.YRKESKODE.getValue(), arbeidsforhold.getYrkekode());
-            map.put(Headers.STILLINGSPROSENT.getValue(), arbeidsforhold.getStillingsprosent());
-            map.put(Headers.STARTDATO.getValue(), arbeidsforhold.getStatdato());
+            map.put(Headers.STARTDATO.getValue(), arbeidsforhold.getStartdato());
             map.put(Headers.SLUTTDATO.getValue(), arbeidsforhold.getSluttdato());
-            map.put(Headers.IDENT.getValue(), arbeidsforhold.getIdent());
+            map.put(Headers.ANTALL_TIMER_PER_UKE_SOM_EN_FULL_STILLING_TILSVARER.getValue(), arbeidsforhold.getAntallTimerPerUkeSomEnFullStillingTilsvarer());
+            map.put(Headers.AVLOENNINGSTYPE.getValue(), arbeidsforhold.getAvloenningstype());
+            map.put(Headers.YRKE.getValue(), arbeidsforhold.getYrke());
+            map.put(Headers.ARBEIDSORDING.getValue(), arbeidsforhold.getArbeidstidsordning());
+            map.put(Headers.STILLINGSPROSENT.getValue(), arbeidsforhold.getStillingsprosent());
+            map.put(Headers.SISTE_LOENNSENDRINGSDATO.getValue(), arbeidsforhold.getSisteLoennsendringsdato());
+            map.put(Headers.SISTE_DATO_FOR_STILLINGSPROSENTENDRING.getValue(), arbeidsforhold.getSisteDatoForStillingsprosentendring());
+            map.put(Headers.ANTALL_PERMISJONER.getValue(), arbeidsforhold.getAntallPermisjoner());
             return map;
         };
     }

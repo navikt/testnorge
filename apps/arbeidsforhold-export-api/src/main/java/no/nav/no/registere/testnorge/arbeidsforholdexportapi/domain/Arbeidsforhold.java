@@ -38,18 +38,43 @@ public class Arbeidsforhold {
     }
 
     public String getArbeidsforholdType() {
+        return arbeidsforhold.getTypeArbeidsforhold();
+    }
+
+    public String getYrke() {
+        return arbeidsforhold.getYrke();
+    }
+
+    public Float getAntallTimerPerUkeSomEnFullStillingTilsvarer() {
+        return arbeidsforhold.getAntallTimerPerUkeSomEnFullStillingTilsvarer().floatValue();
+    }
+
+    public LocalDate getSisteLoennsendringsdato() {
+        return toLocalDate(arbeidsforhold.getSisteLoennsendringsdato());
+    }
+
+    public LocalDate getSisteDatoForStillingsprosentendring() {
+        return toLocalDate(arbeidsforhold.getSisteDatoForStillingsprosentendring());
+    }
+
+    public String getAvloenningstype() {
         return arbeidsforhold.getAvloenningstype();
     }
 
-    public String getYrkekode() {
-        return arbeidsforhold.getYrke();
+    public String getArbeidstidsordning() {
+        return arbeidsforhold.getArbeidstidsordning();
+    }
+
+    public int getAntallPermisjoner() {
+        return arbeidsforhold.getPermisjon() != null && !arbeidsforhold.getPermisjon().isEmpty()
+                ? arbeidsforhold.getPermisjon().size() : 0;
     }
 
     public Float getStillingsprosent() {
         return arbeidsforhold.getStillingsprosent().floatValue();
     }
 
-    public LocalDate getStatdato() {
+    public LocalDate getStartdato() {
         return toLocalDate(arbeidsforhold.getStartdato());
     }
 
