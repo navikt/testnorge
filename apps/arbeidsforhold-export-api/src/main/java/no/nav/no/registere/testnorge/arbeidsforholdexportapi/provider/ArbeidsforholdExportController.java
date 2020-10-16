@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -35,7 +34,7 @@ public class ArbeidsforholdExportController {
 
     @GetMapping(produces = "text/csv")
     public ResponseEntity<HttpStatus> getArbeidsforhold(
-            @RequestParam(value = "antallPersoner", defaultValue = "1") @Max(100) @Min(1) Integer antallPersoner,
+            @RequestParam(value = "antallPersoner", defaultValue = "1") @Min(1) Integer antallPersoner,
             HttpServletResponse response
     ) throws IOException {
         List<Arbeidsforhold> arbeidsforholds = service.getArbeidsforhold(antallPersoner);
@@ -59,7 +58,7 @@ public class ArbeidsforholdExportController {
 
     @GetMapping(value = "/permisjoner", produces = "text/csv")
     public ResponseEntity<HttpStatus> getPermisjoner(
-            @RequestParam(value = "antallPersoner", defaultValue = "1") @Max(100) @Min(1) Integer antallPersoner,
+            @RequestParam(value = "antallPersoner", defaultValue = "1") @Min(1) Integer antallPersoner,
             HttpServletResponse response
     ) throws IOException {
         List<Permisjon> permisjoner = service.getPermisjoner(antallPersoner);
