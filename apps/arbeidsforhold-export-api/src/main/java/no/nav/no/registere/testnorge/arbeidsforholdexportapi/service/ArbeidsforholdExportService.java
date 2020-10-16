@@ -26,8 +26,7 @@ public class ArbeidsforholdExportService {
         return opplysningspliktigList.toArbeidsforhold();
     }
 
-
-    public OpplysningspliktigList getOpplysningspliktigList(Integer antallPersoner) {
+    private OpplysningspliktigList getOpplysningspliktigList(Integer antallPersoner) {
         Set<String> idetner = identRepository.getRandomIdenter(antallPersoner);
         List<String> xmls = inntektsmottakerHendelseRepository.getXmlFrom(idetner);
         return OpplysningspliktigList.from(xmls);
