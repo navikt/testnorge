@@ -54,6 +54,11 @@
             <groupId>com.oracle.database.xml</groupId>
             <artifactId>xdb</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.oracle.database.xml</groupId>
+            <artifactId>xmlparserv2</artifactId>
+            <version>19.7.0.0</version>
+        </dependency>
 
         <!-- XML -->
         <dependency>

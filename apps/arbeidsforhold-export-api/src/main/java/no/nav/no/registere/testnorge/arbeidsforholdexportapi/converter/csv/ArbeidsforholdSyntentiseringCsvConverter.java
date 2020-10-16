@@ -24,7 +24,7 @@ public class ArbeidsforholdSyntentiseringCsvConverter extends CsvConverter<Arbei
     }
 
     private enum Headers implements CsvHeader {
-        RAPPORTERINGSMAANED("RAPPORTERINGSMÅNED"),
+        RAPPORTERINGSMAANED("RAPPORTERINGSMAANED"),
         IDENT("IDENT"),
         OPPLYSNINGSPLIKTIG("OPPLYSNINGSPLIKTIG"),
         VIRKSOMHET("VIRKSOMHET"),
