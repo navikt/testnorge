@@ -51,8 +51,8 @@
             <artifactId>spring-jdbc</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>xdb6</artifactId>
+            <groupId>com.oracle.database.xml</groupId>
+            <artifactId>xdb</artifactId>
         </dependency>
 
         <!-- XML -->
