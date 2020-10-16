@@ -65,7 +65,6 @@
             <artifactId>jaxb-api</artifactId>
         </dependency>
 
-
         <!-- CSV -->
         <dependency>
             <groupId>no.nav.registre.testnorge.libs</groupId>
