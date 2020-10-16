@@ -7,18 +7,22 @@ import no.nav.registre.testnorge.libs.csvconverter.CsvConverter;
 import no.nav.registre.testnorge.libs.csvconverter.CsvHeader;
 import no.nav.registre.testnorge.libs.csvconverter.ObjectConverter;
 import no.nav.registre.testnorge.libs.csvconverter.RowConverter;
+import no.nav.registre.testnorge.personexportapi.consumer.kodeverk.KodeverkConsumer;
 import no.nav.registre.testnorge.personexportapi.domain.Person;
 
 public class NorskHelsenettPersonCsvConverter extends CsvConverter<Person> {
 
+    private static KodeverkConsumer kodeverkConsumer;
+
     private static NorskHelsenettPersonCsvConverter inst;
 
-    private NorskHelsenettPersonCsvConverter() {
+    private NorskHelsenettPersonCsvConverter(KodeverkConsumer kodeverkConsumer) {
+        this.kodeverkConsumer = kodeverkConsumer;
     }
 
     public static NorskHelsenettPersonCsvConverter inst() {
         if (inst == null) {
-            inst = new NorskHelsenettPersonCsvConverter();
+            inst = new NorskHelsenettPersonCsvConverter(kodeverkConsumer);
         }
         return inst;
     }
@@ -98,6 +102,22 @@ public class NorskHelsenettPersonCsvConverter extends CsvConverter<Person> {
             map.put(Headers.FORNAVN.getValue(), person.getFornavn());
             map.put(Headers.MELLOMNAVN.getValue(), person.getMellomnavn());
             map.put(Headers.ETTERNAVN.getValue(), person.getEtternavn());
+            map.put(Headers.ADRESSEKODE.getValue(), person.getAdressetype());
+            map.put(Headers.GATENAVN.getValue(), person.getGatenavn());
+            map.put(Headers.GATENR.getValue(), person.getGatenr());
+            map.put(Headers.HUSBOKSTAV.getValue(), person.getHusnr());
+            map.put(Headers.HUSBOKSTAV.getValue(), person.getHusbokstav());
+            map.put(Headers.STEDSNAVN.getValue(), person.getGaardsnavn());
+            map.put(Headers.GARDSNR.getValue(), person.getGaardsnr());
+            map.put(Headers.BRUKSNR.getValue(), person.getBruksnr());
+            map.put(Headers.BOLIGNR.getValue(), person.getBolignr());
+            map.put(Headers.CO_ADRESSE.getValue(), person.getTilleggsadresse());
+            map.put(Headers.POSTNR.getValue(), person.getPostnummer());
+            map.put(Headers.POSTSTED.getValue(), kodeverkConsumer.getKodeverkByName("Postnummer").get(person.getPostnummer()));
+            map.put(Headers.KOMMUNENR.getValue(), person.getKommunenr());
+            map.put(Headers.KOMMUNE.getValue(), kodeverkConsumer.getKodeverkByName("Kommuner").get(person.getKommunenr()));
+            map.put(Headers.DATO_ADR_FRA.getValue(), person.getFlyttedato());
+
             return map;
         };
     }

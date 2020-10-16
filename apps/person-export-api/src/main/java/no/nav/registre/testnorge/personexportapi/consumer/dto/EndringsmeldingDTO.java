@@ -19,6 +19,17 @@ public class EndringsmeldingDTO {
     String mellomnavn;
     String slektsnavn;
     String aarsakskode;
+    String personkode;
+    String kommunenummer;
+    String postnummer;
+    String flyttedatoAdr; // flyttedato
+    String adressetype; // O = Offisiell, dvs gateadresse, M = matrikkeladresse
+    String gateGaard;  // gatekode (O) eller gårdsnummer (M)
+    String adressenavn; // gatenavn (O) eller gårdsnavn (M)
+    String husBruk;     // husnummer (O) eller bruksnummer (M)
+    String bokstavFestenr;  // husbokstav (O) eller festenummer (M)
+    String bolignr;    // eks H0101
+    String tilleggsadresse;
 
     @JsonIgnore
     public boolean isFoedsel() {
@@ -28,5 +39,15 @@ public class EndringsmeldingDTO {
     @JsonIgnore
     public boolean isInnvandring() {
         return aarsakskode != null && aarsakskode.equals(AARSAKSKODE_INNVANDRING);
+    }
+
+    @JsonIgnore
+    public boolean isMatrikkeladresse() {
+        return "M".equals(getAdressetype());
+    }
+
+    @JsonIgnore
+    public boolean isGateadresse() {
+        return "O".equals(getAdressetype());
     }
 }
