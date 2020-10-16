@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom'
 import Icon from '~/components/ui/icon/Icon'
 // @ts-ignore
 import logo from '~/assets/img/nav-logo-hvit.png'
+import dolly from '~/assets/favicon.ico'
 import './Header.less'
 import Logger from '~/logger'
 import { useLocation } from 'react-use'
@@ -51,7 +52,7 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 
 			<div className="profil-area flexbox--all-center">
 				<NavLink to="/minside">
-					<img alt="Profilbilde" src={brukerBilde && brukerBilde.url} />
+					<img alt="Profilbilde" src={brukerBilde ? brukerBilde.url : dolly} />
 					<div className="profil-navn">
 						<p className="min-side">MIN SIDE</p>
 						<p>{brukerProfil && brukerProfil.visningsNavn}</p>
