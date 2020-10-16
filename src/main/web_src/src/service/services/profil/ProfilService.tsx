@@ -10,6 +10,6 @@ export default {
 
 	getProfilBilde() {
 		const endpoint = getProfilUrl + '/profil/bilde'
-		return Request.getBilde(endpoint).catch(null)
+		return Request.getBilde(endpoint).catch(error => console.error(error))
 	}
 }
