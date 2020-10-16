@@ -12,6 +12,7 @@ import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.EDAGM;
 
@@ -65,6 +66,9 @@ public class OpplysningspliktigList {
         }
     }
 
+    public int getAntallPersoner() {
+        return toArbeidsforhold().stream().collect(Collectors.groupingBy(Arbeidsforhold::getIdent)).keySet().size();
+    }
 
     public List<Arbeidsforhold> toArbeidsforhold() {
         List<Arbeidsforhold> arbeidsforholds = new ArrayList<>();

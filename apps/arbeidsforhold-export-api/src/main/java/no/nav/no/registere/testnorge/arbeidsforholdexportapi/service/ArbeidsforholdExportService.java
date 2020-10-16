@@ -22,6 +22,9 @@ public class ArbeidsforholdExportService {
     public List<Arbeidsforhold> hetArbeidsforholdForEtAntallPersoner(Integer antallPersoner) {
         Set<String> idetner = identRepository.getRandomIdenter(antallPersoner);
         List<String> xmls = inntektsmottakerHendelseRepository.getXmlFrom(idetner);
-        return OpplysningspliktigList.from(xmls).toArbeidsforhold();
+        OpplysningspliktigList opplysningspliktigList = OpplysningspliktigList.from(xmls);
+        log.info("Fant arbeidsforhold på {}/{}", opplysningspliktigList.getAntallPersoner(), antallPersoner);
+
+        return opplysningspliktigList.toArbeidsforhold();
     }
 }
