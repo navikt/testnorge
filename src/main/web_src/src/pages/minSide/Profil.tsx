@@ -1,4 +1,5 @@
 import React from 'react'
+import dolly from '~/assets/favicon.ico'
 
 type Props = {
 	bilde: Response
@@ -12,7 +13,7 @@ type Props = {
 export default function Profil({ bilde, info }: Props) {
 	return (
 		<div className="profil">
-			<img alt="Profilbilde" src={bilde && bilde.url} />
+			<img alt="Profilbilde" src={(bilde && bilde.url) || dolly} />
 			{info && (
 				<div className="person-info">
 					<p>
