@@ -1,7 +1,5 @@
 package no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain;
 
-import lombok.RequiredArgsConstructor;
-
 import javax.annotation.Nullable;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDate;
@@ -10,12 +8,26 @@ import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.Inntektsmottaker;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.Leveranse;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.Virksomhet;
 
-@RequiredArgsConstructor
+
 public class Arbeidsforhold {
     private final Leveranse leveranse;
     private final Virksomhet virksomhet;
     private final Inntektsmottaker inntektsmottaker;
     private final no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.Arbeidsforhold arbeidsforhold;
+    private final Permisjoner permisjoner;
+
+    public Arbeidsforhold(
+            Leveranse leveranse,
+            Virksomhet virksomhet,
+            Inntektsmottaker inntektsmottaker,
+            no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.Arbeidsforhold arbeidsforhold
+    ) {
+        this.leveranse = leveranse;
+        this.virksomhet = virksomhet;
+        this.inntektsmottaker = inntektsmottaker;
+        this.arbeidsforhold = arbeidsforhold;
+        this.permisjoner = new Permisjoner(arbeidsforhold.getPermisjon());
+    }
 
     public String getKalendermaaned() {
         return leveranse.getKalendermaaned().toString();
@@ -66,14 +78,9 @@ public class Arbeidsforhold {
         return arbeidsforhold.getArbeidstidsordning();
     }
 
-    public int getAntallPermisjoner() {
-        return arbeidsforhold.getPermisjon() != null && !arbeidsforhold.getPermisjon().isEmpty()
-                ? arbeidsforhold.getPermisjon().size() : 0;
-    }
-
     public Float getStillingsprosent() {
         return arbeidsforhold.getStillingsprosent() != null
-                ? arbeidsforhold.getStillingsprosent().floatValue() : null   ;
+                ? arbeidsforhold.getStillingsprosent().floatValue() : null;
     }
 
     public LocalDate getStartdato() {
@@ -89,5 +96,29 @@ public class Arbeidsforhold {
             return null;
         }
         return LocalDate.of(calendar.getYear(), calendar.getMonth(), calendar.getDay());
+    }
+
+    public int getAntallVelferdspermisjon() {
+        return permisjoner.getAntallVelferdspermisjon();
+    }
+
+    public int getAntallPermisjonMedForeldrepenger() {
+        return permisjoner.getAntallPermisjonMedForeldrepenger();
+    }
+
+    public int getAntallPermittering() {
+        return permisjoner.getAntallPermittering();
+    }
+
+    public int getAntallPermisjon() {
+        return permisjoner.getAntallPermisjon();
+    }
+
+    public int getAntallPermisjonVedMilitaertjeneste() {
+        return permisjoner.getAntallPermisjonVedMilitaertjeneste();
+    }
+
+    public int getAntallUtdanningspermisjon() {
+        return permisjoner.getAntallUtdanningspermisjon();
     }
 }

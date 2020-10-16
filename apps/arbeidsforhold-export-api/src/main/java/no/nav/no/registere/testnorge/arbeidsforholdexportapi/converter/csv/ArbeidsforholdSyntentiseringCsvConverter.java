@@ -39,7 +39,12 @@ public class ArbeidsforholdSyntentiseringCsvConverter extends CsvConverter<Arbei
         STILLINGSPROSENT("STILLINGSPROSENT"),
         SISTE_LOENNSENDRINGSDATO("SISTE_LOENNSENDRINGSDATO"),
         SISTE_DATO_FOR_STILLINGSPROSENTENDRING("SISTE_DATO_FOR_STILLINGSPROSENTENDRING"),
-        ANTALL_PERMISJONER("ANTALL_PERMISJONER");
+        PERMISJON_MED_FORELDREPENGER("PERMISJON_MED_FORELDREPENGER"),
+        PERMITTERING("PERMITTERING"),
+        PERMISJON("PERMISJON"),
+        PERMISJON_VED_MILITAERTJENESTE("PERMISJON_VED_MILITAERTJENESTE"),
+        VELFERDSPERMISJON("VELFERDSPERMISJON"),
+        UTDANNINGSPERMISJON("UTDANNINGSPERMISJON");
 
         private final String header;
 
@@ -77,7 +82,12 @@ public class ArbeidsforholdSyntentiseringCsvConverter extends CsvConverter<Arbei
             map.put(Headers.STILLINGSPROSENT.getValue(), arbeidsforhold.getStillingsprosent());
             map.put(Headers.SISTE_LOENNSENDRINGSDATO.getValue(), arbeidsforhold.getSisteLoennsendringsdato());
             map.put(Headers.SISTE_DATO_FOR_STILLINGSPROSENTENDRING.getValue(), arbeidsforhold.getSisteDatoForStillingsprosentendring());
-            map.put(Headers.ANTALL_PERMISJONER.getValue(), arbeidsforhold.getAntallPermisjoner());
+            map.put(Headers.PERMISJON_MED_FORELDREPENGER.getValue(), arbeidsforhold.getAntallPermisjonMedForeldrepenger());
+            map.put(Headers.PERMITTERING.getValue(), arbeidsforhold.getAntallPermittering());
+            map.put(Headers.PERMISJON.getValue(), arbeidsforhold.getAntallPermisjon());
+            map.put(Headers.PERMISJON_VED_MILITAERTJENESTE.getValue(), arbeidsforhold.getAntallPermisjonVedMilitaertjeneste());
+            map.put(Headers.VELFERDSPERMISJON.getValue(), arbeidsforhold.getAntallVelferdspermisjon());
+            map.put(Headers.UTDANNINGSPERMISJON.getValue(), arbeidsforhold.getAntallUtdanningspermisjon());
             return map;
         };
     }
