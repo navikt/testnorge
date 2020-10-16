@@ -11,6 +11,7 @@ import javax.xml.bind.Unmarshaller;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -66,8 +67,21 @@ public class OpplysningspliktigList {
         }
     }
 
-    public int getAntallPersoner() {
+    public int getAntallPersonerArbeidsforhold() {
         return toArbeidsforhold().stream().collect(Collectors.groupingBy(Arbeidsforhold::getIdent)).keySet().size();
+    }
+
+    public int getAntallPersonerMedPermisjoner() {
+        return toPermisjoner().stream().collect(Collectors.groupingBy(Permisjon::getIdent)).keySet().size();
+    }
+
+
+    public List<Permisjon> toPermisjoner(){
+        return toArbeidsforhold()
+                .stream()
+                .map(Arbeidsforhold::getPermisjoner)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
     public List<Arbeidsforhold> toArbeidsforhold() {

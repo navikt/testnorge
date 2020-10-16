@@ -2,14 +2,20 @@ package no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain;
 
 import java.util.Collections;
 import java.util.List;
-
-import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.Permisjon;
+import java.util.stream.Collectors;
 
 public class Permisjoner {
     private final List<Permisjon> list;
 
     public Permisjoner(List<Permisjon> list) {
         this.list = list != null ? list : Collections.emptyList();
+    }
+
+    static Permisjoner from(List<no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.Permisjon> list, String kalendermaaned, String ident) {
+        return new Permisjoner(list != null
+                ? list.stream().map(value -> new Permisjon(value, kalendermaaned, ident)).collect(Collectors.toList())
+                : null
+        );
     }
 
     private int antall(String beskrivelse) {
@@ -42,4 +48,9 @@ public class Permisjoner {
     public int getAntallUtdanningspermisjon() {
         return antall("utdanningspermisjon");
     }
+
+    public List<Permisjon> getList() {
+        return list;
+    }
+
 }

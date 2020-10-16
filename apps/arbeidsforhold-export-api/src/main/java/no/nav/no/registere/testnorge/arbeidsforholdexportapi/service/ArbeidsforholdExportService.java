@@ -9,6 +9,7 @@ import java.util.Set;
 
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Arbeidsforhold;
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.OpplysningspliktigList;
+import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Permisjon;
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.repository.IdentRepository;
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.repository.InntektsmottakerHendelseRepository;
 
@@ -19,12 +20,22 @@ public class ArbeidsforholdExportService {
     private final IdentRepository identRepository;
     private final InntektsmottakerHendelseRepository inntektsmottakerHendelseRepository;
 
-    public List<Arbeidsforhold> hetArbeidsforholdForEtAntallPersoner(Integer antallPersoner) {
+    public List<Arbeidsforhold> getArbeidsforhold(Integer antallPersoner) {
+        OpplysningspliktigList opplysningspliktigList = getOpplysningspliktigList(antallPersoner);
+        log.info("Fant arbeidsforhold på {}/{}", opplysningspliktigList.getAntallPersonerArbeidsforhold(), antallPersoner);
+        return opplysningspliktigList.toArbeidsforhold();
+    }
+
+
+    public OpplysningspliktigList getOpplysningspliktigList(Integer antallPersoner) {
         Set<String> idetner = identRepository.getRandomIdenter(antallPersoner);
         List<String> xmls = inntektsmottakerHendelseRepository.getXmlFrom(idetner);
-        OpplysningspliktigList opplysningspliktigList = OpplysningspliktigList.from(xmls);
-        log.info("Fant arbeidsforhold på {}/{}", opplysningspliktigList.getAntallPersoner(), antallPersoner);
+        return OpplysningspliktigList.from(xmls);
+    }
 
-        return opplysningspliktigList.toArbeidsforhold();
+    public List<Permisjon> getPermisjoner(Integer antallPersoner) {
+        OpplysningspliktigList opplysningspliktigList = getOpplysningspliktigList(antallPersoner);
+        log.info("Fant permiteringer på {}/{}", opplysningspliktigList.getAntallPersonerMedPermisjoner(), antallPersoner);
+        return opplysningspliktigList.toPermisjoner();
     }
 }

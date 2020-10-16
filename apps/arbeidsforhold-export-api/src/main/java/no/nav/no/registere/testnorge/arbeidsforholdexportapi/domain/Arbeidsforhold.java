@@ -3,6 +3,7 @@ package no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain;
 import javax.annotation.Nullable;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDate;
+import java.util.List;
 
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.Inntektsmottaker;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.Leveranse;
@@ -26,7 +27,7 @@ public class Arbeidsforhold {
         this.virksomhet = virksomhet;
         this.inntektsmottaker = inntektsmottaker;
         this.arbeidsforhold = arbeidsforhold;
-        this.permisjoner = new Permisjoner(arbeidsforhold.getPermisjon());
+        this.permisjoner = Permisjoner.from(arbeidsforhold.getPermisjon(), getKalendermaaned(), getIdent());
     }
 
     public String getKalendermaaned() {
@@ -91,12 +92,6 @@ public class Arbeidsforhold {
         return toLocalDate(arbeidsforhold.getSluttdato());
     }
 
-    private static LocalDate toLocalDate(@Nullable XMLGregorianCalendar calendar) {
-        if (calendar == null) {
-            return null;
-        }
-        return LocalDate.of(calendar.getYear(), calendar.getMonth(), calendar.getDay());
-    }
 
     public int getAntallVelferdspermisjon() {
         return permisjoner.getAntallVelferdspermisjon();
@@ -120,5 +115,17 @@ public class Arbeidsforhold {
 
     public int getAntallUtdanningspermisjon() {
         return permisjoner.getAntallUtdanningspermisjon();
+    }
+
+    public List<Permisjon> getPermisjoner(){
+        return permisjoner.getList();
+    }
+
+
+    private static LocalDate toLocalDate(@Nullable XMLGregorianCalendar calendar) {
+        if (calendar == null) {
+            return null;
+        }
+        return LocalDate.of(calendar.getYear(), calendar.getMonth(), calendar.getDay());
     }
 }
