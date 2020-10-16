@@ -3,7 +3,7 @@
             xmlns:ds="http://www.w3.org/2000/09/xmldsig#" targetNamespace="urn:nav:a-arbeidsforhold:v2_0"
             elementFormDefault="qualified" attributeFormDefault="unqualified">
     <xsd:import namespace="http://www.w3.org/2000/09/xmldsig#"
-                schemaLocation="http://www.w3.org/TR/xmldsig-core/xmldsig-core-schema.xsd"/>
+                schemaLocation="./xmldsig-core-schema.xsd"/>
     <xsd:element name="melding" type="EDAG_M"/>
     <xsd:complexType name="EDAG_M">
         <xsd:sequence>

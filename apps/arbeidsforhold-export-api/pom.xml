@@ -45,6 +45,15 @@
             <artifactId>hibernate-validator</artifactId>
         </dependency>
 
+        <!-- Database -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>xdb6</artifactId>
+        </dependency>
 
         <!-- XML -->
         <dependency>
@@ -61,6 +70,10 @@
         <dependency>
             <groupId>no.nav.registre.testnorge.libs</groupId>
             <artifactId>testnorge-csv-converter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
         </dependency>
 
         <!-- Logging -->

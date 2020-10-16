@@ -72,6 +72,7 @@
         <testnorge-consumers.version>1.12.0-RELEASE</testnorge-consumers.version>
         <starter-webflux.version>2.3.2.RELEASE</starter-webflux.version>
         <springdoc-openapi.version>1.4.6</springdoc-openapi.version>
+        <xdb6.version>12.2.0.1</xdb6.version>
     </properties>
 
     <dependencyManagement>
@@ -165,6 +166,12 @@
                 <groupId>com.ibm.mq</groupId>
                 <artifactId>mq-jms-spring-boot-starter</artifactId>
                 <version>${mq-jms-spring-boot-starter.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.oracle</groupId>
+                <artifactId>xdb6</artifactId>
+                <version>${xdb6.version}</version>
             </dependency>
 
             <!-- Logging -->

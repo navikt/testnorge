@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
@@ -20,6 +21,11 @@ public class OpplysningspliktigList {
     private final List<EDAGM> list;
 
     @SuppressWarnings("unchecked")
+    private static EDAGM from(String xml, Unmarshaller unmarshaller) throws JAXBException {
+        var reader = new StringReader(xml);
+        return ((JAXBElement<EDAGM>) unmarshaller.unmarshal(reader)).getValue();
+    }
+
     public static OpplysningspliktigList from(MultipartFile... files) {
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(EDAGM.class);
@@ -27,20 +33,38 @@ public class OpplysningspliktigList {
             List<EDAGM> list = new ArrayList<>();
             for (var file : files) {
                 log.info("Converterer fil {}...", file.getOriginalFilename());
-                var reader = new StringReader(new String(file.getBytes(), StandardCharsets.UTF_8));
                 try {
-                    list.add(((JAXBElement<EDAGM>) unmarshaller.unmarshal(reader)).getValue());
+                    list.add(from(new String(file.getBytes(), StandardCharsets.UTF_8), unmarshaller));
                 } catch (Exception e) {
                     log.error("Klarer ikke a lese fil {}", file.getOriginalFilename());
                     throw e;
                 }
-
             }
             return new OpplysningspliktigList(list);
         } catch (Exception e) {
-            throw new RuntimeException("Klarer ikke aa convertere filene til EDAGM", e);
+            throw new RuntimeException("Klarer ikke a convertere filene til EDAGM", e);
         }
     }
+
+    public static OpplysningspliktigList from(List<String> xmls) {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(EDAGM.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            List<EDAGM> list = new ArrayList<>();
+            for (var xml : xmls) {
+                try {
+                    list.add(from(xml, unmarshaller));
+                } catch (Exception e) {
+                    log.error("Klarer ikke a convertere xml");
+                    throw e;
+                }
+            }
+            return new OpplysningspliktigList(list);
+        } catch (Exception e) {
+            throw new RuntimeException("Klarer ikke a convertere xmlene til EDAGM", e);
+        }
+    }
+
 
     public List<Arbeidsforhold> toArbeidsforhold() {
         List<Arbeidsforhold> arbeidsforholds = new ArrayList<>();
@@ -62,6 +86,4 @@ public class OpplysningspliktigList {
         );
         return arbeidsforholds;
     }
-
-
 }

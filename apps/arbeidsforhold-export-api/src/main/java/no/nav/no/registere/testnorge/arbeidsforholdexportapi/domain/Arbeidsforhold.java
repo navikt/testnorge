@@ -46,7 +46,8 @@ public class Arbeidsforhold {
     }
 
     public Float getAntallTimerPerUkeSomEnFullStillingTilsvarer() {
-        return arbeidsforhold.getAntallTimerPerUkeSomEnFullStillingTilsvarer().floatValue();
+        return arbeidsforhold.getAntallTimerPerUkeSomEnFullStillingTilsvarer() != null
+                ? arbeidsforhold.getAntallTimerPerUkeSomEnFullStillingTilsvarer().floatValue() : null;
     }
 
     public LocalDate getSisteLoennsendringsdato() {
@@ -71,7 +72,8 @@ public class Arbeidsforhold {
     }
 
     public Float getStillingsprosent() {
-        return arbeidsforhold.getStillingsprosent().floatValue();
+        return arbeidsforhold.getStillingsprosent() != null
+                ? arbeidsforhold.getStillingsprosent().floatValue() : null   ;
     }
 
     public LocalDate getStartdato() {
