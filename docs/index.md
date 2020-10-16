@@ -16,9 +16,9 @@ nav_order: 1
 
 Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske testdata.  I Dolly kan du opprette syntetiske testpersoner med forskjellige egenskaper, og tilgjengeliggjøre testdataene i valgte testmiljøer.
 
-Fra utviklerimage eller Citrix benytt lenken: 
+Fra enhet som er satt opp med Naisdevice: 
 
-[dolly.nais.preprod.local](https://dolly.nais.preprod.local/)
+[https://dolly.dev.adeo.no/](https://dolly.dev.adeo.no/)
 
 Utenfor de interne Nav systemene benytt: 
 
@@ -30,11 +30,11 @@ Denne lenken krever tilgangen "Utvikling på laptop"
 
 ## Dolly pålogging 
 
-For å logge inn i Dolly trenger du en Z-bruker. Detaljert beskrivelse av hvordan du kan opprette en Z-bruker, samt logge inn i Dolly finner du her: [Hvordan opprette Z-bruker](z_bruker/index.md)
-
 Det første som møter deg når du har logget inn er en startside med noen menyvalg. Siden åpnes automatisk med en oversikt over dine testdatagrupper
 
 ![Startside](assets/startside.png)
+
+Dersom det er første gang du bruker Dolly, eller det finnes ny informasjon vil du bli møtt av en Varsling.
 
 ---
 
