@@ -7,6 +7,7 @@ import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 
 import no.nav.dolly.web.consumers.TilbakemeldingConsumer;
+import no.nav.dolly.web.domain.Level;
 import no.nav.dolly.web.domain.LogEvent;
 
 @Slf4j
@@ -38,7 +39,7 @@ public class LogService {
 
     public void log(LogEvent event) {
         try {
-            if (Strings.isNotBlank(event.getMessage())) {
+            if (Strings.isNotBlank(event.getMessage()) && event.getLevel() == Level.INFO) {
                 tilbakemeldingConsumer.send(event.toTilbakemeldingDTO());
             }
         } catch (Exception e) {
