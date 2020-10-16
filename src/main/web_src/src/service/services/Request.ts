@@ -6,7 +6,10 @@ export default class Request {
 	}
 
 	static getBilde(url: string) {
-		return api.fetch(url, { method: 'GET' }).then(response => ({ data: response }))
+		return api
+			.fetch(url, { method: 'GET' })
+			.then(response => ({ data: response }))
+			.catch(error => null)
 	}
 
 	static post(url: string, data?: object) {
