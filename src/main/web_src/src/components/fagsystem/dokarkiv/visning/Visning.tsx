@@ -68,16 +68,18 @@ export const DokarkivVisning = ({ ident }: DokarkivVisning) => {
 													return response.data
 												}
 												const journalpost = response.data.data.journalpost
-												return {
-													kanal: journalpost.kanalnavn,
-													brevkode: journalpost.dokumenter[0].brevkode,
-													tittel: journalpost.dokumenter[0].tittel,
-													tema: journalpost.temanavn,
-													journalfoerendeEnhet: journalpost.journalfoerendeEnhet,
-													journalpostId: journalpost.journalpostId,
-													dokumentInfoId: journalpost.dokumenter[0].dokumentInfoId,
-													miljoe: bestilling.miljoe
-												}
+												return journalpost
+													? {
+															kanal: journalpost.kanalnavn,
+															brevkode: journalpost.dokumenter[0].brevkode,
+															tittel: journalpost.dokumenter[0].tittel,
+															tema: journalpost.temanavn,
+															journalfoerendeEnhet: journalpost.journalfoerendeEnhet,
+															journalpostId: journalpost.journalpostId,
+															dokumentInfoId: journalpost.dokumenter[0].dokumentInfoId,
+															miljoe: bestilling.miljoe
+													  }
+													: null
 											}
 										})
 										.catch(error => console.error(error))
@@ -87,29 +89,32 @@ export const DokarkivVisning = ({ ident }: DokarkivVisning) => {
 								return Promise.all(data)
 							})
 					}
-					render={(data: Array<Dokument>) =>
-						data &&
-						data.length > 0 && (
-							<ErrorBoundary>
-								<>
-									<SubOverskrift label="Dokumenter" iconKind="dokarkiv" />
-									{data.length > 1 ? (
-										<DollyFieldArray data={data} nested>
-											{(dokument: Dokument, idx: number) => (
-												<div key={idx} className="person-visning_content">
-													<EnkelDokarkivVisning dokument={dokument} />
-												</div>
-											)}
-										</DollyFieldArray>
-									) : (
-										<div className="person-visning_content">
-											<EnkelDokarkivVisning dokument={data[0]} />
-										</div>
-									)}
-								</>
-							</ErrorBoundary>
+					render={(data: Array<Dokument>) => {
+						const filteredData = data.filter(dokument => dokument.journalpostId != null)
+						return (
+							filteredData &&
+							filteredData.length > 0 && (
+								<ErrorBoundary>
+									<>
+										<SubOverskrift label="Dokumenter" iconKind="dokarkiv" />
+										{filteredData.length > 1 ? (
+											<DollyFieldArray data={filteredData} nested>
+												{(dokument: Dokument, idx: number) => (
+													<div key={idx} className="person-visning_content">
+														<EnkelDokarkivVisning dokument={dokument} />
+													</div>
+												)}
+											</DollyFieldArray>
+										) : (
+											<div className="person-visning_content">
+												<EnkelDokarkivVisning dokument={filteredData[0]} />
+											</div>
+										)}
+									</>
+								</ErrorBoundary>
+							)
 						)
-					}
+					}}
 				/>
 			</ErrorBoundary>
 		</div>
