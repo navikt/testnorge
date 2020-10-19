@@ -1,13 +1,12 @@
 package no.nav.registre.arena.core.service.util;
 
 import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.EIER;
-import static no.nav.registre.arena.core.service.util.IdentUtils.hentFoedseldato;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.arena.core.consumer.rs.TiltakArenaForvalterConsumer;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetFinnTiltakRequest;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -26,11 +25,9 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.io.Resources;
-
 import no.nav.registre.arena.core.consumer.rs.AktoerRegisteretConsumer;
+import no.nav.registre.arena.core.consumer.rs.TiltakArenaForvalterConsumer;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetFinnTiltakRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.service.BrukereService;
 import no.nav.registre.arena.core.service.exception.ArbeidssoekerException;
@@ -40,13 +37,15 @@ import no.nav.registre.testnorge.consumers.hodejegeren.response.Relasjon;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.RelasjonsResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.internal.DataRequest;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.internal.HistorikkRequest;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Adresse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Forvalter;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Konto;
+import no.nav.registre.testnorge.libs.core.util.IdentUtil;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Service
@@ -243,7 +242,7 @@ public class ServiceUtils {
 
             var barnFnr = relasjon.getFnrRelasjon();
 
-            int alder = Math.toIntExact(ChronoUnit.YEARS.between(hentFoedseldato(barnFnr), tidspunkt));
+            int alder = Math.toIntExact(ChronoUnit.YEARS.between(IdentUtil.getFoedselsdatoFraIdent(barnFnr), tidspunkt));
 
             return alder > -1 && alder < 18;
         }

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import no.nav.registre.testnorge.libs.core.util.IdentUtil;
 import no.nav.registre.testnorge.libs.dto.syntperson.v1.SyntPersonDTO;
 import no.nav.registre.testnorge.originalpopulasjon.consumer.IdentPoolConsumer;
 import no.nav.registre.testnorge.originalpopulasjon.consumer.SyntPersonConsumer;
@@ -31,11 +32,13 @@ public class PopulasjonService {
         List<Person> populasjon = new ArrayList<>();
         for (int i = 0; i < identliste.size(); i++) {
             SyntPersonDTO syntPerson = personinfoliste.get(i);
+            String ident = identliste.get(i);
             populasjon.add(
                     Person.builder()
-                            .ident(identliste.get(i))
+                            .ident(ident)
                             .fornavn(syntPerson.getFornavn())
                             .etternavn(syntPerson.getSlektsnavn())
+                            .foedselsdato(IdentUtil.getFoedselsdatoFraIdent(ident))
                             .adresse(Adresse.builder()
                                     .gatenavn(syntPerson.getAdressenavn())
                                     .postnummer(syntPerson.getPostnummer())
