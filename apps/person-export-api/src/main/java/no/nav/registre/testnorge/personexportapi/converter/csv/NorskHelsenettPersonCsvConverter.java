@@ -3,29 +3,22 @@ package no.nav.registre.testnorge.personexportapi.converter.csv;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.libs.csvconverter.CsvConverter;
 import no.nav.registre.testnorge.libs.csvconverter.CsvHeader;
 import no.nav.registre.testnorge.libs.csvconverter.ObjectConverter;
 import no.nav.registre.testnorge.libs.csvconverter.RowConverter;
 import no.nav.registre.testnorge.personexportapi.consumer.kodeverk.KodeverkConsumer;
 import no.nav.registre.testnorge.personexportapi.domain.Person;
+import no.nav.registre.testnorge.personexportapi.consumer.dto.PersonStatusMapper;
 
+@Service
+@RequiredArgsConstructor
 public class NorskHelsenettPersonCsvConverter extends CsvConverter<Person> {
 
-    private static KodeverkConsumer kodeverkConsumer;
-
-    private static NorskHelsenettPersonCsvConverter inst;
-
-    private NorskHelsenettPersonCsvConverter(KodeverkConsumer kodeverkConsumer) {
-        this.kodeverkConsumer = kodeverkConsumer;
-    }
-
-    public static NorskHelsenettPersonCsvConverter inst() {
-        if (inst == null) {
-            inst = new NorskHelsenettPersonCsvConverter(kodeverkConsumer);
-        }
-        return inst;
-    }
+    private final KodeverkConsumer kodeverkConsumer;
 
     private enum Headers implements CsvHeader {
         FNR("FNR"),
@@ -102,6 +95,8 @@ public class NorskHelsenettPersonCsvConverter extends CsvConverter<Person> {
             map.put(Headers.FORNAVN.getValue(), person.getFornavn());
             map.put(Headers.MELLOMNAVN.getValue(), person.getMellomnavn());
             map.put(Headers.ETTERNAVN.getValue(), person.getEtternavn());
+            map.put(Headers.PERSONSTATUS.getValue(), person.getPersonstatus());
+            map.put(Headers.BESKR_PERSONSTATUS.getValue(), PersonStatusMapper.getPersonstatus(person));
             map.put(Headers.ADRESSEKODE.getValue(), person.getAdressetype());
             map.put(Headers.GATENAVN.getValue(), person.getGatenavn());
             map.put(Headers.GATENR.getValue(), person.getGatenr());
@@ -113,10 +108,14 @@ public class NorskHelsenettPersonCsvConverter extends CsvConverter<Person> {
             map.put(Headers.BOLIGNR.getValue(), person.getBolignr());
             map.put(Headers.CO_ADRESSE.getValue(), person.getTilleggsadresse());
             map.put(Headers.POSTNR.getValue(), person.getPostnummer());
-            map.put(Headers.POSTSTED.getValue(), kodeverkConsumer.getKodeverkByName("Postnummer").get(person.getPostnummer()));
+            map.put(Headers.POSTSTED.getValue(), kodeverkConsumer.getKodeverkOppslag("Postnummer", person.getPostnummer()));
             map.put(Headers.KOMMUNENR.getValue(), person.getKommunenr());
-            map.put(Headers.KOMMUNE.getValue(), kodeverkConsumer.getKodeverkByName("Kommuner").get(person.getKommunenr()));
+            map.put(Headers.KOMMUNE.getValue(), kodeverkConsumer.getKodeverkOppslag("Kommuner", person.getKommunenr()));
             map.put(Headers.DATO_ADR_FRA.getValue(), person.getFlyttedato());
+            map.put(Headers.POSTADR_1.getValue(), person.getAdresse1());
+            map.put(Headers.POSTADR_2.getValue(), person.getAdresse2());
+            map.put(Headers.POSTADR_3.getValue(), person.getAdresse3());
+            map.put(Headers.POSTADR_LAND.getValue(), kodeverkConsumer.getKodeverkOppslag("Landkoder", person.getPostadrLand()));
 
             return map;
         };

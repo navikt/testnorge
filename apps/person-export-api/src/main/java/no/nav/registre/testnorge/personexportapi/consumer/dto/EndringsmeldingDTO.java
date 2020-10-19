@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.personexportapi.consumer.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
@@ -18,6 +19,7 @@ public class EndringsmeldingDTO {
     String fornavn;
     String mellomnavn;
     String slektsnavn;
+    String statuskode;
     String aarsakskode;
     String personkode;
     String kommunenummer;
@@ -30,6 +32,10 @@ public class EndringsmeldingDTO {
     String bokstavFestenr;  // husbokstav (O) eller festenummer (M)
     String bolignr;    // eks H0101
     String tilleggsadresse;
+    String adresse1;
+    String adresse2;
+    String adresse3;
+    String postadrLand;
 
     @JsonIgnore
     public boolean isFoedsel() {

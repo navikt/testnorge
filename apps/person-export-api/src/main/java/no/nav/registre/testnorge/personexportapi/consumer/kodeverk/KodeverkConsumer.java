@@ -1,11 +1,14 @@
 package no.nav.registre.testnorge.personexportapi.consumer.kodeverk;
 
+import static no.nav.registre.testnorge.personexportapi.config.CachingConfig.CACHE_KODEVERK;
+import static org.apache.logging.log4j.util.Strings.isNotBlank;
+
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -18,14 +21,26 @@ public class KodeverkConsumer {
     private final WebClient webClient;
 
     public KodeverkConsumer(@Value("${consumers.kodeverk.url}") String kodeverkUrl) {
-        this.webClient = WebClient.builder().baseUrl(kodeverkUrl).build();
+        this.webClient = WebClient.builder()
+                .baseUrl(kodeverkUrl)
+                .codecs(configurer -> configurer
+                        .defaultCodecs()
+                        .maxInMemorySize(16 * 1024 * 1024))
+                .build();
     }
 
-    //    @Cacheable(CACHE_KODEVERK)
-    public Map<String, String> getKodeverkByName(String kodeverk) {
+    public String getKodeverkOppslag(String kodeverk, String verdi) {
+
+        return isNotBlank(verdi) ? getKodeverkByName(kodeverk).get(verdi).stream().findFirst()
+                .map(betydning -> betydning.getBeskrivelser().get("nb").getTekst())
+                .orElse(null) : null;
+    }
+
+    @Cacheable(CACHE_KODEVERK)
+    public Map<String, List<KodeverkBetydningerResponse.Betydning>> getKodeverkByName(String kodeverk) {
 
         ResponseEntity<KodeverkBetydningerResponse> kodeverkResponse = webClient
-                        .get()
+                .get()
                 .uri(getKodeverksnavnUrl(kodeverk))
                 .header("Nav-Consumer-Id", "Testnorge")
                 .header("Nav-Call-Id", UUID.randomUUID().toString())
@@ -33,9 +48,7 @@ public class KodeverkConsumer {
                 .toEntity(KodeverkBetydningerResponse.class)
                 .block();
 
-        return kodeverkResponse.hasBody() ? kodeverkResponse.getBody().getBetydninger().entrySet().stream()
-                .collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue().get(0).getBeskrivelser().get("nb").getTekst())) :
-                Collections.emptyMap();
+        return kodeverkResponse.hasBody() ? kodeverkResponse.getBody().getBetydninger() : Collections.emptyMap();
     }
 
     private String getKodeverksnavnUrl(String kodeverksnavn) {
