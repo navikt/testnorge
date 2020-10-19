@@ -32,4 +32,3 @@ public class EregConsumer {
         return response != null ? new Organisasjon(response) : null;
     }
 }
-
