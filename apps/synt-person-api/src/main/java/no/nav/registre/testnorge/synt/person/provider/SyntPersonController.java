@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 import no.nav.registre.testnorge.synt.person.consumer.dto.SyntPersonDTO;
 import no.nav.registre.testnorge.synt.person.service.SyntPersonService;
 
@@ -24,7 +26,7 @@ public class SyntPersonController {
     }
 
     @GetMapping
-    public SyntPersonDTO getSyntPerson(@RequestParam String antall) {
+    public List<SyntPersonDTO> getSyntPerson(@RequestParam String antall) {
         return service.getSyntPerson(antall);
     }
 }

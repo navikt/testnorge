@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.statistikk.v1.StatistikkDTO;
 import no.nav.registre.testnorge.libs.dto.statistikk.v1.StatistikkType;
+import no.nav.registre.testnorge.originalpopulasjon.exceptions.StatistikkException;
 
 @Slf4j
 @Component
@@ -23,7 +24,8 @@ public class StatistikkConsumer {
                 .build();
     }
 
-    public StatistikkDTO getStatistikk (StatistikkType statistikkType) {
+    public StatistikkDTO getStatistikk(StatistikkType statistikkType) {
+        log.info("Henter statistikk...");
         var statistikkDTO = webClient.get().uri(builder -> builder
                 .path("/api/v1/statistikk/{type}")
                 .build(statistikkType))
@@ -32,9 +34,8 @@ public class StatistikkConsumer {
                 .block();
 
         if (statistikkDTO == null) {
-            throw new RuntimeException("Noe gikk galt da statistikk ble hentet");
+            throw new StatistikkException("Noe gikk galt da statistikk ble hentet");
         }
-            //Lage commandpattern for å etter hvert kunne hente mange på en gang?
         return statistikkDTO;
     }
 }

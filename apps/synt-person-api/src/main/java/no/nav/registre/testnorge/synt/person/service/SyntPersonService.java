@@ -3,6 +3,8 @@ package no.nav.registre.testnorge.synt.person.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import no.nav.registre.testnorge.synt.person.consumer.IdentPoolConsumer;
 import no.nav.registre.testnorge.synt.person.consumer.PersonApiConsumer;
 import no.nav.registre.testnorge.synt.person.consumer.SyntrestConsumer;
@@ -18,11 +20,11 @@ public class SyntPersonService {
 
     public void createSyntPerson() {
         String ident = identPoolConsumer.getIdent();
-        SyntPersonDTO syntPerson = getSyntPerson("1");
+        SyntPersonDTO syntPerson = getSyntPerson("1").get(0);
         personApiConsumer.createPerson(new Person(syntPerson, ident));
     }
 
-    public SyntPersonDTO getSyntPerson(String antall) {
+    public List<SyntPersonDTO> getSyntPerson(String antall) {
         return syntrestConsumer.createSyntPerson(antall);
     }
 }

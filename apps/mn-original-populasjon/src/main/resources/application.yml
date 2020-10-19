@@ -18,3 +18,9 @@ spring:
 consumer:
   statistikk:
     url: https://testnorge-statistikk-api.dev.adeo.no
+  identpool:
+    url: https://ident-pool.dev.adeo.no
+  synt-person-api:
+    url: https://testnorge-synt-person-api.dev.adeo.no
+    client_secret: ${SYNT_PERSON_API_CLIENT_SECRET}
+    client_id: ${SYNT_PERSON_API_CLIENT_ID}

@@ -10,7 +10,7 @@ spring:
           accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
   application:
     version: @application.version@
-    name: synt-person-api
+    name: person-api
     desciption: API for opprettelse av personer
 
 system:
