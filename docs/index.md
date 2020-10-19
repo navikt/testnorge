@@ -37,7 +37,9 @@ Det første som møter deg når du har logget inn er en startside med noen menyv
 
 ![Startside](assets/startside.png)
 
-Dersom det er første gang du bruker Dolly, eller det finnes ny informasjon, vil du også bli møtt av en eller flere Varslinger.
+Noen ganger vil du bli møtt av en eller flere meldinger når du åpner Dolly, f.eks. om det er første gang du bruker applikasjonen, eller om det har dukket opp nyheter. 
+
+Det er viktig at du leser disse meldingene, da de inneholder nyttig informasjon om bruk av Dolly.
 
 ![Varslinger](assets/varslinger.png)
 ---
@@ -116,6 +118,10 @@ Når du da starter bestillingen vil du få de valgte egenskapene og verdiene som
 
 ## Endringsmelding
 
+Øverst i menyen kan du velge endringsmelding. Her har du mulighet til å sende inn en fødselsmelding eller dødsmelding til et ønsket testmiljø. 
+
+Merk at det kun er mulig å sende inn endringsmelding på en person om gangen.
+
 !!Denne er udatert og vil bli fjernet i nær fremtid!! 
 
 Det vil fortsatt være mulig å sende fødselsmeldinger og dødsmeldinger i Dolly:
@@ -147,7 +153,9 @@ For personer som ikke eksisterer i Dolly må disse først hentes inn ved å oppr
 
 ## Importere grupper fra gammel Z-bruker
 
-Når du logger inn i Dolly første gang etter endringen vil du se at testdatagruppe-oversikten er tom. Ikke bekymre deg - testpersonene dine er ikke slettet! Men fordi de er koblet til Z-brukeren din må du importere dem til din personlige brukerkonto for å få tilgang til dem.
+Dersom du tidligere har brukt Dolly med en Z-bruker, vil du se at testdatagruppe-oversikten er tom første gang du logger deg på med personlig brukerkonto.
+
+Ikke bekymre deg - testpersonene dine er ikke slettet! Men fordi de er koblet til Z-brukeren din må du importere dem til din personlige brukerkonto for å få tilgang til dem.
  
 Import fra Z-bruker kan du gjøre direkte fra testdatagruppe-oversikten, eller fra Min side.
 
