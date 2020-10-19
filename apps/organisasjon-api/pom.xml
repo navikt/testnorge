@@ -82,7 +82,6 @@
         </dependency>
     </dependencies>
 
-
     <build>
         <finalName>app</finalName>
         <plugins>
