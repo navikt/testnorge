@@ -59,7 +59,6 @@ public class OrgnaisasjonAdapter {
                 ));
     }
 
-
     private List<Organisasjon> fetchBy(Map<String, OrganisasjonModel> map) {
         List<OrganisasjonDTO> organisjoner = consumer.getOrganisjoner(map.keySet());
         return organisjoner

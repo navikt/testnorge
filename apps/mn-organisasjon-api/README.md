@@ -1,5 +1,5 @@
-# testnorge-varslinger-api
-Applikasjon for registering av varslinger og brukeres varslinger. 
+# mn-organisasjon-api
+Applikasjon for å opprette Mini-Norge organisjasjoner.
 
 ## Swagger
 Swagger finnes under [/swagger](https://mn-organisasjon-api.dev.adeo.no/swagger) -endepunktet til applikasjonen.
