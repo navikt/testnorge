@@ -24,7 +24,7 @@ public class SaveOrganisasjonCommand implements Runnable {
         log.info("Oppretter/oppdaterer organisasjon {}", dto.getOrgnummer());
         webClient
                 .put()
-                .uri("/api/v1/organisasjon")
+                .uri("/api/v1/organisasjoner")
                 .header("miljoe", miljoe)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .body(BodyInserters.fromPublisher(Mono.just(dto), OrganisasjonDTO.class))
