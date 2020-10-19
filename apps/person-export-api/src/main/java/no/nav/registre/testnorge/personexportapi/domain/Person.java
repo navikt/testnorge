@@ -36,8 +36,13 @@ public class Person {
     }
 
     public String getAdressetype() {
-        return endringsmeldingDTO.isGateadresse() ? "GATE" :
-                endringsmeldingDTO.isMatrikkeladresse() ? "MATR" : null;
+        if (endringsmeldingDTO.isGateadresse()) {
+            return "GATE";
+        } else if (endringsmeldingDTO.isMatrikkeladresse()) {
+            return "MATR";
+        } else {
+            return null;
+        }
     }
 
     public String getGatenavn() {

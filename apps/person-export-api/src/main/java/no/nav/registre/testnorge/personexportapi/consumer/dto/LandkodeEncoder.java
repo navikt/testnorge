@@ -2,13 +2,8 @@ package no.nav.registre.testnorge.personexportapi.consumer.dto;
 
 import static java.util.Objects.nonNull;
 
-import java.time.LocalDateTime;
 import org.bouncycastle.asn1.eac.BidirectionalMap;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -290,15 +285,5 @@ public class LandkodeEncoder {
     public static String decode(String statsborgerskap) {
         return nonNull(landkoderMap.getReverse(statsborgerskap)) ?
                 (String) landkoderMap.getReverse(statsborgerskap) : "???";
-    }
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    static class LandDetails {
-        private String tpsCode;
-        private LocalDateTime fom;
-        private LocalDateTime tom;
     }
 }
