@@ -27,18 +27,6 @@ public class ArbeidsforholdExportController {
 
     private final ArbeidsforholdExportService service;
 
-//    @GetMapping(produces = "text/csv")
-//    public ResponseEntity<HttpStatus> getArbeidsforhold(
-//            @RequestParam(value = "antallPersoner", defaultValue = "1") @Min(1) Integer antallPersoner,
-//            HttpServletResponse response
-//    ) throws IOException {
-//        List<Arbeidsforhold> arbeidsforholds = service.getArbeidsforhold(antallPersoner);
-//        response.setContentType("text/csv");
-//        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-//        response.setHeader("Content-Disposition", "attachment; filename=arbeidesforhold-syntentisering-" + LocalDateTime.now() + ".csv");
-//        ArbeidsforholdSyntentiseringCsvConverter.inst().write(response.getWriter(), arbeidsforholds);
-//        return ResponseEntity.ok().build();
-//    }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<HttpStatus> convertArbeidsforhold(@RequestParam("files") MultipartFile[] files, HttpServletResponse response) throws IOException {
@@ -51,20 +39,6 @@ public class ArbeidsforholdExportController {
         return ResponseEntity.ok().build();
     }
 
-//    @GetMapping(value = "/permisjoner", produces = "text/csv")
-//    public ResponseEntity<HttpStatus> getPermisjoner(
-//            @RequestParam(value = "antallPersoner", defaultValue = "1") @Min(1) Integer antallPersoner,
-//            HttpServletResponse response
-//    ) throws IOException {
-//        List<Permisjon> permisjoner = service.getPermisjoner(antallPersoner);
-//        response.setContentType("text/csv");
-//        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-//        response.setHeader("Content-Disposition", "attachment; filename=arbeidesforhold-syntentisering-" + LocalDateTime.now() + ".csv");
-//        PermisjonSyntentiseringCsvConverter.inst().write(response.getWriter(), permisjoner);
-//        return ResponseEntity.ok().build();
-//    }
-
-
     @PostMapping(value = "/permisjoner", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<HttpStatus> convertPermisjoner(@RequestParam("files") MultipartFile[] files, HttpServletResponse response) throws IOException {
         OpplysningspliktigList list = OpplysningspliktigList.from(files);
@@ -75,4 +49,34 @@ public class ArbeidsforholdExportController {
         PermisjonSyntentiseringCsvConverter.inst().write(response.getWriter(), list.toPermisjoner());
         return ResponseEntity.ok().build();
     }
+
+    /* Deaktivert til vi finner ut hva vi gjør med dataene
+
+    @GetMapping(produces = "text/csv")
+    public ResponseEntity<HttpStatus> getArbeidsforhold(
+            @RequestParam(value = "antallPersoner", defaultValue = "1") @Min(1) Integer antallPersoner,
+            HttpServletResponse response
+    ) throws IOException {
+        List<Arbeidsforhold> arbeidsforholds = service.getArbeidsforhold(antallPersoner);
+        response.setContentType("text/csv");
+        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
+        response.setHeader("Content-Disposition", "attachment; filename=arbeidesforhold-syntentisering-" + LocalDateTime.now() + ".csv");
+        ArbeidsforholdSyntentiseringCsvConverter.inst().write(response.getWriter(), arbeidsforholds);
+        return ResponseEntity.ok().build();
+    }
+
+
+    @GetMapping(value = "/permisjoner", produces = "text/csv")
+    public ResponseEntity<HttpStatus> getPermisjoner(
+            @RequestParam(value = "antallPersoner", defaultValue = "1") @Min(1) Integer antallPersoner,
+            HttpServletResponse response
+    ) throws IOException {
+        List<Permisjon> permisjoner = service.getPermisjoner(antallPersoner);
+        response.setContentType("text/csv");
+        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
+        response.setHeader("Content-Disposition", "attachment; filename=arbeidesforhold-syntentisering-" + LocalDateTime.now() + ".csv");
+        PermisjonSyntentiseringCsvConverter.inst().write(response.getWriter(), permisjoner);
+        return ResponseEntity.ok().build();
+    }
+    */
 }
