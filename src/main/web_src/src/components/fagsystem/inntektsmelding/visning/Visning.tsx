@@ -3,12 +3,12 @@ import _isEmpty from 'lodash/isEmpty'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import {
-	Inntekt,
-	TransaksjonId,
-	Dokumentinfo,
-	Journalpost,
 	Bestilling,
-	BestillingData
+	BestillingData,
+	Dokumentinfo,
+	Inntekt,
+	Journalpost,
+	TransaksjonId
 } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { EnkelInntektsmeldingVisning } from './partials/enkelInntektsmeldingVisning'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
@@ -61,7 +61,9 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisning)
 					render={(data: Array<Journalpost>) => {
 						if (data && data.length > 0) {
 							const gyldigeBestillinger = liste.filter(bestilling =>
-								data.find(x => (x && x.bestillingId ? x.bestillingId === bestilling.id : x))
+								data
+									.filter(dokument => dokument.journalpost != null)
+									.find(x => (x && x.bestillingId ? x.bestillingId === bestilling.id : x))
 							)
 							if (gyldigeBestillinger && gyldigeBestillinger.length > 0) {
 								return (

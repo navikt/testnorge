@@ -21,7 +21,7 @@ export default ({ brukerId }) => {
 		api
 			.hentMaler()
 			.then(data => {
-				setMaler(data.malbestillinger[brukerId] || [])
+				setMaler(data.malbestillinger[`${brukerId}`] || [])
 			})
 			.then(() => setLoading(false))
 	}, [])

@@ -20,8 +20,9 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 			return response
 		})
 		.catch((error: Error) => {
-			console.error(error)
-			throw error
+			// console.error(error)
+			// throw error
+			return null
 		})
 
 const fetchJson = <T>(url: string, config: Config, body?: object): Promise<T> =>
