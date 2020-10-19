@@ -18,7 +18,7 @@ Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske testdata.  I Dol
 
 Fra enhet som er satt opp med Naisdevice: 
 
-[https://dolly.dev.adeo.no/](https://dolly.dev.adeo.no/)
+[dolly.dev.adeo.no/](https://dolly.dev.adeo.no/)
 
 Utenfor de interne Nav systemene benytt: 
 
