@@ -30,10 +30,14 @@ public class KodeverkConsumer {
     }
 
     public String getKodeverkOppslag(String kodeverk, String verdi) {
+        try {
+            return isNotBlank(verdi) ? getKodeverkByName(kodeverk).get(verdi).stream().findFirst()
+                    .map(betydning -> betydning.getBeskrivelser().get("nb").getTekst())
+                    .orElse(null) : null;
 
-        return isNotBlank(verdi) ? getKodeverkByName(kodeverk).get(verdi).stream().findFirst()
-                .map(betydning -> betydning.getBeskrivelser().get("nb").getTekst())
-                .orElse(null) : null;
+        } catch (RuntimeException e) {
+            return null;
+        }
     }
 
     @Cacheable(CACHE_KODEVERK)
