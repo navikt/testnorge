@@ -17,7 +17,7 @@ public class SaveOrganisasjonCommand implements Runnable {
     private final WebClient webClient;
     private final OrganisasjonDTO dto;
     private final String accessToken;
-    private final String miljoe;
+    private final String miljo;
 
     @Override
     public void run() {
@@ -25,7 +25,7 @@ public class SaveOrganisasjonCommand implements Runnable {
         webClient
                 .put()
                 .uri("/api/v1/organisasjoner")
-                .header("miljoe", miljoe)
+                .header("miljo", miljo)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .body(BodyInserters.fromPublisher(Mono.just(dto), OrganisasjonDTO.class))
                 .retrieve()
