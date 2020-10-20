@@ -22,7 +22,8 @@ public class VaultHikariConfiguration implements InitializingBean {
     private final HikariDataSource hikariDataSource;
     private final VaultDatabaseProperties props;
 
-    public VaultHikariConfiguration(SecretLeaseContainer container, HikariDataSource hikariDataSource,
+    public VaultHikariConfiguration(SecretLeaseContainer container,
+                                    HikariDataSource hikariDataSource,
                                     VaultDatabaseProperties props) {
         this.container = container;
         this.hikariDataSource = hikariDataSource;
@@ -31,9 +32,8 @@ public class VaultHikariConfiguration implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        var secretPath = props.getBackend() + "/creds/" + props.getRole();
-        RequestedSecret secret = RequestedSecret.rotating(secretPath);
-        log.info("Setup vault lease for {}", secretPath);
+        RequestedSecret secret = RequestedSecret.rotating(props.getBackend() + "/creds/" + props.getRole());
+        log.info("Setup vault lease for {}", secret);
 
         container.addLeaseListener(leaseEvent -> {
             log.info("Vault: Lease Event: {}", leaseEvent);
