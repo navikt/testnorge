@@ -11,7 +11,7 @@ import no.nav.registre.testnorge.organisasjon.domain.Organisasjon;
 public class EregMapperConsumer {
     private final WebClient webClient;
 
-    public EregMapperConsumer(@Value("consumers.ereg-mapper.url") String baseUrl) {
+    public EregMapperConsumer(@Value("${consumers.ereg-mapper.url}") String baseUrl) {
         this.webClient = WebClient
                 .builder()
                 .baseUrl(baseUrl)
