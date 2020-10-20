@@ -83,13 +83,6 @@ public class VedtakshistorikkService {
                 continue;
             }
 
-            if (vedtakshistorikken.getTiltaksdeltakelse() == null || vedtakshistorikken.getTiltaksdeltakelse().isEmpty()) {
-                log.info("Har ikke tiltaksdeltakelse.");
-                continue;
-            } else {
-                log.info("Har tiltaksdeltakelse.");
-            }
-
             var minimumAlder = Math.toIntExact(ChronoUnit.YEARS.between(tidligsteDato.minusYears(MIN_ALDER_AAP), LocalDate.now()));
             if (minimumAlder > MAX_ALDER_AAP) {
                 log.error("Kunne ikke opprette vedtakshistorikk på ident med minimum alder {}", minimumAlder);
