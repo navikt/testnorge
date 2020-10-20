@@ -408,10 +408,10 @@ public class ServiceUtils {
     public List<NyttVedtakTiltak> oppdaterVedtakslisteBasertPaaTiltaksdeltakelse(
             List<NyttVedtakTiltak> vedtaksliste,
             List<NyttVedtakTiltak> tiltaksdeltakelser
-    ){
-        List<NyttVedtakTiltak> nyVedtaksliste= new ArrayList<>();
+    ) {
+        List<NyttVedtakTiltak> nyVedtaksliste = new ArrayList<>();
 
-        for (var vedtak : vedtaksliste){
+        for (var vedtak : vedtaksliste) {
             var deltakelse = finnNoedvendigTiltaksdeltakelse(vedtak, tiltaksdeltakelser);
             if (deltakelse != null) {
                 vedtak.setTilDato(deltakelse.getTilDato());
@@ -484,5 +484,4 @@ public class ServiceUtils {
         vedtak.setTilDato(tiltaksdeltakelse.getTilDato());
         return vedtak;
     }
-
 }

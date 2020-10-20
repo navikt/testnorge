@@ -83,6 +83,13 @@ public class VedtakshistorikkService {
                 continue;
             }
 
+            if (vedtakshistorikken.getTiltaksdeltakelse() == null || vedtakshistorikken.getTiltaksdeltakelse().isEmpty()) {
+                log.info("Har ikke tiltaksdeltakelse.");
+                continue;
+            } else {
+                log.info("Har tiltaksdeltakelse.");
+            }
+
             var minimumAlder = Math.toIntExact(ChronoUnit.YEARS.between(tidligsteDato.minusYears(MIN_ALDER_AAP), LocalDate.now()));
             if (minimumAlder > MAX_ALDER_AAP) {
                 log.error("Kunne ikke opprette vedtakshistorikk på ident med minimum alder {}", minimumAlder);
@@ -441,7 +448,9 @@ public class VedtakshistorikkService {
             var nyeTiltaksdeltakelser = tiltaksdeltakelser.stream()
                     .filter(deltakelse -> deltakelse.getTiltakId() != null).collect(Collectors.toList());
 
-            if (!nyeTiltaksdeltakelser.isEmpty()) {
+            nyeTiltaksdeltakelser = removeOverlappingVedtak(nyeTiltaksdeltakelser);
+
+            if (nyeTiltaksdeltakelser != null && !nyeTiltaksdeltakelser.isEmpty()) {
                 List<NyttVedtakTiltak> nyeVedtakRequests = new ArrayList<>();
                 for (var deltakelse : nyeTiltaksdeltakelser) {
                     nyeVedtakRequests.add(serviceUtils.getVedtakForTiltaksdeltakelseRequest(deltakelse));
@@ -593,6 +602,39 @@ public class VedtakshistorikkService {
         }
 
         return Collections.emptyList();
+    }
+
+    private List<NyttVedtakTiltak> removeOverlappingVedtak(List<NyttVedtakTiltak> vedtaksliste) {
+
+        if (vedtaksliste == null || vedtaksliste.isEmpty()) {
+            return vedtaksliste;
+        }
+        List<NyttVedtakTiltak> nyeVedtak = new ArrayList<>();
+
+        for (var vedtak : vedtaksliste) {
+            if (nyeVedtak.isEmpty() || !harOverlappendeVedtak(vedtak, nyeVedtak)) {
+                nyeVedtak.add(vedtak);
+            }
+        }
+
+        return nyeVedtak;
+    }
+
+    private boolean harOverlappendeVedtak(NyttVedtakTiltak vedtak, List<NyttVedtakTiltak> vedtaksliste) {
+        var fraDato = vedtak.getFraDato();
+        var tilDato = vedtak.getTilDato();
+
+        for (var item : vedtaksliste) {
+            var fraDatoItem = item.getFraDato();
+            var tilDatoItem = item.getTilDato();
+
+            if ((fraDato == fraDatoItem) ||
+                    (fraDato.isBefore(fraDatoItem) && tilDato.isAfter(fraDatoItem)) ||
+                    (fraDato.isAfter(fraDatoItem) && fraDato.isBefore(tilDatoItem))) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
