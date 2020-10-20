@@ -44,7 +44,7 @@ public class OpplysningspliktigList {
             }
             return new OpplysningspliktigList(list);
         } catch (Exception e) {
-            throw new RuntimeException("Klarer ikke a convertere filene til EDAGM", e);
+            throw new RuntimeException("Klarer ikke a konvertere filene til EDAGM", e);
         }
     }
 
@@ -57,13 +57,13 @@ public class OpplysningspliktigList {
                 try {
                     list.add(from(xml, unmarshaller));
                 } catch (Exception e) {
-                    log.error("Klarer ikke a convertere xml");
+                    log.error("Klarer ikke a konvertere xml");
                     throw e;
                 }
             }
             return new OpplysningspliktigList(list);
         } catch (Exception e) {
-            throw new RuntimeException("Klarer ikke a convertere xmlene til EDAGM", e);
+            throw new RuntimeException("Klarer ikke a konvertere xmlene til EDAGM", e);
         }
     }
 
