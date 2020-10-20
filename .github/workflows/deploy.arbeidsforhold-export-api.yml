@@ -1,13 +1,14 @@
-name: Deploy oversikt-frontend
+name: Deploy arbeidsforhold-export-api
 
 on:
   push:
     branches: master
     paths:
-      - apps/oversikt-frontend/**
+      - apps/arbeidsforhold-export-api/**
+      - libs/testnorge-core/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/oversikt-frontend:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/arbeidsforhold-export-api:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -24,33 +25,17 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '11.x'
-      - uses: actions/setup-node@v1
-        with:
-          node-version: "12.x"
-      - name: Install js libs
-        run: |
-          npm ci
-        working-directory: apps/oversikt-frontend/src/main/js
-      - name: Build js
-        run: |
-          npm run build
-        working-directory: apps/oversikt-frontend/src/main/js
-      - name: Move js build
-        run: |
-          mv build ../resources/static
-        working-directory: apps/oversikt-frontend/src/main/js
       - name: Compile
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: mvn --projects :oversikt-frontend --also-make --settings maven-settings.xml compile
+        run: mvn --projects :arbeidsforhold-export-api --also-make --settings maven-settings.xml compile
       - name: Test
-        run: mvn --projects :oversikt-frontend --also-make --settings maven-settings.xml test
+        run: mvn --projects :arbeidsforhold-export-api --also-make --settings maven-settings.xml test
       - name: Package
-        run: mvn --projects :oversikt-frontend --also-make --settings maven-settings.xml package -Dmaven.test.skip
-
+        run: mvn --projects :arbeidsforhold-export-api --also-make --settings maven-settings.xml package -Dmaven.test.skip
       - name: Build and publish Docker image
-        working-directory: apps/oversikt-frontend/
+        working-directory: apps/arbeidsforhold-export-api/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -63,4 +48,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/oversikt-frontend/config.yml
+          RESOURCE: apps/arbeidsforhold-export-api/config.yml

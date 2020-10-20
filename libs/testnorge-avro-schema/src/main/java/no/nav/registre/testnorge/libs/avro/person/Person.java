@@ -71,13 +71,13 @@ public class Person extends org.apache.avro.specific.SpecificRecordBase implemen
     return DECODER.decode(b);
   }
 
-   private java.lang.CharSequence ident;
-   private java.lang.CharSequence foedselsdato;
-   private java.lang.CharSequence fornavn;
-   private java.lang.CharSequence mellomnavn;
-   private java.lang.CharSequence etternavn;
-   private java.util.List<java.lang.CharSequence> tags;
-   private no.nav.registre.testnorge.libs.avro.person.Adresse adresse;
+  @Deprecated public java.lang.CharSequence ident;
+  @Deprecated public java.lang.CharSequence foedselsdato;
+  @Deprecated public java.lang.CharSequence fornavn;
+  @Deprecated public java.lang.CharSequence mellomnavn;
+  @Deprecated public java.lang.CharSequence etternavn;
+  @Deprecated public java.util.List<java.lang.CharSequence> tags;
+  @Deprecated public no.nav.registre.testnorge.libs.avro.person.Adresse adresse;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -118,7 +118,7 @@ public class Person extends org.apache.avro.specific.SpecificRecordBase implemen
     case 4: return etternavn;
     case 5: return tags;
     case 6: return adresse;
-    default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
+    default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
 
@@ -133,7 +133,7 @@ public class Person extends org.apache.avro.specific.SpecificRecordBase implemen
     case 4: etternavn = (java.lang.CharSequence)value$; break;
     case 5: tags = (java.util.List<java.lang.CharSequence>)value$; break;
     case 6: adresse = (no.nav.registre.testnorge.libs.avro.person.Adresse)value$; break;
-    default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
+    default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
 

@@ -71,10 +71,10 @@ public class Adresse extends org.apache.avro.specific.SpecificRecordBase impleme
     return DECODER.decode(b);
   }
 
-   private java.lang.CharSequence gatenavn;
-   private java.lang.CharSequence postnummer;
-   private java.lang.CharSequence poststed;
-   private java.lang.CharSequence kommunenummer;
+  @Deprecated public java.lang.CharSequence gatenavn;
+  @Deprecated public java.lang.CharSequence postnummer;
+  @Deprecated public java.lang.CharSequence poststed;
+  @Deprecated public java.lang.CharSequence kommunenummer;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -106,7 +106,7 @@ public class Adresse extends org.apache.avro.specific.SpecificRecordBase impleme
     case 1: return postnummer;
     case 2: return poststed;
     case 3: return kommunenummer;
-    default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
+    default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
 
@@ -118,7 +118,7 @@ public class Adresse extends org.apache.avro.specific.SpecificRecordBase impleme
     case 1: postnummer = (java.lang.CharSequence)value$; break;
     case 2: poststed = (java.lang.CharSequence)value$; break;
     case 3: kommunenummer = (java.lang.CharSequence)value$; break;
-    default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
+    default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
 
