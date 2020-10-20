@@ -1,7 +1,7 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
 import static java.util.Objects.isNull;
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon.*;
+import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon.decode;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand.ENKE_ELLER_ENKEMANN;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand.GIFT;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand.GJENLEVENDE_PARTNER;
@@ -23,6 +23,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand;
+import no.nav.dolly.bestilling.pdlforvalter.domain.SivilstandWrapper;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.Relasjon;
 import no.nav.dolly.domain.resultset.tpsf.Sivilstand.Sivilstatus;
@@ -35,7 +36,7 @@ public class PdlRelasjonerMappingStrategy implements MappingStrategy {
     public void register(MapperFactory factory) {
 
         factory.classMap(Relasjon.class, PdlFamilierelasjon.class)
-                .customize(new CustomMapper<Relasjon, PdlFamilierelasjon>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Relasjon relasjon, PdlFamilierelasjon familierelasjon, MappingContext context) {
 
@@ -52,7 +53,7 @@ public class PdlRelasjonerMappingStrategy implements MappingStrategy {
                 .register();
 
         factory.classMap(Person.class, PdlSivilstand.class)
-                .customize(new CustomMapper<Person, PdlSivilstand>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Person person, PdlSivilstand sivilstand, MappingContext context) {
 
@@ -66,38 +67,57 @@ public class PdlRelasjonerMappingStrategy implements MappingStrategy {
                                 .findFirst().orElse(null));
                         sivilstand.setKilde(CONSUMER);
                     }
+                })
+                .register();
 
-                    private Sivilstand mapSivilstand(Sivilstatus sivilstatus) {
+        factory.classMap(SivilstandWrapper.class, PdlSivilstand.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(SivilstandWrapper wrapper, PdlSivilstand sivilstand, MappingContext context) {
 
-                        if (isNull(sivilstatus)) {
-                            return UOPPGITT;
-                        } else {
-                            switch (sivilstatus) {
-                            case UGIF:
-                                return UGIFT;
-                            case GIFT:
-                                return GIFT;
-                            case ENKE:
-                                return ENKE_ELLER_ENKEMANN;
-                            case SKIL:
-                                return SKILT;
-                            case SEPR:
-                                return SEPARERT_PARTNER;
-                            case REPA:
-                                return REGISTRERT_PARTNER;
-                            case SEPA:
-                                return SEPARERT;
-                            case SKPA:
-                                return SKILT_PARTNER;
-                            case GJPA:
-                                return GJENLEVENDE_PARTNER;
-                            case SAMB:
-                            default:
-                                return UOPPGITT;
-                            }
-                        }
+                        sivilstand.setType(mapSivilstand(wrapper.getSivilstand().getSivilstand()));
+                        sivilstand.setSivilstandsdato(
+                                mapperFacade.map(wrapper.getSivilstand().getSivilstandRegdato(), LocalDate.class));
+                        sivilstand.setRelatertVedSivilstand(wrapper.getPerson().getRelasjoner().stream()
+                                .filter(relasjon -> relasjon.isPartner() && wrapper.getPerson().isSivilstandGift())
+                                .map(Relasjon::getPersonRelasjonMed)
+                                .filter(Person::isSivilstandGift)
+                                .map(Person::getIdent)
+                                .findFirst().orElse(null));
+                        sivilstand.setKilde(CONSUMER);
                     }
                 })
                 .register();
+    }
+
+    private static Sivilstand mapSivilstand(Sivilstatus sivilstatus) {
+
+        if (isNull(sivilstatus)) {
+            return UOPPGITT;
+        } else {
+            switch (sivilstatus) {
+            case UGIF:
+                return UGIFT;
+            case GIFT:
+                return GIFT;
+            case ENKE:
+                return ENKE_ELLER_ENKEMANN;
+            case SKIL:
+                return SKILT;
+            case SEPR:
+                return SEPARERT_PARTNER;
+            case REPA:
+                return REGISTRERT_PARTNER;
+            case SEPA:
+                return SEPARERT;
+            case SKPA:
+                return SKILT_PARTNER;
+            case GJPA:
+                return GJENLEVENDE_PARTNER;
+            case SAMB:
+            default:
+                return UOPPGITT;
+            }
+        }
     }
 }

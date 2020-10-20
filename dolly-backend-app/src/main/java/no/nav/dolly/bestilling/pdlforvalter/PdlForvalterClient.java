@@ -41,6 +41,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlTelefonnummer;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlUtflytting;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaal;
+import no.nav.dolly.bestilling.pdlforvalter.domain.SivilstandWrapper;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
@@ -250,8 +251,16 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void sendSivilstand(Person person) {
 
-        if (person.isMyndig()) {
+        if (person.isMyndig() && person.getSivilstander().isEmpty()) {
             pdlForvalterConsumer.postSivilstand(mapperFacade.map(person, PdlSivilstand.class), person.getIdent());
+
+        } else {
+            person.getSivilstander().forEach(sivilstand ->
+                    pdlForvalterConsumer.postSivilstand(
+                            mapperFacade.map(SivilstandWrapper.builder()
+                                    .person(person)
+                                    .sivilstand(sivilstand)
+                                    .build(), PdlSivilstand.class), person.getIdent()));
         }
     }
 
