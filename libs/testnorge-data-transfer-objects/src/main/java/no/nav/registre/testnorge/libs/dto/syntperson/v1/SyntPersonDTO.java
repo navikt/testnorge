@@ -1,6 +1,5 @@
 package no.nav.registre.testnorge.libs.dto.syntperson.v1;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

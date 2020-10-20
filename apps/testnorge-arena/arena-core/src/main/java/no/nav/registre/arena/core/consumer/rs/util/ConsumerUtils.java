@@ -1,10 +1,5 @@
 package no.nav.registre.arena.core.consumer.rs.util;
 
-import static java.lang.Integer.parseInt;
-import static no.nav.registre.arena.core.consumer.rs.util.Identtype.BOST;
-import static no.nav.registre.arena.core.consumer.rs.util.Identtype.DNR;
-import static no.nav.registre.arena.core.consumer.rs.util.Identtype.FNR;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Service;

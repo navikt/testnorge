@@ -24,19 +24,19 @@ public class StatistikkService {
         Integer antallVoksne = antall - (antallBarn + antallEldre);
 
         liste.add(new Alderskategori(
-                Statistikk.barn_min_alder,
-                Statistikk.barn_max_alder,
+                Statistikk.BARN_MIN_ALDER,
+                Statistikk.BARN_MAX_ALDER,
                 antallBarn
         ));
         liste.add(new Alderskategori(
-                Statistikk.eldre_min_alder,
-                Statistikk.eldre_max_alder,
+                Statistikk.ELDRE_MIN_ALDER,
+                Statistikk.ELDRE_MAX_ALDER,
                 antallEldre
         ));
 
         liste.add(new Alderskategori(
-                Statistikk.voksen_min_alder,
-                Statistikk.voksen_max_alder,
+                Statistikk.VOKSEN_MIN_ALDER,
+                Statistikk.VOKSEN_MAX_ALDER,
                 antallVoksne
         ));
         return liste;

@@ -27,7 +27,7 @@ public class PopulasjonService {
 
     public List<Person> createPopulasjon(Integer antall) {
         List<String> identliste = getIdenter(antall);
-        List<SyntPersonDTO> personinfoliste = getPersonInfo(antall.toString());
+        List<SyntPersonDTO> personinfoliste = getPersonInfo(antall);
 
         List<Person> populasjon = new ArrayList<>();
         for (int i = 0; i < identliste.size(); i++) {
@@ -65,7 +65,7 @@ public class PopulasjonService {
                 .collect(Collectors.toList());
     }
 
-    private List<SyntPersonDTO> getPersonInfo(String antall) {
+    private List<SyntPersonDTO> getPersonInfo(Integer antall) {
         return syntPersonConsumer.getPersonInfo(antall);
     }
 }

@@ -41,7 +41,7 @@ public class SyntPersonConsumer {
     }
 
 
-    public List<SyntPersonDTO> getPersonInfo(String antall) {
+    public List<SyntPersonDTO> getPersonInfo(Integer antall) {
         AccessToken accessToken = accessTokenService.generateToken(
                 clientCredential,
                 new AccessScopes("api://" + clientCredential.getClientId() + "/.default")

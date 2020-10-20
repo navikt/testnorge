@@ -6,6 +6,10 @@ import java.time.LocalDate;
 
 public class IdentUtil {
 
+    private IdentUtil() {
+        throw new IllegalStateException("IdentUtil class");
+    }
+
     public static LocalDate getFoedselsdatoFraIdent(String ident) {
         var year = getFullYear(ident);
         var month = parseInt(ident.substring(2, 4));
