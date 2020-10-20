@@ -428,15 +428,20 @@ public class VedtakshistorikkService {
             });
             tiltaksdeltakelser.forEach(deltakelse -> {
                 var tiltak = serviceUtils.finnTiltak(personident, miljoe, deltakelse);
+
                 if (tiltak != null) {
                     deltakelse.setTiltakId(tiltak.getTiltakId());
+                    deltakelse.setFraDato(tiltak.getFraDato());
+                    deltakelse.setTilDato(tiltak.getTilDato());
                 }
             });
 
             var nyeTiltaksdeltakelser = tiltaksdeltakelser.stream()
                     .filter(deltakelse -> deltakelse.getTiltakId() != null).collect(Collectors.toList());
 
-            if (!nyeTiltaksdeltakelser.isEmpty()) {
+            nyeTiltaksdeltakelser = removeOverlappingVedtak(nyeTiltaksdeltakelser);
+
+            if (nyeTiltaksdeltakelser != null && !nyeTiltaksdeltakelser.isEmpty()) {
                 List<NyttVedtakTiltak> nyeVedtakRequests = new ArrayList<>();
                 for (var deltakelse : nyeTiltaksdeltakelser) {
                     nyeVedtakRequests.add(serviceUtils.getVedtakForTiltaksdeltakelseRequest(deltakelse));
@@ -517,17 +522,18 @@ public class VedtakshistorikkService {
     ) {
         var tiltakspenger = vedtak.getTiltakspenger() != null ? vedtak.getTiltakspenger() : new ArrayList<NyttVedtakTiltak>();
         var tiltaksdeltakelser = vedtak.getTiltaksdeltakelse();
-        tiltakspenger = tiltakspenger.stream()
-                .filter(tiltak -> serviceUtils.harNoedvendigTiltaksdeltakelse(tiltak, tiltaksdeltakelser))
-                .collect(Collectors.toList());
 
-        if (!tiltakspenger.isEmpty()) {
+        List<NyttVedtakTiltak> nyeTiltakspenger = serviceUtils.oppdaterVedtakslisteBasertPaaTiltaksdeltakelse(
+                tiltakspenger, tiltaksdeltakelser);
+
+        if (!nyeTiltakspenger.isEmpty()) {
             var rettighetRequest = new RettighetTiltakspengerRequest(tiltakspenger);
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
             rettighetRequest.getNyeTiltakspenger().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
             rettigheter.add(rettighetRequest);
         }
+        vedtak.setTiltakspenger(nyeTiltakspenger);
     }
 
 
@@ -539,17 +545,18 @@ public class VedtakshistorikkService {
     ) {
         var barnetillegg = vedtak.getBarnetillegg() != null ? vedtak.getBarnetillegg() : new ArrayList<NyttVedtakTiltak>();
         var tiltaksdeltakelser = vedtak.getTiltaksdeltakelse();
-        barnetillegg = barnetillegg.stream()
-                .filter(tillegg -> serviceUtils.harNoedvendigTiltaksdeltakelse(tillegg, tiltaksdeltakelser))
-                .collect(Collectors.toList());
 
-        if (!barnetillegg.isEmpty()) {
+        List<NyttVedtakTiltak> nyeBarnetillegg = serviceUtils.oppdaterVedtakslisteBasertPaaTiltaksdeltakelse(
+                barnetillegg, tiltaksdeltakelser);
+
+        if (!nyeBarnetillegg.isEmpty()) {
             var rettighetRequest = new RettighetTilleggsytelseRequest(barnetillegg);
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
             rettighetRequest.getNyeTilleggsytelser().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
             rettigheter.add(rettighetRequest);
         }
+        vedtak.setBarnetillegg(nyeBarnetillegg);
     }
 
 
@@ -586,6 +593,39 @@ public class VedtakshistorikkService {
         }
 
         return Collections.emptyList();
+    }
+
+    private List<NyttVedtakTiltak> removeOverlappingVedtak(List<NyttVedtakTiltak> vedtaksliste) {
+
+        if (vedtaksliste == null || vedtaksliste.isEmpty()) {
+            return vedtaksliste;
+        }
+        List<NyttVedtakTiltak> nyeVedtak = new ArrayList<>();
+
+        for (var vedtak : vedtaksliste) {
+            if (nyeVedtak.isEmpty() || !harOverlappendeVedtak(vedtak, nyeVedtak)) {
+                nyeVedtak.add(vedtak);
+            }
+        }
+
+        return nyeVedtak;
+    }
+
+    private boolean harOverlappendeVedtak(NyttVedtakTiltak vedtak, List<NyttVedtakTiltak> vedtaksliste) {
+        var fraDato = vedtak.getFraDato();
+        var tilDato = vedtak.getTilDato();
+
+        for (var item : vedtaksliste) {
+            var fraDatoItem = item.getFraDato();
+            var tilDatoItem = item.getTilDato();
+
+            if ((fraDato == fraDatoItem) ||
+                    (fraDato.isBefore(fraDatoItem) && tilDato.isAfter(fraDatoItem)) ||
+                    (fraDato.isAfter(fraDatoItem) && fraDato.isBefore(tilDatoItem))) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

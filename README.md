@@ -15,7 +15,7 @@ https://testnorge-avhengighetsanalyse-frontend.dev.adeo.no/
 
 ## Kjør lokalt
 
-**NB: `navtunnel` må kjøre**
+**NB: `navtunnel` må kjøre, eller man må være logget inn med `naisdevice`**
 
 Legg inn dette i **din** maven settings.xml fil:
 ```
@@ -72,6 +72,23 @@ Så kjør `mvn clean install`
 ![Deploy brreg-stub](https://github.com/navikt/testnorge/workflows/Deploy%20brreg-stub/badge.svg)
 ![Deploy udi-stub](https://github.com/navikt/testnorge/workflows/Deploy%20udi-stub/badge.svg)
 ![Deploy synt-person-api](https://github.com/navikt/testnorge/workflows/Deploy%20synt-person-api%20prod/badge.svg)
+
+## Dokumentasjon
+Enhver testnorge-applikasjon skal ha dokumentasjon i fila `<min-testnorge-app>/docs/Implementasjon.md`. Hver av disse filene må starte med
+```
+---
+layout: default
+title: min-testnorge-app
+parent: Applikasjoner
+---
+
+# min-testnorge-app
+[...]
+```
+for å bli vist på riktig måte under https://navikt.github.io/testnorge.
+Implementasjonsfilen skal beskrive hvordan appen fungerer, sett i samspill med prosjektet som helhet.  
+
+Info om lokal kjøring osv. skal gis i appens `README.md` fil.
 
 ## Migrering inn i monorepo
 
