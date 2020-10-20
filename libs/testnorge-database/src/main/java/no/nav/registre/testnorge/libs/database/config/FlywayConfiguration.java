@@ -26,7 +26,7 @@ public class FlywayConfiguration {
             @Value("${spring.datasource.url}") String url
     ) {
         return configuration -> {
-            var secretPath = format("%s/%s", props.getBackend(), props.getRole());
+            var secretPath = format("%s/creds/%s", props.getBackend(), props.getRole());
             var vaultResponse = Optional.ofNullable(vaultOperations.read(secretPath))
                     .map(VaultResponse::getData)
                     .orElseThrow(() -> new IllegalStateException(
@@ -38,7 +38,7 @@ public class FlywayConfiguration {
             configuration
                     .dataSource(url, username, password)
                     .initSql(format("SET ROLE \"%s\"", props.getRole()));
-            log.info("Flyway configured.");
+            log.info("Flyway configured. With secret path {}", secretPath);
         };
     }
 }
