@@ -405,7 +405,24 @@ public class ServiceUtils {
         }
     }
 
-    public boolean harNoedvendigTiltaksdeltakelse(NyttVedtakTiltak vedtak, List<NyttVedtakTiltak> tiltaksdeltakelser) {
+    public List<NyttVedtakTiltak> oppdaterVedtakslisteBasertPaaTiltaksdeltakelse(
+            List<NyttVedtakTiltak> vedtaksliste,
+            List<NyttVedtakTiltak> tiltaksdeltakelser
+    ) {
+        List<NyttVedtakTiltak> nyVedtaksliste = new ArrayList<>();
+
+        for (var vedtak : vedtaksliste) {
+            var deltakelse = finnNoedvendigTiltaksdeltakelse(vedtak, tiltaksdeltakelser);
+            if (deltakelse != null) {
+                vedtak.setTilDato(deltakelse.getTilDato());
+                vedtak.setFraDato(deltakelse.getFraDato());
+                nyVedtaksliste.add(vedtak);
+            }
+        }
+        return nyVedtaksliste;
+    }
+
+    private NyttVedtakTiltak finnNoedvendigTiltaksdeltakelse(NyttVedtakTiltak vedtak, List<NyttVedtakTiltak> tiltaksdeltakelser) {
         if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
             var fraDato = vedtak.getFraDato();
             var tilDato = vedtak.getTilDato();
@@ -417,13 +434,13 @@ public class ServiceUtils {
 
                     if ((fraDatoDeltakelse != null && fraDato.isAfter(fraDatoDeltakelse.minusDays(1))) &&
                             (tilDato == null || tilDatoDeltakelse != null && tilDato.isBefore(tilDatoDeltakelse.plusDays(1)))) {
-                        return true;
+                        return deltakelse;
                     }
 
                 }
             }
         }
-        return false;
+        return null;
     }
 
     public NyttVedtakTiltak finnTiltak(String personident, String miljoe, NyttVedtakTiltak tiltaksdeltakelse) {
@@ -467,5 +484,4 @@ public class ServiceUtils {
         vedtak.setTilDato(tiltaksdeltakelse.getTilDato());
         return vedtak;
     }
-
 }
