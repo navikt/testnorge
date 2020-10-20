@@ -430,8 +430,11 @@ public class VedtakshistorikkService {
             });
             tiltaksdeltakelser.forEach(deltakelse -> {
                 var tiltak = serviceUtils.finnTiltak(personident, miljoe, deltakelse);
+
                 if (tiltak != null) {
                     deltakelse.setTiltakId(tiltak.getTiltakId());
+                    deltakelse.setFraDato(tiltak.getFraDato());
+                    deltakelse.setTilDato(tiltak.getTilDato());
                 }
             });
 
@@ -519,17 +522,18 @@ public class VedtakshistorikkService {
     ) {
         var tiltakspenger = vedtak.getTiltakspenger() != null ? vedtak.getTiltakspenger() : new ArrayList<NyttVedtakTiltak>();
         var tiltaksdeltakelser = vedtak.getTiltaksdeltakelse();
-        tiltakspenger = tiltakspenger.stream()
-                .filter(tiltak -> serviceUtils.harNoedvendigTiltaksdeltakelse(tiltak, tiltaksdeltakelser))
-                .collect(Collectors.toList());
 
-        if (!tiltakspenger.isEmpty()) {
+        List<NyttVedtakTiltak> nyeTiltakspenger = serviceUtils.oppdaterVedtakslisteBasertPaaTiltaksdeltakelse(
+                tiltakspenger, tiltaksdeltakelser);
+
+        if (!nyeTiltakspenger.isEmpty()) {
             var rettighetRequest = new RettighetTiltakspengerRequest(tiltakspenger);
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
             rettighetRequest.getNyeTiltakspenger().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
             rettigheter.add(rettighetRequest);
         }
+        vedtak.setTiltakspenger(nyeTiltakspenger);
     }
 
 
@@ -541,17 +545,18 @@ public class VedtakshistorikkService {
     ) {
         var barnetillegg = vedtak.getBarnetillegg() != null ? vedtak.getBarnetillegg() : new ArrayList<NyttVedtakTiltak>();
         var tiltaksdeltakelser = vedtak.getTiltaksdeltakelse();
-        barnetillegg = barnetillegg.stream()
-                .filter(tillegg -> serviceUtils.harNoedvendigTiltaksdeltakelse(tillegg, tiltaksdeltakelser))
-                .collect(Collectors.toList());
 
-        if (!barnetillegg.isEmpty()) {
+        List<NyttVedtakTiltak> nyeBarnetillegg = serviceUtils.oppdaterVedtakslisteBasertPaaTiltaksdeltakelse(
+                barnetillegg, tiltaksdeltakelser);
+
+        if (!nyeBarnetillegg.isEmpty()) {
             var rettighetRequest = new RettighetTilleggsytelseRequest(barnetillegg);
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
             rettighetRequest.getNyeTilleggsytelser().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
             rettigheter.add(rettighetRequest);
         }
+        vedtak.setBarnetillegg(nyeBarnetillegg);
     }
 
 

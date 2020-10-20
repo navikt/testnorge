@@ -328,6 +328,8 @@ public class RettighetTiltakService {
                 if (tiltak != null) {
                     deltakelse.setTiltakId(tiltak.getTiltakId());
                     deltakelse.setFodselsnr(ident);
+                    deltakelse.setFraDato(tiltak.getFraDato());
+                    deltakelse.setTilDato(tiltak.getTilDato());
                     tiltaksdeltakelser.add(deltakelse);
 
                     var nyTiltakdeltakelse = serviceUtils.getVedtakForTiltaksdeltakelseRequest(deltakelse);
