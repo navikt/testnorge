@@ -45,12 +45,11 @@ public class OrganisasjonConsumer {
                 .build();
     }
 
-    private CompletableFuture<OrganisasjonDTO> getFutureOrganisjon(String orgnummer) {
+    private CompletableFuture<OrganisasjonDTO> getFutureOrganisjon(String orgnummer, AccessToken accessToken) {
         return CompletableFuture.supplyAsync(
-                () -> {
-                    AccessToken accessToken = clientCredentialGenerateAccessTokenService.generateToken(clientCredential);
-                    return new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, MILJOE).call();
-                }, executorService);
+                () -> new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, MILJOE).call(),
+                executorService
+        );
     }
 
     public OrganisasjonDTO getOrganisjon(String orgnummer) {
@@ -59,14 +58,14 @@ public class OrganisasjonConsumer {
     }
 
     public List<OrganisasjonDTO> getOrganisjoner(Set<String> orgnummerListe) {
-        var futures = orgnummerListe.stream().map(this::getFutureOrganisjon).collect(Collectors.toList());
+        AccessToken accessToken = clientCredentialGenerateAccessTokenService.generateToken(clientCredential);
+        var futures = orgnummerListe.stream().map(value -> getFutureOrganisjon(value, accessToken)).collect(Collectors.toList());
         List<OrganisasjonDTO> list = new ArrayList<>();
 
         for (CompletableFuture<OrganisasjonDTO> future : futures) {
             try {
                 list.add(future.get());
             } catch (Exception e) {
-                executorService.shutdown();
                 throw new RuntimeException("Klarer ikke å hente ut alle oragnisasjoner", e);
             }
         }

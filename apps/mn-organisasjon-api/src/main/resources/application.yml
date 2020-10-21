@@ -1,11 +1,15 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+CLIENT_ID: a9109f54-8cae-4af2-98e3-8c56a1f5c9ad
+
+
 spring:
   application:
     name: mn-organisasjon-api
     version: @application.version@
     description: Applikasjon for å hente/opprette Mini-Norge EREG populasjon.
+  jpa:
+    open-in-view: false
 
-AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-CLIENT_ID: a9109f54-8cae-4af2-98e3-8c56a1f5c9ad
 
 consumers:
   organisasjonapi:
