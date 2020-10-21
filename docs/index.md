@@ -42,6 +42,7 @@ Noen ganger vil du bli møtt av en eller flere meldinger når du åpner Dolly, f
 Det er viktig at du leser disse meldingene, da de inneholder nyttig informasjon om bruk av Dolly.
 
 ![Varslinger](assets/varslinger.png)
+
 ---
 
 ## Opprette en ny testdatagruppe
