@@ -71,12 +71,12 @@ public class Report extends org.apache.avro.specific.SpecificRecordBase implemen
     return DECODER.decode(b);
   }
 
-   private java.lang.CharSequence applicationName;
-   private java.lang.CharSequence name;
-   private java.lang.CharSequence start;
-   private java.lang.CharSequence end;
-   private java.lang.CharSequence traceId;
-   private java.util.List<no.nav.registre.testnorge.libs.avro.report.Entry> entries;
+  @Deprecated public java.lang.CharSequence applicationName;
+  @Deprecated public java.lang.CharSequence name;
+  @Deprecated public java.lang.CharSequence start;
+  @Deprecated public java.lang.CharSequence end;
+  @Deprecated public java.lang.CharSequence traceId;
+  @Deprecated public java.util.List<no.nav.registre.testnorge.libs.avro.report.Entry> entries;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -114,7 +114,7 @@ public class Report extends org.apache.avro.specific.SpecificRecordBase implemen
     case 3: return end;
     case 4: return traceId;
     case 5: return entries;
-    default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
+    default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
 
@@ -128,7 +128,7 @@ public class Report extends org.apache.avro.specific.SpecificRecordBase implemen
     case 3: end = (java.lang.CharSequence)value$; break;
     case 4: traceId = (java.lang.CharSequence)value$; break;
     case 5: entries = (java.util.List<no.nav.registre.testnorge.libs.avro.report.Entry>)value$; break;
-    default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
+    default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
 

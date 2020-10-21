@@ -6,11 +6,18 @@ import static no.nav.registre.skd.service.SyntetiseringService.FOEDTE_IDENTER;
 import static no.nav.registre.skd.service.SyntetiseringService.GIFTE_IDENTER_I_NORGE;
 import static no.nav.registre.skd.service.SyntetiseringService.LEVENDE_IDENTER_I_NORGE;
 import static no.nav.registre.skd.service.SyntetiseringService.SINGLE_IDENTER_I_NORGE;
-import static no.nav.registre.skd.service.utilities.IdentUtility.getFoedselsdatoFraFnr;
+import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.korrigerUtenFastBosted;
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.opprettKopiAvSkdMelding;
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.putEktefellePartnerFnrInnIMelding;
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.putFnrInnIMelding;
-import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.korrigerUtenFastBosted;
+
+import io.micrometer.core.annotation.Timed;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -26,18 +33,11 @@ import java.util.function.Predicate;
 import no.nav.registre.skd.consumer.HodejegerenConsumerSkd;
 import no.nav.registre.skd.consumer.dto.Relasjon;
 import no.nav.registre.skd.consumer.response.RelasjonsResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpStatusCodeException;
-
-import io.micrometer.core.annotation.Timed;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.skd.exceptions.ManglendeInfoITpsException;
 import no.nav.registre.skd.exceptions.ManglerEksisterendeIdentException;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
+import no.nav.registre.testnorge.libs.core.util.IdentUtil;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Service
@@ -75,76 +75,76 @@ public class EksisterendeIdenterService {
             String environment
     ) {
         switch (endringskode) {
-        case NAVNEENDRING_FOERSTE:
-        case NAVNEENDRING_MELDING:
-        case NAVNEENDRING_KORREKSJON:
-        case ADRESSEENDRING_UTEN_FLYTTING:
-        case ADRESSEKORREKSJON:
-        case UTVANDRING:
-        case ENDRING_STATSBORGERSKAP_BIBEHOLD:
-        case ENDRING_FAMILIENUMMER:
-        case ENDRING_FORELDREANSVAR:
-        case ENDRING_OPPHOLDSTILLATELSE:
-        case ENDRING_POSTADRESSE_TILLEGGSADRESSE:
-        case ENDRING_POSTNUMMER_SKOLE_VALG_GRUNNKRETS:
-        case KOMMUNEREGULERING:
-        case ADRESSEENDRING_GAB:
-        case ENDRING_KORREKSJON_FOEDESTED:
-        case ENDRING_DUF_NUMMER:
-        case FLYTTING_INNEN_KOMMUNEN:
-        case UREGISTRERT_PERSON:
-        case ANNULERING_FLYTTING_ADRESSEENDRING:
-        case INNFLYTTING_ANNEN_KOMMUNE:
-            behandleGenerellAarsak(
-                    meldinger,
-                    listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE),
-                    listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
-                    endringskode,
-                    environment
-            );
-            break;
-        case VIGSEL:
-            behandleVigsel(
-                    meldinger,
-                    listerMedIdenter.get(SINGLE_IDENTER_I_NORGE),
-                    listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
-                    endringskode,
-                    environment
-            );
-            break;
-        case SEPERASJON:
-        case SKILSMISSE:
-            behandleSeperasjonSkilsmisse(
-                    meldinger,
-                    listerMedIdenter.get(GIFTE_IDENTER_I_NORGE),
-                    listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
-                    endringskode,
-                    environment
-            );
-            break;
-        case FARSKAP_MEDMORSKAP:
-            behandleFarskapMedmorskap(
-                    meldinger,
-                    listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE),
-                    listerMedIdenter.get(FOEDTE_IDENTER),
-                    listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
-                    endringskode,
-                    environment
-            );
-            break;
-        case DOEDSMELDING:
-            behandleDoedsmelding(
-                    meldinger,
-                    listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE),
-                    listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
-                    endringskode,
-                    environment
-            );
-            break;
-        case KORREKSJON_FAMILIEOPPLYSNINGER:
-            break;
-        default:
-            break;
+            case NAVNEENDRING_FOERSTE:
+            case NAVNEENDRING_MELDING:
+            case NAVNEENDRING_KORREKSJON:
+            case ADRESSEENDRING_UTEN_FLYTTING:
+            case ADRESSEKORREKSJON:
+            case UTVANDRING:
+            case ENDRING_STATSBORGERSKAP_BIBEHOLD:
+            case ENDRING_FAMILIENUMMER:
+            case ENDRING_FORELDREANSVAR:
+            case ENDRING_OPPHOLDSTILLATELSE:
+            case ENDRING_POSTADRESSE_TILLEGGSADRESSE:
+            case ENDRING_POSTNUMMER_SKOLE_VALG_GRUNNKRETS:
+            case KOMMUNEREGULERING:
+            case ADRESSEENDRING_GAB:
+            case ENDRING_KORREKSJON_FOEDESTED:
+            case ENDRING_DUF_NUMMER:
+            case FLYTTING_INNEN_KOMMUNEN:
+            case UREGISTRERT_PERSON:
+            case ANNULERING_FLYTTING_ADRESSEENDRING:
+            case INNFLYTTING_ANNEN_KOMMUNE:
+                behandleGenerellAarsak(
+                        meldinger,
+                        listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE),
+                        listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
+                        endringskode,
+                        environment
+                );
+                break;
+            case VIGSEL:
+                behandleVigsel(
+                        meldinger,
+                        listerMedIdenter.get(SINGLE_IDENTER_I_NORGE),
+                        listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
+                        endringskode,
+                        environment
+                );
+                break;
+            case SEPERASJON:
+            case SKILSMISSE:
+                behandleSeperasjonSkilsmisse(
+                        meldinger,
+                        listerMedIdenter.get(GIFTE_IDENTER_I_NORGE),
+                        listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
+                        endringskode,
+                        environment
+                );
+                break;
+            case FARSKAP_MEDMORSKAP:
+                behandleFarskapMedmorskap(
+                        meldinger,
+                        listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE),
+                        listerMedIdenter.get(FOEDTE_IDENTER),
+                        listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
+                        endringskode,
+                        environment
+                );
+                break;
+            case DOEDSMELDING:
+                behandleDoedsmelding(
+                        meldinger,
+                        listerMedIdenter.get(LEVENDE_IDENTER_I_NORGE),
+                        listerMedIdenter.get(BRUKTE_IDENTER_I_DENNE_BOLKEN),
+                        endringskode,
+                        environment
+                );
+                break;
+            case KORREKSJON_FAMILIEOPPLYSNINGER:
+                break;
+            default:
+                break;
         }
     }
 
@@ -188,7 +188,7 @@ public class EksisterendeIdenterService {
         statusQuoIdent = getIdentWithStatus(singleIdenterINorge, endringskode, environment,
                 (Map<String, String> a) -> KoderForSivilstand.GIFT.getAlleSivilstandkodene().contains(a.get(SIVILSTAND))
                         || KoderForSivilstand.SEPARERT.getAlleSivilstandkodene().contains(a.get(SIVILSTAND))
-                        || ChronoUnit.YEARS.between(getFoedselsdatoFraFnr(a.get(IDENT)), LocalDate.now()) < 18);
+                        || ChronoUnit.YEARS.between(IdentUtil.getFoedselsdatoFraIdent(a.get(IDENT)), LocalDate.now()) < 18);
         return statusQuoIdent;
     }
 
@@ -430,7 +430,7 @@ public class EksisterendeIdenterService {
         return statusQuoIdent;
     }
 
-    @Timed(value = "skd.resource.latency", extraTags = { "operation", "hodejegeren" })
+    @Timed(value = "skd.resource.latency", extraTags = {"operation", "hodejegeren"})
     private Map<String, String> getStatusQuoPaaIdent(
             Endringskoder endringskode,
             String environment,

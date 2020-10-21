@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.List;
+
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.synt.person.consumer.command.GetSyntPersonCommand;
 import no.nav.registre.testnorge.synt.person.consumer.dto.SyntPersonDTO;
@@ -20,7 +22,7 @@ public class SyntrestConsumer {
                 .build();
     }
 
-    public SyntPersonDTO createSyntPerson() {
-        return new GetSyntPersonCommand(webClient).call();
+    public List<SyntPersonDTO> createSyntPerson(String antall) {
+        return new GetSyntPersonCommand(webClient, antall).call();
     }
 }

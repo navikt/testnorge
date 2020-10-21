@@ -71,7 +71,7 @@ public class PersonInfo extends org.apache.avro.specific.SpecificRecordBase impl
     return DECODER.decode(b);
   }
 
-   private java.lang.CharSequence objectId;
+  @Deprecated public java.lang.CharSequence objectId;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -94,7 +94,7 @@ public class PersonInfo extends org.apache.avro.specific.SpecificRecordBase impl
   public java.lang.Object get(int field$) {
     switch (field$) {
     case 0: return objectId;
-    default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
+    default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
 
@@ -103,7 +103,7 @@ public class PersonInfo extends org.apache.avro.specific.SpecificRecordBase impl
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
     case 0: objectId = (java.lang.CharSequence)value$; break;
-    default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
+    default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
 

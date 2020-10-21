@@ -5,7 +5,16 @@ import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperS
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET_BESKRIVELSE;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.STATSBORGER;
 import static no.nav.registre.hodejegeren.service.TpsStatusQuoService.AKSJONSKODE;
-import static no.nav.registre.hodejegeren.service.utilities.IdentUtility.getFoedselsdatoFraFnr;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -18,18 +27,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
-
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 import no.nav.registre.hodejegeren.exception.IdentIOException;
 import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
@@ -38,6 +35,7 @@ import no.nav.registre.hodejegeren.provider.rs.responses.kontoinfo.KontoinfoResp
 import no.nav.registre.hodejegeren.provider.rs.responses.persondata.PersondataResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.Relasjon;
 import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsResponse;
+import no.nav.registre.testnorge.libs.core.util.IdentUtil;
 
 @Service
 @Slf4j
@@ -263,7 +261,7 @@ public class EksisterendeIdenterService {
             int minimumAlder
     ) {
         var identer = cacheService.hentLevendeIdenterCache(avspillergruppeId);
-        return identer.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isBefore(LocalDate.now().minusYears(minimumAlder))).collect(Collectors.toList());
+        return identer.stream().filter(ident -> IdentUtil.getFoedselsdatoFraIdent(ident).isBefore(LocalDate.now().minusYears(minimumAlder))).collect(Collectors.toList());
     }
 
     public List<String> finnLevendeIdenterIAldersgruppe(
@@ -433,7 +431,7 @@ public class EksisterendeIdenterService {
             int minimumAlder,
             int maksimumAlder
     ) {
-        var identerOverAlder = identer.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isBefore(LocalDate.now().minusYears(minimumAlder))).collect(Collectors.toList());
-        return identerOverAlder.stream().filter(ident -> getFoedselsdatoFraFnr(ident).isAfter(LocalDate.now().minusYears(maksimumAlder))).collect(Collectors.toList());
+        var identerOverAlder = identer.stream().filter(ident -> IdentUtil.getFoedselsdatoFraIdent(ident).isBefore(LocalDate.now().minusYears(minimumAlder))).collect(Collectors.toList());
+        return identerOverAlder.stream().filter(ident -> IdentUtil.getFoedselsdatoFraIdent(ident).isAfter(LocalDate.now().minusYears(maksimumAlder))).collect(Collectors.toList());
     }
 }

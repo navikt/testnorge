@@ -51,6 +51,14 @@
                                         <extensionArg>-Ximmutable</extensionArg>
                                     </extensionArgs>
                                 </xsdOption>
+                                <xsdOption>
+                                    <xsd>${basedir}/src/main/xsd/a-arbeidsforhold_v2_0.xsd</xsd>
+                                    <packagename>no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0</packagename>
+                                    <extensionArgs>
+                                        <extensionArg>-Xfluent-builder</extensionArg>
+                                        <extensionArg>-Ximmutable</extensionArg>
+                                    </extensionArgs>
+                                </xsdOption>
                             </xsdOptions>
                         </configuration>
                     </execution>
