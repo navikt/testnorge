@@ -1,5 +1,7 @@
 package no.nav.registre.testnorge.mn.organisasjonapi.provider.dto;
 
+import java.util.List;
+
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.AdresseDTO;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 
@@ -15,9 +17,9 @@ public class MNOrganisasjonDTO extends OrganisasjonDTO {
         active = null;
     }
 
-    public MNOrganisasjonDTO(
-            String orgnummer, String enhetType, String navn, String juridiskEnhet, AdresseDTO postadresse, AdresseDTO forretningsadresser, String redigertnavn, Boolean active) {
-        super(orgnummer, enhetType, navn, juridiskEnhet, postadresse, forretningsadresser, redigertnavn);
+
+    public MNOrganisasjonDTO(String orgnummer, String enhetType, String navn, String juridiskEnhet, AdresseDTO postadresse, AdresseDTO forretningsadresser, String redigertnavn, List<String> driverVirksomheter, Boolean active) {
+        super(orgnummer, enhetType, navn, juridiskEnhet, postadresse, forretningsadresser, redigertnavn, driverVirksomheter);
         this.active = active;
     }
 

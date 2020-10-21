@@ -2,7 +2,6 @@ name: Deploy arbeidsforhold-api
 
 on:
   push:
-    branches: master
     paths:
       - apps/arbeidsforhold-api/**
 
@@ -47,4 +46,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/arbeidsforhold-api/nais.yaml
+          RESOURCE: apps/arbeidsforhold-api/config.yml

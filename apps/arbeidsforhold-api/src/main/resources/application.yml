@@ -1,16 +1,20 @@
 spring:
   application:
     name: arbeidsforhold-api
-
-application:
-  version: @application.version@
-  name: arbeidsforhold-api
+    version: @application.version@
+    description: Opprettelse av arbeidsforhold
 
 aareg:
-  url: https://modapp-q1.adeo.no/aareg-services/api
+  url: https://modapp-q2.adeo.no/aareg-services/api
 
 kafka:
   bootstrapservers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
   schemaregistryservers: http://kafka-schema-registry.tpa.svc.nais.local:8081
   groupid: testnorge-arbeidsforhold-api-v1
   topic: testnorge-opprett-hendelse-v1
+
+consumers:
+  organisasjonapi:
+    url: https://testnorge-organisasjon-api.dev.adeo.no
+    client_id: f4167796-bf43-438b-a282-a480e8108d0c
+    client_secret: ${ORGANISASJON_API_CLIENT_SECRET}

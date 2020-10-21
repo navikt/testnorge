@@ -2,12 +2,15 @@
 kind: "Application"
 metadata:
   name: testnorge-arbeidsforhold-api
-  namespace: default
+  namespace: dolly
   labels:
     team: dolly
 spec:
   image: {{ image }}
   port: 8080
+  azure:
+    application:
+      enabled: true
   liveness:
     path: /internal/isAlive
     initialDelay: 4

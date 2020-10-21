@@ -20,7 +20,7 @@ public class ArbeidsforholdDTO {
     @JsonProperty
     String arbeidstidsordning;
     @JsonProperty(required = true)
-    Double stillingsprosent;
+    Float stillingsprosent;
     @JsonProperty(required = true)
     String yrke;
     @JsonProperty(required = true)
@@ -29,4 +29,10 @@ public class ArbeidsforholdDTO {
     LocalDate tom;
     @JsonProperty(required = true)
     String ident;
+    @JsonProperty
+    Float antallTimerPrUke;
+    @JsonProperty
+    LocalDate sistLoennsendring;
+    @JsonProperty
+    String type;
 }
