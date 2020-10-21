@@ -1,0 +1,17 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+CLIENT_ID: 6554cc46-d5a9-4b9b-aafb-775b9ee09696
+
+# TODO: Ny Application i azure
+
+spring:
+  application:
+    version: @application.version@
+    name: ident-service
+    description: App som håndterer service på identer benyttet av Dolly
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
+
