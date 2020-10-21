@@ -4,11 +4,10 @@ import static no.nav.identpool.util.PersonidentUtil.validate;
 import static no.nav.identpool.util.PersonidentUtil.validateMultiple;
 import static no.nav.identpool.util.ValiderRequestUtil.validateDatesInRequest;
 
-import com.google.common.base.Strings;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,12 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import com.google.common.base.Strings;
 
-import javax.validation.Valid;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
+import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.ajourhold.BatchService;
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
@@ -37,7 +35,6 @@ import no.nav.identpool.service.IdentpoolService;
 
 @Slf4j
 @RestController
-@Api(tags = { "identifikator" })
 @RequestMapping("/api/v1/identifikator")
 @RequiredArgsConstructor
 public class IdentpoolController {
@@ -46,7 +43,7 @@ public class IdentpoolController {
     private final BatchService batchService;
 
     @GetMapping
-    @ApiOperation(value = "hent informasjon lagret på en test-ident")
+    @Operation(description = "hent informasjon lagret på en test-ident")
     public Ident lesInnhold(
             @RequestHeader String personidentifikator
     ) throws UgyldigPersonidentifikatorException {
@@ -55,7 +52,7 @@ public class IdentpoolController {
     }
 
     @PostMapping
-    @ApiOperation(value = "rekvirer nye test-identer")
+    @Operation(description = "rekvirer nye test-identer")
     public List<String> rekvirer(
             @RequestParam(required = false, defaultValue = "true") boolean finnNaermesteLedigeDato,
             @RequestBody @Valid HentIdenterRequest hentIdenterRequest
@@ -83,14 +80,14 @@ public class IdentpoolController {
     }
 
     @PostMapping("/bruk")
-    @ApiOperation(value = "marker eksisterende og ledige identer som i bruk")
+    @Operation(description = "marker eksisterende og ledige identer som i bruk")
     public void markerBrukt(@RequestBody MarkerBruktRequest markerBruktRequest) throws Exception {
         validate(markerBruktRequest.getPersonidentifikator());
         identpoolService.markerBrukt(markerBruktRequest);
     }
 
     @PostMapping("/brukFlere")
-    @ApiOperation(value = "Marker identer i gitt liste som I_BRUK i ident-pool-databasen. Returnerer en liste over de identene som nå er satt til I_BRUK.")
+    @Operation(description = "Marker identer i gitt liste som I_BRUK i ident-pool-databasen. Returnerer en liste over de identene som nå er satt til I_BRUK.")
     public List<String> markerBruktIdenter(
             @RequestParam String rekvirertAv,
             @RequestBody List<String> identer
@@ -107,7 +104,7 @@ public class IdentpoolController {
      */
     @Deprecated
     @PostMapping("/bruk/batch")
-    @ApiOperation(value = "marker eksisterende og ledige identer som i bruk")
+    @Operation(description = "marker eksisterende og ledige identer som i bruk")
     public MarkerBruktBatchResponse markerBruktBatch(@RequestBody MarkerBruktBatchRequest markerBruktBatchRequest) {
         log.info("{} brukte deprecated endepunkt 'markerBruktBatch'", markerBruktBatchRequest.getBruker());
         MarkerBruktBatchResponse markerBruktBatchResponse = MarkerBruktBatchResponse.builder()
@@ -132,7 +129,7 @@ public class IdentpoolController {
     }
 
     @GetMapping("/ledig")
-    @ApiOperation(value = "returnerer true eller false avhengig av om en ident er ledig eller ikke")
+    @Operation(description = "returnerer true eller false avhengig av om en ident er ledig eller ikke")
     public Boolean erLedig(
             @RequestHeader String personidentifikator,
             @RequestParam(required = false) List<String> miljoer
@@ -142,7 +139,7 @@ public class IdentpoolController {
     }
 
     @GetMapping("/ledige")
-    @ApiOperation(value = "returnerer identer som er ledige og født mellom to datoer")
+    @Operation(description = "returnerer identer som er ledige og født mellom to datoer")
     public List<String> erLedige(
             @RequestParam int fromYear,
             @RequestParam int toYear
@@ -151,7 +148,7 @@ public class IdentpoolController {
     }
 
     @PostMapping("/frigjoer")
-    @ApiOperation(value = "Frigjør rekvirerte identer i en gitt liste. Returnerer de identene i den gitte listen som nå er ledige.")
+    @Operation(description = "Frigjør rekvirerte identer i en gitt liste. Returnerer de identene i den gitte listen som nå er ledige.")
     public List<String> frigjoerIdenter(
             @RequestParam String rekvirertAv,
             @RequestBody List<String> identer
@@ -163,13 +160,13 @@ public class IdentpoolController {
     }
 
     @PostMapping("/frigjoerLedige")
-    @ApiOperation(value = "Frigjør rekvirerte, men ubrukte identer i en gitt liste. Returnerer de identene i den gitte listen som nå er ledige.")
+    @Operation(description = "Frigjør rekvirerte, men ubrukte identer i en gitt liste. Returnerer de identene i den gitte listen som nå er ledige.")
     public List<String> frigjoerLedigeIdenter(@RequestBody List<String> identer) {
         return identpoolService.frigjoerLedigeIdenter(identer);
     }
 
     @GetMapping("/whitelist")
-    @ApiOperation(value = "returnerer en list over whitelisted identer")
+    @Operation(description = "returnerer en list over whitelisted identer")
     public List<String> hentWhitelist() {
         return identpoolService.hentWhitelist();
     }
