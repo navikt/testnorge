@@ -34,12 +34,11 @@ public class OrgnaisasjonAdapter {
         if (modelOptional.isEmpty()) {
             return null;
         }
-        OrganisasjonModel organisasjonModel = modelOptional.get();
         OrganisasjonDTO organisjon = consumer.getOrganisjon(orgnummer);
         if (organisjon == null) {
             return null;
         }
-        return new Organisasjon(organisjon, organisasjonModel.getActive());
+        return new Organisasjon(organisjon, modelOptional.get().getActive());
     }
 
     private Map<String, OrganisasjonModel> findAll() {
