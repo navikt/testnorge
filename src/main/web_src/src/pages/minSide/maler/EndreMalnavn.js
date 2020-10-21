@@ -32,11 +32,9 @@ const lagreEndring = (nyttMalnavn, setMaler, id, avbrytRedigering) => {
 	api
 		.endreMalNavn(id, nyttMalnavn)
 		.then(() =>
-			setMaler
-				? setMaler(maler =>
-						maler.map(mal => ({ ...mal, malNavn: mal.id === id ? nyttMalnavn : mal.malNavn }))
-				  )
-				: null
+			setMaler(maler =>
+				maler.map(mal => ({ ...mal, malNavn: mal.id === id ? nyttMalnavn : mal.malNavn }))
+			)
 		)
 		.then(avbrytRedigering(id))
 }
