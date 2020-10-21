@@ -25,6 +25,7 @@ export default function PersonListe({
 	isFetching,
 	personListe,
 	searchActive,
+	visPerson,
 	iLaastGruppe,
 	fetchTpsfPersoner
 }) {
@@ -156,6 +157,7 @@ export default function PersonListe({
 				columns={columns}
 				pagination
 				iconItem={bruker => (bruker.kjonn === 'MANN' ? <ManIconItem /> : <WomanIconItem />)}
+				visPerson={visPerson}
 				onExpand={bruker => (
 					<PersonVisningConnector
 						personId={bruker.ident.ident}

@@ -37,7 +37,15 @@ const getIconType = (iconItem, row) => {
 	return _isFunction(iconItem) ? iconItem(row) : iconItem
 }
 
-export default function Table({ data, iconItem, columns, onRowClick, header = true, onExpand }) {
+export default function Table({
+	data,
+	iconItem,
+	columns,
+	onRowClick,
+	header = true,
+	visPerson,
+	onExpand
+}) {
 	const headerClass = cn('dot-header', {
 		'has-icon': Boolean(iconItem)
 	})
@@ -57,8 +65,19 @@ export default function Table({ data, iconItem, columns, onRowClick, header = tr
 				const expandComponent = onExpand ? onExpand(row) : null
 				const iconType = getIconType(iconItem, row)
 				const rowKey = getRowKey(row, columns) || rowIdx
+				const expandPerson =
+					expandComponent &&
+					visPerson &&
+					_get(expandComponent, 'props.personId') === visPerson.toString()
+
 				return (
-					<Row key={rowKey} icon={iconType} navLink={navLink} expandComponent={expandComponent}>
+					<Row
+						key={rowKey}
+						icon={iconType}
+						navLink={navLink}
+						expandComponent={expandComponent}
+						expandPerson={expandPerson}
+					>
 						{columns.map((columnCell, idx) => (
 							<Column
 								key={idx}
