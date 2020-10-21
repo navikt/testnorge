@@ -121,6 +121,7 @@
         <module>varslinger-api</module>
         <module>tilbakemelding-api</module>
         <module>person-export-api</module>
+        <module>mn-original-populasjon</module>
         <module>arbeidsforhold-export-api</module>
         <module>ident-service</module>
     </modules>

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import no.nav.registre.frikort.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.frikort.provider.rs.request.SyntetiserFrikortRequest;
 import no.nav.registre.frikort.provider.rs.response.SyntetiserFrikortResponse;
-import no.nav.registre.frikort.service.util.IdentUtil;
+import no.nav.registre.testnorge.libs.core.util.IdentUtil;
 import no.nav.registre.frikort.service.util.ServiceUtils;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
@@ -41,7 +41,7 @@ public class SyntetiseringService {
         List<String> identer;
         if (AVSPILLERGRUPPE_MININORGE.equals(syntetiserFrikortRequest.getAvspillergruppeId()) && MILJOE_MININORGE.equals(syntetiserFrikortRequest.getMiljoe().toLowerCase())) {
             identer = hodejegerenHistorikkConsumer.hentIdenterMedKontonummer(syntetiserFrikortRequest.getAntallNyeIdenter());
-            identer.removeIf(ident -> ChronoUnit.YEARS.between(IdentUtil.toBirthdate(ident), LocalDate.now()) < MIN_ALDER);
+            identer.removeIf(ident -> ChronoUnit.YEARS.between(IdentUtil.getFoedselsdatoFraIdent(ident), LocalDate.now()) < MIN_ALDER);
         } else {
             var identerMedKontonummer = hodejegerenConsumer
                     .getIdenterMedKontonummer(

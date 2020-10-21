@@ -1,17 +1,14 @@
 package no.nav.registre.arena.core.service;
 
-import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.getFoedselsdatoFraFnr;
+import static no.nav.registre.arena.core.service.util.ServiceUtils.AKTIVITETSFASE_SYKEPENGEERSTATNING;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.BEGRUNNELSE;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MAX_ALDER_AAP;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MAX_ALDER_UNG_UFOER;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_AAP;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_UNG_UFOER;
-import static no.nav.registre.arena.core.service.util.ServiceUtils.AKTIVITETSFASE_SYKEPENGEERSTATNING;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,6 +30,9 @@ import no.nav.registre.arena.core.pensjon.consumer.rs.PensjonTestdataFacadeConsu
 import no.nav.registre.arena.core.pensjon.request.PensjonTestdataInntekt;
 import no.nav.registre.arena.core.pensjon.request.PensjonTestdataPerson;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.registre.testnorge.libs.core.util.IdentUtil;
 
 @Slf4j
 @Service
@@ -234,7 +234,7 @@ public class RettighetAapService {
     ) {
         var opprettPersonStatus = pensjonTestdataFacadeConsumer.opprettPerson(PensjonTestdataPerson.builder()
                 .bostedsland("NOR")
-                .fodselsDato(getFoedselsdatoFraFnr(ident))
+                .fodselsDato(IdentUtil.getFoedselsdatoFraIdent(ident))
                 .miljoer(Collections.singletonList(miljoe))
                 .fnr(ident)
                 .build());
