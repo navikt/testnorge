@@ -1,0 +1,7 @@
+spring.cloud.vault.token=dummy
+
+CLIENT_ID=dummy
+CLIENT_SECRET=dummy
+
+SYNT_PERSON_API_CLIENT_ID=dummy
+SYNT_PERSON_API_CLIENT_SECRET=dummy
