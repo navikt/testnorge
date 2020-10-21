@@ -45,7 +45,7 @@ public class OrganisasjonConsumer {
                 .build();
     }
 
-    private CompletableFuture<OrganisasjonDTO> getFutureOrganisjon(String orgnummer, AccessToken accessToken) {
+    private CompletableFuture<OrganisasjonDTO> getFutureOrganisasjon(String orgnummer, AccessToken accessToken) {
         return CompletableFuture.supplyAsync(
                 () -> new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, MILJOE).call(),
                 executorService
@@ -57,9 +57,9 @@ public class OrganisasjonConsumer {
         return new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, MILJOE).call();
     }
 
-    public List<OrganisasjonDTO> getOrganisjoner(Set<String> orgnummerListe) {
+    public List<OrganisasjonDTO> getOrganisasjoner(Set<String> orgnummerListe) {
         AccessToken accessToken = clientCredentialGenerateAccessTokenService.generateToken(clientCredential);
-        var futures = orgnummerListe.stream().map(value -> getFutureOrganisjon(value, accessToken)).collect(Collectors.toList());
+        var futures = orgnummerListe.stream().map(value -> getFutureOrganisasjon(value, accessToken)).collect(Collectors.toList());
         List<OrganisasjonDTO> list = new ArrayList<>();
 
         for (CompletableFuture<OrganisasjonDTO> future : futures) {

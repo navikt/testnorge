@@ -1,5 +1,5 @@
 # mn-organisasjon-api
-Applikasjon for å opprette Mini-Norge organisjasjoner.
+Applikasjon for å opprette Mini-Norge organisasjoner.
 
 ## Swagger
 Swagger finnes under [/swagger](https://mn-organisasjon-api.dev.adeo.no/swagger) -endepunktet til applikasjonen.

@@ -11,13 +11,13 @@ import java.util.stream.StreamSupport;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.registre.testnorge.mn.organisasjonapi.consumer.OrganisasjonConsumer;
 import no.nav.registre.testnorge.mn.organisasjonapi.domain.Organisasjon;
-import no.nav.registre.testnorge.mn.organisasjonapi.repository.OrgansiasjonRepository;
+import no.nav.registre.testnorge.mn.organisasjonapi.repository.OrganisasjonRepository;
 import no.nav.registre.testnorge.mn.organisasjonapi.repository.model.OrganisasjonModel;
 
 @Component
 @RequiredArgsConstructor
-public class OrgnaisasjonAdapter {
-    private final OrgansiasjonRepository repository;
+public class OrganisasjonAdapter {
+    private final OrganisasjonRepository repository;
     private final OrganisasjonConsumer consumer;
 
     public void save(Organisasjon organisasjon) {
@@ -59,8 +59,8 @@ public class OrgnaisasjonAdapter {
     }
 
     private List<Organisasjon> fetchBy(Map<String, OrganisasjonModel> map) {
-        List<OrganisasjonDTO> organisjoner = consumer.getOrganisjoner(map.keySet());
-        return organisjoner
+        List<OrganisasjonDTO> organisasjoner = consumer.getOrganisasjoner(map.keySet());
+        return organisasjoner
                 .stream()
                 .map(value -> new Organisasjon(value, map.get(value.getOrgnummer()).getActive()))
                 .collect(Collectors.toList());
