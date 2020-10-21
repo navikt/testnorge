@@ -53,6 +53,10 @@ export default function PersonListe({
 		)
 	}
 
+	const personIndex = personListe.findIndex(person => person.identNr == visPerson)
+	const personerPrSide = 10
+	const visSide = personIndex >= 0 ? Math.floor(personIndex / personerPrSide) : 0
+
 	const columns = [
 		{
 			text: 'Ident',
@@ -157,6 +161,7 @@ export default function PersonListe({
 				columns={columns}
 				pagination
 				iconItem={bruker => (bruker.kjonn === 'MANN' ? <ManIconItem /> : <WomanIconItem />)}
+				visSide={visSide}
 				visPerson={visPerson}
 				onExpand={bruker => (
 					<PersonVisningConnector
