@@ -50,7 +50,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe }) {
 				<GjenopprettConnector bestilling={bestilling} closeModal={closeGjenoprettModal} />
 			)}
 
-			{isOpenMalModalOpen && <MalModal bestilling={bestilling} closeModal={closeOpenMalModal} />}
+			{isOpenMalModalOpen && <MalModal id={bestilling.id} closeModal={closeOpenMalModal} />}
 		</div>
 	)
 }
