@@ -6,7 +6,6 @@ import org.springframework.vault.annotation.VaultPropertySource;
 
 @Configuration
 @Profile("dev")
-@VaultPropertySource(value = "kv/preprod/fss/testnorge-ident-service/dev", ignoreSecretNotFound = true)
-//TODO tilbake til false over, trenger å opprette source over i vault
+@VaultPropertySource(value = "kv/preprod/fss/testnorge-ident-service/dev", ignoreSecretNotFound = false)
 public class DevVaultConfig {
 }
