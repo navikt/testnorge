@@ -16,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import no.nav.freg.fasit.utils.FasitService;
 import no.nav.identpool.test.mockito.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)

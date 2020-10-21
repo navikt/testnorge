@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.freg.fasit.utils.FasitService;
 
 @Component
 @Profile("fasit")

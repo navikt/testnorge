@@ -10,25 +10,30 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import lombok.RequiredArgsConstructor;
 
+@Service
 @RequiredArgsConstructor
-public class FasitServiceImpl implements no.nav.freg.fasit.utils.FasitService {
+public class FasitServiceImpl implements FasitService {
 
     static final Pattern NAME_PATTERN = Pattern.compile("\"name\": \"(?<value>.*?)\"", Pattern.MULTILINE);
     private static final String SCOPED_RESOURCE_URL = "{0}/api/v2/scopedresource?alias={1}&type={2}&environment={3}&application={4}&zone={5}";
     private static final String SCOPED_ENVIRONMENT_URL = "{0}/api/v2/environments?environmentclass={1}&page={2}&pr_page={3}";
     private final List<Mapper> mappers;
-    private final no.nav.freg.fasit.utils.RestConsumer consumer;
-    private final String fasitUrl;
+    private final RestConsumer consumer;
+
+    @Value("https://fasit.adeo.no/")
+    private String fasitUrl;
 
     @Override
     public String downloadFromUrl(String url, String fileName) throws IOException {

@@ -1,11 +1,7 @@
-package no.nav.freg.fasit.utils;
+package no.nav.identpool.fasit;
 
 import java.io.IOException;
 import java.util.List;
-
-import no.nav.identpool.fasit.FasitResource;
-import no.nav.identpool.fasit.ResourceType;
-import no.nav.identpool.fasit.Zone;
 
 public interface FasitService {
 

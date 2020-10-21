@@ -1,11 +1,7 @@
 package no.nav.identpool;
 
-import static no.nav.identpool.SecurityTestConfig.NAV_STS_ISSUER_URL;
-
 import java.net.URI;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import org.jose4j.jwt.JwtClaims;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +16,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import no.nav.freg.security.test.oidc.tools.JwtClaimsBuilder;
-import no.nav.freg.security.test.oidc.tools.OidcTestService;
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
@@ -42,8 +36,8 @@ public abstract class ComponentTestbase {
     @Autowired
     protected TestRestTemplate testRestTemplate;
 
-    @Autowired
-    private OidcTestService oidcTestService;
+//    @Autowired
+//    private OidcTestService oidcTestService;
 
     private HttpEntityBuilder httpEntityBuilder;
 
@@ -87,16 +81,16 @@ public abstract class ComponentTestbase {
         return testRestTemplate.exchange(uri, method, httpEntity, responseEntity);
     }
 
-    private JwtClaims getJwtClaims() {
-        return new JwtClaimsBuilder()
-                .subject("sub")
-                .audience("aud")
-                .expiry(LocalDateTime.now().plusMinutes(10))
-                .validFrom(LocalDateTime.now().minusMinutes(5))
-                .azp("azp")
-                .issuer(NAV_STS_ISSUER_URL)
-                .build();
-    }
+//    private JwtClaims getJwtClaims() {
+//        return new JwtClaimsBuilder()
+//                .subject("sub")
+//                .audience("aud")
+//                .expiry(LocalDateTime.now().plusMinutes(10))
+//                .validFrom(LocalDateTime.now().minusMinutes(5))
+//                .azp("azp")
+//                .issuer(NAV_STS_ISSUER_URL)
+//                .build();
+//    }
 
     private class HttpEntityBuilder {
         private Object body;
@@ -126,9 +120,9 @@ public abstract class ComponentTestbase {
                 httpHeaders.addAll(headers);
             }
 
-            if (addOidcToken) {
-                httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + oidcTestService.createOidc(getJwtClaims()));
-            }
+//            if (addOidcToken) {
+//                httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + oidcTestService.createOidc(getJwtClaims()));
+//            }
 
             if (body != null) {
                 return new HttpEntity<>(body, httpHeaders);

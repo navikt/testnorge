@@ -1,4 +1,4 @@
-package no.nav.freg.fasit.utils;
+package no.nav.identpool.fasit;
 
 public interface RestConsumer {
 
