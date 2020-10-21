@@ -6,13 +6,15 @@ import GjenopprettConnector from '~/components/bestilling/gjenopprett/Gjenoppret
 import SendOpenAmConnector from '~/components/bestilling/sendOpenAm/SendOpenAmConnector'
 
 import './Detaljer.less'
+import { MalModal } from '~/pages/minSide/maler/MalModal'
 
 export default function BestillingDetaljer({ bestilling, iLaastGruppe }) {
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
 	const [isOpenAmModalOpen, openOpenAmModal, closeOpenAmModal] = useBoolean(false)
+	const [isOpenMalModalOpen, openOpenMalModal, closeOpenMalModal] = useBoolean(false)
 
 	const alleredeSendtTilOpenAm = Boolean(bestilling.openamSent)
-
+	const alleredeMal = Boolean(bestilling.malBestillingNavn)
 	const harIdenterOpprettet = bestilling.antallIdenterOpprettet > 0
 
 	return (
@@ -32,6 +34,11 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe }) {
 							GJENOPPRETT
 						</Button>
 					)}
+					{!alleredeMal && (
+						<Button onClick={openOpenMalModal} kind={'maler'}>
+							OPPRETT NY MAL
+						</Button>
+					)}
 				</div>
 			)}
 
@@ -40,8 +47,10 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe }) {
 			)}
 
 			{isGjenopprettModalOpen && (
-				<GjenopprettConnector closeModal={closeGjenoprettModal} bestilling={bestilling} />
+				<GjenopprettConnector bestilling={bestilling} closeModal={closeGjenoprettModal} />
 			)}
+
+			{isOpenMalModalOpen && <MalModal id={bestilling.id} closeModal={closeOpenMalModal} />}
 		</div>
 	)
 }
