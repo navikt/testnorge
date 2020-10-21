@@ -1,10 +1,11 @@
 package no.nav.dolly.service;
 
 import static java.util.Collections.singletonList;
-import static java.util.Objects.nonNull;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class TpsfPersonCache {
 
     public TpsPerson fetchIfEmpty(TpsPerson tpsPerson) {
 
-        List<String> tpsfIdenter = new ArrayList<>();
+        Set<String> tpsfIdenter = new HashSet<>();
         Stream.of(singletonList(tpsPerson.getHovedperson()), tpsPerson.getPartnere(), tpsPerson.getBarn(), tpsPerson.getVerger())
                 .forEach(tpsfIdenter::addAll);
 
@@ -35,7 +36,7 @@ public class TpsfPersonCache {
                 .collect(Collectors.toList());
 
         if (!manglendeIdenter.isEmpty()) {
-            tpsPerson.getPersondetaljer().addAll(tpsfService.hentTestpersoner(tpsfIdenter));
+            tpsPerson.getPersondetaljer().addAll(tpsfService.hentTestpersoner(new ArrayList<>(tpsfIdenter)));
         }
 
         List<String> vergeIdenter = tpsPerson.getPersondetaljer().stream()

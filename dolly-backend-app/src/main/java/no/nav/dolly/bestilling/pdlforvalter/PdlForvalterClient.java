@@ -68,7 +68,6 @@ public class PdlForvalterClient implements ClientRegister {
     public static final String PDL_FORVALTER = "PdlForvalter";
 
     private static final String UKJENT = "U";
-    private static final String HENDELSE_ID = "hendelseId";
 
     private final PdlForvalterConsumer pdlForvalterConsumer;
     private final TpsfPersonCache tpsfPersonCache;
@@ -147,7 +146,9 @@ public class PdlForvalterClient implements ClientRegister {
                 }
             }
         }
-        tpsPerson.getPersondetaljer().forEach(person -> person.getRelasjoner().forEach(relasjon -> relasjon.setPersonRelasjonTil(tpsPerson.getPerson(relasjon.getPersonRelasjonMed().getIdent()))));
+        tpsPerson.getPersondetaljer()
+                .forEach(person -> person.getRelasjoner().forEach(relasjon ->
+                        relasjon.setPersonRelasjonTil(tpsPerson.getPerson(relasjon.getPersonRelasjonMed().getIdent()))));
     }
 
     private void sendPdlPersondetaljer(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, StringBuilder status, boolean isOpprettEndre) {
@@ -159,7 +160,7 @@ public class PdlForvalterClient implements ClientRegister {
                 sendOpprettPerson(person);
                 sendFoedselsmelding(person);
                 sendNavn(person);
-                sendKjoenn(person, isOpprettEndre, tpsPerson.getNyePartnereOgBarn());
+                sendKjoenn(person);
                 sendAdressebeskyttelse(person);
                 sendOppholdsadresse(person);
                 sendKontaktadresse(person);
@@ -213,10 +214,8 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void sendKjoenn(Person person, boolean isOpprettEndre, List<String> nyePartnereOgBarn) {
-        if (!isOpprettEndre || nyePartnereOgBarn.contains(person.getIdent())) {
-            pdlForvalterConsumer.postKjoenn(mapperFacade.map(person, PdlKjoenn.class), person.getIdent());
-        }
+    private void sendKjoenn(Person person) {
+        pdlForvalterConsumer.postKjoenn(mapperFacade.map(person, PdlKjoenn.class), person.getIdent());
     }
 
     private void sendAdressebeskyttelse(Person person) {
