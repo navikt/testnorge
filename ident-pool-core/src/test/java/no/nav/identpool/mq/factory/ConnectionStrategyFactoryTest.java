@@ -5,15 +5,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-import no.nav.identpool.test.mockito.MockitoExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 
-import no.nav.freg.fasit.utils.domain.QueueManager;
 import no.nav.identpool.fasit.FasitClient;
+import no.nav.identpool.fasit.QueueManager;
 import no.nav.identpool.mq.strategy.ConnectionStrategy;
+import no.nav.identpool.test.mockito.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class ConnectionStrategyFactoryTest {

@@ -7,8 +7,8 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.freg.fasit.utils.domain.QueueManager;
 import no.nav.identpool.fasit.FasitClient;
+import no.nav.identpool.fasit.QueueManager;
 import no.nav.identpool.mq.strategy.ConnectionStrategy;
 
 @Component

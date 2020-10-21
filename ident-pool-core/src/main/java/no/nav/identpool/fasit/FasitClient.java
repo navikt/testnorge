@@ -1,7 +1,7 @@
 package no.nav.identpool.fasit;
 
-import static no.nav.freg.fasit.utils.domain.ResourceType.QUEUE_MANAGER;
-import static no.nav.freg.fasit.utils.domain.Zone.FSS;
+import static no.nav.identpool.fasit.ResourceType.QUEUE_MANAGER;
+import static no.nav.identpool.fasit.Zone.FSS;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.freg.fasit.utils.FasitService;
-import no.nav.freg.fasit.utils.domain.QueueManager;
 
 @Component
 @RequiredArgsConstructor

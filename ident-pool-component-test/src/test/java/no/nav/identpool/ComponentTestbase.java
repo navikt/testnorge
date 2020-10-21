@@ -5,12 +5,6 @@ import static no.nav.identpool.SecurityTestConfig.NAV_STS_ISSUER_URL;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import no.nav.identpool.domain.Identtype;
-import no.nav.identpool.domain.Kjoenn;
-import no.nav.identpool.domain.Rekvireringsstatus;
-import no.nav.identpool.domain.Ident;
-import no.nav.identpool.rs.v1.support.IdentRequest;
 import org.jose4j.jwt.JwtClaims;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +22,12 @@ import org.springframework.util.MultiValueMap;
 
 import no.nav.freg.security.test.oidc.tools.JwtClaimsBuilder;
 import no.nav.freg.security.test.oidc.tools.OidcTestService;
+import no.nav.identpool.domain.Ident;
+import no.nav.identpool.domain.Identtype;
+import no.nav.identpool.domain.Kjoenn;
+import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.repository.IdentRepository;
+import no.nav.identpool.rs.v1.support.IdentRequest;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)

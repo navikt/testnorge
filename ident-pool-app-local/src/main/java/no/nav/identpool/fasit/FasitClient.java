@@ -1,8 +1,8 @@
 package no.nav.identpool.fasit;
 
-import static no.nav.freg.fasit.utils.domain.ResourceType.BASE_URL;
-import static no.nav.freg.fasit.utils.domain.ResourceType.REST_SERVICE;
-import static no.nav.freg.fasit.utils.domain.Zone.FSS;
+import static no.nav.identpool.fasit.ResourceType.BASE_URL;
+import static no.nav.identpool.fasit.ResourceType.REST_SERVICE;
+import static no.nav.identpool.fasit.Zone.FSS;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,8 +12,6 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.freg.fasit.utils.FasitService;
-import no.nav.freg.fasit.utils.domain.BaseUrl;
-import no.nav.freg.fasit.utils.domain.RestService;
 
 @Component
 @Profile("fasit")

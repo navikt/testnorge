@@ -7,11 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-
-import no.nav.identpool.ComponentTestbase;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
+
+import no.nav.identpool.ComponentTestbase;
 import no.nav.identpool.domain.Navn;
 
 class FiktiveNavnComponentTest extends ComponentTestbase {

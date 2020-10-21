@@ -9,8 +9,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
-
-import no.nav.identpool.test.mockito.MockitoExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,9 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import no.nav.freg.fasit.utils.FasitService;
-import no.nav.freg.fasit.utils.domain.QueueManager;
-import no.nav.freg.fasit.utils.domain.ResourceType;
-import no.nav.freg.fasit.utils.domain.Zone;
+import no.nav.identpool.test.mockito.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Tester kobling mot Fasit")

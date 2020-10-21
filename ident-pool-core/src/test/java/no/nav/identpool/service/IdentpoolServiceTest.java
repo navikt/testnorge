@@ -1,23 +1,14 @@
 package no.nav.identpool.service;
 
-import static no.nav.identpool.domain.Rekvireringsstatus.I_BRUK;
 import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import jdk.nashorn.internal.ir.annotations.Ignore;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,6 +17,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
@@ -35,7 +30,8 @@ import no.nav.identpool.domain.TpsStatus;
 import no.nav.identpool.repository.IdentRepository;
 import no.nav.identpool.test.mockito.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class) class IdentpoolServiceTest {
+@ExtendWith(MockitoExtension.class)
+class IdentpoolServiceTest {
 
     @Mock
     private IdentRepository repository;

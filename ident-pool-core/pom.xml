@@ -54,20 +54,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc6</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.ibm</groupId>
-            <artifactId>mqjms</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.ibm.mq</groupId>
-            <artifactId>jmqi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.ibm.disthub2</groupId>
-            <artifactId>dhbcore</artifactId>
+            <artifactId>com.ibm.mq.allclient</artifactId>
         </dependency>
 
         <dependency>
@@ -83,10 +71,6 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.freg</groupId>
-            <artifactId>fasit-util</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -128,7 +112,7 @@
         <dependency>
             <groupId>no.nav.repository.fellesreg.tpsws</groupId>
             <artifactId>nav-repository-fellesregister-jaxb-tps-m201-domain</artifactId>
-            <version>${tpsws-domain.version}</version>
+            <version>${tps.interface.library.version}</version>
         </dependency>
 
         <dependency>
