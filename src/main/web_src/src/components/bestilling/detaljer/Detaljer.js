@@ -36,7 +36,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe }) {
 					)}
 					{!alleredeMal && (
 						<Button onClick={openOpenMalModal} kind={'maler'}>
-							LAG NY MAL
+							OPPRETT NY MAL
 						</Button>
 					)}
 				</div>
