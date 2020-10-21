@@ -1,17 +1,18 @@
 package no.nav.registre.testnorge.personexportapi.consumer;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.reactive.function.client.WebClient;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.personexportapi.consumer.command.GetTpsfGrupperCommand;
 import no.nav.registre.testnorge.personexportapi.consumer.command.GetTpsfMeldingerFromPageCommand;
@@ -39,14 +40,13 @@ public class TpsfConsumer {
         this.executorService = Executors.newFixedThreadPool(threads);
     }
 
-
     private GruppeDTO getGruppe(String avspillingsgruppe) {
         log.info("Henter avspillingsgruppe med id {}...", avspillingsgruppe);
         List<GruppeDTO> list = new GetTpsfGrupperCommand(webClient, username, password).call();
         GruppeDTO gruppeDTO = list.stream()
                 .filter(value -> value.getId().equals(avspillingsgruppe))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Finner ikke gruppe med avspillergruppeId " + avspillingsgruppe));
+                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND, "Finner ikke gruppe med avspillergruppeId " + avspillingsgruppe));
         log.info("Avspillingsgruppe med id {} og navn {} hentet.", gruppeDTO.getId(), gruppeDTO.getNavn());
         return gruppeDTO;
     }
@@ -85,7 +85,7 @@ public class TpsfConsumer {
                 personer.addAll(future.get());
             } catch (Exception e) {
                 executorService.shutdown();
-                throw new RuntimeException("Klare ikke a hente ut alle personer.", e);
+                throw new RuntimeException("Klarer ikke aa hente ut alle personer.", e);
             }
         }
         return personer;

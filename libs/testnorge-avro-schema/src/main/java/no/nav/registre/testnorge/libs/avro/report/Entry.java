@@ -71,9 +71,9 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
     return DECODER.decode(b);
   }
 
-   private java.lang.CharSequence status;
-   private java.lang.CharSequence description;
-   private java.lang.CharSequence time;
+  @Deprecated public java.lang.CharSequence status;
+  @Deprecated public java.lang.CharSequence description;
+  @Deprecated public java.lang.CharSequence time;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -102,7 +102,7 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
     case 0: return status;
     case 1: return description;
     case 2: return time;
-    default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
+    default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
 
@@ -113,7 +113,7 @@ public class Entry extends org.apache.avro.specific.SpecificRecordBase implement
     case 0: status = (java.lang.CharSequence)value$; break;
     case 1: description = (java.lang.CharSequence)value$; break;
     case 2: time = (java.lang.CharSequence)value$; break;
-    default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
+    default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
 

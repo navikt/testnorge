@@ -12,6 +12,8 @@ consumers:
     token: ${SLACK_TOKEN}
     channel: ${SLACK_CHANNEL}
     baseUrl: https://slack.com
+  kodeverk:
+    url: https://kodeverk.dev.adeo.no
 
 spring:
   application:

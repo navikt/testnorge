@@ -62,9 +62,9 @@ public class OrkestreringsController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping(value = "/ereg/{miljoe}/update/{orgnr}")
-    public ResponseEntity<HttpStatus> updateEreg(@PathVariable String miljoe, @PathVariable("orgnr") String orgnr) {
-        environmentInitializationService.updateEregByOrgnr(miljoe, orgnr);
+    @PostMapping(value = "/ereg/{miljoe}/update/{regnr}")
+    public ResponseEntity<HttpStatus> updateEreg(@PathVariable String miljoe, @PathVariable("regnr") String regnr) {
+        environmentInitializationService.updateEregByOrgnr(miljoe, regnr);
         return ResponseEntity.ok().build();
     }
 

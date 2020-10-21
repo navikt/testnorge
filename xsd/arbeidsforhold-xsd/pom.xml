@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>xsd</artifactId>
+        <groupId>no.nav.registre.testnorge.xsd</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>arbeidsforhold-xsd</artifactId>
+    <properties>
+        <cxf-xjc.version>3.3.1</cxf-xjc.version>
+        <jaxb2-rich-contract.version>2.0.1</jaxb2-rich-contract.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>arbeidsforhold-xsd</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-xjc-plugin</artifactId>
+                <version>${cxf-xjc.version}</version>
+                <configuration>
+                    <extensions>
+                        <extension>net.codesup.util:jaxb2-rich-contract-plugin:${jaxb2-rich-contract.version}</extension>
+                    </extensions>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>xjc</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>xsdtojava</goal>
+                        </goals>
+                        <configuration>
+                            <xsdOptions>
+                                <xsdOption>
+                                    <xsd>${basedir}/src/main/xsd/a-arbeidsforhold_v2_1.xsd</xsd>
+                                    <packagename>no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1</packagename>
+                                    <extensionArgs>
+                                        <extensionArg>-Xfluent-builder</extensionArg>
+                                        <extensionArg>-Ximmutable</extensionArg>
+                                    </extensionArgs>
+                                </xsdOption>
+                                <xsdOption>
+                                    <xsd>${basedir}/src/main/xsd/a-arbeidsforhold_v2_0.xsd</xsd>
+                                    <packagename>no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0</packagename>
+                                    <extensionArgs>
+                                        <extensionArg>-Xfluent-builder</extensionArg>
+                                        <extensionArg>-Ximmutable</extensionArg>
+                                    </extensionArgs>
+                                </xsdOption>
+                            </xsdOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

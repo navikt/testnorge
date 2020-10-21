@@ -64,6 +64,11 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <artifactId>arbeidsforhold-xsd</artifactId>
+                <groupId>no.nav.registre.testnorge.xsd</groupId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <artifactId>testnorge-testing</artifactId>
                 <groupId>no.nav.registre.testnorge.libs</groupId>
                 <version>${project.version}</version>
@@ -116,6 +121,9 @@
         <module>varslinger-api</module>
         <module>tilbakemelding-api</module>
         <module>person-export-api</module>
+        <module>mn-organisasjon-api</module>
+        <module>mn-original-populasjon</module>
+        <module>arbeidsforhold-export-api</module>
     </modules>
 
     <build>

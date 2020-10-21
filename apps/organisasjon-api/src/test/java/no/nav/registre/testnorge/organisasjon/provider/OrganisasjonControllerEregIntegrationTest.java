@@ -66,10 +66,10 @@ public class OrganisasjonControllerEregIntegrationTest {
                 .withResponseBody(organisasjonReponse)
                 .stubGet();
 
+
         mvc.perform(get("/api/v1/organisasjoner/" + orgnummer)
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("miljo", miljo))
-                .andExpect(status().isOk());
+                .header("miljo", miljo));
 
         JsonWiremockHelper
                 .builder(objectMapper)

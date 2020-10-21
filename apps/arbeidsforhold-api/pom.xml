@@ -13,6 +13,10 @@
 
     <dependencies>
         <dependency>
+            <artifactId>arbeidsforhold-xsd</artifactId>
+            <groupId>no.nav.registre.testnorge.xsd</groupId>
+        </dependency>
+        <dependency>
             <artifactId>testnorge-core</artifactId>
             <groupId>no.nav.registre.testnorge.libs</groupId>
         </dependency>
