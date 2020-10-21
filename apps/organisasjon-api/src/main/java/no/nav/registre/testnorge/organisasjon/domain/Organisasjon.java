@@ -1,15 +1,25 @@
 package no.nav.registre.testnorge.organisasjon.domain;
 
+import lombok.Value;
+import org.apache.logging.log4j.util.Strings;
+
+import java.util.Collections;
+import java.util.HashMap;
+
+import no.nav.registre.testnorge.libs.dto.eregmapper.v1.EregMapperDTO;
+import no.nav.registre.testnorge.libs.dto.eregmapper.v1.NavnDTO;
 import no.nav.registre.testnorge.organisasjon.consumer.dto.OrganisasjonDTO;
 
+
+@Value
 public class Organisasjon {
-    private final String orgnummer;
-    private final String enhetType;
-    private final String navn;
-    private final String juridiskEnhet;
-    private final Adresse postadresse;
-    private final Adresse forretningsadresser;
-    private final String redigertnavn;
+    String orgnummer;
+    String enhetType;
+    String navn;
+    String juridiskEnhet;
+    Adresse postadresse;
+    Adresse forretningsadresser;
+    String redigertnavn;
 
     public Organisasjon(OrganisasjonDTO dto) {
 
@@ -38,7 +48,25 @@ public class Organisasjon {
         }
     }
 
-    public no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO toDTO(){
+    public Organisasjon(no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO dto) {
+        orgnummer = dto.getOrgnummer();
+        enhetType = dto.getEnhetType();
+        navn = dto.getNavn();
+        juridiskEnhet = dto.getJuridiskEnhet();
+        if (dto.getPostadresse() != null) {
+            postadresse = new Adresse(dto.getPostadresse());
+        } else {
+            postadresse = null;
+        }
+        if (dto.getForretningsadresser() != null) {
+            forretningsadresser = new Adresse(dto.getForretningsadresser());
+        } else {
+            forretningsadresser = null;
+        }
+        redigertnavn = dto.getRedigertnavn();
+    }
+
+    public no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO toDTO() {
         return no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO.builder()
                 .navn(navn)
                 .enhetType(enhetType)
@@ -47,6 +75,34 @@ public class Organisasjon {
                 .postadresse(postadresse != null ? postadresse.toDTO() : null)
                 .forretningsadresser(forretningsadresser != null ? forretningsadresser.toDTO() : null)
                 .redigertnavn(redigertnavn)
+                .build();
+    }
+
+    public EregMapperDTO toEregMapperDTO(boolean update) {
+        var builder = EregMapperDTO.builder();
+
+        if (Strings.isNotBlank(navn)) {
+            builder.navn(NavnDTO.builder()
+                    .redNavn(redigertnavn)
+                    .navneListe(Collections.singletonList(navn))
+                    .build()
+            );
+        }
+
+        if (juridiskEnhet != null) {
+            String type = new StringBuilder("    NSSY").replace(0, enhetType.length(), enhetType).toString();
+            builder.knytninger(Collections.singletonList(new HashMap<>() {{
+                put("orgnr", juridiskEnhet);
+                put("type", type);
+            }}));
+        }
+
+        return builder
+                .endringsType(update ? "E" : "N")
+                .enhetstype(enhetType)
+                .orgnr(orgnummer)
+                .forretningsAdresse(forretningsadresser != null ? forretningsadresser.toAdresseDTO() : null)
+                .adresse(postadresse != null ? postadresse.toAdresseDTO() : null)
                 .build();
     }
 }

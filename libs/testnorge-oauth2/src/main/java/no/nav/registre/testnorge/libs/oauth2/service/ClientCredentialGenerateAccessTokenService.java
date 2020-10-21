@@ -52,6 +52,11 @@ public class ClientCredentialGenerateAccessTokenService {
         this.webClient = builder.build();
     }
 
+
+    public AccessToken generateToken(ClientCredential remoteClientCredential) {
+        return generateToken(remoteClientCredential, new AccessScopes("api://" + remoteClientCredential.getClientId() + "/.default"));
+    }
+
     public AccessToken generateToken(ClientCredential remoteClientCredential, AccessScopes accessScopes) {
         if (!tokenResolver.isClientCredentials()) {
             throw new BadCredentialsException("Kan ikke gjennomfore OnBehalfOf-flow fra Client Credentials.");
