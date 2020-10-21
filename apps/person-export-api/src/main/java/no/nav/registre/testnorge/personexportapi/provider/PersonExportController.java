@@ -34,7 +34,7 @@ public class PersonExportController {
     public void exportHelsenettFormat(@PathVariable("avspillingsgruppe") String avspillingsgruppe) throws IOException {
 
         List<Person> personer = consumer.getPersoner(avspillingsgruppe);
-        log.info("Eksporterer {} personer til csv.", personer.size());
+        log.info("Eksporterer {} personer til csv til Slack", personer.size());
 
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         PrintWriter pw = new PrintWriter(byteStream);
@@ -45,6 +45,7 @@ public class PersonExportController {
                 "testnorge-personer-nhn-" + LocalDateTime.now().toString() + ".csv"
         );
 
+        log.info("Eksporterer {} personer til csv til http response", personer.size());
         response.setContentType("text/csv");
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setHeader(

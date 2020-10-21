@@ -1,5 +1,7 @@
 package no.nav.registre.testnorge.personexportapi.consumer;
 
+import static java.lang.String.format;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -66,7 +68,7 @@ public class TpsfConsumer {
             return meldinger
                     .stream()
                     .filter(value -> value.isFoedsel() || value.isInnvandring())
-                    .map(Person::new)
+                    .map(endringsmelding -> new Person(endringsmelding, format("%d/%d",page+1,numberOfPages)))
                     .collect(Collectors.toList());
         });
     }
