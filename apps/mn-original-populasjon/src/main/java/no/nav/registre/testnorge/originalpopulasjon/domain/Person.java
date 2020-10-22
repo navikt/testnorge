@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Value;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
 
@@ -19,15 +20,7 @@ public class Person {
     String mellomnavn;
     String etternavn;
     Adresse adresse;
-
-    public Person(PersonDTO dto) {
-        ident = dto.getIdent();
-        foedselsdato = dto.getFoedselsdato();
-        fornavn = dto.getFornavn();
-        mellomnavn = dto.getMellomnavn();
-        etternavn = dto.getEtternavn();
-        adresse = dto.getAdresse() != null ? new Adresse(dto.getAdresse()) : null;
-    }
+    Set<String> tags;
 
     public PersonDTO toDTO() {
         return PersonDTO.builder()
@@ -37,6 +30,7 @@ public class Person {
                 .mellomnavn(mellomnavn)
                 .etternavn(etternavn)
                 .adresse(adresse != null ? adresse.toDto() : null)
+                .tags(tags)
                 .build();
     }
 }
