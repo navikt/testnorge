@@ -35,8 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
-@AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
+@AutoConfigureMockMvc(addFilters = false)
 public class ArbeidsforholdControllerIntegrationTest {
 
     @Autowired
