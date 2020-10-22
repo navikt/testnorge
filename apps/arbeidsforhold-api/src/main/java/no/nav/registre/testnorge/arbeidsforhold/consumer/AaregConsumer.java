@@ -38,22 +38,22 @@ public class AaregConsumer {
         this.executorService = Executors.newFixedThreadPool(7);
     }
 
-    private CompletableFuture<Arbeidsforhold> getArbeidsforhold(Integer navArbeidsforholdId) {
+    private CompletableFuture<Arbeidsforhold> getArbeidsforhold(Integer navArbeidsforholdId, String miljo) {
         return CompletableFuture.supplyAsync(
-                () -> new GetArbeidsforholdCommand(restTemplate, url, tokenService.getToken(), navArbeidsforholdId).call(),
+                () -> new GetArbeidsforholdCommand(restTemplate, url, tokenService.getToken(), navArbeidsforholdId, miljo).call(),
                 executorService
         );
     }
 
 
-    public List<Arbeidsforhold> getArbeidsforholdByArbeidsgiver(String orgummer) {
+    public List<Arbeidsforhold> getArbeidsforholdByArbeidsgiver(String orgummer, String miljo) {
         log.info("Henter alle arbeidsforhold for arbeidsgiver {}...", orgummer);
         ArbeidsforholdoversikterDTO arbeidsforholdoversikter =
-                new GetArbeidsforholdoversikterCommand(restTemplate, url, tokenService.getToken(), orgummer).call();
+                new GetArbeidsforholdoversikterCommand(restTemplate, url, tokenService.getToken(), orgummer, miljo).call();
 
         var futures = arbeidsforholdoversikter.getArbeidsforholdoversikter()
                 .stream()
-                .map(value -> getArbeidsforhold(value.getNavArbeidsforholdId()))
+                .map(value -> getArbeidsforhold(value.getNavArbeidsforholdId(), miljo))
                 .collect(Collectors.toList());
 
         List<Arbeidsforhold> arbeidsforholds = new ArrayList<>();

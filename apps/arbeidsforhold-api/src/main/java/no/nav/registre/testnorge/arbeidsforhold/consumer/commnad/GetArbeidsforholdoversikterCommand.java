@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriTemplate;
 
 import java.net.URI;
 import java.util.concurrent.Callable;
@@ -21,12 +22,13 @@ public class GetArbeidsforholdoversikterCommand implements Callable<Arbeidsforho
     private final String url;
     private final String token;
     private final String orgnummer;
+    private final String miljo;
 
     @SneakyThrows
     @Override
     public ArbeidsforholdoversikterDTO call() {
         RequestEntity<Void> request = RequestEntity
-                .get(new URI(url + "/v1/arbeidsgiver/arbeidsforholdoversikt"))
+                .get(new UriTemplate(url + "/v1/arbeidsgiver/arbeidsforholdoversikt").expand(miljo))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(AaregHeaders.NAV_CONSUMER_TOKEN, "Bearer " + token)
                 .header(AaregHeaders.NAV_ARBEIDSGIVERIDENT, orgnummer)

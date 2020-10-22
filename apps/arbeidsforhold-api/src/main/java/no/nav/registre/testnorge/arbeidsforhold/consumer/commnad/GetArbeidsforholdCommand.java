@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriTemplate;
 
 import java.net.URI;
 import java.util.concurrent.Callable;
@@ -22,13 +23,14 @@ public class GetArbeidsforholdCommand implements Callable<Arbeidsforhold> {
     private final String url;
     private final String token;
     private final Integer navArbeidsforholdId;
+    private final String miljo;
 
     @SneakyThrows
     @Override
     public Arbeidsforhold call() {
         log.info("Henter arbeidsforhold for navArbeidsforholdId {}...", navArbeidsforholdId);
         RequestEntity<Void> request = RequestEntity
-                .get(new URI(url + "/v1/arbeidstaker/" + navArbeidsforholdId))
+                .get(new UriTemplate(url + "/v1/arbeidstaker/" + navArbeidsforholdId).expand(miljo))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(AaregHeaders.NAV_CONSUMER_TOKEN, "Bearer " + token)
                 .build();

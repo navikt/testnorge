@@ -24,7 +24,7 @@ public class OpplysningspliktigSerivce {
                 .stream()
                 .collect(Collectors.toMap(
                         orgnummer -> orgnummer,
-                        aaregConsumer::getArbeidsforholdByArbeidsgiver
+                        orgnummer -> aaregConsumer.getArbeidsforholdByArbeidsgiver(orgnummer, miljo)
                 ));
         return new Opplysningspliktig(opplysningspliktig, map);
     }

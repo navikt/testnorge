@@ -15,7 +15,7 @@ spring:
           accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
 
 aareg:
-  url: https://modapp-q2.adeo.no/aareg-services/api
+  url: https://modapp-{miljo}.adeo.no/aareg-services/api
 
 kafka:
   bootstrapservers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443

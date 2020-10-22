@@ -1,6 +1,5 @@
 package no.nav.registre.testnorge.arbeidsforhold.consumer.commnad;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -8,8 +7,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriTemplate;
 
-import java.net.URI;
 import java.util.concurrent.Callable;
 
 import no.nav.registre.testnorge.arbeidsforhold.consumer.dto.ArbeidsforholdDTO;
@@ -27,7 +26,7 @@ public class CreateArbeidsforholdCommand implements Callable<Arbeidsforhold> {
     @Override
     public Arbeidsforhold call() {
         RequestEntity<ArbeidsforholdDTO> request = RequestEntity
-                .post(new URI(url + "/v1/arbeidsforhold"))
+                .post(new UriTemplate(url + "/v1/arbeidsforhold").expand("q2"))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(AaregHeaders.NAV_CONSUMER_TOKEN, "Bearer " + token)
                 .header(AaregHeaders.NAV_ARBEIDSFORHOLD_KILDEREFERANSE, "testnorge")
