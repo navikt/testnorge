@@ -5,16 +5,12 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import java.time.LocalDate;
+import java.util.List;
 
 @Value
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class ArbeidsavtaleDTO {
-    Float stillingsprosent;
-    String yrke;
-    String arbeidstidsordning;
-    Float antallTimerPrUke;
-    LocalDate sistLoennsendring;
+public class ArbeidsforholdoversikterDTO {
+    List<ArbeidsforholdoversiktDTO> arbeidsforholdoversikter;
 }

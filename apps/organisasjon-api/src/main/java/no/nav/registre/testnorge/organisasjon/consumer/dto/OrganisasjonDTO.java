@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,6 +19,7 @@ import java.util.List;
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
+@ToString
 public class OrganisasjonDTO {
     @JsonProperty(required = true)
     private final String organisasjonsnummer;

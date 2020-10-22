@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -19,7 +21,7 @@ public class OrganisasjonDTO {
     private final AdresseDTO postadresse;
     private final AdresseDTO forretningsadresser;
     private final String redigertnavn;
-
+    private final List<String> driverVirksomheter;
 
     public OrganisasjonDTO(OrganisasjonDTO dto) {
         this.orgnummer = dto.getOrgnummer();
@@ -29,5 +31,6 @@ public class OrganisasjonDTO {
         this.postadresse = dto.getPostadresse();
         this.forretningsadresser = dto.getForretningsadresser();
         this.redigertnavn = dto.getRedigertnavn();
+        this.driverVirksomheter = dto.getDriverVirksomheter();
     }
 }
