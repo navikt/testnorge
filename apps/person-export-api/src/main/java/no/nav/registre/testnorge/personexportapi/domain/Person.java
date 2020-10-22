@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.personexportapi.domain;
 
 import static java.lang.Integer.parseInt;
+import static java.lang.String.format;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 import java.time.LocalDate;
@@ -14,9 +15,15 @@ import no.nav.registre.testnorge.personexportapi.consumer.dto.LandkodeEncoder;
 public class Person {
 
     private final EndringsmeldingDTO endringsmeldingDTO;
+    private final String page;
 
-    public Person(EndringsmeldingDTO endringsmeldingDTO) {
+    public Person(EndringsmeldingDTO endringsmeldingDTO, String page) {
         this.endringsmeldingDTO = endringsmeldingDTO;
+        this.page = page;
+    }
+
+    public String getPage() {
+        return page;
     }
 
     public String getIdent() {
@@ -46,11 +53,11 @@ public class Person {
     }
 
     public String getGatenavn() {
-        return endringsmeldingDTO.isGateadresse() ? endringsmeldingDTO.getGateGaard() : null;
+        return endringsmeldingDTO.isGateadresse() ? endringsmeldingDTO.getAdressenavn() : null;
     }
 
     public String getGaardsnavn() {
-        return endringsmeldingDTO.isMatrikkeladresse() ? endringsmeldingDTO.getGateGaard() : null;
+        return endringsmeldingDTO.isMatrikkeladresse() ? endringsmeldingDTO.getAdressenavn() : null;
     }
 
     public String getHusnr() {
@@ -118,5 +125,10 @@ public class Person {
     @JsonIgnore
     public boolean isFnr() {
         return parseInt(Character.toString(endringsmeldingDTO.getFodselsdato().charAt(0))) < 4;
+    }
+
+    @Override
+    public String toString() {
+        return format("Page: %s fnr: %s", getPage(), getIdent());
     }
 }
