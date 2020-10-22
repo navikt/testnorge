@@ -47,7 +47,7 @@ public class PersonExportController {
                 "testnorge-personer-nhn-" + LocalDateTime.now().toString() + ".csv"
         );
 
-        log.info("Eksporterer {} personer til csv til http response", personer.size());
+        log.info("Eksporterer {} personer til http response", personer.size());
         response.setContentType("text/csv");
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setHeader(
