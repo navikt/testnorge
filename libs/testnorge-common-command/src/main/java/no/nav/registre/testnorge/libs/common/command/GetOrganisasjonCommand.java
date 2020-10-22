@@ -25,7 +25,6 @@ public class GetOrganisasjonCommand implements Callable<OrganisasjonDTO> {
     @Override
     public OrganisasjonDTO call() {
         log.info("Henter organiasjon med orgnummer {}.", orgnummer);
-
         try {
             return webClient
                     .get()

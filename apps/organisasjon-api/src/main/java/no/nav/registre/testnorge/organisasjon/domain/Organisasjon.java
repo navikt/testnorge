@@ -38,6 +38,8 @@ public class Organisasjon {
                 ? dto.getChildren().stream().map(OrganisasjonDTO::getOrganisasjonsnummer).collect(Collectors.toList())
                 : Collections.emptyList();
 
+        log.info("Antall virksomhetner {}", driverVirksomheter.size());
+
         if (dto.getOrganisasjonDetaljer() != null) {
             var postadresser = dto.getOrganisasjonDetaljer().getPostadresser();
             if (postadresser != null && !postadresser.isEmpty()) {
