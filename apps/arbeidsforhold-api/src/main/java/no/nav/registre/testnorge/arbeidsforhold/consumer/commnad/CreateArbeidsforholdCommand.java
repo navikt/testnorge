@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
@@ -25,6 +26,7 @@ public class CreateArbeidsforholdCommand implements Callable<Arbeidsforhold> {
     @SneakyThrows
     @Override
     public Arbeidsforhold call() {
+
         RequestEntity<ArbeidsforholdDTO> request = RequestEntity
                 .post(new UriTemplate(url + "/v1/arbeidsforhold").expand("q2"))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)

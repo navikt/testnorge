@@ -6,11 +6,10 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.net.URI;
 import java.util.concurrent.Callable;
 
 import no.nav.registre.testnorge.arbeidsforhold.consumer.dto.ArbeidsforholdDTO;
@@ -28,21 +27,22 @@ public class GetArbeidsforholdCommand implements Callable<Arbeidsforhold> {
     @SneakyThrows
     @Override
     public Arbeidsforhold call() {
-        log.info("Henter arbeidsforhold for navArbeidsforholdId {}...", navArbeidsforholdId);
-        RequestEntity<Void> request = RequestEntity
-                .get(new UriTemplate(url + "/v1/arbeidsforhold/" + navArbeidsforholdId).expand(miljo))
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(AaregHeaders.NAV_CONSUMER_TOKEN, "Bearer " + token)
-                .build();
 
-        ResponseEntity<ArbeidsforholdDTO> response = restTemplate.exchange(request, ArbeidsforholdDTO.class);
-        if (!response.getStatusCode().is2xxSuccessful() || !response.hasBody() || response.getBody() == null) {
-            throw new RuntimeException(
-                    "Klarer ikke å hente arbeidsforhold for " + navArbeidsforholdId + ". Response code: " + response.getStatusCodeValue()
-            );
+        try {
+            log.trace("Henter arbeidsforhold for navArbeidsforholdId {}...", navArbeidsforholdId);
+            RequestEntity<Void> request = RequestEntity
+                    .get(new UriTemplate(url + "/v1/arbeidsforhold/" + navArbeidsforholdId).expand(miljo))
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .header(AaregHeaders.NAV_CONSUMER_TOKEN, "Bearer " + token)
+                    .build();
+
+            var response = restTemplate.exchange(request, ArbeidsforholdDTO.class);
+
+            log.trace("Hentet arbeidsforhold for navArbeidsforholdId {}.", navArbeidsforholdId);
+            return new Arbeidsforhold(response.getBody());
+        } catch (HttpClientErrorException.NotFound e) {
+            log.warn("Fant ikke arbeidsforhold for navArbeidsforholdId {} i miljo {}", navArbeidsforholdId, miljo);
+            return null;
         }
-
-        log.info("Hentet arbeidsforhold for navArbeidsforholdId {}.", navArbeidsforholdId);
-        return new Arbeidsforhold(response.getBody());
     }
 }

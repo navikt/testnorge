@@ -35,7 +35,7 @@ public class AaregConsumer {
         this.tokenService = tokenService;
         this.restTemplate = restTemplateBuilder.build();
         this.url = url;
-        this.executorService = Executors.newFixedThreadPool(7);
+        this.executorService = Executors.newFixedThreadPool(4);
     }
 
     private CompletableFuture<Arbeidsforhold> getArbeidsforhold(Integer navArbeidsforholdId, String miljo) {
@@ -57,9 +57,10 @@ public class AaregConsumer {
                 .collect(Collectors.toList());
 
         List<Arbeidsforhold> arbeidsforholds = new ArrayList<>();
-        for (var future : futures) {
+        for (int index = 0; index < futures.size(); index++) {
             try {
-                arbeidsforholds.add(future.get());
+                arbeidsforholds.add(futures.get(index).get());
+                log.info("Hentet antall arbeisforhold {}/{}", index, futures.size());
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException("Klarer ikke a hente ut arbeidsforhold", e);
             }
