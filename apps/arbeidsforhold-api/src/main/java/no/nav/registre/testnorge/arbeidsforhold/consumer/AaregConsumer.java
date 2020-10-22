@@ -35,7 +35,7 @@ public class AaregConsumer {
         this.tokenService = tokenService;
         this.restTemplate = restTemplateBuilder.build();
         this.url = url;
-        this.executorService = Executors.newFixedThreadPool(4);
+        this.executorService = Executors.newFixedThreadPool(5);
     }
 
     private CompletableFuture<Arbeidsforhold> getArbeidsforhold(Integer navArbeidsforholdId, String miljo) {
