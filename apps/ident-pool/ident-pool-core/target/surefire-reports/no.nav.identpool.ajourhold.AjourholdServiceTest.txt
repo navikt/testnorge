@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: no.nav.identpool.ajourhold.AjourholdServiceTest
+-------------------------------------------------------------------------------
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.982 s - in no.nav.identpool.ajourhold.AjourholdServiceTest
