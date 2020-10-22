@@ -10,11 +10,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import org.junit.After;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -57,6 +59,7 @@ public class StaticDataControllerV2EregIntegrationTest {
     private GruppeRepository gruppeRepository;
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void should_not_have_arbeidsforhold() throws Exception {
         EregModel as = createEregModel("999999999", "AS");
         EregModel ans = createEregModel("888888888", "ANS");
@@ -78,6 +81,7 @@ public class StaticDataControllerV2EregIntegrationTest {
 
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void should_have_arbeidsforhold() throws Exception {
         EregModel aafy = createEregModel("999999999", "AAFY");
         EregModel bedr = createEregModel("888888888", "BEDR");
@@ -98,6 +102,7 @@ public class StaticDataControllerV2EregIntegrationTest {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void should_only_get_EREGS() throws Exception {
         EregModel as = createEregModel("999999999", "AS");
         EregModel bedr = createEregModel("888888888", "BEDR");
@@ -124,6 +129,7 @@ public class StaticDataControllerV2EregIntegrationTest {
 
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldGetEregsWithOpprinnelse() throws Exception {
         OpprinnelseModel altinn = opprinnelseRepository.save(new OpprinnelseModel("Altinn"));
         EregModel model = createEregModel("123456789", "BEDR", altinn);
@@ -142,6 +148,7 @@ public class StaticDataControllerV2EregIntegrationTest {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldAddEregSetToDatabase() throws Exception {
         Ereg ereg = createEreg("987654321", "BEDR");
         mvc.perform(post(EREG_API)
@@ -159,6 +166,7 @@ public class StaticDataControllerV2EregIntegrationTest {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldGetEregWithGruppe() throws Exception {
         GruppeModel gruppeModel = gruppeRepository.save(new GruppeModel(
                 null,
@@ -181,6 +189,7 @@ public class StaticDataControllerV2EregIntegrationTest {
 
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldOnlyGetEregWithGruppe() throws Exception {
         GruppeModel gruppeModel = gruppeRepository.save(new GruppeModel(
                 null,
@@ -207,6 +216,7 @@ public class StaticDataControllerV2EregIntegrationTest {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldAddEregWithGrouppe() throws Exception {
         GruppeModel gruppeModel = gruppeRepository.save(new GruppeModel(
                 null,
@@ -228,6 +238,7 @@ public class StaticDataControllerV2EregIntegrationTest {
 
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldAddOpprinnelseToDatabase() throws Exception {
         Opprinnelse altinn = new Opprinnelse("Altinn");
         Ereg ereg_123456789 = createEreg("123456789", "BEDR", altinn.getNavn());
@@ -247,7 +258,7 @@ public class StaticDataControllerV2EregIntegrationTest {
         return new EregListe(Arrays.asList(eregs));
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         eregRepository.deleteAll();
         gruppeRepository.deleteAll();
