@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.core.util.IdentUtil;
@@ -20,6 +21,8 @@ import no.nav.registre.testnorge.originalpopulasjon.domain.Person;
 @Service
 @RequiredArgsConstructor
 public class PopulasjonService {
+
+    private static final Set<String> TAGS = Set.of("Mini-Norge");
 
     private final StatistikkService statistikkService;
     private final SyntPersonConsumer syntPersonConsumer;
@@ -44,7 +47,9 @@ public class PopulasjonService {
                                     .postnummer(syntPerson.getPostnummer())
                                     .kommunenummer(syntPerson.getKommunenummer())
                                     .build()
-                            ).build()
+                            )
+                            .tags(TAGS)
+                            .build()
             );
         }
         return populasjon;
