@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.SyntConsumer;
 import no.nav.registre.syntrest.consumer.UriExpander;
+import no.nav.registre.syntrest.domain.amelding.Arbeidsforhold;
 import no.nav.registre.syntrest.domain.aareg.Arbeidsforholdsmelding;
 import no.nav.registre.syntrest.domain.bisys.Barnebidragsmelding;
 import no.nav.registre.syntrest.domain.frikort.FrikortKvittering;
@@ -53,6 +54,7 @@ public class SyntController {
     private final SyntConsumer tpConsumer;
     private final SyntConsumer tpsConsumer;
     private final SyntConsumer frikortConsumer;
+    private final SyntConsumer aMeldingConsumer;
 
 
     ///////////// URLs //////////////
@@ -80,6 +82,9 @@ public class SyntController {
     private String tpsUrl;
     @Value("${synth-frikort-url}")
     private String frikortUrl;
+    @Value("${synth-amelding-url}")
+    private String aMeldingUrl;
+
 
 
     @PostMapping("/aareg")
@@ -291,6 +296,18 @@ public class SyntController {
         fnrAntMeldingMap.forEach((key, value) -> InputValidator.validateInput(value));
         Map<String, List<FrikortKvittering>> response = (Map<String, List<FrikortKvittering>>)
                 frikortConsumer.synthesizeData(UriExpander.createRequestEntity(frikortUrl, fnrAntMeldingMap));
+        doResponseValidation(response);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/amelding")
+    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-amelding"})
+    public ResponseEntity<Arbeidsforhold> generateArbeidforhold(
+            @RequestBody Arbeidsforhold tidligereArbeidsforhold
+    ) {
+        Arbeidsforhold response = (Arbeidsforhold)
+                aMeldingConsumer.synthesizeData(UriExpander.createRequestEntity(aMeldingUrl, tidligereArbeidsforhold));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
