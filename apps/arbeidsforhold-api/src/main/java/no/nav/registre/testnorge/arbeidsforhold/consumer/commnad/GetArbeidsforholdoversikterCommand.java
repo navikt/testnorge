@@ -26,7 +26,7 @@ public class GetArbeidsforholdoversikterCommand implements Callable<Arbeidsforho
     @Override
     public ArbeidsforholdoversikterDTO call() {
         RequestEntity<Void> request = RequestEntity
-                .get(new URI(url + "/v1/arbeidstaker/arbeidsforholdoversikt"))
+                .get(new URI(url + "/v1/arbeidsgiver/arbeidsforholdoversikt"))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(AaregHeaders.NAV_CONSUMER_TOKEN, "Bearer " + token)
                 .header(AaregHeaders.NAV_ARBEIDSGIVERIDENT, orgnummer)
