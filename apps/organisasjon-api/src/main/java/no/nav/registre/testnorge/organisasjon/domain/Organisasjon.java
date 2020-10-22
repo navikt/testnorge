@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.organisasjon.domain;
 
 import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 
 import java.util.Collections;
@@ -13,6 +14,7 @@ import no.nav.registre.testnorge.libs.dto.eregmapper.v1.NavnDTO;
 import no.nav.registre.testnorge.organisasjon.consumer.dto.OrganisasjonDTO;
 
 
+@Slf4j
 @Value
 public class Organisasjon {
     String orgnummer;
@@ -31,6 +33,8 @@ public class Organisasjon {
         juridiskEnhet = dto.getParents().isEmpty() ? null : dto.getParents().get(0).getOrganisasjonsnummer();
         redigertnavn = dto.getNavn().getRedigertnavn();
         enhetType = dto.getDetaljer().getEnhetstype();
+
+        log.info("Driver antall virksomheter: {}", dto.getChildren() != null ? dto.getChildren().size() : "[ingen]");
         driverVirksomheter = dto.getChildren() != null
                 ? dto.getChildren().stream().map(OrganisasjonDTO::getOrganisasjonsnummer).collect(Collectors.toList())
                 : Collections.emptyList();
