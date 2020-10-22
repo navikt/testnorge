@@ -30,7 +30,7 @@ public class GetArbeidsforholdCommand implements Callable<Arbeidsforhold> {
     public Arbeidsforhold call() {
         log.info("Henter arbeidsforhold for navArbeidsforholdId {}...", navArbeidsforholdId);
         RequestEntity<Void> request = RequestEntity
-                .get(new UriTemplate(url + "/v1/arbeidstaker/" + navArbeidsforholdId).expand(miljo))
+                .get(new UriTemplate(url + "/v1/arbeidsforhold/" + navArbeidsforholdId).expand(miljo))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(AaregHeaders.NAV_CONSUMER_TOKEN, "Bearer " + token)
                 .build();
