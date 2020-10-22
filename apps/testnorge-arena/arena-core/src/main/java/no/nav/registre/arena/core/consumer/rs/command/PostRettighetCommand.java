@@ -44,7 +44,7 @@ public class PostRettighetCommand implements Callable<NyttVedtakResponse> {
                     .retrieve()
                     .bodyToMono(NyttVedtakResponse.class)
                     .block();
-        } catch (HttpStatusCodeException e) {
+        } catch (Exception e) {
             log.error("Kunne ikke opprette rettighet i arena-forvalteren.", e);
         }
         return response;
