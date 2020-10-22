@@ -35,6 +35,10 @@ public class Organisasjon {
         enhetType = dto.getDetaljer().getEnhetstype();
 
         log.info("Driver antall virksomheter: {}", dto.getChildren() != null ? dto.getChildren().size() : "[ingen]");
+
+
+        dto.getChildren().forEach(value -> log.info(value.toString()));
+
         driverVirksomheter = dto.getChildren() != null
                 ? dto.getChildren().stream().map(OrganisasjonDTO::getOrganisasjonsnummer).collect(Collectors.toList())
                 : Collections.emptyList();
