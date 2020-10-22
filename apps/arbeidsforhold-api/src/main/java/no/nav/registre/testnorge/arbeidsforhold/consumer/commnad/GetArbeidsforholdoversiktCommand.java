@@ -18,7 +18,7 @@ import no.nav.registre.testnorge.arbeidsforhold.consumer.dto.Arbeidsforholdovers
 
 @Slf4j
 @RequiredArgsConstructor
-public class GetArbeidsforholdoversikterCommand implements Callable<ArbeidsforholdoversikterDTO> {
+public class GetArbeidsforholdoversiktCommand implements Callable<ArbeidsforholdoversikterDTO> {
     private final RestTemplate restTemplate;
     private final String url;
     private final String token;

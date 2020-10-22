@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.arbeidsforhold.consumer.commnad.CreateArbeidsforholdCommand;
 import no.nav.registre.testnorge.arbeidsforhold.consumer.commnad.GetArbeidsforholdCommand;
-import no.nav.registre.testnorge.arbeidsforhold.consumer.commnad.GetArbeidsforholdoversikterCommand;
+import no.nav.registre.testnorge.arbeidsforhold.consumer.commnad.GetArbeidsforholdoversiktCommand;
 import no.nav.registre.testnorge.arbeidsforhold.consumer.commnad.GetArbeidstakerArbeidsforholdCommand;
 import no.nav.registre.testnorge.arbeidsforhold.consumer.dto.ArbeidsforholdoversikterDTO;
 import no.nav.registre.testnorge.arbeidsforhold.domain.Arbeidsforhold;
@@ -49,7 +49,7 @@ public class AaregConsumer {
     public List<Arbeidsforhold> getArbeidsforholdByArbeidsgiver(String orgummer, String miljo) {
         log.info("Henter alle arbeidsforhold for arbeidsgiver {}...", orgummer);
         ArbeidsforholdoversikterDTO arbeidsforholdoversikter =
-                new GetArbeidsforholdoversikterCommand(restTemplate, url, tokenService.getToken(), orgummer, miljo).call();
+                new GetArbeidsforholdoversiktCommand(restTemplate, url, tokenService.getToken(), orgummer, miljo).call();
 
         var futures = arbeidsforholdoversikter.getArbeidsforholdoversikter()
                 .stream()
