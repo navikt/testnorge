@@ -129,6 +129,6 @@ public class Person {
 
     @Override
     public String toString() {
-        return format("Page: %s med person fnr: %s navn: %s %s", getPage(), getIdent(), getFornavn(), getEtternavn());
+        return format("Page: %s fnr: %s", getPage(), getIdent());
     }
 }

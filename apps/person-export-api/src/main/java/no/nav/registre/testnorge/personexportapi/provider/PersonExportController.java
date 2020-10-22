@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.personexportapi.adapter.SlackAdapter;
 import no.nav.registre.testnorge.personexportapi.consumer.TpsfConsumer;
-import no.nav.registre.testnorge.personexportapi.converter.csv.NorskHelsenettPersonCsvConverter;
+import no.nav.registre.testnorge.personexportapi.converter.csv.HelsenettCsvConverter;
 import no.nav.registre.testnorge.personexportapi.domain.Person;
 
 @Slf4j
@@ -28,10 +28,12 @@ public class PersonExportController {
     private final TpsfConsumer consumer;
     private final SlackAdapter slackAdapter;
     private final HttpServletResponse response;
-    private final NorskHelsenettPersonCsvConverter helsenettPersonCsvConverter;
+    private final HelsenettCsvConverter helsenettCsvConverter;
 
     @GetMapping(value = "/nhn/{avspillingsgruppe}")
     public void exportHelsenettFormat(@PathVariable("avspillingsgruppe") String avspillingsgruppe) throws IOException {
+
+        long startTime = System.nanoTime();
 
         List<Person> personer = consumer.getPersoner(avspillingsgruppe);
         log.info("Eksporterer {} personer til csv til Slack", personer.size());
@@ -39,7 +41,7 @@ public class PersonExportController {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         PrintWriter pw = new PrintWriter(byteStream);
 
-        helsenettPersonCsvConverter.write(pw, personer);
+        helsenettCsvConverter.write(pw, personer);
         slackAdapter.uploadFile(
                 byteStream.toByteArray(),
                 "testnorge-personer-nhn-" + LocalDateTime.now().toString() + ".csv"
@@ -52,6 +54,19 @@ public class PersonExportController {
                 "Content-Disposition",
                 "attachment; filename=testnorge-personer-nhn-" + LocalDateTime.now().toString() + ".csv"
         );
-        helsenettPersonCsvConverter.write(response.getWriter(), personer);
+        helsenettCsvConverter.write(response.getWriter(), personer);
+
+        log.info("Medgaatt tid til uttrekk {} ", getReadableTime(System.nanoTime() - startTime));
+    }
+
+    private static String getReadableTime(Long nanos) {
+
+        long tempSec = nanos / (1000 * 1000 * 1000);
+        long sec = tempSec % 60;
+        long min = (tempSec / 60) % 60;
+        long hour = (tempSec / (60 * 60)) % 24;
+        long day = (tempSec / (24 * 60 * 60)) % 24;
+
+        return String.format("%dd %dh %dm %ds", day, hour, min, sec);
     }
 }

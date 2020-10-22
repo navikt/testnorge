@@ -17,7 +17,7 @@ import no.nav.registre.testnorge.personexportapi.domain.Person;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class NorskHelsenettPersonCsvConverter extends CsvConverter<Person> {
+public class HelsenettCsvConverter extends CsvConverter<Person> {
 
     private final KodeverkConsumer kodeverkConsumer;
 
@@ -118,7 +118,7 @@ public class NorskHelsenettPersonCsvConverter extends CsvConverter<Person> {
             map.put(Headers.POSTADR_3.getValue(), person.getAdresse3());
             map.put(Headers.POSTADR_LAND.getValue(), kodeverkConsumer.getKodeverkOppslag("Landkoder", person.getPostadrLand()));
 
-            log.info(person.toString() + " konvertert!");
+            log.info(person.toString());
             return map;
         };
     }
