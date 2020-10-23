@@ -20,4 +20,4 @@ jobs:
       - name: Loooog
         run: ls
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew.sh build
