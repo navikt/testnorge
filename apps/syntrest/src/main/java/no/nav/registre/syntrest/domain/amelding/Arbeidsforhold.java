@@ -41,7 +41,7 @@ public class Arbeidsforhold {
     @JsonAlias({"YRKE", "yrke"})
     private String yrke;
 
-    @JsonAlias({"ARBEIDSORDINDG", "arbeidsording", "arbeidstidsordning"})
+    @JsonAlias({"ARBEIDSORDING", "ARBEIDSTIDSORDNING", "arbeidsording", "arbeidstidsordning"})
     private String arbeidstidsordning;
 
     @JsonAlias({"STILLINGSPROSENT", "stillingsprosent"})
