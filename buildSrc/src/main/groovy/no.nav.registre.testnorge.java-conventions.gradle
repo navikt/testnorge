@@ -14,7 +14,7 @@ repositories {
     maven {
         url = uri('https://maven.pkg.github.com/navikt/maven-release')
         credentials(PasswordCredentials) {
-            password '${env.NAV_TOKEN}'
+            password '${env.NAV_TOKEN}11'
             username 'token'
         }
     }
