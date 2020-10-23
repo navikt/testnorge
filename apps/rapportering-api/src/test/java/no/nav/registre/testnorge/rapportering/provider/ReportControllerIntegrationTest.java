@@ -30,12 +30,11 @@ import no.nav.registre.testnorge.rapportering.domain.Report;
 import no.nav.registre.testnorge.rapportering.repository.ReportRepository;
 import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
-class ReportControllerIntegrationTest {
+public class ReportControllerIntegrationTest {
 
     @Autowired
     private MockMvc mvc;

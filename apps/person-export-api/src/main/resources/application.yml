@@ -17,7 +17,7 @@ consumers:
 
 spring:
   application:
-    version: @application.version@
+    version: application.version.todo
     name: person-export-api
     description: Api for å eksportere personer.
   security:

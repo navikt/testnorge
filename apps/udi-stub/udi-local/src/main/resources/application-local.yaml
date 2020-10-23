@@ -22,7 +22,7 @@ spring:
 
 
 application:
-  version: @application.version@
+  version: application.version.todo
 
 spring.jpa.hibernate.ddl-auto: create-drop
 

@@ -12,7 +12,7 @@
     <artifactId>arbeidsforhold-xsd</artifactId>
     <properties>
         <cxf-xjc.version>3.3.1</cxf-xjc.version>
-        <jaxb2-rich-contract.version>2.0.1</jaxb2-rich-contract.version>
+        <jaxb2-rich-contract.version>hgb2.0.1</jaxb2-rich-contract.version>
     </properties>
 
     <dependencies>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 3 U (http://www.xmlspy.com) by Stein Ivar Olsen (Bronnoysundregistrene) -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema xmlns="no:nav:brregstub:tjenestekontrakter:rolleutskrift" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified" targetNamespace="no:nav:brregstub:tjenestekontrakter:rolleutskrift">
     <xs:element name="grunndata">
         <xs:annotation>
             <xs:documentation>Bekskriver tjenesten hentRolleutskrift</xs:documentation>
@@ -53,7 +54,8 @@
                                                 <xs:complexType>
                                                     <xs:simpleContent>
                                                         <xs:extension base="xs:int">
-                                                            <xs:attribute name="ledetekst" type="xs:string" use="optional"/>
+                                                            <xs:attribute name="ledetekst" type="xs:string"
+                                                                          use="optional"/>
                                                         </xs:extension>
                                                     </xs:simpleContent>
                                                 </xs:complexType>
@@ -62,7 +64,8 @@
                                                 <xs:complexType>
                                                     <xs:simpleContent>
                                                         <xs:extension base="xs:string">
-                                                            <xs:attribute name="ledetekst" type="xs:string" use="optional"/>
+                                                            <xs:attribute name="ledetekst" type="xs:string"
+                                                                          use="optional"/>
                                                         </xs:extension>
                                                     </xs:simpleContent>
                                                 </xs:complexType>
@@ -71,7 +74,8 @@
                                                 <xs:complexType>
                                                     <xs:simpleContent>
                                                         <xs:extension base="xs:date">
-                                                            <xs:attribute name="ledetekst" type="xs:string" use="optional"/>
+                                                            <xs:attribute name="ledetekst" type="xs:string"
+                                                                          use="optional"/>
                                                         </xs:extension>
                                                     </xs:simpleContent>
                                                 </xs:complexType>
@@ -92,7 +96,8 @@
                                                         <xs:complexType>
                                                             <xs:simpleContent>
                                                                 <xs:extension base="xs:string">
-                                                                    <xs:attribute name="ledetekst" type="xs:string" use="optional"/>
+                                                                    <xs:attribute name="ledetekst" type="xs:string"
+                                                                                  use="optional"/>
                                                                 </xs:extension>
                                                             </xs:simpleContent>
                                                         </xs:complexType>
@@ -101,7 +106,8 @@
                                                         <xs:complexType>
                                                             <xs:simpleContent>
                                                                 <xs:extension base="xs:int">
-                                                                    <xs:attribute name="ledetekst" type="xs:string" use="optional"/>
+                                                                    <xs:attribute name="ledetekst" type="xs:string"
+                                                                                  use="optional"/>
                                                                 </xs:extension>
                                                             </xs:simpleContent>
                                                         </xs:complexType>
@@ -110,8 +116,10 @@
                                                     <xs:element name="adresse">
                                                         <xs:complexType>
                                                             <xs:sequence>
-                                                                <xs:element name="forretningsAdresse" type="adresseType2" minOccurs="0"/>
-                                                                <xs:element name="postAdresse" type="adresseType2" minOccurs="0"/>
+                                                                <xs:element name="forretningsAdresse"
+                                                                            type="adresseType2" minOccurs="0"/>
+                                                                <xs:element name="postAdresse" type="adresseType2"
+                                                                            minOccurs="0"/>
                                                             </xs:sequence>
                                                         </xs:complexType>
                                                     </xs:element>

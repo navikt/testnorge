@@ -5,7 +5,7 @@ CLIENT_ID: 1b2f24c8-a426-47b1-8ff1-7905d6dfddb5
 spring:
   application:
     name: arbeidsforhold-api
-    version: @application.version@
+    version: application.version.todo
     description: Opprettelse av arbeidsforhold
   security:
     oauth2:
