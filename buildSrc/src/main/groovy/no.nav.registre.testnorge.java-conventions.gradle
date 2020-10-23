@@ -33,6 +33,9 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.16'
 }
 
+jar{
+    archiveName 'app.jar'
+}
 
 group = 'no.nav.registre.testnorge'
 version = '1.0-SNAPSHOT'
