@@ -5,3 +5,12 @@ CLIENT_SECRET=dummy
 
 SYNT_PERSON_API_CLIENT_ID=dummy
 SYNT_PERSON_API_CLIENT_SECRET=dummy
+
+SERVICEUSER_USERNAME: dummy
+SERVICEUSER_PASSWORD: dummy
+
+kafka:
+  bootstrapservers: dummy
+  schemaregistryservers: dummy
+  groupid: dummy
+  topic: testnorge-opprett-person-v1
