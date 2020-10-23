@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.11
-      - name: Loooog
-        run: ls
       - name: Build with Gradle
+        env:
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
         run: ./gradlew build
