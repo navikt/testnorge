@@ -21,4 +21,4 @@ jobs:
       - name: Build with Gradle
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew build
+        run: ./gradlew build -Dorg.gradle.parallel=true
