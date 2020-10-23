@@ -1,5 +1,6 @@
 package no.nav.registre.syntrest.domain.amelding;
 
+import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -20,13 +21,13 @@ import lombok.Setter;
 public class Permisjon {
 
     @JsonAlias({"STARTDATO", "startdato", "startDato"})
-    private String startdato;
+    private LocalDate startdato;
 
     @JsonAlias({"SLUTTDATO", "sluttdato", "sluttDato"})
-    private String sluttdato;
+    private LocalDate sluttdato;
 
     @JsonAlias({"PERMISJONSPROSENT", "permisjonsprosent"})
-    private String permisjonsprosent;
+    private float permisjonsprosent;
 
     @JsonAlias({"BESKRIVELSE", "beskrivelse"})
     private String beskrivelse;

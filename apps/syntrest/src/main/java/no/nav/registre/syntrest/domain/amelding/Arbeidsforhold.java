@@ -1,5 +1,6 @@
 package no.nav.registre.syntrest.domain.amelding;
 
+import java.time.LocalDate;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -27,13 +28,13 @@ public class Arbeidsforhold {
     private String arbeidsforholdType;
 
     @JsonAlias({"STARTDATO", "startdato", "startDato"})
-    private String startdato;
+    private LocalDate startdato;
 
     @JsonAlias({"SLUTTDATO", "sluttdato", "sluttDato"})
-    private String sluttdato;
+    private LocalDate sluttdato;
 
     @JsonAlias({"ANTALL_TIMER_PER_UKE_SOM_EN_FULL_STILLING_TILSVARER", "antallTimerPerUkeSomEnFullStillingTilsvarer"})
-    private String antallTimerPerUkeSomEnFullStillingTilsvarer;
+    private float antallTimerPerUkeSomEnFullStillingTilsvarer;
 
     @JsonAlias({"AVLOENNINGSTYPE", "avloenningstype"})
     private String avloenningstype;
@@ -45,31 +46,31 @@ public class Arbeidsforhold {
     private String arbeidstidsordning;
 
     @JsonAlias({"STILLINGSPROSENT", "stillingsprosent"})
-    private String stillingsprosent;
+    private float stillingsprosent;
 
     @JsonAlias({"SISTE_LOENNSENDRINGSDATO", "sisteLoennsendringsdato"})
-    private String sisteLoennsendringsdato;
+    private LocalDate sisteLoennsendringsdato;
 
     @JsonAlias({"SISTE_DATO_FOR_STILLINGSPROSENTENDRING", "sisteDatoForStillingsprosentendring"})
-    private String sisteDatoForStillingsprosentendring;
+    private LocalDate sisteDatoForStillingsprosentendring;
 
     @JsonAlias({"PERMISJON_MED_FORELDREPENGER", "permisjonMedForeldrePenger"})
-    private String permisjonMedForeldrePenger;
+    private float permisjonMedForeldrePenger;
 
     @JsonAlias({"PERMITTERING", "permittering"})
-    private String permittering;
+    private float permittering;
 
     @JsonAlias({"PERMISJON", "permisjon"})
-    private String permisjon;
+    private float permisjon;
 
     @JsonAlias({"PERMISJON_VED_MILITAERTJENESTE", "permisjonVedMilitaertjeneste"})
-    private String permisjonVedMilitaertjeneste;
+    private float permisjonVedMilitaertjeneste;
 
     @JsonAlias({"VELFERDSPERMISJON", "velferdspermisjon"})
-    private String velferdspermisjon;
+    private float velferdspermisjon;
 
     @JsonAlias({"UTDANNINGSPERMISJON", "utdanningspermisjon"})
-    private String utdanningspermisjon;
+    private float utdanningspermisjon;
 
     @JsonAlias({"PERMISJONER", "permisjoner"})
     private List<Permisjon> permisjoner;
