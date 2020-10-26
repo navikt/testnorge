@@ -89,8 +89,7 @@ export default function FinnPerson({ naviger }: FinnPerson) {
 
 	return (
 		<>
-			{/* 
-				// @ts-ignore */}
+			{/* @ts-ignore */}
 			<Søkeknapp onClick={openFinnModal} style={{ marginTop: '10px' }} kompakt="">
 				<span>Finn testperson</span>
 			</Søkeknapp>
@@ -102,8 +101,7 @@ export default function FinnPerson({ naviger }: FinnPerson) {
 					aktuelle personer. Velg en person for å bli tatt direkte til testdatagruppen personen
 					finnes i.
 				</p>
-				{/* 
-				// @ts-ignore */}
+				{/* @ts-ignore */}
 				<Label name="Testperson" label="Testperson">
 					<AsyncSelect
 						defaultOptions={false}
