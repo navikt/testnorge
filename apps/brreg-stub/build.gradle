@@ -6,10 +6,16 @@ plugins {
     id 'no.nav.registre.testnorge.java-conventions'
     id "uk.co.boothen.gradle.wsimport" version "0.16"
     id 'org.unbroken-dome.xjc' version '2.0.0'
+    id 'org.springframework.boot' version '2.3.4.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+}
+
+bootJar {
+    archiveFileName = "app.jar"
 }
 
 wsimport {
-    wsdl ("Grunndata.wsdl"){
+    wsdl("Grunndata.wsdl") {
         packageName("no.nav.brregstub.tjenestekontrakter.ws")
     }
 }
@@ -35,12 +41,6 @@ dependencies {
     implementation 'com.h2database:h2:1.4.200'
     implementation 'jakarta.jws:jakarta.jws-api:2.1.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE'
-}
-
-jar {
-    manifest {
-        attributes 'Main-Class': 'no.nav.brregstub.ApplicationLauncher'
-    }
 }
 
 description = 'brreg-stub'

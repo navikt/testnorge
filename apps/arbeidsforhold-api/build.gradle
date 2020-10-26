@@ -41,11 +41,4 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.16.1'
 }
 
-
-jar {
-    manifest {
-        attributes 'Main-Class': 'no.nav.registre.testnorge.arbeidsforhold.ArbeidsforholdApiApplicationStarter'
-    }
-}
-
 description = 'arbeidsforhold-api'
