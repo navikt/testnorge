@@ -14,3 +14,9 @@ sonarqube {
         property "sonar.moduleKey", "testnorge"
     }
 }
+
+allprojects {
+    plugins.withId('com.gradle.build-scan') {
+        buildScan { termsOfServiceUrl = "https://gradle.com/terms-of-service"; termsOfServiceAgree = "yes" }
+    }
+}
