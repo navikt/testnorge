@@ -15,6 +15,11 @@ pluginManagement {
     }
 }
 
+plugins {
+    id "com.gradle.enterprise" version "3.4.1"
+}
+
+
 rootProject.name = 'testnorge'
 include(':inntektsmelding-stub')
 include(':testnorge-tss')
@@ -205,3 +210,10 @@ project(":testnorge-data-transfer-objects").projectDir = file('libs/testnorge-da
 project(":skd-local").projectDir = file('apps/testnorge-skd/skd-local')
 project(":person-api").projectDir = file('apps/person-api')
 project(":testnorge-medl").projectDir = file('apps/testnorge-medl')
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+    }
+}

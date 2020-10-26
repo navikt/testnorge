@@ -14,3 +14,7 @@ dependencies {
 
 group = 'no.nav.registre.testnorge.libs'
 description = 'testnorge-avro-schema'
+
+sonarqube {
+    skipProject = true
+}
