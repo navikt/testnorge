@@ -5,21 +5,8 @@
 plugins {
     // Support convention plugins written in Groovy. Convention plugins are build scripts in 'src/main' that automatically become available as plugins in the main build.
     id 'groovy-gradle-plugin'
-    id "org.sonarqube" version "3.0"
 }
 
-
-sonarqube {
-    properties {
-        property "sonar.sourceEncoding", "UTF-8"
-        property "sonar.projectKey", "navikt_testnorge"
-        property "sonar.projectName", "testnorge"
-        property "sonar.organization", "navit"
-        property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.login", System.getenv("SONAR_TOKEN")
-        property "sonar.moduleKey", "testnorge"
-    }
-}
 
 repositories {
     // Use the plugin portal to apply community plugins in convention plugins.

@@ -26,4 +26,10 @@ dependencies {
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE'
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'no.nav.registre.testnorge.avhengighetsanalysefrontend.AvhengighetsanalyseFrontendApplicationStarter'
+    }
+}
+
 description = 'avhengighetsanalyse-frontend'

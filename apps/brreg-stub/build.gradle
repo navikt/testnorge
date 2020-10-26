@@ -37,4 +37,10 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE'
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'no.nav.brregstub.ApplicationLauncher'
+    }
+}
+
 description = 'brreg-stub'
