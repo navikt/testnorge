@@ -3,17 +3,6 @@ package no.nav.identpool.ajourhold;
 import static java.time.temporal.TemporalAdjusters.firstDayOfYear;
 import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.querydsl.core.types.Predicate;
-import io.micrometer.core.instrument.Counter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -24,7 +13,17 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.querydsl.core.types.Predicate;
 
+import io.micrometer.core.instrument.Counter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.consumers.TpsfConsumer;
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
@@ -57,6 +56,7 @@ public class AjourholdService {
     private int newIdentCount;
 
     public boolean checkCriticalAndGenerate() {
+
         newIdentCount = 0;
         current = LocalDate.now();
 
@@ -74,8 +74,8 @@ public class AjourholdService {
 
     void checkAndGenerateForDate(
             LocalDate date,
-            Identtype type
-    ) {
+            Identtype type) {
+
         int maxRuns = 3;
         int runs = 0;
         while (runs < maxRuns) {
@@ -91,8 +91,8 @@ public class AjourholdService {
 
     private int getNumberOfMissingIdents(
             int year,
-            Identtype type
-    ) {
+            Identtype type) {
+
         int antallPerDag = IdentDistribusjonUtil.antallPersonerPerDagPerAar(year);
         antallPerDag = adjustForYear(year, antallPerDag);
         int days = (year == current.getYear() ? 365 - (365 - current.getDayOfYear()) : 365);
@@ -107,8 +107,8 @@ public class AjourholdService {
     void generateForYear(
             int year,
             Identtype type,
-            int numberOfIdents
-    ) {
+            int numberOfIdents) {
+
         int antallPerDag = IdentDistribusjonUtil.antallPersonerPerDagPerAar(year + 1) * 2;
         antallPerDag = adjustForYear(year, antallPerDag);
 
@@ -128,8 +128,8 @@ public class AjourholdService {
 
     private int adjustForYear(
             int year,
-            int antallPerDag
-    ) {
+            int antallPerDag) {
+
         if (antallPerDag < MIN_ANTALL_IDENTER_PER_DAG) {
             antallPerDag = MIN_ANTALL_IDENTER_PER_DAG;
         }
@@ -145,8 +145,8 @@ public class AjourholdService {
     private void filterIdents(
             int identsPerDay,
             Map<LocalDate, List<String>> pinMap,
-            int numberOfIdents
-    ) {
+            int numberOfIdents) {
+
         List<String> identsNotInDatabase = filterAgainstDatabase(identsPerDay, pinMap);
         Set<TpsStatus> tpsStatuses = identTpsService.checkIdentsInTps(identsNotInDatabase, new ArrayList<>());
 
@@ -174,8 +174,8 @@ public class AjourholdService {
 
     private List<String> filterAgainstDatabase(
             int antallPerDag,
-            Map<LocalDate, List<String>> pinMap
-    ) {
+            Map<LocalDate, List<String>> pinMap) {
+
         final List<String> arrayList = new ArrayList<>();
         pinMap.forEach((d, value) -> arrayList.addAll(
                 value.stream()
@@ -190,8 +190,8 @@ public class AjourholdService {
     private List<Ident> saveIdents(
             List<String> idents,
             Rekvireringsstatus status,
-            String rekvirertAv
-    ) {
+            String rekvirertAv) {
+
         return identRepository.saveAll(idents.stream()
                 .map(fnr -> IdentGeneratorUtil.createIdent(fnr, status, rekvirertAv))
                 .collect(Collectors.toList()));
@@ -201,6 +201,7 @@ public class AjourholdService {
      * Fjerner FNR/DNR/BNR fra ident-pool-databasen som finnes i prod
      */
     public void getIdentsAndCheckProd() {
+
         HentIdenterRequest request = HentIdenterRequest.builder()
                 .antall(MAX_SIZE_TPS_QUEUE)
                 .foedtEtter(LocalDate.of(1850, 1, 1))

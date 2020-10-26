@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
 import no.nav.identpool.rs.v1.support.IdentRequest;
 import no.nav.identpool.service.IdentpoolService;
 
@@ -22,9 +21,7 @@ public class FinnesHosSkattController {
 
     @PostMapping
     @Operation(description = "tjeneste som DREK bruker for å markere at DNR er i bruk og at det eksisterer hos SKD")
-    public void finnesHosSkatt(
-            @RequestBody IdentRequest identRequest
-    ) throws UgyldigPersonidentifikatorException {
+    public void finnesHosSkatt(@RequestBody IdentRequest identRequest) {
         validate(identRequest.getPersonidentifikator());
         identpoolService.registrerFinnesHosSkatt(identRequest.getPersonidentifikator());
     }

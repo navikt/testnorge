@@ -5,12 +5,6 @@ import static no.nav.identpool.domain.Rekvireringsstatus.I_BRUK;
 import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
 import static no.nav.identpool.util.PersonidentUtil.getIdentType;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,7 +16,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
@@ -270,7 +269,7 @@ public class IdentpoolService {
         return identRepository.findTopByPersonidentifikator(personidentifikator);
     }
 
-    public void registrerFinnesHosSkatt(String personidentifikator) throws UgyldigPersonidentifikatorException {
+    public void registrerFinnesHosSkatt(String personidentifikator) {
 
         if (Identtype.FNR.equals(getIdentType(personidentifikator))) {
             throw new UgyldigPersonidentifikatorException("personidentifikatoren er ikke et DNR");

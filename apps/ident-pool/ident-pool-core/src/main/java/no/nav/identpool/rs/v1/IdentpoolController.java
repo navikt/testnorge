@@ -45,8 +45,8 @@ public class IdentpoolController {
     @GetMapping
     @Operation(description = "hent informasjon lagret på en test-ident")
     public Ident lesInnhold(
-            @RequestHeader String personidentifikator
-    ) throws UgyldigPersonidentifikatorException {
+            @RequestHeader String personidentifikator) {
+
         validate(personidentifikator);
         return identpoolService.lesInnhold(personidentifikator);
     }
@@ -55,8 +55,8 @@ public class IdentpoolController {
     @Operation(description = "rekvirer nye test-identer")
     public List<String> rekvirer(
             @RequestParam(required = false, defaultValue = "true") boolean finnNaermesteLedigeDato,
-            @RequestBody @Valid HentIdenterRequest hentIdenterRequest
-    ) throws Exception {
+            @RequestBody @Valid HentIdenterRequest hentIdenterRequest) {
+
         validateDatesInRequest(hentIdenterRequest);
         if (hentIdenterRequest.getFoedtFoer() == null) {
             hentIdenterRequest.setFoedtFoer(hentIdenterRequest.getFoedtEtter().plusDays(1));
@@ -81,7 +81,8 @@ public class IdentpoolController {
 
     @PostMapping("/bruk")
     @Operation(description = "marker eksisterende og ledige identer som i bruk")
-    public void markerBrukt(@RequestBody MarkerBruktRequest markerBruktRequest) throws Exception {
+    public void markerBrukt(@RequestBody MarkerBruktRequest markerBruktRequest) {
+
         validate(markerBruktRequest.getPersonidentifikator());
         identpoolService.markerBrukt(markerBruktRequest);
     }
@@ -90,8 +91,8 @@ public class IdentpoolController {
     @Operation(description = "Marker identer i gitt liste som I_BRUK i ident-pool-databasen. Returnerer en liste over de identene som nå er satt til I_BRUK.")
     public List<String> markerBruktIdenter(
             @RequestParam String rekvirertAv,
-            @RequestBody List<String> identer
-    ) throws Exception {
+            @RequestBody List<String> identer) {
+
         if (Strings.isNullOrEmpty(rekvirertAv)) {
             throw new IllegalArgumentException("Felt 'rekvirertAv' må fylles ut");
         }
@@ -106,6 +107,7 @@ public class IdentpoolController {
     @PostMapping("/bruk/batch")
     @Operation(description = "marker eksisterende og ledige identer som i bruk")
     public MarkerBruktBatchResponse markerBruktBatch(@RequestBody MarkerBruktBatchRequest markerBruktBatchRequest) {
+
         log.info("{} brukte deprecated endepunkt 'markerBruktBatch'", markerBruktBatchRequest.getBruker());
         MarkerBruktBatchResponse markerBruktBatchResponse = MarkerBruktBatchResponse.builder()
                 .personidentifikatorerMarkertSomBrukt(new ArrayList<>())
@@ -132,8 +134,8 @@ public class IdentpoolController {
     @Operation(description = "returnerer true eller false avhengig av om en ident er ledig eller ikke")
     public Boolean erLedig(
             @RequestHeader String personidentifikator,
-            @RequestParam(required = false) List<String> miljoer
-    ) throws UgyldigPersonidentifikatorException {
+            @RequestParam(required = false) List<String> miljoer)  {
+
         validate(personidentifikator);
         return identpoolService.erLedig(personidentifikator, miljoer);
     }
@@ -142,8 +144,8 @@ public class IdentpoolController {
     @Operation(description = "returnerer identer som er ledige og født mellom to datoer")
     public List<String> erLedige(
             @RequestParam int fromYear,
-            @RequestParam int toYear
-    ) {
+            @RequestParam int toYear) {
+
         return identpoolService.hentLedigeFNRFoedtMellom(LocalDate.of(fromYear, 1, 1), LocalDate.of(toYear, 1, 1));
     }
 
@@ -151,8 +153,8 @@ public class IdentpoolController {
     @Operation(description = "Frigjør rekvirerte identer i en gitt liste. Returnerer de identene i den gitte listen som nå er ledige.")
     public List<String> frigjoerIdenter(
             @RequestParam String rekvirertAv,
-            @RequestBody List<String> identer
-    ) {
+            @RequestBody List<String> identer) {
+
         if (Strings.isNullOrEmpty(rekvirertAv)) {
             throw new IllegalArgumentException("Felt 'rekvirertAv' må fylles ut");
         }
@@ -162,17 +164,20 @@ public class IdentpoolController {
     @PostMapping("/frigjoerLedige")
     @Operation(description = "Frigjør rekvirerte, men ubrukte identer i en gitt liste. Returnerer de identene i den gitte listen som nå er ledige.")
     public List<String> frigjoerLedigeIdenter(@RequestBody List<String> identer) {
+
         return identpoolService.frigjoerLedigeIdenter(identer);
     }
 
     @GetMapping("/whitelist")
     @Operation(description = "returnerer en list over whitelisted identer")
     public List<String> hentWhitelist() {
+
         return identpoolService.hentWhitelist();
     }
 
     @PostMapping("/startBatch")
     public void startBatch() {
+
         batchService.startGeneratingIdentsBatch();
     }
 }

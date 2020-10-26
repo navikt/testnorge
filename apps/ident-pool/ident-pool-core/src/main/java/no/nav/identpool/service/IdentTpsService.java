@@ -1,21 +1,20 @@
 package no.nav.identpool.service;
 
-import com.google.common.collect.Lists;
-import io.micrometer.core.annotation.Timed;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
-import javax.jms.JMSException;
-import javax.xml.bind.DataBindingException;
-import javax.xml.bind.JAXB;
 import java.io.StringReader;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.jms.JMSException;
+import javax.xml.bind.DataBindingException;
+import javax.xml.bind.JAXB;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import com.google.common.collect.Lists;
 
+import io.micrometer.core.annotation.Timed;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.domain.TpsStatus;
 import no.nav.identpool.mq.consumer.MessageQueue;
 import no.nav.identpool.mq.factory.MessageQueueFactory;
@@ -34,7 +33,6 @@ public class IdentTpsService {
     private static final String TPS_ENDRET_I_BRUK = "04";
 
     private final MessageQueueFactory messageQueueFactory;
-
     private MessageQueue messageQueue;
 
     @Timed(value = "ident_pool.resource.latency", extraTags = { "operation", "TPS" })

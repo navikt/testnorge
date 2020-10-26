@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: no.nav.identpool.mq.factory.ConnectionFactoryFactoryTest
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.496 s - in no.nav.identpool.mq.factory.ConnectionFactoryFactoryTest
