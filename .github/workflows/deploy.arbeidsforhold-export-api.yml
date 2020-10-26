@@ -1,13 +1,14 @@
-name: Deploy brreg-stub
+name: Deploy arbeidsforhold-export-api
 
 on:
   push:
     branches: master
     paths:
-      - apps/brreg-stub/**
+      - apps/arbeidsforhold-export-api/**
+      - libs/testnorge-core/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/brreg-stub-v2:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/arbeidsforhold-export-api:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -15,12 +16,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Cache Dependencies
-        uses: actions/cache@v1
+      - name: Gradle cache
+        uses: actions/cache@v2
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-maven-
+          path: |
+            ~/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
       - uses: actions/setup-java@v1
         with:
           java-version: '11.x'
@@ -28,13 +31,9 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: mvn --projects :brreg-stub --also-make --settings maven-settings.xml compile
-      - name: Test
-        run: mvn --projects :brreg-stub --also-make --settings maven-settings.xml test
-      - name: Package
-        run: mvn --projects :brreg-stub --also-make --settings maven-settings.xml package -Dmaven.test.skip
+        run: ./gradlew :arbeidsforhold-export-api:build
       - name: Build and publish Docker image
-        working-directory: apps/brreg-stub/
+        working-directory: apps/arbeidsforhold-export-api/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -47,4 +46,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/brreg-stub/nais.yaml
+          RESOURCE: apps/arbeidsforhold-export-api/config.yml
