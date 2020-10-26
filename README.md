@@ -17,61 +17,16 @@ https://testnorge-avhengighetsanalyse-frontend.dev.adeo.no/
 
 **NB: `navtunnel` må kjøre, eller man må være logget inn med `naisdevice`**
 
-Legg inn dette i **din** maven settings.xml fil:
+For å kunne hente ned alle avheningehter må det opprettes en NAV_TOKEN fra https://github.com/settings/tokens. Denne token må legges inn i system variabler.
+
+
+Fra Mac
 ```
-<settings>
-    <profiles>
-        <profile>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <repositories>
-                <repository>
-                    <id>internal-mirror-github-navikt</id>
-                    <url>https://repo.adeo.no/repository/github-package-registry-navikt/</url>
-                </repository>
-            </repositories>
-        </profile>
-    </profiles>
-</settings>
+/etc/profile
+export NAV_TOKEN=xxxx-yyyy-zzzz
 ```
 
-Så kjør `mvn clean install`
-
-## Deploy status
-
-![Deploy testnorge-ereg-mapper](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-ereg-mapper/badge.svg)
-![Deploy testnorge-medl](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-medl/badge.svg)
-![Deploy testnorge-arena](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-arena/badge.svg)
-![Deploy testnorge-skd](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-skd/badge.svg)
-![Deploy testnorge-inst](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-inst/badge.svg)
-![Deploy testnorge-statisk-data-forvalter](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-statisk-data-forvalter/badge.svg)
-![Deploy testnorge-tp](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-tp/badge.svg)
-![Deploy testnorge-hodejegeren](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-hodejegeren/badge.svg)
-![Deploy testnorge-spion](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-spion/badge.svg)
-![Deploy testnorge-aareg](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-aareg/badge.svg)
-![Deploy testnorge-sigrun](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-sigrun/badge.svg)
-![Deploy testnorge-sam](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-sam/badge.svg)
-![Deploy orkestratoren](https://github.com/navikt/testnorge/workflows/Deploy%20orkestratoren/badge.svg)
-![Deploy inntektsmelding-stub](https://github.com/navikt/testnorge/workflows/Deploy%20inntektsmelding-stub/badge.svg)
-![Deploy testnorge-frikort](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-frikort/badge.svg)
-![Deploy testnorge-aaregstub](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-aaregstub/badge.svg)
-![Deploy testnorge-tss](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-tss/badge.svg)
-![Deploy testnorge-nav-endringsmeldinger](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-nav-endringsmeldinger/badge.svg)
-![Deploy testnorge-token-provider](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-token-provider/badge.svg)
-![Deploy testnorge-inntekt](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-inntekt/badge.svg)
-![Deploy helsepersonell-api](https://github.com/navikt/testnorge/workflows/Deploy%20helsepersonell-api/badge.svg)
-![Deploy avhengighetsanalyse-frontend](https://github.com/navikt/testnorge/workflows/Deploy%20avhengighetsanalyse-frontend/badge.svg)
-![Deploy person-api](https://github.com/navikt/testnorge/workflows/Deploy%20person-api/badge.svg)
-![Deploy sykemelding-api](https://github.com/navikt/testnorge/workflows/Deploy%20sykemelding-api/badge.svg)
-![Deploy organisasjon-api](https://github.com/navikt/testnorge/workflows/Deploy%20organisasjon-api/badge.svg)
-![Deploy arbeidsforhold-api](https://github.com/navikt/testnorge/workflows/Deploy%20arbeidsforhold-api/badge.svg)
-![Deploy synt-sykemelding-api](https://github.com/navikt/testnorge/workflows/Deploy%20synt-sykemelding-api/badge.svg)
-![Deploy testnorge-populasjoner](https://github.com/navikt/testnorge/workflows/Deploy%20testnorge-populasjoner/badge.svg)
-![Deploy hendelse-api](https://github.com/navikt/testnorge/workflows/Deploy%20hendelse-api/badge.svg)
-![Deploy brreg-stub](https://github.com/navikt/testnorge/workflows/Deploy%20brreg-stub/badge.svg)
-![Deploy udi-stub](https://github.com/navikt/testnorge/workflows/Deploy%20udi-stub/badge.svg)
-![Deploy synt-person-api](https://github.com/navikt/testnorge/workflows/Deploy%20synt-person-api%20prod/badge.svg)
+Så kjør `gradle build`
 
 ## Dokumentasjon
 Enhver testnorge-applikasjon skal ha dokumentasjon i fila `<min-testnorge-app>/docs/Implementasjon.md`. Hver av disse filene må starte med
