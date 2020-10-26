@@ -92,7 +92,7 @@ public class ArbeidsforholdControllerIntegrationTest {
                 .withResponseBody(aaregResponse)
                 .stubGet();
 
-        var mvcResultat = mockMvc.perform(get("/api/v1/arbeidsforhold/" + personIdent)
+        var mvcResultat = mockMvc.perform(get("/api/v1/arbeidsforhold2/" + personIdent)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()

@@ -20,7 +20,7 @@ import no.nav.registre.testnorge.arbeidsforhold.service.ArbeidsforholdService;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
 
 @RestController
-@RequestMapping("/api/v1/arbeidsforhold")
+@RequestMapping("/api/v1/arbeidsforhold2")
 @RequiredArgsConstructor
 public class ArbeidsforholdController {
     private final ArbeidsforholdService service;
