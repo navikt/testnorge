@@ -11,7 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: git fetch --unshallow
+      - name: Fetch git history
+        run: git fetch --unshallow
       - name: Cache SonarCloud packages
         uses: actions/cache@v2
         with:
