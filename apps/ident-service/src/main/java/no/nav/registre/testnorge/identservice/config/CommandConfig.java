@@ -1,0 +1,26 @@
+package no.nav.registre.testnorge.identservice.config;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import no.nav.registre.testnorge.identservice.testdata.factories.MessageQueueServiceFactory;
+import no.nav.registre.testnorge.identservice.testdata.servicerutiner.Command;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ComponentScan(basePackageClasses = Command.class)
+public class CommandConfig {
+
+    @Autowired
+    MessageQueueServiceFactory messageQueueServiceFactory;
+
+    @Bean
+    XmlMapper xmlMapper() {
+        XmlMapper xmlMapper = new XmlMapper();
+        xmlMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        xmlMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+        return xmlMapper;
+    }
+}
