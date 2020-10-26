@@ -24,11 +24,11 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.11
-      - name: Build --scan
+      - name: Build
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew build
+        run: ./gradlew build --scan
       - name: Analzye
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
