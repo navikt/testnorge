@@ -14,19 +14,20 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
+@RequestMapping("/api/v1/identer")
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/ident")
 public class IdentServiceController {
+
     private final IdentServiceAppService identServiceAppService;
     private final SjekkIdenterService sjekkIdenterService;
 
     @PostMapping(value = "/checkpersoner")
-    public Set<String> checkIdentList(@RequestBody List<String> identer) {
+    public ResponseEntity<Set<String>> checkIdentList(@RequestBody List<String> identer) {
         return sjekkIdenterService.finnLedigeIdenter(identer);
     }
 
 
-    @GetMapping("/helloworld")
+    @GetMapping(value = "/helloworld")
     public ResponseEntity<String> helloWorld() {
         return identServiceAppService.helloWorld();
     }
