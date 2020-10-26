@@ -20,6 +20,6 @@ public class ApplicationContextTest {
      */
     @Test
     @SuppressWarnings("java:S2699")
-    public void load_app_context() {
+    public void load_app_context2() {
     }
 }
