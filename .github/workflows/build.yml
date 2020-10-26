@@ -10,6 +10,7 @@ jobs:
         with:
           path: |
             ~/.gradle
+            ~/.m2/repository
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
