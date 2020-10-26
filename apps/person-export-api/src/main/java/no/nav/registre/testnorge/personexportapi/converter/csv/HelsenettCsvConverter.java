@@ -2,21 +2,22 @@ package no.nav.registre.testnorge.personexportapi.converter.csv;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.libs.csvconverter.CsvConverter;
 import no.nav.registre.testnorge.libs.csvconverter.CsvHeader;
 import no.nav.registre.testnorge.libs.csvconverter.ObjectConverter;
 import no.nav.registre.testnorge.libs.csvconverter.RowConverter;
+import no.nav.registre.testnorge.personexportapi.consumer.dto.PersonStatusMapper;
 import no.nav.registre.testnorge.personexportapi.consumer.kodeverk.KodeverkConsumer;
 import no.nav.registre.testnorge.personexportapi.domain.Person;
-import no.nav.registre.testnorge.personexportapi.consumer.dto.PersonStatusMapper;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-public class NorskHelsenettPersonCsvConverter extends CsvConverter<Person> {
+public class HelsenettCsvConverter extends CsvConverter<Person> {
 
     private final KodeverkConsumer kodeverkConsumer;
 
@@ -100,7 +101,7 @@ public class NorskHelsenettPersonCsvConverter extends CsvConverter<Person> {
             map.put(Headers.ADRESSEKODE.getValue(), person.getAdressetype());
             map.put(Headers.GATENAVN.getValue(), person.getGatenavn());
             map.put(Headers.GATENR.getValue(), person.getGatenr());
-            map.put(Headers.HUSBOKSTAV.getValue(), person.getHusnr());
+            map.put(Headers.HUSNR.getValue(), person.getHusnr());
             map.put(Headers.HUSBOKSTAV.getValue(), person.getHusbokstav());
             map.put(Headers.STEDSNAVN.getValue(), person.getGaardsnavn());
             map.put(Headers.GARDSNR.getValue(), person.getGaardsnr());
@@ -117,6 +118,7 @@ public class NorskHelsenettPersonCsvConverter extends CsvConverter<Person> {
             map.put(Headers.POSTADR_3.getValue(), person.getAdresse3());
             map.put(Headers.POSTADR_LAND.getValue(), kodeverkConsumer.getKodeverkOppslag("Landkoder", person.getPostadrLand()));
 
+            log.info(person.toString());
             return map;
         };
     }

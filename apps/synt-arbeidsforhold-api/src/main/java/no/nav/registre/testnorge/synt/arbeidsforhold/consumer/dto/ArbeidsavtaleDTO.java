@@ -17,6 +17,6 @@ public class ArbeidsavtaleDTO {
     Double avtaltArbeidstimerPerUke;
     LocalDate endringsdatoStillingsprosent;
     LocalDate sisteLoennsendringsdato;
-    Double stillingsprosent;
+    Float stillingsprosent;
     String yrke;
 }

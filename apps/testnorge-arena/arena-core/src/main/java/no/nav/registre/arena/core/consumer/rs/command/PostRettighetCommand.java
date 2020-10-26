@@ -5,7 +5,6 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -44,7 +43,7 @@ public class PostRettighetCommand implements Callable<NyttVedtakResponse> {
                     .retrieve()
                     .bodyToMono(NyttVedtakResponse.class)
                     .block();
-        } catch (HttpStatusCodeException e) {
+        } catch (Exception e) {
             log.error("Kunne ikke opprette rettighet i arena-forvalteren.", e);
         }
         return response;

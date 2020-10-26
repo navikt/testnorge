@@ -1,5 +1,7 @@
 package no.nav.registre.testnorge.personexportapi.consumer.dto;
 
+import static java.util.Objects.nonNull;
+
 import org.bouncycastle.asn1.eac.BidirectionalMap;
 
 import lombok.experimental.UtilityClass;
@@ -48,6 +50,6 @@ public class HusbokstavEncoder {
     }
 
     public static String decode(String skdHusnummerCode) {
-        return (String) encodingMap.getReverse(skdHusnummerCode);
+        return nonNull(skdHusnummerCode) ? (String) encodingMap.getReverse(skdHusnummerCode) : null;
     }
 }

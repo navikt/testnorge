@@ -39,6 +39,7 @@ public class ArbeidsforholdDTO {
                 .build()
         );
         arbeidstaker = ArbeidstakerDTO.builder().offentligIdent(arbeidsforhold.getIdent()).type("Person").build();
+        type = "ordinaertArbeidsforhold";
     }
 
     AnsettelsesperiodeDTO ansettelsesperiode;
@@ -46,5 +47,5 @@ public class ArbeidsforholdDTO {
     ArbeidsgiverDTO arbeidsgiver;
     List<ArbeidsavtaleDTO> arbeidsavtaler;
     ArbeidstakerDTO arbeidstaker;
-    String type = "ordinaertArbeidsforhold";
+    String type;
 }

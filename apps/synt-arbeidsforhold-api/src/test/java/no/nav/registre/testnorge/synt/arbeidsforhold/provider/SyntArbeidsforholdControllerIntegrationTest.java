@@ -79,7 +79,7 @@ class SyntArbeidsforholdControllerIntegrationTest {
         var generated = no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.SyntArbeidsforholdDTO
                 .builder()
                 .ansettelsesPeriode(AnsettelsePeriodeDTO.builder().fom(fom).tom(tom).build())
-                .arbeidsavtale(ArbeidsavtaleDTO.builder().stillingsprosent(100.0).yrke(yrke).build())
+                .arbeidsavtale(ArbeidsavtaleDTO.builder().stillingsprosent(100.0F).yrke(yrke).build())
                 .arbeidsforholdID(arbeidsforholdID)
                 .arbeidsforholdstype("ordinaertArbeidsforhold")
                 .arbeidstaker(ArbeidstakerDTO.builder().ident(ident).build())
@@ -122,7 +122,7 @@ class SyntArbeidsforholdControllerIntegrationTest {
                         .tom(tom)
                         .arbeidsforholdId(arbeidsforholdID)
                         .orgnummer(ORGNUMMER)
-                        .stillingsprosent(100.0)
+                        .stillingsprosent(100.0F)
                         .yrke(yrke)
                         .build())
                 .verifyPost();
@@ -141,7 +141,7 @@ class SyntArbeidsforholdControllerIntegrationTest {
         var generated = no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.SyntArbeidsforholdDTO
                 .builder()
                 .ansettelsesPeriode(AnsettelsePeriodeDTO.builder().fom(fom).tom(tom).build())
-                .arbeidsavtale(ArbeidsavtaleDTO.builder().stillingsprosent(100.0).yrke(yrke).build())
+                .arbeidsavtale(ArbeidsavtaleDTO.builder().stillingsprosent(100.0F).yrke(yrke).build())
                 .arbeidsforholdID(arbeidsforholdID)
                 .arbeidsforholdstype("ordinaertArbeidsforhold")
                 .arbeidstaker(ArbeidstakerDTO.builder().ident(ident).build())
@@ -185,7 +185,7 @@ class SyntArbeidsforholdControllerIntegrationTest {
                         .tom(tom)
                         .arbeidsforholdId(arbeidsforholdID)
                         .orgnummer(ORGNUMMER)
-                        .stillingsprosent(100.0)
+                        .stillingsprosent(100.0F)
                         .yrke(yrke)
                         .build())
                 .verifyPost();
@@ -207,7 +207,7 @@ class SyntArbeidsforholdControllerIntegrationTest {
         var generated = no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.SyntArbeidsforholdDTO
                 .builder()
                 .ansettelsesPeriode(AnsettelsePeriodeDTO.builder().fom(fom).tom(tom).build())
-                .arbeidsavtale(ArbeidsavtaleDTO.builder().stillingsprosent(100.0).yrke(invalidYrke).build())
+                .arbeidsavtale(ArbeidsavtaleDTO.builder().stillingsprosent(100.0F).yrke(invalidYrke).build())
                 .arbeidsforholdID(arbeidsforholdID)
                 .arbeidsforholdstype("ordinaertArbeidsforhold")
                 .arbeidstaker(ArbeidstakerDTO.builder().ident(ident).build())
@@ -250,7 +250,7 @@ class SyntArbeidsforholdControllerIntegrationTest {
                         .tom(tom)
                         .arbeidsforholdId(arbeidsforholdID)
                         .orgnummer(ORGNUMMER)
-                        .stillingsprosent(100.0)
+                        .stillingsprosent(100.0F)
                         .yrke(validYrke)
                         .build())
                 .verifyPost();

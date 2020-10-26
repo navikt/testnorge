@@ -1,6 +1,5 @@
 package no.nav.registre.testnorge.personexportapi.consumer.kodeverk;
 
-import static no.nav.registre.testnorge.personexportapi.config.CachingConfig.CACHE_KODEVERK;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 import java.util.Collections;
@@ -8,12 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
+@CacheConfig(cacheNames = "Kodeverk")
 public class KodeverkConsumer {
 
     private static final String KODEVERK_URL_COMPLETE = "/api/v1/kodeverk/{kodeverksnavn}/koder/betydninger?ekskluderUgyldige=true&spraak=nb";
@@ -40,7 +41,7 @@ public class KodeverkConsumer {
         }
     }
 
-    @Cacheable(CACHE_KODEVERK)
+    @Cacheable(sync = true)
     public Map<String, List<KodeverkBetydningerResponse.Betydning>> getKodeverkByName(String kodeverk) {
 
         ResponseEntity<KodeverkBetydningerResponse> kodeverkResponse = webClient
