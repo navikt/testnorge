@@ -7,16 +7,16 @@ sonarqube {
     properties {
         property "sonar.sourceEncoding", "UTF-8"
         property "sonar.projectKey", "navikt_testnorge"
-        property "sonar.projectName", "testnorge"
         property "sonar.organization", "navit"
         property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.login", System.getenv("SONAR_TOKEN")
-        property "sonar.moduleKey", "testnorge"
     }
 }
 
 allprojects {
     plugins.withId('com.gradle.build-scan') {
-        buildScan { termsOfServiceUrl = "https://gradle.com/terms-of-service"; termsOfServiceAgree = "yes" }
+        buildScan {
+            termsOfServiceUrl = "https://gradle.com/terms-of-service"
+            termsOfServiceAgree = "yes"
+        }
     }
 }

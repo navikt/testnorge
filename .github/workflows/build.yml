@@ -18,12 +18,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.11
-      - name: Build with Gradle
+      - name: Build and analzye
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew build --scan
-      - name: SonarQube
-        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew sonarqube
+        run: ./gradlew build sonarqube --info --scan
