@@ -30,7 +30,7 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :testnorge-aareg:build
+        run: ./gradlew :tilbakemelding-api:build
       - name: Build and publish Docker image
         working-directory: apps/tilbakemelding-api/
         env:
