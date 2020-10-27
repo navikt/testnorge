@@ -38,7 +38,7 @@ public class TpsRequestService {
         forbiddenCallHandlerService.authoriseRestCall(serviceRoutine);
 
         MessageQueueConsumer messageQueueConsumer =
-                messageQueueServiceFactory.createMessageQueueConsumer(context.getEnvironment(), serviceRoutine.getConfig().getRequestQueue(), false);
+                messageQueueServiceFactory.createMessageQueueConsumer("q2", serviceRoutine.getConfig().getRequestQueue(), false);
 
         if (tpsRequest instanceof TpsServiceRoutineHentByFnrRequest) {
             forbiddenCallHandlerService.authorisePersonSearch(serviceRoutine, ((TpsServiceRoutineHentByFnrRequest) tpsRequest).getFnr());
