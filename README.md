@@ -17,13 +17,13 @@ Swagger finnes under /swagger-ui.html.
 #### Javascript
 - Følg oppskriften i Java, denne kreves for å kjøre Dolly lokalt
 - Kjør applikasjonen med npm start (fra ./src/main/web_src)
-    - Default browser åpner automatisk et vindu til localhost:3000, hvor du blir møtt av en feilmelding
+    - Default browser åpner automatisk et vindu til localhost:3000, hvor du vil bli møtt av en feilmelding
     - Åpne konsollen og klikk på linken som ligger øverst i konsollen
-        - Åpne konsoll i Chrome - ***Mac:** Command + Option + J, **Win:** Control + Shift + J*
-        - Åpne konsoll i Firefox - ***Mac:** - Command + Option + K, **Win:** Control + Shift + K*
+        - Åpne konsoll i *Chrome - **Mac:** Command + Option + J, **Win:** Control + Shift + J*
+        - Åpne konsoll i *Firefox - **Mac:** - Command + Option + K, **Win:** Control + Shift + K*
         ![Konsoll Login](docs/assets/konsoll_login.png)
-    - En ny fane åpnes med informasjon tilknyttet din bruker, denne fanen kan lukkes
-- Du er nå logget inn i den første fanen (prøv en refresh dersom det ikke fungerer med en gang) og kan begynne å bruke Dolly lokalt
+    - En ny fane åpnes med informasjon tilknyttet din konto, denne fanen kan deretter lukkes
+- Du vil nå være logget inn i den første fanen (prøv en refresh dersom det ikke fungerer med en gang) og kan begynne å bruke Dolly lokalt
 
 
 **NB: Legg til i .npmrc filen for å kjøre fra utv image**
