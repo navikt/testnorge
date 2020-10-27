@@ -1,7 +1,7 @@
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-  name: ident-pool
+  name: ident-pool-test
   namespace: default
   labels:
     team: dolly
@@ -34,10 +34,9 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://ident-pool.nais.preprod.local"
-    - "https://ident-pool.dev.adeo.no"
+    - "https://ident-pool-test.dev.adeo.no"
   paths:
-    - kvPath: /oracle/data/dev/config/identpool_q2
+    - kvPath: /oracle/data/dev/config/identpool_test
       mountPath: /var/run/secrets/nais.io/dbPath
-    - kvPath: /oracle/data/dev/creds/identpool_q2-user
+    - kvPath: /oracle/data/dev/creds/identpool_test-user
       mountPath: /var/run/secrets/nais.io/db
