@@ -13,7 +13,8 @@ bootJar {
 
 dependencies {
 
-    runtimeOnly 'com.sun.xml.ws:jaxws-ri:2.3.3'
+
+    implementation 'com.sun.xml.ws:jaxws-ri:2.3.3'
     implementation project(':testnorge-core')
     implementation project(':testnorge-dependency-analysis')
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:2.2.5.RELEASE'
@@ -29,12 +30,19 @@ dependencies {
     implementation 'com.jayway.jsonpath:json-path:2.4.0'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
     implementation project(':aareg-domain')
-    implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
+
+    implementation('no.nav.registre:testnorge-consumers:1.12.0-RELEASE') {
+        exclude group: 'org.codehaus.woodstox', module: 'stax2-api'
+    }
     implementation project(':testnorge-domain')
     implementation 'no.nav.tjenestespesifikasjoner:nav-fim-behandleArbeidsforhold-v1-tjenestespesifikasjon:1.2020.04.30-11.45-a45e1248c063'
     implementation 'org.apache.neethi:neethi:3.1.1'
-    implementation 'org.apache.cxf:cxf-spring-boot-starter-jaxws:3.3.3'
-    implementation 'org.apache.cxf:cxf-rt-ws-security:3.3.3'
+    implementation ('org.apache.cxf:cxf-spring-boot-starter-jaxws:3.3.3') {
+        exclude group: 'org.codehaus.woodstox', module: 'stax2-api'
+    }
+    implementation ('org.apache.cxf:cxf-rt-ws-security:3.3.3') {
+        exclude group: 'org.codehaus.woodstox', module: 'stax2-api'
+    }
     implementation 'javax.xml.ws:jaxws-api:2.3.0'
     implementation 'org.apache.commons:commons-lang3:3.10'
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
