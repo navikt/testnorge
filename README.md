@@ -15,10 +15,18 @@ Swagger finnes under /swagger-ui.html.
 ## Lokal kjøring
 
 #### Javascript
-- Logg på [dolly-t2](https://dolly-t2.nais.preprod.local/) for å få oppdatert OIDC token i nettleser.
+- Følg oppskriften i Java, denne kreves for å kjøre Dolly lokalt
 - Kjør applikasjonen med npm start (fra ./src/main/web_src)
+    - Default browser åpner automatisk et vindu til localhost:3000, hvor du blir møtt av en feilmelding
+    - Åpne konsollen og klikk på linken som ligger øverst i konsollen
+        - Åpne konsoll i Chrome - ***Mac:** Command + Option + J, **Win:** Control + Shift + J*
+        - Åpne konsoll i Firefox - ***Mac:** - Command + Option + K, **Win:** Control + Shift + K*
+        ![Konsoll Login](docs/assets/konsoll_login.png)
+    - En ny fane åpnes med informasjon tilknyttet din bruker, denne fanen kan lukkes
+- Du er nå logget inn i den første fanen (prøv en refresh dersom det ikke fungerer med en gang) og kan begynne å bruke Dolly lokalt
 
-**NB: Legg til i .npmrc filen får å kjøre fra utv image**
+
+**NB: Legg til i .npmrc filen for å kjøre fra utv image**
 
 ```
 https-proxy=http://155.55.60.117:8088/
@@ -36,44 +44,31 @@ trykker på nedtrekksmenyen oppe til høyre, og trykker på "Copy token".
 Hvis du også kjører Dolly-backend lokalt og vil teste Dolly mot den lokale backend versjonen så må `dolly.url` i application-local.yml 
 settes til url-en for den lokale versjonen av dolly-backend (eks: `http://localhost:8080`)
 
-Legg dette i **din** maven settings.xml fil (bytt ut password med ditt Github-token):
 
+##### Legge til sertifikat i truststore:
+Dersom det dukker opp RunTimeException under oppstart kan det være at du mangler sertifikat i din truststore.
+
+Sertifikat kan hentes fra [Microsoft Login Cert](https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/login) (Ignorer feilmeldingen om POST)
+
+For Mac:
+- Trykk på hengelåsen til venstre for URL og klikk deretter på sertifikat
+
+ ![Microsoft Sertifikat](docs/assets/microsoft_keychain.png)
+
+- Klikk på pilen ved siden av detaljer og bla helt ned
+
+ ![Sertifikat Detaljer](docs/assets/cert_details.png)
+
+- Ved å trykke på linken vil sertifikat lastes ned og man kan deretter legge denne til i Truststore ved hjelp av kommandoen:
 ```
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
-  <mirrors>
-    <mirror>
-      <id>NAV internal Nexus</id>
-      <mirrorOf>external:*,!nav-github-packages</mirrorOf>
-      <url>https://repo.adeo.no/repository/maven-public</url>
-    </mirror>
-  </mirrors>
-  <profiles>
-    <profile>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <repositories>
-        <repository>
-          <id>nav-github-packages</id>
-          <url>https://repo.adeo.no/repository/github-package-registry-navikt/</url>
-        </repository>
-      </repositories>
-    </profile>
-  </profiles>
-      <servers>
-        <server>
-            <id>nav-github-packages</id>
-            <username>token</username>
-            <password>...</password>
-        </server>
-    </servers>
-</settings>
+keytool -import -trustcacerts -alias MicrosoftLoginCert -file DIN_DOWNLOAD_DIR/DigiCertSHA2SecureServerCA.crt -keystore PATH_TIL_DIN_KEYSTORE.jts
 ```
+
+ ![Sertifikat Download](docs/assets/cert_download.png)
+
 ##### Bygge med maven utenfor utviklerimage:
 
-**NB: `navtunnel` må kjøre**
+**NB: `Naisdevice` må kjøre**
 
 Legg inn dette i **din** maven settings.xml fil:
 ```
