@@ -10,10 +10,10 @@ plugins {
 bootJar {
     archiveFileName = "app.jar"
 }
-sourceCompatibility = '11'
-targetCompatibility = '11'
 
 dependencies {
+
+    runtimeOnly 'com.sun.xml.ws:jaxws-ri:2.3.3'
     implementation project(':testnorge-core')
     implementation project(':testnorge-dependency-analysis')
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:2.2.5.RELEASE'
