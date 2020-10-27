@@ -22,7 +22,7 @@ import no.nav.registre.testnorge.originalpopulasjon.domain.Person;
 @RequiredArgsConstructor
 public class PopulasjonService {
 
-    private static final Set<String> TAGS = Set.of("Mini-Norge");
+    private static final Set<String> TAGS = Set.of("MINI_NORGE");
 
     private final StatistikkService statistikkService;
     private final SyntPersonConsumer syntPersonConsumer;

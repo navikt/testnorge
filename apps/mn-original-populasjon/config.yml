@@ -28,8 +28,8 @@ spec:
   vault:
     enabled: true
     paths:
-      - kvPath: /kv/preprod/fss/mn-original-populasjon/default
-        mountPath: /var/run/secrets/nais.io/vault
+      - kvPath: /serviceuser/data/dev/srvtestnorge
+        mountPath: /secret/serviceuser
   resources:
     requests:
       cpu: 200m
