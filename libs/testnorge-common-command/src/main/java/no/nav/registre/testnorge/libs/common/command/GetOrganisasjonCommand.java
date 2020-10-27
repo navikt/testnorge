@@ -13,8 +13,8 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 
 @Slf4j
-@RequiredArgsConstructor
 @DependencyOn("organisasjon-api")
+@RequiredArgsConstructor
 public class GetOrganisasjonCommand implements Callable<OrganisasjonDTO> {
     private final WebClient webClient;
     private final String accessToken;
@@ -25,7 +25,6 @@ public class GetOrganisasjonCommand implements Callable<OrganisasjonDTO> {
     @Override
     public OrganisasjonDTO call() {
         log.info("Henter organiasjon med orgnummer {}.", orgnummer);
-
         try {
             return webClient
                     .get()

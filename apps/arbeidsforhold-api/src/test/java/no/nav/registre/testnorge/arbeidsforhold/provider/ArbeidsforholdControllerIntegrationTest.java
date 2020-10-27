@@ -35,8 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
-@AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
+@AutoConfigureMockMvc(addFilters = false)
 public class ArbeidsforholdControllerIntegrationTest {
 
     @Autowired
@@ -49,7 +49,7 @@ public class ArbeidsforholdControllerIntegrationTest {
     private static final String personIdent = "12345678910";
     private static final String arbeidsforholdId = "1";
     private static final String yrke = "Tester";
-    private static final double stillingsprosent = 100.00;
+    private static final float stillingsprosent = 100.00F;
     private static final String aaregUrl = "(.*)/aareg-test/api/v1/arbeidstaker/arbeidsforhold";
     private static final String tokenUrl = "(.*)/token-provider";
 

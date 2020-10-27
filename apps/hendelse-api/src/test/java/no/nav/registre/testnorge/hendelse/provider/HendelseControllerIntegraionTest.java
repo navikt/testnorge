@@ -7,13 +7,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.Date;
@@ -21,18 +19,17 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
-import no.nav.registre.testnorge.libs.dto.hendelse.v1.HendelseDTO;
-import no.nav.registre.testnorge.libs.dto.hendelse.v1.HendelseType;
 import no.nav.registre.testnorge.hendelse.repository.HendelseRepository;
 import no.nav.registre.testnorge.hendelse.repository.model.HendelseModel;
+import no.nav.registre.testnorge.libs.dto.hendelse.v1.HendelseDTO;
+import no.nav.registre.testnorge.libs.dto.hendelse.v1.HendelseType;
 
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
-class HendelseControllerIntegraionTest {
+public class HendelseControllerIntegraionTest {
 
     private static final String FIRST_IDENT = "01010123964";
     private static final String SECOND_IDENT = "02012134961";

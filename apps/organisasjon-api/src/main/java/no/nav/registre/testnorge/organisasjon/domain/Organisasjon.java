@@ -1,16 +1,20 @@
 package no.nav.registre.testnorge.organisasjon.domain;
 
 import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.eregmapper.v1.EregMapperDTO;
 import no.nav.registre.testnorge.libs.dto.eregmapper.v1.NavnDTO;
 import no.nav.registre.testnorge.organisasjon.consumer.dto.OrganisasjonDTO;
 
 
+@Slf4j
 @Value
 public class Organisasjon {
     String orgnummer;
@@ -20,6 +24,7 @@ public class Organisasjon {
     Adresse postadresse;
     Adresse forretningsadresser;
     String redigertnavn;
+    List<String> driverVirksomheter;
 
     public Organisasjon(OrganisasjonDTO dto) {
 
@@ -28,6 +33,10 @@ public class Organisasjon {
         juridiskEnhet = dto.getParents().isEmpty() ? null : dto.getParents().get(0).getOrganisasjonsnummer();
         redigertnavn = dto.getNavn().getRedigertnavn();
         enhetType = dto.getDetaljer().getEnhetstype();
+
+        driverVirksomheter = dto.getChildren() != null
+                ? dto.getChildren().stream().map(OrganisasjonDTO::getOrganisasjonsnummer).collect(Collectors.toList())
+                : Collections.emptyList();
 
         if (dto.getOrganisasjonDetaljer() != null) {
             var postadresser = dto.getOrganisasjonDetaljer().getPostadresser();
@@ -64,6 +73,7 @@ public class Organisasjon {
             forretningsadresser = null;
         }
         redigertnavn = dto.getRedigertnavn();
+        driverVirksomheter = dto.getDriverVirksomheter();
     }
 
     public no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO toDTO() {
@@ -75,6 +85,7 @@ public class Organisasjon {
                 .postadresse(postadresse != null ? postadresse.toDTO() : null)
                 .forretningsadresser(forretningsadresser != null ? forretningsadresser.toDTO() : null)
                 .redigertnavn(redigertnavn)
+                .driverVirksomheter(driverVirksomheter)
                 .build();
     }
 

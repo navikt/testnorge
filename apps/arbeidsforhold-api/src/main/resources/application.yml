@@ -1,16 +1,30 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+CLIENT_ID: 1b2f24c8-a426-47b1-8ff1-7905d6dfddb5
+
+
 spring:
   application:
     name: arbeidsforhold-api
-
-application:
-  version: @application.version@
-  name: arbeidsforhold-api
+    version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
+    description: Opprettelse av arbeidsforhold
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
 
 aareg:
-  url: https://modapp-q1.adeo.no/aareg-services/api
+  url: https://modapp-{miljo}.adeo.no/aareg-services/api
 
 kafka:
   bootstrapservers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
   schemaregistryservers: http://kafka-schema-registry.tpa.svc.nais.local:8081
   groupid: testnorge-arbeidsforhold-api-v1
   topic: testnorge-opprett-hendelse-v1
+
+consumers:
+  organisasjonapi:
+    url: https://testnorge-organisasjon-api.dev.adeo.no
+    client_id: f4167796-bf43-438b-a282-a480e8108d0c
+    client_secret: ${ORGANISASJON_API_CLIENT_SECRET}

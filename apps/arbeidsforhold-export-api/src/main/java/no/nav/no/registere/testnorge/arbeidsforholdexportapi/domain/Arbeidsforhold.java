@@ -1,6 +1,5 @@
 package no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain;
 
-import javax.annotation.Nullable;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDate;
 import java.util.List;
@@ -122,7 +121,7 @@ public class Arbeidsforhold {
     }
 
 
-    private static LocalDate toLocalDate(@Nullable XMLGregorianCalendar calendar) {
+    private static LocalDate toLocalDate(XMLGregorianCalendar calendar) {
         if (calendar == null) {
             return null;
         }

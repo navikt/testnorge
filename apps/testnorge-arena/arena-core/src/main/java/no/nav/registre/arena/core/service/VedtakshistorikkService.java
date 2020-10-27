@@ -180,14 +180,17 @@ public class VedtakshistorikkService {
 
         List<RettighetRequest> rettighetRequests;
 
-        if (senesteVedtak instanceof NyttVedtakAap) {
+        if (senesteVedtak == null){
+            log.info("Kunne ikke opprette rettigheter for ident: " + personident);
+            rettighetRequests = new ArrayList<>();
+        }else if (senesteVedtak instanceof NyttVedtakAap) {
             rettighetRequests = serviceUtils.opprettArbeidssoekerAap(rettigheter, miljoe, ((NyttVedtakAap) senesteVedtak).getAktivitetsfase());
         } else if (senesteVedtak instanceof NyttVedtakTiltak) {
             rettighetRequests = serviceUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe);
         } else if (senesteVedtak instanceof NyttVedtakTillegg) {
             rettighetRequests = serviceUtils.opprettArbeidssoekerTillegg(rettigheter, miljoe);
         } else {
-            throw new VedtakshistorikkException("Ukjent vedtakstype: " + (senesteVedtak != null ? senesteVedtak.getClass() : null));
+            throw new VedtakshistorikkException("Ukjent vedtakstype: " + senesteVedtak.getClass());
         }
 
 

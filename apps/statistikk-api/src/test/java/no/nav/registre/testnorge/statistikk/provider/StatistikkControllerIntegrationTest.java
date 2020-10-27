@@ -9,13 +9,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
@@ -26,11 +24,10 @@ import no.nav.registre.testnorge.libs.dto.statistikk.v1.StatistikkValueType;
 import no.nav.registre.testnorge.statistikk.repository.StatistikkRepository;
 import no.nav.registre.testnorge.statistikk.repository.model.StatistikkModel;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
-class StatistikkControllerIntegrationTest {
+public class StatistikkControllerIntegrationTest {
 
     @Autowired
     private MockMvc mvc;

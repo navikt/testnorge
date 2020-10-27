@@ -10,5 +10,5 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
 application:
-  version: @application.version@
+  version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
   name: statistikk-api

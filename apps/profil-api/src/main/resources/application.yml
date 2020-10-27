@@ -1,5 +1,5 @@
 spring.application:
-  version: @application.version@
+  version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
   name: profil-api
   desciption: API for hente ut profil fra Azure Ad
 

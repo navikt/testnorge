@@ -11,7 +11,7 @@ spring:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
   application:
-    version: @application.version@
+    version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
     name: mn-original-populasjon
     desciption: API for opprettelse av populasjon til Mini-Norge
 
@@ -23,4 +23,4 @@ consumer:
   synt-person-api:
     url: https://testnorge-synt-person-api.dev.adeo.no
     client_secret: ${SYNT_PERSON_API_CLIENT_SECRET}
-    client_id: ${SYNT_PERSON_API_CLIENT_ID}
+    client_id: 9e22aba7-8c92-4f5e-8c0e-073e00c82bcf

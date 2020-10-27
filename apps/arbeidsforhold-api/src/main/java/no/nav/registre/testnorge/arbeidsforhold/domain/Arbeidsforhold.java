@@ -13,12 +13,15 @@ import no.nav.registre.testnorge.arbeidsforhold.exception.ArbeidsforholdNotFound
 public class Arbeidsforhold {
     private final String arbeidsforholdId;
     private final String orgnummer;
-    private final Double stillingsprosent;
+    private final Float stillingsprosent;
     private final String arbeidstidsordning;
     private final String yrke;
     private final LocalDate fom;
     private final LocalDate tom;
     private final String ident;
+    private final String type;
+    private final Float antallTimerPrUke;
+    private final LocalDate sistLoennsendring;
 
     public Arbeidsforhold(ArbeidsforholdDTO dto) {
         arbeidsforholdId = dto.getArbeidsforholdId();
@@ -37,9 +40,12 @@ public class Arbeidsforhold {
         stillingsprosent = arbeidsavtale.getStillingsprosent();
         yrke = arbeidsavtale.getYrke();
         arbeidstidsordning = arbeidsavtale.getArbeidstidsordning();
+        antallTimerPrUke = arbeidsavtale.getAntallTimerPrUke();
+        sistLoennsendring = arbeidsavtale.getSistLoennsendring();
         fom = dto.getAnsettelsesperiode().getPeriode().getFom();
         tom = dto.getAnsettelsesperiode().getPeriode().getTom();
         ident = dto.getArbeidstaker().getOffentligIdent();
+        type = dto.getType();
     }
 
     public Arbeidsforhold(no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO dto) {
@@ -50,7 +56,10 @@ public class Arbeidsforhold {
         yrke = dto.getYrke();
         fom = dto.getFom();
         tom = dto.getTom();
+        antallTimerPrUke = dto.getAntallTimerPrUke();
+        sistLoennsendring = dto.getSistLoennsendring();
         ident = dto.getIdent();
+        type = dto.getType();
     }
 
     public no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO toDTO() {
@@ -63,7 +72,10 @@ public class Arbeidsforhold {
                 .yrke(yrke)
                 .fom(fom)
                 .tom(tom)
+                .antallTimerPrUke(antallTimerPrUke)
+                .sistLoennsendring(sistLoennsendring)
                 .ident(ident)
+                .type(type)
                 .build();
     }
 }
