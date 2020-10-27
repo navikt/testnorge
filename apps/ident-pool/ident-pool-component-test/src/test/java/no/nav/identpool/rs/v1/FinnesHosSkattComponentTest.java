@@ -6,22 +6,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
-import no.nav.identpool.rs.v1.support.ApiResponse;
-import no.nav.identpool.rs.v1.support.IdentRequest;
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import no.nav.identpool.ComponentTestbase;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
+import no.nav.identpool.rs.v1.support.ApiResponse;
+import no.nav.identpool.rs.v1.support.IdentRequest;
 
 @DisplayName("POST /api/v1/finneshosskatt")
 class FinnesHosSkattComponentTest extends ComponentTestbase {
@@ -45,15 +42,6 @@ class FinnesHosSkattComponentTest extends ComponentTestbase {
     @AfterEach
     void clearDatabase() {
         identRepository.deleteAll();
-    }
-
-    @Test
-    void registrerFinnesISkdUtenOidc() {
-        IdentRequest request = new IdentRequest(DNR);
-
-        ResponseEntity<ApiResponse> apiResponseResponseEntity = doPostRequest(ROOT_URI, createBodyEntity(request, false), ApiResponse.class);
-
-        assertThat(apiResponseResponseEntity.getStatusCode(), is(HttpStatus.FORBIDDEN));
     }
 
     @Test
@@ -82,17 +70,6 @@ class FinnesHosSkattComponentTest extends ComponentTestbase {
         ResponseEntity<ApiResponse> apiResponseResponseEntity = doPostRequest(ROOT_URI, createBodyEntity(request, true), ApiResponse.class);
 
         assertOK(apiResponseResponseEntity, NYTT_DNR);
-    }
-
-    @Test
-    void registrerFinnesISkdMedUgyldigOidc() {
-        HttpHeaders httpEntityWithInvalidToken = new HttpHeaders();
-        httpEntityWithInvalidToken.add(HttpHeaders.CONTENT_TYPE, "application/json");
-        httpEntityWithInvalidToken.add(HttpHeaders.AUTHORIZATION, "Bearer eyJrawJEGxsdERasjdhIKKEjshjsdhETasnmbhfvTOKEN");
-
-        ResponseEntity<ApiResponse> apiResponseResponseEntity = doPostRequest(ROOT_URI, new HttpEntity<>(DNR, httpEntityWithInvalidToken), ApiResponse.class);
-
-        assertThat(apiResponseResponseEntity.getStatusCode(), is(HttpStatus.FORBIDDEN));
     }
 
     private void assertOK(ResponseEntity<ApiResponse> apiResponseResponseEntity, String dnr) {

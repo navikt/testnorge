@@ -31,7 +31,6 @@
         <woodstox.version>4.4.1</woodstox.version>
         <woodstox-core.version>5.0.3</woodstox-core.version>
         <javassist.version>3.22.0-GA</javassist.version>
-<!--        <freg-security-oidc.version>3.1.0</freg-security-oidc.version>-->
         <guava.version>18.0</guava.version>
         <tps.interface.library.version>2020.08.27-09.53-183ead3d81eb</tps.interface.library.version>
         <springdoc-openapi.version>1.4.7</springdoc-openapi.version>
@@ -87,11 +86,6 @@
                 <artifactId>ident-pool-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
-<!--            <dependency>-->
-<!--                <groupId>no.nav.freg</groupId>-->
-<!--                <artifactId>freg-security-oidc</artifactId>-->
-<!--                <version>${freg-security-oidc.version}</version>-->
-<!--            </dependency>-->
             <dependency>
                 <groupId>org.reflections</groupId>
                 <artifactId>reflections</artifactId>

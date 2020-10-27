@@ -48,11 +48,6 @@
             <artifactId>spring-retry</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>no.nav.freg</groupId>-->
-<!--            <artifactId>freg-security-oidc</artifactId>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>com.ibm.mq</groupId>
             <artifactId>com.ibm.mq.allclient</artifactId>
