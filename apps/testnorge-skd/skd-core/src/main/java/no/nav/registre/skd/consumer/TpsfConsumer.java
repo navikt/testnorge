@@ -22,6 +22,7 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Base64Utils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
@@ -41,13 +42,14 @@ public class TpsfConsumer {
     private final WebClient webClient;
 
     public TpsfConsumer(
-            WebClient webClient,
-            RestTemplateBuilder restTemplateBuilder,
             @Value("${tps-forvalteren.rest-api.url}") String serverUrl,
             @Value("${testnorges.ida.credential.tpsf.username}") String username,
             @Value("${testnorges.ida.credential.tpsf.password}") String password
     ) {
-        this.webClient = webClient;
+        this.webClient = WebClient.builder()
+                .baseUrl(serverUrl)
+                .defaultHeaders(headers -> headers.setBasicAuth(username, password))
+                .build();
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
