@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="urn:no:nav:registre:testnorge:xsd:arbeidsforhold:v2_0" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:ds="http://www.w3.org/2000/09/xmldsig#" targetNamespace="urn:no:nav:registre:testnorge:xsd:arbeidsforhold:v2_0"
+            elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xsd:import namespace="http://www.w3.org/2000/09/xmldsig#"
+                schemaLocation="./xmldsig-core-schema.xsd"/>
+    <xsd:element name="melding" type="EDAG_M"/>
+    <xsd:complexType name="EDAG_M">
+        <xsd:sequence>
+            <xsd:element name="Leveranse" type="Leveranse"/>
+            <xsd:element ref="ds:Signature" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="Leveranse">
+        <xsd:sequence>
+            <xsd:element name="kalendermaaned" type="AArOgMaaned"/>
+            <xsd:element name="leveranseinformasjon" type="Leveranseinformasjon" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>Inneholder en liste med referanser til de a-meldinger som danner grunnlaget for
+                        innholdet i denne leveransen.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="opplysningspliktig" type="Opplysningspliktig"/>
+            <xsd:element name="oppgave" type="JuridiskEntitet"/>
+            <xsd:element name="kilde" type="Kilde">
+                <xsd:annotation>
+                    <xsd:documentation>Inneholder identifiserende informasjon for kilden til innholdet på dette nivå. I
+                        dette tilfellet oppsumeringsdokument for opplysningpliktig.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="Opplysningspliktig">
+        <xsd:sequence>
+            <xsd:element name="norskIdentifikator" type="NorskIdentifikator"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="JuridiskEntitet">
+        <xsd:sequence>
+            <xsd:element name="virksomhet" type="Virksomhet" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="Virksomhet">
+        <xsd:sequence>
+            <xsd:element name="norskIdentifikator" type="NorskIdentifikator"/>
+            <xsd:element name="inntektsmottaker" type="Inntektsmottaker" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="avvik" type="Avvik" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>Dette elementet inneholder eventuelle avvik oppdaget av kontroller som er utført
+                        på dette nivå av dokumentet
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="Inntektsmottaker">
+        <xsd:sequence>
+            <xsd:element name="norskIdentifikator" type="NorskIdentifikator"/>
+            <xsd:element name="arbeidsforhold" type="Arbeidsforhold" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="inntekt" type="Inntekt" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="avvik" type="Avvik" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>Dette elementet inneholder eventuelle avvik oppdaget av kontroller som er utført
+                        på dette nivå av dokumentet
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="kilde" type="Kilde">
+                <xsd:annotation>
+                    <xsd:documentation>Inneholder identifiserende informasjon for kilden til innholdet på dette nivå. I
+                        dette tilfellet oppsumeringsdokument for inntektsmottaker.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="Landkode">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:complexType name="Arbeidsforhold">
+        <xsd:sequence>
+            <xsd:element name="arbeidsforholdId" type="Identifikator" minOccurs="0"/>
+            <xsd:element name="typeArbeidsforhold" type="Arbeidsforholdstype"/>
+            <xsd:element name="startdato" type="Dato" minOccurs="0"/>
+            <xsd:element name="sluttdato" type="Dato" minOccurs="0"/>
+            <xsd:element name="antallTimerPerUkeSomEnFullStillingTilsvarer" type="Desimaltall" minOccurs="0"/>
+            <xsd:element name="avloenningstype" type="Avloenningstype" minOccurs="0"/>
+            <xsd:element name="yrke" type="Yrke" minOccurs="0"/>
+            <xsd:element name="arbeidstidsordning" type="Arbeidstidsordning" minOccurs="0"/>
+            <xsd:element name="stillingsprosent" type="Desimaltall" minOccurs="0"/>
+            <xsd:element name="sisteLoennsendringsdato" type="Dato" minOccurs="0"/>
+            <xsd:element name="fartoey" type="Fartoey" minOccurs="0"/>
+            <xsd:element name="permisjon" type="Permisjon" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="sisteDatoForStillingsprosentendring" type="Dato" minOccurs="0"/>
+            <xsd:element name="avvik" type="Avvik" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>Dette elementet inneholder eventuelle avvik oppdaget av kontroller som er utført
+                        på dette nivå av dokumentet
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="Arbeidsforholdstype">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="Avloenningstype">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="Yrke">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="Arbeidstidsordning">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:complexType name="Fartoey">
+        <xsd:sequence>
+            <xsd:element name="skipsregister" type="Skipsregister"/>
+            <xsd:element name="skipstype" type="Skipstype"/>
+            <xsd:element name="fartsomraade" type="Fartsomraade"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="Skipsregister">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="Skipstype">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="Fartsomraade">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="PermisjonsOgPermitteringsBeskrivelse">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:complexType name="Permisjon">
+        <xsd:sequence>
+            <xsd:element name="startdato" type="Dato"/>
+            <xsd:element name="sluttdato" type="Dato" minOccurs="0"/>
+            <xsd:element name="permisjonsprosent" type="Desimaltall"/>
+            <xsd:element name="permisjonId" type="Identifikator"/>
+            <xsd:element name="beskrivelse" type="PermisjonsOgPermitteringsBeskrivelse"/>
+            <xsd:element name="avvik" type="Avvik" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>Dette elementet inneholder eventuelle avvik oppdaget av kontroller som er utført
+                        på dette nivå av dokumentet
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="Inntekt">
+        <xsd:sequence>
+            <xsd:element name="startdatoOpptjeningsperiode" type="Dato" minOccurs="0"/>
+            <xsd:element name="sluttdatoOpptjeningsperiode" type="Dato" minOccurs="0"/>
+            <xsd:element name="arbeidsforholdId" type="Identifikator" minOccurs="0"/>
+            <xsd:choice>
+                <xsd:element name="loennsinntekt" type="Loennsinntekt"/>
+            </xsd:choice>
+            <xsd:element name="avvik" type="Avvik" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:documentation>Dette elementet inneholder eventuelle avvik oppdaget av kontroller som er utført
+                        på dette nivå av dokumentet
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="Loennsinntekt">
+        <xsd:sequence>
+            <xsd:element name="spesifikasjon" type="Spesifikasjon" minOccurs="0"/>
+            <xsd:element name="antall" type="Desimaltall" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="Spesifikasjon">
+        <xsd:sequence>
+            <xsd:element name="opptjeningsland" type="Landkode" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="DatoTid">
+        <xsd:restriction base="xsd:dateTime"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="AArOgMaaned">
+        <xsd:restriction base="xsd:gYearMonth"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="Tekst">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="NorskIdentifikator">
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="BeloepSomHeltall">
+        <xsd:restriction base="xsd:integer"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="Beloep">
+        <xsd:restriction base="xsd:decimal"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="Dato">
+        <xsd:restriction base="xsd:date"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="Desimaltall">
+        <xsd:restriction base="xsd:decimal"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="Boolsk">
+        <xsd:restriction base="xsd:boolean"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="Heltall">
+        <xsd:restriction base="xsd:integer"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="AArstall">
+        <xsd:restriction base="xsd:gYear"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="TekstMedRestriksjon">
+        <xsd:restriction base="RestriksjonTekstfelt"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="RestriksjonTekstfelt">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="255"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="Identifikator">
+        <xsd:restriction base="RestriksjonIdentifikator"/>
+    </xsd:simpleType>
+    <xsd:simpleType name="RestriksjonIdentifikator">
+        <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="150"/>
+            <xsd:pattern value="([0-9a-zA-Z_.-])*"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="Avvik">
+        <xsd:sequence>
+            <xsd:element name="id" type="Tekst">
+                <xsd:annotation>
+                    <xsd:documentation>Id som unikt identifiserer kontrollen som er utført</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="navn" type="Tekst">
+                <xsd:annotation>
+                    <xsd:documentation>Beskrivende navn på kontrollen</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="alvorlighetsgrad" type="Alvorlighetsgrad">
+                <xsd:annotation>
+                    <xsd:documentation>Forteller i hvilken grad kontrollen avstedkommer sanksjoner</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="detaljer" type="Tekst" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>Detaljer om kontrollen som er utført og årsak til avvik</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:simpleType name="Alvorlighetsgrad">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Oeyeblikkelig"/>
+            <xsd:enumeration value="Retningslinje"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:complexType name="Leveranseinformasjon">
+        <xsd:sequence>
+            <xsd:element name="altinnreferanse" type="Tekst">
+                <xsd:annotation>
+                    <xsd:documentation>Id tildelt av Altinn ved innlevering av melding. Globalt unik</xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="innleveringstidspunkt" type="DatoTid">
+                <xsd:annotation>
+                    <xsd:documentation>Tidspunkt for når aktuell melding ble innlevertlevert til altInn
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="kildesystem" type="TekstMedRestriksjon">
+                <xsd:annotation>
+                    <xsd:documentation>En id gitt av opplysningspliktig som forteller hvilket system som genererte
+                        meldingen
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="erstatterMeldingsId" type="Identifikator" minOccurs="0">
+                <xsd:annotation>
+                    <xsd:documentation>En id gitt av opplysningspliktig som forteller at en tidligere innsendt melding
+                        skal erstattes
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="meldingsId" type="Identifikator">
+                <xsd:annotation>
+                    <xsd:documentation>En id gitt av opplysningspliktig. Utgjør en unik referanse mot
+                        opplysningspliktiges systemer
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="Kilde">
+        <xsd:annotation>
+            <xsd:documentation>Beskriver kilden til informasjon på et gitt nivå</xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="kildereferanse" type="Tekst">
+                <xsd:annotation>
+                    <xsd:documentation>Inneholder en unik id som identifiserer dokumentet eller kilden til innholdet på
+                        dette nivå.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="kildenavn" type="Tekst">
+                <xsd:annotation>
+                    <xsd:documentation>Inneholder navnet til dokumentet som danner grunnlaget for innholdet på dette
+                        nivå. Legg merke til at et navngitt dokument kan ha flere versjoner.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="kildeversjon" type="Heltall">
+                <xsd:annotation>
+                    <xsd:documentation>Inneholder versjonsnummer til dokumentetet som danner grunnlag for denne
+                        leveransen. Høyeste versjon et dokument representerer den sist oppdaterte informasjonen.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

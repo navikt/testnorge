@@ -31,13 +31,12 @@ import no.nav.registre.testnorge.libs.dto.samhandlerregisteret.v1.SamhandlerDTO;
 import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
 @DirtiesContext
 @TestPropertySource(locations = "classpath:application-test.properties")
-class HelsepersonellControllerIntegrationTest {
+public class HelsepersonellControllerIntegrationTest {
 
     @Value("${avspillingsgruppe.helsepersonell.id}")
     private Integer helsepersonellAvspillergruppeId;
@@ -49,7 +48,7 @@ class HelsepersonellControllerIntegrationTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void should_get_helsepersonell_with_hpr_id() throws Exception {
+    public void should_get_helsepersonell_with_hpr_id() throws Exception {
 
         String firstPersonIdent = "12125678903";
         String secondPersonIdent = "09126543211";

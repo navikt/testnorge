@@ -13,3 +13,7 @@
 *.DS_Store
 
 *apps/testnorge-bisys/c:/
+
+### Gradle ###
+.gradle
+*build/
