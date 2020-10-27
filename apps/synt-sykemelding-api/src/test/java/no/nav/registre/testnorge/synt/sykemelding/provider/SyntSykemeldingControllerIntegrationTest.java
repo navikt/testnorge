@@ -9,26 +9,11 @@ import static no.nav.registre.testnorge.synt.sykemelding.util.TestUtil.getTestPe
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
-import no.nav.registre.testnorge.libs.dto.hodejegeren.v1.PersondataDTO;
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.SykemeldingDTO;
-import no.nav.registre.testnorge.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntSykemeldingHistorikkDTO;
-import no.nav.registre.testnorge.synt.sykemelding.domain.Arbeidsforhold;
-import no.nav.registre.testnorge.synt.sykemelding.domain.Person;
-import no.nav.registre.testnorge.synt.sykemelding.domain.Sykemelding;
-import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.runner.RunWith;
-
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -55,6 +40,7 @@ import no.nav.registre.testnorge.libs.dto.hodejegeren.v1.PersondataDTO;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.registre.testnorge.libs.dto.sykemelding.v1.SykemeldingDTO;
 import no.nav.registre.testnorge.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntSykemeldingHistorikkDTO;
 import no.nav.registre.testnorge.synt.sykemelding.domain.Arbeidsforhold;

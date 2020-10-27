@@ -28,11 +28,7 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: mvn --projects :brreg-stub --also-make --settings maven-settings.xml compile
-      - name: Test
-        run: mvn --projects :brreg-stub --also-make --settings maven-settings.xml test
-      - name: Package
-        run: mvn --projects :brreg-stub --also-make --settings maven-settings.xml package -Dmaven.test.skip
+        run: ./gradlew :brreg-stub:build
       - name: Build and publish Docker image
         working-directory: apps/brreg-stub/
         env:

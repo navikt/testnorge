@@ -1,10 +1,5 @@
 package no.nav.registre.testnorge.libs.csvconverter;
 
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.csv.CSVRecord;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
@@ -14,7 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.CSVRecord;
 
 public abstract class CsvConverter<T> {
     private static final char DELIMITER = ';';
@@ -33,7 +31,7 @@ public abstract class CsvConverter<T> {
                 .print(writer);
 
         List<Map<String, Object>> collectionOfMap = rows
-                .stream()
+                .parallelStream()
                 .map(getObjectConverter()::convert)
                 .collect(Collectors.toList());
 

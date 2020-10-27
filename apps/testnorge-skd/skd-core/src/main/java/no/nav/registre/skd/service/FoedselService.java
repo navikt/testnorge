@@ -1,6 +1,5 @@
 package no.nav.registre.skd.service;
 
-import static no.nav.registre.skd.service.utilities.IdentUtility.getFoedselsdatoFraFnr;
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.putFnrInnIMelding;
 
 import lombok.AllArgsConstructor;
@@ -23,6 +22,7 @@ import no.nav.registre.skd.consumer.requests.HentIdenterRequest.IdentType;
 import no.nav.registre.skd.exceptions.ManglerEksisterendeIdentException;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
+import no.nav.registre.testnorge.libs.core.util.IdentUtil;
 
 @Service
 @AllArgsConstructor
@@ -63,7 +63,7 @@ public class FoedselService {
             var melding = meldingIterator.next();
 
             var morFnr = moedre.get(i++);
-            var morFoedselsdato = getFoedselsdatoFraFnr(morFnr);
+            var morFoedselsdato = IdentUtil.getFoedselsdatoFraIdent(morFnr);
 
             String barnFnr;
             try {
@@ -87,7 +87,7 @@ public class FoedselService {
             }
 
             putFnrInnIMelding((RsMeldingstype1Felter) melding, barnFnr);
-            ((RsMeldingstype1Felter) melding).setRegDato(getFoedselsdatoFraFnr(barnFnr).toString().replaceAll("-", ""));
+            ((RsMeldingstype1Felter) melding).setRegDato(IdentUtil.getFoedselsdatoFraIdent(barnFnr).toString().replaceAll("-", ""));
 
             ((RsMeldingstype1Felter) melding).setMorsFodselsdato(morFnr.substring(0, 6));
             ((RsMeldingstype1Felter) melding).setMorsPersonnummer(morFnr.substring(6));
@@ -151,8 +151,8 @@ public class FoedselService {
         potensielleFedre.removeIf(potensiellFarFnr -> antallEksisterendeRelasjoner(potensiellFarFnr) > MAKS_BARN);
         Collections.shuffle(potensielleFedre);
 
-        var foedselsdatoTilMor = getFoedselsdatoFraFnr(morsFnr);
-        var foedselsdatoTilBarn = getFoedselsdatoFraFnr(barnFnr);
+        var foedselsdatoTilMor = IdentUtil.getFoedselsdatoFraIdent(morsFnr);
+        var foedselsdatoTilBarn = IdentUtil.getFoedselsdatoFraIdent(barnFnr);
         var dagensDato = LocalDate.now();
 
         var morAlder = dagensDato.minusYears(foedselsdatoTilMor.getYear()).getYear();
@@ -170,7 +170,7 @@ public class FoedselService {
 
         for (var far : potensielleFedre) {
             if (!moedre.contains(far)) {
-                var foedselsdatoTilFar = getFoedselsdatoFraFnr(far);
+                var foedselsdatoTilFar = IdentUtil.getFoedselsdatoFraIdent(far);
                 var farAlder = dagensDato.minusYears(foedselsdatoTilFar.getYear()).getYear();
                 if (farAlder >= gyldigMinimumFarAlder && farAlder <= gyldigMaksimumFarAlder) {
                     return far;

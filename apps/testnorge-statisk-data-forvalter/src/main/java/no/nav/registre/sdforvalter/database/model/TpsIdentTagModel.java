@@ -35,7 +35,7 @@ public class TpsIdentTagModel extends AuditModel {
     @JoinColumn(name = "IDENT")
     private TpsIdentModel ident;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TAG")
     private TagModel tag;
 }

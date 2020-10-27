@@ -30,7 +30,7 @@ public class TestUtil {
         return ArbeidsforholdDTO.builder()
                 .arbeidsforholdId(arbeidsforholdId)
                 .orgnummer(orgnr)
-                .stillingsprosent(100.00)
+                .stillingsprosent(100.00F)
                 .yrke("Test yrke")
                 .build();
     }

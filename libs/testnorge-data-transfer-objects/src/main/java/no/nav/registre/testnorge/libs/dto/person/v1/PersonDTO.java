@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Value
 @Builder
@@ -26,5 +27,6 @@ public class PersonDTO {
     String etternavn;
     @JsonProperty
     AdresseDTO adresse;
-
+    @JsonProperty
+    Set<String> tags;
 }

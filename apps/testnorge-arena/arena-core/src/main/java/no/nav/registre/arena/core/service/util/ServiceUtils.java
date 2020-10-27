@@ -1,8 +1,10 @@
 package no.nav.registre.arena.core.service.util;
 
 import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.EIER;
-import static no.nav.registre.arena.core.service.util.IdentUtils.hentFoedseldato;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,11 +25,9 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.io.Resources;
-
 import no.nav.registre.arena.core.consumer.rs.AktoerRegisteretConsumer;
+import no.nav.registre.arena.core.consumer.rs.TiltakArenaForvalterConsumer;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetFinnTiltakRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.service.BrukereService;
 import no.nav.registre.arena.core.service.exception.ArbeidssoekerException;
@@ -37,13 +37,15 @@ import no.nav.registre.testnorge.consumers.hodejegeren.response.Relasjon;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.RelasjonsResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.internal.DataRequest;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.internal.HistorikkRequest;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Adresse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Forvalter;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Konto;
+import no.nav.registre.testnorge.libs.core.util.IdentUtil;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Service
@@ -52,6 +54,7 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Kon
 public class ServiceUtils {
 
     public static final String BEGRUNNELSE = "Syntetisert rettighet";
+    public static final String DELTAKERSTATUS_GJENNOMFOERES = "GJENN";
     public static final int MIN_ALDER_AAP = 18;
     public static final int MAX_ALDER_AAP = 67;
     public static final int MIN_ALDER_UNG_UFOER = 18;
@@ -68,6 +71,7 @@ public class ServiceUtils {
     private final BrukereService brukereService;
     private final AktoerRegisteretConsumer aktoerRegisteretConsumer;
     private final Random rand;
+    private final TiltakArenaForvalterConsumer tiltakArenaForvalterConsumer;
 
     static {
         aktivitestsfaserMedInnsats = new HashMap<>();
@@ -170,10 +174,10 @@ public class ServiceUtils {
     }
 
     private Kvalifiseringsgrupper velgKvalifiseringsgruppeBasertPaaAktivitetsfase(String aktivitetsfase) {
-        if (aktivitestsfaserMedInnsats.containsKey(aktivitetsfase)){
+        if (aktivitestsfaserMedInnsats.containsKey(aktivitetsfase)) {
             var innsats = velgKodeBasertPaaSannsynlighet(aktivitestsfaserMedInnsats.get(aktivitetsfase)).getKode();
             return Kvalifiseringsgrupper.valueOf(innsats);
-        }else{
+        } else {
             throw new ArbeidssoekerException("Ukjent aktivitetsfase " + aktivitetsfase);
         }
     }
@@ -238,7 +242,7 @@ public class ServiceUtils {
 
             var barnFnr = relasjon.getFnrRelasjon();
 
-            int alder = Math.toIntExact(ChronoUnit.YEARS.between(hentFoedseldato(barnFnr), tidspunkt));
+            int alder = Math.toIntExact(ChronoUnit.YEARS.between(IdentUtil.getFoedselsdatoFraIdent(barnFnr), tidspunkt));
 
             return alder > -1 && alder < 18;
         }
@@ -278,6 +282,25 @@ public class ServiceUtils {
             rettigheter.removeIf(rettighet -> feiledeIdenter.contains(rettighet.getPersonident()));
         }
         return rettigheter;
+    }
+
+    public void opprettArbeidssoekerTiltakdeltakelse(
+            String ident,
+            String miljoe
+    ) {
+        var kvalifiseringsgruppe = rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM;
+        var identerIArena = brukereService.hentEksisterendeArbeidsoekerIdenter();
+        var uregistrertBruker = !identerIArena.contains(ident);
+
+        if (uregistrertBruker) {
+            var nyeBrukereResponse = brukereService
+                    .sendArbeidssoekereTilArenaForvalter(Collections.singletonList(ident), miljoe, kvalifiseringsgruppe);
+            if (nyeBrukereResponse != null && nyeBrukereResponse.getNyBrukerFeilList() != null && !nyeBrukereResponse.getNyBrukerFeilList().isEmpty()) {
+                nyeBrukereResponse.getNyBrukerFeilList().forEach(nyBrukerFeil ->
+                        log.error("Kunne ikke opprette ny bruker med fnr {} i arena: {}", nyBrukerFeil.getPersonident(), nyBrukerFeil.getMelding())
+                );
+            }
+        }
     }
 
     public List<String> getIdenterMedFoedselsmelding(
@@ -367,21 +390,6 @@ public class ServiceUtils {
                 .values();
     }
 
-    public Map<String, List<NyttVedtakResponse>> combineNyttVedtakResponseLists(
-            Map<String, List<NyttVedtakResponse>> firstResponses,
-            Map<String, List<NyttVedtakResponse>> secondResponses
-    ) {
-        if (!secondResponses.isEmpty()) {
-            for (var entry : firstResponses.entrySet()) {
-                String ident = entry.getKey();
-                if (secondResponses.get(ident) != null) {
-                    entry.getValue().addAll(secondResponses.get(ident));
-                }
-            }
-        }
-        return firstResponses;
-    }
-
     public void setDatoPeriodeVedtakInnenforMaxAntallMaaneder(
             NyttVedtak vedtak,
             int antallMaaneder
@@ -394,5 +402,85 @@ public class ServiceUtils {
                 vedtak.setTilDato(tilDatoLimit);
             }
         }
+    }
+
+    public List<NyttVedtakTiltak> oppdaterVedtakslisteBasertPaaTiltaksdeltakelse(
+            List<NyttVedtakTiltak> vedtaksliste,
+            List<NyttVedtakTiltak> tiltaksdeltakelser
+    ) {
+        List<NyttVedtakTiltak> nyVedtaksliste = new ArrayList<>();
+
+        for (var vedtak : vedtaksliste) {
+            var deltakelse = finnNoedvendigTiltaksdeltakelse(vedtak, tiltaksdeltakelser);
+            if (deltakelse != null) {
+                vedtak.setTilDato(deltakelse.getTilDato());
+                vedtak.setFraDato(deltakelse.getFraDato());
+                nyVedtaksliste.add(vedtak);
+            }
+        }
+        return nyVedtaksliste;
+    }
+
+    private NyttVedtakTiltak finnNoedvendigTiltaksdeltakelse(NyttVedtakTiltak vedtak, List<NyttVedtakTiltak> tiltaksdeltakelser) {
+        if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
+            var fraDato = vedtak.getFraDato();
+            var tilDato = vedtak.getTilDato();
+
+            if (fraDato != null) {
+                for (var deltakelse : tiltaksdeltakelser) {
+                    var fraDatoDeltakelse = deltakelse.getFraDato();
+                    var tilDatoDeltakelse = deltakelse.getTilDato();
+
+                    if ((fraDatoDeltakelse != null && fraDato.isAfter(fraDatoDeltakelse.minusDays(1))) &&
+                            (tilDato == null || tilDatoDeltakelse != null && tilDato.isBefore(tilDatoDeltakelse.plusDays(1)))) {
+                        return deltakelse;
+                    }
+
+                }
+            }
+        }
+        return null;
+    }
+
+    public NyttVedtakTiltak finnTiltak(String personident, String miljoe, NyttVedtakTiltak tiltaksdeltakelse) {
+        var finnTiltak = getVedtakForFinnTiltakRequest(tiltaksdeltakelse);
+
+        NyttVedtakTiltak tiltak = null;
+        var rettighetRequest = new RettighetFinnTiltakRequest(Collections.singletonList(finnTiltak));
+
+        rettighetRequest.setPersonident(personident);
+        rettighetRequest.setMiljoe(miljoe);
+        var response = tiltakArenaForvalterConsumer.finnTiltak(rettighetRequest);
+        if (response != null && !response.getNyeRettigheterTiltak().isEmpty()) {
+            tiltak = response.getNyeRettigheterTiltak().get(0);
+        } else {
+            log.info("Fant ikke tiltak for tiltakdeltakelse.");
+        }
+        return tiltak;
+    }
+
+    public NyttVedtakTiltak getVedtakForTiltaksdeltakelseRequest(NyttVedtakTiltak syntetiskDeltakelse) {
+        var nyTiltaksdeltakelse = NyttVedtakTiltak.builder()
+                .lagOppgave(syntetiskDeltakelse.getLagOppgave())
+                .tiltakId(syntetiskDeltakelse.getTiltakId())
+                .build();
+        nyTiltaksdeltakelse.setBegrunnelse(BEGRUNNELSE);
+        nyTiltaksdeltakelse.setTilDato(syntetiskDeltakelse.getTilDato());
+        nyTiltaksdeltakelse.setFraDato(syntetiskDeltakelse.getFraDato());
+
+        return nyTiltaksdeltakelse;
+    }
+
+    private NyttVedtakTiltak getVedtakForFinnTiltakRequest(NyttVedtakTiltak tiltaksdeltakelse) {
+        var vedtak = NyttVedtakTiltak.builder()
+                .tiltakKode(tiltaksdeltakelse.getTiltakKode())
+                .tiltakProsentDeltid(tiltaksdeltakelse.getTiltakProsentDeltid())
+                .tiltakVedtak(tiltaksdeltakelse.getTiltakVedtak())
+                .tiltakYtelse(tiltaksdeltakelse.getTiltakYtelse())
+                .tiltakAdminKode(tiltaksdeltakelse.getTiltakAdminKode())
+                .build();
+        vedtak.setFraDato(tiltaksdeltakelse.getFraDato());
+        vedtak.setTilDato(tiltaksdeltakelse.getTilDato());
+        return vedtak;
     }
 }

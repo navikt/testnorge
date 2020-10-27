@@ -1,12 +1,12 @@
 package no.nav.registre.testnorge.person.provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.reflections.Reflections.log;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.runner.RunWith;
@@ -47,6 +47,7 @@ import no.nav.registre.testnorge.person.consumer.dto.tpsf.PersonMiljoeResponse;
 import no.nav.registre.testnorge.person.consumer.dto.tpsf.TpsPerson;
 import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 
+@Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureWireMock(port = 0)

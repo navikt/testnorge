@@ -26,7 +26,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.times;
@@ -50,55 +49,70 @@ public class RettighetTiltakServiceTest {
     private String miljoe = "t1";
     private int antallNyeIdenter = 1;
     private List<String> identer;
-    private Map<String, List<NyttVedtakResponse>> response;
-    private List<NyttVedtakTiltak> vedtak;
+    private NyttVedtakTiltak tiltakMedTilDatoFremITid;
+    private NyttVedtakTiltak tiltakMedTilDatoLikDagens;
 
     @Before
     public void setUp() {
         identer = new ArrayList<>(Collections.singletonList("01010101010"));
 
-        response = new HashMap<>();
-        response.put(identer.get(0),Collections.singletonList(new NyttVedtakResponse()));
+        Map<String, List<NyttVedtakResponse>> response = new HashMap<>();
+        response.put(identer.get(0), Collections.singletonList(new NyttVedtakResponse()));
         response.get(identer.get(0)).get(0).setFeiledeRettigheter(new ArrayList<>());
 
-        vedtak = new ArrayList<>(Collections.singletonList(new NyttVedtakTiltak()));
-        vedtak.get(0).setTiltakskarakteristikk("IND");
-        vedtak.get(0).setDeltakerstatusKode("GJENN");
+        tiltakMedTilDatoFremITid = NyttVedtakTiltak.builder()
+                .tiltakId(123)
+                .tiltakAdminKode("IND")
+                .tiltakskarakteristikk("IND")
+                .deltakerstatusKode("GJENN")
+                .build();
+        tiltakMedTilDatoFremITid.setFraDato(LocalDate.now().minusMonths(1));
+        tiltakMedTilDatoFremITid.setTilDato(LocalDate.now().plusMonths(1));
+
+        tiltakMedTilDatoLikDagens = NyttVedtakTiltak.builder()
+                .tiltakId(123)
+                .tiltakAdminKode("IND")
+                .tiltakskarakteristikk("IND")
+                .deltakerstatusKode("GJENN")
+                .build();
+        tiltakMedTilDatoLikDagens.setFraDato(LocalDate.now().minusMonths(1));
+        tiltakMedTilDatoLikDagens.setTilDato(LocalDate.now());
+
     }
 
 
     @Test
-    public void shouldOnlyOppretteTiltaksdeltakelse() {
-        when(tiltakSyntConsumer.opprettTiltaksdeltakelse(antallNyeIdenter)).thenReturn(Collections.singletonList(new NyttVedtakTiltak()));
-        when(serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
-        when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
-        when(serviceUtils.combineNyttVedtakResponseLists(anyMap(), anyMap())).thenReturn(new HashMap<>());
-
-        rettighetTiltakService.opprettTiltaksdeltakelse(avspillergruppeId, miljoe, antallNyeIdenter);
-
-        verify(tiltakSyntConsumer).opprettTiltaksdeltakelse(antallNyeIdenter);
-        verify(serviceUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
-        verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
-        verify(serviceUtils).combineNyttVedtakResponseLists(anyMap(), anyMap());
-    }
-
-    @Test
-    public void shouldOppretteTiltaksdeltakelseOgEndreDeltakerstatus() {
+    public void shouldOnlyOppretteTiltaksdeltakelseOgEndreDeltakerstatusGjennomfoeres() {
+        var vedtak = Collections.singletonList(tiltakMedTilDatoFremITid);
         when(tiltakSyntConsumer.opprettTiltaksdeltakelse(antallNyeIdenter)).thenReturn(vedtak);
         when(serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
-        when(tiltakSyntConsumer.opprettDeltakerstatus(antallNyeIdenter)).thenReturn(vedtak);
-        when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(response);
-
-        var aktivitetskodeMedSannsynlighet = KodeMedSannsynlighet.builder().kode("FULLF").build();
-
-        when(serviceUtils.velgKodeBasertPaaSannsynlighet(anyList())).thenReturn(aktivitetskodeMedSannsynlighet);
+        when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
+        when(serviceUtils.finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoFremITid)).thenReturn(tiltakMedTilDatoFremITid);
 
         rettighetTiltakService.opprettTiltaksdeltakelse(avspillergruppeId, miljoe, antallNyeIdenter);
 
         verify(tiltakSyntConsumer).opprettTiltaksdeltakelse(antallNyeIdenter);
         verify(serviceUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
-        verify(tiltakSyntConsumer).opprettDeltakerstatus(antallNyeIdenter);
         verify(rettighetArenaForvalterConsumer, times(2)).opprettRettighet(anyList());
+        verify(serviceUtils).finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoFremITid);
+    }
+
+    @Test
+    public void shouldOppretteTiltaksdeltakelseOgEndreDeltakerstatusAvsluttet() {
+        var vedtak = Collections.singletonList(tiltakMedTilDatoLikDagens);
+        when(tiltakSyntConsumer.opprettTiltaksdeltakelse(antallNyeIdenter)).thenReturn(vedtak);
+        when(serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
+        when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
+        when(serviceUtils.finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoLikDagens)).thenReturn(tiltakMedTilDatoLikDagens);
+        when(serviceUtils.velgKodeBasertPaaSannsynlighet(anyList())).thenReturn(new KodeMedSannsynlighet("FULLF", 100));
+
+        rettighetTiltakService.opprettTiltaksdeltakelse(avspillergruppeId, miljoe, antallNyeIdenter);
+
+        verify(tiltakSyntConsumer).opprettTiltaksdeltakelse(antallNyeIdenter);
+        verify(serviceUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
+        verify(rettighetArenaForvalterConsumer, times(2)).opprettRettighet(anyList());
+        verify(serviceUtils).finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoLikDagens);
+        verify(serviceUtils).velgKodeBasertPaaSannsynlighet(anyList());
     }
 
     @Test

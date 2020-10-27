@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriTemplate;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -31,7 +32,7 @@ public class GetArbeidstakerArbeidsforholdCommand implements Callable<List<Arbei
     @Override
     public List<Arbeidsforhold> call() {
         RequestEntity<Void> request = RequestEntity
-                .get(new URI(url + "/v1/arbeidstaker/arbeidsforhold"))
+                .get(new UriTemplate(url + "/v1/arbeidstaker/arbeidsforhold").expand("q2"))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(AaregHeaders.NAV_CONSUMER_TOKEN, "Bearer " + token)
                 .header(AaregHeaders.NAV_PERSON_IDENT, ident)

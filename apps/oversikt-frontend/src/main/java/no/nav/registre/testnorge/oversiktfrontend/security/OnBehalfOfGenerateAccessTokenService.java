@@ -1,7 +1,6 @@
 package no.nav.registre.testnorge.oversiktfrontend.security;
 
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -14,7 +13,6 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.ProxyProvider;
 
 import java.net.URI;
-import java.util.Map;
 
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;

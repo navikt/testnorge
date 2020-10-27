@@ -84,7 +84,7 @@ public class SykemeldingControllerTest {
                         .build(),
                 ArbeidsgiverDTO.builder()
                         .navn("arbeidsgiver")
-                        .stillingsprosent((double) 100)
+                        .stillingsprosent(100F)
                         .yrkesbetegnelse("giver")
                         .build(),
                 false,

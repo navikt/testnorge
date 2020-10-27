@@ -9,14 +9,12 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
@@ -28,14 +26,13 @@ import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.libs.dto.statiskedataforvalter.v1.OrganisasjonDTO;
 import no.nav.registre.testnorge.libs.dto.statiskedataforvalter.v1.OrganisasjonListeDTO;
 import no.nav.registre.testnorge.libs.dto.synt.arbeidsforhold.v1.SyntArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.AnsettelsePeriodeDTO;
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.ArbeidsavtaleDTO;
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.ArbeidstakerDTO;
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.KodeverkDTO;
 import no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.SyntDTO;
-import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @AutoConfigureWireMock(port = 0)
@@ -62,8 +59,6 @@ class SyntArbeidsforholdControllerIntegrationTest {
                                 .build())
                         ).build()
         );
-
-
     }
 
     @Test
@@ -79,7 +74,7 @@ class SyntArbeidsforholdControllerIntegrationTest {
         var generated = no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.SyntArbeidsforholdDTO
                 .builder()
                 .ansettelsesPeriode(AnsettelsePeriodeDTO.builder().fom(fom).tom(tom).build())
-                .arbeidsavtale(ArbeidsavtaleDTO.builder().stillingsprosent(100.0).yrke(yrke).build())
+                .arbeidsavtale(ArbeidsavtaleDTO.builder().stillingsprosent(100.0F).yrke(yrke).build())
                 .arbeidsforholdID(arbeidsforholdID)
                 .arbeidsforholdstype("ordinaertArbeidsforhold")
                 .arbeidstaker(ArbeidstakerDTO.builder().ident(ident).build())
@@ -122,7 +117,7 @@ class SyntArbeidsforholdControllerIntegrationTest {
                         .tom(tom)
                         .arbeidsforholdId(arbeidsforholdID)
                         .orgnummer(ORGNUMMER)
-                        .stillingsprosent(100.0)
+                        .stillingsprosent(100.0F)
                         .yrke(yrke)
                         .build())
                 .verifyPost();
@@ -141,7 +136,7 @@ class SyntArbeidsforholdControllerIntegrationTest {
         var generated = no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.SyntArbeidsforholdDTO
                 .builder()
                 .ansettelsesPeriode(AnsettelsePeriodeDTO.builder().fom(fom).tom(tom).build())
-                .arbeidsavtale(ArbeidsavtaleDTO.builder().stillingsprosent(100.0).yrke(yrke).build())
+                .arbeidsavtale(ArbeidsavtaleDTO.builder().stillingsprosent(100.0F).yrke(yrke).build())
                 .arbeidsforholdID(arbeidsforholdID)
                 .arbeidsforholdstype("ordinaertArbeidsforhold")
                 .arbeidstaker(ArbeidstakerDTO.builder().ident(ident).build())
@@ -185,12 +180,11 @@ class SyntArbeidsforholdControllerIntegrationTest {
                         .tom(tom)
                         .arbeidsforholdId(arbeidsforholdID)
                         .orgnummer(ORGNUMMER)
-                        .stillingsprosent(100.0)
+                        .stillingsprosent(100.0F)
                         .yrke(yrke)
                         .build())
                 .verifyPost();
     }
-
 
 
     @Test
@@ -207,7 +201,7 @@ class SyntArbeidsforholdControllerIntegrationTest {
         var generated = no.nav.registre.testnorge.synt.arbeidsforhold.consumer.dto.SyntArbeidsforholdDTO
                 .builder()
                 .ansettelsesPeriode(AnsettelsePeriodeDTO.builder().fom(fom).tom(tom).build())
-                .arbeidsavtale(ArbeidsavtaleDTO.builder().stillingsprosent(100.0).yrke(invalidYrke).build())
+                .arbeidsavtale(ArbeidsavtaleDTO.builder().stillingsprosent(100.0F).yrke(invalidYrke).build())
                 .arbeidsforholdID(arbeidsforholdID)
                 .arbeidsforholdstype("ordinaertArbeidsforhold")
                 .arbeidstaker(ArbeidstakerDTO.builder().ident(ident).build())
@@ -250,7 +244,7 @@ class SyntArbeidsforholdControllerIntegrationTest {
                         .tom(tom)
                         .arbeidsforholdId(arbeidsforholdID)
                         .orgnummer(ORGNUMMER)
-                        .stillingsprosent(100.0)
+                        .stillingsprosent(100.0F)
                         .yrke(validYrke)
                         .build())
                 .verifyPost();

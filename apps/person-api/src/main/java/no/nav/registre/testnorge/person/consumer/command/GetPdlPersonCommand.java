@@ -1,9 +1,9 @@
 package no.nav.registre.testnorge.person.consumer.command;
 
-import static org.reflections.Reflections.log;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.web.client.RestTemplate;
@@ -23,6 +23,7 @@ import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.PdlPerson;
 import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.Request;
 import no.nav.registre.testnorge.person.consumer.header.PdlHeaders;
 
+@Slf4j
 @RequiredArgsConstructor
 public class GetPdlPersonCommand implements Callable<PdlPerson> {
     private static final String GRAPHQL_URL = "/graphql";

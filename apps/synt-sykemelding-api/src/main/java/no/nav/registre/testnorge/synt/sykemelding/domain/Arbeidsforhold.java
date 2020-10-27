@@ -8,7 +8,7 @@ import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 @Getter
 public class Arbeidsforhold {
     private final String navn;
-    private final Double stillingsprosent;
+    private final Float stillingsprosent;
     private final String yrkesbetegnelse;
     private final String gatenavn;
     private final String postnummer;

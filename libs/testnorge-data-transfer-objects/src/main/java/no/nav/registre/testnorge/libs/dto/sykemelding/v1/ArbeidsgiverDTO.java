@@ -14,5 +14,5 @@ import lombok.Value;
 public class ArbeidsgiverDTO {
     private String navn;
     private String yrkesbetegnelse;
-    private Double stillingsprosent;
+    private Float stillingsprosent;
 }

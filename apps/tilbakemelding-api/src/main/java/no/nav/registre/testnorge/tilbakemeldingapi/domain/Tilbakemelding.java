@@ -26,7 +26,7 @@ public class Tilbakemelding {
         var ratingIcon = (rating != null ? " " + getIcon(rating) : "");
 
         var headerBlock = Section.from(
-                "*Tilbakemelding for: " + title + "*" + ratingIcon
+                "*" + title + "*" + ratingIcon
         );
 
         var blocks = new ArrayList<Block>();

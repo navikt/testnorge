@@ -16,12 +16,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Cache Maven dependencies
-        uses: actions/cache@v1
+      - name: Gradle cache
+        uses: actions/cache@v2
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-maven-
+          path: |
+            ~/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
       - uses: actions/setup-java@v1
         with:
           java-version: '11.x'
@@ -29,12 +31,7 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: mvn --projects :statistikk-api --also-make --settings maven-settings.xml compile
-      - name: Test with Maven
-        run: mvn --projects :statistikk-api --also-make --settings maven-settings.xml test
-      - name: Package with Maven
-        run: mvn --projects :statistikk-api --also-make --settings maven-settings.xml package -Dmaven.test.skip
-
+        run: ./gradlew :statistikk-api:build
       - name: Build and publish Docker image
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
