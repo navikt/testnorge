@@ -1,7 +1,6 @@
 package no.nav.registre.testnorge.originalpopulasjon.consumer;
 
-import static org.reflections.Reflections.log;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -13,6 +12,7 @@ import no.nav.registre.testnorge.libs.avro.person.Person;
 import no.nav.registre.testnorge.libs.dto.person.v1.AdresseDTO;
 import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
 
+@Slf4j
 @Component
 public class HendelseConsumer {
 
