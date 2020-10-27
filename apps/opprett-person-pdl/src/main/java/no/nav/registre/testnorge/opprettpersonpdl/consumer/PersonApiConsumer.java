@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.opprettpersonpdl.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
@@ -18,7 +19,7 @@ import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAcc
 import no.nav.registre.testnorge.opprettpersonpdl.consumer.credentials.PersonApiClientCredential;
 import no.nav.registre.testnorge.opprettpersonpdl.domain.Person;
 
-
+@Slf4j
 @Component
 @DependencyOn("person-api")
 public class PersonApiConsumer {
@@ -51,10 +52,16 @@ public class PersonApiConsumer {
 
 
     public void createPerson(Person person) {
-        AccessToken accessToken = clientCredentialGenerateAccessTokenService.generateToken(
-                clientCredential,
-                new AccessScopes("api://" + clientCredential.getClientId() + "/.default")
-        );
-        new CreatePersonCommand(webClient, person.toDTO(), accessToken.getTokenValue(), person.toKommaseparerteTags()).run();
+        try {
+            AccessToken accessToken = clientCredentialGenerateAccessTokenService.generateToken(
+                    clientCredential,
+                    new AccessScopes("api://" + clientCredential.getClientId() + "/.default")
+            );
+
+            log.info("Create person mellom token og command");
+            new CreatePersonCommand(webClient, person.toDTO(), accessToken.getTokenValue(), person.toKommaseparerteTags()).run();
+        } catch (Exception e) {
+            log.info("Noe gikk galt ved henting av token eller send person");
+        }
     }
 }

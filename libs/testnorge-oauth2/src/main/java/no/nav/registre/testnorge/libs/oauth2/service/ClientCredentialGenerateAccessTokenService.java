@@ -76,6 +76,7 @@ public class ClientCredentialGenerateAccessTokenService {
                 .with("client_secret", remoteClientCredential.getClientSecret())
                 .with("grant_type", "client_credentials");
 
+        log.info("Mellom body og post. id: {}", remoteClientCredential.getClientId());
         AccessToken token = webClient.post()
                 .body(body)
                 .retrieve()
