@@ -70,7 +70,7 @@ public class Opplysningspliktig {
     }
 
 
-    public OpplysningspliktigDTO toDTO(){
+    public OpplysningspliktigDTO toDTO() {
         return dto;
     }
 
@@ -82,71 +82,65 @@ public class Opplysningspliktig {
                 .map(Opplysningspliktig::create)
                 .collect(Collectors.toList());
 
-        Leveranse leveranse = Leveranse
-                .builder()
-                .withKalendermaaned(toXMLGregorianCalendar(dto.getKalendermaaned()))
-                .withOpplysningspliktig(no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Opplysningspliktig
-                        .builder()
-                        .withNorskIdentifikator(dto.getOpplysningspliktigOrganisajonsnummer())
-                        .build()
-                )
-                .withOppgave(JuridiskEntitet.builder().withVirksomhet(virksomheter).build())
-                .build();
 
-        return EDAGM
-                .builder()
-                .withLeveranse(leveranse)
-                .build();
+        var opplysningspliktig = new no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Opplysningspliktig();
+        opplysningspliktig.setNorskIdentifikator(dto.getOpplysningspliktigOrganisajonsnummer());
+
+        JuridiskEntitet juridiskEntitet = new JuridiskEntitet();
+        juridiskEntitet.getVirksomhet().addAll(virksomheter);
+
+        Leveranse leveranse = new Leveranse();
+        leveranse.setKalendermaaned(toXMLGregorianCalendar(dto.getKalendermaaned()));
+        leveranse.setOpplysningspliktig(opplysningspliktig);
+        leveranse.setOppgave(juridiskEntitet);
+
+        EDAGM edagm = new EDAGM();
+        edagm.setLeveranse(leveranse);
+
+        return edagm;
     }
 
 
     private static Virksomhet create(VirksomhetDTO dto) {
-        return Virksomhet
-                .builder()
-                .withNorskIdentifikator(dto.getOrganisajonsnummer())
-                .withInntektsmottaker(dto
-                        .getPersoner()
-                        .stream()
-                        .map(personDTO -> Inntektsmottaker
-                                .builder()
-                                .withNorskIdentifikator(personDTO.getIdent())
-                                .withArbeidsforhold(personDTO
-                                        .getArbeidsforhold()
-                                        .stream()
-                                        .map(Opplysningspliktig::create)
-                                        .collect(Collectors.toList())
-                                )
-                                .build()
-                        ).collect(Collectors.toList())
-                )
-                .build();
+        Virksomhet virksomhet = new Virksomhet();
+        virksomhet.setNorskIdentifikator(dto.getOrganisajonsnummer());
+
+
+        virksomhet.getInntektsmottaker().addAll(
+                dto.getPersoner().stream().map(personDTO -> {
+
+                    Inntektsmottaker inntektsmottaker = new Inntektsmottaker();
+                    inntektsmottaker.setNorskIdentifikator(personDTO.getIdent());
+                    inntektsmottaker.getArbeidsforhold().addAll(
+                            personDTO.getArbeidsforhold()
+                                    .stream()
+                                    .map(Opplysningspliktig::create)
+                                    .collect(Collectors.toList())
+                    );
+                    return inntektsmottaker;
+                }).collect(Collectors.toList())
+        );
+
+        return virksomhet;
     }
 
     private static Arbeidsforhold create(ArbeidsforholdDTO dto) {
-        return Arbeidsforhold
-                .builder()
-                .withStartdato(toXMLGregorianCalendar(dto.getStartdato()))
-                .withSluttdato(toXMLGregorianCalendar(dto.getSluttdato()))
-                .withTypeArbeidsforhold(dto.getTypeArbeidsforhold())
-                .withArbeidsforholdId(dto.getArbeidsforholdId())
-                .withAntallTimerPerUkeSomEnFullStillingTilsvarer(dto.getAntallTimerPerUke() != null
-                        ? BigDecimal.valueOf(dto.getAntallTimerPerUke())
-                        : null
-                )
-                .withYrke(dto.getYrke())
-                .withArbeidstidsordning(dto.getArbeidstidsordning())
-                .withStillingsprosent(
-                        dto.getStillingsprosent() != null
-                                ? BigDecimal.valueOf(dto.getStillingsprosent())
-                                : null
-                )
-                .withSisteLoennsendringsdato(toXMLGregorianCalendar(dto.getSisteLoennsendringsdato()))
-                .build();
+        Arbeidsforhold arbeidsforhold = new Arbeidsforhold();
+        arbeidsforhold.setStartdato(toXMLGregorianCalendar(dto.getStartdato()));
+        arbeidsforhold.setSluttdato(toXMLGregorianCalendar(dto.getSluttdato()));
+        arbeidsforhold.setTypeArbeidsforhold(dto.getTypeArbeidsforhold());
+        arbeidsforhold.setArbeidsforholdId(dto.getArbeidsforholdId());
+        arbeidsforhold.setAntallTimerPerUkeSomEnFullStillingTilsvarer(dto.getAntallTimerPerUke() != null ? BigDecimal.valueOf(dto.getAntallTimerPerUke()) : null);
+        arbeidsforhold.setYrke(dto.getYrke());
+        arbeidsforhold.setArbeidstidsordning(dto.getArbeidstidsordning());
+        arbeidsforhold.setStillingsprosent(dto.getStillingsprosent() != null ? BigDecimal.valueOf(dto.getStillingsprosent()) : null);
+        arbeidsforhold.setSisteLoennsendringsdato(toXMLGregorianCalendar(dto.getSisteLoennsendringsdato()));
+        return arbeidsforhold;
     }
 
 
     @SneakyThrows
-    private static XMLGregorianCalendar toXMLGregorianCalendar(@Nullable LocalDate localDate) {
+    private static XMLGregorianCalendar toXMLGregorianCalendar(LocalDate localDate) {
         if (localDate == null) {
             return null;
         }

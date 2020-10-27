@@ -17,7 +17,7 @@ consumers:
 
 spring:
   application:
-    version: @application.version@
+    version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
     name: person-export-api
     description: Api for å eksportere personer.
   security:
