@@ -1,5 +1,5 @@
 application:
-  version: application.version.todo
+  version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
   name: rapportering-api
 
 spring:
