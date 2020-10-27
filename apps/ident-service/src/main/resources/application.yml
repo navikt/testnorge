@@ -1,7 +1,20 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 CLIENT_ID: 451e4aeb-c11d-4c40-99d2-3c4d5e1a35a0
 
+srvtps:
+  forvalteren:
+    username: ${TPSF_CREDENTIAL_USERNAME}
+    password: ${TPSF_CREDENTIAL_PASSWORD}
+
 spring:
+  datasource:
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL}
+    driver-class-name: oracle.jdbc.OracleDriver
+  ldap:
+    username: ${LDAP_USERNAME}
+    password: ${LDAP_PASSWORD}
   application:
     version: @application.version@
     name: ident-service
@@ -12,3 +25,5 @@ spring:
         jwt:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
+
+
