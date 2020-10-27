@@ -67,6 +67,7 @@ public class IdentService {
     ) {
         tpsfConsumer.slettIdenterFraTps(miljoer, identer);
         var meldingIderTilhoerendeIdenter = tpsfConsumer.getMeldingIderTilhoerendeIdenter(avspillergruppeId, identer);
+
         var tpsfResponse = tpsfConsumer.slettMeldingerFraTpsf(meldingIderTilhoerendeIdenter);
         if (tpsfResponse.getStatusCode().is2xxSuccessful()) {
             List<String> frigjorteIdenter = identPoolConsumer.frigjoerLedigeIdenter(identer);

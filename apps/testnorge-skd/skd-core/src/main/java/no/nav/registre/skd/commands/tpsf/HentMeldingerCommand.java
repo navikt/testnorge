@@ -15,26 +15,28 @@ import java.util.concurrent.Callable;
 @Slf4j
 @RequiredArgsConstructor
 public class HentMeldingerCommand implements Callable<List<RsMeldingstype>> {
-    private static final ParameterizedTypeReference<List<RsMeldingstype>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {};
     private static final int PAGE_SIZE = 80;
     private final WebClient webClient;
     private final List<String> ider;
 
     @Override
     public List<RsMeldingstype> call() {
-        log.info("Henter {} meldinger fra TPSF.", ider.size());
-        List<RsMeldingstype> response = new ArrayList<>(ider.size());
-        Lists.partition(ider, PAGE_SIZE).forEach(partisjon -> response.addAll(
-                Objects.requireNonNull(webClient
+        log.info("Henter meldigner fra {} IDer i TPSF.", ider.size());
+
+        List<RsMeldingstype> responseAllPages = new ArrayList<>(ider.size());
+
+        Lists.partition(ider, PAGE_SIZE).forEach(partisjon ->
+                webClient
                         .get()
                         .uri(uriBuilder -> uriBuilder
                                 .path("/v1/endringsmelding/skd/meldinger")
                                 .queryParam("ids", String.join(",", partisjon))
                                 .build())
                         .retrieve()
-                        .bodyToMono(RESPONSE_TYPE)
-                        .block())));
-        log.info("{}/{} meldinger ble hentet fra TPSF.", response.size(), ider.size());
-        return response;
+                        .bodyToFlux(RsMeldingstype.class)
+                        .subscribe(responseAllPages::add));
+
+        log.info("{} meldinger ble hentet fra {} IDer i TPSF.", responseAllPages.size(), ider.size());
+        return responseAllPages;
     }
 }

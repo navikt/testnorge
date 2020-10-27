@@ -28,9 +28,11 @@ public class SlettIdenterFraTpsCommand implements Runnable {
                             .queryParam("miljoer", String.join(",", miljoer))
                             .queryParam("identer", String.join(",", partisjon))
                             .build())
-                    .retrieve()
-                    .bodyToMono(Void.class)
-                    .block());
+                    .exchange()
+                    .subscribe(clientResponse ->
+                            log.info("Slettet identer {}.", clientResponse.statusCode())));
+                    /*.bodyToMono(Void.class)
+                    .block());*/
         } catch (HttpClientErrorException e) {
             log.error("Kunne ikke slette ident fra TPS. ", e);
             throw e;

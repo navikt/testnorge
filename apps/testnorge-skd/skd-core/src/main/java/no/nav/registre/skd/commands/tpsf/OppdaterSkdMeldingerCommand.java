@@ -12,31 +12,21 @@ import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class LagreSkdEndringseldingerITpsfCommand implements Callable<List<Long>> {
+public class OppdaterSkdMeldingerCommand implements Callable<List<Long>> {
     private static final ParameterizedTypeReference<List<Long>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {};
     private final WebClient webClient;
-    private final Long avspillergruppeId;
-    private final List<RsMeldingstype> skdmeldinger;
+    private final List<RsMeldingstype> meldinger;
 
     @Override
     public List<Long> call() {
-        log.info("Lagrer {} SKD endringsmeldinger i tps-forvalteren med gruppe ID: {}", skdmeldinger.size(), avspillergruppeId);
-        List<Long> response = webClient
+        return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/v1/endringsmelding/skd/save/")
-                        .pathSegment(avspillergruppeId.toString())
+                        .path("/v1/endringsmelding/skd/updatemeldinger")
                         .build())
-                .body(BodyInserters.fromValue(skdmeldinger))
+                .body(BodyInserters.fromValue(meldinger))
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
                 .block();
-
-        if (response != null) {
-            log.info("{} rader ble lagret i TPSF.", response.get(0));
-        } else {
-            throw new RuntimeException("Feil ved lagring til TPSF.");
-        }
-        return response;
     }
 }

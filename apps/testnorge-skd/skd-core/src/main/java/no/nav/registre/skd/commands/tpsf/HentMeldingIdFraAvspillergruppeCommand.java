@@ -10,7 +10,7 @@ import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class HentMeldigIdFraAvspillergruppeCommand implements Callable<List<Long>> {
+public class HentMeldingIdFraAvspillergruppeCommand implements Callable<List<Long>> {
     private static final ParameterizedTypeReference<List<Long>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {};
     private final WebClient webClient;
     private final Long avspillergruppeId;
