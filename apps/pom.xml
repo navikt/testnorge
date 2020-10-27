@@ -124,6 +124,7 @@
         <module>mn-organisasjon-api</module>
         <module>mn-original-populasjon</module>
         <module>arbeidsforhold-export-api</module>
+        <module>ident-pool</module>
     </modules>
 
     <build>
