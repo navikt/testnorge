@@ -17,8 +17,7 @@ https://testnorge-avhengighetsanalyse-frontend.dev.adeo.no/
 
 **NB: `navtunnel` må kjøre, eller man må være logget inn med `naisdevice`**
 
-For å kunne hente ned alle avheningehter må det opprettes en NAV_TOKEN fra https://github.com/settings/tokens. Denne token må legges inn i system variabler.
-
+For å kunne hente ned alle avheningehter må det opprettes en Personal access tokens fra https://github.com/settings/tokens. Denne token må legges inn i system variabler NAV_TOKEN.
 
 Fra Mac
 ```
