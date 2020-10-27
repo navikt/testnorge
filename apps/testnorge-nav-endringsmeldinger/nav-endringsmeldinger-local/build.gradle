@@ -10,8 +10,7 @@ plugins {
 bootJar {
     archiveFileName = "app.jar"
 }
-sourceCompatibility = 11
-targetCompatibility = 11
+
 
 dependencies {
     implementation project(':nav-endringsmeldinger-core')
