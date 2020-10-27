@@ -4,11 +4,33 @@
 
 plugins {
     id 'no.nav.registre.testnorge.java-conventions'
-    id 'org.unbroken-dome.xjc' version '2.0.0'
+    id 'com.github.edeandrea.xjc-generation' version '1.5'
 }
 dependencies {
+    implementation 'javax.activation:activation:1.1'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
+
+    xjc 'javax.xml.bind:jaxb-api:2.3.1'
+    xjc 'com.sun.xml.bind:jaxb-xjc:2.3.1'
+    xjc 'com.sun.xml.bind:jaxb-impl:2.3.1'
+    xjc 'com.sun.istack:istack-commons-runtime:3.0.11'
+
 }
+
+xjcGeneration {
+    defaultAdditionalXjcOptions = ['encoding': 'UTF-8']
+    schemas {
+        v2_0 {
+            schemaFile = 'a-arbeidsforhold_v2_0.xsd'
+            javaPackageName = 'no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0'
+        }
+        v2_1 {
+            schemaFile = 'a-arbeidsforhold_v2_1.xsd'
+            javaPackageName = 'no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1'
+        }
+    }
+}
+
 
 group = 'no.nav.registre.testnorge.xsd'
 description = 'arbeidsforhold-xsd'
