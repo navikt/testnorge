@@ -3,7 +3,7 @@ name: Deploy ident-pool-test
 on:
   push:
     paths:
-      - apps/ident-pool-test/**
+      - apps/ident-pool/**
       - libs/testnorge-core/**
 
 env:
