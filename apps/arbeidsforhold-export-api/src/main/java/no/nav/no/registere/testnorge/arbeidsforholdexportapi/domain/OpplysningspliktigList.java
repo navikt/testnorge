@@ -10,10 +10,14 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.EDAGM;
 
@@ -27,6 +31,32 @@ public class OpplysningspliktigList {
         var reader = new StringReader(xml);
         return ((JAXBElement<EDAGM>) unmarshaller.unmarshal(reader)).getValue();
     }
+
+    public static OpplysningspliktigList from(final String folderPath) {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(EDAGM.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            List<EDAGM> list = new ArrayList<>();
+
+            try (Stream<Path> stream = Files.walk(Paths.get(folderPath))) {
+                List<Path> paths = stream.filter(Files::isRegularFile).collect(Collectors.toList());
+                for (var path : paths) {
+                    try {
+                        log.info("Converterer fil {}...", path.getFileName().toString());
+                        byte[] bytes = Files.readAllBytes(path);
+                        list.add(from(new String(bytes, StandardCharsets.UTF_8), unmarshaller));
+                    } catch (Exception e) {
+                        log.error("Klarer ikke a lese fil {}", path.getFileName().toString());
+                        throw e;
+                    }
+                }
+            }
+            return new OpplysningspliktigList(list);
+        } catch (Exception e) {
+            throw new RuntimeException("Klarer ikke a konvertere filene til EDAGM", e);
+        }
+    }
+
 
     public static OpplysningspliktigList from(MultipartFile... files) {
         try {
@@ -76,7 +106,7 @@ public class OpplysningspliktigList {
     }
 
 
-    public List<Permisjon> toPermisjoner(){
+    public List<Permisjon> toPermisjoner() {
         return toArbeidsforhold()
                 .stream()
                 .map(Arbeidsforhold::getPermisjoner)

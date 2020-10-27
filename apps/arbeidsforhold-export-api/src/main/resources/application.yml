@@ -10,7 +10,7 @@ database:
 
 spring:
   application:
-    version: @application.version@
+    version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
     name: arbeidsforhold-export-api
     description: Api for å eksportere arbeidsforhold.
   security:
