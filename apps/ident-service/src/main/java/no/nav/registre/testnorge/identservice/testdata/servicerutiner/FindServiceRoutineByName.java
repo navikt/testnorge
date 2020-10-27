@@ -12,10 +12,9 @@ public class FindServiceRoutineByName implements Command {
     @Autowired
     private GetTpsServiceRutinerService getTpsServiceRutinerService;
 
-    public Optional<TpsServiceRoutineDefinitionRequest> execute(String serviceName) {
+    public Optional<TpsServiceRoutineDefinitionRequest> execute() {
         return getTpsServiceRutinerService.execute()
                 .stream()
-                .filter(request -> request.getName().equalsIgnoreCase(serviceName))
                 .findFirst();
     }
 

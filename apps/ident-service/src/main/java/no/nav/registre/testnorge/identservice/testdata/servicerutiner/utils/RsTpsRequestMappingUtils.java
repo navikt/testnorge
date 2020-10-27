@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Objects.nonNull;
+
 @Component
 @RequiredArgsConstructor
 public class RsTpsRequestMappingUtils {
@@ -24,24 +26,25 @@ public class RsTpsRequestMappingUtils {
     }
 
     public TpsServiceRoutineRequest convertToTpsServiceRoutineRequest(String serviceRutineNavn, Map<String, Object> map) {
-        return convertToTpsServiceRoutineRequest(serviceRutineNavn, map,false);
+        return convertToTpsServiceRoutineRequest(serviceRutineNavn, map, false);
     }
-    
+
     public TpsServiceRoutineRequest convertToTpsServiceRoutineRequest(String serviceRutineNavn, Map<String, Object> map, boolean validateRequestParameters) {
         TpsServiceRoutineDefinitionRequest tpsServiceRoutineDefinitionRequest = getTpsServiceRutinerService.execute()
                 .stream()
                 .filter(request -> request.getName().equalsIgnoreCase(serviceRutineNavn))
-                .findFirst().get();
-        Class<?> requestClass = tpsServiceRoutineDefinitionRequest
-                .getJavaClass();
-    
+                .findFirst().orElse(null);
+
+        Class<?> requestClass = nonNull(tpsServiceRoutineDefinitionRequest) ? tpsServiceRoutineDefinitionRequest
+                .getJavaClass() : null;
+
         if (validateRequestParameters) {
             validateTpsRequestParameters(tpsServiceRoutineDefinitionRequest, map);
         }
-        
-        return (TpsServiceRoutineRequest)objectMapper.convertValue(map, requestClass);
+
+        return (TpsServiceRoutineRequest) objectMapper.convertValue(map, requestClass);
     }
-    
+
     public void validateTpsRequestParameters(TpsServiceRoutineDefinitionRequest tpsServiceRoutineDefinitionRequest, Map<String, Object> map) {
         List<String> requiredParameterNameList = tpsServiceRoutineDefinitionRequest.getRequiredParameterNameList();
         requiredParameterNameList.removeAll(map.keySet());

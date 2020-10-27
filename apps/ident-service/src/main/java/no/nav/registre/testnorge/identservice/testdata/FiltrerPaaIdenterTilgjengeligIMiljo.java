@@ -1,9 +1,9 @@
 package no.nav.registre.testnorge.identservice.testdata;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.identservice.testdata.request.TpsHentFnrHistMultiServiceRoutineRequest;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.TpsRequestSender;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.requests.TpsRequestContext;
-import no.nav.registre.testnorge.identservice.testdata.servicerutiner.requests.TpsServiceRoutineRequest;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.requests.User;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.response.TpsServiceRoutineResponse;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.utils.RsTpsRequestMappingUtils;
@@ -42,13 +42,17 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
 
             context.setEnvironment("q2");
 
-            TpsServiceRoutineRequest tpsServiceRoutineRequest = mappingUtils.convertToTpsServiceRoutineRequest(String.valueOf(tpsRequestParameters
-                    .get("serviceRutinenavn")), tpsRequestParameters);
+        TpsHentFnrHistMultiServiceRoutineRequest request = new TpsHentFnrHistMultiServiceRoutineRequest();
+        request.setAntallFnr("1");
+        request.setFnr(identer.toArray(new String[0]));
+        request.setAksjonsKode("A");
+        request.setAksjonsKode2("2");
+        request.setServiceRutinenavn(tpsRequestParameters.get("serviceRutinenavn").toString());
 
             TpsServiceRoutineResponse tpsResponse = null;
             int loopCount = 3;
             do {
-                tpsResponse = tpsRequestSender.sendTpsRequest(tpsServiceRoutineRequest, context);
+                tpsResponse = tpsRequestSender.sendTpsRequest(request, context);
                 loopCount--;
             } while (loopCount != 0 && tpsResponse.getXml().isEmpty());
 

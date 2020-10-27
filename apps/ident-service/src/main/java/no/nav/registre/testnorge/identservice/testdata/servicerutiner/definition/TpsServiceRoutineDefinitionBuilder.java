@@ -5,10 +5,14 @@ import no.nav.registre.testnorge.identservice.testdata.config.TpsRequestConfig;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.TpsParameter;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.TpsParameterType;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.authorization.ServiceRutineAuthorisationStrategy;
+import no.nav.registre.testnorge.identservice.testdata.servicerutiner.transformers.RequestTransformer;
+import no.nav.registre.testnorge.identservice.testdata.servicerutiner.transformers.ResponseTransformer;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.transformers.Transformer;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Arrays.asList;
 
 public class TpsServiceRoutineDefinitionBuilder {
 
@@ -94,6 +98,31 @@ public class TpsServiceRoutineDefinitionBuilder {
             this.name = name;
             return this;
         }
+
+        public TpsServiceRoutineParameterBuilder type(TpsParameterType type) {
+            this.type = type;
+            return this;
+        }
+
+        public TpsServiceRoutineParameterBuilder required() {
+            this.use = REQUIRED;
+            return this;
+        }
+
+        public TpsServiceRoutineParameterBuilder values(String... values) {
+            this.values.addAll(asList(values));
+            return this;
+        }
+
+        public TpsServiceRoutineDefinitionBuilder and() {
+            TpsParameter param = new TpsParameter();
+            param.setName(name);
+            param.setType(type);
+            param.setUse(use);
+            param.setValues(values);
+            TpsServiceRoutineDefinitionBuilder.this.parameters.add(param);
+            return TpsServiceRoutineDefinitionBuilder.this;
+        }
     }
 
     public class TransformerBuilder {
@@ -102,6 +131,16 @@ public class TpsServiceRoutineDefinitionBuilder {
 
         TransformerBuilder() {
             this.transformers = new ArrayList<>();
+        }
+
+        public TransformerBuilder preSend(RequestTransformer transformer) {
+            transformers.add(transformer);
+            return this;
+        }
+
+        public TransformerBuilder postSend(ResponseTransformer transformer) {
+            transformers.add(transformer);
+            return this;
         }
 
         public TpsServiceRoutineDefinitionBuilder and() {

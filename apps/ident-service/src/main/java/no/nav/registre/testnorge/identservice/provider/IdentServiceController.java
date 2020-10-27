@@ -5,12 +5,11 @@ import no.nav.registre.testnorge.identservice.service.IdentServiceAppService;
 import no.nav.registre.testnorge.identservice.service.SjekkIdenterService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -21,9 +20,9 @@ public class IdentServiceController {
     private final IdentServiceAppService identServiceAppService;
     private final SjekkIdenterService sjekkIdenterService;
 
-    @PostMapping(value = "/checkpersoner")
-    public ResponseEntity<Set<String>> checkIdentList(@RequestBody List<String> identer) {
-        return sjekkIdenterService.finnLedigeIdenter(identer);
+    @PostMapping(value = "/checkIdentInProd/{ident}")
+    public ResponseEntity<Set<String>> checkIdent(@PathVariable String ident) {
+        return sjekkIdenterService.finnLedigeIdenter(ident);
     }
 
 

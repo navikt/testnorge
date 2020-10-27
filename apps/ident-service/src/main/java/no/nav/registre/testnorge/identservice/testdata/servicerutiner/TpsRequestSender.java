@@ -29,7 +29,7 @@ public class TpsRequestSender {
 
     @SneakyThrows
     public TpsServiceRoutineResponse sendTpsRequest(TpsServiceRoutineRequest request, TpsRequestContext context, long timeout) {
-        Optional<TpsServiceRoutineDefinitionRequest> serviceRoutine = findServiceRoutineByName.execute(request.getServiceRutinenavn());
+        Optional<TpsServiceRoutineDefinitionRequest> serviceRoutine = findServiceRoutineByName.execute();
         if (serviceRoutine.isPresent()) {
 
             Response response = tpsRequestService.executeServiceRutineRequest(request, serviceRoutine.get(), context, timeout);

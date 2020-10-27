@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -15,8 +14,9 @@ public class SjekkIdenterService {
     @Autowired
     private FiltrerPaaIdenterTilgjengeligIMiljo filtrerPaaIdenterTilgjengeligIMiljo;
 
-    public ResponseEntity<Set<String>> finnLedigeIdenter(List<String> identListe) {
-        Set<String> ukjenteIdenter = new HashSet<>(identListe);
+    public ResponseEntity<Set<String>> finnLedigeIdenter(String ident) {
+        Set<String> ukjenteIdenter = new HashSet();
+        ukjenteIdenter.add(ident);
 
         return ResponseEntity.ok(filtrerPaaIdenterTilgjengeligIMiljo.filtrerPaaIdenter(ukjenteIdenter));
     }

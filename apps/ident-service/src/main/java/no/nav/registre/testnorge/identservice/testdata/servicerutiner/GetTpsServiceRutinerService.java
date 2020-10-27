@@ -15,7 +15,7 @@ import static java.util.stream.Collectors.toList;
 public class GetTpsServiceRutinerService {
 
     @Autowired(required = false)
-    private List<ServiceRoutineResolver> resolvers = new ArrayList<>();
+    private final List<ServiceRoutineResolver> resolvers = new ArrayList<>();
 
     public List<TpsServiceRoutineDefinitionRequest> execute() {
         return resolvers.stream()
