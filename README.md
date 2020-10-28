@@ -37,7 +37,7 @@ strict-ssl=false
 ```
 
 #### Java
-For å kjøre lokalt (LocalAppStarter) må active profile settes til `dev`. I tillegg, for å kunne gjøre kall mot NAIS apper må nav 
+For å kjøre lokalt (ApplicationStarter) må active profile settes til `dev`. I tillegg, for å kunne gjøre kall mot NAIS apper må nav 
 truststore settes opp og cloud vault token må hentes fra Vault. Vault token hentes ved at man logger inn i Vault, 
 trykker på nedtrekksmenyen oppe til høyre, og trykker på "Copy token".
 
