@@ -41,6 +41,17 @@ For å kjøre lokalt (LocalAppStarter) må active profile settes til `dev`. I ti
 truststore settes opp og cloud vault token må hentes fra Vault. Vault token hentes ved at man logger inn i Vault, 
 trykker på nedtrekksmenyen oppe til høyre, og trykker på "Copy token".
 
+Disse verdiene fylles deretter inn i VM Options på IDE:
+
+Run -> Edit Configurations -> VM Options 
+
+```
+-Djavax.net.ssl.trustStore=C:\path\to\truststore
+-Djavax.net.ssl.trustStorePassword=(Passord)
+-Dspring.cloud.vault.token=(Copy token fra Vault)
+-Dspring.profiles.active=dev
+```
+
 Hvis du også kjører Dolly-backend lokalt og vil teste Dolly mot den lokale backend versjonen så må `dolly.url` i application-local.yml 
 settes til url-en for den lokale versjonen av dolly-backend (eks: `http://localhost:8080`)
 
@@ -88,20 +99,3 @@ Legg inn dette i **din** maven settings.xml fil:
     </profiles>
 </settings>
 ```
-##### I Intellij:
-
-Run -> Edit Configurations -> VM Options 
-
-Fyll inn verdiene:
-```
--Djavax.net.ssl.trustStore=C:\path\to\truststore
--Djavax.net.ssl.trustStorePassword=(Passord)
--Dspring.cloud.vault.token=(Copy token fra Vault)
--Dspring.profiles.active=dev
-```
-
-#### Begge
-Hvis du har gjort endringer lokalt på dolly sin frontend-backend (f.eks: lagt til en ny proxy i ProxyController) og 
-vil raskt teste hvordan det fungerer sammen med frontend elementer så kan du gjøre følgende:
-- Kjør ApplicationStarter (som forklart under Java)
-- Kjør applikasjonen med npm run local (fra ./src/main/web_src)
