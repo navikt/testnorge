@@ -24,6 +24,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedsadresseHistorikk;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresseHistorikk;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresseHistorikk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
@@ -70,6 +73,10 @@ public class PdlForvalterClientTest {
     public void setup() {
         when(pdlForvalterConsumer.deleteIdent(eq(IDENT)))
                 .thenReturn(ResponseEntity.ok(instance.objectNode().put(HENDLSE_ID, HENDELSE_ID_SLETTING)));
+
+        when(mapperFacade.map(any(Person.class), eq(PdlOppholdsadresseHistorikk.class))).thenReturn(new PdlOppholdsadresseHistorikk());
+        when(mapperFacade.map(any(Person.class), eq(PdlKontaktadresseHistorikk.class))).thenReturn(new PdlKontaktadresseHistorikk());
+        when(mapperFacade.map(any(Person.class), eq(PdlBostedsadresseHistorikk.class))).thenReturn(new PdlBostedsadresseHistorikk());
     }
 
     @Test
