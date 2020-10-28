@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
-import static no.nav.dolly.bestilling.pdlforvalter.mapper.PdlAdresseMappingStrategy.getCoadresse;
 import static no.nav.dolly.bestilling.pdlforvalter.mapper.PdlAdresseMappingStrategy.getDato;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 
@@ -10,6 +9,7 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdresse.Vegadresse;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedAdresseHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlMatrikkeladresse;
 import no.nav.dolly.domain.resultset.tpsf.Person;
@@ -21,31 +21,30 @@ public class PdlBostedsadresseMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(Person.class, PdlBostedadresse.class)
-                .customize(new CustomMapper<Person, PdlBostedadresse>() {
+        factory.classMap(Person.class, PdlBostedAdresseHistorikk.class)
+                .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(Person person, PdlBostedadresse bostedadresse, MappingContext context) {
+                    public void mapAtoB(Person person, PdlBostedAdresseHistorikk historikk, MappingContext context) {
 
-                        bostedadresse.setKilde(CONSUMER);
-
-                        if (!person.getBoadresse().isEmpty()) {
-                            bostedadresse.setGyldigFraOgMed(getDato(person.getBoadresse().get(0).getFlyttedato()));
-
+                        person.getBoadresse().forEach(boAdresse -> {
+                            PdlBostedadresse bostedadresse = new PdlBostedadresse();
+                            bostedadresse.setKilde(CONSUMER);
+                            bostedadresse.setGyldigFraOgMed(getDato(boAdresse.getFlyttedato()));
                             if (person.isUtenFastBopel()) {
                                 bostedadresse.setUkjentBosted(PdlBostedadresse.UkjentBosted.builder()
-                                        .bostedskommune(person.getBoadresse().get(0).getKommunenr())
+                                        .bostedskommune(boAdresse.getKommunenr())
                                         .build());
                             } else {
-                                if ("GATE".equals(person.getBoadresse().get(0).getAdressetype())) {
+                                if ("GATE".equals(boAdresse.getAdressetype())) {
                                     bostedadresse.setVegadresse(mapperFacade.map(
-                                            person.getBoadresse().get(0), Vegadresse.class));
+                                            boAdresse, Vegadresse.class));
                                 } else {
                                     bostedadresse.setMatrikkeladresse(mapperFacade.map(
-                                            person.getBoadresse().get(0), PdlMatrikkeladresse.class));
+                                            boAdresse, PdlMatrikkeladresse.class));
                                 }
-                                bostedadresse.setCoAdressenavn(getCoadresse(person.getBoadresse().get(0)));
                             }
-                        }
+                            historikk.getPdlAdresser().add(bostedadresse);
+                        });
                     }
                 })
                 .register();
