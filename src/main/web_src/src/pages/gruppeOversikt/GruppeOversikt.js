@@ -7,9 +7,11 @@ import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConn
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import Icon from '~/components/ui/icon/Icon'
 import Liste from './Liste'
+import FinnPerson from './FinnPerson'
 
 export default function GruppeOversikt({
 	getGrupper,
+	navigerTilPerson,
 	fetchMineGrupper,
 	isFetching,
 	gruppeListe,
@@ -37,11 +39,14 @@ export default function GruppeOversikt({
 
 	return (
 		<div className="oversikt-container">
-			<div className="page-header flexbox--align-center--justify-start">
-				<h1>Testdatagrupper</h1>
-				<Hjelpetekst hjelpetekstFor="Testdatagrupper">
-					Testdatagruppen inneholder alle personene dine (FNR/DNR/BOST).
-				</Hjelpetekst>
+			<div className="toolbar">
+				<div className="page-header flexbox--align-center--justify-start">
+					<h1>Testdatagrupper</h1>
+					<Hjelpetekst hjelpetekstFor="Testdatagrupper">
+						Testdatagruppen inneholder alle personene dine (FNR/DNR/BOST).
+					</Hjelpetekst>
+				</div>
+				<FinnPerson naviger={navigerTilPerson} />
 			</div>
 
 			<div className="toolbar">

@@ -25,9 +25,10 @@ Modal.setAppElement('#root')
 
 export default class DollyModal extends PureComponent {
 	render() {
-		const { children, isOpen, closeModal, noCloseButton, width } = this.props
+		const { children, isOpen, closeModal, noCloseButton, width, overflow } = this.props
 
 		if (width) customStyles.content.width = width
+		if (overflow) customStyles.content.overflow = overflow
 
 		return (
 			<Modal isOpen={isOpen} shouldCloseOnEsc onRequestClose={closeModal} style={customStyles}>

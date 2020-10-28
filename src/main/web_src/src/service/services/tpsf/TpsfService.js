@@ -19,6 +19,12 @@ export default {
 		return Request.post(endpoint, userArray)
 	},
 
+	soekPersoner(fragment) {
+		if (!fragment) return
+		const endpoint = `${getTpsfUrl()}/dolly/testdata/soekperson?fragment=${fragment}`
+		return Request.get(endpoint)
+	},
+
 	createFoedselsmelding(userData) {
 		const endpoint = getTpsfUrl() + '/tpsmelding/foedselsmelding'
 		return Request.post(endpoint, userData)

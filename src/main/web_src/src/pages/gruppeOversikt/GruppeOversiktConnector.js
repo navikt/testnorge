@@ -6,6 +6,7 @@ import {
 	loadingGrupper,
 	sokSelectorGruppeOversikt
 } from '~/ducks/gruppe'
+import { navigerTilPerson } from '~/ducks/finnPerson'
 import GruppeOversikt from './GruppeOversikt'
 
 const mapStateToProps = state => ({
@@ -18,6 +19,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
 	getGrupper: actions.getAlle,
+	navigerTilPerson: navigerTilPerson,
 	fetchMineGrupper
 }
 
