@@ -2,26 +2,29 @@ import React, { useState } from 'react'
 import { api } from './api'
 import Button from '~/components/ui/button/Button'
 import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export const EndreMalnavn = ({ malInfo, setMaler, avbrytRedigering }) => {
 	const { malNavn, id } = malInfo
 	const [nyttMalnavn, setMalnavn] = useState(malNavn)
 
 	return (
-		<div className="endreMalnavn">
-			<TextInput
-				name="malnavn"
-				value={nyttMalnavn}
-				onChange={e => setMalnavn(e.target.value)}
-				className="navnInput"
-			/>
-			<Button
-				className="lagre"
-				onClick={() => lagreEndring(nyttMalnavn, setMaler, id, avbrytRedigering)}
-			>
-				LAGRE
-			</Button>
-		</div>
+		<ErrorBoundary>
+			<div className="endreMalnavn">
+				<TextInput
+					name="malnavn"
+					value={nyttMalnavn}
+					onChange={e => setMalnavn(e.target.value)}
+					className="navnInput"
+				/>
+				<Button
+					className="lagre"
+					onClick={() => lagreEndring(nyttMalnavn, setMaler, id, avbrytRedigering)}
+				>
+					LAGRE
+				</Button>
+			</div>
+		</ErrorBoundary>
 	)
 }
 

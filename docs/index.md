@@ -16,9 +16,9 @@ nav_order: 1
 
 Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske testdata.  I Dolly kan du opprette syntetiske testpersoner med forskjellige egenskaper, og tilgjengeliggjøre testdataene i valgte testmiljøer.
 
-Fra utviklerimage eller Citrix benytt lenken: 
+Fra enhet som er satt opp med Naisdevice: 
 
-[dolly.nais.preprod.local](https://dolly.nais.preprod.local/)
+[dolly.dev.adeo.no/](https://dolly.dev.adeo.no/)
 
 Utenfor de interne Nav systemene benytt: 
 
@@ -30,11 +30,18 @@ Denne lenken krever tilgangen "Utvikling på laptop"
 
 ## Dolly pålogging 
 
-For å logge inn i Dolly trenger du en Z-bruker. Detaljert beskrivelse av hvordan du kan opprette en Z-bruker, samt logge inn i Dolly finner du her: [Hvordan opprette Z-bruker](z_bruker/index.md)
+Dolly benytter seg nå av Single Sign On (SSO) som fører til at du blir innlogget gjennom dette systemet.
+Du vil derfor som oftest være logget inn på din bruker med en gang du åpner Dolly.
 
 Det første som møter deg når du har logget inn er en startside med noen menyvalg. Siden åpnes automatisk med en oversikt over dine testdatagrupper
 
 ![Startside](assets/startside.png)
+
+Noen ganger vil du bli møtt av en eller flere meldinger når du åpner Dolly, f.eks. om det er første gang du bruker applikasjonen, eller om det har dukket opp nyheter. 
+
+Det er viktig at du leser disse meldingene, da de inneholder nyttig informasjon om bruk av Dolly.
+
+![Varslinger](assets/varslinger.png)
 
 ---
 
@@ -112,7 +119,26 @@ Når du da starter bestillingen vil du få de valgte egenskapene og verdiene som
 
 ## Endringsmelding
 
-Øverst i menyen kan du velge endringsmelding. Her har du mulighet til å sende inn en fødselsmelding eller dødsmelding til et ønsket testmiljø. Merk at det kun er mulig å sende inn endringsmelding på en person om gangen.
+Øverst i menyen kan du velge endringsmelding. Her har du mulighet til å sende inn en fødselsmelding eller dødsmelding til et ønsket testmiljø. 
+
+Merk at det kun er mulig å sende inn endringsmelding på en person om gangen.
+
+!!Denne er udatert og vil bli fjernet i nær fremtid!! 
+
+Det vil fortsatt være mulig å sende fødselsmeldinger og dødsmeldinger i Dolly:
+
+* Sende fødselsmelding: Gå til testdatagruppe og finn personen som skal være forelder. Her finnes to alternativer:
+    * Velg "Legg til/endre", og huk av for "Barn" i første steg. I neste steg kan et utvalg av egenskaper velges for barnet.
+    * Hvis barnet (og eventuelt den andre forelderen) allerede er opprettet i testdatagruppen: Velg "Legg til relasjoner" og legg til barn.
+
+* Sende dødsmelding: 
+    * Gå til testdatagruppe og finn personen det skal sendes dødsmelding på. 
+    * Velg "Legg til/endre", og huk av for "Dødsdato" i første steg. 
+    * I neste steg kan dødsdatoen settes, før dødsmeldingen sendes som en vanlig bestilling. 
+    
+    For å sende dødsmelding på personens partner/barn må partner eller barn hukes av i første steg. Da vil det være mulig å sette dødsdato på eksisterende relasjoener i steg to.
+
+For personer som ikke eksisterer i Dolly må disse først hentes inn ved å opprette person, velge "Eksisterende person" og skrive inn ident.
 
 ![Endringsmelding](assets/endringsmelding.png)
 
@@ -123,3 +149,21 @@ Når du da starter bestillingen vil du få de valgte egenskapene og verdiene som
 Øverst i menyen ligger også en lenke til API dokumentasjon. Den tar deg til Swagger og dokumentasjon av tilgjengelige APIer. 
 
 ![API dok](assets/api_dok.png)
+
+---
+
+## Importere grupper fra gammel Z-bruker
+
+Dersom du tidligere har brukt Dolly med en Z-bruker, vil du se at testdatagruppe-oversikten er tom første gang du logger deg på med personlig brukerkonto.
+
+Ikke bekymre deg - testpersonene dine er ikke slettet! Men fordi de er koblet til Z-brukeren din må du importere dem til din personlige brukerkonto for å få tilgang til dem.
+ 
+Import fra Z-bruker kan du gjøre direkte fra testdatagruppe-oversikten, eller fra Min side.
+
+![Import fra min side](assets/minside.png)
+
+For at overgangen skal gå så smertefritt som mulig, vil følgende regler gjelde ved import av Z-bruker:
+* Du kan importere så mange Z-brukere du ønsker. Har du flere Z-brukere vil altså alle dataene fra disse kunne samles på din personlige brukerkonto.
+* Hver Z-bruker kan kun importeres av én personlig brukerkonto. Her er det førstemann til mølla-prinsippet som gjelder, dvs. at når du importerer en Z-bruker vil ingen andre kunne importere den samme.
+
+Det vil fortsatt være mulig å sette andre brukeres testdatagrupper som “favoritter”, slik at du har enkel tilgang til dem fra testdatagruppe-oversikten.
