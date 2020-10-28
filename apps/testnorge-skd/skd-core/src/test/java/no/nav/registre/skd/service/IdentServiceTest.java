@@ -38,7 +38,7 @@ public class IdentServiceTest {
         var meldingIder = new ArrayList<>(Collections.singletonList(1L));
 
         when(tpsfConsumer.getMeldingIderTilhoerendeIdenter(avspillergruppeId, identer)).thenReturn(meldingIder);
-        when(tpsfConsumer.slettMeldingerFraTpsf(meldingIder)).thenReturn(ResponseEntity.ok().build());
+        when(tpsfConsumer.slettMeldingerFraTpsf(meldingIder)).thenReturn(true);
         when(identPoolConsumer.frigjoerLedigeIdenter(identer)).thenReturn(new ArrayList<>(identer));
 
         var response = identService.slettIdenterFraAvspillergruppe(avspillergruppeId, miljoer, identer);

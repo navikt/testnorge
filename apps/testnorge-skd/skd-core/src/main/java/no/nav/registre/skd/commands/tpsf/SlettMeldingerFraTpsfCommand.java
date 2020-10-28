@@ -10,12 +10,12 @@ import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class SlettMeldingerFraTpsfCommand implements Callable<String> {
+public class SlettMeldingerFraTpsfCommand implements Callable<Boolean> {
     private final WebClient webClient;
     private final List<Long> meldingIder;
 
     @Override
-    public String call() {
+    public Boolean call() {
         log.info("Sletter {} melding(er) fra TPSF.", meldingIder.size());
         return webClient
                 .post()
@@ -23,8 +23,8 @@ public class SlettMeldingerFraTpsfCommand implements Callable<String> {
                         .path("/v1/endringsmelding/deletemeldinger")
                         .build())
                 .body(BodyInserters.fromValue(meldingIder))
-                .retrieve()
-                .bodyToMono(String.class)
+                .exchange()
+                .map(response -> response.statusCode().is2xxSuccessful())
                 .block();
     }
 }

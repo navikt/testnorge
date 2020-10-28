@@ -63,9 +63,4 @@ public class HentMeldingerCommandTest {
         assertThat(response.size(), is(70));
     }
 
-    @Test
-    public void hentMeldingerFlereSider() {
-
-    }
-
 }

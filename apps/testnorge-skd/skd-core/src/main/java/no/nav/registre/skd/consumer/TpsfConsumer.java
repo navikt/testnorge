@@ -83,11 +83,10 @@ public class TpsfConsumer {
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
-    public ResponseEntity<String> slettMeldingerFraTpsf(List<Long> meldingIder) {
-    /*    new SlettMeldingerFraTpsfCommand(webClient, meldingIder).call();
-        var postRequest = RequestEntity.post(uriSlettMeldinger.expand()).body(SlettSkdmeldingerRequest.builder().ids(meldingIder).build());
+    public Boolean slettMeldingerFraTpsf(List<Long> meldingIder) {
+        return new SlettMeldingerFraTpsfCommand(webClient, meldingIder).call();
+    /*    var postRequest = RequestEntity.post(uriSlettMeldinger.expand()).body(SlettSkdmeldingerRequest.builder().ids(meldingIder).build());
         return restTemplate.exchange(postRequest, String.class);*/
-        return null;
     }
 
     @Timed
