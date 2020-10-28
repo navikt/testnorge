@@ -53,15 +53,12 @@ public class PersonApiConsumer {
 
     public void createPerson(Person person) {
         try {
-            AccessToken accessToken = clientCredentialGenerateAccessTokenService.generateToken(
-                    clientCredential,
-                    new AccessScopes("api://" + clientCredential.getClientId() + "/.default")
-            );
+            AccessToken accessToken = clientCredentialGenerateAccessTokenService.generateToken(clientCredential);
 
             log.info("Create person mellom token og command");
             new CreatePersonCommand(webClient, person.toDTO(), accessToken.getTokenValue(), person.toKommaseparerteTags()).run();
         } catch (Exception e) {
-            log.info("Noe gikk galt ved henting av token eller send person");
+            log.info("Noe gikk galt ved henting av token eller send person {}", e);
         }
     }
 }
