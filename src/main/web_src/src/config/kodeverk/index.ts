@@ -7,6 +7,13 @@ export enum PersoninformasjonKodeverk {
 	Retningsnumre = 'Retningsnumre'
 }
 
+export enum VergemaalKodeverk {
+	Fylkesmannsembeter = 'Vergemål_Fylkesmannsembeter',
+	Mandattype = 'Vergemål_Mandattype',
+	Sakstype = 'Vergemål_Sakstype',
+	Vergetype = 'Vergemål_Vergetype'
+}
+
 export enum AdresseKodeverk {
 	Postnummer = 'Postnummer',
 	PostnummerUtenPostboks = 'Postnummer vegadresser',

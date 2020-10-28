@@ -8,7 +8,8 @@ import {
 	AdresseKodeverk,
 	ArbeidKodeverk,
 	PersoninformasjonKodeverk,
-	SigrunKodeverk
+	SigrunKodeverk,
+	VergemaalKodeverk
 } from '~/config/kodeverk'
 
 // TODO: Flytte til selector?
@@ -90,6 +91,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			adresseNrInfo,
 			identHistorikk,
 			relasjoner,
+			vergemaal,
 			...persondetaljer
 		} = bestillingData.tpsf
 
@@ -343,6 +345,21 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 				data.push(barn)
 			}
+		}
+
+		if (vergemaal) {
+			const vergemaalKriterier = {
+				header: 'Vergemål',
+				items: [
+					obj('Fylkesmannsembete', vergemaal.embete, VergemaalKodeverk.Fylkesmannsembeter),
+					obj('Sakstype', vergemaal.sakType, VergemaalKodeverk.Sakstype),
+					obj('Mandattype', vergemaal.mandatType, VergemaalKodeverk.Mandattype),
+					obj('Vedtaksdato', Formatters.formatDate(vergemaal.vedtakDato)),
+					obj('Verges identtype', vergemaal.identType),
+					obj('Verge har mellomnavn', Formatters.oversettBoolean(vergemaal.harMellomnavn))
+				]
+			}
+			data.push(vergemaalKriterier)
 		}
 	}
 
