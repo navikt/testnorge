@@ -10,7 +10,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Component;
 
 import ma.glasnost.orika.CustomMapper;
@@ -36,18 +35,20 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
     public void register(MapperFactory factory) {
 
         factory.classMap(Person.class, PdlOpprettPerson.class)
-                .customize(new CustomMapper<Person, PdlOpprettPerson>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Person person, PdlOpprettPerson pdlOpprettPerson, MappingContext context) {
 
                         pdlOpprettPerson.setOpprettetIdent(person.getIdent());
-                        pdlOpprettPerson.setHistoriskeIdenter(person.getIdentHistorikk().stream().map(IdentHistorikk::getIdent).collect(Collectors.toList()));
+                        pdlOpprettPerson.setHistoriskeIdenter(person.getIdentHistorikk().stream()
+                                .map(IdentHistorikk::getAliasPerson)
+                                .map(Person::getIdent).collect(Collectors.toList()));
                     }
                 })
                 .register();
 
         factory.classMap(Person.class, PdlFoedsel.class)
-                .customize(new CustomMapper<Person, PdlFoedsel>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Person person, PdlFoedsel pdlFoedsel, MappingContext context) {
 
@@ -58,7 +59,7 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                 .register();
 
         factory.classMap(Person.class, PdlNavn.class)
-                .customize(new CustomMapper<Person, PdlNavn>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Person person, PdlNavn pdlNavn, MappingContext context) {
 
@@ -69,7 +70,7 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                 .register();
 
         factory.classMap(Person.class, PdlKjoenn.class)
-                .customize(new CustomMapper<Person, PdlKjoenn>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Person person, PdlKjoenn pdlKjoenn, MappingContext context) {
 
@@ -80,7 +81,7 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                 .register();
 
         factory.classMap(Statsborgerskap.class, PdlStatsborgerskap.class)
-                .customize(new CustomMapper<Statsborgerskap, PdlStatsborgerskap>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Statsborgerskap statsborgerskap, PdlStatsborgerskap pdlStatsborgerskap, MappingContext context) {
 
@@ -92,7 +93,7 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                 .register();
 
         factory.classMap(Person.class, PdlAdressebeskyttelse.class)
-                .customize(new CustomMapper<Person, PdlAdressebeskyttelse>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Person person, PdlAdressebeskyttelse adressebeskyttelse, MappingContext context) {
 
@@ -112,7 +113,7 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                 .register();
 
         factory.classMap(Person.class, PdlDoedsfall.class)
-                .customize(new CustomMapper<Person, PdlDoedsfall>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Person person, PdlDoedsfall pdlDoedsfall, MappingContext context) {
 

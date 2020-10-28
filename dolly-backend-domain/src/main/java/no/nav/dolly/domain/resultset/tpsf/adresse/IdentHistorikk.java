@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.dolly.domain.resultset.tpsf.Person;
 
 @Getter
 @Setter
@@ -11,5 +12,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class IdentHistorikk {
 
-    private String ident;
+    private Person aliasPerson;
 }
