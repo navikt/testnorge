@@ -1,0 +1,24 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+CLIENT_ID: c0c0f823-2c3c-416e-8eb2-38aca3c980c0
+
+
+consumers:
+  personapi:
+    threads: 5
+    client_id: 607ab2ee-2473-4bfd-8d48-03a7aaceeda6
+    client_secret: ${PERSON_API_CLIENT_SECRET}
+    url: https://testnorge-person-api.dev.adeo.no
+
+spring:
+  flyway:
+    enabled: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
+  application:
+    version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
+    name: mn-person-service
+    desciption: API for å hente personer fra Mini-Norge

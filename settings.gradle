@@ -117,6 +117,7 @@ include(':testnorge-data-transfer-objects')
 include(':skd-local')
 include(':person-api')
 include(':testnorge-medl')
+include(':mn-person-service')
 project(":inntektsmelding-stub").projectDir = file('apps/inntektsmelding-stub')
 project(":testnorge-tss").projectDir = file('apps/testnorge-tss')
 project(":profil-api").projectDir = file('apps/profil-api')
@@ -210,6 +211,7 @@ project(":testnorge-data-transfer-objects").projectDir = file('libs/testnorge-da
 project(":skd-local").projectDir = file('apps/testnorge-skd/skd-local')
 project(":person-api").projectDir = file('apps/person-api')
 project(":testnorge-medl").projectDir = file('apps/testnorge-medl')
+project(":mn-person-service").projectDir = file('apps/mn-person-service')
 
 gradleEnterprise {
     buildScan {
