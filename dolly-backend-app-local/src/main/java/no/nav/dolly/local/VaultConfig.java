@@ -10,8 +10,8 @@ import org.springframework.vault.annotation.VaultPropertySource;
 @VaultPropertySource(value = "serviceuser/dev/srvfregdolly", propertyNamePrefix = "jira.", ignoreSecretNotFound = false)
 @VaultPropertySource(value = "serviceuser/test/srvdolly-backend", propertyNamePrefix = "credentials.test.", ignoreSecretNotFound = false)
 @VaultPropertySource(value = "serviceuser/dev/srvdolly-preprod-env", propertyNamePrefix = "credentials.preprod.", ignoreSecretNotFound = false)
-@VaultPropertySource(value = "oracle/dev/creds/dolly_u2-user", propertyNamePrefix = "spring.datasource.", ignoreSecretNotFound = false)
-@VaultPropertySource(value = "oracle/dev/config/dolly_u2", propertyNamePrefix = "dolly.datasource.", ignoreSecretNotFound = false)
+@VaultPropertySource(value = "oracle/dev/creds/dolly_t1-user", propertyNamePrefix = "spring.datasource.", ignoreSecretNotFound = false)
+@VaultPropertySource(value = "oracle/dev/config/dolly_t1", propertyNamePrefix = "dolly.datasource.", ignoreSecretNotFound = false)
 class VaultConfig {
 
 }

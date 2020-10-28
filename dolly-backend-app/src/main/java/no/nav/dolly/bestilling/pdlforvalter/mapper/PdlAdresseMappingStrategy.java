@@ -44,7 +44,7 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
                         vegadresse.setBruksenhetstype(Bruksenhetstype.BOLIG);
                         vegadresse.setKommunenummer(gateadresse.getKommunenr());
                         vegadresse.setPostnummer(gateadresse.getPostnr());
-                        vegadresse.setAdressetillegsnavn(getTilleggsnavn(gateadresse));
+                        vegadresse.setAdressetillegsnavn(getCoadresse(gateadresse));
                         vegadresse.setBruksenhetsnummer(gateadresse.getBolignr());
                     }
                 })
@@ -64,7 +64,7 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
                         matrikkeladresse.setKommunenummer(rsMatrikkeladresse.getKommunenr());
                         matrikkeladresse.setPostnummer(rsMatrikkeladresse.getPostnr());
                         matrikkeladresse.setUndernummer(toNumeric(rsMatrikkeladresse.getUndernr()));
-                        matrikkeladresse.setAdressetilleggsnavn(getTilleggsnavn(rsMatrikkeladresse));
+                        matrikkeladresse.setAdressetilleggsnavn(getCoadresse(rsMatrikkeladresse));
                         matrikkeladresse.setBruksenhetsnummer(rsMatrikkeladresse.getBolignr());
                     }
                 })
@@ -116,13 +116,6 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
 
         return isNotBlank(boAdresse.getTilleggsadresse()) &&
                 boAdresse.getTilleggsadresse().contains(CO_NAME) ?
-                boAdresse.getTilleggsadresse() : null;
-    }
-
-    public static String getTilleggsnavn(BoAdresse boAdresse) {
-
-        return isNotBlank(boAdresse.getTilleggsadresse()) &&
-                !boAdresse.getTilleggsadresse().contains(CO_NAME) ?
                 boAdresse.getTilleggsadresse() : null;
     }
 

@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.pdlforvalter.mapper;
 import static java.util.Objects.isNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 
+import java.time.LocalDate;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,9 @@ public class PdlVergemaalMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Person person, PdlVergemaal vergemaal, MappingContext context) {
 
                         vergemaal.setEmbete(kodeverkConsumer.getKodeverkByName(EMBETE_KODEVERK).get(person.getVergemaal().get(0).getEmbete()));
+                        vergemaal.setFolkeregistermetadata(PdlVergemaal.Folkeregistermetadata.builder()
+                                .gyldighetstidspunkt(mapperFacade.map(person.getVergemaal().get(0).getVedtakDato(), LocalDate.class))
+                                .build());
                         vergemaal.setKilde(CONSUMER);
                         vergemaal.setType(getSakstype(person.getVergemaal().get(0).getSakType()));
                         vergemaal.setVergeEllerFullmektig(VergeEllerFullmektig.builder()
