@@ -219,3 +219,7 @@ gradleEnterprise {
         termsOfServiceAgree = "yes"
     }
 }
+
+include 'apps:mn-synt-arbeidsforhold-service'
+findProject(':apps:mn-synt-arbeidsforhold-service')?.name = 'mn-synt-arbeidsforhold-service'
+
