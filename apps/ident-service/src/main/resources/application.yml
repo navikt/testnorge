@@ -16,7 +16,7 @@ spring:
     username: ${LDAP_USERNAME}
     password: ${LDAP_PASSWORD}
   application:
-    version: 1
+    version: 1.0
     name: ident-service
     description: App som håndterer service på identer benyttet av Dolly
   security:
