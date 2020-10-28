@@ -1,28 +1,28 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.NORSK;
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.UTENLANDSK;
 import static no.nav.dolly.bestilling.pdlforvalter.mapper.PdlAdresseMappingStrategy.getDato;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.resultset.tpsf.adresse.MidlertidigAdresse.MidlertidigAdressetype.GATE;
 import static no.nav.dolly.domain.resultset.tpsf.adresse.MidlertidigAdresse.MidlertidigAdressetype.PBOX;
+import static no.nav.dolly.domain.resultset.tpsf.adresse.MidlertidigAdresse.MidlertidigAdressetype.STED;
+import static no.nav.dolly.domain.resultset.tpsf.adresse.MidlertidigAdresse.MidlertidigAdressetype.UTAD;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.CustomMapper;
-import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdresse.Adressegradering;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse.PostadresseIFrittFormat;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse.Postboksadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse.UtenlandskAdresseIFrittFormat;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse.VegadresseForPost;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresseHistorikk;
 import no.nav.dolly.domain.resultset.tpsf.Person;
+import no.nav.dolly.domain.resultset.tpsf.adresse.BoAdresse;
+import no.nav.dolly.domain.resultset.tpsf.adresse.MidlertidigAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.MidlertidigAdresse.MidlertidigGateAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.MidlertidigAdresse.MidlertidigPboxAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.MidlertidigAdresse.MidlertidigUtadAdresse;
@@ -38,30 +38,68 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(PdlPersonAdresseWrapper.class, PdlKontaktadresse.class)
-                .customize(new CustomMapper<PdlPersonAdresseWrapper, PdlKontaktadresse>() {
+        factory.classMap(Person.class, PdlKontaktadresseHistorikk.class)
+                .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(PdlPersonAdresseWrapper wrapper, PdlKontaktadresse kontaktadresse, MappingContext context) {
+                    public void mapAtoB(Person person, PdlKontaktadresseHistorikk historikk, MappingContext context) {
 
-                        if (NORSK == wrapper.getAdressetype()) {
+                        person.getBoadresse().forEach(boAdresse -> {
+                            if (!person.isUtenFastBopel() && "GATE".equals(boAdresse.getAdressetype())) {
 
-                            kontaktadresse.setCoAdressenavn(getCoAdresse(wrapper.getPerson()));
-                            mapNorskAdresse(mapperFacade, wrapper, kontaktadresse);
+                                PdlKontaktadresse kontaktadresse = new PdlKontaktadresse();
+                                kontaktadresse.setGyldigFraOgMed(
+                                        getDato(boAdresse.getFlyttedato()));
+                                kontaktadresse.setVegadresseForPost(mapperFacade.map(
+                                        boAdresse, VegadresseForPost.class));
+                                kontaktadresse.setCoAdressenavn(getCoAdresse(boAdresse));
+                                kontaktadresse.setKilde(CONSUMER);
+                                historikk.getPdlAdresser().add(kontaktadresse);
+                            }
+                        });
+                        person.getMidlertidigAdresse().forEach(midlertidigAdresse -> {
 
-                        } else if (UTENLANDSK == wrapper.getAdressetype()) {
+                            if (STED != midlertidigAdresse.getAdressetype()) {
+                                PdlKontaktadresse kontaktadresse = new PdlKontaktadresse();
+                                kontaktadresse.setGyldigTilOgMed(getDato(midlertidigAdresse.getGyldigTom()));
 
-                            mapUtenlandskAdresse(mapperFacade, wrapper, kontaktadresse);
-                        }
+                                if (GATE == midlertidigAdresse.getAdressetype()) {
 
-                        kontaktadresse.setAdressegradering(Adressegradering.UGRADERT);
-                        kontaktadresse.setKilde(CONSUMER);
+                                    kontaktadresse.setVegadresseForPost(
+                                            mapperFacade.map(midlertidigAdresse, VegadresseForPost.class));
+
+                                } else if (PBOX == midlertidigAdresse.getAdressetype()) {
+
+                                    kontaktadresse.setPostboksadresse(
+                                            mapperFacade.map(midlertidigAdresse, Postboksadresse.class));
+
+                                } else if (UTAD == midlertidigAdresse.getAdressetype()) {
+
+                                    kontaktadresse.setUtenlandskAdresseIFrittFormat(
+                                            mapperFacade.map(midlertidigAdresse, UtenlandskAdresseIFrittFormat.class));
+                                }
+                                kontaktadresse.setCoAdressenavn(getCoAdresse(midlertidigAdresse));
+                                kontaktadresse.setKilde(CONSUMER);
+                                historikk.getPdlAdresser().add(kontaktadresse);
+                            }
+                        });
+
+                        person.getPostadresse().forEach(postAdresse -> {
+                            PdlKontaktadresse kontaktadresse = new PdlKontaktadresse();
+                            if (postAdresse.isNorsk()) {
+                                kontaktadresse.setPostadresseIFrittFormat(mapperFacade.map(
+                                        postAdresse, PostadresseIFrittFormat.class));
+                            } else {
+                                kontaktadresse.setUtenlandskAdresseIFrittFormat(mapperFacade.map(
+                                        postAdresse, UtenlandskAdresseIFrittFormat.class));
+                            }
+                            kontaktadresse.setKilde(CONSUMER);
+                            historikk.getPdlAdresser().add(kontaktadresse);
+                        });
                     }
-
-                })
-                .register();
+                }).register();
 
         factory.classMap(MidlertidigGateAdresse.class, VegadresseForPost.class)
-                .customize(new CustomMapper<MidlertidigGateAdresse, VegadresseForPost>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(MidlertidigGateAdresse gateadresse, VegadresseForPost vegadresse, MappingContext context) {
 
@@ -73,11 +111,10 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                                 !gateadresse.getTilleggsadresse().contains(CO_NAME) ?
                                 gateadresse.getTilleggsadresse() : null);
                     }
-                })
-                .register();
+                }).register();
 
         factory.classMap(MidlertidigPboxAdresse.class, Postboksadresse.class)
-                .customize(new CustomMapper<MidlertidigPboxAdresse, Postboksadresse>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(MidlertidigPboxAdresse midlertidigAdresse, Postboksadresse postboksadresse, MappingContext context) {
 
@@ -85,11 +122,10 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                         postboksadresse.setPostbokseier(midlertidigAdresse.getPostboksAnlegg());
                         postboksadresse.setPostnummer(midlertidigAdresse.getPostnr());
                     }
-                })
-                .register();
+                }).register();
 
         factory.classMap(MidlertidigUtadAdresse.class, UtenlandskAdresseIFrittFormat.class)
-                .customize(new CustomMapper<MidlertidigUtadAdresse, UtenlandskAdresseIFrittFormat>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(MidlertidigUtadAdresse utadAdresse, UtenlandskAdresseIFrittFormat utenlandskAdresseIFrittFormat, MappingContext context) {
 
@@ -104,12 +140,10 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                         }
                         utenlandskAdresseIFrittFormat.setLandkode(utadAdresse.getPostLand());
                     }
-                })
-                .register();
+                }).register();
 
         factory.classMap(RsPostadresse.class, UtenlandskAdresseIFrittFormat.class)
-
-                .customize(new CustomMapper<RsPostadresse, UtenlandskAdresseIFrittFormat>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(RsPostadresse postadresse, UtenlandskAdresseIFrittFormat utenlandskAdresse, MappingContext context) {
 
@@ -124,74 +158,20 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                         }
                         utenlandskAdresse.setLandkode(postadresse.getPostLand());
                     }
-                })
-                .register();
+                }).register();
     }
 
-    private void mapNorskAdresse(MapperFacade mapperFacade, PdlPersonAdresseWrapper wrapper, PdlKontaktadresse kontaktadresse) {
+    private static String getCoAdresse(MidlertidigAdresse midlertidigAdresse) {
 
-        if (!wrapper.getPerson().getMidlertidigAdresse().isEmpty() &&
-                GATE == wrapper.getPerson().getMidlertidigAdresse().get(0).getAdressetype()) {
-
-            kontaktadresse.setGyldigTilOgMed(
-                    wrapper.getPerson().getMidlertidigAdresse().get(0).getGyldigTom().toLocalDate());
-            kontaktadresse.setVegadresseForPost(
-                    mapperFacade.map(wrapper.getPerson().getMidlertidigAdresse().get(0), VegadresseForPost.class));
-
-        } else if (!wrapper.getPerson().getMidlertidigAdresse().isEmpty() &&
-                PBOX == wrapper.getPerson().getMidlertidigAdresse().get(0).getAdressetype()) {
-
-            kontaktadresse.setGyldigTilOgMed(
-                    wrapper.getPerson().getMidlertidigAdresse().get(0).getGyldigTom().toLocalDate());
-            kontaktadresse.setPostboksadresse(mapperFacade.map(
-                    wrapper.getPerson().getMidlertidigAdresse().get(0), Postboksadresse.class));
-
-        } else if (!wrapper.getPerson().getBoadresse().isEmpty() &&
-                !wrapper.getPerson().isUtenFastBopel() &&
-                "GATE".equals(wrapper.getPerson().getBoadresse().get(0).getAdressetype())) {
-
-            kontaktadresse.setGyldigFraOgMed(
-                    getDato(wrapper.getPerson().getBoadresse().get(0).getFlyttedato()));
-
-            kontaktadresse.setVegadresseForPost(mapperFacade.map(
-                    wrapper.getPerson().getBoadresse().get(0), VegadresseForPost.class));
-
-        } else if (!wrapper.getPerson().getPostadresse().isEmpty()) {
-
-            kontaktadresse.setPostadresseIFrittFormat(mapperFacade.map(
-                    wrapper.getPerson().getPostadresse().get(0), PostadresseIFrittFormat.class));
-        }
+        return isNotBlank(midlertidigAdresse.getTilleggsadresse()) &&
+                midlertidigAdresse.getTilleggsadresse().contains(CO_NAME) ?
+                midlertidigAdresse.getTilleggsadresse() : null;
     }
 
-    private void mapUtenlandskAdresse(MapperFacade mapperFacade, PdlPersonAdresseWrapper wrapper, PdlKontaktadresse kontaktadresse) {
-        if (!wrapper.getPerson().getMidlertidigAdresse().isEmpty() &&
-                wrapper.getPerson().getMidlertidigAdresse().get(0).isUtenlandsk()) {
+    private static String getCoAdresse(BoAdresse boAdresse) {
 
-            kontaktadresse.setUtenlandskAdresseIFrittFormat(mapperFacade.map(
-                    wrapper.getPerson().getMidlertidigAdresse().get(0), UtenlandskAdresseIFrittFormat.class));
-
-        } else if (!wrapper.getPerson().getPostadresse().isEmpty() &&
-                wrapper.getPerson().getPostadresse().get(0).isUtenlandsk()) {
-
-            kontaktadresse.setUtenlandskAdresseIFrittFormat(mapperFacade.map(
-                    wrapper.getPerson().getPostadresse().get(0), UtenlandskAdresseIFrittFormat.class));
-        }
-    }
-
-    private static String getCoAdresse(Person person) {
-
-        if (!person.getMidlertidigAdresse().isEmpty()) {
-            return isNotBlank(person.getMidlertidigAdresse().get(0).getTilleggsadresse()) &&
-                    person.getMidlertidigAdresse().get(0).getTilleggsadresse().contains(CO_NAME) ?
-                    person.getMidlertidigAdresse().get(0).getTilleggsadresse() : null;
-
-        } else if (!person.getBoadresse().isEmpty()) {
-            return isNotBlank(person.getBoadresse().get(0).getTilleggsadresse()) &&
-                    person.getBoadresse().get(0).getTilleggsadresse().contains(CO_NAME) ?
-                    person.getBoadresse().get(0).getTilleggsadresse() : null;
-
-        } else {
-            return null;
-        }
+        return isNotBlank(boAdresse.getTilleggsadresse()) &&
+                boAdresse.getTilleggsadresse().contains(CO_NAME) ?
+                boAdresse.getTilleggsadresse() : null;
     }
 }

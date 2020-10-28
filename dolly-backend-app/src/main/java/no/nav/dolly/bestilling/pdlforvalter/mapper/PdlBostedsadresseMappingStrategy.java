@@ -9,8 +9,8 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdresse.Vegadresse;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedAdresseHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedadresse;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedsadresseHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlMatrikkeladresse;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.mapper.MappingStrategy;
@@ -21,10 +21,10 @@ public class PdlBostedsadresseMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(Person.class, PdlBostedAdresseHistorikk.class)
+        factory.classMap(Person.class, PdlBostedsadresseHistorikk.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(Person person, PdlBostedAdresseHistorikk historikk, MappingContext context) {
+                    public void mapAtoB(Person person, PdlBostedsadresseHistorikk historikk, MappingContext context) {
 
                         person.getBoadresse().forEach(boAdresse -> {
                             PdlBostedadresse bostedadresse = new PdlBostedadresse();

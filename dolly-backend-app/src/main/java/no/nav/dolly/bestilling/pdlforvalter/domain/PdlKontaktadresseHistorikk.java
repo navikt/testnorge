@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlBostedAdresseHistorikk {
+public class PdlKontaktadresseHistorikk {
 
-    private List<PdlBostedadresse> pdlAdresser;
+    private List<PdlKontaktadresse> pdlAdresser;
 
-    public List<PdlBostedadresse> getPdlAdresser() {
+    public List<PdlKontaktadresse> getPdlAdresser() {
         if (isNull(pdlAdresser)) {
             pdlAdresser = new ArrayList<>();
         }

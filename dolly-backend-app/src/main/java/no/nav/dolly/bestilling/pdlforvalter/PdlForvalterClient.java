@@ -1,8 +1,6 @@
 package no.nav.dolly.bestilling.pdlforvalter;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.NORSK;
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper.Adressetype.UTENLANDSK;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.containsSynthEnv;
 import static no.nav.dolly.domain.CommonKeysAndUtils.getSynthEnv;
@@ -22,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedAdresseHistorikk;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedsadresseHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
@@ -30,12 +28,11 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFolkeregisterpersonstatus;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlForeldreansvar;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlInnflytting;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresseHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpphold;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresseHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlPersonAdresseWrapper;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlTelefonnummer;
@@ -292,17 +289,14 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void sendOppholdsadresse(Person person) {
 
-        if (person.hasOppholdsadresse()) {
-            pdlForvalterConsumer.postOppholdsadresse(mapperFacade.map(person, PdlOppholdsadresse.class), person.getIdent());
-        }
+        mapperFacade.map(person, PdlOppholdsadresseHistorikk.class).getPdlAdresser()
+                .forEach(adresse -> pdlForvalterConsumer.postOppholdsadresse(adresse, person.getIdent()));
     }
 
     private void sendBostedadresse(Person person) {
 
-        if (!person.getBoadresse().isEmpty()) {
-            mapperFacade.map(person, PdlBostedAdresseHistorikk.class).getPdlAdresser()
-                    .forEach(adresse-> pdlForvalterConsumer.postBostedadresse(adresse, person.getIdent()));
-        }
+        mapperFacade.map(person, PdlBostedsadresseHistorikk.class).getPdlAdresser()
+                .forEach(adresse -> pdlForvalterConsumer.postBostedadresse(adresse, person.getIdent()));
     }
 
     private void sendFolkeregisterpersonstatus(Person person) {
@@ -313,16 +307,8 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void sendKontaktadresse(Person person) {
 
-        if (person.hasNorskKontaktadresse()) {
-            pdlForvalterConsumer.postKontaktadresse(mapperFacade.map(
-                    PdlPersonAdresseWrapper.builder().person(person).adressetype(NORSK).build(),
-                    PdlKontaktadresse.class), person.getIdent());
-        }
-        if (person.hasUtenlandskAdresse()) {
-            pdlForvalterConsumer.postKontaktadresse(mapperFacade.map(
-                    PdlPersonAdresseWrapper.builder().person(person).adressetype(UTENLANDSK).build(),
-                    PdlKontaktadresse.class), person.getIdent());
-        }
+        mapperFacade.map(person, PdlKontaktadresseHistorikk.class).getPdlAdresser()
+                .forEach(adresse -> pdlForvalterConsumer.postKontaktadresse(adresse, person.getIdent()));
     }
 
     private void sendInnflytting(Person person) {

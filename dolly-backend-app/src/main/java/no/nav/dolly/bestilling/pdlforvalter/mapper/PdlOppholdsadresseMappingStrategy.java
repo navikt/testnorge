@@ -2,7 +2,6 @@ package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse.UtenlandskAdresse;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse.Vegadresse;
-import static no.nav.dolly.bestilling.pdlforvalter.mapper.PdlAdresseMappingStrategy.getCoadresse;
 import static no.nav.dolly.bestilling.pdlforvalter.mapper.PdlAdresseMappingStrategy.getDato;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static org.apache.logging.log4j.util.Strings.isBlank;
@@ -16,6 +15,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdresse.OppholdAnnetSted;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlMatrikkeladresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresseHistorikk;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 import no.nav.dolly.mapper.MappingStrategy;
@@ -26,38 +26,44 @@ public class PdlOppholdsadresseMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(Person.class, PdlOppholdsadresse.class)
-                .customize(new CustomMapper<Person, PdlOppholdsadresse>() {
+        factory.classMap(Person.class, PdlOppholdsadresseHistorikk.class)
+                .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(Person person, PdlOppholdsadresse oppholdsadresse, MappingContext context) {
+                    public void mapAtoB(Person person, PdlOppholdsadresseHistorikk historikk, MappingContext context) {
 
-                        oppholdsadresse.setKilde(CONSUMER);
-                        oppholdsadresse.setOppholdAnnetSted(mapSpesReg(person.getSpesreg()));
+                        person.getBoadresse().forEach(boAdresse -> {
 
-                        if (!person.getBoadresse().isEmpty()) {
-                            oppholdsadresse.setGyldigFraOgMed(
-                                    getDato(person.getBoadresse().get(0).getFlyttedato()));
-
-                            if ("GATE".equals(person.getBoadresse().get(0).getAdressetype())) {
-                                oppholdsadresse.setVegadresse(mapperFacade.map(
-                                        person.getBoadresse().get(0), Vegadresse.class));
-                                oppholdsadresse.setCoAdressenavn(getCoadresse(person.getBoadresse().get(0)));
+                            PdlOppholdsadresse oppholdsadresse = new PdlOppholdsadresse();
+                            oppholdsadresse.setGyldigFraOgMed(getDato(boAdresse.getFlyttedato()));
+                            if ("GATE".equals(boAdresse.getAdressetype())) {
+                                oppholdsadresse.setVegadresse(mapperFacade.map(boAdresse, Vegadresse.class));
                             } else {
                                 oppholdsadresse.setMatrikkeladresse(mapperFacade.map(
-                                        person.getBoadresse().get(0), PdlMatrikkeladresse.class));
-                                oppholdsadresse.setCoAdressenavn(getCoadresse(person.getBoadresse().get(0)));
+                                        boAdresse, PdlMatrikkeladresse.class));
                             }
-                        } else if (!person.getPostadresse().isEmpty() &&
-                                !person.getPostadresse().get(0).isNorsk()) {
-                            oppholdsadresse.setUtenlandskAdresse(mapperFacade.map(
-                                    person.getPostadresse().get(0), UtenlandskAdresse.class));
-                        }
+                            oppholdsadresse.setKilde(CONSUMER);
+                            oppholdsadresse.setOppholdAnnetSted(mapSpesReg(person.getSpesreg()));
+                            historikk.getPdlAdresser().add(oppholdsadresse);
+                        });
+
+                        person.getPostadresse().forEach(postAdresse -> {
+                            if (postAdresse.isUtenlandsk()) {
+
+                                PdlOppholdsadresse oppholdsadresse = new PdlOppholdsadresse();
+                                oppholdsadresse.setUtenlandskAdresse(mapperFacade.map(
+                                        postAdresse, UtenlandskAdresse.class));
+
+                                oppholdsadresse.setKilde(CONSUMER);
+                                oppholdsadresse.setOppholdAnnetSted(mapSpesReg(person.getSpesreg()));
+                                historikk.getPdlAdresser().add(oppholdsadresse);
+                            }
+                        });
                     }
                 })
                 .register();
 
         factory.classMap(RsPostadresse.class, UtenlandskAdresse.class)
-                .customize(new CustomMapper<RsPostadresse, UtenlandskAdresse>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(RsPostadresse postadresse, UtenlandskAdresse utenlandskAdresse, MappingContext context) {
 

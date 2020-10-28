@@ -158,25 +158,6 @@ public class Person {
     }
 
     @JsonIgnore
-    public boolean hasOppholdsadresse() {
-        return !getBoadresse().isEmpty() && !isUtenFastBopel() || hasUtenlandskAdresse();
-    }
-
-    @JsonIgnore
-    public boolean hasUtenlandskAdresse() {
-        return !getPostadresse().isEmpty() && getPostadresse().get(0).isUtenlandsk() ||
-                (!getMidlertidigAdresse().isEmpty() && midlertidigAdresse.get(0).isUtenlandsk());
-    }
-
-    @JsonIgnore
-    public boolean hasNorskKontaktadresse() {
-        return !getBoadresse().isEmpty() && !isUtenFastBopel() && getBoadresse().get(0).isGateadresse() ||
-                (!getPostadresse().isEmpty() && getPostadresse().get(0).isNorsk()) ||
-                (!getMidlertidigAdresse().isEmpty() && midlertidigAdresse.get(0).isNorsk() &&
-                        !midlertidigAdresse.get(0).isStedadresse());
-    }
-
-    @JsonIgnore
     public boolean isUtenFastBopel() {
         return isTrue(utenFastBopel) || "UFB".equals(getSpesreg());
     }
