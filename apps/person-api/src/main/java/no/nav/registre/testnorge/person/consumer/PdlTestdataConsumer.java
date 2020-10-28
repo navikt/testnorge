@@ -58,8 +58,7 @@ public class PdlTestdataConsumer {
             try {
                 command.call();
             } catch (Exception e) {
-                log.error("Klarer ikke å utfløre kall til PDL", e);
-                throw new PdlCreatePersonException("Feil ved innsendelse til PDL testdata");
+                throw new PdlCreatePersonException("Feil ved innsendelse til PDL testdata", e);
             }
         }
 
