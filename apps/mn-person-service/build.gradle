@@ -14,12 +14,19 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation project(':testnorge-core')
 
+    implementation project(':testnorge-core')
+    implementation project(':testnorge-oauth2')
+
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+
+    implementation 'org.springframework.security:spring-security-web:5.3.4.RELEASE'
 
     implementation 'org.springdoc:springdoc-openapi-ui:1.4.6'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
