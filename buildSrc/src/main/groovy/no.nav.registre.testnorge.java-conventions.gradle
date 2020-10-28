@@ -8,25 +8,18 @@ plugins {
 }
 
 repositories {
-    mavenCentral()
-    mavenLocal()
 
-    maven {
-        name = "GitHubPackages"
-        url = uri('https://maven.pkg.github.com/navikt/maven-release')
-        credentials(PasswordCredentials) {
-            password System.getenv("NAV_TOKEN")
-            username 'token'
+    mavenLocal() {
+        metadataSources {
+            mavenPom()
+            artifact()
         }
     }
 
     maven {
-        url = uri('http://packages.confluent.io/maven/')
+        url "https://repo.adeo.no/repository/maven-public"
     }
 
-    maven {
-        url = uri('https://repo.maven.apache.org/maven2/')
-    }
 }
 
 
