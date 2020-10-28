@@ -76,19 +76,12 @@ public class ClientCredentialGenerateAccessTokenService {
                 .with("client_secret", remoteClientCredential.getClientSecret())
                 .with("grant_type", "client_credentials");
 
-        log.info("Mellom body og post. id: {}, AccessScopes: {}, lengde secret: {}",
-                remoteClientCredential.getClientId(),
-                String.join(" ", accessScopes.getScopes()),
-                remoteClientCredential.getClientSecret().length());
-
-
         AccessToken token = webClient.post()
                 .body(body)
                 .retrieve()
                 .bodyToMono(AccessToken.class)
                 .block();
-
-        log.info("OAuth2 access token hentet");
+        log.info("OAuth2 access token hentet.");
         return token;
     }
 }

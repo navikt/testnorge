@@ -2,6 +2,7 @@ name: Deploy opprett-person-pdl
 
 on:
   push:
+    branches: master
     paths:
       - apps/opprett-person-pdl/**
       - libs/testnorge-core/**
