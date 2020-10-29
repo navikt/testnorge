@@ -1,15 +1,16 @@
 package no.nav.registre.testnorge.arbeidsforhold.domain;
 
 import lombok.SneakyThrows;
-import org.springframework.lang.Nullable;
 
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.ArbeidsforholdDTO;
@@ -20,6 +21,7 @@ import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Arbeidsforhold;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.EDAGM;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Inntektsmottaker;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.JuridiskEntitet;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Kilde;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Leveranse;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Virksomhet;
 
@@ -30,7 +32,7 @@ public class Opplysningspliktig {
         this.dto = dto;
     }
 
-    public String getOrgnummer(){
+    public String getOrgnummer() {
         return dto.getOpplysningspliktigOrganisajonsnummer();
     }
 
@@ -89,6 +91,7 @@ public class Opplysningspliktig {
 
 
         var opplysningspliktig = new no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Opplysningspliktig();
+
         opplysningspliktig.setNorskIdentifikator(dto.getOpplysningspliktigOrganisajonsnummer());
 
         JuridiskEntitet juridiskEntitet = new JuridiskEntitet();
@@ -97,6 +100,7 @@ public class Opplysningspliktig {
         Leveranse leveranse = new Leveranse();
         leveranse.setKalendermaaned(toXMLGregorianCalendar(dto.getKalendermaaned()));
         leveranse.setOpplysningspliktig(opplysningspliktig);
+        leveranse.getLeveranseinformasjon();
         leveranse.setOppgave(juridiskEntitet);
 
         EDAGM edagm = new EDAGM();
@@ -115,6 +119,11 @@ public class Opplysningspliktig {
                 dto.getPersoner().stream().map(personDTO -> {
 
                     Inntektsmottaker inntektsmottaker = new Inntektsmottaker();
+                    Kilde value = new Kilde();
+                    value.setKildenavn("Team Dolly");
+                    value.setKildereferanse(UUID.randomUUID().toString());
+                    value.setKildeversjon(BigInteger.valueOf(1));
+                    inntektsmottaker.setKilde(value);
                     inntektsmottaker.setNorskIdentifikator(personDTO.getIdent());
                     inntektsmottaker.getArbeidsforhold().addAll(
                             personDTO.getArbeidsforhold()
