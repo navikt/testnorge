@@ -14,6 +14,8 @@ consumers:
     url: https://mn-organisasjon-api.dev.adeo.no
   kodeverk:
     url: https://kodeverk.dev.adeo.no
+  syntrest:
+    utl: https://nais-synthdata-amelding.dev.adeo.no #TODO bruk https://syntrest.dev.adeo.no
 
 spring:
   flyway:
