@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.arbeidsforhold.domain;
 
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -26,6 +27,7 @@ import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Leveranse;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Leveranseinformasjon;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Virksomhet;
 
+@Slf4j
 public class Opplysningspliktig {
     private final OpplysningspliktigDTO dto;
 
@@ -104,7 +106,12 @@ public class Opplysningspliktig {
 
         Leveranseinformasjon leveranseinformasjon = new Leveranseinformasjon();
         leveranseinformasjon.setAltinnreferanse("Dummy");
-        leveranseinformasjon.setInnleveringstidspunkt(toXMLGregorianCalendar(LocalDate.now()));
+
+        XMLGregorianCalendar xmlGregorianCalendar = toXMLGregorianCalendar(LocalDate.now());
+
+        log.info(xmlGregorianCalendar.toXMLFormat());
+
+        leveranseinformasjon.setInnleveringstidspunkt(xmlGregorianCalendar);
         leveranseinformasjon.setMeldingsId(UUID.randomUUID().toString());
         leveranseinformasjon.setKildesystem("testnorge-arbeidsforhold-api");
         leveranseinformasjon.setMeldingsId(UUID.randomUUID().toString());
