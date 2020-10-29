@@ -25,6 +25,7 @@ public class TpsPerson {
     private List<String> barn;
     private List<String> nyePartnereOgBarn;
     private List<String> verger;
+    private List<String> identhistorikk;
 
     public List<String> getPartnere() {
         if (isNull(partnere)) {
@@ -47,6 +48,13 @@ public class TpsPerson {
         return verger;
     }
 
+    public List<String> getIdenthistorikk() {
+        if (isNull(identhistorikk)) {
+            identhistorikk = new ArrayList<>();
+        }
+        return identhistorikk;
+    }
+
     public List<Person> getPersondetaljer() {
         if (isNull(persondetaljer)) {
             persondetaljer = new ArrayList<>();
@@ -54,9 +62,9 @@ public class TpsPerson {
         return persondetaljer;
     }
 
-    public Person getPerson(String ident){
-        for (Person person : getPersondetaljer()){
-            if (person.getIdent().equals(ident)){
+    public Person getPerson(String ident) {
+        for (Person person : getPersondetaljer()) {
+            if (person.getIdent().equals(ident)) {
                 return person;
             }
         }

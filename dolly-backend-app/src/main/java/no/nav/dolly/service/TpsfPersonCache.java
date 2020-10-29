@@ -1,5 +1,14 @@
 package no.nav.dolly.service;
 
+import static java.util.Collections.singletonList;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.springframework.stereotype.Service;
+
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.resultset.tpsf.Person;
@@ -9,16 +18,6 @@ import no.nav.dolly.domain.resultset.tpsf.RsSimplePerson;
 import no.nav.dolly.domain.resultset.tpsf.RsVergemaal;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static java.util.Collections.singletonList;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +28,8 @@ public class TpsfPersonCache {
     public TpsPerson fetchIfEmpty(TpsPerson tpsPerson) {
 
         Set<String> tpsfIdenter = new HashSet<>();
-        Stream.of(singletonList(tpsPerson.getHovedperson()), tpsPerson.getPartnere(), tpsPerson.getBarn(), tpsPerson.getVerger())
+        Stream.of(singletonList(tpsPerson.getHovedperson()), tpsPerson.getPartnere(),
+                tpsPerson.getBarn(), tpsPerson.getVerger(), tpsPerson.getIdenthistorikk())
                 .forEach(tpsfIdenter::addAll);
 
         List<String> manglendeIdenter = tpsfIdenter.stream().filter(ident -> tpsPerson.getPersondetaljer().stream()
@@ -37,7 +37,7 @@ public class TpsfPersonCache {
                 .collect(Collectors.toList());
 
         if (!manglendeIdenter.isEmpty()) {
-            tpsPerson.getPersondetaljer().addAll(tpsfService.hentTestpersoner(new ArrayList<>(tpsfIdenter)));
+            tpsPerson.getPersondetaljer().addAll(tpsfService.hentTestpersoner(manglendeIdenter));
         }
 
         List<String> historikkIdenter = tpsPerson.getPerson(tpsPerson.getHovedperson()).getIdentHistorikk().stream()
@@ -95,6 +95,10 @@ public class TpsfPersonCache {
                             .map(RsVergemaal::getVerge)
                             .map(RsSimplePerson::getIdent)
                             .collect(Collectors.toList()))
+                    .identhistorikk(personer.get(0).getIdentHistorikk().stream()
+                            .map(IdentHistorikk::getAliasPerson)
+                            .map(Person::getIdent)
+                            .collect(Collectors.toList()))
                     .build();
         }
 
@@ -113,6 +117,14 @@ public class TpsfPersonCache {
                 .barn(person.getRelasjoner().stream()
                         .filter(Relasjon::isBarn)
                         .map(Relasjon::getPersonRelasjonMed)
+                        .map(Person::getIdent)
+                        .collect(Collectors.toList()))
+                .verger(person.getVergemaal().stream()
+                        .map(RsVergemaal::getVerge)
+                        .map(RsSimplePerson::getIdent)
+                        .collect(Collectors.toList()))
+                .identhistorikk(person.getIdentHistorikk().stream()
+                        .map(IdentHistorikk::getAliasPerson)
                         .map(Person::getIdent)
                         .collect(Collectors.toList()))
                 .build());
