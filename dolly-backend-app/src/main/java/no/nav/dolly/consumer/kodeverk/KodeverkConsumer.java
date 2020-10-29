@@ -46,7 +46,8 @@ public class KodeverkConsumer {
 
         ResponseEntity<KodeverkBetydningerResponse> kodeverkResponse = getKodeverk(kodeverk);
         return kodeverkResponse.hasBody() ? kodeverkResponse.getBody().getBetydninger().entrySet().stream()
-                .collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue().get(0).getBeskrivelser().get("nb").getTekst())) :
+                .collect(Collectors.toMap(Entry::getKey, entry -> !entry.getValue().isEmpty() ?
+                        entry.getValue().get(0).getBeskrivelser().get("nb").getTekst() : "Innhold er tomt")) :
                 Collections.emptyMap();
     }
 

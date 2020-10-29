@@ -15,6 +15,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaal.Omfang;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaal.Personnavn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaal.VergeEllerFullmektig;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaal.VergemaalType;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaalHistorikk;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.mapper.MappingStrategy;
@@ -29,23 +30,29 @@ public class PdlVergemaalMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(Person.class, PdlVergemaal.class)
-                .customize(new CustomMapper<Person, PdlVergemaal>() {
+        factory.classMap(Person.class, PdlVergemaalHistorikk.class)
+                .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(Person person, PdlVergemaal vergemaal, MappingContext context) {
+                    public void mapAtoB(Person person, PdlVergemaalHistorikk historikk, MappingContext context) {
 
-                        vergemaal.setEmbete(kodeverkConsumer.getKodeverkByName(EMBETE_KODEVERK).get(person.getVergemaal().get(0).getEmbete()));
-                        vergemaal.setFolkeregistermetadata(PdlVergemaal.Folkeregistermetadata.builder()
-                                .gyldighetstidspunkt(mapperFacade.map(person.getVergemaal().get(0).getVedtakDato(), LocalDate.class))
-                                .build());
-                        vergemaal.setKilde(CONSUMER);
-                        vergemaal.setType(getSakstype(person.getVergemaal().get(0).getSakType()));
-                        vergemaal.setVergeEllerFullmektig(VergeEllerFullmektig.builder()
-                                .motpartsPersonident(person.getVergemaal().get(0).getVerge().getIdent())
-                                .navn(mapperFacade.map(person.getVergemaal().get(0).getVerge(), Personnavn.class))
-                                .omfang(getOmfang(person.getVergemaal().get(0).getMandatType()))
-                                .omfangetErInnenPersonligOmraade(!"FIN".equals(person.getVergemaal().get(0).getMandatType()))
-                                .build());
+                        person.getVergemaal().forEach(vergemaal -> {
+
+                            PdlVergemaal pdlVergemaal = new PdlVergemaal();
+                            pdlVergemaal.setEmbete(kodeverkConsumer.getKodeverkByName(EMBETE_KODEVERK).get(vergemaal.getEmbete()));
+                            pdlVergemaal.setFolkeregistermetadata(PdlVergemaal.Folkeregistermetadata.builder()
+                                    .gyldighetstidspunkt(mapperFacade.map(vergemaal.getVedtakDato(), LocalDate.class))
+                                    .build());
+                            pdlVergemaal.setKilde(CONSUMER);
+                            pdlVergemaal.setType(getSakstype(vergemaal.getSakType()));
+                            pdlVergemaal.setVergeEllerFullmektig(VergeEllerFullmektig.builder()
+                                    .motpartsPersonident(vergemaal.getVerge().getIdent())
+                                    .navn(mapperFacade.map(vergemaal.getVerge(), Personnavn.class))
+                                    .omfang(getOmfang(vergemaal.getMandatType()))
+                                    .omfangetErInnenPersonligOmraade(!"FIN".equals(vergemaal.getMandatType()))
+                                    .build());
+
+                            historikk.getVergemaaler().add(pdlVergemaal);
+                        });
                     }
                 })
                 .register();

@@ -37,7 +37,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlTelefonnummer;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlUtflytting;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaal;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaalHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.SivilstandWrapper;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -327,9 +327,8 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void sendVergemaal(Person person) {
 
-        if (!person.getVergemaal().isEmpty()) {
-            pdlForvalterConsumer.postVergemaal(mapperFacade.map(person, PdlVergemaal.class), person.getIdent());
-        }
+        mapperFacade.map(person, PdlVergemaalHistorikk.class).getVergemaaler()
+                .forEach(vergemaal -> pdlForvalterConsumer.postVergemaal(vergemaal, person.getIdent()));
     }
 
     private void sendUtenlandsid(Pdldata pdldata, String ident, StringBuilder status) {
