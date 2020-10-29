@@ -23,6 +23,7 @@ import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Inntektsmottaker;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.JuridiskEntitet;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Kilde;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Leveranse;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Leveranseinformasjon;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Virksomhet;
 
 public class Opplysningspliktig {
@@ -100,7 +101,15 @@ public class Opplysningspliktig {
         Leveranse leveranse = new Leveranse();
         leveranse.setKalendermaaned(toXMLGregorianCalendar(dto.getKalendermaaned()));
         leveranse.setOpplysningspliktig(opplysningspliktig);
-        leveranse.getLeveranseinformasjon();
+
+        Leveranseinformasjon leveranseinformasjon = new Leveranseinformasjon();
+        leveranseinformasjon.setAltinnreferanse("Dummy");
+        leveranseinformasjon.setInnleveringstidspunkt(toXMLGregorianCalendar(LocalDate.now()));
+        leveranseinformasjon.setMeldingsId(UUID.randomUUID().toString());
+        leveranseinformasjon.setKildesystem("testnorge-arbeidsforhold-api");
+        leveranseinformasjon.setMeldingsId(UUID.randomUUID().toString());
+
+        leveranse.getLeveranseinformasjon().add(leveranseinformasjon);
         Kilde value = new Kilde();
         value.setKildenavn("Team Dolly");
         value.setKildereferanse(UUID.randomUUID().toString());
