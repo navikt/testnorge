@@ -8,6 +8,10 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -107,9 +111,13 @@ public class Opplysningspliktig {
         Leveranseinformasjon leveranseinformasjon = new Leveranseinformasjon();
         leveranseinformasjon.setAltinnreferanse("Dummy");
 
-        XMLGregorianCalendar xmlGregorianCalendar = toXMLGregorianCalendar(LocalDate.now());
+        ZonedDateTime zoneDateTime = ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault());
+        GregorianCalendar gregorianCalendar = GregorianCalendar.from(zoneDateTime);
+        XMLGregorianCalendar xmlGregorianCalendar = DatatypeFactory
+                .newInstance()
+                .newXMLGregorianCalendar(gregorianCalendar);
 
-        log.info(xmlGregorianCalendar.toXMLFormat());
+        log.info("XMLGregorianCalendar format : " + xmlGregorianCalendar);
 
         leveranseinformasjon.setInnleveringstidspunkt(xmlGregorianCalendar);
         leveranseinformasjon.setMeldingsId(UUID.randomUUID().toString());
