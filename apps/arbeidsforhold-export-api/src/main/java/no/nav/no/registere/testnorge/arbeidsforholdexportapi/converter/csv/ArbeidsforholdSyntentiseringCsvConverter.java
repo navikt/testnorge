@@ -35,7 +35,7 @@ public class ArbeidsforholdSyntentiseringCsvConverter extends CsvConverter<Arbei
         ANTALL_TIMER_PER_UKE_SOM_EN_FULL_STILLING_TILSVARER("ANTALL_TIMER_PER_UKE_SOM_EN_FULL_STILLING_TILSVARER"),
         AVLOENNINGSTYPE("AVLOENNINGSTYPE"),
         YRKE("YRKE"),
-        ARBEIDSORDING("ARBEIDSORDING"),
+        ARBEIDSTIDSORDNING("ARBEIDSTIDSORDNING"),
         STILLINGSPROSENT("STILLINGSPROSENT"),
         SISTE_LOENNSENDRINGSDATO("SISTE_LOENNSENDRINGSDATO"),
         SISTE_DATO_FOR_STILLINGSPROSENTENDRING("SISTE_DATO_FOR_STILLINGSPROSENTENDRING"),
@@ -78,7 +78,7 @@ public class ArbeidsforholdSyntentiseringCsvConverter extends CsvConverter<Arbei
             map.put(Headers.ANTALL_TIMER_PER_UKE_SOM_EN_FULL_STILLING_TILSVARER.getValue(), arbeidsforhold.getAntallTimerPerUkeSomEnFullStillingTilsvarer());
             map.put(Headers.AVLOENNINGSTYPE.getValue(), arbeidsforhold.getAvloenningstype());
             map.put(Headers.YRKE.getValue(), arbeidsforhold.getYrke());
-            map.put(Headers.ARBEIDSORDING.getValue(), arbeidsforhold.getArbeidstidsordning());
+            map.put(Headers.ARBEIDSTIDSORDNING.getValue(), arbeidsforhold.getArbeidstidsordning());
             map.put(Headers.STILLINGSPROSENT.getValue(), arbeidsforhold.getStillingsprosent());
             map.put(Headers.SISTE_LOENNSENDRINGSDATO.getValue(), arbeidsforhold.getSisteLoennsendringsdato());
             map.put(Headers.SISTE_DATO_FOR_STILLINGSPROSENTENDRING.getValue(), arbeidsforhold.getSisteDatoForStillingsprosentendring());

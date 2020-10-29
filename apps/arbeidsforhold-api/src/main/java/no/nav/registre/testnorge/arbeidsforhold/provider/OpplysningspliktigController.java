@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.arbeidsforhold.provider;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import no.nav.registre.testnorge.arbeidsforhold.domain.Opplysningspliktig;
 import no.nav.registre.testnorge.arbeidsforhold.service.OpplysningspliktigSerivce;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OpplysningspliktigDTO;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/opplysningspliktig")
 @RequiredArgsConstructor
@@ -22,9 +24,12 @@ public class OpplysningspliktigController {
     private final OpplysningspliktigSerivce serivce;
 
     @PutMapping
-    public ResponseEntity<HttpStatus> createOpplysningspliktig(@RequestBody OpplysningspliktigDTO opplysningspliktigDTO) {
+    public ResponseEntity<HttpStatus> createOpplysningspliktig(
+            @RequestBody OpplysningspliktigDTO opplysningspliktigDTO,
+            @RequestHeader("miljo") String miljo
+    ) {
         Opplysningspliktig opplysningspliktig = new Opplysningspliktig(opplysningspliktigDTO);
-        // TODO Send inn opplysningspliktig til aareg
+        log.info("Oppretter a-melding for opplysningspliktig {} i miljo {}.", opplysningspliktig.getOrgnummer(), miljo);
         return ResponseEntity.ok().build();
     }
 

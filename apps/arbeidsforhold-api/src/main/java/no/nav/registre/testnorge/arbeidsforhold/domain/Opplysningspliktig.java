@@ -30,6 +30,11 @@ public class Opplysningspliktig {
         this.dto = dto;
     }
 
+    public String getOrgnummer(){
+        return dto.getOpplysningspliktigOrganisajonsnummer();
+    }
+
+
     public Opplysningspliktig(String opplysningspliktig, Map<String, List<no.nav.registre.testnorge.arbeidsforhold.domain.Arbeidsforhold>> map) {
         dto = OpplysningspliktigDTO
                 .builder()
