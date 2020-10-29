@@ -9,7 +9,7 @@ const ITEM_PER_PAGE = 10
 
 export default class Pagination extends Component {
 	state = {
-		currentPage: 0,
+		currentPage: this.props.visSide ? this.props.visSide : 0,
 		itemCount: ITEM_PER_PAGE
 	}
 

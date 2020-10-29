@@ -25,6 +25,7 @@ export default function PersonListe({
 	isFetching,
 	personListe,
 	searchActive,
+	visPerson,
 	iLaastGruppe,
 	fetchTpsfPersoner
 }) {
@@ -51,6 +52,10 @@ export default function PersonListe({
 			</div>
 		)
 	}
+
+	const personIndex = personListe.findIndex(person => person.identNr == visPerson)
+	const personerPrSide = 10
+	const visSide = personIndex >= 0 ? Math.floor(personIndex / personerPrSide) : 0
 
 	const columns = [
 		{
@@ -156,6 +161,8 @@ export default function PersonListe({
 				columns={columns}
 				pagination
 				iconItem={bruker => (bruker.kjonn === 'MANN' ? <ManIconItem /> : <WomanIconItem />)}
+				visSide={visSide}
+				visPerson={visPerson}
 				onExpand={bruker => (
 					<PersonVisningConnector
 						personId={bruker.ident.ident}

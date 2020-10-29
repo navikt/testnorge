@@ -4,8 +4,14 @@ import Icon from '~/components/ui/icon/Icon'
 import Column from './TableColumn'
 import ExpandButton from '~/components/ui/button/ExpandButton'
 
-export default function TableRow({ children, icon, expandComponent, navLink }) {
-	const [isExpanded, setIsExpanded] = useState(false)
+export default function TableRow({
+	children,
+	icon,
+	expandComponent,
+	navLink,
+	expandPerson = false
+}) {
+	const [isExpanded, setIsExpanded] = useState(expandPerson)
 
 	const onRowClick = event => {
 		if (expandComponent) return setIsExpanded(!isExpanded)

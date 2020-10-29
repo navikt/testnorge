@@ -136,6 +136,10 @@ export default class DollyEndpoints {
 		return `${identBase}/${ident}/ibruk?iBruk=${ibruk}`
 	}
 
+	static naviger(ident) {
+		return `${identBase}/naviger/${ident}`
+	}
+
 	static kobleIdenter(ident) {
 		return `${identBase}/${ident}/relasjon`
 	}

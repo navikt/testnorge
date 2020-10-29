@@ -56,6 +56,10 @@ export default {
 		return Request.put(Endpoints.leggTilPaaPerson(ident), data)
 	},
 
+	navigerTilPerson(ident) {
+		return Request.get(Endpoints.naviger(ident))
+	},
+
 	//* Bruker
 	getBrukere() {
 		return Request.get(Endpoints.bruker())
