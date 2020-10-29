@@ -42,6 +42,8 @@ public class TpsfPersonCache {
 
         List<String> historikkIdenter = tpsPerson.getPerson(tpsPerson.getHovedperson()).getIdentHistorikk().stream()
                 .map(IdentHistorikk::getAliasPerson)
+                .filter(person -> tpsPerson.getPersondetaljer().stream()
+                        .noneMatch(person1 -> person.getIdent().equals(person1.getIdent())))
                 .map(Person::getIdent)
                 .collect(Collectors.toList());
 
