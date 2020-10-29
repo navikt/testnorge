@@ -9,6 +9,7 @@ import java.util.List;
 import no.nav.registre.testnorge.libs.dto.statistikk.v1.StatistikkType;
 import no.nav.registre.testnorge.originalpopulasjon.consumer.StatistikkConsumer;
 import no.nav.registre.testnorge.originalpopulasjon.domain.Alderskategori;
+import no.nav.registre.testnorge.originalpopulasjon.domain.Aldersspenn;
 
 @Service
 @AllArgsConstructor
@@ -16,7 +17,7 @@ public class StatistikkService {
 
     private final StatistikkConsumer statistikkConsumer;
 
-    public List<Alderskategori> getAlderskategorier (Integer antall) {
+    public List<Alderskategori> getAlderskategorier(Integer antall) {
         List<Alderskategori> liste = new ArrayList<>();
 
         Integer antallBarn = finnAntallAvKategori(antall, Statistikk.BARN);
@@ -24,20 +25,20 @@ public class StatistikkService {
         Integer antallVoksne = antall - (antallBarn + antallEldre);
 
         liste.add(new Alderskategori(
-                Statistikk.BARN_MIN_ALDER,
-                Statistikk.BARN_MAX_ALDER,
-                antallBarn
+                antallBarn,
+                new Aldersspenn(Statistikk.BARN_MIN_ALDER,
+                        Statistikk.BARN_MAX_ALDER)
         ));
         liste.add(new Alderskategori(
-                Statistikk.ELDRE_MIN_ALDER,
-                Statistikk.ELDRE_MAX_ALDER,
-                antallEldre
+                antallEldre,
+                new Aldersspenn(Statistikk.ELDRE_MIN_ALDER,
+                        Statistikk.ELDRE_MAX_ALDER)
         ));
 
         liste.add(new Alderskategori(
-                Statistikk.VOKSEN_MIN_ALDER,
-                Statistikk.VOKSEN_MAX_ALDER,
-                antallVoksne
+                antallVoksne,
+                new Aldersspenn(Statistikk.VOKSEN_MIN_ALDER,
+                        Statistikk.VOKSEN_MAX_ALDER)
         ));
         return liste;
     }

@@ -29,9 +29,6 @@ public class KafkaConfig {
     @Value("${kafka.bootstrapservers}")
     public String bootstrapAddress;
 
-    @Value("${kafka.groupid}")
-    public String groupId;
-
     @Value("${kafka.schemaregistryservers}")
     public String schemaregistryServers;
 
@@ -43,11 +40,9 @@ public class KafkaConfig {
 
     @Bean
     public ProducerFactory<String, Person> producerFactory() {
-        InetSocketAddress inetSocketAddress = new InetSocketAddress(0);
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaregistryServers);
-        props.put(ProducerConfig.CLIENT_ID_CONFIG, groupId + inetSocketAddress.getHostString());
         props.put(ProducerConfig.ACKS_CONFIG, "1");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);

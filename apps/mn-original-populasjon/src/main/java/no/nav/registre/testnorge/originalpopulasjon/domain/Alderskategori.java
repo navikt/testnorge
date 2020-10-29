@@ -6,7 +6,6 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 public class Alderskategori {
-    Integer minAlder;
-    Integer maxAlder;
     Integer antall;
+    Aldersspenn aldersspenn;
 }

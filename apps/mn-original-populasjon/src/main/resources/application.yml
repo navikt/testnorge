@@ -24,9 +24,11 @@ consumer:
     url: https://testnorge-synt-person-api.dev.adeo.no
     client_secret: ${SYNT_PERSON_API_CLIENT_SECRET}
     client_id: 9e22aba7-8c92-4f5e-8c0e-073e00c82bcf
+  statisk-data-forvalter:
+    url: https://testnorge-statisk-data-forvalter.dev.adeo.no
+    threads: 5
 
 kafka:
   bootstrapservers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
   schemaregistryservers: http://kafka-schema-registry.tpa.svc.nais.local:8081
-  groupid: testnorge-hendelse-api-v1 #HVA GJØR VI MED DENNE?
   topic: testnorge-opprett-person-v1

@@ -10,7 +10,7 @@ import java.util.List;
 import no.nav.registre.testnorge.libs.core.config.ApplicationProperties;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.originalpopulasjon.consumer.command.GetIdenterCommand;
-import no.nav.registre.testnorge.originalpopulasjon.domain.Alderskategori;
+import no.nav.registre.testnorge.originalpopulasjon.domain.Aldersspenn;
 
 @Slf4j
 @Component
@@ -28,7 +28,7 @@ public class IdentPoolConsumer {
                 .build();
     }
 
-    public List<String> getIdenter(Alderskategori alderskategori) {
-        return new GetIdenterCommand(webClient, applicationName, alderskategori).call();
+    public List<String> getIdenter(Integer antall, Aldersspenn aldersspenn) {
+        return new GetIdenterCommand(webClient, applicationName, antall, aldersspenn).call();
     }
 }

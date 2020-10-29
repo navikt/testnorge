@@ -4,18 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.core.util.IdentUtil;
 import no.nav.registre.testnorge.libs.dto.syntperson.v1.SyntPersonDTO;
-import no.nav.registre.testnorge.originalpopulasjon.consumer.IdentPoolConsumer;
 import no.nav.registre.testnorge.originalpopulasjon.consumer.SyntPersonConsumer;
 import no.nav.registre.testnorge.originalpopulasjon.domain.Adresse;
-import no.nav.registre.testnorge.originalpopulasjon.domain.Alderskategori;
 import no.nav.registre.testnorge.originalpopulasjon.domain.Person;
 
 @Service
@@ -24,12 +19,11 @@ public class PopulasjonService {
 
     private static final Set<String> TAGS = Set.of("MINI_NORGE");
 
-    private final StatistikkService statistikkService;
+    private final IdentService identService;
     private final SyntPersonConsumer syntPersonConsumer;
-    private final IdentPoolConsumer identPoolConsumer;
 
     public List<Person> createPopulasjon(Integer antall) {
-        List<String> identliste = getIdenter(antall);
+        List<String> identliste = identService.getIdenter(antall);
         List<SyntPersonDTO> personinfoliste = getPersonInfo(antall);
 
         List<Person> populasjon = new ArrayList<>();
@@ -53,21 +47,6 @@ public class PopulasjonService {
             );
         }
         return populasjon;
-    }
-
-    private List<String> getIdenter(Integer antall) {
-        List<Alderskategori> liste = statistikkService.getAlderskategorier(antall);
-
-        return liste.stream()
-                .map(alderskategori -> {
-                    if (alderskategori.getAntall() > 0) {
-                        return identPoolConsumer.getIdenter(alderskategori);
-                    }
-                    return null;
-                })
-                .filter(Objects::nonNull)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
     }
 
     private List<SyntPersonDTO> getPersonInfo(Integer antall) {
