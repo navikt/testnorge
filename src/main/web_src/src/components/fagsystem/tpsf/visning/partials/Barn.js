@@ -36,6 +36,7 @@ export const Barn = ({ data, type }) => {
 					title="Alder"
 					value={Formatters.formatAlderBarn(data.alder, data.doedsdato, erDoedfoedt)}
 				/>
+				<TitleValue title="Dødsdato" value={Formatters.formatDate(data.doedsdato)} />
 				<TitleValue
 					title="Diskresjonskode"
 					kodeverk={PersoninformasjonKodeverk.Diskresjonskoder}
