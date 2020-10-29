@@ -1,15 +1,5 @@
 package no.nav.dolly.service;
 
-import static java.util.Collections.singletonList;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.resultset.tpsf.Person;
@@ -18,6 +8,17 @@ import no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsSimplePerson;
 import no.nav.dolly.domain.resultset.tpsf.RsVergemaal;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.Collections.singletonList;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +38,15 @@ public class TpsfPersonCache {
 
         if (!manglendeIdenter.isEmpty()) {
             tpsPerson.getPersondetaljer().addAll(tpsfService.hentTestpersoner(new ArrayList<>(tpsfIdenter)));
+        }
+
+        List<String> historikkIdenter = tpsPerson.getPerson(tpsPerson.getHovedperson()).getIdentHistorikk().stream()
+                .map(IdentHistorikk::getAliasPerson)
+                .map(Person::getIdent)
+                .collect(Collectors.toList());
+
+        if (!historikkIdenter.isEmpty()) {
+            tpsPerson.getPersondetaljer().addAll(tpsfService.hentTestpersoner(historikkIdenter));
         }
 
         List<String> vergeIdenter = tpsPerson.getPersondetaljer().stream()
