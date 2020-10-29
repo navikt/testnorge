@@ -21,6 +21,7 @@ export const Partner = ({ data }) => {
 				<TitleValue title="Etternavn" value={data.etternavn} />
 				<TitleValue title="Kjønn" value={Formatters.kjonn(data.kjonn, data.alder)} />
 				<TitleValue title="Alder" value={Formatters.formatAlder(data.alder, data.doedsdato)} />
+				<TitleValue title="Dødsdato" value={Formatters.formatDate(data.doedsdato)} />
 				<TitleValue
 					title="Diskresjonskode"
 					kodeverk={PersoninformasjonKodeverk.Diskresjonskoder}
