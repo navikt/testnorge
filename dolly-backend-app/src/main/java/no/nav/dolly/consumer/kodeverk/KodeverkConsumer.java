@@ -46,8 +46,14 @@ public class KodeverkConsumer {
 
         ResponseEntity<KodeverkBetydningerResponse> kodeverkResponse = getKodeverk(kodeverk);
         return kodeverkResponse.hasBody() ? kodeverkResponse.getBody().getBetydninger().entrySet().stream()
-                .collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue().get(0).getBeskrivelser().get("nb").getTekst())) :
+                .collect(Collectors.toMap(Entry::getKey, KodeverkConsumer::getNorskBokmaal)) :
                 Collections.emptyMap();
+    }
+
+    private static String getNorskBokmaal(Entry<String, java.util.List<KodeverkBetydningerResponse.Betydning>> entry) {
+
+        return !entry.getValue().isEmpty() ?
+                entry.getValue().get(0).getBeskrivelser().get("nb").getTekst() : "Innhold er tomt";
     }
 
     private ResponseEntity<KodeverkBetydningerResponse> getKodeverk(String kodeverk) {
@@ -64,7 +70,7 @@ public class KodeverkConsumer {
         }
     }
 
-    private String getKodeverksnavnUrl(String kodeverksnavn) {
+    private static String getKodeverksnavnUrl(String kodeverksnavn) {
         return KODEVERK_URL_COMPLETE.replace("{kodeverksnavn}", kodeverksnavn);
     }
 }
