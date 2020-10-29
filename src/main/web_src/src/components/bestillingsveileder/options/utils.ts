@@ -17,6 +17,7 @@ export const initialValues = {
 	instdata: initialValuesInst,
 	barnDoedfoedt: initialValuesDoedfoedt,
 	boadresse: {
+		bolignr: '',
 		// @ts-ignore
 		flyttedato: null
 	},
