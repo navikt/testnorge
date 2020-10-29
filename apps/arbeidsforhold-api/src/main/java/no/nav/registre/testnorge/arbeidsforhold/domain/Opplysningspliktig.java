@@ -101,6 +101,11 @@ public class Opplysningspliktig {
         leveranse.setKalendermaaned(toXMLGregorianCalendar(dto.getKalendermaaned()));
         leveranse.setOpplysningspliktig(opplysningspliktig);
         leveranse.getLeveranseinformasjon();
+        Kilde value = new Kilde();
+        value.setKildenavn("Team Dolly");
+        value.setKildereferanse(UUID.randomUUID().toString());
+        value.setKildeversjon(BigInteger.valueOf(1));
+        leveranse.setKilde(value);
         leveranse.setOppgave(juridiskEntitet);
 
         EDAGM edagm = new EDAGM();
