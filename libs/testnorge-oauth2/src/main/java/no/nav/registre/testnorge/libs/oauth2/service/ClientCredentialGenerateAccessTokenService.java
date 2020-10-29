@@ -68,7 +68,7 @@ public class ClientCredentialGenerateAccessTokenService {
 
         tokenResolver.verifyAuthentication();
 
-        log.info("Henter OAuth2 access token fra client credential...");
+        log.trace("Henter OAuth2 access token fra client credential...");
 
         var body = BodyInserters
                 .fromFormData("scope", String.join(" ", accessScopes.getScopes()))
@@ -81,7 +81,7 @@ public class ClientCredentialGenerateAccessTokenService {
                 .retrieve()
                 .bodyToMono(AccessToken.class)
                 .block();
-        log.info("OAuth2 access token hentet.");
+        log.trace("OAuth2 access token hentet.");
         return token;
     }
 }
