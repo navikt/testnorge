@@ -22,6 +22,10 @@ public class KodeverkConsumer {
         this.applicationName = applicationName;
         this.webClient = WebClient
                 .builder()
+                .codecs(configurer -> configurer
+                        .defaultCodecs()
+                        .maxInMemorySize(16 * 1024 * 1024)
+                )
                 .baseUrl(url)
                 .build();
     }

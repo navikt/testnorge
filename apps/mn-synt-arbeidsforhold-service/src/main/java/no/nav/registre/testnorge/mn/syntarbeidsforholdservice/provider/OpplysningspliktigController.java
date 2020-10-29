@@ -3,12 +3,12 @@ package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.provider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.websocket.server.PathParam;
 import java.time.LocalDate;
 
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.service.ArbeidsfoholdService;
@@ -31,7 +31,7 @@ public class OpplysningspliktigController {
 
     @PostMapping("/{orgnummer}")
     public ResponseEntity<?> generateFor(
-            @PathParam("orgnummer") String orgnummer,
+            @PathVariable("orgnummer") String orgnummer,
             @RequestHeader("kalendermaaned") LocalDate kalendermaaned
     ) {
         return ResponseEntity.ok().build();

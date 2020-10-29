@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.registre.testnorge.libs.common.command.GetOpplysningspliktigCommand;
-import no.nav.registre.testnorge.libs.common.command.SendOpplysningspliktigCommand;
+import no.nav.registre.testnorge.libs.common.command.SaveOpplysningspliktigCommand;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.credentials.ArbeidsforholdApiClientProperties;
@@ -37,6 +37,6 @@ public class ArbeidsforholdConsumer {
 
     public void sendOppsyninspliktig(Opplysningspliktig opplysningspliktig){
         AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties);
-        new SendOpplysningspliktigCommand(webClient, accessToken.getTokenValue(), opplysningspliktig.toDTO(), "q2").run();
+        new SaveOpplysningspliktigCommand(webClient, accessToken.getTokenValue(), opplysningspliktig.toDTO(), "q2").run();
     }
 }

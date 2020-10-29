@@ -13,7 +13,7 @@ import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OpplysningspliktigDT
 @Slf4j
 @DependencyOn("arbeidsforhold-api")
 @RequiredArgsConstructor
-public class SendOpplysningspliktigCommand implements Runnable {
+public class SaveOpplysningspliktigCommand implements Runnable {
     private final WebClient webClient;
     private final String accessToken;
     private final OpplysningspliktigDTO opplysningspliktigDTO;
@@ -27,7 +27,7 @@ public class SendOpplysningspliktigCommand implements Runnable {
                 opplysningspliktigDTO.getKalendermaaned()
         );
         webClient
-                .post()
+                .put()
                 .uri(builder -> builder.path("/api/v1/opplysningspliktig").build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .header("miljo", miljo)

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import no.nav.registre.testnorge.arbeidsforhold.consumer.AaregSyntConsumer;
 import no.nav.registre.testnorge.arbeidsforhold.domain.Opplysningspliktig;
 import no.nav.registre.testnorge.arbeidsforhold.service.OpplysningspliktigSerivce;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OpplysningspliktigDTO;
@@ -22,6 +23,7 @@ import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OpplysningspliktigDT
 @RequiredArgsConstructor
 public class OpplysningspliktigController {
     private final OpplysningspliktigSerivce serivce;
+    private final AaregSyntConsumer aaregSyntConsumer;
 
     @PutMapping
     public ResponseEntity<HttpStatus> createOpplysningspliktig(
@@ -29,7 +31,7 @@ public class OpplysningspliktigController {
             @RequestHeader("miljo") String miljo
     ) {
         Opplysningspliktig opplysningspliktig = new Opplysningspliktig(opplysningspliktigDTO);
-        log.info("Oppretter a-melding for opplysningspliktig {} i miljo {}.", opplysningspliktig.getOrgnummer(), miljo);
+        aaregSyntConsumer.saveOpplysningspliktig(opplysningspliktig);
         return ResponseEntity.ok().build();
     }
 

@@ -3,8 +3,10 @@ package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.provider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.websocket.server.PathParam;
@@ -20,7 +22,7 @@ public class IdentController {
     private final ArbeidsfoholdService service;
 
     @PostMapping("/{ident}")
-    public ResponseEntity<?> opprettPerson(@PathParam("ident") String ident) {
+    public ResponseEntity<?> opprettPerson(@PathVariable("ident") String ident) {
         service.startArbeidsforhold(ident);
         return ResponseEntity.ok().build();
     }

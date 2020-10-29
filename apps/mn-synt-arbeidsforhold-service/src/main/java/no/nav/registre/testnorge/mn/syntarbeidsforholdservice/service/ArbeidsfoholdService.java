@@ -35,6 +35,10 @@ public class ArbeidsfoholdService {
                 .filter(Organisajon::isDriverVirksomheter)
                 .collect(Collectors.toList());
 
+        if (organisajoner.isEmpty()) {
+            throw new RuntimeException("Fant ingen opplysningspliktige i Mini-Norge som driver virksomheter");
+        }
+
         return organisajoner
                 .stream()
                 .map(organisajon -> arbeidsforholdConsumer.getOpplysningspliktig(organisajon.getOrgnummer()))
