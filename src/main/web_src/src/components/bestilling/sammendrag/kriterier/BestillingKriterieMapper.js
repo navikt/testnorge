@@ -113,6 +113,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							`${Formatters.showLabel('adresseNrType', adresseNrInfo.nummertype)}`,
 							adresseNrInfo.nummer ? adresseNrInfo.nummer : 'Tilfeldig'
 						),
+						obj('Bruksenhetsnummer', boadresse.bolignr),
 						obj('Flyttedato', Formatters.formatDate(boadresse.flyttedato))
 					]
 				}
@@ -134,6 +135,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Undernummer', boadresse.undernr),
 						obj('Postnummer', boadresse.postnr),
 						obj('Kommunenummer', boadresse.kommunenr),
+						obj('Bruksenhetsnummer', boadresse.bolignr),
 						obj('Flyttedato', Formatters.formatDate(boadresse.flyttedato))
 					]
 				}

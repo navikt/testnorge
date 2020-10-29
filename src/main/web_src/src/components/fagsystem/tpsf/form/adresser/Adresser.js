@@ -4,6 +4,7 @@ import _get from 'lodash/get'
 import _has from 'lodash/has'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
 import { erForste } from '~/components/ui/form/formUtils'
@@ -19,6 +20,7 @@ const paths = ['tpsf.boadresse', 'tpsf.postadresse', 'tpsf.midlertidigAdresse']
 Flyttedato er for nye bestillinger. Postnr (detaljert gateadr og matr) og adresseNrInfo er for maler
 */
 export const boadressePaths = [
+	'tpsf.boadresse.bolignr',
 	'tpsf.boadresse.flyttedato',
 	'tpsf.boadresse.postnr',
 	'tpsf.adresseNrInfo'
@@ -47,6 +49,7 @@ export const Adresser = ({ formikBag }) => {
 
 		formikBag.setFieldValue('tpsf.adresseNrInfo', null)
 		formikBag.setFieldValue('tpsf.boadresse', {
+			bolignr: _get(formikBag.values.tpsf.boadresse, 'bolignr') || '',
 			flyttedato: _get(formikBag.values.tpsf.boadresse, 'flyttedato') || '',
 			tilleggsadresse: _get(formikBag.values.tpsf.boadresse, 'tilleggsadresse') || undefined,
 			adressetype: 'GATE'
@@ -75,6 +78,7 @@ export const Adresser = ({ formikBag }) => {
 					kommunenr: '',
 					gatekode: '',
 					husnummer: '',
+					bolignr: formikBag.values.tpsf.boadresse.bolignr,
 					flyttedato: formikBag.values.tpsf.boadresse.flyttedato,
 					tilleggsadresse: formikBag.values.tpsf.boadresse.tilleggsadresse
 				})
@@ -89,6 +93,7 @@ export const Adresser = ({ formikBag }) => {
 					undernr: '',
 					postnr: '',
 					kommunenr: '',
+					bolignr: formikBag.values.tpsf.boadresse.bolignr,
 					flyttedato: formikBag.values.tpsf.boadresse.flyttedato,
 					tilleggsadresse: formikBag.values.tpsf.boadresse.tilleggsadresse
 				})
@@ -134,7 +139,10 @@ export const Adresser = ({ formikBag }) => {
 						)}
 						{boType === 'gate' && <Boadresse formikBag={formikBag} />}
 						{boType === 'matrikkel' && <MatrikkelAdresse formikBag={formikBag} />}
-						<FormikDatepicker name="tpsf.boadresse.flyttedato" label="Flyttedato" />
+						<div className="flexbox--flex-wrap">
+							<FormikTextInput name="tpsf.boadresse.bolignr" label="Bruksenhetsnummer" />
+							<FormikDatepicker name="tpsf.boadresse.flyttedato" label="Flyttedato" />
+						</div>
 						<Tilleggsadresse
 							formikBag={formikBag}
 							tilleggsadressePath="tpsf.boadresse.tilleggsadresse"
