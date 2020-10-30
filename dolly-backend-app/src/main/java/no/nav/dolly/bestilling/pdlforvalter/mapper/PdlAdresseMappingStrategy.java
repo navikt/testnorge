@@ -34,7 +34,7 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
     public void register(MapperFactory factory) {
 
         factory.classMap(BoGateadresse.class, Vegadresse.class)
-                .customize(new CustomMapper<BoGateadresse, Vegadresse>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(BoGateadresse gateadresse, Vegadresse vegadresse, MappingContext context) {
 
@@ -52,7 +52,7 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
                 .register();
 
         factory.classMap(BoMatrikkeladresse.class, PdlMatrikkeladresse.class)
-                .customize(new CustomMapper<BoMatrikkeladresse, PdlMatrikkeladresse>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(BoMatrikkeladresse rsMatrikkeladresse, PdlMatrikkeladresse matrikkeladresse, MappingContext context) {
 
@@ -71,7 +71,7 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
                 .register();
 
         factory.classMap(BoGateadresse.class, VegadresseForPost.class)
-                .customize(new CustomMapper<BoGateadresse, VegadresseForPost>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(BoGateadresse gateadresse, VegadresseForPost vegadresse, MappingContext context) {
 

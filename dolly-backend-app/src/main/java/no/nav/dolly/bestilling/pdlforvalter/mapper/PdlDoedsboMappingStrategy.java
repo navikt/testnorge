@@ -26,7 +26,7 @@ public class PdlDoedsboMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
         factory.classMap(RsPdlKontaktinformasjonForDoedsbo.class, PdlKontaktinformasjonForDoedsbo.class)
-                .customize(new CustomMapper<RsPdlKontaktinformasjonForDoedsbo, PdlKontaktinformasjonForDoedsbo>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(RsPdlKontaktinformasjonForDoedsbo rsPdlKontaktinformasjonForDoedsbo,
                             PdlKontaktinformasjonForDoedsbo kontaktinformasjonForDoedsbo, MappingContext context) {

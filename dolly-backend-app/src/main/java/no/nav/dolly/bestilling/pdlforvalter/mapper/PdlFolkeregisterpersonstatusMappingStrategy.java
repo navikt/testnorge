@@ -18,7 +18,7 @@ public class PdlFolkeregisterpersonstatusMappingStrategy implements MappingStrat
 
     @Override public void register(MapperFactory factory) {
         factory.classMap(Person.class, PdlFolkeregisterpersonstatus.class)
-                .customize(new CustomMapper<Person, PdlFolkeregisterpersonstatus>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Person person,
                             PdlFolkeregisterpersonstatus personstatus, MappingContext context) {

@@ -22,7 +22,7 @@ public class PdlFalskIdentitetMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
         factory.classMap(RsPdlFalskIdentitet.class, PdlFalskIdentitet.class)
-                .customize(new CustomMapper<RsPdlFalskIdentitet, PdlFalskIdentitet>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(RsPdlFalskIdentitet rsPdlFalskIdentitet,
                                         PdlFalskIdentitet pdlFalskIdentitet, MappingContext context) {

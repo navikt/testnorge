@@ -2,8 +2,6 @@ package no.nav.dolly.domain.resultset.tpsf;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.resultset.tpsf.InnvandretUtvandret.InnUtvandret.INNVANDRET;
-import static no.nav.dolly.domain.resultset.tpsf.InnvandretUtvandret.InnUtvandret.UTVANDRET;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 import java.time.LocalDateTime;
@@ -167,13 +165,4 @@ public class Person {
         return "FDAT".equals(getIdenttype());
     }
 
-    @JsonIgnore
-    public boolean isInnvandret() {
-        return !getInnvandretUtvandret().isEmpty() && INNVANDRET == getInnvandretUtvandret().get(0).getInnutvandret();
-    }
-
-    @JsonIgnore
-    public boolean isUtvandret() {
-        return !getInnvandretUtvandret().isEmpty() && UTVANDRET == getInnvandretUtvandret().get(0).getInnutvandret();
-    }
 }

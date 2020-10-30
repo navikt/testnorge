@@ -26,7 +26,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFolkeregisterpersonstatus;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlForeldreansvar;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlInnflytting;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlInnflyttingHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresseHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
@@ -36,7 +36,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlTelefonnummer;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlUtflytting;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlUtflyttingHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaalHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.SivilstandWrapper;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -313,16 +313,14 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void sendInnflytting(Person person) {
 
-        if (person.isInnvandret()) {
-            pdlForvalterConsumer.postInnflytting(mapperFacade.map(person, PdlInnflytting.class), person.getIdent());
-        }
+        mapperFacade.map(person, PdlInnflyttingHistorikk.class).getInnflyttinger().forEach(innflytting ->
+            pdlForvalterConsumer.postInnflytting(innflytting, person.getIdent()));
     }
 
     private void sendUtflytting(Person person) {
 
-        if (person.isUtvandret()) {
-            pdlForvalterConsumer.postUtflytting(mapperFacade.map(person, PdlUtflytting.class), person.getIdent());
-        }
+        mapperFacade.map(person, PdlUtflyttingHistorikk.class).getUtflyttinger().forEach(utflytting ->
+            pdlForvalterConsumer.postUtflytting(utflytting, person.getIdent()));
     }
 
     private void sendVergemaal(Person person) {
