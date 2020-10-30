@@ -9,6 +9,7 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { Diverse } from './partials/Diverse'
 import { Alder } from './partials/alder/Alder'
+import { Vergemaal } from './partials/vergemaal/Vergemaal'
 
 const alderPaths = ['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer', 'tpsf.doedsdato']
 
@@ -17,6 +18,7 @@ const nasjonalitetPaths = [
 	'tpsf.innvandretFraLand',
 	'tpsf.utvandretTilLand'
 ]
+
 const diversePaths = [
 	'tpsf.kjonn',
 	'tpsf.harMellomnavn',
@@ -31,7 +33,9 @@ const diversePaths = [
 	'tpsf.telefonnummer_1'
 ]
 
-const panelPaths = [alderPaths, nasjonalitetPaths, diversePaths].flat()
+const vergemaalPath = ['tpsf.vergemaal']
+
+const panelPaths = [alderPaths, nasjonalitetPaths, diversePaths, vergemaalPath].flat()
 
 export const Personinformasjon = ({ formikBag }) => (
 	<Vis attributt={panelPaths}>
@@ -40,7 +44,10 @@ export const Personinformasjon = ({ formikBag }) => (
 			hasErrors={panelError(formikBag, panelPaths)}
 			iconType={'personinformasjon'}
 			startOpen={() =>
-				erForste(formikBag.values, alderPaths.concat(nasjonalitetPaths, diversePaths))
+				erForste(
+					formikBag.values,
+					alderPaths.concat(nasjonalitetPaths, diversePaths, vergemaalPath)
+				)
 			}
 		>
 			<Kategori title="Alder" vis={alderPaths}>
@@ -84,6 +91,9 @@ export const Personinformasjon = ({ formikBag }) => (
 
 			<Kategori title="Diverse" vis={diversePaths}>
 				<Diverse formikBag={formikBag} />
+			</Kategori>
+			<Kategori title="Vergemål" vis={vergemaalPath}>
+				<Vergemaal />
 			</Kategori>
 		</Panel>
 	</Vis>

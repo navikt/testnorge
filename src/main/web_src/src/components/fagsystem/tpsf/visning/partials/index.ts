@@ -5,6 +5,7 @@ import { Postadresse } from './Postadresse'
 import { Identhistorikk } from './Identhistorikk'
 import { Relasjoner } from './Relasjoner'
 import { MidlertidigAdresse } from './MidlertidigAdresse'
+import { Vergemaal } from './Vergemaal'
 
 export {
 	Personinfo,
@@ -13,5 +14,6 @@ export {
 	Postadresse,
 	MidlertidigAdresse,
 	Identhistorikk,
-	Relasjoner
+	Relasjoner,
+	Vergemaal
 }

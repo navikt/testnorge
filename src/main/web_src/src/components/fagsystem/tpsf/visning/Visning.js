@@ -7,7 +7,8 @@ import {
 	Postadresse,
 	MidlertidigAdresse,
 	Identhistorikk,
-	Relasjoner
+	Relasjoner,
+	Vergemaal
 } from './partials'
 
 export const TpsfVisning = ({ data }) => {
@@ -17,6 +18,7 @@ export const TpsfVisning = ({ data }) => {
 		<div>
 			<Personinfo data={data} />
 			<Nasjonalitet data={data} />
+			<Vergemaal data={data.vergemaal} />
 			<Boadresse boadresse={data.boadresse} />
 			<Postadresse postadresse={data.postadresse} />
 			<MidlertidigAdresse midlertidigAdresse={data.midlertidigAdresse} />

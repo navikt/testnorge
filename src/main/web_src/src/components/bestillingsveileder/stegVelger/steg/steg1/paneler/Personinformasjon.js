@@ -60,6 +60,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt attr={sm.attrs.harBankkontonr} />
 				<Attributt attr={sm.attrs.telefonnummer_1} />
 				<Attributt attr={sm.attrs.spesreg} />
+				<Attributt attr={sm.attrs.vergemaal} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -207,6 +208,20 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => {
 			remove() {
 				del(['tpsf.spesreg', 'tpsf.utenFastBopel'])
 			}
+		},
+		vergemaal: {
+			label: 'Vergemål',
+			checked: has('tpsf.vergemaal'),
+			add: () =>
+				set('tpsf.vergemaal', {
+					embete: null,
+					sakType: null,
+					mandatType: null,
+					vedtakDato: null,
+					identType: null,
+					harMellomnavn: null
+				}),
+			remove: () => del('tpsf.vergemaal')
 		}
 	}
 }

@@ -108,5 +108,9 @@ export const SortKodeverkArray = data => {
 		return kodeverk.filter(kode => !ugyldigeKoder.includes(kode.value))
 	}
 
+	if (data.name === 'Vergemål_Mandattype') {
+		return kodeverk.filter(kode => kode.value !== '<Blank>' && kode.value !== 'ADP')
+	}
+
 	return kodeverk
 }
