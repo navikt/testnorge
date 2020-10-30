@@ -17,6 +17,3 @@
 ### Gradle ###
 .gradle
 *build/
-
-
-apps/arbeidsforhold-export-api/src/main/resources/tmp

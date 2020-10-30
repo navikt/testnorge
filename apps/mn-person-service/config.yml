@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: mn-original-populasjon
+  name: mn-person-service
   namespace: dolly
   labels:
     team: dolly
@@ -27,9 +27,6 @@ spec:
     max: 1
   vault:
     enabled: true
-    paths:
-      - kvPath: /serviceuser/data/dev/srvtestnorge
-        mountPath: /secret/serviceuser
   resources:
     requests:
       cpu: 200m
@@ -38,4 +35,4 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://mn-original-populasjon.dev.adeo.no"
+    - "https://mn-person-service.dev.adeo.no"
