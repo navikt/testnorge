@@ -17,7 +17,7 @@ export default function SendOpenAm({ closeModal, bestilling, getBestillinger }) 
 	const close = () => (requestState.value ? getBestillinger() : closeModal())
 
 	return (
-		<DollyModal isOpen={true} closeModal={close}>
+		<DollyModal isOpen={true} closeModal={close} width={'25%'}>
 			<h1>Send til OpenAm</h1>
 
 			{!requestState.value && (
