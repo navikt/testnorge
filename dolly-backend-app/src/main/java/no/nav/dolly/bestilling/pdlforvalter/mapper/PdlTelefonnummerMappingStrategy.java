@@ -19,7 +19,7 @@ public class PdlTelefonnummerMappingStrategy implements MappingStrategy {
     public void register(MapperFactory factory) {
 
         factory.classMap(Person.class, PdlTelefonnummer.class)
-                .customize(new CustomMapper<Person, PdlTelefonnummer>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Person person, PdlTelefonnummer telefonnummer, MappingContext context) {
 

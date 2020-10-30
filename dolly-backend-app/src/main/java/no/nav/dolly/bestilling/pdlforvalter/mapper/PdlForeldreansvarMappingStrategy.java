@@ -19,7 +19,7 @@ public class PdlForeldreansvarMappingStrategy implements MappingStrategy {
     @Override public void register(MapperFactory factory) {
 
         factory.classMap(Relasjon.class, PdlForeldreansvar.class)
-                .customize(new CustomMapper<Relasjon, PdlForeldreansvar>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Relasjon relasjon, PdlForeldreansvar foreldreansvar, MappingContext context) {
 

@@ -26,7 +26,7 @@ public class PdlOppholdMappingStrategy implements MappingStrategy {
 
     @Override public void register(MapperFactory factory) {
         factory.classMap(RsUdiPerson.class, PdlOpphold.class)
-                .customize(new CustomMapper<RsUdiPerson, PdlOpphold>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(RsUdiPerson person, PdlOpphold opphold, MappingContext context) {
 

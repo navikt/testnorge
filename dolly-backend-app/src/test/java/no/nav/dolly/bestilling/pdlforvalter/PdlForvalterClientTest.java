@@ -25,8 +25,10 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedsadresseHistorikk;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlInnflyttingHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresseHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresseHistorikk;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlUtflyttingHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaalHistorikk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
@@ -79,6 +81,8 @@ public class PdlForvalterClientTest {
         when(mapperFacade.map(any(Person.class), eq(PdlKontaktadresseHistorikk.class))).thenReturn(new PdlKontaktadresseHistorikk());
         when(mapperFacade.map(any(Person.class), eq(PdlBostedsadresseHistorikk.class))).thenReturn(new PdlBostedsadresseHistorikk());
         when(mapperFacade.map(any(Person.class), eq(PdlVergemaalHistorikk.class))).thenReturn((new PdlVergemaalHistorikk()));
+        when(mapperFacade.map(any(Person.class), eq(PdlInnflyttingHistorikk.class))).thenReturn(new PdlInnflyttingHistorikk());
+        when(mapperFacade.map(any(Person.class), eq(PdlUtflyttingHistorikk.class))).thenReturn(new PdlUtflyttingHistorikk());
     }
 
     @Test
