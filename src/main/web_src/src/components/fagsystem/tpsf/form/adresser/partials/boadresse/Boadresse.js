@@ -13,6 +13,7 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 export const Boadresse = ({ formikBag }) => {
 	const settBoadresse = adresse => {
 		formikBag.setFieldValue('tpsf.boadresse', {
+			bolignr: formikBag.values.tpsf.boadresse.bolignr,
 			flyttedato: formikBag.values.tpsf.boadresse.flyttedato,
 			tilleggsadresse: formikBag.values.tpsf.boadresse.tilleggsadresse
 		})
