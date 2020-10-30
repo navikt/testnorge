@@ -1,6 +1,8 @@
 package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -22,6 +24,7 @@ public class GenererArbeidsforholdCommand implements Callable<ArbeidsforholdDTO>
                 .post()
                 .uri("/api/v1/generate/arbeidsforhold/sklearn")
                 .body(BodyInserters.fromPublisher(Mono.just(arbeidsforholdDTO), ArbeidsforholdDTO.class))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .bodyToMono(ArbeidsforholdDTO.class)
                 .block();

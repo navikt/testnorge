@@ -24,7 +24,6 @@ public class OpplysningspliktigController {
     public ResponseEntity<?> generateForAll(
             @RequestHeader("kalendermaaned") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate kalendermaaned
     ) {
-        syntentiseringService.synt(kalendermaaned);
         return ResponseEntity.ok().build();
     }
 

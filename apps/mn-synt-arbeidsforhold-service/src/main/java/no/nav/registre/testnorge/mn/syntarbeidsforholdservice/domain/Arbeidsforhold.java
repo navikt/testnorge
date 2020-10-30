@@ -7,11 +7,11 @@ import java.util.UUID;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.ArbeidsforholdDTO;
 
 public class Arbeidsforhold {
+    public static final DateTimeFormatter SYNT_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private final ArbeidsforholdDTO dto;
     private final String ident;
 
-    private Arbeidsforhold(String ident, String yrke) {
-        LocalDate startdato = LocalDate.now();
+    private Arbeidsforhold(String ident, String yrke, LocalDate startdato) {
         this.ident = ident;
         this.dto = ArbeidsforholdDTO
                 .builder()
@@ -47,8 +47,8 @@ public class Arbeidsforhold {
     }
 
 
-    public static Arbeidsforhold from(String ident, String yrke) {
-        return new Arbeidsforhold(ident, yrke);
+    public static Arbeidsforhold from(String ident, String yrke, LocalDate startdato) {
+        return new Arbeidsforhold(ident, yrke, startdato);
     }
 
     public String getIdent() {
@@ -59,7 +59,7 @@ public class Arbeidsforhold {
         return dto;
     }
 
-    public String getArbeidsforholdId(){
+    public String getArbeidsforholdId() {
         return dto.getArbeidsforholdId();
     }
 
@@ -75,7 +75,7 @@ public class Arbeidsforhold {
                 .permisjonVedMilitaertjeneste(0f)
                 .permittering(0f)
                 .rapporteringsmaaned(formatKaldenermaand(kaldermaaned))
-                .sisteDatoForStillingsprosentendring("")
+                .sisteDatoForStillingsprosentendring(format(kaldermaaned))
                 .sisteLoennsendringsdato(format(dto.getSisteLoennsendringsdato()))
                 .sluttdato(format(dto.getSluttdato()))
                 .startdato(format(dto.getStartdato()))
@@ -103,14 +103,14 @@ public class Arbeidsforhold {
     }
 
     private LocalDate format(String value) {
-        return value.equals("") ? null : LocalDate.parse(value);
+        return value.equals("") ? null : LocalDate.parse(value, SYNT_FORMATTER);
     }
 
     private String format(LocalDate value) {
         if (value == null) {
             return "";
         }
-        return value.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        return value.format(SYNT_FORMATTER);
     }
 
     private String formatKaldenermaand(LocalDate value) {

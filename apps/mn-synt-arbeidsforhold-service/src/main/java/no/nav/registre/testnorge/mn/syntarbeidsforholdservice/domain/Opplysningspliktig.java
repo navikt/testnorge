@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -24,12 +25,10 @@ public class Opplysningspliktig {
     private final OpplysningspliktigDTO dto;
     private final Random random = new Random();
 
-    public void addArbeidsforhold(Arbeidsforhold arbeidsforhold) {
-        VirksomhetDTO virksomhetDTO = dto.getVirksomheter().get(random.nextInt(dto.getVirksomheter().size()));
-        virksomhetDTO.getPersoner().add(new PersonDTO(arbeidsforhold.getIdent(), Collections.singletonList(
-                arbeidsforhold.toDTO()
-        )));
+    public String getRandomVirksomhetsnummer() {
+        return dto.getVirksomheter().get(random.nextInt(dto.getVirksomheter().size())).getOrganisajonsnummer();
     }
+
 
     public void addArbeidsforhold(String virksomhetsnummer, Arbeidsforhold arbeidsforhold) {
         VirksomhetDTO virksomhet = dto.getVirksomheter()
@@ -50,16 +49,20 @@ public class Opplysningspliktig {
             )));
         } else {
             PersonDTO personDTO = optional.get();
-            List<ArbeidsforholdDTO> list = personDTO.getArbeidsforhold();
-            Optional<ArbeidsforholdDTO> tidligereArbeidsforhold = list
+            Optional<ArbeidsforholdDTO> tidligereArbeidsforhold = personDTO.getArbeidsforhold()
                     .stream()
                     .filter(arbeidsforholdDTO -> arbeidsforholdDTO.getArbeidsforholdId().equals(arbeidsforhold.getArbeidsforholdId()))
                     .findFirst();
-            tidligereArbeidsforhold.ifPresent(value -> {
-                log.info("Fjerner tidligere arbeidsforhold {}", value.getArbeidsforholdId());
-                list.remove(value);
-            });
+
+            List<ArbeidsforholdDTO> list = new ArrayList<>(personDTO.getArbeidsforhold());
+            if (tidligereArbeidsforhold.isPresent()) {
+                ArbeidsforholdDTO dto = tidligereArbeidsforhold.get();
+                log.info("Fjerner tidligere arbeidsforhold {}", dto.getArbeidsforholdId());
+                list.remove(dto);
+            }
+
             list.add(arbeidsforhold.toDTO());
+            personDTO.setArbeidsforhold(list);
         }
     }
 

@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.registre.testnorge.arbeidsforhold.consumer.commnad.SaveAmeldingCommand;
+import no.nav.registre.testnorge.arbeidsforhold.consumer.commnad.SaveOpplysningspliktigCommand;
 import no.nav.registre.testnorge.arbeidsforhold.domain.Opplysningspliktig;
 
 @Slf4j
@@ -24,7 +24,7 @@ public class AaregSyntConsumer {
 
     public void saveOpplysningspliktig(Opplysningspliktig opplysningspliktig) {
         log.info("Oppretter a-melding for opplysningspliktig {}...", opplysningspliktig.getOrgnummer());
-        new SaveAmeldingCommand(webClient, opplysningspliktig.toEDAGM()).run();
+        new SaveOpplysningspliktigCommand(webClient, opplysningspliktig.toEDAGM()).run();
         log.info("A-melding opprettet for opplysningspliktig {}.", opplysningspliktig.getOrgnummer());
     }
 }

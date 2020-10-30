@@ -21,7 +21,7 @@ import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.ObjectFactory;
 @Slf4j
 @DependencyOn(value = "aareg-synt", external = true)
 @RequiredArgsConstructor
-public class SaveAmeldingCommand implements Runnable {
+public class SaveOpplysningspliktigCommand implements Runnable {
     private final WebClient webClient;
     private final EDAGM edagm;
 
@@ -36,15 +36,16 @@ public class SaveAmeldingCommand implements Runnable {
         StringWriter sw = new StringWriter();
         jaxbMarshaller.marshal(melding, sw);
         String xml = sw.toString();
-        log.info(xml);
+        log.trace(xml);
 
-        webClient
-                .post()
-                .uri(builder -> builder.path("/oppsummeringsdokument").build())
-                .body(BodyInserters.fromPublisher(Mono.just(xml), String.class))
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
-                .retrieve()
-                .bodyToMono(Void.class)
-                .block();
+        //TODO
+//        webClient
+//                .post()
+//                .uri(builder -> builder.path("/oppsummeringsdokument").build())
+//                .body(BodyInserters.fromPublisher(Mono.just(xml), String.class))
+//                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+//                .retrieve()
+//                .bodyToMono(Void.class)
+//                .block();
     }
 }

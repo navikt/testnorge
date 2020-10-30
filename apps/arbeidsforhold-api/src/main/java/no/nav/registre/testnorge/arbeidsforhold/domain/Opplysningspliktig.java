@@ -117,8 +117,6 @@ public class Opplysningspliktig {
                 .newInstance()
                 .newXMLGregorianCalendar(gregorianCalendar);
 
-        log.info("XMLGregorianCalendar format : " + xmlGregorianCalendar);
-
         leveranseinformasjon.setInnleveringstidspunkt(xmlGregorianCalendar);
         leveranseinformasjon.setMeldingsId(UUID.randomUUID().toString());
         leveranseinformasjon.setKildesystem("testnorge-arbeidsforhold-api");
