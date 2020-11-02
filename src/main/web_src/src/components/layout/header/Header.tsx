@@ -7,6 +7,7 @@ import dolly from '~/assets/favicon.ico'
 import './Header.less'
 import Logger from '~/logger'
 import { useLocation } from 'react-use'
+import { Forbedring } from '~/components/feedback/Forbedring'
 
 type Props = {
 	brukerProfil: {
@@ -48,6 +49,7 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 				<a href="/swagger-ui.html" target="_blank">
 					API-dok
 				</a>
+				<Forbedring />
 			</div>
 
 			<div className="profil-area flexbox--all-center">
