@@ -13,7 +13,9 @@ import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.arbeidsforhold.consumer.AaregSyntConsumer;
 import no.nav.registre.testnorge.arbeidsforhold.domain.Opplysningspliktig;
@@ -51,14 +53,20 @@ public class OpplysningspliktigAdapter {
 
     public Opplysningspliktig fetch(String orgnummer, LocalDate rapporteringsmaaned, String mijlo) {
         Optional<OpplysningspliktigModel> opplysningspliktigModel = opplysningspliktigRepository
-                .findLast(format(rapporteringsmaaned), orgnummer, mijlo);
+                .findBy(format(rapporteringsmaaned), orgnummer, mijlo);
         if (opplysningspliktigModel.isEmpty()) {
             return null;
         }
-
         var model = opplysningspliktigModel.get();
         EDAGM edagm = toEDAGM(model.getDocument());
         return new Opplysningspliktig(edagm);
+    }
+
+    public List<Opplysningspliktig> fetch(String orgnummer, String mijlo) {
+        return opplysningspliktigRepository.findAllBy(orgnummer, mijlo)
+                .stream()
+                .map(model -> new Opplysningspliktig(toEDAGM(model.getDocument())))
+                .collect(Collectors.toList());
     }
 
     @SneakyThrows

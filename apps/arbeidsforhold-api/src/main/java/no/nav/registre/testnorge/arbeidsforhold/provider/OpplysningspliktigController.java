@@ -16,6 +16,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.arbeidsforhold.adapter.OpplysningspliktigAdapter;
 import no.nav.registre.testnorge.arbeidsforhold.domain.Opplysningspliktig;
@@ -46,7 +48,7 @@ public class OpplysningspliktigController {
     }
 
     @GetMapping("/{orgnummer}/{kalendermaaned}")
-    public ResponseEntity<OpplysningspliktigDTO> getOpplysningspliktig(
+    public ResponseEntity<OpplysningspliktigDTO> getOpplysningspliktigFromKalendermaaned(
             @PathVariable("orgnummer") String orgnummer,
             @PathVariable("kalendermaaned") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate kalendermaaned,
             @RequestHeader("miljo") String miljo
@@ -56,5 +58,17 @@ public class OpplysningspliktigController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(opplysningspliktig.toDTO());
+    }
+
+    @GetMapping("/{orgnummer}")
+    public ResponseEntity<List<OpplysningspliktigDTO>> getOpplysningspliktig(
+            @PathVariable("orgnummer") String orgnummer,
+            @RequestHeader("miljo") String miljo
+    ) {
+        List<OpplysningspliktigDTO> opplysningspliktig = opplysningspliktigAdapter.fetch(orgnummer, miljo)
+                .stream()
+                .map(Opplysningspliktig::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(opplysningspliktig);
     }
 }
