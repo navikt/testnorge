@@ -5,8 +5,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -32,7 +30,7 @@ public class ArbeidsfoholdService {
     private final Random random = new Random();
 
 
-    private List<Opplysningspliktig> getOpplysningspliktige() {
+    private List<Organisajon> getOpplysningspliktigeOrganiasjoner() {
         List<Organisajon> organisajoner = mnOrganiasjonConsumer
                 .getOrganisajoner()
                 .stream()
@@ -44,48 +42,46 @@ public class ArbeidsfoholdService {
             throw new RuntimeException("Fant ingen opplysningspliktige i Mini-Norge som driver virksomheter");
         }
 
-        return organisajoner
-                .stream()
-                .map(organisajon -> arbeidsforholdConsumer.getOpplysningspliktig(organisajon.getOrgnummer()))
-                .collect(Collectors.toList());
-    }
-
-
-    public Set<String> getIdenterWithArbeidsforhold() {
-        List<Opplysningspliktig> opplysningspliktige = getOpplysningspliktige();
-        return opplysningspliktige
-                .stream()
-                .map(Opplysningspliktig::getIdenter)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
+        return organisajoner;
     }
 
     public void startArbeidsforhold(String ident, LocalDate kalendermaaned, boolean historikk) {
         Kodeverk yrkeKodeverk = kodeverkConsumer.getYrkeKodeverk();
         Arbeidsforhold arbeidsforhold = Arbeidsforhold.from(ident, yrkeKodeverk.getRandomKode(), kalendermaaned);
-        List<Opplysningspliktig> opplysningspliktige = getOpplysningspliktige();
-        Opplysningspliktig opplysningspliktig = opplysningspliktige.get(random.nextInt(opplysningspliktige.size()));
-        String virksomhetsnummer = opplysningspliktig.getRandomVirksomhetsnummer();
+        List<Organisajon> organisajoner = getOpplysningspliktigeOrganiasjoner();
+        Organisajon organisajon = organisajoner.get(random.nextInt(organisajoner.size()));
+        String virksomhetsnummer = organisajon.getRandomVirksomhentsnummer();
+        Opplysningspliktig opplysningspliktig = getOpplysningspliktig(organisajon, kalendermaaned);
+
         opplysningspliktig.addArbeidsforhold(virksomhetsnummer, arbeidsforhold);
-        opplysningspliktig.setKalendermaaned(kalendermaaned);
+
         arbeidsforholdConsumer.sendOppsyninspliktig(opplysningspliktig);
 
         if (historikk) {
-            synt(opplysningspliktig, arbeidsforhold, findAllDatesBetweenNowAnd(kalendermaaned), virksomhetsnummer);
+            synt(organisajon, arbeidsforhold, findAllDatesBetweenNowAnd(kalendermaaned), virksomhetsnummer);
         }
     }
 
-    public void synt(Opplysningspliktig opplysningspliktig, Arbeidsforhold arbeidsforhold, Set<LocalDate> kalendermaander, String virksomhentsnummer) {
-        List<Opplysningspliktig> opprettelseListe = new ArrayList<>();
-        opprettelseListe.add(opplysningspliktig);
+    private Opplysningspliktig getOpplysningspliktig(Organisajon organisajon, LocalDate kalendermaaned) {
+        Opplysningspliktig opplysningspliktig = arbeidsforholdConsumer.getOpplysningspliktig(organisajon.getOrgnummer(), kalendermaaned);
+        if (opplysningspliktig != null) {
+            opplysningspliktig.setVersion(opplysningspliktig.getVersion() + 1);
+            opplysningspliktig.setKalendermaaned(kalendermaaned);
+            return opplysningspliktig;
+        }
+        return new Opplysningspliktig(organisajon, kalendermaaned);
+    }
+
+
+    public void synt(Organisajon organisajon, Arbeidsforhold arbeidsforhold, Set<LocalDate> kalendermaander, String virksomhentsnummer) {
         if (kalendermaander.isEmpty()) {
             return;
         }
         Arbeidsforhold forige = arbeidsforhold;
         for (LocalDate kalendermaaned : kalendermaander) {
+            Opplysningspliktig opplysningspliktig = getOpplysningspliktig(organisajon, kalendermaaned);
             Arbeidsforhold neste = syntrestConsumer.getNesteArbeidsforhold(forige, kalendermaaned);
             opplysningspliktig.addArbeidsforhold(virksomhentsnummer, neste);
-            opplysningspliktig.setKalendermaaned(kalendermaaned);
             arbeidsforholdConsumer.sendOppsyninspliktig(opplysningspliktig);
             forige = neste;
         }
@@ -102,7 +98,6 @@ public class ArbeidsfoholdService {
         for (int index = 1; index <= months; index++) {
             dates.add(date.withDayOfMonth(1).plusMonths(index));
         }
-
         return dates;
     }
 }

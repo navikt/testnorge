@@ -43,18 +43,4 @@ public class IdentController {
                 .toUri();
         return ResponseEntity.created(uri).build();
     }
-
-    @GetMapping
-    public ResponseEntity<Set<String>> getIdenter() {
-        return ResponseEntity.ok(service.getIdenterWithArbeidsforhold());
-    }
-
-    @GetMapping("/{ident}")
-    public ResponseEntity<String> getIdent(@PathVariable("ident") String ident) {
-        Set<String> identer = service.getIdenterWithArbeidsforhold();
-        if (identer.contains(ident)) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(ident);
-    }
 }

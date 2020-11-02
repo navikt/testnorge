@@ -22,9 +22,7 @@ public class AaregSyntConsumer {
                 .build();
     }
 
-    public void saveOpplysningspliktig(Opplysningspliktig opplysningspliktig) {
-        log.info("Oppretter a-melding for opplysningspliktig {}...", opplysningspliktig.getOrgnummer());
-        new SaveOpplysningspliktigCommand(webClient, opplysningspliktig.toEDAGM()).run();
-        log.info("A-melding opprettet for opplysningspliktig {}.", opplysningspliktig.getOrgnummer());
+    public void saveOpplysningspliktig(String xml) {
+        new SaveOpplysningspliktigCommand(webClient, xml).run();
     }
 }

@@ -21,4 +21,6 @@ public class OpplysningspliktigDTO {
     private String opplysningspliktigOrganisajonsnummer;
     @JsonProperty(required = true)
     private List<VirksomhetDTO> virksomheter;
+    @JsonProperty(required = true)
+    private Long version;
 }

@@ -44,6 +44,55 @@ public class Opplysningspliktig {
     }
 
 
+    public LocalDate getRapporteringsmaaned() {
+        return dto.getKalendermaaned();
+    }
+
+    public Long getVersion() {
+        return dto.getVersion();
+    }
+
+
+    public Opplysningspliktig(EDAGM edagm) {
+        var leveranse = edagm.getLeveranse();
+        var oppgave = edagm.getLeveranse().getOppgave();
+        dto = OpplysningspliktigDTO
+                .builder()
+                .kalendermaaned(toLocalDate(leveranse.getKalendermaaned()))
+                .opplysningspliktigOrganisajonsnummer(leveranse.getOpplysningspliktig().getNorskIdentifikator())
+                .version(leveranse.getKilde().getKildeversjon().longValue())
+                .virksomheter(oppgave.getVirksomhet().stream().map(virksomhet -> VirksomhetDTO
+                        .builder()
+                        .organisajonsnummer(virksomhet.getNorskIdentifikator())
+                        .personer(virksomhet.getInntektsmottaker().stream().map(inntektsmottaker -> PersonDTO
+                                .builder()
+                                .ident(inntektsmottaker.getNorskIdentifikator())
+                                .arbeidsforhold(inntektsmottaker.getArbeidsforhold().stream().map(arbeidsforhold -> ArbeidsforholdDTO
+                                        .builder()
+                                        .arbeidsforholdId(arbeidsforhold.getArbeidsforholdId())
+                                        .arbeidstidsordning(arbeidsforhold.getArbeidstidsordning())
+                                        .antallTimerPerUke(arbeidsforhold.getAntallTimerPerUkeSomEnFullStillingTilsvarer() != null
+                                                ? arbeidsforhold.getAntallTimerPerUkeSomEnFullStillingTilsvarer().floatValue()
+                                                : null
+                                        )
+                                        .sisteLoennsendringsdato(toLocalDate(arbeidsforhold.getSisteLoennsendringsdato()))
+                                        .startdato(toLocalDate(arbeidsforhold.getStartdato()))
+                                        .sluttdato(toLocalDate(arbeidsforhold.getSluttdato()))
+                                        .yrke(arbeidsforhold.getYrke())
+                                        .stillingsprosent(arbeidsforhold.getStillingsprosent() != null
+                                                ? arbeidsforhold.getStillingsprosent().floatValue()
+                                                : null
+                                        )
+                                        .typeArbeidsforhold(arbeidsforhold.getTypeArbeidsforhold())
+                                        .build()
+                                ).collect(Collectors.toList()))
+                                .build()
+                        ).collect(Collectors.toList()))
+                        .build()
+                ).collect(Collectors.toList()))
+                .build();
+    }
+
     public Opplysningspliktig(String opplysningspliktig, Map<String, List<no.nav.registre.testnorge.arbeidsforhold.domain.Arbeidsforhold>> map) {
         dto = OpplysningspliktigDTO
                 .builder()
@@ -93,7 +142,7 @@ public class Opplysningspliktig {
         List<Virksomhet> virksomheter = dto
                 .getVirksomheter()
                 .stream()
-                .map(Opplysningspliktig::create)
+                .map(value -> create(value, dto.getVersion()))
                 .collect(Collectors.toList());
 
 
@@ -126,7 +175,7 @@ public class Opplysningspliktig {
         Kilde value = new Kilde();
         value.setKildenavn("Team Dolly");
         value.setKildereferanse(UUID.randomUUID().toString());
-        value.setKildeversjon(BigInteger.valueOf(1));
+        value.setKildeversjon(BigInteger.valueOf(dto.getVersion()));
         leveranse.setKilde(value);
         leveranse.setOppgave(juridiskEntitet);
 
@@ -137,7 +186,7 @@ public class Opplysningspliktig {
     }
 
 
-    private static Virksomhet create(VirksomhetDTO dto) {
+    private static Virksomhet create(VirksomhetDTO dto, Long version) {
         Virksomhet virksomhet = new Virksomhet();
         virksomhet.setNorskIdentifikator(dto.getOrganisajonsnummer());
 
@@ -149,7 +198,7 @@ public class Opplysningspliktig {
                     Kilde value = new Kilde();
                     value.setKildenavn("Team Dolly");
                     value.setKildereferanse(UUID.randomUUID().toString());
-                    value.setKildeversjon(BigInteger.valueOf(1));
+                    value.setKildeversjon(BigInteger.valueOf(version));
                     inntektsmottaker.setKilde(value);
                     inntektsmottaker.setNorskIdentifikator(personDTO.getIdent());
                     inntektsmottaker.getArbeidsforhold().addAll(
@@ -179,6 +228,18 @@ public class Opplysningspliktig {
         return arbeidsforhold;
     }
 
+
+    private static LocalDate toLocalDate(XMLGregorianCalendar calendar) {
+        if (calendar == null) {
+            return null;
+        }
+
+        return LocalDate.of(
+                calendar.getYear(),
+                calendar.getMonth(),
+                1
+        );
+    }
 
     @SneakyThrows
     private static XMLGregorianCalendar toXMLGregorianCalendar(LocalDate localDate) {

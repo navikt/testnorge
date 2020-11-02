@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.LocalDate;
 import java.util.concurrent.Callable;
 
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
@@ -19,6 +20,7 @@ public class GetOpplysningspliktigCommand implements Callable<Opplysningspliktig
     private final WebClient webClient;
     private final String accessToken;
     private final String orgnummer;
+    private final LocalDate kalendermaaned;
     private final String miljo;
 
     @SneakyThrows
@@ -29,8 +31,8 @@ public class GetOpplysningspliktigCommand implements Callable<Opplysningspliktig
             return webClient
                     .get()
                     .uri(builder -> builder
-                            .path("/api/v1/opplysningspliktig/{orgnummer}")
-                            .build(orgnummer)
+                            .path("/api/v1/opplysningspliktig/{orgnummer}/{kalendermaaned}")
+                            .build(orgnummer, kalendermaaned)
                     )
                     .header("miljo", this.miljo)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)

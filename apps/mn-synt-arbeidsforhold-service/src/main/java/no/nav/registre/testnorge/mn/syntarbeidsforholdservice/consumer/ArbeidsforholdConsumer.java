@@ -3,6 +3,8 @@ package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.LocalDate;
+
 import no.nav.registre.testnorge.libs.common.command.GetOpplysningspliktigCommand;
 import no.nav.registre.testnorge.libs.common.command.SaveOpplysningspliktigCommand;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
@@ -29,10 +31,10 @@ public class ArbeidsforholdConsumer {
     }
 
 
-    public Opplysningspliktig getOpplysningspliktig(String orgnummer) {
+    public Opplysningspliktig getOpplysningspliktig(String orgnummer, LocalDate kalendermaaned) {
         AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties);
-        var dto = new GetOpplysningspliktigCommand(webClient, accessToken.getTokenValue(), orgnummer, "q2").call();
-        return new Opplysningspliktig(dto);
+        var dto = new GetOpplysningspliktigCommand(webClient, accessToken.getTokenValue(), orgnummer, kalendermaaned,"q2").call();
+        return dto != null ?  new Opplysningspliktig(dto) : null;
     }
 
     public void sendOppsyninspliktig(Opplysningspliktig opplysningspliktig){

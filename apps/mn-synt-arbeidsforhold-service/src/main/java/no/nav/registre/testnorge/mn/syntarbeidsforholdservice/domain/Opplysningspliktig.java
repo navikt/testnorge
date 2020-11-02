@@ -25,6 +25,17 @@ public class Opplysningspliktig {
     private final OpplysningspliktigDTO dto;
     private final Random random = new Random();
 
+    public Opplysningspliktig(Organisajon organisajon, LocalDate kalendermaand) {
+        dto = OpplysningspliktigDTO
+                .builder()
+                .version(1L)
+                .kalendermaaned(kalendermaand)
+                .opplysningspliktigOrganisajonsnummer(organisajon.getOrgnummer())
+                .virksomheter(new ArrayList<>())
+                .build();
+    }
+
+
     public String getRandomVirksomhetsnummer() {
         return dto.getVirksomheter().get(random.nextInt(dto.getVirksomheter().size())).getOrganisajonsnummer();
     }
@@ -68,6 +79,14 @@ public class Opplysningspliktig {
 
     public void setKalendermaaned(LocalDate kalendermaaned) {
         dto.setKalendermaaned(kalendermaaned);
+    }
+
+    public void setVersion(Long version) {
+        dto.setVersion(version);
+    }
+
+    public Long getVersion() {
+        return dto.getVersion() == null ? 0 : dto.getVersion();
     }
 
     public Set<String> getIdenter() {
