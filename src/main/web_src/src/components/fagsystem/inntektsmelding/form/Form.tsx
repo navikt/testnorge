@@ -7,6 +7,7 @@ import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { panelError } from '~/components/ui/form/formUtils'
 import { erForste } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
+import { InputWarning } from '~/components/ui/form/inputWarning/InputWarning'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
@@ -186,10 +187,15 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 								</Kategori>
 								{ytelse === Ytelser.Foreldrepenger && (
 									<Kategori title="Foreldrepenger">
-										<FormikDatepicker
-											name={`${path}.startdatoForeldrepengeperiode`}
-											label="Startdato for periode"
-										/>
+										<InputWarning
+											visWarning={!_get(formikBag.values, `${path}.startdatoForeldrepengeperiode`)}
+											warningText="For automatisk behandling av inntektsmelding må dette feltet fylles ut"
+										>
+											<FormikDatepicker
+												name={`${path}.startdatoForeldrepengeperiode`}
+												label="Startdato for periode"
+											/>
+										</InputWarning>
 									</Kategori>
 								)}
 								{ytelse === Ytelser.Sykepenger && (
