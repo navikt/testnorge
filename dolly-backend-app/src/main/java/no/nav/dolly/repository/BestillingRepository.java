@@ -8,15 +8,12 @@ import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 
 import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.jpa.Testgruppe;
 
 public interface BestillingRepository extends Repository<Bestilling, Long> {
 
     Optional<Bestilling> findById(Long id);
 
     Bestilling save(Bestilling bestilling);
-
-    List<Bestilling> findBestillingByGruppeOrderById(Testgruppe gruppe);
 
     @Query(value = "from Bestilling b where b.malBestillingNavn is not null order by b.malBestillingNavn")
     Optional<List<Bestilling>> findMalBestilling();
