@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
@@ -20,7 +21,7 @@ public class ArbeidsforholdDTO {
     String typeArbeidsforhold;
     @JsonProperty(required = true)
     LocalDate startdato;
-    @JsonProperty(required = true)
+    @JsonProperty
     LocalDate sluttdato;
     @JsonProperty
     Float antallTimerPerUke;
@@ -32,4 +33,6 @@ public class ArbeidsforholdDTO {
     Float stillingsprosent;
     @JsonProperty
     LocalDate sisteLoennsendringsdato;
+    @JsonProperty
+    List<PermisjonDTO> permisjoner;
 }

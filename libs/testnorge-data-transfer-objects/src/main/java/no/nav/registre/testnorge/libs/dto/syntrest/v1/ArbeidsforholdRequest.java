@@ -10,7 +10,7 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class ArbeidsforholdDTO {
+public class ArbeidsforholdRequest {
     @JsonProperty("RAPPORTERINGSMAANED")
     String rapporteringsmaaned;
     @JsonProperty("ARBEIDSFORHOLD_TYPE")

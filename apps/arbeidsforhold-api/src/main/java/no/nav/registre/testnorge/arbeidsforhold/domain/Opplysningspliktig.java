@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OpplysningspliktigDTO;
+import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.PermisjonDTO;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.VirksomhetDTO;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Arbeidsforhold;
@@ -29,6 +30,7 @@ import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.JuridiskEntitet;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Kilde;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Leveranse;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Leveranseinformasjon;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Permisjon;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Virksomhet;
 
 @Slf4j
@@ -83,6 +85,14 @@ public class Opplysningspliktig {
                                                 ? arbeidsforhold.getStillingsprosent().floatValue()
                                                 : null
                                         )
+                                        .permisjoner(arbeidsforhold.getPermisjon().stream().map(permisjon -> PermisjonDTO
+                                                .builder()
+                                                .beskrivelse(permisjon.getBeskrivelse())
+                                                .permisjonsprosent(permisjon.getPermisjonsprosent().floatValue())
+                                                .sluttdato(toLocalDate(permisjon.getSluttdato()))
+                                                .startdato(toLocalDate(permisjon.getStartdato()))
+                                                .build()
+                                        ).collect(Collectors.toList()))
                                         .typeArbeidsforhold(arbeidsforhold.getTypeArbeidsforhold())
                                         .build()
                                 ).collect(Collectors.toList()))
@@ -225,6 +235,14 @@ public class Opplysningspliktig {
         arbeidsforhold.setArbeidstidsordning(dto.getArbeidstidsordning());
         arbeidsforhold.setStillingsprosent(dto.getStillingsprosent() != null ? BigDecimal.valueOf(dto.getStillingsprosent()) : null);
         arbeidsforhold.setSisteLoennsendringsdato(toXMLGregorianCalendar(dto.getSisteLoennsendringsdato()));
+        arbeidsforhold.getPermisjon().addAll(dto.getPermisjoner().stream().map(permisjonDTO -> {
+            Permisjon permisjon = new Permisjon();
+            permisjon.setBeskrivelse(permisjonDTO.getBeskrivelse());
+            permisjon.setPermisjonId(UUID.randomUUID().toString());
+            permisjon.setSluttdato(toXMLGregorianCalendar(permisjonDTO.getSluttdato()));
+            permisjon.setStartdato(toXMLGregorianCalendar(permisjonDTO.getStartdato()));
+            return permisjon;
+        }).collect(Collectors.toList()));
         return arbeidsforhold;
     }
 

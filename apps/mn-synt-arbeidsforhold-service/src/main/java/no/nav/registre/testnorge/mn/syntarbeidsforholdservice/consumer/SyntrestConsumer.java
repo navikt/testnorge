@@ -13,7 +13,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
 
-import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdRequest;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GenererArbeidsforholdCommand;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Arbeidsforhold;
 
@@ -43,10 +43,10 @@ public class SyntrestConsumer {
     public Arbeidsforhold getNesteArbeidsforhold(Arbeidsforhold arbeidsforhold, LocalDate kaldermaaned) {
         var dto = arbeidsforhold.toSyntrestDTO(kaldermaaned);
         try {
-            ArbeidsforholdDTO response = new GenererArbeidsforholdCommand(webClient, dto).call();
+            ArbeidsforholdRequest response = new GenererArbeidsforholdCommand(webClient, dto).call();
             return new Arbeidsforhold(response, arbeidsforhold.getIdent(), arbeidsforhold.getArbeidsforholdId());
         } catch (HttpServerErrorException.InternalServerError e) {
-            log.error(objectMapper.writeValueAsString(dto), e);
+            log.error("Feil med opprellese av: {}", objectMapper.writeValueAsString(dto), e);
             throw e;
         }
     }

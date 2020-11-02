@@ -10,23 +10,23 @@ import reactor.core.publisher.Mono;
 import java.util.concurrent.Callable;
 
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdRequest;
 
 @DependencyOn("syntrest")
 @RequiredArgsConstructor
-public class GenererArbeidsforholdCommand implements Callable<ArbeidsforholdDTO> {
+public class GenererArbeidsforholdCommand implements Callable<ArbeidsforholdRequest> {
     private final WebClient webClient;
-    private final ArbeidsforholdDTO arbeidsforholdDTO;
+    private final ArbeidsforholdRequest arbeidsforholdDTO;
 
     @Override
-    public ArbeidsforholdDTO call() {
+    public ArbeidsforholdRequest call() {
         return webClient
                 .post()
                 .uri("/api/v1/generate/arbeidsforhold/sklearn")
-                .body(BodyInserters.fromPublisher(Mono.just(arbeidsforholdDTO), ArbeidsforholdDTO.class))
+                .body(BodyInserters.fromPublisher(Mono.just(arbeidsforholdDTO), ArbeidsforholdRequest.class))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
-                .bodyToMono(ArbeidsforholdDTO.class)
+                .bodyToMono(ArbeidsforholdRequest.class)
                 .block();
     }
 }

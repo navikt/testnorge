@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdRequest;
 
 public class Arbeidsforhold {
     public static final DateTimeFormatter SYNT_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
@@ -27,7 +28,7 @@ public class Arbeidsforhold {
     }
 
     public Arbeidsforhold(
-            no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdDTO arbeidsforholdDTO,
+            ArbeidsforholdRequest arbeidsforholdDTO,
             String ident,
             String arbeidsforholdId
     ) {
@@ -63,8 +64,8 @@ public class Arbeidsforhold {
         return dto.getArbeidsforholdId();
     }
 
-    public no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdDTO toSyntrestDTO(LocalDate kaldermaaned) {
-        return no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdDTO
+    public ArbeidsforholdRequest toSyntrestDTO(LocalDate kaldermaaned) {
+        return ArbeidsforholdRequest
                 .builder()
                 .antallTimerPerUkeSomEnFullStillingTilsvarer(nullToEmpty(dto.getAntallTimerPerUke()))
                 .arbeidsforholdType(nullToEmpty(dto.getTypeArbeidsforhold()))
