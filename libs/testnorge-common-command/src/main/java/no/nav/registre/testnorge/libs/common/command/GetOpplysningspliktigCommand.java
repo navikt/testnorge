@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.time.LocalDate;
 import java.util.concurrent.Callable;
@@ -39,7 +39,7 @@ public class GetOpplysningspliktigCommand implements Callable<Opplysningspliktig
                     .retrieve()
                     .bodyToMono(OpplysningspliktigDTO.class)
                     .block();
-        } catch (HttpClientErrorException.NotFound e) {
+        } catch (WebClientResponseException.NotFound e) {
             return null;
         }
     }

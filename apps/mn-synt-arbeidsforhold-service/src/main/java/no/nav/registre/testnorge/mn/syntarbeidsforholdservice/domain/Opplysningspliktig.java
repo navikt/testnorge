@@ -45,9 +45,11 @@ public class Opplysningspliktig {
         VirksomhetDTO virksomhet = dto.getVirksomheter()
                 .stream()
                 .filter(value -> value.getOrganisajonsnummer().equals(virksomhetsnummer))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Finner ikke viksomhent " + virksomhetsnummer));
-
+                .findFirst().orElseGet(() -> {
+                    VirksomhetDTO virksomhetDTO = new VirksomhetDTO(virksomhetsnummer, new ArrayList<>());
+                    dto.getVirksomheter().add(virksomhetDTO);
+                    return virksomhetDTO;
+                });
 
         Optional<PersonDTO> optional = virksomhet.getPersoner()
                 .stream()

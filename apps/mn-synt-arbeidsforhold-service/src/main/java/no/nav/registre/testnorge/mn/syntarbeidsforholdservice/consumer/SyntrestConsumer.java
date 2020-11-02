@@ -10,6 +10,7 @@ import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.time.LocalDate;
 
@@ -45,7 +46,7 @@ public class SyntrestConsumer {
         try {
             ArbeidsforholdRequest response = new GenererArbeidsforholdCommand(webClient, dto).call();
             return new Arbeidsforhold(response, arbeidsforhold.getIdent(), arbeidsforhold.getArbeidsforholdId());
-        } catch (HttpServerErrorException.InternalServerError e) {
+        } catch (WebClientResponseException.InternalServerError e) {
             log.error("Feil med opprellese av: {}", objectMapper.writeValueAsString(dto), e);
             throw e;
         }
