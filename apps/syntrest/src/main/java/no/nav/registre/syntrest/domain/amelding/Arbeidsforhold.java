@@ -1,6 +1,5 @@
 package no.nav.registre.syntrest.domain.amelding;
 
-import java.time.LocalDate;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -28,31 +27,28 @@ public class Arbeidsforhold {
     private String arbeidsforholdType;
 
     @JsonAlias({"STARTDATO", "startdato", "startDato"})
-    private LocalDate startdato;
+    private String startdato;
 
     @JsonAlias({"SLUTTDATO", "sluttdato", "sluttDato"})
-    private LocalDate sluttdato;
+    private String sluttdato;
 
     @JsonAlias({"ANTALL_TIMER_PER_UKE_SOM_EN_FULL_STILLING_TILSVARER", "antallTimerPerUkeSomEnFullStillingTilsvarer"})
     private float antallTimerPerUkeSomEnFullStillingTilsvarer;
 
-    @JsonAlias({"AVLOENNINGSTYPE", "avloenningstype"})
-    private String avloenningstype;
-
     @JsonAlias({"YRKE", "yrke"})
     private String yrke;
 
-    @JsonAlias({"ARBEIDSORDING", "ARBEIDSTIDSORDNING", "arbeidsording", "arbeidstidsordning"})
+    @JsonAlias({"ARBEIDSTIDSORDNING", "arbeidstidsordning"})
     private String arbeidstidsordning;
 
     @JsonAlias({"STILLINGSPROSENT", "stillingsprosent"})
     private float stillingsprosent;
 
     @JsonAlias({"SISTE_LOENNSENDRINGSDATO", "sisteLoennsendringsdato"})
-    private LocalDate sisteLoennsendringsdato;
+    private String sisteLoennsendringsdato;
 
     @JsonAlias({"SISTE_DATO_FOR_STILLINGSPROSENTENDRING", "sisteDatoForStillingsprosentendring"})
-    private LocalDate sisteDatoForStillingsprosentendring;
+    private String sisteDatoForStillingsprosentendring;
 
     @JsonAlias({"PERMISJON_MED_FORELDREPENGER", "permisjonMedForeldrePenger"})
     private float permisjonMedForeldrePenger;
