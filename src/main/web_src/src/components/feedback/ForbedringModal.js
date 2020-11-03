@@ -5,18 +5,23 @@ import { v4 as _uuid } from 'uuid'
 import ModalActionKnapper from '~/components/ui/modal/ModalActionKnapper'
 import Logger from '~/logger'
 import { Textarea } from 'nav-frontend-skjema'
+import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { useToggle } from 'react-use'
 
 export const ForbedringModal = ({ closeModal }) => {
 	const MAX_LENGTH = 2000
 	const [uuid] = useState(_uuid())
 	const [forbedring, setForbedring] = useState('')
+	const [isAnonym, toggleAnonym] = useToggle(false)
 
 	const sendForbedring = () => {
 		Logger.log({
 			event: `Ønsket forbedring fra Dollybruker`,
 			message: forbedring,
-			uuid: uuid
+			uuid: uuid,
+			isAnonym: isAnonym
 		})
+		closeModal()
 	}
 
 	return (
@@ -24,6 +29,11 @@ export const ForbedringModal = ({ closeModal }) => {
 			<DollyModal isOpen closeModal={closeModal} width="70%">
 				<div className="modal">
 					<h1>Ønske om forbedring eller ny funksjonalitet</h1>
+					<br />
+					<div className="skjemaelement textarea__container">
+						<label className="skjemaelement__label">Jeg ønsker å være anonym</label>
+						<DollyCheckbox onChange={toggleAnonym} isSwitch />
+					</div>
 
 					<br />
 					<Textarea

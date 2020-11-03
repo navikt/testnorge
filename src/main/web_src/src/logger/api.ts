@@ -8,6 +8,7 @@ interface LogEvent {
 	message?: string
 	uuid: string
 	rating?: Rating
+	isAnonym?: boolean
 }
 
 export default {

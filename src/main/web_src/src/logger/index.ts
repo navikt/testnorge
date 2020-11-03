@@ -3,8 +3,22 @@ import Api from './api'
 import { v4 as _uuid } from 'uuid'
 import { Level, Rating } from './types'
 
-const log = (level: Level, event: string, message?: string, uuid?: string, rating?: Rating) => {
-	Api.log({ event: event, message: message, level: level, uuid: uuid || _uuid(), rating: rating })
+const log = (
+	level: Level,
+	event: string,
+	message?: string,
+	uuid?: string,
+	rating?: Rating,
+	isAnonym?: boolean
+) => {
+	Api.log({
+		event: event,
+		message: message,
+		level: level,
+		uuid: uuid || _uuid(),
+		rating: rating,
+		isAnonym: isAnonym
+	})
 }
 
 interface Log {
@@ -12,10 +26,12 @@ interface Log {
 	message?: string
 	uuid?: string
 	rating?: Rating
+	isAnonym?: boolean
 }
 
 export default {
-	log: ({ event, message, uuid, rating }: Log) => log(Level.INFO, event, message, uuid, rating),
+	log: ({ event, message, uuid, rating, isAnonym }: Log) =>
+		log(Level.INFO, event, message, uuid, rating, isAnonym),
 	warn: ({ event, message, uuid, rating }: Log) => log(Level.WARNING, event, message, uuid, rating),
 	error: ({ event, message, uuid, rating }: Log) => log(Level.ERROR, event, message, uuid, rating)
 }
