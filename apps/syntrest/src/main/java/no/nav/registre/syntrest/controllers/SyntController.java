@@ -19,7 +19,6 @@ import no.nav.registre.syntrest.domain.tp.TPmelding;
 import no.nav.registre.syntrest.domain.tps.SkdMelding;
 import no.nav.registre.syntrest.utils.InputValidator;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

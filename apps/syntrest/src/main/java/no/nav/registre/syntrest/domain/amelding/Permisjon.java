@@ -20,10 +20,10 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Permisjon {
 
-    @JsonAlias({"STARTDATO", "startdato", "startDato"})
+    @JsonAlias({"STARTDATO", "startdato"})
     private LocalDate startdato;
 
-    @JsonAlias({"SLUTTDATO", "sluttdato", "sluttDato"})
+    @JsonAlias({"SLUTTDATO", "sluttdato"})
     private LocalDate sluttdato;
 
     @JsonAlias({"PERMISJONSPROSENT", "permisjonsprosent"})

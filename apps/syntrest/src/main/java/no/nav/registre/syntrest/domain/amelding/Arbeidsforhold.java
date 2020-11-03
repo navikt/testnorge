@@ -26,10 +26,10 @@ public class Arbeidsforhold {
     @JsonAlias({"ARBEIDSFORHOLD_TYPE", "arbeidsforholdType"})
     private String arbeidsforholdType;
 
-    @JsonAlias({"STARTDATO", "startdato", "startDato"})
+    @JsonAlias({"STARTDATO", "startdato"})
     private String startdato;
 
-    @JsonAlias({"SLUTTDATO", "sluttdato", "sluttDato"})
+    @JsonAlias({"SLUTTDATO", "sluttdato"})
     private String sluttdato;
 
     @JsonAlias({"ANTALL_TIMER_PER_UKE_SOM_EN_FULL_STILLING_TILSVARER", "antallTimerPerUkeSomEnFullStillingTilsvarer"})
