@@ -48,7 +48,7 @@ export const Feedback = ({ label, feedbackFor }: FeedbackProps) => {
 						<Knapp
 							form="kompakt"
 							htmlType="submit"
-							disabled={text.length < 1 || text.length > MAX_LENGTH}
+							disabled={text.length > MAX_LENGTH}
 							autoFocus={true}
 							onClick={event => {
 								event.preventDefault()
