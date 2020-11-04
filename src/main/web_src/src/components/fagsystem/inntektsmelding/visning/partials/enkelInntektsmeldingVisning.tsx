@@ -94,6 +94,9 @@ export const EnkelInntektsmeldingVisning = ({ bestilling, data }: EnkelInntektsm
 						if (id.feil) {
 							return <p style={{ margin: 0 }}>{id.feil}</p>
 						}
+						if (!id.journalpost) {
+							return <p style={{ margin: 0 }}>Tom journalpost</p>
+						}
 
 						const [viserSkjemainnhold, vis, skjul] = useBoolean(false)
 						const feilmelding = 'Kan ikke hente dokument fra SAF.'

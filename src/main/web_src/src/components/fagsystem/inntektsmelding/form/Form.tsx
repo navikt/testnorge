@@ -198,7 +198,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 										</InputWarning>
 									</Kategori>
 								)}
-								{ytelse === Ytelser.Sykepenger && (
+								{(ytelse === Ytelser.Sykepenger || ytelse === Ytelser.Omsorgspenger) && (
 									<Kategori title="Sykepenger">
 										<SykepengerForm path={`${path}.sykepengerIArbeidsgiverperioden`} />
 									</Kategori>

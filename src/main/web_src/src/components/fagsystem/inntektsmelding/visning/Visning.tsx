@@ -40,7 +40,7 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisning)
 									)
 										.then((response: Dokumentinfo) => {
 											if (response) {
-												if (response.data[0].feil) {
+												if (response.data[0].feil || !response.data[0].data) {
 													return response.data[0]
 												}
 												return {
@@ -62,7 +62,7 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisning)
 						if (data && data.length > 0) {
 							const gyldigeBestillinger = liste.filter(bestilling =>
 								data
-									.filter(dokument => dokument.journalpost != null)
+									.filter(dokument => dokument != undefined && dokument.journalpost != null)
 									.find(x => (x && x.bestillingId ? x.bestillingId === bestilling.id : x))
 							)
 							if (gyldigeBestillinger && gyldigeBestillinger.length > 0) {
