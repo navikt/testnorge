@@ -36,6 +36,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:2.2.5.RELEASE'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:3.2.0'
 }
 
 description = 'skd-core'
