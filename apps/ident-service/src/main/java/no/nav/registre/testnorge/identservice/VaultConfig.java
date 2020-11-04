@@ -7,8 +7,6 @@ import org.springframework.vault.annotation.VaultPropertySource;
 @Configuration
 @Profile("dev")
 @VaultPropertySource(value = "kv/preprod/fss/testnorge-ident-service/local", ignoreSecretNotFound = false)
-@VaultPropertySource(value = "oracle/dev/creds/tpsforvalteren_t1-user", propertyNamePrefix = "spring.datasource.", ignoreSecretNotFound = false)
-@VaultPropertySource(value = "oracle/dev/config/tpsforvalteren_t1", propertyNamePrefix = "tps-forvalteren.datasource.", ignoreSecretNotFound = false)
 @VaultPropertySource(value = "serviceuser/test/srvtps-forvalteren", propertyNamePrefix = "srvtps.forvalteren.", ignoreSecretNotFound = false)
 class VaultConfig {
 
