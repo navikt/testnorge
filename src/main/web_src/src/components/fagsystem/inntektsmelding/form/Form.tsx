@@ -7,7 +7,6 @@ import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { panelError } from '~/components/ui/form/formUtils'
 import { erForste } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { InputWarning } from '~/components/ui/form/inputWarning/InputWarning'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
@@ -32,6 +31,7 @@ import ArbeidsforholdForm from './partials/arbeidsforholdForm'
 import NaturalytelseForm from './partials/naturalytelseForm'
 import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
 import { AlertAaregRequired } from '~/components/ui/brukerAlert/AlertAaregRequired'
+import { InputWarning } from '~/components/ui/form/inputWarning/inputWarning'
 
 interface InntektsmeldingForm {
 	formikBag: FormikProps<{}>
