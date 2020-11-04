@@ -14,7 +14,7 @@ export const MalModal = ({ id, closeModal }) => {
 	const [nyttMalnavn, setMalnavn] = useState('')
 	return (
 		<ErrorBoundary>
-			<DollyModal isOpen closeModal={closeModal} width="40%">
+			<DollyModal isOpen closeModal={closeModal} width="40%" overflow="auto">
 				<div className="modal">
 					<h1>Opprett ny mal</h1>
 

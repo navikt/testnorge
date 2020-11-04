@@ -12,7 +12,7 @@ export const BestillingSammendragModal = ({ bestilling }) => {
 			<Button onClick={openModal} kind="details">
 				BESTILLINGSDETALJER
 			</Button>
-			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="60%">
+			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="60%" overflow="auto">
 				<h1>Bestilling #{bestilling.id}</h1>
 				<BestillingSammendrag bestilling={bestilling} modal />
 			</DollyModal>
