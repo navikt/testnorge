@@ -1,55 +1,47 @@
 package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdRequest;
+import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 
+@Slf4j
+@RequiredArgsConstructor
 public class Arbeidsforhold {
-    public static final DateTimeFormatter SYNT_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private final ArbeidsforholdDTO dto;
     private final String ident;
 
-    private Arbeidsforhold(String ident, String yrke, LocalDate startdato) {
-        this.ident = ident;
-        this.dto = ArbeidsforholdDTO
-                .builder()
-                .typeArbeidsforhold("ordinaertArbeidsforhold")
-                .antallTimerPerUke(37.5f)
-                .arbeidstidsordning("ikkeSkift")
-                .sisteLoennsendringsdato(startdato)
-                .stillingsprosent(100.0f)
-                .yrke(yrke)
-                .startdato(startdato)
-                .arbeidsforholdId(UUID.randomUUID().toString())
-                .build();
-    }
-
     public Arbeidsforhold(
-            ArbeidsforholdRequest arbeidsforholdDTO,
+            ArbeidsforholdResponse response,
             String ident,
             String arbeidsforholdId
     ) {
         this.ident = ident;
         this.dto = ArbeidsforholdDTO
                 .builder()
-                .typeArbeidsforhold(emptyToNull(arbeidsforholdDTO.getArbeidsforholdType()))
-                .antallTimerPerUke(emptyToNull(arbeidsforholdDTO.getAntallTimerPerUkeSomEnFullStillingTilsvarer()))
-                .arbeidstidsordning(emptyToNull(arbeidsforholdDTO.getArbeidsordning()))
-                .sisteLoennsendringsdato(format(arbeidsforholdDTO.getSisteDatoForStillingsprosentendring()))
-                .stillingsprosent(emptyToNull(arbeidsforholdDTO.getStillingsprosent()))
-                .yrke(emptyToNull(arbeidsforholdDTO.getYrke()))
-                .startdato(format(arbeidsforholdDTO.getStartdato()))
-                .sluttdato(format(arbeidsforholdDTO.getSluttdato()))
+                .typeArbeidsforhold(emptyToNull(response.getArbeidsforholdType()))
+                .antallTimerPerUke(emptyToNull(response.getAntallTimerPerUkeSomEnFullStillingTilsvarer()))
+                .arbeidstidsordning(emptyToNull(response.getArbeidstidsordning()))
+                .sisteLoennsendringsdato(response.getSisteDatoForStillingsprosentendring())
+                .stillingsprosent(emptyToNull(response.getStillingsprosent()))
+                .yrke(emptyToNull(response.getYrke()))
+                .startdato(response.getStartdato())
+                .sluttdato(response.getSluttdato())
                 .arbeidsforholdId(arbeidsforholdId)
                 .build();
     }
 
-
-    public static Arbeidsforhold from(String ident, String yrke, LocalDate startdato) {
-        return new Arbeidsforhold(ident, yrke, startdato);
+    public Arbeidsforhold(
+            ArbeidsforholdResponse response,
+            String ident
+    ) {
+        this(response, ident, UUID.randomUUID().toString());
     }
 
     public String getIdent() {
@@ -64,26 +56,62 @@ public class Arbeidsforhold {
         return dto.getArbeidsforholdId();
     }
 
+    public LocalDate getSluttdato() {
+        return dto.getSluttdato();
+    }
+
     public ArbeidsforholdRequest toSyntrestDTO(LocalDate kaldermaaned) {
+        float velferdspermisjon = 0;
+        float utdanningspermisjon = 0;
+        float permisjonMedForeldrepenger = 0;
+        float permisjonVedMilitaertjeneste = 0;
+        float permisjon = 0;
+        float permittering = 0;
+
+        for (var permisjonDTO : dto.getPermisjoner()) {
+            switch (permisjonDTO.getBeskrivelse()) {
+                case "velferdspermisjon":
+                    velferdspermisjon++;
+                    break;
+                case "utdanningspermisjon":
+                    utdanningspermisjon++;
+                    break;
+                case "permisjonMedForeldrepenger":
+                    permisjonMedForeldrepenger++;
+                    break;
+                case "permisjonVedMilitaertjeneste":
+                    permisjonVedMilitaertjeneste++;
+                    break;
+                case "permisjon":
+                    permisjon++;
+                    break;
+                case "permittering":
+                    permittering++;
+                    break;
+                default:
+                    log.warn("Uskjent permisjons beskrivelse {}", permisjonDTO.getBeskrivelse());
+                    break;
+            }
+        }
+
         return ArbeidsforholdRequest
                 .builder()
                 .antallTimerPerUkeSomEnFullStillingTilsvarer(nullToEmpty(dto.getAntallTimerPerUke()))
                 .arbeidsforholdType(nullToEmpty(dto.getTypeArbeidsforhold()))
-                .arbeidsordning(nullToEmpty(dto.getArbeidstidsordning()))
-                .avloenningstype("")
-                .permisjon(0f)
-                .permisjonMedForeldrepenger(0f)
-                .permisjonVedMilitaertjeneste(0f)
-                .permittering(0f)
+                .arbeidstidsordning(nullToEmpty(dto.getArbeidstidsordning()))
+                .permisjon(permisjon)
+                .permisjonMedForeldrepenger(permisjonMedForeldrepenger)
+                .permisjonVedMilitaertjeneste(permisjonVedMilitaertjeneste)
+                .permittering(permittering)
                 .rapporteringsmaaned(formatKaldenermaand(kaldermaaned))
-                .sisteDatoForStillingsprosentendring(format(kaldermaaned))
-                .sisteLoennsendringsdato(format(dto.getSisteLoennsendringsdato()))
-                .sluttdato(format(dto.getSluttdato()))
-                .startdato(format(dto.getStartdato()))
+                .sisteDatoForStillingsprosentendring(kaldermaaned)
+                .sisteLoennsendringsdato(dto.getSisteLoennsendringsdato())
+                .sluttdato(dto.getSluttdato())
+                .startdato(dto.getStartdato())
                 .stillingsprosent(nullToEmpty(dto.getStillingsprosent()))
-                .utdanningspermisjon(0f)
+                .utdanningspermisjon(utdanningspermisjon)
                 .yrke(nullToEmpty(dto.getYrke()))
-                .velferdspermisjon(0f)
+                .velferdspermisjon(velferdspermisjon)
                 .build();
     }
 
@@ -96,22 +124,11 @@ public class Arbeidsforhold {
     }
 
     private String emptyToNull(String value) {
-        return value.equals("") ? null : value;
+        return value == null ? null : value.equals("") ? null : value;
     }
 
     private Float emptyToNull(Float value) {
         return value == 0f ? null : value;
-    }
-
-    private LocalDate format(String value) {
-        return value.equals("") ? null : LocalDate.parse(value, SYNT_FORMATTER);
-    }
-
-    private String format(LocalDate value) {
-        if (value == null) {
-            return "";
-        }
-        return value.format(SYNT_FORMATTER);
     }
 
     private String formatKaldenermaand(LocalDate value) {

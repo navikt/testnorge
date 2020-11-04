@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Value
@@ -18,23 +19,23 @@ public class ArbeidsforholdResponse {
     @JsonProperty("ARBEIDSFORHOLD_TYPE")
     String arbeidsforholdType;
     @JsonProperty("STARTDATO")
-    String startdato;
+    LocalDate startdato;
     @JsonProperty("SLUTTDATO")
-    String sluttdato;
+    LocalDate sluttdato;
     @JsonProperty("ANTALL_TIMER_PER_UKE_SOM_EN_FULL_STILLING_TILSVARER")
     Float antallTimerPerUkeSomEnFullStillingTilsvarer;
     @JsonProperty("AVLOENNINGSTYPE")
     String avloenningstype;
     @JsonProperty("YRKE")
     String yrke;
-    @JsonProperty("ARBEIDSORDING")
-    String arbeidsordning;
+    @JsonProperty("ARBEIDSTIDSORDNING")
+    String arbeidstidsordning;
     @JsonProperty("STILLINGSPROSENT")
     Float stillingsprosent;
     @JsonProperty("SISTE_LOENNSENDRINGSDATO")
-    String sisteLoennsendringsdato;
+    LocalDate sisteLoennsendringsdato;
     @JsonProperty("SISTE_DATO_FOR_STILLINGSPROSENTENDRING")
-    String sisteDatoForStillingsprosentendring;
+    LocalDate sisteDatoForStillingsprosentendring;
     @JsonProperty("PERMISJONER")
     List<PermisjonDTO> permisjoner;
 

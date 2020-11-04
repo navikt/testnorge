@@ -35,11 +35,9 @@ public class Opplysningspliktig {
                 .build();
     }
 
-
-    public String getRandomVirksomhetsnummer() {
-        return dto.getVirksomheter().get(random.nextInt(dto.getVirksomheter().size())).getOrganisajonsnummer();
+    public List<VirksomhetDTO> getVirksomheter() {
+        return dto.getVirksomheter();
     }
-
 
     public void addArbeidsforhold(String virksomhetsnummer, Arbeidsforhold arbeidsforhold) {
         VirksomhetDTO virksomhet = dto.getVirksomheter()
@@ -89,13 +87,6 @@ public class Opplysningspliktig {
 
     public Long getVersion() {
         return dto.getVersion() == null ? 0 : dto.getVersion();
-    }
-
-    public Set<String> getIdenter() {
-        Set<String> identer = new HashSet<>();
-        dto.getVirksomheter()
-                .forEach(virksomhet -> virksomhet.getPersoner().forEach(person -> identer.add(person.getIdent())));
-        return identer;
     }
 
     public OpplysningspliktigDTO toDTO() {

@@ -8,14 +8,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.time.LocalDate;
 
-import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdRequest;
-import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GenererArbeidsforholdCommand;
+import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GenerateNextArbeidsforholdCommand;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GenerateStartOfArbeidsforholdCommand;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Arbeidsforhold;
 
 @Slf4j
@@ -44,11 +44,16 @@ public class SyntrestConsumer {
     public Arbeidsforhold getNesteArbeidsforhold(Arbeidsforhold arbeidsforhold, LocalDate kaldermaaned) {
         var dto = arbeidsforhold.toSyntrestDTO(kaldermaaned);
         try {
-            ArbeidsforholdRequest response = new GenererArbeidsforholdCommand(webClient, dto).call();
+            ArbeidsforholdResponse response = new GenerateNextArbeidsforholdCommand(webClient, dto).call();
             return new Arbeidsforhold(response, arbeidsforhold.getIdent(), arbeidsforhold.getArbeidsforholdId());
         } catch (WebClientResponseException.InternalServerError e) {
             log.error("Feil med opprellese av: {}", objectMapper.writeValueAsString(dto), e);
             throw e;
         }
+    }
+
+    public Arbeidsforhold getFirstArbeidsforhold(LocalDate startdato, String ident) {
+        ArbeidsforholdResponse response = new GenerateStartOfArbeidsforholdCommand(webClient, startdato).call();
+        return new Arbeidsforhold(response, ident);
     }
 }

@@ -24,15 +24,7 @@ public class OpplysningspliktigController {
     public ResponseEntity<?> generateForAll(
             @RequestHeader("kalendermaaned") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate kalendermaaned
     ) {
-        return ResponseEntity.ok().build();
-    }
-
-
-    @PostMapping("/{orgnummer}")
-    public ResponseEntity<?> generateFor(
-            @PathVariable("orgnummer") String orgnummer,
-            @RequestHeader("kalendermaaned") LocalDate kalendermaaned
-    ) {
-        return ResponseEntity.ok().build();
+        syntentiseringService.reportAll(kalendermaaned);
+        return ResponseEntity.noContent().build();
     }
 }

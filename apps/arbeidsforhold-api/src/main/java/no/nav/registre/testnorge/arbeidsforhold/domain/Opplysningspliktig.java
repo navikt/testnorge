@@ -3,8 +3,12 @@ package no.nav.registre.testnorge.arbeidsforhold.domain;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.Marshaller;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -30,6 +34,7 @@ import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.JuridiskEntitet;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Kilde;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Leveranse;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Leveranseinformasjon;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.ObjectFactory;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Permisjon;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Virksomhet;
 
@@ -148,6 +153,18 @@ public class Opplysningspliktig {
     }
 
     @SneakyThrows
+    public String toXml(){
+        JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
+        ObjectFactory objectFactory = new ObjectFactory();
+        JAXBElement<EDAGM> melding = objectFactory.createMelding(toEDAGM());
+        Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        StringWriter sw = new StringWriter();
+        jaxbMarshaller.marshal(melding, sw);
+        return sw.toString();
+    }
+
+    @SneakyThrows
     public EDAGM toEDAGM() {
         List<Virksomhet> virksomheter = dto
                 .getVirksomheter()
@@ -240,6 +257,7 @@ public class Opplysningspliktig {
                 Permisjon permisjon = new Permisjon();
                 permisjon.setBeskrivelse(permisjonDTO.getBeskrivelse());
                 permisjon.setPermisjonId(UUID.randomUUID().toString());
+                permisjon.setPermisjonsprosent(BigDecimal.valueOf(permisjonDTO.getPermisjonsprosent()));
                 permisjon.setSluttdato(toXMLGregorianCalendar(permisjonDTO.getSluttdato()));
                 permisjon.setStartdato(toXMLGregorianCalendar(permisjonDTO.getStartdato()));
                 return permisjon;

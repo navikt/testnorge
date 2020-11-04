@@ -38,6 +38,7 @@ dependencies {
     implementation project(':testnorge-common-command')
     implementation project(':testnorge-oauth2')
     implementation project(':arbeidsforhold-xsd')
+    implementation project(':testnorge-csv-converter')
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'

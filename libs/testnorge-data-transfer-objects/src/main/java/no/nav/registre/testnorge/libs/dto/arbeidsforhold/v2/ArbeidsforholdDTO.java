@@ -5,9 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -35,4 +35,12 @@ public class ArbeidsforholdDTO {
     LocalDate sisteLoennsendringsdato;
     @JsonProperty
     List<PermisjonDTO> permisjoner;
+
+
+    public List<PermisjonDTO> getPermisjoner() {
+        if (permisjoner == null) {
+            permisjoner = new ArrayList<>();
+        }
+        return permisjoner;
+    }
 }

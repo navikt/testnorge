@@ -31,7 +31,6 @@ public class KodeverkConsumer {
     }
 
     public Kodeverk getYrkeKodeverk(){
-
         KodeverkDTO dto = new GetKodeverkCommand(webClient, "Yrker", LocalDate.now(), applicationName).call();
         return new Kodeverk(dto);
     }

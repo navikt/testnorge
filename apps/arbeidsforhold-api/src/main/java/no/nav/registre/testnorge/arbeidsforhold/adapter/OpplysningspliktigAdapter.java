@@ -13,9 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.arbeidsforhold.consumer.AaregSyntConsumer;
 import no.nav.registre.testnorge.arbeidsforhold.domain.Opplysningspliktig;
@@ -34,7 +32,7 @@ public class OpplysningspliktigAdapter {
 
     public void save(Opplysningspliktig opplysningspliktig, String miljo) {
 
-        String xml = toXml(opplysningspliktig.toEDAGM());
+        String xml = opplysningspliktig.toXml();
 
         OpplysningspliktigModel model = OpplysningspliktigModel.builder()
                 .document(xml)
@@ -43,7 +41,6 @@ public class OpplysningspliktigAdapter {
                 .version(opplysningspliktig.getVersion())
                 .miljo(miljo)
                 .build();
-
 
         log.info("Oppretter oppsummeringsdokuemnt for {}.", opplysningspliktig.getOrgnummer());
         aaregSyntConsumer.saveOpplysningspliktig(xml);
@@ -62,27 +59,8 @@ public class OpplysningspliktigAdapter {
         return new Opplysningspliktig(edagm);
     }
 
-    public List<Opplysningspliktig> fetch(String orgnummer, String mijlo) {
-        return opplysningspliktigRepository.findAllBy(orgnummer, mijlo)
-                .stream()
-                .map(model -> new Opplysningspliktig(toEDAGM(model.getDocument())))
-                .collect(Collectors.toList());
-    }
-
     @SneakyThrows
-    private static String toXml(EDAGM edagm) {
-        JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
-        ObjectFactory objectFactory = new ObjectFactory();
-        JAXBElement<EDAGM> melding = objectFactory.createMelding(edagm);
-        Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        StringWriter sw = new StringWriter();
-        jaxbMarshaller.marshal(melding, sw);
-        return sw.toString();
-    }
 
-    @SneakyThrows
-    @SuppressWarnings("unchecked")
     private static EDAGM toEDAGM(String xml) {
         JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
 
