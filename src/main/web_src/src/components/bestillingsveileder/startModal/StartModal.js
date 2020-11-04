@@ -9,7 +9,7 @@ import './startModal.less'
 export const BestillingsveilederModal = ({ onAvbryt, onSubmit, brukernavn }) => {
 	const [type, setType] = useState('ny')
 	return (
-		<DollyModal isOpen closeModal={onAvbryt} width="60%">
+		<DollyModal isOpen closeModal={onAvbryt} width="60%" overflow="auto">
 			<div className="start-bestilling-modal">
 				<h1>Opprett personer</h1>
 

@@ -68,7 +68,12 @@ export default function ImporterGrupper({ importZIdent }: ImporterGrupper) {
 				Importer grupper
 			</NavButton>
 
-			<DollyModal isOpen={isImportModalOpen} closeModal={closeImportModal} width="70%">
+			<DollyModal
+				isOpen={isImportModalOpen}
+				closeModal={closeImportModal}
+				width="70%"
+				overflow="auto"
+			>
 				<div className="importer-grupper-modal">
 					<h1>Importer testdatagrupper fra Z-ident</h1>
 					<h3>Velg hvilke Z-brukere du ønsker å importere. Vær klar over følgende:</h3>
