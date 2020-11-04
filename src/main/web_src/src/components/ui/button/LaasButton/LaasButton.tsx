@@ -22,7 +22,7 @@ export const LaasButton = ({ action, loading, children }: LaasButton) => {
 			<Button onClick={openModal} kind="lock">
 				LÅS
 			</Button>
-			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%">
+			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
 				<div className="laasModal">
 					<div className="laasModal laasModal-content">
 						{

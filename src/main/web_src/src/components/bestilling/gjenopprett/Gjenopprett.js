@@ -28,7 +28,7 @@ export default function GjenopprettBestilling(props) {
 	const { environments } = bestilling
 
 	return (
-		<DollyModal isOpen={true} closeModal={closeModal} width={'25%'}>
+		<DollyModal isOpen={true} closeModal={closeModal} width="25%" overflow="auto">
 			<div style={{ paddingLeft: 20, paddingRight: 20 }}>
 				<h1>Bestilling #{bestilling.id}</h1>
 				<TitleValue title="Bestilt miljø" value={Formatters.arrayToString(environments)} />

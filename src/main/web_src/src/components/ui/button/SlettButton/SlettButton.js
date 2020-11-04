@@ -17,7 +17,7 @@ export const SlettButton = ({ action, loading, children }) => {
 			<Button onClick={openModal} kind="trashcan">
 				SLETT
 			</Button>
-			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%">
+			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
 				<div className="slettModal">
 					<div className="slettModal slettModal-content">
 						<Icon size={50} kind="report-problem-circle" />
