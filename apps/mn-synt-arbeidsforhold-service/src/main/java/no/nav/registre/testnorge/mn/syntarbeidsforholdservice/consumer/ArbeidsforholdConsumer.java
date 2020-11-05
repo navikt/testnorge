@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
@@ -45,17 +46,18 @@ public class ArbeidsforholdConsumer {
     }
 
 
-    public Optional<Opplysningspliktig> getOpplysningspliktig(String orgnummer, LocalDate kalendermaaned) {
+    public Optional<Opplysningspliktig> getOpplysningspliktig(String orgnummer, LocalDate kalendermaaned, String miljo) {
         AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties);
-        var dto = new GetOppsummeringsdokumentetCommand(webClient, accessToken.getTokenValue(), orgnummer, kalendermaaned, "q2").call();
+        var dto = new GetOppsummeringsdokumentetCommand(webClient, accessToken.getTokenValue(), orgnummer, kalendermaaned, miljo).call();
         if(dto == null){
             return Optional.empty();
         }
+
         return Optional.of(new Opplysningspliktig(dto));
     }
 
-    public void sendOpplysningspliktig(Opplysningspliktig opplysningspliktig) {
+    public void sendOpplysningspliktig(Opplysningspliktig opplysningspliktig, String miljo) {
         AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties);
-        new SaveOpplysningspliktigCommand(webClient, accessToken.getTokenValue(), opplysningspliktig.toDTO(), "q2").run();
+        new SaveOpplysningspliktigCommand(webClient, accessToken.getTokenValue(), opplysningspliktig.toDTO(), miljo).run();
     }
 }

@@ -32,7 +32,7 @@ public class Arbeidsforhold {
                 .stillingsprosent(emptyToNull(response.getStillingsprosent()))
                 .yrke(emptyToNull(response.getYrke()))
                 .startdato(response.getStartdato())
-                .sluttdato(response.getSluttdato())
+                .sluttdato(response.getSluttdato().equals("") ? null : LocalDate.parse(response.getSluttdato()))
                 .arbeidsforholdId(arbeidsforholdId)
                 .build();
     }
@@ -106,7 +106,7 @@ public class Arbeidsforhold {
                 .rapporteringsmaaned(formatKaldenermaand(kaldermaaned))
                 .sisteDatoForStillingsprosentendring(kaldermaaned)
                 .sisteLoennsendringsdato(dto.getSisteLoennsendringsdato())
-                .sluttdato(dto.getSluttdato())
+                .sluttdato(format(dto.getSluttdato()))
                 .startdato(dto.getStartdato())
                 .stillingsprosent(nullToEmpty(dto.getStillingsprosent()))
                 .utdanningspermisjon(utdanningspermisjon)
@@ -133,5 +133,12 @@ public class Arbeidsforhold {
 
     private String formatKaldenermaand(LocalDate value) {
         return value.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+    }
+
+    private String format(LocalDate value) {
+        if (value == null) {
+            return "";
+        }
+        return value.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 }

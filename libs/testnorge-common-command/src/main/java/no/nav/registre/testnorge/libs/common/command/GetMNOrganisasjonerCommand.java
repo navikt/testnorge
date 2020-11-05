@@ -20,6 +20,7 @@ import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 public class GetMNOrganisasjonerCommand implements Callable<List<OrganisasjonDTO>> {
     private final WebClient webClient;
     private final String accessToken;
+    private final String miljo;
 
     @SneakyThrows
     @Override
@@ -32,6 +33,7 @@ public class GetMNOrganisasjonerCommand implements Callable<List<OrganisasjonDTO
                             .path("/api/v1/organisasjoner/")
                             .build()
                     )
+                    .header("miljo", miljo)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                     .retrieve()
                     .bodyToMono(OrganisasjonDTO[].class)

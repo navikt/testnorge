@@ -32,9 +32,9 @@ public class MNOrganiasjonConsumer {
                 .build();
     }
 
-    public List<Organisajon> getOrganisajoner() {
+    public List<Organisajon> getOrganisajoner(String miljo) {
         AccessToken accessToken = accessTokenService.generateToken(mnOrganisasjonApiClientProperties);
-        List<OrganisasjonDTO> list = new GetMNOrganisasjonerCommand(webClient, accessToken.getTokenValue()).call();
+        List<OrganisasjonDTO> list = new GetMNOrganisasjonerCommand(webClient, accessToken.getTokenValue(), miljo).call();
         return list.stream().map(Organisajon::new).collect(Collectors.toList());
     }
 }

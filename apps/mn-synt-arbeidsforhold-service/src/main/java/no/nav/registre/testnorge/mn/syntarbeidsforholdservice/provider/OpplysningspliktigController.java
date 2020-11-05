@@ -22,9 +22,10 @@ public class OpplysningspliktigController {
 
     @PostMapping
     public ResponseEntity<?> generateForAll(
+            @RequestHeader("miljo") String miljo,
             @RequestHeader("kalendermaaned") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate kalendermaaned
     ) {
-        syntentiseringService.reportAll(kalendermaaned);
+        syntentiseringService.reportAll(kalendermaaned, miljo);
         return ResponseEntity.noContent().build();
     }
 }

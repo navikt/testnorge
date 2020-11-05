@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.libs.dto.syntrest.v1;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +15,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ArbeidsforholdResponse {
     @JsonAlias("RAPPORTERINGSMAANED")
     String rapporteringsmaaned;
@@ -22,7 +24,7 @@ public class ArbeidsforholdResponse {
     @JsonAlias("STARTDATO")
     LocalDate startdato;
     @JsonAlias("SLUTTDATO")
-    LocalDate sluttdato;
+    String sluttdato;
     @JsonAlias("ANTALL_TIMER_PER_UKE_SOM_EN_FULL_STILLING_TILSVARER")
     Float antallTimerPerUkeSomEnFullStillingTilsvarer;
     @JsonAlias("YRKE")
