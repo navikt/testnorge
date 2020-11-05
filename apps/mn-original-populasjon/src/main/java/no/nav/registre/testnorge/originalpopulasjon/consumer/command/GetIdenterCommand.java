@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import no.nav.registre.testnorge.originalpopulasjon.consumer.command.model.GetIdenterRequest;
-import no.nav.registre.testnorge.originalpopulasjon.domain.Alderskategori;
+import no.nav.registre.testnorge.originalpopulasjon.domain.Aldersspenn;
 import no.nav.registre.testnorge.originalpopulasjon.exceptions.IdentPoolException;
 
 @Slf4j
@@ -21,7 +21,8 @@ public class GetIdenterCommand implements Callable<List<String>> {
 
     private final WebClient webClient;
     private final String applicationName;
-    private final Alderskategori alderskategori;
+    private final Integer antall;
+    private final Aldersspenn aldersspenn;
 
     @Override
     public List<String> call() {
@@ -29,9 +30,9 @@ public class GetIdenterCommand implements Callable<List<String>> {
 
         var request = GetIdenterRequest
                 .builder()
-                .antall(alderskategori.getAntall())
-                .foedtEtter(LocalDate.now().minusYears(alderskategori.getMaxAlder()))
-                .foedtFoer(LocalDate.now().minusYears(alderskategori.getMinAlder()))
+                .antall(antall)
+                .foedtEtter(LocalDate.now().minusYears(aldersspenn.getMaxAlder()))
+                .foedtFoer(LocalDate.now().minusYears(aldersspenn.getMinAlder()))
                 .identtype("FNR")
                 .rekvirertAv(applicationName)
                 .build();
@@ -48,7 +49,7 @@ public class GetIdenterCommand implements Callable<List<String>> {
             throw new IdentPoolException("Klarte ikke å hente identer fra ident pool");
         }
 
-        log.info("Hentet {} av {} fra ident pool,", response.length, alderskategori.getAntall());
+        log.info("Hentet {} av {} fra ident pool,", response.length, antall);
 
         return Arrays.asList(response.clone());
     }
