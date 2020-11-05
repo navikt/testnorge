@@ -16,8 +16,7 @@ import java.net.ProxySelector;
 
 @Configuration
 @Import({
-        FetchEnvironmentsConsumerConfig.class,
-        IdentpoolConfig.class
+        FetchEnvironmentsConsumerConfig.class
 })
 public class RestConsumerConfig {
 
