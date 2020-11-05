@@ -19,7 +19,7 @@ import static no.nav.registre.testnorge.identservice.testdata.consumers.config.M
  * Consumes information from Fasit and produces MessageQueueServices
  */
 @Component
-@ConditionalOnProperty(prefix = "testnorge-ident-service", name = "production.mode", havingValue = "false")
+@ConditionalOnProperty(prefix = "testnorge-ident-service", name = "production.mode", havingValue = "false", matchIfMissing = true)
 public class DefaultMessageQueueServiceFactory implements MessageQueueServiceFactory {
 
     @Autowired
