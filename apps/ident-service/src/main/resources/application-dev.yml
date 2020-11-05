@@ -1,5 +1,3 @@
-server.port: 8050
-
 application:
   descriptiveName: ident-service
   name: ident-service

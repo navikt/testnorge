@@ -22,7 +22,6 @@ public class MessageQueueConsumer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageQueueConsumer.class);
     private static final String FEIL_KOENAVN = "Feil i koenavn eller miljoe";
-    private static final String PING_MESSAGE = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><tpsPersonData xmlns=\"http://www.rtv.no/NamespaceTPS\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.rtv.no/NamespaceTPS H:\\SYSTEM~1\\SYSTEM~4\\FS03TP~1\\TPSDAT~1.XSD\"><tpsServiceRutine><serviceRutinenavn>FS03-OTILGANG-TILSRTPS-O</serviceRutinenavn></tpsServiceRutine></tpsPersonData>";
 
     private String requestQueueName;
     private ConnectionFactory connectionFactory;
@@ -91,8 +90,4 @@ public class MessageQueueConsumer {
         return session.createTemporaryQueue();
     }
 
-    public boolean ping() throws JMSException {
-        this.sendMessage(PING_MESSAGE);
-        return true;
-    }
 }
