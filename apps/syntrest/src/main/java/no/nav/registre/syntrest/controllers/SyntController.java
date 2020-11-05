@@ -326,7 +326,6 @@ public class SyntController {
     public ResponseEntity<Arbeidsforhold> generateArbeidforholdSklearn(
             @RequestBody Arbeidsforhold tidligereArbeidsforhold
     ) {
-        log.info(tidligereArbeidsforhold.getSluttdato() + "");
         Arbeidsforhold response = (Arbeidsforhold)
                 aMeldingConsumer.synthesizeData(UriExpander.createRequestEntity(aMeldingUrl+"/sklearn",
                         tidligereArbeidsforhold), Arbeidsforhold.class);
