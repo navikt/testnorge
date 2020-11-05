@@ -11,12 +11,12 @@ import java.time.LocalDate;
 import java.util.concurrent.Callable;
 
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OpplysningspliktigDTO;
+import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OppsummeringsdokumentetDTO;
 
 @Slf4j
 @DependencyOn("arbeidsforhold-api")
 @RequiredArgsConstructor
-public class GetOpplysningspliktigCommand implements Callable<OpplysningspliktigDTO> {
+public class GetOppsummeringsdokumentetCommand implements Callable<OppsummeringsdokumentetDTO> {
     private final WebClient webClient;
     private final String accessToken;
     private final String orgnummer;
@@ -25,19 +25,19 @@ public class GetOpplysningspliktigCommand implements Callable<Opplysningspliktig
 
     @SneakyThrows
     @Override
-    public OpplysningspliktigDTO call() {
-        log.info("Henter opplysningspliktig med orgnummer {}.", orgnummer);
+    public OppsummeringsdokumentetDTO call() {
+        log.info("Henter oppsummeringsdokumentet med orgnummer {}.", orgnummer);
         try {
             return webClient
                     .get()
                     .uri(builder -> builder
-                            .path("/api/v1/opplysningspliktig/{orgnummer}/{kalendermaaned}")
+                            .path("/api/v1/oppsummeringsdokumentet/{orgnummer}/{kalendermaaned}")
                             .build(orgnummer, kalendermaaned)
                     )
                     .header("miljo", this.miljo)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                     .retrieve()
-                    .bodyToMono(OpplysningspliktigDTO.class)
+                    .bodyToMono(OppsummeringsdokumentetDTO.class)
                     .block();
         } catch (WebClientResponseException.NotFound e) {
             return null;

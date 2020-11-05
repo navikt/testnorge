@@ -15,7 +15,7 @@ consumers:
   kodeverk:
     url: https://kodeverk.dev.adeo.no
   syntrest:
-    url: https://nais-synthdata-amelding.dev.adeo.no #TODO bruk https://syntrest.dev.adeo.no
+    url: https://syntrest.dev.adeo.no
 
 spring:
   flyway:

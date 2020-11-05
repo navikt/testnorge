@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -73,8 +72,8 @@ public class ArbeidsfoholdService {
 
         opplysningspliktig.addArbeidsforhold(virksomhetsnummer, arbeidsforhold);
 
-        arbeidsforholdConsumer.sendOppsyninspliktig(opplysningspliktig);
-        synt(organisajon, arbeidsforhold, findAllDatesBetweenNowAnd(fom, tom), virksomhetsnummer);
+        arbeidsforholdConsumer.sendOpplysningspliktig(opplysningspliktig);
+        synt(organisajon, arbeidsforhold, findAllDatesBetween(fom, tom), virksomhetsnummer);
     }
 
     private Opplysningspliktig getOpplysningspliktig(Organisajon organisajon, LocalDate kalendermaaned) {
@@ -128,7 +127,7 @@ public class ArbeidsfoholdService {
             Arbeidsforhold nesteArbeidsforhold = syntrestConsumer.getNesteArbeidsforhold(new Arbeidsforhold(arbeidsforholdDTO, personDTO.getIdent()), kalendermaaned);
             next.addArbeidsforhold(virksomhetDTO.getOrganisajonsnummer(), nesteArbeidsforhold);
         })));
-        arbeidsforholdConsumer.sendOppsyninspliktig(next);
+        arbeidsforholdConsumer.sendOpplysningspliktig(next);
     }
 
 
@@ -141,12 +140,12 @@ public class ArbeidsfoholdService {
             Opplysningspliktig opplysningspliktig = getOpplysningspliktig(organisajon, kalendermaaned);
             Arbeidsforhold neste = createArbeidsforhold(kalendermaaned, forige);
             opplysningspliktig.addArbeidsforhold(virksomhentsnummer, neste);
-            arbeidsforholdConsumer.sendOppsyninspliktig(opplysningspliktig);
+            arbeidsforholdConsumer.sendOpplysningspliktig(opplysningspliktig);
             forige = neste;
         }
     }
 
-    private Set<LocalDate> findAllDatesBetweenNowAnd(LocalDate fom, LocalDate tom) {
+    private Set<LocalDate> findAllDatesBetween(LocalDate fom, LocalDate tom) {
         Set<LocalDate> dates = new TreeSet<>();
         if (tom == null) {
             return dates;

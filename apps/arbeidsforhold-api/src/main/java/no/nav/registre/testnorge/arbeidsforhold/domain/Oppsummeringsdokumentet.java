@@ -23,7 +23,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.ArbeidsforholdDTO;
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OpplysningspliktigDTO;
+import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OppsummeringsdokumentetDTO;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.PermisjonDTO;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.VirksomhetDTO;
@@ -39,10 +39,10 @@ import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Permisjon;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Virksomhet;
 
 @Slf4j
-public class Opplysningspliktig {
-    private final OpplysningspliktigDTO dto;
+public class Oppsummeringsdokumentet {
+    private final OppsummeringsdokumentetDTO dto;
 
-    public Opplysningspliktig(OpplysningspliktigDTO dto) {
+    public Oppsummeringsdokumentet(OppsummeringsdokumentetDTO dto) {
         this.dto = dto;
     }
 
@@ -60,10 +60,10 @@ public class Opplysningspliktig {
     }
 
 
-    public Opplysningspliktig(EDAGM edagm) {
+    public Oppsummeringsdokumentet(EDAGM edagm) {
         var leveranse = edagm.getLeveranse();
         var oppgave = edagm.getLeveranse().getOppgave();
-        dto = OpplysningspliktigDTO
+        dto = OppsummeringsdokumentetDTO
                 .builder()
                 .kalendermaaned(toLocalDate(leveranse.getKalendermaaned()))
                 .opplysningspliktigOrganisajonsnummer(leveranse.getOpplysningspliktig().getNorskIdentifikator())
@@ -108,8 +108,8 @@ public class Opplysningspliktig {
                 .build();
     }
 
-    public Opplysningspliktig(String opplysningspliktig, Map<String, List<no.nav.registre.testnorge.arbeidsforhold.domain.Arbeidsforhold>> map) {
-        dto = OpplysningspliktigDTO
+    public Oppsummeringsdokumentet(String opplysningspliktig, Map<String, List<no.nav.registre.testnorge.arbeidsforhold.domain.Arbeidsforhold>> map) {
+        dto = OppsummeringsdokumentetDTO
                 .builder()
                 .kalendermaaned(LocalDate.now())
                 .opplysningspliktigOrganisajonsnummer(opplysningspliktig)
@@ -148,7 +148,7 @@ public class Opplysningspliktig {
     }
 
 
-    public OpplysningspliktigDTO toDTO() {
+    public OppsummeringsdokumentetDTO toDTO() {
         return dto;
     }
 
@@ -231,7 +231,7 @@ public class Opplysningspliktig {
                     inntektsmottaker.getArbeidsforhold().addAll(
                             personDTO.getArbeidsforhold()
                                     .stream()
-                                    .map(Opplysningspliktig::create)
+                                    .map(Oppsummeringsdokumentet::create)
                                     .collect(Collectors.toList())
                     );
                     return inntektsmottaker;

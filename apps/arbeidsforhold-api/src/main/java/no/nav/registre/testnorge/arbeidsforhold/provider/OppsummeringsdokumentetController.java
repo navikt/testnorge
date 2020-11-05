@@ -17,24 +17,24 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.time.LocalDate;
 
-import no.nav.registre.testnorge.arbeidsforhold.adapter.OpplysningspliktigAdapter;
-import no.nav.registre.testnorge.arbeidsforhold.domain.Opplysningspliktig;
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OpplysningspliktigDTO;
+import no.nav.registre.testnorge.arbeidsforhold.adapter.OppsummeringsdokumentetAdapter;
+import no.nav.registre.testnorge.arbeidsforhold.domain.Oppsummeringsdokumentet;
+import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OppsummeringsdokumentetDTO;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/opplysningspliktig")
+@RequestMapping("/api/v1/oppsummeringsdokumentet")
 @RequiredArgsConstructor
-public class OpplysningspliktigController {
-    private final OpplysningspliktigAdapter opplysningspliktigAdapter;
+public class OppsummeringsdokumentetController {
+    private final OppsummeringsdokumentetAdapter oppsummeringsdokumentetAdapter;
 
     @PutMapping
     public ResponseEntity<HttpStatus> createOpplysningspliktig(
-            @RequestBody OpplysningspliktigDTO opplysningspliktigDTO,
+            @RequestBody OppsummeringsdokumentetDTO opplysningspliktigDTO,
             @RequestHeader("miljo") String miljo
     ) {
-        Opplysningspliktig opplysningspliktig = new Opplysningspliktig(opplysningspliktigDTO);
-        opplysningspliktigAdapter.save(opplysningspliktig, miljo);
+        Oppsummeringsdokumentet opplysningspliktig = new Oppsummeringsdokumentet(opplysningspliktigDTO);
+        oppsummeringsdokumentetAdapter.save(opplysningspliktig, miljo);
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -46,12 +46,12 @@ public class OpplysningspliktigController {
     }
 
     @GetMapping("/{orgnummer}/{kalendermaaned}")
-    public ResponseEntity<OpplysningspliktigDTO> getOpplysningspliktigFromKalendermaaned(
+    public ResponseEntity<OppsummeringsdokumentetDTO> getOpplysningspliktigFromKalendermaaned(
             @PathVariable("orgnummer") String orgnummer,
             @PathVariable("kalendermaaned") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate kalendermaaned,
             @RequestHeader("miljo") String miljo
     ) {
-        Opplysningspliktig opplysningspliktig = opplysningspliktigAdapter.fetch(orgnummer, kalendermaaned, miljo);
+        Oppsummeringsdokumentet opplysningspliktig = oppsummeringsdokumentetAdapter.fetch(orgnummer, kalendermaaned, miljo);
         if (opplysningspliktig == null) {
             return ResponseEntity.notFound().build();
         }

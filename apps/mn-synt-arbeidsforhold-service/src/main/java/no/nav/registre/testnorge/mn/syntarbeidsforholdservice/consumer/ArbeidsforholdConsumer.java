@@ -10,7 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import no.nav.registre.testnorge.libs.common.command.GetOpplysningspliktigCommand;
+import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumentetCommand;
 import no.nav.registre.testnorge.libs.common.command.SaveOpplysningspliktigCommand;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
@@ -47,14 +47,14 @@ public class ArbeidsforholdConsumer {
 
     public Optional<Opplysningspliktig> getOpplysningspliktig(String orgnummer, LocalDate kalendermaaned) {
         AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties);
-        var dto = new GetOpplysningspliktigCommand(webClient, accessToken.getTokenValue(), orgnummer, kalendermaaned, "q2").call();
+        var dto = new GetOppsummeringsdokumentetCommand(webClient, accessToken.getTokenValue(), orgnummer, kalendermaaned, "q2").call();
         if(dto == null){
             return Optional.empty();
         }
         return Optional.of(new Opplysningspliktig(dto));
     }
 
-    public void sendOppsyninspliktig(Opplysningspliktig opplysningspliktig) {
+    public void sendOpplysningspliktig(Opplysningspliktig opplysningspliktig) {
         AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties);
         new SaveOpplysningspliktigCommand(webClient, accessToken.getTokenValue(), opplysningspliktig.toDTO(), "q2").run();
     }

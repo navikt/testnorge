@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,7 +38,9 @@ public class OrganisasjonController {
     }
 
     @GetMapping("/{orgnummer}")
-    public ResponseEntity<MNOrganisasjonDTO> getOrganisasjon(@PathVariable("orgnummer") String orgnummer) {
+    public ResponseEntity<MNOrganisasjonDTO> getOrganisasjon(
+            @PathVariable("orgnummer") String orgnummer
+    ) {
         Organisasjon organisasjon = orgnaisasjonAdapter.getBy(orgnummer);
         if (organisasjon == null) {
             return ResponseEntity.notFound().build();
@@ -46,7 +49,9 @@ public class OrganisasjonController {
     }
 
     @PutMapping
-    public ResponseEntity<?> createOrganisasjon(@RequestBody MNOrganisasjonDTO dto) {
+    public ResponseEntity<?> createOrganisasjon(
+            @RequestBody MNOrganisasjonDTO dto
+    ) {
         orgnaisasjonAdapter.save(new Organisasjon(dto));
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()

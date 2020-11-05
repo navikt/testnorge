@@ -23,7 +23,7 @@ public class GenerateNextArbeidsforholdCommand implements Callable<Arbeidsforhol
     public ArbeidsforholdResponse call() {
         return webClient
                 .post()
-                .uri("/api/v1/generate/arbeidsforhold/sklearn")
+                .uri("/api/v1/generate/amelding/arbeidsforhold")
                 .body(BodyInserters.fromPublisher(Mono.just(arbeidsforholdDTO), ArbeidsforholdRequest.class))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()

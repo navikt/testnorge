@@ -1,6 +1,6 @@
 package no.nav.registre.testnorge.libs.dto.syntrest.v1;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -13,36 +13,36 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class ArbeidsforholdRequest {
-    @JsonProperty("RAPPORTERINGSMAANED")
+    @JsonAlias("RAPPORTERINGSMAANED")
     String rapporteringsmaaned;
-    @JsonProperty("ARBEIDSFORHOLD_TYPE")
+    @JsonAlias("ARBEIDSFORHOLD_TYPE")
     String arbeidsforholdType;
-    @JsonProperty("STARTDATO")
+    @JsonAlias("STARTDATO")
     LocalDate startdato;
-    @JsonProperty("SLUTTDATO")
+    @JsonAlias("SLUTTDATO")
     LocalDate sluttdato;
-    @JsonProperty("ANTALL_TIMER_PER_UKE_SOM_EN_FULL_STILLING_TILSVARER")
+    @JsonAlias("ANTALL_TIMER_PER_UKE_SOM_EN_FULL_STILLING_TILSVARER")
     Float antallTimerPerUkeSomEnFullStillingTilsvarer;
-    @JsonProperty("YRKE")
+    @JsonAlias("YRKE")
     String yrke;
-    @JsonProperty("ARBEIDSTIDSORDNING")
+    @JsonAlias("ARBEIDSTIDSORDNING")
     String arbeidstidsordning;
-    @JsonProperty("STILLINGSPROSENT")
+    @JsonAlias("STILLINGSPROSENT")
     Float stillingsprosent;
-    @JsonProperty("SISTE_LOENNSENDRINGSDATO")
+    @JsonAlias("SISTE_LOENNSENDRINGSDATO")
     LocalDate sisteLoennsendringsdato;
-    @JsonProperty("SISTE_DATO_FOR_STILLINGSPROSENTENDRING")
+    @JsonAlias("SISTE_DATO_FOR_STILLINGSPROSENTENDRING")
     LocalDate sisteDatoForStillingsprosentendring;
-    @JsonProperty("PERMISJON_MED_FORELDREPENGER")
+    @JsonAlias("PERMISJON_MED_FORELDREPENGER")
     Float permisjonMedForeldrepenger;
-    @JsonProperty("PERMITTERING")
+    @JsonAlias("PERMITTERING")
     Float permittering;
-    @JsonProperty("PERMISJON")
+    @JsonAlias("PERMISJON")
     Float permisjon;
-    @JsonProperty("PERMISJON_VED_MILITAERTJENESTE")
+    @JsonAlias("PERMISJON_VED_MILITAERTJENESTE")
     Float permisjonVedMilitaertjeneste;
-    @JsonProperty("VELFERDSPERMISJON")
+    @JsonAlias("VELFERDSPERMISJON")
     Float velferdspermisjon;
-    @JsonProperty("UTDANNINGSPERMISJON")
+    @JsonAlias("UTDANNINGSPERMISJON")
     Float utdanningspermisjon;
 }

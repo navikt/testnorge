@@ -25,7 +25,7 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
 @NoArgsConstructor
-public class OpplysningspliktigModel {
+public class OppsummeringsdokumentetModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.registre.testnorge.arbeidsforhold.consumer.commnad.SaveOpplysningspliktigCommand;
-import no.nav.registre.testnorge.arbeidsforhold.domain.Opplysningspliktig;
 
 @Slf4j
 @Component

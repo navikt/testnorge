@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.libs.dto.syntrest.v1;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,29 +15,27 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class ArbeidsforholdResponse {
-    @JsonProperty("RAPPORTERINGSMAANED")
+    @JsonAlias("RAPPORTERINGSMAANED")
     String rapporteringsmaaned;
-    @JsonProperty("ARBEIDSFORHOLD_TYPE")
+    @JsonAlias("ARBEIDSFORHOLD_TYPE")
     String arbeidsforholdType;
-    @JsonProperty("STARTDATO")
+    @JsonAlias("STARTDATO")
     LocalDate startdato;
-    @JsonProperty("SLUTTDATO")
+    @JsonAlias("SLUTTDATO")
     LocalDate sluttdato;
-    @JsonProperty("ANTALL_TIMER_PER_UKE_SOM_EN_FULL_STILLING_TILSVARER")
+    @JsonAlias("ANTALL_TIMER_PER_UKE_SOM_EN_FULL_STILLING_TILSVARER")
     Float antallTimerPerUkeSomEnFullStillingTilsvarer;
-    @JsonProperty("AVLOENNINGSTYPE")
-    String avloenningstype;
-    @JsonProperty("YRKE")
+    @JsonAlias("YRKE")
     String yrke;
-    @JsonProperty("ARBEIDSTIDSORDNING")
+    @JsonAlias("ARBEIDSTIDSORDNING")
     String arbeidstidsordning;
-    @JsonProperty("STILLINGSPROSENT")
+    @JsonAlias("STILLINGSPROSENT")
     Float stillingsprosent;
-    @JsonProperty("SISTE_LOENNSENDRINGSDATO")
+    @JsonAlias("SISTE_LOENNSENDRINGSDATO")
     LocalDate sisteLoennsendringsdato;
-    @JsonProperty("SISTE_DATO_FOR_STILLINGSPROSENTENDRING")
+    @JsonAlias("SISTE_DATO_FOR_STILLINGSPROSENTENDRING")
     LocalDate sisteDatoForStillingsprosentendring;
-    @JsonProperty("PERMISJONER")
+    @JsonAlias("PERMISJONER")
     List<PermisjonDTO> permisjoner;
 
 }

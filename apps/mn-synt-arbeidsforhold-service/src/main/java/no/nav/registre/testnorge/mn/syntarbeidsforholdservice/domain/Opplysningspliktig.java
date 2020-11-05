@@ -6,15 +6,13 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.Set;
 
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.ArbeidsforholdDTO;
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OpplysningspliktigDTO;
+import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OppsummeringsdokumentetDTO;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.VirksomhetDTO;
 
@@ -22,11 +20,10 @@ import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.VirksomhetDTO;
 @DependencyOn("arbeidsforhold-api")
 @RequiredArgsConstructor
 public class Opplysningspliktig {
-    private final OpplysningspliktigDTO dto;
-    private final Random random = new Random();
+    private final OppsummeringsdokumentetDTO dto;
 
     public Opplysningspliktig(Organisajon organisajon, LocalDate kalendermaand) {
-        dto = OpplysningspliktigDTO
+        dto = OppsummeringsdokumentetDTO
                 .builder()
                 .version(1L)
                 .kalendermaaned(kalendermaand)
@@ -89,7 +86,7 @@ public class Opplysningspliktig {
         return dto.getVersion() == null ? 0 : dto.getVersion();
     }
 
-    public OpplysningspliktigDTO toDTO() {
+    public OppsummeringsdokumentetDTO toDTO() {
         return dto;
     }
 

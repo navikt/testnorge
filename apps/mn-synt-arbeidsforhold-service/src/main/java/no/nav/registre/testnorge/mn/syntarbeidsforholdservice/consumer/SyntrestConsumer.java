@@ -15,7 +15,7 @@ import java.time.LocalDate;
 
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GenerateNextArbeidsforholdCommand;
-import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GenerateStartOfArbeidsforholdCommand;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GenerateStartArbeidsforholdCommand;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Arbeidsforhold;
 
 @Slf4j
@@ -53,7 +53,7 @@ public class SyntrestConsumer {
     }
 
     public Arbeidsforhold getFirstArbeidsforhold(LocalDate startdato, String ident) {
-        ArbeidsforholdResponse response = new GenerateStartOfArbeidsforholdCommand(webClient, startdato).call();
+        ArbeidsforholdResponse response = new GenerateStartArbeidsforholdCommand(webClient, startdato).call();
         return new Arbeidsforhold(response, ident);
     }
 }

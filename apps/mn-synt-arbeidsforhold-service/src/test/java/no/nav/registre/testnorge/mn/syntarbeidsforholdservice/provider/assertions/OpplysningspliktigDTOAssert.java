@@ -10,17 +10,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.ArbeidsforholdDTO;
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OpplysningspliktigDTO;
+import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OppsummeringsdokumentetDTO;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.VirksomhetDTO;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.provider.matcher.CustomMatcher;
 
-public class OpplysningspliktigDTOAssert extends AbstractAssert<OpplysningspliktigDTOAssert, OpplysningspliktigDTO> {
-    public OpplysningspliktigDTOAssert(OpplysningspliktigDTO opplysningspliktigDTO) {
+public class OpplysningspliktigDTOAssert extends AbstractAssert<OpplysningspliktigDTOAssert, OppsummeringsdokumentetDTO> {
+    public OpplysningspliktigDTOAssert(OppsummeringsdokumentetDTO opplysningspliktigDTO) {
         super(opplysningspliktigDTO, OpplysningspliktigDTOAssert.class);
     }
 
-    public static OpplysningspliktigDTOAssert assertThat(OpplysningspliktigDTO actual) {
+    public static OpplysningspliktigDTOAssert assertThat(OppsummeringsdokumentetDTO actual) {
         return new OpplysningspliktigDTOAssert(actual);
     }
 

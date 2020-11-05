@@ -89,7 +89,7 @@ public class Arbeidsforhold {
                     permittering++;
                     break;
                 default:
-                    log.warn("Uskjent permisjons beskrivelse {}", permisjonDTO.getBeskrivelse());
+                    log.warn("Ukjent permisjons beskrivelse {}", permisjonDTO.getBeskrivelse());
                     break;
             }
         }

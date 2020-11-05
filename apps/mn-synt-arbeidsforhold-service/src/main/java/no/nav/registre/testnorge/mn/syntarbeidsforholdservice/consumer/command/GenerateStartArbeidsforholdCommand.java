@@ -15,7 +15,7 @@ import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 
 @DependencyOn("syntrest")
 @RequiredArgsConstructor
-public class GenerateStartOfArbeidsforholdCommand implements Callable<ArbeidsforholdResponse> {
+public class GenerateStartArbeidsforholdCommand implements Callable<ArbeidsforholdResponse> {
     private final WebClient webClient;
     private final LocalDate startdate;
 
@@ -23,7 +23,7 @@ public class GenerateStartOfArbeidsforholdCommand implements Callable<Arbeidsfor
     public ArbeidsforholdResponse call() {
         ArbeidsforholdResponse[] array = webClient
                 .post()
-                .uri("/api/v1/generate/arbeidsforhold/start")
+                .uri("/api/v1/generate/amelding/arbeidsforhold/start")
                 .body(BodyInserters.fromPublisher(Mono.just(new LocalDate[]{startdate}), LocalDate[].class))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
