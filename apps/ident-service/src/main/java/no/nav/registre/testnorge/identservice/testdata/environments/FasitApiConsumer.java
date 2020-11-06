@@ -27,7 +27,6 @@ import static no.nav.registre.testnorge.identservice.testdata.url.FasitUrl.creat
 @Service
 public class FasitApiConsumer {
 
-    private static final String DEV_ENVIRONMENT = "D8";
     private static final String PREFIX_MQ_QUEUES = "QA.";
     private static final String MID_PREFIX_QUEUE_ENDRING = "_412.";
     private static final String MID_PREFIX_QUEUE_HENTING = "_411.";
@@ -41,7 +40,7 @@ public class FasitApiConsumer {
     @Autowired
     private MapperFacade mapperFacade;
 
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
     public FasitApiConsumer(RestTemplate template) {
         restTemplate = template;
@@ -78,7 +77,7 @@ public class FasitApiConsumer {
         return Queue.builder()
                 .name(new StringBuilder()
                         .append(PREFIX_MQ_QUEUES)
-                        .append(environment.toLowerCase().contains("u") ? DEV_ENVIRONMENT : environment.toUpperCase())
+                        .append(environment.toUpperCase())
                         .append(TpsConstants.REQUEST_QUEUE_SERVICE_RUTINE_ALIAS.equals(alias) ?
                                 MID_PREFIX_QUEUE_HENTING : MID_PREFIX_QUEUE_ENDRING)
                         .append(alias)
