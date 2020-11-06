@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,6 +18,7 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Opplysnings
 @RequiredArgsConstructor
 public class IdentService {
     private final ArbeidsforholdConsumer arbeidsforholdConsumer;
+
     public Set<String> getIdenterMedArbeidsforhold(String mijlo) {
         return arbeidsforholdConsumer
                 .getAlleOpplysningspliktig(mijlo)

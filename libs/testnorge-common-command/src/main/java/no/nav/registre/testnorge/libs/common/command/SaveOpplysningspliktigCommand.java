@@ -28,7 +28,7 @@ public class SaveOpplysningspliktigCommand implements Runnable {
         );
         webClient
                 .put()
-                .uri(builder -> builder.path("/api/v1/oppsummeringsdokumentet").build())
+                .uri(builder -> builder.path("/api/v1/oppsummeringsdokumenteter").build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .header("miljo", miljo)
                 .body(BodyInserters.fromPublisher(Mono.just(opplysningspliktigDTO), OppsummeringsdokumentetDTO.class))
