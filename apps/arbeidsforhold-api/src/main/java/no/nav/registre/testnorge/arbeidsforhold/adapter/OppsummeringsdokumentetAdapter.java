@@ -12,7 +12,9 @@ import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.arbeidsforhold.consumer.AaregSyntConsumer;
 import no.nav.registre.testnorge.arbeidsforhold.domain.Oppsummeringsdokumentet;
@@ -56,6 +58,14 @@ public class OppsummeringsdokumentetAdapter {
         var model = opplysningspliktigModel.get();
         EDAGM edagm = toEDAGM(model.getDocument());
         return new Oppsummeringsdokumentet(edagm);
+    }
+
+    public List<Oppsummeringsdokumentet> fetchAll(String mijlo) {
+        return opplysningspliktigRepository
+                .findAllByLast(mijlo)
+                .stream()
+                .map(model ->  new Oppsummeringsdokumentet(toEDAGM(model.getDocument())))
+                .collect(Collectors.toList());
     }
 
     @SneakyThrows
