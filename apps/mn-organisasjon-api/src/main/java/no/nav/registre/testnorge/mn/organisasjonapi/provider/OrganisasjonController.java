@@ -38,12 +38,17 @@ public class OrganisasjonController {
                 .stream()
                 .map(Organisasjon::toDTO)
                 .collect(Collectors.toList());
-        if (opplysningspliktig != null && opplysningspliktig) {
+        if (opplysningspliktig == null) {
+            return ResponseEntity.ok(list);
+        }
+        if (opplysningspliktig) {
             return ResponseEntity.ok(
                     list.stream().filter(MNOrganisasjonDTO::isOpplysningspliktig).collect(Collectors.toList())
             );
         }
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(
+                list.stream().filter(value -> !value.isOpplysningspliktig()).collect(Collectors.toList())
+        );
     }
 
     @GetMapping("/{orgnummer}")
