@@ -38,7 +38,6 @@ public class OrganisasjonController {
                 .stream()
                 .map(Organisasjon::toDTO)
                 .collect(Collectors.toList());
-
         if (opplysningspliktig != null && opplysningspliktig) {
             return ResponseEntity.ok(
                     list.stream().filter(MNOrganisasjonDTO::isOpplysningspliktig).collect(Collectors.toList())
