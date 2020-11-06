@@ -3,7 +3,11 @@ package no.nav.registre.testnorge.arbeidsforhold.consumer.commnad;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
@@ -19,14 +23,13 @@ public class SaveOpplysningspliktigCommand implements Runnable {
     public void run() {
         log.trace(xml);
 
-        //TODO
-//        webClient
-//                .post()
-//                .uri(builder -> builder.path("/oppsummeringsdokument").build())
-//                .body(BodyInserters.fromPublisher(Mono.just(xml), String.class))
-//                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
-//                .retrieve()
-//                .bodyToMono(Void.class)
-//                .block();
+        webClient
+                .post()
+                .uri(builder -> builder.path("/oppsummeringsdokument").build())
+                .body(BodyInserters.fromPublisher(Mono.just(xml), String.class))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
     }
 }
