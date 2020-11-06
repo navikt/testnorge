@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.libs.dto.syntrest.v1;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,12 +14,12 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class PermisjonDTO {
-    @JsonProperty("BESKRIVELSE")
+    @JsonAlias("BESKRIVELSE")
     String beskrivelse;
-    @JsonProperty("PERMISJONSPROSENT")
+    @JsonAlias("PERMISJONSPROSENT")
     String permisjonsprosent;
-    @JsonProperty("STARTDATO")
+    @JsonAlias("STARTDATO")
     LocalDate startdato;
-    @JsonProperty("SLUTTDATO")
+    @JsonAlias("SLUTTDATO")
     LocalDate sluttdato;
 }
