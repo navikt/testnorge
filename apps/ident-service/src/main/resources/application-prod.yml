@@ -1,0 +1,4 @@
+testnorge-ident-service:
+  production:
+    mode: true
+
