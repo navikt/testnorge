@@ -107,7 +107,7 @@ public class ArbeidsfoholdService {
 
     private void syntHistoryForThisMonth(Opplysningspliktig opplysningspliktig, LocalDate kalendermaaned, String miljo) {
         opplysningspliktig.getVirksomheter().forEach(virksomhetDTO -> virksomhetDTO.getPersoner().forEach(personDTO -> personDTO.getArbeidsforhold().forEach(arbeidsforholdDTO -> {
-            if (arbeidsforholdDTO.getSluttdato() == null || !arbeidsforholdDTO.getSluttdato().equals(kalendermaaned)) {
+            if (arbeidsforholdDTO.getSluttdato() == null || !arbeidsforholdDTO.getSluttdato().equals(kalendermaaned.minusMonths(1))) {
                 Arbeidsforhold nesteArbeidsforhold = syntrestConsumer.getNesteArbeidsforhold(new Arbeidsforhold(arbeidsforholdDTO, personDTO.getIdent(), virksomhetDTO.getOrganisajonsnummer()), kalendermaaned.minusMonths(1));
                 opplysningspliktig.addArbeidsforhold(nesteArbeidsforhold);
             }
