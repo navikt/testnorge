@@ -8,9 +8,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumentetCommand;
+import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumenteterCommand;
 import no.nav.registre.testnorge.libs.common.command.SaveOpplysningspliktigCommand;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
@@ -53,6 +56,13 @@ public class ArbeidsforholdConsumer {
         }
 
         return Optional.of(new Opplysningspliktig(dto));
+    }
+
+    public List<Opplysningspliktig> getAlleOpplysningspliktig(String miljo) {
+        AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties);
+        var list = new GetOppsummeringsdokumenteterCommand(webClient, accessToken.getTokenValue(), miljo).call();
+
+        return list.stream().map(Opplysningspliktig::new).collect(Collectors.toList());
     }
 
     public void sendOpplysningspliktig(Opplysningspliktig opplysningspliktig, String miljo) {

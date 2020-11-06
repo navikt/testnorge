@@ -25,7 +25,7 @@ import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.Oppsummeringsdokumen
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/oppsummeringsdokumentet")
+@RequestMapping("/api/v1/oppsummeringsdokumenteter")
 @RequiredArgsConstructor
 public class OppsummeringsdokumentetController {
     private final OppsummeringsdokumentetAdapter oppsummeringsdokumentetAdapter;

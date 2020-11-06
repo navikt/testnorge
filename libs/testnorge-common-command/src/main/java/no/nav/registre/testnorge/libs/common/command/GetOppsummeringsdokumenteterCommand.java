@@ -8,7 +8,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OppsummeringsdokumentetDTO;
@@ -16,29 +19,28 @@ import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.Oppsummeringsdokumen
 @Slf4j
 @DependencyOn("arbeidsforhold-api")
 @RequiredArgsConstructor
-public class GetOppsummeringsdokumentetCommand implements Callable<OppsummeringsdokumentetDTO> {
+public class GetOppsummeringsdokumenteterCommand implements Callable<List<OppsummeringsdokumentetDTO>> {
     private final WebClient webClient;
     private final String accessToken;
-    private final String orgnummer;
-    private final LocalDate kalendermaaned;
     private final String miljo;
 
     @SneakyThrows
     @Override
-    public OppsummeringsdokumentetDTO call() {
-        log.info("Henter oppsummeringsdokumentet med orgnummer {}.", orgnummer);
+    public List<OppsummeringsdokumentetDTO> call() {
+        log.info("Henter alle oppsummeringsdokumenteter.");
         try {
-            return webClient
+            OppsummeringsdokumentetDTO[] array = webClient
                     .get()
                     .uri(builder -> builder
-                            .path("/api/v1/oppsummeringsdokumenteter/{orgnummer}/{kalendermaaned}")
-                            .build(orgnummer, kalendermaaned)
+                            .path("/api/v1/oppsummeringsdokumenteter")
+                            .build()
                     )
                     .header("miljo", this.miljo)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                     .retrieve()
-                    .bodyToMono(OppsummeringsdokumentetDTO.class)
+                    .bodyToMono(OppsummeringsdokumentetDTO[].class)
                     .block();
+            return Arrays.stream(array).collect(Collectors.toList());
         } catch (WebClientResponseException.NotFound e) {
             return null;
         }
