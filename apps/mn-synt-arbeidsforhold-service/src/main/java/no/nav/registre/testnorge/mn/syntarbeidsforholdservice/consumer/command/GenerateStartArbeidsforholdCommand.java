@@ -23,7 +23,7 @@ public class GenerateStartArbeidsforholdCommand implements Callable<Arbeidsforho
     public ArbeidsforholdResponse call() {
         ArbeidsforholdResponse[] array = webClient
                 .post()
-                .uri("/api/v1/generate/amelding/arbeidsforhold/start")
+                .uri("/api/v1/generate/amelding/arbeidsforhold")
                 .body(BodyInserters.fromPublisher(Mono.just(new LocalDate[]{startdate}), LocalDate[].class))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
