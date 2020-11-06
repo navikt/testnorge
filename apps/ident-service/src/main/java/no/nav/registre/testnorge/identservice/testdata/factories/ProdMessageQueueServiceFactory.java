@@ -15,7 +15,7 @@ import javax.jms.JMSException;
 import static no.nav.registre.testnorge.identservice.testdata.consumers.config.MessageQueueConsumerConstants.CHANNEL_POSTFIX;
 
 @Component
-@ConditionalOnProperty(prefix = "testnorge-ident-service", name = "production.mode", havingValue = "true")
+@ConditionalOnProperty(prefix = "testnorge-ident-service", name = "production.mode", havingValue = "true", matchIfMissing = true)
 public class ProdMessageQueueServiceFactory implements MessageQueueServiceFactory {
 
     @Value("${tps.foresporsel.xml.o.queuename}")
