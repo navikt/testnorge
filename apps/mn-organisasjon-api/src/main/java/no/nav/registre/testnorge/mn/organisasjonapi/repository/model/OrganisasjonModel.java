@@ -11,6 +11,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -25,12 +27,20 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrganisasjonModel {
+
     @Id
-    @Column(name = "ORGNUMMER")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long id;
+
+    @Column(name = "ORGNUMMER", nullable = false, updatable = false)
     private String orgnummer;
 
     @Column(name = "ACTIVE", nullable = false)
     private Boolean active;
+
+    @Column(name = "ENVIRONMENT", nullable = false, updatable = false)
+    private String environment;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATED_AT", nullable = false, updatable = false)

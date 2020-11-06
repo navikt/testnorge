@@ -7,6 +7,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -42,9 +43,9 @@ public class PdlTestdataConsumer {
         String token = tokenService.getIdToken();
         log.info("Oppretter person med ident {} i PDL", person.getIdent());
 
-        List<Callable<? extends Object>> commands = Arrays.asList(
-                new PostOpprettPersonCommand(restTemplate, pdlTestdataUrl, person.getIdent(), kilde, token)
-        );
+        List<Callable<? extends Object>> commands = new ArrayList<>();
+
+        commands.add(new PostOpprettPersonCommand(restTemplate, pdlTestdataUrl, person.getIdent(), kilde, token));
 
         if (person.getFornavn() != null && person.getEtternavn() != null) {
             commands.add(new PostNavnCommand(restTemplate, pdlTestdataUrl, person, kilde, token));
@@ -57,8 +58,7 @@ public class PdlTestdataConsumer {
             try {
                 command.call();
             } catch (Exception e) {
-                log.error("Klarer ikke å utfløre kall til PDL", e);
-                throw new PdlCreatePersonException("Feil ved innsendelse til PDL testdata");
+                throw new PdlCreatePersonException("Feil ved innsendelse til PDL testdata", e);
             }
         }
 

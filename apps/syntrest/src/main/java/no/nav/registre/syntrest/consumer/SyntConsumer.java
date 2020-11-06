@@ -26,7 +26,7 @@ public class SyntConsumer {
         this.appName = name;
     }
 
-    public synchronized Object synthesizeData(RequestEntity request) throws ResponseStatusException {
+    public synchronized Object synthesizeData(RequestEntity request, Class responseClass) throws ResponseStatusException {
 
         try {
             log.info("Starting synth package {}...", this.appName);
@@ -36,13 +36,13 @@ public class SyntConsumer {
             return null;
         }
 
-        return getDataFromSyntPackage(request);
+        return getDataFromSyntPackage(request, responseClass);
     }
 
 
-    private synchronized Object getDataFromSyntPackage(RequestEntity request) throws RestClientException {
+    private synchronized Object getDataFromSyntPackage(RequestEntity request, Class responseClass) throws RestClientException {
         try {
-            ResponseEntity response = restTemplate.exchange(request, Object.class);
+            ResponseEntity response = restTemplate.exchange(request, responseClass);
 
             if (response.getStatusCode() != HttpStatus.OK) {
                 log.warn("Unexpected synth response: {}", response.getStatusCode());

@@ -19,6 +19,6 @@ public class AdresseDTO {
     public AdresseDTO(Person person, String kilde) {
         vegadresse = person.getAdresse() == null ? null : new VegadresseDTO(person.getAdresse());
         this.kilde = kilde;
-        master = "PDL";
+        master = "FREG";
     }
 }

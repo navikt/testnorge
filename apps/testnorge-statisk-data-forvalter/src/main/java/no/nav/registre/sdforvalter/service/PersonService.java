@@ -41,8 +41,12 @@ public class PersonService {
         );
     }
 
-    public List<Person> getPerson(String gruppe){
+    public List<Person> getPerson(String gruppe) {
         TpsIdentListe tpsIdentListe = tpsIdenterAdapter.fetchBy(gruppe);
         return tpsIdentListe.stream().map(Person::new).collect(Collectors.toList());
+    }
+
+    public TpsIdent getPersonByIdent(String ident) {
+        return tpsIdenterAdapter.fetchByIdent(ident);
     }
 }
