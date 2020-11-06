@@ -26,5 +26,19 @@ public class MNOrganisasjonDTO extends OrganisasjonDTO {
     public Boolean getActive() {
         return active;
     }
+
+    public boolean isOpplysningspliktig() {
+        switch (getEnhetType()) {
+            case "AS":
+            case "NUF":
+            case "BRL":
+            case "KBO":
+            case "SA":
+            case "ENK":
+                return true;
+            default:
+                return false;
+        }
+    }
 }
 

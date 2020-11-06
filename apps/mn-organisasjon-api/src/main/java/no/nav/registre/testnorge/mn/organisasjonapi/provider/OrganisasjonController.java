@@ -29,14 +29,21 @@ public class OrganisasjonController {
 
     @GetMapping
     public ResponseEntity<List<MNOrganisasjonDTO>> getOrganisasjon(
+            @RequestHeader("miljo") String miljo,
             @RequestParam(required = false) Boolean active,
-            @RequestHeader("miljo") String miljo
+            @RequestParam(value = "opplysningspliktig", required = false) Boolean opplysningspliktig
     ) {
         List<MNOrganisasjonDTO> list = orgnaisasjonAdapter
                 .getAllBy(active, miljo)
                 .stream()
                 .map(Organisasjon::toDTO)
                 .collect(Collectors.toList());
+
+        if (opplysningspliktig != null && opplysningspliktig) {
+            return ResponseEntity.ok(
+                    list.stream().filter(MNOrganisasjonDTO::isOpplysningspliktig).collect(Collectors.toList())
+            );
+        }
         return ResponseEntity.ok(list);
     }
 
