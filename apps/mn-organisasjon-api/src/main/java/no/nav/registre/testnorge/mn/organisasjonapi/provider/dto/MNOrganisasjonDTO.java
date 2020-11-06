@@ -1,5 +1,7 @@
 package no.nav.registre.testnorge.mn.organisasjonapi.provider.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
 
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.AdresseDTO;
@@ -27,6 +29,7 @@ public class MNOrganisasjonDTO extends OrganisasjonDTO {
         return active;
     }
 
+    @JsonIgnore
     public boolean isOpplysningspliktig() {
         switch (getEnhetType()) {
             case "AS":

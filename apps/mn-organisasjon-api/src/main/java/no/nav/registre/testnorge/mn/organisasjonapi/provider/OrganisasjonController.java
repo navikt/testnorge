@@ -2,6 +2,7 @@ package no.nav.registre.testnorge.mn.organisasjonapi.provider;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -76,4 +77,14 @@ public class OrganisasjonController {
                 .toUri();
         return ResponseEntity.created(uri).build();
     }
+
+    @DeleteMapping("/{orgnummer}")
+    public ResponseEntity<MNOrganisasjonDTO> deleteOrganisasjon(
+            @PathVariable("orgnummer") String orgnummer,
+            @RequestHeader("miljo") String miljo
+    ) {
+        orgnaisasjonAdapter.deleteBy(orgnummer, miljo);
+        return ResponseEntity.accepted().build();
+    }
+
 }

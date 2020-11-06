@@ -10,6 +10,8 @@ import no.nav.registre.testnorge.mn.organisasjonapi.repository.model.Organisasjo
 public interface OrganisasjonRepository extends CrudRepository<OrganisasjonModel, String> {
     Optional<OrganisasjonModel> findByOrgnummerAndEnvironment(String orgnummer, String environment);
 
+    void deleteByOrgnummerAndEnvironment(String orgnummer, String environment);
+
     List<OrganisasjonModel> findAllByActiveAndEnvironment(Boolean active, String environment);
 
     List<OrganisasjonModel> findAllByEnvironment(String environment);
