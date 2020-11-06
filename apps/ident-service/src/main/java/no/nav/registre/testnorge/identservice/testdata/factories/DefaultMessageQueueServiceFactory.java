@@ -1,8 +1,6 @@
 package no.nav.registre.testnorge.identservice.testdata.factories;
 
-
 import no.nav.registre.testnorge.identservice.testdata.consumers.MessageQueueConsumer;
-import no.nav.registre.testnorge.identservice.testdata.environments.FasitApiConsumer;
 import no.nav.registre.testnorge.identservice.testdata.factories.strategies.ConnectionFactoryFactoryStrategy;
 import no.nav.registre.testnorge.identservice.testdata.factories.strategies.QueueManagerConnectionFactoryFactoryStrategy;
 import no.nav.registre.testnorge.identservice.testdata.fasit.Queue;
@@ -23,9 +21,6 @@ import static no.nav.registre.testnorge.identservice.testdata.consumers.config.M
 public class DefaultMessageQueueServiceFactory implements MessageQueueServiceFactory {
 
     @Autowired
-    private FasitApiConsumer fasitClient;
-
-    @Autowired
     private ConnectionFactoryFactory connectionFactoryFactory;
 
     /**
@@ -38,8 +33,8 @@ public class DefaultMessageQueueServiceFactory implements MessageQueueServiceFac
     @Override
        public MessageQueueConsumer createMessageQueueConsumer(String environment, String requestQueueAlias, boolean isQueName) throws JMSException {
 
-        QueueManager queueManager = fasitClient.getQueueManager(environment);
-        Queue requestQueue        = isQueName ? Queue.builder().name(requestQueueAlias).build() : fasitClient.getQueue(requestQueueAlias, environment);
+        QueueManager queueManager = new QueueManager("MQLCLIENT01", "b27apvl057.preprod.local", "1413", null);
+        Queue requestQueue        = new Queue("QA.Q2_411.TPS_FORESPORSEL_XML_O", null);
 
         ConnectionFactoryFactoryStrategy connectionFactoryFactoryStrategy = new QueueManagerConnectionFactoryFactoryStrategy(queueManager,
                 (environment).toUpperCase() + CHANNEL_POSTFIX);
