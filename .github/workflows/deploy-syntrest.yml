@@ -5,6 +5,9 @@ on:
     branches: master
     paths:
       - apps/syntrest/**
+  workflow_dispatch:
+    paths:
+      - apps/syntrest/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/syntrest:${{ github.sha }}
