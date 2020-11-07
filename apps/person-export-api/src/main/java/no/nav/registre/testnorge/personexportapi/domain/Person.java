@@ -9,8 +9,11 @@ import java.time.format.DateTimeFormatter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import no.nav.registre.testnorge.personexportapi.consumer.dto.EndringsmeldingDTO;
+import no.nav.registre.testnorge.personexportapi.consumer.dto.FoedselsdatoFraIdent;
 import no.nav.registre.testnorge.personexportapi.consumer.dto.HusbokstavEncoder;
+import no.nav.registre.testnorge.personexportapi.consumer.dto.KjoennFraIdent;
 import no.nav.registre.testnorge.personexportapi.consumer.dto.LandkodeEncoder;
+import no.nav.registre.testnorge.personexportapi.consumer.dto.Sivilstatus;
 
 public class Person {
 
@@ -43,13 +46,7 @@ public class Person {
     }
 
     public String getAdressetype() {
-        if (endringsmeldingDTO.isGateadresse()) {
-            return "GATE";
-        } else if (endringsmeldingDTO.isMatrikkeladresse()) {
-            return "MATR";
-        } else {
-            return null;
-        }
+        return endringsmeldingDTO.getAdressetype();
     }
 
     public String getGatenavn() {
@@ -120,6 +117,30 @@ public class Person {
 
     public String getPersonstatus() {
         return isNotBlank(endringsmeldingDTO.getStatuskode()) ? endringsmeldingDTO.getStatuskode() : null;
+    }
+
+    public String getFoedselsdato() {
+        return FoedselsdatoFraIdent.getFoedselsdato(getIdent()).format(DateTimeFormatter.ISO_DATE);
+    }
+
+    public String getKjoenn() {
+        return KjoennFraIdent.getKjoenn(getIdent()).name();
+    }
+
+    public String getKjoennBeskrivelse() {
+        return KjoennFraIdent.getKjoenn(getIdent()).getBeskrivelse();
+    }
+
+    public String getSivilstand() {
+        return endringsmeldingDTO.getSivilstand();
+    }
+
+    public String getSivilstandBeskrivelse() {
+        return Sivilstatus.lookup(getSivilstand()).getKodeverkskode();
+    }
+
+    public String getSivilstandRegdato() {
+        return endringsmeldingDTO.getRegdatoSivilstand();
     }
 
     @JsonIgnore

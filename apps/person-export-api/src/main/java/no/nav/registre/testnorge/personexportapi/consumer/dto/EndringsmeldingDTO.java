@@ -36,6 +36,8 @@ public class EndringsmeldingDTO {
     String adresse2;
     String adresse3;
     String postadrLand;
+    String sivilstand;
+    String regdatoSivilstand;
 
     @JsonIgnore
     public boolean isFoedsel() {
