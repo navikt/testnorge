@@ -119,10 +119,16 @@ public class HelsenettCsvConverter extends CsvConverter<Person> {
             map.put(Headers.POSTADR_LAND.getValue(), kodeverkConsumer.getKodeverkOppslag("Landkoder", person.getPostadrLand()));
             map.put(Headers.FODT_DATO.getValue(), person.getFoedselsdato());
             map.put(Headers.KJONN.getValue(), person.getKjoenn());
-            map.put(Headers.BESKR_KJONN.getValue(), person.getKjoennBeskrivelse());
+            map.put(Headers.BESKR_KJONN.getValue(), kodeverkConsumer.getKodeverkOppslag("Kjønnstyper", person.getKjoennBeskrivelse()));
             map.put(Headers.SIVILSTAND.getValue(), person.getSivilstand());
-            map.put(Headers.BESKR_SIVILSTAND.getValue(), person.getSivilstandBeskrivelse());
+            map.put(Headers.BESKR_SIVILSTAND.getValue(), kodeverkConsumer.getKodeverkOppslag("Sivilstander", person.getSivilstandBeskrivelse()));
             map.put(Headers.SIVILSTAND_DATO.getValue(), person.getSivilstandRegdato());
+            map.put(Headers.STATSBORGERLAND.getValue(), kodeverkConsumer.getKodeverkOppslag("Landkoder", person.getStatsborgerskap()));
+            map.put(Headers.STATSBORGER_DATO.getValue(), person.getStatsborgerskapRegdato());
+            map.put(Headers.INNVANDRET_FRA_LAND.getValue(), kodeverkConsumer.getKodeverkOppslag("Landkoder", person.getInnvandretFraLand()));
+            map.put(Headers.INNVANDRET_DATO.getValue(), person.getInvandretFraLandFlyttedato());
+            map.put(Headers.UTVANDRET_TIL_LAND.getValue(), kodeverkConsumer.getKodeverkOppslag("Landkoder", person.getUtvandretTilLand()));
+            map.put(Headers.UTVANDRET_DATO.getValue(), person.getInvandretFraLandFlyttedato());
 
             log.info(person.toString());
             return map;

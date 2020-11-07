@@ -17,6 +17,8 @@ import no.nav.registre.testnorge.personexportapi.consumer.dto.Sivilstatus;
 
 public class Person {
 
+    private static DateTimeFormatter TPS_DATE_FMT = DateTimeFormatter.ofPattern("yyyyMMdd");
+
     private final EndringsmeldingDTO endringsmeldingDTO;
     private final String page;
 
@@ -94,9 +96,7 @@ public class Person {
     }
 
     public String getFlyttedato() {
-        return isNotBlank(endringsmeldingDTO.getFlyttedatoAdr()) ?
-                LocalDate.parse(endringsmeldingDTO.getFlyttedatoAdr(), DateTimeFormatter.ofPattern("yyyyMMdd"))
-                        .format(DateTimeFormatter.ISO_DATE) : null;
+        return formatDate(endringsmeldingDTO.getFlyttedatoAdr());
     }
 
     public String getAdresse1() {
@@ -128,7 +128,7 @@ public class Person {
     }
 
     public String getKjoennBeskrivelse() {
-        return KjoennFraIdent.getKjoenn(getIdent()).getBeskrivelse();
+        return KjoennFraIdent.getKjoenn(getIdent()).name();
     }
 
     public String getSivilstand() {
@@ -140,7 +140,31 @@ public class Person {
     }
 
     public String getSivilstandRegdato() {
-        return endringsmeldingDTO.getRegdatoSivilstand();
+        return formatDate(endringsmeldingDTO.getRegdatoSivilstand());
+    }
+
+    public String getStatsborgerskap() {
+        return isNotBlank(endringsmeldingDTO.getStatsborgerskap()) ? LandkodeEncoder.decode(endringsmeldingDTO.getStatsborgerskap()) : null;
+    }
+
+    public String getStatsborgerskapRegdato() {
+        return formatDate(endringsmeldingDTO.getRegdatoStatsb());
+    }
+
+    public String getInnvandretFraLand() {
+        return isNotBlank(endringsmeldingDTO.getInnvandretFraLand()) ? LandkodeEncoder.decode(endringsmeldingDTO.getInnvandretFraLand()) : null;
+    }
+
+    public String getInvandretFraLandFlyttedato() {
+        return formatDate(endringsmeldingDTO.getFraLandFlyttedato());
+    }
+
+    public String getUtvandretTilLand() {
+        return isNotBlank(endringsmeldingDTO.getUtvandretTilLand()) ? LandkodeEncoder.decode(endringsmeldingDTO.getUtvandretTilLand()) : null;
+    }
+
+    public String getUtvandretTilLandFlyttedato() {
+        return formatDate(endringsmeldingDTO.getTilLandFlyttedato());
     }
 
     @JsonIgnore
@@ -151,5 +175,12 @@ public class Person {
     @Override
     public String toString() {
         return format("Page: %s fnr: %s", getPage(), getIdent());
+    }
+
+    private static String formatDate(String tpsDato) {
+
+        return isNotBlank(tpsDato) ?
+                LocalDate.parse(tpsDato, TPS_DATE_FMT)
+                        .format(DateTimeFormatter.ISO_DATE) : null;
     }
 }

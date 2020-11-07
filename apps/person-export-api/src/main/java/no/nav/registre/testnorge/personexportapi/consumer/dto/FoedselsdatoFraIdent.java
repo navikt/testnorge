@@ -1,7 +1,6 @@
 package no.nav.registre.testnorge.personexportapi.consumer.dto;
 
 import static java.lang.Integer.parseInt;
-import static java.time.LocalDateTime.of;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,9 +16,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class FoedselsdatoFraIdent {
 
-    private static final LocalDateTime TPS_MIN_REG_DATE = of(1900, 1, 1, 0, 0);
-
-    public LocalDateTime getFoedselsdato(String ident) {
+     public LocalDateTime getFoedselsdato(String ident) {
 
         int year = parseInt(ident.substring(4, 6));
         int individ = parseInt(ident.substring(6, 9));
