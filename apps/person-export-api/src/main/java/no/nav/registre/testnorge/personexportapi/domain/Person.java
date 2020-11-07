@@ -17,7 +17,7 @@ import no.nav.registre.testnorge.personexportapi.consumer.dto.Sivilstatus;
 
 public class Person {
 
-    private static DateTimeFormatter TPS_DATE_FMT = DateTimeFormatter.ofPattern("yyyyMMdd");
+    private static final DateTimeFormatter TPS_DATE_FMT = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     private final EndringsmeldingDTO endringsmeldingDTO;
     private final String page;
