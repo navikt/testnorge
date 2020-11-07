@@ -130,7 +130,7 @@ public class HelsenettCsvConverter extends CsvConverter<Person> {
             map.put(Headers.INNVANDRET_FRA_LAND.getValue(), kodeverkConsumer.getKodeverkOppslag(LANDKODER, person.getInnvandretFraLand()));
             map.put(Headers.INNVANDRET_DATO.getValue(), person.getInvandretFraLandFlyttedato());
             map.put(Headers.UTVANDRET_TIL_LAND.getValue(), kodeverkConsumer.getKodeverkOppslag(LANDKODER, person.getUtvandretTilLand()));
-            map.put(Headers.UTVANDRET_DATO.getValue(), person.getInvandretFraLandFlyttedato());
+            map.put(Headers.UTVANDRET_DATO.getValue(), person.getUtvandretTilLandFlyttedato());
 
             log.info(person.toString());
             return map;
