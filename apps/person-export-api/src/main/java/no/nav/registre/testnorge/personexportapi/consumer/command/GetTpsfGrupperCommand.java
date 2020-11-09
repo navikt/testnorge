@@ -1,13 +1,12 @@
 package no.nav.registre.testnorge.personexportapi.consumer.command;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.reactive.function.client.WebClient;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
+import org.springframework.web.reactive.function.client.WebClient;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.personexportapi.consumer.dto.GruppeDTO;
 
 @RequiredArgsConstructor
