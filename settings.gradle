@@ -118,7 +118,6 @@ include(':skd-local')
 include(':person-api')
 include(':testnorge-medl')
 include(':ident-service')
-project(":ident-service").projectDir = file('apps/ident-service')
 include(':mn-person-service')
 include(':mn-synt-arbeidsforhold-service')
 project(":inntektsmelding-stub").projectDir = file('apps/inntektsmelding-stub')
@@ -216,6 +215,7 @@ project(":person-api").projectDir = file('apps/person-api')
 project(":testnorge-medl").projectDir = file('apps/testnorge-medl')
 project(":mn-person-service").projectDir = file('apps/mn-person-service')
 project(":mn-synt-arbeidsforhold-service").projectDir = file('apps/mn-synt-arbeidsforhold-service')
+project(":ident-service").projectDir = file('apps/ident-service')
 
 gradleEnterprise {
     buildScan {
