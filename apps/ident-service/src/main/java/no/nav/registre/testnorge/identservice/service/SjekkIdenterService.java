@@ -3,11 +3,9 @@ package no.nav.registre.testnorge.identservice.service;
 import no.nav.registre.testnorge.identservice.testdata.FiltrerPaaIdenterTilgjengeligIMiljo;
 import no.nav.registre.testnorge.identservice.testdata.response.IdentMedStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,18 +14,16 @@ import static com.google.common.collect.Sets.newHashSetWithExpectedSize;
 @Service
 public class SjekkIdenterService {
 
-    private static final String GYLDIG_OG_LEDIG = "Gyldig og ledig";
+    private static final String LEDIG = "Ledig ident";
 
     @Autowired
     private FiltrerPaaIdenterTilgjengeligIMiljo filtrerPaaIdenterTilgjengeligIMiljo;
 
-    public Set<IdentMedStatus> finnLedigeIdenter(String ident) {
-        Set<String> ukjenteIdenter = new HashSet<>();
+    public Set<IdentMedStatus> finnLedigeIdenter(Set<String> identer) {
 
-        ukjenteIdenter.add(ident);
-        Set<String> filtrerteIdenter = filtrerPaaIdenterTilgjengeligIMiljo.filtrerPaaIdenter(ukjenteIdenter);
+        Set<String> filtrerteIdenter = filtrerPaaIdenterTilgjengeligIMiljo.filtrerPaaIdenter(identer);
         Map<String, String> identerMedStatus = new HashMap<>();
-        filtrerteIdenter.forEach(filtrertIdent -> identerMedStatus.put(filtrertIdent, GYLDIG_OG_LEDIG));
+        filtrerteIdenter.forEach(filtrertIdent -> identerMedStatus.put(filtrertIdent, LEDIG));
 
         return mapToIdentMedStatusSet(identerMedStatus);
     }
