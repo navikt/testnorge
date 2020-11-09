@@ -31,7 +31,7 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
     @Autowired
     private RsTpsRequestMappingUtils mappingUtils;
 
-    public Set<String> filtrerPaaIdenter(Collection<String> identer) {
+    public Set<String> filtrerPaaIdenter(Set<String> identer) {
 
         Map<String, Object> tpsRequestParameters = opprettParametereForM201TpsRequest(identer, "A2");
 

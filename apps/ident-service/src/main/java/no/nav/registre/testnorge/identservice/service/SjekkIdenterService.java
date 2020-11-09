@@ -15,7 +15,7 @@ public class SjekkIdenterService {
     private FiltrerPaaIdenterTilgjengeligIMiljo filtrerPaaIdenterTilgjengeligIMiljo;
 
     public ResponseEntity<Set<String>> finnLedigeIdenter(String ident) {
-        Set<String> ukjenteIdenter = new HashSet();
+        Set<String> ukjenteIdenter = new HashSet<>();
         ukjenteIdenter.add(ident);
 
         return ResponseEntity.ok(filtrerPaaIdenterTilgjengeligIMiljo.filtrerPaaIdenter(ukjenteIdenter));
