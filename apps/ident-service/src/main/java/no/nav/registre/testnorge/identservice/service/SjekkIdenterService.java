@@ -24,7 +24,7 @@ public class SjekkIdenterService {
 
         Set<String> filtrerteIdenter = filtrerPaaIdenterTilgjengeligIMiljo.filtrerPaaIdenter(identer);
         Map<String, String> identerMedStatus = new HashMap<>();
-        filtrerteIdenter.forEach(filtrertIdent -> identerMedStatus.put(filtrertIdent, LEDIG));
+        filtrerteIdenter.forEach(filtrertIdent -> identerMedStatus.putIfAbsent(filtrertIdent, LEDIG));
 
         return mapToIdentMedStatusSet(identerMedStatus);
     }

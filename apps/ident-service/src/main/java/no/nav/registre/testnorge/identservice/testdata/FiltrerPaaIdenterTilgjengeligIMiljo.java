@@ -10,12 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
-import static com.google.common.collect.Sets.newHashSet;
 import static no.nav.registre.testnorge.identservice.testdata.utils.TpsRequestParameterCreator.opprettParametereForM201TpsRequest;
 
 @Slf4j
@@ -36,8 +34,8 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
         context.setEnvironment("q2");
 
         TpsHentFnrHistMultiServiceRoutineRequest request = new TpsHentFnrHistMultiServiceRoutineRequest();
-        request.setAntallFnr("1");
-        request.setFnr(identer.toArray(new String[1]));
+        request.setAntallFnr("0");
+        request.setFnr(identer.toArray(new String[0]));
         request.setAksjonsKode("A");
         request.setAksjonsKode2("2");
         request.setServiceRutinenavn(tpsRequestParameters.get("serviceRutinenavn").toString());
@@ -52,13 +50,13 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
 
         checkForTpsSystemfeil(tpsResponse);
 
-        return null;
+        return Collections.emptySet();
         //return tilgjengeligeIdenterAlleMiljoer;
     }
 
     private void checkForTpsSystemfeil(TpsServiceRoutineResponse response) {
         if (response.getXml().isEmpty()) {
-            FiltrerPaaIdenterTilgjengeligIMiljo.log.error("Request mot TPS fikk timeout. Sjekk av tilgjengelighet på ident i miljoe feilet.");
+            log.error("Request mot TPS fikk timeout. Sjekk av tilgjengelighet på ident i miljoe feilet.");
         }
     }
 }
