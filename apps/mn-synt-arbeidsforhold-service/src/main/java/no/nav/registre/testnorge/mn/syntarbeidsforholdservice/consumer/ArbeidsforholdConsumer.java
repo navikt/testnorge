@@ -5,14 +5,16 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumentetCommand;
-import no.nav.registre.testnorge.libs.common.command.SaveOpplysningspliktigCommand;
+import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumenterCommand;
+import no.nav.registre.testnorge.libs.common.command.SaveOppsummeringsdokumenterCommand;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.credentials.ArbeidsforholdApiClientProperties;
@@ -49,15 +51,22 @@ public class ArbeidsforholdConsumer {
     public Optional<Opplysningspliktig> getOpplysningspliktig(String orgnummer, LocalDate kalendermaaned, String miljo) {
         AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties);
         var dto = new GetOppsummeringsdokumentetCommand(webClient, accessToken.getTokenValue(), orgnummer, kalendermaaned, miljo).call();
-        if(dto == null){
+        if (dto == null) {
             return Optional.empty();
         }
 
         return Optional.of(new Opplysningspliktig(dto));
     }
 
+    public List<Opplysningspliktig> getAlleOpplysningspliktig(String miljo) {
+        AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties);
+        var list = new GetOppsummeringsdokumenterCommand(webClient, accessToken.getTokenValue(), miljo).call();
+
+        return list.stream().map(Opplysningspliktig::new).collect(Collectors.toList());
+    }
+
     public void sendOpplysningspliktig(Opplysningspliktig opplysningspliktig, String miljo) {
         AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties);
-        new SaveOpplysningspliktigCommand(webClient, accessToken.getTokenValue(), opplysningspliktig.toDTO(), miljo).run();
+        new SaveOppsummeringsdokumenterCommand(webClient, accessToken.getTokenValue(), opplysningspliktig.toDTO(), miljo).run();
     }
 }

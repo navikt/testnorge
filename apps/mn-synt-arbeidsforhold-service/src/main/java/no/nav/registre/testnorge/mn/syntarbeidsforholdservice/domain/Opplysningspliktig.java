@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.ArbeidsforholdDTO;
@@ -36,7 +35,8 @@ public class Opplysningspliktig {
         return dto.getVirksomheter();
     }
 
-    public void addArbeidsforhold(String virksomhetsnummer, Arbeidsforhold arbeidsforhold) {
+    public void addArbeidsforhold(Arbeidsforhold arbeidsforhold) {
+        String virksomhetsnummer = arbeidsforhold.getVirksomhentsnummer();
         VirksomhetDTO virksomhet = dto.getVirksomheter()
                 .stream()
                 .filter(value -> value.getOrganisajonsnummer().equals(virksomhetsnummer))
