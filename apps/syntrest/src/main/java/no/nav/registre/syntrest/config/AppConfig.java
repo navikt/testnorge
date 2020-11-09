@@ -190,4 +190,10 @@ public class AppConfig {
     SyntConsumer aMeldingConsumer() {
         return new SyntConsumer(applicationManager(), "synthdata-amelding");
     }
+
+    @Bean
+    @DependsOn({"applicationManager", "restTemplate"})
+    SyntConsumer aMeldingStartConsumer() {
+        return new SyntConsumer(applicationManager(), "synthdata-amelding");
+    }
 }

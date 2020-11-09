@@ -55,6 +55,7 @@ public class SyntController {
     private final SyntConsumer tpsConsumer;
     private final SyntConsumer frikortConsumer;
     private final SyntConsumer aMeldingConsumer;
+    private final SyntConsumer aMeldingStartConsumer;
 
 
     ///////////// URLs //////////////
@@ -340,7 +341,7 @@ public class SyntController {
             @RequestBody List<String> startdatoer
     ) {
         List<Arbeidsforhold> response = (List<Arbeidsforhold>)
-                aMeldingConsumer.synthesizeData(UriExpander.createRequestEntity(aMeldingUrl+"/start",
+                aMeldingStartConsumer.synthesizeData(UriExpander.createRequestEntity(aMeldingUrl+"/start",
                         startdatoer), Object.class);
         doResponseValidation(response);
 
