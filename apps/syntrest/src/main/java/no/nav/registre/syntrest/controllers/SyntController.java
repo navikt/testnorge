@@ -55,6 +55,7 @@ public class SyntController {
     private final SyntConsumer tpsConsumer;
     private final SyntConsumer frikortConsumer;
     private final SyntConsumer aMeldingConsumer;
+    private final SyntConsumer aMeldingSklearnConsumer;
     private final SyntConsumer aMeldingStartConsumer;
 
 
@@ -328,7 +329,7 @@ public class SyntController {
             @RequestBody Arbeidsforhold tidligereArbeidsforhold
     ) {
         Arbeidsforhold response = (Arbeidsforhold)
-                aMeldingConsumer.synthesizeData(UriExpander.createRequestEntity(aMeldingUrl+"/sklearn",
+                aMeldingSklearnConsumer.synthesizeData(UriExpander.createRequestEntity(aMeldingUrl+"/sklearn",
                         tidligereArbeidsforhold), Arbeidsforhold.class);
         doResponseValidation(response);
 
