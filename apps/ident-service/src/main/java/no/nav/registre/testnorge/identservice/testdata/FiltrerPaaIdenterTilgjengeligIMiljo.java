@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -32,16 +33,11 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
 
         TpsRequestContext context = new TpsRequestContext();
         context.setUser(DOLLY_USER);
-
-        Set<String> tilgjengeligeIdenterAlleMiljoer = newHashSet((Collection<String>) tpsRequestParameters.get("fnr"));
-        Optional<String> firstIdent = tilgjengeligeIdenterAlleMiljoer.stream().findFirst();
-        String[] arr = new String[1];
-        arr[0] = firstIdent.orElse(null);
         context.setEnvironment("q2");
 
         TpsHentFnrHistMultiServiceRoutineRequest request = new TpsHentFnrHistMultiServiceRoutineRequest();
         request.setAntallFnr("1");
-        request.setFnr(arr);
+        request.setFnr(identer.toArray(new String[1]));
         request.setAksjonsKode("A");
         request.setAksjonsKode2("2");
         request.setServiceRutinenavn(tpsRequestParameters.get("serviceRutinenavn").toString());
@@ -56,7 +52,8 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
 
         checkForTpsSystemfeil(tpsResponse);
 
-        return tilgjengeligeIdenterAlleMiljoer;
+        return null;
+        //return tilgjengeligeIdenterAlleMiljoer;
     }
 
     private void checkForTpsSystemfeil(TpsServiceRoutineResponse response) {
