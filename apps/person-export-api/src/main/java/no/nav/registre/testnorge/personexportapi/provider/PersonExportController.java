@@ -3,7 +3,6 @@ package no.nav.registre.testnorge.personexportapi.provider;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
@@ -47,14 +46,14 @@ public class PersonExportController {
                 "testnorge-personer-nhn-" + LocalDateTime.now().toString() + ".csv"
         );
 
-        log.info("Eksporterer {} personer til http response", personer.size());
-        response.setContentType("text/csv");
-        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-        response.setHeader(
-                "Content-Disposition",
-                "attachment; filename=testnorge-personer-nhn-" + LocalDateTime.now().toString() + ".csv"
-        );
-        helsenettCsvConverter.write(response.getWriter(), personer);
+//        log.info("Eksporterer {} personer til http response", personer.size());
+//        response.setContentType("text/csv");
+//        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
+//        response.setHeader(
+//                "Content-Disposition",
+//                "attachment; filename=testnorge-personer-nhn-" + LocalDateTime.now().toString() + ".csv"
+//        );
+//        helsenettCsvConverter.write(response.getWriter(), personer);
 
         log.info("Medgaatt tid til uttrekk {} ", getReadableTime(System.nanoTime() - startTime));
     }
