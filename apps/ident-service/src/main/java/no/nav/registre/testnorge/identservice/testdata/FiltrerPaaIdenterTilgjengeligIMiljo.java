@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import static com.google.common.collect.Sets.newHashSet;
@@ -25,7 +26,7 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
     @Autowired
     private TpsRequestSender tpsRequestSender;
 
-    public Set<String> filtrerPaaIdenter(Set<String> identer) {
+    public Set<String> filtrerPaaIdenter(Collection<String> identer) {
 
         Map<String, Object> tpsRequestParameters = opprettParametereForM201TpsRequest(identer, "A2");
 
@@ -33,12 +34,14 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
         context.setUser(DOLLY_USER);
 
         Set<String> tilgjengeligeIdenterAlleMiljoer = newHashSet((Collection<String>) tpsRequestParameters.get("fnr"));
-
+        Optional<String> firstIdent = tilgjengeligeIdenterAlleMiljoer.stream().findFirst();
+        String[] arr = new String[1];
+        arr[0] = firstIdent.orElse(null);
         context.setEnvironment("q2");
 
         TpsHentFnrHistMultiServiceRoutineRequest request = new TpsHentFnrHistMultiServiceRoutineRequest();
         request.setAntallFnr("1");
-        request.setFnr(identer.toArray(String[]::new));
+        request.setFnr(arr);
         request.setAksjonsKode("A");
         request.setAksjonsKode2("2");
         request.setServiceRutinenavn(tpsRequestParameters.get("serviceRutinenavn").toString());

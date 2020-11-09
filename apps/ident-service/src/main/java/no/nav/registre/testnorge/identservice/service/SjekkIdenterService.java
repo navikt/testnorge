@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,7 +20,7 @@ public class SjekkIdenterService {
     @Autowired
     private FiltrerPaaIdenterTilgjengeligIMiljo filtrerPaaIdenterTilgjengeligIMiljo;
 
-    public Set<IdentMedStatus> finnLedigeIdenter(Set<String> identer) {
+    public Set<IdentMedStatus> finnLedigeIdenter(List<String> identer) {
 
         Set<String> filtrerteIdenter = filtrerPaaIdenterTilgjengeligIMiljo.filtrerPaaIdenter(identer);
         Map<String, String> identerMedStatus = new HashMap<>();

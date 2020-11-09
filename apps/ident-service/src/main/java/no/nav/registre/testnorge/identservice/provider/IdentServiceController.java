@@ -6,12 +6,12 @@ import no.nav.registre.testnorge.identservice.service.SjekkIdenterService;
 import no.nav.registre.testnorge.identservice.testdata.response.IdentMedStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -23,7 +23,7 @@ public class IdentServiceController {
     private final SjekkIdenterService sjekkIdenterService;
 
     @PostMapping(value = "/checkIdentInProd")
-    public Set<IdentMedStatus> checkIdent(@RequestBody Set<String> identer) {
+    public Set<IdentMedStatus> checkIdent(@RequestBody List<String> identer) {
         return sjekkIdenterService.finnLedigeIdenter(identer);
     }
 
