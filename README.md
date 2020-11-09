@@ -25,7 +25,23 @@ Fra Mac
 export NAV_TOKEN=xxxx-yyyy-zzzz
 ```
 
-Så kjør `gradle build`
+Gradle følger med prosjektet og `./gradlew build` vil derfor fungere. `gradle build` bruker lokalt installert Gradle.
+
+
+## Utviklerimage
+- Opprett Personal access tokens i Github og legg til token som systemvariabelen NAV_TOKEN (se forklaring over)
+- Legg til sertifikat til truststore: https://plugins.gradle.org, https://dl.bintray.com/gradle/gradle-plugins og https://repository-cdn.liferay.com/nexus/content/groups/public 
+- Opprett `gradle.properties` under `C:/Users/%USERNAME%/.gradle` med innhold (bytt ut truststorepassord og -path):
+```
+systemProp.http.proxyHost=webproxy-utvikler.nav.no
+systemProp.http.proxyPort=8088
+systemProp.http.nonProxyHosts=localhost|127.0.0.1|*.local|*.adeo.no|*.nav.no|*.aetat.no|*.devillo.no|*.oera.no|*devel
+systemProp.https.proxyHost=webproxy-utvikler.nav.no
+systemProp.https.proxyPort=8088
+systemProp.https.nonProxyHosts=localhost|127.0.0.1|*.local|*.adeo.no|*.nav.no|*.aetat.no|*.devillo.no|*.oera.no|*devel
+systemProp.javax.net.ssl.trustStorePassword=TRUSTSTORE_PASS
+systemProp.javax.net.ssl.trustStore=TRUSTSTORE_PATH
+```
 
 ## Dokumentasjon
 Enhver testnorge-applikasjon skal ha dokumentasjon i fila `<min-testnorge-app>/docs/Implementasjon.md`. Hver av disse filene må starte med
