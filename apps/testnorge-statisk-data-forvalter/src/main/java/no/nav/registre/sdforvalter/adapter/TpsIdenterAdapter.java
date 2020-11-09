@@ -51,12 +51,23 @@ public class TpsIdenterAdapter extends FasteDataAdapter {
 
         List<TpsIdentModel> tpsIdentModels = tpsIdenterRepository.findByGruppeModel(getGruppe(gruppe));
         List<TpsIdent> liste = tpsIdentModels.stream().map(tpsIdentModel -> {
-            List<TagModel> tagModels = tpsIdentTagAdapter.findAllTagsByIdent(tpsIdentModel.getFnr());
+            List<TagModel> tagModels = fetchTagsByIdent(tpsIdentModel.getFnr());
             return new TpsIdent(tpsIdentModel, tagModels);
         }).collect(Collectors.toList());
 
         log.info("Fant {} personer fra gruppe {}", liste.size(), gruppe);
         return new TpsIdentListe(liste);
+    }
+
+    public TpsIdent fetchByIdent(String ident) {
+        log.info("Henter tps-ident {}", ident);
+        var tpsIdent = tpsIdenterRepository.findByFnr(ident);
+        var tags = fetchTagsByIdent(ident);
+        return tpsIdent != null ? new TpsIdent(tpsIdent, tags) : null;
+    }
+
+    public List<TagModel> fetchTagsByIdent(String ident) {
+        return tpsIdentTagAdapter.findAllTagsByIdent(ident);
     }
 
     public TpsIdentListe save(TpsIdentListe liste) {

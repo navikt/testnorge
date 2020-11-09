@@ -29,7 +29,7 @@ public class SecurityConfig extends OAuth2ResourceServerConfiguration {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.sessionManagement()
+        http.headers().frameOptions().disable().and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .csrf()

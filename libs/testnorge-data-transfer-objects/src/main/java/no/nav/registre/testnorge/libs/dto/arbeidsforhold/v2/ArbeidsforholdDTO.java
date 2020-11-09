@@ -3,12 +3,14 @@ package no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
-@Value
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
@@ -19,7 +21,7 @@ public class ArbeidsforholdDTO {
     String typeArbeidsforhold;
     @JsonProperty(required = true)
     LocalDate startdato;
-    @JsonProperty(required = true)
+    @JsonProperty
     LocalDate sluttdato;
     @JsonProperty
     Float antallTimerPerUke;
@@ -31,4 +33,14 @@ public class ArbeidsforholdDTO {
     Float stillingsprosent;
     @JsonProperty
     LocalDate sisteLoennsendringsdato;
+    @JsonProperty
+    List<PermisjonDTO> permisjoner;
+
+
+    public List<PermisjonDTO> getPermisjoner() {
+        if (permisjoner == null) {
+            permisjoner = new ArrayList<>();
+        }
+        return permisjoner;
+    }
 }

@@ -1,23 +1,25 @@
 package no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2;
 
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 
 import java.time.LocalDate;
-import java.util.List;
 
-@Value
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class OpplysningspliktigDTO {
+public class PermisjonDTO {
     @JsonProperty(required = true)
-    LocalDate kalendermaaned;
+    String beskrivelse;
     @JsonProperty(required = true)
-    String opplysningspliktigOrganisajonsnummer;
+    LocalDate startdato;
     @JsonProperty(required = true)
-    List<VirksomhetDTO> virksomheter;
+    LocalDate sluttdato;
+    @JsonProperty(required = true)
+    Float permisjonsprosent;
 }

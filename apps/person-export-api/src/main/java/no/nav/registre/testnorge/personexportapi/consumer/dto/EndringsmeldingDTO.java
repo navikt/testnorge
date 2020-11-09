@@ -36,15 +36,23 @@ public class EndringsmeldingDTO {
     String adresse2;
     String adresse3;
     String postadrLand;
+    String sivilstand;
+    String regdatoSivilstand;
+    String statsborgerskap;
+    String regdatoStatsb;
+    String innvandretFraLand;
+    String fraLandFlyttedato;
+    String utvandretTilLand;
+    String tilLandFlyttedato;
 
     @JsonIgnore
     public boolean isFoedsel() {
-        return aarsakskode != null && aarsakskode.equals(AARSAKSKODE_FOEDSEL);
+        return AARSAKSKODE_FOEDSEL.equals(aarsakskode);
     }
 
     @JsonIgnore
     public boolean isInnvandring() {
-        return aarsakskode != null && aarsakskode.equals(AARSAKSKODE_INNVANDRING);
+        return AARSAKSKODE_INNVANDRING.equals(aarsakskode);
     }
 
     @JsonIgnore
