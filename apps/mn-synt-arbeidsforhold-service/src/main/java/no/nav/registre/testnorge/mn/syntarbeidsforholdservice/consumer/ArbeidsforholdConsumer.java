@@ -13,8 +13,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumentetCommand;
-import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumenteterCommand;
-import no.nav.registre.testnorge.libs.common.command.SaveOpplysningspliktigCommand;
+import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumenterCommand;
+import no.nav.registre.testnorge.libs.common.command.SaveOppsummeringsdokumenterCommand;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.credentials.ArbeidsforholdApiClientProperties;
@@ -60,13 +60,13 @@ public class ArbeidsforholdConsumer {
 
     public List<Opplysningspliktig> getAlleOpplysningspliktig(String miljo) {
         AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties);
-        var list = new GetOppsummeringsdokumenteterCommand(webClient, accessToken.getTokenValue(), miljo).call();
+        var list = new GetOppsummeringsdokumenterCommand(webClient, accessToken.getTokenValue(), miljo).call();
 
         return list.stream().map(Opplysningspliktig::new).collect(Collectors.toList());
     }
 
     public void sendOpplysningspliktig(Opplysningspliktig opplysningspliktig, String miljo) {
         AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties);
-        new SaveOpplysningspliktigCommand(webClient, accessToken.getTokenValue(), opplysningspliktig.toDTO(), miljo).run();
+        new SaveOppsummeringsdokumenterCommand(webClient, accessToken.getTokenValue(), opplysningspliktig.toDTO(), miljo).run();
     }
 }

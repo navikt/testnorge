@@ -22,7 +22,7 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.service.IdentServi
 @RequestMapping("api/v1/identer")
 public class IdentController {
 
-    private final ArbeidsfoholdService servicarbeidsfoholdService;
+    private final ArbeidsfoholdService arbeidsfoholdService;
     private final IdentService identService;
 
     @PostMapping("/{ident}")
@@ -32,7 +32,7 @@ public class IdentController {
             @RequestParam("fom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fom,
             @RequestParam(value = "tom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate tom
     ) {
-        servicarbeidsfoholdService.startArbeidsforhold(ident, fom, tom, miljo);
+        arbeidsfoholdService.startArbeidsforhold(ident, fom, tom, miljo);
         return ResponseEntity.noContent().build();
     }
 

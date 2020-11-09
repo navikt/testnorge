@@ -19,7 +19,7 @@ import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.Oppsummeringsdokumen
 @Slf4j
 @DependencyOn("arbeidsforhold-api")
 @RequiredArgsConstructor
-public class GetOppsummeringsdokumenteterCommand implements Callable<List<OppsummeringsdokumentetDTO>> {
+public class GetOppsummeringsdokumenterCommand implements Callable<List<OppsummeringsdokumentetDTO>> {
     private final WebClient webClient;
     private final String accessToken;
     private final String miljo;
@@ -27,12 +27,12 @@ public class GetOppsummeringsdokumenteterCommand implements Callable<List<Oppsum
     @SneakyThrows
     @Override
     public List<OppsummeringsdokumentetDTO> call() {
-        log.info("Henter alle oppsummeringsdokumenteter.");
+        log.info("Henter alle oppsummeringsdokumenter.");
         try {
             OppsummeringsdokumentetDTO[] array = webClient
                     .get()
                     .uri(builder -> builder
-                            .path("/api/v1/oppsummeringsdokumenteter")
+                            .path("/api/v1/oppsummeringsdokumenter")
                             .build()
                     )
                     .header("miljo", this.miljo)

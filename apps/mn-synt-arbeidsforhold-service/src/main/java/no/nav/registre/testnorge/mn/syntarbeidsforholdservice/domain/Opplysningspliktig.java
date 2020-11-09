@@ -35,10 +35,6 @@ public class Opplysningspliktig {
         return dto.getVirksomheter();
     }
 
-    public boolean hasViksomhet(String virksomhentsnummer) {
-        return dto.getVirksomheter().stream().anyMatch(virksomhent -> virksomhent.getOrganisajonsnummer().equals(virksomhentsnummer));
-    }
-
     public void addArbeidsforhold(Arbeidsforhold arbeidsforhold) {
         String virksomhetsnummer = arbeidsforhold.getVirksomhentsnummer();
         VirksomhetDTO virksomhet = dto.getVirksomheter()

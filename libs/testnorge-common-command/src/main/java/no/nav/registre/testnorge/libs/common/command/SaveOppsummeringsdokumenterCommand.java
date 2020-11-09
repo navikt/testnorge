@@ -13,7 +13,7 @@ import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.Oppsummeringsdokumen
 @Slf4j
 @DependencyOn("arbeidsforhold-api")
 @RequiredArgsConstructor
-public class SaveOpplysningspliktigCommand implements Runnable {
+public class SaveOppsummeringsdokumenterCommand implements Runnable {
     private final WebClient webClient;
     private final String accessToken;
     private final OppsummeringsdokumentetDTO opplysningspliktigDTO;
@@ -28,7 +28,7 @@ public class SaveOpplysningspliktigCommand implements Runnable {
         );
         webClient
                 .put()
-                .uri(builder -> builder.path("/api/v1/oppsummeringsdokumenteter").build())
+                .uri(builder -> builder.path("/api/v1/oppsummeringsdokumenter").build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .header("miljo", miljo)
                 .body(BodyInserters.fromPublisher(Mono.just(opplysningspliktigDTO), OppsummeringsdokumentetDTO.class))

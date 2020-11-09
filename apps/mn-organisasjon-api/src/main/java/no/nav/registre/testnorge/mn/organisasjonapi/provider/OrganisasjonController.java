@@ -29,7 +29,7 @@ public class OrganisasjonController {
     private final OrganisasjonAdapter orgnaisasjonAdapter;
 
     @GetMapping
-    public ResponseEntity<List<MNOrganisasjonDTO>> getOrganisasjon(
+    public ResponseEntity<List<MNOrganisasjonDTO>> getOrganisasjoner(
             @RequestHeader("miljo") String miljo,
             @RequestParam(required = false) Boolean active,
             @RequestParam(value = "opplysningspliktig", required = false) Boolean opplysningspliktig
@@ -53,7 +53,7 @@ public class OrganisasjonController {
     }
 
     @GetMapping("/{orgnummer}")
-    public ResponseEntity<MNOrganisasjonDTO> getOrganisasjon(
+    public ResponseEntity<MNOrganisasjonDTO> getOrganisasjoner(
             @PathVariable("orgnummer") String orgnummer,
             @RequestHeader("miljo") String miljo
     ) {
@@ -86,5 +86,4 @@ public class OrganisasjonController {
         orgnaisasjonAdapter.deleteBy(orgnummer, miljo);
         return ResponseEntity.accepted().build();
     }
-
 }

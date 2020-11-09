@@ -24,7 +24,7 @@ public class GetMNOrganisasjonCommand implements Callable<OrganisasjonDTO> {
     @SneakyThrows
     @Override
     public OrganisasjonDTO call() {
-        log.info("Henter organiasjon {} fra Mini-Norge organiasjoner.", orgnummer);
+        log.info("Henter organisasjon {} fra Mini-Norge organisasjoner.", orgnummer);
         try {
             return webClient
                     .get()
