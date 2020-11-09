@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.identservice.testdata.servicerutiner;
 
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.identservice.service.TpsRequestService;
 import no.nav.registre.testnorge.identservice.testdata.response.Response;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.definition.TpsServiceRoutineDefinitionRequest;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 
+@Slf4j
 @Service
 public class TpsRequestSender {
     public static final long DEFAULT_LES_TIMEOUT = 5000;
@@ -33,6 +35,7 @@ public class TpsRequestSender {
         if (serviceRoutine.isPresent()) {
 
             Response response = tpsRequestService.executeServiceRutineRequest(request, serviceRoutine.get(), context, timeout);
+            log.info(response.getRawXml());
             return rsTpsResponseMappingUtils.convertToTpsServiceRutineResponse(response);
         }
         return null;
