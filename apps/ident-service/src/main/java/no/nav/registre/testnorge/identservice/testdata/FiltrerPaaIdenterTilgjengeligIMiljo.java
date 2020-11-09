@@ -39,7 +39,7 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
 
         TpsHentFnrHistMultiServiceRoutineRequest request = new TpsHentFnrHistMultiServiceRoutineRequest();
         request.setAntallFnr("1");
-        request.setFnr(identer.toArray(new String[0]));
+        request.setFnr(identer.toArray(String[]::new));
         request.setAksjonsKode("A");
         request.setAksjonsKode2("2");
         request.setServiceRutinenavn(tpsRequestParameters.get("serviceRutinenavn").toString());
