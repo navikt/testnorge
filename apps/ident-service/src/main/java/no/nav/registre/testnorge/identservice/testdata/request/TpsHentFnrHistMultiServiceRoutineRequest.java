@@ -17,6 +17,6 @@ public class TpsHentFnrHistMultiServiceRoutineRequest extends TpsServiceRoutineH
 
     @JacksonXmlElementWrapper(localName = "nFnr")
     @JacksonXmlProperty(localName = "fnr")
-    private String fnr;
+    private String[] fnr;
 
 }
