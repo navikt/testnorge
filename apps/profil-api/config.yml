@@ -15,6 +15,7 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: testnorge-tilbakemelding-api
         - application: dolly-frontend
   liveness:
     path: /internal/isAlive
