@@ -63,10 +63,11 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
 
         XmlMapper xmlMapper = new XmlMapper();
         JsonNode node = xmlMapper.readTree(response.getXml().getBytes());
-        log.info(node.asText());
-        JsonNode tpsResponseNode = nonNull(node.get("tpsPersonData")) ? node.get("tpsPersonData") : node;
+        log.info(node.toString());
+        JsonNode tpsSvar = nonNull(node.get("tpsSvar")) ? node.get("tpsSvar") : node;
+        JsonNode tpsSvarStatus = nonNull(tpsSvar.get("svarStatus")) ? tpsSvar.get("svarStatus") : node;
 
-        return nonNull(tpsResponseNode.get("utfyllendeMelding")) ? tpsResponseNode.get("utfyllendeMelding").asText() : "Felt ikke funnet";
+        return nonNull(tpsSvarStatus.get("returStatus")) ? tpsSvarStatus.get("returStatus").asText() : "Felt ikke funnet";
 
     }
 }
