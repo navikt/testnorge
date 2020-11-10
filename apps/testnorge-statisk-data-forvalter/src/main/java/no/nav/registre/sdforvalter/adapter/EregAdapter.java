@@ -40,7 +40,7 @@ public class EregAdapter extends FasteDataAdapter {
     }
 
     private EregModel fetchModelByOrgnr(String orgnr) {
-        return repository.findById(orgnr).orElse(null);
+        return orgnr == null ? null : repository.findById(orgnr).orElse(null);
     }
 
 
@@ -114,12 +114,7 @@ public class EregAdapter extends FasteDataAdapter {
 
         for (Ereg ereg : liste) {
             EregModel model = fetchModelByOrgnr(ereg.getJuridiskEnhet());
-            if ( model == null) {
-                throw new HttpClientErrorException(
-                        HttpStatus.NOT_FOUND,
-                        "Finner ikke orgnr = " + ereg.getOrgnr() + " i ereg databasen."
-                );
-            }
+
             EregModel eregModel = repository.save(new EregModel(
                     ereg,
                     ereg.getJuridiskEnhet() != null ? model : null,
