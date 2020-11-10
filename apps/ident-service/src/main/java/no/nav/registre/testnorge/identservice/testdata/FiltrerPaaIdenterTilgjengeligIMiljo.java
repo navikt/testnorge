@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.identservice.testdata.request.TpsHentFnrHistMultiServiceRoutineRequest;
+import no.nav.registre.testnorge.identservice.testdata.response.IdentMedStatus;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.TpsRequestSender;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.requests.TpsRequestContext;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.requests.User;
@@ -26,7 +27,7 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
     @Autowired
     private TpsRequestSender tpsRequestSender;
 
-    public String filtrerPaaIdenter(String ident) throws IOException {
+    public IdentMedStatus filtrerPaaIdenter(String ident) throws IOException {
 
         Map<String, Object> tpsRequestParameters = opprettParametereForM201TpsRequest(ident, "A2");
 
@@ -48,13 +49,13 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
             loopCount--;
         } while (loopCount != 0 && tpsResponse.getXml().isEmpty());
 
-        return getDescriptiveMessage(tpsResponse);
+        return getDescriptiveMessage(ident, tpsResponse);
     }
 
-    private String getDescriptiveMessage(TpsServiceRoutineResponse response) throws IOException {
+    private IdentMedStatus getDescriptiveMessage(String ident, TpsServiceRoutineResponse response) throws IOException {
         if (response.getXml().isEmpty()) {
             log.error("Request mot TPS fikk timeout. Sjekk av tilgjengelighet på ident i miljoe feilet.");
-            return "TPS Timeout";
+            return new IdentMedStatus(ident, "TPS Timeout", null);
         }
 
         XmlMapper xmlMapper = new XmlMapper();
@@ -62,7 +63,10 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
         JsonNode tpsSvar = nonNull(node.get("tpsSvar")) ? node.get("tpsSvar") : node;
         JsonNode tpsSvarStatus = nonNull(tpsSvar.get("svarStatus")) ? tpsSvar.get("svarStatus") : node;
 
-        return nonNull(tpsSvarStatus.get("utfyllendeMelding")) ? tpsSvarStatus.get("utfyllendeMelding").asText() : "Felt ikke funnet";
-
+        return new IdentMedStatus(
+                ident,
+                nonNull(tpsSvarStatus.get("utfyllendeMelding")) ? tpsSvarStatus.get("utfyllendeMelding").asText() : "Detaljert melding ikke funnet",
+                nonNull(tpsSvarStatus.get("returStatus")) ? tpsSvarStatus.get("returStatus").asText() : "Statuskode ikke funnet"
+        );
     }
 }

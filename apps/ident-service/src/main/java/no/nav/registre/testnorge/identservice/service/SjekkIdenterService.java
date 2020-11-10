@@ -7,13 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 public class SjekkIdenterService {
-
 
     @Autowired
     private FiltrerPaaIdenterTilgjengeligIMiljo filtrerPaaIdenterTilgjengeligIMiljo;
@@ -21,15 +18,15 @@ public class SjekkIdenterService {
     @SneakyThrows
     public ResponseEntity<IdentMedStatus> finnLedigeIdenter(String ident) {
 
-        String identStatus = filtrerPaaIdenterTilgjengeligIMiljo.filtrerPaaIdenter(ident);
-        Map.Entry<String, String> identMedStatus = Map.entry(ident, identStatus);
+        IdentMedStatus identMedStatus = filtrerPaaIdenterTilgjengeligIMiljo.filtrerPaaIdenter(ident);
 
-        return ResponseEntity.ok().body(mapToIdentMedStatusSet(identMedStatus));
+        return ResponseEntity.ok().body(mapToIdentMedStatus(identMedStatus));
     }
 
-    protected IdentMedStatus mapToIdentMedStatusSet(Map.Entry<String, String> ident) {
+    protected IdentMedStatus mapToIdentMedStatus(IdentMedStatus ident) {
 
-        return new IdentMedStatus(ident.getKey(), isNotBlank(ident.getValue()) ? ident.getValue() : "Fant person i prod");
+        return new IdentMedStatus(ident.getIdent(),
+                isNotBlank(ident.getStatus()) ? ident.getStatus() : "Fant person i prod",
+                ident.getStatusCode());
     }
-
 }
