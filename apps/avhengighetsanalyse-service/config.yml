@@ -9,6 +9,10 @@ spec:
   image: {{ image }}
   port: 8080
   webproxy: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: testnorge-avhengighetsanalyse-frontend
   azure:
     application:
       enabled: true
