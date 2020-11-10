@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class IdentServiceAppService {
+public class IdentAppService {
 
     public ResponseEntity<String> helloWorld() {
         return ResponseEntity.ok("Hello World!");

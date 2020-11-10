@@ -5,6 +5,7 @@ import no.nav.registre.testnorge.identservice.testdata.response.IdentMedStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,10 @@ public class SjekkIdenterService {
     @Autowired
     private FiltrerPaaIdenterTilgjengeligIMiljo filtrerPaaIdenterTilgjengeligIMiljo;
 
-    public Set<IdentMedStatus> finnLedigeIdenter(List<String> identer) {
+    public Set<IdentMedStatus> finnLedigeIdenter(String ident) {
+
+        List<String> identer = new ArrayList<>();
+        identer.add(ident);
 
         Set<String> filtrerteIdenter = filtrerPaaIdenterTilgjengeligIMiljo.filtrerPaaIdenter(identer);
         Map<String, String> identerMedStatus = new HashMap<>();
