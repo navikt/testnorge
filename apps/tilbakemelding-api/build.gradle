@@ -27,6 +27,9 @@ dependencies {
     implementation 'org.springframework.security:spring-security-config:5.3.4.RELEASE'
     implementation 'org.springframework.security:spring-security-core:5.3.4.RELEASE'
     implementation project(':testnorge-data-transfer-objects')
+    implementation 'org.reactivestreams:reactive-streams:1.0.2'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
 }
 
 description = 'tilbakemelding-api'

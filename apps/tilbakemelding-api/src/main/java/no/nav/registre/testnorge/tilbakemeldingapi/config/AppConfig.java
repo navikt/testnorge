@@ -1,5 +1,7 @@
 package no.nav.registre.testnorge.tilbakemeldingapi.config;
 
+import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerConfiguration;
+import no.nav.registre.testnorge.libs.oauth2.service.SecureAuthenticationTokenResolver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +13,9 @@ import no.nav.registre.testnorge.libs.slack.consumer.SlackConsumer;
 
 @Configuration
 @Import(value = {
-        ApplicationCoreConfig.class
+        ApplicationCoreConfig.class,
+        SecureAuthenticationTokenResolver.class,
+        SecureOAuth2ServerToServerConfiguration.class
 })
 public class AppConfig {
 
