@@ -19,7 +19,7 @@ public class IdentServiceController {
     private final SjekkIdenterService sjekkIdenterService;
 
     @GetMapping(value = "/checkIdentInProd/{ident}")
-    public IdentMedStatus checkIdent(@PathVariable String ident) {
+    public ResponseEntity<IdentMedStatus> checkIdent(@PathVariable String ident) {
         return sjekkIdenterService.finnLedigeIdenter(ident);
     }
 

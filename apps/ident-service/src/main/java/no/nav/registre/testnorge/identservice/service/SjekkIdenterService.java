@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import no.nav.registre.testnorge.identservice.testdata.FiltrerPaaIdenterTilgjengeligIMiljo;
 import no.nav.registre.testnorge.identservice.testdata.response.IdentMedStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class SjekkIdenterService {
     private FiltrerPaaIdenterTilgjengeligIMiljo filtrerPaaIdenterTilgjengeligIMiljo;
 
     @SneakyThrows
-    public IdentMedStatus finnLedigeIdenter(String ident) {
+    public ResponseEntity<IdentMedStatus> finnLedigeIdenter(String ident) {
 
         List<String> identer = new ArrayList<>();
         identer.add(ident);
@@ -28,7 +29,7 @@ public class SjekkIdenterService {
         String identStatus = filtrerPaaIdenterTilgjengeligIMiljo.filtrerPaaIdenter(identer);
         Map.Entry<String, String> identMedStatus = Map.entry(ident, identStatus);
 
-        return mapToIdentMedStatusSet(identMedStatus);
+        return ResponseEntity.ok().body(mapToIdentMedStatusSet(identMedStatus));
     }
 
     protected IdentMedStatus mapToIdentMedStatusSet(Map.Entry<String, String> ident) {
