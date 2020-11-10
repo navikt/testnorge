@@ -1,17 +1,11 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 CLIENT_ID: 451e4aeb-c11d-4c40-99d2-3c4d5e1a35a0
 
-srvtps:
-  forvalteren:
-    username: ${TPSF_CREDENTIAL_USERNAME}
-    password: ${TPSF_CREDENTIAL_PASSWORD}
-
 spring:
-  ldap:
-    username: ${LDAP_USERNAME}
-    password: ${LDAP_PASSWORD}
+  main:
+    banner-mode: off
   application:
-    version: 1.0
+    version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
     name: ident-service
     description: App som håndterer service på identer benyttet av Dolly
   security:
