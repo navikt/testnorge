@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.google.common.collect.Sets.newHashSetWithExpectedSize;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 public class SjekkIdenterService {
@@ -40,8 +41,10 @@ public class SjekkIdenterService {
         Set<IdentMedStatus> identerMedStatus = newHashSetWithExpectedSize(identer.size());
 
         for (Map.Entry<String, String> entry : identer.entrySet()) {
+            String status = isNotBlank(entry.getValue()) ? entry.getValue() : "Fant person i prod";
             identerMedStatus.add(new IdentMedStatus(entry.getKey(), entry.getValue()));
         }
         return identerMedStatus;
     }
+
 }

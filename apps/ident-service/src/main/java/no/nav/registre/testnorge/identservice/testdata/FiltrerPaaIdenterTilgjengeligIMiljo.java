@@ -48,7 +48,6 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
         int loopCount = 3;
         do {
             tpsResponse = tpsRequestSender.sendTpsRequest(request, context);
-            log.info(tpsResponse.getXml());
             loopCount--;
         } while (loopCount != 0 && tpsResponse.getXml().isEmpty());
 
@@ -63,11 +62,10 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
 
         XmlMapper xmlMapper = new XmlMapper();
         JsonNode node = xmlMapper.readTree(response.getXml().getBytes());
-        log.info(node.toString());
         JsonNode tpsSvar = nonNull(node.get("tpsSvar")) ? node.get("tpsSvar") : node;
         JsonNode tpsSvarStatus = nonNull(tpsSvar.get("svarStatus")) ? tpsSvar.get("svarStatus") : node;
 
-        return nonNull(tpsSvarStatus.get("returStatus")) ? tpsSvarStatus.get("returStatus").asText() : "Felt ikke funnet";
+        return nonNull(tpsSvarStatus.get("utfyllendeMelding")) ? tpsSvarStatus.get("utfyllendeMelding").asText() : "Felt ikke funnet";
 
     }
 }
