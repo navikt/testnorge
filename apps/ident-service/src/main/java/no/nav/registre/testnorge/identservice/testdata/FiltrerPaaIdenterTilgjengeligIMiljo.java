@@ -29,9 +29,9 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
     @Autowired
     private TpsRequestSender tpsRequestSender;
 
-    public String filtrerPaaIdenter(Collection<String> identer) throws IOException {
+    public String filtrerPaaIdenter(String ident) throws IOException {
 
-        Map<String, Object> tpsRequestParameters = opprettParametereForM201TpsRequest(identer, "A2");
+        Map<String, Object> tpsRequestParameters = opprettParametereForM201TpsRequest(ident, "A2");
 
         TpsRequestContext context = new TpsRequestContext();
         context.setUser(DOLLY_USER);
@@ -39,7 +39,7 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
 
         TpsHentFnrHistMultiServiceRoutineRequest request = new TpsHentFnrHistMultiServiceRoutineRequest();
         request.setAntallFnr("1");
-        request.setFnr(identer.toArray(new String[0]));
+        request.setFnr(ident);
         request.setAksjonsKode("A");
         request.setAksjonsKode2("2");
         request.setServiceRutinenavn(tpsRequestParameters.get("serviceRutinenavn").toString());
