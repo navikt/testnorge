@@ -21,8 +21,8 @@ public class IdentServiceController {
     private final IdentAppService identAppService;
     private final SjekkIdenterService sjekkIdenterService;
 
-    @PostMapping(value = "/checkIdentInProd/{ident}")
-    public Set<IdentMedStatus> checkIdent(@PathVariable String ident) {
+    @getMapping(value = "/checkIdentInProd/{ident}")
+    public IdentMedStatus checkIdent(@PathVariable String ident) {
         return sjekkIdenterService.finnLedigeIdenter(ident);
     }
 

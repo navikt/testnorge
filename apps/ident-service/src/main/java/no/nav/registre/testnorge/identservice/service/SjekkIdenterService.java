@@ -7,12 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import static com.google.common.collect.Sets.newHashSetWithExpectedSize;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
@@ -23,28 +20,20 @@ public class SjekkIdenterService {
     private FiltrerPaaIdenterTilgjengeligIMiljo filtrerPaaIdenterTilgjengeligIMiljo;
 
     @SneakyThrows
-    public Set<IdentMedStatus> finnLedigeIdenter(String ident) {
+    public IdentMedStatus finnLedigeIdenter(String ident) {
 
         List<String> identer = new ArrayList<>();
         identer.add(ident);
 
         String identStatus = filtrerPaaIdenterTilgjengeligIMiljo.filtrerPaaIdenter(identer);
-        Map<String, String> identerMedStatus = new HashMap<>();
+        Map.Entry<String, String> identMedStatus = Map.entry(ident, identStatus);
 
-        identerMedStatus.put(ident, identStatus);
-
-        return mapToIdentMedStatusSet(identerMedStatus);
+        return mapToIdentMedStatusSet(identMedStatus);
     }
 
-    protected Set<IdentMedStatus> mapToIdentMedStatusSet(Map<String, String> identer) {
+    protected IdentMedStatus mapToIdentMedStatusSet(Map.Entry<String, String> ident) {
 
-        Set<IdentMedStatus> identerMedStatus = newHashSetWithExpectedSize(identer.size());
-
-        for (Map.Entry<String, String> entry : identer.entrySet()) {
-            String status = isNotBlank(entry.getValue()) ? entry.getValue() : "Fant person i prod";
-            identerMedStatus.add(new IdentMedStatus(entry.getKey(), entry.getValue()));
-        }
-        return identerMedStatus;
+        return new IdentMedStatus(ident.getKey(), isNotBlank(ident.getValue()) ? ident.getValue() : "Fant person i prod");
     }
 
 }
