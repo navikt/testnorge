@@ -14,4 +14,7 @@ spring:
         jwt:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
-
+springdoc:
+  swagger-ui:
+    validator-url: null
+    url: /v3/api-docs
