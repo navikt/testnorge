@@ -9,6 +9,7 @@ export default function StatusListe(props) {
 		isFetchingBestillinger,
 		nyeBestillinger,
 		isCanceling,
+		brukerBilde,
 		getGruppe,
 		getBestillinger,
 		removeNyBestillingStatus,
@@ -34,7 +35,11 @@ export default function StatusListe(props) {
 		return (
 			<div className="bestilling-status" key={bestilling.id}>
 				{bestilling.ferdig ? (
-					<BestillingResultat bestilling={bestilling} onCloseButton={_onCloseBestillingResultat} />
+					<BestillingResultat
+						bestilling={bestilling}
+						onCloseButton={_onCloseBestillingResultat}
+						brukerBilde={brukerBilde}
+					/>
 				) : (
 					<BestillingProgresjon
 						bestilling={bestilling}

@@ -83,7 +83,7 @@ export default class App extends Component {
 						</Switch>
 					</Suspense>
 				</main>
-				<Forbedring />
+				<Forbedring brukerBilde={brukerBilde} />
 				{applicationError && <Toast error={applicationError} clearErrors={clearAllErrors} />}
 			</React.Fragment>
 		)
