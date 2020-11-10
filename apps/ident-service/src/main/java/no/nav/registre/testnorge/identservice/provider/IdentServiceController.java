@@ -7,11 +7,8 @@ import no.nav.registre.testnorge.identservice.testdata.response.IdentMedStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/identer")
@@ -21,7 +18,7 @@ public class IdentServiceController {
     private final IdentAppService identAppService;
     private final SjekkIdenterService sjekkIdenterService;
 
-    @getMapping(value = "/checkIdentInProd/{ident}")
+    @GetMapping(value = "/checkIdentInProd/{ident}")
     public IdentMedStatus checkIdent(@PathVariable String ident) {
         return sjekkIdenterService.finnLedigeIdenter(ident);
     }
