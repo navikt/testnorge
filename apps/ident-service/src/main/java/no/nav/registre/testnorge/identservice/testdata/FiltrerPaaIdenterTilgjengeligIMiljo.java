@@ -1,5 +1,7 @@
 package no.nav.registre.testnorge.identservice.testdata;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.identservice.testdata.request.TpsHentFnrHistMultiServiceRoutineRequest;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.TpsRequestSender;
@@ -9,11 +11,13 @@ import no.nav.registre.testnorge.identservice.testdata.servicerutiner.response.T
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
+import static java.util.Objects.nonNull;
 import static no.nav.registre.testnorge.identservice.testdata.utils.TpsRequestParameterCreator.opprettParametereForM201TpsRequest;
 
 @Slf4j
@@ -25,7 +29,7 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
     @Autowired
     private TpsRequestSender tpsRequestSender;
 
-    public Set<String> filtrerPaaIdenter(Collection<String> identer) {
+    public String filtrerPaaIdenter(Collection<String> identer) throws IOException {
 
         Map<String, Object> tpsRequestParameters = opprettParametereForM201TpsRequest(identer, "A2");
 
@@ -48,15 +52,19 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
             loopCount--;
         } while (loopCount != 0 && tpsResponse.getXml().isEmpty());
 
-        checkForTpsSystemfeil(tpsResponse);
-
-        return Collections.emptySet();
-        //return tilgjengeligeIdenterAlleMiljoer;
+        return getDescriptiveMessage(tpsResponse);
     }
 
-    private void checkForTpsSystemfeil(TpsServiceRoutineResponse response) {
+    private String getDescriptiveMessage(TpsServiceRoutineResponse response) throws IOException {
         if (response.getXml().isEmpty()) {
             log.error("Request mot TPS fikk timeout. Sjekk av tilgjengelighet på ident i miljoe feilet.");
+            return "TPS Timeout";
         }
+
+        XmlMapper xmlMapper = new XmlMapper();
+        JsonNode node = xmlMapper.readTree(response.getXml().getBytes());
+
+        return nonNull(node.get("utfyllendeMelding")) ? node.get("utfyllendeMelding").asText() : "Felt ikke funnet";
+
     }
 }

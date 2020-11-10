@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.identservice.service;
 
+import lombok.SneakyThrows;
 import no.nav.registre.testnorge.identservice.testdata.FiltrerPaaIdenterTilgjengeligIMiljo;
 import no.nav.registre.testnorge.identservice.testdata.response.IdentMedStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,19 +17,20 @@ import static com.google.common.collect.Sets.newHashSetWithExpectedSize;
 @Service
 public class SjekkIdenterService {
 
-    private static final String LEDIG = "Ledig ident";
 
     @Autowired
     private FiltrerPaaIdenterTilgjengeligIMiljo filtrerPaaIdenterTilgjengeligIMiljo;
 
+    @SneakyThrows
     public Set<IdentMedStatus> finnLedigeIdenter(String ident) {
 
         List<String> identer = new ArrayList<>();
         identer.add(ident);
 
-        Set<String> filtrerteIdenter = filtrerPaaIdenterTilgjengeligIMiljo.filtrerPaaIdenter(identer);
+        String identStatus = filtrerPaaIdenterTilgjengeligIMiljo.filtrerPaaIdenter(identer);
         Map<String, String> identerMedStatus = new HashMap<>();
-        filtrerteIdenter.forEach(filtrertIdent -> identerMedStatus.putIfAbsent(filtrertIdent, LEDIG));
+
+        identerMedStatus.put(ident, identStatus);
 
         return mapToIdentMedStatusSet(identerMedStatus);
     }
