@@ -14,14 +14,20 @@ public class Organisasjon {
         this.dto = new MNOrganisasjonDTO(dto, active);
     }
 
+    public String getOrgnummer() {
+        return dto.getOrgnummer();
+    }
+
     public MNOrganisasjonDTO toDTO() {
         return dto;
     }
 
-    public OrganisasjonModel toModel(){
+    public OrganisasjonModel toModel(Long id, String miljo) {
         return OrganisasjonModel
                 .builder()
+                .id(id)
                 .active(dto.getActive())
+                .environment(miljo)
                 .orgnummer(dto.getOrgnummer())
                 .build();
     }

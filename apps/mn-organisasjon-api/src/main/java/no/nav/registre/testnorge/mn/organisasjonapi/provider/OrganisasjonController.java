@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,9 +28,12 @@ public class OrganisasjonController {
     private final OrganisasjonAdapter orgnaisasjonAdapter;
 
     @GetMapping
-    public ResponseEntity<List<MNOrganisasjonDTO>> getOrganisasjon(@RequestParam(required = false) Boolean active) {
+    public ResponseEntity<List<MNOrganisasjonDTO>> getOrganisasjon(
+            @RequestParam(required = false) Boolean active,
+            @RequestHeader("miljo") String miljo
+    ) {
         List<MNOrganisasjonDTO> list = orgnaisasjonAdapter
-                .getAllBy(active)
+                .getAllBy(active, miljo)
                 .stream()
                 .map(Organisasjon::toDTO)
                 .collect(Collectors.toList());
@@ -37,8 +41,11 @@ public class OrganisasjonController {
     }
 
     @GetMapping("/{orgnummer}")
-    public ResponseEntity<MNOrganisasjonDTO> getOrganisasjon(@PathVariable("orgnummer") String orgnummer) {
-        Organisasjon organisasjon = orgnaisasjonAdapter.getBy(orgnummer);
+    public ResponseEntity<MNOrganisasjonDTO> getOrganisasjon(
+            @PathVariable("orgnummer") String orgnummer,
+            @RequestHeader("miljo") String miljo
+    ) {
+        Organisasjon organisasjon = orgnaisasjonAdapter.findBy(orgnummer, miljo);
         if (organisasjon == null) {
             return ResponseEntity.notFound().build();
         }
@@ -46,8 +53,11 @@ public class OrganisasjonController {
     }
 
     @PutMapping
-    public ResponseEntity<?> createOrganisasjon(@RequestBody MNOrganisasjonDTO dto) {
-        orgnaisasjonAdapter.save(new Organisasjon(dto));
+    public ResponseEntity<?> createOrganisasjon(
+            @RequestBody MNOrganisasjonDTO dto,
+            @RequestHeader("miljo") String miljo
+    ) {
+        orgnaisasjonAdapter.save(new Organisasjon(dto), miljo);
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{orgnummer}")

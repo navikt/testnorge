@@ -24,7 +24,6 @@ import no.nav.registre.testnorge.mn.organisasjonapi.credential.OrganisasjonApiCl
 @Slf4j
 @Component
 public class OrganisasjonConsumer {
-    private static final String MILJOE = "q2";
     private final ClientCredential clientCredential;
     private final ClientCredentialGenerateAccessTokenService clientCredentialGenerateAccessTokenService;
     private final WebClient webClient;
@@ -45,21 +44,21 @@ public class OrganisasjonConsumer {
                 .build();
     }
 
-    private CompletableFuture<OrganisasjonDTO> getFutureOrganisasjon(String orgnummer, AccessToken accessToken) {
+    private CompletableFuture<OrganisasjonDTO> getFutureOrganisasjon(String orgnummer, AccessToken accessToken, String miljo) {
         return CompletableFuture.supplyAsync(
-                () -> new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, MILJOE).call(),
+                () -> new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, miljo).call(),
                 executorService
         );
     }
 
-    public OrganisasjonDTO getOrganisjon(String orgnummer) {
+    public OrganisasjonDTO getOrganisjon(String orgnummer, String miljo) {
         AccessToken accessToken = clientCredentialGenerateAccessTokenService.generateToken(clientCredential);
-        return new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, MILJOE).call();
+        return new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, miljo).call();
     }
 
-    public List<OrganisasjonDTO> getOrganisasjoner(Set<String> orgnummerListe) {
+    public List<OrganisasjonDTO> getOrganisasjoner(Set<String> orgnummerListe, String miljo) {
         AccessToken accessToken = clientCredentialGenerateAccessTokenService.generateToken(clientCredential);
-        var futures = orgnummerListe.stream().map(value -> getFutureOrganisasjon(value, accessToken)).collect(Collectors.toList());
+        var futures = orgnummerListe.stream().map(value -> getFutureOrganisasjon(value, accessToken, miljo)).collect(Collectors.toList());
         List<OrganisasjonDTO> list = new ArrayList<>();
 
         for (CompletableFuture<OrganisasjonDTO> future : futures) {
@@ -72,8 +71,8 @@ public class OrganisasjonConsumer {
         return list;
     }
 
-    public void saveOrganisasjon(OrganisasjonDTO dto) {
+    public void saveOrganisasjon(OrganisasjonDTO dto, String miljo) {
         AccessToken accessToken = clientCredentialGenerateAccessTokenService.generateToken(clientCredential);
-        new SaveOrganisasjonCommand(webClient, dto, accessToken.getTokenValue(), MILJOE).run();
+        new SaveOrganisasjonCommand(webClient, dto, accessToken.getTokenValue(), miljo).run();
     }
 }

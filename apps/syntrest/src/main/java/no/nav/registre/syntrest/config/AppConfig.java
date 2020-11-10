@@ -184,4 +184,10 @@ public class AppConfig {
     SyntConsumer frikortConsumer() {
         return new SyntConsumer(applicationManager(), "synthdata-frikort");
     }
+
+    @Bean
+    @DependsOn({"applicationManager", "restTemplate"})
+    SyntConsumer aMeldingConsumer() {
+        return new SyntConsumer(applicationManager(), "synthdata-amelding");
+    }
 }
