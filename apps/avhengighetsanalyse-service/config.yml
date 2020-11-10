@@ -9,6 +9,7 @@ spec:
   image: {{ image }}
   port: 8080
   webproxy: true
+
   accessPolicy:
     inbound:
       rules:
@@ -32,6 +33,9 @@ spec:
     max: 1
   vault:
     enabled: true
+    paths:
+      - kvPath: /serviceuser/data/dev/srvtestnorge
+        mountPath: /secret/serviceuser
   resources:
     requests:
       cpu: 200m

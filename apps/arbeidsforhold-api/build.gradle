@@ -19,7 +19,6 @@ dependencyManagement {
 }
 
 dependencies {
-
     compile('com.google.guava:guava') {
         version {
             strictly '20.0'
