@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/identer")
+@RequestMapping("/api/v1/identservice")
 @RequiredArgsConstructor
 public class IdentServiceController {
 
