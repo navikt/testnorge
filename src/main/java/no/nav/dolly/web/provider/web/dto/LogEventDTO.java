@@ -25,4 +25,7 @@ public class LogEventDTO {
 
     @JsonProperty
     private Rating rating;
+
+    @JsonProperty
+    private Boolean isAnonym;
 }
