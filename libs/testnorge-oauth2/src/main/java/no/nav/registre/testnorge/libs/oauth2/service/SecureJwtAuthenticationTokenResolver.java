@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Component
-public class SecureAuthenticationTokenResolver implements AuthenticationTokenResolver {
+public class SecureJwtAuthenticationTokenResolver implements AuthenticationTokenResolver {
 
     private JwtAuthenticationToken getJwtAuthenticationToken() {
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())

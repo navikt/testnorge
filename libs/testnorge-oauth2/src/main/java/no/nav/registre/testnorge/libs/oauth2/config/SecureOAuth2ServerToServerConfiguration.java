@@ -13,5 +13,5 @@ import no.nav.registre.testnorge.libs.oauth2.service.SecureJwtAuthenticationToke
         ClientCredentialGenerateAccessTokenService.class,
         OnBehalfOfGenerateAccessTokenService.class
 })
-public class SecureJwtServerToServerConfiguration {
+public class SecureOAuth2ServerToServerConfiguration {
 }

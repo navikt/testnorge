@@ -5,15 +5,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import no.nav.registre.testnorge.avhengighetsanalysefrontend.filter.AddAuthorizationToRouteFilter;
 import no.nav.registre.testnorge.avhengighetsanalysefrontend.credentials.AvhengighetsanalyseFrontendClientCredentials;
+import no.nav.registre.testnorge.avhengighetsanalysefrontend.filter.AddAuthorizationToRouteFilter;
 import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
-import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerConfiguration;
+import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2FrontendConfiguration;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.service.OnBehalfOfGenerateAccessTokenService;
 
 @Configuration
-@Import({ApplicationCoreConfig.class, SecureOAuth2ServerToServerConfiguration.class})
+@Import({ApplicationCoreConfig.class, SecureOAuth2FrontendConfiguration.class})
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
