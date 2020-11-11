@@ -2,7 +2,6 @@ package no.nav.registre.testnorge.identservice.provider;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.identservice.service.IdentAppService;
-import no.nav.registre.testnorge.identservice.service.SjekkIdenterService;
 import no.nav.registre.testnorge.identservice.testdata.response.IdentMedStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,16 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class IdentServiceController {
 
     private final IdentAppService identAppService;
-    private final SjekkIdenterService sjekkIdenterService;
 
     @GetMapping(value = "/checkIdentInProd/{ident}")
     public ResponseEntity<IdentMedStatus> checkIdent(@PathVariable String ident) {
-        return sjekkIdenterService.finnLedigeIdenter(ident);
-    }
 
-
-    @GetMapping(value = "/helloworld")
-    public ResponseEntity<String> helloWorld() {
-        return identAppService.helloWorld();
+        return identAppService.finnLedigeIdenter(ident);
     }
 }

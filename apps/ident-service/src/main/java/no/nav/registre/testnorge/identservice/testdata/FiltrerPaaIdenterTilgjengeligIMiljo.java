@@ -17,6 +17,7 @@ import java.util.Map;
 
 import static java.util.Objects.nonNull;
 import static no.nav.registre.testnorge.identservice.testdata.utils.TpsRequestParameterCreator.opprettParametereForM201TpsRequest;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -53,6 +54,7 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
     }
 
     private IdentMedStatus getDescriptiveMessage(String ident, TpsServiceRoutineResponse response) throws IOException {
+
         if (response.getXml().isEmpty()) {
             log.error("Request mot TPS fikk timeout. Sjekk av tilgjengelighet på ident i miljoe feilet.");
             return new IdentMedStatus(ident, "TPS Timeout", null);
@@ -63,10 +65,16 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
         JsonNode tpsSvar = nonNull(node.get("tpsSvar")) ? node.get("tpsSvar") : node;
         JsonNode tpsSvarStatus = nonNull(tpsSvar.get("svarStatus")) ? tpsSvar.get("svarStatus") : node;
 
-        return new IdentMedStatus(
+        return mapToIdentMedStatus(new IdentMedStatus(
                 ident,
                 nonNull(tpsSvarStatus.get("utfyllendeMelding")) ? tpsSvarStatus.get("utfyllendeMelding").asText() : "Detaljert melding ikke funnet",
                 nonNull(tpsSvarStatus.get("returStatus")) ? tpsSvarStatus.get("returStatus").asText() : "Statuskode ikke funnet"
-        );
+        ));
+    }
+    protected IdentMedStatus mapToIdentMedStatus(IdentMedStatus ident) {
+
+        return new IdentMedStatus(ident.getIdent(),
+                isNotBlank(ident.getStatus()) ? ident.getStatus() : "Fant person i prod",
+                ident.getStatusCode());
     }
 }
