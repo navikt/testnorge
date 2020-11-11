@@ -17,4 +17,4 @@ spring:
 springdoc:
   swagger-ui:
     validator-url: null
-    url: /v3/api-docs
+    url: /swagger-ui/index.html?url=/v3/api-docs/
