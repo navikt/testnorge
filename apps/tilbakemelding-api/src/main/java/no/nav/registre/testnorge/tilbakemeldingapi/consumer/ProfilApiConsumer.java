@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.tilbakemeldingapi.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.profil.v1.ProfilDTO;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
@@ -14,6 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
 @Component
+@DependencyOn("profil-api")
 
 public class ProfilApiConsumer {
 

@@ -14,7 +14,6 @@ import no.nav.registre.testnorge.libs.slack.consumer.SlackConsumer;
 @Configuration
 @Import(value = {
         ApplicationCoreConfig.class,
-        SecureAuthenticationTokenResolver.class,
         SecureOAuth2ServerToServerConfiguration.class
 })
 public class AppConfig {
