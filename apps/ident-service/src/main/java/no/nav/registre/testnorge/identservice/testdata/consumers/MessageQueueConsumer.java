@@ -18,8 +18,6 @@ import javax.jms.TextMessage;
 
 public class MessageQueueConsumer {
 
-    private static final long DEFAULT_SKRIV_TIMEOUT = 5000;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageQueueConsumer.class);
     private static final String FEIL_KOENAVN = "Feil i koenavn eller miljoe";
 
@@ -29,10 +27,6 @@ public class MessageQueueConsumer {
     public MessageQueueConsumer(String requestQueueName, ConnectionFactory connectionFactory) {
         this.requestQueueName = requestQueueName;
         this.connectionFactory = connectionFactory;
-    }
-
-    public String sendMessage(String requestMessageContent) throws JMSException {
-        return sendMessage(requestMessageContent, DEFAULT_SKRIV_TIMEOUT);
     }
 
     public String sendMessage(String requestMessageContent, long timeout) throws JMSException {

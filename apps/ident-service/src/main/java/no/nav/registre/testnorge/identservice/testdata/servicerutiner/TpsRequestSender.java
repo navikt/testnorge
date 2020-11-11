@@ -31,6 +31,7 @@ public class TpsRequestSender {
         if (serviceRoutine.isPresent()) {
 
             Response response = tpsRequestService.executeServiceRutineRequest(request, serviceRoutine.get(), context, timeout);
+            log.info(response.toString());
             return rsTpsResponseMappingUtils.convertToTpsServiceRutineResponse(response);
         }
         return null;
