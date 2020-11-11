@@ -32,13 +32,13 @@ dependencies {
     implementation 'org.springframework.security:spring-security-web:5.3.4.RELEASE'
     implementation 'org.springframework.security:spring-security-config:5.3.4.RELEASE'
     implementation 'org.springframework.security:spring-security-core:5.3.4.RELEASE'
-    testCompile group: 'com.oracle.database.jdbc', name: 'ojdbc8', version: '19.8.0.0'
-    compile group: 'com.ibm.mq', name: 'mq-jms-spring-boot-starter', version: '2.3.4'
-    compile group: 'javax.jms', name: 'javax.jms-api', version: '2.0.1'
-    compile group: 'org.json', name: 'json', version: '20200518'
-    compile 'org.springframework:spring-jms:',
-            'org.springframework:spring-messaging:',
-            'org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1'
+    implementation 'com.oracle.database.jdbc:ojdbc8:19.8.0.0'
+    implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.3.4'
+    implementation 'javax.jms:javax.jms-api:2.0.1'
+    implementation 'org.json:json:20200518'
+    implementation 'org.springframework:spring-jms:5.2.10.RELEASE'
+    implementation 'org.springframework:spring-messaging:5.2.10.RELEASE'
+    implementation 'org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1'
 }
 
 description = 'ident-service'

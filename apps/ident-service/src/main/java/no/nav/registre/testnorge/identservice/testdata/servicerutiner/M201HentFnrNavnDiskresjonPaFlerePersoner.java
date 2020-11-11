@@ -1,6 +1,5 @@
 package no.nav.registre.testnorge.identservice.testdata.servicerutiner;
 
-import no.nav.registre.testnorge.identservice.service.authorization.ReadServiceRutineAuthorisation;
 import no.nav.registre.testnorge.identservice.testdata.request.TpsHentFnrHistMultiServiceRoutineRequest;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.definition.TpsServiceRoutineDefinitionBuilder;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.definition.TpsServiceRoutineDefinitionRequest;
@@ -48,10 +47,6 @@ public class M201HentFnrNavnDiskresjonPaFlerePersoner implements ServiceRoutineR
                 .postSend(ResponseDataTransformer.extractDataFromXmlElement("personDataM201"))
                 .postSend(ResponseStatusTransformer.extractStatusFromXmlElement("svarStatus"))
                 .and()
-
-                .securityBuilder()
-                .addRequiredSearchAuthorisationStrategy(ReadServiceRutineAuthorisation.readAuthorisation())
-                .addSecurity()
 
                 .build();
     }

@@ -2,14 +2,15 @@ package no.nav.registre.testnorge.identservice.testdata;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.identservice.testdata.request.TpsHentFnrHistMultiServiceRoutineRequest;
-import no.nav.registre.testnorge.identservice.testdata.response.IdentMedStatus;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.TpsRequestSender;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.requests.TpsRequestContext;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.requests.User;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.response.TpsServiceRoutineResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -17,18 +18,17 @@ import java.util.Map;
 
 import static java.util.Objects.nonNull;
 import static no.nav.registre.testnorge.identservice.testdata.utils.TpsRequestParameterCreator.opprettParametereForM201TpsRequest;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class FiltrerPaaIdenterTilgjengeligIMiljo {
 
     private static final User DOLLY_USER = new User("Dolly", "Dolly");
 
-    @Autowired
-    private TpsRequestSender tpsRequestSender;
+    private final TpsRequestSender tpsRequestSender;
 
-    public IdentMedStatus filtrerPaaIdenter(String ident) throws IOException {
+    public ResponseEntity<String> filtrerPaaIdenter(String ident) throws IOException {
 
         Map<String, Object> tpsRequestParameters = opprettParametereForM201TpsRequest(ident, "A2");
 
@@ -43,21 +43,16 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
         request.setAksjonsKode2("2");
         request.setServiceRutinenavn(tpsRequestParameters.get("serviceRutinenavn").toString());
 
-        TpsServiceRoutineResponse tpsResponse = null;
-        int loopCount = 3;
-        do {
-            tpsResponse = tpsRequestSender.sendTpsRequest(request, context);
-            loopCount--;
-        } while (loopCount != 0 && tpsResponse.getXml().isEmpty());
+        TpsServiceRoutineResponse tpsResponse = tpsRequestSender.sendTpsRequest(request, context);
 
         return getDescriptiveMessage(ident, tpsResponse);
     }
 
-    private IdentMedStatus getDescriptiveMessage(String ident, TpsServiceRoutineResponse response) throws IOException {
+    private ResponseEntity<String> getDescriptiveMessage(String ident, TpsServiceRoutineResponse response) throws IOException {
 
         if (response.getXml().isEmpty()) {
             log.error("Request mot TPS fikk timeout. Sjekk av tilgjengelighet på ident i miljoe feilet.");
-            return new IdentMedStatus(ident, "TPS Timeout", null);
+            throw new RuntimeException("TPS Timeout");
         }
 
         XmlMapper xmlMapper = new XmlMapper();
@@ -65,16 +60,6 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
         JsonNode tpsSvar = nonNull(node.get("tpsSvar")) ? node.get("tpsSvar") : node;
         JsonNode tpsSvarStatus = nonNull(tpsSvar.get("svarStatus")) ? tpsSvar.get("svarStatus") : node;
 
-        return mapToIdentMedStatus(new IdentMedStatus(
-                ident,
-                nonNull(tpsSvarStatus.get("utfyllendeMelding")) ? tpsSvarStatus.get("utfyllendeMelding").asText() : "Detaljert melding ikke funnet",
-                nonNull(tpsSvarStatus.get("returStatus")) ? tpsSvarStatus.get("returStatus").asText() : "Statuskode ikke funnet"
-        ));
-    }
-    protected IdentMedStatus mapToIdentMedStatus(IdentMedStatus ident) {
-
-        return new IdentMedStatus(ident.getIdent(),
-                isNotBlank(ident.getStatus()) ? ident.getStatus() : "Fant person i prod",
-                ident.getStatusCode());
+        return tpsSvarStatus.asText().contains("00") ? ResponseEntity.ok(ident) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }

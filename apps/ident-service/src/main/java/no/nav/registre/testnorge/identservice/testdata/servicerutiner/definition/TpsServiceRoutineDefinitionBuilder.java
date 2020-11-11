@@ -4,7 +4,6 @@ package no.nav.registre.testnorge.identservice.testdata.servicerutiner.definitio
 import no.nav.registre.testnorge.identservice.testdata.config.TpsRequestConfig;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.TpsParameter;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.TpsParameterType;
-import no.nav.registre.testnorge.identservice.testdata.servicerutiner.authorization.ServiceRutineAuthorisationStrategy;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.transformers.RequestTransformer;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.transformers.ResponseTransformer;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.transformers.Transformer;
@@ -23,7 +22,6 @@ public class TpsServiceRoutineDefinitionBuilder {
     private List<TpsParameter> parameters = new ArrayList<>();
     private List<Transformer> transformers = new ArrayList<>();
     private TpsRequestConfig requestConfig;
-    private List<ServiceRutineAuthorisationStrategy> securitySearchAuthorisationStrategies = new ArrayList<>();
 
     public TransformerBuilder transformer() {
         return new TransformerBuilder();
@@ -64,7 +62,6 @@ public class TpsServiceRoutineDefinitionBuilder {
         routine.setParameters(parameters);
         routine.setTransformers(transformers);
         routine.setConfig(requestConfig);
-        routine.setRequiredSecurityServiceStrategies(securitySearchAuthorisationStrategies);
         return routine;
     }
 
@@ -74,17 +71,6 @@ public class TpsServiceRoutineDefinitionBuilder {
 
     public class TpsServiceRoutineSecurityBuilder {
 
-        private List<ServiceRutineAuthorisationStrategy> serviceStrategies = new ArrayList<>();
-
-        public TpsServiceRoutineSecurityBuilder addRequiredSearchAuthorisationStrategy(ServiceRutineAuthorisationStrategy serviceStrategy) {
-            this.serviceStrategies.add(serviceStrategy);
-            return this;
-        }
-
-        public TpsServiceRoutineDefinitionBuilder addSecurity() {
-            securitySearchAuthorisationStrategies = this.serviceStrategies;
-            return TpsServiceRoutineDefinitionBuilder.this;
-        }
     }
 
     public class TpsServiceRoutineParameterBuilder {

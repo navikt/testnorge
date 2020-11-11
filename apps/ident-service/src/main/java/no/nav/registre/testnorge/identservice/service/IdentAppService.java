@@ -1,23 +1,20 @@
 package no.nav.registre.testnorge.identservice.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import no.nav.registre.testnorge.identservice.testdata.FiltrerPaaIdenterTilgjengeligIMiljo;
-import no.nav.registre.testnorge.identservice.testdata.response.IdentMedStatus;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class IdentAppService {
 
-    @Autowired
-    private FiltrerPaaIdenterTilgjengeligIMiljo filtrerPaaIdenterTilgjengeligIMiljo;
+    private final FiltrerPaaIdenterTilgjengeligIMiljo filtrerPaaIdenterTilgjengeligIMiljo;
 
     @SneakyThrows
-    public ResponseEntity<IdentMedStatus> finnLedigeIdenter(String ident) {
+    public ResponseEntity<String> finnLedigeIdenter(String ident) {
 
-        IdentMedStatus identMedStatus = filtrerPaaIdenterTilgjengeligIMiljo.filtrerPaaIdenter(ident);
-
-        return ResponseEntity.ok().body(identMedStatus);
+        return filtrerPaaIdenterTilgjengeligIMiljo.filtrerPaaIdenter(ident);
     }
 }

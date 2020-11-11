@@ -18,7 +18,7 @@ import javax.jms.TextMessage;
 
 public class MessageQueueConsumer {
 
-    public static final long DEFAULT_SKRIV_TIMEOUT = 5000;
+    private static final long DEFAULT_SKRIV_TIMEOUT = 5000;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageQueueConsumer.class);
     private static final String FEIL_KOENAVN = "Feil i koenavn eller miljoe";

@@ -8,7 +8,7 @@ import no.nav.registre.testnorge.identservice.testdata.config.TpsRequestConfig;
 
 @Getter
 @Setter
-public class TpsRequestMeldingDefinition extends DBRequestMeldingDefinition {
+public class TpsRequestMeldingDefinition {
 
     private String name;
 
