@@ -2,7 +2,8 @@ name: Deploy ident-service
 
 on:
   push:
-    branches: master
+    branches: ident-service-app
+    #branches: master TODO: Endre tilbake til master
     paths:
       - apps/ident-service/**
       - libs/testnorge-core/**
