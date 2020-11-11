@@ -15,32 +15,34 @@ import java.util.Optional;
 @Component
 public class SecureAuthenticationTokenResolver implements AuthenticationTokenResolver {
 
-    @Override
-    public JwtAuthenticationToken jwtAuthenticationToken() {
+    private JwtAuthenticationToken getJwtAuthenticationToken() {
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
                 .filter(o -> o instanceof JwtAuthenticationToken)
                 .map(JwtAuthenticationToken.class::cast)
                 .orElseThrow(() -> new RuntimeException("Finner ikke Jwt Authentication Token"));
     }
 
+
+    @Override
+    public String getTokenValue() {
+        return getJwtAuthenticationToken().getToken().getTokenValue();
+    }
+
     @Override
     public boolean isClientCredentials() {
-        var jwtAuthenticationToken = jwtAuthenticationToken();
-        Map<String, Object> tokenAttributes = jwtAuthenticationToken.getTokenAttributes();
+        Map<String, Object> tokenAttributes = getJwtAuthenticationToken().getTokenAttributes();
         return String.valueOf(tokenAttributes.get("oid")).equals(String.valueOf(tokenAttributes.get("sub")));
     }
 
     @Override
     public String getOid() {
-        var jwtAuthenticationToken = jwtAuthenticationToken();
-        Map<String, Object> tokenAttributes = jwtAuthenticationToken.getTokenAttributes();
+        Map<String, Object> tokenAttributes = getJwtAuthenticationToken().getTokenAttributes();
         return String.valueOf(tokenAttributes.get("oid"));
     }
 
     @Override
     public void verifyAuthentication() {
-        var jwtAuthenticationToken = jwtAuthenticationToken();
-        Jwt credentials = (Jwt) jwtAuthenticationToken.getCredentials();
+        Jwt credentials = (Jwt) getJwtAuthenticationToken().getCredentials();
         Instant expiresAt = credentials.getExpiresAt();
         if (expiresAt == null || expiresAt.isBefore(LocalDateTime.now(ZoneOffset.UTC).toInstant(ZoneOffset.UTC))) {
             throw new CredentialsExpiredException("Jwt er utloept");
