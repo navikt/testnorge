@@ -5,17 +5,18 @@ import lombok.Value;
 import java.util.HashMap;
 import java.util.Map;
 
+import no.nav.dolly.web.dto.TilbakemeldingDTO;
 import no.nav.dolly.web.provider.web.dto.LogEventDTO;
-import no.nav.registre.testnorge.libs.dto.tilbakemeldingapi.v1.TilbakemeldingDTO;
 
 @Value
 public class LogEvent {
-    private Level level;
-    private String event;
-    private String message;
-    private LogMetadata metadata;
-    private String uuid;
-    private Rating rating;
+    Level level;
+    String event;
+    String message;
+    LogMetadata metadata;
+    String uuid;
+    Rating rating;
+    Boolean isAnonym;
 
     public LogEvent(LogEventDTO dto, String userAgent, String host) {
         metadata = new LogMetadata(userAgent, host);
@@ -24,6 +25,7 @@ public class LogEvent {
         message = dto.getMessage();
         uuid = dto.getUuid();
         rating = dto.getRating();
+        isAnonym = dto.getIsAnonym();
     }
 
     public Map<String, String> toPropertyMap() {
@@ -45,6 +47,7 @@ public class LogEvent {
                 .message(message)
                 .title(event)
                 .rating(toTilbakemeldingRating(rating))
+                .isAnonym(isAnonym)
                 .build();
     }
 
