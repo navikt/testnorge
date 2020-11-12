@@ -23,7 +23,6 @@ plugins {
 rootProject.name = 'testnorge'
 
 include(':testnorge-auto-config-dependency-analysis')
-project(":testnorge-auto-config-dependency-analysis").projectDir = file('libs/testnorge-auto-config-dependency-analysis')
 
 include(':inntektsmelding-stub')
 include(':testnorge-tss')
@@ -220,6 +219,7 @@ project(":testnorge-medl").projectDir = file('apps/testnorge-medl')
 project(":mn-person-service").projectDir = file('apps/mn-person-service')
 project(":mn-synt-arbeidsforhold-service").projectDir = file('apps/mn-synt-arbeidsforhold-service')
 project(":avhengighetsanalyse-service").projectDir = file('apps/avhengighetsanalyse-service')
+project(":testnorge-auto-config-dependency-analysis").projectDir = file('libs/testnorge-auto-config-dependency-analysis')
 
 
 gradleEnterprise {

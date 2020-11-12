@@ -5,8 +5,8 @@ plugins {
 }
 
 dependencies {
-    implementation project(':testnorge-dependency-analysis')
     implementation project(':testnorge-oauth2')
+    implementation project(':testnorge-dependency-analysis')
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-web'
