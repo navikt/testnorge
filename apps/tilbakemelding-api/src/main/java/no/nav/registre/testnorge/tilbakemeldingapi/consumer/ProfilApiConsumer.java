@@ -16,7 +16,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Slf4j
 @Component
 @DependencyOn("testnorge-profil-api")
-
 public class ProfilApiConsumer {
 
     private final WebClient webClient;
