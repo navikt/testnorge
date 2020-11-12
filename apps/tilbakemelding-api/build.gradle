@@ -12,6 +12,7 @@ bootJar {
 }
 
 dependencies {
+
     implementation project(':testnorge-core')
     implementation project(':testnorge-dependency-analysis')
     implementation project(':testnorge-auto-dependency-analysis')
