@@ -32,7 +32,6 @@ public class AutoConfigureDependencyAnalysisRegistration {
         this.applicationName = applicationName;
     }
 
-    @Async
     @PostConstruct
     public void init() {
         try {
