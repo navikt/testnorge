@@ -26,4 +26,8 @@ public class Application {
                 .registeredName(registeredName)
                 .build();
     }
+
+    public String getRegisteredName() {
+        return registeredName;
+    }
 }

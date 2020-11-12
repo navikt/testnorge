@@ -26,4 +26,8 @@ public class ApplicationAdapter {
         repository.save(application.toModel());
     }
 
+    public void deleteApplication(String name) {
+        repository.deleteById(name);
+    }
+
 }
