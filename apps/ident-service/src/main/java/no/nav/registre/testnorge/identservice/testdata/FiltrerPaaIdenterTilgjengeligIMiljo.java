@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.net.http.HttpConnectTimeoutException;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.registre.testnorge.identservice.testdata.consumers.config.MessageQueueConsumerConstants.SEARCH_ENVIRONMENT;
 import static no.nav.registre.testnorge.identservice.testdata.consumers.config.MessageQueueConsumerConstants.TPS_SERVICERUTINE;
@@ -49,7 +50,7 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
 
     private ResponseEntity<String> getDescriptiveMessage(String ident, TpsServiceRoutineResponse response) throws IOException {
 
-        if (response.getXml().isEmpty()) {
+        if (isNull(response) || response.getXml().isEmpty()) {
             log.error("Request mot TPS fikk timeout. Sjekk av tilgjengelighet på ident i miljoe feilet.");
             throw new HttpConnectTimeoutException("TPS Timeout");
         }
