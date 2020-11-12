@@ -1,11 +1,11 @@
-package no.nav.registre.testnorge.libs.autodependencyanalysis.consumer;
+package no.nav.registre.testnorge.libs.autoconfigdependencyanalysis.consumer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.registre.testnorge.libs.autodependencyanalysis.config.AvhengighetsanalyseServiceClientCredential;
-import no.nav.registre.testnorge.libs.autodependencyanalysis.consumer.command.RegisterApplicationCommand;
+import no.nav.registre.testnorge.libs.autoconfigdependencyanalysis.config.AvhengighetsanalyseServiceClientCredential;
+import no.nav.registre.testnorge.libs.autoconfigdependencyanalysis.consumer.command.RegisterApplicationCommand;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateWithoutLoginAccessTokenService;

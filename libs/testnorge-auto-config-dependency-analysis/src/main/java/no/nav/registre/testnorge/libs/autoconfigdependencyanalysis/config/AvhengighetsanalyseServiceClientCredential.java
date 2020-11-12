@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.libs.autodependencyanalysis.config;
+package no.nav.registre.testnorge.libs.autoconfigdependencyanalysis.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

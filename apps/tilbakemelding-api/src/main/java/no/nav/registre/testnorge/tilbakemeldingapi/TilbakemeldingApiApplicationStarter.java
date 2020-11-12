@@ -2,9 +2,6 @@ package no.nav.registre.testnorge.tilbakemeldingapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Import;
-
-import no.nav.registre.testnorge.libs.autodependencyanalysis.config.AutoRegistrationDependencyAnalysisConfiguration;
 
 @SpringBootApplication
 public class TilbakemeldingApiApplicationStarter {

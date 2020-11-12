@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.libs.autodependencyanalysis.consumer.command;
+package no.nav.registre.testnorge.libs.autoconfigdependencyanalysis.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
