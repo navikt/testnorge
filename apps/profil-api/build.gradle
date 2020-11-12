@@ -33,7 +33,6 @@ dependencies {
     implementation 'org.projectlombok:lombok:1.18.12'
 
     testImplementation project(':testnorge-testing')
-
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE'
     testImplementation 'org.assertj:assertj-core:3.16.1'

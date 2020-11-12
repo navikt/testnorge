@@ -45,7 +45,7 @@ public class DependencyAnalysisAutoConfiguration {
             return;
         }
 
-        if (applicationName != null) {
+        if (applicationName == null) {
             log.warn("Registerer ikke avhengigheter fordi applikasjonsnavn navn ikke er satt.");
             return;
         }
