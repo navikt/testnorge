@@ -21,15 +21,17 @@ public class MessageQueueConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageQueueConsumer.class);
     private static final String FEIL_KOENAVN = "Feil i koenavn eller miljoe";
 
+    private final String requestQueueName;
+    private final ConnectionFactory connectionFactory;
     @Value("${mq.username}")
-    String username;
+    private String username;
     @Value("${mq.password}")
-    String password;
+    private String password;
 
-    private String requestQueueName;
-    private ConnectionFactory connectionFactory;
-
-    public MessageQueueConsumer(String requestQueueName, ConnectionFactory connectionFactory) {
+    public MessageQueueConsumer(
+            String requestQueueName,
+            ConnectionFactory connectionFactory
+    ) {
         this.requestQueueName = requestQueueName;
         this.connectionFactory = connectionFactory;
     }
@@ -56,7 +58,7 @@ public class MessageQueueConsumer {
                     ((MQQueue) requestDestination).setTargetClient(JMSC.MQJMS_CLIENT_NONJMS_MQ);         //TODO: This method should be provider independent
                 }
 
-        /* Prepare request message */
+                /* Prepare request message */
                 TextMessage requestMessage = session.createTextMessage(requestMessageContent);
                 try {
                     try (MessageProducer producer = session.createProducer(requestDestination)) {
