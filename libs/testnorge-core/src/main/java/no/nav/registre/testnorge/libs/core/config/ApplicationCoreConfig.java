@@ -13,8 +13,7 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.provider.DependenciesCo
         InternalController.class,
         DependenciesController.class,
         ApplicationProperties.class,
-        LoggingWebConfig.class,
-        DependencyAnalysisAutoConfiguration.class
+        LoggingWebConfig.class
 })
 public class ApplicationCoreConfig {
 }
