@@ -19,7 +19,7 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
-@DependencyOn"syntrest")
+@DependencyOn("syntrest")
 public class SyntrestConsumer {
 
     private RestTemplate restTemplate;

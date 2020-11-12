@@ -18,7 +18,7 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
-@DependencyOn"syntrest")
+@DependencyOn("syntrest")
 public class SamSyntetisererenConsumer {
 
     private static final ParameterizedTypeReference<List<SyntetisertSamordningsmelding>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
