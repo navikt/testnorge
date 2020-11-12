@@ -5,7 +5,6 @@ import com.ibm.msg.client.wmq.compat.jms.internal.JMSC;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -24,17 +23,20 @@ public class MessageQueueConsumer {
 
     private final String requestQueueName;
     private final ConnectionFactory connectionFactory;
-    @Value("${mq.username}")
-    private String username;
-    @Value("${mq.password}")
-    private String password;
+
+    private final String password;
+    private final String username;
 
     public MessageQueueConsumer(
             String requestQueueName,
-            ConnectionFactory connectionFactory
+            ConnectionFactory connectionFactory,
+            String username,
+            String password
     ) {
         this.requestQueueName = requestQueueName;
         this.connectionFactory = connectionFactory;
+        this.username = username;
+        this.password = password;
     }
 
     public String sendMessage(String requestMessageContent, long timeout) throws JMSException {

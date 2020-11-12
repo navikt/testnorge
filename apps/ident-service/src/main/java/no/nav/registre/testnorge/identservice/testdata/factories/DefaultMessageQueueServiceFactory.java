@@ -1,10 +1,11 @@
 package no.nav.registre.testnorge.identservice.testdata.factories;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.identservice.testdata.consumers.MessageQueueConsumer;
 import no.nav.registre.testnorge.identservice.testdata.factories.strategies.ConnectionFactoryFactoryStrategy;
 import no.nav.registre.testnorge.identservice.testdata.factories.strategies.QueueManagerConnectionFactoryFactoryStrategy;
 import no.nav.registre.testnorge.identservice.testdata.queue.Queue;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
@@ -21,11 +22,16 @@ import static no.nav.registre.testnorge.identservice.testdata.consumers.config.M
  * Consumes information from Fasit and produces MessageQueueServices
  */
 @Component
+@RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "testnorge-ident-service", name = "production.mode", havingValue = "false", matchIfMissing = true)
 public class DefaultMessageQueueServiceFactory implements MessageQueueServiceFactory {
 
-    @Autowired
-    private ConnectionFactoryFactory connectionFactoryFactory;
+    private final ConnectionFactoryFactory connectionFactoryFactory;
+
+    @Value("${mq.username}")
+    private String username;
+    @Value("${mq.password}")
+    private String password;
 
     /**
      * Instantiates a new MessageQueueConsumer in the specified environment
@@ -35,7 +41,7 @@ public class DefaultMessageQueueServiceFactory implements MessageQueueServiceFac
      * @throws JMSException
      */
     @Override
-       public MessageQueueConsumer createMessageQueueConsumer(String environment, String requestQueueAlias, boolean isQueName) throws JMSException {
+    public MessageQueueConsumer createMessageQueueConsumer(String environment, String requestQueueAlias, boolean isQueName) throws JMSException {
 
         QueueManager queueManager = new QueueManager(CHANNEL_NAME, CHANNEL_HOSTNAME, CHANNEL_PORT, null);
         Queue requestQueue = new Queue(QUEUE_NAME, null);
@@ -47,7 +53,9 @@ public class DefaultMessageQueueServiceFactory implements MessageQueueServiceFac
 
         return new MessageQueueConsumer(
                 requestQueue.getName(),
-                connectionFactory
+                connectionFactory,
+                username,
+                password
         );
     }
 }
