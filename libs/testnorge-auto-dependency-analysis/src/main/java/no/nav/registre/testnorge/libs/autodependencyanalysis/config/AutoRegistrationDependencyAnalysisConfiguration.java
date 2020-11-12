@@ -20,11 +20,11 @@ import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateWit
         ClientCredentialGenerateWithoutLoginAccessTokenService.class
 })
 @Profile("prod")
-public class AutoConfigureDependencyAnalysisRegistration {
+public class AutoRegistrationDependencyAnalysisConfiguration {
     private final AvhengighetsanalyseServiceConsumer avhengighetsanalyseServiceConsumer;
     private final String applicationName;
 
-    public AutoConfigureDependencyAnalysisRegistration(
+    public AutoRegistrationDependencyAnalysisConfiguration(
             AvhengighetsanalyseServiceConsumer avhengighetsanalyseServiceConsumer,
             @Value("${application.name:${spring.application.name:#{null}}}") String applicationName
     ) {
