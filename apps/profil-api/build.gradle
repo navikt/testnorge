@@ -16,7 +16,6 @@ dependencies {
     implementation project(':testnorge-oauth2')
     implementation project(':testnorge-data-transfer-objects')
     implementation project(':testnorge-dependency-analysis')
-    implementation project(':testnorge-dependency-analysis-auto-configuration')
 
     implementation 'org.springframework.security:spring-security-web:5.3.4.RELEASE'
     implementation 'org.springframework.security:spring-security-config:5.3.4.RELEASE'
