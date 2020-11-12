@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.avhengighetsanalyseservice.adapter.ApplicationAdapter;
+import no.nav.registre.testnorge.avhengighetsanalyseservice.adapter.DependenciesAdapter;
 import no.nav.registre.testnorge.avhengighetsanalyseservice.domain.Application;
 
 @RestController
@@ -21,6 +22,7 @@ import no.nav.registre.testnorge.avhengighetsanalyseservice.domain.Application;
 @RequiredArgsConstructor
 public class ApplicationController {
     private final ApplicationAdapter adapter;
+    private final DependenciesAdapter dependenciesAdapter;
 
     @GetMapping
     public ResponseEntity<Set<String>> getApplications() {
@@ -35,6 +37,7 @@ public class ApplicationController {
     @PutMapping("/{name}")
     public ResponseEntity<HttpStatus> createApplications(@PathVariable("name") String name) {
         adapter.save(new Application(name));
+        dependenciesAdapter.registerDependenciesHistory();
         return ResponseEntity.ok().build();
     }
 

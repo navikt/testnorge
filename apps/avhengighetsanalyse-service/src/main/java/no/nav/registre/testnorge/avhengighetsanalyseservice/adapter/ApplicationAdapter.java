@@ -14,7 +14,6 @@ import no.nav.registre.testnorge.avhengighetsanalyseservice.repository.Applicati
 @RequiredArgsConstructor
 public class ApplicationAdapter {
     private final ApplicationRepository repository;
-    private final DependenciesAdapter dependenciesAdapter;
 
     public List<Application> getAllApplications() {
         return StreamSupport
@@ -25,7 +24,6 @@ public class ApplicationAdapter {
 
     public void save(Application application) {
         repository.save(application.toModel());
-        dependenciesAdapter.registerDependenciesHistory();
     }
 
     public void deleteApplication(String name) {
