@@ -13,4 +13,4 @@ dependencies {
 }
 
 group = 'no.nav.registre.testnorge.libs'
-description = 'testnorge-auto-dependency-analysis'
+description = 'testnorge-auto-config-dependency-analysis'

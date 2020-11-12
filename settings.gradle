@@ -22,8 +22,8 @@ plugins {
 
 rootProject.name = 'testnorge'
 
-include(':testnorge-auto-dependency-analysis')
-project(":testnorge-auto-dependency-analysis").projectDir = file('libs/testnorge-auto-dependency-analysis')
+include(':testnorge-auto-config-dependency-analysis')
+project(":testnorge-auto-config-dependency-analysis").projectDir = file('libs/testnorge-auto-config-dependency-analysis')
 
 include(':inntektsmelding-stub')
 include(':testnorge-tss')
