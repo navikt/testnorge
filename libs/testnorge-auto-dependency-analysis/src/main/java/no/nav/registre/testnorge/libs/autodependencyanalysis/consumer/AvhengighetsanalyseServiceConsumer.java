@@ -8,21 +8,21 @@ import no.nav.registre.testnorge.libs.autodependencyanalysis.config.Avhengighets
 import no.nav.registre.testnorge.libs.autodependencyanalysis.consumer.command.RegisterApplicationCommand;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
+import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateWithoutLoginAccessTokenService;
 
 @Slf4j
 @Component
 public class AvhengighetsanalyseServiceConsumer {
     private final WebClient webClient;
     private final AvhengighetsanalyseServiceClientCredential clientCredential;
-    private final ClientCredentialGenerateAccessTokenService clientCredentialGenerateAccessTokenService;
+    private final ClientCredentialGenerateWithoutLoginAccessTokenService tokenService;
 
     public AvhengighetsanalyseServiceConsumer(
             AvhengighetsanalyseServiceClientCredential clientCredential,
-            ClientCredentialGenerateAccessTokenService clientCredentialGenerateAccessTokenService
+            ClientCredentialGenerateWithoutLoginAccessTokenService tokenService
     ) {
         this.clientCredential = clientCredential;
-        this.clientCredentialGenerateAccessTokenService = clientCredentialGenerateAccessTokenService;
+        this.tokenService = tokenService;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(clientCredential.getHost())
@@ -30,7 +30,7 @@ public class AvhengighetsanalyseServiceConsumer {
     }
 
     public void registerApplication(String name) {
-        AccessToken accessToken = clientCredentialGenerateAccessTokenService.generateToken(
+        AccessToken accessToken = tokenService.generateToken(
                 clientCredential,
                 new AccessScopes("api://" + clientCredential.getClientId() + "/.default")
         );
