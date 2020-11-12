@@ -35,6 +35,6 @@ public class AvhengighetsanalyseServiceConsumer {
                 new AccessScopes("api://" + clientCredential.getClientId() + "/.default")
         );
         new RegisterApplicationCommand(webClient, name, accessToken.getTokenValue()).run();
-        log.info("Registert application {} avheningheter.", name);
+        log.info("Registert app {}.", name);
     }
 }
