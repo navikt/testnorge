@@ -1,16 +1,17 @@
-name: Deploy testnorge-inntekt
+name: Deploy testnorge-aaregstub
 
 on:
   push:
     branches: master
     paths:
-      - apps/testnorge-inntekt/**
+      - apps/testnorge-aaregstub/**
+      - libs/testnorge-core/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/inntekt:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/aaregstub:${{ github.sha }}
 
 jobs:
-  build-jar:
+  build_and_deploy:
     name: Build and deploy
     runs-on: ubuntu-latest
     steps:
@@ -30,33 +31,18 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :testnorge-inntekt:build
+        run: ./gradlew :testnorge-aaregstub:build
       - name: Build and publish Docker image
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker build --tag ${IMAGE} . -f ./apps/testnorge-inntekt/Dockerfile
+          docker build --tag ${IMAGE} . -f ./apps/testnorge-aaregstub/Dockerfile
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}
-  deploy-default:
-    name: "Deploy default"
-    needs: build-jar
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: nais/deploy/actions/deploy@v1
+      - name: Deploy to nais
+        timeout-minutes: 5
+        uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/testnorge-inntekt/nais.yaml
-  deploy-t6:
-    name: "Deploy t6"
-    needs: build-jar
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-fss
-          RESOURCE: apps/testnorge-inntekt/nais_t6.yaml
+          RESOURCE: apps/testnorge-aaregstub/nais.yaml

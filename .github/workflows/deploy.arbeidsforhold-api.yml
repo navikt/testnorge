@@ -2,8 +2,10 @@ name: Deploy arbeidsforhold-api
 
 on:
   push:
+    branches: master
     paths:
       - apps/arbeidsforhold-api/**
+      - libs/testnorge-core/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/arbeidsforhold-api:${{ github.sha }}

@@ -1,13 +1,14 @@
-name: Deploy testnorge-token-provider
+name: Deploy testnorge-inntekt
 
 on:
   push:
     branches: master
     paths:
-      - apps/testnorge-token-provider/**
+      - apps/testnorge-inntekt/**
+      - libs/testnorge-core/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/token-provider:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/inntekt:${{ github.sha }}
 
 jobs:
   build-jar:
@@ -30,12 +31,12 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :token-provider-core:build
+        run: ./gradlew :testnorge-inntekt:build
       - name: Build and publish Docker image
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker build --tag ${IMAGE} . -f ./apps/testnorge-token-provider/Dockerfile
+          docker build --tag ${IMAGE} . -f ./apps/testnorge-inntekt/Dockerfile
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}
   deploy-default:
@@ -48,7 +49,7 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/testnorge-token-provider/nais.yaml
+          RESOURCE: apps/testnorge-inntekt/nais.yaml
   deploy-t6:
     name: "Deploy t6"
     needs: build-jar
@@ -59,4 +60,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/testnorge-token-provider/nais_t6.yaml
+          RESOURCE: apps/testnorge-inntekt/nais_t6.yaml

@@ -1,16 +1,17 @@
-name: Deploy testnorge-populasjoner
+name: Deploy testnorge-frikort
 
 on:
   push:
     branches: master
     paths:
-      - apps/testnorge-populasjoner/**
+      - apps/testnorge-frikort/**
+      - libs/testnorge-core/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/populasjoner:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/frikort:${{ github.sha }}
 
 jobs:
-  build-jar:
+  build_and_deploy:
     name: Build and deploy
     runs-on: ubuntu-latest
     steps:
@@ -30,12 +31,12 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :testnorge-populasjoner:build
+        run: ./gradlew :testnorge-frikort:build
       - name: Build and publish Docker image
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker build --tag ${IMAGE} . -f ./apps/testnorge-populasjoner/Dockerfile
+          docker build --tag ${IMAGE} . -f ./apps/testnorge-frikort/Dockerfile
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}
       - name: Deploy to nais
@@ -44,4 +45,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/testnorge-populasjoner/nais.yaml
+          RESOURCE: apps/testnorge-frikort/nais.yaml

@@ -1,12 +1,14 @@
-name: Deploy sykemelding-api dev
+name: Deploy synt-sykemelding-api
 
 on:
   push:
+    branches: master
     paths:
-      - apps/sykemelding-api/**
+      - apps/synt-sykemelding-api/**
+      - libs/testnorge-core/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/sykemelding-api:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/synt-sykemelding-api:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -29,12 +31,12 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :sykemelding-api:build
+        run: ./gradlew :synt-sykemelding-api:build
       - name: Build and publish Docker image
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker build --tag ${IMAGE} . -f ./apps/sykemelding-api/Dockerfile
+          docker build --tag ${IMAGE} . -f ./apps/synt-sykemelding-api/Dockerfile
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}
       - name: Deploy to nais
@@ -43,4 +45,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/sykemelding-api/nais-t2.yaml
+          RESOURCE: apps/synt-sykemelding-api/nais.yaml

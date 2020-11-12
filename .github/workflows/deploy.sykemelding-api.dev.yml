@@ -1,16 +1,13 @@
-name: Deploy syntrest
+name: Deploy sykemelding-api dev
 
 on:
   push:
-    branches: master
     paths:
-      - apps/syntrest/**
-  workflow_dispatch:
-    paths:
-      - apps/syntrest/**
+      - apps/sykemelding-api/**
+      - libs/testnorge-core/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/syntrest:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/sykemelding-api:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -33,18 +30,18 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :syntrest:build
+        run: ./gradlew :sykemelding-api:build
       - name: Build and publish Docker image
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker build --tag ${IMAGE} . -f ./apps/syntrest/Dockerfile
+          docker build --tag ${IMAGE} . -f ./apps/sykemelding-api/Dockerfile
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}
       - name: Deploy to nais
         timeout-minutes: 5
         uses: nais/deploy/actions/deploy@v1
         env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/syntrest/nais.yaml
+          RESOURCE: apps/sykemelding-api/nais-t2.yaml

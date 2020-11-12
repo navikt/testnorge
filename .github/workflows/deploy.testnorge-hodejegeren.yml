@@ -1,13 +1,14 @@
-name: Deploy testnorge-tss
+name: Deploy testnorge-hodejegeren
 
 on:
   push:
     branches: master
     paths:
-      - apps/testnorge-tss/**
+      - apps/testnorge-hodejegeren/**
+      - libs/testnorge-core/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/tss:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/hodejegeren:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -30,12 +31,12 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :testnorge-tss:build
+        run: ./gradlew :hodejegeren-core:build
       - name: Build and publish Docker image
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker build --tag ${IMAGE} . -f ./apps/testnorge-tss/Dockerfile
+          docker build --tag ${IMAGE} . -f ./apps/testnorge-hodejegeren/Dockerfile
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}
       - name: Deploy to nais
@@ -44,4 +45,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/testnorge-tss/nais.yaml
+          RESOURCE: apps/testnorge-hodejegeren/nais.yaml

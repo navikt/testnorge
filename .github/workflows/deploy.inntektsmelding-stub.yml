@@ -1,13 +1,14 @@
-name: Deploy testnorge-medl
+name: Deploy inntektsmelding-stub
 
 on:
   push:
     branches: master
     paths:
-      - apps/testnorge-medl/**
+      - apps/inntektsmelding-stub/**
+      - libs/testnorge-core/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/medl:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/inntektsmelding:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -30,12 +31,12 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :medl-core:build
+        run: ./gradlew :inntektsmelding-stub:build
       - name: Build and publish Docker image
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker build --tag ${IMAGE} . -f ./apps/testnorge-medl/Dockerfile
+          docker build --tag ${IMAGE} . -f ./apps/inntektsmelding-stub/Dockerfile
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}
       - name: Deploy to nais
@@ -44,4 +45,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/testnorge-medl/nais.yaml
+          RESOURCE: apps/inntektsmelding-stub/nais.yaml
