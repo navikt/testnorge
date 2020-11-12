@@ -20,7 +20,7 @@ bootJar {
 
 dependencies {
 
-    api project(':testnorge-auto-config-dependency-analysis')
+    implementation project(':testnorge-auto-config-dependency-analysis')
     implementation project(':testnorge-core')
     implementation project(':testnorge-slack')
     implementation project(':testnorge-oauth2')
