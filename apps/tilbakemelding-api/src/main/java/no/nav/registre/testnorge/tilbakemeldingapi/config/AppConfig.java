@@ -18,8 +18,7 @@ import no.nav.registre.testnorge.libs.slack.consumer.SlackConsumer;
 @Configuration
 @Import({
         ApplicationCoreConfig.class,
-        SecureOAuth2ServerToServerConfiguration.class,
-        AutoRegistrationDependencyAnalysisConfiguration.class
+        SecureOAuth2ServerToServerConfiguration.class
 })
 @RequiredArgsConstructor
 public class AppConfig {
