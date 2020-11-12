@@ -3,7 +3,7 @@ CLIENT_ID: 6554cc46-d5a9-4b9b-aafb-775b9ee09696
 
 spring:
   application:
-    version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     name: testnorge-tilbakemelding-api
     description: App for innsending av tilbakemeldinger. Tilbakemeldingene blir publisert i slack
   security:

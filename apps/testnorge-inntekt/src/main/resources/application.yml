@@ -1,6 +1,6 @@
 application:
   name: testnorge-inntekt
-  version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
+  version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
 
 spring:
   application:

@@ -12,7 +12,7 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
 
 @Slf4j
-@DependencyOn("statisk-data-forvalter")
+@DependencyOn("testnorge-statisk-data-forvalter")
 @RequiredArgsConstructor
 public class GetFasteDataIdenterCommand implements Callable<PersonDTO> {
     private final WebClient webClient;

@@ -1,6 +1,6 @@
 application:
-  version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
-  name: synt-arbeidsforhold-api
+  version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
+  name: testnorge-synt-arbeidsforhold-api
 
 consumers:
   synt-arbeidsforhold:

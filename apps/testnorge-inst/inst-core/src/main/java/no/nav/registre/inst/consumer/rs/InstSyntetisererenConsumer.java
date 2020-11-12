@@ -17,7 +17,7 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
-@DependencyOn(value = "syntrest", external = true)
+@DependencyOn"syntrest")
 public class InstSyntetisererenConsumer {
 
     private static final ParameterizedTypeReference<List<Institusjonsopphold>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

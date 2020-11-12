@@ -20,7 +20,7 @@ import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAcc
 
 
 @Component
-@DependencyOn("person-api")
+@DependencyOn("testnorge-person-api")
 public class PersonConsumer {
     private final WebClient webClient;
     private final ClientCredential clientCredential;

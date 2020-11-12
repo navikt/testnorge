@@ -1,6 +1,6 @@
 spring:
   application:
-    name: statistikk-api
+    name: testnorge-statistikk-api
   flyway:
     locations: classpath:db/migration
   jpa:
@@ -10,5 +10,5 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
 application:
-  version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
+  version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
   name: statistikk-api

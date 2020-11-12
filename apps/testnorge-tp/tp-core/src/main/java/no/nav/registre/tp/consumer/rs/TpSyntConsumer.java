@@ -17,7 +17,7 @@ import no.nav.registre.tp.database.models.TYtelse;
 
 @Slf4j
 @Component
-@DependencyOn(value = "syntrest", external = true)
+@DependencyOn"syntrest")
 public class TpSyntConsumer {
 
     private static final ParameterizedTypeReference<List<TYtelse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

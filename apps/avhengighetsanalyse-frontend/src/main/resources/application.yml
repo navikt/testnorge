@@ -3,8 +3,8 @@ CLIENT_ID: fed74251-7f43-4b6d-a838-11dbccda82c3
 
 spring:
   application:
-    name: "avhengighetsanalyse-frontend"
-    version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
+    name: testnorge-avhengighetsanalyse-frontend
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     description: App for visning av avhengigheter i testnorge
   cloud:
     vault:
