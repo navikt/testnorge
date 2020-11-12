@@ -37,5 +37,5 @@ spec:
   vault:
     enabled: true
     paths:
-      - kvPath: /kv/preprod/fss/testnorge-ident-service/default
+      - kvPath: /kv/preprod/fss/testnorge-ident-service/dolly
         mountPath: /var/run/secrets/nais.io/vault
