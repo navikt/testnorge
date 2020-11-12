@@ -114,7 +114,7 @@ public class VedtakshistorikkService {
                 identerIAldersgruppe = serviceUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe);
             }
         } catch (RuntimeException e) {
-            log.error("Kunne ikke hente ident fra hodejegeren");
+            log.error("Kunne ikke hente ident fra hodejegeren.", e);
         }
 
         if (!identerIAldersgruppe.isEmpty()) {
