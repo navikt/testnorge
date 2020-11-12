@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -27,14 +26,14 @@ public class TpsRequestSender {
 
     @SneakyThrows
     public TpsServiceRoutineResponse sendTpsRequest(TpsServiceRoutineRequest request, TpsRequestContext context, long timeout) {
-        Optional<TpsServiceRoutineDefinitionRequest> serviceRoutine = findServiceRoutineByName.execute();
-        if (serviceRoutine.isPresent()) {
 
-            Response response = tpsRequestService.executeServiceRutineRequest(request, serviceRoutine.get(), context, timeout);
-            log.info(response.getRawXml());
-            return rsTpsResponseMappingUtils.convertToTpsServiceRutineResponse(response);
+        Optional<TpsServiceRoutineDefinitionRequest> serviceRoutine = findServiceRoutineByName.execute();
+        if (serviceRoutine.isEmpty()) {
+            throw new RuntimeException("ServiceRoutine ikke funnet, kan ikke sende request til TPS");
         }
-        return null;
+        Response response = tpsRequestService.executeServiceRutineRequest(request, serviceRoutine.get(), context, timeout);
+        log.info(response.getRawXml());
+        return rsTpsResponseMappingUtils.convertToTpsServiceRutineResponse(response);
     }
 
     public TpsServiceRoutineResponse sendTpsRequest(TpsServiceRoutineRequest request, TpsRequestContext context) {
