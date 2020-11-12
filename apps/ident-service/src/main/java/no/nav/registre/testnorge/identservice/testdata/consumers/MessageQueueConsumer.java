@@ -2,6 +2,7 @@ package no.nav.registre.testnorge.identservice.testdata.consumers;
 
 import com.ibm.mq.jms.MQQueue;
 import com.ibm.msg.client.wmq.compat.jms.internal.JMSC;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +16,7 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
-
+@Slf4j
 public class MessageQueueConsumer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageQueueConsumer.class);
@@ -23,9 +24,9 @@ public class MessageQueueConsumer {
 
     private final String requestQueueName;
     private final ConnectionFactory connectionFactory;
-    @Value("${mq.username}")
+    @Value("${MQ_USERNAME}")
     private String username;
-    @Value("${mq.password}")
+    @Value("${MQ_PASSWORD}")
     private String password;
 
     public MessageQueueConsumer(
@@ -39,6 +40,7 @@ public class MessageQueueConsumer {
     public String sendMessage(String requestMessageContent, long timeout) throws JMSException {
 
         TextMessage responseMessage;
+        log.info("Kobler til MQ med brukernavn: " + username);
         try (Connection connection = connectionFactory.createConnection(username, password)) {
             connection.start();
 
