@@ -42,7 +42,6 @@ public class MessageQueueConsumer {
     public String sendMessage(String requestMessageContent, long timeout) throws JMSException {
 
         TextMessage responseMessage;
-        log.info("Kobler til MQ med brukernavn: " + username + " og passord: " + password); //TODO Fjerne denne loggingen
         try (Connection connection = connectionFactory.createConnection(username, password)) {
             connection.start();
 

@@ -62,7 +62,7 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
         JsonNode node = xmlMapper.readTree(response.getXml().getBytes());
         JsonNode tpsSvar = nonNull(node.get("tpsSvar")) ? node.get("tpsSvar") : node;
         JsonNode tpsSvarStatus = nonNull(tpsSvar.get("svarStatus")) ? tpsSvar.get("svarStatus") : node;
-        JsonNode tpsStatusKode = nonNull(tpsSvarStatus.get("returStatus")) ? tpsSvar.get("returStatus") : node;
+        JsonNode tpsStatusKode = nonNull(tpsSvarStatus.get("returStatus")) ? tpsSvarStatus.get("returStatus") : node;
         log.info(tpsStatusKode.asText());
         log.info(node.asText());
 
