@@ -13,6 +13,9 @@ bootJar {
 
 dependencies {
     implementation project(':testnorge-core')
+    implementation project(':testnorge-dependency-analysis')
+    implementation project(':testnorge-auto-dependency-analysis')
+
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server:2.3.4.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
     implementation 'org.springdoc:springdoc-openapi-ui:1.4.6'

@@ -7,17 +7,18 @@ bootJar {
     archiveFileName = "app.jar"
 }
 dependencies {
-
-
     compile('com.google.guava:guava') {
         version {
             strictly '20.0'
         }
     }
 
-
     implementation project(':testnorge-core')
     implementation project(':testnorge-avro-schema')
+    implementation project(':testnorge-common-command')
+    implementation project(':testnorge-data-transfer-objects')
+    implementation project(':testnorge-oauth2')
+    implementation project(':testnorge-database')
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
@@ -27,16 +28,12 @@ dependencies {
     implementation 'org.apache.kafka:kafka-clients:2.5.1'
     implementation 'io.confluent:kafka-avro-serializer:5.5.0'
     implementation 'org.springframework.kafka:spring-kafka:2.5.6.RELEASE'
-    implementation project(':testnorge-common-command')
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:2.2.5.RELEASE'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:2.2.5.RELEASE'
     implementation 'org.springframework.security:spring-security-web:5.3.4.RELEASE'
     implementation 'org.springframework.security:spring-security-config:5.3.4.RELEASE'
     implementation 'org.springframework.security:spring-security-core:5.3.4.RELEASE'
-    implementation project(':testnorge-data-transfer-objects')
-    implementation project(':testnorge-oauth2')
     implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
-    implementation project(':testnorge-database')
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.3.4.RELEASE'
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases:2.2.5.RELEASE'
     implementation 'com.h2database:h2:1.4.200'
