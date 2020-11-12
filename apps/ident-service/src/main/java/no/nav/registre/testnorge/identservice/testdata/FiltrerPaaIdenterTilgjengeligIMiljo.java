@@ -9,6 +9,7 @@ import no.nav.registre.testnorge.identservice.testdata.servicerutiner.TpsRequest
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.requests.TpsRequestContext;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.requests.User;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.response.TpsServiceRoutineResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,12 +20,14 @@ import java.net.http.HttpConnectTimeoutException;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.registre.testnorge.identservice.testdata.consumers.config.MessageQueueConsumerConstants.SEARCH_ENVIRONMENT;
-import static no.nav.registre.testnorge.identservice.testdata.consumers.config.MessageQueueConsumerConstants.TPS_SERVICERUTINE;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class FiltrerPaaIdenterTilgjengeligIMiljo {
+
+    @Value("${mq.tps.serviceroutine}")
+    public final String tpsServicerutine;
 
     private static final User DOLLY_USER = new User("Dolly", "Dolly");
 
@@ -41,7 +44,7 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
         request.setFnr(new String[]{ident});
         request.setAksjonsKode("A");
         request.setAksjonsKode2("2");
-        request.setServiceRutinenavn(TPS_SERVICERUTINE);
+        request.setServiceRutinenavn(tpsServicerutine);
 
         TpsServiceRoutineResponse tpsResponse = tpsRequestSender.sendTpsRequest(request, context);
 

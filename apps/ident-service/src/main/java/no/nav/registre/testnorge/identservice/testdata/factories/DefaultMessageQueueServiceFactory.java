@@ -12,12 +12,6 @@ import org.springframework.stereotype.Component;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 
-import static no.nav.registre.testnorge.identservice.testdata.consumers.config.MessageQueueConsumerConstants.CHANNEL_HOSTNAME;
-import static no.nav.registre.testnorge.identservice.testdata.consumers.config.MessageQueueConsumerConstants.CHANNEL_NAME;
-import static no.nav.registre.testnorge.identservice.testdata.consumers.config.MessageQueueConsumerConstants.CHANNEL_PORT;
-import static no.nav.registre.testnorge.identservice.testdata.consumers.config.MessageQueueConsumerConstants.CHANNEL_POSTFIX;
-import static no.nav.registre.testnorge.identservice.testdata.consumers.config.MessageQueueConsumerConstants.QUEUE_NAME;
-
 /**
  * Consumes information from Fasit and produces MessageQueueServices
  */
@@ -33,6 +27,21 @@ public class DefaultMessageQueueServiceFactory implements MessageQueueServiceFac
     @Value("${mq.password}")
     private String password;
 
+    @Value("${mq.channel.postfix}")
+    public final String channelPostfix;
+    @Value("${mq.channel.name}")
+    public final String channelName;
+    @Value("${mq.channel.hostname}")
+    public final String channelHostname;
+    @Value("${mq.channel.port}")
+    public final String channelPort;
+
+    @Value("${mq.queue.name}")
+    public final String queueName;
+
+    @Value("${mq.tps.serviceroutine}")
+    public final String tpsServicerutine;
+
     /**
      * Instantiates a new MessageQueueConsumer in the specified environment
      *
@@ -43,11 +52,11 @@ public class DefaultMessageQueueServiceFactory implements MessageQueueServiceFac
     @Override
     public MessageQueueConsumer createMessageQueueConsumer(String environment, String requestQueueAlias, boolean isQueName) throws JMSException {
 
-        QueueManager queueManager = new QueueManager(CHANNEL_NAME, CHANNEL_HOSTNAME, CHANNEL_PORT, null);
-        Queue requestQueue = new Queue(QUEUE_NAME, null);
+        QueueManager queueManager = new QueueManager(channelName, channelHostname, channelPort, null);
+        Queue requestQueue = new Queue(queueName, null);
 
         ConnectionFactoryFactoryStrategy connectionFactoryFactoryStrategy = new QueueManagerConnectionFactoryFactoryStrategy(queueManager,
-                (environment).toUpperCase() + CHANNEL_POSTFIX);
+                (environment).toUpperCase() + channelPostfix);
 
         ConnectionFactory connectionFactory = connectionFactoryFactory.createConnectionFactory(connectionFactoryFactoryStrategy);
 
