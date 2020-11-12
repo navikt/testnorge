@@ -16,7 +16,7 @@ public class IdentController {
     private final IdentAppService identAppService;
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<String> checkIdent(@PathVariable String id) {
+    public ResponseEntity<String> checkIdentExistsInProd(@PathVariable String id) {
 
         return identAppService.finnLedigeIdenter(id);
     }

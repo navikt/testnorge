@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.identservice;
+package no.nav.registre.testnorge.identservice.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;

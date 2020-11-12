@@ -14,10 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Map;
+import java.net.http.HttpConnectTimeoutException;
 
 import static java.util.Objects.nonNull;
-import static no.nav.registre.testnorge.identservice.testdata.utils.TpsRequestParameterCreator.opprettParametereForM201TpsRequest;
+import static no.nav.registre.testnorge.identservice.testdata.consumers.config.MessageQueueConsumerConstants.SEARCH_ENVIRONMENT;
+import static no.nav.registre.testnorge.identservice.testdata.consumers.config.MessageQueueConsumerConstants.TPS_SERVICERUTINE;
 
 @Slf4j
 @Service
@@ -30,18 +31,16 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
 
     public ResponseEntity<String> filtrerPaaIdenter(String ident) throws IOException {
 
-        Map<String, Object> tpsRequestParameters = opprettParametereForM201TpsRequest(ident, "A2");
-
         TpsRequestContext context = new TpsRequestContext();
         context.setUser(DOLLY_USER);
-        context.setEnvironment("q2");
+        context.setEnvironment(SEARCH_ENVIRONMENT);
 
         TpsHentFnrHistMultiServiceRoutineRequest request = new TpsHentFnrHistMultiServiceRoutineRequest();
         request.setAntallFnr("1");
         request.setFnr(new String[]{ident});
         request.setAksjonsKode("A");
         request.setAksjonsKode2("2");
-        request.setServiceRutinenavn(tpsRequestParameters.get("serviceRutinenavn").toString());
+        request.setServiceRutinenavn(TPS_SERVICERUTINE);
 
         TpsServiceRoutineResponse tpsResponse = tpsRequestSender.sendTpsRequest(request, context);
 
@@ -52,7 +51,7 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
 
         if (response.getXml().isEmpty()) {
             log.error("Request mot TPS fikk timeout. Sjekk av tilgjengelighet på ident i miljoe feilet.");
-            throw new RuntimeException("TPS Timeout");
+            throw new HttpConnectTimeoutException("TPS Timeout");
         }
 
         XmlMapper xmlMapper = new XmlMapper();

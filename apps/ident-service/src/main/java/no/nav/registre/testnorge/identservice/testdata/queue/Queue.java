@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.identservice.testdata.fasit;
+package no.nav.registre.testnorge.identservice.testdata.queue;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

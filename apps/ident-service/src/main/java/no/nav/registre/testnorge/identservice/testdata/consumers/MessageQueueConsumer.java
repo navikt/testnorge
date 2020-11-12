@@ -2,9 +2,9 @@ package no.nav.registre.testnorge.identservice.testdata.consumers;
 
 import com.ibm.mq.jms.MQQueue;
 import com.ibm.msg.client.wmq.compat.jms.internal.JMSC;
-import no.nav.registre.testnorge.identservice.testdata.consumers.config.MessageQueueConsumerConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -21,6 +21,11 @@ public class MessageQueueConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageQueueConsumer.class);
     private static final String FEIL_KOENAVN = "Feil i koenavn eller miljoe";
 
+    @Value("${mq.username}")
+    String username;
+    @Value("${mq.password}")
+    String password;
+
     private String requestQueueName;
     private ConnectionFactory connectionFactory;
 
@@ -32,12 +37,12 @@ public class MessageQueueConsumer {
     public String sendMessage(String requestMessageContent, long timeout) throws JMSException {
 
         TextMessage responseMessage;
-        try (Connection connection = connectionFactory.createConnection(MessageQueueConsumerConstants.USERNAME, MessageQueueConsumerConstants.PASSWORD)) {
+        try (Connection connection = connectionFactory.createConnection(username, password)) {
             connection.start();
 
             try (Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)) {
 
-        /* Prepare destinations */
+                /* Prepare destinations */
                 Destination requestDestination = session.createQueue(requestQueueName);
 
                 Destination responseDestination;

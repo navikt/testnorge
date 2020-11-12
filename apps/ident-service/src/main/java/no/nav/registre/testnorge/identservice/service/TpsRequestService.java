@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import javax.jms.JMSException;
 import java.io.IOException;
 
+import static no.nav.registre.testnorge.identservice.testdata.consumers.config.MessageQueueConsumerConstants.SEARCH_ENVIRONMENT;
+
 @Service
 @RequiredArgsConstructor
 public class TpsRequestService {
@@ -29,7 +31,7 @@ public class TpsRequestService {
             throws JMSException, IOException {
 
         MessageQueueConsumer messageQueueConsumer =
-                messageQueueServiceFactory.createMessageQueueConsumer("q2", serviceRoutine.getConfig().getRequestQueue(), false);
+                messageQueueServiceFactory.createMessageQueueConsumer(SEARCH_ENVIRONMENT, serviceRoutine.getConfig().getRequestQueue(), false);
 
         tpsRequest.setServiceRutinenavn(removeTestdataFromServicerutinenavn(tpsRequest.getServiceRutinenavn()));
         String xml = xmlMapper.writeValueAsString(tpsRequest);
