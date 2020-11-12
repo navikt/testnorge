@@ -23,24 +23,21 @@ public class DefaultMessageQueueServiceFactory implements MessageQueueServiceFac
     private final ConnectionFactoryFactory connectionFactoryFactory;
 
     @Value("${mq.username}")
-    private String username;
+    private final String username;
     @Value("${mq.password}")
-    private String password;
+    private final String password;
 
     @Value("${mq.channel.postfix}")
-    public String channelPostfix;
+    private final String channelPostfix;
     @Value("${mq.channel.name}")
-    public String channelName;
+    private final String channelName;
     @Value("${mq.channel.hostname}")
-    public String channelHostname;
+    private final String channelHostname;
     @Value("${mq.channel.port}")
-    public String channelPort;
+    private final String channelPort;
 
     @Value("${mq.queue.name}")
-    public String queueName;
-
-    @Value("${mq.tps.serviceroutine}")
-    public String tpsServicerutine;
+    private final String queueName;
 
     /**
      * Instantiates a new MessageQueueConsumer in the specified environment
