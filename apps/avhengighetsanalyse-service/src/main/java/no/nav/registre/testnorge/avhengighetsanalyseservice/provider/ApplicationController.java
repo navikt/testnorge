@@ -44,6 +44,7 @@ public class ApplicationController {
     @DeleteMapping("/{name}")
     public ResponseEntity<HttpStatus> deleteApplication(@PathVariable("name") String name) {
         adapter.deleteApplication(name);
+        dependenciesAdapter.registerDependenciesHistory();
         return ResponseEntity.noContent().build();
     }
 }
