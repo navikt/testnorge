@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/testnorge-aareg/**
+      - libs/testnorge-core/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/aareg:${{ github.sha }}

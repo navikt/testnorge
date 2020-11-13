@@ -3,8 +3,8 @@ CLIENT_ID: 6554cc46-d5a9-4b9b-aafb-775b9ee09696
 
 spring:
   application:
-    version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
-    name: tilbakemelding-api
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
+    name: testnorge-tilbakemelding-api
     description: App for innsending av tilbakemeldinger. Tilbakemeldingene blir publisert i slack
 
 consumer:
@@ -12,3 +12,6 @@ consumer:
     token: ${SLACK_TOKEN}
     baseUrl: https://slack.com
     channel: ${SLACK_CHANNEL}
+  profil-api:
+    url: https://testnorge-profil-api.dev.adeo.no
+    client-id: 81d0a23d-20ef-49de-8761-2e7917bc9238

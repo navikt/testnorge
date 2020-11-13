@@ -31,7 +31,7 @@ public class GetOppsummeringsdokumentetCommand implements Callable<Oppsummerings
             return webClient
                     .get()
                     .uri(builder -> builder
-                            .path("/api/v1/oppsummeringsdokumentet/{orgnummer}/{kalendermaaned}")
+                            .path("/api/v1/oppsummeringsdokumenter/{orgnummer}/{kalendermaaned}")
                             .build(orgnummer, kalendermaaned)
                     )
                     .header("miljo", this.miljo)

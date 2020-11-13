@@ -13,6 +13,6 @@ spring:
   flyway:
     enabled: false
   application:
-    version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     name: mn-person-service
     desciption: API for å hente personer fra Mini-Norge

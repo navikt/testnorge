@@ -1,10 +1,10 @@
 application:
-  version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
+  version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
   name: rapportering-api
 
 spring:
   application:
-    name: rapportering-api
+    name: testnorge-rapportering-api
   flyway:
     locations: classpath:db/migration
   jpa:

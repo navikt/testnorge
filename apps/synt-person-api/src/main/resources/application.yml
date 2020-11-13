@@ -1,6 +1,6 @@
 spring.application:
-  version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
-  name: synt-person-api
+  version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
+  name: testnorge-synt-person-api
   desciption: API for opprettelse av syntetiske personer
 
 consumers.syntrest.url: https://syntrest.dev.adeo.no/api

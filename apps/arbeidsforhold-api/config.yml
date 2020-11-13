@@ -38,5 +38,4 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://testnorge-arbeidsforhold-api.nais.preprod.local"
     - "https://testnorge-arbeidsforhold-api.dev.adeo.no"

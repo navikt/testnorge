@@ -12,7 +12,7 @@ import no.nav.registre.testnorge.libs.dto.statistikk.v1.StatistikkType;
 
 @Slf4j
 @Component
-@DependencyOn("statistikk-api")
+@DependencyOn("testnorge-statistikk-api")
 public class StatistikkConsumer {
     private final RestTemplate restTemplate;
     private final String url;

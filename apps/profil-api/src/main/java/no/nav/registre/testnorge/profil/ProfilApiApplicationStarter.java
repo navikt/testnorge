@@ -4,12 +4,18 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
+import no.nav.registre.testnorge.libs.autoconfigdependencyanalysis.config.DependencyAnalysisAutoConfiguration;
 import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
 import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerConfiguration;
 
 @SpringBootApplication
-@Import(value = {ApplicationCoreConfig.class, SecureOAuth2ServerToServerConfiguration.class})
+@Import({
+        ApplicationCoreConfig.class,
+        SecureOAuth2ServerToServerConfiguration.class,
+        DependencyAnalysisAutoConfiguration.class
+})
 public class ProfilApiApplicationStarter {
+
     public static void main(String[] args) {
         SpringApplication.run(ProfilApiApplicationStarter.class, args);
     }

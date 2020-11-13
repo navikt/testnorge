@@ -16,6 +16,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.arbeidsforhold.adapter.OppsummeringsdokumentetAdapter;
 import no.nav.registre.testnorge.arbeidsforhold.domain.Oppsummeringsdokumentet;
@@ -23,10 +25,18 @@ import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.Oppsummeringsdokumen
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/oppsummeringsdokumentet")
+@RequestMapping("/api/v1/oppsummeringsdokumenter")
 @RequiredArgsConstructor
 public class OppsummeringsdokumentetController {
     private final OppsummeringsdokumentetAdapter oppsummeringsdokumentetAdapter;
+
+    @GetMapping
+    public ResponseEntity<List<OppsummeringsdokumentetDTO>> getAllOpplysningspliktig(
+            @RequestHeader("miljo") String miljo
+    ) {
+        List<Oppsummeringsdokumentet> oppsummeringsdokumentets = oppsummeringsdokumentetAdapter.fetchAll(miljo);
+        return ResponseEntity.ok(oppsummeringsdokumentets.stream().map(Oppsummeringsdokumentet::toDTO).collect(Collectors.toList()));
+    }
 
     @PutMapping
     public ResponseEntity<HttpStatus> createOpplysningspliktig(

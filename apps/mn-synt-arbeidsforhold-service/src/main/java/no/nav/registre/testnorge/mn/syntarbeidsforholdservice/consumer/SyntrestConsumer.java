@@ -45,15 +45,15 @@ public class SyntrestConsumer {
         var dto = arbeidsforhold.toSyntrestDTO(kaldermaaned);
         try {
             ArbeidsforholdResponse response = new GenerateNextArbeidsforholdCommand(webClient, dto).call();
-            return new Arbeidsforhold(response, arbeidsforhold.getIdent(), arbeidsforhold.getArbeidsforholdId());
+            return new Arbeidsforhold(response, arbeidsforhold.getIdent(), arbeidsforhold.getArbeidsforholdId(), arbeidsforhold.getVirksomhentsnummer());
         } catch (WebClientResponseException.InternalServerError e) {
             log.error("Feil med opprellese av: {}", objectMapper.writeValueAsString(dto), e);
             throw e;
         }
     }
 
-    public Arbeidsforhold getFirstArbeidsforhold(LocalDate startdato, String ident) {
+    public Arbeidsforhold getFirstArbeidsforhold(LocalDate startdato, String ident, String virksomhetsnummer) {
         ArbeidsforholdResponse response = new GenerateStartArbeidsforholdCommand(webClient, startdato).call();
-        return new Arbeidsforhold(response, ident);
+        return new Arbeidsforhold(response, ident, virksomhetsnummer);
     }
 }

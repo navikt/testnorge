@@ -51,22 +51,22 @@ public class Arbeidsforhold {
     private String sisteDatoForStillingsprosentendring;
 
     @JsonAlias({"PERMISJON_MED_FORELDREPENGER", "permisjonMedForeldrePenger"})
-    private float permisjonMedForeldrePenger;
+    private Integer permisjonMedForeldrePenger;
 
     @JsonAlias({"PERMITTERING", "permittering"})
-    private float permittering;
+    private Integer permittering;
 
     @JsonAlias({"PERMISJON", "permisjon"})
-    private float permisjon;
+    private Integer permisjon;
 
     @JsonAlias({"PERMISJON_VED_MILITAERTJENESTE", "permisjonVedMilitaertjeneste"})
-    private float permisjonVedMilitaertjeneste;
+    private Integer permisjonVedMilitaertjeneste;
 
     @JsonAlias({"VELFERDSPERMISJON", "velferdspermisjon"})
-    private float velferdspermisjon;
+    private Integer velferdspermisjon;
 
     @JsonAlias({"UTDANNINGSPERMISJON", "utdanningspermisjon"})
-    private float utdanningspermisjon;
+    private Integer utdanningspermisjon;
 
     @JsonAlias({"PERMISJONER", "permisjoner"})
     private List<Permisjon> permisjoner;

@@ -14,7 +14,7 @@ import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
 
 @Slf4j
-@DependencyOn("synt-sykemelding-api")
+@DependencyOn("testnorge-synt-sykemelding-api")
 @RequiredArgsConstructor
 public class CreateSyntSykemeldingCommand implements Callable<Void> {
     private final RestTemplate restTemplate;

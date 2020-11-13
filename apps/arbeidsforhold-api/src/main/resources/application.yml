@@ -4,8 +4,8 @@ CLIENT_ID: 1b2f24c8-a426-47b1-8ff1-7905d6dfddb5
 
 spring:
   application:
-    name: arbeidsforhold-api
-    version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
+    name: testnorge-arbeidsforhold-api
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     description: Opprettelse av arbeidsforhold
 
 

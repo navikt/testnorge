@@ -13,7 +13,7 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component
-@DependencyOn("populasjoner-api")
+@DependencyOn("testnorge-populasjoner-api")
 public class PopulasjonerConsumer {
 
     private final RestTemplate restTemplate;

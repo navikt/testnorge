@@ -2,6 +2,7 @@ name: Deploy mn-synt-arbeidsforhold-service
 
 on:
   push:
+    branches: master
     paths:
       - apps/mn-synt-arbeidsforhold-service/**
       - libs/testnorge-core/**
