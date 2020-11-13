@@ -49,11 +49,7 @@ jobs:
           COMMIT=$(git rev-parse --short=12 HEAD)
           VERSION="$TIME-$COMMIT"
 
-          ./gradlew :testnorge-avro-schema:build -PreleaseVersion=$VERSION
+          ./gradlew testnorge-avro-schema:publish -PreleaseVersion=$VERSION
 
           git tag -a $VERSION -m "Tag release version"
           git push origin $VERSION
-      - uses: actions/upload-artifact@v2
-        with:
-          path: |
-            libs/testnorge-avro-schema/build/libs/
