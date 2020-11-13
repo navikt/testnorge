@@ -9,8 +9,8 @@ spring:
           #The client_id of this application
           accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
   application:
-    version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
-    name: person-api
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
+    name: testnorge-person-api
     desciption: API for opprettelse av personer
 
 system:

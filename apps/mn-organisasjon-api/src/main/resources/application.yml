@@ -5,7 +5,7 @@ CLIENT_ID: a9109f54-8cae-4af2-98e3-8c56a1f5c9ad
 spring:
   application:
     name: mn-organisasjon-api
-    version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     description: Applikasjon for å hente/opprette Mini-Norge EREG populasjon.
   jpa:
     open-in-view: false

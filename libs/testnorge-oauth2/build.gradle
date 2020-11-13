@@ -12,6 +12,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator:2.3.4.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-webflux:2.3.2.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
+    implementation 'org.springframework.security:spring-security-oauth2-client:5.3.4.RELEASE'
 }
 
 group = 'no.nav.registre.testnorge.libs'

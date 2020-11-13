@@ -18,7 +18,7 @@ import no.nav.registre.testnorge.libs.dto.hendelse.v1.HendelseDTO;
 import no.nav.registre.testnorge.libs.dto.hendelse.v1.HendelseType;
 
 @Slf4j
-@DependencyOn("hendelse-api")
+@DependencyOn("testnorge-hendelse-api")
 @RequiredArgsConstructor
 public class GetHendelseCommand implements Callable<List<HendelseDTO>> {
     private final RestTemplate restTemplate;

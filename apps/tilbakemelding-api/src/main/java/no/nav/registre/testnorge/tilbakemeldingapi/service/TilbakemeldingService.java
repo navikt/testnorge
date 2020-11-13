@@ -24,7 +24,6 @@ public class TilbakemeldingService {
     }
 
     public void publish(Tilbakemelding tilbakemelding) {
-
         String visningsNavn = tilbakemelding.getIsAnonym() ? "Anonym" : profilApiConsumer.getBruker().getVisningsNavn();
         slackConsumer.publish(tilbakemelding.toSlackMessage(channel, visningsNavn));
     }

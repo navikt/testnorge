@@ -3,8 +3,8 @@ CLIENT_ID: fed74251-7f43-4b6d-a838-11dbccda82c3
 
 spring:
   application:
-    name: "avhengighetsanalyse-frontend"
-    version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
+    name: testnorge-avhengighetsanalyse-frontend
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     description: App for visning av avhengigheter i testnorge
   cloud:
     vault:
@@ -27,41 +27,9 @@ spring:
   main:
     banner-mode: off
 
-dependencies:
-  urls:
-    - https://testnorge-arbeidsforhold-api.dev.adeo.no/dependencies
-    - https://testnorge-helsepersonell-api.dev.adeo.no/dependencies
-    - https://testnorge-hendelse-api.dev.adeo.no/dependencies
-    - https://inntektsmelding-stub.dev.adeo.no/dependencies
-    - https://orkestratoren.dev.adeo.no/dependencies
-    - https://testnorge-organisasjon-api.dev.adeo.no/dependencies
-    - https://testnorge-person-api.dev.adeo.no/dependencies
-    - https://testnorge-profil-api.dev.adeo.no/dependencies
-    - https://testnorge-rapportering-api.dev.adeo.no/dependencies
-    - https://testnorge-statistikk-api.dev.adeo.no/dependencies
-    - https://testnorge-sykemelding-api.dev.adeo.no/dependencies
-    - https://testnorge-synt-arbeidsforhold-api.dev.adeo.no/dependencies
-    - https://testnorge-synt-person-api.dev.adeo.no/dependencies
-    - https://testnorge-synt-sykemelding-api.dev.adeo.no/dependencies
-    - https://testnorge-statisk-data-forvalter.dev.adeo.no/dependencies
-    - https://testnorge-aareg.dev.adeo.no/dependencies
-    - https://testnorge-aaregstub.dev.adeo.no/dependencies
-    - https://testnorge-arena.dev.adeo.no/dependencies
-    - https://testnorge-ereg-mapper.dev.adeo.no/dependencies
-    - https://testnorge-frikort.dev.adeo.no/dependencies
-    - https://testnorge-hodejegeren.dev.adeo.no/dependencies
-    - https://testnorge-inntekt.dev.adeo.no/dependencies
-    - https://testnorge-inst.dev.adeo.no/dependencies
-    - https://testnorge-medl.dev.adeo.no/dependencies
-    - https://testnorge-nav-endringsmeldinger.dev.adeo.no/dependencies
-    - https://testnorge-populasjoner.dev.adeo.no/dependencies
-    - https://testnorge-sam.dev.adeo.no/dependencies
-    - https://testnorge-sigrun.dev.adeo.no/dependencies
-    - https://testnorge-skd.dev.adeo.no/dependencies
-    - https://testnorge-spion.dev.adeo.no/dependencies
-    - https://testnorge-token-provider.dev.adeo.no/dependencies
-    - https://testnorge-tp.dev.adeo.no/dependencies
-    - https://testnorge-tss.dev.adeo.no/dependencies
-    - https://udi-stub.dev.adeo.no/dependencies
-    - https://brreg-stub.dev.adeo.no/dependencies
-  threads: 6
+zuul:
+  routes:
+    testnorge-avhengighetsanalyse-service:
+      path: /api/**
+      url: https://testnorge-avhengighetsanalyse-service.dev.adeo.no/api
+      sensitiveHeaders: Cookie,Set-Cookie

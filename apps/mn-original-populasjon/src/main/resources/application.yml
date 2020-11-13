@@ -11,7 +11,7 @@ spring:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
   application:
-    version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     name: mn-original-populasjon
     desciption: API for opprettelse av populasjon til Mini-Norge
 

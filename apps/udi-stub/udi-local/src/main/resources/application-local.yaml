@@ -22,7 +22,7 @@ spring:
 
 
 application:
-  version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
+  version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
 
 spring.jpa.hibernate.ddl-auto: create-drop
 
