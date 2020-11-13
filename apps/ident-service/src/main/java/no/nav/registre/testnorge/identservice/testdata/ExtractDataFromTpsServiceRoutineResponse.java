@@ -3,7 +3,6 @@ package no.nav.registre.testnorge.identservice.testdata;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.identservice.testdata.response.ResponseStatus;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.response.TpsServiceRoutineResponse;
 
 import java.util.HashSet;
@@ -26,8 +25,6 @@ public final class ExtractDataFromTpsServiceRoutineResponse {
 
         Set<String> identer = new HashSet();
 
-        ResponseStatus status = (ResponseStatus) getArtifact(responseMap, "status");
-        if (!"12".equals(status.getReturStatus())) {
             for (int i = 1; i < antallIdenter + 1; i++) {
                 Map data = (Map) getArtifact(responseMap, "data" + i);
 
@@ -57,7 +54,6 @@ public final class ExtractDataFromTpsServiceRoutineResponse {
                     }
                 }
             }
-        }
         return identer;
     }
 
