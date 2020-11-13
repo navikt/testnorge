@@ -14,7 +14,7 @@ bootJar {
     archiveFileName = "app.jar"
 }
 
-project.tasks.publish.enabled = false
+
 
 
 wsimport {

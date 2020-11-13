@@ -11,7 +11,7 @@ bootJar {
     archiveFileName = "app.jar"
 }
 
-project.tasks.publish.enabled = false
+
 
 dependencies {
     implementation project(':testnorge-data-transfer-objects')
