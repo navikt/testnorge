@@ -30,7 +30,7 @@
         <commons-lang3.version>3.11</commons-lang3.version>
         <papertrailapp.version>1.0.0</papertrailapp.version>
         <logstash-logback-encoder.version>5.1</logstash-logback-encoder.version>
-        <testnorge-libs.version>2020.11.13-12.38-eb6fe14074b2</testnorge-libs.version>
+        <testnorge-libs.version>2020.11.13-13.14-1f4923c6cf11</testnorge-libs.version>
     </properties>
 
     <dependencyManagement>
