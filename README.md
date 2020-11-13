@@ -30,7 +30,6 @@ Gradle følger med prosjektet og `./gradlew build` vil derfor fungere. `gradle b
 
 ## Utviklerimage
 - Opprett Personal access tokens i Github og legg til token som systemvariabelen NAV_TOKEN (se forklaring over)
-- Legg til sertifikat til truststore: https://plugins.gradle.org, https://dl.bintray.com/gradle/gradle-plugins og https://repository-cdn.liferay.com/nexus/content/groups/public 
 - Opprett `gradle.properties` under `C:/Users/%USERNAME%/.gradle` med innhold (bytt ut truststorepassord og -path):
 ```
 systemProp.http.proxyHost=webproxy-utvikler.nav.no
@@ -42,7 +41,19 @@ systemProp.https.nonProxyHosts=localhost|127.0.0.1|*.local|*.adeo.no|*.nav.no|*.
 systemProp.javax.net.ssl.trustStorePassword=TRUSTSTORE_PASS
 systemProp.javax.net.ssl.trustStore=TRUSTSTORE_PATH
 ```
-
+- Legg til sertifikat til truststore: https://plugins.gradle.org, https://dl.bintray.com/gradle/gradle-plugins og https://repository-cdn.liferay.com/nexus/content/groups/public 
+    - Åpne URL i nettleser
+    - Trykk på hengelås til venstre for URL og klikk på "Sertifikat"
+    - Velg fanen "Detaljer" og klikk "Kopier til fil". Last ned DER-kodet binær. Merk at sertifikatet får filformat .cer
+    - Sertifikat legges til TrustStore ved hjelp av kommandoen:
+        ``keytool -import -trustcacerts -alias ALIAS -file DIN_DOWNLOAD_DIR/SERTIFIKAT_FILNAVN.cer -keystore PATH_TIL_KEYSTORE/KEYSTORE_FILNAVN.jts``
+- Hvis punktene over ikke er tilstrekkelig og prosjektet sliter med å hente pakker fra maven, forsøk å legge til denne 
+under repositories i `java-conventions.gradle` (MERK! Denne må fjernes igjen før commit):
+``` 
+maven {
+          url = uri('https://repo.adeo.no/repository/github-package-registry-navikt')
+      }
+```
 ## Dokumentasjon
 Enhver testnorge-applikasjon skal ha dokumentasjon i fila `<min-testnorge-app>/docs/Implementasjon.md`. Hver av disse filene må starte med
 ```
