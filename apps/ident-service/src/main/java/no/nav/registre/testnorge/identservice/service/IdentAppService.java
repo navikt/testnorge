@@ -6,6 +6,8 @@ import no.nav.registre.testnorge.identservice.testdata.FiltrerPaaIdenterTilgjeng
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class IdentAppService {
@@ -13,8 +15,8 @@ public class IdentAppService {
     private final FiltrerPaaIdenterTilgjengeligIMiljo filtrerPaaIdenterTilgjengeligIMiljo;
 
     @SneakyThrows
-    public ResponseEntity<String> finnLedigeIdenter(String ident) {
+    public ResponseEntity<List<String>> finnLedigeIdenter(List<String> identer) {
 
-        return filtrerPaaIdenterTilgjengeligIMiljo.filtrerPaaIdenter(ident);
+        return filtrerPaaIdenterTilgjengeligIMiljo.filtrerPaaIdenter(identer);
     }
 }

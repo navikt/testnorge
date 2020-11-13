@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.http.HttpConnectTimeoutException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -33,39 +35,39 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
 
     private final TpsRequestSender tpsRequestSender;
 
-    public ResponseEntity<String> filtrerPaaIdenter(String ident) throws IOException {
+    public ResponseEntity<List<String>> filtrerPaaIdenter(List<String> identer) throws IOException {
 
         TpsRequestContext context = new TpsRequestContext();
         context.setUser(DOLLY_USER);
         context.setEnvironment(SEARCH_ENVIRONMENT);
 
         TpsHentFnrHistMultiServiceRoutineRequest request = new TpsHentFnrHistMultiServiceRoutineRequest();
-        request.setAntallFnr("1");
-        request.setFnr(new String[]{ident});
+        request.setAntallFnr(String.valueOf(identer.size()));
+        request.setFnr(identer.toArray(String[]::new));
         request.setAksjonsKode("A");
         request.setAksjonsKode2("2");
         request.setServiceRutinenavn(tpsServicerutine);
 
         TpsServiceRoutineResponse tpsResponse = tpsRequestSender.sendTpsRequest(request, context);
 
-        return getDescriptiveMessage(ident, tpsResponse);
+        return getDescriptiveMessage(identer, tpsResponse);
     }
 
-    private ResponseEntity<String> getDescriptiveMessage(String ident, TpsServiceRoutineResponse response) throws IOException {
+    private ResponseEntity<List<String>> getDescriptiveMessage(List<String> identer, TpsServiceRoutineResponse response) throws IOException {
 
         if (isNull(response) || response.getXml().isEmpty()) {
             log.error("Request mot TPS fikk timeout. Sjekk av tilgjengelighet på ident i miljoe feilet.");
             throw new HttpConnectTimeoutException("TPS Timeout");
         }
+        List<String> identerFunnet = new ArrayList<>();
 
         XmlMapper xmlMapper = new XmlMapper();
         JsonNode node = xmlMapper.readTree(response.getXml().getBytes());
         JsonNode tpsSvar = nonNull(node.get("tpsSvar")) ? node.get("tpsSvar") : node;
         JsonNode tpsSvarStatus = nonNull(tpsSvar.get("svarStatus")) ? tpsSvar.get("svarStatus") : node;
         JsonNode tpsStatusKode = nonNull(tpsSvarStatus.get("returStatus")) ? tpsSvarStatus.get("returStatus") : node;
-        log.info(tpsStatusKode.asText());
         log.info(node.asText());
 
-        return tpsStatusKode.asText().contains("00") ? ResponseEntity.ok(ident) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return tpsStatusKode.asText().contains("00") ? ResponseEntity.ok(identerFunnet) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }

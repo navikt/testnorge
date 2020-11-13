@@ -5,7 +5,7 @@ spring:
   main:
     banner-mode: off
   application:
-    version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     name: ident-service
     description: App som håndterer service på identer benyttet av Dolly
   security:
