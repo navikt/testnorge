@@ -36,7 +36,9 @@ jobs:
           COMMIT=$(git rev-parse --short=12 HEAD)
           VERSION="$TIME-$COMMIT"
 
-          ./gradlew publish -PreleaseVersion=$VERSION
+          ./gradlew testnorge-avro-schema:publish -PreleaseVersion=$VERSION
+          ./gradlew testnorge-dependency-analysis:publish -PreleaseVersion=$VERSION
+          ./gradlew testnorge-data-transfer-objects:publish -PreleaseVersion=$VERSION
 
           git tag -a $VERSION -m "Tag release version"
           git push origin $VERSION
