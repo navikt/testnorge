@@ -7,8 +7,6 @@ bootJar {
     archiveFileName = "app.jar"
 }
 
-
-
 dependencies {
     compile('com.google.guava:guava') {
         version {

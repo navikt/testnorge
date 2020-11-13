@@ -7,9 +7,6 @@ bootJar {
     archiveFileName = "app.jar"
 }
 
-
-
-
 dependencyManagement {
     imports {
         mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR8'
