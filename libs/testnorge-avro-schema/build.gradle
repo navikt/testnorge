@@ -12,6 +12,7 @@ dependencies {
     implementation 'org.apache.avro:avro-maven-plugin:1.10.0'
 }
 
+
 group = 'no.nav.registre.testnorge.libs'
 description = 'testnorge-avro-schema'
 
