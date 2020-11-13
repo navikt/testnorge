@@ -15,7 +15,7 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ResponseStatus {
 
-    private String kode;
-    private String melding;
+    private String returStatus;
+    private String returMelding;
     private String utfyllendeMelding;
 }

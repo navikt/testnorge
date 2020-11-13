@@ -26,9 +26,9 @@ public final class ExtractDataFromTpsServiceRoutineResponse {
 
         Set<String> identer = new HashSet<>();
 
-        ResponseStatus status = (ResponseStatus) getArtifact(responseMap, "returStatus");
+        ResponseStatus status = (ResponseStatus) getArtifact(responseMap, "svarStatus");
         log.info(status.toString());
-        if (!"12".equals(status.getKode())) {
+        if (!"12".equals(status.getReturStatus())) {
             for (int i = 1; i < antallIdenter + 1; i++) {
                 Map data = (Map) getArtifact(responseMap, "data" + i);
 
