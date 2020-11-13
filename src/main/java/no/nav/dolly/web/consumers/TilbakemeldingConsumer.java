@@ -1,6 +1,5 @@
 package no.nav.dolly.web.consumers;
 
-import no.nav.dolly.web.dto.TilbakemeldingDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -10,11 +9,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import no.nav.dolly.web.config.RemoteApplicationsProperties;
+import no.nav.dolly.web.dto.TilbakemeldingDTO;
 import no.nav.dolly.web.security.TokenService;
 import no.nav.dolly.web.security.domain.AccessScopes;
 import no.nav.dolly.web.security.domain.AccessToken;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Service
+@DependencyOn("testnorge-tilbakemelding-api")
 public class TilbakemeldingConsumer {
     private final WebClient webClient;
     private final RemoteApplicationsProperties properties;
