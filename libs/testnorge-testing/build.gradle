@@ -13,6 +13,5 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.2'
 }
 
-
 group = 'no.nav.registre.testnorge.libs'
 description = 'testnorge-testing'
