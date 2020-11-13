@@ -22,6 +22,8 @@ public final class ExtractDataFromTpsServiceRoutineResponse {
 
         Map responseMap = (Map) tpsResponse.getResponse();
         log.info(responseMap.toString());
+        log.info(responseMap.get("data1").toString());
+        log.info(responseMap.get("antallFnr").toString());
         int antallIdenter = (int) responseMap.get("antallFM201");
 
         Set<String> identer = new HashSet<>();
