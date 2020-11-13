@@ -17,12 +17,6 @@ consumers:
 
 spring:
   application:
-    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
-    name: testnorge-person-export-api
+    version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
+    name: person-export-api
     description: Api for å eksportere personer.
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
