@@ -12,12 +12,6 @@ consumers:
 spring:
   flyway:
     enabled: false
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
   application:
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     name: mn-person-service

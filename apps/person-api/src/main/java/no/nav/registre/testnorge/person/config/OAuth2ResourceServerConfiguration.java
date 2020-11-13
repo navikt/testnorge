@@ -3,6 +3,7 @@ package no.nav.registre.testnorge.person.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,6 +24,7 @@ import java.util.List;
 @EnableWebSecurity
 @Order(1)
 @Configuration
+@Profile({"prod", "dev"})
 public class OAuth2ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 
     private final List<String> acceptedAudience;
