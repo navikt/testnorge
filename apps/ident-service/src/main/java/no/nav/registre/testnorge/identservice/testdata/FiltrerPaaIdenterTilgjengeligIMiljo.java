@@ -41,9 +41,12 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
         context.setUser(DOLLY_USER);
         context.setEnvironment(SEARCH_ENVIRONMENT);
 
+        String[] identerArray = new String[identer.size()];
+        identerArray = identer.toArray(identerArray);
+
         TpsHentFnrHistMultiServiceRoutineRequest request = new TpsHentFnrHistMultiServiceRoutineRequest();
         request.setAntallFnr(String.valueOf(identer.size()));
-        request.setFnr(identer.toArray(String[]::new));
+        request.setFnr(identerArray);
         request.setAksjonsKode("A");
         request.setAksjonsKode2("2");
         request.setServiceRutinenavn(tpsServicerutine);
