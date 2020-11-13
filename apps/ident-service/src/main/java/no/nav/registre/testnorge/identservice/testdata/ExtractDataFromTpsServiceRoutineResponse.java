@@ -20,10 +20,8 @@ public final class ExtractDataFromTpsServiceRoutineResponse {
 
     public static Set<String> trekkUtIdenterMedStatusFunnetFraResponse(TpsServiceRoutineResponse tpsResponse) {
 
-        log.info(tpsResponse.getResponse().toString());
-        log.info(tpsResponse.getXml());
-
         Map responseMap = (Map) tpsResponse.getResponse();
+        log.info(responseMap.toString());
         int antallIdenter = (int) responseMap.get("antallTotalt");
 
         Set<String> identer = new HashSet();
