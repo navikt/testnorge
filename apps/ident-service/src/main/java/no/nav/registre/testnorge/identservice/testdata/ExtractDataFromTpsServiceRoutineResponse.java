@@ -22,11 +22,11 @@ public final class ExtractDataFromTpsServiceRoutineResponse {
 
         Map responseMap = (Map) tpsResponse.getResponse();
         log.info(responseMap.toString());
-        int antallIdenter = (int) responseMap.get("antallFnr");
+        int antallIdenter = (int) responseMap.get("antallFM201");
 
         Set<String> identer = new HashSet<>();
 
-        ResponseStatus status = (ResponseStatus) getArtifact(responseMap, "status");
+        ResponseStatus status = (ResponseStatus) getArtifact(responseMap, "returStatus");
         log.info(status.toString());
         if (!"12".equals(status.getKode())) {
             for (int i = 1; i < antallIdenter + 1; i++) {
