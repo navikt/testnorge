@@ -1,7 +1,5 @@
 package no.nav.registre.testnorge.identservice.testdata;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.identservice.testdata.request.TpsHentFnrHistMultiServiceRoutineRequest;
@@ -62,9 +60,7 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
             throw new HttpConnectTimeoutException("TPS Timeout");
         }
 
-        XmlMapper xmlMapper = new XmlMapper();
-        JsonNode JsonResponse = xmlMapper.readTree(response.getXml().getBytes());
-        identer.removeAll(trekkUtIdenterMedStatusFunnetFraResponse(JsonResponse));
+        identer.removeAll(trekkUtIdenterMedStatusFunnetFraResponse(response));
 
         return !identer.isEmpty() ? ResponseEntity.ok(identer) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
