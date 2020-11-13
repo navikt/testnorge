@@ -37,7 +37,13 @@ dependencies {
 }
 
 group = 'no.nav.registre.testnorge'
-version = '1.0-SNAPSHOT'
+
+
+if (project.hasProperty("releaseVersion")) {
+    version = releaseVersion
+}
+
+
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 publishing {

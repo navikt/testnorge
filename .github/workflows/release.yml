@@ -2,7 +2,6 @@ name: Release
 
 on:
   push:
-    branches: master
     paths:
       - libs/**
 
@@ -11,13 +10,23 @@ jobs:
     name: Release modules
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Cache Maven dependencies
-        uses: actions/cache@v1
+      - uses: actions/checkout@v2
+      - name: Fetch git history
+        run: git fetch --unshallow
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v2
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-maven-
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Gradle cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
       - name: Set up JDK 1.11
         uses: actions/setup-java@v1
         with:
@@ -29,7 +38,7 @@ jobs:
           git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git
           git config --global user.email "dolly@nav.no"
           git config --global user.name "$GITHUB_ACTOR"
-      - name: Release with maven
+      - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
@@ -40,8 +49,7 @@ jobs:
           COMMIT=$(git rev-parse --short=12 HEAD)
           VERSION="$TIME-$COMMIT"
 
-          mvn -B versions:set -DnewVersion="$VERSION"
-          mvn -B versions:commit
-          mvn -B --settings maven-settings.xml deploy -Dmaven.wagon.http.pool=false -Dmaven.test.skip
+          ./gradlew publish -PreleaseVersion=$VERSION
+
           git tag -a $VERSION -m "Tag release version"
           git push origin $VERSION

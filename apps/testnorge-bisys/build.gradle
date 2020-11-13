@@ -10,6 +10,7 @@ plugins {
 bootJar {
     archiveFileName = "app.jar"
 }
+project.tasks.publish.enabled = false
 dependencies {
     implementation project(':testnorge-data-transfer-objects')
     implementation project(':testnorge-dependency-analysis')

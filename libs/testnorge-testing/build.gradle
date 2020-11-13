@@ -5,8 +5,7 @@
 plugins {
     id 'no.nav.registre.testnorge.java-conventions'
 }
-
-
+project.tasks.publish.enabled = false
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE'
     implementation 'org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE'

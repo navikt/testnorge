@@ -5,7 +5,7 @@
 plugins {
     id 'no.nav.registre.testnorge.java-conventions'
 }
-
+project.tasks.publish.enabled = false
 dependencies {
     implementation project(':testnorge-logging')
     implementation project(':testnorge-dependency-analysis')
