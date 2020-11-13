@@ -1,12 +1,11 @@
 package no.nav.dolly.web.domain;
 
 import lombok.Value;
+import no.nav.dolly.web.provider.web.dto.LogEventDTO;
+import no.nav.registre.testnorge.libs.dto.tilbakemeldingapi.v1.TilbakemeldingDTO;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import no.nav.dolly.web.dto.TilbakemeldingDTO;
-import no.nav.dolly.web.provider.web.dto.LogEventDTO;
 
 @Value
 public class LogEvent {
