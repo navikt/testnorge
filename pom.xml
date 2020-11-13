@@ -30,7 +30,7 @@
         <commons-lang3.version>3.11</commons-lang3.version>
         <papertrailapp.version>1.0.0</papertrailapp.version>
         <logstash-logback-encoder.version>5.1</logstash-logback-encoder.version>
-        <testnorge-libs.version>2020.10.06-11.24-c4abd25161ae</testnorge-libs.version>
+        <testnorge-libs.version>2020.11.13-12.38-eb6fe14074b2</testnorge-libs.version>
     </properties>
 
     <dependencyManagement>
@@ -57,6 +57,17 @@
             <groupId>no.nav.registre.testnorge.libs</groupId>
             <artifactId>testnorge-data-transfer-objects</artifactId>
             <version>${testnorge-libs.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.registre.testnorge.libs</groupId>
+            <artifactId>testnorge-dependency-analysis</artifactId>
+            <version>${testnorge-libs.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springdoc</groupId>
+                    <artifactId>springdoc-openapi-ui</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

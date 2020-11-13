@@ -1,5 +1,7 @@
 package no.nav.dolly.web.provider.web;
 
+import static java.lang.String.format;
+
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,12 +17,28 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
-import static java.lang.String.format;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependenciesOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@DependenciesOn({
+        @DependencyOn(value = "arena-forvalteren", external = true),
+        @DependencyOn(value = "digdir-krr-stub", external = true),
+        @DependencyOn(value = "sigrun-skd-stub", external = true),
+        @DependencyOn(value = "tps-forvalteren", external = true),
+        @DependencyOn(value = "pensjon-testdata-facade", external = true),
+        @DependencyOn(value = "pdl-api", external = true),
+        @DependencyOn("testnorge-inst"),
+        @DependencyOn("testnorge-statisk-data-forvalter"),
+        @DependencyOn("testnorge-hodejegeren"),
+        @DependencyOn("testnorge-aareg"),
+        @DependencyOn("inntektstub"),
+        @DependencyOn("brreg-stub"),
+        @DependencyOn("udi-stub")
+})
 public class ProxyController {
 
     public static final String API_URI = "/api/v1";

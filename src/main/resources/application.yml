@@ -25,10 +25,15 @@ applications:
   testnorge-tilbakemelding-api: 6554cc46-d5a9-4b9b-aafb-775b9ee09696
 
 
+application:
+  basepackage: no.nav.dolly.web
+
 consumers:
   testnorge-tilbakemelding-api.baseUrl: https://testnorge-tilbakemelding-api.dev.adeo.no
 
 spring:
+  application:
+    name: dolly-frontend
   cloud:
     vault:
       enabled: false
