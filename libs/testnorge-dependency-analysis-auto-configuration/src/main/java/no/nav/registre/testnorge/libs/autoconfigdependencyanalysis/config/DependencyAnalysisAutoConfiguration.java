@@ -41,19 +41,19 @@ public class DependencyAnalysisAutoConfiguration {
     @PostConstruct
     public void init() {
         if (avhengighetsanalyseServiceClientCredential.getClientSecret() == null) {
-            log.warn("Kan ikke registere app fordi AVHENGIGHETSANALYSE_SERVICE_CLIENT_SECRET ikke er satt i vault.");
+            log.warn("Kan ikke registrere app fordi AVHENGIGHETSANALYSE_SERVICE_CLIENT_SECRET ikke er satt i vault.");
             return;
         }
 
         if (applicationName == null) {
-            log.warn("Registerer ikke avhengigheter fordi applikasjonsnavn navn ikke er satt.");
+            log.warn("Registrerer ikke avhengigheter fordi applikasjonsnavn ikke er satt.");
             return;
         }
 
         try {
             avhengighetsanalyseServiceConsumer.registerApplication(applicationName);
         } catch (Exception e) {
-            log.error("Klarete ikke å registere {}.", applicationName, e);
+            log.error("Klarte ikke å registrere {}.", applicationName, e);
         }
     }
 }

@@ -42,12 +42,12 @@ public class DependencyConsumer {
                 .map(this::fetchDependencies)
                 .collect(Collectors.toList());
 
-        log.info("Venter på {} avheninghetesanalyser.", futures.size());
+        log.info("Venter på {} avhengighetsanalyser.", futures.size());
         return futures.stream().map(future -> {
             try {
                 return future.get();
             } catch (Exception e) {
-                log.warn("Klarer ikke å hente alle avheningheter.", e);
+                log.warn("Klarer ikke å hente alle avhengigheter.", e);
                 return null;
             }
         }).filter(Objects::nonNull).collect(Collectors.toSet());

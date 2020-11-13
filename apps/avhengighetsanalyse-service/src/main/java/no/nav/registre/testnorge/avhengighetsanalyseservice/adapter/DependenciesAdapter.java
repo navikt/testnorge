@@ -53,10 +53,10 @@ public class DependenciesAdapter {
     public void registerDependenciesHistory() {
         try {
             Set<ApplicationDependenciesDTO> dependencies = consumer.getDependencies();
-            log.info("Registerer nye avheningheter");
+            log.info("Registrerer nye avhengigheter");
             save(dependencies);
         } catch (Exception e) {
-            log.error("Klarete ikke å registere historik for avhengigheter.", e);
+            log.error("Klarte ikke å registrere historikk for avhengigheter.", e);
         }
     }
 
