@@ -1,9 +1,6 @@
 name: Release
 
-on:
-  push:
-    paths:
-      - libs/**
+on: push
 
 jobs:
   release:
@@ -38,24 +35,11 @@ jobs:
           git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git
           git config --global user.email "dolly@nav.no"
           git config --global user.name "$GITHUB_ACTOR"
-      - name: Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      - name: Sett version
         run: |
-          echo Release started by $GITHUB_ACTOR
-
           TIME=$(TZ="Europe/Oslo" date +%Y.%m.%d-%H.%M)
           COMMIT=$(git rev-parse --short=12 HEAD)
-          VERSION="$TIME-$COMMIT"
-
-          ./gradlew build -PreleaseVersion=$VERSION
-
-          git tag -a $VERSION -m "Tag release version"
-          git push origin $VERSION
-      - uses: actions/upload-artifact@v2
-        with:
-          path: |
-            libs/testnorge-avro-schema/build/libs/
-
-          
+          set-env VERSION="$TIME-$COMMIT"
+      - name: echo version
+        run: |
+          echo $VERSION
