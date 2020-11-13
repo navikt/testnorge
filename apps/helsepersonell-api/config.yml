@@ -2,7 +2,7 @@
 kind: "Application"
 metadata:
   name: testnorge-helsepersonell-api
-  namespace: default
+  namespace: dolly
   labels:
     team: dolly
 spec:
@@ -31,5 +31,4 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://testnorge-helsepersonell-api.nais.preprod.local"
-    - "https://testnorge-helsepersonell-api.dev.adeo.no"
+    - "https://testnorge-helsepersonell-api-tmp.dev.adeo.no"

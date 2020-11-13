@@ -12,6 +12,7 @@ dependencies {
     compile group: 'com.google.guava', name: 'guava', version: '30.0-jre'
 
     implementation project(':testnorge-dependency-analysis-auto-configuration')
+
     implementation 'org.springframework.boot:spring-boot-starter-security:2.3.4.RELEASE'
     implementation project(':testnorge-dependency-analysis')
     implementation 'org.springframework.boot:spring-boot-starter-webflux:2.3.2.RELEASE'

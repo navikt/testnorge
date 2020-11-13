@@ -9,7 +9,9 @@ consumers:
   hodejegeren:
     url: http://testnorge-hodejegeren.default.svc.nais.local
   helsepersonell:
-    url: http://testnorge-helsepersonell-api.default.svc.nais.local
+    client_id: dummy
+    client_secret: ${HELSEPERSONELL_API_CLIENT_SECRET}
+    url: https://testnorge-helsepersonell-api-tmp.dev.adeo.no
   synt-sykemelding:
     url: http://synthdata-elsam.q2.svc.nais.local
   sykemelding:

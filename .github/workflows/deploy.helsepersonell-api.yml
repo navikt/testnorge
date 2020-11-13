@@ -2,7 +2,6 @@ name: Deploy helsepersonell-api
 
 on:
   push:
-    branches: master
     paths:
       - apps/helsepersonell-api/**
       - libs/testnorge-core/**
@@ -36,13 +35,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker build --tag ${IMAGE} . -f ./apps/helsepersonell-api/Dockerfile
-          docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
-          docker push ${IMAGE}
+          docker build --tag $IMAGE . -f ./apps/helsepersonell-api/Dockerfile
+          docker login docker.pkg.github.com -u $GITHUB_REPOSITORY -p $GITHUB_TOKEN
+          docker push $IMAGE
       - name: Deploy to nais
         timeout-minutes: 5
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/helsepersonell-api/nais.yaml
+          RESOURCE: apps/helsepersonell-api/config.yml
