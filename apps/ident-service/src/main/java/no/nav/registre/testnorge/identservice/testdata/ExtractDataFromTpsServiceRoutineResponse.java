@@ -2,6 +2,7 @@ package no.nav.registre.testnorge.identservice.testdata;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.identservice.testdata.response.ResponseStatus;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.response.TpsServiceRoutineResponse;
 
@@ -13,17 +14,20 @@ import java.util.Set;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ExtractDataFromTpsServiceRoutineResponse {
 
     public static Set<String> trekkUtIdenterMedStatusFunnetFraResponse(TpsServiceRoutineResponse tpsResponse) {
 
         Map responseMap = (Map) tpsResponse.getResponse();
-        int antallIdenter = (int) responseMap.get("antallTotalt");
+        log.info(responseMap.toString());
+        int antallIdenter = (int) responseMap.get("antallFnr");
 
-        Set<String> identer = new HashSet();
+        Set<String> identer = new HashSet<>();
 
         ResponseStatus status = (ResponseStatus) getArtifact(responseMap, "status");
+        log.info(status.toString());
         if (!"12".equals(status.getKode())) {
             for (int i = 1; i < antallIdenter + 1; i++) {
                 Map data = (Map) getArtifact(responseMap, "data" + i);
