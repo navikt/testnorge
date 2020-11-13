@@ -1,7 +1,5 @@
 package no.nav.registre.testnorge.identservice.testdata;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.identservice.testdata.request.TpsHentFnrHistMultiServiceRoutineRequest;
@@ -16,11 +14,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.http.HttpConnectTimeoutException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
+import static no.nav.registre.testnorge.identservice.testdata.ExtractDataFromTpsServiceRoutineResponse.trekkUtIdenterMedStatusFunnetFraResponse;
 import static no.nav.registre.testnorge.identservice.testdata.consumers.config.MessageQueueConsumerConstants.SEARCH_ENVIRONMENT;
 
 @Slf4j
@@ -62,15 +59,9 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
             log.error("Request mot TPS fikk timeout. Sjekk av tilgjengelighet på ident i miljoe feilet.");
             throw new HttpConnectTimeoutException("TPS Timeout");
         }
-        List<String> identerFunnet = new ArrayList<>();
 
-        XmlMapper xmlMapper = new XmlMapper();
-        JsonNode node = xmlMapper.readTree(response.getXml().getBytes());
-        log.info(node.asText());
-        JsonNode tpsSvar = nonNull(node.get("tpsSvar")) ? node.get("tpsSvar") : node;
-        JsonNode tpsSvarStatus = nonNull(tpsSvar.get("svarStatus")) ? tpsSvar.get("svarStatus") : node;
-        JsonNode tpsStatusKode = nonNull(tpsSvarStatus.get("returStatus")) ? tpsSvarStatus.get("returStatus") : node;
+        identer.removeAll(trekkUtIdenterMedStatusFunnetFraResponse(response));
 
-        return tpsStatusKode.asText().contains("00") ? ResponseEntity.ok(identerFunnet) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return !identer.isEmpty() ? ResponseEntity.ok(identer) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }
