@@ -10,7 +10,7 @@ plugins {
 bootJar {
     archiveFileName = "app.jar"
 }
-project.tasks.publish.enabled = false
+
 dependencies {
     implementation project(':udi-core')
     runtimeOnly 'com.h2database:h2:1.4.200'

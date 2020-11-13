@@ -10,7 +10,7 @@ plugins {
 bootJar {
     archiveFileName = "app.jar"
 }
-project.tasks.publish.enabled = false
+
 dependencies {
     implementation project(':testnorge-dependency-analysis')
     implementation project(':testnorge-dependency-analysis-auto-configuration')

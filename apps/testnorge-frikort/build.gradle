@@ -10,7 +10,7 @@ plugins {
 bootJar {
     archiveFileName = "app.jar"
 }
-project.tasks.publish.enabled = false
+
 dependencies {
     compile group: 'org.springframework', name: 'spring-tx', version: '5.2.9.RELEASE'
 

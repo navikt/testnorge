@@ -10,7 +10,7 @@ plugins {
 bootJar {
     archiveFileName = "app.jar"
 }
-project.tasks.publish.enabled = false
+
 dependencies {
     implementation 'org.projectlombok:lombok:1.18.16'
     implementation project(':ereg-mapper-core')
