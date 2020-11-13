@@ -1,10 +1,9 @@
 package no.nav.registre.testnorge.identservice.testdata;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.identservice.testdata.response.ResponseStatus;
-import no.nav.registre.testnorge.identservice.testdata.servicerutiner.response.TpsServiceRoutineResponse;
 
 import java.util.HashSet;
 import java.util.List;
@@ -18,21 +17,18 @@ import static java.util.Objects.nonNull;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ExtractDataFromTpsServiceRoutineResponse {
 
-    public static Set<String> trekkUtIdenterMedStatusFunnetFraResponse(TpsServiceRoutineResponse tpsResponse) {
+    public static Set<String> trekkUtIdenterMedStatusFunnetFraResponse(JsonNode jsonResponse) {
 
-        Map responseMap = (Map) tpsResponse.getResponse();
-        log.info(responseMap.toString());
-        log.info(responseMap.get("data1").toString());
-        log.info(responseMap.get("antallFnr").toString());
-        int antallIdenter = (int) responseMap.get("antallFM201");
+        log.info(jsonResponse.asText());
+        int antallIdenter = jsonResponse.get("antallFM201").asInt();
 
         Set<String> identer = new HashSet<>();
 
-        ResponseStatus status = (ResponseStatus) getArtifact(responseMap, "svarStatus");
-        log.info(status.toString());
-        if (!"12".equals(status.getReturStatus())) {
+        String status = jsonResponse.get("returStatus").asText();
+        log.info(status);
+        if (!"12".equals(status)) {
             for (int i = 1; i < antallIdenter + 1; i++) {
-                Map data = (Map) getArtifact(responseMap, "data" + i);
+                Map data = (Map) jsonResponse.get("data");
 
                 Map aFnr = (Map) getArtifact(data, "AFnr");
                 Map svarStatus;
