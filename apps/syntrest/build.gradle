@@ -11,6 +11,8 @@ bootJar {
     archiveFileName = "app.jar"
 }
 
+project.tasks.publish.enabled = false
+
 dependencies {
     compile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.4.32.v20200930'
     compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.4.32.v20200930'

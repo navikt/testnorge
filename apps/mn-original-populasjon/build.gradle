@@ -11,6 +11,8 @@ bootJar {
     archiveFileName = "app.jar"
 }
 
+project.tasks.publish.enabled = false
+
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux:2.3.2.RELEASE'

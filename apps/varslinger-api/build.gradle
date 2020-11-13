@@ -11,6 +11,8 @@ bootJar {
     archiveFileName = "app.jar"
 }
 
+project.tasks.publish.enabled = false
+
 dependencies {
     implementation project(':testnorge-core')
     implementation project(':testnorge-dependency-analysis-auto-configuration')

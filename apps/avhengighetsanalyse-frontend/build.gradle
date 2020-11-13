@@ -11,6 +11,8 @@ bootJar {
     archiveFileName = "app.jar"
 }
 
+project.tasks.publish.enabled = false
+
 dependencyManagement {
     imports {
         mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR8'

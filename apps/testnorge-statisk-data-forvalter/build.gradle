@@ -11,6 +11,8 @@ bootJar {
     archiveFileName = "app.jar"
 }
 
+project.tasks.publish.enabled = false
+
 dependencies {
     //TODO remove
     compile group: 'com.google.guava', name: 'guava', version: '30.0-jre'
