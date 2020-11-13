@@ -1,7 +1,7 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnorge-ident-service
+  name: testnorge-ident-check-in-prod-service
   namespace: dolly
   labels:
     team: dolly
@@ -33,9 +33,9 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://testnorge-ident-service.dev.adeo.no"
+    - "https://testnorge-ident-check-in-prod-service.dev.adeo.no"
   vault:
     enabled: true
     paths:
-      - kvPath: /kv/preprod/fss/testnorge-ident-service/dolly
+      - kvPath: /kv/preprod/fss/testnorge-ident-check-in-prod-service/dolly
         mountPath: /var/run/secrets/nais.io/vault

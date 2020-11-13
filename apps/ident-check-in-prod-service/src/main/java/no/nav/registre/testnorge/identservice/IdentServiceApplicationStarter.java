@@ -20,8 +20,6 @@ public class IdentServiceApplicationStarter {
         if (isNull(AuthConfigFactory.getFactory())) {
             AuthConfigFactory.setFactory(new AuthConfigFactoryImpl());
         }
-
         SpringApplication.run(IdentServiceApplicationStarter.class, args);
     }
-
 }

@@ -1,8 +1,0 @@
-application:
-  descriptiveName: ident-service
-  name: ident-service
-  version: 1
-
-testnorge-ident-service:
-  production:
-    mode: false

@@ -6,8 +6,8 @@ spring:
     banner-mode: off
   application:
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
-    name: ident-service
-    description: App som håndterer service på identer benyttet av Dolly
+    name: ident-check-in-prod-service
+    description: App som sjekker om ident finnes i prod på identer benyttet av Dolly og Orkestrator
   security:
     oauth2:
       resourceserver:

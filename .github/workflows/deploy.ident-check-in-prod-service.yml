@@ -1,15 +1,15 @@
-name: Deploy ident-service
+name: Deploy ident-check-in-prod-service
 
 on:
   push:
     branches: ident-service-app
     #branches: master TODO: Endre tilbake til master
     paths:
-      - apps/ident-service/**
+      - apps/ident-check-in-prod-service/**
       - libs/testnorge-core/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/ident-service:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/ident-check-in-prod-service:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -32,9 +32,9 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :ident-service:build
+        run: ./gradlew :ident-check-in-prod-service:build
       - name: Build and publish Docker image
-        working-directory: apps/ident-service/
+        working-directory: apps/ident-check-in-prod-service/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -47,4 +47,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/ident-service/config.yml
+          RESOURCE: apps/ident-check-in-prod-service/config.yml

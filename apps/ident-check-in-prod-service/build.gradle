@@ -41,4 +41,4 @@ dependencies {
     implementation 'org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1'
 }
 
-description = 'ident-service'
+description = 'ident-check-in-prod-service'

@@ -1,0 +1,4 @@
+application:
+  descriptiveName: ident-check-in-prod-service
+  name: ident-check-in-prod-service
+  version: 1

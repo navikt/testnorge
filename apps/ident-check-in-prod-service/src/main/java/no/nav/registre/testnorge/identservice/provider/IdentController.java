@@ -20,9 +20,9 @@ public class IdentController {
     private final IdentAppService identAppService;
 
     @LogExceptions
-    @GetMapping(value = "/identer")
-    public ResponseEntity<Set<String>> checkIdentExistsInProd(@RequestParam List<String> identer) {
+    @GetMapping(value = "/id")
+    public ResponseEntity<Set<String>> checkIdentExistsInProd(@RequestParam List<String> ideer) {
 
-        return identAppService.finnLedigeIdenter(identer);
+        return identAppService.finnLedigeIdenter(ideer);
     }
 }

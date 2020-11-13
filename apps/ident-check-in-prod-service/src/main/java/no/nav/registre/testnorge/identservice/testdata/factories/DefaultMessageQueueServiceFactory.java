@@ -17,7 +17,7 @@ import javax.jms.JMSException;
  */
 @Component
 @RequiredArgsConstructor
-@ConditionalOnProperty(prefix = "testnorge-ident-service", name = "production.mode", havingValue = "false", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "testnorge-ident-check-in-prod-service", name = "production.mode", havingValue = "false", matchIfMissing = true)
 public class DefaultMessageQueueServiceFactory implements MessageQueueServiceFactory {
 
     private final ConnectionFactoryFactory connectionFactoryFactory;
