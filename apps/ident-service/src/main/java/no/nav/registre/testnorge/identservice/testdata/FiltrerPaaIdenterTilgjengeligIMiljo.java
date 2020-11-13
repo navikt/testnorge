@@ -50,10 +50,10 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
 
         TpsServiceRoutineResponse tpsResponse = tpsRequestSender.sendTpsRequest(request, context);
 
-        return getDescriptiveMessage(identer, tpsResponse);
+        return filtrerFunnedeIdenter(identer, tpsResponse);
     }
 
-    private ResponseEntity<List<String>> getDescriptiveMessage(List<String> identer, TpsServiceRoutineResponse response) throws IOException {
+    private ResponseEntity<List<String>> filtrerFunnedeIdenter(List<String> identer, TpsServiceRoutineResponse response) throws IOException {
 
         if (isNull(response) || response.getXml().isEmpty()) {
             log.error("Request mot TPS fikk timeout. Sjekk av tilgjengelighet på ident i miljoe feilet.");
@@ -63,10 +63,10 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
 
         XmlMapper xmlMapper = new XmlMapper();
         JsonNode node = xmlMapper.readTree(response.getXml().getBytes());
+        log.info(node.asText());
         JsonNode tpsSvar = nonNull(node.get("tpsSvar")) ? node.get("tpsSvar") : node;
         JsonNode tpsSvarStatus = nonNull(tpsSvar.get("svarStatus")) ? tpsSvar.get("svarStatus") : node;
         JsonNode tpsStatusKode = nonNull(tpsSvarStatus.get("returStatus")) ? tpsSvarStatus.get("returStatus") : node;
-        log.info(node.asText());
 
         return tpsStatusKode.asText().contains("00") ? ResponseEntity.ok(identerFunnet) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
