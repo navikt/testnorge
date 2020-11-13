@@ -13,7 +13,7 @@ import no.nav.registre.testnorge.synt.sykemelding.domain.Sykemelding;
 
 @Slf4j
 @Component
-@DependencyOn("sykemelding-api")
+@DependencyOn("testnorge-sykemelding-api")
 public class SykemeldingConsumer {
     private final RestTemplate restTemplate;
     private final String url;

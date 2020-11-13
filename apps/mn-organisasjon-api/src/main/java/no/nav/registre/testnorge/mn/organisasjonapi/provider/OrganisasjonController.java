@@ -2,6 +2,7 @@ package no.nav.registre.testnorge.mn.organisasjonapi.provider;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -28,20 +29,31 @@ public class OrganisasjonController {
     private final OrganisasjonAdapter orgnaisasjonAdapter;
 
     @GetMapping
-    public ResponseEntity<List<MNOrganisasjonDTO>> getOrganisasjon(
+    public ResponseEntity<List<MNOrganisasjonDTO>> getOrganisasjoner(
+            @RequestHeader("miljo") String miljo,
             @RequestParam(required = false) Boolean active,
-            @RequestHeader("miljo") String miljo
+            @RequestParam(value = "opplysningspliktig", required = false) Boolean opplysningspliktig
     ) {
         List<MNOrganisasjonDTO> list = orgnaisasjonAdapter
                 .getAllBy(active, miljo)
                 .stream()
                 .map(Organisasjon::toDTO)
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(list);
+        if (opplysningspliktig == null) {
+            return ResponseEntity.ok(list);
+        }
+        if (opplysningspliktig) {
+            return ResponseEntity.ok(
+                    list.stream().filter(MNOrganisasjonDTO::isOpplysningspliktig).collect(Collectors.toList())
+            );
+        }
+        return ResponseEntity.ok(
+                list.stream().filter(value -> !value.isOpplysningspliktig()).collect(Collectors.toList())
+        );
     }
 
     @GetMapping("/{orgnummer}")
-    public ResponseEntity<MNOrganisasjonDTO> getOrganisasjon(
+    public ResponseEntity<MNOrganisasjonDTO> getOrganisasjoner(
             @PathVariable("orgnummer") String orgnummer,
             @RequestHeader("miljo") String miljo
     ) {
@@ -64,5 +76,14 @@ public class OrganisasjonController {
                 .buildAndExpand(dto.getOrgnummer())
                 .toUri();
         return ResponseEntity.created(uri).build();
+    }
+
+    @DeleteMapping("/{orgnummer}")
+    public ResponseEntity<MNOrganisasjonDTO> deleteOrganisasjon(
+            @PathVariable("orgnummer") String orgnummer,
+            @RequestHeader("miljo") String miljo
+    ) {
+        orgnaisasjonAdapter.deleteBy(orgnummer, miljo);
+        return ResponseEntity.accepted().build();
     }
 }

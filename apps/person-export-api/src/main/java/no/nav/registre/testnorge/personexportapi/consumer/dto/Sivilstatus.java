@@ -3,6 +3,9 @@ package no.nav.registre.testnorge.personexportapi.consumer.dto;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.Getter;
+
+@Getter
 public enum Sivilstatus {
 
     UGIFT("1", "UGIF"),
@@ -13,8 +16,7 @@ public enum Sivilstatus {
     REGISTRERT_PARTNER("6", "REPA"),
     SEPARERT_PARTNER("7", "SEPA"),
     SKILT_PARTNER("8", "SKPA"),
-    GJENLEVENDE_PARTNER("9", "GJPA"),
-    SAMBOER("1", "SAMB");
+    GJENLEVENDE_PARTNER("9", "GJPA");
 
     private static Map<String, Sivilstatus> map = new HashMap<>();
 
@@ -25,24 +27,11 @@ public enum Sivilstatus {
     }
 
     private final String sivilstandKode;
-
     private final String kodeverkskode;
 
     Sivilstatus(final String sivilstandKode, String kodeverkkode) {
         this.sivilstandKode = sivilstandKode;
         this.kodeverkskode = kodeverkkode;
-    }
-
-    public String getRelasjonTypeKode() {
-        return sivilstandKode;
-    }
-
-    public String getKodeverkskode() {
-        return kodeverkskode;
-    }
-
-    public static Sivilstatus fetchSivilstand(String sivilstandKode) {
-        return values()[Integer.valueOf(sivilstandKode) - 1];
     }
 
     public static Sivilstatus lookup(String sivilstatusKode) {

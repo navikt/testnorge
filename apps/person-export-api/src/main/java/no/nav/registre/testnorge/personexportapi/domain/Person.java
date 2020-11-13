@@ -2,10 +2,12 @@ package no.nav.registre.testnorge.personexportapi.domain;
 
 import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import no.nav.registre.testnorge.personexportapi.consumer.dto.EndringsmeldingDTO;
@@ -18,6 +20,7 @@ import no.nav.registre.testnorge.personexportapi.consumer.dto.Sivilstatus;
 public class Person {
 
     private static final DateTimeFormatter TPS_DATE_FMT = DateTimeFormatter.ofPattern("yyyyMMdd");
+    private static final int MYNDIGHET_ALDER = 18;
 
     private final EndringsmeldingDTO endringsmeldingDTO;
     private final String page;
@@ -128,15 +131,15 @@ public class Person {
     }
 
     public String getKjoennBeskrivelse() {
-        return KjoennFraIdent.getKjoenn(getIdent()).name();
+        return KjoennFraIdent.getKjoenn(getIdent()).getBeskrivelse();
     }
 
     public String getSivilstand() {
-        return endringsmeldingDTO.getSivilstand();
+        return isMyndig() ? endringsmeldingDTO.getSivilstand() : null;
     }
 
     public String getSivilstandBeskrivelse() {
-        return Sivilstatus.lookup(getSivilstand()).getKodeverkskode();
+        return nonNull(getSivilstand()) ? Sivilstatus.lookup(getSivilstand()).getKodeverkskode() : null;
     }
 
     public String getSivilstandRegdato() {
@@ -182,5 +185,11 @@ public class Person {
         return isNotBlank(tpsDato) ?
                 LocalDate.parse(tpsDato, TPS_DATE_FMT)
                         .format(DateTimeFormatter.ISO_DATE) : null;
+    }
+
+    private boolean isMyndig() {
+        return ChronoUnit.YEARS.between(
+                FoedselsdatoFraIdent.getFoedselsdato(getIdent()).toLocalDate(),
+                LocalDate.now()) > MYNDIGHET_ALDER;
     }
 }

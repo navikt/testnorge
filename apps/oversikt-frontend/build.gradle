@@ -13,6 +13,8 @@ bootJar {
 dependencies {
     implementation project(':testnorge-dependency-analysis')
     implementation project(':testnorge-core')
+    implementation project(':testnorge-dependency-analysis-auto-configuration')
+
     implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
     implementation project(':testnorge-oauth2')

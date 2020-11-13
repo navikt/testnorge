@@ -11,6 +11,13 @@ bootJar {
     archiveFileName = "app.jar"
 }
 dependencies {
+    compile('com.google.guava:guava') {
+        version {
+            strictly '20.0'
+        }
+    }
+
+    implementation project(':testnorge-dependency-analysis-auto-configuration')
     implementation project(':testnorge-dependency-analysis')
     implementation project(':testnorge-data-transfer-objects')
     implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'

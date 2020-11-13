@@ -15,7 +15,7 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
 
 @Slf4j
-@DependencyOn("arbeidsforhold-api")
+@DependencyOn("testnorge-arbeidsforhold-api")
 @RequiredArgsConstructor
 public class GetArbeidsforholdCommand implements Callable<List<ArbeidsforholdDTO>> {
     private final RestTemplate restTemplate;

@@ -19,7 +19,6 @@ dependencyManagement {
 }
 
 dependencies {
-
     compile('com.google.guava:guava') {
         version {
             strictly '20.0'
@@ -39,6 +38,7 @@ dependencies {
     implementation project(':testnorge-oauth2')
     implementation project(':arbeidsforhold-xsd')
     implementation project(':testnorge-csv-converter')
+    implementation project(':testnorge-dependency-analysis-auto-configuration')
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'

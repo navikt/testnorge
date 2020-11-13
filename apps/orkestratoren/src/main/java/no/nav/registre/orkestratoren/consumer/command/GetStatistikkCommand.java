@@ -13,7 +13,7 @@ import no.nav.registre.testnorge.libs.dto.statistikk.v1.StatistikkDTO;
 import no.nav.registre.testnorge.libs.dto.statistikk.v1.StatistikkType;
 
 @Slf4j
-@DependencyOn("statistikk-api")
+@DependencyOn("testnorge-statistikk-api")
 @RequiredArgsConstructor
 public class GetStatistikkCommand implements Callable<StatistikkDTO> {
     private final RestTemplate restTemplate;

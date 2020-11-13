@@ -8,10 +8,10 @@ import java.time.LocalDateTime;
 import lombok.experimental.UtilityClass;
 
 /**
- * INDIVID(POS 7-9) 500-749 OG ÅR > 54 => ÅRHUNDRE = 1800
- * INDIVID(POS 7-9) 000-499            => ÅRHUNDRE = 1900
- * INDIVID(POS 7-9) 900-999 OG ÅR > 39 => ÅRHUNDRE = 1900
- * INDIVID(POS 7-9) 500-999 OG ÅR < 40 => ÅRHUNDRE = 2000
+ * INDIVID(POS 7-9) 500-749 OG Ã…R > 54 => Ã…RHUNDRE = 1800
+ * INDIVID(POS 7-9) 000-499            => Ã…RHUNDRE = 1900
+ * INDIVID(POS 7-9) 900-999 OG Ã…R > 39 => Ã…RHUNDRE = 1900
+ * INDIVID(POS 7-9) 500-999 OG Ã…R < 40 => Ã…RHUNDRE = 2000
  */
 @UtilityClass
 public class FoedselsdatoFraIdent {

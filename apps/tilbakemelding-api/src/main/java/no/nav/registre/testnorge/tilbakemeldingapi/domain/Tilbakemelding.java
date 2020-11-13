@@ -2,6 +2,7 @@ package no.nav.registre.testnorge.tilbakemeldingapi.domain;
 
 import java.util.ArrayList;
 
+import lombok.Value;
 import no.nav.registre.testnorge.libs.dto.tilbakemeldingapi.v1.Rating;
 import no.nav.registre.testnorge.libs.dto.tilbakemeldingapi.v1.TilbakemeldingDTO;
 import no.nav.registre.testnorge.libs.slack.dto.Attachment;
@@ -11,26 +12,34 @@ import no.nav.registre.testnorge.libs.slack.dto.Message;
 import no.nav.registre.testnorge.libs.slack.dto.Section;
 import no.nav.registre.testnorge.libs.slack.dto.TextAttachment;
 
+@Value
 public class Tilbakemelding {
-    private final String title;
-    private final String message;
-    private final Rating rating;
+    String title;
+    String message;
+    Rating rating;
+    Boolean isAnonym;
 
     public Tilbakemelding(TilbakemeldingDTO dto) {
         rating = dto.getRating();
         title = dto.getTitle();
         message = dto.getMessage();
+        isAnonym = dto.getIsAnonym();
     }
 
-    public Message toSlackMessage(String channel) {
+    public Message toSlackMessage(String channel, String visningsNavn) {
         var ratingIcon = (rating != null ? " " + getIcon(rating) : "");
 
         var headerBlock = Section.from(
                 "*" + title + "*" + ratingIcon
         );
 
+        var senderBlock = Section.from(
+                "Avsender: " + visningsNavn
+        );
+
         var blocks = new ArrayList<Block>();
         blocks.add(headerBlock);
+        blocks.add(senderBlock);
         blocks.add(new Divider());
 
         var attachments = new ArrayList<Attachment>();

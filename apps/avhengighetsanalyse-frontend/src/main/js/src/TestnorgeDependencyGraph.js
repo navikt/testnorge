@@ -8,7 +8,7 @@ const myConfig = {
     directed: true,
     collapsible: true,
     d3: {
-        gravity: -250,
+        gravity: -800,
     },
     node: {
         fontSize: 12,
@@ -23,7 +23,7 @@ const myConfig = {
     },
     width: 1200,
     height: 800,
-    focusZoom: 2
+    focusZoom: 1
 };
 
 const TestnorgeDependencyGraph = () => (

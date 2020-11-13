@@ -15,6 +15,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux:2.3.2.RELEASE'
     implementation project(':testnorge-dependency-analysis')
     implementation project(':testnorge-core')
+    implementation project(':testnorge-dependency-analysis-auto-configuration')
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:2.2.5.RELEASE'
     implementation 'org.springframework.security:spring-security-web:5.3.4.RELEASE'
     implementation project(':testnorge-data-transfer-objects')

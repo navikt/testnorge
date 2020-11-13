@@ -7,7 +7,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -30,7 +29,7 @@ public class OnBehalfOfGenerateAccessTokenService {
     public OnBehalfOfGenerateAccessTokenService(
             @Value("${http.proxy:#{null}}") String proxyHost,
             @Value("${AAD_ISSUER_URI}") String issuerUrl,
-            SecureAuthenticationTokenResolver tokenResolver
+            AuthenticationTokenResolver tokenResolver
     ) {
 
         WebClient.Builder builder = WebClient
@@ -65,27 +64,31 @@ public class OnBehalfOfGenerateAccessTokenService {
         }
         tokenResolver.verifyAuthentication();
 
-        Map<String, String> contextMap = MDC.getCopyOfContextMap();
-        contextMap.put("oid", tokenResolver.getOid());
-        MDC.setContextMap(contextMap);
 
-        JwtAuthenticationToken jwtAuthenticationToken = tokenResolver.jwtAuthenticationToken();
+        String oid = tokenResolver.getOid();
+        if (oid != null) {
+            Map<String, String> contextMap = MDC.getCopyOfContextMap();
+            contextMap.put("oid", oid);
+            MDC.setContextMap(contextMap);
+        }
+
+        var token = tokenResolver.getTokenValue();
 
         var body = BodyInserters
                 .fromFormData("scope", String.join(" ", accessScopes.getScopes()))
                 .with("client_id", clientCredential.getClientId())
                 .with("client_secret", clientCredential.getClientSecret())
-                .with("assertion", jwtAuthenticationToken.getToken().getTokenValue())
+                .with("assertion", token)
                 .with("requested_token_use", "on_behalf_of")
                 .with("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
 
-        AccessToken token = webClient.post()
+        AccessToken accessToken = webClient.post()
                 .body(body)
                 .retrieve()
                 .bodyToMono(AccessToken.class)
                 .block();
 
         log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow");
-        return token;
+        return accessToken;
     }
 }

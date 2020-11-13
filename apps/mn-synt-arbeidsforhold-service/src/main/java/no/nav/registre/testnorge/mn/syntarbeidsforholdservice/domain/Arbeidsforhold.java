@@ -1,6 +1,5 @@
 package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
@@ -12,16 +11,25 @@ import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdRequest;
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 
 @Slf4j
-@RequiredArgsConstructor
 public class Arbeidsforhold {
+
+    public Arbeidsforhold(ArbeidsforholdDTO dto, String ident, String virksomhentsnummer) {
+        this.dto = dto;
+        this.ident = ident;
+        this.virksomhentsnummer = virksomhentsnummer;
+    }
+
     private final ArbeidsforholdDTO dto;
     private final String ident;
+    private String virksomhentsnummer;
 
     public Arbeidsforhold(
             ArbeidsforholdResponse response,
             String ident,
-            String arbeidsforholdId
+            String arbeidsforholdId,
+            String virksomhentsnummer
     ) {
+        this.virksomhentsnummer = virksomhentsnummer;
         this.ident = ident;
         this.dto = ArbeidsforholdDTO
                 .builder()
@@ -39,9 +47,18 @@ public class Arbeidsforhold {
 
     public Arbeidsforhold(
             ArbeidsforholdResponse response,
-            String ident
+            String ident,
+            String virksomhentsnummer
     ) {
-        this(response, ident, UUID.randomUUID().toString());
+        this(response, ident, UUID.randomUUID().toString(), virksomhentsnummer);
+    }
+
+    public String getVirksomhentsnummer() {
+        return virksomhentsnummer;
+    }
+
+    public void setVirksomhentsnummer(String virksomhentsnummer) {
+        this.virksomhentsnummer = virksomhentsnummer;
     }
 
     public String getIdent() {

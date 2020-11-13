@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "name": "Application",
+  "namespace": "no.nav.registre.testnorge.libs.avro.application",
+  "fields": [
+    {
+      "name": "registeredName",
+      "type": "string"
+    }
+  ]
+}

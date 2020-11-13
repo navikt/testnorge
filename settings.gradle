@@ -21,6 +21,9 @@ plugins {
 
 
 rootProject.name = 'testnorge'
+
+include(':testnorge-dependency-analysis-auto-configuration')
+
 include(':inntektsmelding-stub')
 include(':testnorge-tss')
 include(':profil-api')
@@ -120,6 +123,7 @@ include(':testnorge-medl')
 include(':ident-service')
 include(':mn-person-service')
 include(':mn-synt-arbeidsforhold-service')
+include(':avhengighetsanalyse-service')
 project(":inntektsmelding-stub").projectDir = file('apps/inntektsmelding-stub')
 project(":testnorge-tss").projectDir = file('apps/testnorge-tss')
 project(":profil-api").projectDir = file('apps/profil-api')
@@ -216,6 +220,8 @@ project(":testnorge-medl").projectDir = file('apps/testnorge-medl')
 project(":mn-person-service").projectDir = file('apps/mn-person-service')
 project(":mn-synt-arbeidsforhold-service").projectDir = file('apps/mn-synt-arbeidsforhold-service')
 project(":ident-service").projectDir = file('apps/ident-service')
+project(":avhengighetsanalyse-service").projectDir = file('apps/avhengighetsanalyse-service')
+project(":testnorge-dependency-analysis-auto-configuration").projectDir = file('libs/testnorge-dependency-analysis-auto-configuration')
 
 gradleEnterprise {
     buildScan {
@@ -223,3 +229,4 @@ gradleEnterprise {
         termsOfServiceAgree = "yes"
     }
 }
+
