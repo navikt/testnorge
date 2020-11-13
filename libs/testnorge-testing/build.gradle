@@ -1,7 +1,6 @@
 plugins {
     id 'no.nav.registre.testnorge.java-conventions'
 }
-
 project.tasks.publish.enabled = false
 
 dependencies {

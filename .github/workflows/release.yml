@@ -26,6 +26,7 @@ jobs:
           git config --global user.name "$GITHUB_ACTOR"
       - name: Release
         env:
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
         run: |
