@@ -89,6 +89,10 @@ public class OrganisasjonControllerV1 {
     @GetMapping("/{orgnr}")
     public ResponseEntity<OrganisasjonDTO> getOrganisasjon(@PathParam("orgnr") @Pattern(regexp = ORGNR_REGEX) String orgnr) {
         Ereg ereg = eregAdapter.fetchByOrgnr(orgnr);
+        if (ereg == null) {
+            return ResponseEntity.notFound().build();
+        }
+
         return ResponseEntity.ok(ereg.toDTO());
     }
 
