@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.net.http.HttpConnectTimeoutException;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.Objects.isNull;
 import static no.nav.registre.testnorge.identservice.testdata.ExtractDataFromTpsServiceRoutineResponse.trekkUtIdenterMedStatusFunnetFraResponse;
@@ -32,7 +33,7 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
 
     private final TpsRequestSender tpsRequestSender;
 
-    public ResponseEntity<List<String>> filtrerPaaIdenter(List<String> identer) throws IOException {
+    public ResponseEntity<Set<String>> filtrerPaaIdenter(List<String> identer) throws IOException {
 
         TpsRequestContext context = new TpsRequestContext();
         context.setUser(DOLLY_USER);
@@ -50,18 +51,18 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
 
         TpsServiceRoutineResponse tpsResponse = tpsRequestSender.sendTpsRequest(request, context);
 
-        return filtrerFunnedeIdenter(identer, tpsResponse);
+        return filtrerFunnedeIdenter(tpsResponse);
     }
 
-    private ResponseEntity<List<String>> filtrerFunnedeIdenter(List<String> identer, TpsServiceRoutineResponse response) throws IOException {
+    private ResponseEntity<Set<String>> filtrerFunnedeIdenter(TpsServiceRoutineResponse response) throws IOException {
 
         if (isNull(response) || response.getXml().isEmpty()) {
             log.error("Request mot TPS fikk timeout. Sjekk av tilgjengelighet på ident i miljoe feilet.");
             throw new HttpConnectTimeoutException("TPS Timeout");
         }
 
-        identer.removeAll(trekkUtIdenterMedStatusFunnetFraResponse(response));
+        Set<String> identerIProd = trekkUtIdenterMedStatusFunnetFraResponse(response);
 
-        return !identer.isEmpty() ? ResponseEntity.ok(identer) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return !identerIProd.isEmpty() ? ResponseEntity.ok(identerIProd) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }

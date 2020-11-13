@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -15,7 +16,7 @@ public class IdentAppService {
     private final FiltrerPaaIdenterTilgjengeligIMiljo filtrerPaaIdenterTilgjengeligIMiljo;
 
     @SneakyThrows
-    public ResponseEntity<List<String>> finnLedigeIdenter(List<String> identer) {
+    public ResponseEntity<Set<String>> finnLedigeIdenter(List<String> identer) {
 
         return filtrerPaaIdenterTilgjengeligIMiljo.filtrerPaaIdenter(identer);
     }

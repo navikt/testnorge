@@ -2,7 +2,6 @@ package no.nav.registre.testnorge.identservice.testdata.servicerutiner;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.identservice.service.TpsRequestService;
 import no.nav.registre.testnorge.identservice.testdata.response.Response;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.definition.TpsServiceRoutineDefinitionRequest;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TpsRequestSender {
@@ -32,7 +30,6 @@ public class TpsRequestSender {
             throw new RuntimeException("ServiceRoutine ikke funnet, kan ikke sende request til TPS");
         }
         Response response = tpsRequestService.executeServiceRutineRequest(request, serviceRoutine.get(), context, timeout);
-        log.info(response.getRawXml());
         return rsTpsResponseMappingUtils.convertToTpsServiceRutineResponse(response);
     }
 
