@@ -1,6 +1,6 @@
 package no.nav.dolly.web.security;
 
-import lombok.extern.slf4j.Slf4j;
+import java.net.URI;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -9,15 +9,14 @@ import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.netty.http.client.HttpClient;
-import reactor.netty.tcp.ProxyProvider;
 
-import java.net.URI;
-
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.web.security.domain.AccessScopes;
 import no.nav.dolly.web.security.domain.AccessToken;
 import no.nav.dolly.web.security.domain.ClientCredential;
 import no.nav.dolly.web.security.domain.DollyFrontendClientCredential;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.tcp.ProxyProvider;
 
 
 @Slf4j
@@ -66,8 +65,8 @@ class OnBehalfOfGenerateAccessTokenService {
 
         var body = BodyInserters
                 .fromFormData("scope", String.join(" ", accessScopes.getScopes()))
-                .with("client_id", clientCredential.getClientId())
-                .with("client_secret", clientCredential.getClientSecret())
+                .with("spring.security.oauth2.client.registration.aad.client-id", clientCredential.getClientId())
+                .with("spring.security.oauth2.client.registration.aad.client-secret", clientCredential.getClientSecret())
                 .with("assertion", accessToken.getTokenValue())
                 .with("requested_token_use", "on_behalf_of")
                 .with("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
