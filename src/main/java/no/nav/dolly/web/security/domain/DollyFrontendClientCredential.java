@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DollyFrontendClientCredential extends ClientCredential {
     public DollyFrontendClientCredential(
-            @Value("${spring.security.oauth2.client.registration.aad.client-id}") String clientId,
-            @Value("${spring.security.oauth2.client.registration.aad.client-secret}") String clientSecret
+            @Value("${azure.app.client.id}") String clientId,
+            @Value("${azure.app.client.secret}") String clientSecret
     ) {
         super(clientId, clientSecret);
     }

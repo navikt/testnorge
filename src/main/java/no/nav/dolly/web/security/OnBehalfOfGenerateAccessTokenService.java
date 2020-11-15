@@ -65,8 +65,8 @@ class OnBehalfOfGenerateAccessTokenService {
 
         var body = BodyInserters
                 .fromFormData("scope", String.join(" ", accessScopes.getScopes()))
-                .with("spring.security.oauth2.client.registration.aad.client-id", clientCredential.getClientId())
-                .with("spring.security.oauth2.client.registration.aad.client-secret", clientCredential.getClientSecret())
+                .with("client_id", clientCredential.getClientId())
+                .with("client_secret", clientCredential.getClientSecret())
                 .with("assertion", accessToken.getTokenValue())
                 .with("requested_token_use", "on_behalf_of")
                 .with("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
