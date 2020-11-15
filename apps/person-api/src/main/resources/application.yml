@@ -1,5 +1,5 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-CLIENT_ID: 607ab2ee-2473-4bfd-8d48-03a7aaceeda6
+CLIENT_ID: ${azure.app.client.id}
 
 spring:
   application:

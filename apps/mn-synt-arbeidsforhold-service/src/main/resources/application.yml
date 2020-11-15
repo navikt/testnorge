@@ -25,7 +25,7 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
   application:
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     name: mn-synt-arbeidsforhold-service

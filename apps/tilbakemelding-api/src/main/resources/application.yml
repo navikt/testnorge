@@ -14,4 +14,4 @@ consumer:
     channel: ${SLACK_CHANNEL}
   profil-api:
     url: https://testnorge-profil-api.dev.adeo.no
-    client-id: 81d0a23d-20ef-49de-8761-2e7917bc9238
+    client-id: ${azure.app.client.id}
