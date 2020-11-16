@@ -44,7 +44,6 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
                         vegadresse.setBruksenhetstype(Bruksenhetstype.BOLIG);
                         vegadresse.setKommunenummer(gateadresse.getKommunenr());
                         vegadresse.setPostnummer(gateadresse.getPostnr());
-                        vegadresse.setAdressetillegsnavn(getCoadresse(gateadresse));
                         vegadresse.setBruksenhetsnummer(gateadresse.getBolignr());
                     }
                 })
@@ -64,7 +63,6 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
                         matrikkeladresse.setKommunenummer(rsMatrikkeladresse.getKommunenr());
                         matrikkeladresse.setPostnummer(rsMatrikkeladresse.getPostnr());
                         matrikkeladresse.setUndernummer(toNumeric(rsMatrikkeladresse.getUndernr()));
-                        matrikkeladresse.setAdressetilleggsnavn(getCoadresse(rsMatrikkeladresse));
                         matrikkeladresse.setBruksenhetsnummer(rsMatrikkeladresse.getBolignr());
                     }
                 })

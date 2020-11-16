@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse.UtenlandskAdresse;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse.Vegadresse;
+import static no.nav.dolly.bestilling.pdlforvalter.mapper.PdlAdresseMappingStrategy.getCoadresse;
 import static no.nav.dolly.bestilling.pdlforvalter.mapper.PdlAdresseMappingStrategy.getDato;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static org.apache.logging.log4j.util.Strings.isBlank;
@@ -35,6 +36,7 @@ public class PdlOppholdsadresseMappingStrategy implements MappingStrategy {
 
                             PdlOppholdsadresse oppholdsadresse = new PdlOppholdsadresse();
                             oppholdsadresse.setGyldigFraOgMed(getDato(boAdresse.getFlyttedato()));
+                            oppholdsadresse.setCoAdressenavn(getCoadresse(boAdresse));
                             if ("GATE".equals(boAdresse.getAdressetype())) {
                                 oppholdsadresse.setVegadresse(mapperFacade.map(boAdresse, Vegadresse.class));
                             } else {
