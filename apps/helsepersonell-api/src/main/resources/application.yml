@@ -3,6 +3,8 @@ CLIENT_ID: dummy
 
 
 spring:
+  main:
+    banner-mode: off
   application:
     version: application.version.todo
     name: testnorge-helsepersonell-api

@@ -9,6 +9,9 @@ spec:
   image: {{ image }}
   port: 8080
   webproxy: true
+  azure:
+    application:
+      enabled: true
   accessPolicy:
     inbound:
       rules:
