@@ -28,17 +28,13 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: mvn --projects :ident-pool-test --also-make --settings maven-settings.xml compile
-      - name: Test
-        run: mvn --projects :ident-pool-test --also-make --settings maven-settings.xml test
-      - name: Package
-        run: mvn --projects :ident-pool-test --also-make --settings maven-settings.xml package -Dmaven.test.skip
+        run: ./gradlew :ident-pool-app:build
 
       - name: Build and publish Docker image
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker build --tag ${IMAGE} . -f ./apps/ident-pool-test/Dockerfile
+          docker build --tag ${IMAGE} . -f ./apps/ident-pool/Dockerfile
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}
       - name: Deploy to nais
@@ -47,4 +43,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/ident-pool-test/nais_dev-fss_test_template.yaml
+          RESOURCE: apps/ident-pool/nais_dev-fss_test_template.yaml
