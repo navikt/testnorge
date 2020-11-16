@@ -1,3 +1,6 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+CLIENT_ID: af686685-d25a-462a-a0ea-e2a348c457d3
+
 spring:
   security:
     oauth2:
