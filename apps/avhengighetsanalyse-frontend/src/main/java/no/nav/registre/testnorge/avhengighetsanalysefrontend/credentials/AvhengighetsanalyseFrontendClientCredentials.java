@@ -8,8 +8,8 @@ import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
 @Configuration
 public class AvhengighetsanalyseFrontendClientCredentials extends ClientCredential {
     public AvhengighetsanalyseFrontendClientCredentials(
-            @Value("${CLIENT_ID}") String clientId,
-            @Value("${CLIENT_SECRET}") String clientSecret
+            @Value("${azure.app.client.id}") String clientId,
+            @Value("${azure.app.client.secret}") String clientSecret
     ) {
         super(clientId, clientSecret);
     }
