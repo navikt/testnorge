@@ -3,12 +3,12 @@ package no.nav.registre.testnorge.identservice.testdata;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.identservice.testdata.request.TpsHentFnrHistMultiServiceRoutineRequest;
+import no.nav.registre.testnorge.identservice.testdata.response.IdentResponse;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.TpsRequestSender;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.requests.TpsRequestContext;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.requests.User;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.response.TpsServiceRoutineResponse;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.http.HttpConnectTimeoutException;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static no.nav.registre.testnorge.identservice.testdata.ExtractDataFromTpsServiceRoutineResponse.trekkUtIdenterMedStatusFunnetFraResponse;
@@ -30,10 +31,9 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
     private String tpsServicerutine;
 
     private static final User DOLLY_USER = new User("Dolly", "Dolly");
-
     private final TpsRequestSender tpsRequestSender;
 
-    public ResponseEntity<Set<String>> filtrerPaaIdenter(List<String> identer) throws IOException {
+    public ResponseEntity<Set<IdentResponse>> filtrerPaaIdenter(List<String> identer) throws IOException {
 
         TpsRequestContext context = new TpsRequestContext();
         context.setUser(DOLLY_USER);
@@ -51,18 +51,19 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
 
         TpsServiceRoutineResponse tpsResponse = tpsRequestSender.sendTpsRequest(request, context);
 
-        return filtrerFunnedeIdenter(tpsResponse);
+        return filtrerFunnedeIdenter(identer, tpsResponse);
     }
 
-    private ResponseEntity<Set<String>> filtrerFunnedeIdenter(TpsServiceRoutineResponse response) throws IOException {
+    private ResponseEntity<Set<IdentResponse>> filtrerFunnedeIdenter(List<String> identer, TpsServiceRoutineResponse response) throws IOException {
 
         if (isNull(response) || response.getXml().isEmpty()) {
             log.error("Request mot TPS fikk timeout. Sjekk av tilgjengelighet på ident i miljoe feilet.");
             throw new HttpConnectTimeoutException("TPS Timeout");
         }
-
         Set<String> identerIProd = trekkUtIdenterMedStatusFunnetFraResponse(response);
 
-        return !identerIProd.isEmpty() ? ResponseEntity.ok(identerIProd) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return ResponseEntity.ok(
+                identer.stream().map(ident -> new IdentResponse(ident, identerIProd.contains(ident))).collect(Collectors.toSet())
+        );
     }
 }

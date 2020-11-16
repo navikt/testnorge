@@ -1,5 +1,4 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-CLIENT_ID: 451e4aeb-c11d-4c40-99d2-3c4d5e1a35a0
 
 spring:
   main:
@@ -13,7 +12,7 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
 springdoc:
   swagger-ui:
     url: /swagger-ui/index.html?url=/v3/api-docs/
