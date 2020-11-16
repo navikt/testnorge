@@ -16,8 +16,8 @@ import java.util.Arrays;
 @Slf4j
 public class SyntConsumer {
 
-    private final ApplicationManager applicationManager;
-    private final String appName;
+    final ApplicationManager applicationManager;
+    final String appName;
     @Autowired
     private RestTemplate restTemplate;
 
@@ -26,7 +26,7 @@ public class SyntConsumer {
         this.appName = name;
     }
 
-    public synchronized Object synthesizeData(RequestEntity request, Class responseClass) throws ResponseStatusException {
+    public synchronized Object synthesizeData(RequestEntity request) throws ResponseStatusException {
 
         try {
             log.info("Starting synth package {}...", this.appName);
@@ -36,13 +36,13 @@ public class SyntConsumer {
             return null;
         }
 
-        return getDataFromSyntPackage(request, responseClass);
+        return getDataFromSyntPackage(request);
     }
 
 
-    private synchronized Object getDataFromSyntPackage(RequestEntity request, Class responseClass) throws RestClientException {
+    private synchronized Object getDataFromSyntPackage(RequestEntity request) throws RestClientException {
         try {
-            ResponseEntity response = restTemplate.exchange(request, responseClass);
+            ResponseEntity response = restTemplate.exchange(request, Object.class);
 
             if (response.getStatusCode() != HttpStatus.OK) {
                 log.warn("Unexpected synth response: {}", response.getStatusCode());
@@ -58,7 +58,7 @@ public class SyntConsumer {
         }
     }
 
-    private synchronized void scheduleShutdown() {
+    synchronized void scheduleShutdown() {
         applicationManager.scheduleShutdown(this);
     }
 

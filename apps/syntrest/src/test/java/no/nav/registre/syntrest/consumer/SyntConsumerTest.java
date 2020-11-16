@@ -50,7 +50,7 @@ public class SyntConsumerTest {
         Mockito.when(applicationManager.applicationIsAlive(Mockito.anyString())).thenReturn(false);
         Mockito.when(restTemplate.exchange(RequestEntity.get(new UriTemplate(numberAndCodeUrl).expand(2, "dummyCode")).build(), Object.class)).thenReturn(ResponseEntity.ok().body("OK"));
 
-        String result = (String) testConsumer.synthesizeData(UriExpander.createRequestEntity(numberAndCodeUrl,"dummyCode", 2), Object.class);
+        String result = (String) testConsumer.synthesizeData(UriExpander.createRequestEntity(numberAndCodeUrl,"dummyCode", 2));
 
         try {
             Mockito.verify(applicationManager, Mockito.atLeastOnce()).startApplication(Mockito.any(SyntConsumer.class));
@@ -62,7 +62,7 @@ public class SyntConsumerTest {
     public void applicationAliveReturnData() {
         Mockito.when(restTemplate.exchange(RequestEntity.post(new UriTemplate("dummyUrl").expand()).body("Somebody To Love"), Object.class)).thenReturn(ResponseEntity.ok().body("OK"));
 
-        String result = (String) testConsumer.synthesizeData(UriExpander.createRequestEntity("dummyUrl","Somebody To Love"), Object.class);
+        String result = (String) testConsumer.synthesizeData(UriExpander.createRequestEntity("dummyUrl","Somebody To Love"));
 
         try {
             Mockito.verify(applicationManager).startApplication(testConsumer);
