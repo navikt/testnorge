@@ -8,6 +8,12 @@ metadata:
 spec:
   image: {{ image }}
   port: 8080
+  webproxy: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: dolly-backend-dev
+        - application: dolly-backend
   liveness:
     path: /internal/isAlive
     initialDelay: 4
