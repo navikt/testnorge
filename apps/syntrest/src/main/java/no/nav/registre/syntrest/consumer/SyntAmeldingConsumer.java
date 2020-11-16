@@ -6,6 +6,7 @@ import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdCommand;
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdStartCommand;
 import no.nav.registre.syntrest.domain.amelding.Arbeidsforhold;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
+
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -13,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
-public class SyntAmeldingConsumer extends SyntConsumer{
+public class SyntAmeldingConsumer extends SyntConsumer {
     private final WebClient webClient;
 
     public SyntAmeldingConsumer(ApplicationManager applicationManager, String appName, String synthAmeldingUrl) {
@@ -21,7 +22,7 @@ public class SyntAmeldingConsumer extends SyntConsumer{
         this.webClient = WebClient.builder().baseUrl(synthAmeldingUrl).build();
     }
 
-    public Arbeidsforhold synthesizeArbeidsforhold(Arbeidsforhold tidligereArbeidsforhold, String syntAmeldingUrlPath ){
+    public Arbeidsforhold synthesizeArbeidsforhold(Arbeidsforhold tidligereArbeidsforhold, String syntAmeldingUrlPath) {
         try {
             log.info("Starting synth package {}...", this.appName);
             applicationManager.startApplication(this);
@@ -40,7 +41,7 @@ public class SyntAmeldingConsumer extends SyntConsumer{
         }
     }
 
-    public List<Arbeidsforhold> synthesizeArbeidsforholdStart(List<String> datoer, String url){
+    public List<Arbeidsforhold> synthesizeArbeidsforholdStart(List<String> datoer, String url) {
 
         try {
             log.info("Starting synth package {}...", this.appName);

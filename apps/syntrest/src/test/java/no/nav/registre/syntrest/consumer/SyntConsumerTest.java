@@ -2,6 +2,7 @@ package no.nav.registre.syntrest.consumer;
 
 import io.kubernetes.client.ApiException;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,11 +51,13 @@ public class SyntConsumerTest {
         Mockito.when(applicationManager.applicationIsAlive(Mockito.anyString())).thenReturn(false);
         Mockito.when(restTemplate.exchange(RequestEntity.get(new UriTemplate(numberAndCodeUrl).expand(2, "dummyCode")).build(), Object.class)).thenReturn(ResponseEntity.ok().body("OK"));
 
-        String result = (String) testConsumer.synthesizeData(UriExpander.createRequestEntity(numberAndCodeUrl,"dummyCode", 2));
+        String result = (String) testConsumer.synthesizeData(UriExpander.createRequestEntity(numberAndCodeUrl, "dummyCode", 2));
 
         try {
             Mockito.verify(applicationManager, Mockito.atLeastOnce()).startApplication(Mockito.any(SyntConsumer.class));
-        } catch (ApiException | InterruptedException e) { fail(); }
+        } catch (ApiException | InterruptedException e) {
+            fail();
+        }
         assertEquals("OK", result);
     }
 
@@ -62,11 +65,13 @@ public class SyntConsumerTest {
     public void applicationAliveReturnData() {
         Mockito.when(restTemplate.exchange(RequestEntity.post(new UriTemplate("dummyUrl").expand()).body("Somebody To Love"), Object.class)).thenReturn(ResponseEntity.ok().body("OK"));
 
-        String result = (String) testConsumer.synthesizeData(UriExpander.createRequestEntity("dummyUrl","Somebody To Love"));
+        String result = (String) testConsumer.synthesizeData(UriExpander.createRequestEntity("dummyUrl", "Somebody To Love"));
 
         try {
             Mockito.verify(applicationManager).startApplication(testConsumer);
-        } catch (ApiException | InterruptedException e) { fail();}
+        } catch (ApiException | InterruptedException e) {
+            fail();
+        }
         assertEquals("OK", result);
     }
 

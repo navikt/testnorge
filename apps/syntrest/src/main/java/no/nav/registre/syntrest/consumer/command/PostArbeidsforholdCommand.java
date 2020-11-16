@@ -17,7 +17,6 @@ public class PostArbeidsforholdCommand implements Callable<Arbeidsforhold> {
     private final Arbeidsforhold arbeidsforhold;
     private final String syntAmeldingUrlPath;
 
-
     public PostArbeidsforholdCommand(Arbeidsforhold arbeidsforhold, String syntAmeldingUrlPath, WebClient webClient) {
         this.webClient = webClient;
         this.arbeidsforhold = arbeidsforhold;

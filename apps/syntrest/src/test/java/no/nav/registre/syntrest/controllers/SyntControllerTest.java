@@ -10,6 +10,7 @@ import no.nav.registre.syntrest.domain.popp.Inntektsmelding;
 import no.nav.registre.syntrest.domain.sam.SamMelding;
 import no.nav.registre.syntrest.domain.tp.TPmelding;
 import no.nav.registre.syntrest.domain.tps.SkdMelding;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -67,7 +68,6 @@ public class SyntControllerTest {
 
         assertThat(listResponseEntity.getBody(), equalTo(expectedResponse));
     }
-
 
     @Test
     public void bisysTest() throws NoSuchFieldException {
@@ -170,9 +170,8 @@ public class SyntControllerTest {
         assertThat(listResponseEntity.getBody(), equalTo(expectedResponse));
     }
 
-
     @Test
-    public void poppTest() throws NoSuchFieldException{
+    public void poppTest() throws NoSuchFieldException {
         FieldSetter.setField(syntController, syntController.getClass().getDeclaredField("poppUrl"), poppUrl);
         List<String> fnrs = new ArrayList<>();
         fnrs.add("12345678910");
@@ -190,7 +189,7 @@ public class SyntControllerTest {
     }
 
     @Test(expected = ResponseStatusException.class)
-    public void poppFeilTest() throws NoSuchFieldException{
+    public void poppFeilTest() throws NoSuchFieldException {
         FieldSetter.setField(syntController, syntController.getClass().getDeclaredField("poppUrl"), poppUrl);
         List<String> fnrs = new ArrayList<>();
         fnrs.add("12345678910");

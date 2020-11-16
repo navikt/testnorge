@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -76,7 +77,6 @@ public class SyntController {
     private final SyntConsumer frikortConsumer;
     private final SyntAmeldingConsumer ameldingConsumer;
 
-
     ///////////// URLs //////////////
     @Value("${synth-aareg-url}")
     private String aaregUrl;
@@ -103,10 +103,9 @@ public class SyntController {
     @Value("${synth-frikort-url}")
     private String frikortUrl;
 
-
     @PostMapping("/aareg")
     @ApiOperation(value = "Aareg", notes = "Genererer syntetiske arbeidshistorikker bestående av meldinger på AAREG format.")
-    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-aareg"})
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-aareg" })
     public ResponseEntity<List<Arbeidsforholdsmelding>> generateAareg(
             @ApiParam(value = "Liste med identifikasjonsnumre for fikitve personer", required = true)
             @RequestBody List<String> fnrs
@@ -121,7 +120,7 @@ public class SyntController {
 
     @GetMapping("/bisys")
     @ApiOperation(value = "Barnebidragsmelding", notes = "API for å generere syntetiserte bisysmeldinger.")
-    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-arena-bisys"})
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-arena-bisys" })
     public ResponseEntity<List<Barnebidragsmelding>> generateBisys(
             @ApiParam(value = "Antall meldinger som skal genereres", required = true)
             @RequestParam int numToGenerate
@@ -136,7 +135,7 @@ public class SyntController {
 
     @GetMapping("/inst")
     @ApiOperation(value = "Inst", notes = "Generer et antall institusjonsforholdsmeldinger.")
-    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-inst"})
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-inst" })
     public ResponseEntity<List<Institusjonsmelding>> generateInst(
             @ApiParam(value = "Antall institusjonsmeldinger", required = true)
             @RequestParam int numToGenerate
@@ -152,7 +151,7 @@ public class SyntController {
     @GetMapping("/medl")
     @ApiOperation(value = "Medl", notes = "Generer MEDL meldinger. For info om selve syntetiseringen og datagrunnlag " +
             "se https://confluence.adeo.no/display/FEL/Syntetisering+-+MEDL\n\nObs! Veldig treg!")
-    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-medl"})
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-medl" })
     public ResponseEntity<List<Medlemskapsmelding>> generateMedl(
             @ApiParam(value = "Antall meldinger", required = true)
             @RequestParam int numToGenerate
@@ -174,7 +173,7 @@ public class SyntController {
             "postgresdatabasen og legges inn på nytt.\n\nMerk at dette ikke er mulig med dagens NAIS oppsett da dette " +
             "tar lang tid og applikasjonen timer ut. Dette må enten gjøres lokalt med samme python versjon som blir " +
             "kjørt på NAIS (3.7.1 per dags dato), eller så må NAIS instillingene oppdateres.")
-    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-meldekort"})
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-meldekort" })
     public ResponseEntity<List<String>> generateMeldekort(
             @ApiParam(value = "Meldegruppe", required = true)
             @PathVariable String meldegruppe,
@@ -199,7 +198,7 @@ public class SyntController {
     @GetMapping("/nav/{endringskode}")
     @ApiOperation(value = "Nav Melding", notes = "Opprett et antall meldinger med endringskode fra path variabelen. " +
             "\nReturenterer en liste med strenger der hvert element er en endringsmelding-xml.")
-    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-nav"})
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-nav" })
     public ResponseEntity<List<String>> generateNavEndringsmelding(
             @ApiParam(value = "Nav endringskode", required = true)
             @PathVariable String endringskode,
@@ -220,7 +219,7 @@ public class SyntController {
             "Inntektsmeldingene blir returnert på et format som kan bli lagret i sigrunstub, og vil generere en ny " +
             "inntektsmelding basert på personens inntektsmelding forrige år. Hvis personen ikke har en inntektsmelding " +
             "vil det bli samplet en ny inntektsmelding fra en BeAn/CART-modell.")
-    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-popp"})
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-popp" })
     public ResponseEntity<List<Inntektsmelding>> generateInntektsmelding(
             @ApiParam(value = "Fnrs å opprette inntektsmeldinger på", required = true)
             @RequestBody List<String> fnrs
@@ -235,7 +234,7 @@ public class SyntController {
 
     @GetMapping("/sam")
     @ApiOperation(value = "Generer SAM melding", notes = "API for å generere syntetiserte SAM data.")
-    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-sam"})
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-sam" })
     public ResponseEntity<List<SamMelding>> generateSamMelding(
             @ApiParam(value = "Antall meldinger", required = true)
             @RequestParam int numToGenerate
@@ -254,7 +253,7 @@ public class SyntController {
             "per fødselsnummer, (altså forrige måneds inntektsmelding) blir den nye inntektsmeldingen basert på disse. " +
             "Hvis man legger ved en tom liste til fødselsnummeret blir en inntektsmelding generert basert på en kernel " +
             "density model.")
-    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-inntekt"})
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-inntekt" })
     public ResponseEntity<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> generateInntektsMelding(
             @ApiParam(value = "Map der key=fødselsnummer, value=liste med inntektsmeldinger", required = true)
             @RequestBody Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>> fnrInntektMap
@@ -271,7 +270,7 @@ public class SyntController {
     @GetMapping("/tp")
     @ApiOperation(value = "Tjeneste Pensjonsmeldinger", notes = "Generer antall tjenestepensjonsmeldinger. For info om " +
             "selve syntetiseringen av TP, se https://confluence.adeo.no/display/FEL/Syntetisering+-+TP")
-    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-tp"})
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-tp" })
     public ResponseEntity<List<TPmelding>> generateTPMelding(
             @ApiParam(value = "Antall meldinger", required = true)
             @RequestParam int numToGenerate
@@ -286,7 +285,7 @@ public class SyntController {
 
     @GetMapping("/tps/{endringskode}")
     @ApiOperation(value = "Generer SKD melding", notes = "Lager SKD meldinger for ulike endringskoder")
-    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-tps"})
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-tps" })
     public ResponseEntity<List<SkdMelding>> generateSkdMelding(
             @ApiParam(value = "Endringskode", required = true)
             @PathVariable String endringskode,
@@ -305,7 +304,7 @@ public class SyntController {
     @PostMapping("/frikort")
     @ApiOperation(value = "Generer kvitteringer for frikort", notes = "Lager et spesifisert antall kvitteringer for " +
             "hvert personnummersom sendes inn.")
-    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-frikort"})
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-frikort" })
     public ResponseEntity<Map<String, List<FrikortKvittering>>> generateFrikort(
             @ApiParam(value = "Map der key=fødselsnummer og value er antall kvitteringer man ønsker å lage for denne identen.", required = true)
             @RequestBody Map<String, Integer> fnrAntMeldingMap
@@ -319,7 +318,7 @@ public class SyntController {
     }
 
     @PostMapping("/amelding/arbeidsforhold")
-    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-amelding"})
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
     public ResponseEntity<Arbeidsforhold> generateArbeidforhold(
             @RequestBody Arbeidsforhold tidligereArbeidsforhold
     ) {
@@ -330,7 +329,7 @@ public class SyntController {
     }
 
     @PostMapping("/amelding/arbeidsforhold/sklearn")
-    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-amelding"})
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
     public ResponseEntity<Arbeidsforhold> generateArbeidforholdSklearn(
             @RequestBody Arbeidsforhold tidligereArbeidsforhold
     ) {
@@ -341,11 +340,11 @@ public class SyntController {
     }
 
     @PostMapping("/amelding/arbeidsforhold/start")
-    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-amelding"})
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
     public ResponseEntity<List<Arbeidsforhold>> generateArbeidforholdStart(
             @RequestBody List<String> startdatoer
     ) {
-        var response = ameldingConsumer.synthesizeArbeidsforholdStart(startdatoer,"/arbeidsforhold/start");
+        var response = ameldingConsumer.synthesizeArbeidsforholdStart(startdatoer, "/arbeidsforhold/start");
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);

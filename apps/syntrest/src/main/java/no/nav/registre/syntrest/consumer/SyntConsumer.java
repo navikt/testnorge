@@ -3,6 +3,7 @@ package no.nav.registre.syntrest.consumer;
 import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -38,7 +39,6 @@ public class SyntConsumer {
 
         return getDataFromSyntPackage(request);
     }
-
 
     private synchronized Object getDataFromSyntPackage(RequestEntity request) throws RestClientException {
         try {

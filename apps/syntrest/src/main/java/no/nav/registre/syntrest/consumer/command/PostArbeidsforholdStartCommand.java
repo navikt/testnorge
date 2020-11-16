@@ -19,8 +19,10 @@ public class PostArbeidsforholdStartCommand implements Callable<List<Arbeidsforh
     private final List<String> startdatoer;
     private final String syntAmeldingUrlPath;
 
-    private static final ParameterizedTypeReference<List<String>> REQUEST_TYPE = new ParameterizedTypeReference<>() {};
-    private static final ParameterizedTypeReference<List<Arbeidsforhold>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {};
+    private static final ParameterizedTypeReference<List<String>> REQUEST_TYPE = new ParameterizedTypeReference<>() {
+    };
+    private static final ParameterizedTypeReference<List<Arbeidsforhold>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
+    };
 
     public PostArbeidsforholdStartCommand(List<String> startdatoer, String syntAmeldingUrlPath, WebClient webClient) {
         this.webClient = webClient;
