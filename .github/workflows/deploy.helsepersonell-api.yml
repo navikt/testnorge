@@ -2,6 +2,7 @@ name: Deploy helsepersonell-api
 
 on:
   push:
+    branches: master
     paths:
       - apps/helsepersonell-api/**
       - libs/testnorge-core/**

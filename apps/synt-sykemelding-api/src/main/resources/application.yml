@@ -9,7 +9,7 @@ consumers:
   hodejegeren:
     url: http://testnorge-hodejegeren.default.svc.nais.local
   helsepersonell:
-    client_id: dummy
+    client_id: af686685-d25a-462a-a0ea-e2a348c457d3
     client_secret: ${HELSEPERSONELL_API_CLIENT_SECRET}
     url: https://testnorge-helsepersonell-api-tmp.dev.adeo.no
   synt-sykemelding:
