@@ -2,17 +2,25 @@ package no.nav.registre.testnorge.personexportapi.domain;
 
 import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import no.nav.registre.testnorge.personexportapi.consumer.dto.EndringsmeldingDTO;
+import no.nav.registre.testnorge.personexportapi.consumer.dto.FoedselsdatoFraIdent;
 import no.nav.registre.testnorge.personexportapi.consumer.dto.HusbokstavEncoder;
+import no.nav.registre.testnorge.personexportapi.consumer.dto.KjoennFraIdent;
 import no.nav.registre.testnorge.personexportapi.consumer.dto.LandkodeEncoder;
+import no.nav.registre.testnorge.personexportapi.consumer.dto.Sivilstatus;
 
 public class Person {
+
+    private static final DateTimeFormatter TPS_DATE_FMT = DateTimeFormatter.ofPattern("yyyyMMdd");
+    private static final int MYNDIGHET_ALDER = 18;
 
     private final EndringsmeldingDTO endringsmeldingDTO;
     private final String page;
@@ -43,13 +51,7 @@ public class Person {
     }
 
     public String getAdressetype() {
-        if (endringsmeldingDTO.isGateadresse()) {
-            return "GATE";
-        } else if (endringsmeldingDTO.isMatrikkeladresse()) {
-            return "MATR";
-        } else {
-            return null;
-        }
+        return endringsmeldingDTO.getAdressetype();
     }
 
     public String getGatenavn() {
@@ -97,9 +99,7 @@ public class Person {
     }
 
     public String getFlyttedato() {
-        return isNotBlank(endringsmeldingDTO.getFlyttedatoAdr()) ?
-                LocalDate.parse(endringsmeldingDTO.getFlyttedatoAdr(), DateTimeFormatter.ofPattern("yyyyMMdd"))
-                        .format(DateTimeFormatter.ISO_DATE) : null;
+        return formatDate(endringsmeldingDTO.getFlyttedatoAdr());
     }
 
     public String getAdresse1() {
@@ -122,6 +122,54 @@ public class Person {
         return isNotBlank(endringsmeldingDTO.getStatuskode()) ? endringsmeldingDTO.getStatuskode() : null;
     }
 
+    public String getFoedselsdato() {
+        return FoedselsdatoFraIdent.getFoedselsdato(getIdent()).format(DateTimeFormatter.ISO_DATE);
+    }
+
+    public String getKjoenn() {
+        return KjoennFraIdent.getKjoenn(getIdent()).name();
+    }
+
+    public String getKjoennBeskrivelse() {
+        return KjoennFraIdent.getKjoenn(getIdent()).getBeskrivelse();
+    }
+
+    public String getSivilstand() {
+        return isMyndig() ? endringsmeldingDTO.getSivilstand() : null;
+    }
+
+    public String getSivilstandBeskrivelse() {
+        return nonNull(getSivilstand()) ? Sivilstatus.lookup(getSivilstand()).getKodeverkskode() : null;
+    }
+
+    public String getSivilstandRegdato() {
+        return formatDate(endringsmeldingDTO.getRegdatoSivilstand());
+    }
+
+    public String getStatsborgerskap() {
+        return isNotBlank(endringsmeldingDTO.getStatsborgerskap()) ? LandkodeEncoder.decode(endringsmeldingDTO.getStatsborgerskap()) : null;
+    }
+
+    public String getStatsborgerskapRegdato() {
+        return formatDate(endringsmeldingDTO.getRegdatoStatsb());
+    }
+
+    public String getInnvandretFraLand() {
+        return isNotBlank(endringsmeldingDTO.getInnvandretFraLand()) ? LandkodeEncoder.decode(endringsmeldingDTO.getInnvandretFraLand()) : null;
+    }
+
+    public String getInvandretFraLandFlyttedato() {
+        return formatDate(endringsmeldingDTO.getFraLandFlyttedato());
+    }
+
+    public String getUtvandretTilLand() {
+        return isNotBlank(endringsmeldingDTO.getUtvandretTilLand()) ? LandkodeEncoder.decode(endringsmeldingDTO.getUtvandretTilLand()) : null;
+    }
+
+    public String getUtvandretTilLandFlyttedato() {
+        return formatDate(endringsmeldingDTO.getTilLandFlyttedato());
+    }
+
     @JsonIgnore
     public boolean isFnr() {
         return parseInt(Character.toString(endringsmeldingDTO.getFodselsdato().charAt(0))) < 4;
@@ -130,5 +178,18 @@ public class Person {
     @Override
     public String toString() {
         return format("Page: %s fnr: %s", getPage(), getIdent());
+    }
+
+    private static String formatDate(String tpsDato) {
+
+        return isNotBlank(tpsDato) ?
+                LocalDate.parse(tpsDato, TPS_DATE_FMT)
+                        .format(DateTimeFormatter.ISO_DATE) : null;
+    }
+
+    private boolean isMyndig() {
+        return ChronoUnit.YEARS.between(
+                FoedselsdatoFraIdent.getFoedselsdato(getIdent()).toLocalDate(),
+                LocalDate.now()) > MYNDIGHET_ALDER;
     }
 }

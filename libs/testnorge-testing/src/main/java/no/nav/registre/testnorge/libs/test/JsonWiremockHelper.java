@@ -10,6 +10,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
@@ -70,6 +71,15 @@ public class JsonWiremockHelper {
 
     public void stubPost() {
         MappingBuilder mappingBuilder = post(urlPathPattern);
+
+        updateMappingBuilder(mappingBuilder);
+
+        stubFor(mappingBuilder);
+    }
+
+
+    public void stubPut() {
+        MappingBuilder mappingBuilder = put(urlPathPattern);
 
         updateMappingBuilder(mappingBuilder);
 

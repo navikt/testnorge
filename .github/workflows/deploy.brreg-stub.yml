@@ -5,6 +5,7 @@ on:
     branches: master
     paths:
       - apps/brreg-stub/**
+      - libs/testnorge-core/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/brreg-stub-v2:${{ github.sha }}

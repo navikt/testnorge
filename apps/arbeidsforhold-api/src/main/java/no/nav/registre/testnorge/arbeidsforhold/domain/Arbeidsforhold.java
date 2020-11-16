@@ -4,9 +4,11 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import no.nav.registre.testnorge.arbeidsforhold.consumer.dto.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.arbeidsforhold.exception.ArbeidsforholdNotFoundException;
+import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.PermisjonDTO;
 
 @Slf4j
 @Getter

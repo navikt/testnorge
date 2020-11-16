@@ -5,11 +5,11 @@ import org.springframework.context.annotation.Import;
 
 import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
 import no.nav.registre.testnorge.libs.oauth2.service.OnBehalfOfGenerateAccessTokenService;
-import no.nav.registre.testnorge.libs.oauth2.service.SecureAuthenticationTokenResolver;
+import no.nav.registre.testnorge.libs.oauth2.service.SecureJwtAuthenticationTokenResolver;
 
 @Configuration
 @Import({
-        SecureAuthenticationTokenResolver.class,
+        SecureJwtAuthenticationTokenResolver.class,
         ClientCredentialGenerateAccessTokenService.class,
         OnBehalfOfGenerateAccessTokenService.class
 })

@@ -1,0 +1,45 @@
+name: Release
+
+on:
+  push:
+    branches: master
+    paths:
+      - libs/**
+
+jobs:
+  release:
+    name: Release modules
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Fetch git history
+        run: git fetch --unshallow
+      - name: Set up JDK 1.11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.11
+      - name: Setup git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git
+          git config --global user.email "dolly@nav.no"
+          git config --global user.name "$GITHUB_ACTOR"
+      - name: Release
+        env:
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
+        run: |
+          echo Release started by $GITHUB_ACTOR
+
+          TIME=$(TZ="Europe/Oslo" date +%Y.%m.%d-%H.%M)
+          COMMIT=$(git rev-parse --short=12 HEAD)
+          VERSION="$TIME-$COMMIT"
+
+          ./gradlew testnorge-avro-schema:publish -PreleaseVersion=$VERSION
+          ./gradlew testnorge-dependency-analysis:publish -PreleaseVersion=$VERSION
+          ./gradlew testnorge-data-transfer-objects:publish -PreleaseVersion=$VERSION
+
+          git tag -a $VERSION -m "Tag release version"
+          git push origin $VERSION

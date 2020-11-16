@@ -19,6 +19,8 @@ import no.nav.registre.testnorge.personexportapi.domain.Person;
 @RequiredArgsConstructor
 public class HelsenettCsvConverter extends CsvConverter<Person> {
 
+    private static final String LANDKODER = "Landkoder";
+
     private final KodeverkConsumer kodeverkConsumer;
 
     private enum Headers implements CsvHeader {
@@ -116,7 +118,19 @@ public class HelsenettCsvConverter extends CsvConverter<Person> {
             map.put(Headers.POSTADR_1.getValue(), person.getAdresse1());
             map.put(Headers.POSTADR_2.getValue(), person.getAdresse2());
             map.put(Headers.POSTADR_3.getValue(), person.getAdresse3());
-            map.put(Headers.POSTADR_LAND.getValue(), kodeverkConsumer.getKodeverkOppslag("Landkoder", person.getPostadrLand()));
+            map.put(Headers.POSTADR_LAND.getValue(), kodeverkConsumer.getKodeverkOppslag(LANDKODER, person.getPostadrLand()));
+            map.put(Headers.FODT_DATO.getValue(), person.getFoedselsdato());
+            map.put(Headers.KJONN.getValue(), person.getKjoenn());
+            map.put(Headers.BESKR_KJONN.getValue(), person.getKjoennBeskrivelse());
+            map.put(Headers.SIVILSTAND.getValue(), person.getSivilstand());
+            map.put(Headers.BESKR_SIVILSTAND.getValue(), kodeverkConsumer.getKodeverkOppslag("Sivilstander", person.getSivilstandBeskrivelse()));
+            map.put(Headers.SIVILSTAND_DATO.getValue(), person.getSivilstandRegdato());
+            map.put(Headers.STATSBORGERLAND.getValue(), kodeverkConsumer.getKodeverkOppslag(LANDKODER, person.getStatsborgerskap()));
+            map.put(Headers.STATSBORGER_DATO.getValue(), person.getStatsborgerskapRegdato());
+            map.put(Headers.INNVANDRET_FRA_LAND.getValue(), kodeverkConsumer.getKodeverkOppslag(LANDKODER, person.getInnvandretFraLand()));
+            map.put(Headers.INNVANDRET_DATO.getValue(), person.getInvandretFraLandFlyttedato());
+            map.put(Headers.UTVANDRET_TIL_LAND.getValue(), kodeverkConsumer.getKodeverkOppslag(LANDKODER, person.getUtvandretTilLand()));
+            map.put(Headers.UTVANDRET_DATO.getValue(), person.getUtvandretTilLandFlyttedato());
 
             log.info(person.toString());
             return map;

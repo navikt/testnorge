@@ -20,7 +20,7 @@ import no.nav.registre.testnorge.synt.person.domain.Person;
 
 
 @Component
-@DependencyOn("person-api")
+@DependencyOn("testnorge-person-api")
 public class PersonApiConsumer {
     private final WebClient webClient;
     private final ClientCredential clientCredential;

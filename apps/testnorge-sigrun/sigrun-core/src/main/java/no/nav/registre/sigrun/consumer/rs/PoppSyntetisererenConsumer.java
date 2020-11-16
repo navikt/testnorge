@@ -18,7 +18,7 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
-@DependencyOn(value = "syntrest", external = true)
+@DependencyOn("syntrest")
 public class PoppSyntetisererenConsumer {
 
     private static final ParameterizedTypeReference<List<PoppSyntetisererenResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

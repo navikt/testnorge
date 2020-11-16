@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.opprettpersonpdl.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
@@ -11,14 +12,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.registre.testnorge.libs.common.command.CreatePersonCommand;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
 import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
 import no.nav.registre.testnorge.opprettpersonpdl.consumer.credentials.PersonApiClientCredential;
 import no.nav.registre.testnorge.opprettpersonpdl.domain.Person;
 
-
+@Slf4j
 @Component
 @DependencyOn("person-api")
 public class PersonApiConsumer {
@@ -51,10 +51,7 @@ public class PersonApiConsumer {
 
 
     public void createPerson(Person person) {
-        AccessToken accessToken = clientCredentialGenerateAccessTokenService.generateToken(
-                clientCredential,
-                new AccessScopes("api://" + clientCredential.getClientId() + "/.default")
-        );
+        AccessToken accessToken = clientCredentialGenerateAccessTokenService.generateToken(clientCredential);
         new CreatePersonCommand(webClient, person.toDTO(), accessToken.getTokenValue(), person.toKommaseparerteTags()).run();
     }
 }

@@ -1,10 +1,10 @@
 package no.nav.registre.testnorge.personexportapi.consumer.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
-
-import java.util.List;
 
 @Value
 @NoArgsConstructor(force = true)

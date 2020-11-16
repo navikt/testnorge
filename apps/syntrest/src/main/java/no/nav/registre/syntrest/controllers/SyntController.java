@@ -5,18 +5,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.syntrest.consumer.SyntConsumer;
-import no.nav.registre.syntrest.consumer.UriExpander;
-import no.nav.registre.syntrest.domain.aareg.Arbeidsforholdsmelding;
-import no.nav.registre.syntrest.domain.bisys.Barnebidragsmelding;
-import no.nav.registre.syntrest.domain.frikort.FrikortKvittering;
-import no.nav.registre.syntrest.domain.inst.Institusjonsmelding;
-import no.nav.registre.syntrest.domain.medl.Medlemskapsmelding;
-import no.nav.registre.syntrest.domain.popp.Inntektsmelding;
-import no.nav.registre.syntrest.domain.sam.SamMelding;
-import no.nav.registre.syntrest.domain.tp.TPmelding;
-import no.nav.registre.syntrest.domain.tps.SkdMelding;
-import no.nav.registre.syntrest.utils.InputValidator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,10 +22,42 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import no.nav.registre.syntrest.consumer.SyntConsumer;
+import no.nav.registre.syntrest.consumer.UriExpander;
+import no.nav.registre.syntrest.domain.aareg.Arbeidsforholdsmelding;
+import no.nav.registre.syntrest.domain.amelding.Arbeidsforhold;
+import no.nav.registre.syntrest.domain.bisys.Barnebidragsmelding;
+import no.nav.registre.syntrest.domain.frikort.FrikortKvittering;
+import no.nav.registre.syntrest.domain.inst.Institusjonsmelding;
+import no.nav.registre.syntrest.domain.medl.Medlemskapsmelding;
+import no.nav.registre.syntrest.domain.popp.Inntektsmelding;
+import no.nav.registre.syntrest.domain.sam.SamMelding;
+import no.nav.registre.syntrest.domain.tp.TPmelding;
+import no.nav.registre.syntrest.domain.tps.SkdMelding;
+import no.nav.registre.syntrest.utils.InputValidator;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependenciesOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
+
 @Slf4j
 @RestController
 @RequestMapping("api/v1/generate")
 @RequiredArgsConstructor
+@DependenciesOn({
+        @DependencyOn(value = "nais-synthdata-medl", external = true),
+        @DependencyOn(value = "nais-synthdata-inst", external = true),
+        @DependencyOn(value = "nais-synthdata-arena-meldekort", external = true),
+        @DependencyOn(value = "nais-synthdata-inntekt", external = true),
+        @DependencyOn(value = "nais-synthdata-elsam", external = true),
+        @DependencyOn(value = "nais-synthdata-popp", external = true),
+        @DependencyOn(value = "nais-synthdata-tp", external = true),
+        @DependencyOn(value = "nais-synthdata-tps", external = true),
+        @DependencyOn(value = "nais-synthdata-nav", external = true),
+        @DependencyOn(value = "nais-synthdata-sam", external = true),
+        @DependencyOn(value = "nais-synthdata-aareg", external = true),
+        @DependencyOn(value = "nais-synthdata-frikort", external = true),
+        @DependencyOn(value = "nais-synthdata-amelding", external = true),
+        @DependencyOn(value = "nais-synthdata-arena-bisys", external = true)
+})
 public class SyntController {
 
     ///////////// SYNT CONSUMERS //////////////
@@ -53,6 +73,9 @@ public class SyntController {
     private final SyntConsumer tpConsumer;
     private final SyntConsumer tpsConsumer;
     private final SyntConsumer frikortConsumer;
+    private final SyntConsumer aMeldingConsumer;
+    private final SyntConsumer aMeldingSklearnConsumer;
+    private final SyntConsumer aMeldingStartConsumer;
 
 
     ///////////// URLs //////////////
@@ -80,6 +103,8 @@ public class SyntController {
     private String tpsUrl;
     @Value("${synth-frikort-url}")
     private String frikortUrl;
+    @Value("${synth-amelding-url}")
+    private String aMeldingUrl;
 
 
     @PostMapping("/aareg")
@@ -91,7 +116,7 @@ public class SyntController {
     ) {
         InputValidator.validateInput(fnrs);
         List<Arbeidsforholdsmelding> response = (List<Arbeidsforholdsmelding>)
-                aaregConsumer.synthesizeData(UriExpander.createRequestEntity(aaregUrl, fnrs));
+                aaregConsumer.synthesizeData(UriExpander.createRequestEntity(aaregUrl, fnrs), Object.class);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -106,7 +131,7 @@ public class SyntController {
     ) {
         InputValidator.validateInput(numToGenerate);
         List<Barnebidragsmelding> response = (List<Barnebidragsmelding>)
-                bisysConsumer.synthesizeData(UriExpander.createRequestEntity(bisysUrl, numToGenerate));
+                bisysConsumer.synthesizeData(UriExpander.createRequestEntity(bisysUrl, numToGenerate), Object.class);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -121,7 +146,7 @@ public class SyntController {
     ) {
         InputValidator.validateInput(numToGenerate);
         List<Institusjonsmelding> response = (List<Institusjonsmelding>)
-                instConsumer.synthesizeData(UriExpander.createRequestEntity(instUrl, numToGenerate));
+                instConsumer.synthesizeData(UriExpander.createRequestEntity(instUrl, numToGenerate), Object.class);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -137,7 +162,7 @@ public class SyntController {
     ) {
         InputValidator.validateInput(numToGenerate);
         List<Medlemskapsmelding> response = (List<Medlemskapsmelding>)
-                medlConsumer.synthesizeData(UriExpander.createRequestEntity(medlUrl, numToGenerate));
+                medlConsumer.synthesizeData(UriExpander.createRequestEntity(medlUrl, numToGenerate), Object.class);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -168,7 +193,8 @@ public class SyntController {
                 : arenaMeldekortUrl + "?arbeidstimer=" + arbeidstimer;
 
         List<String> response = (List<String>)
-                meldekortConsumer.synthesizeData(UriExpander.createRequestEntity(url, meldegruppe, numToGenerate));
+                meldekortConsumer.synthesizeData(UriExpander.createRequestEntity(url, meldegruppe, numToGenerate),
+                        Object.class);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -187,7 +213,8 @@ public class SyntController {
         InputValidator.validateInput(numToGenerate);
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ENDRINGSKODE_NAV, endringskode);
         List<String> response = (List<String>)
-                navConsumer.synthesizeData(UriExpander.createRequestEntity(navEndringsmeldingUrl, endringskode, numToGenerate));
+                navConsumer.synthesizeData(UriExpander.createRequestEntity(navEndringsmeldingUrl, endringskode,
+                        numToGenerate), Object.class);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -205,7 +232,8 @@ public class SyntController {
     ) {
         InputValidator.validateInput(fnrs);
         List<Inntektsmelding> response = (List<Inntektsmelding>)
-                poppConsumer.synthesizeData(UriExpander.createRequestEntity(poppUrl, fnrs));
+                poppConsumer.synthesizeData(UriExpander.createRequestEntity(poppUrl, fnrs),
+                        Object.class);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -220,7 +248,8 @@ public class SyntController {
     ) {
         InputValidator.validateInput(numToGenerate);
         List<SamMelding> response = (List<SamMelding>)
-                samConsumer.synthesizeData(UriExpander.createRequestEntity(samUrl, numToGenerate));
+                samConsumer.synthesizeData(UriExpander.createRequestEntity(samUrl, numToGenerate),
+                        Object.class);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -240,7 +269,8 @@ public class SyntController {
         InputValidator.validateInput(new ArrayList<>(fnrInntektMap.keySet()));
         Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>> response =
                 (Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>)
-                        inntektConsumer.synthesizeData(UriExpander.createRequestEntity(inntektUrl, fnrInntektMap));
+                        inntektConsumer.synthesizeData(UriExpander.createRequestEntity(inntektUrl, fnrInntektMap),
+                                Object.class);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -256,7 +286,7 @@ public class SyntController {
     ) {
         InputValidator.validateInput(numToGenerate);
         List<TPmelding> response = (List<TPmelding>)
-                tpConsumer.synthesizeData(UriExpander.createRequestEntity(tpUrl, numToGenerate));
+                tpConsumer.synthesizeData(UriExpander.createRequestEntity(tpUrl, numToGenerate), Object.class);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -274,7 +304,8 @@ public class SyntController {
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ENDRINGSKODE, endringskode);
         InputValidator.validateInput(numToGenerate);
         List<SkdMelding> response = (List<SkdMelding>)
-                tpsConsumer.synthesizeData(UriExpander.createRequestEntity(tpsUrl, endringskode, numToGenerate));
+                tpsConsumer.synthesizeData(UriExpander.createRequestEntity(tpsUrl, endringskode, numToGenerate),
+                        Object.class);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -290,7 +321,47 @@ public class SyntController {
     ) {
         fnrAntMeldingMap.forEach((key, value) -> InputValidator.validateInput(value));
         Map<String, List<FrikortKvittering>> response = (Map<String, List<FrikortKvittering>>)
-                frikortConsumer.synthesizeData(UriExpander.createRequestEntity(frikortUrl, fnrAntMeldingMap));
+                frikortConsumer.synthesizeData(UriExpander.createRequestEntity(frikortUrl, fnrAntMeldingMap),
+                        Object.class);
+        doResponseValidation(response);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/amelding/arbeidsforhold")
+    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-amelding"})
+    public ResponseEntity<Arbeidsforhold> generateArbeidforhold(
+            @RequestBody Arbeidsforhold tidligereArbeidsforhold
+    ) {
+        Arbeidsforhold response = (Arbeidsforhold)
+                aMeldingConsumer.synthesizeData(UriExpander.createRequestEntity(aMeldingUrl,
+                        tidligereArbeidsforhold), Arbeidsforhold.class);
+        doResponseValidation(response);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/amelding/arbeidsforhold/sklearn")
+    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-amelding"})
+    public ResponseEntity<Arbeidsforhold> generateArbeidforholdSklearn(
+            @RequestBody Arbeidsforhold tidligereArbeidsforhold
+    ) {
+        Arbeidsforhold response = (Arbeidsforhold)
+                aMeldingSklearnConsumer.synthesizeData(UriExpander.createRequestEntity(aMeldingUrl + "/sklearn",
+                        tidligereArbeidsforhold), Arbeidsforhold.class);
+        doResponseValidation(response);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/amelding/arbeidsforhold/start")
+    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-amelding"})
+    public ResponseEntity<List<Arbeidsforhold>> generateArbeidforholdStart(
+            @RequestBody List<String> startdatoer
+    ) {
+        List<Arbeidsforhold> response = (List<Arbeidsforhold>)
+                aMeldingStartConsumer.synthesizeData(UriExpander.createRequestEntity(aMeldingUrl + "/start",
+                        startdatoer), Object.class);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
