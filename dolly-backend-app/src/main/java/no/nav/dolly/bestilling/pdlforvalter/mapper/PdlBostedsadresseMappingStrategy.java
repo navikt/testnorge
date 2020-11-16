@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
+import static no.nav.dolly.bestilling.pdlforvalter.mapper.PdlAdresseMappingStrategy.getCoadresse;
 import static no.nav.dolly.bestilling.pdlforvalter.mapper.PdlAdresseMappingStrategy.getDato;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 
@@ -30,6 +31,7 @@ public class PdlBostedsadresseMappingStrategy implements MappingStrategy {
                             PdlBostedadresse bostedadresse = new PdlBostedadresse();
                             bostedadresse.setKilde(CONSUMER);
                             bostedadresse.setGyldigFraOgMed(getDato(boAdresse.getFlyttedato()));
+                            bostedadresse.setCoAdressenavn(getCoadresse(boAdresse));
                             if (person.isUtenFastBopel()) {
                                 bostedadresse.setUkjentBosted(PdlBostedadresse.UkjentBosted.builder()
                                         .bostedskommune(boAdresse.getKommunenr())
