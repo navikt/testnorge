@@ -5,6 +5,7 @@ import io.kubernetes.client.apis.CustomObjectsApi;
 import io.kubernetes.client.util.Config;
 import io.kubernetes.client.util.KubeConfig;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.syntrest.consumer.SyntAmeldingConsumer;
 import no.nav.registre.syntrest.consumer.SyntConsumer;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 import no.nav.registre.syntrest.kubernetes.KubernetesController;
@@ -55,6 +56,8 @@ public class AppConfig {
     private String proxyUrl;
     @Value("${proxy-port}")
     private int proxyPort;
+    @Value("${synth-amelding-url}")
+    private String ameldingUrl;
 
     @Bean
     ScheduledExecutorService scheduledExecutorService() {
@@ -190,18 +193,9 @@ public class AppConfig {
     }
 
     @Bean
-    @DependsOn({"applicationManager", "restTemplate"})
-    SyntConsumer aMeldingConsumer() {
-        return new SyntConsumer(applicationManager(), "synthdata-amelding");
+    @DependsOn({"applicationManager"})
+    SyntAmeldingConsumer ameldingConsumer() {
+        return new SyntAmeldingConsumer(applicationManager(), "synthdata-amelding", ameldingUrl);
     }
 
-    @Bean
-    @DependsOn({"applicationManager", "restTemplate"})
-    SyntConsumer aMeldingStartConsumer() {
-        return new SyntConsumer(applicationManager(), "synthdata-amelding");
-    }
-
-    @Bean
-    @DependsOn({"applicationManager", "restTemplate"})
-    SyntConsumer aMeldingSklearnConsumer() { return new SyntConsumer(applicationManager(), "synthdata-amelding"); }
 }

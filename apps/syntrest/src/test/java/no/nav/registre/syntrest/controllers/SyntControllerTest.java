@@ -10,6 +10,7 @@ import no.nav.registre.syntrest.domain.popp.Inntektsmelding;
 import no.nav.registre.syntrest.domain.sam.SamMelding;
 import no.nav.registre.syntrest.domain.tp.TPmelding;
 import no.nav.registre.syntrest.domain.tps.SkdMelding;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -59,15 +60,14 @@ public class SyntControllerTest {
         List<String> identer = new ArrayList<>();
         List<Arbeidsforholdsmelding> expectedResponse = new ArrayList<>();
 
-        when(consumer.synthesizeData(any(), any(Class.class))).thenReturn(expectedResponse);
+        when(consumer.synthesizeData(any())).thenReturn(expectedResponse);
 
         ResponseEntity<List<Arbeidsforholdsmelding>> listResponseEntity = syntController.generateAareg(identer);
 
-        verify(consumer).synthesizeData(any(RequestEntity.class), any(Class.class));
+        verify(consumer).synthesizeData(any(RequestEntity.class));
 
         assertThat(listResponseEntity.getBody(), equalTo(expectedResponse));
     }
-
 
     @Test
     public void bisysTest() throws NoSuchFieldException {
@@ -77,10 +77,10 @@ public class SyntControllerTest {
         expectedResponse.add(new Barnebidragsmelding());
         expectedResponse.add(new Barnebidragsmelding());
 
-        when(consumer.synthesizeData(any(RequestEntity.class), any(Class.class))).thenReturn(expectedResponse);
+        when(consumer.synthesizeData(any(RequestEntity.class))).thenReturn(expectedResponse);
 
         ResponseEntity<List<Barnebidragsmelding>> listResponseEntity = syntController.generateBisys(numToGenerate);
-        verify(consumer).synthesizeData(any(RequestEntity.class), any(Class.class));
+        verify(consumer).synthesizeData(any(RequestEntity.class));
         assertThat(listResponseEntity.getBody(), equalTo(expectedResponse));
     }
 
@@ -92,10 +92,10 @@ public class SyntControllerTest {
         expectedResponse.add(new Institusjonsmelding());
         expectedResponse.add(new Institusjonsmelding());
 
-        when(consumer.synthesizeData(any(RequestEntity.class), any(Class.class))).thenReturn(expectedResponse);
+        when(consumer.synthesizeData(any(RequestEntity.class))).thenReturn(expectedResponse);
 
         ResponseEntity<List<Institusjonsmelding>> listResponseEntity = syntController.generateInst(numToGenerate);
-        verify(consumer).synthesizeData(any(RequestEntity.class), any(Class.class));
+        verify(consumer).synthesizeData(any(RequestEntity.class));
         assertThat(listResponseEntity.getBody(), equalTo(expectedResponse));
     }
 
@@ -107,10 +107,10 @@ public class SyntControllerTest {
         expectedResponse.add(new Medlemskapsmelding());
         expectedResponse.add(new Medlemskapsmelding());
 
-        when(consumer.synthesizeData(any(RequestEntity.class), any(Class.class))).thenReturn(expectedResponse);
+        when(consumer.synthesizeData(any(RequestEntity.class))).thenReturn(expectedResponse);
 
         ResponseEntity<List<Medlemskapsmelding>> listResponseEntity = syntController.generateMedl(numToGenerate);
-        verify(consumer).synthesizeData(any(RequestEntity.class), any(Class.class));
+        verify(consumer).synthesizeData(any(RequestEntity.class));
         assertThat(listResponseEntity.getBody(), equalTo(expectedResponse));
     }
 
@@ -122,10 +122,10 @@ public class SyntControllerTest {
         expectedResponse.add("<XML/>");
         expectedResponse.add("<XML/>");
 
-        when(consumer.synthesizeData(any(RequestEntity.class), any(Class.class))).thenReturn(expectedResponse);
+        when(consumer.synthesizeData(any(RequestEntity.class))).thenReturn(expectedResponse);
 
         ResponseEntity<List<String>> listResponseEntity = syntController.generateMeldekort("ATTF", numToGenerate, null);
-        verify(consumer).synthesizeData(any(RequestEntity.class), any(Class.class));
+        verify(consumer).synthesizeData(any(RequestEntity.class));
         assertThat(listResponseEntity.getBody(), equalTo(expectedResponse));
     }
 
@@ -138,7 +138,7 @@ public class SyntControllerTest {
         expectedResponse.add("<XML/>");
 
         ResponseEntity<List<String>> listResponseEntity = syntController.generateMeldekort("Feil", numToGenerate, null);
-        verify(consumer).synthesizeData(any(RequestEntity.class), any(Class.class));
+        verify(consumer).synthesizeData(any(RequestEntity.class));
         assertThat(listResponseEntity.getBody(), equalTo(expectedResponse));
     }
 
@@ -150,10 +150,10 @@ public class SyntControllerTest {
         expectedResponse.add("<XML/>");
         expectedResponse.add("<XML/>");
 
-        when(consumer.synthesizeData(any(RequestEntity.class), any(Class.class))).thenReturn(expectedResponse);
+        when(consumer.synthesizeData(any(RequestEntity.class))).thenReturn(expectedResponse);
 
         ResponseEntity<List<String>> listResponseEntity = syntController.generateNavEndringsmelding("Z010", numToGenerate);
-        verify(consumer).synthesizeData(any(RequestEntity.class), any(Class.class));
+        verify(consumer).synthesizeData(any(RequestEntity.class));
         assertThat(listResponseEntity.getBody(), equalTo(expectedResponse));
     }
 
@@ -166,13 +166,12 @@ public class SyntControllerTest {
         expectedResponse.add("<XML/>");
 
         ResponseEntity<List<String>> listResponseEntity = syntController.generateNavEndringsmelding("Feil", numToGenerate);
-        verify(consumer).synthesizeData(any(RequestEntity.class), any(Class.class));
+        verify(consumer).synthesizeData(any(RequestEntity.class));
         assertThat(listResponseEntity.getBody(), equalTo(expectedResponse));
     }
 
-
     @Test
-    public void poppTest() throws NoSuchFieldException{
+    public void poppTest() throws NoSuchFieldException {
         FieldSetter.setField(syntController, syntController.getClass().getDeclaredField("poppUrl"), poppUrl);
         List<String> fnrs = new ArrayList<>();
         fnrs.add("12345678910");
@@ -182,15 +181,15 @@ public class SyntControllerTest {
         expectedResponse.add(new Inntektsmelding());
         expectedResponse.add(new Inntektsmelding());
 
-        when(consumer.synthesizeData(any(RequestEntity.class), any(Class.class))).thenReturn(expectedResponse);
+        when(consumer.synthesizeData(any(RequestEntity.class))).thenReturn(expectedResponse);
 
         ResponseEntity<List<Inntektsmelding>> listResponseEntity = syntController.generateInntektsmelding(fnrs);
-        verify(consumer).synthesizeData(any(RequestEntity.class), any(Class.class));
+        verify(consumer).synthesizeData(any(RequestEntity.class));
         assertThat(listResponseEntity.getBody(), equalTo(expectedResponse));
     }
 
     @Test(expected = ResponseStatusException.class)
-    public void poppFeilTest() throws NoSuchFieldException{
+    public void poppFeilTest() throws NoSuchFieldException {
         FieldSetter.setField(syntController, syntController.getClass().getDeclaredField("poppUrl"), poppUrl);
         List<String> fnrs = new ArrayList<>();
         fnrs.add("12345678910");
@@ -202,7 +201,7 @@ public class SyntControllerTest {
         expectedResponse.add(new Inntektsmelding());
 
         ResponseEntity<List<Inntektsmelding>> listResponseEntity = syntController.generateInntektsmelding(fnrs);
-        verify(consumer).synthesizeData(any(RequestEntity.class), any(Class.class));
+        verify(consumer).synthesizeData(any(RequestEntity.class));
         assertThat(listResponseEntity.getBody(), equalTo(expectedResponse));
     }
 
@@ -214,10 +213,10 @@ public class SyntControllerTest {
         expectedResponse.add(new SamMelding());
         expectedResponse.add(new SamMelding());
 
-        when(consumer.synthesizeData(any(RequestEntity.class), any(Class.class))).thenReturn(expectedResponse);
+        when(consumer.synthesizeData(any(RequestEntity.class))).thenReturn(expectedResponse);
 
         ResponseEntity<List<SamMelding>> listResponseEntity = syntController.generateSamMelding(numToGenerate);
-        verify(consumer).synthesizeData(any(RequestEntity.class), any(Class.class));
+        verify(consumer).synthesizeData(any(RequestEntity.class));
         assertThat(listResponseEntity.getBody(), equalTo(expectedResponse));
     }
 
@@ -232,11 +231,11 @@ public class SyntControllerTest {
         expectedResponse.put("12345678910", new ArrayList<>());
         expectedResponse.put("10987654321", new ArrayList<>());
 
-        when(consumer.synthesizeData(any(RequestEntity.class), any(Class.class))).thenReturn(expectedResponse);
+        when(consumer.synthesizeData(any(RequestEntity.class))).thenReturn(expectedResponse);
 
         ResponseEntity<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> mapResponseEntity =
                 syntController.generateInntektsMelding(fnrInntektMap);
-        verify(consumer).synthesizeData(any(RequestEntity.class), any(Class.class));
+        verify(consumer).synthesizeData(any(RequestEntity.class));
         assertThat(mapResponseEntity.getBody(), equalTo(expectedResponse));
     }
 
@@ -248,10 +247,10 @@ public class SyntControllerTest {
         expectedResponse.add(new TPmelding());
         expectedResponse.add(new TPmelding());
 
-        when(consumer.synthesizeData(any(RequestEntity.class), any(Class.class))).thenReturn(expectedResponse);
+        when(consumer.synthesizeData(any(RequestEntity.class))).thenReturn(expectedResponse);
 
         ResponseEntity<List<TPmelding>> listResponseEntity = syntController.generateTPMelding(numToGenerate);
-        verify(consumer).synthesizeData(any(RequestEntity.class), any(Class.class));
+        verify(consumer).synthesizeData(any(RequestEntity.class));
         assertThat(listResponseEntity.getBody(), equalTo(expectedResponse));
     }
 
@@ -263,10 +262,10 @@ public class SyntControllerTest {
         expectedResponse.add(new SkdMelding());
         expectedResponse.add(new SkdMelding());
 
-        when(consumer.synthesizeData(any(RequestEntity.class), any(Class.class))).thenReturn(expectedResponse);
+        when(consumer.synthesizeData(any(RequestEntity.class))).thenReturn(expectedResponse);
 
         ResponseEntity<List<SkdMelding>> listResponseEntity = syntController.generateSkdMelding("0110", numToGenerate);
-        verify(consumer).synthesizeData(any(RequestEntity.class), any(Class.class));
+        verify(consumer).synthesizeData(any(RequestEntity.class));
         assertThat(listResponseEntity.getBody(), equalTo(expectedResponse));
     }
 
@@ -279,7 +278,7 @@ public class SyntControllerTest {
         expectedResponse.add(new SkdMelding());
 
         ResponseEntity<List<SkdMelding>> listResponseEntity = syntController.generateSkdMelding("Feil", numToGenerate);
-        verify(consumer).synthesizeData(any(RequestEntity.class), any(Class.class));
+        verify(consumer).synthesizeData(any(RequestEntity.class));
         assertThat(listResponseEntity.getBody(), equalTo(expectedResponse));
     }
 
@@ -293,10 +292,10 @@ public class SyntControllerTest {
         expectedResponse.put("12345678910", new ArrayList<>(2));
         expectedResponse.put("10987651233", new ArrayList<>(3));
 
-        when(consumer.synthesizeData(any(RequestEntity.class), any(Class.class))).thenReturn(expectedResponse);
+        when(consumer.synthesizeData(any(RequestEntity.class))).thenReturn(expectedResponse);
 
         ResponseEntity<Map<String, List<FrikortKvittering>>> mapResponseEntity = syntController.generateFrikort(fnrAntMeldingMap);
-        verify(consumer).synthesizeData(any(RequestEntity.class), any(Class.class));
+        verify(consumer).synthesizeData(any(RequestEntity.class));
         assertThat(mapResponseEntity.getBody(), equalTo(expectedResponse));
     }
 
