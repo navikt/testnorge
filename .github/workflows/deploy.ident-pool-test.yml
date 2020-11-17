@@ -31,6 +31,7 @@ jobs:
         run: ./gradlew :ident-pool-app:build
 
       - name: Build and publish Docker image
+        working-directory: apps/ident-pool/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

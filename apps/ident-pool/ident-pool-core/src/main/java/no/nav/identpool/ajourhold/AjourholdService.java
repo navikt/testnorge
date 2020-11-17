@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.querydsl.core.types.Predicate;
 
 import io.micrometer.core.instrument.Counter;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +33,6 @@ import no.nav.identpool.rs.v1.support.HentIdenterRequest;
 import no.nav.identpool.service.IdentGeneratorService;
 import no.nav.identpool.service.IdentTpsService;
 import no.nav.identpool.util.IdentGeneratorUtil;
-import no.nav.identpool.util.IdentPredicateUtil;
 
 @Slf4j
 @Service
@@ -192,9 +190,9 @@ public class AjourholdService {
             Rekvireringsstatus status,
             String rekvirertAv) {
 
-        return identRepository.saveAll(idents.stream()
-                .map(fnr -> IdentGeneratorUtil.createIdent(fnr, status, rekvirertAv))
-                .collect(Collectors.toList()));
+        return idents.stream()
+                .map(ident -> identRepository.save(IdentGeneratorUtil.createIdent(ident, status, rekvirertAv)))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -206,14 +204,13 @@ public class AjourholdService {
                 .antall(MAX_SIZE_TPS_QUEUE)
                 .foedtEtter(LocalDate.of(1850, 1, 1))
                 .build();
-        Predicate predicate = IdentPredicateUtil.lagPredicateFraRequest(request, LEDIG);
-        Page<Ident> firstPage = identRepository.findAll(predicate, PageRequest.of(0, MAX_SIZE_TPS_QUEUE));
+        Page<Ident> firstPage = identRepository.findAll(LEDIG, request.getFoedtEtter(), PageRequest.of(0, MAX_SIZE_TPS_QUEUE));
         List<String> usedIdents = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
 
         if (firstPage.getTotalPages() > 0) {
             for (int i = 0; i < firstPage.getTotalPages(); i++) {
-                Page<Ident> page = identRepository.findAll(predicate, PageRequest.of(i, MAX_SIZE_TPS_QUEUE));
+                Page<Ident> page = identRepository.findAll(LEDIG, request.getFoedtEtter(), PageRequest.of(i, MAX_SIZE_TPS_QUEUE));
 
                 List<String> idents = page.getContent().stream().map(Ident::getPersonidentifikator).collect(Collectors.toList());
                 try {

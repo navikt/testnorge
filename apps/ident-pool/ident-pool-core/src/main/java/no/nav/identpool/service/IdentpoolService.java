@@ -34,7 +34,6 @@ import no.nav.identpool.repository.WhitelistRepository;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;
 import no.nav.identpool.rs.v1.support.MarkerBruktRequest;
 import no.nav.identpool.util.IdentGeneratorUtil;
-import no.nav.identpool.util.IdentPredicateUtil;
 import no.nav.identpool.util.PersonidentUtil;
 
 @Slf4j
@@ -353,7 +352,7 @@ public class IdentpoolService {
                 .antall(request.getAntall())
                 .build();
 
-        Page<Ident> firstPage = identRepository.findAll(IdentPredicateUtil.lagPredicateFraRequest(availableIdentsRequest, LEDIG), PageRequest.of(0, request.getAntall()));
+        Page<Ident> firstPage = findPage(availableIdentsRequest, LEDIG, 0);
         Map<Integer, Page<Ident>> pageCache = new HashMap<>();
         pageCache.put(0, firstPage);
 
@@ -364,7 +363,7 @@ public class IdentpoolService {
             for (int i = 0; i < request.getAntall(); i++) {
                 int randomPageNumber = rand.nextInt(totalPages);
                 if (!pageCache.containsKey(randomPageNumber)) {
-                    pageCache.put(randomPageNumber, identRepository.findAll(IdentPredicateUtil.lagPredicateFraRequest(availableIdentsRequest, LEDIG), PageRequest.of(randomPageNumber, request.getAntall())));
+                    pageCache.put(randomPageNumber, findPage(availableIdentsRequest, LEDIG, randomPageNumber));
                 }
 
                 List<Ident> content = pageCache.get(randomPageNumber).getContent();
@@ -382,19 +381,18 @@ public class IdentpoolService {
 
     private List<String> hentBrukteIdenterFraDatabase(
             HentIdenterRequest request,
-            int daysInRange
-    ) {
+            int daysInRange) {
+
         HentIdenterRequest usedIdentsRequest = HentIdenterRequest.builder()
                 .identtype(request.getIdenttype())
                 .foedtEtter(request.getFoedtEtter().minusDays(1))
                 .foedtFoer(request.getFoedtFoer().plusDays(1))
                 .kjoenn(request.getKjoenn())
+                .antall(MAKS_ANTALL_OPPRETTINGER_ONTHEFLY_PER_DAG * daysInRange)
                 .build();
 
         return StreamSupport.stream(
-                identRepository.findAll(
-                        IdentPredicateUtil.lagPredicateFraRequest(usedIdentsRequest, I_BRUK),
-                        PageRequest.of(0, MAKS_ANTALL_OPPRETTINGER_ONTHEFLY_PER_DAG * daysInRange)).spliterator(), false)
+                findPage(usedIdentsRequest, I_BRUK, 0).spliterator(), false)
                 .map(Ident::getPersonidentifikator)
                 .collect(Collectors.toList());
     }
@@ -402,10 +400,15 @@ public class IdentpoolService {
     private void saveIdents(
             List<String> pins,
             Rekvireringsstatus status,
-            String rekvirertAv
-    ) {
-        identRepository.saveAll(pins.stream()
-                .map(fnr -> IdentGeneratorUtil.createIdent(fnr, status, rekvirertAv))
-                .collect(Collectors.toList()));
+            String rekvirertAv) {
+
+        pins.forEach(fnr ->
+                identRepository.save(
+                        IdentGeneratorUtil.createIdent(fnr, status, rekvirertAv)));
     }
-}
+
+    private Page<Ident> findPage(HentIdenterRequest request, Rekvireringsstatus rekvireringsstatus, int page) {
+        return identRepository.findAll(
+                rekvireringsstatus, request.getIdenttype(), request.getKjoenn(), request.getFoedtFoer(),
+                request.getFoedtEtter(), PageRequest.of(page, request.getAntall()));
+    }}
