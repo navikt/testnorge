@@ -8,7 +8,7 @@ applications:
   testnorge-varslinger-api: a1dca941-bdd5-4705-a1a4-04cf76473040
   testnorge-tilbakemelding-api: 6554cc46-d5a9-4b9b-aafb-775b9ee09696
   testnorge-arbeidsforhold-export-api: 06c9b9c1-d370-40ea-8181-2c4a6858392f
-  testnorge-ident-check-in-prod-service: 451e4aeb-c11d-4c40-99d2-3c4d5e1a35a0
+  testnorge-ident-check-in-prod-service: bb4aa476-9040-48a1-bcac-79370c530f58
   testnorge-avhengighetsanalyse-service: a90b186a-6896-4a79-9462-03b8cc9c36a9
 
 spring:
