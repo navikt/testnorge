@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.arena.core.service.util.*;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -30,8 +31,6 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggsytelseReq
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksaktivitetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksdeltakelseRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequest;
-import no.nav.registre.arena.core.service.util.KodeMedSannsynlighet;
-import no.nav.registre.arena.core.service.util.ServiceUtils;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
@@ -48,6 +47,9 @@ public class RettighetTiltakService {
     private final TiltakSyntConsumer tiltakSyntConsumer;
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final ServiceUtils serviceUtils;
+    private final IdenterUtils identerUtils;
+    private final ArbeidssoekerUtils arbeidsoekerUtils;
+    private final VedtakUtils vedtakUtils;
     private final Random rand;
 
     private static final Map<String, List<KodeMedSannsynlighet>> vedtakMedAktitivetskode;
@@ -88,7 +90,7 @@ public class RettighetTiltakService {
             int antallNyeIdenter
     ) {
         Map<String, List<NyttVedtakResponse>> responses = new HashMap<>();
-        var utvalgteIdenter = serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
+        var utvalgteIdenter = identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
 
         List<NyttVedtakTiltak> tiltaksdeltakelser = new ArrayList<>();
         var rettigheter = hentRettigheterForTiltaksdeltakelse(utvalgteIdenter, miljoe, tiltaksdeltakelser);
@@ -109,9 +111,9 @@ public class RettighetTiltakService {
     ) {
         List<KontoinfoResponse> identerMedKontonummer = new ArrayList<>();
         if (rand.nextBoolean()) {
-            identerMedKontonummer = serviceUtils.getIdenterMedKontoinformasjon(avspillergruppeId, miljoe, antallNyeIdenter);
+            identerMedKontonummer = identerUtils.getIdenterMedKontoinformasjon(avspillergruppeId, miljoe, antallNyeIdenter);
         }
-        var utvalgteIdenter = serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
+        var utvalgteIdenter = identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
 
         var syntetiserteRettigheter = tiltakSyntConsumer.opprettTiltakspenger(antallNyeIdenter);
 
@@ -241,7 +243,7 @@ public class RettighetTiltakService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        var utvalgteIdenter = serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
+        var utvalgteIdenter = identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
 
         var syntetiserteRettigheter = tiltakSyntConsumer.opprettTiltaksaktivitet(utvalgteIdenter.size());
 
@@ -255,7 +257,7 @@ public class RettighetTiltakService {
             rettigheter.add(rettighetRequest);
         }
         var responses = rettighetArenaForvalterConsumer
-                .opprettRettighet(serviceUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe));
+                .opprettRettighet(arbeidsoekerUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe));
         for (var response : responses.values()) {
             for (var nyttVedtakResponse : response) {
                 if (!nyttVedtakResponse.getFeiledeRettigheter().isEmpty()) {
@@ -275,7 +277,7 @@ public class RettighetTiltakService {
     ) {
         if (!rettigheter.isEmpty()) {
             var responses = rettighetArenaForvalterConsumer
-                    .opprettRettighet(serviceUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe));
+                    .opprettRettighet(arbeidsoekerUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe));
             for (var response : responses.values()) {
                 for (var nyttVedtakResponse : response) {
                     if (nyttVedtakResponse.getFeiledeRettigheter() != null && !nyttVedtakResponse.getFeiledeRettigheter().isEmpty()) {
@@ -322,8 +324,8 @@ public class RettighetTiltakService {
             if (syntetisertDeltakelser != null && !syntetisertDeltakelser.isEmpty()) {
                 var deltakelse = syntetisertDeltakelser.get(0);
 
-                serviceUtils.opprettArbeidssoekerTiltakdeltakelse(ident, miljoe);
-                var tiltak = serviceUtils.finnTiltak(ident, miljoe, deltakelse);
+                arbeidsoekerUtils.opprettArbeidssoekerTiltakdeltakelse(ident, miljoe);
+                var tiltak = vedtakUtils.finnTiltak(ident, miljoe, deltakelse);
 
                 if (tiltak != null) {
                     deltakelse.setTiltakId(tiltak.getTiltakId());
@@ -332,7 +334,7 @@ public class RettighetTiltakService {
                     deltakelse.setTilDato(tiltak.getTilDato());
                     tiltaksdeltakelser.add(deltakelse);
 
-                    var nyTiltakdeltakelse = serviceUtils.getVedtakForTiltaksdeltakelseRequest(deltakelse);
+                    var nyTiltakdeltakelse = vedtakUtils.getVedtakForTiltaksdeltakelseRequest(deltakelse);
 
                     var rettighetRequest = new RettighetTiltaksdeltakelseRequest(Collections.singletonList(nyTiltakdeltakelse));
 
@@ -406,13 +408,13 @@ public class RettighetTiltakService {
             String miljoe,
             int antallIdenter
     ) {
-        var foedteIdenter = serviceUtils.getIdenterMedFoedselsmelding(avspillergruppeId, 17);
+        var foedteIdenter = identerUtils.getIdenterMedFoedselsmelding(avspillergruppeId, 17);
 
         Collections.shuffle(foedteIdenter);
         List<String> utvalgteIdenter = new ArrayList<>(antallIdenter);
 
         for (var ident : foedteIdenter) {
-            var relasjonsResponse = serviceUtils.getRelasjonerTilIdent(ident, miljoe);
+            var relasjonsResponse = identerUtils.getRelasjonerTilIdent(ident, miljoe);
 
             var farFnr = "";
             var morFnr = "";
