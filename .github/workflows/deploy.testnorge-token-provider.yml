@@ -47,7 +47,7 @@ jobs:
       - uses: actions/checkout@v1
       - uses: nais/deploy/actions/deploy@v1
         env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
           RESOURCE: apps/testnorge-token-provider/nais.yaml
   deploy-t6:
@@ -58,6 +58,6 @@ jobs:
       - uses: actions/checkout@v1
       - uses: nais/deploy/actions/deploy@v1
         env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
           RESOURCE: apps/testnorge-token-provider/nais_t6.yaml
