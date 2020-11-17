@@ -4,7 +4,7 @@ metadata:
   name: testnorge-token-provider
   namespace: t6
   labels:
-    team: orkestrator
+    team: dolly
 spec:
   port: 8080
   liveness:
