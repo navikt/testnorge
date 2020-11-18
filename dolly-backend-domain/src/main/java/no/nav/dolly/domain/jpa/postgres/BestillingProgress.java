@@ -1,13 +1,12 @@
-package no.nav.dolly.domain.jpa;
+package no.nav.dolly.domain.jpa.postgres;
 
-import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
+import static no.nav.dolly.domain.jpa.postgres.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
@@ -22,19 +21,20 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "T_BESTILLING_PROGRESS")
+@Table(name = "BESTILLING_PROGRESS")
 @Builder
 public class BestillingProgress {
 
     @Id
     @GeneratedValue(generator = "bestillingProgressIdGenerator")
     @GenericGenerator(name = "bestillingProgressIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
-            @Parameter(name = "sequence_name", value = "T_BESTILLING_PROGRESS_SEQ"),
+            @Parameter(name = "sequence_name", value = "BESTILLING_PROGRESS_SEQ"),
             @Parameter(name = "initial_value", value = "1"),
             @Parameter(name = "increment_size", value = "1")
     })
     private Long id;
 
+    @Column(name = "BESTILLING_ID")
     private Long bestillingId;
 
     private String ident;

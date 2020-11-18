@@ -1,19 +1,19 @@
 package no.nav.dolly.service;
 
-import lombok.RequiredArgsConstructor;
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
-import org.springframework.stereotype.Service;
+import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
+import org.springframework.stereotype.Service;
 
-import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import lombok.RequiredArgsConstructor;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.postgres.Bestilling;
+import no.nav.dolly.domain.jpa.postgres.Bruker;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 
 @Service
 @RequiredArgsConstructor

@@ -12,7 +12,7 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo;
 import no.nav.dolly.bestilling.brregstub.mapper.RolleUtskriftMapper;
 import no.nav.dolly.bestilling.brregstub.util.BrregstubMergeUtil;
-import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.postgres.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;

@@ -23,12 +23,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.jpa.BestillingKontroll;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.jpa.BestilteKriterier;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.jpa.postgres.Bestilling;
+import no.nav.dolly.domain.jpa.postgres.BestillingKontroll;
+import no.nav.dolly.domain.jpa.postgres.BestillingProgress;
+import no.nav.dolly.domain.jpa.postgres.Testgruppe;
+import no.nav.dolly.domain.jpa.postgres.Testident;
+import no.nav.dolly.domain.resultset.BestilteKriterier;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingLeggTilPaaGruppe;
 import no.nav.dolly.domain.resultset.RsDollyImportFraTpsRequest;
@@ -41,11 +41,11 @@ import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.BestillingKontrollRepository;
-import no.nav.dolly.repository.BestillingProgressRepository;
-import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.repository.IdentRepository;
-import no.nav.dolly.repository.TestgruppeRepository;
+import no.nav.dolly.repository.postgres.BestillingKontrollRepository;
+import no.nav.dolly.repository.postgres.BestillingProgressRepository;
+import no.nav.dolly.repository.postgres.BestillingRepository;
+import no.nav.dolly.repository.postgres.IdentRepository;
+import no.nav.dolly.repository.postgres.TestgruppeRepository;
 
 @Slf4j
 @Service

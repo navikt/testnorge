@@ -1,7 +1,7 @@
-package no.nav.dolly.domain.jpa;
+package no.nav.dolly.domain.jpa.postgres;
 
 import static java.util.Objects.isNull;
-import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
+import static no.nav.dolly.domain.jpa.postgres.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,13 +32,13 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "T_BRUKER")
+@Table(name = "BRUKER")
 public class Bruker {
 
     @Id
     @GeneratedValue(generator = "brukerIdGenerator")
     @GenericGenerator(name = "brukerIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
-            @Parameter(name = "sequence_name", value = "T_BRUKER_SEQ"),
+            @Parameter(name = "sequence_name", value = "BRUKER_SEQ"),
             @Parameter(name = "initial_value", value = "1"),
             @Parameter(name = "increment_size", value = "1")
     })
@@ -67,7 +67,7 @@ public class Bruker {
     private Set<Testgruppe> testgrupper;
 
     @ManyToMany
-    @JoinTable(name = "T_BRUKER_FAVORITTER",
+    @JoinTable(name = "BRUKER_FAVORITTER",
             joinColumns = @JoinColumn(name = "bruker_id"),
             inverseJoinColumns = @JoinColumn(name = "gruppe_id"))
     private Set<Testgruppe> favoritter;

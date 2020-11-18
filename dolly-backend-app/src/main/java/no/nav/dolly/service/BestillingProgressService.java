@@ -1,15 +1,15 @@
 package no.nav.dolly.service;
 
-import lombok.RequiredArgsConstructor;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.BestillingProgressRepository;
-import org.springframework.stereotype.Service;
+import static java.util.Collections.emptyList;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 
-import static java.util.Collections.emptyList;
+import lombok.RequiredArgsConstructor;
+import no.nav.dolly.domain.jpa.postgres.BestillingProgress;
+import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.postgres.BestillingProgressRepository;
 
 @Service
 @RequiredArgsConstructor

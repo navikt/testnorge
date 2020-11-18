@@ -1,4 +1,4 @@
-package no.nav.dolly.repository;
+package no.nav.dolly.repository.postgres;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,11 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 
-import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.jpa.postgres.Bestilling;
 
 public interface BestillingRepository extends Repository<Bestilling, Long> {
 
-    Optional<Bestilling> findById(Long id);
+    @Query("from Bestilling b where b.id = :id")
+    Optional<Bestilling> findById(@Param("id") Long id);
 
     Bestilling save(Bestilling bestilling);
 

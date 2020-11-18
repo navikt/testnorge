@@ -1,7 +1,8 @@
 package no.nav.dolly.common.repository;
 
-import no.nav.dolly.domain.jpa.BestillingProgress;
 import org.springframework.data.repository.CrudRepository;
+
+import no.nav.dolly.domain.jpa.postgres.BestillingProgress;
 
 public interface BestillingProgressTestRepository extends CrudRepository<BestillingProgress, Long> {
     void flush();

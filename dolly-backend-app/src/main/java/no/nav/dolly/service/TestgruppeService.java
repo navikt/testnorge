@@ -15,14 +15,15 @@ import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.jpa.postgres.Bruker;
+import no.nav.dolly.domain.jpa.postgres.Testgruppe;
+import no.nav.dolly.domain.jpa.postgres.Testident;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsLockTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.TestgruppeRepository;
+import no.nav.dolly.repository.postgres.TestgruppeRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -119,12 +120,12 @@ public class TestgruppeService {
         return isBlank(brukerId) ? testgruppeRepository.findAllByOrderByNavn() : fetchTestgrupperByBrukerId(brukerId);
     }
 
-    public Testgruppe oppdaterTestgruppeMedLaas(Long gruppeId, Boolean erLaast, String laastBeskrivelse) {
+    public Testgruppe oppdaterTestgruppeMedLaas(Long gruppeId, RsLockTestgruppe lockTestgruppe) {
 
         Testgruppe testgruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke testgruppe med id = " + gruppeId));
-        if (isTrue(erLaast)) {
+        if (isTrue(lockTestgruppe.getErLaast())) {
             testgruppe.setErLaast(true);
-            testgruppe.setLaastBeskrivelse(laastBeskrivelse);
+            testgruppe.setLaastBeskrivelse(lockTestgruppe.getLaastBeskrivelse());
 
         } else {
             testgruppe.setErLaast(false);

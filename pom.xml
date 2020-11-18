@@ -46,12 +46,13 @@
     </modules>
 
     <properties>
+        <start-class>no.nav.dolly.ApplicationStarter</start-class>
         <application.name>dolly-backend</application.name>
         <application.version>${project.version}</application.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
-        <spring-cloud.version>2.2.4.RELEASE</spring-cloud.version>
+        <spring-cloud.version>2.2.5.RELEASE</spring-cloud.version>
         <jdbc.ojdbc.version>19.7.0.0</jdbc.ojdbc.version>
         <orika.version>1.5.4</orika.version>
         <cxf.version>3.3.4</cxf.version>

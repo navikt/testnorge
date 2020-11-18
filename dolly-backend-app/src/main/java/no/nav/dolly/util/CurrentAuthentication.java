@@ -5,7 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 import lombok.experimental.UtilityClass;
-import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.postgres.Bruker;
 
 @UtilityClass
 public final class CurrentAuthentication {

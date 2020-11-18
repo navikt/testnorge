@@ -26,12 +26,12 @@ spec:
     path: /internal/isAlive
     initialDelay: 20
     periodSeconds: 2
-    failureThreshold: 140
+    failureThreshold: 900
   readiness:
     path: /internal/isReady
     initialDelay: 20
     periodSeconds: 2
-    failureThreshold: 140
+    failureThreshold: 900
   prometheus:
     enabled: true
     path: /internal/metrics

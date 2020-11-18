@@ -23,12 +23,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.jpa.postgres.Bestilling;
+import no.nav.dolly.domain.jpa.postgres.BestillingProgress;
+import no.nav.dolly.domain.jpa.postgres.Testgruppe;
+import no.nav.dolly.domain.jpa.postgres.Testident;
 import no.nav.dolly.domain.resultset.RsOpenAmResponse;
-import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.repository.postgres.BestillingRepository;
 import no.nav.dolly.service.OpenAmService;
 
 @RunWith(MockitoJUnitRunner.class)

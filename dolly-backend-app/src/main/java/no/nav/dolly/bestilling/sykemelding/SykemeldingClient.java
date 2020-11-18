@@ -6,11 +6,9 @@ import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -22,8 +20,8 @@ import no.nav.dolly.bestilling.sykemelding.domain.BestillingPersonWrapper;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
 import no.nav.dolly.bestilling.sykemelding.domain.SykemeldingTransaksjon;
 import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.jpa.TransaksjonMapping;
+import no.nav.dolly.domain.jpa.postgres.BestillingProgress;
+import no.nav.dolly.domain.jpa.postgres.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding.RsDetaljertSykemelding;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding.RsSyntSykemelding;

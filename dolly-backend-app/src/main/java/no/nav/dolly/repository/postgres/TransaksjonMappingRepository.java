@@ -1,11 +1,11 @@
-package no.nav.dolly.repository;
-
-import no.nav.dolly.domain.jpa.TransaksjonMapping;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.Repository;
+package no.nav.dolly.repository.postgres;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.Repository;
+
+import no.nav.dolly.domain.jpa.postgres.TransaksjonMapping;
 
 public interface TransaksjonMappingRepository extends Repository<TransaksjonMapping, Long> {
 

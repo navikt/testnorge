@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,13 +15,12 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataRequest;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataResponse;
-import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.postgres.BestillingProgress;
 import no.nav.dolly.domain.resultset.IdentType;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.Person;

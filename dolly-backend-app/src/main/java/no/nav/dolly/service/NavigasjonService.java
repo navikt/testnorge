@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
-import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.jpa.postgres.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.Relasjon;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.IdentRepository;
+import no.nav.dolly.repository.postgres.IdentRepository;
 
 @Service
 @RequiredArgsConstructor

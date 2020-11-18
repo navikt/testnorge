@@ -1,4 +1,4 @@
-package no.nav.dolly.repository;
+package no.nav.dolly.repository.postgres;
 
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Modifying;
@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 
-import no.nav.dolly.domain.jpa.BestillingKontroll;
+import no.nav.dolly.domain.jpa.postgres.BestillingKontroll;
 
 public interface BestillingKontrollRepository extends Repository<BestillingKontroll, Long> {
 

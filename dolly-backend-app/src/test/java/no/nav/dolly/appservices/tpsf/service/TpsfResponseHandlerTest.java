@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
 import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
-import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.postgres.BestillingProgress;
 import no.nav.dolly.domain.resultset.tpsf.SendSkdMeldingTilTpsResponse;
 import no.nav.dolly.exceptions.TpsfException;
 

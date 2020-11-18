@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.postgres.Testgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.mapper.MappingStrategy;
 

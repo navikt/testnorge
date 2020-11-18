@@ -12,7 +12,7 @@ import static org.hamcrest.Matchers.hasSize;
 
 import org.junit.jupiter.api.Test;
 
-import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.postgres.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 import no.nav.dolly.domain.resultset.SystemTyper;
 

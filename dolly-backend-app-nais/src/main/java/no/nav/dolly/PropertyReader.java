@@ -22,8 +22,8 @@ public class PropertyReader {
             log.error("Ingen fil funnet under pathen " + path, e);
             throw new RuntimeException("Ingen fil funnet under pathen " + path);
         } catch (IOException ex) {
-            log.error("Noe gitt galt under lesing av filen " + path, ex);
-            throw new RuntimeException("Noe gitt galt under lesing av filen " + path);
+            log.error("Noe gikk galt under lesing av filen " + path, ex);
+            throw new RuntimeException("Noe gikk galt under lesing av filen " + path);
         }
     }
 

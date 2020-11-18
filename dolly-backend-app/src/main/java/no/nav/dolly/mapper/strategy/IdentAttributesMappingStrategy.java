@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.jpa.postgres.Testident;
 import no.nav.dolly.domain.testperson.IdentAttributesResponse;
 import no.nav.dolly.mapper.MappingStrategy;
 

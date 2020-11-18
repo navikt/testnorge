@@ -12,7 +12,7 @@ import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonWrapper;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonWrapper.Status;
 import no.nav.dolly.bestilling.udistub.util.UdiMergeService;
-import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.postgres.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;

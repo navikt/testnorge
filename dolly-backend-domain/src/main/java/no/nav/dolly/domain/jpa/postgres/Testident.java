@@ -1,4 +1,4 @@
-package no.nav.dolly.domain.jpa;
+package no.nav.dolly.domain.jpa.postgres;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "T_TEST_IDENT")
+@Table(name = "TEST_IDENT")
 public class Testident {
 
     @Id

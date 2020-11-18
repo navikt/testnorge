@@ -19,11 +19,11 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.common.TestidentBuilder;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.jpa.postgres.Testgruppe;
+import no.nav.dolly.domain.jpa.postgres.Testident;
 import no.nav.dolly.domain.resultset.entity.testident.RsTestident;
 import no.nav.dolly.exceptions.ConstraintViolationException;
-import no.nav.dolly.repository.IdentRepository;
+import no.nav.dolly.repository.postgres.IdentRepository;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IdentServiceTest {

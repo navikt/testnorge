@@ -28,8 +28,6 @@ dolly:
 spring:
   main:
     allow-bean-definition-overriding: true
-  datasource:
-    driver-class-name: oracle.jdbc.OracleDriver
   security:
     oauth2:
       resourceserver:
@@ -37,6 +35,10 @@ spring:
           issuer-uri: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/v2.0
           #The client_id of this application
           accepted-audience: ${client.id}, api://${client.id}
+
+oracle:
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
 
 management:
   endpoints:

@@ -17,4 +17,6 @@
 
     <logger name="no.nav.dolly" level="WARN"/>
     <logger name="org.springframework" level="WARN"/>
+    <logger name="org.hibernate.SQL" level="DEBUG"/>
+    <logger name="org.hibernate.type" level="TRACE"/>
 </configuration>

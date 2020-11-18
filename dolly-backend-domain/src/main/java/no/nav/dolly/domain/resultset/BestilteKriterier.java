@@ -1,9 +1,8 @@
-package no.nav.dolly.domain.jpa;
+package no.nav.dolly.domain.resultset;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;

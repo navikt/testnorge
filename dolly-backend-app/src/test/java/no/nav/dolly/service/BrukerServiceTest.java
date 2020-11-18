@@ -30,12 +30,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.postgres.Bruker;
+import no.nav.dolly.domain.jpa.postgres.Testgruppe;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.BrukerRepository;
-import no.nav.dolly.repository.TestgruppeRepository;
+import no.nav.dolly.repository.postgres.BrukerRepository;
+import no.nav.dolly.repository.postgres.TestgruppeRepository;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BrukerServiceTest {

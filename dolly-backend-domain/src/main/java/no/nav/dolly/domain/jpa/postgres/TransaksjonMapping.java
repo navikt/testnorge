@@ -1,20 +1,13 @@
-package no.nav.dolly.domain.jpa;
+package no.nav.dolly.domain.jpa.postgres;
 
-import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
+import static no.nav.dolly.domain.jpa.postgres.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
@@ -30,13 +23,13 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "T_TRANSAKSJON_MAPPING")
+@Table(name = "TRANSAKSJON_MAPPING")
 public class TransaksjonMapping {
 
     @Id
     @GeneratedValue(generator = "transaksjonMappingIdGenerator")
     @GenericGenerator(name = "transaksjonMappingIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
-            @Parameter(name = "sequence_name", value = "T_TRANSAKSJON_MAPPING_SEQ"),
+            @Parameter(name = "sequence_name", value = "TRANSAKSJON_MAPPING_SEQ"),
             @Parameter(name = "initial_value", value = "1"),
             @Parameter(name = "increment_size", value = "1")
     })
@@ -57,6 +50,6 @@ public class TransaksjonMapping {
     @Column(name = "TRANSAKSJON_ID")
     private String transaksjonId;
 
-    @Column(name="DATO_ENDRET")
+    @Column(name = "DATO_ENDRET")
     private LocalDateTime datoEndret;
 }

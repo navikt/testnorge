@@ -26,19 +26,19 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
-import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.jpa.BestillingKontroll;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.jpa.postgres.Bestilling;
+import no.nav.dolly.domain.jpa.postgres.BestillingKontroll;
+import no.nav.dolly.domain.jpa.postgres.Bruker;
+import no.nav.dolly.domain.jpa.postgres.Testgruppe;
+import no.nav.dolly.domain.jpa.postgres.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.BestillingKontrollRepository;
-import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.repository.TestgruppeRepository;
+import no.nav.dolly.repository.postgres.BestillingKontrollRepository;
+import no.nav.dolly.repository.postgres.BestillingRepository;
+import no.nav.dolly.repository.postgres.TestgruppeRepository;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BestillingServiceTest {

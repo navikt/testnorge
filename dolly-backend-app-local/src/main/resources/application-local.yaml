@@ -4,3 +4,13 @@ providers:
     url: https://tps-forvalteren-u2.nais.preprod.local
 #    url: http://localhost:8050
 
+oracle:
+  datasource:
+    url: ${dolly.datasource.jdbc_url}
+
+#spring:
+#  jpa:
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        format_sql: true

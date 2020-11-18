@@ -22,9 +22,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
-import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.postgres.BestillingProgress;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.BestillingProgressRepository;
+import no.nav.dolly.repository.postgres.BestillingProgressRepository;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BestillingProgressServiceTest {
