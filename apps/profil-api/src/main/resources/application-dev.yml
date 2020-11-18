@@ -1,4 +1,4 @@
-CLIENT_ID: 81d0a23d-20ef-49de-8761-2e7917bc9238
+CLIENT_ID: 4f6035c0-610d-43ea-a80b-76d214428769
 
 spring:
   security:
@@ -7,4 +7,4 @@ spring:
         jwt:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           #The client_id of this application
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
