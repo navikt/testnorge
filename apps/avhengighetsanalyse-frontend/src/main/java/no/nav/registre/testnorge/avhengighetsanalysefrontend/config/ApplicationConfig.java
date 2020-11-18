@@ -6,20 +6,23 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
-import no.nav.registre.testnorge.avhengighetsanalysefrontend.credentials.AvhengighetsanalyseFrontendClientCredentials;
 import no.nav.registre.testnorge.avhengighetsanalysefrontend.filter.AddAuthorizationToRouteFilter;
 import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
 import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2FrontendConfiguration;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
+import no.nav.registre.testnorge.libs.oauth2.domain.AzureClientCredentials;
 import no.nav.registre.testnorge.libs.oauth2.service.OnBehalfOfGenerateAccessTokenService;
 
 @Configuration
-@Import({ApplicationCoreConfig.class, SecureOAuth2FrontendConfiguration.class})
+@Import({
+        ApplicationCoreConfig.class,
+        SecureOAuth2FrontendConfiguration.class
+})
 @Profile({"dev", "prod"})
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final AvhengighetsanalyseFrontendClientCredentials clientCredentials;
+    private final AzureClientCredentials clientCredentials;
     private final OnBehalfOfGenerateAccessTokenService tokenService;
 
     @Bean

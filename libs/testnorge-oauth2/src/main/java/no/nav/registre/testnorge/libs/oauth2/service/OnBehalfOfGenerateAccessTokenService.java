@@ -18,6 +18,7 @@ import java.util.Map;
 
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
+import no.nav.registre.testnorge.libs.oauth2.domain.AzureClientCredentials;
 import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
 
 @Slf4j
@@ -55,7 +56,7 @@ public class OnBehalfOfGenerateAccessTokenService {
         this.webClient = builder.build();
     }
 
-    public AccessToken generateToken(ClientCredential clientCredential, AccessScopes accessScopes) {
+    public AccessToken generateToken(AzureClientCredentials clientCredential, AccessScopes accessScopes) {
         if (tokenResolver.isClientCredentials()) {
             throw new BadCredentialsException("Kan ikke gjennomfore On Behalf of fra Client Credentials.");
         }

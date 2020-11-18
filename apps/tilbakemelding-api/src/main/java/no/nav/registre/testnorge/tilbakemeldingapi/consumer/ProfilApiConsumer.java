@@ -5,6 +5,7 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.profil.v1.ProfilDTO;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
+import no.nav.registre.testnorge.libs.oauth2.domain.AzureClientCredentials;
 import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
 import no.nav.registre.testnorge.libs.oauth2.service.OnBehalfOfGenerateAccessTokenService;
 import no.nav.registre.testnorge.tilbakemeldingapi.consumer.credentials.TilbakemeldingApiClientCredential;
@@ -19,14 +20,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class ProfilApiConsumer {
 
     private final WebClient webClient;
-    private final ClientCredential clientCredential;
+    private final AzureClientCredentials clientCredential;
     private final OnBehalfOfGenerateAccessTokenService accessTokenService;
     private final AccessScopes accessScopes;
 
     public ProfilApiConsumer(
             @Value("${consumer.profil-api.url}") String url,
             @Value("${consumer.profil-api.client-id}") String clientId,
-            TilbakemeldingApiClientCredential clientCredential,
+            AzureClientCredentials clientCredential,
             OnBehalfOfGenerateAccessTokenService accessTokenService
     ) {
         this.accessScopes = new AccessScopes("api://" + clientId + "/.default");

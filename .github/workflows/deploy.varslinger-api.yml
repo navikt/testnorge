@@ -2,6 +2,7 @@ name: Deploy varslinger-api
 
 on:
   push:
+    branches: master
     paths:
       - apps/varslinger-api/**
       - libs/testnorge-core/**
