@@ -5,7 +5,6 @@ Det er kun team dolly som bruker denne appen.
 
 Lenke https://testnorge-oversikt-frontend.dev.adeo.no/ 
 
-
 ## Lokal kjøring
    
 ### Utviklerimage

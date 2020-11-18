@@ -4,7 +4,7 @@ metadata:
   name: testnorge-hodejegeren
   namespace: default
   labels:
-    team: orkestrator
+    team: dolly
 spec:
   liveness:
     path: /internal/isAlive

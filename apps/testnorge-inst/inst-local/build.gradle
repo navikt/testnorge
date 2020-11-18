@@ -11,6 +11,9 @@ bootJar {
     archiveFileName = "app.jar"
 }
 
+
+
+
 dependencies {
     implementation project(':inst-core')
     implementation 'org.projectlombok:lombok:1.18.12'

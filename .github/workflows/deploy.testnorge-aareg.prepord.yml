@@ -5,6 +5,7 @@ on:
     branches: master
     paths:
       - apps/testnorge-aareg/**
+      - libs/testnorge-core/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/aareg:${{ github.sha }}
@@ -42,6 +43,6 @@ jobs:
         timeout-minutes: 5
         uses: nais/deploy/actions/deploy@v1
         env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
           RESOURCE: apps/testnorge-aareg/nais.yaml

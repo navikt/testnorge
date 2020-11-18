@@ -9,8 +9,8 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 application:
-  version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
-  name: hendelse-api
+  version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
+  name: testnorge-hendelse-api
 
 kafka:
   bootstrapservers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443

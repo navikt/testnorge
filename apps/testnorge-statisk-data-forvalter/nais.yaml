@@ -4,7 +4,7 @@ metadata:
   name: testnorge-statisk-data-forvalter
   namespace: default
   labels:
-    team: orkestrator
+    team: dolly
 spec:
   image: {{ image }}
   port: 8080

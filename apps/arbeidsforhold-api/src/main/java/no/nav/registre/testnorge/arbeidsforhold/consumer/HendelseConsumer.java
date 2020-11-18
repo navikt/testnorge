@@ -13,7 +13,7 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyType;
 import no.nav.registre.testnorge.libs.dto.hendelse.v1.HendelseType;
 
 @Component
-@DependencyOn(value = "hendelse-api", type = DependencyType.QUEUE)
+@DependencyOn(value = "testnorge-hendelse-api", type = DependencyType.QUEUE)
 public class HendelseConsumer {
 
     public HendelseConsumer(@Value("${kafka.topic}") String topic, KafkaTemplate<String, Hendelse> kafkaTemplate) {

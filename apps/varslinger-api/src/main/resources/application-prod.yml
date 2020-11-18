@@ -1,3 +1,5 @@
+CLIENT_SECRET: ${azure.app.client.secret}
+
 spring:
   datasource:
     url: jdbc:postgresql://b27dbvl022.preprod.local:5432/testnorge-varslinger?useUnicode=yes&characterEncoding=UTF-8
@@ -9,7 +11,7 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
   flyway:
     locations: classpath:db/migration
     enabled: true
