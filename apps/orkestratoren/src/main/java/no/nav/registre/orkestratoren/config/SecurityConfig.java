@@ -17,7 +17,7 @@ import no.nav.registre.testnorge.libs.oauth2.config.OAuth2ResourceServerConfigur
 @Order(1)
 @EnableWebSecurity
 @Configuration
-@Profile({"prod", "dev"})
+@Profile({"prod", "local"})
 public class SecurityConfig extends OAuth2ResourceServerConfiguration {
 
     public SecurityConfig(
