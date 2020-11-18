@@ -17,4 +17,4 @@
 ### Gradle ###
 .gradle
 *build/
-*/out/production/*
+**/out/*
