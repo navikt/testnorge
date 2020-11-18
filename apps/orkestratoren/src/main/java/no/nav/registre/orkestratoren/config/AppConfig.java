@@ -13,18 +13,18 @@ import org.springframework.context.annotation.Import;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.registre.testnorge.libs.autoconfigdependencyanalysis.config.DependencyAnalysisAutoConfiguration;
-import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
 import no.nav.registre.orkestratoren.batch.v1.JobController;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.testnorge.libs.oauth2.config.InsecureOAuth2ServerToServerConfiguration;
+import no.nav.registre.testnorge.libs.autoconfigdependencyanalysis.config.DependencyAnalysisAutoConfiguration;
+import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
+import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerConfiguration;
 
 @Configuration
 @EnableJms
 @Import({
         ApplicationCoreConfig.class,
         JobController.class,
-        InsecureOAuth2ServerToServerConfiguration.class,
+        SecureOAuth2ServerToServerConfiguration.class,
         DependencyAnalysisAutoConfiguration.class
 })
 public class AppConfig {
