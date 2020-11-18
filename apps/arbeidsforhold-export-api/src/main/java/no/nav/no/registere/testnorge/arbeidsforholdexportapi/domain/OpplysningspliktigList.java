@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,22 +39,25 @@ public class OpplysningspliktigList {
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             List<EDAGM> list = new ArrayList<>();
 
+            AtomicInteger count = new AtomicInteger(0);
+
             try (Stream<Path> stream = Files.walk(Paths.get(folderPath))) {
-                List<Path> paths = stream.filter(Files::isRegularFile).collect(Collectors.toList());
-                for (var path : paths) {
-                    try {
-                        log.info("Converterer fil {}...", path.getFileName().toString());
-                        byte[] bytes = Files.readAllBytes(path);
-                        list.add(from(new String(bytes, StandardCharsets.UTF_8), unmarshaller));
-                    } catch (Exception e) {
-                        log.error("Klarer ikke a lese fil {}", path.getFileName().toString());
-                        throw e;
+                stream.forEach(path -> {
+                    if (Files.isRegularFile(path)) {
+                        try {
+                            log.info("Converterer fil {} til EDAGM (antall {})...", path.getFileName().toString(), count.incrementAndGet() );
+                            byte[] bytes = Files.readAllBytes(path);
+
+                            list.add(from(new String(bytes, StandardCharsets.UTF_8), unmarshaller));
+                        } catch (Exception e) {
+                            throw new RuntimeException("Klarer ikke a lese fil: " + path.getFileName().toString(), e);
+                        }
                     }
-                }
+                });
             }
             return new OpplysningspliktigList(list);
         } catch (Exception e) {
-            throw new RuntimeException("Klarer ikke a konvertere filene til EDAGM", e);
+            throw new RuntimeException("Klarer ikke a konvertere alle filene til EDAGM", e);
         }
     }
 
