@@ -1,5 +1,5 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-CLIENT_ID: DUMMY
+CLIENT_ID: c163301f-082d-4fbd-9a78-6bdd92e3c36a
 
 #batch
 spring:

@@ -2,6 +2,7 @@ name: Deploy orkestratoren
 
 on:
   push:
+    branches: master
     paths:
       - apps/orkestratoren/**
       - libs/testnorge-core/**
