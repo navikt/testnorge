@@ -4,7 +4,6 @@ spring.application:
   desciption: API for hente ut profil fra Azure Ad
 
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-CLIENT_ID: 81d0a23d-20ef-49de-8761-2e7917bc9238
 
 access.scopes:
   - https://graph.microsoft.com/.default

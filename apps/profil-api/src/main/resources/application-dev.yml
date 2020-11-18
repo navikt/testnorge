@@ -1,3 +1,5 @@
+CLIENT_ID: 81d0a23d-20ef-49de-8761-2e7917bc9238
+
 spring:
   security:
     oauth2:
