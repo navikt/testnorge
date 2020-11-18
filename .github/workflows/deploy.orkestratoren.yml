@@ -44,4 +44,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/orkestratoren/nais.yaml
+          RESOURCE: apps/orkestratoren/config.yml
