@@ -6,7 +6,7 @@ spring:
     hibernate:
       showSql: true
   datasource:
-    url: ${tps-forvalteren.datasource.jdbc_url}
+    url: ${spring.datasource.jdbc_url}
   cloud:
     vault:
       host: vault.adeo.no
@@ -14,6 +14,5 @@ spring:
       fail-fast: true
       connection-timeout: 15000
       read-timeout: 30000
-      enabled: true
       generic:
         enabled: false

@@ -1,4 +1,4 @@
-spring:
-  cloud:
-    vault:
-      enabled: false
+#spring:
+#  cloud:
+#    vault:
+#      enabled: false

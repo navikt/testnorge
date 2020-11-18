@@ -1,12 +1,12 @@
 package no.nav.identpool.util;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.IOException;
 import java.util.List;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 class LastInnFiktiveNavnUtilTest {
 
@@ -16,7 +16,7 @@ class LastInnFiktiveNavnUtilTest {
             " blokkbokstaver i konsumentenes SKDmeldinger)")
     void shouldloadListFromCsvFile() throws IOException {
         List strings = LastInnFiktiveNavnUtil.loadListFromCsvFile("__files/navnepool/test.csv");
-        assertTrue(strings.contains("AKTIV"));
-        assertTrue(strings.contains("AKTPÅGIVENDE"));
+        assertThat(strings.contains("AKTIV"), equalTo(true));
+        assertThat(strings.contains("AKTPAAGIVENDE"), equalTo(true));
     }
 }

@@ -1,12 +1,10 @@
 application:
   name: ident-pool
-  version: @project.version@
+  version: dummy
 
 spring:
   datasource:
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
-    url: ${SPRING_DATASOURCE_URL}
+#    url: ${SPRING_DATASOURCE_URL}
     driver-class-name: oracle.jdbc.OracleDriver
   flyway:
     locations: classpath:/db/migration
@@ -31,7 +29,7 @@ mq:
   channel:
     postfix: _TPSWS
   context:
-    exclude: tx,ty,ta,q231,o1,test,q11,t8
+    exclude: tx,ty,ta,q231,o1,test,q11,t8,qa,qb
 
 ### FASIT ###
 fasit:

@@ -30,10 +30,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.4.7'
     implementation 'org.springframework.boot:spring-boot-configuration-processor:2.3.4.RELEASE'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.6.2'
-
+    testImplementation project(':testnorge-testing')
 }
 
 description = 'ident-pool-core'

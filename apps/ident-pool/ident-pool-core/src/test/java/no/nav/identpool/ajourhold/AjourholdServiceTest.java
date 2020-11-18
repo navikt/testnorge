@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyIterable;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -13,20 +12,19 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import io.micrometer.core.instrument.Counter;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.stubbing.Answer;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.stubbing.Answer;
 
+import io.micrometer.core.instrument.Counter;
 import no.nav.identpool.consumers.TpsfConsumer;
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
@@ -63,9 +61,9 @@ class AjourholdServiceTest {
         ajourholdService = spy(new AjourholdService(identRepository, new IdentGeneratorService(), identTpsService, tpsfConsumer, counter));
         ajourholdService.current = LocalDate.now();
 
-        when(identRepository.saveAll(anyIterable())).thenAnswer((Answer<Void>) invocationOnMock -> {
-            List<Ident> pins = invocationOnMock.getArgument(0);
-            entities.addAll(pins);
+        when(identRepository.save(any(Ident.class))).thenAnswer((Answer<Void>) invocationOnMock -> {
+            Ident ident = invocationOnMock.getArgument(0);
+            entities.add(ident);
             return null;
         });
     }
@@ -92,9 +90,9 @@ class AjourholdServiceTest {
             return pins.stream().map(p -> new TpsStatus(p, false)).collect(Collectors.toSet());
         });
         ajourholdService.generateForYear(1941, Identtype.FNR, 365 * 4);
-        verify(identRepository, times(2)).saveAll(anyIterable());
+        verify(identRepository, times(entities.size())).save(any(Ident.class));
         assertThat(entities.size(), is(365 * 4));
-        entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.FNR)));
+        entities.forEach(entity -> assertThat(entity.getIdenttype(),  is(Identtype.FNR)));
         entities.forEach(entity -> assertThat(PersonidentUtil.getIdentType(entity.getPersonidentifikator()), is(Identtype.FNR)));
         entities.forEach(entity -> assertThat(entity.getRekvireringsstatus(), is(Rekvireringsstatus.LEDIG)));
     }
@@ -106,7 +104,7 @@ class AjourholdServiceTest {
             return pins.stream().map(p -> new TpsStatus(p, true)).collect(Collectors.toSet());
         });
         ajourholdService.generateForYear(1941, Identtype.DNR, 0);
-        verify(identRepository, times(2)).saveAll(anyIterable());
+        verify(identRepository, times(entities.size())).save(any(Ident.class));
         assertThat(entities.size(), is(365 * 4));
         entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.DNR)));
         entities.forEach(entity -> assertThat(PersonidentUtil.getIdentType(entity.getPersonidentifikator()), is(Identtype.DNR)));
@@ -120,7 +118,7 @@ class AjourholdServiceTest {
             return pins.stream().map(p -> new TpsStatus(p, true)).collect(Collectors.toSet());
         });
         ajourholdService.generateForYear(1941, Identtype.BOST, 0);
-        verify(identRepository, times(2)).saveAll(anyIterable());
+        verify(identRepository, times(entities.size())).save(any(Ident.class));
         assertThat(entities.size(), is(365 * 4));
         entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.BOST)));
         entities.forEach(entity -> assertThat(PersonidentUtil.getIdentType(entity.getPersonidentifikator()), is(Identtype.BOST)));
@@ -136,7 +134,7 @@ class AjourholdServiceTest {
         LocalDate dayOfYear = LocalDate.of(1941, 4, 10);
         ajourholdService.current = dayOfYear;
         ajourholdService.generateForYear(1941, Identtype.DNR, 0);
-        verify(identRepository, times(2)).saveAll(anyIterable());
+        verify(identRepository, times(entities.size())).save(any(Ident.class));
         assertThat(entities.size(), is(dayOfYear.minusDays(1).getDayOfYear() * 4));
         entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.DNR)));
         entities.forEach(entity -> assertThat(PersonidentUtil.getIdentType(entity.getPersonidentifikator()), is(Identtype.DNR)));
@@ -152,7 +150,7 @@ class AjourholdServiceTest {
         LocalDate dayOfYear = LocalDate.of(1941, 4, 10);
         ajourholdService.current = dayOfYear;
         ajourholdService.generateForYear(1941, Identtype.BOST, 0);
-        verify(identRepository, times(2)).saveAll(anyIterable());
+        verify(identRepository, times(entities.size())).save(any(Ident.class));
         assertThat(entities.size(), is(dayOfYear.minusDays(1).getDayOfYear() * 4));
         entities.forEach(entity -> assertThat(entity.getIdenttype(), is(Identtype.BOST)));
         entities.forEach(entity -> assertThat(PersonidentUtil.getIdentType(entity.getPersonidentifikator()), is(Identtype.BOST)));
