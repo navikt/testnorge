@@ -120,7 +120,7 @@ public class VedtakshistorikkService {
                 identerIAldersgruppe = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe);
             }
         } catch (RuntimeException e) {
-            log.error("Kunne ikke hente ident fra hodejegeren.", e);
+            log.error("Kunne ikke hente utvalgte identer.", e);
         }
 
         if (!identerIAldersgruppe.isEmpty()) {
@@ -448,6 +448,7 @@ public class VedtakshistorikkService {
             var nyeTiltaksdeltakelser = tiltaksdeltakelser.stream()
                     .filter(deltakelse -> deltakelse.getTiltakId() != null).collect(Collectors.toList());
 
+            nyeTiltaksdeltakelser = vedtakUtils.removeOverlappingTiltakVedtak(nyeTiltaksdeltakelser, vedtak.getAap());
 
             if (nyeTiltaksdeltakelser != null && !nyeTiltaksdeltakelser.isEmpty()) {
                 List<NyttVedtakTiltak> nyeVedtakRequests = new ArrayList<>();
@@ -467,12 +468,12 @@ public class VedtakshistorikkService {
 
 
     private void opprettVedtakEndreDeltakerstatusTilGjennomfoeres(
-            Vedtakshistorikk vedtak,
+            Vedtakshistorikk historikk,
             String personident,
             String miljoe,
             List<RettighetRequest> rettigheter
     ) {
-        var tiltaksdeltakelser = vedtak.getTiltaksdeltakelse();
+        var tiltaksdeltakelser = historikk.getTiltaksdeltakelse();
         if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
             for (var deltakelse : tiltaksdeltakelser) {
                 var fraDato = deltakelse.getFraDato();
@@ -534,9 +535,10 @@ public class VedtakshistorikkService {
         List<NyttVedtakTiltak> nyeTiltakspenger = vedtakUtils.oppdaterVedtakslisteBasertPaaTiltaksdeltakelse(
                 tiltakspenger, tiltaksdeltakelser);
 
+        nyeTiltakspenger = vedtakUtils.removeOverlappingTiltakSequences(nyeTiltakspenger);
 
         if (nyeTiltakspenger != null && !nyeTiltakspenger.isEmpty()) {
-            var rettighetRequest = new RettighetTiltakspengerRequest(tiltakspenger);
+            var rettighetRequest = new RettighetTiltakspengerRequest(nyeTiltakspenger);
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
             rettighetRequest.getNyeTiltakspenger().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
@@ -547,26 +549,32 @@ public class VedtakshistorikkService {
 
 
     private void opprettVedtakBarnetillegg(
-            Vedtakshistorikk vedtak,
+            Vedtakshistorikk historikk,
             String personident,
             String miljoe,
             List<RettighetRequest> rettigheter
     ) {
-        var barnetillegg = vedtak.getBarnetillegg() != null ? vedtak.getBarnetillegg() : new ArrayList<NyttVedtakTiltak>();
-        var tiltaksdeltakelser = vedtak.getTiltaksdeltakelse();
+        var barnetillegg = historikk.getBarnetillegg() != null ? historikk.getBarnetillegg() : new ArrayList<NyttVedtakTiltak>();
+        var tiltakspenger = historikk.getTiltakspenger() != null ? historikk.getTiltakspenger() : new ArrayList<NyttVedtakTiltak>();
+        var tiltaksdeltakelser = historikk.getTiltaksdeltakelse();
 
-        List<NyttVedtakTiltak> nyeBarnetillegg = vedtakUtils.oppdaterVedtakslisteBasertPaaTiltaksdeltakelse(
-                barnetillegg, tiltaksdeltakelser);
+        List<NyttVedtakTiltak> nyeBarnetillegg = new ArrayList<>();
+        if (!tiltakspenger.isEmpty()){
+            nyeBarnetillegg = vedtakUtils.oppdaterVedtakslisteBasertPaaTiltaksdeltakelse(
+                    barnetillegg, tiltaksdeltakelser);
 
+            nyeBarnetillegg = vedtakUtils.removeOverlappingTiltakSequences(nyeBarnetillegg);
 
-        if (nyeBarnetillegg != null && !nyeBarnetillegg.isEmpty()) {
-            var rettighetRequest = new RettighetTilleggsytelseRequest(barnetillegg);
-            rettighetRequest.setPersonident(personident);
-            rettighetRequest.setMiljoe(miljoe);
-            rettighetRequest.getNyeTilleggsytelser().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
-            rettigheter.add(rettighetRequest);
+            if (nyeBarnetillegg != null && !nyeBarnetillegg.isEmpty()) {
+                var rettighetRequest = new RettighetTilleggsytelseRequest(nyeBarnetillegg);
+                rettighetRequest.setPersonident(personident);
+                rettighetRequest.setMiljoe(miljoe);
+                rettighetRequest.getNyeTilleggsytelser().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
+                rettigheter.add(rettighetRequest);
+            }
         }
-        vedtak.setBarnetillegg(nyeBarnetillegg);
+
+        historikk.setBarnetillegg(nyeBarnetillegg);
     }
 
 

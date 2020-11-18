@@ -116,4 +116,86 @@ public class VedtakUtils {
         vedtak.setTilDato(tiltaksdeltakelse.getTilDato());
         return vedtak;
     }
+
+    public List<NyttVedtakTiltak> removeOverlappingTiltakVedtak(
+            List<NyttVedtakTiltak> vedtaksliste,
+            List<? extends NyttVedtak> relatedVedtak
+    ) {
+
+        if (vedtaksliste == null || vedtaksliste.isEmpty()) {
+            return vedtaksliste;
+        }
+
+        List<NyttVedtakTiltak> nyeVedtak = new ArrayList<>();
+
+        List<NyttVedtak> vedtakToCompare = new ArrayList<>();
+        if (relatedVedtak != null && relatedVedtak.isEmpty()) {
+            vedtakToCompare.addAll(relatedVedtak);
+        }
+
+        for (var vedtak : vedtaksliste) {
+            if (nyeVedtak.isEmpty() || (!harOverlappendeVedtak(vedtak, vedtakToCompare))) {
+                nyeVedtak.add(vedtak);
+                vedtakToCompare.add(vedtak);
+            }
+        }
+
+        return nyeVedtak;
+    }
+
+    public List<NyttVedtakTiltak> removeOverlappingTiltakSequences(List<NyttVedtakTiltak> vedtaksliste) {
+        if (vedtaksliste == null || vedtaksliste.isEmpty()) {
+            return vedtaksliste;
+        }
+
+        List<NyttVedtakTiltak> nyeVedtak = new ArrayList<>();
+
+        var vedtakSequences = getVedtakSequences(vedtaksliste);
+
+        for (var sequence : vedtakSequences) {
+            var validSequence = true;
+            for (var vedtak : sequence) {
+                if (!nyeVedtak.isEmpty() && harOverlappendeVedtak(vedtak, nyeVedtak)) {
+                    validSequence = false;
+                    break;
+                }
+            }
+            if (validSequence) {
+                nyeVedtak.addAll(sequence);
+            }
+        }
+
+        return nyeVedtak;
+    }
+
+    private boolean harOverlappendeVedtak(NyttVedtakTiltak vedtak, List<? extends NyttVedtak> vedtaksliste) {
+        var fraDato = vedtak.getFraDato();
+        var tilDato = vedtak.getTilDato();
+
+        for (var item : vedtaksliste) {
+            var fraDatoItem = item.getFraDato();
+            var tilDatoItem = item.getTilDato();
+
+            if ((fraDato == fraDatoItem) ||
+                    (fraDato.isBefore(fraDatoItem) && tilDato.isAfter(fraDatoItem)) ||
+                    (fraDato.isAfter(fraDatoItem) && fraDato.isBefore(tilDatoItem))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private List<List<NyttVedtakTiltak>> getVedtakSequences(List<NyttVedtakTiltak> vedtak) {
+        List<List<NyttVedtakTiltak>> vedtakSequences = new ArrayList<>();
+        List<NyttVedtakTiltak> sequence = new ArrayList<>();
+        for (var tiltak : vedtak) {
+            if (tiltak.getVedtaktype() != null && tiltak.getVedtaktype().equals("O")) {
+                vedtakSequences.add(sequence);
+                sequence.clear();
+            }
+            sequence.add(tiltak);
+        }
+
+        return vedtakSequences;
+    }
 }
