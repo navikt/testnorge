@@ -11,7 +11,7 @@ import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.command.GetArbeidsforholdCommand;
 
 @Component
-@DependencyOn("arbeidsforhold-api")
+@DependencyOn("testnorge-arbeidsforhold-api")
 public class ArbeidsforholdConsumer {
     private final RestTemplate restTemplate;
     private final String url;

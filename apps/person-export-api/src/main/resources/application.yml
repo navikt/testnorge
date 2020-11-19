@@ -1,5 +1,5 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-CLIENT_ID: 9b23a7f9-df5d-4c79-a3fc-a4a5ebb70a66
+CLIENT_ID: ${azure.app.client.id}
 
 
 consumers:
@@ -20,9 +20,3 @@ spring:
     version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
     name: person-export-api
     description: Api for å eksportere personer.
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}

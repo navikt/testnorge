@@ -2,7 +2,6 @@ package no.nav.registre.testnorge.profil.consumer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
@@ -14,11 +13,10 @@ import java.net.URI;
 
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
+import no.nav.registre.testnorge.libs.oauth2.domain.AzureClientCredentials;
 import no.nav.registre.testnorge.libs.oauth2.service.OnBehalfOfGenerateAccessTokenService;
 import no.nav.registre.testnorge.profil.consumer.command.GetProfileCommand;
 import no.nav.registre.testnorge.profil.consumer.command.GetProfileImageCommand;
-import no.nav.registre.testnorge.profil.consumer.credentials.ProfilApiClientCredential;
 import no.nav.registre.testnorge.profil.consumer.dto.ProfileDTO;
 import no.nav.registre.testnorge.profil.domain.Profil;
 
@@ -27,14 +25,14 @@ import no.nav.registre.testnorge.profil.domain.Profil;
 public class AzureAdProfileConsumer {
 
     private final WebClient webClient;
-    private final ClientCredential clientCredential;
+    private final AzureClientCredentials clientCredential;
     private final OnBehalfOfGenerateAccessTokenService accessTokenService;
     private final AccessScopes accessScopes;
 
     public AzureAdProfileConsumer(
             @Value("${http.proxy:#{null}}") String proxyHost,
             @Value("${api.azuread.url}") String url,
-            ProfilApiClientCredential clientCredential,
+            AzureClientCredentials clientCredential,
             OnBehalfOfGenerateAccessTokenService accessTokenService
     ) {
         this.accessScopes = new AccessScopes(url + "/.default");

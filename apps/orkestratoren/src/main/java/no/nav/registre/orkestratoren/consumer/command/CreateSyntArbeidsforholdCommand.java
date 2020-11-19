@@ -13,7 +13,7 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.synt.arbeidsforhold.v1.SyntArbeidsforholdDTO;
 
 @Slf4j
-@DependencyOn("synt-arbeidsforhold-api")
+@DependencyOn("testnorge-synt-arbeidsforhold-api")
 @RequiredArgsConstructor
 public class CreateSyntArbeidsforholdCommand implements Callable<Void> {
     private final RestTemplate restTemplate;

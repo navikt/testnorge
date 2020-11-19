@@ -19,7 +19,7 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
-@DependencyOn(value = "syntrest", external = true)
+@DependencyOn("syntrest")
 public class AaregSyntetisererenConsumer {
 
     @Value("${aareg.pageSize}")

@@ -7,6 +7,12 @@ consumers:
     client_id: 32d4b32e-95d1-4e40-b594-304945a1a24a
 
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
   h2:
     console:
       enabled: true
@@ -22,3 +28,4 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
+

@@ -1,17 +1,11 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-CLIENT_ID: 7ae3bcec-8c22-4436-bc4c-36e70c86db1d
+CLIENT_ID: ${azure.app.client.id}
 
 spring:
   flyway:
     enabled: false
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
   application:
-    version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     name: mn-original-populasjon
     desciption: API for opprettelse av populasjon til Mini-Norge
 

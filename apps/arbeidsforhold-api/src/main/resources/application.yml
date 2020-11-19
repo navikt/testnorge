@@ -4,15 +4,10 @@ CLIENT_ID: 1b2f24c8-a426-47b1-8ff1-7905d6dfddb5
 
 spring:
   application:
-    name: arbeidsforhold-api
-    version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
+    name: testnorge-arbeidsforhold-api
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     description: Opprettelse av arbeidsforhold
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
+
 
 aareg:
   url: https://modapp-{miljo}.adeo.no/aareg-services/api

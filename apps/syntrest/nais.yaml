@@ -4,7 +4,7 @@ metadata:
   name: syntrest
   namespace: q2
   labels:
-    team: orkestrator
+    team: dolly
 spec:
   port: 8080
   liveness:

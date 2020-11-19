@@ -5,6 +5,7 @@ on:
     branches: master
     paths:
       - apps/avhengighetsanalyse-frontend/**
+      - libs/testnorge-core/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/avhengighetsanalyse-frontend:${{ github.sha }}

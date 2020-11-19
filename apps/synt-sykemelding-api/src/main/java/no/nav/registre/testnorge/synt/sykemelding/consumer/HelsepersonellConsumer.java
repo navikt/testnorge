@@ -17,7 +17,7 @@ import no.nav.registre.testnorge.synt.sykemelding.exception.LegerNotFoundExcepti
 
 @Slf4j
 @Component
-@DependencyOn("helsepersonell-api")
+@DependencyOn("testnorge-helsepersonell-api")
 public class HelsepersonellConsumer {
     private final RestTemplate restTemplate;
     private final String url;

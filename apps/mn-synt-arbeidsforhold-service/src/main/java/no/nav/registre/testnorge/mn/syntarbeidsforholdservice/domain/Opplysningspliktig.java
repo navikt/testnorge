@@ -16,7 +16,7 @@ import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.VirksomhetDTO;
 
 @Slf4j
-@DependencyOn("arbeidsforhold-api")
+@DependencyOn("testnorge-arbeidsforhold-api")
 @RequiredArgsConstructor
 public class Opplysningspliktig {
     private final OppsummeringsdokumentetDTO dto;

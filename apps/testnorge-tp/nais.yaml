@@ -4,7 +4,7 @@ metadata:
   name: testnorge-tp
   namespace: default
   labels:
-    team: orkestrator
+    team: dolly
 spec:
   port: 8080
   liveness:

@@ -14,7 +14,7 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyType;
 import no.nav.registre.testnorge.libs.reporting.ReportConsumer;
 
 @Component
-@DependencyOn(value = "rapportering-api", type = DependencyType.QUEUE)
+@DependencyOn(value = "testnorge-rapportering-api", type = DependencyType.QUEUE)
 public class RapporteringConsumer implements ReportConsumer {
 
     private final String topic;

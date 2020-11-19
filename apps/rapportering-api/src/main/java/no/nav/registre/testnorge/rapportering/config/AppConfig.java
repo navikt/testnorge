@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import no.nav.registre.testnorge.libs.autoconfigdependencyanalysis.config.DependencyAnalysisAutoConfiguration;
 import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
 import no.nav.registre.testnorge.libs.core.config.ApplicationProperties;
 import no.nav.registre.testnorge.libs.database.config.FlywayConfiguration;
@@ -19,7 +20,8 @@ import no.nav.registre.testnorge.libs.slack.consumer.SlackConsumer;
 @Import(value = {
         ApplicationCoreConfig.class,
         VaultHikariConfiguration.class,
-        FlywayConfiguration.class
+        FlywayConfiguration.class,
+        DependencyAnalysisAutoConfiguration.class
 })
 public class AppConfig {
 
