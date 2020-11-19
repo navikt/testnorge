@@ -18,6 +18,10 @@
     {
       "name": "underenheterEnhetstype",
       "type": "string"
+    },
+    {
+      "name": "miljo",
+      "type": "string"
     }
   ]
 }
