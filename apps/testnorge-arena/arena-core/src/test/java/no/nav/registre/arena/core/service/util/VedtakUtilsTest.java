@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 
-import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -14,10 +13,10 @@ import static no.nav.registre.arena.core.service.RettighetAapService.SYKEPENGEER
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ServiceUtilsTest {
+public class VedtakUtilsTest {
 
     @InjectMocks
-    private ServiceUtils serviceUtils;
+    private VedtakUtils vedtakUtils;
 
     @Test
     public void shouldSetDatoPeriodeVedtakInnenforMaxAntallMaaneder(){
@@ -37,9 +36,9 @@ public class ServiceUtilsTest {
         vedtakMedNullTilDato.setFraDato(LocalDate.now());
         vedtakMedNullTilDato.setTilDato(null);
 
-        serviceUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(vedtakMedUgyldigTilDato, SYKEPENGEERSTATNING_MAKS_PERIODE);
-        serviceUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(vedtakMedGyldigTilDato, SYKEPENGEERSTATNING_MAKS_PERIODE);
-        serviceUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(vedtakMedNullTilDato, SYKEPENGEERSTATNING_MAKS_PERIODE);
+        vedtakUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(vedtakMedUgyldigTilDato, SYKEPENGEERSTATNING_MAKS_PERIODE);
+        vedtakUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(vedtakMedGyldigTilDato, SYKEPENGEERSTATNING_MAKS_PERIODE);
+        vedtakUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(vedtakMedNullTilDato, SYKEPENGEERSTATNING_MAKS_PERIODE);
 
         assertThat(vedtakMedUgyldigTilDato.getTilDato()).isEqualTo(tilDatoEtterEndring);
         assertThat(vedtakMedGyldigTilDato.getTilDato()).isEqualTo(gyldigTilDato);

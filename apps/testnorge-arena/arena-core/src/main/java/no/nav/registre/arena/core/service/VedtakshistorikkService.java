@@ -431,6 +431,7 @@ public class VedtakshistorikkService {
         var tiltaksdeltakelser = vedtak.getTiltaksdeltakelse();
         if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
             arbeidsoekerUtils.opprettArbeidssoekerTiltakdeltakelse(personident, miljoe);
+
             tiltaksdeltakelser.forEach(deltakelse -> {
                 deltakelse.setFodselsnr(personident);
                 deltakelse.setTiltakYtelse("J");

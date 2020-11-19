@@ -129,7 +129,7 @@ public class VedtakUtils {
         List<NyttVedtakTiltak> nyeVedtak = new ArrayList<>();
 
         List<NyttVedtak> vedtakToCompare = new ArrayList<>();
-        if (relatedVedtak != null && relatedVedtak.isEmpty()) {
+        if (relatedVedtak != null && !relatedVedtak.isEmpty()) {
             vedtakToCompare.addAll(relatedVedtak);
         }
 
