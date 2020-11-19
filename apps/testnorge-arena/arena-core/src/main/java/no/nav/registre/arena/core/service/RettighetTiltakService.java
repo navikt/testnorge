@@ -8,7 +8,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.arena.core.service.util.*;
+import no.nav.registre.arena.core.service.util.ServiceUtils;
+import no.nav.registre.arena.core.service.util.ArbeidssoekerUtils;
+import no.nav.registre.arena.core.service.util.IdenterUtils;
+import no.nav.registre.arena.core.service.util.VedtakUtils;
+import no.nav.registre.arena.core.service.util.KodeMedSannsynlighet;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
