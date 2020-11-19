@@ -1,0 +1,23 @@
+{
+  "type": "record",
+  "name": "Organiasjon",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organiasjon",
+  "fields": [
+    {
+      "name": "orgnummer",
+      "type": "string"
+    },
+    {
+      "name": "enhetstype",
+      "type": "string"
+    },
+    {
+      "name": "navn",
+      "type": "string"
+    },
+    {
+      "name": "miljo",
+      "type": "string"
+    }
+  ]
+}

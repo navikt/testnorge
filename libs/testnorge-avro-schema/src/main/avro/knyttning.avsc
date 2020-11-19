@@ -1,0 +1,23 @@
+{
+  "type": "record",
+  "name": "Knyttning",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organiasjon",
+  "fields": [
+    {
+      "name": "overenhetOrgnummer",
+      "type": "string"
+    },
+    {
+      "name": "overenhetEnhetstype",
+      "type": "string"
+    },
+    {
+      "name": "underenheterOrgnummer",
+      "type": "string"
+    },
+    {
+      "name": "underenheterEnhetstype",
+      "type": "string"
+    }
+  ]
+}

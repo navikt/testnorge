@@ -2,6 +2,14 @@ package no.nav.registre.ereg.mapper;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
+import com.google.common.base.Strings;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
@@ -9,15 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-
-import com.google.common.base.Strings;
-
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.ereg.consumer.rs.EregConsumer;
 import no.nav.registre.ereg.csv.NaeringskodeRecord;
 import no.nav.registre.ereg.provider.rs.request.AdresseRs;
@@ -135,6 +134,7 @@ public class EregMapper {
         } else {
             file = new StringBuilder(createENH(data.getOrgnr(), data.getEnhetstype(), "N"));
         }
+
         String endringsType = "N";
         numRecords++;
 
