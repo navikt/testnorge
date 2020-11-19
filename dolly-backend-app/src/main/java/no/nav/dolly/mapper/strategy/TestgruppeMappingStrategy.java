@@ -1,5 +1,6 @@
 package no.nav.dolly.mapper.strategy;
 
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Component;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.domain.jpa.postgres.Bruker;
 import no.nav.dolly.domain.jpa.postgres.Testgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.mapper.MappingStrategy;
@@ -24,11 +26,16 @@ public class TestgruppeMappingStrategy implements MappingStrategy {
                         rsTestgruppe.setAntallIdenter(testgruppe.getTestidenter().size());
                         rsTestgruppe.setAntallIBruk(((Long) testgruppe.getTestidenter().stream().filter(ident -> isTrue(ident.getIBruk())).count()).intValue()); //NOSONAR
                         rsTestgruppe.setFavorittIGruppen(!testgruppe.getFavorisertAv().isEmpty());
-                        rsTestgruppe.setErEierAvGruppe(getUserId().equalsIgnoreCase(testgruppe.getOpprettetAv().getBrukerId()));
+                        rsTestgruppe.setErEierAvGruppe(getUserId().equals(getBrukerId(testgruppe.getOpprettetAv())));
                         rsTestgruppe.setErLaast(isTrue(rsTestgruppe.getErLaast()));
                     }
                 })
                 .byDefault()
                 .register();
+    }
+
+    private static String getBrukerId(Bruker bruker) {
+
+        return nonNull(bruker.getBrukerId()) ? bruker.getBrukerId() : bruker.getEidAv().getBrukerId();
     }
 }
