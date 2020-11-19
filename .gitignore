@@ -17,3 +17,5 @@
 ### Gradle ###
 .gradle
 *build/
+**/out/production/*
+**/out/test/*
