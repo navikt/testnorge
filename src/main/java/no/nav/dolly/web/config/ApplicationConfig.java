@@ -8,9 +8,16 @@ import org.springframework.web.client.RestTemplate;
 import no.nav.dolly.web.config.filters.AddAuthorizationToRouteFilter;
 import no.nav.dolly.web.security.TokenService;
 import no.nav.dolly.web.security.domain.AccessScopes;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependenciesOn;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Configuration
 @RequiredArgsConstructor
+@DependenciesOn({
+        @DependencyOn("dolly-backend"),
+        @DependencyOn("testnorge-profil-api"),
+        @DependencyOn("testnorge-varslinger-api")
+})
 public class ApplicationConfig {
     private final RemoteApplicationsProperties properties;
     private final TokenService tokenService;

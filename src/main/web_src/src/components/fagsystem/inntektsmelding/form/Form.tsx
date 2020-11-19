@@ -31,6 +31,7 @@ import ArbeidsforholdForm from './partials/arbeidsforholdForm'
 import NaturalytelseForm from './partials/naturalytelseForm'
 import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
 import { AlertAaregRequired } from '~/components/ui/brukerAlert/AlertAaregRequired'
+import { InputWarning } from '~/components/ui/form/inputWarning/inputWarning'
 
 interface InntektsmeldingForm {
 	formikBag: FormikProps<{}>
@@ -186,13 +187,18 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 								</Kategori>
 								{ytelse === Ytelser.Foreldrepenger && (
 									<Kategori title="Foreldrepenger">
-										<FormikDatepicker
-											name={`${path}.startdatoForeldrepengeperiode`}
-											label="Startdato for periode"
-										/>
+										<InputWarning
+											visWarning={!_get(formikBag.values, `${path}.startdatoForeldrepengeperiode`)}
+											warningText="For automatisk behandling av inntektsmelding må dette feltet fylles ut"
+										>
+											<FormikDatepicker
+												name={`${path}.startdatoForeldrepengeperiode`}
+												label="Startdato for periode"
+											/>
+										</InputWarning>
 									</Kategori>
 								)}
-								{ytelse === Ytelser.Sykepenger && (
+								{(ytelse === Ytelser.Sykepenger || ytelse === Ytelser.Omsorgspenger) && (
 									<Kategori title="Sykepenger">
 										<SykepengerForm path={`${path}.sykepengerIArbeidsgiverperioden`} />
 									</Kategori>

@@ -25,10 +25,15 @@ applications:
   testnorge-tilbakemelding-api: 6554cc46-d5a9-4b9b-aafb-775b9ee09696
 
 
+application:
+  basepackage: no.nav.dolly.web
+
 consumers:
   testnorge-tilbakemelding-api.baseUrl: https://testnorge-tilbakemelding-api.dev.adeo.no
 
 spring:
+  application:
+    name: dolly-frontend
   cloud:
     vault:
       enabled: false
@@ -37,11 +42,11 @@ spring:
       client:
         registration:
           aad:
-            client-id: ${CLIENT_ID}
-            client-secret: ${CLIENT_SECRET}
+            client-id: ${azure.app.client.id}
+            client-secret: ${azure.app.client.secret}
             authorization-grant-type: authorization_code
             redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
-            scope: openid, ${CLIENT_ID}/.default
+            scope: openid, ${azure.app.client.id}/.default
         provider:
           aad:
             authorization-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/authorize

@@ -54,7 +54,7 @@ export const VarslingerModal = ({
 	}
 
 	return (
-		<DollyModal isOpen={modalOpen} noCloseButton={true} width="70%">
+		<DollyModal isOpen={modalOpen} noCloseButton={true} width="70%" overflow="auto">
 			<div className="varslinger-modal">
 				{/* 
                 //@ts-ignore */}

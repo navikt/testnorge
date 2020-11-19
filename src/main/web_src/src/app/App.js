@@ -9,6 +9,7 @@ import { VarslingerModal } from '~/components/varslinger/VarslingerModal'
 
 import './App.less'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { Forbedring } from '~/components/feedback/Forbedring'
 
 export default class App extends Component {
 	state = {
@@ -82,6 +83,7 @@ export default class App extends Component {
 						</Switch>
 					</Suspense>
 				</main>
+				<Forbedring brukerBilde={brukerBilde} />
 				{applicationError && <Toast error={applicationError} clearErrors={clearAllErrors} />}
 			</React.Fragment>
 		)

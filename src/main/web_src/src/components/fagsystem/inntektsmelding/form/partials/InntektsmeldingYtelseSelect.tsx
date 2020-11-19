@@ -93,7 +93,8 @@ const setYtelseOgTema = (value: Option, formikBag: FormikProps<{}>, path: string
 			formikBag.setFieldValue(path, {
 				...rest,
 				ytelse: value.value,
-				omsorgspenger: { harUtbetaltPliktigeDager: false }
+				omsorgspenger: { harUtbetaltPliktigeDager: false },
+				sykepengerIArbeidsgiverperioden: { bruttoUtbetalt: '' }
 			})
 			break
 		case Ytelser.Sykepenger:

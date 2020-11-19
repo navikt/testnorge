@@ -15,7 +15,7 @@ export const LeggTilRelasjonModal = ({ environments, personInfo }) => {
 			<Button onClick={openModal} className="flexbox--align-center" kind="relasjoner">
 				LEGG TIL RELASJONER
 			</Button>
-			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="70%">
+			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="70%" overflow="auto">
 				<h1>Legg til relasjoner </h1>
 				<div className="relasjon-modal-overskrift">
 					<div className="icon">

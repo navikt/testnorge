@@ -28,7 +28,7 @@ export default class DollyModal extends PureComponent {
 		const { children, isOpen, closeModal, noCloseButton, width, overflow } = this.props
 
 		if (width && isOpen) customStyles.content.width = width
-		if (overflow) customStyles.content.overflow = overflow
+		if (overflow && isOpen) customStyles.content.overflow = overflow
 
 		return (
 			<Modal isOpen={isOpen} shouldCloseOnEsc onRequestClose={closeModal} style={customStyles}>

@@ -24,7 +24,7 @@ export const ImportTilDolly = ({ valgtePersoner }: ImportTilDolly) => {
 				>
 					Importer person(er) til gruppe
 				</NavButton>
-				<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="60%">
+				<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="60%" overflow="auto">
 					<ImportTilDollyModal onAvbryt={closeModal} valgtePersoner={valgtePersoner} />
 				</DollyModal>
 			</div>
