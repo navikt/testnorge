@@ -2,12 +2,15 @@ apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
   name: orkestratoren
-  namespace: default
+  namespace: dolly
   labels:
     team: dolly
 spec:
   port: 8080
   webproxy: true
+  azure:
+    application:
+      enabled: true
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
@@ -35,5 +38,4 @@ spec:
       memory: 2048Mi
   image: {{ image }}
   ingresses:
-    - "https://orkestratoren.nais.preprod.local"
     - "https://orkestratoren.dev.adeo.no"

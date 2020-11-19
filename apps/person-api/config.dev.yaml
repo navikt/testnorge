@@ -12,6 +12,10 @@ spec:
   azure:
     application:
       enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: orkestratoren
   liveness:
     path: /internal/isAlive
     initialDelay: 4

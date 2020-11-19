@@ -1,0 +1,45 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+CLIENT_ID: ${azure.app.client.id}
+CLIENT_SECRET: ${azure.app.client.secret}
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
+
+management:
+  endpoints:
+    web:
+      base-path: /internal
+      exposure.include: prometheus
+
+ibm:
+  mq:
+    conn-name: ${IBM_MQ_CONN_NAME}
+    channel: ${IBM_MQ_CHANNEL}
+    user-authentication-m-q-c-s-p: false
+    queue-manager: ${IBM_MQ_QUEUE_MANAGER}
+    user: ${IBM_MQ_USER}
+    password: ${IBM_MQ_PASSWORD}
+
+queue:
+  queueName: ${QUEUE_NAME}
+
+
+batch:
+  avspillergruppeId.miljoe: ${AVSPILLERGRUPPEID_MILJOE}
+  antallMeldingerPerEndringskode: ${ANTALL_SKD_MELDINGER_PER_ENDRINGSKODE}
+  navMeldinger: ${ANTALL_NAV_MELDINGER_PER_ENDRINGSKODE}
+  
+poppbatch.antallNyeIdenter:  ${POPP_ANTALL_NYE_IDENTER}
+aaregbatch.antallNyeIdenter:  ${AAREG_ANTALL_NYE_IDENTER}
+instbatch.antallNyeIdenter:  ${INST_ANTALL_NYE_IDENTER}
+bisysbatch.antallNyeIdenter:  ${BISYS_ANTALL_NYE_IDENTER}
+tpbatch.antallPersoner:  ${TP_ANTALL_NYE_IDENTER}
+sambatch.antallMeldinger:  ${SAM_ANTALL_NYE_IDENTER}
+arenabatch.antallNyeIdenter:  ${ARENA_ANTALL_NYE_IDENTER}
+medlbatch.prosentfaktor:  ${MEDL_PROSENTFAKTOR}
+frikortbatch.antallNyeIdenter:  ${FRIKORT_ANTALL_NYE_IDENTER}

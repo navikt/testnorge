@@ -21,7 +21,7 @@ public class RapporteringConsumer implements ReportConsumer {
     private final KafkaTemplate<String, Report> kafkaTemplate;
     public final String applicationName;
 
-    public RapporteringConsumer(@Value("${kafka.topic}") String topic, KafkaTemplate<String, Report> kafkaTemplate, @Value("${application.name}") String applicationName) {
+    public RapporteringConsumer(@Value("${kafka.topic}") String topic, KafkaTemplate<String, Report> kafkaTemplate, @Value("${spring.application.name}") String applicationName) {
         this.topic = topic;
         this.kafkaTemplate = kafkaTemplate;
         this.applicationName = applicationName;
