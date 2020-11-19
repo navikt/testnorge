@@ -1,13 +1,13 @@
-name: Deploy ident-pool-test
+name: Deploy ident-pool
 
 on:
   push:
+    branches: master
     paths:
       - apps/ident-pool/**
-      - libs/testnorge-core/**
-
+      -
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/ident-pool-test:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/ident-pool:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -44,4 +44,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/ident-pool/nais_dev-fss_test_template.yaml
+          RESOURCE: apps/ident-pool/nais.yml

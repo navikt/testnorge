@@ -1,25 +1,25 @@
-# Testnorge-Inst
-Testnorge-Inst er en applikasjon som henter syntetiske institusjonsforholdsmeldinger og populerer disse med identer før den sender meldingene til Inst.
-
+# Tdent-Pool
+Ident-pool har oversikt på syntetiske identer, og sjekker mot prod og testmiljøer for eksistens.
+ Fra ident-pool kan det rekvireres identer basert på født-før og født-etter samt kjønn og type.
+ Spesifikke identer kan også allokeres.
+ Identer kan frigjøres og benyttes om igjen
+ 
 ## Swagger
-Swagger finnes under [/api](https://testnorge-inst.nais.preprod.local/api) -endepunktet til applikasjonen.
+Swagger finnes under [/api](https://ident-pool.dev.adeo.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
    
-### Utviklerimage
+### Utenfor utviklerimage
 Kjør LocalApplicationStarter med følgende argumenter:
  - -Djavax.net.ssl.trustStore=[path til lokal truststore]
  - -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
  - -Dspring.cloud.vault.token=[Kopier token fra vault]
-    
-### Utenfor utviklerimage
-
-#### Windows
-Ha BIG-IP Edge Client kjørende og kjør LocalApplicationStarter med samme argumenter som for utviklerimage.
-    
-#### Mac
-Ha Nav-Tunnel kjørende og kjør LocalApplicationStarter med samme argumenter som for utviklerimage og legg til følgende argumenter:
-- -DsocksProxyHost=127.0.0.1
-- -DsocksProxyPort=14122
-- -DsocksNonProxyHosts=127.0.0.1|dl.bintray.com|repo.maven.apache.org|maven.adeo.no|packages.confluent.io|confluent.io|maven.xwiki.org|maven.repository.redhat.com
+ 
+### Utviklerimage 
+I utviklerimage kan du måtte ha disse i tillegg:
+ - -Dhttp.proxyHost=webproxy-utvikler.nav.no
+ - -Dhttps.proxyHost=webproxy-utvikler.nav.no 
+ - -Dhttp.proxyPort=8088 
+ - -Dhttps.proxyPort=8088 
+ - -Dhttp.nonProxyHosts=localhost|127.0.0.1|10.254.0.1|*.local|*.adeo.no|*.nav.no|*.aetat.no|*.devillo.no|*.oera.no|*.nais.io 
     
