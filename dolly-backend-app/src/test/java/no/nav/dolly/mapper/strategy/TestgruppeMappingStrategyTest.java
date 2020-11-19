@@ -51,7 +51,7 @@ public class TestgruppeMappingStrategyTest {
 
     @Test
     public void mappingFromTestgruppeToRsTestgruppe() {
-        Bruker bruker = Bruker.builder().navIdent("ident").build();
+        Bruker bruker = Bruker.builder().brukerId(BRUKERID).build();
         Testident testident = TestidentBuilder.builder().ident("1").build().convertToRealTestident();
         Set<Testident> identer = new HashSet<>(singletonList(testident));
 
