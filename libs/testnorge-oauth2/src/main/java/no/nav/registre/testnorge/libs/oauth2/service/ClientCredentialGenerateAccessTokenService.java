@@ -16,6 +16,7 @@ import java.net.URI;
 
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
+import no.nav.registre.testnorge.libs.oauth2.domain.AzureClientCredentials;
 import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
 
 @Slf4j
@@ -57,6 +58,7 @@ public class ClientCredentialGenerateAccessTokenService {
         return generateToken(remoteClientCredential, new AccessScopes("api://" + remoteClientCredential.getClientId() + "/.default"));
     }
 
+    @Deprecated
     public AccessToken generateToken(ClientCredential remoteClientCredential, AccessScopes accessScopes) {
         if (!tokenResolver.isClientCredentials()) {
             throw new BadCredentialsException("Kan ikke gjennomfore OnBehalfOf-flow fra Client Credentials.");
@@ -74,6 +76,34 @@ public class ClientCredentialGenerateAccessTokenService {
                 .fromFormData("scope", String.join(" ", accessScopes.getScopes()))
                 .with("client_id", remoteClientCredential.getClientId())
                 .with("client_secret", remoteClientCredential.getClientSecret())
+                .with("grant_type", "client_credentials");
+
+        AccessToken token = webClient.post()
+                .body(body)
+                .retrieve()
+                .bodyToMono(AccessToken.class)
+                .block();
+        log.trace("OAuth2 access token hentet.");
+        return token;
+    }
+
+    public AccessToken generateToken(AzureClientCredentials clientCredentials, AccessScopes accessScopes) {
+        if (!tokenResolver.isClientCredentials()) {
+            throw new BadCredentialsException("Kan ikke gjennomfore OnBehalfOf-flow fra Client Credentials.");
+        }
+
+        if (accessScopes.getScopes().isEmpty()) {
+            throw new RuntimeException("Kan ikke opprette accessToken uten scopes (clienter).");
+        }
+
+        tokenResolver.verifyAuthentication();
+
+        log.trace("Henter OAuth2 access token fra client credential...");
+
+        var body = BodyInserters
+                .fromFormData("scope", String.join(" ", accessScopes.getScopes()))
+                .with("client_id", clientCredentials.getClientId())
+                .with("client_secret", clientCredentials.getClientSecret())
                 .with("grant_type", "client_credentials");
 
         AccessToken token = webClient.post()

@@ -17,14 +17,13 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import no.nav.registre.orkestratoren.consumer.credential.PersonApiClientCredential;
 import no.nav.registre.testnorge.libs.common.command.GetPersonCommand;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.person.v1.Persondatasystem;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
+import no.nav.registre.testnorge.libs.oauth2.domain.AzureClientCredentials;
 import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
 
 @Slf4j
@@ -32,14 +31,14 @@ import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAcc
 @DependencyOn("testnorge-person-api")
 public class PersonConsumer {
     private final WebClient webClient;
-    private final ClientCredential clientCredential;
+    private final AzureClientCredentials clientCredential;
     private final ClientCredentialGenerateAccessTokenService accessTokenService;
     private final Executor executor;
 
     public PersonConsumer(
             @Value("${consumers.person.url}") String baseUrl,
             ObjectMapper objectMapper, @Value("${consumers.person.threads}") Integer threads,
-            PersonApiClientCredential clientCredential,
+            AzureClientCredentials clientCredential,
             ClientCredentialGenerateAccessTokenService accessTokenService
     ) {
         this.clientCredential = clientCredential;
