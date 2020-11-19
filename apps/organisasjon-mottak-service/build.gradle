@@ -11,6 +11,7 @@ dependencyManagement {
         mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR8'
     }
 }
+
 dependencies {
     implementation project(':testnorge-core')
     implementation project(':testnorge-dependency-analysis')
