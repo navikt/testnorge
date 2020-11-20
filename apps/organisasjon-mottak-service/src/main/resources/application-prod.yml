@@ -1,1 +1,4 @@
-DUMMY: dummy
+jenkins:
+  rest.api.url: https://batch.adeo.no
+  password: ${JENKINS_PASSWORD}
+  username: ${JENKINS_USERNAME}
