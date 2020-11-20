@@ -1,6 +1,6 @@
 
 jenkins:
-  rest.api.url: ${JENKINS_REST_API_URL}
+  rest.api.url: https://batch.adeo.no
   password: ${JENKINS_PASSWORD}
   username: ${JENKINS_USERNAME}
 
