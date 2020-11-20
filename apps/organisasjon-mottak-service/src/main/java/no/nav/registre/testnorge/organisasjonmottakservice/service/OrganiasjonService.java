@@ -14,17 +14,17 @@ import no.nav.registre.testnorge.organisasjonmottakservice.domain.Organiasjon;
 @RequiredArgsConstructor
 public class OrganiasjonService {
     private final FlatfilService flatfilService;
-    private final EregConsumer eregConsumer;
+    //private final EregConsumer eregConsumer;
 
     public void save(Knyttning knyttning, String miljo) {
         Flatfil flatfil = flatfilService.toFlatfil(knyttning);
         log.info("Lagerer knyttning i {}.", miljo);
-        eregConsumer.save(flatfil, miljo);
+        //eregConsumer.save(flatfil, miljo);
     }
 
     public void save(Organiasjon organiasjon, String miljo) {
         Flatfil flatfil = flatfilService.toFlatfil(organiasjon);
         log.info("Lagerer organiasjon i {}.", miljo);
-        eregConsumer.save(flatfil, miljo);
+        //eregConsumer.save(flatfil, miljo);
     }
 }

@@ -20,7 +20,6 @@ import no.nav.registre.testnorge.organisasjonmottakservice.consumer.request.Jenk
 import no.nav.registre.testnorge.organisasjonmottakservice.domain.Flatfil;
 
 @Slf4j
-@Component
 @DependencyOn(value = "jenkins", external = true)
 public class JenkinsConsumer {
     private final Environment env;

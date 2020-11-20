@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 import no.nav.registre.testnorge.organisasjonmottakservice.domain.Flatfil;
 
-@Component
 @RequiredArgsConstructor
 public class EregConsumer {
     private final JenkinsConsumer jenkinsConsumer;
