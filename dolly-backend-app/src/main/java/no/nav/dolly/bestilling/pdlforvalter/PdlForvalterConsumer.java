@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.pdlforvalter;
 
 import static java.lang.String.format;
-import static java.util.Objects.isNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -98,7 +97,7 @@ public class PdlForvalterConsumer {
 
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_OPPRETT_PERSON +
-                        (isNull(opprettPerson) || opprettPerson.getHistoriskeIdenter().isEmpty() ? "" :
+                        (opprettPerson.getHistoriskeIdenter().isEmpty() ? "" :
                                 PDL_IDENTHISTORIKK_PARAMS + String.join(PDL_IDENTHISTORIKK_PARAMS_2, opprettPerson.getHistoriskeIdenter())),
                 opprettPerson, ident, "opprett person");
     }

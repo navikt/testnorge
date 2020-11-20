@@ -49,6 +49,7 @@ import no.nav.dolly.domain.resultset.tpsf.RsBarnRequest;
 import no.nav.dolly.domain.resultset.tpsf.RsPartnerRequest;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.service.TpsfPersonCache;
@@ -154,7 +155,7 @@ public class PdlForvalterClient implements ClientRegister {
 
         try {
             tpsPerson.getPersondetaljer().forEach(person -> {
-                sendOpprettPerson(person, tpsPerson.getHovedperson());
+                sendOpprettPerson(person, tpsPerson);
                 sendFoedselsmelding(person);
                 sendNavn(person);
                 sendKjoenn(person);
@@ -199,11 +200,14 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void sendOpprettPerson(Person person, String hovedperson) {
+    private void sendOpprettPerson(Person person, TpsPerson tpsPerson) {
 
-        pdlForvalterConsumer.postOpprettPerson(
-                person.getIdent().equals(hovedperson) ?
-                        mapperFacade.map(person, PdlOpprettPerson.class) : null, person.getIdent());
+        if (tpsPerson.getPerson(tpsPerson.getHovedperson()).getIdentHistorikk().stream()
+                .map(IdentHistorikk::getAliasPerson)
+                .noneMatch(histPerson -> histPerson.getIdent().equals(person.getIdent()))) {
+
+            pdlForvalterConsumer.postOpprettPerson(mapperFacade.map(person, PdlOpprettPerson.class), person.getIdent());
+        }
     }
 
     private void sendNavn(Person person) {
