@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,27 +18,27 @@ import java.util.Map;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.domain.AzureClientCredentials;
-import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
 
 @Slf4j
 @Service
-public class OnBehalfOfGenerateAccessTokenService {
+public class AccessTokenService {
     private final WebClient webClient;
     private final AuthenticationTokenResolver tokenResolver;
+    private final AzureClientCredentials clientCredentials;
 
-    public OnBehalfOfGenerateAccessTokenService(
+    public AccessTokenService(
             @Value("${http.proxy:#{null}}") String proxyHost,
             @Value("${AAD_ISSUER_URI}") String issuerUrl,
-            AuthenticationTokenResolver tokenResolver
+            AuthenticationTokenResolver tokenResolver,
+            AzureClientCredentials clientCredentials
     ) {
-
         WebClient.Builder builder = WebClient
                 .builder()
                 .baseUrl(issuerUrl + "/oauth2/v2.0/token")
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
 
         if (proxyHost != null) {
-            log.info("Setter opp proxy host {} for OAuth 2.0 On-Behalf-Of Flow", proxyHost);
+            log.info("Setter opp proxy host {} for Client Credentials", proxyHost);
             var uri = URI.create(proxyHost);
 
             HttpClient httpClient = HttpClient
@@ -54,18 +53,48 @@ public class OnBehalfOfGenerateAccessTokenService {
 
         this.tokenResolver = tokenResolver;
         this.webClient = builder.build();
+        this.clientCredentials = clientCredentials;
     }
 
-    public AccessToken generateToken(AzureClientCredentials clientCredential, AccessScopes accessScopes) {
-        if (tokenResolver.isClientCredentials()) {
-            throw new BadCredentialsException("Kan ikke gjennomfore On Behalf of fra Client Credentials.");
-        }
-        if (accessScopes.getScopes().isEmpty()) {
-            throw new RuntimeException("Kan ikke opprette accessToken uten clients");
-        }
+    public AccessToken generateToken(String clientId) {
+        return generateToken(new AccessScopes("api://" + clientId + "/.default"));
+    }
+
+    public AccessToken generateToken(AccessScopes accessScopes) {
         tokenResolver.verifyAuthentication();
 
+        if (accessScopes.getScopes().isEmpty()) {
+            throw new RuntimeException("Kan ikke opprette accessToken uten scopes (clienter).");
+        }
 
+
+        if (tokenResolver.isClientCredentials()) {
+            return generateClientCredentialAccessToken(accessScopes);
+        }
+
+        return generateOnBehalfOfAccessToken(accessScopes);
+    }
+
+
+    private AccessToken generateClientCredentialAccessToken(AccessScopes accessScopes) {
+        log.trace("Henter OAuth2 access token fra client credential...");
+
+        var body = BodyInserters
+                .fromFormData("scope", String.join(" ", accessScopes.getScopes()))
+                .with("client_id", clientCredentials.getClientId())
+                .with("client_secret", clientCredentials.getClientSecret())
+                .with("grant_type", "client_credentials");
+
+        AccessToken token = webClient.post()
+                .body(body)
+                .retrieve()
+                .bodyToMono(AccessToken.class)
+                .block();
+        log.trace("Access token opprettet for OAuth 2.0 Client Credentials flow.");
+        return token;
+    }
+
+    private AccessToken generateOnBehalfOfAccessToken(AccessScopes accessScopes) {
         String oid = tokenResolver.getOid();
         if (oid != null) {
             Map<String, String> contextMap = MDC.getCopyOfContextMap();
@@ -77,8 +106,8 @@ public class OnBehalfOfGenerateAccessTokenService {
 
         var body = BodyInserters
                 .fromFormData("scope", String.join(" ", accessScopes.getScopes()))
-                .with("client_id", clientCredential.getClientId())
-                .with("client_secret", clientCredential.getClientSecret())
+                .with("client_id", clientCredentials.getClientId())
+                .with("client_secret", clientCredentials.getClientSecret())
                 .with("assertion", token)
                 .with("requested_token_use", "on_behalf_of")
                 .with("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");

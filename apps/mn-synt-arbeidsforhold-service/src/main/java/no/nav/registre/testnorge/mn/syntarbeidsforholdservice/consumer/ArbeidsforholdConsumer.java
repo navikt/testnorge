@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumentetCommand;
 import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumenterCommand;
+import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumentetCommand;
 import no.nav.registre.testnorge.libs.common.command.SaveOppsummeringsdokumenterCommand;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.credentials.ArbeidsforholdApiClientProperties;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Opplysningspliktig;
 
@@ -24,11 +24,11 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Opplysnings
 public class ArbeidsforholdConsumer {
     private final WebClient webClient;
     private final ArbeidsforholdApiClientProperties arbeidsforholdApiClientProperties;
-    private final ClientCredentialGenerateAccessTokenService accessTokenService;
+    private final AccessTokenService accessTokenService;
 
     public ArbeidsforholdConsumer(
             ArbeidsforholdApiClientProperties arbeidsforholdApiClientProperties,
-            ClientCredentialGenerateAccessTokenService accessTokenService,
+            AccessTokenService accessTokenService,
             ObjectMapper objectMapper
     ) {
         this.arbeidsforholdApiClientProperties = arbeidsforholdApiClientProperties;
@@ -49,7 +49,7 @@ public class ArbeidsforholdConsumer {
 
 
     public Optional<Opplysningspliktig> getOpplysningspliktig(String orgnummer, LocalDate kalendermaaned, String miljo) {
-        AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties);
+        AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties.getClientId());
         var dto = new GetOppsummeringsdokumentetCommand(webClient, accessToken.getTokenValue(), orgnummer, kalendermaaned, miljo).call();
         if (dto == null) {
             return Optional.empty();
@@ -59,14 +59,14 @@ public class ArbeidsforholdConsumer {
     }
 
     public List<Opplysningspliktig> getAlleOpplysningspliktig(String miljo) {
-        AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties);
+        AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties.getClientId());
         var list = new GetOppsummeringsdokumenterCommand(webClient, accessToken.getTokenValue(), miljo).call();
 
         return list.stream().map(Opplysningspliktig::new).collect(Collectors.toList());
     }
 
     public void sendOpplysningspliktig(Opplysningspliktig opplysningspliktig, String miljo) {
-        AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties);
+        AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties.getClientId());
         new SaveOppsummeringsdokumenterCommand(webClient, accessToken.getTokenValue(), opplysningspliktig.toDTO(), miljo).run();
     }
 }
