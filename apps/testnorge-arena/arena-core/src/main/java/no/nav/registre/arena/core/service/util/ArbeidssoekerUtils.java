@@ -3,10 +3,15 @@ package no.nav.registre.arena.core.service.util;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.arena.core.consumer.rs.InnsatsArenaForvalterConsumer;
+import no.nav.registre.arena.core.consumer.rs.request.EndreInnsatsbehovRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.service.BrukereService;
+import no.nav.registre.arena.core.service.InnsatsService;
 import no.nav.registre.arena.core.service.exception.ArbeidssoekerException;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import org.springframework.stereotype.Service;
@@ -28,22 +33,36 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ArbeidssoekerUtils {
 
-    private static final Map<String, List<KodeMedSannsynlighet>> aktivitestsfaserMedInnsats;
+    private static final Map<String, List<KodeMedSannsynlighet>> aktivitestsfaserMedInnsatsARBS;
+    private static final Map<String, List<KodeMedSannsynlighet>> aktivitestsfaserMedInnsatsIARBS;
+    private static final Map<String, List<KodeMedSannsynlighet>> aktivitestsfaserMedFormidlingsgruppe;
 
     private final Random rand;
     private final BrukereService brukereService;
     private final ServiceUtils serviceUtils;
+    private final InnsatsService innsatsService;
 
     static {
-        aktivitestsfaserMedInnsats = new HashMap<>();
-        URL resourceInnsatser = Resources.getResource("aktfase_til_innsats.json");
+        aktivitestsfaserMedInnsatsARBS = new HashMap<>();
+        aktivitestsfaserMedInnsatsIARBS = new HashMap<>();
+        aktivitestsfaserMedFormidlingsgruppe = new HashMap<>();
+        URL resourceInnsatserARBS = Resources.getResource("ARBS_aktfase_til_innsats.json");
+        URL resourceInnsatserIARBS = Resources.getResource("IARBS_aktfase_til_innsats.json");
+        URL resourceFormidling = Resources.getResource("aktfase_til_formidling.json");
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            Map<String, List<KodeMedSannsynlighet>> map = objectMapper.readValue(resourceInnsatser, new TypeReference<>() {
+            Map<String, List<KodeMedSannsynlighet>> mapFormidling = objectMapper.readValue(resourceFormidling, new TypeReference<>() {
             });
-            aktivitestsfaserMedInnsats.putAll(map);
+            Map<String, List<KodeMedSannsynlighet>> mapARBS = objectMapper.readValue(resourceInnsatserARBS, new TypeReference<>() {
+            });
+            Map<String, List<KodeMedSannsynlighet>> mapIARBS = objectMapper.readValue(resourceInnsatserIARBS, new TypeReference<>() {
+            });
+
+            aktivitestsfaserMedFormidlingsgruppe.putAll(mapFormidling);
+            aktivitestsfaserMedInnsatsARBS.putAll(mapARBS);
+            aktivitestsfaserMedInnsatsIARBS.putAll(mapIARBS);
         } catch (IOException e) {
-            log.error("Kunne ikke laste inn innsatskoder.", e);
+            log.error("Kunne ikke laste inn aktivitetsfase fordelinger.", e);
         }
     }
 
@@ -55,6 +74,7 @@ public class ArbeidssoekerUtils {
     }
 
     public List<RettighetRequest> opprettArbeidssoekerAap(
+            String personident,
             List<RettighetRequest> rettigheter,
             String miljoe,
             String aktivitetsfase
@@ -62,7 +82,13 @@ public class ArbeidssoekerUtils {
         if (aktivitetsfase == null || aktivitetsfase.isBlank()) {
             return opprettArbeidssoeker(rettigheter, miljoe, Kvalifiseringsgrupper.BATT);
         } else {
-            return opprettArbeidssoeker(rettigheter, miljoe, velgKvalifiseringsgruppeBasertPaaAktivitetsfase(aktivitetsfase));
+            var formidlingsgruppe = velgFormidlingsgruppeBasertPaaAktivitetsfase(aktivitetsfase);
+            var kvalifiseringsgruppe = velgKvalifiseringsgruppeBasertPaaFormidlingsgruppe(aktivitetsfase, formidlingsgruppe);
+            var response = opprettArbeidssoeker(rettigheter, miljoe, kvalifiseringsgruppe);
+            if (formidlingsgruppe.equals("IARBS") && !response.isEmpty()) {
+                innsatsService.endreTilFormidlingsgruppeIarbs(personident, miljoe, kvalifiseringsgruppe);
+            }
+            return response;
         }
     }
 
@@ -123,7 +149,25 @@ public class ArbeidssoekerUtils {
         }
     }
 
-    private Kvalifiseringsgrupper velgKvalifiseringsgruppeBasertPaaAktivitetsfase(String aktivitetsfase) {
+    private Kvalifiseringsgrupper velgKvalifiseringsgruppeBasertPaaFormidlingsgruppe(String aktivitetsfase, String formidlingsgruppe) {
+        if (formidlingsgruppe.equals("IARBS")) {
+            return velgKvalifiseringsgruppeBasertPaaAktivitetsfase(aktivitetsfase, aktivitestsfaserMedInnsatsIARBS);
+        } else {
+            return velgKvalifiseringsgruppeBasertPaaAktivitetsfase(aktivitetsfase, aktivitestsfaserMedInnsatsARBS);
+        }
+    }
+
+    private String velgFormidlingsgruppeBasertPaaAktivitetsfase(String aktivitetsfase) {
+        if (aktivitestsfaserMedFormidlingsgruppe.containsKey(aktivitetsfase)) {
+            return serviceUtils.velgKodeBasertPaaSannsynlighet(aktivitestsfaserMedFormidlingsgruppe.get(aktivitetsfase)).getKode();
+        } else {
+            throw new ArbeidssoekerException("Ukjent aktivitetsfase " + aktivitetsfase);
+        }
+    }
+
+    private Kvalifiseringsgrupper velgKvalifiseringsgruppeBasertPaaAktivitetsfase(
+            String aktivitetsfase,
+            Map<String, List<KodeMedSannsynlighet>> aktivitestsfaserMedInnsats) {
         if (aktivitestsfaserMedInnsats.containsKey(aktivitetsfase)) {
             var innsats = serviceUtils.velgKodeBasertPaaSannsynlighet(aktivitestsfaserMedInnsats.get(aktivitetsfase)).getKode();
             return Kvalifiseringsgrupper.valueOf(innsats);

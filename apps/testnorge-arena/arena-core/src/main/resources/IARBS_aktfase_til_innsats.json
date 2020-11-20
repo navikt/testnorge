@@ -2,19 +2,19 @@
   "AU": [
     {
       "kode": "BATT",
-      "sannsynlighet": 1533
+      "sannsynlighet": 1116
     },
     {
       "kode": "BFORM",
-      "sannsynlighet": 2
+      "sannsynlighet": 1
     },
     {
       "kode": "IKVAL",
-      "sannsynlighet": 3
+      "sannsynlighet": 2
     },
     {
       "kode": "OPPFI",
-      "sannsynlighet": 2
+      "sannsynlighet": 1
     },
     {
       "kode": "VARIG",
@@ -28,15 +28,15 @@
   "FA": [
     {
       "kode": "BATT",
-      "sannsynlighet": 96
+      "sannsynlighet": 13
     },
     {
       "kode": "BFORM",
-      "sannsynlighet": 860
+      "sannsynlighet": 107
     },
     {
       "kode": "IKVAL",
-      "sannsynlighet": 454
+      "sannsynlighet": 35
     },
     {
       "kode": "VARIG",
@@ -46,23 +46,15 @@
   "SPE": [
     {
       "kode": "BATT",
-      "sannsynlighet": 149
+      "sannsynlighet": 93
     },
     {
       "kode": "BFORM",
-      "sannsynlighet": 36
-    },
-    {
-      "kode": "BKART",
-      "sannsynlighet": 45
+      "sannsynlighet":  22
     },
     {
       "kode": "IKVAL",
-      "sannsynlighet": 33
-    },
-    {
-      "kode": "IVURD",
-      "sannsynlighet": 6
+      "sannsynlighet": 11
     },
     {
       "kode": "OPPFI",
@@ -84,27 +76,23 @@
   "UA": [
     {
       "kode": "BATT",
-      "sannsynlighet": 482626
+      "sannsynlighet": 41878
     },
     {
       "kode": "BFORM",
-      "sannsynlighet": 144
+      "sannsynlighet": 35
     },
     {
       "kode": "BKART",
-      "sannsynlighet": 104
+      "sannsynlighet": 3
     },
     {
       "kode": "IKVAL",
-      "sannsynlighet": 85
-    },
-    {
-      "kode": "IVURD",
-      "sannsynlighet": 7
+      "sannsynlighet": 22
     },
     {
       "kode": "OPPFI",
-      "sannsynlighet": 54
+      "sannsynlighet": 52
     },
     {
       "kode": "VARIG",
@@ -112,7 +100,7 @@
     },
     {
       "kode": "VURDI",
-      "sannsynlighet": 69
+      "sannsynlighet": 66
     },
     {
       "kode": "VURDU",
@@ -122,19 +110,11 @@
   "UVUP": [
     {
       "kode": "BATT",
-      "sannsynlighet": 26
-    },
-    {
-      "kode": "BFORM",
-      "sannsynlighet": 1
+      "sannsynlighet": 22
     },
     {
       "kode": "BKART",
-      "sannsynlighet": 7
-    },
-    {
-      "kode": "IKVAL",
-      "sannsynlighet": 1
+      "sannsynlighet": 6
     },
     {
       "kode": "IVURD",
