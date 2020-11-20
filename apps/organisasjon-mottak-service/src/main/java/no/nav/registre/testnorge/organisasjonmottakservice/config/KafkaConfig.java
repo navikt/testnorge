@@ -22,8 +22,7 @@ import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 
-@EnableKafka
-@Configuration
+
 @Profile("prod")
 public class KafkaConfig {
 
