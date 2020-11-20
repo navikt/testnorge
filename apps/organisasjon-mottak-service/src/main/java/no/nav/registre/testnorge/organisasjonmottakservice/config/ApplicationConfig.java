@@ -8,8 +8,7 @@ import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
 
 @Configuration
 @Import({
-        ApplicationCoreConfig.class,
-        DependencyAnalysisAutoConfiguration.class
+        ApplicationCoreConfig.class
 })
 public class ApplicationConfig {
 }
