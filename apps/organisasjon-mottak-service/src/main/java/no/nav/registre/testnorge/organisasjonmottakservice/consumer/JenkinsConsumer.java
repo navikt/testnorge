@@ -30,8 +30,8 @@ public class JenkinsConsumer {
             Environment env,
             @Value("${http.proxy:#{null}}") String proxyHost,
             @Value("${jenkins.rest.api.url}") String jenkinsUri,
-            @Value("${jenkins.password}") String jenkinsPassword,
-            @Value("${jenkins.username}") String jenkinsUsername
+            @Value("${jenkins.username}") String jenkinsUsername,
+            @Value("${jenkins.password}") String jenkinsPassword
     ) {
         WebClient.Builder builder = WebClient
                 .builder()
