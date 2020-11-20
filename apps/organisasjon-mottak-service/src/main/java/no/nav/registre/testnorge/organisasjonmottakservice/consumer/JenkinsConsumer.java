@@ -20,6 +20,7 @@ import no.nav.registre.testnorge.organisasjonmottakservice.consumer.request.Jenk
 import no.nav.registre.testnorge.organisasjonmottakservice.domain.Flatfil;
 
 @Slf4j
+@Component
 @DependencyOn(value = "jenkins", external = true)
 public class JenkinsConsumer {
     private final Environment env;
@@ -29,8 +30,8 @@ public class JenkinsConsumer {
             Environment env,
             @Value("${http.proxy:#{null}}") String proxyHost,
             @Value("${jenkins.rest.api.url}") String jenkinsUri,
-            @Value("${JENKINS_USERNAME}") String jenkinsUsername,
-            @Value("${JENKINS_PASSWORD}") String jenkinsPassword
+            @Value("${jenkins.username}") String jenkinsUsername,
+            @Value("${jenkins.password}") String jenkinsPassword
     ) {
         WebClient.Builder builder = WebClient
                 .builder()
