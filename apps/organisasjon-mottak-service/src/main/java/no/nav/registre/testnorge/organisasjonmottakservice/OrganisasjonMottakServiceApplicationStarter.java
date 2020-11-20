@@ -8,11 +8,6 @@ import no.nav.registre.testnorge.libs.core.util.VaultUtil;
 @SpringBootApplication
 public class OrganisasjonMottakServiceApplicationStarter {
     public static void main(String[] args) {
-
-        if ("prod".equals(System.getProperty("spring.profiles.active"))) {
-            VaultUtil.initCloudVaultToken();
-        }
-
         SpringApplication.run(OrganisasjonMottakServiceApplicationStarter.class, args);
     }
 }
