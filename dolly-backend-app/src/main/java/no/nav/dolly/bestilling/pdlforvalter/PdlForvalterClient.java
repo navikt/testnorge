@@ -154,7 +154,7 @@ public class PdlForvalterClient implements ClientRegister {
 
         try {
             tpsPerson.getPersondetaljer().forEach(person -> {
-                sendOpprettPerson(person);
+                sendOpprettPerson(person, tpsPerson.getHovedperson());
                 sendFoedselsmelding(person);
                 sendNavn(person);
                 sendKjoenn(person);
@@ -199,9 +199,11 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void sendOpprettPerson(Person person) {
+    private void sendOpprettPerson(Person person, String hovedperson) {
 
-        pdlForvalterConsumer.postOpprettPerson(mapperFacade.map(person, PdlOpprettPerson.class), person.getIdent());
+        pdlForvalterConsumer.postOpprettPerson(
+                person.getIdent().equals(hovedperson) ?
+                        mapperFacade.map(person, PdlOpprettPerson.class) : null, person.getIdent());
     }
 
     private void sendNavn(Person person) {
@@ -314,13 +316,13 @@ public class PdlForvalterClient implements ClientRegister {
     private void sendInnflytting(Person person) {
 
         mapperFacade.map(person, PdlInnflyttingHistorikk.class).getInnflyttinger().forEach(innflytting ->
-            pdlForvalterConsumer.postInnflytting(innflytting, person.getIdent()));
+                pdlForvalterConsumer.postInnflytting(innflytting, person.getIdent()));
     }
 
     private void sendUtflytting(Person person) {
 
         mapperFacade.map(person, PdlUtflyttingHistorikk.class).getUtflyttinger().forEach(utflytting ->
-            pdlForvalterConsumer.postUtflytting(utflytting, person.getIdent()));
+                pdlForvalterConsumer.postUtflytting(utflytting, person.getIdent()));
     }
 
     private void sendVergemaal(Person person) {
