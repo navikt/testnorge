@@ -13,6 +13,7 @@ import no.nav.registre.testnorge.libs.avro.organiasjon.Organiasjon;
 import no.nav.registre.testnorge.organisasjonmottakservice.service.OrganiasjonService;
 
 @Slf4j
+@Component
 @Profile("prod")
 @RequiredArgsConstructor
 public class OrganaisjonMottakListener {
