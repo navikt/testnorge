@@ -12,6 +12,10 @@ spec:
   azure:
     application:
       enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: mn-synt-arbeidsforhold-service
   liveness:
     path: /internal/isAlive
     initialDelay: 4

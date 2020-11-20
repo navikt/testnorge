@@ -2,7 +2,6 @@ name: Deploy mn-organisasjon-api
 
 on:
   push:
-    branches: master
     paths:
       - apps/mn-organisasjon-api/**
       - libs/testnorge-core/**
