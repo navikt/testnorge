@@ -17,7 +17,7 @@ public class OrganiasjonService {
         this.flatfilService = flatfilService;
 
         log.info("############################################");
-        log.info("{}", String.join(",", System.getProperties().keySet().stream().map(Object::toString).collect(Collectors.toSet())));
+        log.info("{}", String.join("\n", System.getProperties().keySet().stream().map(Object::toString).collect(Collectors.toSet())));
         log.info("############################################");
     }
 
