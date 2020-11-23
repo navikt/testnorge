@@ -21,17 +21,17 @@ spec:
   prometheus:
     path: /metrics
   replicas:
-    min: 1
-    max: 4
+    min: 3
+    max: 5
   vault:
     enabled: true
   resources:
     requests:
       cpu: 200m
-      memory: 10000Mi
+      memory: 30000Mi
     limits:
       cpu: 500m
-      memory: 15000Mi
+      memory: 31000Mi
   ingresses:
     - "https://nais-synthdata-amelding.nais.preprod.local"
     - "https://nais-synthdata-amelding.dev.adeo.no"
