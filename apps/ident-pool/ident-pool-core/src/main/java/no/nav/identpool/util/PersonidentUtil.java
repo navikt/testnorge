@@ -10,10 +10,12 @@ import static org.springframework.util.Assert.notNull;
 import java.time.LocalDate;
 import java.util.List;
 
+import lombok.experimental.UtilityClass;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
 import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
 
+@UtilityClass
 public final class PersonidentUtil {
 
     private static final int[] CONTROL_DIGIT_C1 = { 3, 7, 6, 1, 8, 9, 4, 5, 2 };
@@ -23,9 +25,6 @@ public final class PersonidentUtil {
     private static final int GENDER_POS = 8;
     private static final int C1_POS = 9;
     private static final int C2_POS = 10;
-
-    private PersonidentUtil() {
-    }
 
     public static void validate(String ident) {
         notNull(ident, "Personidentifikator kan ikke være null");
