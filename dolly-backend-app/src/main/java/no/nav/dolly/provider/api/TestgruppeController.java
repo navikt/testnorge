@@ -3,7 +3,7 @@ package no.nav.dolly.provider.api;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
-import java.util.Set;
+import java.util.List;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
@@ -94,9 +94,16 @@ public class TestgruppeController {
     @Cacheable(CACHE_GRUPPE)
     @GetMapping
     @Operation(description = "Hent testgrupper")
-    public Set<RsTestgruppe> getTestgrupper(
+    public List<RsTestgruppe> getTestgrupper(
             @RequestParam(name = "brukerId", required = false) String brukerId) {
-        return mapperFacade.mapAsSet(testgruppeService.getTestgruppeByBrukerId(brukerId), RsTestgruppe.class);
+        return mapperFacade.mapAsList(testgruppeService.getTestgruppeByBrukerId(brukerId), RsTestgruppe.class);
+    }
+
+    @Cacheable(CACHE_GRUPPE)
+    @GetMapping("/page/{pageNo}")
+    @Operation(description = "Hent testgrupper")
+    public List<RsTestgruppe> getTestgrupper(@PathVariable(value = "pageNo") Integer pageNo) {
+        return mapperFacade.mapAsList(testgruppeService.getAllTestgrupper(pageNo).getContent(), RsTestgruppe.class);
     }
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)

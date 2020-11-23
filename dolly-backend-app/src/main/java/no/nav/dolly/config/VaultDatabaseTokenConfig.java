@@ -1,6 +1,7 @@
 package no.nav.dolly.config;
 
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.flyway.FlywayConfigurationCustomizer;
@@ -40,8 +41,11 @@ class VaultDatabaseTokenConfig implements InitializingBean {
 
                 hikariDataSource.setUsername(username);
                 hikariDataSource.setPassword(password);
-                hikariDataSource.getHikariConfigMXBean().setUsername(username);
-                hikariDataSource.getHikariConfigMXBean().setPassword(password);
+                if (nonNull(hikariDataSource.getHikariPoolMXBean())) {
+                    hikariDataSource.getHikariPoolMXBean().softEvictConnections();
+                } else {
+                    log.info("hikariDataSource.getHikariPoolMXBean() == null -> softEvictConnections ikke utført");
+                }
             }
         });
 
