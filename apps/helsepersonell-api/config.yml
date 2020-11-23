@@ -17,6 +17,7 @@ spec:
       rules:
         - application: dolly-backend-dev
         - application: dolly-backend
+        - application: testnorge-synt-sykemelding-api
   liveness:
     path: /internal/isAlive
     initialDelay: 4
