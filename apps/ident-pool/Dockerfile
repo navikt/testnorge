@@ -1,4 +1,4 @@
 FROM navikt/java:11
-LABEL maintainer="Team Registre"
+LABEL maintainer="Team Dolly"
 
-ADD build/libs/app.jar /app/app.jar
+ADD apps/ident-pool/ident-pool-app/build/libs/ident-pool-app.jar /app/app.jar
