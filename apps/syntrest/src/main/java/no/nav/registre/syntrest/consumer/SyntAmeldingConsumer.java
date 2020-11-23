@@ -24,7 +24,6 @@ public class SyntAmeldingConsumer extends SyntConsumer {
 
     public Arbeidsforhold synthesizeArbeidsforhold(Arbeidsforhold tidligereArbeidsforhold, String syntAmeldingUrlPath) {
         try {
-            log.info("Starting synth package {}...", this.appName);
             applicationManager.startApplication(this);
         } catch (ApiException | InterruptedException e) {
             log.error("Could not start synth package {}: {}", this.appName, e.getMessage());
@@ -44,7 +43,6 @@ public class SyntAmeldingConsumer extends SyntConsumer {
     public List<Arbeidsforhold> synthesizeArbeidsforholdStart(List<String> datoer, String url) {
 
         try {
-            log.info("Starting synth package {}...", this.appName);
             applicationManager.startApplication(this);
         } catch (ApiException | InterruptedException e) {
             log.error("Could not start synth package {}: {}", this.appName, e.getMessage());
