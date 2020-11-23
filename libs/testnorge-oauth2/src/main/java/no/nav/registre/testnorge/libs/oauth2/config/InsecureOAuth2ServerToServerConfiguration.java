@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Import;
 
 import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
 import no.nav.registre.testnorge.libs.oauth2.service.InsecureAuthenticationTokenResolver;
-import no.nav.registre.testnorge.libs.oauth2.service.OnBehalfOfGenerateAccessTokenService;
 
 
 /**

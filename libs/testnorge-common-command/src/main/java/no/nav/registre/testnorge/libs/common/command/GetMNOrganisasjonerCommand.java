@@ -30,7 +30,7 @@ public class GetMNOrganisasjonerCommand implements Callable<List<OrganisasjonDTO
             OrganisasjonDTO[] array = webClient
                     .get()
                     .uri(builder -> builder
-                            .path("/api/v1/organisasjoner/")
+                            .path("/api/v1/organisasjoner")
                             .build()
                     )
                     .header("miljo", miljo)

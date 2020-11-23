@@ -11,15 +11,15 @@ import java.util.Set;
 
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import no.nav.registre.testnorge.oversiktfrontend.config.ApplicationsProperties;
-import no.nav.registre.testnorge.oversiktfrontend.security.OnBehalfOfGenerateAccessTokenService;
 
 @RestController
 @RequestMapping("/api/v1/applications")
 @RequiredArgsConstructor
 public class ApplicationsController {
     private final ApplicationsProperties properties;
-    private final OnBehalfOfGenerateAccessTokenService accessTokenService;
+    private final AccessTokenService accessTokenService;
 
     @GetMapping
     public ResponseEntity<Set<String>> getApplications() {

@@ -53,7 +53,7 @@ public class ClientCredentialGenerateAccessTokenService {
         this.webClient = builder.build();
     }
 
-
+    @Deprecated
     public AccessToken generateToken(ClientCredential remoteClientCredential) {
         return generateToken(remoteClientCredential, new AccessScopes("api://" + remoteClientCredential.getClientId() + "/.default"));
     }
@@ -85,6 +85,11 @@ public class ClientCredentialGenerateAccessTokenService {
                 .block();
         log.trace("OAuth2 access token hentet.");
         return token;
+    }
+
+
+    public AccessToken generateToken(AzureClientCredentials clientCredentials,  String clientId) {
+        return generateToken(clientCredentials, new AccessScopes("api://" + clientId + "/.default"));
     }
 
     public AccessToken generateToken(AzureClientCredentials clientCredentials, AccessScopes accessScopes) {

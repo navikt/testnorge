@@ -9,8 +9,8 @@ public class AzureClientCredentials {
     private final String clientSecret;
 
     public AzureClientCredentials(
-            @Value("${CLIENT_ID}") String clientId,
-            @Value("${CLIENT_SECRET:#{null}}") String clientSecret
+            @Value("${azure.app.client.id}") String clientId,
+            @Value("${azure.app.client.secret:#{null}}") String clientSecret
     ) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
