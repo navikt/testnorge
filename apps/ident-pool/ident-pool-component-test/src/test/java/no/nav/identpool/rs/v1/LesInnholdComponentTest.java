@@ -53,7 +53,7 @@ class LesInnholdComponentTest extends ComponentTestbase {
         assertThat(ident.getIdenttype(), is(IDENTTYPE));
         assertThat(ident.getKjoenn(), is(Kjoenn.MANN));
         assertThat(ident.getRekvireringsstatus(), is(REKVIRERINGSSTATUS));
-        assertThat(ident.finnesHosSkatt(), is(FINNES_HOS_SKATT));
+        assertThat(ident.isFinnesHosSkatt(), is(FINNES_HOS_SKATT));
         assertThat(ident.getFoedselsdato(), is(FOEDSELSDATO));
         assertThat(ident.getRekvirertAv(), is(REKVIRERT_AV));
     }

@@ -75,7 +75,7 @@ class FinnesHosSkattComponentTest extends ComponentTestbase {
     private void assertOK(ResponseEntity<ApiResponse> apiResponseResponseEntity, String dnr) {
         assertThat(apiResponseResponseEntity.getStatusCode(), is(HttpStatus.OK));
 
-        assertTrue(identRepository.findTopByPersonidentifikator(dnr).finnesHosSkatt());
+        assertTrue(identRepository.findTopByPersonidentifikator(dnr).isFinnesHosSkatt());
         assertThat(identRepository.findTopByPersonidentifikator(dnr).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
     }
 }
