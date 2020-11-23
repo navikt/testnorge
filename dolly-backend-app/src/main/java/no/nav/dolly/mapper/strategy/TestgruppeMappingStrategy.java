@@ -3,6 +3,7 @@ package no.nav.dolly.mapper.strategy;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import org.springframework.stereotype.Component;
 
@@ -36,6 +37,10 @@ public class TestgruppeMappingStrategy implements MappingStrategy {
 
     private static String getBrukerId(Bruker bruker) {
 
-        return nonNull(bruker.getBrukerId()) ? bruker.getBrukerId() : bruker.getEidAv().getBrukerId();
+        if (isNotBlank(bruker.getBrukerId())){
+            return bruker.getBrukerId();
+        } else {
+            return nonNull(bruker.getEidAv()) ? bruker.getEidAv().getBrukerId() : bruker.getNavIdent();
+        }
     }
 }
