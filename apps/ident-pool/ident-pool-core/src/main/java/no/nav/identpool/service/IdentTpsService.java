@@ -1,5 +1,6 @@
 package no.nav.identpool.service;
 
+import static java.util.Collections.emptySet;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
@@ -106,7 +107,7 @@ public class IdentTpsService {
             log.error("Fikk response: {} fra TPS i miljø {}", response, env, env);
             throw new HttpServerErrorException(INTERNAL_SERVER_ERROR, "Teknisk feil se logg!");
         }
-        return null;
+        return emptySet();
     }
 
     private void initMq(String environment) throws JMSException {

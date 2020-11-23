@@ -38,15 +38,8 @@ public final class PersonidentUtil {
     }
 
     public static void validateMultiple(List<String> identer) {
-        for (String ident : identer) {
-            notNull(ident, "Personidentifikator kan ikke være null");
 
-            if (ident.matches("\\d{11}")) {
-                validateControlDigits(ident);
-            } else {
-                throw new UgyldigPersonidentifikatorException(String.format("%s inneholder ikke nok sifre", ident));
-            }
-        }
+        identer.forEach(PersonidentUtil::validate);
     }
 
     public static Identtype getIdentType(String ident) {
