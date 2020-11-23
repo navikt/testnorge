@@ -1,6 +1,5 @@
 package no.nav.registre.arena.core.consumer.rs.response;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +18,9 @@ import java.util.List;
 @Builder
 public class EndreInnsatsbehovResponse {
 
+    @JsonProperty("nyeEndreInnsatsbehov")
     private List<NyEndreInnsatsbehov> nyeEndreInnsatsbehov;
 
+    @JsonProperty("nyeEndreInnsatsbehovFeilList")
     private List<NyEndreInnsatsbehovFeil> nyeEndreInnsatsbehovFeilList;
 }
