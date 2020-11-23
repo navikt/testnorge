@@ -4,6 +4,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import static no.nav.identpool.domain.Rekvireringsstatus.I_BRUK;
 import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
 import static no.nav.identpool.util.PersonidentUtil.getIdentType;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 import java.security.SecureRandom;
 import java.time.LocalDate;
@@ -19,6 +20,7 @@ import java.util.stream.StreamSupport;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +53,7 @@ public class IdentpoolService {
     private final IdentGeneratorService identGeneratorService;
     private final WhitelistRepository whitelistRepository;
 
-    public List<String> rekvirerNaermesteLedigDato(HentIdenterRequest request) throws ForFaaLedigeIdenterException {
+    public List<String> rekvirerNaermesteLedigDato(HentIdenterRequest request) {
         LocalDate foedtEtter = request.getFoedtEtter();
         LocalDate foedtFoer = request.getFoedtFoer();
 
@@ -75,7 +77,7 @@ public class IdentpoolService {
         return new ArrayList<>();
     }
 
-    public List<String> rekvirer(HentIdenterRequest request) throws ForFaaLedigeIdenterException {
+    public List<String> rekvirer(HentIdenterRequest request) {
         Set<Ident> identEntities = hentLedigeIdenterFraDatabase(request);
 
         List<String> identList = identEntities.stream()
@@ -129,7 +131,7 @@ public class IdentpoolService {
         } else {
             List<TpsStatus> tpsStatus = new ArrayList<>(identTpsService.checkIdentsInTps(Collections.singletonList(personidentifikator), miljoer));
             if (tpsStatus.size() != 1) {
-                throw new RuntimeException("Fikk ikke riktig antall statuser tilbake på metodekall til checkIdentsInTps");
+                throw new HttpServerErrorException(INTERNAL_SERVER_ERROR, "Fikk ikke riktig antall statuser tilbake på metodekall til checkIdentsInTps");
             }
             TpsStatus identStatus = tpsStatus.get(0);
 
@@ -137,7 +139,7 @@ public class IdentpoolService {
         }
     }
 
-    public void markerBrukt(MarkerBruktRequest markerBruktRequest) throws IdentAlleredeIBrukException {
+    public void markerBrukt(MarkerBruktRequest markerBruktRequest) {
         Ident ident = identRepository.findTopByPersonidentifikator(markerBruktRequest.getPersonidentifikator());
         if (ident == null) {
             String personidentifikator = markerBruktRequest.getPersonidentifikator();
@@ -216,7 +218,7 @@ public class IdentpoolService {
             if (ident != null) {
                 if (LEDIG.equals(ident.getRekvireringsstatus())) {
                     ledigeIdenter.add(id);
-                } else if (!ident.finnesHosSkatt() && rekvirertAv.equals(ident.getRekvirertAv())) {
+                } else if (!ident.isFinnesHosSkatt() && rekvirertAv.equals(ident.getRekvirertAv())) {
                     fnrMedIdent.put(id, ident);
                     identerSomSkalSjekkes.add(id);
                 }
@@ -236,7 +238,7 @@ public class IdentpoolService {
             if (ident != null) {
                 if (LEDIG.equals(ident.getRekvireringsstatus())) {
                     ledigeIdenter.add(id);
-                } else if (!ident.finnesHosSkatt()) {
+                } else if (!ident.isFinnesHosSkatt()) {
                     fnrMedIdent.put(id, ident);
                     identerSomSkalSjekkes.add(id);
                 }

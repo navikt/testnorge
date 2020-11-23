@@ -1,15 +1,8 @@
 package no.nav.identpool.mq.consumer;
 
-import no.nav.identpool.test.mockito.MockitoExtension;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-
 import static org.hamcrest.CoreMatchers.is;
-
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -26,6 +19,13 @@ import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TemporaryQueue;
 import javax.jms.TextMessage;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+
+import no.nav.identpool.test.mockito.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class DefaultMessageQueueTest {
@@ -74,8 +74,8 @@ class DefaultMessageQueueTest {
 
     @Test
     @DisplayName("Ping skal ikke kaste exception")
-    void ping() throws JMSException {
-        messageQueue.ping();
+    void ping() {
+        assertDoesNotThrow(() -> messageQueue.ping());
     }
 
     @Test

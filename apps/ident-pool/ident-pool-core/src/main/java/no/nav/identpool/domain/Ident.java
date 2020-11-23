@@ -11,15 +11,13 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import org.hibernate.annotations.Type;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
 
 @Data
 @Entity
@@ -49,9 +47,8 @@ public class Ident {
     @Enumerated(EnumType.STRING)
     private Rekvireringsstatus rekvireringsstatus;
 
-    @Getter(AccessLevel.NONE)
     @NotNull
-    @Type(type="true_false")
+    @Type(type = "true_false")
     @Column(name = "FINNES_HOS_SKATT")
     private boolean finnesHosSkatt;
 
@@ -66,10 +63,4 @@ public class Ident {
 
     @Column(name = "REKVIRERT_AV")
     private String rekvirertAv;
-
-
-    //Override for prettier method name
-    public Boolean finnesHosSkatt() {
-        return this.finnesHosSkatt;
-    }
 }

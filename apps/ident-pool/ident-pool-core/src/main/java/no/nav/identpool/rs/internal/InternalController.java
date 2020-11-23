@@ -10,9 +10,11 @@ public class InternalController {
 
     @GetMapping("/isAlive")
     public void isAlive() {
+        // Do nothing
     }
 
     @GetMapping("/isReady")
     public void isReady() {
+        // Do nothing
     }
 }

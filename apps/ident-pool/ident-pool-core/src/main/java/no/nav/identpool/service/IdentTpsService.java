@@ -1,5 +1,8 @@
 package no.nav.identpool.service;
 
+import static org.apache.logging.log4j.util.Strings.isNotBlank;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+
 import java.io.StringReader;
 import java.util.HashSet;
 import java.util.List;
@@ -10,6 +13,7 @@ import javax.xml.bind.DataBindingException;
 import javax.xml.bind.JAXB;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.client.HttpServerErrorException;
 import com.google.common.collect.Lists;
 
 import io.micrometer.core.annotation.Timed;
@@ -50,11 +54,14 @@ public class IdentTpsService {
 
             Set<String> usedIdents = checkInEnvironment(env, notFoundInEnv);
 
-            identSet = identSet.stream().peek(status -> {
-                if (usedIdents.contains(status.getIdent())) {
-                    status.setInUse(true);
-                }
-            }).collect(Collectors.toSet());
+            identSet = identSet.stream()
+                    .map(status -> {
+                        if (usedIdents.contains(status.getIdent())) {
+                            status.setInUse(true);
+                        }
+                        return status;
+                    })
+                    .collect(Collectors.toSet());
         }
 
         return identSet;
@@ -73,25 +80,33 @@ public class IdentTpsService {
             initMq(env);
             for (List<String> list : Lists.partition(nonExisting, MAX_SIZE_TPS_QUEUE)) {
                 String response = messageQueue.sendMessage(new NavnOpplysning(list).toXml());
-                try {
-                    if (response == null || "".equals(response)) {
-                        log.warn("Fikk tom response fra TPS i miljø {}", env);
-                        return usedIdents;
-                    }
-                    TpsPersonData data = JAXB.unmarshal(new StringReader(response), TpsPersonData.class);
-                    if (data.getTpsSvar().getIngenReturData() == null) {
-                        usedIdents.addAll(findUsedIdents(data));
-                    }
-                } catch (DataBindingException ex) {
-                    log.info("Fikk response: {} fra TPS i miljø {}", response, env);
-                    throw new RuntimeException(ex);
-                }
+                Set<String> usedIdents1 = getResponse(env, usedIdents, response);
+                if (usedIdents1 != null)
+                    return usedIdents1;
             }
         } catch (JMSException e) {
-            throw new RuntimeException(e);
+            log.error("Feilet å sjekke identer mot TPS {}", e.getMessage(), e);
+            throw new HttpServerErrorException(INTERNAL_SERVER_ERROR, "Teknisk feil se logg!");
         }
 
         return usedIdents;
+    }
+
+    private Set<String> getResponse(String env, Set<String> usedIdents, String response) {
+        try {
+            if (isNotBlank(response)) {
+                log.warn("Fikk tom response fra TPS i miljø {}", env);
+                return usedIdents;
+            }
+            TpsPersonData data = JAXB.unmarshal(new StringReader(response), TpsPersonData.class);
+            if (data.getTpsSvar().getIngenReturData() == null) {
+                usedIdents.addAll(findUsedIdents(data));
+            }
+        } catch (DataBindingException ex) {
+            log.error("Fikk response: {} fra TPS i miljø {}", response, env, env);
+            throw new HttpServerErrorException(INTERNAL_SERVER_ERROR, "Teknisk feil se logg!");
+        }
+        return null;
     }
 
     private void initMq(String environment) throws JMSException {

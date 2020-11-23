@@ -27,7 +27,7 @@ public final class PersonidentUtil {
     private PersonidentUtil() {
     }
 
-    public static void validate(String ident) throws UgyldigPersonidentifikatorException {
+    public static void validate(String ident) {
         notNull(ident, "Personidentifikator kan ikke være null");
 
         if (ident.matches("\\d{11}")) {
@@ -37,7 +37,7 @@ public final class PersonidentUtil {
         }
     }
 
-    public static void validateMultiple(List<String> identer) throws UgyldigPersonidentifikatorException {
+    public static void validateMultiple(List<String> identer) {
         for (String ident : identer) {
             notNull(ident, "Personidentifikator kan ikke være null");
 
@@ -121,7 +121,7 @@ public final class PersonidentUtil {
         return (getNumericValue(fnr.charAt(GENDER_POS)) % 2 == 0) ? Kjoenn.KVINNE : Kjoenn.MANN;
     }
 
-    private static void validateControlDigits(String ident) throws UgyldigPersonidentifikatorException {
+    private static void validateControlDigits(String ident) {
         int c1 = getNumericValue(ident.charAt(C1_POS));
         int c2 = getNumericValue(ident.charAt(C2_POS));
         int calcC1 = calculateControlDigit(ident, CONTROL_DIGIT_C1);

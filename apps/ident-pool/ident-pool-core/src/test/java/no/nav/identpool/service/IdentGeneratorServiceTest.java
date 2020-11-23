@@ -2,19 +2,21 @@ package no.nav.identpool.service;
 
 import static java.lang.Character.getNumericValue;
 import static java.lang.Integer.parseInt;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import com.google.common.collect.Ordering;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import com.google.common.collect.Ordering;
 
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
@@ -57,8 +59,8 @@ class IdentGeneratorServiceTest {
         // This test will stop working 1. Jan 2040 :(
         LocalDate localDate = LocalDate.now();
         Map<LocalDate, List<String>> pinMap = identGeneratorService.genererIdenterMap(localDate, localDate.plusDays(1), Identtype.FNR);
-        assertEquals(1, pinMap.size());
-        assertTrue(Ordering.natural().reverse().isOrdered(pinMap.get(localDate)));
+        assertThat(pinMap.size(), is(equalTo(1)));
+        assertThat(Ordering.natural().reverse().isOrdered(pinMap.get(localDate)), is(true));
     }
 
     @Test
@@ -67,9 +69,9 @@ class IdentGeneratorServiceTest {
         List<String> menn = generateIdents(Identtype.FNR, Kjoenn.MANN);
         List<String> kvinner = generateIdents(Identtype.FNR, Kjoenn.KVINNE);
 
-        assertEquals(menn.size(), GENERATE_SIZE);
+        assertThat(menn.size(), is(equalTo(GENERATE_SIZE)));
         menn.forEach(fnr -> assertFnrValues(fnr, Kjoenn.MANN, LOCAL_DATE));
-        assertEquals(kvinner.size(), GENERATE_SIZE);
+        assertThat(kvinner.size(), is(equalTo(GENERATE_SIZE)));
         kvinner.forEach(fnr -> assertFnrValues(fnr, Kjoenn.KVINNE, LOCAL_DATE));
     }
 
@@ -79,9 +81,9 @@ class IdentGeneratorServiceTest {
         List<String> menn = generateIdents(Identtype.DNR, Kjoenn.MANN);
         List<String> kvinner = generateIdents(Identtype.DNR, Kjoenn.KVINNE);
 
-        assertEquals(menn.size(), GENERATE_SIZE);
+        assertThat(menn.size(), is(equalTo(GENERATE_SIZE)));
         menn.forEach(dnr -> assertDnrValues(dnr, Kjoenn.MANN, LOCAL_DATE));
-        assertEquals(kvinner.size(), GENERATE_SIZE);
+        assertThat(kvinner.size(), is(equalTo(GENERATE_SIZE)));
         kvinner.forEach(dnr -> assertDnrValues(dnr, Kjoenn.KVINNE, LOCAL_DATE));
     }
 
@@ -91,9 +93,9 @@ class IdentGeneratorServiceTest {
         List<String> menn = generateIdents(Identtype.BOST, Kjoenn.MANN);
         List<String> kvinner = generateIdents(Identtype.BOST, Kjoenn.KVINNE);
 
-        assertEquals(menn.size(), GENERATE_SIZE);
+        assertThat(menn.size(), is(equalTo(GENERATE_SIZE)));
         menn.forEach(bnr -> assertBnrValues(bnr, Kjoenn.MANN, LOCAL_DATE));
-        assertEquals(kvinner.size(), GENERATE_SIZE);
+        assertThat(kvinner.size(), is(equalTo(GENERATE_SIZE)));
         kvinner.forEach(bnr -> assertBnrValues(bnr, Kjoenn.KVINNE, LOCAL_DATE));
     }
 
@@ -112,24 +114,24 @@ class IdentGeneratorServiceTest {
     }
 
     private void assertFnrValues(String fnr, Kjoenn expectedKjoenn, LocalDate expectedDate) {
-        assertTrue(fnr.matches("\\d{11}"));
-        assertEquals(getKjoenn(fnr), expectedKjoenn);
-        assertEquals(getBirthdate(fnr, false, false), expectedDate);
-        assertTrue(getNumericValue(fnr.charAt(0)) < 4);
+        assertThat(fnr.matches("\\d{11}"), is(true));
+        assertThat(getKjoenn(fnr), is(equalTo(expectedKjoenn)));
+        assertThat(getBirthdate(fnr, false, false), is(equalTo(expectedDate)));
+        assertThat(getNumericValue(fnr.charAt(0)), is(lessThan(4)));
     }
 
     private void assertDnrValues(String fnr, Kjoenn expectedKjoenn, LocalDate expectedDate) {
-        assertTrue(fnr.matches("\\d{11}"));
-        assertEquals(getKjoenn(fnr), expectedKjoenn);
-        assertEquals(getBirthdate(fnr, true, false), expectedDate);
-        assertTrue(getNumericValue(fnr.charAt(0)) > 3);
+        assertThat(fnr.matches("\\d{11}"), is(true));
+        assertThat(getKjoenn(fnr), is(equalTo(expectedKjoenn)));
+        assertThat(getBirthdate(fnr, true, false), is(equalTo(expectedDate)));
+        assertThat(getNumericValue(fnr.charAt(0)), is(greaterThan(3)));
     }
 
     private void assertBnrValues(String fnr, Kjoenn expectedKjoenn, LocalDate expectedDate) {
-        assertTrue(fnr.matches("\\d{11}"));
-        assertEquals(getKjoenn(fnr), expectedKjoenn);
-        assertEquals(getBirthdate(fnr, false, true), expectedDate);
-        assertTrue(getNumericValue(fnr.charAt(2)) > 1);
+        assertThat(fnr.matches("\\d{11}"), is(true));
+        assertThat(getKjoenn(fnr), is(equalTo(expectedKjoenn)));
+        assertThat(getBirthdate(fnr, false, true), is(equalTo(expectedDate)));
+        assertThat(getNumericValue(fnr.charAt(2)), is(greaterThan(1)));
     }
 
     private Kjoenn getKjoenn(String fnr) {

@@ -36,9 +36,6 @@ public abstract class ComponentTestbase {
     @Autowired
     protected TestRestTemplate testRestTemplate;
 
-//    @Autowired
-//    private OidcTestService oidcTestService;
-
     private HttpEntityBuilder httpEntityBuilder;
 
     @BeforeEach
@@ -81,17 +78,6 @@ public abstract class ComponentTestbase {
         return testRestTemplate.exchange(uri, method, httpEntity, responseEntity);
     }
 
-//    private JwtClaims getJwtClaims() {
-//        return new JwtClaimsBuilder()
-//                .subject("sub")
-//                .audience("aud")
-//                .expiry(LocalDateTime.now().plusMinutes(10))
-//                .validFrom(LocalDateTime.now().minusMinutes(5))
-//                .azp("azp")
-//                .issuer(NAV_STS_ISSUER_URL)
-//                .build();
-//    }
-
     private class HttpEntityBuilder {
         private Object body;
         private MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
@@ -119,10 +105,6 @@ public abstract class ComponentTestbase {
             if (!headers.isEmpty()) {
                 httpHeaders.addAll(headers);
             }
-
-//            if (addOidcToken) {
-//                httpHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer " + oidcTestService.createOidc(getJwtClaims()));
-//            }
 
             if (body != null) {
                 return new HttpEntity<>(body, httpHeaders);

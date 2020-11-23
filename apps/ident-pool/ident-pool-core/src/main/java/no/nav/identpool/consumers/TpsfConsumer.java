@@ -1,7 +1,7 @@
 package no.nav.identpool.consumers;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.RequestEntity;
@@ -9,9 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
-
-import java.io.IOException;
-import java.util.List;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 public class TpsfConsumer {
@@ -31,7 +30,7 @@ public class TpsfConsumer {
 
     public JsonNode getStatusFromTps(List<String> idents) throws IOException {
         String identsAsString = String.join(",", idents);
-        RequestEntity getRequest = RequestEntity.get(url.expand(idents.size(), ENVIRONMENT, identsAsString)).build();
+        RequestEntity<Void> getRequest = RequestEntity.get(url.expand(idents.size(), ENVIRONMENT, identsAsString)).build();
         ResponseEntity<String> response = restTemplate.exchange(getRequest, String.class);
         return new ObjectMapper().readTree(response.getBody()).findValue("data1");
     }

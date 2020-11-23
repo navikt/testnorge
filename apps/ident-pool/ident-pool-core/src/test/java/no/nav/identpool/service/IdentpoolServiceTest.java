@@ -72,7 +72,7 @@ class IdentpoolServiceTest {
     }
 
     @Test
-    public void markerBruktFlereTest() {
+    void markerBruktFlereTest() {
         String rekvirertAv = "test";
         String fnr1 = "01010101010";
         String fnr2 = "02020202020";

@@ -103,7 +103,7 @@ public class IdentpoolController {
     /**
      * @deprecated (2019 - 02 - 09, erstattet av endepunkt / brukFlere, benytt endepunkt / brukFlere)
      */
-    @Deprecated
+    @Deprecated(since = "2019-02-09")
     @PostMapping("/bruk/batch")
     @Operation(description = "marker eksisterende og ledige identer som i bruk")
     public MarkerBruktBatchResponse markerBruktBatch(@RequestBody MarkerBruktBatchRequest markerBruktBatchRequest) {

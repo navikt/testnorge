@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class RegexUtils {
 
     static final Pattern URL_PATTERN = Pattern.compile("\"url\": \"(?<value>.*?)\"", Pattern.MULTILINE);
