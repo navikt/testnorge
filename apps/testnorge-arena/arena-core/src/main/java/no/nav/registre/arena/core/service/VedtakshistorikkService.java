@@ -190,7 +190,7 @@ public class VedtakshistorikkService {
             log.info("Kunne ikke opprette rettigheter for ident: " + personident);
             rettighetRequests = new ArrayList<>();
         } else if (senesteVedtak instanceof NyttVedtakAap) {
-            rettighetRequests = arbeidsoekerUtils.opprettArbeidssoekerAap(rettigheter, miljoe, ((NyttVedtakAap) senesteVedtak).getAktivitetsfase());
+            rettighetRequests = arbeidsoekerUtils.opprettArbeidssoekerAap(personident, rettigheter, miljoe, ((NyttVedtakAap) senesteVedtak).getAktivitetsfase());
         } else if (senesteVedtak instanceof NyttVedtakTiltak) {
             rettighetRequests = arbeidsoekerUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe);
         } else if (senesteVedtak instanceof NyttVedtakTillegg) {
@@ -560,7 +560,7 @@ public class VedtakshistorikkService {
         var tiltaksdeltakelser = historikk.getTiltaksdeltakelse();
 
         List<NyttVedtakTiltak> nyeBarnetillegg = new ArrayList<>();
-        if (!tiltakspenger.isEmpty()){
+        if (!tiltakspenger.isEmpty()) {
             nyeBarnetillegg = vedtakUtils.oppdaterVedtakslisteBasertPaaTiltaksdeltakelse(
                     barnetillegg, tiltaksdeltakelser);
 
