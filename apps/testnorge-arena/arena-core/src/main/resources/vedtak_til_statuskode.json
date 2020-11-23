@@ -32,33 +32,5 @@
       "kode": "TILBU",
       "sannsynlighet": 1
     }
-  ],
-  "DELTAKER": [
-    {
-      "kode": "DELAVB",
-      "sannsynlighet": 101
-    },
-    {
-      "kode": "FULLF",
-      "sannsynlighet": 892
-    },
-    {
-      "kode": "GJENN",
-      "sannsynlighet": 5
-    },
-    {
-      "kode": "TILBUD",
-      "sannsynlighet": 2
-    }
-  ],
-  "AVSLUTTET_DELTAKER": [
-    {
-      "kode": "DELAVB",
-      "sannsynlighet": 101
-    },
-    {
-      "kode": "FULLF",
-      "sannsynlighet": 892
-    }
   ]
 }

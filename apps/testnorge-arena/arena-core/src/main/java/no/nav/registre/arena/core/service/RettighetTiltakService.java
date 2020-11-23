@@ -1,7 +1,6 @@
 package no.nav.registre.arena.core.service;
 
 import static no.nav.registre.arena.core.service.util.ServiceUtils.BEGRUNNELSE;
-import static no.nav.registre.arena.core.service.util.ServiceUtils.DELTAKERSTATUS_GJENNOMFOERES;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,9 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +25,6 @@ import java.util.Random;
 
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.TiltakSyntConsumer;
-import no.nav.registre.arena.core.consumer.rs.request.RettighetEndreDeltakerstatusRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggsytelseRequest;
@@ -36,6 +32,7 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksaktivitetR
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksdeltakelseRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequest;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 
@@ -58,14 +55,8 @@ public class RettighetTiltakService {
 
     private static final Map<String, List<KodeMedSannsynlighet>> vedtakMedAktitivetskode;
     private static final Map<String, List<KodeMedSannsynlighet>> vedtakMedStatuskoder;
-    private static final Map<String, List<String>> deltakerstatuskoderMedAarsakkoder;
 
     static {
-        deltakerstatuskoderMedAarsakkoder = new HashMap<>();
-        deltakerstatuskoderMedAarsakkoder.put("NEITAKK", Arrays.asList("ANN", "BEGA", "FRISM", "FTOAT", "HENLU", "SYK", "UTV"));
-        deltakerstatuskoderMedAarsakkoder.put("IKKEM", Arrays.asList("ANN", "BEGA", "SYK"));
-        deltakerstatuskoderMedAarsakkoder.put("DELAVB", Arrays.asList("ANN", "BEGA", "FTOAT", "SYK"));
-
         vedtakMedAktitivetskode = new HashMap<>();
         URL resourceAktivitetkoder = Resources.getResource("vedtak_til_aktivitetkode.json");
         ObjectMapper objectMapper = new ObjectMapper();
@@ -170,30 +161,6 @@ public class RettighetTiltakService {
         return identerMedOpprettedeTiltak;
     }
 
-    public RettighetEndreDeltakerstatusRequest opprettRettighetEndreDeltakerstatusRequest(
-            String ident,
-            String miljoe,
-            NyttVedtakTiltak tiltaksdeltakelse,
-            String deltakerstatuskode
-    ) {
-
-        NyttVedtakTiltak vedtak = new NyttVedtakTiltak();
-        vedtak.setTiltakskarakteristikk(tiltaksdeltakelse.getTiltakAdminKode());
-        vedtak.setDato(tiltaksdeltakelse.getFraDato());
-        vedtak.setDeltakerstatusKode(deltakerstatuskode);
-
-        if (deltakerstatuskoderMedAarsakkoder.containsKey(deltakerstatuskode)) {
-            List<String> aarsakkoder = deltakerstatuskoderMedAarsakkoder.get(deltakerstatuskode);
-            String aarsakkode = aarsakkoder.get(rand.nextInt(aarsakkoder.size()));
-            vedtak.setAarsakKode(aarsakkode);
-        }
-
-        var rettighetRequest = new RettighetEndreDeltakerstatusRequest(Collections.singletonList(vedtak));
-
-        rettighetRequest.setPersonident(ident);
-        rettighetRequest.setMiljoe(miljoe);
-        return rettighetRequest;
-    }
 
     Map<String, List<NyttVedtakResponse>> opprettTiltaksaktiviteter(
             List<RettighetRequest> rettigheter
@@ -296,7 +263,7 @@ public class RettighetTiltakService {
         }
     }
 
-    public Map<String, List<NyttVedtakResponse>> endreDeltakerstatus(
+    private Map<String, List<NyttVedtakResponse>> endreDeltakerstatus(
             List<RettighetRequest> rettigheter
     ) {
         if (!rettigheter.isEmpty()) {
@@ -358,51 +325,30 @@ public class RettighetTiltakService {
     ) {
         List<RettighetRequest> rettigheter = new ArrayList<>();
         for (var vedtak : tiltaksdeltakelser) {
-            var deltakerstatus = getDeltakerstatus(vedtak);
-            if (deltakerstatus != null) {
-                List<String> endringer = getEndringerMedGyldigRekkefoelge(deltakerstatus, vedtak.getTiltakAdminKode());
+                List<String> endringer = getEndringerMedGyldigRekkefoelge(vedtak);
 
                 for (var endring : endringer) {
-                    var rettighetRequest = opprettRettighetEndreDeltakerstatusRequest(vedtak.getFodselsnr(),
+                    var rettighetRequest = vedtakUtils.opprettRettighetEndreDeltakerstatusRequest(vedtak.getFodselsnr(),
                             miljoe, vedtak, endring);
 
                     rettigheter.add(rettighetRequest);
                 }
-            }
         }
         return rettigheter;
     }
 
-    public String getDeltakerstatus(NyttVedtakTiltak tiltakdeltakelse) {
-        String deltakerstatus = null;
-        var fraDato = tiltakdeltakelse.getFraDato();
-        var tilDato = tiltakdeltakelse.getTilDato();
-        if (fraDato != null && fraDato.isBefore(LocalDate.now().plusDays(1))) {
-            deltakerstatus = DELTAKERSTATUS_GJENNOMFOERES;
-            if (tilDato != null && tilDato.isBefore(LocalDate.now().plusDays(1))) {
-                deltakerstatus = serviceUtils.velgKodeBasertPaaSannsynlighet(
-                        vedtakMedStatuskoder.get("AVSLUTTET_DELTAKER")).getKode();
-            }
-        }
-        return deltakerstatus;
-    }
-
-
-    public List<String> getEndringerMedGyldigRekkefoelge(
-            String deltakerstatuskode,
-            String adminKode
+    private List<String> getEndringerMedGyldigRekkefoelge(
+            NyttVedtakTiltak tiltaksdeltakelse
     ) {
+        var adminKode = tiltaksdeltakelse.getTiltakAdminKode();
         List<String> endringer = new ArrayList<>();
-
-        if (adminKode.equals("AMO")) {
-            endringer.add("TILBUD");
-            endringer.add("JATAKK");
+        if (vedtakUtils.canSetDeltakelseTilGjennomfoeres(tiltaksdeltakelse)){
+            endringer = vedtakUtils.getFoersteEndringerDeltakerstatus(adminKode);
         }
 
-        if (!deltakerstatuskode.equals(DELTAKERSTATUS_GJENNOMFOERES)) {
-            endringer.add(DELTAKERSTATUS_GJENNOMFOERES);
+        if (!endringer.isEmpty() && endringer.contains(Deltakerstatuser.GJENN.toString()) && vedtakUtils.canSetDeltakelseTilFinished(tiltaksdeltakelse)){
+            endringer.add(vedtakUtils.getAvsluttendeDeltakerstatus(adminKode).toString());
         }
-        endringer.add(deltakerstatuskode);
 
         return endringer;
     }
@@ -452,10 +398,6 @@ public class RettighetTiltakService {
         } else if (!farFnr.isEmpty()) {
             utvalgteIdenter.add(farFnr);
         }
-    }
-
-    public Map<String, List<KodeMedSannsynlighet>> getVedtakMedStatuskoder() {
-        return vedtakMedStatuskoder;
     }
 
     private void addResponses(
