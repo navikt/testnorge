@@ -12,7 +12,7 @@ import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.person.v1.Persondatasystem;
 
 @Slf4j
-@DependencyOn("person-api")
+@DependencyOn("testnorge-person-api")
 @RequiredArgsConstructor
 public class GetPersonCommand implements Callable<PersonDTO> {
     private final WebClient webClient;

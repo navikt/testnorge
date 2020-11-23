@@ -1,0 +1,17 @@
+CLIENT_ID: ${azure.app.client.id}
+
+avspillingsgruppe.helsepersonell.id: ${AVSPILLERGRUPPE_HELSEPERSONELL}
+
+samhandlerregisteret.api.url: ${SAMHANDLERREGISTERET_URL}
+
+hodejegeren.api.url: ${HODEJEGEREN_URL}
+
+helsepersonell.controller.cache.hours: ${CACHE_HOURS_HELSEPERSONELL}
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}

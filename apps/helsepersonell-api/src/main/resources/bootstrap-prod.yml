@@ -2,5 +2,3 @@ spring:
   cloud:
     vault:
       enabled: false
-  main:
-    banner-mode: off

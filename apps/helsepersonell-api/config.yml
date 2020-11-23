@@ -1,14 +1,23 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnorge-synt-sykemelding-api
-  namespace: default
+  name: testnorge-helsepersonell-api
+  namespace: dolly
   labels:
     team: dolly
 spec:
   image: {{ image }}
   port: 8080
   webproxy: true
+  azure:
+    application:
+      enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: dolly-backend-dev
+        - application: dolly-backend
+        - application: testnorge-synt-sykemelding-api
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -32,5 +41,4 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://testnorge-synt-sykemelding-api.nais.preprod.local"
-    - "https://testnorge-synt-sykemelding-api.dev.adeo.no"
+    - "https://testnorge-helsepersonell-api-tmp.dev.adeo.no"
