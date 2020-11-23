@@ -1,4 +1,5 @@
 export enum Level {
+	TRACE = 'TRACE',
 	INFO = 'INFO',
 	WARNING = 'WARNING',
 	ERROR = 'ERROR'

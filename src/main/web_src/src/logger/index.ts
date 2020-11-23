@@ -30,6 +30,7 @@ interface Log {
 }
 
 export default {
+	trace: ({ event, message, uuid }: Log) => log(Level.TRACE, event, message, uuid),
 	log: ({ event, message, uuid, rating, isAnonym }: Log) =>
 		log(Level.INFO, event, message, uuid, rating, isAnonym),
 	warn: ({ event, message, uuid, rating }: Log) => log(Level.WARNING, event, message, uuid, rating),
