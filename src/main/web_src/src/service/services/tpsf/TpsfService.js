@@ -19,10 +19,10 @@ export default {
 		return Request.post(endpoint, userArray)
 	},
 
-	hentTpsInnhold(ident) {
-		if (!ident) return
+	hentTpsInnhold(identMiljoe) {
+		if (!identMiljoe) return
 		const endpoint = getTpsfUrl() + '/dolly/testdata/import'
-		return Request.post(endpoint, ident)
+		return Request.post(endpoint, identMiljoe)
 	},
 
 	soekPersoner(fragment) {

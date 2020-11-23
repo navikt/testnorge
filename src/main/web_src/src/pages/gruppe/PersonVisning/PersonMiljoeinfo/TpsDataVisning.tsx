@@ -15,8 +15,6 @@ type Data = {
 }
 
 export const TpsDataVisning = ({ data }: TpsData) => {
-	console.log('data :>> ', data)
-
 	data.sort(function(a, b) {
 		if (a.environment < b.environment) {
 			return -1
