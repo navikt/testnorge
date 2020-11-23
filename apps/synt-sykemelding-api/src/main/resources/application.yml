@@ -7,18 +7,16 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 
 consumers:
   hodejegeren:
-    url: http://testnorge-hodejegeren.default.svc.nais.local
+    url: http://testnorge-hodejegeren.dev.adeo.no
   helsepersonell:
     client_id: af686685-d25a-462a-a0ea-e2a348c457d3
-    client_secret: ${HELSEPERSONELL_API_CLIENT_SECRET}
     url: https://testnorge-helsepersonell-api-tmp.dev.adeo.no
   synt-sykemelding:
-    url: http://synthdata-elsam.q2.svc.nais.local
+    url: http://synthdata-elsam.nais.preprod.local
   sykemelding:
-    url: http://testnorge-sykemelding-api.default.svc.nais.local
+    url: http://testnorge-sykemelding-api.dev.adeo.no
   organisasjonapi:
-    client_id: ${ORGANISASJON_API_CLIENT_ID}
-    client_secret: ${ORGANISASJON_API_CLIENT_SECRET}
+    client_id: f4167796-bf43-438b-a282-a480e8108d0c
     url: https://testnorge-organisasjon-api.dev.adeo.no
   arbeidsforhold:
-    url: http://testnorge-arbeidsforhold-api.default.svc.nais.local
+    url: http://testnorge-arbeidsforhold-api.dev.adeo.no

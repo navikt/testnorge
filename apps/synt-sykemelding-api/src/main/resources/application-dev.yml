@@ -1,13 +1,6 @@
+azure.app.client.id: dummy
+
 consumers:
-  hodejegeren:
-    url: https://testnorge-hodejegeren.nais.preprod.local
-  helsepersonell:
-    url: https://testnorge-helsepersonell-api.nais.preprod.local
-  synt-sykemelding:
-    url: https://nais-synthdata-elsam.nais.preprod.local
-  sykemelding:
-    url: http://testnorge-sykemelding-api.nais.preprod.local
-  arbeidsforhold:
-    url: http://testnorge-arbeidsforhold-api.nais.preprod.local
   organisasjonapi:
     url: https://testnorge-organisasjon-api-dev.dev.adeo.no
+    client_id: 32d4b32e-95d1-4e40-b594-304945a1a24a

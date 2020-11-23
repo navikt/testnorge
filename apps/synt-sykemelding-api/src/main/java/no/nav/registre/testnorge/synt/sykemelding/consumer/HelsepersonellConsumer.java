@@ -12,6 +12,7 @@ import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.HelsepersonellListeD
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.credential.HelsepersonellApiClientCredential;
 import no.nav.registre.testnorge.synt.sykemelding.domain.HelsepersonellListe;
@@ -20,17 +21,17 @@ import no.nav.registre.testnorge.synt.sykemelding.domain.HelsepersonellListe;
 @Component
 @DependencyOn("testnorge-helsepersonell-api")
 public class HelsepersonellConsumer {
-    private final ClientCredentialGenerateAccessTokenService accessTokenService;
-    private final ClientCredential clientCredential;
+    private final AccessTokenService accessTokenService;
     private final WebClient webClient;
+    private final String clientId;
 
     public HelsepersonellConsumer(
-            ClientCredentialGenerateAccessTokenService accessTokenService,
-            HelsepersonellApiClientCredential clientCredential,
+            AccessTokenService accessTokenService,
+            @Value("${consumers.helsepersonell.client_id}") String clientId,
             @Value("${consumers.helsepersonell.url}") String url
     ) {
         this.accessTokenService = accessTokenService;
-        this.clientCredential = clientCredential;
+        this.clientId = clientId;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(url)
@@ -39,10 +40,7 @@ public class HelsepersonellConsumer {
 
     @SneakyThrows
     public HelsepersonellListe hentHelsepersonell() {
-        AccessToken accessToken = accessTokenService.generateToken(
-                clientCredential,
-                new AccessScopes("api://" + clientCredential.getClientId() + "/.default")
-        );
+        AccessToken accessToken = accessTokenService.generateToken(clientId);
         log.info("Henter helsepersonell...");
         HelsepersonellListeDTO dto = new GetHelsepersonellCommand(webClient, accessToken.getTokenValue()).call();
         log.info("{} helsepersonell hentet", dto.getHelsepersonell().size());
