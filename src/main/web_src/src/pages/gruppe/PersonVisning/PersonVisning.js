@@ -81,7 +81,7 @@ export const PersonVisning = ({
 				loading={loading.udistub}
 			/>
 			<DokarkivVisning ident={ident.ident} />
-			<PersonMiljoeinfo ident={ident.ident} />
+			<PersonMiljoeinfo ident={ident.ident} miljoe={bestilling.environments} />
 			<TidligereBestillinger ids={ident.bestillingId} />
 			<BeskrivelseConnector ident={ident} iLaastGruppe={iLaastGruppe} />
 		</div>

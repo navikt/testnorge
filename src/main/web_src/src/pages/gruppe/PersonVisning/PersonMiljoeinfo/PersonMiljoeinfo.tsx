@@ -1,48 +1,42 @@
 import React from 'react'
-import { useAsyncFn } from 'react-use'
 import { useAsync } from 'react-use'
 import { TpsfApi } from '~/service/Api'
 import Loading from '~/components/ui/loading/Loading'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TpsDataVisning } from './TpsDataVisning'
+import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 
-export const PersonMiljoeinfo = (ident: string) => {
+type PersonMiljoeinfo = {
+	ident: string
+	miljoe: Array<string>
+}
+
+export const PersonMiljoeinfo = ({ ident, miljoe }: PersonMiljoeinfo) => {
 	if (!ident) return null
 
-	// const [miljoeInfo, fetch] = useAsyncFn(async () => {
-	// 	const { data } = await TpsfApi.hentTpsInnhold(ident)
-	// 	console.log('data :>> ', data)
-	// 	return data
-	// }, [])
-	console.log('ident :>> ', ident)
+	const request = {
+		ident: ident,
+		miljoe: miljoe
+	}
 
 	const state = useAsync(async () => {
-		const response = await TpsfApi.hentTpsInnhold(ident)
-		console.log('response :>> ', response)
+		const response = await TpsfApi.hentTpsInnhold(request)
 		return response
 	}, [])
 
-	console.log('state :>> ', state)
-	// console.log('miljoeInfo.value :>> ', miljoeInfo.value)
-
 	return (
 		<div>
-			<h4>Finnes i miljøer</h4>
+			<SubOverskrift label="Opprettet i miljøer" iconKind="visTpsData" />
 			{state.loading && <Loading label="Laster miljøer" />}
+			{/* @ts-ignore */}
 			{state.value && <TpsDataVisning data={state.value.data} />}
-			{/* {state.value && (
-				<DollyFieldArray data={state.value.data}>
-					{(id, idx) => <p>{id.environment}</p>}
-				</DollyFieldArray>
-			)} */}
-			{/* {state.value &&
-				state.value.data.forEach(miljoe => (
-					// console.log('miljoe :>> ', miljoe)
-					<p>{miljoe.environment}</p>
-				))} */}
-			{/* <p>{fetch()}</p> */}
-			{/* <div>{miljoeInfo}</div> */}
+			{state.value && (
+				<p>
+					<i>
+						Hold pekeren over et miljø for å se dataene som finnes på denne personen i TPS for det
+						aktuelle miljøet.
+					</i>
+				</p>
+			)}
 		</div>
 	)
 }
