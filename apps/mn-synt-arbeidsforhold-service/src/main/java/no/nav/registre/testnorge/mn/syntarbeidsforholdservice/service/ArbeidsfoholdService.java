@@ -200,12 +200,12 @@ public class ArbeidsfoholdService {
         return getNesteArbeidsforhold(previous, kalendermaaned.minusMonths(1));
     }
 
-    private Arbeidsforhold getNesteArbeidsforhold(Arbeidsforhold arbeidsforhold, LocalDate kaldermaaned) {
+    private Arbeidsforhold getNesteArbeidsforhold(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned) {
         if (random.nextFloat() > syntetiseringProperties.getEndringssannsynlighet()) {
-            log.info("Retunerer samme arbeidsforhold for arbeidsforholdId {}.", arbeidsforhold.getArbeidsforholdId());
+            log.info("Returnerer samme arbeidsforhold for arbeidsforholdId {}.", arbeidsforhold.getArbeidsforholdId());
             return arbeidsforhold;
         }
-        return syntrestConsumer.getNesteArbeidsforhold(arbeidsforhold, kaldermaaned);
+        return syntrestConsumer.getNesteArbeidsforhold(arbeidsforhold, kalendermaaned);
     }
 
     private Set<LocalDate> findAllDatesBetween(LocalDate fom, LocalDate tom) {
