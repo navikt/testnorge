@@ -11,9 +11,6 @@ bootJar {
     archiveFileName = "app.jar"
 }
 
-
-
-
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
     implementation project(':arena-core')

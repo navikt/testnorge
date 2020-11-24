@@ -1,0 +1,11 @@
+CLIENT_ID: af686685-d25a-462a-a0ea-e2a348c457d3
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
+  main:
+    banner-mode: off

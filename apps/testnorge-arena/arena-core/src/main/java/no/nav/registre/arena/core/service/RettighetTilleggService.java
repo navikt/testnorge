@@ -4,6 +4,8 @@ import static no.nav.registre.arena.core.service.util.ServiceUtils.BEGRUNNELSE;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.arena.core.service.util.ArbeidssoekerUtils;
+import no.nav.registre.arena.core.service.util.IdenterUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,6 +30,8 @@ public class RettighetTilleggService {
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final RettighetTiltakService rettighetTiltakService;
     private final ServiceUtils serviceUtils;
+    private final IdenterUtils identerUtils;
+    private final ArbeidssoekerUtils arbeidssoekerUtils;
 
     public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadBoutgifter(
             Long avspillergruppeId,
@@ -182,7 +186,7 @@ public class RettighetTilleggService {
             int antallNyeIdenter,
             List<NyttVedtakTillegg> syntetiserteRettigheter
     ) {
-        var utvalgteIdenter = serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
+        var utvalgteIdenter = identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
 
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
@@ -196,7 +200,7 @@ public class RettighetTilleggService {
             rettigheter.add(rettighetRequest);
         }
 
-        serviceUtils.opprettArbeidssoekerTillegg(rettigheter, miljoe);
+        arbeidssoekerUtils.opprettArbeidssoekerTillegg(rettigheter, miljoe);
 
         opprettTiltaksaktiviteter(rettigheter);
 

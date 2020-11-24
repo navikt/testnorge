@@ -12,6 +12,11 @@ spec:
   azure:
     application:
       enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: mn-organisasjon-api
+        - application: testnorge-synt-sykemelding-api
   liveness:
     path: /internal/isAlive
     initialDelay: 4

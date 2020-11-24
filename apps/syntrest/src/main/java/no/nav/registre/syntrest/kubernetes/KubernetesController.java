@@ -191,6 +191,7 @@ public class KubernetesController {
             }
             numRetries++;
         }
+        log.info("Application \'{}\' deployed successfully!", appName);
     }
 
 

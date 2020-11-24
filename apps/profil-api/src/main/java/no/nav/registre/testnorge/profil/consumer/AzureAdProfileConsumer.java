@@ -2,7 +2,6 @@ package no.nav.registre.testnorge.profil.consumer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
@@ -14,11 +13,9 @@ import java.net.URI;
 
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
-import no.nav.registre.testnorge.libs.oauth2.service.OnBehalfOfGenerateAccessTokenService;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import no.nav.registre.testnorge.profil.consumer.command.GetProfileCommand;
 import no.nav.registre.testnorge.profil.consumer.command.GetProfileImageCommand;
-import no.nav.registre.testnorge.profil.consumer.credentials.ProfilApiClientCredential;
 import no.nav.registre.testnorge.profil.consumer.dto.ProfileDTO;
 import no.nav.registre.testnorge.profil.domain.Profil;
 
@@ -27,18 +24,15 @@ import no.nav.registre.testnorge.profil.domain.Profil;
 public class AzureAdProfileConsumer {
 
     private final WebClient webClient;
-    private final ClientCredential clientCredential;
-    private final OnBehalfOfGenerateAccessTokenService accessTokenService;
+    private final AccessTokenService accessTokenService;
     private final AccessScopes accessScopes;
 
     public AzureAdProfileConsumer(
             @Value("${http.proxy:#{null}}") String proxyHost,
             @Value("${api.azuread.url}") String url,
-            ProfilApiClientCredential clientCredential,
-            OnBehalfOfGenerateAccessTokenService accessTokenService
+            AccessTokenService accessTokenService
     ) {
         this.accessScopes = new AccessScopes(url + "/.default");
-        this.clientCredential = clientCredential;
         this.accessTokenService = accessTokenService;
 
         WebClient.Builder builder = WebClient.builder();
@@ -68,13 +62,13 @@ public class AzureAdProfileConsumer {
     }
 
     public Profil getProfil() {
-        AccessToken accessToken = accessTokenService.generateToken(clientCredential, accessScopes);
+        AccessToken accessToken = accessTokenService.generateToken(accessScopes);
         ProfileDTO dto = new GetProfileCommand(webClient, accessToken.getTokenValue()).call();
         return new Profil(dto);
     }
 
     public byte[] getProfilImage() {
-        AccessToken accessToken = accessTokenService.generateToken(clientCredential, accessScopes);
+        AccessToken accessToken = accessTokenService.generateToken(accessScopes);
         return new GetProfileImageCommand(webClient, accessToken.getTokenValue()).call();
     }
 

@@ -1,7 +1,6 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 CLIENT_ID: 06c9b9c1-d370-40ea-8181-2c4a6858392f
 
-
 database:
   aareg:
     username: ${AAREG_DB_USERNAME}

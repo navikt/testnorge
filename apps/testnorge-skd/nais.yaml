@@ -4,7 +4,7 @@ metadata:
   name: testnorge-skd
   namespace: default
   labels:
-    team: orkestrator
+    team: dolly
 spec:
   port: 8080
   webproxy: true
