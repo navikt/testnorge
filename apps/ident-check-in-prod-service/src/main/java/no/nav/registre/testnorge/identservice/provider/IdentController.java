@@ -1,7 +1,6 @@
 package no.nav.registre.testnorge.identservice.provider;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.registre.testnorge.identservice.logging.LogExceptions;
 import no.nav.registre.testnorge.identservice.service.IdentAppService;
 import no.nav.registre.testnorge.identservice.testdata.response.IdentResponse;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +19,6 @@ public class IdentController {
 
     private final IdentAppService identAppService;
 
-    @LogExceptions
     @GetMapping(value = "/id")
     public ResponseEntity<Set<IdentResponse>> checkIdentExistsInProd(@RequestParam List<String> ideer) {
 
