@@ -7,6 +7,9 @@ metadata:
     team: dolly
 spec:
   image: {{ image }}
+  azure:
+    application:
+      enabled: true
   port: 8080
   webproxy: true
   accessPolicy:
@@ -15,9 +18,6 @@ spec:
         - application: dolly-backend-dev
         - application: dolly-backend
         - application: testnorge-oversikt-frontend
-  azure:
-    application:
-      enabled: true
   liveness:
     path: /internal/isAlive
     initialDelay: 4

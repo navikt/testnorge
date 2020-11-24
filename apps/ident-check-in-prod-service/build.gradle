@@ -13,9 +13,11 @@ bootJar {
 
 dependencies {
     implementation project(':testnorge-dependency-analysis')
+    implementation project(':testnorge-dependency-analysis-auto-configuration')
     implementation project(':testnorge-core')
     implementation project(':testnorge-oauth2')
     implementation project(':testnorge-data-transfer-objects')
+
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.2'
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
     implementation 'org.mockito:mockito-core:3.6.0'
