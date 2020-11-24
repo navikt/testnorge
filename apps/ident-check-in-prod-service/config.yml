@@ -6,9 +6,15 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: {{ image }}
+  image: { { image } }
   port: 8080
   webproxy: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: dolly-backend-dev
+        - application: dolly-backend
+        - application: testnorge-oversikt-frontend
   azure:
     application:
       enabled: true
