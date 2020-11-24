@@ -9,12 +9,6 @@ spring:
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     name: ident-check-in-prod-service
     description: App som sjekker om ident finnes i prod på identer benyttet av Dolly og Orkestrator
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
 springdoc:
   swagger-ui:
     url: /swagger-ui/index.html?url=/v3/api-docs/

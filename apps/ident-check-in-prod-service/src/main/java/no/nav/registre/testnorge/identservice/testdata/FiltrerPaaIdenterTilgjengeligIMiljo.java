@@ -27,7 +27,7 @@ import static no.nav.registre.testnorge.identservice.testdata.consumers.config.M
 @RequiredArgsConstructor
 public class FiltrerPaaIdenterTilgjengeligIMiljo {
 
-    @Value("${mq.tps.serviceroutine}")
+    @Value("${MQ_TPS_SERVICEROUTINE}")
     private String tpsServicerutine;
 
     private static final User DOLLY_USER = new User("Dolly", "Dolly");
