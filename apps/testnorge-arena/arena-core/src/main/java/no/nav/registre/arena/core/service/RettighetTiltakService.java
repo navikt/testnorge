@@ -325,14 +325,14 @@ public class RettighetTiltakService {
     ) {
         List<RettighetRequest> rettigheter = new ArrayList<>();
         for (var vedtak : tiltaksdeltakelser) {
-                List<String> endringer = getEndringerMedGyldigRekkefoelge(vedtak);
+            List<String> endringer = getEndringerMedGyldigRekkefoelge(vedtak);
 
-                for (var endring : endringer) {
-                    var rettighetRequest = vedtakUtils.opprettRettighetEndreDeltakerstatusRequest(vedtak.getFodselsnr(),
-                            miljoe, vedtak, endring);
+            for (var endring : endringer) {
+                var rettighetRequest = vedtakUtils.opprettRettighetEndreDeltakerstatusRequest(vedtak.getFodselsnr(),
+                        miljoe, vedtak, endring);
 
-                    rettigheter.add(rettighetRequest);
-                }
+                rettigheter.add(rettighetRequest);
+            }
         }
         return rettigheter;
     }
@@ -342,11 +342,11 @@ public class RettighetTiltakService {
     ) {
         var adminKode = tiltaksdeltakelse.getTiltakAdminKode();
         List<String> endringer = new ArrayList<>();
-        if (vedtakUtils.canSetDeltakelseTilGjennomfoeres(tiltaksdeltakelse)){
+        if (vedtakUtils.canSetDeltakelseTilGjennomfoeres(tiltaksdeltakelse)) {
             endringer = vedtakUtils.getFoersteEndringerDeltakerstatus(adminKode);
         }
 
-        if (!endringer.isEmpty() && endringer.contains(Deltakerstatuser.GJENN.toString()) && vedtakUtils.canSetDeltakelseTilFinished(tiltaksdeltakelse)){
+        if (!endringer.isEmpty() && endringer.contains(Deltakerstatuser.GJENN.toString()) && vedtakUtils.canSetDeltakelseTilFinished(tiltaksdeltakelse)) {
             endringer.add(vedtakUtils.getAvsluttendeDeltakerstatus(adminKode).toString());
         }
 

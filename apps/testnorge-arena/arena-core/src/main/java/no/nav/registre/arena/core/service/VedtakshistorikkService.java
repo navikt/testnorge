@@ -112,7 +112,7 @@ public class VedtakshistorikkService {
     }
 
     private void opprettVedtaksHistorikkResponse(Long avspillergruppeId, String miljoe, Map<String, List<NyttVedtakResponse>> responses, Vedtakshistorikk vedtakshistorikken, LocalDate tidligsteDatoBarnetillegg,
-            int minimumAlder, int maksimumAlder) {
+                                                 int minimumAlder, int maksimumAlder) {
         List<String> identerIAldersgruppe = Collections.emptyList();
         try {
             if (tidligsteDatoBarnetillegg != null) {
