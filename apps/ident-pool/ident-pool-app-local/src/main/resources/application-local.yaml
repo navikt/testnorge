@@ -1,0 +1,4 @@
+oracle:
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+#    url: ${identpool.datasource.jdbc_url}

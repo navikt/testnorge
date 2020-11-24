@@ -1,4 +1,4 @@
-package no.nav.identpool;
+package no.nav.identpool.config;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

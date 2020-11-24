@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 
 import no.nav.identpool.ComponentTestbase;
 import no.nav.identpool.domain.Identtype;
-import no.nav.identpool.domain.Rekvireringsstatus;
+import no.nav.identpool.domain.postgres.Rekvireringsstatus;
 import no.nav.identpool.rs.v1.support.ApiResponse;
 import no.nav.identpool.rs.v1.support.IdentRequest;
 

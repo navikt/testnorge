@@ -1,4 +1,4 @@
-package no.nav.identpool;
+package no.nav.identpool.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,8 +8,8 @@ import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import no.nav.identpool.domain.Identtype;
-import no.nav.identpool.domain.Rekvireringsstatus;
-import no.nav.identpool.repository.IdentRepository;
+import no.nav.identpool.domain.postgres.Rekvireringsstatus;
+import no.nav.identpool.repository.postgres.IdentRepository;
 
 @Configuration
 @EnableAspectJAutoProxy

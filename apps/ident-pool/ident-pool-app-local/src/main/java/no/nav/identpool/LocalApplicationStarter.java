@@ -3,6 +3,7 @@ package no.nav.identpool;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.identpool.config.ApplicationConfig;
 
 @Slf4j
 public class LocalApplicationStarter {

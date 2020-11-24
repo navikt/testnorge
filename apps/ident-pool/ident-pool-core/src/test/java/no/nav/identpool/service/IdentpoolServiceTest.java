@@ -1,6 +1,6 @@
 package no.nav.identpool.service;
 
-import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
+import static no.nav.identpool.domain.postgres.Rekvireringsstatus.LEDIG;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,12 +22,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import no.nav.identpool.domain.Ident;
+import no.nav.identpool.domain.postgres.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
-import no.nav.identpool.domain.Rekvireringsstatus;
+import no.nav.identpool.domain.postgres.Rekvireringsstatus;
 import no.nav.identpool.domain.TpsStatus;
-import no.nav.identpool.repository.IdentRepository;
+import no.nav.identpool.repository.postgres.IdentRepository;
 import no.nav.identpool.test.mockito.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)

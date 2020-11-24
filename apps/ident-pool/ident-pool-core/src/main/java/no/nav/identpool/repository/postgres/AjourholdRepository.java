@@ -1,9 +1,9 @@
-package no.nav.identpool.repository;
+package no.nav.identpool.repository.postgres;
 
 import java.time.LocalDateTime;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import no.nav.identpool.domain.Ajourhold;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AjourholdRepository extends JpaRepository<Ajourhold, Long> {
 
