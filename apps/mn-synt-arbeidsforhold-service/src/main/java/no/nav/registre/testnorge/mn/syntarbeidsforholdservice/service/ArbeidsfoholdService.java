@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.SyntetiseringProperties;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.ArbeidsforholdConsumer;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.MNOrganiasjonConsumer;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.SyntrestConsumer;
@@ -28,6 +29,7 @@ public class ArbeidsfoholdService {
     private final MNOrganiasjonConsumer mnOrganiasjonConsumer;
     private final ArbeidsforholdConsumer arbeidsforholdConsumer;
     private final SyntrestConsumer syntrestConsumer;
+    private final SyntetiseringProperties syntetiseringProperties;
     private final Random random = new Random();
 
 
@@ -110,7 +112,7 @@ public class ArbeidsfoholdService {
                 virksomhetDTO -> virksomhetDTO.getPersoner().forEach(personDTO -> personDTO.getArbeidsforhold().forEach(
                         arbeidsforholdDTO -> {
                             if (arbeidsforholdDTO.getSluttdato() == null || !arbeidsforholdDTO.getSluttdato().equals(kalendermaaned.minusMonths(1))) {
-                                Arbeidsforhold nesteArbeidsforhold = syntrestConsumer.getNesteArbeidsforhold(
+                                Arbeidsforhold nesteArbeidsforhold = getNesteArbeidsforhold(
                                         new Arbeidsforhold(
                                                 arbeidsforholdDTO,
                                                 personDTO.getIdent(),
@@ -135,7 +137,7 @@ public class ArbeidsfoholdService {
                                         log.info("Starter nytt arbeidsforhold for {}.", personDTO.getIdent());
                                         startArbeidsforhold(personDTO.getIdent(), kalendermaaned, null, miljo);
                                     } else {
-                                        Arbeidsforhold nesteArbeidsforhold = syntrestConsumer.getNesteArbeidsforhold(
+                                        Arbeidsforhold nesteArbeidsforhold = getNesteArbeidsforhold(
                                                 new Arbeidsforhold(
                                                         arbeidsforholdDTO,
                                                         personDTO.getIdent(),
@@ -195,7 +197,15 @@ public class ArbeidsfoholdService {
             log.info("Nytt arbeidsforhold id {} for person {}.", next.getArbeidsforholdId(), next.getIdent());
             return next;
         }
-        return syntrestConsumer.getNesteArbeidsforhold(previous, kalendermaaned.minusMonths(1));
+        return getNesteArbeidsforhold(previous, kalendermaaned.minusMonths(1));
+    }
+
+    private Arbeidsforhold getNesteArbeidsforhold(Arbeidsforhold arbeidsforhold, LocalDate kaldermaaned) {
+        if (random.nextFloat() > syntetiseringProperties.getEndringssannsynlighet()) {
+            log.info("Retunerer samme arbeidsforhold for arbeidsforholdId {}.", arbeidsforhold.getArbeidsforholdId());
+            return arbeidsforhold;
+        }
+        return syntrestConsumer.getNesteArbeidsforhold(arbeidsforhold, kaldermaaned);
     }
 
     private Set<LocalDate> findAllDatesBetween(LocalDate fom, LocalDate tom) {
