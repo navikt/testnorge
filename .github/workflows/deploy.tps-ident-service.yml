@@ -2,6 +2,7 @@ name: Deploy tps-ident-service
 
 on:
   push:
+    branches: master
     paths:
       - apps/tps-ident-service/**
       - libs/testnorge-core/**
