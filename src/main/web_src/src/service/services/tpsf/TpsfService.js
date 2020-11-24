@@ -19,6 +19,12 @@ export default {
 		return Request.post(endpoint, userArray)
 	},
 
+	hentTpsInnhold(identMiljoe) {
+		if (!identMiljoe) return
+		const endpoint = getTpsfUrl() + '/dolly/testdata/import'
+		return Request.post(endpoint, identMiljoe)
+	},
+
 	soekPersoner(fragment) {
 		if (!fragment) return
 		const endpoint = `${getTpsfUrl()}/dolly/testdata/soekperson?fragment=${fragment}`

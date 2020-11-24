@@ -74,6 +74,10 @@ export default function PersonListe({
 							destroyTooltipOnHide={true}
 							mouseEnterDelay={0}
 							mouseLeaveDelay={0.1}
+							arrowContent={<div className="rc-tooltip-arrow-inner"> </div>}
+							align={{
+								offset: ['0', '-10']
+							}}
 						>
 							<div
 								className="icon"
@@ -143,6 +147,10 @@ export default function PersonListe({
 							destroyTooltipOnHide={true}
 							mouseEnterDelay={0}
 							mouseLeaveDelay={0.1}
+							arrowContent={<div className="rc-tooltip-arrow-inner"> </div>}
+							align={{
+								offset: ['0', '-10']
+							}}
 						>
 							<div style={{ textAlign: 'center' }}>
 								<Icon kind="kommentar" size={20} />

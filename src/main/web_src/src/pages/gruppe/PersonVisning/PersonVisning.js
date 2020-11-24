@@ -2,6 +2,7 @@ import React from 'react'
 import { useMount } from 'react-use'
 import Button from '~/components/ui/button/Button'
 import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
+import { PersonMiljoeinfo } from './PersonMiljoeinfo/PersonMiljoeinfo'
 import {
 	KrrVisning,
 	PdlfVisning,
@@ -80,6 +81,7 @@ export const PersonVisning = ({
 				loading={loading.udistub}
 			/>
 			<DokarkivVisning ident={ident.ident} />
+			<PersonMiljoeinfo ident={ident.ident} miljoe={bestilling.environments} />
 			<TidligereBestillinger ids={ident.bestillingId} />
 			<BeskrivelseConnector ident={ident} iLaastGruppe={iLaastGruppe} />
 		</div>
