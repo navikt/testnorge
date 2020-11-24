@@ -1,0 +1,5 @@
+spring:
+  application:
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
+    name: testnorge-tps-ident-service
+    desciption: Tjeneste for å hente identer og miljo for identer i TPS
