@@ -25,3 +25,7 @@ spring:
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     name: mn-synt-arbeidsforhold-service
     desciption: API for å opprette syntetiske arbeidsforhold i mini-norge
+
+
+syntetisering:
+  endringssannsynlighet: 0.1
