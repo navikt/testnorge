@@ -27,7 +27,7 @@ public interface BrukerRepository extends Repository<Bruker, Long> {
     int deleteNavIdentToBruker(@Param("bruker") Bruker bruker);
 
     @Modifying
-    @Query(value = "update Bruker set migrert = 1 where brukerId = :brukerId")
+    @Query(value = "update Bruker set migrert = true where brukerId = :brukerId")
     int saveBrukerIdMigrert(@Param(value = "brukerId") String brukerId);
 
     @Modifying
