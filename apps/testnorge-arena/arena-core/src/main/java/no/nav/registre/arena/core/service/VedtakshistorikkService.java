@@ -422,12 +422,12 @@ public class VedtakshistorikkService {
     }
 
     private void opprettVedtakTiltaksdeltakelse(
-            Vedtakshistorikk vedtak,
+            Vedtakshistorikk historikk,
             String personident,
             String miljoe,
             List<RettighetRequest> rettigheter
     ) {
-        var tiltaksdeltakelser = vedtak.getTiltaksdeltakelse();
+        var tiltaksdeltakelser = historikk.getTiltaksdeltakelse();
         if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
             arbeidsoekerUtils.opprettArbeidssoekerTiltakdeltakelse(personident, miljoe);
 
@@ -448,7 +448,7 @@ public class VedtakshistorikkService {
             var nyeTiltaksdeltakelser = tiltaksdeltakelser.stream()
                     .filter(deltakelse -> deltakelse.getTiltakId() != null).collect(Collectors.toList());
 
-            nyeTiltaksdeltakelser = vedtakUtils.removeOverlappingTiltakVedtak(nyeTiltaksdeltakelser, vedtak.getAap());
+            nyeTiltaksdeltakelser = vedtakUtils.removeOverlappingTiltakVedtak(nyeTiltaksdeltakelser, historikk.getAap());
 
             if (nyeTiltaksdeltakelser != null && !nyeTiltaksdeltakelser.isEmpty()) {
                 List<NyttVedtakTiltak> nyeVedtakRequests = new ArrayList<>();
@@ -462,7 +462,7 @@ public class VedtakshistorikkService {
                 rettighetRequest.setMiljoe(miljoe);
                 rettigheter.add(rettighetRequest);
             }
-            vedtak.setTiltaksdeltakelse(nyeTiltaksdeltakelser);
+            historikk.setTiltaksdeltakelse(nyeTiltaksdeltakelser);
         }
     }
 
