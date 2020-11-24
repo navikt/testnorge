@@ -14,6 +14,7 @@ import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_UNG
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import no.nav.registre.arena.core.service.util.ServiceUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -39,7 +40,6 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequ
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
 import no.nav.registre.arena.core.service.exception.VedtakshistorikkException;
-import no.nav.registre.arena.core.service.util.ServiceUtils;
 import no.nav.registre.arena.core.service.util.ArbeidssoekerUtils;
 import no.nav.registre.arena.core.service.util.IdenterUtils;
 import no.nav.registre.arena.core.service.util.VedtakUtils;
@@ -61,7 +61,6 @@ public class VedtakshistorikkService {
 
     private final AapSyntConsumer aapSyntConsumer;
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
-    private final ServiceUtils serviceUtils;
     private final IdenterUtils identerUtils;
     private final ArbeidssoekerUtils arbeidsoekerUtils;
     private final VedtakUtils vedtakUtils;
@@ -509,7 +508,8 @@ public class VedtakshistorikkService {
         if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
             for (var deltakelse : tiltaksdeltakelser) {
                 if (vedtakUtils.canSetDeltakelseTilFinished(deltakelse)) {
-                    var deltakerstatuskode = vedtakUtils.getAvsluttendeDeltakerstatus(deltakelse.getTiltakAdminKode()).toString();
+                    var deltakerstatuskode = vedtakUtils.getAvsluttendeDeltakerstatus(deltakelse
+                            .getTiltakAdminKode()).toString();
 
                     var rettighetRequest = vedtakUtils.opprettRettighetEndreDeltakerstatusRequest(personident, miljoe,
                             deltakelse, deltakerstatuskode);

@@ -256,9 +256,9 @@ public class VedtakUtils {
             var sisteEndring = serviceUtils.velgKodeBasertPaaSannsynlighet(adminkodeTilDeltakerstatus.get(adminkode)).getKode();
             if (adminkode.equals("AMO")) {
                 if (sisteEndring.equals(Deltakerstatuser.GJENN.toString()) || sisteEndring.equals(Deltakerstatuser.IKKEM.toString())) {
-                    return Arrays.asList(Deltakerstatuser.TILBUD.toString(), Deltakerstatuser.JATAKK.toString(), sisteEndring);
+                    return new ArrayList<>(Arrays.asList(Deltakerstatuser.TILBUD.toString(), Deltakerstatuser.JATAKK.toString(), sisteEndring));
                 } else if (sisteEndring.equals(Deltakerstatuser.NEITAKK.toString())) {
-                    return Arrays.asList(Deltakerstatuser.TILBUD.toString(), sisteEndring);
+                    return new ArrayList<>(Arrays.asList(Deltakerstatuser.TILBUD.toString(), sisteEndring));
                 }
             }
             return sisteEndring.equals("") ? new ArrayList<>() : Collections.singletonList(sisteEndring);

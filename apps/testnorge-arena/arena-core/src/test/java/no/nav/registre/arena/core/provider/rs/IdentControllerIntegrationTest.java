@@ -48,7 +48,7 @@ public class IdentControllerIntegrationTest {
     private NyeBrukereResponse nyeBrukereResponse;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         var arbeidsoekere = Collections.singletonList(Arbeidsoeker.builder()
                 .personident(ident)
                 .miljoe(miljoe)
