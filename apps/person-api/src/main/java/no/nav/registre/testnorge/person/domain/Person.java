@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.Set;
 
 import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
 import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.Foedsel;
@@ -28,6 +29,7 @@ public class Person {
     private String mellomnavn;
     private String etternavn;
     private Adresse adresse;
+    private Set<String> tags;
 
     public Person(PersonDTO dto) {
         ident = dto.getIdent();
@@ -36,6 +38,7 @@ public class Person {
         mellomnavn = dto.getMellomnavn();
         etternavn = dto.getEtternavn();
         adresse = dto.getAdresse() != null ? new Adresse(dto.getAdresse()) : null;
+        tags = dto.getTags();
     }
 
     public Person(PdlPerson pdlPerson) {
@@ -76,6 +79,7 @@ public class Person {
                 .mellomnavn(mellomnavn)
                 .etternavn(etternavn)
                 .adresse(adresse != null ? adresse.toDto() : null)
+                .tags(tags)
                 .build();
     }
 }
