@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.person.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -14,6 +15,7 @@ import no.nav.registre.testnorge.person.consumer.dto.pdl.NavnDTO;
 import no.nav.registre.testnorge.person.consumer.header.PdlHeaders;
 import no.nav.registre.testnorge.person.domain.Person;
 
+@Slf4j
 @RequiredArgsConstructor
 public class PostNavnCommand implements Callable<HendelseDTO> {
     private final WebClient webClient;
@@ -23,12 +25,12 @@ public class PostNavnCommand implements Callable<HendelseDTO> {
 
     @Override
     public HendelseDTO call() {
+        log.info("Legger til navn");
         NavnDTO body = new NavnDTO(person, kilde);
         return webClient.post()
                 .uri(uriBuilder -> uriBuilder.path("/api/v1/bestilling/opprettperson").build())
                 .accept(MediaType.APPLICATION_JSON)
                 .header(PdlHeaders.NAV_PERSONIDENT, person.getIdent())
-                .header(PdlHeaders.KILDE, kilde)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body(BodyInserters.fromPublisher(Mono.just(body), NavnDTO.class))
                 .retrieve()

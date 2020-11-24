@@ -29,7 +29,6 @@ public class PostAdresseCommand implements Callable<HendelseDTO> {
                 .uri(uriBuilder -> uriBuilder.path("/api/v1/bestilling/bostedsadresse").build())
                 .accept(MediaType.APPLICATION_JSON)
                 .header(PdlHeaders.NAV_PERSONIDENT, person.getIdent())
-                .header(PdlHeaders.KILDE, kilde)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body(BodyInserters.fromPublisher(Mono.just(body), AdresseDTO.class))
                 .retrieve()
