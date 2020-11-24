@@ -47,6 +47,7 @@ export const TpsDataVisning = ({ data }: TpsData) => {
 						mouseLeaveDelay={0.1}
 						arrowContent={<div className="rc-tooltip-arrow-inner"></div>}
 						key={idx}
+						overlayStyle={{ opacity: 1 }}
 					>
 						<div className="miljoe-knapp">{miljoe.environment.toUpperCase()}</div>
 					</Tooltip>
