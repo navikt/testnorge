@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import no.nav.registre.sdforvalter.consumer.rs.request.ereg.Adresse;
 import no.nav.registre.sdforvalter.consumer.rs.request.ereg.EregMapperRequest;
@@ -139,8 +140,10 @@ public class StaticDataControllerV1OrganisasjonIntegrationTest {
                 juridiskEnhet,
                 orgMedKnytning
         );
+
         List<EregModel> expected = Collections.singletonList(
-                createEregModel("999999999", "BEDR", "DOLLY TEST BEDR", createEregModel("888888888", "AS", "DOLLY JURIDISK ENHET", wip, brreg), wip, brreg)
+                createEregModel("999999999", "BEDR", "DOLLY TEST BEDR",
+                        createEregModel("888888888", "AS", "DOLLY JURIDISK ENHET", wip, brreg), wip, brreg)
         );
 
         assertResponseIsSavedInDatabase(eregMapperRequestList, expected);
@@ -177,8 +180,6 @@ public class StaticDataControllerV1OrganisasjonIntegrationTest {
                 .andExpect(status().isOk());
 
         Iterable<EregModel> eregRepositoryAll = eregRepository.findAll();
-        assertThat(eregRepository.findAll())
-                .hasSize(eregMapperRequests.size());
 
         assertThat(eregRepositoryAll)
                 .usingElementComparatorIgnoringFields("id", "updatedAt", "createdAt")
