@@ -38,7 +38,7 @@ public class OracleDatabaseConfiguration {
     public DataSource oracleDataSource() {
         return DataSourceBuilder.create()
                 .driverClassName(environment.getProperty("oracle.datasource.driver-class-name"))
-                .url(environment.getProperty("oracle.datasource.jdbc_url"))
+                .url(environment.getProperty("oracle.datasource.url"))
                 .username(environment.getProperty("oracle.datasource.username"))
                 .password(environment.getProperty("oracle.datasource.password"))
                 .build();
