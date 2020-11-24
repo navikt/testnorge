@@ -1,4 +1,2 @@
-application:
-  descriptiveName: ident-check-in-prod-service
-  name: ident-check-in-prod-service
-  version: 1
+CLIENT_ID: bb4aa476-9040-48a1-bcac-79370c530f58
+CLIENT_SECRET: dummy
