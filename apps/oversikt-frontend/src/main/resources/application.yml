@@ -12,3 +12,4 @@ applications:
   testnorge-ident-check-in-prod-service: bb4aa476-9040-48a1-bcac-79370c530f58
   mn-synt-arbeidsforhold-service: 6d2a7d13-a1cc-4397-ac6b-5480049187c4
   testnorge-tps-ident-service: 76276f3a-29d7-4bc4-ba1e-018007b7417b
+  endringsmelding-service: 7f00fa49-869e-4a1a-b4a0-e0c1d556dc38
