@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
 import java.util.List;
 
 import no.nav.registre.orgnrservice.service.OrgnummerService;
@@ -16,15 +15,12 @@ import no.nav.registre.orgnrservice.service.OrgnummerService;
 @RequestMapping("/api/v1/orgnummer")
 public class OrgnummerController {
 
-    OrgnummerService orgnummerService;
+    private final OrgnummerService orgnummerService;
 
     @GetMapping
     public List<String> getOrgnummer (@RequestHeader Integer antall) {
-
-        var a = orgnummerService.generate();
-
+        var a = orgnummerService.generateOrgnrs(antall);
         //sjekk om orgnr finnes i EREG
-
-        return Collections.singletonList(a);
+        return a;
     }
 }

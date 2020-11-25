@@ -1,21 +1,37 @@
 package no.nav.registre.orgnrservice.service;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import no.nav.registre.orgnrservice.consumer.OrganisasjonApiConsumer;
+import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
+
 @Service
+@AllArgsConstructor
 public class OrgnummerService {
 
-    public String generate() {
+    private final OrganisasjonApiConsumer organisasjonApiConsumer;
+
+    public List<String> generateOrgnrs (Integer antall) {
+        List<String> identListe = new ArrayList<>();
+        for (int i = 0; i < antall; i++) {
+            identListe.add(generateOrgnr());
+        }
+        return identListe;
+    }
+
+    private String generateOrgnr() {
         String weights = "32765432";
         int random = ThreadLocalRandom.current().nextInt(80000000, 99999999);
         String randomString = String.valueOf(random);
 
         int controlDigit = calculateControlDigit(weights, randomString);
         if (controlDigit == 1 || controlDigit < 0) {
-            return generate();
+            return generateOrgnr();
         }
 
         return randomString + controlDigit;
@@ -32,4 +48,8 @@ public class OrgnummerService {
         return 11 - (weightedSum % 11);
     }
 
+    private boolean finnesOrgnr (String orgnummer) {
+        OrganisasjonDTO orgnr = organisasjonApiConsumer.getOrgnr(orgnummer);
+        return true;
+    }
 }

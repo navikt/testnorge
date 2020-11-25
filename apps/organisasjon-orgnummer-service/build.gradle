@@ -21,9 +21,9 @@ dependencies {
     implementation 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
     implementation project(':testnorge-oauth2')
     implementation project(':testnorge-dependency-analysis')
-
     implementation project(':testnorge-dependency-analysis-auto-configuration')
     implementation project(':testnorge-core')
+    implementation project(':testnorge-data-transfer-objects')
 
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }

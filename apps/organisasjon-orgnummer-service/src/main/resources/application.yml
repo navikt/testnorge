@@ -3,3 +3,5 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 consumer:
   ereg:
     url: https://modapp-{miljoe}.adeo.no
+  organisasjon-api:
+    url: https://testnorge-organisasjon-api.dev.adeo.no
