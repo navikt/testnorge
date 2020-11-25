@@ -1,14 +1,18 @@
 package no.nav.identpool;
 
-import java.util.Map;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
+import java.util.Map;
+
+@Slf4j
 @SpringBootApplication
 public class ApplicationStarter {
 
     public static void main(String[] arguments) {
+
+        log.info("Starter opp...");
 
         Map<String, Object> properties = PropertyReader.builder()
                 .readSecret("spring.cloud.vault.token", "/var/run/secrets/nais.io/vault/vault_token")
@@ -21,6 +25,8 @@ public class ApplicationStarter {
                 .sources(ApplicationConfig.class, ScheduleConfig.class)
                 .properties(properties)
                 .build();
+
+        log.info("Startet.");
     }
 }
 
