@@ -1,13 +1,11 @@
 package no.nav.identpool;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
 import java.util.Map;
 
 @Slf4j
-@SpringBootApplication
 public class ApplicationStarter {
 
     public static void main(String[] arguments) {
@@ -24,6 +22,7 @@ public class ApplicationStarter {
         new SpringApplicationBuilder()
                 .sources(ApplicationConfig.class, ScheduleConfig.class)
                 .properties(properties)
+                .profiles("prod")
                 .build();
 
         log.info("Startet.");
