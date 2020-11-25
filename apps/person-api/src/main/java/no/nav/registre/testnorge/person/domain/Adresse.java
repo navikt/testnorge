@@ -71,6 +71,6 @@ public class Adresse {
 
 
     private List<String> splitGatenavn(String gatenavn) {
-        return Arrays.asList(gatenavn.split("^\\d+$", 2));
+        return Arrays.asList(StringUtils.split(gatenavn));
     }
 }

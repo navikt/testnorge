@@ -46,16 +46,18 @@ public class PdlTestdataConsumer {
 
         List<Callable<? extends Object>> commands = new ArrayList<>();
 
-        commands.add(new PostOpprettPersonCommand(webClient, person.getIdent(), kilde, token, url));
+        commands.add(new PostOpprettPersonCommand(webClient, person.getIdent(), kilde, token));
+
+        if (person.getFornavn() != null && person.getEtternavn() != null) {
+            commands.add(new PostNavnCommand(webClient, person, kilde, token));
+        }
 
         if (person.getAdresse() != null) {
-            commands.add(new PostAdresseCommand(webClient, person, kilde, token, url));
+            commands.add(new PostAdresseCommand(webClient, person, kilde, token));
         }
-        if (person.getFornavn() != null && person.getEtternavn() != null) {
-            commands.add(new PostNavnCommand(webClient, person, kilde, token, url));
-        }
+
         if (person.getTags() != null && !person.getTags().isEmpty()) {
-            commands.add(new PostTagsCommand(webClient, person, token, url));
+            new PostTagsCommand(webClient, person, token).call();
         }
 
         for (var command : commands) {
@@ -65,7 +67,6 @@ public class PdlTestdataConsumer {
                 throw new PdlCreatePersonException("Feil ved innsendelse til PDL testdata", e);
             }
         }
-
         return person.getIdent();
     }
 }
