@@ -57,7 +57,6 @@ public class JenkinsConsumer {
         this.env = env;
     }
 
-
     public void send(Flatfil flatFile, String miljo) {
         var server = env.getProperty("JENKINS_SERVER_" + miljo.toUpperCase());
         if (server == null) {
