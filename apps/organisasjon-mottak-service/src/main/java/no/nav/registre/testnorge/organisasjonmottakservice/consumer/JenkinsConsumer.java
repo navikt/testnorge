@@ -28,7 +28,6 @@ public class JenkinsConsumer {
 
     public JenkinsConsumer(
             Environment env,
-            @Value("${http.proxy:#{null}}") String proxyHost,
             @Value("${jenkins.rest.api.url}") String jenkinsUri,
             @Value("${jenkins.username}") String jenkinsUsername,
             @Value("${jenkins.password}") String jenkinsPassword
@@ -40,21 +39,6 @@ public class JenkinsConsumer {
         WebClient.Builder builder = WebClient
                 .builder()
                 .baseUrl(jenkinsUri);
-
-        if (proxyHost != null) {
-            log.info("Setter opp proxy host {} for Client Credentials", proxyHost);
-            var uri = URI.create(proxyHost);
-
-            HttpClient httpClient = HttpClient
-                    .create()
-                    .tcpConfiguration(tcpClient -> tcpClient.proxy(proxy -> proxy
-                            .type(ProxyProvider.Proxy.HTTP)
-                            .host(uri.getHost())
-                            .port(uri.getPort())
-                    ));
-
-            builder.clientConnector(new ReactorClientHttpConnector(httpClient));
-        }
 
         this.webClient = builder.build();
         this.env = env;
