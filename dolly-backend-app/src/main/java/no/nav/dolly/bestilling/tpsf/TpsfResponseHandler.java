@@ -8,7 +8,7 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
-import no.nav.dolly.domain.jpa.postgres.BestillingProgress;
+import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.tpsf.SendSkdMeldingTilTpsResponse;
 
 @Component

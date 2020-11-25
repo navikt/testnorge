@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import no.nav.dolly.domain.jpa.postgres.Bestilling;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

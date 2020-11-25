@@ -17,10 +17,10 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.postgres.BestillingProgress;
-import no.nav.dolly.domain.jpa.postgres.TransaksjonMapping;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.SystemTyper;
-import no.nav.dolly.repository.postgres.TransaksjonMappingRepository;
+import no.nav.dolly.repository.TransaksjonMappingRepository;
 
 @Service
 @RequiredArgsConstructor

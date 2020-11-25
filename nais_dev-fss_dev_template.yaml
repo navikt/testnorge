@@ -47,7 +47,3 @@ spec:
     paths:
       - kvPath: /kv/preprod/fss/dolly-backend-dev/dolly
         mountPath: /var/run/secrets/nais.io/vault
-      - kvPath: /oracle/data/dev/creds/dollybackend_t2-user
-        mountPath: /var/run/secrets/nais.io/db
-      - kvPath: /oracle/data/dev/config/dollybackend_t2
-        mountPath: /var/run/secrets/nais.io/dbPath

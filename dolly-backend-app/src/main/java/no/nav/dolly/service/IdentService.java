@@ -11,12 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.postgres.Testgruppe;
-import no.nav.dolly.domain.jpa.postgres.Testident;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testident.RsTestident;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.postgres.IdentRepository;
+import no.nav.dolly.repository.IdentRepository;
 
 @Service
 @RequiredArgsConstructor

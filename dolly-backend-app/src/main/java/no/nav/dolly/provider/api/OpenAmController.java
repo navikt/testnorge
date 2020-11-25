@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.domain.jpa.postgres.Bestilling;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsOpenAmResponse;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.postgres.BestillingRepository;
+import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.service.OpenAmService;
 
 @Transactional

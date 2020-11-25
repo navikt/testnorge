@@ -17,13 +17,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.domain.jpa.postgres.Bruker;
-import no.nav.dolly.domain.jpa.postgres.Testgruppe;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.postgres.BrukerRepository;
-import no.nav.dolly.repository.postgres.TestgruppeRepository;
+import no.nav.dolly.repository.BrukerRepository;
+import no.nav.dolly.repository.TestgruppeRepository;
 
 @Service
 @RequiredArgsConstructor

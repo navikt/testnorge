@@ -1,7 +1,7 @@
 spring:
   flyway:
     enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
-    locations: classpath:db/migration/postgres
+    locations: classpath:db/migration
     baseline-on-migrate: true
   datasource:
     url: jdbc:postgresql://b27dbvl023.preprod.local:5432/dolly-test

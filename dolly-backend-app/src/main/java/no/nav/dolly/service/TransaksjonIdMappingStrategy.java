@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.domain.jpa.postgres.TransaksjonMapping;
+import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.dolly.service.RsTransaksjonMapping.TransaksjonId;
 

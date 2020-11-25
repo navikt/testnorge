@@ -11,8 +11,8 @@ import org.junit.Test;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.common.TestidentBuilder;
-import no.nav.dolly.domain.jpa.postgres.Bruker;
-import no.nav.dolly.domain.jpa.postgres.Testgruppe;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 

@@ -9,7 +9,7 @@ import static org.hamcrest.Matchers.is;
 import java.util.List;
 import org.junit.Test;
 
-import no.nav.dolly.domain.jpa.postgres.BestillingProgress;
+import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
 public class BestillingAaregStatusMapperTest {

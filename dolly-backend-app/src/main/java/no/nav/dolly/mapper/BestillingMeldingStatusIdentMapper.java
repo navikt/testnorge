@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import no.nav.dolly.domain.jpa.postgres.BestillingProgress;
+import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.arenaforvalter.RsMeldingStatusIdent;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

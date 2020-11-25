@@ -16,9 +16,9 @@ import no.nav.dolly.common.repository.BestillingTestRepository;
 import no.nav.dolly.common.repository.BrukerTestRepository;
 import no.nav.dolly.common.repository.GruppeTestRepository;
 import no.nav.dolly.common.repository.IdentTestRepository;
-import no.nav.dolly.domain.jpa.postgres.Bruker;
-import no.nav.dolly.domain.jpa.postgres.Testgruppe;
-import no.nav.dolly.domain.jpa.postgres.Testident;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.provider.api.TestpersonController;
 
 @Component

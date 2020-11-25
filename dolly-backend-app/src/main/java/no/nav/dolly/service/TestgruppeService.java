@@ -17,15 +17,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.domain.jpa.postgres.Bruker;
-import no.nav.dolly.domain.jpa.postgres.Testgruppe;
-import no.nav.dolly.domain.jpa.postgres.Testident;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsLockTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.postgres.TestgruppeRepository;
+import no.nav.dolly.repository.TestgruppeRepository;
 
 @Service
 @RequiredArgsConstructor
