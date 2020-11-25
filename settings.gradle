@@ -234,3 +234,5 @@ gradleEnterprise {
     }
 }
 
+include 'tps-ident-service'
+project(":tps-ident-service").projectDir = file('apps/tps-ident-service')
