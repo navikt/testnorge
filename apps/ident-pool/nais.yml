@@ -6,12 +6,13 @@ metadata:
   labels:
     team: dolly
 spec:
-  accessPolicy:
-    inbound:
-      rules:
-        - application: tps-forvalteren
+  image: {{ image }}
   webproxy: true
   port: 8080
+  ingresses:
+    - "https://ident-pool.nais.preprod.local"
+    - "https://ident-pool.dev.adeo.no"
+    - "https://ident-pool.dev.intern.nav.no"
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
@@ -24,8 +25,6 @@ spec:
   replicas:
     min: 1
     max: 1
-  vault:
-    enabled: true
   resources:
     limits:
       cpu: 2000m
@@ -33,11 +32,10 @@ spec:
     requests:
       cpu: 500m
       memory: 2048Mi
-  ingresses:
-    - "https://ident-pool.nais.preprod.local"
-    - "https://ident-pool.dev.adeo.no"
-  paths:
-    - kvPath: /oracle/data/dev/config/identpool_q2
-      mountPath: /var/run/secrets/nais.io/dbPath
-    - kvPath: /oracle/data/dev/creds/identpool_q2-user
-      mountPath: /var/run/secrets/nais.io/db
+  vault:
+    enabled: true
+    paths:
+      - kvPath: /oracle/data/dev/config/identpool_q2
+        mountPath: /var/run/secrets/nais.io/dbPath
+      - kvPath: /oracle/data/dev/creds/identpool_q2-user
+        mountPath: /var/run/secrets/nais.io/db

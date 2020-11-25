@@ -33,3 +33,4 @@ spec:
   ingresses:
     - "https://inntektsmelding-stub.nais.preprod.local"
     - "https://inntektsmelding-stub.dev.adeo.no"
+    - "https://inntektsmelding-stub.dev.intern.nav.no"

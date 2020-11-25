@@ -37,3 +37,4 @@ spec:
   ingresses:
     - "https://testnorge-synt-sykemelding-api.nais.preprod.local"
     - "https://testnorge-synt-sykemelding-api.dev.adeo.no"
+    - "https://testnorge-synt-sykemelding-api.dev.intern.nav.no"

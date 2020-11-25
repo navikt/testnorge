@@ -35,3 +35,4 @@ spec:
   ingresses:
     - "https://nais-synthdata-frikort.nais.preprod.local"
     - "https://nais-synthdata-frikort.dev.adeo.no"
+    - "https://nais-synthdata-frikort.dev.intern.nav.no"

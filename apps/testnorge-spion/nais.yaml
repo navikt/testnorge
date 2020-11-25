@@ -34,3 +34,4 @@ spec:
     - "https://testnorge-spion.nais.preprod.local"
     - "https://testnorge-spion.dev-fss.nais.io"
     - "https://testnorge-spion.dev.adeo.no"
+    - "https://testnorge-spion.dev.intern.nav.no"

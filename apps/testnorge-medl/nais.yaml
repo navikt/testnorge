@@ -33,3 +33,4 @@ spec:
     - "https://testnorge-medl.nais.preprod.local"
     - "https://testnorge-medl.dev-fss.nais.io"
     - "https://testnorge-medl.dev.adeo.no"
+    - "https://testnorge-medl.dev.intern.nav.no"

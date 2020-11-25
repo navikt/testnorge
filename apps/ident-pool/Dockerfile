@@ -1,4 +1,6 @@
 FROM navikt/java:11
 LABEL maintainer="Team Dolly"
 
-ADD apps/ident-pool/ident-pool-app/build/libs/ident-pool-app.jar /app/app.jar
+ADD ident-pool-app/build/libs/ident-pool-app.jar /app/app.jar
+
+EXPOSE 8080

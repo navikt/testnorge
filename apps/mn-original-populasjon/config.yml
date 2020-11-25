@@ -39,3 +39,4 @@ spec:
       memory: 5000Mi
   ingresses:
     - "https://mn-original-populasjon.dev.adeo.no"
+    - "https://mn-original-populasjon.dev.intern.nav.no"

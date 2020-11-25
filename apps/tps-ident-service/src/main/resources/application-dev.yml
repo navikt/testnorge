@@ -1,0 +1,9 @@
+azure.app.client.id: 76276f3a-29d7-4bc4-ba1e-018007b7417b
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}

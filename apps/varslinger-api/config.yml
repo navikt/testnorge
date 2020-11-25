@@ -45,3 +45,4 @@ spec:
       memory: 5000Mi
   ingresses:
     - "https://testnorge-varslinger-api.dev.adeo.no"
+    - "https://testnorge-varslinger-api.dev.intern.nav.no"

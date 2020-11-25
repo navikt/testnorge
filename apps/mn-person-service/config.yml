@@ -36,3 +36,4 @@ spec:
       memory: 5000Mi
   ingresses:
     - "https://mn-person-service.dev.adeo.no"
+    - "https://mn-person-service.dev.intern.nav.no"

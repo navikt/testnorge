@@ -35,3 +35,4 @@ spec:
   ingresses:
     - "https://nais-synthdata-elsam.nais.preprod.local"
     - "https://nais-synthdata-elsam.dev.adeo.no"
+    - "https://nais-synthdata-elsam.dev.intern.nav.no"
