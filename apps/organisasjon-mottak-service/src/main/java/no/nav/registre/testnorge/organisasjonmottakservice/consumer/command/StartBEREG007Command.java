@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.UUID;
 
 import no.nav.registre.testnorge.organisasjonmottakservice.consumer.request.JenkinsCrumb;
 import no.nav.registre.testnorge.organisasjonmottakservice.domain.Flatfil;
@@ -37,7 +36,7 @@ public class StartBEREG007Command implements Runnable {
     private final String password;
 
     private static Resource getFileResource(String content) throws IOException {
-        Path tempFile = Files.createTempFile("ereg_" + System.currentTimeMillis(), ".txt");
+        Path tempFile = Files.createTempFile("ereg", ".txt");
         Files.write(tempFile, content.getBytes(StandardCharsets.UTF_8));
         File file = tempFile.toFile();
         return new FileSystemResource(file);
@@ -66,7 +65,7 @@ public class StartBEREG007Command implements Runnable {
                 .fromMultipartData("server", server)
                 .with("batchName", "BEREG007")
                 .with("workUnit", "100")
-                .with("FileName", "dolly-" + UUID.randomUUID() + ".txt")
+                .with("FileName", "dolly-" + System.currentTimeMillis() + ".txt")
                 .with("overrideSequenceControl", "true")
                 .with("input_file", fileEntity);
 
@@ -77,8 +76,13 @@ public class StartBEREG007Command implements Runnable {
                 .header("Jenkins-Crumb", crumb.getCrumb())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
                 .body(body)
-                .retrieve()
-                .bodyToMono(Void.class)
+                .exchange()
+                .flatMap(clientResponse -> {
+                    if (!clientResponse.statusCode().is2xxSuccessful()) {
+                        log.error(clientResponse.bodyToMono(String.class).block());
+                    }
+                    return clientResponse.bodyToMono(Void.class);
+                })
                 .block();
     }
 }
