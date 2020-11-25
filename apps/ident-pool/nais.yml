@@ -7,10 +7,6 @@ metadata:
     team: dolly
 spec:
   image: {{ image }}
-  accessPolicy:
-    inbound:
-      rules:
-        - application: tps-forvalteren
   webproxy: true
   port: 8080
   ingresses:
