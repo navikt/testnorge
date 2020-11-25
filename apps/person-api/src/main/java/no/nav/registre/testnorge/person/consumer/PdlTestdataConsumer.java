@@ -14,6 +14,7 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.person.consumer.command.PostAdresseCommand;
 import no.nav.registre.testnorge.person.consumer.command.PostNavnCommand;
 import no.nav.registre.testnorge.person.consumer.command.PostOpprettPersonCommand;
+import no.nav.registre.testnorge.person.consumer.command.PostTagsCommand;
 import no.nav.registre.testnorge.person.domain.Person;
 import no.nav.registre.testnorge.person.exception.PdlCreatePersonException;
 import no.nav.registre.testnorge.person.service.StsOidcTokenService;
@@ -25,6 +26,7 @@ public class PdlTestdataConsumer {
 
     private final StsOidcTokenService tokenService;
     private final WebClient webClient;
+    private final String url;
 
     public PdlTestdataConsumer(
             StsOidcTokenService tokenService,
@@ -34,26 +36,27 @@ public class PdlTestdataConsumer {
         this.webClient = WebClient.builder()
                 .baseUrl(pdlTestdataUrl)
                 .build();
+        this.url = pdlTestdataUrl;
     }
 
     public String createPerson(Person person, String kilde) {
         String token = tokenService.getIdToken();
         log.info("Oppretter person med ident {} i PDL", person.getIdent());
-        log.info("Personen: {}", person);
+        log.info("Personen: {}", person.toString());
 
         List<Callable<? extends Object>> commands = new ArrayList<>();
 
-        commands.add(new PostOpprettPersonCommand(webClient, person.getIdent(), kilde, token));
+        commands.add(new PostOpprettPersonCommand(webClient, person.getIdent(), kilde, token, url));
 
-        if (person.getFornavn() != null && person.getEtternavn() != null) {
-            commands.add(new PostNavnCommand(webClient, person, kilde, token));
-        }
         if (person.getAdresse() != null) {
-            commands.add(new PostAdresseCommand(webClient, person, kilde, token));
+            commands.add(new PostAdresseCommand(webClient, person, kilde, token, url));
         }
-//        if (person.getTags() != null && !person.getTags().isEmpty()) {
-//            commands.add(new PostTagsCommand(webClient, person, token));
-//        }
+        if (person.getFornavn() != null && person.getEtternavn() != null) {
+            commands.add(new PostNavnCommand(webClient, person, kilde, token, url));
+        }
+        if (person.getTags() != null && !person.getTags().isEmpty()) {
+            commands.add(new PostTagsCommand(webClient, person, token, url));
+        }
 
         for (var command : commands) {
             try {

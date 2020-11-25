@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -63,8 +64,11 @@ public class Adresse {
             return null;
         }
         List<String> list = splitGatenavn(getGatenavn());
-        return list.size() == 2 ? list.get(1) : null;
+        String muligHusnummer = list.get(list.size() - 1);
+
+        return StringUtils.isNumeric(muligHusnummer) ? muligHusnummer : null;
     }
+
 
     private List<String> splitGatenavn(String gatenavn) {
         return Arrays.asList(gatenavn.split("^\\d+$", 2));

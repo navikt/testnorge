@@ -22,12 +22,14 @@ public class PostNavnCommand implements Callable<HendelseDTO> {
     private final Person person;
     private final String kilde;
     private final String token;
+    private final String url;
 
     @Override
     public HendelseDTO call() {
-        log.info("Legger til navn");
+        log.info("Legger til navn {} {}", person.getFornavn(), person.getEtternavn());
+        var a  = WebClient.builder().baseUrl(url).build();
         NavnDTO body = new NavnDTO(person, kilde);
-        return webClient.post()
+        return a.post()
                 .uri(uriBuilder -> uriBuilder.path("/api/v1/bestilling/opprettperson").build())
                 .accept(MediaType.APPLICATION_JSON)
                 .header(PdlHeaders.NAV_PERSONIDENT, person.getIdent())

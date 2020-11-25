@@ -17,20 +17,23 @@ public class PostTagsCommand implements Callable<String> {
     private final WebClient webClient;
     private final Person person;
     private final String token;
+    private final String url;
 
     @Override
     public String call() {
         log.info("Legger til tags");
-        return webClient.post()
+        var a  = WebClient.builder().baseUrl(url).build();
+        return a.post()
                 .uri(uriBuilder -> {
                             return uriBuilder.path("/api/v1/bestilling/tags")
-                                    .queryParam("tags", person.getTags().toArray())
+//                                    .queryParam("tags", person.getTags().toArray())
                                     .build();
                         }
                 )
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(PdlHeaders.NAV_PERSONIDENT, person.getIdent())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .header("tags", person.getTags().toArray().toString())
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
