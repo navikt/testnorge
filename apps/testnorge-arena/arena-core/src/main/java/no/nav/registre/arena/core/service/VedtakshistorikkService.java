@@ -476,25 +476,27 @@ public class VedtakshistorikkService {
 
         var nyeTiltaksedeltakelser = new ArrayList<NyttVedtakTiltak>();
 
-        if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
-            for (var deltakelse : tiltaksdeltakelser) {
-                if (vedtakUtils.canSetDeltakelseTilGjennomfoeres(deltakelse)) {
-                    List<String> endringer = vedtakUtils.getFoersteEndringerDeltakerstatus(deltakelse.getTiltakAdminKode());
+        if (tiltaksdeltakelser == null || tiltaksdeltakelser.isEmpty()) {
+            return;
+        }
+        for (var deltakelse : tiltaksdeltakelser) {
+            if (vedtakUtils.canSetDeltakelseTilGjennomfoeres(deltakelse)) {
+                List<String> endringer = vedtakUtils.getFoersteEndringerDeltakerstatus(deltakelse.getTiltakAdminKode());
 
-                    for (var endring : endringer) {
-                        var rettighetRequest = vedtakUtils.opprettRettighetEndreDeltakerstatusRequest(personident, miljoe,
-                                deltakelse, endring);
+                for (var endring : endringer) {
+                    var rettighetRequest = vedtakUtils.opprettRettighetEndreDeltakerstatusRequest(personident, miljoe,
+                            deltakelse, endring);
 
-                        rettigheter.add(rettighetRequest);
-                    }
+                    rettigheter.add(rettighetRequest);
+                }
 
-                    // Hvis siste endring ikke er lik GJENN kan ikke andre tiltak-vedtak (BASI/BTIL) knyttes til tiltaksdeltakelsen.
-                    if (!endringer.isEmpty() && endringer.get(endringer.size() - 1).equals(Deltakerstatuser.GJENN.toString())) {
-                        nyeTiltaksedeltakelser.add(deltakelse);
-                    }
+                // Hvis siste endring ikke er lik GJENN kan ikke andre tiltak-vedtak (BASI/BTIL) knyttes til tiltaksdeltakelsen.
+                if (!endringer.isEmpty() && endringer.get(endringer.size() - 1).equals(Deltakerstatuser.GJENN.toString())) {
+                    nyeTiltaksedeltakelser.add(deltakelse);
                 }
             }
         }
+
         historikk.setTiltaksdeltakelse(nyeTiltaksedeltakelser);
     }
 
