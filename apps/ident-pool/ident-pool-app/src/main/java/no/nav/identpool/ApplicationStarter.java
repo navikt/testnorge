@@ -23,7 +23,7 @@ public class ApplicationStarter {
                 .sources(ApplicationConfig.class, ScheduleConfig.class)
                 .properties(properties)
                 .profiles("prod")
-                .build();
+                .run(arguments);
 
         log.info("Startet.");
     }
