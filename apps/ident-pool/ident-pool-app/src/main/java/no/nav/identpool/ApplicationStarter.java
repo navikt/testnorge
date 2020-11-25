@@ -1,8 +1,11 @@
 package no.nav.identpool;
 
 import java.util.Map;
+
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
+@SpringBootApplication
 public class ApplicationStarter {
 
     public static void main(String[] arguments) {
