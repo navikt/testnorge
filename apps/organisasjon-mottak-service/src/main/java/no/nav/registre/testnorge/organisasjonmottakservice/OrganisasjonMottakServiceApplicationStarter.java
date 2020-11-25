@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @SpringBootApplication
 public class OrganisasjonMottakServiceApplicationStarter {
-    public static void main(String[] args) {
 
+    public static void main(String[] args) {
         SpringApplication.run(OrganisasjonMottakServiceApplicationStarter.class, args);
     }
 }

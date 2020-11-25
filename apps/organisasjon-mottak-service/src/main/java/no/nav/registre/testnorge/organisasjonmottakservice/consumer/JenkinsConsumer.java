@@ -3,8 +3,6 @@ package no.nav.registre.testnorge.organisasjonmottakservice.consumer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -25,6 +23,8 @@ import no.nav.registre.testnorge.organisasjonmottakservice.domain.Flatfil;
 public class JenkinsConsumer {
     private final Environment env;
     private final WebClient webClient;
+    private final String username;
+    private final String password;
 
     public JenkinsConsumer(
             Environment env,
@@ -33,10 +33,12 @@ public class JenkinsConsumer {
             @Value("${jenkins.username}") String jenkinsUsername,
             @Value("${jenkins.password}") String jenkinsPassword
     ) {
+
+        username = jenkinsUsername;
+        password = jenkinsPassword;
+
         WebClient.Builder builder = WebClient
                 .builder()
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
-                .defaultHeaders(headers -> headers.setBasicAuth(jenkinsUsername, jenkinsPassword))
                 .baseUrl(jenkinsUri);
 
         if (proxyHost != null) {
@@ -63,6 +65,6 @@ public class JenkinsConsumer {
             throw new RuntimeException("Finner ikke url for miljo: " + miljo);
         }
         JenkinsCrumb jenkinsCrumb = new GetCrumbCommand(webClient).call();
-        new StartBEREG007Command(webClient, server, miljo, jenkinsCrumb, flatFile).run();
+        new StartBEREG007Command(webClient, server, miljo, jenkinsCrumb, flatFile, username, password).run();
     }
 }
