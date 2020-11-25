@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.opprettpersonpdl.config;
+package no.nav.registre.testnorge.organisasjonmottakservice.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
