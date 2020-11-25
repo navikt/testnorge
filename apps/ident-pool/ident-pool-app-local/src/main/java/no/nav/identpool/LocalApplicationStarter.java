@@ -1,11 +1,11 @@
 package no.nav.identpool;
 
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
-import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.config.ApplicationConfig;
 
-@Slf4j
+@EnableAutoConfiguration
 public class LocalApplicationStarter {
     public static void main(String[] args) {
 
