@@ -36,3 +36,4 @@ spec:
       memory: 5000Mi
   ingresses:
     - "https://testnorge-synt-person-api-dev.dev.adeo.no"
+    - "https://testnorge-synt-person-api-dev.dev.intern.nav.no"

@@ -35,3 +35,4 @@ spec:
   ingresses:
     - "https://nais-synthdata-medl.nais.preprod.local"
     - "https://nais-synthdata-medl.dev.adeo.no"
+    - "https://nais-synthdata-medl.dev.intern.nav.no"

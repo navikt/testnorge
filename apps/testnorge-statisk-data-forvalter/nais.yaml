@@ -33,3 +33,4 @@ spec:
   ingresses:
     - "https://testnorge-statisk-data-forvalter.nais.preprod.local"
     - "https://testnorge-statisk-data-forvalter.dev.adeo.no"
+    - "https://testnorge-statisk-data-forvalter.dev.intern.nav.no"

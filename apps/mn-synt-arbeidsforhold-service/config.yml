@@ -40,3 +40,4 @@ spec:
       memory: 5000Mi
   ingresses:
     - "https://mn-synt-arbeidsforhold-service.dev.adeo.no"
+    - "https://mn-synt-arbeidsforhold-service.dev.intern.nav.no"

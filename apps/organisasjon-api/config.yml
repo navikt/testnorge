@@ -41,3 +41,4 @@ spec:
       memory: 5000Mi
   ingresses:
     - "https://testnorge-organisasjon-api.dev.adeo.no"
+    - "https://testnorge-organisasjon-api.dev.intern.nav.no"
