@@ -69,7 +69,7 @@ public class StartBEREG007Command implements Runnable {
                 .with("overrideSequenceControl", "true")
                 .with("input_file", fileEntity);
 
-        webClient
+        String block = webClient
                 .post()
                 .uri("/view/Registre/job/Start_BEREG007/buildWithParameters")
                 .headers(headers -> headers.setBasicAuth(username, password))
@@ -79,10 +79,12 @@ public class StartBEREG007Command implements Runnable {
                 .exchange()
                 .flatMap(clientResponse -> {
                     if (!clientResponse.statusCode().is2xxSuccessful()) {
-                        log.error(clientResponse.bodyToMono(String.class).block());
+                        return clientResponse.bodyToMono(String.class);
                     }
-                    return clientResponse.bodyToMono(Void.class);
+                    return clientResponse.bodyToMono(String.class);
                 })
                 .block();
+
+        log.info(block);
     }
 }
