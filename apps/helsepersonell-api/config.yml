@@ -42,3 +42,4 @@ spec:
       memory: 5000Mi
   ingresses:
     - "https://testnorge-helsepersonell-api-tmp.dev.adeo.no"
+    - "https://testnorge-helsepersonell-api-tmp.dev.intern.nav.no"

@@ -33,3 +33,4 @@ spec:
   ingresses:
     - "https://syntrest.nais.preprod.local"
     - "https://syntrest.dev.adeo.no"
+    - "https://syntrest.dev.intern.nav.no"

@@ -35,3 +35,4 @@ spec:
   ingresses:
     - "https://testnorge-inntekt.nais.preprod.local"
     - "https://testnorge-inntekt.dev.adeo.no"
+    - "https://testnorge-inntekt.dev.intern.nav.no"

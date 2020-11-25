@@ -45,3 +45,4 @@ spec:
       memory: 5000Mi
   ingresses:
     - "https://testnorge-avhengighetsanalyse-service.dev.adeo.no"
+    - "https://testnorge-avhengighetsanalyse-service.dev.intern.nav.no"

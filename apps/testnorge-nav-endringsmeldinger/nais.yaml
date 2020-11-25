@@ -32,3 +32,4 @@ spec:
   ingresses:
     - "https://testnorge-nav-endringsmeldinger.nais.preprod.local"
     - "https://testnorge-nav-endringsmeldinger.dev.adeo.no"
+    - "https://testnorge-nav-endringsmeldinger.dev.intern.nav.no"

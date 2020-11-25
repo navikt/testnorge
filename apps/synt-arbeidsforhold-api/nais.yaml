@@ -33,3 +33,4 @@ spec:
   ingresses:
     - "https://testnorge-synt-arbeidsforhold-api.nais.preprod.local"
     - "https://testnorge-synt-arbeidsforhold-api.dev.adeo.no"
+    - "https://testnorge-synt-arbeidsforhold-api.dev.intern.nav.no"

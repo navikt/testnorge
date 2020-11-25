@@ -36,3 +36,4 @@ spec:
   ingresses:
     - "https://testnorge-frikort.nais.preprod.local"
     - "https://testnorge-frikort.dev.adeo.no"
+    - "https://testnorge-frikort.dev.intern.nav.no"

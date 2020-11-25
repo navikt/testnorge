@@ -12,6 +12,7 @@ spec:
   ingresses:
     - "https://ident-pool.nais.preprod.local"
     - "https://ident-pool.dev.adeo.no"
+    - "https://ident-pool.dev.intern.nav.no"
   liveness:
     path: /internal/isAlive
     periodSeconds: 30

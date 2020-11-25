@@ -35,3 +35,4 @@ spec:
   ingresses:
     - "https://testnorge-populasjoner.nais.preprod.local"
     - "https://testnorge-populasjoner.dev.adeo.no"
+    - "https://testnorge-populasjoner.dev.intern.nav.no"

@@ -39,3 +39,4 @@ spec:
   image: {{ image }}
   ingresses:
     - "https://orkestratoren.dev.adeo.no"
+    - "https://orkestratoren.dev.intern.nav.no"

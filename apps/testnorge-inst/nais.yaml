@@ -32,3 +32,4 @@ spec:
   ingresses:
     - "https://testnorge-inst.nais.preprod.local"
     - "https://testnorge-inst.dev.adeo.no"
+    - "https://testnorge-inst.dev.intern.nav.no"
