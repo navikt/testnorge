@@ -52,6 +52,7 @@ public class JenkinsConsumer {
                             .host(uri.getHost())
                             .port(uri.getPort())
                     ));
+
             builder.clientConnector(new ReactorClientHttpConnector(httpClient));
         }
 
