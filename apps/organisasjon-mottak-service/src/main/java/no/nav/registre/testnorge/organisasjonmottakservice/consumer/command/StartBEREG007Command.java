@@ -35,7 +35,7 @@ public class StartBEREG007Command implements Runnable {
     private final Flatfil flatfil;
 
     private static Resource getFileResource(String content) throws IOException {
-        Path tempFile = Files.createTempFile("ereg", ".txt");
+        Path tempFile = Files.createTempFile("ereg_" + System.currentTimeMillis(), ".txt");
         Files.write(tempFile, content.getBytes(StandardCharsets.UTF_8));
         File file = tempFile.toFile();
         return new FileSystemResource(file);

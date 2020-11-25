@@ -45,7 +45,7 @@ public class Flatfil {
         StringBuilder builder = new StringBuilder();
         builder.append(createHeader());
         records.forEach(record -> builder.append(record.build()));
-        createTrailer(records.size(), count);
+        builder.append(createTrailer(records.size(), count));
         return builder.toString();
     }
 }

@@ -16,7 +16,7 @@ public class OrganiasjonMottakController {
     private final OrganiasjonService organiasjonService;
 
     @PostMapping
-    private void test(@RequestBody Organiasjon organiasjon) {
+    public void test(@RequestBody Organiasjon organiasjon) {
         organiasjonService.save(organiasjon, "T4");
     }
 }
