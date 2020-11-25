@@ -2,12 +2,12 @@ application:
   name: ident-pool
   version: dummy
 
-spring:
-  datasource:
-#    url: ${SPRING_DATASOURCE_URL}
-    driver-class-name: oracle.jdbc.OracleDriver
-  flyway:
-    locations: classpath:/db/migration
+#spring:
+#  datasource:
+##    url: ${SPRING_DATASOURCE_URL}
+#    driver-class-name: oracle.jdbc.OracleDriver
+#  flyway:
+#    locations: classpath:/db/migration
 
 ### TPS ###
 TPS_FORESPORSEL_XML_O_QUEUENAME: QA.%s_411.TPS_FORESPORSEL_XML_O
