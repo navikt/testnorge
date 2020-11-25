@@ -32,7 +32,6 @@ public class JenkinsConsumer {
             @Value("${jenkins.username}") String jenkinsUsername,
             @Value("${jenkins.password}") String jenkinsPassword
     ) {
-
         username = jenkinsUsername;
         password = jenkinsPassword;
 
