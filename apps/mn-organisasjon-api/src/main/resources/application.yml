@@ -1,6 +1,4 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-CLIENT_ID: a9109f54-8cae-4af2-98e3-8c56a1f5c9ad
-
 
 spring:
   application:
@@ -16,4 +14,3 @@ consumers:
     url: https://testnorge-organisasjon-api.dev.adeo.no
     threads: 7
     client_id: f4167796-bf43-438b-a282-a480e8108d0c
-    client_secret: ${ORGANISASJON_API_CLIENT_SECRET}

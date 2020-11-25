@@ -2,6 +2,7 @@ name: Deploy mn-person-service
 
 on:
   push:
+    branches: master
     paths:
       - apps/mn-person-service/**
       - libs/testnorge-core/**

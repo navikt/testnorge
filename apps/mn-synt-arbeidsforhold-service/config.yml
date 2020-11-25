@@ -9,6 +9,10 @@ spec:
   image: {{ image }}
   port: 8080
   webproxy: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: testnorge-oversikt-frontend
   azure:
     application:
       enabled: true
@@ -36,3 +40,4 @@ spec:
       memory: 5000Mi
   ingresses:
     - "https://mn-synt-arbeidsforhold-service.dev.adeo.no"
+    - "https://mn-synt-arbeidsforhold-service.dev.intern.nav.no"

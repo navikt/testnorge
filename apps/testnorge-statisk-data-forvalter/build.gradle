@@ -12,6 +12,7 @@ dependencies {
     compile group: 'com.google.guava', name: 'guava', version: '30.0-jre'
 
     implementation project(':testnorge-dependency-analysis-auto-configuration')
+
     implementation 'org.springframework.boot:spring-boot-starter-security:2.3.4.RELEASE'
     implementation project(':testnorge-dependency-analysis')
     implementation 'org.springframework.boot:spring-boot-starter-webflux:2.3.2.RELEASE'
@@ -42,7 +43,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.4.6'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:2.2.5.RELEASE'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.5.RELEASE'
     testImplementation project(':testnorge-testing')
 }
 

@@ -10,8 +10,7 @@ import no.nav.registre.testnorge.avhengighetsanalysefrontend.filter.AddAuthoriza
 import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
 import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2FrontendConfiguration;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
-import no.nav.registre.testnorge.libs.oauth2.domain.AzureClientCredentials;
-import no.nav.registre.testnorge.libs.oauth2.service.OnBehalfOfGenerateAccessTokenService;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 
 @Configuration
 @Import({
@@ -22,14 +21,12 @@ import no.nav.registre.testnorge.libs.oauth2.service.OnBehalfOfGenerateAccessTok
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final AzureClientCredentials clientCredentials;
-    private final OnBehalfOfGenerateAccessTokenService tokenService;
+    private final AccessTokenService tokenService;
 
     @Bean
     public AddAuthorizationToRouteFilter dollyBackendAddAuthorizationToRouteFilter() {
         return new AddAuthorizationToRouteFilter(
                 () -> tokenService.generateToken(
-                        clientCredentials,
                         new AccessScopes("api://a90b186a-6896-4a79-9462-03b8cc9c36a9/.default")
                 ).getTokenValue(),
                 "testnorge-avhengighetsanalyse-service"

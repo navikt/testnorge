@@ -41,6 +41,7 @@ public class ApplicationManager {
 
     public void startApplication(SyntConsumer app) throws ApiException, InterruptedException {
         if (!applicationIsAlive(app.getAppName())) {
+            log.info("Starting synth package {}...", app.getAppName());
             kubernetesController.deployImage(app.getAppName());
         }
 

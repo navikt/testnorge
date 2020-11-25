@@ -12,6 +12,11 @@ spec:
   azure:
     application:
       enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: mn-organisasjon-api
+        - application: testnorge-synt-sykemelding-api
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -36,3 +41,4 @@ spec:
       memory: 5000Mi
   ingresses:
     - "https://testnorge-organisasjon-api-dev.dev.adeo.no"
+    - "https://testnorge-organisasjon-api-dev.dev.intern.nav.no"

@@ -11,7 +11,7 @@ import no.nav.registre.testnorge.libs.common.command.GetMNOrganisasjonCommand;
 import no.nav.registre.testnorge.libs.common.command.GetMNOrganisasjonerCommand;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.credentials.MNOrganisasjonApiClientProperties;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Organisajon;
 
@@ -20,11 +20,11 @@ public class MNOrganiasjonConsumer {
 
     private final WebClient webClient;
     private final MNOrganisasjonApiClientProperties mnOrganisasjonApiClientProperties;
-    private final ClientCredentialGenerateAccessTokenService accessTokenService;
+    private final AccessTokenService accessTokenService;
 
     public MNOrganiasjonConsumer(
             MNOrganisasjonApiClientProperties mnOrganisasjonApiClientProperties,
-            ClientCredentialGenerateAccessTokenService accessTokenService
+            AccessTokenService accessTokenService
     ) {
         this.mnOrganisasjonApiClientProperties = mnOrganisasjonApiClientProperties;
         this.accessTokenService = accessTokenService;
@@ -35,13 +35,15 @@ public class MNOrganiasjonConsumer {
     }
 
     public List<Organisajon> getOrganisajoner(String miljo) {
-        AccessToken accessToken = accessTokenService.generateToken(mnOrganisasjonApiClientProperties);
+        AccessToken accessToken = accessTokenService.generateToken(mnOrganisasjonApiClientProperties.getClientId());
+
         List<OrganisasjonDTO> list = new GetMNOrganisasjonerCommand(webClient, accessToken.getTokenValue(), miljo).call();
         return list.stream().map(Organisajon::new).collect(Collectors.toList());
     }
 
     public Optional<Organisajon> getOrganisajon(String miljo, String orgnummer) {
-        AccessToken accessToken = accessTokenService.generateToken(mnOrganisasjonApiClientProperties);
+        AccessToken accessToken = accessTokenService.generateToken(mnOrganisasjonApiClientProperties.getClientId());
+
         OrganisasjonDTO call = new GetMNOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, miljo).call();
         return Optional.of(call).map(Organisajon::new);
     }

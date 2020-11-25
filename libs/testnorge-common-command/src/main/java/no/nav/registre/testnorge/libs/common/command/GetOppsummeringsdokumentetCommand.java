@@ -14,7 +14,7 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OppsummeringsdokumentetDTO;
 
 @Slf4j
-@DependencyOn("arbeidsforhold-api")
+@DependencyOn("testnorge-arbeidsforhold-api")
 @RequiredArgsConstructor
 public class GetOppsummeringsdokumentetCommand implements Callable<OppsummeringsdokumentetDTO> {
     private final WebClient webClient;

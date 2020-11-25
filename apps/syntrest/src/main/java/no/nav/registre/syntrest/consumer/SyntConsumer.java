@@ -30,10 +30,9 @@ public class SyntConsumer {
     public synchronized Object synthesizeData(RequestEntity request) throws ResponseStatusException {
 
         try {
-            log.info("Starting synth package {}...", this.appName);
             applicationManager.startApplication(this);
         } catch (ApiException | InterruptedException e) {
-            log.error("Could not start synth package {}: {}", this.appName, e.getMessage());
+            log.error("Could access synth package {}: {}", this.appName, e.getMessage());
             return null;
         }
 

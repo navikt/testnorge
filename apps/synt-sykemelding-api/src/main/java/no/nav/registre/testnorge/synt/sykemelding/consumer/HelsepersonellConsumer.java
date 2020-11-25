@@ -3,38 +3,42 @@ package no.nav.registre.testnorge.synt.sykemelding.consumer;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
-import java.net.URI;
-
+import no.nav.registre.testnorge.libs.common.command.GetHelsepersonellCommand;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import no.nav.registre.testnorge.synt.sykemelding.domain.HelsepersonellListe;
-import no.nav.registre.testnorge.synt.sykemelding.exception.LegerNotFoundException;
 
 @Slf4j
 @Component
 @DependencyOn("testnorge-helsepersonell-api")
 public class HelsepersonellConsumer {
-    private final RestTemplate restTemplate;
-    private final String url;
+    private final AccessTokenService accessTokenService;
+    private final WebClient webClient;
+    private final String clientId;
 
-    public HelsepersonellConsumer(RestTemplateBuilder restTemplateBuilder, @Value("${consumers.helsepersonell.url}") String url) {
-        this.restTemplate = restTemplateBuilder.build();
-        this.url = url + "/api/v1/helsepersonell";
+    public HelsepersonellConsumer(
+            AccessTokenService accessTokenService,
+            @Value("${consumers.helsepersonell.client_id}") String clientId,
+            @Value("${consumers.helsepersonell.url}") String url
+    ) {
+        this.accessTokenService = accessTokenService;
+        this.clientId = clientId;
+        this.webClient = WebClient
+                .builder()
+                .baseUrl(url)
+                .build();
     }
 
     @SneakyThrows
     public HelsepersonellListe hentHelsepersonell() {
+        AccessToken accessToken = accessTokenService.generateToken(clientId);
         log.info("Henter helsepersonell...");
-        var dto = restTemplate.exchange(RequestEntity.get(new URI(url)).build(), HelsepersonellListeDTO.class).getBody();
-
-        if (dto == null) {
-            throw new LegerNotFoundException("Klarer ikke å hente helsepersonell fra helsepersonell-api");
-        }
+        HelsepersonellListeDTO dto = new GetHelsepersonellCommand(webClient, accessToken.getTokenValue()).call();
         log.info("{} helsepersonell hentet", dto.getHelsepersonell().size());
         return new HelsepersonellListe(dto);
     }

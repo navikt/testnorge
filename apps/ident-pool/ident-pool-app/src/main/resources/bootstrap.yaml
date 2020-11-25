@@ -1,0 +1,12 @@
+spring:
+  flyway:
+    enabled: true
+    locations: classpath:/db/migration
+  jpa:
+    hibernate:
+      showSql: false
+  datasource:
+    url: ${spring.datasource.jdbc_url}
+  cloud:
+    vault:
+      enabled: false

@@ -12,6 +12,10 @@ spec:
   azure:
     application:
       enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: orkestratoren
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -36,3 +40,4 @@ spec:
       memory: 5000Mi
   ingresses:
     - "https://testnorge-person-api-dev.dev.adeo.no"
+    - "https://testnorge-person-api-dev.dev.intern.nav.no"

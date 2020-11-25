@@ -6,39 +6,31 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.registre.testnorge.libs.common.command.GetOrganisasjonCommand;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
-import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
-import no.nav.registre.testnorge.synt.sykemelding.consumer.credential.OrganisasjonApiClientCredential;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 
 @Component
 public class OrganisasjonConsumer {
     private final WebClient webClient;
-    private final ClientCredential clientCredential;
-    private final ClientCredentialGenerateAccessTokenService accessTokenService;
+    private final AccessTokenService accessTokenService;
+    private final String clientId;
 
     public OrganisasjonConsumer(
             @Value("${consumers.organisasjonapi.url}") String url,
-            OrganisasjonApiClientCredential clientCredential,
-            ClientCredentialGenerateAccessTokenService accessTokenService
+            @Value("${consumers.organisasjonapi.client_id}") String clientId,
+            AccessTokenService accessTokenService
     ) {
-
-        this.clientCredential = clientCredential;
+        this.clientId = clientId;
         this.accessTokenService = accessTokenService;
 
         this.webClient = WebClient
                 .builder()
                 .baseUrl(url)
                 .build();
-
     }
 
     public OrganisasjonDTO getOrganisasjon(String orgnummer) {
-        AccessToken accessToken = accessTokenService.generateToken(
-                clientCredential,
-                new AccessScopes("api://" + clientCredential.getClientId() + "/.default")
-        );
+        AccessToken accessToken = accessTokenService.generateToken(clientId);
         return new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, "q1").call();
     }
 }
