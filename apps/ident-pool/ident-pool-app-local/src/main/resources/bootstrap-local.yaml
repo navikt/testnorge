@@ -27,3 +27,6 @@ spring:
         default-schema: public
         showSql: true
 
+oracle:
+  datasource:
+    url: ${identpool.datasource.jdbc_url}
