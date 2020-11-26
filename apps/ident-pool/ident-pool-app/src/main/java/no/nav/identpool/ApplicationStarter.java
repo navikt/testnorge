@@ -1,9 +1,10 @@
 package no.nav.identpool;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.Map;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
-import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.identpool.config.ScheduleConfig;
 
 @Slf4j
 public class ApplicationStarter {

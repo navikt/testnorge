@@ -2,10 +2,6 @@ application:
   name: ident-pool
   version: dummy
 
-oracle:
-  datasource:
-    url: ${identpool.datasource.jdbc_url}
-
 ### TPS ###
 TPS_FORESPORSEL_XML_O_QUEUENAME: QA.%s_411.TPS_FORESPORSEL_XML_O
 generer:

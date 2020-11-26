@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.identpool.dbmigration.MigrationService;
 import no.nav.identpool.domain.oracle.OraAjourhold;
 import no.nav.identpool.domain.postgres.Ajourhold;
 import no.nav.identpool.repository.oracle.OraAjourholdRepository;

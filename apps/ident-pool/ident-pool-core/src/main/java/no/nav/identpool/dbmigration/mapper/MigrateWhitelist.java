@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.identpool.dbmigration.MigrationService;
 import no.nav.identpool.domain.oracle.OraWhitelist;
 import no.nav.identpool.domain.postgres.Whitelist;
 import no.nav.identpool.repository.oracle.OraWhitelistRepository;

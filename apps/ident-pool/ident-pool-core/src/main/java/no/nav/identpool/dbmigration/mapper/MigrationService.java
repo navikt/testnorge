@@ -1,4 +1,4 @@
-package no.nav.identpool.dbmigration;
+package no.nav.identpool.dbmigration.mapper;
 
 public interface MigrationService {
 
