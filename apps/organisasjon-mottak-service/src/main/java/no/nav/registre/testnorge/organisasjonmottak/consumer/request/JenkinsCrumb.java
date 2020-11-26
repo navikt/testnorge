@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.organisasjonmottakservice.consumer.request;
+package no.nav.registre.testnorge.organisasjonmottak.consumer.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,21 +1,16 @@
-package no.nav.registre.testnorge.organisasjonmottakservice.consumer;
+package no.nav.registre.testnorge.organisasjonmottak.consumer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.netty.http.client.HttpClient;
-import reactor.netty.tcp.ProxyProvider;
-
-import java.net.URI;
 
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.organisasjonmottakservice.consumer.command.GetCrumbCommand;
-import no.nav.registre.testnorge.organisasjonmottakservice.consumer.command.StartBEREG007Command;
-import no.nav.registre.testnorge.organisasjonmottakservice.consumer.request.JenkinsCrumb;
-import no.nav.registre.testnorge.organisasjonmottakservice.domain.Flatfil;
+import no.nav.registre.testnorge.organisasjonmottak.consumer.command.GetCrumbCommand;
+import no.nav.registre.testnorge.organisasjonmottak.consumer.command.StartBEREG007Command;
+import no.nav.registre.testnorge.organisasjonmottak.consumer.request.JenkinsCrumb;
+import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
 
 @Slf4j
 @Component

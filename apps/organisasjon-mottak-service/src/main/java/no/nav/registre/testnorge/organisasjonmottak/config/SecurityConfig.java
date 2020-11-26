@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.organisasjonmottakservice.config;
+package no.nav.registre.testnorge.organisasjonmottak.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;

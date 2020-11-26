@@ -1,9 +1,9 @@
-package no.nav.registre.testnorge.organisasjonmottakservice.consumer;
+package no.nav.registre.testnorge.organisasjonmottak.consumer;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import no.nav.registre.testnorge.organisasjonmottakservice.domain.Flatfil;
+import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
 
 @Component
 @RequiredArgsConstructor

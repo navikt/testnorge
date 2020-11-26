@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.organisasjonmottakservice.domain;
+package no.nav.registre.testnorge.organisasjonmottak.domain;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.organisasjonmottakservice.consumer.command;
+package no.nav.registre.testnorge.organisasjonmottak.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,7 +6,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.organisasjonmottakservice.consumer.request.JenkinsCrumb;
+import no.nav.registre.testnorge.organisasjonmottak.consumer.request.JenkinsCrumb;
 
 @Slf4j
 @RequiredArgsConstructor

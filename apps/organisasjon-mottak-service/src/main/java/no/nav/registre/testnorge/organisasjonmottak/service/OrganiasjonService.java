@@ -1,13 +1,13 @@
-package no.nav.registre.testnorge.organisasjonmottakservice.service;
+package no.nav.registre.testnorge.organisasjonmottak.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import no.nav.registre.testnorge.organisasjonmottakservice.consumer.EregConsumer;
-import no.nav.registre.testnorge.organisasjonmottakservice.domain.Flatfil;
-import no.nav.registre.testnorge.organisasjonmottakservice.domain.Knyttning;
-import no.nav.registre.testnorge.organisasjonmottakservice.domain.Organiasjon;
+import no.nav.registre.testnorge.organisasjonmottak.consumer.EregConsumer;
+import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
+import no.nav.registre.testnorge.organisasjonmottak.domain.Knyttning;
+import no.nav.registre.testnorge.organisasjonmottak.domain.Organiasjon;
 
 @Slf4j
 @Service

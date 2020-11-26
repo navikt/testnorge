@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.organisasjonmottakservice.listener;
+package no.nav.registre.testnorge.organisasjonmottak.listener;
 
 
 import lombok.RequiredArgsConstructor;
@@ -6,11 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.stereotype.Component;
 
 import no.nav.registre.testnorge.libs.avro.organiasjon.Knyttning;
 import no.nav.registre.testnorge.libs.avro.organiasjon.Organiasjon;
-import no.nav.registre.testnorge.organisasjonmottakservice.service.OrganiasjonService;
+import no.nav.registre.testnorge.organisasjonmottak.service.OrganiasjonService;
 
 @Slf4j
 @Profile("prod")
@@ -21,7 +20,7 @@ public class OrganaisjonMottakListener {
     @KafkaListener(topics = "tn-opprett-organiasjon-v1")
     public void opprettOrganiasjon(@Payload Organiasjon organiasjon) {
         organiasjonService.save(
-                new no.nav.registre.testnorge.organisasjonmottakservice.domain.Organiasjon(organiasjon),
+                new no.nav.registre.testnorge.organisasjonmottak.domain.Organiasjon(organiasjon),
                 organiasjon.getMiljo()
         );
     }
@@ -29,7 +28,7 @@ public class OrganaisjonMottakListener {
     @KafkaListener(topics = "tn-opprett-knyttninger-mellom-organiasjoner-v1")
     public void opprettKnyttning(@Payload Knyttning knyttning) {
         organiasjonService.save(
-                new no.nav.registre.testnorge.organisasjonmottakservice.domain.Knyttning(knyttning),
+                new no.nav.registre.testnorge.organisasjonmottak.domain.Knyttning(knyttning),
                 knyttning.getMiljo()
         );
     }

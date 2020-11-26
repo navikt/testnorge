@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.organisasjonmottakservice.service;
+package no.nav.registre.testnorge.organisasjonmottak.service;
 
 import com.google.common.base.Strings;
 import org.springframework.stereotype.Service;
@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import no.nav.registre.testnorge.organisasjonmottakservice.domain.Flatfil;
-import no.nav.registre.testnorge.organisasjonmottakservice.domain.Knyttning;
-import no.nav.registre.testnorge.organisasjonmottakservice.domain.Organiasjon;
-import no.nav.registre.testnorge.organisasjonmottakservice.domain.Record;
+import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
+import no.nav.registre.testnorge.organisasjonmottak.domain.Knyttning;
+import no.nav.registre.testnorge.organisasjonmottak.domain.Organiasjon;
+import no.nav.registre.testnorge.organisasjonmottak.domain.Record;
 
 @Service
 public class FlatfilService {

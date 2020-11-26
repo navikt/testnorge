@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.organisasjonmottakservice.provider;
+package no.nav.registre.testnorge.organisasjonmottak.provider;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.registre.testnorge.organisasjonmottakservice.domain.Organiasjon;
-import no.nav.registre.testnorge.organisasjonmottakservice.service.OrganiasjonService;
+import no.nav.registre.testnorge.organisasjonmottak.domain.Organiasjon;
+import no.nav.registre.testnorge.organisasjonmottak.service.OrganiasjonService;
 
 @RequiredArgsConstructor
 @RestController

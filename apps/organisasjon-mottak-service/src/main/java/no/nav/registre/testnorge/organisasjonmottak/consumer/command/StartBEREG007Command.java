@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.organisasjonmottakservice.consumer.command;
+package no.nav.registre.testnorge.organisasjonmottak.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -21,8 +21,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import no.nav.registre.testnorge.organisasjonmottakservice.consumer.request.JenkinsCrumb;
-import no.nav.registre.testnorge.organisasjonmottakservice.domain.Flatfil;
+import no.nav.registre.testnorge.organisasjonmottak.consumer.request.JenkinsCrumb;
+import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -74,9 +74,8 @@ public class StartBEREG007Command implements Runnable {
         String block = webClient
                 .post()
                 .uri("/view/Registre/job/Start_BEREG007/buildWithParameters")
-                .header("Jenkins-Crumb", "43b4571a33fea57944febec34e128005")
+                .header("Jenkins-Crumb", crumb.getCrumb())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
-//                .headers(headers -> headers.setBasicAuth(username, password))
                 .body(body)
                 .exchange()
                 .flatMap(clientResponse -> {
