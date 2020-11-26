@@ -16,12 +16,12 @@ import no.nav.registre.testnorge.organisasjonmottak.service.OrganiasjonService;
 public class OrganiasjonMottakController {
     private final OrganiasjonService organiasjonService;
 
-    @PostMapping
+    @PostMapping("/org")
     public void setOrganiasjon(@RequestBody Organiasjon organiasjon) {
         organiasjonService.save(organiasjon, "T4");
     }
 
-    @PostMapping
+    @PostMapping("/navn")
     public void setNavn(@RequestBody Navn navn) {
         organiasjonService.save(navn, "T4");
     }
