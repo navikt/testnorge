@@ -9,12 +9,11 @@ import lombok.Value;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 @EqualsAndHashCode(callSuper = true)
-public class Organiasjon extends Base {
+public class Navn extends Base {
     String navn;
 
-    public Organiasjon(no.nav.registre.testnorge.libs.avro.organiasjon.Organiasjon organiasjon) {
-        super(organiasjon.getOrgnummer(), organiasjon.getEnhetstype());
-        this.navn = organiasjon.getNavn();
+    public Navn(no.nav.registre.testnorge.libs.avro.organiasjon.Navn navn) {
+        super(navn.getMetadata());
+        this.navn = navn.getNavn();
     }
-
 }

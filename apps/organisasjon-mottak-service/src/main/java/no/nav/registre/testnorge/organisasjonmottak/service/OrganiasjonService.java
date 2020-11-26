@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.EregConsumer;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Knyttning;
+import no.nav.registre.testnorge.organisasjonmottak.domain.Navn;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Organiasjon;
 
 @Slf4j
@@ -25,6 +26,12 @@ public class OrganiasjonService {
     public void save(Organiasjon organiasjon, String miljo) {
         Flatfil flatfil = flatfilService.toFlatfil(organiasjon);
         log.info("Lagerer organiasjon i {}.", miljo);
+        eregConsumer.save(flatfil, miljo);
+    }
+
+    public void save(Navn navn, String miljo) {
+        Flatfil flatfil = flatfilService.toFlatfil(navn);
+        log.info("Endrer navn i {}.", miljo);
         eregConsumer.save(flatfil, miljo);
     }
 }

@@ -6,8 +6,10 @@ import org.springframework.stereotype.Service;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import no.nav.registre.testnorge.organisasjonmottak.domain.Base;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Knyttning;
+import no.nav.registre.testnorge.organisasjonmottak.domain.Navn;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Organiasjon;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Record;
 
@@ -25,12 +27,21 @@ public class FlatfilService {
         record.append(createEHN(organiasjon, false));
         record.append(createNavn(organiasjon.getNavn()));
         flatfil.add(record);
-
         return flatfil;
     }
 
-    private String createEHN(Organiasjon organiasjon, boolean update) {
-        return createEHN(organiasjon.getOrgnummer(), organiasjon.getEnhetstype(), update);
+    public Flatfil toFlatfil(Navn navn) {
+        Flatfil flatfil = new Flatfil();
+        Record record = new Record();
+        record.append(createEHN(navn, true));
+        record.append(createNavn(navn.getNavn()));
+        flatfil.add(record);
+        return flatfil;
+    }
+
+
+    private String createEHN(Base base, boolean update) {
+        return createEHN(base.getOrgnummer(), base.getEnhetstype(), update);
     }
 
     private String createEHN(Knyttning knyttning, boolean update) {
