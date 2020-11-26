@@ -1,0 +1,11 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
+    name: endringsmelding-service
+    desciption: Tjeneste for å sende endringsmeldinger
+
+consumers:
+  tpsforvalter:
+    url: https://tps-forvalteren.dev.adeo.no
