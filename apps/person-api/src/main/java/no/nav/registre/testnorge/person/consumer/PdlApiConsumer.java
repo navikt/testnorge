@@ -35,7 +35,7 @@ public class PdlApiConsumer {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public Person getPerson(String ident) throws PdlGetPersonException {
+    public Person getPerson(String ident) {
         log.info("Henter person {} fra PDL", ident);
         String token = tokenService.getIdToken();
 

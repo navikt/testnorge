@@ -27,9 +27,8 @@ public class PostAdresseCommand implements Callable<HendelseDTO> {
     @Override
     public HendelseDTO call() {
         AdresseDTO body = new AdresseDTO(person, kilde);
-        log.info("Legger til adresse. Gatenavn {} og husnummer {}", body.getVegadresse().getAdressenavn(), body.getVegadresse().getHusnummer());
         return webClient.post()
-                .uri(uriBuilder -> uriBuilder.path("/api/v1/bestilling/bostedsadresse").build())
+                .uri("/api/v1/bestilling/bostedsadresse")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(PdlHeaders.NAV_PERSONIDENT, person.getIdent())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)

@@ -8,9 +8,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.person.consumer.command.GetTagsCommand;
 import no.nav.registre.testnorge.person.consumer.command.PostAdresseCommand;
 import no.nav.registre.testnorge.person.consumer.command.PostNavnCommand;
 import no.nav.registre.testnorge.person.consumer.command.PostOpprettPersonCommand;
@@ -26,7 +28,6 @@ public class PdlTestdataConsumer {
 
     private final StsOidcTokenService tokenService;
     private final WebClient webClient;
-    private final String url;
 
     public PdlTestdataConsumer(
             StsOidcTokenService tokenService,
@@ -36,13 +37,11 @@ public class PdlTestdataConsumer {
         this.webClient = WebClient.builder()
                 .baseUrl(pdlTestdataUrl)
                 .build();
-        this.url = pdlTestdataUrl;
     }
 
     public String createPerson(Person person, String kilde) {
         String token = tokenService.getIdToken();
         log.info("Oppretter person med ident {} i PDL", person.getIdent());
-        log.info("Personen: {}", person.toString());
 
         List<Callable<? extends Object>> commands = new ArrayList<>();
 
@@ -68,5 +67,10 @@ public class PdlTestdataConsumer {
             }
         }
         return person.getIdent();
+    }
+
+    public Set<String> getTags (String ident) {
+        String token = tokenService.getIdToken();
+        return new GetTagsCommand(webClient, ident, token).call();
     }
 }

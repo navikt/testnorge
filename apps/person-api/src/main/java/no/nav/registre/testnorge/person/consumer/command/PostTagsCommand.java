@@ -26,8 +26,6 @@ public class PostTagsCommand implements Callable<Void> {
 
     @Override
     public Void call() {
-        log.info("Legger til tags");
-
         List<String> ident = Collections.singletonList(person.getIdent());
         return webClient.post()
                 .uri(uriBuilder -> uriBuilder.path("/api/v1/bestilling/tags")

@@ -25,10 +25,9 @@ public class PostNavnCommand implements Callable<HendelseDTO> {
 
     @Override
     public HendelseDTO call() {
-        log.info("Legger til navn {} {}", person.getFornavn(), person.getEtternavn());
         NavnDTO body = new NavnDTO(person, kilde);
         return webClient.post()
-                .uri(uriBuilder -> uriBuilder.path("/api/v1/bestilling/navn").build())
+                .uri("/api/v1/bestilling/navn")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(PdlHeaders.NAV_PERSONIDENT, person.getIdent())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)

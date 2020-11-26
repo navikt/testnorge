@@ -16,7 +16,6 @@ spec:
     inbound:
       rules:
         - application: orkestratoren
-        - application: testnorge-oversikt-frontend
   liveness:
     path: /internal/isAlive
     initialDelay: 4
