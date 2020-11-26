@@ -9,19 +9,14 @@ import lombok.Value;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 @EqualsAndHashCode(callSuper = true)
-public class Navn extends ToFlatfil {
-    String navn;
+public class Maalform extends ToFlatfil {
+    String maalform;
 
-    public Navn(no.nav.registre.testnorge.libs.avro.organiasjon.Navn navn) {
-        super(navn.getMetadata());
-        this.navn = navn.getNavn();
-    }
-
-    private String createNavn() {
-        StringBuilder stringBuilder = createBaseStringbuilder(219, "NAVN", "N");
-        stringBuilder.replace(8, 8 + navn.length(), navn).append("\n");
-        stringBuilder.replace(183, 183 + navn.length(), navn).append("\n");
-        return stringBuilder.toString();
+    private String toRecordLine() {
+        return LineBuilder
+                .newBuilder("MÅL", 9)
+                .setLine(8, maalform)
+                .toString();
     }
 
     @Override
@@ -34,7 +29,7 @@ public class Navn extends ToFlatfil {
         Flatfil flatfil = new Flatfil();
         Record record = new Record();
         record.append(createEHN());
-        record.append(createNavn());
+        record.append(toRecordLine());
         flatfil.add(record);
         return flatfil;
     }

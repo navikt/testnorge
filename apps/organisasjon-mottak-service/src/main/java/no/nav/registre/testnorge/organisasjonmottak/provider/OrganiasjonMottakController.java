@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import no.nav.registre.testnorge.organisasjonmottak.domain.Maalform;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Navn;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Organiasjon;
 import no.nav.registre.testnorge.organisasjonmottak.service.OrganiasjonService;
@@ -24,5 +25,10 @@ public class OrganiasjonMottakController {
     @PostMapping("/navn")
     public void setNavn(@RequestBody Navn navn) {
         organiasjonService.save(navn, "T4");
+    }
+
+    @PostMapping("/maal")
+    public void setNavn(@RequestBody Maalform maalform) {
+        organiasjonService.save(maalform, "T4");
     }
 }
