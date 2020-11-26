@@ -5,9 +5,6 @@ plugins {
 
 repositories {
     maven {
-        url = uri('https://repo.adeo.no/repository/github-package-registry-navikt')
-    }
-    maven {
         url = uri('https://repo1.maven.org/maven2/')
     }
     mavenLocal()
