@@ -8,7 +8,7 @@ import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import no.nav.identpool.domain.Identtype;
-import no.nav.identpool.domain.postgres.Rekvireringsstatus;
+import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.repository.postgres.IdentRepository;
 
 @Configuration

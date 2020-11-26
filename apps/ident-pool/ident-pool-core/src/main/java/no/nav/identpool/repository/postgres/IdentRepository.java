@@ -12,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 import no.nav.identpool.domain.postgres.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
-import no.nav.identpool.domain.postgres.Rekvireringsstatus;
+import no.nav.identpool.domain.Rekvireringsstatus;
 
 public interface IdentRepository extends PagingAndSortingRepository<Ident, Long> {
 

@@ -1,4 +1,4 @@
-package no.nav.identpool.domain;
+package no.nav.identpool.domain.postgres;
 
 import java.time.LocalDateTime;
 import javax.batch.runtime.BatchStatus;

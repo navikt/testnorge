@@ -1,8 +1,8 @@
 package no.nav.identpool.service;
 
 import static java.time.temporal.ChronoUnit.DAYS;
-import static no.nav.identpool.domain.postgres.Rekvireringsstatus.I_BRUK;
-import static no.nav.identpool.domain.postgres.Rekvireringsstatus.LEDIG;
+import static no.nav.identpool.domain.Rekvireringsstatus.I_BRUK;
+import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
 import static no.nav.identpool.util.PersonidentUtil.getIdentType;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.domain.postgres.Ident;
 import no.nav.identpool.domain.Identtype;
-import no.nav.identpool.domain.postgres.Rekvireringsstatus;
+import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.domain.TpsStatus;
 import no.nav.identpool.exception.ForFaaLedigeIdenterException;
 import no.nav.identpool.exception.IdentAlleredeIBrukException;

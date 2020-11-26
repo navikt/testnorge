@@ -3,7 +3,7 @@ package no.nav.identpool.ajourhold;
 import java.time.LocalDateTime;
 import javax.batch.runtime.BatchStatus;
 
-import no.nav.identpool.domain.Ajourhold;
+import no.nav.identpool.domain.postgres.Ajourhold;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;

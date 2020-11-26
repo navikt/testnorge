@@ -1,7 +1,7 @@
 package no.nav.identpool.ajourhold;
 
 import static java.time.temporal.TemporalAdjusters.firstDayOfYear;
-import static no.nav.identpool.domain.postgres.Rekvireringsstatus.LEDIG;
+import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.consumers.TpsfConsumer;
 import no.nav.identpool.domain.postgres.Ident;
 import no.nav.identpool.domain.Identtype;
-import no.nav.identpool.domain.postgres.Rekvireringsstatus;
+import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.domain.TpsStatus;
 import no.nav.identpool.repository.postgres.IdentRepository;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;

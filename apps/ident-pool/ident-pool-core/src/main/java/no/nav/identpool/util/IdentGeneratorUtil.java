@@ -9,7 +9,7 @@ import com.google.common.collect.ImmutableMap;
 import no.nav.identpool.domain.postgres.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
-import no.nav.identpool.domain.postgres.Rekvireringsstatus;
+import no.nav.identpool.domain.Rekvireringsstatus;
 
 import java.security.SecureRandom;
 import java.time.LocalDate;

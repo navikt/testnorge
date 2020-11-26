@@ -28,7 +28,7 @@ import io.micrometer.core.instrument.Counter;
 import no.nav.identpool.consumers.TpsfConsumer;
 import no.nav.identpool.domain.postgres.Ident;
 import no.nav.identpool.domain.Identtype;
-import no.nav.identpool.domain.postgres.Rekvireringsstatus;
+import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.domain.TpsStatus;
 import no.nav.identpool.repository.postgres.IdentRepository;
 import no.nav.identpool.service.IdentGeneratorService;

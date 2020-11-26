@@ -1,4 +1,4 @@
-package no.nav.identpool.domain.postgres;
+package no.nav.identpool.domain;
 
 public enum Rekvireringsstatus {
     LEDIG,

@@ -23,7 +23,7 @@ import org.springframework.util.LinkedMultiValueMap;
 
 import no.nav.identpool.ComponentTestbase;
 import no.nav.identpool.domain.Identtype;
-import no.nav.identpool.domain.postgres.Rekvireringsstatus;
+import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.exception.ForFaaLedigeIdenterException;
 import no.nav.identpool.util.PersonidentUtil;
 
