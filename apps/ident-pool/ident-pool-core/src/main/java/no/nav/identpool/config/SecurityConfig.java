@@ -12,7 +12,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-//                .antMatchers("/api/v1/finneshosskatt").authenticated()
                 .antMatchers("/**").permitAll()
                 .and()
                 .csrf().disable();
