@@ -69,6 +69,8 @@ public class StartBEREG007Command implements Runnable {
                 .with("overrideSequenceControl", "true")
                 .with("input_file", fileEntity);
 
+        log.info("Jenkins-Crumb: {}", crumb.getCrumb());
+
         String block = webClient
                 .post()
                 .uri("/view/Registre/job/Start_BEREG007/buildWithParameters")
