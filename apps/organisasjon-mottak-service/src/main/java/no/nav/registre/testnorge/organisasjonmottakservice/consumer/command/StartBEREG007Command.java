@@ -74,9 +74,9 @@ public class StartBEREG007Command implements Runnable {
         String block = webClient
                 .post()
                 .uri("/view/Registre/job/Start_BEREG007/buildWithParameters")
-                .headers(headers -> headers.setBasicAuth(username, password))
                 .header("Jenkins-Crumb", "43b4571a33fea57944febec34e128005")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+//                .headers(headers -> headers.setBasicAuth(username, password))
                 .body(body)
                 .exchange()
                 .flatMap(clientResponse -> {
