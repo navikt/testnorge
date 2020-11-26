@@ -1,10 +1,10 @@
 {
   "type": "record",
-  "name": "Organiasjon",
+  "name": "Telefon",
   "namespace": "no.nav.registre.testnorge.libs.avro.organiasjon",
   "fields": [
     {
-      "name": "navn",
+      "name": "tlf",
       "type": "string"
     },
     {

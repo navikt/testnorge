@@ -1,14 +1,5 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.Value;
-
-@Value
-@AllArgsConstructor
-@NoArgsConstructor(force = true)
-@EqualsAndHashCode(callSuper = true)
 public class Forretningsadresse extends Adresse {
 
     public Forretningsadresse(no.nav.registre.testnorge.libs.avro.organiasjon.Forretningsadresse forretningsadresse) {

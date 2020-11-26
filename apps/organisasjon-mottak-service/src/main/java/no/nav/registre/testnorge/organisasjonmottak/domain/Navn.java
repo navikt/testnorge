@@ -1,16 +1,7 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.Value;
-
-@Value
-@AllArgsConstructor
-@NoArgsConstructor(force = true)
-@EqualsAndHashCode(callSuper = true)
 public class Navn extends ToFlatfil {
-    String navn;
+    private final String navn;
 
     public Navn(no.nav.registre.testnorge.libs.avro.organiasjon.Navn navn) {
         super(navn.getMetadata());
@@ -18,10 +9,10 @@ public class Navn extends ToFlatfil {
     }
 
     private String createNavn() {
-        StringBuilder stringBuilder = createBaseStringbuilder(219, "NAVN", "N");
-        stringBuilder.replace(8, 8 + navn.length(), navn).append("\n");
-        stringBuilder.replace(183, 183 + navn.length(), navn).append("\n");
-        return stringBuilder.toString();
+        LineBuilder builder = LineBuilder.newBuilder("NAVN", 219);
+        builder.setLine(8, navn);
+        builder.setLine(183, navn);
+        return builder.toString();
     }
 
     @Override

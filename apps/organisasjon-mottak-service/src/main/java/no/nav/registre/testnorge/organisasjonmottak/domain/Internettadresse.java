@@ -1,16 +1,14 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.Value;
+import no.nav.registre.testnorge.libs.avro.organiasjon.Metadata;
 
-@Value
-@AllArgsConstructor
-@NoArgsConstructor(force = true)
-@EqualsAndHashCode(callSuper = true)
 public class Internettadresse extends ToFlatfil {
-    String internettadresse;
+    private final String internettadresse;
+
+    public Internettadresse(Metadata metadata, no.nav.registre.testnorge.libs.avro.organiasjon.Internettadresse internettadresse) {
+        super(metadata);
+        this.internettadresse = internettadresse.getInternettadresse();
+    }
 
     private String toInternettadresse() {
         return LineBuilder

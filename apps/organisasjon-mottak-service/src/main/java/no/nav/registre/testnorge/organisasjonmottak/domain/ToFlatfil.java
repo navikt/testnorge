@@ -1,17 +1,10 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import no.nav.registre.testnorge.libs.avro.organiasjon.Metadata;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor(force = true)
 public abstract class ToFlatfil {
     private final String orgnummer;
     private final String enhetstype;
@@ -19,13 +12,6 @@ public abstract class ToFlatfil {
     public ToFlatfil(Metadata metadata) {
         this.orgnummer = metadata.getOrgnummer();
         this.enhetstype = metadata.getEnhetstype();
-    }
-
-    void setLine(StringBuilder builder, int exclusiveStart, String value) {
-        if (value == null) {
-            return;
-        }
-        builder.replace(exclusiveStart, exclusiveStart + value.length(), value).append("\n");
     }
 
     private static String getDateNowFormatted() {
@@ -39,13 +25,6 @@ public abstract class ToFlatfil {
         for (int i = 0; i < stringBuilder.length(); i++) {
             stringBuilder.setCharAt(i, replacement);
         }
-        return stringBuilder;
-    }
-
-    StringBuilder createBaseStringbuilder(int size, String type, String endringsType) {
-        StringBuilder stringBuilder = createStringBuilderWithReplacement(size, ' ');
-        stringBuilder.replace(0, type.length(), type);
-        stringBuilder.replace(4, 5, endringsType);
         return stringBuilder;
     }
 

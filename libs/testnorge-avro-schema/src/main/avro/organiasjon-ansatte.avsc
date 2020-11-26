@@ -1,11 +1,11 @@
 {
   "type": "record",
-  "name": "Organiasjon",
+  "name": "Ansatte",
   "namespace": "no.nav.registre.testnorge.libs.avro.organiasjon",
   "fields": [
     {
-      "name": "navn",
-      "type": "string"
+      "name": "harAnsatte",
+      "type": "boolean"
     },
     {
       "name": "metadata",

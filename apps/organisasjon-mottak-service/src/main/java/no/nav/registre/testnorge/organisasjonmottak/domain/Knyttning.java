@@ -1,13 +1,10 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-import lombok.Value;
-
-@Value
 public class Knyttning {
-    String overenhetOrgnummer;
-    String overenhetEnhetstype;
-    String underenhetOrgnummer;
-    String underenhetEnhetstype;
+    private final String overenhetOrgnummer;
+    private final String overenhetEnhetstype;
+    private final String underenhetOrgnummer;
+    private final String underenhetEnhetstype;
 
     public Knyttning(no.nav.registre.testnorge.libs.avro.organiasjon.Knyttning knyttning) {
         this.overenhetOrgnummer = knyttning.getOverenhetOrgnummer();

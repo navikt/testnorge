@@ -1,25 +1,24 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-import no.nav.registre.testnorge.libs.avro.organiasjon.Metadata;
+public class Ansatte extends ToFlatfil {
+    private final boolean ansatte;
 
-public class Maalform extends ToFlatfil {
-    private final String maalform;
-
-    public Maalform(Metadata metadata, no.nav.registre.testnorge.libs.avro.organiasjon.Maalform maalform) {
-        super(metadata);
-        this.maalform = maalform.getMaalform();
-    }
-
-    private String toRecordLine() {
-        return LineBuilder
-                .newBuilder("MÅL", 9)
-                .setLine(8, maalform)
-                .toString();
+    public Ansatte(no.nav.registre.testnorge.libs.avro.organiasjon.Ansatte ansatte) {
+        super(ansatte.getMetadata());
+        this.ansatte = ansatte.getHarAnsatte();
     }
 
     @Override
     public boolean isUpdate() {
         return true;
+    }
+
+
+    private String toRecordLine() {
+        return LineBuilder
+                .newBuilder("MÅL", 9)
+                .setLine(8, ansatte ? "J" : "N")
+                .toString();
     }
 
     @Override

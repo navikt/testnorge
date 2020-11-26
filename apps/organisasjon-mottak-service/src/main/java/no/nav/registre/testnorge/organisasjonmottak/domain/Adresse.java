@@ -1,14 +1,7 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
 import no.nav.registre.testnorge.libs.avro.organiasjon.Metadata;
 
-@Data
-@NoArgsConstructor(force = true)
-@EqualsAndHashCode(callSuper = true)
 public abstract class Adresse extends ToFlatfil {
     private final String postnummer;
     private final String landkode;
@@ -37,17 +30,18 @@ public abstract class Adresse extends ToFlatfil {
 
 
     private String createAdresse() {
-        StringBuilder builder = createBaseStringbuilder(185, getFelttype(), "N");
-        setLine(builder, 8, postnummer);
-        setLine(builder, 17, landkode);
-        setLine(builder, 20, kommunenummer);
-        setLine(builder, 29, poststed);
-        setLine(builder, 64, postadresse1);
-        setLine(builder, 99, postadresse2);
-        setLine(builder, 134, postadresse3);
-        setLine(builder, 169, linjenummer);
-        setLine(builder, 170, vegadresseId);
-        return builder.toString();
+        return LineBuilder
+                .newBuilder(getFelttype(), 185)
+                .setLine(8, postnummer)
+                .setLine(17, landkode)
+                .setLine(20, kommunenummer)
+                .setLine(29, poststed)
+                .setLine(64, postadresse1)
+                .setLine(99, postadresse2)
+                .setLine(134, postadresse3)
+                .setLine(169, linjenummer)
+                .setLine(170, vegadresseId)
+                .toString();
     }
 
     @Override

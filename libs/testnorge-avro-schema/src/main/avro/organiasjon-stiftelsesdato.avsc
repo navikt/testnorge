@@ -1,11 +1,19 @@
 {
   "type": "record",
-  "name": "Organiasjon",
+  "name": "Stiftelsesdato",
   "namespace": "no.nav.registre.testnorge.libs.avro.organiasjon",
   "fields": [
     {
-      "name": "navn",
-      "type": "string"
+      "name": "dag",
+      "type": "int"
+    },
+    {
+      "name": "maaned",
+      "type": "int"
+    },
+    {
+      "name": "aar",
+      "type": "int"
     },
     {
       "name": "metadata",

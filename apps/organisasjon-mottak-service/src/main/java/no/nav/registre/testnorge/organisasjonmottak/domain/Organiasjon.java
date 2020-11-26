@@ -1,27 +1,19 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.Value;
-
-@Value
-@AllArgsConstructor
-@NoArgsConstructor(force = true)
-@EqualsAndHashCode(callSuper = true)
 public class Organiasjon extends ToFlatfil {
-    String navn;
+    private final String navn;
 
     public Organiasjon(no.nav.registre.testnorge.libs.avro.organiasjon.Organiasjon organiasjon) {
-        super(organiasjon.getOrgnummer(), organiasjon.getEnhetstype());
+        super(organiasjon.getMetadata());
         this.navn = organiasjon.getNavn();
     }
 
     private String createNavn() {
-        StringBuilder stringBuilder = createBaseStringbuilder(219, "NAVN", "N");
-        stringBuilder.replace(8, 8 + navn.length(), navn).append("\n");
-        stringBuilder.replace(183, 183 + navn.length(), navn).append("\n");
-        return stringBuilder.toString();
+        return LineBuilder
+                .newBuilder("NAVN", 219)
+                .setLine(8, navn)
+                .setLine(183, navn)
+                .toString();
     }
 
     @Override
