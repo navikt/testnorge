@@ -3,7 +3,7 @@ pluginManagement {
         gradlePluginPortal()
         jcenter()
         maven {
-            url  "https://dl.bintray.com/gradle/gradle-plugins"
+            url "https://dl.bintray.com/gradle/gradle-plugins"
         }
         maven {
             url "https://repository-cdn.liferay.com/nexus/content/groups/public"
@@ -236,3 +236,6 @@ gradleEnterprise {
 
 include 'tps-ident-service'
 project(":tps-ident-service").projectDir = file('apps/tps-ident-service')
+
+include 'endringsmelding-service'
+project(":endringsmelding-service").projectDir = file('apps/endringsmelding-service')

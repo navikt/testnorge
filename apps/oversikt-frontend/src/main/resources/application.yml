@@ -14,3 +14,4 @@ applications:
   testnorge-tps-ident-service: 76276f3a-29d7-4bc4-ba1e-018007b7417b
   testnorge-person-api: 607ab2ee-2473-4bfd-8d48-03a7aaceeda6
   testnorge-person-api-dev: 51ec8e6e-20a1-4b8f-b66a-66dd6a9b00b9
+  endringsmelding-service: 7f00fa49-869e-4a1a-b4a0-e0c1d556dc38
