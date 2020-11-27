@@ -1,8 +1,8 @@
 package no.nav.registre.testnorge.organisasjonmottak.provider.dto;
 
-import no.nav.registre.testnorge.organisasjonmottak.domain.ToFlatfil;
+import org.apache.avro.specific.SpecificRecord;
 
-public abstract class BaseDTO<T extends ToFlatfil> {
+public abstract class BaseDTO<T extends SpecificRecord> {
     private final String orgnummer;
     private final String enhetstype;
 
@@ -24,5 +24,5 @@ public abstract class BaseDTO<T extends ToFlatfil> {
         return enhetstype;
     }
 
-    public abstract T toDomain();
+    public abstract T toRecord();
 }
