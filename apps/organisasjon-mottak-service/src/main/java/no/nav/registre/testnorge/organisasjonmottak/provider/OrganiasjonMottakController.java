@@ -38,7 +38,7 @@ public class OrganiasjonMottakController {
     }
 
     @PostMapping("/detaljert-navn")
-    public void setNavn(
+    public void setDetaljertNavn(
             @HeaderParam("miljoe") String miljoe,
             @RequestBody DetaljertNavnDTO dto
     ) {
