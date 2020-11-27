@@ -15,8 +15,8 @@ import javax.validation.constraints.Size;
 import java.net.URI;
 
 import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
-import no.nav.registre.testnorge.person.domain.Person;
 import no.nav.registre.testnorge.libs.dto.person.v1.Persondatasystem;
+import no.nav.registre.testnorge.person.domain.Person;
 import no.nav.registre.testnorge.person.service.PersonService;
 
 @RestController

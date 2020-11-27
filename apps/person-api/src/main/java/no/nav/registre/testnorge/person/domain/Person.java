@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.Set;
 
 import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
 import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.Foedsel;
@@ -17,6 +19,7 @@ import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.PdlPerson;
 import no.nav.registre.testnorge.person.consumer.dto.tpsf.TpsPerson;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,6 +31,7 @@ public class Person {
     private String mellomnavn;
     private String etternavn;
     private Adresse adresse;
+    private Set<String> tags;
 
     public Person(PersonDTO dto) {
         ident = dto.getIdent();
@@ -36,6 +40,7 @@ public class Person {
         mellomnavn = dto.getMellomnavn();
         etternavn = dto.getEtternavn();
         adresse = dto.getAdresse() != null ? new Adresse(dto.getAdresse()) : null;
+        tags = dto.getTags();
     }
 
     public Person(PdlPerson pdlPerson) {
@@ -76,6 +81,7 @@ public class Person {
                 .mellomnavn(mellomnavn)
                 .etternavn(etternavn)
                 .adresse(adresse != null ? adresse.toDto() : null)
+                .tags(tags)
                 .build();
     }
 }
