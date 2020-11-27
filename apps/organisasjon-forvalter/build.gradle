@@ -43,6 +43,8 @@ dependencies {
     implementation 'org.reactivestreams:reactive-streams:1.0.2'
 
     implementation 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
+
+    implementation 'javax.persistence:javax.persistence-api:2.2'
 }
 
 description = 'organisasjon-forvalter'
