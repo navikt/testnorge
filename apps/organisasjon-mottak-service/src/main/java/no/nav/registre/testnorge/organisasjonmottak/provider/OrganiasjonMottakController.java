@@ -3,10 +3,9 @@ package no.nav.registre.testnorge.organisasjonmottak.provider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.ws.rs.HeaderParam;
 
 import no.nav.registre.testnorge.organisasjonmottak.consumer.OrganiasjonMottakConsumer;
 import no.nav.registre.testnorge.organisasjonmottak.provider.dto.AnsatteDTO;
@@ -23,7 +22,7 @@ public class OrganiasjonMottakController {
 
     @PostMapping("/organiasjon")
     public void setOrganiasjon(
-            @HeaderParam("miljoe") String miljoe,
+            @RequestHeader("miljoe") String miljoe,
             @RequestBody OrganiasjonDTO dto
     ) {
         organiasjonMottakConsumer.send(dto.toRecord(miljoe));
@@ -31,7 +30,7 @@ public class OrganiasjonMottakController {
 
     @PostMapping("/navn")
     public void setNavn(
-            @HeaderParam("miljoe") String miljoe,
+            @RequestHeader("miljoe") String miljoe,
             @RequestBody NavnDTO dto
     ) {
         organiasjonMottakConsumer.send(dto.toRecord(miljoe));
@@ -39,7 +38,7 @@ public class OrganiasjonMottakController {
 
     @PostMapping("/detaljert-navn")
     public void setDetaljertNavn(
-            @HeaderParam("miljoe") String miljoe,
+            @RequestHeader("miljoe") String miljoe,
             @RequestBody DetaljertNavnDTO dto
     ) {
         organiasjonMottakConsumer.send(dto.toRecord(miljoe));
@@ -47,7 +46,7 @@ public class OrganiasjonMottakController {
 
     @PostMapping("/ansatte")
     public void setAnsatte(
-            @HeaderParam("miljoe") String miljoe,
+            @RequestHeader("miljoe") String miljoe,
             @RequestBody AnsatteDTO dto
     ) {
         organiasjonMottakConsumer.send(dto.toRecord(miljoe));
