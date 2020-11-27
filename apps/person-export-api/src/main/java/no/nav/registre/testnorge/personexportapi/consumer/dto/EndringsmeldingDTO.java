@@ -44,6 +44,8 @@ public class EndringsmeldingDTO {
     String fraLandFlyttedato;
     String utvandretTilLand;
     String tilLandFlyttedato;
+    String spesRegType;
+    String datoSpesRegType;
 
     @JsonIgnore
     public boolean isFoedsel() {
