@@ -21,11 +21,12 @@ public class DetaljertNavnDTO extends BaseDTO<DetaljertNavn> {
     String redigertNavn;
 
     @Override
-    public DetaljertNavn toRecord() {
+    public DetaljertNavn toRecord(String miljoe) {
         var value = new DetaljertNavn();
         var metadata = new Metadata();
         metadata.setOrgnummer(getOrgnummer());
         metadata.setEnhetstype(getEnhetstype());
+        metadata.setMiljo(miljoe);
         value.setMetadata(metadata);
         value.setNavn1(navn1);
         value.setNavn1(navn2);

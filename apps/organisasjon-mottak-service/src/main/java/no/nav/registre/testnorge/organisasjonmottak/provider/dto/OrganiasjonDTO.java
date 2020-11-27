@@ -16,11 +16,12 @@ public class OrganiasjonDTO extends BaseDTO<Organiasjon> {
     String navn;
 
     @Override
-    public Organiasjon toRecord() {
+    public Organiasjon toRecord(String miljoe) {
         var value = new Organiasjon();
         var metadata = new Metadata();
         metadata.setOrgnummer(getOrgnummer());
         metadata.setEnhetstype(getEnhetstype());
+        metadata.setMiljo(miljoe);
         value.setMetadata(metadata);
         value.setNavn(navn);
         return value;

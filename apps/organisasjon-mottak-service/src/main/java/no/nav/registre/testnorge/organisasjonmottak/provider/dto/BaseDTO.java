@@ -24,5 +24,5 @@ public abstract class BaseDTO<T extends SpecificRecord> {
         return enhetstype;
     }
 
-    public abstract T toRecord();
+    public abstract T toRecord(String miljoe);
 }

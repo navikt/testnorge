@@ -16,13 +16,15 @@ public class NavnDTO extends BaseDTO<Navn> {
     String navn;
 
     @Override
-    public Navn toRecord() {
+    public Navn toRecord(String miljoe) {
         var value = new Navn();
         var metadata = new Metadata();
         metadata.setOrgnummer(getOrgnummer());
         metadata.setEnhetstype(getEnhetstype());
+        metadata.setMiljo(miljoe);
         value.setMetadata(metadata);
         value.setNavn(navn);
+        metadata.setMiljo(miljoe);
         return value;
     }
 }
