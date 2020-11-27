@@ -1,4 +1,4 @@
-package no.nav.identpool.domain;
+package no.nav.identpool.domain.oracle;
 
 import java.time.LocalDate;
 import javax.persistence.Column;
@@ -18,6 +18,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.identpool.domain.Identtype;
+import no.nav.identpool.domain.Kjoenn;
+import no.nav.identpool.domain.Rekvireringsstatus;
 
 @Data
 @Entity
@@ -25,7 +28,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "PERSONIDENTIFIKATOR")
-public class Ident {
+public class OraIdent {
     @Id
     @Column(name = "ID")
     @JsonIgnore
