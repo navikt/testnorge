@@ -38,4 +38,4 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://organisasjon-mottak-service.dev.adeo.no"
+    - "https://organisasjon-mottak-service.dev.intern.nav.no"

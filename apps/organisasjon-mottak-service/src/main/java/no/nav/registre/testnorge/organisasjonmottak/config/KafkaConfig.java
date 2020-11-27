@@ -3,12 +3,12 @@ package no.nav.registre.testnorge.organisasjonmottak.config;
 import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
+import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.config.SaslConfigs;
 import org.apache.kafka.common.config.SslConfigs;
 import org.apache.kafka.common.serialization.LongDeserializer;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -25,31 +25,18 @@ import java.util.Map;
 @EnableKafka
 @Component
 @Profile("prod")
+@RequiredArgsConstructor
 public class KafkaConfig {
-
-    @Value("${kafka.bootstrapservers}")
-    public String bootstrapAddress;
-
-    @Value("${kafka.groupid}")
-    public String groupId;
-
-    @Value("${kafka.schemaregistryservers}")
-    public String schemaregistryServers;
-
-    @Value("${SERVICEUSER_USERNAME}")
-    public String username;
-
-    @Value("${SERVICEUSER_PASSWORD}")
-    public String password;
+    private final ApplicationKafkaProperties properties;
 
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         InetSocketAddress inetSocketAddress = new InetSocketAddress(0);
         Map<String, Object> props = new HashMap<>();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
-        props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaregistryServers);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-        props.put(ConsumerConfig.CLIENT_ID_CONFIG, groupId + inetSocketAddress.getHostString());
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, properties.getBootstrapAddress());
+        props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, properties.getSchemaregistryServers());
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, properties.getGroupId());
+        props.put(ConsumerConfig.CLIENT_ID_CONFIG, properties.getGroupId() + inetSocketAddress.getHostString());
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class);
@@ -58,7 +45,7 @@ public class KafkaConfig {
         props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true);
         props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_PLAINTEXT");
 
-        props.put(SaslConfigs.SASL_JAAS_CONFIG, "org.apache.kafka.common.security.plain.PlainLoginModule required username=" + username + " password=" + password + ";");
+        props.put(SaslConfigs.SASL_JAAS_CONFIG, "org.apache.kafka.common.security.plain.PlainLoginModule required username=" + properties.getUsername() + " password=" + properties.getPassword() + ";");
 
         String navTruststorePath = System.getenv("NAV_TRUSTSTORE_PATH");
 
