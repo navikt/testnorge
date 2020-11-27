@@ -1,3 +1,8 @@
+spring:
+  application:
+    name: organiasjon-mottak
+    description: Test tjenesste for å vise hvilke tjenester som er tilgjenelig. Skal ikke brukes til noe annet enn for å test lokalt. For integrasjon bruk kafka.
+
 
 jenkins:
   rest.api.url: https://batch.adeo.no

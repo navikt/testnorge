@@ -29,10 +29,10 @@ public class DetaljertNavnDTO extends BaseDTO<DetaljertNavn> {
         metadata.setMiljo(miljoe);
         value.setMetadata(metadata);
         value.setNavn1(navn1);
-        value.setNavn1(navn2);
-        value.setNavn1(navn3);
-        value.setNavn1(navn4);
-        value.setNavn1(navn5);
+        value.setNavn2(navn2);
+        value.setNavn3(navn3);
+        value.setNavn4(navn4);
+        value.setNavn5(navn5);
         value.setRedigertNavn(redigertNavn);
         return value;
     }
