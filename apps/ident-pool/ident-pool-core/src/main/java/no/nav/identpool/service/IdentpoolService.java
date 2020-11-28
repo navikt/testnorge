@@ -24,15 +24,15 @@ import org.springframework.web.client.HttpServerErrorException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.identpool.domain.Ident;
+import no.nav.identpool.domain.postgres.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.domain.TpsStatus;
 import no.nav.identpool.exception.ForFaaLedigeIdenterException;
 import no.nav.identpool.exception.IdentAlleredeIBrukException;
 import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
-import no.nav.identpool.repository.IdentRepository;
-import no.nav.identpool.repository.WhitelistRepository;
+import no.nav.identpool.repository.postgres.IdentRepository;
+import no.nav.identpool.repository.postgres.WhitelistRepository;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;
 import no.nav.identpool.rs.v1.support.MarkerBruktRequest;
 import no.nav.identpool.util.IdentGeneratorUtil;

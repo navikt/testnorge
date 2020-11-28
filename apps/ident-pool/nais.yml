@@ -15,11 +15,14 @@ spec:
     - "https://ident-pool.dev.intern.nav.no"
   liveness:
     path: /internal/isAlive
-    periodSeconds: 30
     initialDelay: 30
+    periodSeconds: 30
+    failureThreshold: 86400
   readiness:
     path: /internal/isReady
     initialDelay: 30
+    periodSeconds: 30
+    failureThreshold: 86400
   prometheus:
     path: /internal/prometheus
   replicas:
