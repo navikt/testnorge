@@ -1,6 +1,7 @@
 package no.nav.identpool.dbmigration.mapper;
 
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,8 +15,8 @@ import no.nav.identpool.repository.oracle.OraIdentRepository;
 import no.nav.identpool.repository.postgres.IdentRepository;
 
 @Slf4j
+@Order(3)
 @Service
-@Order(1)
 @RequiredArgsConstructor
 public class MigrateIdent implements MigrationService {
 
@@ -26,17 +27,20 @@ public class MigrateIdent implements MigrationService {
 
     @Override public void migrate() {
 
-        int pageNo = 0;
-        Page<OraIdent> identer = oraIdentRepository.findAllByOrderByIdentity(PageRequest.of(pageNo, PAGE_SIZE));
-        while (!identer.getContent().isEmpty()) {
-            identRepository.saveAll(
-                    identer.getContent().stream()
-                            .map(MigrateIdent::getIdent)
-                            .collect(Collectors.toList()));
-            pageNo++;
-            log.info("Migrert {} antall personidentifikatorer", pageNo * PAGE_SIZE);
-            identer = oraIdentRepository.findAllByOrderByIdentity(PageRequest.of(pageNo, PAGE_SIZE));
-        }
+        Page<OraIdent> identer = oraIdentRepository.findAllByOrderByIdentity(PageRequest.of(0, PAGE_SIZE));
+        IntStream.range(0, identer.getTotalPages())
+                .boxed()
+                .parallel()
+                .map(pageNo -> {
+                    identRepository.saveAll(
+                            oraIdentRepository.findAllByOrderByIdentity(PageRequest.of(pageNo, PAGE_SIZE))
+                                    .getContent().stream()
+                                    .map(MigrateIdent::getIdent)
+                                    .collect(Collectors.toList()));
+                    log.info("Migrert page {} of total {} personidentifikatorer", pageNo, identer.getTotalPages());
+                    return pageNo;
+                })
+                .collect(Collectors.toList());
 
         log.info("Migrert Personidentifikator tabell");
     }
