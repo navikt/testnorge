@@ -1,4 +1,4 @@
-package no.nav.identpool;
+package no.nav.identpool.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.annotation.EnableRetry;

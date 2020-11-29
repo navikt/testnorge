@@ -1,4 +1,4 @@
-package no.nav.identpool.domain;
+package no.nav.identpool.domain.oracle;
 
 import java.time.LocalDateTime;
 import javax.batch.runtime.BatchStatus;
@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "AJOURHOLD")
-public class Ajourhold {
+public class OraAjourhold {
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ajourhold_seq")
