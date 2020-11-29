@@ -6,7 +6,7 @@ import static no.nav.identpool.util.PersonidentUtil.getKjonn;
 import static no.nav.identpool.util.PersonidentUtil.toBirthdate;
 
 import com.google.common.collect.ImmutableMap;
-import no.nav.identpool.domain.postgres.Ident;
+import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
 import no.nav.identpool.domain.Rekvireringsstatus;

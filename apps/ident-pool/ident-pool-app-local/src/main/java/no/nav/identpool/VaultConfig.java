@@ -6,8 +6,8 @@ import org.springframework.vault.annotation.VaultPropertySource;
 
 @Configuration
 @Profile("local")
-@VaultPropertySource(value = "oracle/dev/creds/identpool_test-user", propertyNamePrefix = "oracle.datasource.", ignoreSecretNotFound = false)
-@VaultPropertySource(value = "oracle/dev/config/identpool_test", propertyNamePrefix = "identpool.datasource.", ignoreSecretNotFound = false)
+@VaultPropertySource(value = "oracle/dev/creds/identpool_test-user", propertyNamePrefix = "spring.datasource.", ignoreSecretNotFound = false)
+@VaultPropertySource(value = "oracle/dev/config/identpool_test", propertyNamePrefix = "spring.datasource.", ignoreSecretNotFound = false)
 class VaultConfig {
 
 }

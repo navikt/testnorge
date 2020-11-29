@@ -18,7 +18,7 @@ import no.nav.identpool.ComponentTestbase;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
 import no.nav.identpool.domain.Rekvireringsstatus;
-import no.nav.identpool.domain.postgres.Ident;
+import no.nav.identpool.domain.Ident;
 
 class LesInnholdComponentTest extends ComponentTestbase {
     private static final String PERSONIDENTIFIKATOR = "10108000398";

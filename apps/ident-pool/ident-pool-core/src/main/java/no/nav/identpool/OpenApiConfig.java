@@ -1,4 +1,4 @@
-package no.nav.identpool.config;
+package no.nav.identpool;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
