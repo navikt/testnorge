@@ -1,12 +1,14 @@
 package no.nav.identpool.repository.oracle;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.time.LocalDateTime;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import no.nav.identpool.domain.oracle.OraAjourhold;
 
 public interface OraAjourholdRepository extends JpaRepository<OraAjourhold, Long> {
 
-    Page<OraAjourhold> findAllByOrderByIdentity(Pageable pageable);
+    default void update(OraAjourhold entity) {
+        entity.setSistOppdatert(LocalDateTime.now());
+        this.save(entity);
+    }
 }
