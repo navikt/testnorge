@@ -1,5 +1,6 @@
 package no.nav.identpool.dbmigration.mapper;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import no.nav.identpool.repository.oracle.OraWhitelistRepository;
 import no.nav.identpool.repository.postgres.WhitelistRepository;
 
 @Slf4j
+@Order(1)
 @Service
 @RequiredArgsConstructor
 public class MigrateWhitelist implements MigrationService {
