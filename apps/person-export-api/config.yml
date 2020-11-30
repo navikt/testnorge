@@ -29,10 +29,10 @@ spec:
     enabled: true
   resources:
     requests:
-      cpu: "4.0"
+      cpu: 4000m
       memory: 4000Mi
     limits:
-      cpu: "6.0"
+      cpu: 6000m
       memory: 5000Mi
   ingresses:
     - "https://testnorge-person-export-api.dev.adeo.no"
