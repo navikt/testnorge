@@ -18,13 +18,14 @@ dependencies {
     implementation project(':testnorge-common-command')
     implementation project(':testnorge-dependency-analysis-auto-configuration')
     implementation project(':testnorge-avro-schema')
+    implementation project(':testnorge-oauth2')
 
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
     implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
-
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:2.3.4.RELEASE'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
