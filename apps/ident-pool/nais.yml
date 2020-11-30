@@ -41,4 +41,4 @@ spec:
       - kvPath: /oracle/data/dev/config/identpool_q2
         mountPath: /var/run/secrets/nais.io/dbPath
       - kvPath: /oracle/data/dev/creds/identpool_q2-user
-        mountPath: /var/run/secrets/nais.io/dbk8s ?
+        mountPath: /var/run/secrets/nais.io/db
