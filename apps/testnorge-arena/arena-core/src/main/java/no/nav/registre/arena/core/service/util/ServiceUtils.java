@@ -26,7 +26,6 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 public class ServiceUtils {
 
     public static final String BEGRUNNELSE = "Syntetisert rettighet";
-    public static final String DELTAKERSTATUS_GJENNOMFOERES = "GJENN";
     public static final int MIN_ALDER_AAP = 18;
     public static final int MAX_ALDER_AAP = 67;
     public static final int MIN_ALDER_UNG_UFOER = 18;

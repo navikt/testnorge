@@ -5,15 +5,28 @@ import static no.nav.registre.arena.core.service.util.ServiceUtils.BEGRUNNELSE;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.arena.core.consumer.rs.TiltakArenaForvalterConsumer;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetEndreDeltakerstatusRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetFinnTiltakRequest;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
+
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.io.Resources;
 
 @Slf4j
 @Service
@@ -21,7 +34,31 @@ import java.util.List;
 public class VedtakUtils {
 
     private final TiltakArenaForvalterConsumer tiltakArenaForvalterConsumer;
+    private final ServiceUtils serviceUtils;
+    private final Random rand;
 
+    private static final Map<String, List<String>> deltakerstatuskoderMedAarsakkoder;
+    private static final Map<String, List<KodeMedSannsynlighet>> adminkodeTilDeltakerstatus;
+
+    static {
+        deltakerstatuskoderMedAarsakkoder = new HashMap<>();
+        deltakerstatuskoderMedAarsakkoder.put(Deltakerstatuser.NEITAKK.toString(), Arrays.asList("ANN", "BEGA", "FRISM", "FTOAT", "HENLU", "SYK", "UTV"));
+        deltakerstatuskoderMedAarsakkoder.put(Deltakerstatuser.IKKEM.toString(), Arrays.asList("ANN", "BEGA", "SYK"));
+        deltakerstatuskoderMedAarsakkoder.put(Deltakerstatuser.DELAVB.toString(), Arrays.asList("ANN", "BEGA", "FTOAT", "SYK"));
+
+        adminkodeTilDeltakerstatus = new HashMap<>();
+
+        URL resourceDeltakerstatus = Resources.getResource("adminkode_til_deltakerstatus_endring.json");
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            Map<String, List<KodeMedSannsynlighet>> map = objectMapper.readValue(resourceDeltakerstatus, new TypeReference<>() {
+            });
+
+            adminkodeTilDeltakerstatus.putAll(map);
+        } catch (IOException e) {
+            log.error("Kunne ikke laste inn deltakerstatus fordeling.", e);
+        }
+    }
 
     public void setDatoPeriodeVedtakInnenforMaxAntallMaaneder(
             NyttVedtak vedtak,
@@ -197,5 +234,70 @@ public class VedtakUtils {
         }
 
         return vedtakSequences;
+    }
+
+    public boolean canSetDeltakelseTilGjennomfoeres(NyttVedtakTiltak tiltaksdeltakelse) {
+        var fraDato = tiltaksdeltakelse.getFraDato();
+        return (fraDato != null && fraDato.isBefore(LocalDate.now().plusDays(1)));
+    }
+
+    public boolean canSetDeltakelseTilFinished(NyttVedtakTiltak tiltaksdeltakelse) {
+        var fraDato = tiltaksdeltakelse.getFraDato();
+        var tilDato = tiltaksdeltakelse.getTilDato();
+
+        if (fraDato == null || tilDato == null) {
+            return false;
+        }
+        return fraDato.isBefore(LocalDate.now().plusDays(1)) && tilDato.isBefore(LocalDate.now().plusDays(1));
+    }
+
+    public List<String> getFoersteEndringerDeltakerstatus(String adminkode) {
+        if (adminkodeTilDeltakerstatus.containsKey(adminkode)) {
+            var sisteEndring = serviceUtils.velgKodeBasertPaaSannsynlighet(adminkodeTilDeltakerstatus.get(adminkode)).getKode();
+            if (adminkode.equals("AMO")) {
+                if (sisteEndring.equals(Deltakerstatuser.GJENN.toString()) || sisteEndring.equals(Deltakerstatuser.IKKEM.toString())) {
+                    return new ArrayList<>(Arrays.asList(Deltakerstatuser.TILBUD.toString(), Deltakerstatuser.JATAKK.toString(), sisteEndring));
+                } else if (sisteEndring.equals(Deltakerstatuser.NEITAKK.toString())) {
+                    return new ArrayList<>(Arrays.asList(Deltakerstatuser.TILBUD.toString(), sisteEndring));
+                }
+            }
+            return sisteEndring.equals("") ? new ArrayList<>() : Collections.singletonList(sisteEndring);
+        } else {
+            log.info("Ugylding tiltak adminkode.");
+            return new ArrayList<>();
+        }
+    }
+
+    public Deltakerstatuser getAvsluttendeDeltakerstatus(String adminkode) {
+        if (adminkode.equals("INST")) {
+            return rand.nextDouble() > 0.28 ? Deltakerstatuser.FULLF : Deltakerstatuser.DELAVB;
+        } else {
+            return Deltakerstatuser.FULLF;
+        }
+    }
+
+    public RettighetEndreDeltakerstatusRequest opprettRettighetEndreDeltakerstatusRequest(
+            String ident,
+            String miljoe,
+            NyttVedtakTiltak tiltaksdeltakelse,
+            String deltakerstatuskode
+    ) {
+
+        NyttVedtakTiltak vedtak = new NyttVedtakTiltak();
+        vedtak.setTiltakskarakteristikk(tiltaksdeltakelse.getTiltakAdminKode());
+        vedtak.setDato(tiltaksdeltakelse.getFraDato());
+        vedtak.setDeltakerstatusKode(deltakerstatuskode);
+
+        if (deltakerstatuskoderMedAarsakkoder.containsKey(deltakerstatuskode)) {
+            List<String> aarsakkoder = deltakerstatuskoderMedAarsakkoder.get(deltakerstatuskode);
+            String aarsakkode = aarsakkoder.get(rand.nextInt(aarsakkoder.size()));
+            vedtak.setAarsakKode(aarsakkode);
+        }
+
+        var rettighetRequest = new RettighetEndreDeltakerstatusRequest(Collections.singletonList(vedtak));
+
+        rettighetRequest.setPersonident(ident);
+        rettighetRequest.setMiljoe(miljoe);
+        return rettighetRequest;
     }
 }

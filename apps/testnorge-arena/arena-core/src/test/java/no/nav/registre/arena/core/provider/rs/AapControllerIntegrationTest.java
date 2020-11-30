@@ -55,19 +55,19 @@ public class AapControllerIntegrationTest {
 
     private static final String ident = "01019049900";
     private static final String miljoe = "test";
-    private static final Long avspillergruppeId=123456789L;
+    private static final Long avspillergruppeId = 123456789L;
 
-    private static final String tokenProviderUrl="(.*)/token-provider";
-    private static final String hentLevendeIdenterIAldersgruppeUrl="(.*)/hodejegeren/api/v1/levende-identer-i-aldersgruppe/"+avspillergruppeId;
-    private static final String hentIdenterIAktoerregisteretUrl="(.*)/aktoerregister/v1/identer";
-    private static final String brukereArenaUrl="(.*)/arena-forvalteren/api/v1/bruker";
-    private static final String hentSyntetisertRettighetAapUrl="(.*)/syntetisereren/api/v1/arena/aap";
-    private static final String hentSyntetisertRettighetAap115Url="(.*)/syntetisereren/api/v1/arena/aap/11_5";
-    private static final String opprettPersonIPoppUrl="(.*)/pensjon-testdata-facade/api/v1/person";
-    private static final String opprettInntektIPoppUrl="(.*)/pensjon-testdata-facade/api/v1/inntekt";
+    private static final String tokenProviderUrl = "(.*)/token-provider";
+    private static final String hentLevendeIdenterIAldersgruppeUrl = "(.*)/hodejegeren/api/v1/levende-identer-i-aldersgruppe/" + avspillergruppeId;
+    private static final String hentIdenterIAktoerregisteretUrl = "(.*)/aktoerregister/v1/identer";
+    private static final String brukereArenaUrl = "(.*)/arena-forvalteren/api/v1/bruker";
+    private static final String hentSyntetisertRettighetAapUrl = "(.*)/syntetisereren/api/v1/arena/aap";
+    private static final String hentSyntetisertRettighetAap115Url = "(.*)/syntetisereren/api/v1/arena/aap/11_5";
+    private static final String opprettPersonIPoppUrl = "(.*)/pensjon-testdata-facade/api/v1/person";
+    private static final String opprettInntektIPoppUrl = "(.*)/pensjon-testdata-facade/api/v1/inntekt";
     private static final String opprettRettigheterAap115Url = "(.*)/arena-forvalteren/api/v1/aap115";
     private static final String opprettRettigheterAapUrl = "(.*)/arena-forvalteren/api/v1/aap";
-    private static final String saveHistorikkUrl="(.*)/hodejegeren/api/v1/historikk";
+    private static final String saveHistorikkUrl = "(.*)/hodejegeren/api/v1/historikk";
 
     private NyttVedtakAap vedtak;
     private NyttVedtakResponse nyttVedtakResponse;
@@ -76,7 +76,7 @@ public class AapControllerIntegrationTest {
     private PensjonTestdataResponse pensjonTestdataResponse;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         vedtak = NyttVedtakAap.builder().aktivitetsfase("TEST").build();
         vedtak.setFraDato(LocalDate.now().minusMonths(3));
         vedtak.setTilDato(LocalDate.now());
@@ -92,8 +92,8 @@ public class AapControllerIntegrationTest {
 
         identerIAktoerRegisteret = new HashMap<>();
         var aktoerResponse = new AktoerResponse();
-        aktoerResponse.setIdenter(Collections.singletonList(new AktoerInnhold(ident,"test", true)));
-        identerIAktoerRegisteret.put(ident, aktoerResponse );
+        aktoerResponse.setIdenter(Collections.singletonList(new AktoerInnhold(ident, "test", true)));
+        identerIAktoerRegisteret.put(ident, aktoerResponse);
 
         pensjonTestdataResponse = PensjonTestdataResponse.builder()
                 .status(Collections.singletonList(PensjonTestdataStatus.builder()
@@ -185,10 +185,12 @@ public class AapControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
-                .getContentAsString();;
+                .getContentAsString();
+        ;
 
         Map<String, List<NyttVedtakResponse>> resultat = objectMapper.readValue(mvcResultat,
-                new TypeReference<>() {});
+                new TypeReference<>() {
+                });
 
         assertThat(resultat.keySet()).contains(ident).hasSize(1);
     }
