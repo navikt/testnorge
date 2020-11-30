@@ -1,9 +1,8 @@
 package no.nav.dolly.local;
 
+import no.nav.dolly.ApplicationConfig;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-
-import no.nav.dolly.ApplicationConfig;
 
 @EnableAutoConfiguration
 public class LocalApplicationStarter {

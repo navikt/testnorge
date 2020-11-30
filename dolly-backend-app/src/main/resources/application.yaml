@@ -4,6 +4,13 @@ server.compression.mime-types: application/json,text/html,text/xml,text/plain,ap
 
 APP_NAME: dolly
 APP_VERSION: ${application.version}
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+CLIENT_ID: f0174d28-cb33-44f9-a7b5-09e52582e601
+HELSEPERSONELL_CLIENT_ID: af686685-d25a-462a-a0ea-e2a348c457d3
+
+CLIENT_SECRET: ${azure.app.client.secret}
+
 
 #### APP DB ####
 ? app.datasource.onsHosts
@@ -19,7 +26,7 @@ dolly:
     v1:
       name: Dolly V2.0
       description: Dolly er verktøyet som kloner GDPR testdata til ønsket miljø. </br>
-               Opprett fiktive testpersoner med arbeidsforhold, inntekter, sykemelding og annet i hht testbehov.
+        Opprett fiktive testpersoner med arbeidsforhold, inntekter, sykemelding og annet i hht testbehov.
       version: Versjon 1
       header:
         nav-consumer-id: Navn på applikasjon som gjør kallet
@@ -34,11 +41,7 @@ spring:
         jwt:
           issuer-uri: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/v2.0
           #The client_id of this application
-          accepted-audience: ${client.id}, api://${client.id}
-
-oracle:
-  datasource:
-    driver-class-name: oracle.jdbc.OracleDriver
+          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
 
 management:
   endpoints:

@@ -1,4 +1,3 @@
-
 providers:
   tpsf:
     url: https://tps-forvalteren-u2.nais.preprod.local

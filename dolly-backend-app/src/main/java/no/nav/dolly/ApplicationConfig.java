@@ -1,7 +1,6 @@
 package no.nav.dolly;
 
-import java.net.ProxySelector;
-import java.util.concurrent.ForkJoinPool;
+import no.nav.dolly.config.ForkJoinWorkerThreadFactory;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -14,7 +13,8 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.dolly.config.ForkJoinWorkerThreadFactory;
+import java.net.ProxySelector;
+import java.util.concurrent.ForkJoinPool;
 
 @SpringBootApplication
 public class ApplicationConfig {
@@ -44,7 +44,7 @@ public class ApplicationConfig {
         MethodInvokingFactoryBean methodInvokingFactoryBean = new MethodInvokingFactoryBean();
         methodInvokingFactoryBean.setTargetClass(SecurityContextHolder.class);
         methodInvokingFactoryBean.setTargetMethod("setStrategyName");
-        methodInvokingFactoryBean.setArguments(new String[] { SecurityContextHolder.MODE_INHERITABLETHREADLOCAL });
+        methodInvokingFactoryBean.setArguments(new String[]{SecurityContextHolder.MODE_INHERITABLETHREADLOCAL});
         return methodInvokingFactoryBean;
     }
 

@@ -4,6 +4,8 @@ server.port: 8080
 APP_NAME: dolly
 environment: localhost
 APP_VERSION: ${application.version}
+CLIENT_ID: dummy
+CLIENT_SECRET: dummy
 
 sts:
   token:
