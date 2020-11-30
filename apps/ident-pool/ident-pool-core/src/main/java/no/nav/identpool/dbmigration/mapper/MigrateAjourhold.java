@@ -34,7 +34,7 @@ public class MigrateAjourhold implements MigrationService {
                 .map(pageNo -> {
                     ajourholdRepository.saveAll(
                             oraAjourholdRepository.findAllByOrderByIdentity(PageRequest.of(pageNo, PAGE_SIZE))
-                                    .getContent().stream()
+                                    .getContent().parallelStream()
                                     .map(MigrateAjourhold::getAjourhold)
                                     .collect(Collectors.toList()));
                     log.info("Migrert page {} of total {} ajourhold", pageNo, ajourhold.getTotalPages());

@@ -17,12 +17,12 @@ spec:
     path: /internal/isAlive
     initialDelay: 30
     periodSeconds: 30
-    failureThreshold: 86400
+    failureThreshold: 200000
   readiness:
     path: /internal/isReady
     initialDelay: 30
     periodSeconds: 30
-    failureThreshold: 86400
+    failureThreshold: 200000
   prometheus:
     path: /internal/prometheus
   replicas:
@@ -30,15 +30,15 @@ spec:
     max: 1
   resources:
     limits:
-      cpu: 2000m
-      memory: 4096Mi
+      cpu: 1200m
+      memory: 8192Mi
     requests:
-      cpu: 500m
-      memory: 2048Mi
+      cpu: 1000m
+      memory: 4096Mi
   vault:
     enabled: true
     paths:
       - kvPath: /oracle/data/dev/config/identpool_q2
         mountPath: /var/run/secrets/nais.io/dbPath
       - kvPath: /oracle/data/dev/creds/identpool_q2-user
-        mountPath: /var/run/secrets/nais.io/db
+        mountPath: /var/run/secrets/nais.io/dbk8s ?

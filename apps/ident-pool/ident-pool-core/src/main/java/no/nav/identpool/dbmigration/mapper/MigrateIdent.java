@@ -34,7 +34,7 @@ public class MigrateIdent implements MigrationService {
                 .map(pageNo -> {
                     identRepository.saveAll(
                             oraIdentRepository.findAllByOrderByIdentity(PageRequest.of(pageNo, PAGE_SIZE))
-                                    .getContent().stream()
+                                    .getContent().parallelStream()
                                     .map(MigrateIdent::getIdent)
                                     .collect(Collectors.toList()));
                     log.info("Migrert page {} of total {} personidentifikatorer", pageNo, identer.getTotalPages());
