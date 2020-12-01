@@ -19,13 +19,13 @@ public class TpsServiceRoutineService {
     private final RsTpsRequestMappingUtils mappingUtils;
     private final TpsRequestSender tpsRequestSender;
 
-    public TpsServiceRoutineResponse execute(String serviceRoutinenavn, Map<String, Object> tpsRequestParameters, boolean validateRequestParameters) {
+    public TpsServiceRoutineResponse execute(String serviceRoutinenavn, Map<String, Object> tpsRequestParameters) {
         tpsRequestParameters.put(TPS_SERVICE_ROUTINE_PARAM_NAME, serviceRoutinenavn);
 
         TpsRequestContext context = new TpsRequestContext();
         context.setEnvironment(tpsRequestParameters.get(ENVIRONMENT_PARAM_NAME).toString());
 
-        TpsServiceRoutineRequest tpsServiceRoutineRequest = mappingUtils.convertToTpsServiceRoutineRequest(tpsRequestParameters, validateRequestParameters);
+        TpsServiceRoutineRequest tpsServiceRoutineRequest = mappingUtils.convertToTpsServiceRoutineRequest(tpsRequestParameters);
 
         return tpsRequestSender.sendTpsRequest(tpsServiceRoutineRequest, context);
     }

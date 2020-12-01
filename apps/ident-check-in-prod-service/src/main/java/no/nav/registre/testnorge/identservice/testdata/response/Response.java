@@ -21,10 +21,9 @@ public class Response {
     private TpsRequestContext context;
     private TpsServiceRoutineDefinitionRequest serviceRoutine;
 
-    public Response(String rawXml, TpsRequestContext context, TpsServiceRoutineDefinitionRequest serviceRoutine) {
+    public Response(String rawXml, TpsRequestContext context) {
         this.rawXml = rawXml;
         this.context = context;
-        this.serviceRoutine = serviceRoutine;
     }
 
     public void addDataXml(String xml) {
