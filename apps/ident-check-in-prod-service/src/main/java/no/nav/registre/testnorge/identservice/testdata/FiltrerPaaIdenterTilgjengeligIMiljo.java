@@ -56,7 +56,7 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
 
     private ResponseEntity<Set<IdentResponse>> filtrerFunnedeIdenter(List<String> identer, TpsServiceRoutineResponse response) throws IOException {
 
-        if (isNull(response) || response.getXml().isEmpty()) {
+        if (isNull(response) || response.getXml().isEmpty() || isNull(response.getResponse())) {
             log.error("Request mot TPS fikk timeout. Sjekk av tilgjengelighet på ident i miljoe feilet.");
             throw new HttpConnectTimeoutException("TPS Timeout");
         }

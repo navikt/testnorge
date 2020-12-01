@@ -3,6 +3,7 @@ package no.nav.registre.testnorge.identservice.service;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.identservice.testdata.consumers.MessageQueueConsumer;
 import no.nav.registre.testnorge.identservice.testdata.factories.MessageQueueServiceFactory;
 import no.nav.registre.testnorge.identservice.testdata.response.Response;
@@ -18,6 +19,7 @@ import static no.nav.registre.testnorge.identservice.testdata.consumers.config.M
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TpsRequestService {
 
     private static final String XML_PROPERTIES_PREFIX = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><tpsPersonData xmlns=\"http://www.rtv.no/NamespaceTPS\">";
@@ -41,8 +43,11 @@ public class TpsRequestService {
 
         Request request = new Request(xml, tpsRequest, context);
         request.setXml(XML_PROPERTIES_PREFIX + request.getXml() + XML_PROPERTIES_POSTFIX);
+        log.info("Xml: " + request.getXml());
+        log.info("Request: " + request.toString());
 
         String responseXml = messageQueueConsumer.sendMessage(request.getXml(), timeout);
+        log.info("Response: " + responseXml);
 
         return new Response(responseXml, context);
     }
