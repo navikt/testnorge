@@ -11,6 +11,7 @@ const BestillingIconItem = () => (
 const GruppeIconItem = () => <IconItem className={'icon-item--group'} icon={'group'} />
 const LaastGruppeIconItem = () => <IconItem className={'icon-item--group'} icon={'lockedGroup'} />
 const MalIconItem = () => <IconItem className={'icon-item'} icon={'maler'} />
+const OrganisasjonItem = () => <IconItem className={'icon-item--org'} icon={'organisasjon'} />
 
 export {
 	WomanIconItem,
@@ -18,5 +19,6 @@ export {
 	BestillingIconItem,
 	GruppeIconItem,
 	LaastGruppeIconItem,
-	MalIconItem
+	MalIconItem,
+	OrganisasjonItem
 }

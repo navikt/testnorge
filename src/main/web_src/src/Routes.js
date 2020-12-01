@@ -2,6 +2,7 @@ import React, { lazy } from 'react'
 
 const Gruppe = lazy(() => import('./pages/gruppe/GruppeConnector'))
 const GruppeOversikt = lazy(() => import('./pages/gruppeOversikt/GruppeOversiktConnector'))
+const Organisasjoner = lazy(() => import('./pages/organisasjoner/Organisasjoner'))
 const TPSEndring = lazy(() => import('./pages/tpsEndring/TpsEndring'))
 const BestillingsveilederConnector = lazy(() =>
 	import('./components/bestillingsveileder/BestillingsveilederConnector')
@@ -13,7 +14,7 @@ const SoekMiniNorge = lazy(() => import('./pages/soekMiniNorge/SoekMiniNorge'))
 const GruppeBreadcrumb = props => <span>Gruppe #{props.match.params.gruppeId}</span>
 
 const routes = [
-	{ path: '/', exact: true, breadcrumb: 'Testdatagrupper', component: GruppeOversikt },
+	{ path: '/', exact: true, breadcrumb: 'Testpersoner', component: GruppeOversikt },
 	{ path: '/gruppe/:gruppeId', exact: true, breadcrumb: GruppeBreadcrumb, component: Gruppe },
 	{
 		path: '/gruppe/:gruppeId/bestilling/:personId',
@@ -26,6 +27,12 @@ const routes = [
 		exact: true,
 		breadcrumb: 'Opprett personer',
 		component: BestillingsveilederConnector
+	},
+	{
+		path: '/organisasjoner',
+		exact: true,
+		breadcrumb: 'Testorganisasjoner',
+		component: Organisasjoner
 	},
 	{ path: '/tpsendring', exact: true, breadcrumb: 'TPSEndring', component: TPSEndring },
 	{ path: '/minside', exact: true, breadcrumb: 'Min side', component: MinSide },
