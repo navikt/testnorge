@@ -47,9 +47,11 @@ public class TpsRequestService {
         log.info("Request: " + request.toString());
 
         String responseXml = messageQueueConsumer.sendMessage(request.getXml(), timeout);
-        log.info("Response: " + responseXml);
+        Response response = new Response(responseXml, context);
 
-        return new Response(responseXml, context);
+        log.info("Response: " + response);
+
+        return response;
     }
 
     private String removeTestdataFromServicerutinenavn(String serviceRutinenavn) {
