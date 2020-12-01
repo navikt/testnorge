@@ -50,6 +50,7 @@ public class FiltrerPaaIdenterTilgjengeligIMiljo {
         request.setServiceRutinenavn(tpsServicerutine);
 
         TpsServiceRoutineResponse tpsResponse = tpsRequestSender.sendTpsRequest(request, context);
+        log.info("Response: " + tpsResponse.toString());
 
         return filtrerFunnedeIdenter(identer, tpsResponse);
     }
