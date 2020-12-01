@@ -17,11 +17,12 @@ bootJar {
 dependencies {
 
     implementation project(':testnorge-core')
-    implementation project(':testnorge-slack')
+//    implementation project(':testnorge-slack')
     implementation project(':testnorge-oauth2')
-    implementation project(':testnorge-dependency-analysis')
-    implementation project(':testnorge-data-transfer-objects')
-    implementation project(':testnorge-dependency-analysis-auto-configuration')
+    implementation project(':testnorge-database')
+//    implementation project(':testnorge-dependency-analysis')
+//    implementation project(':testnorge-data-transfer-objects')
+//    implementation project(':testnorge-dependency-analysis-auto-configuration')
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
@@ -39,12 +40,14 @@ dependencies {
     implementation 'org.springframework.security:spring-security-web:5.3.4.RELEASE'
     implementation 'org.springframework.security:spring-security-config:5.3.4.RELEASE'
     implementation 'org.springframework.security:spring-security-core:5.3.4.RELEASE'
+    implementation 'org.springframework.data:spring-data-commons:2.3.4.RELEASE'
 
     implementation 'org.reactivestreams:reactive-streams:1.0.2'
 
     implementation 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
 
     implementation 'javax.persistence:javax.persistence-api:2.2'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.2'
 }
 
 description = 'organisasjon-forvalter'

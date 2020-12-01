@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.mn.personservice.config;
+package no.nav.organisasjonforvalter.config;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
