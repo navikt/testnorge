@@ -49,7 +49,7 @@ public class TpsRequestService {
         String responseXml = messageQueueConsumer.sendMessage(request.getXml(), timeout);
         Response response = new Response(responseXml, context);
 
-        log.info("Response: " + response);
+        log.info("Response: " + response.toString());
 
         return response;
     }
