@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.identservice.testdata;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.response.TpsServiceRoutineResponse;
 
 import java.util.HashSet;
@@ -10,6 +11,7 @@ import java.util.Set;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+@Slf4j
 public final class ExtractDataFromTpsServiceRoutineResponse {
 
     private ExtractDataFromTpsServiceRoutineResponse() {
@@ -18,6 +20,7 @@ public final class ExtractDataFromTpsServiceRoutineResponse {
     public static Set<String> trekkUtIdenterMedStatusFunnetFraResponse(TpsServiceRoutineResponse tpsResponse) {
 
         Map responseMap = (Map) tpsResponse.getResponse();
+        log.info(responseMap.toString());
         int antallIdenter = (int) responseMap.get("antallTotalt");
 
         Set<String> identer = new HashSet<>();
