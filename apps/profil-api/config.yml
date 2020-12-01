@@ -16,7 +16,9 @@ spec:
     inbound:
       rules:
         - application: testnorge-tilbakemelding-api
+          cluster: dev-fss
         - application: dolly-frontend
+          cluster: dev-fss
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -25,7 +27,7 @@ spec:
   readiness:
     path: /internal/isReady
     initialDelay: 4
-    periodSeconds: 5
+    periodSeconds: 5-
     failureThreshold: 500
   replicas:
     min: 1
