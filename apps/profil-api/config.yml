@@ -27,7 +27,7 @@ spec:
   readiness:
     path: /internal/isReady
     initialDelay: 4
-    periodSeconds: 5-
+    periodSeconds: 5
     failureThreshold: 500
   replicas:
     min: 1
