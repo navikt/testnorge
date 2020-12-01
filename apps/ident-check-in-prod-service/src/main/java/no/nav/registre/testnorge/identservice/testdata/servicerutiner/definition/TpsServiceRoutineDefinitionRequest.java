@@ -10,12 +10,12 @@ import no.nav.registre.testnorge.identservice.testdata.servicerutiner.transforme
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static no.nav.registre.testnorge.identservice.testdata.servicerutiner.definition.TpsServiceRoutineDefinitionBuilder.REQUIRED;
-
 @Getter
 @Setter
 @NoArgsConstructor
 public class TpsServiceRoutineDefinitionRequest extends TpsRequestMeldingDefinition {
+
+    private static final String REQUIRED = "required";
 
     private String internalName;    // (DisplayName)
 
@@ -26,7 +26,7 @@ public class TpsServiceRoutineDefinitionRequest extends TpsRequestMeldingDefinit
 
     @JsonIgnore
     private List<Transformer> transformers;
-    
+
     @JsonIgnore
     public List<String> getRequiredParameterNameList() {
         return parameters.stream().filter(parameter -> REQUIRED.equals(parameter.getUse())).map(TpsParameter::getName).collect(Collectors.toList());

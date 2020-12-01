@@ -13,8 +13,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TpsServiceRoutineService {
 
-    private static final String TPS_SERVICE_ROUTINE_PARAM_NAME = "serviceRutinenavn";
-    private static final String ENVIRONMENT_PARAM_NAME = "environment";
+    private static final String TPS_SERVICE_ROUTINE_PARAM_NAME = "FS03-FDLISTER-DISKNAVN-M";
+    private static final String ENVIRONMENT_PARAM_NAME = "q1";
 
     private final RsTpsRequestMappingUtils mappingUtils;
     private final TpsRequestSender tpsRequestSender;
@@ -25,7 +25,7 @@ public class TpsServiceRoutineService {
         TpsRequestContext context = new TpsRequestContext();
         context.setEnvironment(tpsRequestParameters.get(ENVIRONMENT_PARAM_NAME).toString());
 
-        TpsServiceRoutineRequest tpsServiceRoutineRequest = mappingUtils.convertToTpsServiceRoutineRequest(serviceRoutinenavn, tpsRequestParameters, validateRequestParameters);
+        TpsServiceRoutineRequest tpsServiceRoutineRequest = mappingUtils.convertToTpsServiceRoutineRequest(tpsRequestParameters, validateRequestParameters);
 
         return tpsRequestSender.sendTpsRequest(tpsServiceRoutineRequest, context);
     }

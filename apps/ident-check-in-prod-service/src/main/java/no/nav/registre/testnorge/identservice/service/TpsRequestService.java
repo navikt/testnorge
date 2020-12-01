@@ -9,7 +9,6 @@ import no.nav.registre.testnorge.identservice.testdata.servicerutiner.definition
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.requests.Request;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.requests.TpsRequestContext;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.requests.TpsServiceRoutineRequest;
-import no.nav.registre.testnorge.identservice.testdata.transformation.TransformationService;
 import org.springframework.stereotype.Service;
 
 import javax.jms.JMSException;
@@ -21,11 +20,12 @@ import static no.nav.registre.testnorge.identservice.testdata.consumers.config.M
 @RequiredArgsConstructor
 public class TpsRequestService {
 
+    private static final String XML_PROPERTIES_PREFIX  = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><tpsPersonData xmlns=\"http://www.rtv.no/NamespaceTPS\">";
+    private static final String XML_PROPERTIES_POSTFIX = "</tpsPersonData>";
+
     private final XmlMapper xmlMapper;
 
     private final MessageQueueServiceFactory messageQueueServiceFactory;
-
-    private final TransformationService transformationService;
 
     public Response executeServiceRutineRequest(TpsServiceRoutineRequest tpsRequest, TpsServiceRoutineDefinitionRequest serviceRoutine, TpsRequestContext context, long timeout)
             throws JMSException, IOException {
@@ -37,7 +37,7 @@ public class TpsRequestService {
         String xml = xmlMapper.writeValueAsString(tpsRequest);
 
         Request request = new Request(xml, tpsRequest, context);
-        transformationService.transform(request, serviceRoutine);
+        request.setXml(XML_PROPERTIES_PREFIX + request.getXml() + XML_PROPERTIES_POSTFIX);
 
         String responseXml = messageQueueConsumer.sendMessage(request.getXml(), timeout);
 

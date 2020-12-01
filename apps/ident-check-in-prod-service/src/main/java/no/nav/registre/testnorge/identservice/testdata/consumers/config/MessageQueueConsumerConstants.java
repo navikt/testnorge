@@ -1,10 +1,8 @@
 package no.nav.registre.testnorge.identservice.testdata.consumers.config;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 
-@RequiredArgsConstructor
-@Component
+@UtilityClass
 public class MessageQueueConsumerConstants {
 
     /* Used to create a channel name by combining it with the environment name. E.g. 'T1_TPSWS'*/
