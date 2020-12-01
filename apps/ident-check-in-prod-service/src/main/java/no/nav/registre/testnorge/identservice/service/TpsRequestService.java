@@ -9,6 +9,7 @@ import no.nav.registre.testnorge.identservice.testdata.response.Response;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.requests.Request;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.requests.TpsRequestContext;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.requests.TpsServiceRoutineRequest;
+import no.nav.registre.testnorge.identservice.testdata.servicerutiner.response.ResponseDataListTransformerStrategy;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.response.TpsServiceRoutineResponse;
 import no.nav.registre.testnorge.identservice.testdata.servicerutiner.utils.RsTpsResponseMappingUtils;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class TpsRequestService {
     private final XmlMapper xmlMapper = new XmlMapper();
     private final MessageQueueServiceFactory messageQueueServiceFactory;
     private final RsTpsResponseMappingUtils rsTpsResponseMappingUtils;
+    private final ResponseDataListTransformerStrategy responseDataListTransformerStrategy;
 
 
     public TpsServiceRoutineResponse executeServiceRutineRequest(TpsServiceRoutineRequest tpsRequest, TpsRequestContext context, long timeout)
@@ -48,6 +50,8 @@ public class TpsRequestService {
 
         String responseXml = messageQueueConsumer.sendMessage(request.getXml(), timeout);
         Response response = new Response(responseXml, context);
+
+        responseDataListTransformerStrategy.execute(response);
 
         return rsTpsResponseMappingUtils.convertToTpsServiceRutineResponse(response);
     }
