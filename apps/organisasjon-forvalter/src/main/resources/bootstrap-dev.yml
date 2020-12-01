@@ -4,7 +4,7 @@ spring:
     locations: classpath:db/migration/postgres
     baseline-on-migrate: true
   datasource:
-    url: jdbc:postgresql://b27dbvl023.preprod.local:5432/organisasjon-forvalter-test
+    url: jdbc:postgresql://b27dbvl023.preprod.local:5432/organisasjon-forvalter-preprod
     hikari:
       maximum-pool-size: 3
       minimum-idle: 1
@@ -24,4 +24,4 @@ spring:
       database:
         backend: postgresql/preprod-fss
         enabled: true
-        role: organisasjon-forvalter-test-admin
+        role: organisasjon-forvalter-preprod-admin
