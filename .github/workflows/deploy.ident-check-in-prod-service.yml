@@ -2,8 +2,7 @@ name: Deploy ident-check-in-prod-service
 
 on:
   push:
-    branches: ident-service-app
-    #branches: master TODO: Endre tilbake til master
+    branches: master
     paths:
       - apps/ident-check-in-prod-service/**
       - libs/testnorge-core/**
