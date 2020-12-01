@@ -120,6 +120,7 @@ include(':ident-pool-app')
 include(':ident-pool-app-local')
 include(':ident-pool-component-test')
 include(':ident-pool-core')
+include(':ident-check-in-prod-service')
 include(':mn-person-service')
 include(':mn-synt-arbeidsforhold-service')
 include(':avhengighetsanalyse-service')
@@ -223,9 +224,9 @@ project(":ident-pool-component-test").projectDir = file('apps/ident-pool/ident-p
 project(":ident-pool-core").projectDir = file('apps/ident-pool/ident-pool-core')
 project(":mn-person-service").projectDir = file('apps/mn-person-service')
 project(":mn-synt-arbeidsforhold-service").projectDir = file('apps/mn-synt-arbeidsforhold-service')
+project(":ident-check-in-prod-service").projectDir = file('apps/ident-check-in-prod-service')
 project(":avhengighetsanalyse-service").projectDir = file('apps/avhengighetsanalyse-service')
 project(":testnorge-dependency-analysis-auto-configuration").projectDir = file('libs/testnorge-dependency-analysis-auto-configuration')
-
 
 gradleEnterprise {
     buildScan {
