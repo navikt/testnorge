@@ -1,5 +1,4 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-CLIENT_ID: 6554cc46-d5a9-4b9b-aafb-775b9ee09696
 
 spring:
   application:
@@ -14,4 +13,4 @@ consumer:
     channel: ${SLACK_CHANNEL}
   profil-api:
     url: https://testnorge-profil-api.dev.intern.nav.no
-    client-id: 81d0a23d-20ef-49de-8761-2e7917bc9238
+    client-id: e8e0772f-8204-4b88-88ad-233d62863f47
