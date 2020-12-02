@@ -12,7 +12,6 @@ import org.springframework.web.client.HttpStatusCodeException;
 import java.util.Map;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaAapRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaVedtakshistorikkRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortRequest;
