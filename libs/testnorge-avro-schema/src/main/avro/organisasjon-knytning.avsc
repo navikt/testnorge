@@ -1,6 +1,6 @@
 {
   "type": "record",
-  "name": "Knyttning",
+  "name": "Knytning",
   "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon",
   "fields": [
     {
@@ -12,16 +12,8 @@
       "type": "string"
     },
     {
-      "name": "underenheterOrgnummer",
-      "type": "string"
-    },
-    {
-      "name": "underenheterEnhetstype",
-      "type": "string"
-    },
-    {
-      "name": "miljo",
-      "type": "string"
+      "name": "metadata",
+      "type": "Metadata"
     }
   ]
 }

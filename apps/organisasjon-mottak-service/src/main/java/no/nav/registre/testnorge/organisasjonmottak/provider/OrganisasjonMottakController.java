@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.OrganisasjonMottakConsumer;
 import no.nav.registre.testnorge.organisasjonmottak.provider.dto.AnsatteDTO;
 import no.nav.registre.testnorge.organisasjonmottak.provider.dto.DetaljertNavnDTO;
+import no.nav.registre.testnorge.organisasjonmottak.provider.dto.KnytningDTO;
 import no.nav.registre.testnorge.organisasjonmottak.provider.dto.NavnDTO;
 import no.nav.registre.testnorge.organisasjonmottak.provider.dto.OrganisasjonDTO;
 
@@ -48,6 +49,14 @@ public class OrganisasjonMottakController {
     public void setAnsatte(
             @RequestHeader("miljoe") String miljoe,
             @RequestBody AnsatteDTO dto
+    ) {
+        organisasjonMottakConsumer.send(dto.toRecord(miljoe));
+    }
+
+    @PutMapping("/knytning")
+    public void setKnytning(
+            @RequestHeader("miljoe") String miljoe,
+            @RequestBody KnytningDTO dto
     ) {
         organisasjonMottakConsumer.send(dto.toRecord(miljoe));
     }
