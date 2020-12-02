@@ -50,8 +50,8 @@ public class Arbeidsforhold {
     @JsonAlias({"SISTE_DATO_FOR_STILLINGSPROSENTENDRING", "sisteDatoForStillingsprosentendring"})
     private String sisteDatoForStillingsprosentendring;
 
-    @JsonAlias({"PERMISJON_MED_FORELDREPENGER", "permisjonMedForeldrePenger"})
-    private Integer permisjonMedForeldrePenger;
+    @JsonAlias({"PERMISJON_MED_FORELDREPENGER", "permisjonMedForeldrepenger"})
+    private Integer permisjonMedForeldrepenger;
 
     @JsonAlias({"PERMITTERING", "permittering"})
     private Integer permittering;
