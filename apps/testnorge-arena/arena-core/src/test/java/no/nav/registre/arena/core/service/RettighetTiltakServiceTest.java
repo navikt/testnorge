@@ -3,15 +3,19 @@ package no.nav.registre.arena.core.service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.TiltakSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggRequest;
-import no.nav.registre.arena.core.service.util.KodeMedSannsynlighet;
+import no.nav.registre.arena.core.service.util.IdenterUtils;
+import no.nav.registre.arena.core.service.util.ArbeidssoekerUtils;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
+import no.nav.registre.arena.core.service.util.VedtakUtils;
+import no.nav.registre.arena.core.service.util.KodeMedSannsynlighet;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
@@ -26,6 +30,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.times;
@@ -41,6 +46,15 @@ public class RettighetTiltakServiceTest {
 
     @Mock
     private ServiceUtils serviceUtils;
+
+    @Mock
+    private IdenterUtils identerUtils;
+
+    @Mock
+    private VedtakUtils vedtakUtils;
+
+    @Mock
+    private ArbeidssoekerUtils arbeidssoekerUtils;
 
     @InjectMocks
     private RettighetTiltakService rettighetTiltakService;
@@ -85,34 +99,44 @@ public class RettighetTiltakServiceTest {
     public void shouldOnlyOppretteTiltaksdeltakelseOgEndreDeltakerstatusGjennomfoeres() {
         var vedtak = Collections.singletonList(tiltakMedTilDatoFremITid);
         when(tiltakSyntConsumer.opprettTiltaksdeltakelse(antallNyeIdenter)).thenReturn(vedtak);
-        when(serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
+        when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
-        when(serviceUtils.finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoFremITid)).thenReturn(tiltakMedTilDatoFremITid);
+        when(vedtakUtils.finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoFremITid)).thenReturn(tiltakMedTilDatoFremITid);
+        when(vedtakUtils.canSetDeltakelseTilGjennomfoeres(tiltakMedTilDatoFremITid)).thenReturn(true);
+        when(vedtakUtils.getVedtakForTiltaksdeltakelseRequest(tiltakMedTilDatoFremITid)).thenReturn(tiltakMedTilDatoFremITid);
+        when(vedtakUtils.getFoersteEndringerDeltakerstatus(anyString())).thenReturn(Collections.singletonList(Deltakerstatuser.GJENN.toString()));
+        when(arbeidssoekerUtils.opprettArbeidssoekerTiltak(anyList(), anyString())).thenReturn(Collections.emptyList());
 
         rettighetTiltakService.opprettTiltaksdeltakelse(avspillergruppeId, miljoe, antallNyeIdenter);
 
         verify(tiltakSyntConsumer).opprettTiltaksdeltakelse(antallNyeIdenter);
-        verify(serviceUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
+        verify(identerUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(rettighetArenaForvalterConsumer, times(2)).opprettRettighet(anyList());
-        verify(serviceUtils).finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoFremITid);
+        verify(vedtakUtils).finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoFremITid);
+        verify(vedtakUtils).getVedtakForTiltaksdeltakelseRequest(tiltakMedTilDatoFremITid);
+        verify(vedtakUtils).getFoersteEndringerDeltakerstatus(anyString());
     }
 
     @Test
     public void shouldOppretteTiltaksdeltakelseOgEndreDeltakerstatusAvsluttet() {
         var vedtak = Collections.singletonList(tiltakMedTilDatoLikDagens);
         when(tiltakSyntConsumer.opprettTiltaksdeltakelse(antallNyeIdenter)).thenReturn(vedtak);
-        when(serviceUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
+        when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
-        when(serviceUtils.finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoLikDagens)).thenReturn(tiltakMedTilDatoLikDagens);
-        when(serviceUtils.velgKodeBasertPaaSannsynlighet(anyList())).thenReturn(new KodeMedSannsynlighet("FULLF", 100));
+        when(vedtakUtils.finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoLikDagens)).thenReturn(tiltakMedTilDatoLikDagens);
+        when(vedtakUtils.canSetDeltakelseTilGjennomfoeres(tiltakMedTilDatoLikDagens)).thenReturn(true);
+        when(vedtakUtils.canSetDeltakelseTilFinished(tiltakMedTilDatoLikDagens)).thenReturn(true);
+        when(vedtakUtils.getVedtakForTiltaksdeltakelseRequest(tiltakMedTilDatoLikDagens)).thenReturn(tiltakMedTilDatoLikDagens);
+        when(vedtakUtils.getFoersteEndringerDeltakerstatus(anyString())).thenReturn(new ArrayList<>(Collections.singletonList(Deltakerstatuser.GJENN.toString())));
+        when(vedtakUtils.getAvsluttendeDeltakerstatus(anyString())).thenReturn(Deltakerstatuser.FULLF);
+        when(arbeidssoekerUtils.opprettArbeidssoekerTiltak(anyList(), anyString())).thenReturn(Collections.emptyList());
 
         rettighetTiltakService.opprettTiltaksdeltakelse(avspillergruppeId, miljoe, antallNyeIdenter);
 
         verify(tiltakSyntConsumer).opprettTiltaksdeltakelse(antallNyeIdenter);
-        verify(serviceUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
+        verify(identerUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(rettighetArenaForvalterConsumer, times(2)).opprettRettighet(anyList());
-        verify(serviceUtils).finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoLikDagens);
-        verify(serviceUtils).velgKodeBasertPaaSannsynlighet(anyList());
+        verify(vedtakUtils).finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoLikDagens);
     }
 
     @Test

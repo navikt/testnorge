@@ -1,0 +1,14 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+CLIENT_ID: ${azure.app.client.id}
+CLIENT_SECRET: ${azure.app.client.secret}
+
+spring:
+  main:
+    banner-mode: off
+  application:
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
+    name: ident-check-in-prod-service
+    description: App som sjekker om ident finnes i prod på identer benyttet av Dolly og Orkestrator
+springdoc:
+  swagger-ui:
+    url: /swagger-ui/index.html?url=/v3/api-docs/

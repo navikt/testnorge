@@ -12,6 +12,11 @@ spec:
   azure:
     application:
       enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: orkestratoren
+        - application: testnorge-oversikt-frontend
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -36,3 +41,4 @@ spec:
       memory: 5000Mi
   ingresses:
     - "https://testnorge-person-api.dev.adeo.no"
+    - "https://testnorge-person-api.dev.intern.nav.no"

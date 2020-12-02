@@ -36,3 +36,4 @@ spec:
   ingresses:
     - "https://testnorge-hendelse-api.nais.preprod.local"
     - "https://testnorge-hendelse-api.dev.adeo.no"
+    - "https://testnorge-hendelse-api.dev.intern.nav.no"

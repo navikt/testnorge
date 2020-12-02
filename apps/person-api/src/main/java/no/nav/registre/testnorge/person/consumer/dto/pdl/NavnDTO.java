@@ -26,7 +26,7 @@ public class NavnDTO {
         mellomnavn = person.getMellomnavn();
         originaltNavn = new OriginaltNavnDTO(person);
         kilde = "DOLLY";
-        master = "PDL";
+        master = "FREG";
     }
 
     public NavnDTO(Person person, String kilde) {
@@ -35,6 +35,6 @@ public class NavnDTO {
         mellomnavn = person.getMellomnavn();
         originaltNavn = new OriginaltNavnDTO(person);
         this.kilde = kilde;
-        master = "PDL";
+        master = "FREG";
     }
 }

@@ -16,7 +16,9 @@ spec:
     inbound:
       rules:
         - application: testnorge-tilbakemelding-api
+          cluster: dev-fss
         - application: dolly-frontend
+          cluster: dev-fss
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -40,4 +42,4 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://testnorge-profil-api.dev.adeo.no"
+    - "https://testnorge-profil-api.dev.intern.nav.no"

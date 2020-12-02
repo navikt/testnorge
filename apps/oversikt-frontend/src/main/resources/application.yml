@@ -1,5 +1,5 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-CLIENT_ID: ${azure.app.client.id}
+azure.app.client.id: 568d8ca9-8b52-4473-ac3e-21865893419c
 
 applications:
   testnorge-profil-api-dev: 4f6035c0-610d-43ea-a80b-76d214428769
@@ -10,8 +10,8 @@ applications:
   testnorge-arbeidsforhold-export-api: 06c9b9c1-d370-40ea-8181-2c4a6858392f
   testnorge-avhengighetsanalyse-service: a90b186a-6896-4a79-9462-03b8cc9c36a9
   testnorge-ident-check-in-prod-service: bb4aa476-9040-48a1-bcac-79370c530f58
-
-spring:
-  cloud:
-    vault:
-      enabled: false
+  mn-synt-arbeidsforhold-service: 6d2a7d13-a1cc-4397-ac6b-5480049187c4
+  testnorge-tps-ident-service: 76276f3a-29d7-4bc4-ba1e-018007b7417b
+  testnorge-person-api: 607ab2ee-2473-4bfd-8d48-03a7aaceeda6
+  testnorge-person-api-dev: 51ec8e6e-20a1-4b8f-b66a-66dd6a9b00b9
+  endringsmelding-service: 7f00fa49-869e-4a1a-b4a0-e0c1d556dc38

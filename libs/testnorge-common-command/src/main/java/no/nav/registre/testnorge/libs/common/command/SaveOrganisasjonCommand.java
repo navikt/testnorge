@@ -11,7 +11,7 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 
 @Slf4j
-@DependencyOn("organisasjon-api")
+@DependencyOn("testnorge-organisasjon-api")
 @RequiredArgsConstructor
 public class SaveOrganisasjonCommand implements Runnable {
     private final WebClient webClient;

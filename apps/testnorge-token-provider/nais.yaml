@@ -32,3 +32,4 @@ spec:
   ingresses:
     - "https://testnorge-token-provider.nais.preprod.local"
     - "https://testnorge-token-provider.dev.adeo.no"
+    - "https://testnorge-token-provider.dev.intern.nav.no"

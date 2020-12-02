@@ -4,9 +4,7 @@ import static java.lang.String.format;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -72,7 +70,6 @@ public class TpsfConsumer {
                     .collect(Collectors.toList());
         });
     }
-
     public List<Person> getPersoner(String avspillingsgruppe) {
         int numberOfPages = getNumberOfPages(avspillingsgruppe);
         log.info("Henter alle personer fra avspillingsgruppeID {} med {} antall sider.", avspillingsgruppe, numberOfPages);
@@ -84,10 +81,17 @@ public class TpsfConsumer {
         List<Person> personer = new ArrayList<>();
         for (CompletableFuture<List<Person>> future : futures) {
             try {
-                personer.addAll(future.get());
-            } catch (Exception e) {
-                executorService.shutdown();
-                throw new RuntimeException("Klarer ikke aa hente ut alle personer.", e);
+                log.info(format("Active threads: %d, Waiting to start: %d",
+                        ((ThreadPoolExecutor) executorService).getActiveCount(),
+                        ((ThreadPoolExecutor) executorService).getQueue().size()));
+                personer.addAll(future.get(1, TimeUnit.MINUTES));
+
+            } catch (TimeoutException e) {
+                 log.error("Future task timeout exception {}", future, e);
+            } catch (ExecutionException e) {
+                log.error("Execution exception", e);
+            } catch (InterruptedException e) {
+                log.error("Interrupted exception", e);
             }
         }
         return personer;

@@ -7,6 +7,7 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -51,7 +52,7 @@ public class Person {
     }
 
     public String getAdressetype() {
-        return endringsmeldingDTO.getAdressetype();
+        return endringsmeldingDTO.getSpesRegType();
     }
 
     public String getGatenavn() {
@@ -126,8 +127,8 @@ public class Person {
         return FoedselsdatoFraIdent.getFoedselsdato(getIdent()).format(DateTimeFormatter.ISO_DATE);
     }
 
-    public String getKjoenn() {
-        return KjoennFraIdent.getKjoenn(getIdent()).name();
+    public Integer getKjoenn() {
+        return KjoennFraIdent.getKjoenn(getIdent()).getHdirType();
     }
 
     public String getKjoennBeskrivelse() {
@@ -135,7 +136,12 @@ public class Person {
     }
 
     public String getSivilstand() {
-        return isMyndig() ? endringsmeldingDTO.getSivilstand() : null;
+        if (!isMyndig()) {
+            return null;
+        } else {
+            return isNotBlank(endringsmeldingDTO.getSivilstand()) ?
+                    endringsmeldingDTO.getSivilstand() : "0";
+        }
     }
 
     public String getSivilstandBeskrivelse() {
@@ -182,9 +188,13 @@ public class Person {
 
     private static String formatDate(String tpsDato) {
 
-        return isNotBlank(tpsDato) ?
-                LocalDate.parse(tpsDato, TPS_DATE_FMT)
-                        .format(DateTimeFormatter.ISO_DATE) : null;
+        try {
+            return isNotBlank(tpsDato) ?
+                    LocalDate.parse(tpsDato, TPS_DATE_FMT)
+                            .format(DateTimeFormatter.ISO_DATE) : null;
+        } catch (DateTimeParseException e){
+            return null;
+        }
     }
 
     private boolean isMyndig() {

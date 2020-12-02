@@ -1,3 +1,5 @@
+azure.app.client.id: 6554cc46-d5a9-4b9b-aafb-775b9ee09696
+
 spring:
   security:
     oauth2:

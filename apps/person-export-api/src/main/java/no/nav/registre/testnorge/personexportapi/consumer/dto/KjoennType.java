@@ -5,13 +5,15 @@ import lombok.Getter;
 @Getter
 public enum KjoennType {
 
-    K("Kvinne"),
-    M("Mann"),
-    U("Ukjent");
+    K(0,"Kvinne"),
+    M(1, "Mann"),
+    U(2, "Ukjent");
 
     private String beskrivelse;
+    private Integer hdirType;
 
-    KjoennType(String beskrivelse) {
+    KjoennType(Integer hdirType, String beskrivelse) {
+        this.hdirType = hdirType;
         this.beskrivelse = beskrivelse;
     }
 }

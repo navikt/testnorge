@@ -1,3 +1,5 @@
+azure.app.client.id: a9109f54-8cae-4af2-98e3-8c56a1f5c9ad
+
 spring:
   h2:
     console:

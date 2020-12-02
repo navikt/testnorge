@@ -13,8 +13,7 @@ import java.net.URI;
 
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-import no.nav.registre.testnorge.libs.oauth2.domain.AzureClientCredentials;
-import no.nav.registre.testnorge.libs.oauth2.service.OnBehalfOfGenerateAccessTokenService;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import no.nav.registre.testnorge.profil.consumer.command.GetProfileCommand;
 import no.nav.registre.testnorge.profil.consumer.command.GetProfileImageCommand;
 import no.nav.registre.testnorge.profil.consumer.dto.ProfileDTO;
@@ -25,18 +24,15 @@ import no.nav.registre.testnorge.profil.domain.Profil;
 public class AzureAdProfileConsumer {
 
     private final WebClient webClient;
-    private final AzureClientCredentials clientCredential;
-    private final OnBehalfOfGenerateAccessTokenService accessTokenService;
+    private final AccessTokenService accessTokenService;
     private final AccessScopes accessScopes;
 
     public AzureAdProfileConsumer(
             @Value("${http.proxy:#{null}}") String proxyHost,
             @Value("${api.azuread.url}") String url,
-            AzureClientCredentials clientCredential,
-            OnBehalfOfGenerateAccessTokenService accessTokenService
+            AccessTokenService accessTokenService
     ) {
         this.accessScopes = new AccessScopes(url + "/.default");
-        this.clientCredential = clientCredential;
         this.accessTokenService = accessTokenService;
 
         WebClient.Builder builder = WebClient.builder();
@@ -66,13 +62,13 @@ public class AzureAdProfileConsumer {
     }
 
     public Profil getProfil() {
-        AccessToken accessToken = accessTokenService.generateToken(clientCredential, accessScopes);
+        AccessToken accessToken = accessTokenService.generateToken(accessScopes);
         ProfileDTO dto = new GetProfileCommand(webClient, accessToken.getTokenValue()).call();
         return new Profil(dto);
     }
 
     public byte[] getProfilImage() {
-        AccessToken accessToken = accessTokenService.generateToken(clientCredential, accessScopes);
+        AccessToken accessToken = accessTokenService.generateToken(accessScopes);
         return new GetProfileImageCommand(webClient, accessToken.getTokenValue()).call();
     }
 

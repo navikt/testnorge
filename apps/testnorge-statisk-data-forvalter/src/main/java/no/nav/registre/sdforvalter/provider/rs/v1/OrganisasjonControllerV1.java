@@ -30,7 +30,6 @@ import no.nav.registre.sdforvalter.service.EregStatusService;
 import no.nav.registre.testnorge.libs.dto.statiskedataforvalter.v1.OrganisasjonDTO;
 import no.nav.registre.testnorge.libs.dto.statiskedataforvalter.v1.OrganisasjonListeDTO;
 
-@Controller
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/organisasjons")

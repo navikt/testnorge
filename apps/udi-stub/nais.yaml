@@ -32,3 +32,4 @@ spec:
   ingresses:
     - "https://udi-stub.nais.preprod.local"
     - "https://udi-stub.dev.adeo.no"
+    - "https://udi-stub.dev.intern.nav.no"

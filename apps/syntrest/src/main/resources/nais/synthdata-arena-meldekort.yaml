@@ -35,3 +35,4 @@ spec:
   ingresses:
     - "https://nais-synthdata-arena-meldekort.nais.preprod.local"
     - "https://nais-synthdata-arena-meldekort.dev.adeo.no"
+    - "https://nais-synthdata-arena-meldekort.dev.intern.nav.no"

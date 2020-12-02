@@ -38,3 +38,4 @@ spec:
   image: {{ image }}
   ingresses:
     - "https://testnorge-avhengighetsanalyse-frontend.dev.adeo.no"
+    - "https://testnorge-avhengighetsanalyse-frontend.dev.intern.nav.no"

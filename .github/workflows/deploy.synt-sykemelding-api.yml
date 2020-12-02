@@ -2,7 +2,6 @@ name: Deploy synt-sykemelding-api
 
 on:
   push:
-    branches: master
     paths:
       - apps/synt-sykemelding-api/**
       - libs/testnorge-core/**
@@ -45,4 +44,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/synt-sykemelding-api/nais.yaml
+          RESOURCE: apps/synt-sykemelding-api/config.yml
