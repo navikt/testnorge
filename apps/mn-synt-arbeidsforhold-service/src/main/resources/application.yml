@@ -28,4 +28,4 @@ spring:
 
 
 syntetisering:
-  endringssannsynlighet: 0.1
+  endringssannsynlighet: 0.27

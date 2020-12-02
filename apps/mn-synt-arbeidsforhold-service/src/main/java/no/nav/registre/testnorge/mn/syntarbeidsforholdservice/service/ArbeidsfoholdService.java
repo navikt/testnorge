@@ -171,7 +171,17 @@ public class ArbeidsfoholdService {
             return;
         }
         LocalDate kalendermaaned = kalendermaander.next();
-        boolean newArbeidsforhold = previous.getSluttdato() != null && previous.getSluttdato().getMonth().equals(kalendermaaned.minusMonths(1).getMonth());
+        boolean newArbeidsforhold = previous.getSluttdato() != null
+                && previous.getSluttdato().getMonth() == kalendermaaned.minusMonths(1).getMonth()
+                && previous.getSluttdato().getYear() == kalendermaaned.minusMonths(1).getYear();
+
+        if (previous.getSluttdato() != null) {
+            log.info("Sluttdato er satt til {} og neste mnd er {}. Derfor er nytt arbeidsforhold satt til {}.",
+                    previous.getSluttdato(),
+                    kalendermaaned,
+                    newArbeidsforhold
+            );
+        }
         Arbeidsforhold next = createArabeidsforhold(newArbeidsforhold, kalendermaaned, previous);
         if (newArbeidsforhold) {
             List<Organisajon> opplysningspliktigeOrganiasjoner = getOpplysningspliktigeOrganiasjoner(miljo);

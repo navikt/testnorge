@@ -26,7 +26,7 @@ public class GenerateNextArbeidsforholdCommand implements Callable<Arbeidsforhol
         log.info("Generer neste arbeidsforhold.");
         return webClient
                 .post()
-                .uri("/api/v1/generate/amelding/arbeidsforhold")
+                .uri("/api/v1/generate/amelding/arbeidsforhold/sklearn")
                 .body(BodyInserters.fromPublisher(Mono.just(arbeidsforholdDTO), ArbeidsforholdRequest.class))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
