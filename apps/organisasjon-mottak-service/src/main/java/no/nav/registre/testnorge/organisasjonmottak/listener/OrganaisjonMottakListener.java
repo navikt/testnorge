@@ -58,7 +58,7 @@ public class OrganaisjonMottakListener {
     public void opprettorganisasjon(@Payload Knytning knytning) {
         organisasjonService.save(
                 new no.nav.registre.testnorge.organisasjonmottak.domain.Knytning(knytning),
-                detaljertNavn.getMetadata().getMiljo()
+                knytning.getMetadata().getMiljo()
         );
     }
 
