@@ -2,12 +2,12 @@ package no.nav.registre.testnorge.organisasjonmottak.consumer.kafka;
 
 import org.springframework.stereotype.Component;
 
-import no.nav.registre.testnorge.libs.avro.organiasjon.DetaljertNavn;
+import no.nav.registre.testnorge.libs.avro.organiasjon.Organiasjon;
 import no.nav.registre.testnorge.organisasjonmottak.config.ApplicationKafkaProperties;
 
 @Component
-public class DetajertNavnProducer extends KafkaProducer<DetaljertNavn> {
-    DetajertNavnProducer(ApplicationKafkaProperties properties) {
+public class OrganisasjonProducer extends KafkaProducer<Organiasjon> {
+    OrganisasjonProducer(ApplicationKafkaProperties properties) {
         super(
                 properties.getBootstrapAddress(),
                 properties.getGroupId(),
@@ -18,7 +18,7 @@ public class DetajertNavnProducer extends KafkaProducer<DetaljertNavn> {
     }
 
     @Override
-    public void send(String key, DetaljertNavn value) {
-        getKafkaTemplate().send("tn-organiasjon-set-navn-detaljer-v1", key, value);
+    public void send(String key, Organiasjon value) {
+        getKafkaTemplate().send("tn-opprett-organisasjon-v1", key, value);
     }
 }

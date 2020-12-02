@@ -2,6 +2,7 @@ package no.nav.registre.testnorge.organisasjonmottak.provider;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,7 @@ public class OrganiasjonMottakController {
         organiasjonMottakConsumer.send(dto.toRecord(miljoe));
     }
 
-    @PostMapping("/navn")
+    @PutMapping("/navn")
     public void setNavn(
             @RequestHeader("miljoe") String miljoe,
             @RequestBody NavnDTO dto
@@ -36,7 +37,7 @@ public class OrganiasjonMottakController {
         organiasjonMottakConsumer.send(dto.toRecord(miljoe));
     }
 
-    @PostMapping("/detaljert-navn")
+    @PutMapping("/detaljert-navn")
     public void setDetaljertNavn(
             @RequestHeader("miljoe") String miljoe,
             @RequestBody DetaljertNavnDTO dto
@@ -44,7 +45,7 @@ public class OrganiasjonMottakController {
         organiasjonMottakConsumer.send(dto.toRecord(miljoe));
     }
 
-    @PostMapping("/ansatte")
+    @PutMapping("/ansatte")
     public void setAnsatte(
             @RequestHeader("miljoe") String miljoe,
             @RequestBody AnsatteDTO dto

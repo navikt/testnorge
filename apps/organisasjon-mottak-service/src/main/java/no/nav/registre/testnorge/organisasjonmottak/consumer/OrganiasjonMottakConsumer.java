@@ -10,20 +10,20 @@ import no.nav.registre.testnorge.libs.avro.organiasjon.DetaljertNavn;
 import no.nav.registre.testnorge.libs.avro.organiasjon.Navn;
 import no.nav.registre.testnorge.libs.avro.organiasjon.Organiasjon;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.AnsatteProducer;
-import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.DetajertNavnProducer;
+import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.DetaljertNavnProducer;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.NavnProducer;
-import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.OrganaisasjonProducer;
+import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.OrganisasjonProducer;
 
 @Component
 @RequiredArgsConstructor
 public class OrganiasjonMottakConsumer {
     private final AnsatteProducer ansatteProducer;
-    private final DetajertNavnProducer detajertNavnProducer;
+    private final DetaljertNavnProducer detaljertNavnProducer;
     private final NavnProducer navnProducer;
-    private final OrganaisasjonProducer organaisasjonProducer;
+    private final OrganisasjonProducer organisasjonProducer;
 
     public void send(Organiasjon value) {
-        organaisasjonProducer.send(UUID.randomUUID().toString(), value);
+        organisasjonProducer.send(UUID.randomUUID().toString(), value);
     }
 
     public void send(Navn value) {
@@ -31,7 +31,7 @@ public class OrganiasjonMottakConsumer {
     }
 
     public void send(DetaljertNavn value) {
-        detajertNavnProducer.send(UUID.randomUUID().toString(), value);
+        detaljertNavnProducer.send(UUID.randomUUID().toString(), value);
     }
 
     public void send(Ansatte value) {

@@ -20,6 +20,6 @@ public class AnsatteProducer extends KafkaProducer<Ansatte> {
 
     @Override
     public void send(String key, Ansatte value) {
-        getKafkaTemplate().send("tn-organiasjon-set-ansatte-v1", key, value);
+        getKafkaTemplate().send("tn-organisasjon-set-ansatte-v1", key, value);
     }
 }

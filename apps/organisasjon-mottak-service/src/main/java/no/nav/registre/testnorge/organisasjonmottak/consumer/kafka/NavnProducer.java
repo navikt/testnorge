@@ -20,6 +20,6 @@ public class NavnProducer extends KafkaProducer<Navn> {
 
     @Override
     public void send(String key, Navn value) {
-        getKafkaTemplate().send("tn-organiasjon-set-navn-v1", key, value);
+        getKafkaTemplate().send("tn-organisasjon-set-navn-v1", key, value);
     }
 }

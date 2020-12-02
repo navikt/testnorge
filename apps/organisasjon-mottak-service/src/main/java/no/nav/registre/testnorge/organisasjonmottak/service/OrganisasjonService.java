@@ -10,7 +10,7 @@ import no.nav.registre.testnorge.organisasjonmottak.domain.ToFlatfil;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class OrganiasjonService {
+public class OrganisasjonService {
     private final EregConsumer eregConsumer;
 
     public void save(ToFlatfil base, String miljo) {

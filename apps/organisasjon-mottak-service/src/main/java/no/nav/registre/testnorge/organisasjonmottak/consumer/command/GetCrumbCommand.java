@@ -15,7 +15,7 @@ public class GetCrumbCommand implements Callable<JenkinsCrumb> {
 
     @Override
     public JenkinsCrumb call() {
-        log.info("Het crumb issuer fra jenkins.");
+        log.info("Henter crumb issuer fra jenkins");
         JenkinsCrumb crumb = webClient
                 .get()
                 .uri("/crumbIssuer/api/json")

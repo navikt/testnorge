@@ -45,7 +45,7 @@ public class StartBEREG007Command implements Runnable {
     @SneakyThrows
     @Override
     public void run() {
-        log.info("Sender faltfil til server {} ({})", server, miljo);
+        log.info("Sender flatfil til server {} ({})", server, miljo);
 
         String content = flatfil.build();
 

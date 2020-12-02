@@ -12,42 +12,42 @@ import no.nav.registre.testnorge.libs.avro.organiasjon.Ansatte;
 import no.nav.registre.testnorge.libs.avro.organiasjon.DetaljertNavn;
 import no.nav.registre.testnorge.libs.avro.organiasjon.Navn;
 import no.nav.registre.testnorge.libs.avro.organiasjon.Organiasjon;
-import no.nav.registre.testnorge.organisasjonmottak.service.OrganiasjonService;
+import no.nav.registre.testnorge.organisasjonmottak.service.OrganisasjonService;
 
 @Slf4j
 @Profile("prod")
 @Component
 @RequiredArgsConstructor
 public class OrganaisjonMottakListener {
-    private final OrganiasjonService organiasjonService;
+    private final OrganisasjonService organisasjonService;
 
-    @KafkaListener(topics = "tn-opprett-organiasjon-v1")
+    @KafkaListener(topics = "tn-opprett-organisasjon-v1")
     public void opprettOrganiasjon(@Payload Organiasjon organiasjon) {
-        organiasjonService.save(
+        organisasjonService.save(
                 new no.nav.registre.testnorge.organisasjonmottak.domain.Organiasjon(organiasjon),
                 organiasjon.getMetadata().getMiljo()
         );
     }
 
-    @KafkaListener(topics = "tn-organiasjon-set-navn-v1")
+    @KafkaListener(topics = "tn-organisasjon-set-navn-v1")
     public void opprettOrganiasjon(@Payload Navn navn) {
-        organiasjonService.save(
+        organisasjonService.save(
                 new no.nav.registre.testnorge.organisasjonmottak.domain.Navn(navn),
                 navn.getMetadata().getMiljo()
         );
     }
 
-    @KafkaListener(topics = "tn-organiasjon-set-ansatte-v1")
+    @KafkaListener(topics = "tn-organisasjon-set-ansatte-v1")
     public void opprettOrganiasjon(@Payload Ansatte ansatte) {
-        organiasjonService.save(
+        organisasjonService.save(
                 new no.nav.registre.testnorge.organisasjonmottak.domain.Ansatte(ansatte),
                 ansatte.getMetadata().getMiljo()
         );
     }
 
-    @KafkaListener(topics = "tn-organiasjon-set-navn-detaljer-v1")
+    @KafkaListener(topics = "tn-organisasjon-set-navn-detaljer-v1")
     public void opprettOrganiasjon(@Payload DetaljertNavn detaljertNavn) {
-        organiasjonService.save(
+        organisasjonService.save(
                 new no.nav.registre.testnorge.organisasjonmottak.domain.DetaljertNavn(detaljertNavn),
                 detaljertNavn.getMetadata().getMiljo()
         );
