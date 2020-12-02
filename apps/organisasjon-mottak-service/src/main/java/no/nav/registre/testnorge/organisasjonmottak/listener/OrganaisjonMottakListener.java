@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Ansatte;
 import no.nav.registre.testnorge.libs.avro.organisasjon.DetaljertNavn;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Navn;
-import no.nav.registre.testnorge.libs.avro.organisasjon.organisasjon;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Organisasjon;
 import no.nav.registre.testnorge.organisasjonmottak.service.OrganisasjonService;
 
 @Slf4j
@@ -22,9 +22,9 @@ public class OrganaisjonMottakListener {
     private final OrganisasjonService organisasjonService;
 
     @KafkaListener(topics = "tn-opprett-organisasjon-v1")
-    public void opprettorganisasjon(@Payload organisasjon organisasjon) {
+    public void opprettorganisasjon(@Payload Organisasjon organisasjon) {
         organisasjonService.save(
-                new no.nav.registre.testnorge.organisasjonmottak.domain.organisasjon(organisasjon),
+                new no.nav.registre.testnorge.organisasjonmottak.domain.Organisasjon(organisasjon),
                 organisasjon.getMetadata().getMiljo()
         );
     }

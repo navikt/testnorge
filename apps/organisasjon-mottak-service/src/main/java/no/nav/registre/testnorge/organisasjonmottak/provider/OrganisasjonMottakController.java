@@ -8,23 +8,22 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.registre.testnorge.organisasjonmottak.consumer.organisasjonMottakConsumer;
+import no.nav.registre.testnorge.organisasjonmottak.consumer.OrganisasjonMottakConsumer;
 import no.nav.registre.testnorge.organisasjonmottak.provider.dto.AnsatteDTO;
 import no.nav.registre.testnorge.organisasjonmottak.provider.dto.DetaljertNavnDTO;
 import no.nav.registre.testnorge.organisasjonmottak.provider.dto.NavnDTO;
-import no.nav.registre.testnorge.organisasjonmottak.provider.dto.organisasjonDTO;
+import no.nav.registre.testnorge.organisasjonmottak.provider.dto.OrganisasjonDTO;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/organisasjonmottak")
-public class organisasjonMottakController {
-    private final organisasjonMottakConsumer organisasjonMottakConsumer;
-
+public class OrganisasjonMottakController {
+    private final OrganisasjonMottakConsumer organisasjonMottakConsumer;
 
     @PostMapping("/organisasjon")
     public void setorganisasjon(
             @RequestHeader("miljoe") String miljoe,
-            @RequestBody organisasjonDTO dto
+            @RequestBody OrganisasjonDTO dto
     ) {
         organisasjonMottakConsumer.send(dto.toRecord(miljoe));
     }

@@ -1,9 +1,9 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-public class organisasjon extends ToFlatfil {
+public class Organisasjon extends ToFlatfil {
     private final String navn;
 
-    public organisasjon(no.nav.registre.testnorge.libs.avro.organisasjon.organisasjon organisasjon) {
+    public Organisasjon(no.nav.registre.testnorge.libs.avro.organisasjon.Organisasjon organisasjon) {
         super(organisasjon.getMetadata());
         this.navn = organisasjon.getNavn();
     }

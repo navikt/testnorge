@@ -8,7 +8,7 @@ import java.util.UUID;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Ansatte;
 import no.nav.registre.testnorge.libs.avro.organisasjon.DetaljertNavn;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Navn;
-import no.nav.registre.testnorge.libs.avro.organisasjon.organisasjon;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Organisasjon;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.AnsatteProducer;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.DetaljertNavnProducer;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.NavnProducer;
@@ -16,13 +16,13 @@ import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.OrganisasjonP
 
 @Component
 @RequiredArgsConstructor
-public class organisasjonMottakConsumer {
+public class OrganisasjonMottakConsumer {
     private final AnsatteProducer ansatteProducer;
     private final DetaljertNavnProducer detaljertNavnProducer;
     private final NavnProducer navnProducer;
     private final OrganisasjonProducer organisasjonProducer;
 
-    public void send(organisasjon value) {
+    public void send(Organisasjon value) {
         organisasjonProducer.send(UUID.randomUUID().toString(), value);
     }
 

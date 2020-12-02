@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.SyntetiseringProperties;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.ArbeidsforholdConsumer;
-import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.MNorganisasjonConsumer;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.MNOrganisasjonConsumer;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.SyntrestConsumer;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Arbeidsforhold;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Opplysningspliktig;
@@ -26,7 +26,7 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Organisajon
 @Service
 @RequiredArgsConstructor
 public class ArbeidsfoholdService {
-    private final MNorganisasjonConsumer mnorganisasjonConsumer;
+    private final MNOrganisasjonConsumer mnorganisasjonConsumer;
     private final ArbeidsforholdConsumer arbeidsforholdConsumer;
     private final SyntrestConsumer syntrestConsumer;
     private final SyntetiseringProperties syntetiseringProperties;

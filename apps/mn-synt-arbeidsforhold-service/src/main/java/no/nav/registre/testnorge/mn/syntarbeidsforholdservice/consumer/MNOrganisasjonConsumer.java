@@ -16,13 +16,13 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.credentials.MNOrga
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Organisajon;
 
 @Component
-public class MNorganisasjonConsumer {
+public class MNOrganisasjonConsumer {
 
     private final WebClient webClient;
     private final MNOrganisasjonApiClientProperties mnOrganisasjonApiClientProperties;
     private final AccessTokenService accessTokenService;
 
-    public MNorganisasjonConsumer(
+    public MNOrganisasjonConsumer(
             MNOrganisasjonApiClientProperties mnOrganisasjonApiClientProperties,
             AccessTokenService accessTokenService
     ) {
@@ -47,5 +47,4 @@ public class MNorganisasjonConsumer {
         OrganisasjonDTO call = new GetMNOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, miljo).call();
         return Optional.of(call).map(Organisajon::new);
     }
-
 }
