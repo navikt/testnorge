@@ -369,7 +369,7 @@ public class EregMapper {
             List<String> navneListe,
             String redigertNavn,
             String endringsType) {
-        StringBuilder stringBuilder = createBaseStringbuilder(219, "NAVN", endringsType);
+        StringBuilder stringBuilder = createBaseStringBuilder(219, "NAVN", endringsType);
         concatListToString(stringBuilder, navneListe, 8);
         stringBuilder.replace(183, 183 + redigertNavn.length(), redigertNavn).append("\n");
         return stringBuilder.toString();
@@ -384,7 +384,7 @@ public class EregMapper {
             String rangering,
             String endringsType) {
 
-        StringBuilder stringBuilder = createBaseStringbuilder(14, "KATG", endringsType);
+        StringBuilder stringBuilder = createBaseStringBuilder(14, "KATG", endringsType);
         stringBuilder.replace(8, 8 + kode.length(), kode)
                 .replace(13, 14, rangering)
                 .append("\n");
@@ -396,7 +396,7 @@ public class EregMapper {
             String dato,
             String endringsType) {
 
-        StringBuilder stringBuilder = createBaseStringbuilder(16, type, endringsType);
+        StringBuilder stringBuilder = createBaseStringBuilder(16, type, endringsType);
         stringBuilder.replace(8, 8 + dato.length(), dato)
                 .append("\n");
         return stringBuilder.toString();
@@ -410,7 +410,7 @@ public class EregMapper {
             String landCode,
             String kommuneNr,
             String postSted) {
-        StringBuilder stringBuilder = createBaseStringbuilder(185, type, endringsType);
+        StringBuilder stringBuilder = createBaseStringBuilder(185, type, endringsType);
         stringBuilder.replace(8, 8 + postNr.length(), postNr)
                 .replace(17, 17 + landCode.length(), landCode)
                 .replace(20, 20 + getStringLength(kommuneNr), Strings.nullToEmpty(kommuneNr))
@@ -431,7 +431,7 @@ public class EregMapper {
             String beskrivelseNorge,
             String endringsType) {
 
-        StringBuilder stringBuilder = createBaseStringbuilder(159, "ULOV", endringsType);
+        StringBuilder stringBuilder = createBaseStringBuilder(159, "ULOV", endringsType);
         stringBuilder.replace(8, 8 + landkode.length(), landkode)
                 .replace(11, 11 + foretaksform.length(), foretaksform)
                 .replace(19, 19 + beskrivelseHjemland.length(), beskrivelseHjemland)
@@ -447,7 +447,7 @@ public class EregMapper {
             String kapitalBundet,
             String fritekst,
             String endringsType) {
-        StringBuilder stringBuilder = createBaseStringbuilder(187, "KAPI", endringsType);
+        StringBuilder stringBuilder = createBaseStringBuilder(187, "KAPI", endringsType);
         stringBuilder.replace(8, 8 + valuttakode.length(), valuttakode)
                 .replace(11, 29, createStringBuilderWithReplacement(18, '0').toString())
                 .replace(29 - kapital.length(), 29, kapital)
@@ -465,7 +465,7 @@ public class EregMapper {
             Boolean hjelpeEnhet,
             String endringsType) {
         String verdi = isTrue(hjelpeEnhet) ? "J" : endringsType;
-        StringBuilder stringBuilder = createBaseStringbuilder(23, "NACE", endringsType);
+        StringBuilder stringBuilder = createBaseStringBuilder(23, "NACE", endringsType);
         stringBuilder.replace(8, 8 + naeringskode.length(), naeringskode)
                 .replace(14, 14 + gyldighetsDato.length(), gyldighetsDato)
                 .replace(22, 22 + verdi.length(), verdi)
@@ -473,7 +473,7 @@ public class EregMapper {
         return stringBuilder.toString();
     }
 
-    private StringBuilder createBaseStringbuilder(
+    private StringBuilder createBaseStringBuilder(
             int size,
             String type,
             String endringsType) {
@@ -488,7 +488,7 @@ public class EregMapper {
             String type,
             String endringsType,
             String value) {
-        StringBuilder stringBuilder = createBaseStringbuilder(size, type, endringsType);
+        StringBuilder stringBuilder = createBaseStringBuilder(size, type, endringsType);
         stringBuilder.replace(8, 8 + value.length(), value)
                 .append("\n");
         return stringBuilder.toString();
@@ -549,7 +549,7 @@ public class EregMapper {
             AdresseRs adresse,
             String endringsType) {
 
-        StringBuilder stringBuilder = createBaseStringbuilder(291, "UREG", endringsType);
+        StringBuilder stringBuilder = createBaseStringBuilder(291, "UREG", endringsType);
         stringBuilder.replace(8, 8 + registerNr.length(), registerNr);
 
         concatListToString(stringBuilder, navn, 43);
