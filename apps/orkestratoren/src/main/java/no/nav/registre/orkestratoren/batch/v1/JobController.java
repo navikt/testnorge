@@ -194,7 +194,7 @@ public class JobController {
         }
     }
 
-    @Scheduled(cron = "0 0 6 * * *")
+    @Scheduled(cron = "0 0 0/2 * * *")
     public void arenaSyntBatch() {
         for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
             for (int i = 0; i < arenaAntallNyeIdenter; i++) {
@@ -204,12 +204,6 @@ public class JobController {
                         .antallVedtakshistorikker(1)
                         .build());
             }
-
-            testnorgeArenaService.opprettArenaAap(SyntetiserArenaAapRequest.builder()
-                    .avspillergruppeId(entry.getKey())
-                    .miljoe(entry.getValue())
-                    .antallAap(arenaAntallNyeIdenter)
-                    .build());
         }
     }
 
