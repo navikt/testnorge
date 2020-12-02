@@ -1,10 +1,10 @@
 {
   "type": "record",
-  "name": "Mobiltelefon",
-  "namespace": "no.nav.registre.testnorge.libs.avro.organiasjon",
+  "name": "Internettadresse",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon",
   "fields": [
     {
-      "name": "tlf",
+      "name": "internettadresse",
       "type": "string"
     },
     {

@@ -1,6 +1,6 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-import no.nav.registre.testnorge.libs.avro.organiasjon.Metadata;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Metadata;
 
 public abstract class Adresse extends ToFlatfil {
     private final String postnummer;

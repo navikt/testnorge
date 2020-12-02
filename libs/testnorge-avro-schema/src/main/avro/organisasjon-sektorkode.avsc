@@ -1,10 +1,10 @@
 {
   "type": "record",
-  "name": "Navn",
-  "namespace": "no.nav.registre.testnorge.libs.avro.organiasjon",
+  "name": "Sektorkode",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon",
   "fields": [
     {
-      "name": "navn",
+      "name": "sektorkode",
       "type": "string"
     },
     {

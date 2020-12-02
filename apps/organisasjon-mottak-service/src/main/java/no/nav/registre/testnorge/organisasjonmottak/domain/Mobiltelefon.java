@@ -1,11 +1,11 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-import no.nav.registre.testnorge.libs.avro.organiasjon.Metadata;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Metadata;
 
 public class Mobiltelefon extends ToFlatfil {
     private final String tlf;
 
-    public Mobiltelefon(Metadata metadata, no.nav.registre.testnorge.libs.avro.organiasjon.Mobiltelefon mobiltelefon) {
+    public Mobiltelefon(Metadata metadata, no.nav.registre.testnorge.libs.avro.organisasjon.Mobiltelefon mobiltelefon) {
         super(metadata);
         this.tlf = mobiltelefon.getTlf();
     }

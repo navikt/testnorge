@@ -1,10 +1,10 @@
 {
   "type": "record",
-  "name": "Maalform",
-  "namespace": "no.nav.registre.testnorge.libs.avro.organiasjon",
+  "name": "Navn",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon",
   "fields": [
     {
-      "name": "maalform",
+      "name": "navn",
       "type": "string"
     },
     {

@@ -1,10 +1,10 @@
 {
   "type": "record",
-  "name": "Internettadresse",
-  "namespace": "no.nav.registre.testnorge.libs.avro.organiasjon",
+  "name": "Organisasjon",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon",
   "fields": [
     {
-      "name": "internettadresse",
+      "name": "navn",
       "type": "string"
     },
     {

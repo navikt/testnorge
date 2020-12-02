@@ -1,11 +1,11 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-import no.nav.registre.testnorge.libs.avro.organiasjon.Metadata;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Metadata;
 
 public class Maalform extends ToFlatfil {
     private final String maalform;
 
-    public Maalform(Metadata metadata, no.nav.registre.testnorge.libs.avro.organiasjon.Maalform maalform) {
+    public Maalform(Metadata metadata, no.nav.registre.testnorge.libs.avro.organisasjon.Maalform maalform) {
         super(metadata);
         this.maalform = maalform.getMaalform();
     }

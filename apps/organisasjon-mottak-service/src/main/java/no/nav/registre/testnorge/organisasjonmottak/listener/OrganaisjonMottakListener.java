@@ -8,10 +8,10 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
-import no.nav.registre.testnorge.libs.avro.organiasjon.Ansatte;
-import no.nav.registre.testnorge.libs.avro.organiasjon.DetaljertNavn;
-import no.nav.registre.testnorge.libs.avro.organiasjon.Navn;
-import no.nav.registre.testnorge.libs.avro.organiasjon.Organiasjon;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Ansatte;
+import no.nav.registre.testnorge.libs.avro.organisasjon.DetaljertNavn;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Navn;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Organisasjon;
 import no.nav.registre.testnorge.organisasjonmottak.service.OrganisasjonService;
 
 @Slf4j
@@ -22,15 +22,15 @@ public class OrganaisjonMottakListener {
     private final OrganisasjonService organisasjonService;
 
     @KafkaListener(topics = "tn-opprett-organisasjon-v1")
-    public void opprettOrganiasjon(@Payload Organiasjon organiasjon) {
+    public void opprettorganisasjon(@Payload Organisasjon organisasjon) {
         organisasjonService.save(
-                new no.nav.registre.testnorge.organisasjonmottak.domain.Organiasjon(organiasjon),
-                organiasjon.getMetadata().getMiljo()
+                new no.nav.registre.testnorge.organisasjonmottak.domain.Organisasjon(organisasjon),
+                organisasjon.getMetadata().getMiljo()
         );
     }
 
     @KafkaListener(topics = "tn-organisasjon-set-navn-v1")
-    public void opprettOrganiasjon(@Payload Navn navn) {
+    public void opprettorganisasjon(@Payload Navn navn) {
         organisasjonService.save(
                 new no.nav.registre.testnorge.organisasjonmottak.domain.Navn(navn),
                 navn.getMetadata().getMiljo()
@@ -38,7 +38,7 @@ public class OrganaisjonMottakListener {
     }
 
     @KafkaListener(topics = "tn-organisasjon-set-ansatte-v1")
-    public void opprettOrganiasjon(@Payload Ansatte ansatte) {
+    public void opprettorganisasjon(@Payload Ansatte ansatte) {
         organisasjonService.save(
                 new no.nav.registre.testnorge.organisasjonmottak.domain.Ansatte(ansatte),
                 ansatte.getMetadata().getMiljo()
@@ -46,7 +46,7 @@ public class OrganaisjonMottakListener {
     }
 
     @KafkaListener(topics = "tn-organisasjon-set-navn-detaljer-v1")
-    public void opprettOrganiasjon(@Payload DetaljertNavn detaljertNavn) {
+    public void opprettorganisasjon(@Payload DetaljertNavn detaljertNavn) {
         organisasjonService.save(
                 new no.nav.registre.testnorge.organisasjonmottak.domain.DetaljertNavn(detaljertNavn),
                 detaljertNavn.getMetadata().getMiljo()

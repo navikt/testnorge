@@ -3,12 +3,12 @@ package no.nav.registre.testnorge.organisasjonmottak.domain;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 
-import no.nav.registre.testnorge.libs.avro.organiasjon.Metadata;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Metadata;
 
 public class Stiftelsesdato extends ToFlatfil {
     private final LocalDate localDate;
 
-    public Stiftelsesdato(Metadata metadata, no.nav.registre.testnorge.libs.avro.organiasjon.Stiftelsesdato stiftelsesdato) {
+    public Stiftelsesdato(Metadata metadata, no.nav.registre.testnorge.libs.avro.organisasjon.Stiftelsesdato stiftelsesdato) {
         super(metadata);
         localDate = LocalDate.of(
                 stiftelsesdato.getAar(),

@@ -2,7 +2,7 @@ package no.nav.registre.testnorge.organisasjonmottak.consumer.kafka;
 
 import org.springframework.stereotype.Component;
 
-import no.nav.registre.testnorge.libs.avro.organiasjon.DetaljertNavn;
+import no.nav.registre.testnorge.libs.avro.organisasjon.DetaljertNavn;
 import no.nav.registre.testnorge.organisasjonmottak.config.ApplicationKafkaProperties;
 
 @Component

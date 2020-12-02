@@ -8,7 +8,7 @@ public class DetaljertNavn extends ToFlatfil {
     private final String navn5;
     private final String redigertNavn;
 
-    public DetaljertNavn(no.nav.registre.testnorge.libs.avro.organiasjon.DetaljertNavn detaljertNavn) {
+    public DetaljertNavn(no.nav.registre.testnorge.libs.avro.organisasjon.DetaljertNavn detaljertNavn) {
         super(detaljertNavn.getMetadata());
         this.navn1 = detaljertNavn.getNavn1();
         this.navn2 = detaljertNavn.getNavn2();

@@ -4,7 +4,7 @@ consumers:
   arbeidsforholdapi:
     client_id: 1b2f24c8-a426-47b1-8ff1-7905d6dfddb5
     url: https://testnorge-arbeidsforhold-api.dev.adeo.no
-  mnorganiasjonapi:
+  mnorganisasjonapi:
     client_id: a9109f54-8cae-4af2-98e3-8c56a1f5c9ad
     url: https://mn-organisasjon-api.dev.adeo.no
   kodeverk:

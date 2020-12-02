@@ -1,11 +1,11 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-import no.nav.registre.testnorge.libs.avro.organiasjon.Metadata;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Metadata;
 
 public class Internettadresse extends ToFlatfil {
     private final String internettadresse;
 
-    public Internettadresse(Metadata metadata, no.nav.registre.testnorge.libs.avro.organiasjon.Internettadresse internettadresse) {
+    public Internettadresse(Metadata metadata, no.nav.registre.testnorge.libs.avro.organisasjon.Internettadresse internettadresse) {
         super(metadata);
         this.internettadresse = internettadresse.getInternettadresse();
     }

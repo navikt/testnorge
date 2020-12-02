@@ -5,19 +5,19 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import no.nav.registre.testnorge.libs.avro.organiasjon.Metadata;
-import no.nav.registre.testnorge.libs.avro.organiasjon.Organiasjon;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Metadata;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Organisasjon;
 
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 @EqualsAndHashCode(callSuper = true)
-public class OrganiasjonDTO extends BaseDTO<Organiasjon> {
+public class OrganisasjonDTO extends BaseDTO<Organisasjon> {
     String navn;
 
     @Override
-    public Organiasjon toRecord(String miljoe) {
-        var value = new Organiasjon();
+    public Organisasjon toRecord(String miljoe) {
+        var value = new Organisasjon();
         var metadata = new Metadata();
         metadata.setOrgnummer(getOrgnummer());
         metadata.setEnhetstype(getEnhetstype());
