@@ -2,6 +2,7 @@ package no.nav.organisasjonforvalter.jpa.entity;
 
 import javax.persistence.*;
 
+@Entity
 @Table(name = "Adresse")
 public class Adresse {
 

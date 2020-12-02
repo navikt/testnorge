@@ -3,6 +3,7 @@ package no.nav.organisasjonforvalter.jpa.entity;
 import javax.persistence.*;
 import java.util.List;
 
+@Entity
 @Table(name = "Organisasjon")
 public class Organisasjon {
 
@@ -33,10 +34,11 @@ public class Organisasjon {
     @Column(name = "nettside")
     private String nettside;
 
-    @JoinColumn(name = "adresse_id", nullable = false)
+    @JoinColumn(name = "adresse_id")
+    @OneToMany
     private List<Adresse> adresser;
 
-    @Column(name = "parent_org")
-    @OneToMany()
+    @JoinColumn(name = "organisasjon_id")
+    @ManyToOne
     private Organisasjon parent;
 }
