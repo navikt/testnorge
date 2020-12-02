@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import no.nav.registre.testnorge.libs.avro.organisasjon.Ansatte;
 import no.nav.registre.testnorge.libs.avro.organisasjon.DetaljertNavn;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Knytning;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Navn;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Organisasjon;
 import no.nav.registre.testnorge.organisasjonmottak.service.OrganisasjonService;
@@ -49,6 +50,14 @@ public class OrganaisjonMottakListener {
     public void opprettorganisasjon(@Payload DetaljertNavn detaljertNavn) {
         organisasjonService.save(
                 new no.nav.registre.testnorge.organisasjonmottak.domain.DetaljertNavn(detaljertNavn),
+                detaljertNavn.getMetadata().getMiljo()
+        );
+    }
+
+    @KafkaListener(topics = "tn-organisasjon-set-knytning-v1")
+    public void opprettorganisasjon(@Payload Knytning knytning) {
+        organisasjonService.save(
+                new no.nav.registre.testnorge.organisasjonmottak.domain.Knytning(knytning),
                 detaljertNavn.getMetadata().getMiljo()
         );
     }

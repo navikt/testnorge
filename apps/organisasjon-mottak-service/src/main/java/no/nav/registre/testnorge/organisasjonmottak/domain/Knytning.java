@@ -1,15 +1,13 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-import no.nav.registre.testnorge.libs.avro.organisasjon.Metadata;
-
 public class Knytning extends ToFlatfil {
     private final String overenhetOrgnummer;
     private final String overenhetEnhetstype;
 
-    public Knytning(Metadata metadata, String overenhetOrgnummer, String overenhetEnhetstype) {
-        super(metadata);
-        this.overenhetOrgnummer = overenhetOrgnummer;
-        this.overenhetEnhetstype = overenhetEnhetstype;
+    public Knytning(no.nav.registre.testnorge.libs.avro.organisasjon.Knytning knytning) {
+        super(knytning.getMetadata());
+        this.overenhetOrgnummer = knytning.getOverenhetOrgnummer();
+        this.overenhetEnhetstype = knytning.getOverenhetEnhetstype();
     }
 
     @Override
