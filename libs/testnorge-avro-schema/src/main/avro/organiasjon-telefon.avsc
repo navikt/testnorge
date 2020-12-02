@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "Telefon",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organiasjon",
+  "fields": [
+    {
+      "name": "tlf",
+      "type": "string"
+    },
+    {
+      "name": "metadata",
+      "type": "Metadata"
+    }
+  ]
+}

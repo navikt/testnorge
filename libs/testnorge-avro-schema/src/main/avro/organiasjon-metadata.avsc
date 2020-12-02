@@ -1,0 +1,19 @@
+{
+  "type": "record",
+  "name": "Metadata",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organiasjon",
+  "fields": [
+    {
+      "name": "orgnummer",
+      "type": "string"
+    },
+    {
+      "name": "enhetstype",
+      "type": "string"
+    },
+    {
+      "name": "miljo",
+      "type": "string"
+    }
+  ]
+}

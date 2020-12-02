@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "Maalform",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organiasjon",
+  "fields": [
+    {
+      "name": "maalform",
+      "type": "string"
+    },
+    {
+      "name": "metadata",
+      "type": "Metadata"
+    }
+  ]
+}

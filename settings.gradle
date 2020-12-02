@@ -234,6 +234,8 @@ gradleEnterprise {
         termsOfServiceAgree = "yes"
     }
 }
+include 'organisasjon-mottak-service'
+project(":organisasjon-mottak-service").projectDir = file('apps/organisasjon-mottak-service')
 
 include 'tps-ident-service'
 project(":tps-ident-service").projectDir = file('apps/tps-ident-service')

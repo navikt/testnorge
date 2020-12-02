@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "Organiasjon",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organiasjon",
+  "fields": [
+    {
+      "name": "navn",
+      "type": "string"
+    },
+    {
+      "name": "metadata",
+      "type": "Metadata"
+    }
+  ]
+}

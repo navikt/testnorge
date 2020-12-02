@@ -1,0 +1,23 @@
+{
+  "type": "record",
+  "name": "Stiftelsesdato",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organiasjon",
+  "fields": [
+    {
+      "name": "dag",
+      "type": "int"
+    },
+    {
+      "name": "maaned",
+      "type": "int"
+    },
+    {
+      "name": "aar",
+      "type": "int"
+    },
+    {
+      "name": "metadata",
+      "type": "Metadata"
+    }
+  ]
+}
