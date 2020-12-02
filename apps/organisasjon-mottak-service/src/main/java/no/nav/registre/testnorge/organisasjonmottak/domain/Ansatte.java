@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.organisasjonmottak.domain;
 public class Ansatte extends ToFlatfil {
     private final boolean ansatte;
 
-    public Ansatte(no.nav.registre.testnorge.libs.avro.organiasjon.Ansatte ansatte) {
+    public Ansatte(no.nav.registre.testnorge.libs.avro.organisasjon.Ansatte ansatte) {
         super(ansatte.getMetadata());
         this.ansatte = ansatte.getHarAnsatte();
     }

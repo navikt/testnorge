@@ -1,7 +1,7 @@
 {
   "type": "record",
   "name": "Metadata",
-  "namespace": "no.nav.registre.testnorge.libs.avro.organiasjon",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon",
   "fields": [
     {
       "name": "orgnummer",

@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.organisasjonmottak.domain;
 public class Navn extends ToFlatfil {
     private final String navn;
 
-    public Navn(no.nav.registre.testnorge.libs.avro.organiasjon.Navn navn) {
+    public Navn(no.nav.registre.testnorge.libs.avro.organisasjon.Navn navn) {
         super(navn.getMetadata());
         this.navn = navn.getNavn();
     }

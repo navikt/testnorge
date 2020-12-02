@@ -1,10 +1,10 @@
 {
   "type": "record",
-  "name": "Sektorkode",
-  "namespace": "no.nav.registre.testnorge.libs.avro.organiasjon",
+  "name": "Maalform",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon",
   "fields": [
     {
-      "name": "sektorkode",
+      "name": "maalform",
       "type": "string"
     },
     {

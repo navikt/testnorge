@@ -16,13 +16,13 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.credentials.MNOrga
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Organisajon;
 
 @Component
-public class MNOrganiasjonConsumer {
+public class MNorganisasjonConsumer {
 
     private final WebClient webClient;
     private final MNOrganisasjonApiClientProperties mnOrganisasjonApiClientProperties;
     private final AccessTokenService accessTokenService;
 
-    public MNOrganiasjonConsumer(
+    public MNorganisasjonConsumer(
             MNOrganisasjonApiClientProperties mnOrganisasjonApiClientProperties,
             AccessTokenService accessTokenService
     ) {

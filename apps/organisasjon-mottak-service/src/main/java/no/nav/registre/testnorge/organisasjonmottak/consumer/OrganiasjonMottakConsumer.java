@@ -5,10 +5,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-import no.nav.registre.testnorge.libs.avro.organiasjon.Ansatte;
-import no.nav.registre.testnorge.libs.avro.organiasjon.DetaljertNavn;
-import no.nav.registre.testnorge.libs.avro.organiasjon.Navn;
-import no.nav.registre.testnorge.libs.avro.organiasjon.Organiasjon;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Ansatte;
+import no.nav.registre.testnorge.libs.avro.organisasjon.DetaljertNavn;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Navn;
+import no.nav.registre.testnorge.libs.avro.organisasjon.organisasjon;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.AnsatteProducer;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.DetaljertNavnProducer;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.NavnProducer;
@@ -16,13 +16,13 @@ import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.OrganisasjonP
 
 @Component
 @RequiredArgsConstructor
-public class OrganiasjonMottakConsumer {
+public class organisasjonMottakConsumer {
     private final AnsatteProducer ansatteProducer;
     private final DetaljertNavnProducer detaljertNavnProducer;
     private final NavnProducer navnProducer;
     private final OrganisasjonProducer organisasjonProducer;
 
-    public void send(Organiasjon value) {
+    public void send(organisasjon value) {
         organisasjonProducer.send(UUID.randomUUID().toString(), value);
     }
 

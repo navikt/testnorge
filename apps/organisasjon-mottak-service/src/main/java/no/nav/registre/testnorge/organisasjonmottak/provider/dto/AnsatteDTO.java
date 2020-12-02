@@ -5,8 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import no.nav.registre.testnorge.libs.avro.organiasjon.Ansatte;
-import no.nav.registre.testnorge.libs.avro.organiasjon.Metadata;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Ansatte;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Metadata;
 
 @Value
 @AllArgsConstructor

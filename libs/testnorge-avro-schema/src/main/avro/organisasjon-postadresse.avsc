@@ -1,7 +1,7 @@
 {
   "type": "record",
-  "name": "Forretningsadresse",
-  "namespace": "no.nav.registre.testnorge.libs.avro.organiasjon",
+  "name": "Posstadresse",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon",
   "fields": [
     {
       "name": "postnummer",
