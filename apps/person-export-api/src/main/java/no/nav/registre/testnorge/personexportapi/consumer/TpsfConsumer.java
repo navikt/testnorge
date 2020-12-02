@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -84,10 +85,15 @@ public class TpsfConsumer {
         List<Person> personer = new ArrayList<>();
         for (CompletableFuture<List<Person>> future : futures) {
             try {
+                log.info(format("Active threads: %d, Waiting to start: %d",
+                        ((ThreadPoolExecutor) executorService).getActiveCount(),
+                        ((ThreadPoolExecutor) executorService).getQueue().size()));
                 personer.addAll(future.get());
             } catch (Exception e) {
-                executorService.shutdown();
+                log.error(e.getMessage(), e);
                 throw new RuntimeException("Klarer ikke aa hente ut alle personer.", e);
+            } finally {
+                executorService.shutdown();
             }
         }
         return personer;
