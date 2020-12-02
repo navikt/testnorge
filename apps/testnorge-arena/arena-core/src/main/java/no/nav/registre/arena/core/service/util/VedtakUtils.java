@@ -209,18 +209,39 @@ public class VedtakUtils {
         var fraDato = vedtak.getFraDato();
         var tilDato = vedtak.getTilDato();
 
+        if (fraDato == null) {
+            return false;
+        }
+
         for (var item : vedtaksliste) {
             var fraDatoItem = item.getFraDato();
             var tilDatoItem = item.getTilDato();
 
-            if ((fraDato == fraDatoItem) ||
-                    (fraDato.isBefore(fraDatoItem) && tilDato.isAfter(fraDatoItem)) ||
-                    (fraDato.isAfter(fraDatoItem) && fraDato.isBefore(tilDatoItem))) {
+            if (datoerOverlapper(fraDato, tilDato, fraDatoItem, tilDatoItem)) {
                 return true;
             }
         }
         return false;
     }
+
+    private boolean datoerOverlapper(LocalDate fraDatoA, LocalDate tilDatoA, LocalDate fraDatoB, LocalDate tilDatoB) {
+        if (fraDatoB == null || (tilDatoA == null && tilDatoB == null)) {
+            return false;
+        }
+
+        if (tilDatoA == null) {
+            return (fraDatoA.isAfter(fraDatoB.minusDays(1)) && fraDatoA.isBefore(tilDatoB));
+        } else {
+            if (tilDatoB == null) {
+                return (fraDatoB.isAfter(fraDatoA.minusDays(1)) && fraDatoB.isBefore(tilDatoA));
+            } else {
+                return ((fraDatoA == fraDatoB) || (fraDatoA.isBefore(fraDatoB) && tilDatoA.isAfter(fraDatoB)) ||
+                        (fraDatoA.isAfter(fraDatoB) && fraDatoA.isBefore(tilDatoB)));
+            }
+
+        }
+    }
+
 
     private List<List<NyttVedtakTiltak>> getVedtakSequences(List<NyttVedtakTiltak> vedtak) {
         List<List<NyttVedtakTiltak>> vedtakSequences = new ArrayList<>();
