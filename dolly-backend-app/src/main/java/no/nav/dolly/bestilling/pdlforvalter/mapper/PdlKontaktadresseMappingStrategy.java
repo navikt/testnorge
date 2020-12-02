@@ -84,16 +84,18 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                         });
 
                         person.getPostadresse().forEach(postAdresse -> {
-                            PdlKontaktadresse kontaktadresse = new PdlKontaktadresse();
-                            if (postAdresse.isNorsk()) {
-                                kontaktadresse.setPostadresseIFrittFormat(mapperFacade.map(
-                                        postAdresse, PostadresseIFrittFormat.class));
-                            } else {
-                                kontaktadresse.setUtenlandskAdresseIFrittFormat(mapperFacade.map(
-                                        postAdresse, UtenlandskAdresseIFrittFormat.class));
+                            if (isNotBlank(postAdresse.getPostLinje1())) {
+                                PdlKontaktadresse kontaktadresse = new PdlKontaktadresse();
+                                if (postAdresse.isNorsk()) {
+                                    kontaktadresse.setPostadresseIFrittFormat(mapperFacade.map(
+                                            postAdresse, PostadresseIFrittFormat.class));
+                                } else {
+                                    kontaktadresse.setUtenlandskAdresseIFrittFormat(mapperFacade.map(
+                                            postAdresse, UtenlandskAdresseIFrittFormat.class));
+                                }
+                                kontaktadresse.setKilde(CONSUMER);
+                                historikk.getPdlAdresser().add(kontaktadresse);
                             }
-                            kontaktadresse.setKilde(CONSUMER);
-                            historikk.getPdlAdresser().add(kontaktadresse);
                         });
                     }
                 }).register();

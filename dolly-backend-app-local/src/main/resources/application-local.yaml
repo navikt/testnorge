@@ -1,6 +1,6 @@
 providers:
   tpsf:
-    url: https://tps-forvalteren-u2.nais.preprod.local
+    url: https://tps-forvalteren-dev.dev.adeo.no
 #    url: http://localhost:8050
 
 #spring:
