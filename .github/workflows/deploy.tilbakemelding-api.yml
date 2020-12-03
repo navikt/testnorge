@@ -2,7 +2,6 @@ name: Deploy tilbakemelding-api
 
 on:
   push:
-    branches: master
     paths:
       - apps/tilbakemelding-api/**
       - libs/testnorge-core/**

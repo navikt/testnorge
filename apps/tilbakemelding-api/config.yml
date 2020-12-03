@@ -42,4 +42,3 @@ spec:
       memory: 5000Mi
   ingresses:
     - "https://testnorge-tilbakemelding-api.dev.adeo.no"
-    - "https://testnorge-tilbakemelding-api.dev.intern.nav.no"
