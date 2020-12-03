@@ -19,7 +19,7 @@ class LineBuilder {
         if (value == null) {
             return this;
         }
-        builder.replace(exclusiveStart, exclusiveStart + value.length(), value).append("\n");
+        builder.replace(exclusiveStart, exclusiveStart + value.length(), value);
         return this;
     }
 
@@ -41,7 +41,7 @@ class LineBuilder {
 
     @Override
     public String toString() {
-        return builder.toString();
+        return builder.append("\n").toString();
     }
 
 }

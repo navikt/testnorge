@@ -11,9 +11,9 @@ public class Stiftelsesdato extends ToFlatfil {
     public Stiftelsesdato(Metadata metadata, no.nav.registre.testnorge.libs.avro.organisasjon.Stiftelsesdato stiftelsesdato) {
         super(metadata);
         localDate = LocalDate.of(
-                stiftelsesdato.getAar(),
-                stiftelsesdato.getMaaned(),
-                stiftelsesdato.getDag()
+                stiftelsesdato.getDato().getAar(),
+                stiftelsesdato.getDato().getMaaned(),
+                stiftelsesdato.getDato().getDag()
         );
     }
 
