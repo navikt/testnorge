@@ -36,6 +36,8 @@ dependencies {
     implementation 'no.nav.common:cxf:1.2019.11.06-15.14-6ca860e6cead'
     implementation 'com.h2database:h2:1.4.200'
     implementation 'jakarta.jws:jakarta.jws-api:2.1.0'
+
+    implementation project(':testnorge-database')
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE'
 }
 
