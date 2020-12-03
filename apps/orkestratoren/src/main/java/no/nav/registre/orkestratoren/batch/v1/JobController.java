@@ -196,7 +196,7 @@ public class JobController {
     /**
     * Denne metoden oppretter vedtakshistorikk i Arena og kjøres annen hver time.
     * */
-    @Scheduled(cron = "0 0 0/2 * * *")
+    @Scheduled(cron = "0 0 0-23/2 * * *")
     public void arenaSyntBatch() {
         for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
             for (int i = 0; i < arenaAntallNyeIdenter; i++) {
