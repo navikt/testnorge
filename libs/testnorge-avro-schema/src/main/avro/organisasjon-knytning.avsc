@@ -4,12 +4,11 @@
   "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon",
   "fields": [
     {
-      "name": "overenhetOrgnummer",
-      "type": "string"
-    },
-    {
-      "name": "overenhetEnhetstype",
-      "type": "string"
+      "name": "driverVirksomhenter",
+      "type": {
+        "type": "array",
+        "items": "Virksomhet"
+      }
     },
     {
       "name": "metadata",
