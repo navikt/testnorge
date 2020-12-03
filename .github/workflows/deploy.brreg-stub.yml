@@ -2,6 +2,7 @@ name: Deploy brreg-stub
 
 on:
   push:
+    branches: master
     paths:
       - apps/brreg-stub/**
       - libs/testnorge-core/**
