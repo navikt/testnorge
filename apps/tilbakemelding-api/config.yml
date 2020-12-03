@@ -13,8 +13,11 @@ spec:
     inbound:
       rules:
         - application: dolly-frontend-dev
+          cluster: dev-fss
         - application: dolly-frontend
+          cluster: dev-fss
         - application: testnorge-oversikt-frontend
+          cluster: dev-fss
   azure:
     application:
       enabled: true
@@ -41,4 +44,4 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://testnorge-tilbakemelding-api.dev.adeo.no"
+    - "https://testnorge-tilbakemelding-api.dev.intern.nav.no"
