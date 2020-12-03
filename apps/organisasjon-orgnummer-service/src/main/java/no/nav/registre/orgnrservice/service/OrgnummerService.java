@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import no.nav.registre.orgnrservice.adapter.OrgnummerAdapter;
 import no.nav.registre.orgnrservice.consumer.OrganisasjonApiConsumer;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 
@@ -15,6 +16,11 @@ import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 public class OrgnummerService {
 
     private final OrganisasjonApiConsumer organisasjonApiConsumer;
+    private final OrgnummerAdapter orgnummerAdapter;
+
+    public List<String> genererOrgnrsTilDb (Integer antall) {
+        return orgnummerAdapter.saveAll(generateOrgnrs(antall));
+    }
 
     public List<String> generateOrgnrs (Integer antall) {
         List<String> identListe = new ArrayList<>();
@@ -30,11 +36,11 @@ public class OrgnummerService {
         String randomString = String.valueOf(random);
 
         int controlDigit = calculateControlDigit(weights, randomString);
-        if (controlDigit == 1 || controlDigit < 0) {
+        String orgnr = randomString + controlDigit;
+        if ((controlDigit == 1 || controlDigit < 0) && finnesOrgnr(orgnr)) {
             return generateOrgnr();
         }
-
-        return randomString + controlDigit;
+        return orgnr;
     }
 
     private static int calculateControlDigit(String weights, String randomString) {
@@ -49,7 +55,8 @@ public class OrgnummerService {
     }
 
     private boolean finnesOrgnr (String orgnummer) {
+        //Har ikke sjekka hva denne returnerer. Finn riktig respons.
         OrganisasjonDTO orgnr = organisasjonApiConsumer.getOrgnr(orgnummer);
-        return true;
+        return orgnr != null;
     }
 }

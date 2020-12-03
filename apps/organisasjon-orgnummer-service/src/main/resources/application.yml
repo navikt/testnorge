@@ -5,3 +5,20 @@ consumer:
     url: https://modapp-{miljoe}.adeo.no
   organisasjon-api:
     url: https://testnorge-organisasjon-api.dev.adeo.no
+
+spring:
+  datasource: #Sjekk hvilken IP som skal være her b27...
+    url: jdbc:postgresql://b27dbvl023.preprod.local:5432/organisasjon-orgnummer-service?useUnicode=yes&characterEncoding=UTF-8
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 0
+  flyway:
+    locations: classpath:db/migration
+    enabled: true
+  jpa:
+    database: POSTGRESQL
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  main:
+    banner-mode: off

@@ -16,9 +16,16 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.3.4.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases:2.2.5.RELEASE'
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation 'org.flywaydb:flyway-core:6.4.4'
+    implementation 'com.h2database:h2:1.4.200'
     implementation 'org.projectlombok:lombok'
     implementation 'org.springdoc:springdoc-openapi-ui:1.4.6'
     implementation 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
+
+    implementation project(':testnorge-database')
     implementation project(':testnorge-oauth2')
     implementation project(':testnorge-dependency-analysis')
     implementation project(':testnorge-dependency-analysis-auto-configuration')
