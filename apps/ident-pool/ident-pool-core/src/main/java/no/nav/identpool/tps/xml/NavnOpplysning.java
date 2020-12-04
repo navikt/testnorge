@@ -10,6 +10,8 @@ import lombok.Getter;
 @Getter
 public class NavnOpplysning extends TpsServiceRutine {
 
+
+
     @JacksonXmlProperty(localName = "antallFnr")
     private final int antallFnr;
 
@@ -17,8 +19,8 @@ public class NavnOpplysning extends TpsServiceRutine {
     @JacksonXmlProperty(localName = "fnr")
     private final Collection<String> fnr;
 
-    public NavnOpplysning(List<String> fnrs) {
-        super(ServiceRutinenavn.HENT_NAVNOPPLYSNINGER, "A", "3");
+    public NavnOpplysning(List<String> fnrs, AksjonKode aksjonKode) {
+        super(ServiceRutinenavn.HENT_NAVNOPPLYSNINGER, "A", aksjonKode.getKode());
         this.antallFnr = fnrs.size();
         this.fnr = fnrs;
     }

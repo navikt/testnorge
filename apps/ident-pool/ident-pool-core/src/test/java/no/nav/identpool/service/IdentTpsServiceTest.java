@@ -16,25 +16,26 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.jms.JMSException;
 import javax.xml.bind.JAXB;
-
-import no.nav.identpool.domain.TpsStatus;
-import no.nav.identpool.service.support.QueueContext;
-import no.nav.identpool.test.mockito.MockitoExtension;
-import no.nav.tps.ctg.m201.domain.PersondataFraTpsS201;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
-import no.nav.identpool.mq.consumer.MessageQueue;
-import no.nav.identpool.mq.factory.MessageQueueFactory;
-import no.nav.tps.ctg.m201.domain.PersondataFraTpsM201;
-import no.nav.tps.ctg.m201.domain.TpsPersonData;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import no.nav.identpool.domain.TpsStatus;
+import no.nav.identpool.mq.consumer.MessageQueue;
+import no.nav.identpool.mq.factory.MessageQueueFactory;
+import no.nav.identpool.service.support.QueueContext;
+import no.nav.identpool.test.mockito.MockitoExtension;
+import no.nav.tps.ctg.m201.domain.PersondataFraTpsM201;
+import no.nav.tps.ctg.m201.domain.PersondataFraTpsS201;
+import no.nav.tps.ctg.m201.domain.TpsPersonData;
+
+@Disabled
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Tester sjekking av identer mot TPS (MQ)")
 class IdentTpsServiceTest {

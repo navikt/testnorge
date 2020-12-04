@@ -146,7 +146,7 @@ public class AjourholdService {
             int numberOfIdents) {
 
         List<String> identsNotInDatabase = filterAgainstDatabase(identsPerDay, pinMap);
-        Set<TpsStatus> tpsStatuses = identTpsService.checkIdentsInTps(identsNotInDatabase, new ArrayList<>());
+        Set<TpsStatus> tpsStatuses = identTpsService.checkIdentsInTps(identsNotInDatabase);
 
         List<String> rekvirert = tpsStatuses.stream()
                 .filter(TpsStatus::isInUse)
@@ -214,7 +214,7 @@ public class AjourholdService {
 
                 List<String> idents = page.getContent().stream().map(Ident::getPersonidentifikator).collect(Collectors.toList());
                 try {
-                    JsonNode statusFromTps = tpsfConsumer.getStatusFromTps(idents).findValue("EFnr");
+                    JsonNode statusFromTps = tpsfConsumer.getProdStatusFromTps(idents).findValue("EFnr");
                     List<Map<String, Object>> identStatus = objectMapper.convertValue(statusFromTps, new TypeReference<List<Map<String, Object>>>() {
                     });
                     for (Map<String, Object> map : identStatus) {

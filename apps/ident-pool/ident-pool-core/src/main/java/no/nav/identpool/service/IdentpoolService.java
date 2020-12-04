@@ -245,7 +245,7 @@ public class IdentpoolService {
             }
         }
 
-        List<TpsStatus> tpsStatuses = new ArrayList<>(identTpsService.checkIdentsInTps(identerSomSkalSjekkes, new ArrayList<>()));
+        List<TpsStatus> tpsStatuses = new ArrayList<>(identTpsService.checkIdentsInTps(identerSomSkalSjekkes));
         return leggTilLedigeIdenterIMiljoer(ledigeIdenter, fnrMedIdent, tpsStatuses);
     }
 
@@ -327,7 +327,7 @@ public class IdentpoolService {
                     .filter(ident -> !identRepository.existsByPersonidentifikator(ident))
                     .collect(Collectors.toList());
 
-            Set<TpsStatus> kontrollerteIdenter = identTpsService.checkIdentsInTps(finnesIkkeAllerede, new ArrayList<>());
+            Set<TpsStatus> kontrollerteIdenter = identTpsService.checkIdentsInTps(finnesIkkeAllerede);
 
             saveIdents(kontrollerteIdenter.stream()
                     .filter(TpsStatus::isInUse)
