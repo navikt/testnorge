@@ -12,6 +12,8 @@ spec:
       enabled: true
   port: 8080
   webproxy: true
+  tracing:
+    enabled: true
   accessPolicy:
     inbound:
       rules:
