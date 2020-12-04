@@ -1,23 +1,24 @@
 package no.nav.dolly.service;
 
-import static java.util.Collections.singletonList;
+import lombok.RequiredArgsConstructor;
+import no.nav.dolly.bestilling.tpsf.TpsfService;
+import no.nav.dolly.domain.resultset.tpsf.Person;
+import no.nav.dolly.domain.resultset.tpsf.Relasjon;
+import no.nav.dolly.domain.resultset.tpsf.RsFullmakt;
+import no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse;
+import no.nav.dolly.domain.resultset.tpsf.RsSimplePerson;
+import no.nav.dolly.domain.resultset.tpsf.RsVergemaal;
+import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
+import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
-import no.nav.dolly.bestilling.tpsf.TpsfService;
-import no.nav.dolly.domain.resultset.tpsf.Person;
-import no.nav.dolly.domain.resultset.tpsf.Relasjon;
-import no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse;
-import no.nav.dolly.domain.resultset.tpsf.RsSimplePerson;
-import no.nav.dolly.domain.resultset.tpsf.RsVergemaal;
-import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
-import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
+import static java.util.Collections.singletonList;
 
 @Service
 @RequiredArgsConstructor
@@ -64,6 +65,19 @@ public class TpsfPersonCache {
             tpsPerson.getPersondetaljer().addAll(tpsfService.hentTestpersoner(vergeIdenter));
         }
 
+        List<String> fullmaktIdenter = tpsPerson.getPersondetaljer().stream()
+                .filter(person -> !person.getFullmakt().isEmpty() && person.getFullmakt().stream()
+                        .noneMatch(fullmakt -> tpsPerson.getPersondetaljer().stream()
+                                .anyMatch(person1 -> fullmakt.getFullmektig().getIdent().equals(person1.getIdent()))))
+                .map(Person::getFullmakt)
+                .flatMap(fullmakt -> fullmakt.stream().map(RsFullmakt::getFullmektig))
+                .map(RsSimplePerson::getIdent)
+                .collect(Collectors.toList());
+
+        if (!fullmaktIdenter.isEmpty()) {
+            tpsPerson.getPersondetaljer().addAll(tpsfService.hentTestpersoner(fullmaktIdenter));
+        }
+
         return tpsPerson;
     }
 
@@ -95,6 +109,10 @@ public class TpsfPersonCache {
                             .map(RsVergemaal::getVerge)
                             .map(RsSimplePerson::getIdent)
                             .collect(Collectors.toList()))
+                    .fullmektige(personer.get(0).getFullmakt().stream()
+                            .map(RsFullmakt::getFullmektig)
+                            .map(RsSimplePerson::getIdent)
+                            .collect(Collectors.toList()))
                     .identhistorikk(personer.get(0).getIdentHistorikk().stream()
                             .map(IdentHistorikk::getAliasPerson)
                             .map(Person::getIdent)
@@ -121,6 +139,10 @@ public class TpsfPersonCache {
                         .collect(Collectors.toList()))
                 .verger(person.getVergemaal().stream()
                         .map(RsVergemaal::getVerge)
+                        .map(RsSimplePerson::getIdent)
+                        .collect(Collectors.toList()))
+                .fullmektige(person.getFullmakt().stream()
+                        .map(RsFullmakt::getFullmektig)
                         .map(RsSimplePerson::getIdent)
                         .collect(Collectors.toList()))
                 .identhistorikk(person.getIdentHistorikk().stream()

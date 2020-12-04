@@ -1,30 +1,8 @@
 package no.nav.dolly.bestilling.pdlforvalter;
 
-import static com.fasterxml.jackson.databind.node.JsonNodeFactory.instance;
-import static java.util.Collections.singletonList;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-
-import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
-
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedsadresseHistorikk;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFullmaktHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlInnflyttingHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresseHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresseHistorikk;
@@ -42,6 +20,29 @@ import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.TpsfPersonCache;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.List;
+
+import static com.fasterxml.jackson.databind.node.JsonNodeFactory.instance;
+import static java.util.Collections.singletonList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PdlForvalterClientTest {
@@ -81,6 +82,7 @@ public class PdlForvalterClientTest {
         when(mapperFacade.map(any(Person.class), eq(PdlKontaktadresseHistorikk.class))).thenReturn(new PdlKontaktadresseHistorikk());
         when(mapperFacade.map(any(Person.class), eq(PdlBostedsadresseHistorikk.class))).thenReturn(new PdlBostedsadresseHistorikk());
         when(mapperFacade.map(any(Person.class), eq(PdlVergemaalHistorikk.class))).thenReturn((new PdlVergemaalHistorikk()));
+        when(mapperFacade.map(any(Person.class), eq(PdlFullmaktHistorikk.class))).thenReturn((new PdlFullmaktHistorikk()));
         when(mapperFacade.map(any(Person.class), eq(PdlInnflyttingHistorikk.class))).thenReturn(new PdlInnflyttingHistorikk());
         when(mapperFacade.map(any(Person.class), eq(PdlUtflyttingHistorikk.class))).thenReturn(new PdlUtflyttingHistorikk());
     }

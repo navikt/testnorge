@@ -1,14 +1,6 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +10,14 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.BoAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
 import no.nav.dolly.domain.resultset.tpsf.adresse.MidlertidigAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Getter
 @Setter
@@ -64,6 +64,7 @@ public class Person {
     private LocalDateTime egenAnsattDatoFom;
     private LocalDateTime egenAnsattDatoTom;
     private List<RsVergemaal> vergemaal;
+    private List<RsFullmakt> fullmakt;
 
     public List<MidlertidigAdresse> getMidlertidigAdresse() {
         if (isNull(midlertidigAdresse)) {
@@ -131,6 +132,13 @@ public class Person {
         return vergemaal;
     }
 
+    public List<RsFullmakt> getFullmakt() {
+        if (isNull(fullmakt)) {
+            fullmakt = new ArrayList<>();
+        }
+        return fullmakt;
+    }
+
     @JsonIgnore
     public boolean isSivilstandGift() {
 
@@ -139,13 +147,13 @@ public class Person {
 
         } else {
             switch (getSivilstand()) {
-            case GIFT:
-            case REPA:
-            case SEPR:
-            case SEPA:
-                return true;
-            default:
-                return false;
+                case GIFT:
+                case REPA:
+                case SEPR:
+                case SEPA:
+                    return true;
+                default:
+                    return false;
             }
         }
     }

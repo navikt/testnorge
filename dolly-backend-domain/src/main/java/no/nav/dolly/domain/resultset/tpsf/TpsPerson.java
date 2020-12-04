@@ -1,15 +1,15 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
-import static java.util.Objects.isNull;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Getter
 @Setter
@@ -25,6 +25,7 @@ public class TpsPerson {
     private List<String> barn;
     private List<String> nyePartnereOgBarn;
     private List<String> verger;
+    private List<String> fullmektige;
     private List<String> identhistorikk;
 
     public List<String> getPartnere() {
@@ -46,6 +47,13 @@ public class TpsPerson {
             verger = new ArrayList<>();
         }
         return verger;
+    }
+
+    public List<String> getFullmektige() {
+        if (isNull(fullmektige)) {
+            fullmektige = new ArrayList<>();
+        }
+        return fullmektige;
     }
 
     public List<String> getIdenthistorikk() {

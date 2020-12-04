@@ -1,6 +1,3 @@
-providers:
-  tpsf:
-    url: https://tps-forvalteren-dev.dev.adeo.no
 #    url: http://localhost:8050
 
 #spring:
