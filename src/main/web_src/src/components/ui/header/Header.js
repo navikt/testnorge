@@ -4,10 +4,10 @@ import Icon from '~/components/ui/icon/Icon'
 
 import './header.less'
 
-export const Header = ({ icon = 'man', iconSize = 36, className, children }) => {
+export const Header = ({ icon = 'man', iconSize = 36, className, iconClassName, children }) => {
 	return (
 		<header className={cn('content-header', className)}>
-			<div className="content-header_icon">
+			<div className={`content-header_icon ${iconClassName}`}>
 				<Icon kind={icon} size={iconSize} />
 			</div>
 			<div className="content-header_content">{children}</div>

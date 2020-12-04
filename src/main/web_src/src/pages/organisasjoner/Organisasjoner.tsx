@@ -6,15 +6,14 @@ import Icon from '~/components/ui/icon/Icon'
 import { SearchField } from '~/components/searchField/SearchField'
 import OrganisasjonListe from './OrganisasjonListe'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
+import Loading from '~/components/ui/loading/Loading'
 
 import { useAsync } from 'react-use'
-import Api from '~/api'
-import config from '~/config'
 
 const VISNING_ORGANISASJONER = 'organisasjoner'
 const VISNING_BESTILLINGER = 'bestillinger'
 
-export default function Organisasjoner() {
+export default function Organisasjoner({ history, isFetching, getOrganisasjoner }) {
 	const [visning, setVisning] = useState(VISNING_ORGANISASJONER)
 
 	const byttVisning = event => setVisning(event.target.value)
@@ -25,14 +24,18 @@ export default function Organisasjoner() {
 	}
 
 	//! Henter midlertidig inn faste org for å kunne lage oppsettet - byttes ut når organisasjonsforvalter er klar
-	const uri = `${config.services.dollyBackend}`
 	const tempOrg = useAsync(async () => {
-		const response = await Api.fetchJson(`${uri}/orgnummer`, { method: 'GET' })
-		return response
+		const response = await getOrganisasjoner()
+		return response.value
 	}, [])
 
-	const antallOrg = !tempOrg.loading ? tempOrg.value.liste.length : 0
+	const antallOrg = !tempOrg.loading && tempOrg.value ? tempOrg.value.liste.length : 0
 	const antallBest = 0
+
+	const values = { opprettOrganisasjon: true }
+	const startBestilling = () => {
+		history.push('/organisasjoner/bestilling', values)
+	}
 
 	return (
 		<div className="oversikt-container">
@@ -50,7 +53,7 @@ export default function Organisasjoner() {
 			{/* // TODO: StatusListeConnector for bestillinger */}
 
 			<div className="toolbar">
-				<NavButton type="hoved" onClick={null}>
+				<NavButton type="hoved" onClick={startBestilling}>
 					Opprett organisasjon
 				</NavButton>
 
@@ -74,7 +77,10 @@ export default function Organisasjoner() {
 				<SearchField placeholder={searchfieldPlaceholderSelector()} />
 			</div>
 
-			{!tempOrg.loading &&
+			{/* //TODO: Bytte rekkefølge på sjekker */}
+			{isFetching ? (
+				<Loading label="laster organisasjoner" panel />
+			) : (
 				visning === VISNING_ORGANISASJONER &&
 				(antallOrg > 0 ? (
 					<OrganisasjonListe orgListe={tempOrg.value.liste} />
@@ -88,7 +94,8 @@ export default function Organisasjoner() {
 							Opprett standard organisasjon
 						</NavButton>
 					</ContentContainer>
-				))}
+				))
+			)}
 			{visning === VISNING_BESTILLINGER && null}
 		</div>
 	)
