@@ -5,3 +5,10 @@ spring:
         jwt:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+
+
+
+consumer:
+  profil-api:
+    url: http://testnorge-profil-api.dolly.svc.dev-gcp.local
+    client-id: e8e0772f-8204-4b88-88ad-233d62863f47
