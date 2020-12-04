@@ -38,6 +38,8 @@ dependencies {
     implementation 'jakarta.jws:jakarta.jws-api:2.1.0'
 
     implementation project(':testnorge-database')
+    implementation project(':testnorge-core')
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE'
 }
 
