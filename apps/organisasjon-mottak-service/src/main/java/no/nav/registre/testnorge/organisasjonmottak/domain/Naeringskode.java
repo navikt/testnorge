@@ -2,20 +2,20 @@ package no.nav.registre.testnorge.organisasjonmottak.domain;
 
 import java.time.LocalDate;
 
-public class Nearingskode extends ToFlatfil {
+public class Naeringskode extends ToFlatfil {
     private final String kode;
     private final LocalDate gyldighetsdato;
     private final boolean hjelpeenhet;
 
-    public Nearingskode(no.nav.registre.testnorge.libs.avro.organisasjon.Nearingskode nearingskode) {
-        super(nearingskode.getMetadata());
-        this.kode = nearingskode.getKode();
+    public Naeringskode(no.nav.registre.testnorge.libs.avro.organisasjon.Naeringskode naeringskode) {
+        super(naeringskode.getMetadata());
+        this.kode = naeringskode.getKode();
         this.gyldighetsdato = LocalDate.of(
-                nearingskode.getGyldighetsdato().getAar(),
-                nearingskode.getGyldighetsdato().getMaaned(),
-                nearingskode.getGyldighetsdato().getDag()
+                naeringskode.getGyldighetsdato().getAar(),
+                naeringskode.getGyldighetsdato().getMaaned(),
+                naeringskode.getGyldighetsdato().getDag()
         );
-        this.hjelpeenhet = nearingskode.getHjelpeenhet();
+        this.hjelpeenhet = naeringskode.getHjelpeenhet();
     }
 
     private String toRecordLine() {

@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Knytning extends ToFlatfil {
-    private final List<Virksomhet> dirverVirksomheter;
+    private final List<Virksomhet> driverVirksomheter;
 
     public Knytning(no.nav.registre.testnorge.libs.avro.organisasjon.Knytning knytning) {
         super(knytning.getMetadata());
-        dirverVirksomheter = knytning
+        driverVirksomheter = knytning
                 .getDriverVirksomhenter()
                 .stream()
                 .map(Virksomhet::new)
@@ -25,7 +25,7 @@ public class Knytning extends ToFlatfil {
         Flatfil flatfil = new Flatfil();
         Record record = new Record();
         record.append(createEHN());
-        dirverVirksomheter.forEach(value -> {
+        driverVirksomheter.forEach(value -> {
             record.append(value.toRecordLine());
         });
         flatfil.add(record);

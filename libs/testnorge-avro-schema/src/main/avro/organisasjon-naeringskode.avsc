@@ -1,6 +1,6 @@
 {
   "type": "record",
-  "name": "Nearingskode",
+  "name": "Naeringskode",
   "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon",
   "fields": [
     {
