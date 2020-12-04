@@ -1,10 +1,10 @@
 package no.nav.registre.testnorge.tilbakemeldingapi.service;
 
-import no.nav.registre.testnorge.tilbakemeldingapi.consumer.ProfilApiConsumer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import no.nav.registre.testnorge.libs.slack.consumer.SlackConsumer;
+import no.nav.registre.testnorge.tilbakemeldingapi.consumer.ProfilApiConsumer;
 import no.nav.registre.testnorge.tilbakemeldingapi.domain.Tilbakemelding;
 
 @Service
@@ -24,7 +24,9 @@ public class TilbakemeldingService {
     }
 
     public void publish(Tilbakemelding tilbakemelding) {
-        String visningsNavn = tilbakemelding.getIsAnonym() ? "Anonym" : profilApiConsumer.getBruker().getVisningsNavn();
+        String visningsNavn = tilbakemelding.getIsAnonym()
+                ? "Anonym"
+                : profilApiConsumer.getBruker().getVisningsNavn();
         slackConsumer.publish(tilbakemelding.toSlackMessage(channel, visningsNavn));
     }
 

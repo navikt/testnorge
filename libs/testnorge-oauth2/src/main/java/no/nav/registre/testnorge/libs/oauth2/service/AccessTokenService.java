@@ -104,6 +104,11 @@ public class AccessTokenService {
 
         var token = tokenResolver.getTokenValue();
 
+
+        if (clientCredentials.getClientSecret() == null) {
+            log.error("Client secret er null.");
+        }
+
         var body = BodyInserters
                 .fromFormData("scope", String.join(" ", accessScopes.getScopes()))
                 .with("client_id", clientCredentials.getClientId())
