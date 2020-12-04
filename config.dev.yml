@@ -11,6 +11,7 @@ spec:
     application:
       enabled: true
       replyURLs:
+        - "https://dolly-frontend-dev.dev.intern.nav.no/login/oauth2/code/aad"
         - "https://dolly-frontend-dev.dev.adeo.no/login/oauth2/code/aad"
         - "http://localhost:8020/login/oauth2/code/aad"
   replicas:
@@ -19,6 +20,7 @@ spec:
   port: 8080
   ingresses:
     - https://dolly-frontend-dev.dev.adeo.no
+    - https://dolly-frontend-dev.dev.intern.nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 20
@@ -42,13 +44,13 @@ spec:
   image: {{ image }}
   env:
     - name: TESTNORGE_PROFIL_API_CLIENT_ID
-      value: 4f6035c0-610d-43ea-a80b-76d214428769
+      value: f73bfcd0-a1f5-4d3f-bfb4-4d0361191438
     - name: DOLLY_BACKEND_API_CLIENT_ID
       value: f0174d28-cb33-44f9-a7b5-09e52582e601
     - name: DOLLY_BACKEND_HOST
       value: https://dolly-backend-dev.dev.adeo.no
     - name: TESTNORGE_PROFIL_API_HOST
-      value: https://testnorge-profil-api-dev.dev.adeo.no
+      value: https://testnorge-profil-api-dev.dev.intern.nav.no
   vault:
     enabled: true
     paths:

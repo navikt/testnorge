@@ -1,8 +1,6 @@
 name: Deploy dev
 
-on:
-  push:
-    branches: master
+on: push
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/dolly-frontend:${{ github.sha }}
