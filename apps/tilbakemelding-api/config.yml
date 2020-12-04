@@ -18,6 +18,9 @@ spec:
           cluster: dev-fss
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
+    outbound:
+      rules:
+        - application: testnorge-tilbakemelding-api
   azure:
     application:
       enabled: true
