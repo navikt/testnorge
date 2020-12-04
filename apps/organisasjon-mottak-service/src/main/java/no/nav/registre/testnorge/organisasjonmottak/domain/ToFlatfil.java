@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import no.nav.registre.testnorge.libs.avro.organisasjon.Metadata;
 
@@ -14,9 +14,17 @@ public abstract class ToFlatfil {
         this.enhetstype = metadata.getEnhetstype();
     }
 
+    static String formattedDate(LocalDate localDate) {
+        if (localDate == null) {
+            return null;
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        return localDate.format(formatter);
+    }
+
     private static String getDateNowFormatted() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-        return format.format(new Date());
+        return formattedDate(LocalDate.now());
     }
 
     private static StringBuilder createStringBuilderWithReplacement(int size, char replacement) {

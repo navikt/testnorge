@@ -1,15 +1,15 @@
 {
   "type": "record",
-  "name": "Stiftelsesdato",
+  "name": "Virksomhet",
   "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon",
   "fields": [
     {
-      "name": "dato",
-      "type": "Dato"
+      "name": "orgnummer",
+      "type": "string"
     },
     {
-      "name": "metadata",
-      "type": "Metadata"
+      "name": "enhetstype",
+      "type": "string"
     }
   ]
 }

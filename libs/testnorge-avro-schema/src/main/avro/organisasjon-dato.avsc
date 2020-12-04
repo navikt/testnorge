@@ -1,0 +1,19 @@
+{
+  "type": "record",
+  "name": "Dato",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon",
+  "fields": [
+    {
+      "name": "dag",
+      "type": "int"
+    },
+    {
+      "name": "maaned",
+      "type": "int"
+    },
+    {
+      "name": "aar",
+      "type": "int"
+    }
+  ]
+}
