@@ -32,8 +32,6 @@ public class StartBEREG007Command implements Runnable {
     private final String miljo;
     private final JenkinsCrumb crumb;
     private final Flatfil flatfil;
-    private final String username;
-    private final String password;
 
     private static Resource getFileResource(String content) throws IOException {
         Path tempFile = Files.createTempFile("ereg", ".txt");
