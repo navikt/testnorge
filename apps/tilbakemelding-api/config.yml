@@ -21,6 +21,8 @@ spec:
     outbound:
       rules:
         - application: testnorge-tilbakemelding-api
+      external:
+        - host: https://slack.com
   azure:
     application:
       enabled: true
