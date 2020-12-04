@@ -22,7 +22,7 @@ spec:
       rules:
         - application: testnorge-tilbakemelding-api
       external:
-        - host: https://slack.com
+        - host: slack.com
   azure:
     application:
       enabled: true
