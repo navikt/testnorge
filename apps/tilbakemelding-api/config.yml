@@ -23,6 +23,7 @@ spec:
         - application: testnorge-profil-api
       external:
         - host: slack.com
+        - host: login.microsoftonline.com
   azure:
     application:
       enabled: true
