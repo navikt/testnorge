@@ -1,6 +1,5 @@
 package no.nav.identpool.service.ny;
 
-import static no.nav.identpool.domain.Rekvireringsstatus.I_BRUK;
 import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
 
 import java.security.SecureRandom;
@@ -10,14 +9,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.identpool.domain.Ident;
-import no.nav.identpool.domain.IdentStatus;
 import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.repository.IdentRepository;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;

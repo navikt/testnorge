@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class DatoFraIdentService {
 
-    private static final LocalDate TPS_MIN_REG_DATE = LocalDate.of(1900, 1, 1);
-
     public LocalDate getFoedselsdato(String ident) {
 
         int year = parseInt(ident.substring(4, 6));

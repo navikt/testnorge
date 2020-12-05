@@ -40,7 +40,7 @@ public class PoolService {
             List<TpsStatus> tpsStatuses = identerAvailService.generateAndCheckIdenter(request, ATTEMPT_OBTAIN);
 
             List<Ident> identerFraTps = tpsStatuses.stream()
-                    .map(status -> buildIdent(status))
+                    .map(this::buildIdent)
                     .collect(Collectors.toList());
             identRepository.saveAll(identerFraTps);
 
