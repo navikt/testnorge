@@ -28,7 +28,6 @@ public class ProfilApiConsumer {
     ) {
         this.accessScopes = new AccessScopes("api://" + clientId + "/.default");
         this.accessTokenService = accessTokenService;
-
         this.webClient = WebClient.builder()
                 .baseUrl(url)
                 .build();
@@ -36,16 +35,12 @@ public class ProfilApiConsumer {
 
     public ProfilDTO getBruker() {
         AccessToken accessToken = accessTokenService.generateToken(accessScopes);
-        log.info("Henter bruker");
+        log.info("Henter bruker fra Azure.");
         return webClient.get()
-                .uri(uriBuilder ->
-                        uriBuilder.path("/api/v1/profil")
-                                .build())
+                .uri("/api/v1/profil")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken.getTokenValue())
                 .retrieve()
                 .bodyToMono(ProfilDTO.class)
                 .block();
-
     }
 }
-

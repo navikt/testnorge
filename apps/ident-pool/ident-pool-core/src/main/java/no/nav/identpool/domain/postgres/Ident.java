@@ -1,5 +1,8 @@
 package no.nav.identpool.domain.postgres;
 
+import static no.nav.identpool.domain.Rekvireringsstatus.I_BRUK;
+import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
+
 import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -64,4 +67,14 @@ public class Ident {
 
     @Column(name = "REKVIRERT_AV")
     private String rekvirertAv;
+
+    @JsonIgnore
+    public boolean isLedig() {
+        return LEDIG == getRekvireringsstatus();
+    }
+
+    @JsonIgnore
+    public boolean isIBruk() {
+        return I_BRUK == getRekvireringsstatus();
+    }
 }

@@ -1,0 +1,18 @@
+{
+  "type": "record",
+  "name": "Knytning",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon",
+  "fields": [
+    {
+      "name": "driverVirksomhenter",
+      "type": {
+        "type": "array",
+        "items": "Virksomhet"
+      }
+    },
+    {
+      "name": "metadata",
+      "type": "Metadata"
+    }
+  ]
+}

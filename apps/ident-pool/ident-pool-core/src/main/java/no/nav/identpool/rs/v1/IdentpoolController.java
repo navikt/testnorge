@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import com.google.common.base.Strings;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,6 +30,7 @@ import no.nav.identpool.rs.v1.support.MarkerBruktBatchRequest;
 import no.nav.identpool.rs.v1.support.MarkerBruktBatchResponse;
 import no.nav.identpool.rs.v1.support.MarkerBruktRequest;
 import no.nav.identpool.service.IdentpoolService;
+import no.nav.identpool.service.ny.PoolService;
 
 @Slf4j
 @RestController
@@ -41,6 +40,7 @@ public class IdentpoolController {
 
     private final IdentpoolService identpoolService;
     private final BatchService batchService;
+    private final PoolService poolService;
 
     @GetMapping
     @Operation(description = "hent informasjon lagret på en test-ident")
@@ -64,19 +64,21 @@ public class IdentpoolController {
         if (Identtype.FDAT == hentIdenterRequest.getIdenttype()) {
             hentIdenterRequest.setKjoenn(null); // ident-pool ignorerer kjønn hos FDAT-identer
         }
-        if (finnNaermesteLedigeDato) {
-            try {
-                return identpoolService.rekvirerNaermesteLedigDato(hentIdenterRequest);
-            } catch (IllegalArgumentException e) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getLocalizedMessage(), e);
-            }
-        } else {
-            try {
-                return identpoolService.rekvirer(hentIdenterRequest);
-            } catch (IllegalArgumentException e) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getLocalizedMessage(), e);
-            }
-        }
+        return poolService.allocateIdenter(hentIdenterRequest);
+
+//        if (finnNaermesteLedigeDato) {
+//            try {
+//                return identpoolService.rekvirerNaermesteLedigDato(hentIdenterRequest);
+//            } catch (IllegalArgumentException e) {
+//                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getLocalizedMessage(), e);
+//            }
+//        } else {
+//            try {
+//                return identpoolService.rekvirer(hentIdenterRequest);
+//            } catch (IllegalArgumentException e) {
+//                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getLocalizedMessage(), e);
+//            }
+//        }
     }
 
     @PostMapping("/bruk")

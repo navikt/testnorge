@@ -1,0 +1,74 @@
+{
+  "type": "record",
+  "name": "Forretningsadresse",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon",
+  "fields": [
+    {
+      "name": "postnummer",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "name": "landkode",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "name": "kommunenummer",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "name": "poststed",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "name": "postadresse1",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "name": "postadresse2",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "name": "postadresse3",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "name": "linjenummer",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "name": "vegadresseId",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "name": "metadata",
+      "type": "Metadata"
+    }
+  ]
+}

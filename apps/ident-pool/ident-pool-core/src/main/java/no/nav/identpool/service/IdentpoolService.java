@@ -85,11 +85,11 @@ public class IdentpoolService {
                 .collect(Collectors.toList());
 
         int missingIdentCount = request.getAntall() - identList.size();
-        if (missingIdentCount > MAKS_ANTALL_MANGLENDE_IDENTER) {
-            String errMsg = "Antall etterspurte identer er større enn tilgjengelig antall. Reduser antallet med %s, " +
-                    "for å få opprettet identene i TPS.";
-            throw new ForFaaLedigeIdenterException(String.format(errMsg, (missingIdentCount - MAKS_ANTALL_MANGLENDE_IDENTER)));
-        }
+//        if (missingIdentCount > MAKS_ANTALL_MANGLENDE_IDENTER) {
+//            String errMsg = "Antall etterspurte identer er større enn tilgjengelig antall. Reduser antallet med %s, " +
+//                    "for å få opprettet identene i TPS.";
+//            throw new ForFaaLedigeIdenterException(String.format(errMsg, (missingIdentCount - MAKS_ANTALL_MANGLENDE_IDENTER)));
+//        }
 
         if (missingIdentCount > 0) {
             // hent identer som er i bruk i ident-pool-databasen allerede, for ikke å opprette eksisterende identifikasjonsnumre:
@@ -245,7 +245,7 @@ public class IdentpoolService {
             }
         }
 
-        List<TpsStatus> tpsStatuses = new ArrayList<>(identTpsService.checkIdentsInTps(identerSomSkalSjekkes, new ArrayList<>()));
+        List<TpsStatus> tpsStatuses = new ArrayList<>(identTpsService.checkIdentsInTps(identerSomSkalSjekkes));
         return leggTilLedigeIdenterIMiljoer(ledigeIdenter, fnrMedIdent, tpsStatuses);
     }
 
@@ -327,7 +327,7 @@ public class IdentpoolService {
                     .filter(ident -> !identRepository.existsByPersonidentifikator(ident))
                     .collect(Collectors.toList());
 
-            Set<TpsStatus> kontrollerteIdenter = identTpsService.checkIdentsInTps(finnesIkkeAllerede, new ArrayList<>());
+            Set<TpsStatus> kontrollerteIdenter = identTpsService.checkIdentsInTps(finnesIkkeAllerede);
 
             saveIdents(kontrollerteIdenter.stream()
                     .filter(TpsStatus::isInUse)

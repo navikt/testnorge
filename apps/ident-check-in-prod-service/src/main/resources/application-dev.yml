@@ -1,0 +1,19 @@
+CLIENT_ID: bb4aa476-9040-48a1-bcac-79370c530f58
+CLIENT_SECRET: dummy
+
+MQ_USERNAME: dummy
+MQ_PASSWORD: dummy
+MQ_CHANNEL_POSTFIX: dummy
+MQ_CHANNEL_NAME: dummy
+MQ_CHANNEL_HOSTNAME: dummy
+MQ_CHANNEL_PORT: dummy
+MQ_QUEUE_NAME: dummy
+MQ_TPS_SERVICEROUTINE: dummy
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}

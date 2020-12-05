@@ -38,7 +38,7 @@ import no.nav.registre.arena.core.config.AppConfig;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @TestPropertySource(locations = "classpath:application-test.properties")
-@ContextConfiguration(classes = { BrukereArenaForvalterConsumer.class, AppConfig.class, ArbeidssoekerCacheUtil.class })
+@ContextConfiguration(classes = {BrukereArenaForvalterConsumer.class, AppConfig.class, ArbeidssoekerCacheUtil.class})
 @EnableAutoConfiguration
 public class BrukereArenaForvalterConsumerTest {
 

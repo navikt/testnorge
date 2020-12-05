@@ -9,12 +9,23 @@ spec:
   image: {{ image }}
   port: 8080
   webproxy: true
+  tracing:
+    enabled: true
   accessPolicy:
     inbound:
       rules:
         - application: dolly-frontend-dev
+          cluster: dev-fss
         - application: dolly-frontend
+          cluster: dev-fss
         - application: testnorge-oversikt-frontend
+          cluster: dev-fss
+    outbound:
+      rules:
+        - application: testnorge-profil-api
+      external:
+        - host: slack.com
+        - host: login.microsoftonline.com
   azure:
     application:
       enabled: true
@@ -40,6 +51,7 @@ spec:
     limits:
       cpu: 500m
       memory: 5000Mi
+  envFrom:
+    - secret: teamdolly-slack-secret
   ingresses:
-    - "https://testnorge-tilbakemelding-api.dev.adeo.no"
     - "https://testnorge-tilbakemelding-api.dev.intern.nav.no"

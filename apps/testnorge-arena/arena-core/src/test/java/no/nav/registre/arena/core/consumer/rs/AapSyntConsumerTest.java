@@ -30,7 +30,7 @@ import no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils;
 @RunWith(SpringRunner.class)
 @AutoConfigureWireMock(port = 0)
 @TestPropertySource(locations = "classpath:application-test.properties")
-@ContextConfiguration(classes = { AapSyntConsumer.class, AppConfig.class, ConsumerUtils.class })
+@ContextConfiguration(classes = {AapSyntConsumer.class, AppConfig.class, ConsumerUtils.class})
 @RestClientTest(AapSyntConsumer.class)
 public class AapSyntConsumerTest {
 

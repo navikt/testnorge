@@ -22,6 +22,8 @@ public interface IdentRepository extends PagingAndSortingRepository<Ident, Long>
 
     Ident findTopByPersonidentifikator(String personidentifkator);
 
+    List<Ident> findByPersonidentifikatorIn(List<String> idents);
+
     @Modifying
     Ident save(Ident ident);
 
@@ -37,8 +39,8 @@ public interface IdentRepository extends PagingAndSortingRepository<Ident, Long>
             @Param("foedtEtter") LocalDate foedtEtter, Pageable pageable);
 
     @Query(value = "from Ident i where i.rekvireringsstatus = :rekvireringsstatus and i.kjoenn = :kjoenn and "
-            + "i.identtype = :identtype and i.foedselsdato between :foedtFoer and :foedtEtter")
+            + "i.identtype = :identtype and i.foedselsdato between :foedtEtter and :foedtFoer")
     Page<Ident> findAll(@Param("rekvireringsstatus") Rekvireringsstatus rekvireringsstatus,
             @Param("identtype") Identtype identtype, @Param("kjoenn") Kjoenn kjoenn,
-            @Param("foedtFoer") LocalDate foedtfoer, @Param("foedtEtter") LocalDate foedtEtter, Pageable pageable);
+            @Param("foedtFoer") LocalDate foedtFoer, @Param("foedtEtter") LocalDate foedtEtter, Pageable pageable);
 }

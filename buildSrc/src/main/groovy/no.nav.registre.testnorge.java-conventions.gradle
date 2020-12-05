@@ -38,7 +38,6 @@ if (project.hasProperty("releaseVersion")) {
 
 java.sourceCompatibility = JavaVersion.VERSION_11
 
-
 publishing {
     repositories {
         maven {
@@ -56,7 +55,6 @@ publishing {
         }
     }
 }
-
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'

@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "Sektorkode",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon",
+  "fields": [
+    {
+      "name": "sektorkode",
+      "type": "string"
+    },
+    {
+      "name": "metadata",
+      "type": "Metadata"
+    }
+  ]
+}

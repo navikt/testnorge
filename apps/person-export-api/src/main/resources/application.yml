@@ -1,5 +1,5 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-CLIENT_ID: ${azure.app.client.id}
+CLIENT_ID: 9b23a7f9-df5d-4c79-a3fc-a4a5ebb70a66
 
 
 consumers:
@@ -7,7 +7,7 @@ consumers:
     url: https://tps-forvalteren.dev.adeo.no
     password: ${TPSF_PASSWORD}
     username: ${TPSF_USERNAME}
-    threads: 7
+    threads: 5
   slack:
     token: ${SLACK_TOKEN}
     channel: ${SLACK_CHANNEL}
