@@ -85,11 +85,11 @@ public class IdentpoolService {
                 .collect(Collectors.toList());
 
         int missingIdentCount = request.getAntall() - identList.size();
-        if (missingIdentCount > MAKS_ANTALL_MANGLENDE_IDENTER) {
-            String errMsg = "Antall etterspurte identer er større enn tilgjengelig antall. Reduser antallet med %s, " +
-                    "for å få opprettet identene i TPS.";
-            throw new ForFaaLedigeIdenterException(String.format(errMsg, (missingIdentCount - MAKS_ANTALL_MANGLENDE_IDENTER)));
-        }
+//        if (missingIdentCount > MAKS_ANTALL_MANGLENDE_IDENTER) {
+//            String errMsg = "Antall etterspurte identer er større enn tilgjengelig antall. Reduser antallet med %s, " +
+//                    "for å få opprettet identene i TPS.";
+//            throw new ForFaaLedigeIdenterException(String.format(errMsg, (missingIdentCount - MAKS_ANTALL_MANGLENDE_IDENTER)));
+//        }
 
         if (missingIdentCount > 0) {
             // hent identer som er i bruk i ident-pool-databasen allerede, for ikke å opprette eksisterende identifikasjonsnumre:
