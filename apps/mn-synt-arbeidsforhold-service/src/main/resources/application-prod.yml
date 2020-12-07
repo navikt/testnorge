@@ -6,7 +6,7 @@ spring:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
   datasource:
-    url: jdbc:postgresql://b27dbvl022.preprod.local:5432/testnorge-arbeidsforhold?useUnicode=yes&characterEncoding=UTF-8
+    url: jdbc:postgresql://b27dbvl022.preprod.local:5432/mn-synt-arbeidsforhold?useUnicode=yes&characterEncoding=UTF-8
     hikari:
       maximum-pool-size: 3
       minimum-idle: 0
