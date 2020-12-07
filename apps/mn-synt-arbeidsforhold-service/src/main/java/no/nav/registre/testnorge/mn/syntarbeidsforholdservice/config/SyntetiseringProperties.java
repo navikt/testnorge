@@ -11,4 +11,5 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 public class SyntetiseringProperties {
     private Float endringssannsynlighet;
+    private boolean saveHistory;
 }

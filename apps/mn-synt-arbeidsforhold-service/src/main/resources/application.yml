@@ -13,14 +13,8 @@ consumers:
     url: https://syntrest.dev.adeo.no
 
 spring:
-  flyway:
-    enabled: false
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+  main:
+    banner-mode: off
   application:
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     name: mn-synt-arbeidsforhold-service
@@ -29,3 +23,4 @@ spring:
 
 syntetisering:
   endringssannsynlighet: 0.27
+  saveHistory: false
