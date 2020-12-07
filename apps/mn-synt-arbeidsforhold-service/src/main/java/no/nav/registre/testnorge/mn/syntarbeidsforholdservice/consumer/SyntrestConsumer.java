@@ -44,16 +44,21 @@ public class SyntrestConsumer {
     public Arbeidsforhold getNesteArbeidsforhold(Arbeidsforhold arbeidsforhold, LocalDate kaldermaaned) {
         var dto = arbeidsforhold.toSyntrestDTO(kaldermaaned);
         try {
+            log.info("Oppretter finner neste arbeidsforhold den {}.", kaldermaaned.plusMonths(1));
             ArbeidsforholdResponse response = new GenerateNextArbeidsforholdCommand(webClient, dto).call();
             return new Arbeidsforhold(response, arbeidsforhold.getIdent(), arbeidsforhold.getArbeidsforholdId(), arbeidsforhold.getVirksomhentsnummer());
         } catch (WebClientResponseException.InternalServerError e) {
-            log.error("Feil med opprellese av: {}", objectMapper.writeValueAsString(dto), e);
-            throw e;
+            throw new RuntimeException("Feil med opprellese av: " + objectMapper.writeValueAsString(dto), e);
         }
     }
 
     public Arbeidsforhold getFirstArbeidsforhold(LocalDate startdato, String ident, String virksomhetsnummer) {
-        ArbeidsforholdResponse response = new GenerateStartArbeidsforholdCommand(webClient, startdato).call();
-        return new Arbeidsforhold(response, ident, virksomhetsnummer);
+        try {
+            log.info("Oppretter nytt arbeidsforhold den {}.", startdato);
+            ArbeidsforholdResponse response = new GenerateStartArbeidsforholdCommand(webClient, startdato).call();
+            return new Arbeidsforhold(response, ident, virksomhetsnummer);
+        } catch (WebClientResponseException.InternalServerError e) {
+            throw new RuntimeException("Feil med start av arbeidsforhold for dato: " + startdato, e);
+        }
     }
 }

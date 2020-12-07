@@ -32,6 +32,11 @@ public class IdentController {
             @RequestParam("fom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fom,
             @RequestParam(value = "tom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate tom
     ) {
+        if (identService.getIdenterMedArbeidsforhold(miljo).contains(ident)) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Kan ikke opprette for ident " + ident + "fordi personen allerede finnes AAREG (" + miljo + ").");
+        }
         arbeidsfoholdService.startArbeidsforhold(ident, fom, tom, miljo);
         return ResponseEntity.noContent().build();
     }
