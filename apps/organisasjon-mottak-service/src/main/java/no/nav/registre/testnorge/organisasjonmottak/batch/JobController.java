@@ -22,11 +22,4 @@ public class JobController {
         log.info("Start indeksering av EREG.");
         eregConsumer.updateIndex("t4");
     }
-
-    @Async
-    @Scheduled(cron = "1 * * * * *")
-    public void testOf() {
-        log.info("Test av cron jobb.");
-    }
-
 }
