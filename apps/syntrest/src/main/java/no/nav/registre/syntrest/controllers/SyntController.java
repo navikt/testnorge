@@ -27,7 +27,7 @@ import no.nav.registre.syntrest.consumer.SyntAmeldingConsumer;
 import no.nav.registre.syntrest.consumer.SyntConsumer;
 import no.nav.registre.syntrest.consumer.UriExpander;
 import no.nav.registre.syntrest.domain.aareg.Arbeidsforholdsmelding;
-import no.nav.registre.syntrest.domain.amelding.Arbeidsforhold;
+import no.nav.registre.syntrest.domain.amelding.ArbeidsforholdAmelding;
 import no.nav.registre.syntrest.domain.bisys.Barnebidragsmelding;
 import no.nav.registre.syntrest.domain.frikort.FrikortKvittering;
 import no.nav.registre.syntrest.domain.inst.Institusjonsmelding;
@@ -319,10 +319,10 @@ public class SyntController {
 
     @PostMapping("/amelding/arbeidsforhold")
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
-    public ResponseEntity<Arbeidsforhold> generateArbeidforhold(
-            @RequestBody Arbeidsforhold tidligereArbeidsforhold
+    public ResponseEntity<ArbeidsforholdAmelding> generateArbeidforhold(
+            @RequestBody ArbeidsforholdAmelding tidligereArbeidsforholdAmelding
     ) {
-        var response = ameldingConsumer.synthesizeArbeidsforhold(tidligereArbeidsforhold, "/arbeidsforhold");
+        var response = ameldingConsumer.synthesizeArbeidsforhold(tidligereArbeidsforholdAmelding, "/arbeidsforhold");
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -330,10 +330,10 @@ public class SyntController {
 
     @PostMapping("/amelding/arbeidsforhold/sklearn")
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
-    public ResponseEntity<Arbeidsforhold> generateArbeidforholdSklearn(
-            @RequestBody Arbeidsforhold tidligereArbeidsforhold
+    public ResponseEntity<ArbeidsforholdAmelding> generateArbeidforholdSklearn(
+            @RequestBody ArbeidsforholdAmelding tidligereArbeidsforholdAmelding
     ) {
-        var response = ameldingConsumer.synthesizeArbeidsforhold(tidligereArbeidsforhold, "/arbeidsforhold/sklearn");
+        var response = ameldingConsumer.synthesizeArbeidsforhold(tidligereArbeidsforholdAmelding, "/arbeidsforhold/sklearn");
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -341,7 +341,7 @@ public class SyntController {
 
     @PostMapping("/amelding/arbeidsforhold/start")
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
-    public ResponseEntity<List<Arbeidsforhold>> generateArbeidforholdStart(
+    public ResponseEntity<List<ArbeidsforholdAmelding>> generateArbeidforholdStart(
             @RequestBody List<String> startdatoer
     ) {
         var response = ameldingConsumer.synthesizeArbeidsforholdStart(startdatoer, "/arbeidsforhold/start");

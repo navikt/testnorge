@@ -18,7 +18,7 @@ import lombok.Setter;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Arbeidsforhold {
+public class ArbeidsforholdAmelding {
 
     @JsonAlias({"RAPPORTERINGSMAANED", "rapporteringsmaaned"})
     private String rapporteringsmaaned;
