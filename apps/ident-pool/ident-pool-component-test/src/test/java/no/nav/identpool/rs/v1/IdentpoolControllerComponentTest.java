@@ -10,7 +10,7 @@ import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.Arrays;
 
-import no.nav.identpool.domain.Ident;
+import no.nav.identpool.domain.postgres.Ident;
 import no.nav.identpool.rs.v1.support.ApiError;
 import no.nav.identpool.rs.v1.support.ApiResponse;
 import org.apache.http.client.utils.URIBuilder;

@@ -1,4 +1,4 @@
-package no.nav.identpool.domain;
+package no.nav.identpool.domain.postgres;
 
 import static no.nav.identpool.domain.Rekvireringsstatus.I_BRUK;
 import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
@@ -14,13 +14,15 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import org.hibernate.annotations.Type;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.identpool.domain.Identtype;
+import no.nav.identpool.domain.Kjoenn;
+import no.nav.identpool.domain.Rekvireringsstatus;
 
 @Data
 @Entity
@@ -51,7 +53,6 @@ public class Ident {
     private Rekvireringsstatus rekvireringsstatus;
 
     @NotNull
-    @Type(type = "true_false")
     @Column(name = "FINNES_HOS_SKATT")
     private boolean finnesHosSkatt;
 

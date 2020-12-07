@@ -8,10 +8,12 @@ import org.springframework.context.annotation.Import;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
+import no.nav.identpool.config.RetryConfig;
+import no.nav.identpool.config.SecurityConfig;
 
 @SpringBootApplication
 @EnableConfigurationProperties
-@Import({SecurityConfig.class, RetryConfig.class})
+@Import({ SecurityConfig.class, RetryConfig.class })
 public class ApplicationConfig {
 
     @Bean
