@@ -1,8 +1,8 @@
-# mn-organisasjon-api
-Applikasjon for å opprette Mini-Norge organisasjoner.
+# generer-navn-service
+App for å generere fiktive navn.
 
 ## Swagger
-Swagger finnes under [/swagger](https://mn-organisasjon-api.dev.adeo.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://generer-navn-service.dev.adeo.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Kjør ApplicationStarter med følgende argumenter:

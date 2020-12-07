@@ -1,4 +1,4 @@
-azure.app.client.id: dummy
+azure.app.client.id: 92e61fa8-6fca-48e2-87b9-29d8bb6cf850
 
 spring:
   security:
