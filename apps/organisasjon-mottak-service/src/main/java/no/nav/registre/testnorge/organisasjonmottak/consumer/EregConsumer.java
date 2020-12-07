@@ -38,9 +38,9 @@ public class EregConsumer {
 
     public void updateIndex(String miljo) {
         if (!envWebClientMap.containsKey(miljo)) {
-            throw new RuntimeException("Stotter ikke indexsering av miljo: " + miljo);
+            throw new RuntimeException("Stotter ikke indeksering av miljo: " + miljo);
         } else {
-            log.info("Starter indexsering av EREG {}.", miljo);
+            log.info("Starter indeksering av EREG {}.", miljo);
             new UpdateEregIndexCommand(envWebClientMap.get(miljo), LocalDateTime.now()).run();
         }
     }
