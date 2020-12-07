@@ -320,9 +320,9 @@ public class SyntController {
     @PostMapping("/amelding/arbeidsforhold")
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
     public ResponseEntity<ArbeidsforholdAmelding> generateArbeidforhold(
-            @RequestBody ArbeidsforholdAmelding tidligereArbeidsforholdAmelding
+            @RequestBody ArbeidsforholdAmelding tidligereArbeidsforhold
     ) {
-        var response = ameldingConsumer.synthesizeArbeidsforhold(tidligereArbeidsforholdAmelding, "/arbeidsforhold");
+        var response = ameldingConsumer.synthesizeArbeidsforhold(tidligereArbeidsforhold, "/arbeidsforhold");
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -331,9 +331,9 @@ public class SyntController {
     @PostMapping("/amelding/arbeidsforhold/sklearn")
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
     public ResponseEntity<ArbeidsforholdAmelding> generateArbeidforholdSklearn(
-            @RequestBody ArbeidsforholdAmelding tidligereArbeidsforholdAmelding
+            @RequestBody ArbeidsforholdAmelding tidligereArbeidsforhold
     ) {
-        var response = ameldingConsumer.synthesizeArbeidsforhold(tidligereArbeidsforholdAmelding, "/arbeidsforhold/sklearn");
+        var response = ameldingConsumer.synthesizeArbeidsforhold(tidligereArbeidsforhold, "/arbeidsforhold/sklearn");
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);

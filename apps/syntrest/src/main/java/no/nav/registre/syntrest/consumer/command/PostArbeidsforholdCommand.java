@@ -14,12 +14,12 @@ import reactor.core.publisher.Mono;
 public class PostArbeidsforholdCommand implements Callable<ArbeidsforholdAmelding> {
 
     private final WebClient webClient;
-    private final ArbeidsforholdAmelding arbeidsforholdAmelding;
+    private final ArbeidsforholdAmelding arbeidsforhold;
     private final String syntAmeldingUrlPath;
 
-    public PostArbeidsforholdCommand(ArbeidsforholdAmelding arbeidsforholdAmelding, String syntAmeldingUrlPath, WebClient webClient) {
+    public PostArbeidsforholdCommand(ArbeidsforholdAmelding arbeidsforhold, String syntAmeldingUrlPath, WebClient webClient) {
         this.webClient = webClient;
-        this.arbeidsforholdAmelding = arbeidsforholdAmelding;
+        this.arbeidsforhold = arbeidsforhold;
         this.syntAmeldingUrlPath = syntAmeldingUrlPath;
     }
 
@@ -27,7 +27,7 @@ public class PostArbeidsforholdCommand implements Callable<ArbeidsforholdAmeldin
     public ArbeidsforholdAmelding call() {
         ArbeidsforholdAmelding response;
         try {
-            var body = BodyInserters.fromPublisher(Mono.just(arbeidsforholdAmelding), ArbeidsforholdAmelding.class);
+            var body = BodyInserters.fromPublisher(Mono.just(arbeidsforhold), ArbeidsforholdAmelding.class);
 
             response = webClient.post()
                     .uri(builder -> builder.path(syntAmeldingUrlPath).build())

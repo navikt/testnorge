@@ -22,7 +22,7 @@ public class SyntAmeldingConsumer extends SyntConsumer {
         this.webClient = WebClient.builder().baseUrl(synthAmeldingUrl).build();
     }
 
-    public ArbeidsforholdAmelding synthesizeArbeidsforhold(ArbeidsforholdAmelding tidligereArbeidsforholdAmelding, String syntAmeldingUrlPath) {
+    public ArbeidsforholdAmelding synthesizeArbeidsforhold(ArbeidsforholdAmelding tidligereArbeidsforhold, String syntAmeldingUrlPath) {
         try {
             applicationManager.startApplication(this);
         } catch (ApiException | InterruptedException e) {
@@ -31,7 +31,7 @@ public class SyntAmeldingConsumer extends SyntConsumer {
         }
 
         try {
-            return new PostArbeidsforholdCommand(tidligereArbeidsforholdAmelding, syntAmeldingUrlPath, webClient).call();
+            return new PostArbeidsforholdCommand(tidligereArbeidsforhold, syntAmeldingUrlPath, webClient).call();
         } catch (RestClientException e) {
             log.error("Unexpected Rest Client Exception: {}", Arrays.toString(e.getStackTrace()));
             throw e;
