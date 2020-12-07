@@ -9,11 +9,11 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.syntrest.domain.amelding.Arbeidsforhold;
+import no.nav.registre.syntrest.domain.amelding.ArbeidsforholdAmelding;
 import reactor.core.publisher.Mono;
 
 @Slf4j
-public class PostArbeidsforholdStartCommand implements Callable<List<Arbeidsforhold>> {
+public class PostArbeidsforholdStartCommand implements Callable<List<ArbeidsforholdAmelding>> {
 
     private final WebClient webClient;
     private final List<String> startdatoer;
@@ -21,7 +21,7 @@ public class PostArbeidsforholdStartCommand implements Callable<List<Arbeidsforh
 
     private static final ParameterizedTypeReference<List<String>> REQUEST_TYPE = new ParameterizedTypeReference<>() {
     };
-    private static final ParameterizedTypeReference<List<Arbeidsforhold>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
+    private static final ParameterizedTypeReference<List<ArbeidsforholdAmelding>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
     public PostArbeidsforholdStartCommand(List<String> startdatoer, String syntAmeldingUrlPath, WebClient webClient) {
@@ -31,8 +31,8 @@ public class PostArbeidsforholdStartCommand implements Callable<List<Arbeidsforh
     }
 
     @Override
-    public List<Arbeidsforhold> call() {
-        List<Arbeidsforhold> response;
+    public List<ArbeidsforholdAmelding> call() {
+        List<ArbeidsforholdAmelding> response;
         try {
             var body = BodyInserters.fromPublisher(Mono.just(startdatoer), REQUEST_TYPE);
 
