@@ -56,4 +56,9 @@ public abstract class ToFlatfil {
     public abstract boolean isUpdate();
 
     public abstract Flatfil toFlatfil();
+
+
+    String getEnhetstype() {
+        return enhetstype;
+    }
 }

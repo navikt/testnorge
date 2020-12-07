@@ -54,7 +54,7 @@ public class OrganaisjonMottakListener {
         );
     }
 
-    @KafkaListener(topics = "tn-organisasjon-set-knytning-v2")
+    @KafkaListener(topics = "tn-organisasjon-set-knytning-v3")
     public void register(@Payload Knytning value) {
         organisasjonService.save(
                 new no.nav.registre.testnorge.organisasjonmottak.domain.Knytning(value),

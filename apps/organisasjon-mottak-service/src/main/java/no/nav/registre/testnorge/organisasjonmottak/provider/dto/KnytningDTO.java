@@ -5,9 +5,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import no.nav.registre.testnorge.libs.avro.organisasjon.Knytning;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Metadata;
 
@@ -16,7 +13,7 @@ import no.nav.registre.testnorge.libs.avro.organisasjon.Metadata;
 @NoArgsConstructor(force = true)
 @EqualsAndHashCode(callSuper = true)
 public class KnytningDTO extends BaseDTO<Knytning> {
-    List<VirksomhetDTO> driverVirksomheter;
+    String juridiskEnhet;
 
     @Override
     public Knytning toRecord(String miljoe) {
@@ -26,9 +23,7 @@ public class KnytningDTO extends BaseDTO<Knytning> {
         metadata.setEnhetstype(getEnhetstype());
         metadata.setMiljo(miljoe);
         value.setMetadata(metadata);
-        value.setDriverVirksomhenter(
-                driverVirksomheter.stream().map(VirksomhetDTO::toRecord).collect(Collectors.toList())
-        );
+        value.setJuridiskEnhet(juridiskEnhet);
         return value;
     }
 }

@@ -6,10 +6,10 @@ import java.time.LocalDate;
 import org.springframework.stereotype.Service;
 
 /**
- * INDIVID(POS 7-9) 500-749 OG ÅR > 54 => ÅRHUNDRE = 1800
- * INDIVID(POS 7-9) 000-499            => ÅRHUNDRE = 1900
- * INDIVID(POS 7-9) 900-999 OG ÅR > 39 => ÅRHUNDRE = 1900
- * INDIVID(POS 7-9) 500-999 OG ÅR < 40 => ÅRHUNDRE = 2000
+ * INDIVID(POS 7-9) 500-749 OG AAR > 54 => AARHUNDRE = 1800
+ * INDIVID(POS 7-9) 000-499            => AARHUNDRE = 1900
+ * INDIVID(POS 7-9) 900-999 OG AAR > 39 => AARHUNDRE = 1900
+ * INDIVID(POS 7-9) 500-999 OG AAR < 40 => AARHUNDRE = 2000
  */
 @Service
 public class DatoFraIdentService {
