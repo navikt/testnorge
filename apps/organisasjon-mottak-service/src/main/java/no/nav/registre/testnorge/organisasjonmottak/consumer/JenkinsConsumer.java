@@ -18,17 +18,11 @@ import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
 public class JenkinsConsumer {
     private final Environment env;
     private final WebClient webClient;
-    private final String username;
-    private final String password;
 
     public JenkinsConsumer(
             Environment env,
-            @Value("${jenkins.rest.api.url}") String jenkinsUri,
-            @Value("${jenkins.username}") String jenkinsUsername,
-            @Value("${jenkins.password}") String jenkinsPassword
+            @Value("${jenkins.rest.api.url}") String jenkinsUri
     ) {
-        username = jenkinsUsername;
-        password = jenkinsPassword;
 
         WebClient.Builder builder = WebClient
                 .builder()
@@ -44,6 +38,6 @@ public class JenkinsConsumer {
             throw new RuntimeException("Finner ikke url for miljo: " + miljo);
         }
         JenkinsCrumb jenkinsCrumb = new GetCrumbCommand(webClient).call();
-        new StartBEREG007Command(webClient, server, miljo, jenkinsCrumb, flatFile, username, password).run();
+        new StartBEREG007Command(webClient, server, miljo, jenkinsCrumb, flatFile).run();
     }
 }
