@@ -30,7 +30,7 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :tilbakemelding-api:build
+        run: ./gradlew :generer-navn-service:build
       - name: Build and publish Docker image
         working-directory: apps/generer-navn-service/
         env:
@@ -39,7 +39,7 @@ jobs:
           docker build --tag $IMAGE .
           docker login docker.pkg.github.com -u $GITHUB_REPOSITORY -p $GITHUB_TOKEN
           docker push $IMAGE
-      - name: Deploy to nais
+      - name: Deploy to GPC dev
         timeout-minutes: 5
         uses: nais/deploy/actions/deploy@v1
         env:

@@ -14,7 +14,7 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: organisasjon-mottak-service
+        - application: organisasjon-forvalter
           cluster: dev-fss
   azure:
     application:
