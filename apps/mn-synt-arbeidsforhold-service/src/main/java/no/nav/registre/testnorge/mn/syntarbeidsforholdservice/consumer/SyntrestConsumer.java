@@ -60,7 +60,7 @@ public class SyntrestConsumer {
         try {
             return new GenerateNextArbeidsforholdCommand(webClient, dto).call();
         } catch (WebClientResponseException.InternalServerError e) {
-            throw new RuntimeException("Feil med opprettelse av: " + objectMapper.writeValueAsString(dto), e);
+            throw new RuntimeException("Feil med opprettelse av arbeidsforhold: " + objectMapper.writeValueAsString(dto), e);
         }
     }
 
@@ -73,13 +73,13 @@ public class SyntrestConsumer {
             adapter.save(arbeidsforhold.getArbeidsforholdId(), response.getHistorikk());
             return response;
         } catch (WebClientResponseException.InternalServerError e) {
-            throw new RuntimeException("Feil med opprettelse av: " + objectMapper.writeValueAsString(dto), e);
+            throw new RuntimeException("Feil med opprettelse av arbeidsforhold: " + objectMapper.writeValueAsString(dto), e);
         }
     }
 
     @SneakyThrows
     public Arbeidsforhold getNesteArbeidsforhold(Arbeidsforhold arbeidsforhold, LocalDate kaldermaaned) {
-        log.info("Oppretter finner neste arbeidsforhold den {}.", kaldermaaned.plusMonths(1));
+        log.info("Finner neste arbeidsforhold den {}.", kaldermaaned.plusMonths(1));
         ArbeidsforholdResponse response = properties.isSaveHistory()
                 ? getNesteArbeidsforholdWithHistorikkResponse(arbeidsforhold, kaldermaaned)
                 : getNesteArbeidsforholdResponse(arbeidsforhold, kaldermaaned);
