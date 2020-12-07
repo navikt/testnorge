@@ -61,6 +61,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt attr={sm.attrs.telefonnummer_1} />
 				<Attributt attr={sm.attrs.spesreg} />
 				<Attributt attr={sm.attrs.vergemaal} />
+				<Attributt attr={sm.attrs.fullmakt} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -222,6 +223,20 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => {
 					harMellomnavn: null
 				}),
 			remove: () => del('tpsf.vergemaal')
+		},
+		fullmakt: {
+			label: 'Fullmakt',
+			checked: has('tpsf.fullmakt'),
+			add: () =>
+				set('tpsf.fullmakt', {
+					kilde: '',
+					omraader: [],
+					gyldigFom: null,
+					gyldigTom: null,
+					identType: null,
+					harMellomnavn: null
+				}),
+			remove: () => del('tpsf.fullmakt')
 		}
 	}
 }

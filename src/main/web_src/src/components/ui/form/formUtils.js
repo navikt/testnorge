@@ -38,6 +38,7 @@ export const erForste = (values, attributt) => {
 		'tpsf.telefonnummer_1',
 		'tpsf.identHistorikk',
 		'tpsf.vergemaal',
+		'tpsf.fullmakt',
 		'tpsf.boadresse',
 		'tpsf.postadresse',
 		'tpsf.midlertidigAdresse',

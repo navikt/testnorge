@@ -140,6 +140,7 @@ export const icons = {
 	copy: Copy,
 	sykdom: Plaster,
 	vergemaal: Group2,
+	fullmakt: Group2,
 	visTpsData: AccountFind
 }
 

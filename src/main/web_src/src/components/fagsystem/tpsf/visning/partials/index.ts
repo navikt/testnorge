@@ -6,6 +6,7 @@ import { Identhistorikk } from './Identhistorikk'
 import { Relasjoner } from './Relasjoner'
 import { MidlertidigAdresse } from './MidlertidigAdresse'
 import { Vergemaal } from './Vergemaal'
+import { Fullmakt } from './Fullmakt'
 
 export {
 	Personinfo,
@@ -15,5 +16,6 @@ export {
 	MidlertidigAdresse,
 	Identhistorikk,
 	Relasjoner,
-	Vergemaal
+	Vergemaal,
+	Fullmakt
 }
