@@ -71,4 +71,7 @@ public class Arbeidsforhold {
     @JsonAlias({"PERMISJONER", "permisjoner"})
     private List<Permisjon> permisjoner;
 
+    @JsonAlias({"HISTORIKK", "historikk"})
+    private String historikk;
+
 }
