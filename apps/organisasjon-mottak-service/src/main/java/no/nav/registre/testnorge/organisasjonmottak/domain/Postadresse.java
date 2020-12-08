@@ -2,18 +2,18 @@ package no.nav.registre.testnorge.organisasjonmottak.domain;
 
 public class Postadresse extends Adresse {
 
-    public Postadresse(no.nav.registre.testnorge.libs.avro.organisasjon.Posstadresse posstadresse) {
+    public Postadresse(no.nav.registre.testnorge.libs.avro.organisasjon.Postadresse postadresse) {
         super(
-                posstadresse.getMetadata(),
-                posstadresse.getPostnummer(),
-                posstadresse.getLandkode(),
-                posstadresse.getKommunenummer(),
-                posstadresse.getPoststed(),
-                posstadresse.getPostadresse1(),
-                posstadresse.getPostadresse2(),
-                posstadresse.getPostadresse3(),
-                posstadresse.getLinjenummer(),
-                posstadresse.getVegadresseId()
+                postadresse.getMetadata(),
+                postadresse.getPostnummer(),
+                postadresse.getLandkode(),
+                postadresse.getKommunenummer(),
+                postadresse.getPoststed(),
+                postadresse.getPostadresse1(),
+                postadresse.getPostadresse2(),
+                postadresse.getPostadresse3(),
+                postadresse.getLinjenummer(),
+                postadresse.getVegadresseId()
         );
     }
 
