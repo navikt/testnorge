@@ -15,16 +15,16 @@ import no.nav.registre.testnorge.libs.avro.organisasjon.Naeringskode;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Navn;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Organisasjon;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Postadresse;
-import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.AnsatteProducer;
-import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.DetaljertNavnProducer;
-import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.ForretningsadresseProducer;
-import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.EpostProducer;
-import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.InternettadresseProducer;
-import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.KnytningProducer;
-import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.NaeringskodeProducer;
-import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.NavnProducer;
-import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.OrganisasjonProducer;
-import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.PostadresseProducer;
+import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.AnsatteProducer;
+import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.DetaljertNavnProducer;
+import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.EpostProducer;
+import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.ForretningsadresseProducer;
+import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.InternettadresseProducer;
+import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.KnytningProducer;
+import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.NaeringskodeProducer;
+import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.NavnProducer;
+import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.OrganisasjonProducer;
+import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.PostadresseProducer;
 
 @Component
 @RequiredArgsConstructor

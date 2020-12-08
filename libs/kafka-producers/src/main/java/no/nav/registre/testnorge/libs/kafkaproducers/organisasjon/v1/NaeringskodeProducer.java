@@ -1,13 +1,15 @@
-package no.nav.registre.testnorge.organisasjonmottak.consumer.kafka;
+package no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1;
 
 import org.springframework.stereotype.Component;
 
 import no.nav.registre.testnorge.libs.avro.organisasjon.Naeringskode;
-import no.nav.registre.testnorge.organisasjonmottak.config.ApplicationKafkaProperties;
+import no.nav.registre.testnorge.libs.kafkaconfig.config.KafkaProperties;
+import no.nav.registre.testnorge.libs.kafkaconfig.topic.OrganisasjonTopic;
+import no.nav.registre.testnorge.libs.kafkaproducers.KafkaProducer;
 
 @Component
 public class NaeringskodeProducer extends KafkaProducer<Naeringskode> {
-    NaeringskodeProducer(ApplicationKafkaProperties properties) {
+    NaeringskodeProducer(KafkaProperties properties) {
         super(
                 properties.getBootstrapAddress(),
                 properties.getGroupId(),
@@ -19,6 +21,6 @@ public class NaeringskodeProducer extends KafkaProducer<Naeringskode> {
 
     @Override
     public void send(String key, Naeringskode value) {
-        getKafkaTemplate().send("tn-organisasjon-set-naeringskode-v1", key, value);
+        getKafkaTemplate().send(OrganisasjonTopic.ORGANISASJON_SET_NAERINGSKODE, key, value);
     }
 }

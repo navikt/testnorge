@@ -13,12 +13,18 @@ dependencyManagement {
 }
 
 dependencies {
+
+    implementation project(':kafka-config')
+    implementation project(':kafka-producers')
+
     implementation project(':testnorge-core')
     implementation project(':testnorge-dependency-analysis')
     implementation project(':testnorge-common-command')
     implementation project(':testnorge-dependency-analysis-auto-configuration')
     implementation project(':testnorge-avro-schema')
     implementation project(':testnorge-oauth2')
+
+
 
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
