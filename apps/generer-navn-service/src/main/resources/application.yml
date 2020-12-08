@@ -1,0 +1,9 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  main:
+    banner-mode: off
+  application:
+    name: generer-navn-service
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
+    description: App for å generere fiktive navn.

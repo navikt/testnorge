@@ -242,3 +242,6 @@ project(":tps-ident-service").projectDir = file('apps/tps-ident-service')
 
 include 'endringsmelding-service'
 project(":endringsmelding-service").projectDir = file('apps/endringsmelding-service')
+
+include 'generer-navn-service'
+project(":generer-navn-service").projectDir = file('apps/generer-navn-service')
