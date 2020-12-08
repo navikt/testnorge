@@ -22,7 +22,7 @@ class FileReader {
             }
             return lines;
         } catch (IOException e) {
-            throw new RuntimeException("Klarer ikke a lese file: " + path, e);
+            throw new RuntimeException("Klarer ikke å lese fil: " + path, e);
         }
     }
 
