@@ -5,38 +5,23 @@
   "fields": [
     {
       "name": "postnummer",
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": "string"
     },
     {
       "name": "landkode",
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": "string"
     },
     {
       "name": "kommunenummer",
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": "string"
     },
     {
       "name": "poststed",
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": "string"
     },
     {
       "name": "postadresse1",
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": "string"
     },
     {
       "name": "postadresse2",

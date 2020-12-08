@@ -10,9 +10,11 @@ import org.springframework.stereotype.Component;
 
 import no.nav.registre.testnorge.libs.avro.organisasjon.Ansatte;
 import no.nav.registre.testnorge.libs.avro.organisasjon.DetaljertNavn;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Forretningsadresse;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Knytning;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Navn;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Organisasjon;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Postadresse;
 import no.nav.registre.testnorge.organisasjonmottak.service.OrganisasjonService;
 
 @Slf4j
@@ -62,4 +64,19 @@ public class OrganaisjonMottakListener {
         );
     }
 
+    @KafkaListener(topics = "tn-organisasjon-set-forretningsadresse-v1")
+    public void register(@Payload Forretningsadresse value) {
+        organisasjonService.save(
+                new no.nav.registre.testnorge.organisasjonmottak.domain.Forretningsadresse(value),
+                value.getMetadata().getMiljo()
+        );
+    }
+
+    @KafkaListener(topics = "tn-organisasjon-set-postadresse-v1")
+    public void register(@Payload Postadresse value) {
+        organisasjonService.save(
+                new no.nav.registre.testnorge.organisasjonmottak.domain.Postadresse(value),
+                value.getMetadata().getMiljo()
+        );
+    }
 }
