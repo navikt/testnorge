@@ -10,8 +10,11 @@ import org.springframework.stereotype.Component;
 
 import no.nav.registre.testnorge.libs.avro.organisasjon.Ansatte;
 import no.nav.registre.testnorge.libs.avro.organisasjon.DetaljertNavn;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Epost;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Internettadresse;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Forretningsadresse;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Knytning;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Naeringskode;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Navn;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Organisasjon;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Postadresse;
@@ -76,6 +79,29 @@ public class OrganaisjonMottakListener {
     public void register(@Payload Postadresse value) {
         organisasjonService.save(
                 new no.nav.registre.testnorge.organisasjonmottak.domain.Postadresse(value),
+                value.getMetadata().getMiljo()
+        );
+    }
+    @KafkaListener(topics = "tn-organisasjon-set-epost-v1")
+    public void register(@Payload Epost value) {
+        organisasjonService.save(
+                new no.nav.registre.testnorge.organisasjonmottak.domain.Epost(value),
+                value.getMetadata().getMiljo()
+        );
+    }
+
+    @KafkaListener(topics = "tn-organisasjon-set-internettadresse-v1")
+    public void register(@Payload Internettadresse value) {
+        organisasjonService.save(
+                new no.nav.registre.testnorge.organisasjonmottak.domain.Internettadresse(value),
+                value.getMetadata().getMiljo()
+        );
+    }
+
+    @KafkaListener(topics = "tn-organisasjon-set-naeringskode-v1")
+    public void register(@Payload Naeringskode value) {
+        organisasjonService.save(
+                new no.nav.registre.testnorge.organisasjonmottak.domain.Naeringskode(value),
                 value.getMetadata().getMiljo()
         );
     }
