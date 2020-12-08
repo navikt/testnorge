@@ -65,25 +65,18 @@ public class StartBEREG007Command implements Runnable {
                 .with("workUnit", "100")
                 .with("FileName", "dolly-" + System.currentTimeMillis() + ".txt")
                 .with("overrideSequenceControl", "true")
+                .with("stepSelection", "2;3;4;5;6")
                 .with("input_file", fileEntity);
 
         log.info("Jenkins-Crumb: {}", crumb.getCrumb());
-
-        String block = webClient
+        webClient
                 .post()
                 .uri("/view/Registre/job/Start_BEREG007/buildWithParameters")
                 .header("Jenkins-Crumb", crumb.getCrumb())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
                 .body(body)
                 .exchange()
-                .flatMap(clientResponse -> {
-                    if (!clientResponse.statusCode().is2xxSuccessful()) {
-                        return clientResponse.bodyToMono(String.class);
-                    }
-                    return clientResponse.bodyToMono(String.class);
-                })
+                .flatMap(clientResponse -> clientResponse.bodyToMono(String.class))
                 .block();
-
-        log.info(block);
     }
 }

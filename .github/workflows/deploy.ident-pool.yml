@@ -2,6 +2,7 @@ name: Deploy ident-pool
 
 on:
   push:
+    branches: master
     paths:
       - apps/ident-pool/**
 env:

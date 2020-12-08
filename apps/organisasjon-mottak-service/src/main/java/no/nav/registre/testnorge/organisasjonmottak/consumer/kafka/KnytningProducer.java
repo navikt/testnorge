@@ -19,6 +19,6 @@ public class KnytningProducer extends KafkaProducer<Knytning> {
 
     @Override
     public void send(String key, Knytning value) {
-        getKafkaTemplate().send("tn-organisasjon-set-knytning-v2", key, value);
+        getKafkaTemplate().send("tn-organisasjon-set-knytning-v3", key, value);
     }
 }

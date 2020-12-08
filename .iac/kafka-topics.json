@@ -200,7 +200,7 @@
         }
       ],
       "numPartitions": 10,
-      "topicName": "tn-organisasjon-set-knytning-v2"
+      "topicName": "tn-organisasjon-set-knytning-v3"
     }
   ]
 }
