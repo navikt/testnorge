@@ -9,6 +9,7 @@ import java.util.UUID;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdRequest;
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
+import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdWithHistorikkRequest;
 
 @Slf4j
 public class Arbeidsforhold {
@@ -130,6 +131,10 @@ public class Arbeidsforhold {
                 .yrke(nullToEmpty(dto.getYrke()))
                 .velferdspermisjon(velferdspermisjon)
                 .build();
+    }
+
+    public ArbeidsforholdWithHistorikkRequest toSyntrestDTO(LocalDate kaldermaaned, String historikk) {
+        return new ArbeidsforholdWithHistorikkRequest(this.toSyntrestDTO(kaldermaaned), historikk);
     }
 
     private Float nullToEmpty(Float value) {
