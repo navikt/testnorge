@@ -245,6 +245,72 @@
       ],
       "numPartitions": 10,
       "topicName": "tn-organisasjon-set-forretningsadresse-v1"
+    },
+    {
+      "configEntries": {
+        "retention.ms": "86400000",
+        "cleanup.policy": "delete"
+      },
+      "members": [
+        {
+          "member": "L143684",
+          "role": "MANAGER"
+        },
+        {
+          "member": "srvtestnorge",
+          "role": "PRODUCER"
+        },
+        {
+          "member": "srvtestnorge",
+          "role": "CONSUMER"
+        }
+      ],
+      "numPartitions": 10,
+      "topicName": "tn-organisasjon-set-epost-v1"
+    },
+    {
+      "configEntries": {
+        "retention.ms": "86400000",
+        "cleanup.policy": "delete"
+      },
+      "members": [
+        {
+          "member": "L143684",
+          "role": "MANAGER"
+        },
+        {
+          "member": "srvtestnorge",
+          "role": "PRODUCER"
+        },
+        {
+          "member": "srvtestnorge",
+          "role": "CONSUMER"
+        }
+      ],
+      "numPartitions": 10,
+      "topicName": "tn-organisasjon-set-internettadresse-v1"
+    },
+    {
+      "configEntries": {
+        "retention.ms": "86400000",
+        "cleanup.policy": "delete"
+      },
+      "members": [
+        {
+          "member": "L143684",
+          "role": "MANAGER"
+        },
+        {
+          "member": "srvtestnorge",
+          "role": "PRODUCER"
+        },
+        {
+          "member": "srvtestnorge",
+          "role": "CONSUMER"
+        }
+      ],
+      "numPartitions": 10,
+      "topicName": "tn-organisasjon-set-naeringskode-v1"
     }
   ]
 }

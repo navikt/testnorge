@@ -19,17 +19,6 @@ public class UpdateEregIndexCommand implements Runnable {
     private final WebClient webClient;
     private final LocalDateTime startTime;
 
-    @Getter
-    @ToString
-    private class IndexJob {
-        public IndexJob(LocalDateTime startTime) {
-            String value = startTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm:ss:SS"));
-            this.jobParameters = "startTime=" + value + ",modus=AJOURHOLD,workUnit=100,stepSelection=7;8";
-        }
-
-        private final String jobParameters;
-    }
-
     @Override
     public void run() {
 
@@ -45,5 +34,16 @@ public class UpdateEregIndexCommand implements Runnable {
                 .retrieve()
                 .bodyToMono(Void.class)
                 .block();
+    }
+
+    @Getter
+    @ToString
+    private class IndexJob {
+        private final String jobParameters;
+
+        public IndexJob(LocalDateTime startTime) {
+            String value = startTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm:ss:SS"));
+            this.jobParameters = "startTime=" + value + ",modus=AJOURHOLD,workUnit=100,stepSelection=7;8";
+        }
     }
 }

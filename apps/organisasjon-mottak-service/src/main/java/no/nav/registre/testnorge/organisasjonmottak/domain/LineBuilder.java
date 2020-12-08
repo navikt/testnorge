@@ -15,14 +15,6 @@ class LineBuilder {
         return new LineBuilder(type, length, "N");
     }
 
-    LineBuilder setLine(int exclusiveStart, String value) {
-        if (value == null) {
-            return this;
-        }
-        builder.replace(exclusiveStart, exclusiveStart + value.length(), value);
-        return this;
-    }
-
     private static StringBuilder createBaseStringbuilder(int size, String type, String endringsType) {
         StringBuilder stringBuilder = createStringBuilderWithReplacement(size, ' ');
         stringBuilder.replace(0, type.length(), type);
@@ -37,6 +29,14 @@ class LineBuilder {
             stringBuilder.setCharAt(i, replacement);
         }
         return stringBuilder;
+    }
+
+    LineBuilder setLine(int exclusiveStart, String value) {
+        if (value == null) {
+            return this;
+        }
+        builder.replace(exclusiveStart, exclusiveStart + value.length(), value);
+        return this;
     }
 
     @Override

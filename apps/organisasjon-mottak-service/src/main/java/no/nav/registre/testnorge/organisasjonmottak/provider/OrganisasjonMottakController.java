@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.OrganisasjonMottakConsumer;
 import no.nav.registre.testnorge.organisasjonmottak.provider.dto.AnsatteDTO;
 import no.nav.registre.testnorge.organisasjonmottak.provider.dto.DetaljertNavnDTO;
+import no.nav.registre.testnorge.organisasjonmottak.provider.dto.EpostDTO;
+import no.nav.registre.testnorge.organisasjonmottak.provider.dto.InternettadresseDTO;
 import no.nav.registre.testnorge.organisasjonmottak.provider.dto.ForretningsadresseDTO;
 import no.nav.registre.testnorge.organisasjonmottak.provider.dto.KnytningDTO;
+import no.nav.registre.testnorge.organisasjonmottak.provider.dto.NaeringskodeDTO;
 import no.nav.registre.testnorge.organisasjonmottak.provider.dto.NavnDTO;
 import no.nav.registre.testnorge.organisasjonmottak.provider.dto.OrganisasjonDTO;
 import no.nav.registre.testnorge.organisasjonmottak.provider.dto.PostadresseDTO;
@@ -75,6 +78,30 @@ public class OrganisasjonMottakController {
     public void setPostadresse(
             @RequestHeader("miljoe") String miljoe,
             @RequestBody PostadresseDTO dto
+    ) {
+        organisasjonMottakConsumer.send(dto.toRecord(miljoe));
+    }
+
+    @PutMapping("/epost")
+    public void setKnytning(
+            @RequestHeader("miljoe") String miljoe,
+            @RequestBody EpostDTO dto
+    ) {
+        organisasjonMottakConsumer.send(dto.toRecord(miljoe));
+    }
+
+    @PutMapping("/internettadresse")
+    public void setKnytning(
+            @RequestHeader("miljoe") String miljoe,
+            @RequestBody InternettadresseDTO dto
+    ) {
+        organisasjonMottakConsumer.send(dto.toRecord(miljoe));
+    }
+
+    @PutMapping("/naeringskode")
+    public void setKnytning(
+            @RequestHeader("miljoe") String miljoe,
+            @RequestBody NaeringskodeDTO dto
     ) {
         organisasjonMottakConsumer.send(dto.toRecord(miljoe));
     }

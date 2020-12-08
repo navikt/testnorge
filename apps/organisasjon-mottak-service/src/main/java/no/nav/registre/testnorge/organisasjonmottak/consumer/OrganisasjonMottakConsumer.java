@@ -8,14 +8,20 @@ import java.util.UUID;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Ansatte;
 import no.nav.registre.testnorge.libs.avro.organisasjon.DetaljertNavn;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Forretningsadresse;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Epost;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Internettadresse;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Knytning;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Naeringskode;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Navn;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Organisasjon;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Postadresse;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.AnsatteProducer;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.DetaljertNavnProducer;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.ForretningsadresseProducer;
+import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.EpostProducer;
+import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.InternettadresseProducer;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.KnytningProducer;
+import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.NaeringskodeProducer;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.NavnProducer;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.OrganisasjonProducer;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.kafka.PostadresseProducer;
@@ -28,6 +34,9 @@ public class OrganisasjonMottakConsumer {
     private final NavnProducer navnProducer;
     private final OrganisasjonProducer organisasjonProducer;
     private final KnytningProducer knytningProducer;
+    private final InternettadresseProducer internettadresseProducer;
+    private final EpostProducer epostProducer;
+    private final NaeringskodeProducer naeringskodeProducer;
     private final ForretningsadresseProducer forretningsadresseProducer;
     private final PostadresseProducer postadresseProducer;
 
@@ -57,5 +66,17 @@ public class OrganisasjonMottakConsumer {
 
     public void send(Forretningsadresse value) {
         forretningsadresseProducer.send(UUID.randomUUID().toString(), value);
+    }
+
+    public void send(Internettadresse value) {
+        internettadresseProducer.send(UUID.randomUUID().toString(), value);
+    }
+
+    public void send(Epost value) {
+        epostProducer.send(UUID.randomUUID().toString(), value);
+    }
+
+    public void send(Naeringskode value) {
+        naeringskodeProducer.send(UUID.randomUUID().toString(), value);
     }
 }
