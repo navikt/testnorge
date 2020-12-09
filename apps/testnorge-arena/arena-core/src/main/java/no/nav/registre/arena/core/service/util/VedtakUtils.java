@@ -1,5 +1,6 @@
 package no.nav.registre.arena.core.service.util;
 
+import static java.time.temporal.ChronoUnit.DAYS;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.BEGRUNNELSE;
 
 import lombok.RequiredArgsConstructor;
@@ -78,17 +79,48 @@ public class VedtakUtils {
             List<NyttVedtakTiltak> vedtaksliste,
             List<NyttVedtakTiltak> tiltaksdeltakelser
     ) {
+        if (vedtaksliste == null || vedtaksliste.isEmpty()) {
+            return vedtaksliste;
+        }
+
         List<NyttVedtakTiltak> nyVedtaksliste = new ArrayList<>();
 
-        for (var vedtak : vedtaksliste) {
-            var deltakelse = finnNoedvendigTiltaksdeltakelse(vedtak, tiltaksdeltakelser);
-            if (deltakelse != null) {
-                vedtak.setTilDato(deltakelse.getTilDato());
-                vedtak.setFraDato(deltakelse.getFraDato());
-                nyVedtaksliste.add(vedtak);
+        var vedtakSequences = getVedtakSequences(vedtaksliste);
+
+        log.info("Hei");
+        for (var sequence : vedtakSequences) {
+            var initialFraDato = sequence.get(0).getFraDato();
+            for (var vedtak : sequence) {
+                var deltakelse = finnNoedvendigTiltaksdeltakelse(vedtak, tiltaksdeltakelser);
+                if (deltakelse != null) {
+                    var nyttVedtak = shiftVedtakDatesBasertPaaTiltaksdeltakelse(vedtak, deltakelse, initialFraDato);
+                    nyVedtaksliste.add(nyttVedtak);
+                } else if (vedtak.getVedtaktype().equals("O")) {
+                    break;
+                }
             }
         }
         return nyVedtaksliste;
+    }
+
+    private NyttVedtakTiltak shiftVedtakDatesBasertPaaTiltaksdeltakelse(
+            NyttVedtakTiltak vedtak,
+            NyttVedtakTiltak deltakelse,
+            LocalDate initialFraDato
+    ) {
+        var newFraDato = deltakelse.getFraDato();
+        if (!vedtak.getVedtaktype().equals("O") && initialFraDato != null && vedtak.getFraDato() != null) {
+            var initialShift = DAYS.between(initialFraDato, vedtak.getFraDato());
+            newFraDato = deltakelse.getFraDato().plusDays(initialShift);
+
+            if (deltakelse.getTilDato() != null && newFraDato.isAfter(deltakelse.getTilDato())) {
+                newFraDato = deltakelse.getTilDato();
+            }
+        }
+        vedtak.setFraDato(newFraDato);
+        vedtak.setDatoMottatt(newFraDato);
+        vedtak.setTilDato(deltakelse.getTilDato());
+        return vedtak;
     }
 
     private NyttVedtakTiltak finnNoedvendigTiltaksdeltakelse(NyttVedtakTiltak vedtak, List<NyttVedtakTiltak> tiltaksdeltakelser) {
@@ -247,11 +279,14 @@ public class VedtakUtils {
         List<List<NyttVedtakTiltak>> vedtakSequences = new ArrayList<>();
         List<NyttVedtakTiltak> sequence = new ArrayList<>();
         for (var tiltak : vedtak) {
-            if (tiltak.getVedtaktype() != null && tiltak.getVedtaktype().equals("O")) {
+            if (tiltak.getVedtaktype() != null && tiltak.getVedtaktype().equals("O") && !sequence.isEmpty()) {
                 vedtakSequences.add(sequence);
-                sequence.clear();
+                sequence = new ArrayList<>();
             }
             sequence.add(tiltak);
+        }
+        if (!sequence.isEmpty()){
+            vedtakSequences.add(sequence);
         }
 
         return vedtakSequences;
