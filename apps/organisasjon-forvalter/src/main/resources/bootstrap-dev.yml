@@ -32,5 +32,5 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri:  ${AAD_ISSUER_URI}/v2.0 
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0 
           accepted-audience: ${client.id}, api://${client.id}

@@ -1,13 +1,16 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
 spring:
   flyway:
     enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
-    locations: classpath:db/migration/postgres
+    locations: classpath:db/migration
     baseline-on-migrate: true
   datasource:
     url: jdbc:postgresql://b27dbvl023.preprod.local:5432/organisasjon-forvalter-preprod
     hikari:
       maximum-pool-size: 3
       minimum-idle: 1
+    driver-class-name: org.postgresql.Driver
   jpa:
     properties:
       hibernate:
@@ -25,3 +28,9 @@ spring:
         backend: postgresql/preprod-fss
         enabled: true
         role: organisasjon-forvalter-preprod-admin
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0 
+          accepted-audience: ${client.id}, api://${client.id}
