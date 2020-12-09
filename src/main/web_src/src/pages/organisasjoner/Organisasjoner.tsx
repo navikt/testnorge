@@ -7,8 +7,15 @@ import { SearchField } from '~/components/searchField/SearchField'
 import OrganisasjonListe from './OrganisasjonListe'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import Loading from '~/components/ui/loading/Loading'
+import { History } from 'history'
 
 import { useAsync } from 'react-use'
+
+type Organisasjoner = {
+	history: History
+	isFetching: boolean
+	getOrganisasjoner: Function
+}
 
 enum BestillingType {
 	NY = 'NY',
@@ -18,10 +25,10 @@ enum BestillingType {
 const VISNING_ORGANISASJONER = 'organisasjoner'
 const VISNING_BESTILLINGER = 'bestillinger'
 
-export default function Organisasjoner({ history, isFetching, getOrganisasjoner }) {
+export default function Organisasjoner({ history, isFetching, getOrganisasjoner }: Organisasjoner) {
 	const [visning, setVisning] = useState(VISNING_ORGANISASJONER)
 
-	const byttVisning = event => setVisning(event.target.value)
+	const byttVisning = (event: React.ChangeEvent<any>) => setVisning(event.target.value)
 
 	const searchfieldPlaceholderSelector = () => {
 		if (visning === VISNING_BESTILLINGER) return 'Søk i bestillinger'
@@ -38,7 +45,7 @@ export default function Organisasjoner({ history, isFetching, getOrganisasjoner 
 	// const antallOrg = 0
 	const antallBest = 0
 
-	const startBestilling = type => {
+	const startBestilling = (type: string) => {
 		history.push('/organisasjoner/bestilling', { opprettOrganisasjon: type })
 	}
 
@@ -53,6 +60,7 @@ export default function Organisasjoner({ history, isFetching, getOrganisasjoner 
 			<div className="toolbar">
 				<div className="page-header flexbox--align-center">
 					<h1>Testorganisasjoner</h1>
+					{/* @ts-ignore */}
 					<Hjelpetekst hjelpetekstFor="Testorganisasjoner" type="under">
 						Organisasjoner i Dolly er en del av NAVs syntetiske testpopulasjon og dekker behov for
 						testdata knyttet til bedrifter/virksomheter (EREG). Løsningen er under utvikling, og det

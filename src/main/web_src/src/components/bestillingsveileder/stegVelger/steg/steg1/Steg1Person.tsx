@@ -14,7 +14,7 @@ import { BrregPanel } from './paneler/Brreg'
 import { DokarkivPanel } from './paneler/Dokarkiv'
 import { SykdomPanel } from './paneler/Sykdom'
 
-export const Steg1Person = ({ stateModifier }) => {
+export const Steg1Person = ({ stateModifier }: any) => {
 	const checked = [
 		PersoninformasjonPanel,
 		AdressePanel,

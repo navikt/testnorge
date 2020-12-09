@@ -1,3 +1,4 @@
+// @ts-ignore
 import { connect } from 'react-redux'
 import { actions } from '~/ducks/organisasjon'
 import { createLoadingSelector } from '~/ducks/loading'
@@ -6,7 +7,7 @@ import config from '~/config'
 
 const loadingSelector = createLoadingSelector(actions.getOrganisasjoner)
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state: any) => {
 	return {
 		isFetching: loadingSelector(state),
 		organisasjoner: state.organisasjon.organisasjoner,
@@ -14,7 +15,7 @@ const mapStateToProps = (state, ownProps) => {
 	}
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch: React.Dispatch<React.SetStateAction<string>>) => {
 	const uri = `${config.services.dollyBackend}`
 	return {
 		getOrganisasjoner: () =>

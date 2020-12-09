@@ -2,7 +2,7 @@ import React from 'react'
 import { AttributtVelger } from './attributtVelger/AttributtVelger'
 import { OrganisasjonDetaljerPanel } from './paneler/OrganisasjonDetaljer'
 
-export const Steg1Organisasjon = ({ stateModifier }) => {
+export const Steg1Organisasjon = ({ stateModifier }: any) => {
 	const checked = [OrganisasjonDetaljerPanel]
 		.map(panel => ({
 			label: panel.heading,

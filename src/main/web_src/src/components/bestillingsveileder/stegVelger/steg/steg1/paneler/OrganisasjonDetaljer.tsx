@@ -2,10 +2,11 @@ import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 
-export const OrganisasjonDetaljerPanel = ({ stateModifier }) => {
+export const OrganisasjonDetaljerPanel = ({ stateModifier }: any) => {
 	const sm = stateModifier(OrganisasjonDetaljerPanel.initialValues)
 
 	return (
+		// @ts-ignore
 		<Panel
 			heading={OrganisasjonDetaljerPanel.heading}
 			startOpen
@@ -38,7 +39,7 @@ export const OrganisasjonDetaljerPanel = ({ stateModifier }) => {
 
 OrganisasjonDetaljerPanel.heading = 'Detaljer'
 
-OrganisasjonDetaljerPanel.initialValues = ({ set, setMulti, del, has }) => {
+OrganisasjonDetaljerPanel.initialValues = ({ set, del, has }: any) => {
 	return {
 		organisasjonsform: {
 			label: 'Organisasjonsform',
