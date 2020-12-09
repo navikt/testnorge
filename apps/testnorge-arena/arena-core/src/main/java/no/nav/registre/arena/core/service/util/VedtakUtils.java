@@ -87,7 +87,6 @@ public class VedtakUtils {
 
         var vedtakSequences = getVedtakSequences(vedtaksliste);
 
-        log.info("Hei");
         for (var sequence : vedtakSequences) {
             var initialFraDato = sequence.get(0).getFraDato();
             for (var vedtak : sequence) {
