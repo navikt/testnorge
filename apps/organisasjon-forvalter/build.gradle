@@ -33,8 +33,8 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:2.2.5.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:2.2.5.RELEASE'
 
     implementation 'org.springframework.security:spring-security-web:5.3.4.RELEASE'
     implementation 'org.springframework.security:spring-security-config:5.3.4.RELEASE'
