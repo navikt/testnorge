@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Profile("!test")
+@Profile({"prod", "dev"})
 @Configuration
 @RequiredArgsConstructor
 class VaultDatabaseTokenConfig implements InitializingBean {
