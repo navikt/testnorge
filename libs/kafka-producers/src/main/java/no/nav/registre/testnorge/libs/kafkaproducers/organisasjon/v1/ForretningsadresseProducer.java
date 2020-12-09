@@ -1,14 +1,15 @@
-package no.nav.registre.testnorge.organisasjonmottak.consumer.kafka;
+package no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1;
 
 import org.springframework.stereotype.Component;
 
 import no.nav.registre.testnorge.libs.avro.organisasjon.Forretningsadresse;
-import no.nav.registre.testnorge.libs.avro.organisasjon.Navn;
-import no.nav.registre.testnorge.organisasjonmottak.config.ApplicationKafkaProperties;
+import no.nav.registre.testnorge.libs.kafkaconfig.config.KafkaProperties;
+import no.nav.registre.testnorge.libs.kafkaconfig.topic.OrganisasjonTopic;
+import no.nav.registre.testnorge.libs.kafkaproducers.KafkaProducer;
 
 @Component
 public class ForretningsadresseProducer extends KafkaProducer<Forretningsadresse> {
-    ForretningsadresseProducer(ApplicationKafkaProperties properties) {
+    ForretningsadresseProducer(KafkaProperties properties) {
         super(
                 properties.getBootstrapAddress(),
                 properties.getGroupId(),
@@ -20,6 +21,6 @@ public class ForretningsadresseProducer extends KafkaProducer<Forretningsadresse
 
     @Override
     public void send(String key, Forretningsadresse value) {
-        getKafkaTemplate().send("tn-organisasjon-set-forretningsadresse-v1", key, value);
+        getKafkaTemplate().send(OrganisasjonTopic.ORGANISASJON_SET_FORRETNINGSADRESSE, key, value);
     }
 }

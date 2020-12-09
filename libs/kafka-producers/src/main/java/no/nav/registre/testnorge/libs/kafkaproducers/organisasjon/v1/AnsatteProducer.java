@@ -1,13 +1,15 @@
-package no.nav.registre.testnorge.organisasjonmottak.consumer.kafka;
+package no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1;
 
 import org.springframework.stereotype.Component;
 
 import no.nav.registre.testnorge.libs.avro.organisasjon.Ansatte;
-import no.nav.registre.testnorge.organisasjonmottak.config.ApplicationKafkaProperties;
+import no.nav.registre.testnorge.libs.kafkaconfig.config.KafkaProperties;
+import no.nav.registre.testnorge.libs.kafkaconfig.topic.OrganisasjonTopic;
+import no.nav.registre.testnorge.libs.kafkaproducers.KafkaProducer;
 
 @Component
 public class AnsatteProducer extends KafkaProducer<Ansatte> {
-    AnsatteProducer(ApplicationKafkaProperties properties) {
+    AnsatteProducer(KafkaProperties properties) {
         super(
                 properties.getBootstrapAddress(),
                 properties.getGroupId(),
@@ -19,6 +21,6 @@ public class AnsatteProducer extends KafkaProducer<Ansatte> {
 
     @Override
     public void send(String key, Ansatte value) {
-        getKafkaTemplate().send("tn-organisasjon-set-ansatte-v1", key, value);
+        getKafkaTemplate().send(OrganisasjonTopic.ORGANISASJON_SET_ANSATTE, key, value);
     }
 }

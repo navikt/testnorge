@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.organisasjonmottak.consumer.kafka;
+package no.nav.registre.testnorge.libs.kafkaproducers;
 
 import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
@@ -42,7 +42,7 @@ public abstract class KafkaProducer<T extends SpecificRecord> {
         this.kafkaTemplate = new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(props));
     }
 
-    KafkaTemplate<String, T> getKafkaTemplate() {
+    protected KafkaTemplate<String, T> getKafkaTemplate() {
         return kafkaTemplate;
     }
 

@@ -22,6 +22,9 @@ spec:
     max: 1
   vault:
     enabled: true
+    paths:
+      - kvPath: /serviceuser/data/dev/srvtestnorge
+        mountPath: /secret/serviceuser
   resources:
     limits:
       cpu: 500m

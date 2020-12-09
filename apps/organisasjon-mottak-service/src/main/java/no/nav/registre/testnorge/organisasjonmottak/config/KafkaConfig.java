@@ -22,14 +22,15 @@ import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 
+import no.nav.registre.testnorge.libs.kafkaconfig.config.KafkaProperties;
+
 @EnableKafka
 @Component
 @Profile("prod")
 @RequiredArgsConstructor
 public class KafkaConfig {
-    private final ApplicationKafkaProperties properties;
+    private final KafkaProperties properties;
 
-    @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         InetSocketAddress inetSocketAddress = new InetSocketAddress(0);
         Map<String, Object> props = new HashMap<>();

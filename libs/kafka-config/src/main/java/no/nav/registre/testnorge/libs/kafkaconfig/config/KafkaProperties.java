@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.organisasjonmottak.config;
+package no.nav.registre.testnorge.libs.kafkaconfig.config;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
@@ -6,14 +6,14 @@ import org.springframework.context.annotation.Configuration;
 
 @Getter
 @Configuration
-public class ApplicationKafkaProperties {
+public class KafkaProperties {
     private final String bootstrapAddress;
     private final String groupId;
     private final String schemaregistryServers;
     private final String username;
     private final String password;
 
-    public ApplicationKafkaProperties(
+    public KafkaProperties(
             @Value("${kafka.bootstrapservers}") String bootstrapAddress,
             @Value("${kafka.groupid}") String groupId,
             @Value("${kafka.schemaregistryservers}") String schemaregistryServers,
@@ -26,6 +26,4 @@ public class ApplicationKafkaProperties {
         this.username = username;
         this.password = password;
     }
-
-
 }
