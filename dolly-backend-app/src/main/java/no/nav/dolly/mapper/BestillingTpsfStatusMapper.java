@@ -1,9 +1,9 @@
 package no.nav.dolly.mapper;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
-import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.resultset.SystemTyper.TPSF;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsStatusRapport;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,10 +13,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsStatusRapport;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.resultset.SystemTyper.TPSF;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingTpsfStatusMapper {
@@ -68,7 +68,7 @@ public final class BestillingTpsfStatusMapper {
                 } else {
                     errorEnvIdents.get(status).put(environ, new HashSet<>(Set.of(ident)));
                 }
-            } else {
+            } else if (nonNull(ident)) {
                 Map<String, Set<String>> entry = new HashMap();
                 entry.put(environ, new HashSet<>(Set.of(ident)));
                 errorEnvIdents.put(status, entry);
