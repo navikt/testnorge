@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.vault.annotation.VaultPropertySource;
 
 @Configuration
-@VaultPropertySource(value = "kv/preprod/fss/organisasjon-forvalter/dolly", ignoreSecretNotFound = false)
+@Profile("dev")
+@VaultPropertySource(value = "kv/preprod/fss/organisasjon-forvalter/dev", ignoreSecretNotFound = false)
 public class VaultConfig {
 }
