@@ -1,4 +1,4 @@
-name: Deploy organisasjon-api
+name: Deploy organisasjon-forvalter
 
 on:
   push:
@@ -28,19 +28,22 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '11.x'
+
       - name: Compile
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
         run: ./gradlew :organisasjon-forvalter:build
+
       - name: Build and publish Docker image
         working-directory: apps/organisasjon-forvalter/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           docker build --tag $IMAGE .
-          docker login docker.pkg.github.com -u $GITHUB_REPOSITORY -p $GITHUB_TOKEN
-          docker push $IMAGE
+          docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
+          docker push ${IMAGE}
+
       - name: Deploy to nais
         timeout-minutes: 5
         uses: nais/deploy/actions/deploy@v1
