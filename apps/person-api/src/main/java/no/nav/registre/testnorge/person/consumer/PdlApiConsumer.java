@@ -13,6 +13,7 @@ import no.nav.registre.testnorge.person.consumer.command.GetPdlPersonCommand;
 import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.Feilmelding;
 import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.PdlPerson;
 import no.nav.registre.testnorge.person.domain.Person;
+import no.nav.registre.testnorge.person.exception.PdlGetPersonException;
 import no.nav.registre.testnorge.person.service.StsOidcTokenService;
 
 @Slf4j
@@ -34,7 +35,8 @@ public class PdlApiConsumer {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public Person getPerson(String ident) throws RuntimeException {
+    public Person getPerson(String ident) {
+        log.info("Henter person {} fra PDL", ident);
         String token = tokenService.getIdToken();
 
         PdlPerson pdlPerson = new GetPdlPersonCommand(restTemplate, pdlApiUrl, ident, token).call();
@@ -53,6 +55,6 @@ public class PdlApiConsumer {
                 .stream()
                 .map(Feilmelding::getMessage)
                 .collect(Collectors.joining(", ")));
-        throw new RuntimeException("Feil ved henting av pdl-personer");
+        throw new PdlGetPersonException("Feil ved henting av pdl-person");
     }
 }

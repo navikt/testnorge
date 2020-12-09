@@ -1,4 +1,21 @@
-spring:
-  cloud:
-    vault:
-      enabled: false
+spring.cloud.vault:
+  enabled: true
+  host: vault.adeo.no
+  port: 443
+  connection-timeout: 15000
+  read-timeout: 30000
+  application-name: preprod/fss/mn-synt-arbeidsforhold-service
+
+  authentication: TOKEN
+
+  generic:
+    enabled: true
+    backend: kv
+    application-name: preprod/fss/mn-synt-arbeidsforhold-service/dolly
+    default-context: preprod/fss/mn-synt-arbeidsforhold-service/dolly
+  database:
+    enabled: true
+    role: mn-synt-arbeidsforhold-admin
+    backend: postgresql/preprod-fss
+    username-property: spring.datasource.username
+    password-property: spring.datasource.password

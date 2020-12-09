@@ -53,12 +53,12 @@ public class TilleggsstoenadControllerIntegrationTest {
 
     private static final String ident = "01019049900";
     private static final String miljoe = "test";
-    private static final Long avspillergruppeId=123456789L;
+    private static final Long avspillergruppeId = 123456789L;
 
-    private static final String tokenProviderUrl="(.*)/token-provider";
-    private static final String hentLevendeIdenterUrl="(.*)/hodejegeren/api/v1/alle-levende-identer/"+avspillergruppeId;
-    private static final String hentIdenterIAktoerregisteretUrl="(.*)/aktoerregister/v1/identer";
-    private static final String arenaForvalterenUrl="(.*)/arena-forvalteren/api/v1/bruker";
+    private static final String tokenProviderUrl = "(.*)/token-provider";
+    private static final String hentLevendeIdenterUrl = "(.*)/hodejegeren/api/v1/alle-levende-identer/" + avspillergruppeId;
+    private static final String hentIdenterIAktoerregisteretUrl = "(.*)/aktoerregister/v1/identer";
+    private static final String arenaForvalterenUrl = "(.*)/arena-forvalteren/api/v1/bruker";
     private static final String arenaTilleggBoutgiftUrl = "(.*)/synt-tillegg/api/v1/arena/tilleggsstonad/boutgift";
     private static final String opprettRettigheterTilleggUrl = "(.*)/arena-forvalteren/api/v1/tilleggsstonad";
     private static final String opprettRettigheterTiltaksaktivitetUrl = "(.*)/arena-forvalteren/api/v1/tiltaksaktivitet";
@@ -74,13 +74,13 @@ public class TilleggsstoenadControllerIntegrationTest {
     private NyttVedtakResponse nyttVedtakTiltakResponse;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         syntetiserArenaRequest = new SyntetiserArenaRequest(avspillergruppeId, miljoe, 1);
 
         identerIAktoerRegisteret = new HashMap<>();
         var aktoerResponse = new AktoerResponse();
-        aktoerResponse.setIdenter(Collections.singletonList(new AktoerInnhold(ident,"test", true)));
-        identerIAktoerRegisteret.put(ident, aktoerResponse );
+        aktoerResponse.setIdenter(Collections.singletonList(new AktoerInnhold(ident, "test", true)));
+        identerIAktoerRegisteret.put(ident, aktoerResponse);
 
         vedtakTillegg = new NyttVedtakTillegg();
         vedtakTillegg.setVedtaksperiode(new Vedtaksperiode(LocalDate.now().minusMonths(3), LocalDate.now()));
@@ -177,7 +177,8 @@ public class TilleggsstoenadControllerIntegrationTest {
                 .getContentAsString();
 
         Map<String, List<NyttVedtakResponse>> resultat = objectMapper.readValue(mvcResultat,
-                new TypeReference<>() {});
+                new TypeReference<>() {
+                });
 
         assertThat(resultat.keySet()).contains(ident).hasSize(1);
     }

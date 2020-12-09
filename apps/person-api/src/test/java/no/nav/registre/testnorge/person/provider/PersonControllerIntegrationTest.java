@@ -144,10 +144,17 @@ public class PersonControllerIntegrationTest {
 
         JsonWiremockHelper
                 .builder(objectMapper)
+                .withUrlPathMatching("(.*)/tags")
+                .withResponseBody(Collections.emptySet())
+                .stubGet();
+
+        JsonWiremockHelper
+                .builder(objectMapper)
                 .withUrlPathMatching("(.*)/graphql")
                 .withRequestBody(generateGraphqlRequest("12345678912"))
                 .withResponseBody(graphqlResponse)
                 .stubPost();
+
 
         JsonWiremockHelper
                 .builder(objectMapper)
@@ -175,6 +182,7 @@ public class PersonControllerIntegrationTest {
                 .ident("12345678912")
                 .foedselsdato(LocalDate.parse("1980-10-02"))
                 .adresse(new AdresseDTO("Linegata 12", "2650", null, null))
+                .tags(Collections.emptySet())
                 .build();
 
         assertThat(actualPersonDTO).isEqualTo(expected);

@@ -4,7 +4,7 @@ import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdCommand;
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdStartCommand;
-import no.nav.registre.syntrest.domain.amelding.Arbeidsforhold;
+import no.nav.registre.syntrest.domain.amelding.ArbeidsforholdAmelding;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 
 import org.springframework.web.client.RestClientException;
@@ -22,7 +22,7 @@ public class SyntAmeldingConsumer extends SyntConsumer {
         this.webClient = WebClient.builder().baseUrl(synthAmeldingUrl).build();
     }
 
-    public Arbeidsforhold synthesizeArbeidsforhold(Arbeidsforhold tidligereArbeidsforhold, String syntAmeldingUrlPath) {
+    public ArbeidsforholdAmelding synthesizeArbeidsforhold(ArbeidsforholdAmelding tidligereArbeidsforhold, String syntAmeldingUrlPath) {
         try {
             applicationManager.startApplication(this);
         } catch (ApiException | InterruptedException e) {
@@ -40,7 +40,7 @@ public class SyntAmeldingConsumer extends SyntConsumer {
         }
     }
 
-    public List<Arbeidsforhold> synthesizeArbeidsforholdStart(List<String> datoer, String url) {
+    public List<ArbeidsforholdAmelding> synthesizeArbeidsforholdStart(List<String> datoer, String url) {
 
         try {
             applicationManager.startApplication(this);

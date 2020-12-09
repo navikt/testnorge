@@ -13,7 +13,6 @@ import static no.nav.registre.arena.core.consumer.rs.AapSyntConsumer.ARENA_AAP_U
 
 import no.nav.registre.arena.core.service.util.IdenterUtils;
 import no.nav.registre.arena.core.service.util.ArbeidssoekerUtils;
-import no.nav.registre.arena.core.service.util.ServiceUtils;
 import no.nav.registre.arena.core.service.util.VedtakUtils;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
@@ -42,9 +41,6 @@ public class VedtakshistorikkServiceTest {
 
     @Mock
     private AapSyntConsumer aapSyntConsumer;
-
-    @Mock
-    private ServiceUtils serviceUtils;
 
     @Mock
     private IdenterUtils identerUtils;

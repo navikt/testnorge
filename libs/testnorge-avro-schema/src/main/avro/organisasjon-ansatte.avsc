@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "Ansatte",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon",
+  "fields": [
+    {
+      "name": "harAnsatte",
+      "type": "boolean"
+    },
+    {
+      "name": "metadata",
+      "type": "Metadata"
+    }
+  ]
+}

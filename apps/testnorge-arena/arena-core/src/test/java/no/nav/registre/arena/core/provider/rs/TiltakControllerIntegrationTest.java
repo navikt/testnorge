@@ -53,20 +53,20 @@ public class TiltakControllerIntegrationTest {
 
     private static final String ident = "01019049900";
     private static final String miljoe = "test";
-    private static final Long avspillergruppeId=123456789L;
+    private static final Long avspillergruppeId = 123456789L;
 
-    private static final String tokenProviderUrl="(.*)/token-provider";
-    private static final String hentIdenterMedKontonummerUrl="(.*)/hodejegeren/api/v1/identer-med-kontonummer/"+avspillergruppeId;
-    private static final String hentLevendeIdenterUrl="(.*)/hodejegeren/api/v1/alle-levende-identer/"+avspillergruppeId;
-    private static final String hentIdenterIAktoerregisteretUrl="(.*)/aktoerregister/v1/identer";
-    private static final String hentBrukereArenaUrl="(.*)/arena-forvalteren/api/v1/bruker";
+    private static final String tokenProviderUrl = "(.*)/token-provider";
+    private static final String hentIdenterMedKontonummerUrl = "(.*)/hodejegeren/api/v1/identer-med-kontonummer/" + avspillergruppeId;
+    private static final String hentLevendeIdenterUrl = "(.*)/hodejegeren/api/v1/alle-levende-identer/" + avspillergruppeId;
+    private static final String hentIdenterIAktoerregisteretUrl = "(.*)/aktoerregister/v1/identer";
+    private static final String hentBrukereArenaUrl = "(.*)/arena-forvalteren/api/v1/bruker";
     private static final String arenaTiltakspengerUrl = "(.*)/synt-tiltak/api/v1/arena/tiltak/basi";
     private static final String arenaTiltaksdeltakelseUrl = "(.*)/synt-tiltak/api/v1/arena/tiltak/deltakelse/1";
     private static final String arenaEndreDeltakerstatusUrl = "(.*)/synt-tiltak/api/v1/arena/tiltak/deltakerstatus";
     private static final String opprettRettigheterTiltaksdeltakelseUrl = "(.*)/arena-forvalteren/api/v1/tiltaksdeltakelse";
     private static final String opprettRettigheterTiltaksaktivitetUrl = "(.*)/arena-forvalteren/api/v1/tiltakspenger";
     private static final String opprettRettigheterEndreDeltakerstatusUrl = "(.*)/arena-forvalteren/api/v1/endreDeltakerstatus";
-    private static final String brukereArenaUrl="(.*)/arena-forvalteren/api/v1/bruker";
+    private static final String brukereArenaUrl = "(.*)/arena-forvalteren/api/v1/bruker";
 
     private SyntetiserArenaRequest syntetiserArenaRequest;
     private Map<String, AktoerResponse> identerIAktoerRegisteret;
@@ -75,13 +75,13 @@ public class TiltakControllerIntegrationTest {
     private NyttVedtakResponse nyttVedtakTiltakResponse;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         syntetiserArenaRequest = new SyntetiserArenaRequest(avspillergruppeId, miljoe, 1);
 
         identerIAktoerRegisteret = new HashMap<>();
         var aktoerResponse = new AktoerResponse();
-        aktoerResponse.setIdenter(Collections.singletonList(new AktoerInnhold(ident,"test", true)));
-        identerIAktoerRegisteret.put(ident, aktoerResponse );
+        aktoerResponse.setIdenter(Collections.singletonList(new AktoerInnhold(ident, "test", true)));
+        identerIAktoerRegisteret.put(ident, aktoerResponse);
 
         nyeBrukereResponse = new NyeBrukereResponse();
         nyeBrukereResponse.setAntallSider(0);
@@ -201,7 +201,8 @@ public class TiltakControllerIntegrationTest {
                 .verifyPost();
 
         Map<String, List<NyttVedtakResponse>> resultat = objectMapper.readValue(mvcResultat,
-                new TypeReference<>() {});
+                new TypeReference<>() {
+                });
 
         assertThat(resultat.keySet()).contains(ident).hasSize(1);
     }

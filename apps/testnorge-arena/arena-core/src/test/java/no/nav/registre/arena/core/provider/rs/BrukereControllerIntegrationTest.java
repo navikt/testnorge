@@ -42,17 +42,17 @@ public class BrukereControllerIntegrationTest {
 
     private static final String ident = "01019049900";
     private static final String miljoe = "test";
-    private static final Long avspillergruppeId=123456789L;
+    private static final Long avspillergruppeId = 123456789L;
 
-    private static final String hentLevendeIdenterIAldersgruppeUrl="(.*)/hodejegeren/api/v1/levende-identer-i-aldersgruppe/"+avspillergruppeId;
-    private static final String arenaForvalterenUrl="(.*)/arena-forvalteren/api/v1/bruker";
+    private static final String hentLevendeIdenterIAldersgruppeUrl = "(.*)/hodejegeren/api/v1/levende-identer-i-aldersgruppe/" + avspillergruppeId;
+    private static final String arenaForvalterenUrl = "(.*)/arena-forvalteren/api/v1/bruker";
 
     private SyntetiserArenaRequest syntetiserArenaRequest;
     private NyeBrukereResponse hentBrukereResponse;
     private NyeBrukereResponse sendBrukerResponse;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         syntetiserArenaRequest = new SyntetiserArenaRequest(avspillergruppeId, miljoe, 1);
 
         hentBrukereResponse = new NyeBrukereResponse();
@@ -116,7 +116,8 @@ public class BrukereControllerIntegrationTest {
                 .verifyPost();
 
         NyeBrukereResponse resultat = objectMapper.readValue(mvcResultat,
-                new TypeReference<>() {});
+                new TypeReference<>() {
+                });
 
         assertThat(resultat.getArbeidsoekerList()).hasSize(1);
         assertThat(resultat.getArbeidsoekerList().get(0).getPersonident()).isEqualTo(ident);
@@ -171,7 +172,8 @@ public class BrukereControllerIntegrationTest {
                 .verifyPost();
 
         NyeBrukereResponse resultat = objectMapper.readValue(mvcResultat,
-                new TypeReference<>() {});
+                new TypeReference<>() {
+                });
 
         assertThat(resultat.getArbeidsoekerList()).hasSize(1);
         assertThat(resultat.getArbeidsoekerList().get(0).getPersonident()).isEqualTo(ident);

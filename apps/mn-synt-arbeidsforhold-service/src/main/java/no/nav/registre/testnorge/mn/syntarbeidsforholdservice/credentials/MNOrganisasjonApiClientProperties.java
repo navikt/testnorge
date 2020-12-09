@@ -13,8 +13,8 @@ public class MNOrganisasjonApiClientProperties {
     private final String clientId;
 
     public MNOrganisasjonApiClientProperties(
-            @Value("${consumers.mnorganiasjonapi.client_id}") String clientId,
-            @Value("${consumers.mnorganiasjonapi.url}") String baseUrl
+            @Value("${consumers.mnorganisasjonapi.client_id}") String clientId,
+            @Value("${consumers.mnorganisasjonapi.url}") String baseUrl
     ) {
         this.baseUrl = baseUrl;
         this.clientId = clientId;

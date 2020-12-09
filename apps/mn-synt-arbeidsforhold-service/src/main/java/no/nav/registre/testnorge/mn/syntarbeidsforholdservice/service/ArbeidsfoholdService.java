@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.SyntetiseringProperties;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.ArbeidsforholdConsumer;
-import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.MNOrganiasjonConsumer;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.MNOrganisasjonConsumer;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.SyntrestConsumer;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Arbeidsforhold;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Opplysningspliktig;
@@ -26,15 +26,15 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Organisajon
 @Service
 @RequiredArgsConstructor
 public class ArbeidsfoholdService {
-    private final MNOrganiasjonConsumer mnOrganiasjonConsumer;
+    private final MNOrganisasjonConsumer mnorganisasjonConsumer;
     private final ArbeidsforholdConsumer arbeidsforholdConsumer;
     private final SyntrestConsumer syntrestConsumer;
     private final SyntetiseringProperties syntetiseringProperties;
     private final Random random = new Random();
 
 
-    private List<Organisajon> getOpplysningspliktigeOrganiasjoner(String miljo) {
-        List<Organisajon> organisajoner = mnOrganiasjonConsumer
+    private List<Organisajon> getOpplysningspliktigeorganisasjoner(String miljo) {
+        List<Organisajon> organisajoner = mnorganisasjonConsumer
                 .getOrganisajoner(miljo)
                 .stream()
                 .filter(Organisajon::isOpplysningspliktig)
@@ -48,7 +48,7 @@ public class ArbeidsfoholdService {
     }
 
     public void reportAll(LocalDate kalendermaaned, String miljo) {
-        List<Organisajon> organisajoner = getOpplysningspliktigeOrganiasjoner(miljo);
+        List<Organisajon> organisajoner = getOpplysningspliktigeorganisasjoner(miljo);
         for (var organisajon : organisajoner) {
             syntHistory(organisajon, kalendermaaned, miljo);
         }
@@ -60,7 +60,7 @@ public class ArbeidsfoholdService {
 
     public void startArbeidsforhold(String ident, LocalDate fom, LocalDate tom, String miljo) {
 
-        List<Organisajon> organisajoner = getOpplysningspliktigeOrganiasjoner(miljo);
+        List<Organisajon> organisajoner = getOpplysningspliktigeorganisasjoner(miljo);
         Organisajon organisajon = organisajoner.get(random.nextInt(organisajoner.size()));
         String virksomhetsnummer = organisajon.getRandomVirksomhentsnummer();
         Opplysningspliktig opplysningspliktig = getOpplysningspliktig(organisajon, fom, miljo);
@@ -171,11 +171,21 @@ public class ArbeidsfoholdService {
             return;
         }
         LocalDate kalendermaaned = kalendermaander.next();
-        boolean newArbeidsforhold = previous.getSluttdato() != null && previous.getSluttdato().getMonth().equals(kalendermaaned.minusMonths(1).getMonth());
+        boolean newArbeidsforhold = previous.getSluttdato() != null
+                && previous.getSluttdato().getMonth() == kalendermaaned.minusMonths(1).getMonth()
+                && previous.getSluttdato().getYear() == kalendermaaned.minusMonths(1).getYear();
+
+        if (previous.getSluttdato() != null) {
+            log.info("Sluttdato er satt til {} og neste mnd er {}. Derfor er nytt arbeidsforhold satt til {}.",
+                    previous.getSluttdato(),
+                    kalendermaaned,
+                    newArbeidsforhold
+            );
+        }
         Arbeidsforhold next = createArabeidsforhold(newArbeidsforhold, kalendermaaned, previous);
         if (newArbeidsforhold) {
-            List<Organisajon> opplysningspliktigeOrganiasjoner = getOpplysningspliktigeOrganiasjoner(miljo);
-            Organisajon newOpplysningspliktigOrganisajon = opplysningspliktigeOrganiasjoner.get(random.nextInt(opplysningspliktigeOrganiasjoner.size()));
+            List<Organisajon> opplysningspliktigeorganisasjoner = getOpplysningspliktigeorganisasjoner(miljo);
+            Organisajon newOpplysningspliktigOrganisajon = opplysningspliktigeorganisasjoner.get(random.nextInt(opplysningspliktigeorganisasjoner.size()));
             String virksomhentsnummer = newOpplysningspliktigOrganisajon.getRandomVirksomhentsnummer();
             next.setVirksomhentsnummer(virksomhentsnummer);
             Opplysningspliktig opplysningspliktig = getOpplysningspliktig(newOpplysningspliktigOrganisajon, kalendermaaned, miljo);

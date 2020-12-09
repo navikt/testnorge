@@ -1,13 +1,13 @@
 package no.nav.registre.testnorge.person.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
-import java.util.Collections;
 import java.util.concurrent.Callable;
 
 import no.nav.registre.testnorge.person.consumer.dto.pdl.AdresseDTO;
@@ -15,26 +15,26 @@ import no.nav.registre.testnorge.person.consumer.dto.pdl.HendelseDTO;
 import no.nav.registre.testnorge.person.consumer.header.PdlHeaders;
 import no.nav.registre.testnorge.person.domain.Person;
 
+@Slf4j
 @RequiredArgsConstructor
 public class PostAdresseCommand implements Callable<HendelseDTO> {
 
-    private final RestTemplate restTemplate;
-    private final String url;
+    private final WebClient webClient;
     private final Person person;
     private final String kilde;
     private final String token;
 
     @Override
     public HendelseDTO call() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        headers.add(PdlHeaders.NAV_PERSONIDENT, person.getIdent());
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + token);
-        return restTemplate.exchange(
-                url + "/api/v1/bestilling/bostedsadresse",
-                HttpMethod.POST,
-                new HttpEntity<>(new AdresseDTO(person, kilde), headers),
-                HendelseDTO.class
-        ).getBody();
+        AdresseDTO body = new AdresseDTO(person, kilde);
+        return webClient.post()
+                .uri("/api/v1/bestilling/bostedsadresse")
+                .accept(MediaType.APPLICATION_JSON)
+                .header(PdlHeaders.NAV_PERSONIDENT, person.getIdent())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .body(BodyInserters.fromPublisher(Mono.just(body), AdresseDTO.class))
+                .retrieve()
+                .bodyToMono(HendelseDTO.class)
+                .block();
     }
 }

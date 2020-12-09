@@ -49,6 +49,7 @@ public class SlackConsumer {
     }
 
     public void publish(Message message) {
+        log.info("Publiserer melding til slack.");
         SlackResponse response = new PublishMessageCommand(webClient, token, message).call();
         if (!response.getOk()) {
             throw new RuntimeException("Klarer ikke aa opprette slack melding ( error: " + response.getError() + " )");
@@ -56,6 +57,7 @@ public class SlackConsumer {
     }
 
     public void uploadFile(byte[] file, String fileName, String channel) {
+        log.info("Publiserer fil til slack.");
         SlackResponse response = new UploadFileCommand(webClient, token, file, fileName, channel, applicationName).call();
         if (!response.getOk()) {
             throw new RuntimeException("Klarer ikke aa laste opp fil ( error: " + response.getError() + " )");

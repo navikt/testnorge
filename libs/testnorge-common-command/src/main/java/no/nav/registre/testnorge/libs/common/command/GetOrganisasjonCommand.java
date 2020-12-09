@@ -24,7 +24,7 @@ public class GetOrganisasjonCommand implements Callable<OrganisasjonDTO> {
     @SneakyThrows
     @Override
     public OrganisasjonDTO call() {
-        log.info("Henter organiasjon med orgnummer {}.", orgnummer);
+        log.info("Henter organisasjon med orgnummer {}.", orgnummer);
         try {
             return webClient
                     .get()

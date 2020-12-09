@@ -24,15 +24,15 @@ import org.springframework.web.client.HttpServerErrorException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.identpool.domain.Ident;
+import no.nav.identpool.domain.postgres.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.domain.TpsStatus;
 import no.nav.identpool.exception.ForFaaLedigeIdenterException;
 import no.nav.identpool.exception.IdentAlleredeIBrukException;
 import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
-import no.nav.identpool.repository.IdentRepository;
-import no.nav.identpool.repository.WhitelistRepository;
+import no.nav.identpool.repository.postgres.IdentRepository;
+import no.nav.identpool.repository.postgres.WhitelistRepository;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;
 import no.nav.identpool.rs.v1.support.MarkerBruktRequest;
 import no.nav.identpool.util.IdentGeneratorUtil;
@@ -85,11 +85,11 @@ public class IdentpoolService {
                 .collect(Collectors.toList());
 
         int missingIdentCount = request.getAntall() - identList.size();
-        if (missingIdentCount > MAKS_ANTALL_MANGLENDE_IDENTER) {
-            String errMsg = "Antall etterspurte identer er større enn tilgjengelig antall. Reduser antallet med %s, " +
-                    "for å få opprettet identene i TPS.";
-            throw new ForFaaLedigeIdenterException(String.format(errMsg, (missingIdentCount - MAKS_ANTALL_MANGLENDE_IDENTER)));
-        }
+//        if (missingIdentCount > MAKS_ANTALL_MANGLENDE_IDENTER) {
+//            String errMsg = "Antall etterspurte identer er større enn tilgjengelig antall. Reduser antallet med %s, " +
+//                    "for å få opprettet identene i TPS.";
+//            throw new ForFaaLedigeIdenterException(String.format(errMsg, (missingIdentCount - MAKS_ANTALL_MANGLENDE_IDENTER)));
+//        }
 
         if (missingIdentCount > 0) {
             // hent identer som er i bruk i ident-pool-databasen allerede, for ikke å opprette eksisterende identifikasjonsnumre:
@@ -245,7 +245,7 @@ public class IdentpoolService {
             }
         }
 
-        List<TpsStatus> tpsStatuses = new ArrayList<>(identTpsService.checkIdentsInTps(identerSomSkalSjekkes, new ArrayList<>()));
+        List<TpsStatus> tpsStatuses = new ArrayList<>(identTpsService.checkIdentsInTps(identerSomSkalSjekkes));
         return leggTilLedigeIdenterIMiljoer(ledigeIdenter, fnrMedIdent, tpsStatuses);
     }
 
@@ -327,7 +327,7 @@ public class IdentpoolService {
                     .filter(ident -> !identRepository.existsByPersonidentifikator(ident))
                     .collect(Collectors.toList());
 
-            Set<TpsStatus> kontrollerteIdenter = identTpsService.checkIdentsInTps(finnesIkkeAllerede, new ArrayList<>());
+            Set<TpsStatus> kontrollerteIdenter = identTpsService.checkIdentsInTps(finnesIkkeAllerede);
 
             saveIdents(kontrollerteIdenter.stream()
                     .filter(TpsStatus::isInUse)

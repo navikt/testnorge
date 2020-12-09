@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "Knytning",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon",
+  "fields": [
+    {
+      "name": "juridiskEnhet",
+      "type": "string"
+    },
+    {
+      "name": "metadata",
+      "type": "Metadata"
+    }
+  ]
+}

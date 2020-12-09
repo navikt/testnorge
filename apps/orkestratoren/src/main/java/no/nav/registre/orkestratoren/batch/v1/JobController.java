@@ -12,7 +12,6 @@ import org.springframework.web.client.HttpStatusCodeException;
 import java.util.Map;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaAapRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaVedtakshistorikkRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortRequest;
@@ -194,7 +193,10 @@ public class JobController {
         }
     }
 
-    @Scheduled(cron = "0 0 6 * * *")
+    /**
+    * Denne metoden oppretter vedtakshistorikk i Arena og kjøres annen hver time.
+    * */
+    @Scheduled(cron = "0 0 0-23/2 * * *")
     public void arenaSyntBatch() {
         for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
             for (int i = 0; i < arenaAntallNyeIdenter; i++) {
@@ -204,12 +206,6 @@ public class JobController {
                         .antallVedtakshistorikker(1)
                         .build());
             }
-
-            testnorgeArenaService.opprettArenaAap(SyntetiserArenaAapRequest.builder()
-                    .avspillergruppeId(entry.getKey())
-                    .miljoe(entry.getValue())
-                    .antallAap(arenaAntallNyeIdenter)
-                    .build());
         }
     }
 

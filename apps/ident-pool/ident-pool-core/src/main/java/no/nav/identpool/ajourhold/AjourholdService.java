@@ -24,11 +24,11 @@ import io.micrometer.core.instrument.Counter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.consumers.TpsfConsumer;
-import no.nav.identpool.domain.Ident;
+import no.nav.identpool.domain.postgres.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.domain.TpsStatus;
-import no.nav.identpool.repository.IdentRepository;
+import no.nav.identpool.repository.postgres.IdentRepository;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;
 import no.nav.identpool.service.IdentGeneratorService;
 import no.nav.identpool.service.IdentTpsService;
@@ -146,7 +146,7 @@ public class AjourholdService {
             int numberOfIdents) {
 
         List<String> identsNotInDatabase = filterAgainstDatabase(identsPerDay, pinMap);
-        Set<TpsStatus> tpsStatuses = identTpsService.checkIdentsInTps(identsNotInDatabase, new ArrayList<>());
+        Set<TpsStatus> tpsStatuses = identTpsService.checkIdentsInTps(identsNotInDatabase);
 
         List<String> rekvirert = tpsStatuses.stream()
                 .filter(TpsStatus::isInUse)
@@ -214,7 +214,7 @@ public class AjourholdService {
 
                 List<String> idents = page.getContent().stream().map(Ident::getPersonidentifikator).collect(Collectors.toList());
                 try {
-                    JsonNode statusFromTps = tpsfConsumer.getStatusFromTps(idents).findValue("EFnr");
+                    JsonNode statusFromTps = tpsfConsumer.getProdStatusFromTps(idents).findValue("EFnr");
                     List<Map<String, Object>> identStatus = objectMapper.convertValue(statusFromTps, new TypeReference<List<Map<String, Object>>>() {
                     });
                     for (Map<String, Object> map : identStatus) {
