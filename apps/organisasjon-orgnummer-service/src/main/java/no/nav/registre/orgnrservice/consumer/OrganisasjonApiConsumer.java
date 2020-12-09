@@ -29,9 +29,8 @@ public class OrganisasjonApiConsumer {
     }
 
     public OrganisasjonDTO getOrgnr (String orgnummer) {
-        //loop gjennom miljø
+        //evt loop gjennom miljø
 
-        //Heller hente inn alle orgnr på en gang slik at miljøsjekk kan skje multithreadet?
         return getOrgnrFraMiljoe(orgnummer, "q1");
     }
 }

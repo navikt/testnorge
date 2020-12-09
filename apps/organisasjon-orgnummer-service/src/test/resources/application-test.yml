@@ -1,0 +1,11 @@
+spring:
+  cloud:
+    vault:
+      token: dummy
+      enabled: false
+
+
+azure:
+  app:
+    client:
+      id: dummy

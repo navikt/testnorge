@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import no.nav.registre.orgnrservice.adapter.OrgnummerAdapter;
 import no.nav.registre.orgnrservice.consumer.OrganisasjonApiConsumer;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 
@@ -16,11 +15,11 @@ import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 public class OrgnummerService {
 
     private final OrganisasjonApiConsumer organisasjonApiConsumer;
-    private final OrgnummerAdapter orgnummerAdapter;
+//    private final OrgnummerAdapter orgnummerAdapter;
 
-    public List<String> genererOrgnrsTilDb (Integer antall) {
-        return orgnummerAdapter.saveAll(generateOrgnrs(antall));
-    }
+//    public List<String> genererOrgnrsTilDb (Integer antall) {
+//        return orgnummerAdapter.saveAll(generateOrgnrs(antall));
+//    }
 
     public List<String> generateOrgnrs (Integer antall) {
         List<String> identListe = new ArrayList<>();
@@ -37,7 +36,9 @@ public class OrgnummerService {
 
         int controlDigit = calculateControlDigit(weights, randomString);
         String orgnr = randomString + controlDigit;
-        if ((controlDigit == 1 || controlDigit < 0) && finnesOrgnr(orgnr)) {
+//        boolean b = finnesOrgnr(orgnr);
+//        if ((controlDigit == 1 || controlDigit < 0) && b) {
+        if ((controlDigit == 1 || controlDigit < 0)) {
             return generateOrgnr();
         }
         return orgnr;
