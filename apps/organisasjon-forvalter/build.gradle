@@ -4,12 +4,6 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 }
 
-dependencyManagement {
-    imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR8'
-    }
-}
-
 bootJar {
     archiveFileName = "app.jar"
 }
