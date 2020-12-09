@@ -2,7 +2,7 @@ name: Deploy organisasjon-forvalter
 
 on:
   push:
-    branches: master
+    branches: feature/organisasjon-forvalter
     paths:
       - apps/organisasjon-forvalter/**
       - libs/testnorge-core/**
