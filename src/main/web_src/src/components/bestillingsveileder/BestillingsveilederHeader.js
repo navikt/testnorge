@@ -7,12 +7,12 @@ import { ImportFraEtikett } from '~/components/ui/etikett'
 export const BestillingsveilederHeader = () => {
 	const opts = useContext(BestillingsveilederContext)
 
-	if (opts.is.nyOrganisasjon) {
+	if (opts.is.nyOrganisasjon || opts.is.nyStandardOrganisasjon) {
+		const titleValue = opts.is.nyStandardOrganisasjon ? 'Standard organisasjon' : 'Organisasjon'
 		return (
 			<Header icon="organisasjon" iconClassName="org">
 				<div className="flexbox">
-					<Header.TitleValue title="Opprett ny" value="Standard organisasjon" />
-					{/* //TODO: Tilpass value etter standard eller vanlig */}
+					<Header.TitleValue title="Opprett ny" value={titleValue} />
 				</div>
 			</Header>
 		)

@@ -85,16 +85,26 @@ OrganisasjonDetaljerPanel.initialValues = ({ set, setMulti, del, has }) => {
 		forretningsadresse: {
 			label: 'Forretningsadresse',
 			checked: has('organisasjon.forretningsadresse'),
-			add: () => set('organisasjon.forretningsadresse', null),
+			add: () =>
+				set('organisasjon.forretningsadresse', {
+					landkode: 'NOR',
+					adresseLinje1: '',
+					adresseLinje2: '',
+					postnr: ''
+				}),
 			remove: () => del('organisasjon.forretningsadresse')
-			// TODO: Lage alle felter for adresse
 		},
 		postadresse: {
 			label: 'Postadresse',
 			checked: has('organisasjon.postadresse'),
-			add: () => set('organisasjon.postadresse', null),
+			add: () =>
+				set('organisasjon.postadresse', {
+					landkode: 'NOR',
+					adresseLinje1: '',
+					adresseLinje2: '',
+					postnr: ''
+				}),
 			remove: () => del('organisasjon.postadresse')
-			// TODO: Lage alle felter for adresse
 		}
 	}
 }

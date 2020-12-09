@@ -10,6 +10,11 @@ import Loading from '~/components/ui/loading/Loading'
 
 import { useAsync } from 'react-use'
 
+enum BestillingType {
+	NY = 'NY',
+	STANDARD = 'STANDARD'
+}
+
 const VISNING_ORGANISASJONER = 'organisasjoner'
 const VISNING_BESTILLINGER = 'bestillinger'
 
@@ -30,22 +35,33 @@ export default function Organisasjoner({ history, isFetching, getOrganisasjoner 
 	}, [])
 
 	const antallOrg = !tempOrg.loading && tempOrg.value ? tempOrg.value.liste.length : 0
+	// const antallOrg = 0
 	const antallBest = 0
 
-	const values = { opprettOrganisasjon: true }
-	const startBestilling = () => {
-		history.push('/organisasjoner/bestilling', values)
+	const startBestilling = type => {
+		history.push('/organisasjoner/bestilling', { opprettOrganisasjon: type })
 	}
+
+	const dollySlack = (
+		<a href="https://nav-it.slack.com/archives/CA3P9NGA2" target="_blank">
+			#dolly
+		</a>
+	)
 
 	return (
 		<div className="oversikt-container">
 			<div className="toolbar">
 				<div className="page-header flexbox--align-center">
 					<h1>Testorganisasjoner</h1>
-					{/* // TODO: Skriv en ordentlig tekst! */}
 					<Hjelpetekst hjelpetekstFor="Testorganisasjoner" type="under">
-						Dette er oversikten over dine egne testorganisasjoner. Du kan opprette nye ved å trykke
-						på knappen under.
+						Organisasjoner i Dolly er en del av NAVs syntetiske testpopulasjon og dekker behov for
+						testdata knyttet til bedrifter/virksomheter (EREG). Løsningen er under utvikling, og det
+						legges til ny funksjonalitet fortløpende.
+						<br />
+						På denne siden finner du en oversikt over dine egne testorganisasjoner. Du kan opprette
+						nye organisasjoner ved å trykke på knappen under.
+						<br />
+						Kontakt oss gjerne på {dollySlack} dersom du har spørsmål eller innspill
 					</Hjelpetekst>
 				</div>
 			</div>
@@ -53,7 +69,7 @@ export default function Organisasjoner({ history, isFetching, getOrganisasjoner 
 			{/* // TODO: StatusListeConnector for bestillinger */}
 
 			<div className="toolbar">
-				<NavButton type="hoved" onClick={startBestilling}>
+				<NavButton type="hoved" onClick={() => startBestilling(BestillingType.NY)}>
 					Opprett organisasjon
 				</NavButton>
 
@@ -77,12 +93,10 @@ export default function Organisasjoner({ history, isFetching, getOrganisasjoner 
 				<SearchField placeholder={searchfieldPlaceholderSelector()} />
 			</div>
 
-			{/* //TODO: Bytte rekkefølge på sjekker */}
-			{isFetching ? (
-				<Loading label="laster organisasjoner" panel />
-			) : (
-				visning === VISNING_ORGANISASJONER &&
-				(antallOrg > 0 ? (
+			{visning === VISNING_ORGANISASJONER &&
+				(isFetching ? (
+					<Loading label="laster organisasjoner" panel />
+				) : antallOrg > 0 ? (
 					<OrganisasjonListe orgListe={tempOrg.value.liste} />
 				) : (
 					<ContentContainer>
@@ -90,13 +104,17 @@ export default function Organisasjoner({ history, isFetching, getOrganisasjoner 
 							Du har for øyeblikket ingen testorganisasjoner. Trykk på knappen under for å opprette
 							en testorganisasjon med standard oppsett.
 						</p>
-						<NavButton type="standard" onClick={null} style={{ marginTop: '10px' }}>
+						<NavButton
+							type="standard"
+							onClick={() => startBestilling(BestillingType.STANDARD)}
+							style={{ marginTop: '10px' }}
+						>
 							Opprett standard organisasjon
 						</NavButton>
 					</ContentContainer>
-				))
-			)}
+				))}
 			{visning === VISNING_BESTILLINGER && null}
+			{/* //TODO: Lag bestillingsoversikt */}
 		</div>
 	)
 }

@@ -1098,6 +1098,17 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		data.push(dokarkiv)
 	}
 
+	const organisasjonKriterier = bestillingData.organisasjon
+
+	if (organisasjonKriterier) {
+		const organisasjon = {
+			header: 'Organisasjonsdetaljer',
+			items: []
+		}
+		// TODO: Lages ferdig sammen med form eller visning av bestilling
+		data.push(organisasjon)
+	}
+
 	const importFraTps = bestillingData.importFraTps
 
 	if (importFraTps) {
