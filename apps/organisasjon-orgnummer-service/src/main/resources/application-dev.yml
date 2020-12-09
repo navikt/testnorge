@@ -1,2 +1,12 @@
-CLIENT_ID: 06c9b9c1-d370-40ea-8181-2c4a6858392f
+azure:
+  app:
+    client:
+      id: 06c9b9c1-d370-40ea-8181-2c4a6858392f
 
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}

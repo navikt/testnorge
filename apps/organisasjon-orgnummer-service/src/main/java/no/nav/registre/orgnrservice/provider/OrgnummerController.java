@@ -23,6 +23,11 @@ public class OrgnummerController {
         //sjekk om orgnr finnes i EREG
         return a;
     }
+    
+    @GetMapping(path = "/hello")
+    public String hello() {
+        return "Hello";
+    }
 
 //    @PostMapping
 //    public List<String> genererOrgnummerTilDb(@RequestHeader Integer antall) {

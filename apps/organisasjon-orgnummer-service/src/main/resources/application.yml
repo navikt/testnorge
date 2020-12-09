@@ -4,12 +4,12 @@ spring:
   application:
     name: organisasjon-orgnummer-service
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
-    description: Generere organisasjonsnummer
+    description: Genererer gyldige organisasjonsnummer. Sjekker at det ikke finnes i q1.
 
 
-consumer:
+consumers:
   organisasjon-api:
-    url: https://testnorge-organisasjon-api.dev.adeo.no
+    url: https://testnorge-organisasjon-api.dev.intern.nav.no
     client_id: f4167796-bf43-438b-a282-a480e8108d0c
 
 #spring:

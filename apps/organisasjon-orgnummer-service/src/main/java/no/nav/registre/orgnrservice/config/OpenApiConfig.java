@@ -22,15 +22,16 @@ public class OpenApiConfig implements WebMvcConfigurer {
     @Bean
     public OpenAPI openApi(ApplicationProperties applicationProperties) {
         return new OpenAPI()
-//                .components(new Components().addSecuritySchemes("bearer-jwt", new SecurityScheme()
-//                        .type(SecurityScheme.Type.HTTP)
-//                        .scheme("bearer")
-//                        .bearerFormat("JWT")
-//                        .in(SecurityScheme.In.HEADER)
-//                        .name("Authorization")
-//                ))
-//                .addSecurityItem(
-//                        new SecurityRequirement().addList("bearer-jwt", Arrays.asList("read", "write")))
+                .components(new Components().addSecuritySchemes("bearer-jwt", new SecurityScheme()
+                        .type(SecurityScheme.Type.HTTP)
+                        .scheme("bearer")
+                        .bearerFormat("JWT")
+                        .in(SecurityScheme.In.HEADER)
+                        .name("Authorization")
+                        .description("Trenger ikke \"Bearer \" foran")
+                ))
+                .addSecurityItem(
+                        new SecurityRequirement().addList("bearer-jwt", Arrays.asList("read", "write")))
                 .info(new Info()
                         .title(applicationProperties.getName())
                         .version(applicationProperties.getVersion())

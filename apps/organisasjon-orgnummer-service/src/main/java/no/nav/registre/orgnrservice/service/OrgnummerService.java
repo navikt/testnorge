@@ -36,9 +36,9 @@ public class OrgnummerService {
 
         int controlDigit = calculateControlDigit(weights, randomString);
         String orgnr = randomString + controlDigit;
-//        boolean b = finnesOrgnr(orgnr);
-//        if ((controlDigit == 1 || controlDigit < 0) && b) {
-        if ((controlDigit == 1 || controlDigit < 0)) {
+        boolean b = finnesOrgnr(orgnr);
+        if ((controlDigit == 1 || controlDigit < 0) && b) {
+//        if ((controlDigit == 1 || controlDigit < 0)) {
             return generateOrgnr();
         }
         return orgnr;
