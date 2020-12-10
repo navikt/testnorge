@@ -43,8 +43,13 @@ public class DatoFraIdentService {
     }
 
     private int getMonth(String ident) {
-        // Fix B-number
-        return ident.charAt(2) >= '2' ? parseInt(ident.substring(2, 4)) - 20 :
-                parseInt(ident.substring(2, 4));
+        // Fix B-number and syntetisk
+        if (ident.charAt(2) >= '6') {
+            return parseInt(ident.substring(2, 4)) - 60;
+        } else if (ident.charAt(2) >= '4') {
+            return parseInt(ident.substring(2, 4)) - 40;
+        } else {
+            return parseInt(ident.substring(2, 4));
+        }
     }
 }

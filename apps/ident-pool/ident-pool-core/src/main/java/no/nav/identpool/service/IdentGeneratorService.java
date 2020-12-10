@@ -7,9 +7,7 @@ import static no.nav.identpool.util.IdentGeneratorUtil.getStartIndex;
 import static no.nav.identpool.util.IdentGeneratorUtil.getYearRange;
 import static no.nav.identpool.util.IdentGeneratorUtil.numberFormatter;
 import static no.nav.identpool.util.PersonidentUtil.generateFnr;
-
-import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 import java.security.SecureRandom;
 import java.time.LocalDate;
@@ -22,6 +20,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
@@ -31,6 +31,7 @@ import no.nav.identpool.util.IdentGeneratorUtil;
 @Service
 public class IdentGeneratorService {
 
+    private static final int SYNTETISK = 4;
     private static SecureRandom random = new SecureRandom();
 
     public Map<LocalDate, List<String>> genererIdenterMap(
@@ -69,6 +70,9 @@ public class IdentGeneratorService {
         while (identer.size() < antall) {
             LocalDate birthdate = request.getFoedtEtter().plusDays(random.nextInt(numberOfDates));
             String format = numberFormat.apply(birthdate);
+            if (isTrue(request.getSyntetisk())) {
+                format = addSyntetiskToken(format);
+            }
 
             int originalSize = identer.size();
 
@@ -108,6 +112,9 @@ public class IdentGeneratorService {
         while (identer.size() < antall) {
             LocalDate birthdate = request.getFoedtEtter().plusDays(random.nextInt(numberOfDates));
             String format = numberFormat.apply(birthdate);
+            if (isTrue(request.getSyntetisk())) {
+                format = addSyntetiskToken(format);
+            }
 
             List<Integer> yearRange = getYearRange(birthdate);
             int originalSize = identer.size();
@@ -142,5 +149,9 @@ public class IdentGeneratorService {
         if (foedtEtter.isAfter(foedtFoer)) {
             throw new IllegalArgumentException(String.format("Til dato (%s) kan ikke være etter før dato (%s)", foedtEtter, foedtFoer));
         }
+    }
+
+    private static String addSyntetiskToken(String format){
+        return String.format("%s%1d%s", format.substring(0, 2), Integer.parseInt(format.substring(2,3)) + SYNTETISK, format.substring(3));
     }
 }

@@ -44,6 +44,10 @@ public class Ident {
     private Identtype identtype;
 
     @NotNull
+    @Column(name = "SYNTETISK")
+    private Boolean syntetisk;
+
+    @NotNull
     @Column(name = "PERSONIDENTIFIKATOR")
     private String personidentifikator;
 

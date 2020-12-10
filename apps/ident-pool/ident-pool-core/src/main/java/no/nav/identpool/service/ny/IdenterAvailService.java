@@ -46,7 +46,7 @@ public class IdenterAvailService {
                     .collect(Collectors.toList());
 
             if (!identerAaSjekke.isEmpty()) {
-                tpsStatuser.addAll(tpsfService.checkAvailStatus(identerAaSjekke));
+                tpsStatuser.addAll(tpsfService.checkAvailStatus(identerAaSjekke, request.getSyntetisk()));
             }
         }
 

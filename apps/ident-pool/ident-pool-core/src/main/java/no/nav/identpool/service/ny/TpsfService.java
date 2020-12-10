@@ -1,5 +1,7 @@
 package no.nav.identpool.service.ny;
 
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -15,7 +17,16 @@ public class TpsfService {
 
     private final TpsfConsumer tpsfConsumer;
 
-    public List<TpsStatus> checkAvailStatus(List<String> idents) {
+    public List<TpsStatus> checkAvailStatus(List<String> idents, Boolean syntetisk) {
+
+        if (isTrue(syntetisk)) {
+            return idents.stream()
+                    .map(ident -> TpsStatus.builder()
+                            .ident(ident)
+                            .inUse(false)
+                            .build())
+                    .collect(Collectors.toList());
+        }
 
         TpsfStatusResponse response = tpsfConsumer.getStatusFromTpsf(idents, true);
 

@@ -39,8 +39,10 @@ public interface IdentRepository extends PagingAndSortingRepository<Ident, Long>
             @Param("foedtEtter") LocalDate foedtEtter, Pageable pageable);
 
     @Query(value = "from Ident i where i.rekvireringsstatus = :rekvireringsstatus and i.kjoenn = :kjoenn and "
-            + "i.identtype = :identtype and i.foedselsdato between :foedtEtter and :foedtFoer")
+            + "i.identtype = :identtype and i.foedselsdato between :foedtEtter and :foedtFoer and "
+            + "i.syntetisk = :syntetisk")
     Page<Ident> findAll(@Param("rekvireringsstatus") Rekvireringsstatus rekvireringsstatus,
             @Param("identtype") Identtype identtype, @Param("kjoenn") Kjoenn kjoenn,
-            @Param("foedtFoer") LocalDate foedtFoer, @Param("foedtEtter") LocalDate foedtEtter, Pageable pageable);
+            @Param("foedtFoer") LocalDate foedtFoer, @Param("foedtEtter") LocalDate foedtEtter,
+            @Param("syntetisk") boolean syntetisk, Pageable pageable);
 }
