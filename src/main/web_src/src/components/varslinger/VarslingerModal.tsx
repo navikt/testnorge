@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-import { isBefore, isAfter } from 'date-fns'
+import { isAfter, isBefore } from 'date-fns'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import Stegindikator from 'nav-frontend-stegindikator'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { VarslingerTekster } from './VarslingerTekster'
 import './varslingerModal.less'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 interface Varslinger {
 	varslinger: Array<Varsling>
@@ -27,6 +28,8 @@ export const VarslingerModal = ({
 }: Varslinger) => {
 	const [steg, setSteg] = useState(0)
 	const [modalOpen, setModalOpen] = useState(true)
+
+	if (!varslinger) return null
 
 	const usetteVarslinger =
 		isLoadingVarslinger === false &&
@@ -54,39 +57,47 @@ export const VarslingerModal = ({
 	}
 
 	return (
-		<DollyModal isOpen={modalOpen} noCloseButton={true} width="70%" overflow="auto">
-			<div className="varslinger-modal">
-				{/* 
+		<ErrorBoundary>
+			<DollyModal isOpen={modalOpen} noCloseButton={true} width="70%" overflow="auto">
+				<div className="varslinger-modal">
+					{/* 
                 //@ts-ignore */}
-				{antallVarslinger > 1 && <Stegindikator aktivtSteg={steg} steg={varslingerSteg} kompakt />}
-
-				<VarslingerTekster varslingId={gyldigeVarslinger[steg].varslingId} />
-
-				<div className="varslinger-buttons">
-					{steg > 0 && (
-						<NavButton type="standard" onClick={() => setSteg(steg - 1)} style={{ float: 'left' }}>
-							Forrige side
-						</NavButton>
+					{antallVarslinger > 1 && (
+						<Stegindikator aktivtSteg={steg} steg={varslingerSteg} kompakt />
 					)}
-					{steg < antallVarslinger - 1 ? (
-						<NavButton
-							type="hoved"
-							onClick={() => submitSettVarsling(false)}
-							style={{ float: 'right' }}
-						>
-							Neste side
-						</NavButton>
-					) : (
-						<NavButton
-							type="hoved"
-							onClick={() => submitSettVarsling(true)}
-							style={{ float: 'right' }}
-						>
-							Lukk
-						</NavButton>
-					)}
+
+					<VarslingerTekster varslingId={gyldigeVarslinger[steg].varslingId} />
+
+					<div className="varslinger-buttons">
+						{steg > 0 && (
+							<NavButton
+								type="standard"
+								onClick={() => setSteg(steg - 1)}
+								style={{ float: 'left' }}
+							>
+								Forrige side
+							</NavButton>
+						)}
+						{steg < antallVarslinger - 1 ? (
+							<NavButton
+								type="hoved"
+								onClick={() => submitSettVarsling(false)}
+								style={{ float: 'right' }}
+							>
+								Neste side
+							</NavButton>
+						) : (
+							<NavButton
+								type="hoved"
+								onClick={() => submitSettVarsling(true)}
+								style={{ float: 'right' }}
+							>
+								Lukk
+							</NavButton>
+						)}
+					</div>
 				</div>
-			</div>
-		</DollyModal>
+			</DollyModal>
+		</ErrorBoundary>
 	)
 }
