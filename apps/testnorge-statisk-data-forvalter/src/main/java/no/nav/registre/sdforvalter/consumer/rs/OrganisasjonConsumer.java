@@ -14,32 +14,30 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
-import no.nav.registre.sdforvalter.consumer.rs.credentials.OrganisasjonApiClientCredential;
 import no.nav.registre.sdforvalter.domain.Ereg;
 import no.nav.registre.sdforvalter.domain.EregListe;
 import no.nav.registre.sdforvalter.domain.status.ereg.Organisasjon;
 import no.nav.registre.testnorge.libs.common.command.GetOrganisasjonCommand;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
-import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 
 @Slf4j
 @Component
 public class OrganisasjonConsumer {
     private final WebClient webClient;
-    private final ClientCredential clientCredential;
-    private final ClientCredentialGenerateAccessTokenService accessTokenService;
+    private final AccessTokenService accessTokenService;
     private final Executor executor;
     private final OrganisasjonProducers organisasjonProducers;
+    private final String clientId;
 
     public OrganisasjonConsumer(
             @Value("${organsisasjon.api.url}") String url,
-            OrganisasjonApiClientCredential clientCredential,
-            ClientCredentialGenerateAccessTokenService accessTokenService,
+            @Value("${organsisasjon.api.client_id}") String clientId,
+            AccessTokenService accessTokenService,
             @Value("${organsisasjon.api.threads}") Integer threads,
-            OrganisasjonProducers organisasjonProducers) {
-        this.clientCredential = clientCredential;
+            OrganisasjonProducers organisasjonProducers
+    ) {
+        this.clientId = clientId;
         this.accessTokenService = accessTokenService;
         this.executor = Executors.newFixedThreadPool(threads);
         this.webClient = WebClient
@@ -50,10 +48,7 @@ public class OrganisasjonConsumer {
     }
 
     private CompletableFuture<Organisasjon> getOrganisasjon(String orgnummer, String miljo, Executor executor) {
-        AccessToken accessToken = accessTokenService.generateToken(
-                clientCredential,
-                new AccessScopes("api://" + clientCredential.getClientId() + "/.default")
-        );
+        AccessToken accessToken = accessTokenService.generateToken(clientId);
         return CompletableFuture.supplyAsync(
                 () -> {
                     try {
@@ -78,7 +73,7 @@ public class OrganisasjonConsumer {
 
     @SneakyThrows
     private Organisasjon getOrganisasjon(String orgnummer, String miljo) {
-        log.info("Henter ut {} fra ereg", orgnummer);
+        log.info("Henter ut {} fra EREG ({}).", orgnummer, miljo);
         return getOrganisasjon(orgnummer, miljo, executor).get();
     }
 
