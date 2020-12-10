@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.concurrent.Callable;
@@ -37,7 +37,7 @@ public class GetOrganisasjonCommand implements Callable<OrganisasjonDTO> {
                     .retrieve()
                     .bodyToMono(OrganisasjonDTO.class)
                     .block();
-        } catch (HttpClientErrorException.NotFound e) {
+        } catch (WebClientResponseException.NotFound e) {
             log.warn("Organisasjon {} finnes ikke i {}.", orgnummer, miljo);
             return null;
         }
