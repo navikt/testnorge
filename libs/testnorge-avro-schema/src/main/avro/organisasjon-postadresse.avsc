@@ -26,29 +26,29 @@
     {
       "name": "postadresse2",
       "type": [
-        "string",
-        "null"
+        "null",
+        "string"
       ]
     },
     {
       "name": "postadresse3",
       "type": [
-        "string",
-        "null"
+        "null",
+        "string"
       ]
     },
     {
       "name": "linjenummer",
       "type": [
-        "string",
-        "null"
+        "null",
+        "string"
       ]
     },
     {
       "name": "vegadresseId",
       "type": [
-        "string",
-        "null"
+        "null",
+        "string"
       ]
     },
     {
