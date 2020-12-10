@@ -2,6 +2,7 @@ package no.nav.identpool.repository.postgres;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -9,10 +10,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
-import no.nav.identpool.domain.postgres.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
 import no.nav.identpool.domain.Rekvireringsstatus;
+import no.nav.identpool.domain.postgres.Ident;
 
 public interface IdentRepository extends PagingAndSortingRepository<Ident, Long> {
 
@@ -22,7 +23,7 @@ public interface IdentRepository extends PagingAndSortingRepository<Ident, Long>
 
     Ident findTopByPersonidentifikator(String personidentifkator);
 
-    List<Ident> findByPersonidentifikatorIn(List<String> idents);
+    Set<Ident> findByPersonidentifikatorIn(Set<String> idents);
 
     @Modifying
     Ident save(Ident ident);

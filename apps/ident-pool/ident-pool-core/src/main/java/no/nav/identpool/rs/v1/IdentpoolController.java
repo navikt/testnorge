@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.Valid;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,8 +21,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.ajourhold.BatchService;
-import no.nav.identpool.domain.postgres.Ident;
 import no.nav.identpool.domain.Identtype;
+import no.nav.identpool.domain.postgres.Ident;
 import no.nav.identpool.exception.IdentAlleredeIBrukException;
 import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;
@@ -52,7 +51,6 @@ public class IdentpoolController {
         return identpoolService.lesInnhold(personidentifikator);
     }
 
-    @Transactional
     @PostMapping
     @Operation(description = "rekvirer nye test-identer")
     public List<String> rekvirer(

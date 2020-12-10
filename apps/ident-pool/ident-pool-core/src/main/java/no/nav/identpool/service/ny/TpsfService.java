@@ -1,6 +1,6 @@
 package no.nav.identpool.service.ny;
 
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ public class TpsfService {
 
     private final TpsfConsumer tpsfConsumer;
 
-    public List<TpsStatus> checkAvailStatus(List<String> idents) {
+    public Set<TpsStatus> checkAvailStatus(Set<String> idents) {
 
         TpsfStatusResponse response = tpsfConsumer.getStatusFromTpsf(idents, true);
 
@@ -24,6 +24,6 @@ public class TpsfService {
                         .ident(status.getIdent())
                         .inUse(!status.getEnv().isEmpty())
                         .build())
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 }

@@ -4,7 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.spy;
@@ -25,10 +25,10 @@ import org.mockito.stubbing.Answer;
 
 import io.micrometer.core.instrument.Counter;
 import no.nav.identpool.consumers.TpsfConsumer;
-import no.nav.identpool.domain.postgres.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.domain.TpsStatus;
+import no.nav.identpool.domain.postgres.Ident;
 import no.nav.identpool.repository.postgres.IdentRepository;
 import no.nav.identpool.service.IdentGeneratorService;
 import no.nav.identpool.service.IdentTpsService;
@@ -84,8 +84,8 @@ class AjourholdServiceTest {
 
     @Test
     void genererIdenterForAarHvorIngenErLedige() {
-        when(identTpsService.checkIdentsInTps(anyList())).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
-            List<String> pins = invocationOnMock.getArgument(0);
+        when(identTpsService.checkIdentsInTps(anySet())).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
+            Set<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().map(p -> new TpsStatus(p, false)).collect(Collectors.toSet());
         });
         ajourholdService.generateForYear(1941, Identtype.FNR, 365 * 4);
@@ -98,8 +98,8 @@ class AjourholdServiceTest {
 
     @Test
     void genererIdenterForAarHvorAlleErLedige() {
-        when(identTpsService.checkIdentsInTps(anyList())).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
-            List<String> pins = invocationOnMock.getArgument(0);
+        when(identTpsService.checkIdentsInTps(anySet())).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
+            Set<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().map(p -> new TpsStatus(p, true)).collect(Collectors.toSet());
         });
         ajourholdService.generateForYear(1941, Identtype.DNR, 0);
@@ -112,8 +112,8 @@ class AjourholdServiceTest {
 
     @Test
     void genererIdenterForAarHvorAlleErLedigeBOST() {
-        when(identTpsService.checkIdentsInTps(anyList())).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
-            List<String> pins = invocationOnMock.getArgument(0);
+        when(identTpsService.checkIdentsInTps(anySet())).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
+            Set<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().map(p -> new TpsStatus(p, true)).collect(Collectors.toSet());
         });
         ajourholdService.generateForYear(1941, Identtype.BOST, 0);
@@ -126,8 +126,8 @@ class AjourholdServiceTest {
 
     @Test
     void generererIdenterFraAarTilDatoMidtISammeAar() {
-        when(identTpsService.checkIdentsInTps(anyList())).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
-            List<String> pins = invocationOnMock.getArgument(0);
+        when(identTpsService.checkIdentsInTps(anySet())).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
+            Set<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().map(p -> new TpsStatus(p, true)).collect(Collectors.toSet());
         });
         LocalDate dayOfYear = LocalDate.of(1941, 4, 10);
@@ -142,8 +142,8 @@ class AjourholdServiceTest {
 
     @Test
     void generererIdenterFraAarTilDatoMidtISammeAarBOST() {
-        when(identTpsService.checkIdentsInTps(anyList())).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
-            List<String> pins = invocationOnMock.getArgument(0);
+        when(identTpsService.checkIdentsInTps(anySet())).thenAnswer((Answer<Set<TpsStatus>>) invocationOnMock -> {
+            Set<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().map(p -> new TpsStatus(p, true)).collect(Collectors.toSet());
         });
         LocalDate dayOfYear = LocalDate.of(1941, 4, 10);

@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -59,12 +60,12 @@ class IdentpoolServiceTest {
         statusSet.add(tpsStatus);
 
         when(repository.findTopByPersonidentifikator(fnr1)).thenReturn(ident);
-        when(identTpsService.checkIdentsInTps(anyList())).thenReturn(statusSet);
+        when(identTpsService.checkIdentsInTps(anySet())).thenReturn(statusSet);
 
         List<String> frigjorteIdenter = identpoolService.frigjoerLedigeIdenter(identer);
 
         verify(repository).findTopByPersonidentifikator(fnr1);
-        verify(identTpsService).checkIdentsInTps(anyList());
+        verify(identTpsService).checkIdentsInTps(anySet());
         verify(repository).save(ident);
 
         assertEquals(fnr1, frigjorteIdenter.get(0));
@@ -86,13 +87,13 @@ class IdentpoolServiceTest {
 
         when(repository.findTopByPersonidentifikator(fnr1)).thenReturn(ident1);
         when(repository.findTopByPersonidentifikator(fnr2)).thenReturn(null);
-        when(identTpsService.checkIdentsInTps(anyList(), anyList())).thenReturn(new HashSet<>(Collections.singletonList(tpsStatus)));
+        when(identTpsService.checkIdentsInTps(anySet(), anyList())).thenReturn(new HashSet<>(Collections.singletonList(tpsStatus)));
 
         List<String> identerMarkertSomIBruk = identpoolService.markerBruktFlere(rekvirertAv, identer);
 
         assertThat(identerMarkertSomIBruk, containsInAnyOrder(fnr1, fnr2));
 
-        verify(identTpsService).checkIdentsInTps(anyList(), anyList());
+        verify(identTpsService).checkIdentsInTps(anySet(), anyList());
 
     }
 

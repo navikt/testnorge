@@ -2,6 +2,7 @@ package no.nav.identpool.consumers;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.RequestEntity;
@@ -38,7 +39,7 @@ public class TpsfConsumer {
         return new ObjectMapper().readTree(response.getBody()).findValue("data1");
     }
 
-    public TpsfStatusResponse getStatusFromTpsf(List<String> idents, Boolean includeProd) {
+    public TpsfStatusResponse getStatusFromTpsf(Set<String> idents, Boolean includeProd) {
 
         ResponseEntity<TpsfStatusResponse> response = restTemplate.exchange(RequestEntity.get(new UriTemplate(serverUrl + TPS_STATUS)
                 .expand(String.join(",", idents), includeProd))

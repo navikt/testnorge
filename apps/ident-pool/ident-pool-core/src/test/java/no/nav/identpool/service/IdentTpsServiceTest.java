@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -61,7 +62,7 @@ class IdentTpsServiceTest {
     @DisplayName("Skal ta i bruk kø uten cache")
     void shoudThrow() throws Exception {
         TpsPersonData personData = JAXB.unmarshal(fetchTestXml(), TpsPersonData.class);
-        List<String> idents = extractIdents(personData);
+        Set<String> idents = extractIdents(personData);
         mockMqError();
         mockBackupMq(personData);
 
@@ -74,7 +75,7 @@ class IdentTpsServiceTest {
     @DisplayName("Sjekker at mapping av om identer finnes i TPS går ok")
     void finnesITps() throws Exception {
         TpsPersonData personData = JAXB.unmarshal(fetchTestXml(), TpsPersonData.class);
-        List<String> idents = extractIdents(personData);
+        Set<String> idents = extractIdents(personData);
 
         mockMqSuccess(personData);
 
@@ -87,7 +88,7 @@ class IdentTpsServiceTest {
     @DisplayName("Sjekker at mapping av om identer finnes i TPS går ok")
     void finnesITpsNew() throws Exception {
         TpsPersonData personData = JAXB.unmarshal(fetchTestXml(), TpsPersonData.class);
-        List<String> idents = extractIdents(personData);
+        Set<String> idents = extractIdents(personData);
 
         mockMqSuccess(personData);
 
@@ -99,7 +100,7 @@ class IdentTpsServiceTest {
     @Test
     @DisplayName("Skal returnere når tom liste med fnr")
     void emptyFnrs() {
-        Set<TpsStatus> identerFinnes = identTpsService.checkIdentsInTps(new ArrayList<>(), new ArrayList<>());
+        Set<TpsStatus> identerFinnes = identTpsService.checkIdentsInTps(new HashSet<>(), new ArrayList<>());
 
         assertEquals(0, identerFinnes.size());
     }
@@ -109,7 +110,7 @@ class IdentTpsServiceTest {
     void shouldThrow() throws Exception {
         mockMessageError();
 
-        List<String> idents = extractIdents(JAXB.unmarshal(fetchTestXml(), TpsPersonData.class));
+        Set<String> idents = extractIdents(JAXB.unmarshal(fetchTestXml(), TpsPersonData.class));
 
         assertThrows(RuntimeException.class, () -> identTpsService.checkIdentsInTps(idents, new ArrayList<>()));
     }
@@ -122,10 +123,10 @@ class IdentTpsServiceTest {
         });
     }
 
-    private List<String> extractIdents(TpsPersonData personData) {
+    private Set<String> extractIdents(TpsPersonData personData) {
         return personData.getTpsSvar().getPersonDataM201().getAFnr().getEFnr().stream()
                 .map(PersondataFraTpsS201::getFnr)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     private void mockQueueContext() {
