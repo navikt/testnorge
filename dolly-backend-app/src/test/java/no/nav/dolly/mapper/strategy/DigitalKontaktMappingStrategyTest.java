@@ -1,10 +1,5 @@
 package no.nav.dolly.mapper.strategy;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
@@ -16,10 +11,16 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 public class DigitalKontaktMappingStrategyTest {
 
     private static final String EPOST = "test@nav.no";
     private static final String MOBIL = "99990000";
+    private static final String SPRAAK = "NO";
     private static final boolean RESERVERT = true;
     private static final LocalDateTime GYLDIG_FRA = LocalDateTime.of(2018, 1, 1, 0, 0);
     private static final ZonedDateTime Z_GYLDIG_FRA = ZonedDateTime.of(GYLDIG_FRA, ZoneId.systemDefault());
@@ -73,5 +74,17 @@ public class DigitalKontaktMappingStrategyTest {
         assertThat(result.getEpost(), is(equalTo(EPOST)));
         assertThat(result.getEpostOppdatert(), is(equalTo(Z_GYLDIG_FRA)));
         assertThat(result.getEpostVerifisert(), is(equalTo(Z_GYLDIG_FRA)));
+    }
+
+    @Test
+    public void mapSpraak_OK() {
+
+        DigitalKontaktdata result = mapperFacade.map(RsDigitalKontaktdata.builder()
+                .gyldigFra(GYLDIG_FRA)
+                .spraak(SPRAAK)
+                .build(), DigitalKontaktdata.class);
+
+        assertThat(result.getSpraak(), is(equalTo(SPRAAK)));
+        assertThat(result.getSpraakOppdatert(), is(equalTo(Z_GYLDIG_FRA)));
     }
 }
