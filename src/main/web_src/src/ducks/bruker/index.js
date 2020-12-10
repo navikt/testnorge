@@ -1,5 +1,5 @@
 import { DollyApi, ProfilApi } from '~/service/Api'
-import { createActions, combineActions } from 'redux-actions'
+import { combineActions, createActions } from 'redux-actions'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 import { onSuccess } from '~/ducks/utils/requestActions'
 
@@ -38,10 +38,10 @@ export default handleActions(
 			state.brukerData = action.payload.data
 		},
 		[onSuccess(getCurrentBrukerProfil)](state, action) {
-			state.brukerProfil = action.payload.data
+			state.brukerProfil = action.payload ? action.payload.data : null
 		},
 		[onSuccess(getCurrentBrukerBilde)](state, action) {
-			state.brukerBilde = action.payload.data
+			state.brukerBilde = action.payload ? action.payload.data : null
 		}
 	},
 	initialState

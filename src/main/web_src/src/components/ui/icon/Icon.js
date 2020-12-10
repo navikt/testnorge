@@ -144,7 +144,8 @@ export const icons = {
 	vergemaal: Group2,
 	visTpsData: AccountFind,
 	organisasjon: Hierarchy3,
-	organisasjonLight: Hierarchy3Light
+	organisasjonLight: Hierarchy3Light,
+	fullmakt: Group2
 }
 
 const px = v => `${v}px`

@@ -20,10 +20,10 @@ const initialState = {
 export default handleActions(
 	{
 		[onSuccess(getVarslinger)](state, action) {
-			state.varslingerData = action.payload.data
+			state.varslingerData = action.payload ? action.payload.data : null
 		},
 		[onSuccess(getVarslingerBruker)](state, action) {
-			state.varslingerBrukerData = action.payload.data
+			state.varslingerBrukerData = action.payload ? action.payload.data : null
 		}
 	},
 	initialState

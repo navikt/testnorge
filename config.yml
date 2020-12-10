@@ -47,13 +47,13 @@ spec:
   image: {{ image }}
   env:
     - name: TESTNORGE_PROFIL_API_CLIENT_ID
-      value: 81d0a23d-20ef-49de-8761-2e7917bc9238
+      value: e8e0772f-8204-4b88-88ad-233d62863f47
     - name: DOLLY_BACKEND_API_CLIENT_ID
       value: 787eb670-2731-49b4-8be1-2385990370a9
     - name: DOLLY_BACKEND_HOST
       value: https://dolly-backend.dev.adeo.no
     - name: TESTNORGE_PROFIL_API_HOST
-      value: https://testnorge-profil-api.dev.adeo.no
+      value: https://testnorge-profil-api.dev.intern.nav.no
   vault:
     enabled: true
     paths:

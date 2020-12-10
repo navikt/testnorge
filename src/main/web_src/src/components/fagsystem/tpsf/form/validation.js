@@ -426,6 +426,17 @@ export const validation = {
 					vedtakDato: requiredDate
 				})
 			),
+			fullmakt: ifPresent(
+				'$tpsf.fullmakt',
+				Yup.object({
+					kilde: requiredString,
+					omraader: Yup.array()
+						.of(Yup.string())
+						.required('Velg minst ett område'),
+					gyldigFom: requiredDate,
+					gyldigTom: requiredDate
+				})
+			),
 			boadresse: ifPresent('$tpsf.boadresse', boadresse),
 			adresseNrInfo: ifPresent('$tpsf.adresseNrInfo', adresseNrInfo),
 			midlertidigAdresse: ifPresent('$tpsf.midlertidigAdresse', midlertidigAdresse),

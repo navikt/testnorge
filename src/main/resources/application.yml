@@ -22,14 +22,14 @@ applications:
   testnorge-profil-api: ${TESTNORGE_PROFIL_API_CLIENT_ID}
   dolly-backend: ${DOLLY_BACKEND_API_CLIENT_ID}
   testnorge-varslinger-api: a1dca941-bdd5-4705-a1a4-04cf76473040
-  testnorge-tilbakemelding-api: 6554cc46-d5a9-4b9b-aafb-775b9ee09696
+  testnorge-tilbakemelding-api: 0f8c4430-19e4-4628-8e89-1dd89a1d613d
 
 
 application:
   basepackage: no.nav.dolly.web
 
 consumers:
-  testnorge-tilbakemelding-api.baseUrl: https://testnorge-tilbakemelding-api.dev.adeo.no
+  testnorge-tilbakemelding-api.baseUrl: https://testnorge-tilbakemelding-api.dev.intern.nav.no
 
 spring:
   application:

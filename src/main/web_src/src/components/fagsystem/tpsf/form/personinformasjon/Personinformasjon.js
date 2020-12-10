@@ -2,14 +2,14 @@ import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { panelError } from '~/components/ui/form/formUtils'
-import { erForste } from '~/components/ui/form/formUtils'
+import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { Diverse } from './partials/Diverse'
 import { Alder } from './partials/alder/Alder'
 import { Vergemaal } from './partials/vergemaal/Vergemaal'
+import { Fullmakt } from './partials/fullmakt/Fullmakt'
 
 const alderPaths = ['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer', 'tpsf.doedsdato']
 
@@ -34,8 +34,9 @@ const diversePaths = [
 ]
 
 const vergemaalPath = ['tpsf.vergemaal']
+const fullmaktPath = ['tpsf.fullmakt']
 
-const panelPaths = [alderPaths, nasjonalitetPaths, diversePaths, vergemaalPath].flat()
+const panelPaths = [alderPaths, nasjonalitetPaths, diversePaths, vergemaalPath, fullmaktPath].flat()
 
 export const Personinformasjon = ({ formikBag }) => (
 	<Vis attributt={panelPaths}>
@@ -46,7 +47,7 @@ export const Personinformasjon = ({ formikBag }) => (
 			startOpen={() =>
 				erForste(
 					formikBag.values,
-					alderPaths.concat(nasjonalitetPaths, diversePaths, vergemaalPath)
+					alderPaths.concat(nasjonalitetPaths, diversePaths, vergemaalPath, fullmaktPath)
 				)
 			}
 		>
@@ -94,6 +95,9 @@ export const Personinformasjon = ({ formikBag }) => (
 			</Kategori>
 			<Kategori title="Vergemål" vis={vergemaalPath}>
 				<Vergemaal />
+			</Kategori>
+			<Kategori title="Fullmakt" vis={fullmaktPath}>
+				<Fullmakt />
 			</Kategori>
 		</Panel>
 	</Vis>
