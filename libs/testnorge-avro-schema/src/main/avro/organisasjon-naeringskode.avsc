@@ -10,13 +10,14 @@
     {
       "name": "gyldighetsdato",
       "type": [
-              "null",
-              "Dato"
-      ]
+        "null",
+        "Dato"
+      ],
+      "default": null
     },
     {
       "name": "hjelpeenhet",
-       "type": "boolean"
+      "type": "boolean"
     },
     {
       "name": "metadata",
