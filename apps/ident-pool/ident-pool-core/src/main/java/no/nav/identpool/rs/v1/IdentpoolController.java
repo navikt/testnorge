@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.Valid;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,6 +52,7 @@ public class IdentpoolController {
         return identpoolService.lesInnhold(personidentifikator);
     }
 
+    @Transactional
     @PostMapping
     @Operation(description = "rekvirer nye test-identer")
     public List<String> rekvirer(
