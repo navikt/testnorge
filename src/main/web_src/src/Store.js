@@ -16,6 +16,7 @@ import environmentsReducer from './ducks/environments'
 import kodeverkReducer from './ducks/kodeverk'
 import varslingerReducer from './ducks/varslinger'
 import finnPersonReducer from './ducks/finnPerson'
+import organisasjonReducer from './ducks/organisasjon'
 
 import history from './history'
 
@@ -53,7 +54,8 @@ const configureReduxStore = history => {
 			environments: environmentsReducer,
 			kodeverk: kodeverkReducer,
 			varslinger: varslingerReducer,
-			finnPerson: finnPersonReducer
+			finnPerson: finnPersonReducer,
+			organisasjon: organisasjonReducer
 		})
 
 	return createStore(rootReducer(history), composeWithDevTools(applyMiddleware(...allMiddleware)))
