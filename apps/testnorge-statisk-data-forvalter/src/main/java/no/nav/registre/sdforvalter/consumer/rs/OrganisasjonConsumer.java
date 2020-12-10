@@ -54,7 +54,7 @@ public class OrganisasjonConsumer {
                     try {
                         return new Organisasjon(new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, miljo).call());
                     } catch (Exception e) {
-                        log.warn("Klarer ikke å hente organsisasjon  {}", orgnummer);
+                        log.warn("Klarer ikke å hente organsisasjon {}", orgnummer, e);
                         return null;
                     }
                 },
@@ -74,7 +74,9 @@ public class OrganisasjonConsumer {
     @SneakyThrows
     private Organisasjon getOrganisasjon(String orgnummer, String miljo) {
         log.info("Henter ut {} fra EREG ({}).", orgnummer, miljo);
-        return getOrganisasjon(orgnummer, miljo, executor).get();
+        AccessToken accessToken = accessTokenService.generateToken(clientId);
+        var dto = new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, miljo).call();
+        return dto != null ? new Organisasjon(dto) : null;
     }
 
 

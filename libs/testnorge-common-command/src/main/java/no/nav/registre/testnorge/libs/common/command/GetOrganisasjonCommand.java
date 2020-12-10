@@ -38,6 +38,7 @@ public class GetOrganisasjonCommand implements Callable<OrganisasjonDTO> {
                     .bodyToMono(OrganisasjonDTO.class)
                     .block();
         } catch (HttpClientErrorException.NotFound e) {
+            log.info("Organisasjon {} finnes ikke i {}.", orgnummer, miljo);
             return null;
         }
     }
