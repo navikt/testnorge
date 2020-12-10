@@ -2,12 +2,15 @@ apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: testnorge-statisk-data-forvalter
-  namespace: default
+  namespace: dolly
   labels:
     team: dolly
 spec:
   image: {{ image }}
   port: 8080
+  azure:
+    application:
+      enabled: true
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
@@ -34,6 +37,6 @@ spec:
       memory: 1024Mi
   webproxy: true
   ingresses:
-    - "https://testnorge-statisk-data-forvalter.nais.preprod.local"
-    - "https://testnorge-statisk-data-forvalter.dev.adeo.no"
-    - "https://testnorge-statisk-data-forvalter.dev.intern.nav.no"
+    - "https://testnorge-statisk-data-forvalter-v2.nais.preprod.local"
+    - "https://testnorge-statisk-data-forvalter-v2.dev.adeo.no"
+    - "https://testnorge-statisk-data-forvalter-v2.dev.intern.nav.no"

@@ -8,6 +8,12 @@ bootJar {
 }
 
 dependencies {
+    implementation project(':kafka-config')
+    implementation project(':kafka-producers')
+    implementation project(':testnorge-avro-schema')
+
+    implementation 'io.confluent:kafka-avro-serializer:5.5.0'
+
     //TODO remove
     compile group: 'com.google.guava', name: 'guava', version: '30.0-jre'
 

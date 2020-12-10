@@ -16,6 +16,8 @@ spec:
       rules:
         - application: organisasjon-forvalter
           cluster: dev-fss
+        - application: testnorge-statisk-data-forvalter
+          cluster: dev-fss
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
   azure:
