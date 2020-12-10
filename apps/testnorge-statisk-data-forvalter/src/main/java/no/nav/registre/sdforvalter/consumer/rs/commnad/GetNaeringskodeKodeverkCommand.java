@@ -15,8 +15,8 @@ public class GetNaeringskodeKodeverkCommand implements Callable<KodeverkDTO> {
         return webClient
                 .get()
                 .uri(builder -> builder
-                        .path("/api/kodeverksoversikt/kodeverk/Næringskoder/koder")
-                        .queryParam("spraak", "no")
+                        .path("/api/kodeverk/kodeverk/Næringskoder/koder")
+                        .queryParam("spraak", "nb")
                         .queryParam("periode", "GYLDIG")
                         .build()
                 )
