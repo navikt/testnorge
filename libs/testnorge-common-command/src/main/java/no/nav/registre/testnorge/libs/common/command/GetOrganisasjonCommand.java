@@ -24,7 +24,7 @@ public class GetOrganisasjonCommand implements Callable<OrganisasjonDTO> {
     @SneakyThrows
     @Override
     public OrganisasjonDTO call() {
-        log.info("Henter organisasjon med orgnummer {}.", orgnummer);
+        log.info("Henter organisasjon {} fra {}.", orgnummer, miljo);
         try {
             return webClient
                     .get()
@@ -38,7 +38,7 @@ public class GetOrganisasjonCommand implements Callable<OrganisasjonDTO> {
                     .bodyToMono(OrganisasjonDTO.class)
                     .block();
         } catch (HttpClientErrorException.NotFound e) {
-            log.info("Organisasjon {} finnes ikke i {}.", orgnummer, miljo);
+            log.warn("Organisasjon {} finnes ikke i {}.", orgnummer, miljo);
             return null;
         }
     }
