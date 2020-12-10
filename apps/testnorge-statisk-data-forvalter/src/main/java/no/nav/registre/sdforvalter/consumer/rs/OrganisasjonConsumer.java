@@ -1,5 +1,6 @@
 package no.nav.registre.sdforvalter.consumer.rs;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -75,6 +76,13 @@ public class OrganisasjonConsumer {
         return asyncMap.getMap();
     }
 
+    @SneakyThrows
+    private Organisasjon getOrganisasjon(String orgnummer, String miljo) {
+        log.info("Henter ut {} fra ereg", orgnummer);
+        return getOrganisasjon(orgnummer, miljo, executor).get();
+    }
+
+
     public void opprett(EregListe liste, String miljo, boolean update) {
         var ordereId = UUID.randomUUID();
         var list = liste.getListe();
@@ -89,7 +97,11 @@ public class OrganisasjonConsumer {
             if (update) {
                 organisasjonProducers.setNavn(ordereId, ereg, miljo);
             } else {
-                organisasjonProducers.opprettOrganiasjon(ordereId, ereg, miljo);
+                if (getOrganisasjon(ereg.getOrgnr(), miljo) == null) {
+                    organisasjonProducers.opprettOrganiasjon(ordereId, ereg, miljo);
+                } else {
+                    log.warn("Fant {} i EREG ({}). Oppretter ikke på nytt.", ereg.getOrgnr(), miljo);
+                }
             }
             organisasjonProducers.setNearingskode(ordereId, ereg, miljo);
             if (ereg.getPostadresse() != null) {
