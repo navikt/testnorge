@@ -18,6 +18,7 @@ spec:
         - application: mn-organisasjon-api
         - application: testnorge-synt-sykemelding-api
         - application: testnorge-statisk-data-forvalter
+        - application: testnorge-oversikt-frontend
   liveness:
     path: /internal/isAlive
     initialDelay: 4
