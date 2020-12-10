@@ -171,8 +171,8 @@ public class VedtakshistorikkService {
 
         List<RettighetRequest> rettigheter = new ArrayList<>();
 
-        var ikkeAvluttendeAap115 = getIkkeAvsluttendeVedtakAap115(vedtakshistorikk);
-        var avsluttendeAap115 = getAvsluttendeVedtakAap115(vedtakshistorikk);
+        var ikkeAvluttendeAap115 = getIkkeAvsluttendeVedtakAap115(vedtakshistorikk.getAap115());
+        var avsluttendeAap115 = getAvsluttendeVedtakAap115(vedtakshistorikk.getAap115());
 
         opprettVedtakAap115(ikkeAvluttendeAap115, personident, miljoe, rettigheter);
         opprettVedtakAap(vedtakshistorikk, personident, miljoe, rettigheter);
@@ -329,31 +329,23 @@ public class VedtakshistorikkService {
     }
 
     private List<NyttVedtakAap> getIkkeAvsluttendeVedtakAap115(
-            Vedtakshistorikk historikk
+            List<NyttVedtakAap> aap115
     ) {
         List<NyttVedtakAap> vedtaksliste = new ArrayList<>();
-        var aap115 = historikk.getAap115();
         if (aap115 != null && !aap115.isEmpty()) {
-            for (var vedtak : aap115) {
-                if (!vedtak.getVedtaktype().equals("S")) {
-                    vedtaksliste.add(vedtak);
-                }
-            }
+            vedtaksliste = aap115.stream().filter(vedtak -> !vedtak.getVedtaktype().equals("S"))
+                    .collect(Collectors.toList());
         }
         return vedtaksliste;
     }
 
     private List<NyttVedtakAap> getAvsluttendeVedtakAap115(
-            Vedtakshistorikk historikk
+            List<NyttVedtakAap> aap115
     ) {
         List<NyttVedtakAap> vedtaksliste = new ArrayList<>();
-        var aap115 = historikk.getAap115();
         if (aap115 != null && !aap115.isEmpty()) {
-            for (var vedtak : aap115) {
-                if (vedtak.getVedtaktype().equals("S")) {
-                    vedtaksliste.add(vedtak);
-                }
-            }
+            vedtaksliste = aap115.stream().filter(vedtak -> vedtak.getVedtaktype().equals("S"))
+                    .collect(Collectors.toList());
         }
         return vedtaksliste;
     }
