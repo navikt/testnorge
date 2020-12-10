@@ -10,7 +10,6 @@ import no.nav.registre.sdforvalter.consumer.rs.dto.KodeverkDTO;
 @RequiredArgsConstructor
 public class GetNaeringskodeKodeverkCommand implements Callable<KodeverkDTO> {
     private final WebClient webClient;
-
     @Override
     public KodeverkDTO call() {
         return webClient
