@@ -1,0 +1,27 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  main:
+    banner-mode: off
+  application:
+    name: generer-navn-service
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
+    description: App for å generere fiktive navn.
+
+ereg:
+  envHostMap:
+    q0: https://modapp-q0.adeo.no
+    q1: https://modapp-q1.adeo.no
+    q2: https://modapp-q2.adeo.no
+    q3: https://modapp-q3.adeo.no
+    q4: https://modapp-q4.adeo.no
+    q5: https://modapp-q5.adeo.no
+    q6: https://modapp-q6.adeo.no
+    q8: https://modapp-q8.adeo.no
+    t0: https://modapp-t0.adeo.no
+    t1: https://modapp-t1.adeo.no
+    t2: https://modapp-t2.adeo.no
+    t3: https://modapp-t3.adeo.no
+    t4: https://modapp-t4.adeo.no
+    t5: https://modapp-t5.adeo.no
+    t6: https://modapp-t6.adeo.no
