@@ -18,7 +18,7 @@ import no.nav.identpool.service.IdentGeneratorService;
 @RequiredArgsConstructor
 public class IdenterAvailService {
 
-    private static final int MAX_TPS_CALL_ATTEMPTS = 3;
+    private static final int MAX_TPS_CALL_ATTEMPTS = 1;
 
     private final IdentRepository identRepository;
     private final IdentGeneratorService identGeneratorService;
