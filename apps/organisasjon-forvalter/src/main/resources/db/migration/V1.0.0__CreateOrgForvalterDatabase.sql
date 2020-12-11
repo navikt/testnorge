@@ -24,7 +24,7 @@ create table adresse
     adressetype        varchar(5),
     adresse            varchar(300),
     gatekode           integer,
-    husnummer          varchar(1)
+    husnummer          varchar(1),
     boenhet            varchar(5),
     postnr             varchar(9),
     kommunenr          varchar(9),

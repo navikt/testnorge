@@ -13,9 +13,7 @@ public class ApplicationStarter {
     public static void main(String[] args) {
 
         if ("prod".equals(System.getProperty("spring.profiles.active"))) {
-            Map<String, Object> properties = PropertyReader.builder()
-                    .readSecret("spring.cloud.vault.token", "/var/run/secrets/nais.io/vault/vault_token")
-                    .build();
+            VaultUtil.initCloudVaultToken();
         }
         SpringApplication.run(ApplicationStarter.class, args);
     }
