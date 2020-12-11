@@ -7,6 +7,7 @@ spring:
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
   datasource:
     url: jdbc:${NAIS_DATABASE_ORGANISASJON_BESTILLING_SERVICE_ORGANISASJON_BESTILLING_DB_URL}
+    driverClassName: org.postgresql.Driver
     hikari:
       maximum-pool-size: 3
       minimum-idle: 0
