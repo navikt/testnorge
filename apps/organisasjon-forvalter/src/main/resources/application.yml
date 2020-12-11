@@ -1,3 +1,9 @@
-org:
+organisasjon:
   name:
     url: https://generer-navn-service.dev.intern.nav.no
+
+spring:
+  application:
+    name: Organisasjon-Forvalter
+    version: 1.0
+    description: Bestilling, persistering og opphenting av testorganisasjoner

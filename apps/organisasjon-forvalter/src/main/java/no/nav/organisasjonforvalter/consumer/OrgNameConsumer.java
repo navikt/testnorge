@@ -20,7 +20,7 @@ public class OrgNameConsumer {
     private final WebClient webClient;
 
     public OrgNameConsumer(
-            @Value("${org.name.url}") String baseUrl) {
+            @Value("${organisasjon.name.url}") String baseUrl) {
 
         this.webClient = WebClient.builder().baseUrl(baseUrl).build();
     }
