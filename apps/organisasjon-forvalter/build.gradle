@@ -47,10 +47,6 @@ dependencies {
     implementation 'org.springframework.security:spring-security-core'
     implementation 'org.springframework.data:spring-data-commons'
 
-    implementation 'org.reactivestreams:reactive-streams:1.0.2'
-
-    implementation 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
-
     implementation 'javax.persistence:javax.persistence-api:2.2'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.2'
 }
