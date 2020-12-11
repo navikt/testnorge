@@ -339,9 +339,8 @@ public class VedtakUtils {
     ) {
 
         NyttVedtakTiltak vedtak = new NyttVedtakTiltak();
-        vedtak.setTiltakskarakteristikk(tiltaksdeltakelse.getTiltakAdminKode());
-        vedtak.setDato(tiltaksdeltakelse.getFraDato());
         vedtak.setDeltakerstatusKode(deltakerstatuskode);
+        vedtak.setTiltakId(tiltaksdeltakelse.getTiltakId());
 
         if (deltakerstatuskoderMedAarsakkoder.containsKey(deltakerstatuskode)) {
             List<String> aarsakkoder = deltakerstatuskoderMedAarsakkoder.get(deltakerstatuskode);
