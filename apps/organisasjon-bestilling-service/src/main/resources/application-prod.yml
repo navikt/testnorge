@@ -6,7 +6,7 @@ spring:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
   datasource:
-    url: ${NAIS_DATABASE_ORGANIASJON_BESTILLING_SERVICE_ORGANIASJON_BESTILLING_DB_URL}
+    url: ${NAIS_DATABASE_ORGANISASJON_BESTILLING_SERVICE_ORGANISASJON_BESTILLING_DB_URL}
     hikari:
       maximum-pool-size: 3
       minimum-idle: 0
