@@ -12,7 +12,7 @@ import java.util.Map;
 @DependencyOn(value = "aareg-ws", external = true)
 public class AaregBehandleArbeidsforhold {
 
-    private static final String BEHANDLE_ARBEIDSFORHOLD_SERVICE_URL = "https://modapp-$.adeo.no/aareg-core/BehandleArbeidsforholdService/v1";
+    private static final String BEHANDLE_ARBEIDSFORHOLD_SERVICE_URL = "https://modapp-$.adeo.no/aareg-services/BehandleArbeidsforholdService/v1";
 
     public Map<String, String> fetchWsUrlsAllEnvironments(String environment) {
 
