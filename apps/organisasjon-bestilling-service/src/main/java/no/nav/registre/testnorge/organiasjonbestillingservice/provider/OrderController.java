@@ -29,7 +29,7 @@ public class OrderController {
 
     @GetMapping
     public ResponseEntity<Set<String>> getOrders(){
-        var uuids = service.getOrderUuid();
+        var uuids = service.getOrderUuids();
         return ResponseEntity.ok(uuids);
     }
 

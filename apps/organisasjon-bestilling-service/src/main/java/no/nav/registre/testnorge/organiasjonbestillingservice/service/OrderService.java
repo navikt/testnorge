@@ -28,13 +28,12 @@ public class OrderService {
                 .getId();
     }
 
-    public Set<String> getOrderUuid(){
+    public Set<String> getOrderUuids() {
         return StreamSupport
                 .stream(repository.findAll().spliterator(), false)
                 .map(OrderModel::getUuid)
                 .collect(Collectors.toSet());
     }
-
 
     public ItemDTO getStatusBy(Long id) {
         var model = repository.findById(id);
