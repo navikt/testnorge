@@ -13,7 +13,7 @@ jenkins:
 consumers:
   jenkins-batch-status-service:
     url: https://jenkins-batch-status-service.dev.intern.nav.no
-    client-id: 7c52e43f-9159-4e45-89d9-d7afe9c1f4bc
+    client-id: 34c2e87a-0711-4ef1-b644-55d86a375e7a
 
 kafka:
   bootstrapservers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
