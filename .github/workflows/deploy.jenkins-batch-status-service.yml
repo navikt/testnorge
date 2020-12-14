@@ -3,7 +3,7 @@ name: Deploy jenkins-batch-status-service
 on:
   push:
     paths:
-      - apps/tilbakemelding-api/**
+      - apps/jenkins-batch-status-service/**
       - libs/testnorge-core/**
 
 env:

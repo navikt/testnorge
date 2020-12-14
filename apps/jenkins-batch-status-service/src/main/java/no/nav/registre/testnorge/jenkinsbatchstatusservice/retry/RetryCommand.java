@@ -25,7 +25,7 @@ public class RetryCommand implements Runnable {
         for (int attempts = 1; attempts <= totalAttempts; attempts++) {
             try {
                 runnable.run();
-                log.info("Opperasjonen fungerte etter {}/{} forsøk ({} millisecond).", attempts, totalAttempts, sleepMilliseconds);
+                log.info("Operasjonen ble utført etter {}/{} forsøk ({} millisecond).", attempts, totalAttempts, sleepMilliseconds);
                 return;
             } catch (Exception e) {
                 log.warn("Operasjonen fungerte ikke {} forsøk igjen.", totalAttempts - attempts, e);
@@ -33,9 +33,9 @@ public class RetryCommand implements Runnable {
             try {
                 Thread.sleep(sleepMilliseconds);
             } catch (InterruptedException e) {
-                throw new RetryUnsuccessfulException("Operasjonen ble aldri fullfør", e);
+                throw new RetryUnsuccessfulException("Operasjonen ble aldri fullført.", e);
             }
         }
-        throw new RetryUnsuccessfulException("Operasjonen ble aldri fullført");
+        throw new RetryUnsuccessfulException("Operasjonen ble aldri fullført.");
     }
 }

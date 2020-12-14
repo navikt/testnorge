@@ -16,6 +16,11 @@ jenkins:
   password: ${JENKINS_PASSWORD}
   username: ${JENKINS_USERNAME}
 
+consumers:
+  jenkins-batch-status-service:
+    url: https://jenkins-batch-status-service.dev.intern.nav.no
+    client-id: dummy
+
 kafka:
   bootstrapservers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
   schemaregistryservers: http://kafka-schema-registry.tpa.svc.nais.local:8081

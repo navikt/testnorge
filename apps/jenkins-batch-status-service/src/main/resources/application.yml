@@ -11,6 +11,6 @@ spring:
 consumers:
   jenkins:
     url: https://batch.adeo.no
-  ereg-batch-status-service:
-    url: https://ereg-batch-status-service.dev.intern.nav.no
-    client-id: 67f507ff-399c-4853-9eb3-3dc6aabc8289
+  organisasjon-bestilling-service:
+    url: https://organisasjon-bestilling-service.dev.intern.nav.no
+    client-id: 213b750d-7a71-40bb-ada6-81530e61dcd5

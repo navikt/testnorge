@@ -13,7 +13,7 @@ import no.nav.registre.testnorge.organisasjonmottak.domain.ToFlatfil;
 public class OrganisasjonService {
     private final EregConsumer eregConsumer;
 
-    public void save(ToFlatfil base, String miljo) {
-        eregConsumer.save(base.toFlatfil(), miljo);
+    public void save(ToFlatfil base, String miljo, String uuid) {
+        eregConsumer.save(base.toFlatfil(), miljo, uuid);
     }
 }

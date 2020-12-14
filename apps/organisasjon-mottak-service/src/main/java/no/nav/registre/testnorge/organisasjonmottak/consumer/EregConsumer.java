@@ -32,8 +32,8 @@ public class EregConsumer {
     }
 
 
-    public void save(Flatfil flatfil, String miljo) {
-        jenkinsConsumer.send(flatfil, miljo);
+    public void save(Flatfil flatfil, String miljo, String uuid) {
+        jenkinsConsumer.send(flatfil, miljo, uuid);
     }
 
     public void updateIndex(String miljo) {

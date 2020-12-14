@@ -13,6 +13,7 @@ spec:
     inbound:
       rules:
         - application: testnorge-oversikt-frontend
+        - application: organisasjon-mottak-service
   azure:
     application:
       enabled: true

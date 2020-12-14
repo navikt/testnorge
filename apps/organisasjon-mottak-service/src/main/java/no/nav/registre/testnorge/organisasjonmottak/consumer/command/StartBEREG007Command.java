@@ -13,20 +13,23 @@ import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.Callable;
 
 import no.nav.registre.testnorge.libs.dto.jenkins.v1.JenkinsCrumb;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
 
 @Slf4j
 @RequiredArgsConstructor
-public class StartBEREG007Command implements Runnable {
+public class StartBEREG007Command implements Callable<Mono<ClientResponse>> {
     private final WebClient webClient;
     private final String server;
     private final String miljo;
@@ -42,7 +45,7 @@ public class StartBEREG007Command implements Runnable {
 
     @SneakyThrows
     @Override
-    public void run() {
+    public Mono<ClientResponse> call() {
         log.info("Sender flatfil til server {} ({})", server, miljo);
 
         String content = flatfil.build();
@@ -69,14 +72,12 @@ public class StartBEREG007Command implements Runnable {
                 .with("input_file", fileEntity);
 
         log.info("Jenkins-Crumb: {}", crumb.getCrumb());
-        webClient
+        return webClient
                 .post()
                 .uri("/view/Registre/job/Start_BEREG007/buildWithParameters")
                 .header("Jenkins-Crumb", crumb.getCrumb())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
                 .body(body)
-                .exchange()
-                .flatMap(clientResponse -> clientResponse.bodyToMono(String.class))
-                .block();
+                .exchange();
     }
 }

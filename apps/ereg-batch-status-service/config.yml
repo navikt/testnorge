@@ -13,6 +13,9 @@ spec:
     inbound:
       rules:
         - application: testnorge-oversikt-frontend
+        - application: jenkins-batch-status-service
+        - application: organisasjon-bestilling-service
+          cluster: dev-gcp
   azure:
     application:
       enabled: true
