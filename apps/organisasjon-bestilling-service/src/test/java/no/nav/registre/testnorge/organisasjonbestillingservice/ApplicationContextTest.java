@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.organiasjonbestillingservice;
+package no.nav.registre.testnorge.organisasjonbestillingservice;
 
 
 import org.junit.Test;

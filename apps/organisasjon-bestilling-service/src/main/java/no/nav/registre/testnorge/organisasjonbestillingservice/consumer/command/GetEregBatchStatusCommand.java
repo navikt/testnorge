@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.organiasjonbestillingservice.consumer.command;
+package no.nav.registre.testnorge.organisasjonbestillingservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;

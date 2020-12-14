@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.organiasjonbestillingservice.config;
+package no.nav.registre.testnorge.organisasjonbestillingservice.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.organiasjonbestillingservice.repository.model;
+package no.nav.registre.testnorge.organisasjonbestillingservice.repository.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

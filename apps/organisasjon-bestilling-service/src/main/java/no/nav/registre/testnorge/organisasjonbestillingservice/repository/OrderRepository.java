@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.organiasjonbestillingservice.repository;
+package no.nav.registre.testnorge.organisasjonbestillingservice.repository;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -6,7 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 import java.util.Optional;
 
-import no.nav.registre.testnorge.organiasjonbestillingservice.repository.model.OrderModel;
+import no.nav.registre.testnorge.organisasjonbestillingservice.repository.model.OrderModel;
 
 public interface OrderRepository extends CrudRepository<OrderModel, Long> {
 

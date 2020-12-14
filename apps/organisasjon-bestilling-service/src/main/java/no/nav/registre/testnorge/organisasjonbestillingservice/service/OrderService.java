@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.organiasjonbestillingservice.service;
+package no.nav.registre.testnorge.organisasjonbestillingservice.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,16 +10,16 @@ import java.util.stream.StreamSupport;
 
 import no.nav.registre.testnorge.libs.dto.organiasjonbestilling.v1.ItemDTO;
 import no.nav.registre.testnorge.libs.dto.organiasjonbestilling.v1.Status;
-import no.nav.registre.testnorge.organiasjonbestillingservice.consumer.EregConsumer;
-import no.nav.registre.testnorge.organiasjonbestillingservice.domain.Order;
-import no.nav.registre.testnorge.organiasjonbestillingservice.repository.OrderRepository;
-import no.nav.registre.testnorge.organiasjonbestillingservice.repository.model.OrderModel;
+import no.nav.registre.testnorge.organisasjonbestillingservice.consumer.EregBatchStatusConsumer;
+import no.nav.registre.testnorge.organisasjonbestillingservice.domain.Order;
+import no.nav.registre.testnorge.organisasjonbestillingservice.repository.OrderRepository;
+import no.nav.registre.testnorge.organisasjonbestillingservice.repository.model.OrderModel;
 
 @Service
 @RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository repository;
-    private final EregConsumer consumer;
+    private final EregBatchStatusConsumer consumer;
 
     public Long register(Order order) {
         return repository

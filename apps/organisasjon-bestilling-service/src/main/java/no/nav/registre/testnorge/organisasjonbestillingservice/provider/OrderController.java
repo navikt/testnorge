@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.organiasjonbestillingservice.provider;
+package no.nav.registre.testnorge.organisasjonbestillingservice.provider;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,8 +18,8 @@ import java.util.Set;
 
 import no.nav.registre.testnorge.libs.dto.organiasjonbestilling.v1.ItemDTO;
 import no.nav.registre.testnorge.libs.dto.organiasjonbestilling.v1.OrderDTO;
-import no.nav.registre.testnorge.organiasjonbestillingservice.domain.Order;
-import no.nav.registre.testnorge.organiasjonbestillingservice.service.OrderService;
+import no.nav.registre.testnorge.organisasjonbestillingservice.domain.Order;
+import no.nav.registre.testnorge.organisasjonbestillingservice.service.OrderService;
 
 @RestController
 @RequestMapping("/api/v1/order")

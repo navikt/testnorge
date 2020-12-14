@@ -1,7 +1,7 @@
-package no.nav.registre.testnorge.organiasjonbestillingservice.domain;
+package no.nav.registre.testnorge.organisasjonbestillingservice.domain;
 
 import no.nav.registre.testnorge.libs.dto.organiasjonbestilling.v1.OrderDTO;
-import no.nav.registre.testnorge.organiasjonbestillingservice.repository.model.OrderModel;
+import no.nav.registre.testnorge.organisasjonbestillingservice.repository.model.OrderModel;
 
 public class Order {
     private final Long batchId;
