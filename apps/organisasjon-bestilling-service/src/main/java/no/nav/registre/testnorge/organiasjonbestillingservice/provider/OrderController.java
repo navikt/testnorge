@@ -14,6 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 
 import no.nav.registre.testnorge.libs.dto.organiasjonbestilling.v1.ItemDTO;
 import no.nav.registre.testnorge.libs.dto.organiasjonbestilling.v1.OrderDTO;
@@ -25,6 +26,12 @@ import no.nav.registre.testnorge.organiasjonbestillingservice.service.OrderServi
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService service;
+
+    @GetMapping
+    public ResponseEntity<Set<String>> getOrders(){
+        var uuids = service.getOrderUuid();
+        return ResponseEntity.ok(uuids);
+    }
 
     @PutMapping("/{uuid}")
     public ResponseEntity<HttpStatus> registerBestilling(@PathVariable("uuid") String uuid, @RequestBody OrderDTO dto) {
@@ -38,7 +45,7 @@ public class OrderController {
     }
 
     @GetMapping("/{uuid}/items")
-    public ResponseEntity<List<ItemDTO>> getItem(@PathVariable("uuid") String uuid) {
+    public ResponseEntity<List<ItemDTO>> getItems(@PathVariable("uuid") String uuid) {
         var items = service.getStatusBy(uuid);
         if (items == null) {
             return ResponseEntity.noContent().build();
