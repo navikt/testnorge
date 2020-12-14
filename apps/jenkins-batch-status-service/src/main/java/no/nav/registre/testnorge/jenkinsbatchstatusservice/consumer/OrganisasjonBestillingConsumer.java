@@ -18,8 +18,8 @@ public class OrganisasjonBestillingConsumer {
     private final String clientId;
 
     public OrganisasjonBestillingConsumer(
-            @Value("${consumer.organisasjon-bestilling-service.url}") String url,
-            @Value("${consumer.organisasjon-bestilling-service.client-id}") String clientId,
+            @Value("${consumers.organisasjon-bestilling-service.url}") String url,
+            @Value("${consumers.organisasjon-bestilling-service.client-id}") String clientId,
             AccessTokenService accessTokenService
     ) {
         this.clientId = clientId;
