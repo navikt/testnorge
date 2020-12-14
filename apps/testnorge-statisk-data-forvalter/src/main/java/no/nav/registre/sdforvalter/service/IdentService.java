@@ -81,7 +81,6 @@ public class IdentService {
                 return ident;
             }
         }).collect(Collectors.toList());
-
         return new TpsIdentListe(tpsIdentListe);
     }
 }

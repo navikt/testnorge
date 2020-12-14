@@ -26,3 +26,6 @@ spring:
 
 app.db.flyway.role: brreg-stub-admin
 app.db.flyway.backend: postgresql/preprod-fss/creds
+
+logging:
+  config: "classpath:logback-spring.xml"
