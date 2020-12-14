@@ -254,3 +254,6 @@ project(":kafka-producers").projectDir = file('libs/kafka-producers')
 
 include 'organisasjon-bestilling-service'
 project(":organisasjon-bestilling-service").projectDir = file('apps/organisasjon-bestilling-service')
+
+include 'ereg-batch-status-service'
+project(":ereg-batch-status-service").projectDir = file('apps/ereg-batch-status-service')
