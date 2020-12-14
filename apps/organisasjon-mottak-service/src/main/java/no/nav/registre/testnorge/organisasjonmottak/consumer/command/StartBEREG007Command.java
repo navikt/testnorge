@@ -71,7 +71,7 @@ public class StartBEREG007Command implements Callable<Mono<ClientResponse>> {
                 .with("stepSelection", "2;3;4;5;6")
                 .with("input_file", fileEntity);
 
-        log.info("Jenkins-Crumb: {}", crumb.getCrumb());
+        log.trace("Jenkins-Crumb: {}", crumb.getCrumb());
         return webClient
                 .post()
                 .uri("/view/Registre/job/Start_BEREG007/buildWithParameters")
