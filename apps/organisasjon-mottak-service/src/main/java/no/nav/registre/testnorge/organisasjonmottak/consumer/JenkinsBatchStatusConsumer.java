@@ -26,7 +26,7 @@ public class JenkinsBatchStatusConsumer {
     }
 
     public void registerBestilling(String uuid, String miljo, Long itemId) {
-        var accessToken = accessTokenService.generateToken(clientId);
+        var accessToken = accessTokenService.generateClientCredentialAccessToken(clientId);
         new RegisterEregBestillingCommand(webClient, accessToken.getTokenValue(), uuid, miljo, itemId).run();
     }
 }

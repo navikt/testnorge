@@ -49,7 +49,6 @@ public class JenkinsConsumer {
             var location = response.headers().header(HttpHeaders.LOCATION).get(0);
             var pattern = Pattern.compile("\\d+");
             var matcher = pattern.matcher(location);
-
             if (matcher.find()) {
                 jenkinsBatchStatusConsumer.registerBestilling(uuid, miljo, Long.valueOf(matcher.group()));
             } else {

@@ -85,7 +85,6 @@ public class AccessTokenService {
         return generateClientCredentialAccessToken(new AccessScopes("api://" + clientId + "/.default"));
     }
 
-
     private AccessToken generateClientCredentialAccessToken(AccessScopes accessScopes) {
         log.trace("Henter OAuth2 access token fra client credential...");
 
