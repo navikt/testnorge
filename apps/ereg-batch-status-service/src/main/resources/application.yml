@@ -4,9 +4,9 @@ spring:
   main:
     banner-mode: off
   application:
-    name: generer-navn-service
+    name: ereg-batch-status-service
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
-    description: App for å generere fiktive navn.
+    description: Tjeneste for å hente ut batch status fra EREG.
 
 ereg:
   envHostMap:
