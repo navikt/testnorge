@@ -12,9 +12,10 @@ spec:
   azure:
     application:
       enabled: true
-  inbound:
-    rules:
-      - application: testnorge-oversikt-frontend
+  accessPolicy:
+    inbound:
+      rules:
+        - application: testnorge-oversikt-frontend
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -24,7 +25,7 @@ spec:
     path: /internal/isReady
     initialDelay: 4
     periodSeconds: 5
-    failureThreshold: 500
+    failureThreshold: 500'
   replicas:
     min: 3
     max: 3
