@@ -38,7 +38,7 @@ public class BehandleArbeidsforholdV1Proxy {
         if (hasExpired()) {
             synchronized (this) {
                 if (hasExpired()) {
-                    var urlByEnvironment = behandleArbeidsforholdFasitConsumer.fetchWsUrlsAllEnvironments(environment);
+                    var urlByEnvironment = behandleArbeidsforholdFasitConsumer.fetchWsUrlsAllEnvironments();
                     urlByEnvironment.forEach((env, url) -> wsServiceByEnvironment.put(env, createBehandleArbeidsforholdPortType(env, url)));
                     expiry = LocalDateTime.now().plusHours(4);
                 }

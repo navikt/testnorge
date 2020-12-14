@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -13,9 +14,16 @@ import java.util.Map;
 public class AaregBehandleArbeidsforhold {
 
     private static final String BEHANDLE_ARBEIDSFORHOLD_SERVICE_URL = "https://modapp-$.adeo.no/aareg-services/BehandleArbeidsforholdService/v1";
+    private static final List<String> validEnvironments = List.of("q0", "q1", "q2", "q3", "q4", "t0", "t1", "t2", "t3", "t4", "u2");
 
-    public Map<String, String> fetchWsUrlsAllEnvironments(String environment) {
+    public Map<String, String> fetchWsUrlsAllEnvironments() {
 
-        return  Collections.singletonMap(environment, BEHANDLE_ARBEIDSFORHOLD_SERVICE_URL.replace("$", environment));
+        Map<String, String> allEnvironmentUrls = new HashMap<>();
+
+        validEnvironments.forEach(env -> {
+            allEnvironmentUrls.put(env, BEHANDLE_ARBEIDSFORHOLD_SERVICE_URL.replace("$", env));
+        });
+
+        return allEnvironmentUrls;
     }
 }

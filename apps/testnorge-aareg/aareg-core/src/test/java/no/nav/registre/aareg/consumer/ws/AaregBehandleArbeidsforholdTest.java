@@ -17,7 +17,7 @@ public class AaregBehandleArbeidsforholdTest {
 
     @Test
     public void fetchWsUrslAllEnvironments_OK() {
-        var fasitConsumers = behandleArbeidsforholdFasitConsumer.fetchWsUrlsAllEnvironments("t2");
+        var fasitConsumers = behandleArbeidsforholdFasitConsumer.fetchWsUrlsAllEnvironments();
 
         var expectedUrl = "https://modapp-t2.adeo.no/aareg-services/BehandleArbeidsforholdService/v1";
 
