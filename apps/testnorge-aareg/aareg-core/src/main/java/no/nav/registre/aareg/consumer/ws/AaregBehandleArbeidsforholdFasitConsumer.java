@@ -1,14 +1,13 @@
 package no.nav.registre.aareg.consumer.ws;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.registre.aareg.fasit.FasitApiConsumer;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import no.nav.registre.aareg.fasit.FasitApiConsumer;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
 @RequiredArgsConstructor
@@ -32,7 +31,7 @@ public class AaregBehandleArbeidsforholdFasitConsumer {
                 .collect(Collectors.toMap(
                         resource -> resource.getScope().getEnvironment(),
                         resource -> ((String) ((Map) resource.getProperties()).get("url"))
-                                .contains("/aareg-services/BehandleArbeidsforholdService/v1") ?
+                                .contains(BEHANDLE_ARBEIDSFORHOLD_SERVICE_URL) ?
                                 ((String) ((Map) resource.getProperties()).get("url")) :
                                 ((Map) resource.getProperties()).get("url") + BEHANDLE_ARBEIDSFORHOLD_SERVICE_URL));
     }

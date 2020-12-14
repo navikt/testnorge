@@ -1,11 +1,9 @@
 package no.nav.registre.aareg.security.sts;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-import static no.nav.registre.aareg.properties.Environment.PREPROD;
-import static no.nav.registre.aareg.properties.Environment.TEST;
-
 import lombok.RequiredArgsConstructor;
+import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
+import no.nav.registre.aareg.fasit.FasitApiConsumer;
+import no.nav.registre.aareg.properties.Environment;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -13,9 +11,10 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
-import no.nav.registre.aareg.fasit.FasitApiConsumer;
-import no.nav.registre.aareg.properties.Environment;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static no.nav.registre.aareg.properties.Environment.PREPROD;
+import static no.nav.registre.aareg.properties.Environment.TEST;
 
 @Component
 @RequiredArgsConstructor
