@@ -16,9 +16,11 @@ import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.Naeringskod
 import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.NavnProducer;
 import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.OrganisasjonProducer;
 import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.PostadresseProducer;
+import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerConfiguration;
 
 @Configuration
 @Import({
+        SecureOAuth2ServerToServerConfiguration.class,
         ApplicationCoreConfig.class,
         KafkaProperties.class,
         AnsatteProducer.class,
