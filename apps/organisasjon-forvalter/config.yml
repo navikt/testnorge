@@ -31,9 +31,6 @@ spec:
     max: 1
   vault:
     enabled: true
-    paths:
-      - kvPath: /kv/preprod/fss/organisasjon-forvalter/dolly
-        mountPath: /var/run/secrets/nais.io/vault
   resources:
     requests:
       cpu: 200m
