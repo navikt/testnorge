@@ -1,9 +1,7 @@
 package no.nav.identpool.service.ny;
 
-import static java.util.Collections.emptyList;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
@@ -20,45 +18,46 @@ import no.nav.identpool.service.IdentGeneratorService;
 @RequiredArgsConstructor
 public class IdenterAvailService {
 
-    private static final int MAX_TPS_CALL_ATTEMPTS = 3;
+    private static final int MAX_TPS_CALL_ATTEMPTS = 1;
 
     private final IdentRepository identRepository;
     private final IdentGeneratorService identGeneratorService;
     private final TpsfService tpsfService;
     private final MapperFacade mapperFacade;
 
-    public List<TpsStatus> generateAndCheckIdenter(HentIdenterRequest request, int antall) {
+    public Set<TpsStatus> generateAndCheckIdenter(HentIdenterRequest request, int antall) {
 
         HentIdenterRequest oppdatertRequest = mapperFacade.map(request, HentIdenterRequest.class);
         oppdatertRequest.setAntall(antall);
-        List<TpsStatus> tpsStatuser = new ArrayList<>();
+        Set<TpsStatus> tpsStatuser = new HashSet<>();
         int i = 0;
 
         while (i < MAX_TPS_CALL_ATTEMPTS &&
                 tpsStatuser.stream().filter(status -> !status.isInUse()).count() < request.getAntall()) {
 
-            List<String> genererteIdenter = genererIdenter(oppdatertRequest);
-            List<Ident> identerFinnesIdb = identRepository.findByPersonidentifikatorIn(genererteIdenter);
+            Set<String> genererteIdenter = genererIdenter(oppdatertRequest);
+            Set<Ident> identerFinnesIdb = identRepository.findByPersonidentifikatorIn(genererteIdenter);
 
-            List<String> identerAaSjekke = genererteIdenter.stream()
+            Set<String> identerAaSjekke = genererteIdenter.stream()
                     .filter(ident -> identerFinnesIdb.stream()
                             .noneMatch(dbIdent -> dbIdent.getPersonidentifikator().equals(ident)))
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toSet());
 
             if (!identerAaSjekke.isEmpty()) {
                 tpsStatuser.addAll(tpsfService.checkAvailStatus(identerAaSjekke));
             }
+            i++;
         }
 
         return tpsStatuser;
     }
 
-    private List<String> genererIdenter(HentIdenterRequest request) {
+    private Set<String> genererIdenter(HentIdenterRequest request) {
 
         if (request.getIdenttype() == Identtype.FDAT) {
-            return identGeneratorService.genererIdenterFdat(request, emptyList());
+            return identGeneratorService.genererIdenterFdat(request, new HashSet<>());
         } else {
-            return identGeneratorService.genererIdenter(request, emptyList());
+            return identGeneratorService.genererIdenter(request, new HashSet<>());
         }
     }
 }

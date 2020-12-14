@@ -11,13 +11,14 @@ import org.springframework.stereotype.Component;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Ansatte;
 import no.nav.registre.testnorge.libs.avro.organisasjon.DetaljertNavn;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Epost;
-import no.nav.registre.testnorge.libs.avro.organisasjon.Internettadresse;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Forretningsadresse;
+import no.nav.registre.testnorge.libs.avro.organisasjon.Internettadresse;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Knytning;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Naeringskode;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Navn;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Organisasjon;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Postadresse;
+import no.nav.registre.testnorge.libs.kafkaconfig.topic.OrganisasjonTopic;
 import no.nav.registre.testnorge.organisasjonmottak.service.OrganisasjonService;
 
 @Slf4j
@@ -27,7 +28,7 @@ import no.nav.registre.testnorge.organisasjonmottak.service.OrganisasjonService;
 public class OrganaisjonMottakListener {
     private final OrganisasjonService organisasjonService;
 
-    @KafkaListener(topics = "tn-opprett-organisasjon-v1")
+    @KafkaListener(topics = OrganisasjonTopic.ORGANISASJON_OPPRETT_ORGANISASJON)
     public void register(@Payload Organisasjon value) {
         organisasjonService.save(
                 new no.nav.registre.testnorge.organisasjonmottak.domain.Organisasjon(value),
@@ -35,7 +36,7 @@ public class OrganaisjonMottakListener {
         );
     }
 
-    @KafkaListener(topics = "tn-organisasjon-set-navn-v1")
+    @KafkaListener(topics = OrganisasjonTopic.ORGANISASJON_SET_NAVN)
     public void register(@Payload Navn value) {
         organisasjonService.save(
                 new no.nav.registre.testnorge.organisasjonmottak.domain.Navn(value),
@@ -43,7 +44,7 @@ public class OrganaisjonMottakListener {
         );
     }
 
-    @KafkaListener(topics = "tn-organisasjon-set-ansatte-v1")
+    @KafkaListener(topics = OrganisasjonTopic.ORGANISASJON_SET_ANSATTE)
     public void register(@Payload Ansatte value) {
         organisasjonService.save(
                 new no.nav.registre.testnorge.organisasjonmottak.domain.Ansatte(value),
@@ -51,7 +52,7 @@ public class OrganaisjonMottakListener {
         );
     }
 
-    @KafkaListener(topics = "tn-organisasjon-set-navn-detaljer-v1")
+    @KafkaListener(topics = OrganisasjonTopic.ORGANISASJON_SET_NAVN_DETALJER)
     public void register(@Payload DetaljertNavn value) {
         organisasjonService.save(
                 new no.nav.registre.testnorge.organisasjonmottak.domain.DetaljertNavn(value),
@@ -59,7 +60,7 @@ public class OrganaisjonMottakListener {
         );
     }
 
-    @KafkaListener(topics = "tn-organisasjon-set-knytning-v3")
+    @KafkaListener(topics = OrganisasjonTopic.ORGANISASJON_SET_KNYTNING)
     public void register(@Payload Knytning value) {
         organisasjonService.save(
                 new no.nav.registre.testnorge.organisasjonmottak.domain.Knytning(value),
@@ -67,7 +68,7 @@ public class OrganaisjonMottakListener {
         );
     }
 
-    @KafkaListener(topics = "tn-organisasjon-set-forretningsadresse-v1")
+    @KafkaListener(topics = OrganisasjonTopic.ORGANISASJON_SET_FORRETNINGSADRESSE)
     public void register(@Payload Forretningsadresse value) {
         organisasjonService.save(
                 new no.nav.registre.testnorge.organisasjonmottak.domain.Forretningsadresse(value),
@@ -75,14 +76,15 @@ public class OrganaisjonMottakListener {
         );
     }
 
-    @KafkaListener(topics = "tn-organisasjon-set-postadresse-v1")
+    @KafkaListener(topics = OrganisasjonTopic.ORGANISASJON_SET_POSTADRESSE)
     public void register(@Payload Postadresse value) {
         organisasjonService.save(
                 new no.nav.registre.testnorge.organisasjonmottak.domain.Postadresse(value),
                 value.getMetadata().getMiljo()
         );
     }
-    @KafkaListener(topics = "tn-organisasjon-set-epost-v1")
+
+    @KafkaListener(topics = OrganisasjonTopic.ORGANISASJON_SET_EPOST)
     public void register(@Payload Epost value) {
         organisasjonService.save(
                 new no.nav.registre.testnorge.organisasjonmottak.domain.Epost(value),
@@ -90,7 +92,7 @@ public class OrganaisjonMottakListener {
         );
     }
 
-    @KafkaListener(topics = "tn-organisasjon-set-internettadresse-v1")
+    @KafkaListener(topics = OrganisasjonTopic.ORGANISASJON_SET_INTERNETTADRESSE)
     public void register(@Payload Internettadresse value) {
         organisasjonService.save(
                 new no.nav.registre.testnorge.organisasjonmottak.domain.Internettadresse(value),
@@ -98,7 +100,7 @@ public class OrganaisjonMottakListener {
         );
     }
 
-    @KafkaListener(topics = "tn-organisasjon-set-naeringskode-v1")
+    @KafkaListener(topics = OrganisasjonTopic.ORGANISASJON_SET_NAERINGSKODE)
     public void register(@Payload Naeringskode value) {
         organisasjonService.save(
                 new no.nav.registre.testnorge.organisasjonmottak.domain.Naeringskode(value),

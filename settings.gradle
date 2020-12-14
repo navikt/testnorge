@@ -248,3 +248,12 @@ project(":endringsmelding-service").projectDir = file('apps/endringsmelding-serv
 
 include 'generer-navn-service'
 project(":generer-navn-service").projectDir = file('apps/generer-navn-service')
+
+include 'kafka-config'
+project(":kafka-config").projectDir = file('libs/kafka-config')
+
+include 'kafka-producers'
+project(":kafka-producers").projectDir = file('libs/kafka-producers')
+
+include 'ereg-batch-status-service'
+project(":ereg-batch-status-service").projectDir = file('apps/ereg-batch-status-service')

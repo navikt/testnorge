@@ -29,15 +29,14 @@ public class PoolService {
     private final KjoennFraIdentService kjoennFraIdentService;
     private final IdenttypeFraIdentService identtypeFraIdentService;
 
-    public List<String> allocateIdenter(HentIdenterRequest request) {
+    public synchronized List<String> allocateIdenter(HentIdenterRequest request) {
 
         Set<Ident> identEntities = databaseService.hentLedigeIdenterFraDatabase(request);
-
         int missingIdentCount = request.getAntall() - identEntities.size();
 
         if (missingIdentCount > 0) {
 
-            List<TpsStatus> tpsStatuses = identerAvailService.generateAndCheckIdenter(request, ATTEMPT_OBTAIN);
+            Set<TpsStatus> tpsStatuses = identerAvailService.generateAndCheckIdenter(request, ATTEMPT_OBTAIN);
 
             List<Ident> identerFraTps = tpsStatuses.stream()
                     .map(this::buildIdent)

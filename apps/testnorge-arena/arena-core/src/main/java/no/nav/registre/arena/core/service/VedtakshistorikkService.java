@@ -170,8 +170,13 @@ public class VedtakshistorikkService {
         }
 
         List<RettighetRequest> rettigheter = new ArrayList<>();
-        opprettVedtakAap115(vedtakshistorikk, personident, miljoe, rettigheter);
+
+        var ikkeAvluttendeAap115 = getIkkeAvsluttendeVedtakAap115(vedtakshistorikk.getAap115());
+        var avsluttendeAap115 = getAvsluttendeVedtakAap115(vedtakshistorikk.getAap115());
+
+        opprettVedtakAap115(ikkeAvluttendeAap115, personident, miljoe, rettigheter);
         opprettVedtakAap(vedtakshistorikk, personident, miljoe, rettigheter);
+        opprettVedtakAap115(avsluttendeAap115, personident, miljoe, rettigheter);
         opprettVedtakUngUfoer(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakTvungenForvaltning(vedtakshistorikk, personident, miljoe, rettigheter, identerMedKontonummer);
         opprettVedtakFritakMeldekort(vedtakshistorikk, personident, miljoe, rettigheter);
@@ -323,13 +328,34 @@ public class VedtakshistorikkService {
         return senesteVedtak;
     }
 
+    private List<NyttVedtakAap> getIkkeAvsluttendeVedtakAap115(
+            List<NyttVedtakAap> aap115
+    ) {
+        List<NyttVedtakAap> vedtaksliste = new ArrayList<>();
+        if (aap115 != null && !aap115.isEmpty()) {
+            vedtaksliste = aap115.stream().filter(vedtak -> !vedtak.getVedtaktype().equals("S"))
+                    .collect(Collectors.toList());
+        }
+        return vedtaksliste;
+    }
+
+    private List<NyttVedtakAap> getAvsluttendeVedtakAap115(
+            List<NyttVedtakAap> aap115
+    ) {
+        List<NyttVedtakAap> vedtaksliste = new ArrayList<>();
+        if (aap115 != null && !aap115.isEmpty()) {
+            vedtaksliste = aap115.stream().filter(vedtak -> vedtak.getVedtaktype().equals("S"))
+                    .collect(Collectors.toList());
+        }
+        return vedtaksliste;
+    }
+
     private void opprettVedtakAap115(
-            Vedtakshistorikk vedtak,
+            List<NyttVedtakAap> aap115,
             String personident,
             String miljoe,
             List<RettighetRequest> rettigheter
     ) {
-        var aap115 = vedtak.getAap115();
         if (aap115 != null && !aap115.isEmpty()) {
             var rettighetRequest = new RettighetAap115Request(aap115);
             rettighetRequest.setPersonident(personident);

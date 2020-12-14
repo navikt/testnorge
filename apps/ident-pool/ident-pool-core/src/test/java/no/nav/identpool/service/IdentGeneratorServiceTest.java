@@ -10,9 +10,10 @@ import static org.hamcrest.Matchers.lessThan;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,7 +42,7 @@ class IdentGeneratorServiceTest {
         HentIdenterRequest.HentIdenterRequestBuilder request = createRequest(Identtype.FNR, Kjoenn.MANN);
         request.foedtFoer(LOCAL_DATE.minusDays(2));
 
-        assertThrows(IllegalArgumentException.class, () -> identGeneratorService.genererIdenter(request.build(), new ArrayList<>()));
+        assertThrows(IllegalArgumentException.class, () -> identGeneratorService.genererIdenter(request.build(), new HashSet<>()));
     }
 
     @Test
@@ -50,7 +51,7 @@ class IdentGeneratorServiceTest {
         HentIdenterRequest.HentIdenterRequestBuilder request = createRequest(Identtype.FNR, Kjoenn.MANN);
         request.antall(500);
 
-        assertThrows(IllegalArgumentException.class, () -> identGeneratorService.genererIdenter(request.build(), new ArrayList<>()));
+        assertThrows(IllegalArgumentException.class, () -> identGeneratorService.genererIdenter(request.build(), new HashSet<>()));
     }
 
     @Test
@@ -66,8 +67,8 @@ class IdentGeneratorServiceTest {
     @Test
     @DisplayName("Skal generere angitt antall identer med FNR")
     void fnrGenererKjonnKriterier() {
-        List<String> menn = generateIdents(Identtype.FNR, Kjoenn.MANN);
-        List<String> kvinner = generateIdents(Identtype.FNR, Kjoenn.KVINNE);
+        Set<String> menn = generateIdents(Identtype.FNR, Kjoenn.MANN);
+        Set<String> kvinner = generateIdents(Identtype.FNR, Kjoenn.KVINNE);
 
         assertThat(menn.size(), is(equalTo(GENERATE_SIZE)));
         menn.forEach(fnr -> assertFnrValues(fnr, Kjoenn.MANN, LOCAL_DATE));
@@ -78,8 +79,8 @@ class IdentGeneratorServiceTest {
     @Test
     @DisplayName("Skal generere angitt antall identer med DNR")
     void dnrGenererKjonnKriterier() {
-        List<String> menn = generateIdents(Identtype.DNR, Kjoenn.MANN);
-        List<String> kvinner = generateIdents(Identtype.DNR, Kjoenn.KVINNE);
+        Set<String> menn = generateIdents(Identtype.DNR, Kjoenn.MANN);
+        Set<String> kvinner = generateIdents(Identtype.DNR, Kjoenn.KVINNE);
 
         assertThat(menn.size(), is(equalTo(GENERATE_SIZE)));
         menn.forEach(dnr -> assertDnrValues(dnr, Kjoenn.MANN, LOCAL_DATE));
@@ -90,8 +91,8 @@ class IdentGeneratorServiceTest {
     @Test
     @DisplayName("Skal generere angitt antall identer med BOST")
     void bostGenererKjonnKriterier() {
-        List<String> menn = generateIdents(Identtype.BOST, Kjoenn.MANN);
-        List<String> kvinner = generateIdents(Identtype.BOST, Kjoenn.KVINNE);
+        Set<String> menn = generateIdents(Identtype.BOST, Kjoenn.MANN);
+        Set<String> kvinner = generateIdents(Identtype.BOST, Kjoenn.KVINNE);
 
         assertThat(menn.size(), is(equalTo(GENERATE_SIZE)));
         menn.forEach(bnr -> assertBnrValues(bnr, Kjoenn.MANN, LOCAL_DATE));
@@ -99,9 +100,9 @@ class IdentGeneratorServiceTest {
         kvinner.forEach(bnr -> assertBnrValues(bnr, Kjoenn.KVINNE, LOCAL_DATE));
     }
 
-    private List<String> generateIdents(Identtype identtype, Kjoenn kjoenn) {
+    private Set<String> generateIdents(Identtype identtype, Kjoenn kjoenn) {
         return identGeneratorService.genererIdenter(
-                createRequest(identtype, kjoenn).build(), new ArrayList<>());
+                createRequest(identtype, kjoenn).build(), new HashSet<String>());
     }
 
     private HentIdenterRequest.HentIdenterRequestBuilder createRequest(Identtype identtype, Kjoenn kjoenn) {

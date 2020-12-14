@@ -17,3 +17,4 @@ applications:
   endringsmelding-service: 7f00fa49-869e-4a1a-b4a0-e0c1d556dc38
   generer-navn-service: 92e61fa8-6fca-48e2-87b9-29d8bb6cf850
   organisasjon-forvalter: 80f07134-375b-4df8-be48-2ba877774c6c
+  ereg-batch-status-service: 67f507ff-399c-4853-9eb3-3dc6aabc8289
