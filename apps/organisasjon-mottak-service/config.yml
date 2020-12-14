@@ -12,6 +12,9 @@ spec:
   azure:
     application:
       enabled: true
+  inbound:
+    rules:
+      - application: testnorge-oversikt-frontend
   liveness:
     path: /internal/isAlive
     initialDelay: 4
