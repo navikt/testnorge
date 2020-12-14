@@ -1,5 +1,7 @@
 package no.nav.registre.testnorge.organisasjonmottak.consumer;
 
+import static reactor.core.publisher.Mono.error;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -43,17 +45,18 @@ public class JenkinsConsumer {
             throw new RuntimeException("Finner ikke url for miljo: " + miljo);
         }
         JenkinsCrumb jenkinsCrumb = new GetCrumbCommand(webClient).call();
-        var mono = new StartBEREG007Command(webClient, server, miljo, jenkinsCrumb, flatFile).call();
-        mono.doOnSuccess(response -> {
-            log.info("{}:{}", HttpHeaders.LOCATION, String.join(", ", response.headers().header(HttpHeaders.LOCATION)));
-            var location = response.headers().header(HttpHeaders.LOCATION).get(0);
-            var pattern = Pattern.compile("\\d+");
-            var matcher = pattern.matcher(location);
-            if (matcher.find()) {
-                jenkinsBatchStatusConsumer.registerBestilling(uuid, miljo, Long.valueOf(matcher.group()));
-            } else {
-                log.error("Klarer ikke å finne item id fra location: {}", location);
-            }
-        }).block();
+        new StartBEREG007Command(webClient, server, miljo, jenkinsCrumb, flatFile)
+                .call()
+                .flatMap(response -> {
+                    log.trace("{}:{}", HttpHeaders.LOCATION, String.join(", ", response.headers().header(HttpHeaders.LOCATION)));
+                    var location = response.headers().header(HttpHeaders.LOCATION).get(0);
+                    var pattern = Pattern.compile("\\d+");
+                    var matcher = pattern.matcher(location);
+                    if (matcher.find()) {
+                        return jenkinsBatchStatusConsumer.registerBestilling(uuid, miljo, Long.valueOf(matcher.group()));
+                    } else {
+                        return error(new RuntimeException("Klarer ikke å finne item id fra location: " + location));
+                    }
+                }).block();
     }
 }
