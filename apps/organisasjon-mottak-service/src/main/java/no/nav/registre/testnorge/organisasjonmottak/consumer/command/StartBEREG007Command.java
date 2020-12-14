@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import no.nav.registre.testnorge.organisasjonmottak.consumer.request.JenkinsCrumb;
+import no.nav.registre.testnorge.libs.dto.jenkins.v1.JenkinsCrumb;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
 
 @Slf4j

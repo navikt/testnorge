@@ -1,0 +1,16 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  main:
+    banner-mode: off
+  application:
+    name: ereg-batch-status-service
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
+    description: Tjeneste for å hente ut batch status fra EREG.
+
+consumers:
+  jenkins:
+    url: https://batch.adeo.no
+  ereg-batch-status-service:
+    url: https://ereg-batch-status-service.dev.intern.nav.no
+    client-id: 67f507ff-399c-4853-9eb3-3dc6aabc8289

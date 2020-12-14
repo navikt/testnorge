@@ -262,3 +262,7 @@ project(":ereg-batch-status-service").projectDir = file('apps/ereg-batch-status-
 
 include 'arbeidsforhold-frontend'
 project(":arbeidsforhold-frontend").projectDir = file('apps/arbeidsforhold-frontend')
+
+include 'jenkins-batch-status-service:'
+project(":jenkins-batch-status-service").projectDir = file('apps/jenkins-batch-status-service')
+

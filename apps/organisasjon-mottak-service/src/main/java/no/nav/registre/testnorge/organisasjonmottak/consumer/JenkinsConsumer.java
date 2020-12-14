@@ -6,10 +6,10 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import no.nav.registre.testnorge.libs.common.command.GetCrumbCommand;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.organisasjonmottak.consumer.command.GetCrumbCommand;
+import no.nav.registre.testnorge.libs.dto.jenkins.v1.JenkinsCrumb;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.command.StartBEREG007Command;
-import no.nav.registre.testnorge.organisasjonmottak.consumer.request.JenkinsCrumb;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
 
 @Slf4j
@@ -23,7 +23,6 @@ public class JenkinsConsumer {
             Environment env,
             @Value("${jenkins.rest.api.url}") String jenkinsUri
     ) {
-
         WebClient.Builder builder = WebClient
                 .builder()
                 .baseUrl(jenkinsUri);
