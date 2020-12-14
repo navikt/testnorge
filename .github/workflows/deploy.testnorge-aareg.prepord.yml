@@ -2,7 +2,7 @@ name: Deploy testnorge-aareg
 
 on:
   push:
-    branches: master
+    branches: testnorge-aareg-issues
     paths:
       - apps/testnorge-aareg/**
       - libs/testnorge-core/**
