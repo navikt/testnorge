@@ -265,4 +265,3 @@ project(":arbeidsforhold-frontend").projectDir = file('apps/arbeidsforhold-front
 
 include 'jenkins-batch-status-service:'
 project(":jenkins-batch-status-service").projectDir = file('apps/jenkins-batch-status-service')
-
