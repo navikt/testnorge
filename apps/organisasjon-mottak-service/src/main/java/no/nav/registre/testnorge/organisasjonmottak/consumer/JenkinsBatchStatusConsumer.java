@@ -3,7 +3,6 @@ package no.nav.registre.testnorge.organisasjonmottak.consumer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.command.RegisterEregBestillingCommand;
@@ -26,8 +25,8 @@ public class JenkinsBatchStatusConsumer {
                 .build();
     }
 
-    public Mono<Void> registerBestilling(String uuid, String miljo, Long itemId) {
+    public void registerBestilling(String uuid, String miljo, Long itemId) {
         var accessToken = accessTokenService.generateClientCredentialAccessToken(clientId);
-        return new RegisterEregBestillingCommand(webClient, accessToken.getTokenValue(), uuid, miljo, itemId).call();
+        new RegisterEregBestillingCommand(webClient, accessToken.getTokenValue(), uuid, miljo, itemId).run();
     }
 }

@@ -13,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -23,13 +22,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.Callable;
+import java.util.regex.Pattern;
 
 import no.nav.registre.testnorge.libs.dto.jenkins.v1.JenkinsCrumb;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
 
 @Slf4j
 @RequiredArgsConstructor
-public class StartBEREG007Command implements Callable<Mono<ClientResponse>> {
+public class StartBEREG007Command implements Callable<Long> {
     private final WebClient webClient;
     private final String server;
     private final String miljo;
@@ -45,7 +45,7 @@ public class StartBEREG007Command implements Callable<Mono<ClientResponse>> {
 
     @SneakyThrows
     @Override
-    public Mono<ClientResponse> call() {
+    public Long call() {
         log.info("Sender flatfil til server {} ({})", server, miljo);
 
         String content = flatfil.build();
@@ -71,13 +71,24 @@ public class StartBEREG007Command implements Callable<Mono<ClientResponse>> {
                 .with("stepSelection", "2;3;4;5;6")
                 .with("input_file", fileEntity);
 
-        log.trace("Jenkins-Crumb: {}", crumb.getCrumb());
+        log.info("Jenkins-Crumb: {}", crumb.getCrumb());
         return webClient
                 .post()
                 .uri("/view/Registre/job/Start_BEREG007/buildWithParameters")
                 .header("Jenkins-Crumb", crumb.getCrumb())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
                 .body(body)
-                .exchange();
+                .exchange()
+                .flatMap(response -> {
+                    log.trace("{}:{}", HttpHeaders.LOCATION, String.join(", ", response.headers().header(HttpHeaders.LOCATION)));
+                    var location = response.headers().header(HttpHeaders.LOCATION).get(0);
+                    var pattern = Pattern.compile("\\d+");
+                    var matcher = pattern.matcher(location);
+                    if (matcher.find()) {
+                        return Mono.just(Long.valueOf(matcher.group()));
+                    } else {
+                        return Mono.error(new RuntimeException("Klarer ikke å finne item id fra location: " + location));
+                    }
+                }).block();
     }
 }
