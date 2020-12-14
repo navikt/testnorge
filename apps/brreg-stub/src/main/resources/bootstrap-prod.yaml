@@ -17,3 +17,5 @@ spring.cloud.vault:
     enabled: true
     role: brreg-stub-admin
     backend: postgresql/preprod-fss
+    username-property: spring.datasource.username
+    password-property: spring.datasource.password

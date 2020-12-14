@@ -20,12 +20,15 @@ dependencies {
     implementation 'org.projectlombok:lombok:1.18.12'
     implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-web-services:2.3.4.RELEASE'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.3.4.RELEASE'
     implementation 'org.springframework.vault:spring-vault-core:2.2.0.RELEASE'
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.3.4.RELEASE'
     implementation 'org.postgresql:postgresql:42.2.16'
     implementation 'com.zaxxer:HikariCP:3.4.5'
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases:2.2.5.RELEASE'
     implementation 'org.flywaydb:flyway-core:6.4.4'
+    implementation 'com.h2database:h2:1.4.200'
+
     implementation 'org.apache.cxf:cxf-rt-frontend-jaxws:3.3.6'
     implementation 'wsdl4j:wsdl4j:1.6.3'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
@@ -40,7 +43,9 @@ dependencies {
     implementation project(':testnorge-database')
     implementation project(':testnorge-core')
 
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE'
+    testImplementation project(':testnorge-testing')
 }
 
 description = 'brreg-stub'

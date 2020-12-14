@@ -13,7 +13,6 @@ public class ApplicationLauncher {
 
         if ("prod".equals(System.getProperty("spring.profiles.active"))) {
             VaultUtil.initCloudVaultToken();
-//            VaultUtil.setCloudVaultToken();
         }
         SpringApplication.run(ApplicationLauncher.class, args);
     }
