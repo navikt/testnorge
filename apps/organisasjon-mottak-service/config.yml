@@ -27,7 +27,7 @@ spec:
     periodSeconds: 5
     failureThreshold: 500
   replicas:
-    min: 1
+    min: 3
     max: 3
   vault:
     enabled: true

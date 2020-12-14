@@ -45,12 +45,16 @@ public class JenkinsConsumer {
         JenkinsCrumb jenkinsCrumb = new GetCrumbCommand(webClient).call();
         var mono = new StartBEREG007Command(webClient, server, miljo, jenkinsCrumb, flatFile).call();
         mono.doOnSuccess(response -> {
-
             log.info("{}:{}", HttpHeaders.LOCATION, String.join(", ", response.headers().header(HttpHeaders.LOCATION)));
             var location = response.headers().header(HttpHeaders.LOCATION).get(0);
             var pattern = Pattern.compile("\\d+");
             var matcher = pattern.matcher(location);
-            jenkinsBatchStatusConsumer.registerBestilling(uuid, miljo, Long.valueOf(matcher.group()));
+
+            if (matcher.find()) {
+                jenkinsBatchStatusConsumer.registerBestilling(uuid, miljo, Long.valueOf(matcher.group()));
+            } else {
+                log.error("Klarer ikke å finne item id fra location: {}", location);
+            }
         }).block();
     }
 }
