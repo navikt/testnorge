@@ -1,6 +1,7 @@
 package no.nav.registre.aareg.consumer.ws;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.aareg.cxf.TimeoutFeature;
 import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.security.sts.StsSamlTokenService;
@@ -20,6 +21,7 @@ import static java.util.Objects.isNull;
 @Component
 @RequiredArgsConstructor
 @DependencyOn(value = "aareg-ws", external = true)
+@Slf4j
 public class BehandleArbeidsforholdV1Proxy {
 
     private static final int DEFAULT_TIMEOUT = 5_000;
@@ -35,6 +37,7 @@ public class BehandleArbeidsforholdV1Proxy {
     private LocalDateTime expiry;
 
     public BehandleArbeidsforholdPortType getServiceByEnvironment(String environment) {
+        log.info("Ser etter service i miljo: " + environment);
         if (hasExpired()) {
             synchronized (this) {
                 if (hasExpired()) {

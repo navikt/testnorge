@@ -19,8 +19,10 @@ public class AaregBehandleArbeidsforholdTest {
     public void fetchWsUrslAllEnvironments_OK() {
         var fasitConsumers = behandleArbeidsforholdFasitConsumer.fetchWsUrlsAllEnvironments();
 
-        var expectedUrl = "https://modapp-t2.adeo.no/aareg-services/BehandleArbeidsforholdService/v1";
+        var expectedTestUrl = "https://modapp-t2.adeo.no/aareg-services/BehandleArbeidsforholdService/v1";
+        var expectedPreprodUrl = "https://modapp-q2.adeo.no/aareg-services/BehandleArbeidsforholdService/v1";
 
-        assertThat(fasitConsumers.get("t2"), is(equalTo(expectedUrl)));
+        assertThat(fasitConsumers.get("t2"), is(equalTo(expectedTestUrl)));
+        assertThat(fasitConsumers.get("q2"), is(equalTo(expectedPreprodUrl)));
     }
 }

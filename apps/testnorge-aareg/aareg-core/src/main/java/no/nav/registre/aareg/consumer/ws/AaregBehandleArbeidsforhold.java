@@ -14,15 +14,14 @@ import java.util.Map;
 public class AaregBehandleArbeidsforhold {
 
     private static final String BEHANDLE_ARBEIDSFORHOLD_SERVICE_URL = "https://modapp-$.adeo.no/aareg-services/BehandleArbeidsforholdService/v1";
-    private static final List<String> validEnvironments = List.of("q0", "q1", "q2", "q3", "q4", "t0", "t1", "t2", "t3", "t4", "u2");
+    private static final List<String> validEnvironments =
+            List.of("q0", "q1", "q2", "q4", "q5", "q6", "t0", "t1", "t2", "t3", "t4", "t5", "t6", "u1", "u2", "u4", "u5");
 
     public Map<String, String> fetchWsUrlsAllEnvironments() {
 
         Map<String, String> allEnvironmentUrls = new HashMap<>();
 
-        validEnvironments.forEach(env -> {
-            allEnvironmentUrls.put(env, BEHANDLE_ARBEIDSFORHOLD_SERVICE_URL.replace("$", env));
-        });
+        validEnvironments.forEach(env -> allEnvironmentUrls.put(env, BEHANDLE_ARBEIDSFORHOLD_SERVICE_URL.replace("$", env)));
 
         return allEnvironmentUrls;
     }
