@@ -16,6 +16,8 @@ spec:
       rules:
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
+        - application: organisasjon-forvalter
+          cluster: dev-fss
     outbound:
       rules:
         - application: ereg-batch-status-service
