@@ -25,12 +25,13 @@ public class RetryCommand implements Runnable {
         for (int attempts = 1; attempts <= totalAttempts; attempts++) {
             try {
                 runnable.run();
-                log.info("Operasjonen ble utført etter {}/{} forsøk ({} millisecond).", attempts, totalAttempts, sleepMilliseconds);
+                log.info("Operasjonen ble utført etter {}/{} forsøk ({} millisekunder).", attempts, totalAttempts, sleepMilliseconds);
                 return;
             } catch (Exception e) {
-                log.warn("Operasjonen fungerte ikke {} forsøk igjen.", totalAttempts - attempts, e);
+                log.warn("Operasjonen ikke utført {} forsøk igjen.", totalAttempts - attempts, e);
             }
             try {
+                log.info("Venter i {} millisekunder.", sleepMilliseconds);
                 Thread.sleep(sleepMilliseconds);
             } catch (InterruptedException e) {
                 throw new RetryUnsuccessfulException(e);
