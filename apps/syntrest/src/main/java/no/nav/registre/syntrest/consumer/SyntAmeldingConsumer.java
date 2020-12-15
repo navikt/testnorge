@@ -3,6 +3,7 @@ package no.nav.registre.syntrest.consumer;
 import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdCommand;
+import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdHistorikkCommand;
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdStartCommand;
 import no.nav.registre.syntrest.domain.amelding.ArbeidsforholdAmelding;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
@@ -51,6 +52,24 @@ public class SyntAmeldingConsumer extends SyntConsumer {
 
         try {
             return new PostArbeidsforholdStartCommand(datoer, url, webClient).call();
+        } catch (RestClientException e) {
+            log.error("Unexpected Rest Client Exception: {}", Arrays.toString(e.getStackTrace()));
+            throw e;
+        } finally {
+            scheduleShutdown();
+        }
+    }
+
+    public List<ArbeidsforholdAmelding> synthesizeArbeidsforholdHistorikk(ArbeidsforholdAmelding tidligereArbeidsforhold, String syntAmeldingUrlPath) {
+        try {
+            applicationManager.startApplication(this);
+        } catch (ApiException | InterruptedException e) {
+            log.error("Could not start synth package {}: {}", this.appName, e.getMessage());
+            return null;
+        }
+
+        try {
+            return new PostArbeidsforholdHistorikkCommand(tidligereArbeidsforhold, syntAmeldingUrlPath, webClient).call();
         } catch (RestClientException e) {
             log.error("Unexpected Rest Client Exception: {}", Arrays.toString(e.getStackTrace()));
             throw e;

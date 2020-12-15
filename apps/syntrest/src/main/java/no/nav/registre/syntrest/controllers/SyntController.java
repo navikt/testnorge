@@ -339,6 +339,17 @@ public class SyntController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/amelding/arbeidsforhold/charRnn")
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
+    public ResponseEntity<List<ArbeidsforholdAmelding>> generateArbeidforholdCharRnn(
+            @RequestBody ArbeidsforholdAmelding tidligereArbeidsforhold
+    ) {
+        var response = ameldingConsumer.synthesizeArbeidsforholdHistorikk(tidligereArbeidsforhold, "/arbeidsforhold/char_rnn");
+        doResponseValidation(response);
+
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/amelding/arbeidsforhold/start")
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
     public ResponseEntity<List<ArbeidsforholdAmelding>> generateArbeidforholdStart(
