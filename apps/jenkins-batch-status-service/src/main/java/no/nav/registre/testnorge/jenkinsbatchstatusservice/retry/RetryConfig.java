@@ -19,7 +19,7 @@ public class RetryConfig {
         }
 
         public Builder setSleepSeconds(long seconds) {
-            this.sleepMilliseconds = seconds * 60;
+            this.sleepMilliseconds = seconds * 1000;
             return this;
         }
 

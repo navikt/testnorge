@@ -33,9 +33,9 @@ public class RetryCommand implements Runnable {
             try {
                 Thread.sleep(sleepMilliseconds);
             } catch (InterruptedException e) {
-                throw new RetryUnsuccessfulException("Operasjonen ble aldri fullført.", e);
+                throw new RetryUnsuccessfulException(e);
             }
         }
-        throw new RetryUnsuccessfulException("Operasjonen ble aldri fullført.");
+        throw new RetryUnsuccessfulException();
     }
 }
