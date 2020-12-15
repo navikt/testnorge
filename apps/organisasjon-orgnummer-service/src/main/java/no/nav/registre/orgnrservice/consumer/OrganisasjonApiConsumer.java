@@ -7,8 +7,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.registre.testnorge.libs.common.command.GetOrganisasjonCommand;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
-import no.nav.registre.testnorge.libs.oauth2.domain.AzureClientCredentials;
-import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 
 @Slf4j
 @Component
@@ -16,34 +15,32 @@ public class OrganisasjonApiConsumer {
 
     private WebClient webClient;
     private final String clientId;
-    private final AzureClientCredentials clientCredential;
-    private final ClientCredentialGenerateAccessTokenService clientCredentialGenerateAccessTokenService;
+    private final AccessTokenService accessTokenService;
 
     OrganisasjonApiConsumer (@Value("${consumers.organisasjon-api.url}") String url,
                              @Value("${consumers.organisasjon-api.client_id}") String clientId,
-                             AzureClientCredentials clientCredential,
-                             ClientCredentialGenerateAccessTokenService clientCredentialGenerateAccessTokenService) {
+                             AccessTokenService accessTokenService) {
         this.clientId = clientId;
-        this.clientCredential = clientCredential;
-        this.clientCredentialGenerateAccessTokenService = clientCredentialGenerateAccessTokenService;
+        this.accessTokenService = accessTokenService;
         this.webClient = WebClient.builder()
                 .baseUrl(url)
                 .build();
     }
 
     OrganisasjonDTO getOrgnrFraMiljoe (String orgnummer, String miljoe, String token) {
-        try { return new GetOrganisasjonCommand(webClient, orgnummer, miljoe, token).call();
+        try {
+            OrganisasjonDTO call = new GetOrganisasjonCommand(webClient, token, orgnummer, miljoe).call();
+            log.info("Fikk kontakt med EREG og sjekka Q1");
+            return call;
         } catch( Exception e) {
             throw new RuntimeException("Kunne ikke hente organisasjon " + orgnummer + " fra miljoe " + miljoe);
         }
     }
 
     public OrganisasjonDTO getOrgnr (String orgnummer) {
-        //evt loop gjennom miljø
-        String token = clientCredentialGenerateAccessTokenService
-                .generateToken(clientCredential, clientId)
-                .getTokenValue();
-        log.info("Om token starter med de rette to bokstavene {}", token.startsWith("ey"));
-        return getOrgnrFraMiljoe(orgnummer, "q1", token);
+        //evt loop gjennom miljø. Lage tråder
+        String miljoe = "q1";
+        String token = accessTokenService.generateToken(clientId).getTokenValue();
+        return getOrgnrFraMiljoe(orgnummer, miljoe, token);
     }
 }
