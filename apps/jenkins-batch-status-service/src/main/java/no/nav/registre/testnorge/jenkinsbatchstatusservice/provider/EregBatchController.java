@@ -19,7 +19,11 @@ public class EregBatchController {
     private final BatchService batchService;
 
     @PostMapping("/items/{id}")
-    public ResponseEntity<HttpStatus> register(@RequestHeader("miljo") String miljo, @RequestHeader("uuid") String uuid, @PathVariable("id") Long id) {
+    public ResponseEntity<HttpStatus> register(
+            @RequestHeader("miljo") String miljo,
+            @RequestHeader("uuid") String uuid,
+            @PathVariable("id") Long id
+    ) {
         batchService.registerEregBestilling(uuid, miljo, id);
         return ResponseEntity
                 .noContent()
