@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    vault:
+      connection-timeout: 15000
+      fail-fast: true
+      generic:
+        enabled: false
+      host: vault.adeo.no
+      port: 443
+      read-timeout: 30000
