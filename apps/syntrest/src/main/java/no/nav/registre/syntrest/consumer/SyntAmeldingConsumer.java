@@ -19,7 +19,7 @@ import java.util.List;
 public class SyntAmeldingConsumer extends SyntConsumer {
     private final WebClient webClient;
 
-    private static final String WEB_CLIENT_EXCEPTION_MESSAGE = "Unexpected Web Client Exception: {}";
+    private static final String REST_CLIENT_EXCEPTION_MESSAGE = "Unexpected Rest Client Exception: {}";
 
     public SyntAmeldingConsumer(ApplicationManager applicationManager, String appName, String synthAmeldingUrl) {
         super(applicationManager, appName);
@@ -39,7 +39,7 @@ public class SyntAmeldingConsumer extends SyntConsumer {
         try {
             return new PostArbeidsforholdCommand(tidligereArbeidsforhold, syntAmeldingUrlPath, webClient).call();
         } catch (RestClientException e) {
-            log.error(WEB_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
+            log.error(REST_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
             throw e;
         } finally {
             scheduleShutdown();
@@ -59,7 +59,7 @@ public class SyntAmeldingConsumer extends SyntConsumer {
         try {
             return new PostArbeidsforholdStartCommand(datoer, url, webClient).call();
         } catch (RestClientException e) {
-            log.error(WEB_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
+            log.error(REST_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
             throw e;
         } finally {
             scheduleShutdown();
@@ -79,7 +79,7 @@ public class SyntAmeldingConsumer extends SyntConsumer {
         try {
             return new PostArbeidsforholdHistorikkCommand(tidligereArbeidsforhold, syntAmeldingUrlPath, webClient).call();
         } catch (RestClientException e) {
-            log.error(WEB_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
+            log.error(REST_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
             throw e;
         } finally {
             scheduleShutdown();
