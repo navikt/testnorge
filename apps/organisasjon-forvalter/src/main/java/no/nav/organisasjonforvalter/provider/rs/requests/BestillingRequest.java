@@ -29,10 +29,12 @@ public class BestillingRequest {
 
         private String enhetstype;
         private String naeringskode;
+        private String sektorkode;
         private String formaal;
         private String telefon;
         private String epost;
         private String nettside;
+        private String maalform;
         private List<Adresse> adresser;
         private List<OrganisasjonRequest> underenheter;
 

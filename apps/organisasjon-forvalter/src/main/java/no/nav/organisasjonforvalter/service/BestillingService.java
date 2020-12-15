@@ -30,7 +30,7 @@ public class BestillingService {
                 .setMetadata(Metadata.newBuilder()
                         .setEnhetstype("AS")
                         .setOrgnummer(orgNummer.get(0))
-                        .setMiljo("q1")
+                        .setMiljo("t4")
                         .build())
                 .build());
         return null;
