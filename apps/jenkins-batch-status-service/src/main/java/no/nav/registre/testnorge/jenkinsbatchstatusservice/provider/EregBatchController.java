@@ -16,7 +16,7 @@ import no.nav.registre.testnorge.jenkinsbatchstatusservice.service.BatchService;
 @RestController
 @RequestMapping("/api/v1/ereg/batch/queue")
 public class EregBatchController {
-    private BatchService batchService;
+    private final BatchService batchService;
 
     @PostMapping("/items/{id}")
     public ResponseEntity<HttpStatus> register(@RequestHeader("miljo") String miljo, @RequestHeader("uuid") String uuid, @PathVariable("id") Long id) {
