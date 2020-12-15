@@ -19,3 +19,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+consumers.ereg-batch-status-service:
+  url: http://ereg-batch-status-service.dolly.svc.dev-fss.local
