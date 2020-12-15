@@ -19,12 +19,12 @@ public class BatchService {
     private final RetryService retryService;
 
     public void registerEregBestilling(String uuid, String miljo, Long itemId) {
-        var jobNumber = jenkinsConsumer.getJobNumber(itemId);
         var retryConfig = new RetryConfig.Builder()
                 .setRetryAttempts(10)
                 .setSleepSeconds(60)
                 .build();
         retryService.execute(retryConfig, () -> {
+            var jobNumber = jenkinsConsumer.getJobNumber(itemId);
             var log = jenkinsConsumer.getJobLog(jobNumber);
             var jobId = findIDFromLog(log);
             organisasjonBestillingConsumer.registerBestilling(uuid, miljo, jobId);
