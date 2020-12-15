@@ -18,7 +18,7 @@ public class SaveOrganisasjonBestillingCommand implements Runnable {
     @Override
     public void run() {
         webClient
-                .post()
+                .put()
                 .uri(builder -> builder.path("/api/v1/order/{uuid}").build(uuid))
                 .body(BodyInserters.fromPublisher(Mono.just(orderDTO), OrderDTO.class))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
