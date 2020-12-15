@@ -31,7 +31,7 @@ public class RetryCommand implements Runnable {
                 log.warn("Operasjonen ikke utført {} forsøk igjen.", totalAttempts - attempts, e);
             }
             try {
-                log.info("Venter i {} millisekunder.", sleepMilliseconds);
+                log.info("Venter i {} millisekunder...", sleepMilliseconds);
                 Thread.sleep(sleepMilliseconds);
             } catch (InterruptedException e) {
                 throw new RetryUnsuccessfulException(e);
