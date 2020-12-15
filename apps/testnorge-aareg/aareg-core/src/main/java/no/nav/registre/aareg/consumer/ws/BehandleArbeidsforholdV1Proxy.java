@@ -31,7 +31,7 @@ public class BehandleArbeidsforholdV1Proxy {
     private static final QName BEHANDLE_ARBEIDSFORHOLD_V1 = new QName(NAMESPACE, "BehandleArbeidsforhold_v1");
 
     private final StsSamlTokenService stsSamlTokenService;
-    private final AaregBehandleArbeidsforhold behandleArbeidsforholdFasitConsumer;
+    private final AaregBehandleArbeidsforhold aaregBehandleArbeidsforhold;
 
     private final Map<String, BehandleArbeidsforholdPortType> wsServiceByEnvironment = new HashMap<>();
     private LocalDateTime expiry;
@@ -41,7 +41,7 @@ public class BehandleArbeidsforholdV1Proxy {
         if (hasExpired()) {
             synchronized (this) {
                 if (hasExpired()) {
-                    var urlByEnvironment = behandleArbeidsforholdFasitConsumer.fetchWsUrlsAllEnvironments();
+                    var urlByEnvironment = aaregBehandleArbeidsforhold.fetchWsUrlsAllEnvironments();
                     urlByEnvironment.forEach((env, url) -> wsServiceByEnvironment.put(env, createBehandleArbeidsforholdPortType(env, url)));
                     expiry = LocalDateTime.now().plusHours(4);
                 }
