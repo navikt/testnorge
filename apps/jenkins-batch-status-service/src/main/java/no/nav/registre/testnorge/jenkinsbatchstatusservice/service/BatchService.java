@@ -32,7 +32,7 @@ public class BatchService {
     }
 
     private Long findIDFromLog(String value) {
-        log.info("Prøver å hente ut id fra log: {}", value);
+        log.info("Prøver å hente ut id fra log: {}.", value);
 
         var pattern = Pattern.compile("^\\d{5}");
         var matcher = pattern.matcher(value);
