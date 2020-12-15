@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
+import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.AnsatteProducer;
 import no.nav.registre.testnorge.libs.oauth2.config.InsecureOAuth2ServerToServerConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +15,7 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import({
         ApplicationCoreConfig.class,
-        InsecureOAuth2ServerToServerConfiguration.class,
+        InsecureOAuth2ServerToServerConfiguration.class
 })
 public class AppConfig {
 

@@ -27,7 +27,7 @@ import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.Organisasjo
 import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.PostadresseProducer;
 import org.springframework.stereotype.Service;
 
-//@Service
+@Service
 @RequiredArgsConstructor
 public class OrganisasjonMottakConsumer {
 
