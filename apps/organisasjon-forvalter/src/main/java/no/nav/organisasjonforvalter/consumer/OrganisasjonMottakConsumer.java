@@ -1,6 +1,8 @@
 package no.nav.organisasjonforvalter.consumer;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -27,6 +29,7 @@ import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.Organisasjo
 import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.PostadresseProducer;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrganisasjonMottakConsumer {
@@ -43,7 +46,9 @@ public class OrganisasjonMottakConsumer {
     private final PostadresseProducer postadresseProducer;
 
     public void send(Organisasjon value) {
-        organisasjonProducer.send(UUID.randomUUID().toString(), value);
+        String key = UUID.randomUUID().toString();
+        log.info("Sender melding med navn {}, orgnr {} og key {} til Kafka", value.getNavn(), value.getMetadata().getOrgnummer(), key);
+        organisasjonProducer.send(key, value);
     }
 
     public void send(Navn value) {

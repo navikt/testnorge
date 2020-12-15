@@ -1,12 +1,6 @@
 package no.nav.organisasjonforvalter;
 
-import no.nav.organisasjonforvalter.config.AppConfig;
-import no.nav.registre.testnorge.libs.avro.application.Application;
-import no.nav.registre.testnorge.libs.core.util.VaultUtil;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.util.Collections;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package no.nav.organisasjonforvalter.config;
+package no.nav.organisasjonforvalter;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
