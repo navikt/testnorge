@@ -19,10 +19,8 @@ spec:
         - application: organisasjon-forvalter
           cluster: dev-fss
     outbound:
-      rules:
-        - application: ereg-batch-status-service
-          namespace: dolly
-          cluster: dev-fss
+      external:
+        - host: ereg-batch-status-service.dev.intern.nav.no
   gcp:
     sqlInstances:
       - type: POSTGRES_12
