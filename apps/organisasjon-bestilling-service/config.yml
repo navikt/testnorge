@@ -21,6 +21,7 @@ spec:
     outbound:
       rules:
         - application: ereg-batch-status-service
+          namespace: dolly
           cluster: dev-fss
   gcp:
     sqlInstances:
