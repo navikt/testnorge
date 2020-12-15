@@ -15,10 +15,10 @@ dependencyManagement {
 }
 
 version 'unspecified'
-
-repositories {
-    mavenCentral()
-}
+//
+//repositories {
+//    mavenCentral()
+//}
 
 dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'

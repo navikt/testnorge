@@ -19,14 +19,7 @@ public class OrgnummerController {
 
     @GetMapping
     public List<String> getOrgnummer (@RequestHeader Integer antall) {
-        var a = orgnummerService.generateOrgnrs(antall);
-        //sjekk om orgnr finnes i EREG
-        return a;
-    }
-    
-    @GetMapping(path = "/hello")
-    public String hello() {
-        return "Hello";
+        return orgnummerService.generateOrgnrs(antall);
     }
 
 //    @PostMapping

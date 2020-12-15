@@ -20,12 +20,12 @@ public class OrgnummerService {
 //        return orgnummerAdapter.saveAll(generateOrgnrs(antall));
 //    }
 
-    public List<String> generateOrgnrs (Integer antall) {
-        List<String> identListe = new ArrayList<>();
+    public List<String> generateOrgnrs(Integer antall) {
+        List<String> orgnrListe = new ArrayList<>();
         for (int i = 0; i < antall; i++) {
-            identListe.add(generateOrgnr());
+            orgnrListe.add(generateOrgnr());
         }
-        return identListe;
+        return orgnrListe;
     }
 
     private String generateOrgnr() {
@@ -34,10 +34,13 @@ public class OrgnummerService {
         String randomString = String.valueOf(random);
 
         int controlDigit = calculateControlDigit(weights, randomString);
+
+        if (controlDigit < 0 || controlDigit > 9) {
+            return generateOrgnr();
+        }
+
         String orgnr = randomString + controlDigit;
-        boolean b = finnesOrgnr(orgnr);
-        if ((controlDigit == 1 || controlDigit < 0) && b) {
-//        if ((controlDigit == 1 || controlDigit < 0)) {
+        if (finnesOrgnr(orgnr)) {
             return generateOrgnr();
         }
         return orgnr;
@@ -51,10 +54,18 @@ public class OrgnummerService {
 
             weightedSum += (vekt * numericValue);
         }
-        return 11 - (weightedSum % 11);
+
+        int rest = weightedSum % 11;
+        if (rest == 0) {
+            return 0;
+        } else if (rest == 1) {
+            return -1;
+        }
+        return 11 - rest;
     }
 
-    private boolean finnesOrgnr (String orgnummer) {
-        return organisasjonApiConsumer.finnesOrgnrIEreg(orgnummer);
+    private boolean finnesOrgnr(String orgnummer) {
+        return organisasjonApiConsumer.getOrgnr(orgnummer) != null;
+//        return organisasjonApiConsumer.finnesOrgnrIEreg(orgnummer);
     }
 }
