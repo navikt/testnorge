@@ -28,7 +28,6 @@ public class BestillingRequest {
     public static class OrganisasjonRequest {
 
         private String enhetstype;
-        private String organisasjonsform;
         private String naeringskode;
         private String formaal;
         private String telefon;

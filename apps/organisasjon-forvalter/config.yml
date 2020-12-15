@@ -13,6 +13,10 @@ spec:
     inbound:
       rules:
         - application: testnorge-oversikt-frontend
+        - application: dolly-backend
+        - application: dolly-backend-dev
+        - application: dolly-frontend
+        - application: dolly-frontend-dev
   azure:
     application:
       enabled: true
@@ -31,6 +35,9 @@ spec:
     max: 1
   vault:
     enabled: true
+    paths:
+      - kvPath: /serviceuser/data/dev/srvtestnorge
+        mountPath: /var/run/secrets/nais.io/orgforvalter
   resources:
     requests:
       cpu: 200m
