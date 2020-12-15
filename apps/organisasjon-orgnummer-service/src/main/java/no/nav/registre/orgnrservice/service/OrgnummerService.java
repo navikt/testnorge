@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import no.nav.registre.orgnrservice.consumer.OrganisasjonApiConsumer;
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 
 @Service
 @AllArgsConstructor
@@ -56,8 +55,6 @@ public class OrgnummerService {
     }
 
     private boolean finnesOrgnr (String orgnummer) {
-        //Har ikke sjekka hva denne returnerer. Finn riktig respons.
-        OrganisasjonDTO orgnr = organisasjonApiConsumer.getOrgnr(orgnummer);
-        return orgnr != null;
+        return organisasjonApiConsumer.finnesOrgnrIEreg(orgnummer);
     }
 }

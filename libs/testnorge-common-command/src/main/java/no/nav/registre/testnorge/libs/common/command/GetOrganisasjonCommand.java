@@ -39,9 +39,6 @@ public class GetOrganisasjonCommand implements Callable<OrganisasjonDTO> {
                     .block();
         } catch (HttpClientErrorException.NotFound e) {
             return null;
-        } catch (Exception e) {
-            log.error("Det oppstod en annen feil", e);
-            return null;
         }
     }
 }
