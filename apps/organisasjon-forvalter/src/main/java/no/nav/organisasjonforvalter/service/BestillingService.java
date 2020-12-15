@@ -18,7 +18,7 @@ public class BestillingService {
 
     public BestillingResponse execute(BestillingRequest request) {
 
-        String orgname = organisasjonNavnConsumer.getOrgName();
+        List<String> orgname = organisasjonNavnConsumer.getOrgName(1);
         List<String> orgNummer = organisasjonNummerConsumer.getOrgnummer(1);
 
         return null;

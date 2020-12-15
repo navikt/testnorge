@@ -1,9 +1,10 @@
 package no.nav.organisasjonforvalter.consumer;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
@@ -13,14 +14,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
 @Service
 public class OrganisasjonNavnConsumer {
 
-    private static final String NAME_URL = "/api/v1/navn";
+    private static final String NAME_URL = "/api/v1/navn?antall=";
 
     private final AccessTokenService accessTokenService;
     private final AccessScopes accessScopes;
@@ -36,29 +40,35 @@ public class OrganisasjonNavnConsumer {
         this.accessScopes = new AccessScopes("api://" + clientId + "/.default");
     }
 
-    public String getOrgName() {
+    public List<String> getOrgName(Integer antall) {
 
         AccessToken accessToken = accessTokenService.generateToken(accessScopes);
-        ResponseEntity<NavnDto> response = webClient.get()
-                .uri(NAME_URL)
+        ResponseEntity<Navn[]> response = webClient.get()
+                .uri(NAME_URL + antall.toString())
                 .header("Nav-Consumer-Id", "Testnorge")
                 .header("Nav-Call-Id", UUID.randomUUID().toString())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " +
                         accessToken.getTokenValue())
                 .retrieve()
-                .toEntity(NavnDto.class)
+                .toEntity(Navn[].class)
                 .block();
-        return response.hasBody() ? format("%s %s",
-                response.getBody().getAdjectiv(),
-                response.getBody().getSubstantiv()) : null;
+
+        List<Navn> orgNavn = response.hasBody() ? List.of(response.getBody()) : Collections.emptyList();
+
+        return orgNavn.stream().map(Navn::toString).collect(Collectors.toList());
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class NavnDto{
+    public static class Navn {
 
-        private String adjectiv;
+        private String adjektiv;
         private String substantiv;
+
+        @Override
+        public String toString() {
+            return format("%s %s", adjektiv, substantiv);
+        }
     }
 }
