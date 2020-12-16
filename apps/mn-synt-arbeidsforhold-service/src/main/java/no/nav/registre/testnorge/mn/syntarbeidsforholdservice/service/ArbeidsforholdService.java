@@ -215,10 +215,14 @@ public class ArbeidsforholdService {
             log.info("Nytt arbeidsforhold id {} for person {}.", next.getArbeidsforholdId(), next.getIdent());
             return Collections.singletonList(next);
         } else if (historikk.isEmpty()) {
-            return syntrestConsumer.getArbeidsforholdHistorikk(previous, kalendermaaned.minusMonths(1));
+            return getArbeidsforholdHistorikk(previous, kalendermaaned.minusMonths(1));
         } else {
             return historikk;
         }
+    }
+
+    private List<Arbeidsforhold> getArbeidsforholdHistorikk(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned) {
+        return syntrestConsumer.getArbeidsforholdHistorikk(arbeidsforhold, kalendermaaned);
     }
 
     private Arbeidsforhold createArbeidsforhold(boolean newArbeidsforhold, LocalDate kalendermaaned, Arbeidsforhold previous) {
