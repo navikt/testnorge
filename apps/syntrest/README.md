@@ -114,6 +114,8 @@ Kjør så ApplicationStarter med følgende argumenter:
  - -Dspring.profiles.active=dev
  - -DGITHUB_USERNAME=[github brukernavn, kan finnes i syntrest secrets i vault]
  - -DGITHUB_PASSWORD=[github passord, kan finnes i syntrest secrets i vault]
+ 
+Hvis ApplicationStarter ikke vil kjøre sjekk at du fremdeles har gyldig Kubectl token (`kubectl get pods` kommando fungerer lokalt.)
 
 ## Kubeconfig
 I vault er det lagret en kubeconfig fil som syntrest bruker til å kunne deploye/shutdown appene. Hvis denne filen må 
