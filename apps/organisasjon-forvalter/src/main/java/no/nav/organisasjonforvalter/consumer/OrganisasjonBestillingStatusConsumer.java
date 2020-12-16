@@ -22,6 +22,8 @@ import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 @Service
 public class OrganisasjonBestillingStatusConsumer {
 
+    public enum ItemStatus {RUNNING, COMPLETED, ERROR, FAILED}
+
     private static final String STATUS_URL = "/api/v1/order/{uuid}/items";
 
     private final AccessTokenService accessTokenService;
@@ -38,35 +40,28 @@ public class OrganisasjonBestillingStatusConsumer {
         this.accessScopes = new AccessScopes("api://" + clientId + "/.default");
     }
 
-    public List<String> getOrgName(String uuid) {
+    public List<ItemDto> getBestillingStatus(String uuid) {
 
         AccessToken accessToken = accessTokenService.generateToken(accessScopes);
-        ResponseEntity<Navn[]> response = webClient.get()
+        ResponseEntity<ItemDto[]> response = webClient.get()
                 .uri(STATUS_URL.replace("{uuid}", uuid))
                 .header("Nav-Consumer-Id", "Testnorge")
                 .header("Nav-Call-Id", UUID.randomUUID().toString())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " +
                         accessToken.getTokenValue())
                 .retrieve()
-                .toEntity(Navn[].class)
+                .toEntity(ItemDto[].class)
                 .block();
 
-        List<Navn> orgNavn = response.hasBody() ? List.of(response.getBody()) : Collections.emptyList();
-
-        return orgNavn.stream().map(Navn::toString).collect(Collectors.toList());
+        return response.hasBody() ? List.of(response.getBody()) : Collections.emptyList();
     }
 
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Navn {
+    public static class ItemDto {
 
-        private String adjektiv;
-        private String substantiv;
-
-        @Override
-        public String toString() {
-            return format("%s %s", adjektiv, substantiv);
-        }
+        private Integer id;
+        private ItemStatus status;
     }
 }

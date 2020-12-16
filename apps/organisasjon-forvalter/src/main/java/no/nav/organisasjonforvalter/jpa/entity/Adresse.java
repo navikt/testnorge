@@ -15,20 +15,14 @@ public class Adresse {
     @Column(name = "adressetype")
     private String adressetype;
 
-    @Column(name = "adresselinje1")
-    private String adresselinje1;
+    @Column(name = "adresse")
+    private String adresse;
 
-    @Column(name = "adresselinje2")
-    private String adresselinje2;
+    @Column(name = "gatekode")
+    private String gatekode;
 
-    @Column(name = "adresselinje3")
-    private String adresselinje3;
-
-    @Column(name = "adresselinje4")
-    private String adresselinje4;
-
-    @Column(name = "adresselinje5")
-    private String adresselinje5;
+    @Column(name = "boenhet")
+    private String boenhet;
 
     @Column(name = "postnr")
     private String postnr;

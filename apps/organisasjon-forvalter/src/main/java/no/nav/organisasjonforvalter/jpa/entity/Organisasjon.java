@@ -28,11 +28,14 @@ public class Organisasjon {
     @Column(name = "organisasjonsnummer")
     private String organisasjonsnummer;
 
-    @Column(name = "organisasjonsform")
-    private String organisasjonsform;
+    @Column(name = "enhetstype")
+    private String enhetstype;
 
     @Column(name = "naeringskode")
     private String naeringskode;
+
+    @Column(name = "sektorkode")
+    private String sektorkode;
 
     @Column(name = "formaal")
     private String formaal;
@@ -48,6 +51,9 @@ public class Organisasjon {
 
     @Column(name = "nettside")
     private String nettside;
+
+    @Column(name = "maalform")
+    private String maalform;
 
     @JoinColumn(name = "adresse_id")
     @OneToMany

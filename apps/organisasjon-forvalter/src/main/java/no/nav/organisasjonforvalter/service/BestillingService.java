@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonMottakConsumer;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonNavnConsumer;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonNummerConsumer;
+import no.nav.organisasjonforvalter.jpa.repository.AdresseRepository;
+import no.nav.organisasjonforvalter.jpa.repository.OrganisasjonRepository;
 import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest;
 import no.nav.organisasjonforvalter.provider.rs.responses.BestillingResponse;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Metadata;
@@ -18,21 +20,15 @@ public class BestillingService {
 
     private final OrganisasjonNavnConsumer organisasjonNavnConsumer;
     private final OrganisasjonNummerConsumer organisasjonNummerConsumer;
-    private final OrganisasjonMottakConsumer organisasjonMottakConsumer;
+    private final OrganisasjonRepository organisasjonRepository;
+    private final AdresseRepository adresseRepository;
 
     public BestillingResponse execute(BestillingRequest request) {
 
         List<String> orgname = organisasjonNavnConsumer.getOrgName(1);
         List<String> orgNummer = organisasjonNummerConsumer.getOrgnummer(1);
 
-        organisasjonMottakConsumer.send(Organisasjon.newBuilder()
-                .setNavn(orgname.get(0))
-                .setMetadata(Metadata.newBuilder()
-                        .setEnhetstype("AS")
-                        .setOrgnummer(orgNummer.get(0))
-                        .setMiljo("t4")
-                        .build())
-                .build());
+
         return null;
     }
 }
