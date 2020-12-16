@@ -339,7 +339,7 @@ public class SyntController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/amelding/arbeidsforhold/charRnn")
+    @PostMapping("/amelding/arbeidsforhold/crnn")
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
     public ResponseEntity<List<ArbeidsforholdAmelding>> generateArbeidforholdCharRnn(
             @RequestBody ArbeidsforholdAmelding tidligereArbeidsforhold
