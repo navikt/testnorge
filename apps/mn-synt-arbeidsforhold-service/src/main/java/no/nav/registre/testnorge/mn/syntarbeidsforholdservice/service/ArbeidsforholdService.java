@@ -26,7 +26,7 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Organisajon
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ArbeidsfoholdService {
+public class ArbeidsforholdService {
     private final MNOrganisasjonConsumer mnorganisasjonConsumer;
     private final ArbeidsforholdConsumer arbeidsforholdConsumer;
     private final SyntrestConsumer syntrestConsumer;
@@ -55,7 +55,7 @@ public class ArbeidsfoholdService {
         }
     }
 
-    public Arbeidsforhold createArbeidsforhold(LocalDate kalendermaaned, String ident, String virksomhetsnummer) {
+    private Arbeidsforhold createArbeidsforhold(LocalDate kalendermaaned, String ident, String virksomhetsnummer) {
         return syntrestConsumer.getFirstArbeidsforhold(kalendermaaned, ident, virksomhetsnummer);
     }
 
@@ -154,7 +154,7 @@ public class ArbeidsfoholdService {
         arbeidsforholdConsumer.sendOpplysningspliktig(opplysningspliktig, miljo);
     }
 
-    public void syntHistory(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {
+    private void syntHistory(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {
         Optional<Opplysningspliktig> thisMonth = getOpplysningspliktigForMonth(organisajon, kalendermaaned, miljo);
         Optional<Opplysningspliktig> lastMonth = getOpplysningspliktigForPreviousMonth(organisajon, kalendermaaned, miljo);
         if (thisMonth.isPresent()) {
@@ -167,7 +167,7 @@ public class ArbeidsfoholdService {
     }
 
 
-    public void syntHistory(
+    private void syntHistory(
             Organisajon opplysningspliktigOrganisajon,
             Arbeidsforhold previous,
             String miljo,
@@ -211,7 +211,7 @@ public class ArbeidsfoholdService {
 
     private List<Arbeidsforhold> createArbeidsforholdHistorikk(boolean newArbeidsforhold, LocalDate kalendermaaned, Arbeidsforhold previous, List<Arbeidsforhold> historikk) {
         if (newArbeidsforhold) {
-            log.info("Bytter job for person {} med tidligere arbeidsforhold {}.", previous.getIdent(), previous.getArbeidsforholdId());
+            log.info("Bytter jobb for person {} med tidligere arbeidsforhold {}.", previous.getIdent(), previous.getArbeidsforholdId());
             Arbeidsforhold next = syntrestConsumer.getFirstArbeidsforhold(kalendermaaned, previous.getIdent(), previous.getVirksomhentsnummer());
             log.info("Nytt arbeidsforhold id {} for person {}.", next.getArbeidsforholdId(), next.getIdent());
             return Collections.singletonList(next);

@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 
-import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.service.ArbeidsfoholdService;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.service.ArbeidsforholdService;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/opplysningspliktig")
 public class OpplysningspliktigController {
 
-    private final ArbeidsfoholdService syntentiseringService;
+    private final ArbeidsforholdService syntentiseringService;
 
     @PostMapping
     public ResponseEntity<?> generateForAll(

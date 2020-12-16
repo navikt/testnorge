@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.util.Set;
 
-import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.service.ArbeidsfoholdService;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.service.ArbeidsforholdService;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.service.IdentService;
 
 @RestController
@@ -22,7 +22,7 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.service.IdentServi
 @RequestMapping("api/v1/identer")
 public class IdentController {
 
-    private final ArbeidsfoholdService arbeidsfoholdService;
+    private final ArbeidsforholdService arbeidsforholdService;
     private final IdentService identService;
 
     @PostMapping("/{ident}")
@@ -37,7 +37,7 @@ public class IdentController {
                     .badRequest()
                     .body("Kan ikke opprette for ident " + ident + "fordi personen allerede finnes AAREG (" + miljo + ").");
         }
-        arbeidsfoholdService.startArbeidsforhold(ident, fom, tom, miljo);
+        arbeidsforholdService.startArbeidsforhold(ident, fom, tom, miljo);
         return ResponseEntity.noContent().build();
     }
 
