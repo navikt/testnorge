@@ -3,6 +3,12 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 organisasjon:
   navn:
     url: https://generer-navn-service.dev.intern.nav.no
+    client:
+      id: 92e61fa8-6fca-48e2-87b9-29d8bb6cf850
+  nummer:
+    url: https://organisasjon-orgnummer-service.dev.intern.nav.no
+    client:
+      id: cc5eab78-8ec7-4f4f-8b2f-7e6f46870a48
 
 spring:
   application:
