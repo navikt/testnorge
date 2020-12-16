@@ -34,6 +34,8 @@ public class SyntrestConsumer {
     private final ArbeidsforholdHistorikkAdapter adapter;
     private final SyntetiseringProperties properties;
 
+    private static final String OPPRETTELSE_FEILMELDING = "Feil med opprettelse av arbeidsforhold: ";
+
     public SyntrestConsumer(
             @Value("${consumers.syntrest.url}") String url,
             ObjectMapper objectMapper,
@@ -58,27 +60,27 @@ public class SyntrestConsumer {
     }
 
     @SneakyThrows
-    public ArbeidsforholdResponse getNesteArbeidsforholdResponse(Arbeidsforhold arbeidsforhold, LocalDate kaldermaaned) {
+    private ArbeidsforholdResponse getNesteArbeidsforholdResponse(Arbeidsforhold arbeidsforhold, LocalDate kaldermaaned) {
         var dto = arbeidsforhold.toSyntrestDTO(kaldermaaned);
         try {
             return new GenerateNextArbeidsforholdCommand(webClient, dto).call();
         } catch (WebClientResponseException.InternalServerError e) {
-            throw new RuntimeException("Feil med opprettelse av arbeidsforhold: " + objectMapper.writeValueAsString(dto), e);
+            throw new RuntimeException(OPPRETTELSE_FEILMELDING + objectMapper.writeValueAsString(dto), e);
         }
     }
 
     @SneakyThrows
-    public List<ArbeidsforholdResponse> getArbeidsforholdHistorikkResponse(Arbeidsforhold arbeidsforhold, LocalDate kaldermaaned) {
+    private List<ArbeidsforholdResponse> getArbeidsforholdHistorikkResponse(Arbeidsforhold arbeidsforhold, LocalDate kaldermaaned) {
         var dto = arbeidsforhold.toSyntrestDTO(kaldermaaned);
         try {
             return new GenerateArbeidsforholdHistorikkCommand(webClient, dto).call();
         } catch (WebClientResponseException.InternalServerError e) {
-            throw new RuntimeException("Feil med opprettelse av arbeidsforhold: " + objectMapper.writeValueAsString(dto), e);
+            throw new RuntimeException(OPPRETTELSE_FEILMELDING + objectMapper.writeValueAsString(dto), e);
         }
     }
 
     @SneakyThrows
-    public ArbeidsforholdResponse getNesteArbeidsforholdWithHistorikkResponse(Arbeidsforhold arbeidsforhold, LocalDate kaldermaaned) {
+    private ArbeidsforholdResponse getNesteArbeidsforholdWithHistorikkResponse(Arbeidsforhold arbeidsforhold, LocalDate kaldermaaned) {
         String historikk = adapter.get(arbeidsforhold.getArbeidsforholdId()).getHistorikk();
         var dto = arbeidsforhold.toSyntrestDTO(kaldermaaned, historikk);
         try {
@@ -86,7 +88,7 @@ public class SyntrestConsumer {
             adapter.save(arbeidsforhold.getArbeidsforholdId(), response.getHistorikk());
             return response;
         } catch (WebClientResponseException.InternalServerError e) {
-            throw new RuntimeException("Feil med opprettelse av arbeidsforhold: " + objectMapper.writeValueAsString(dto), e);
+            throw new RuntimeException(OPPRETTELSE_FEILMELDING + objectMapper.writeValueAsString(dto), e);
         }
     }
 
