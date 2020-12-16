@@ -1,8 +1,10 @@
 package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
@@ -12,10 +14,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.adapter.ArbeidsforholdHistorikkAdapter;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.SyntetiseringProperties;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GenerateArbeidsforholdHistorikkCommand;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GenerateNextArbeidsforholdCommand;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GenerateNextArbeidsforholdWithHistorikkCommand;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GenerateStartArbeidsforholdCommand;
@@ -28,7 +33,6 @@ public class SyntrestConsumer {
     private final ObjectMapper objectMapper;
     private final ArbeidsforholdHistorikkAdapter adapter;
     private final SyntetiseringProperties properties;
-
 
     public SyntrestConsumer(
             @Value("${consumers.syntrest.url}") String url,
@@ -53,12 +57,21 @@ public class SyntrestConsumer {
                 .build();
     }
 
-
     @SneakyThrows
     public ArbeidsforholdResponse getNesteArbeidsforholdResponse(Arbeidsforhold arbeidsforhold, LocalDate kaldermaaned) {
         var dto = arbeidsforhold.toSyntrestDTO(kaldermaaned);
         try {
             return new GenerateNextArbeidsforholdCommand(webClient, dto).call();
+        } catch (WebClientResponseException.InternalServerError e) {
+            throw new RuntimeException("Feil med opprettelse av arbeidsforhold: " + objectMapper.writeValueAsString(dto), e);
+        }
+    }
+
+    @SneakyThrows
+    public List<ArbeidsforholdResponse> getArbeidsforholdHistorikkResponse(Arbeidsforhold arbeidsforhold, LocalDate kaldermaaned) {
+        var dto = arbeidsforhold.toSyntrestDTO(kaldermaaned);
+        try {
+            return new GenerateArbeidsforholdHistorikkCommand(webClient, dto).call();
         } catch (WebClientResponseException.InternalServerError e) {
             throw new RuntimeException("Feil med opprettelse av arbeidsforhold: " + objectMapper.writeValueAsString(dto), e);
         }
@@ -89,6 +102,18 @@ public class SyntrestConsumer {
                 arbeidsforhold.getArbeidsforholdId(),
                 arbeidsforhold.getVirksomhentsnummer()
         );
+    }
+
+    @SneakyThrows
+    public List<Arbeidsforhold> getArbeidsforholdHistorikk(Arbeidsforhold arbeidsforhold, LocalDate kaldermaaned) {
+        log.info("Finner arbeidsforhold historikk fra og med {}.", kaldermaaned.plusMonths(1));
+        List<ArbeidsforholdResponse> response = getArbeidsforholdHistorikkResponse(arbeidsforhold, kaldermaaned);
+        return response.stream().map(res -> new Arbeidsforhold(
+                res,
+                arbeidsforhold.getIdent(),
+                arbeidsforhold.getArbeidsforholdId(),
+                arbeidsforhold.getVirksomhentsnummer()))
+                .collect(Collectors.toList());
     }
 
     public Arbeidsforhold getFirstArbeidsforhold(LocalDate startdato, String ident, String virksomhetsnummer) {
