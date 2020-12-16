@@ -1,11 +1,13 @@
 package no.nav.organisasjonforvalter.jpa.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -14,16 +16,17 @@ import static java.util.Objects.isNull;
 
 @Data
 @Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Organisasjon")
-public class Organisasjon {
+public class Organisasjon implements Serializable {
 
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "adresse_seq")
     @SequenceGenerator(name = "adresse_seq", sequenceName = "ADRESSE_SEQ", allocationSize = 1)
-    private String id;
+    private Long id;
 
     @Column(name = "organisasjonsnummer")
     private String organisasjonsnummer;

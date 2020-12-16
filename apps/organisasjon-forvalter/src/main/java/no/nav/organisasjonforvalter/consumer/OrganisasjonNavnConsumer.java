@@ -58,6 +58,12 @@ public class OrganisasjonNavnConsumer {
         return orgNavn.stream().map(Navn::toString).collect(Collectors.toList());
     }
 
+    public String getOrgName() {
+
+        List<String> orgName = getOrgName(1);
+        return orgName.isEmpty() ? null : orgName.get(0);
+    }
+
     @Data
     @NoArgsConstructor
     @AllArgsConstructor

@@ -50,4 +50,10 @@ public class OrganisasjonNummerConsumer {
 
             return response.hasBody() ? response.getBody(): Collections.emptyList();
     }
+
+    public String getOrgnummer() {
+
+        List<String> orgnummer = getOrgnummer(1);
+        return orgnummer.isEmpty() ? null : orgnummer.get(0);
+    }
 }

@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ import static java.util.Objects.isNull;
 public class BestillingRequest {
 
     public enum MaalformType {B, N}
-    public enum AdresseType {FORRETNING_ADR, POST_ADR}
+    public enum AdresseType {FADR, PADR}
 
     private List<OrganisasjonRequest> organisasjoner;
 
@@ -31,20 +32,20 @@ public class BestillingRequest {
 
         @Schema(required = true, example = "BEDR", description = "I hht kodeverk EnhetstyperJuridiskEnhet eller EnhetstyperVirksomhet")
         private String enhetstype;
-        @Schema(required = true, example = "28.930", description = "I hht kodeverk Næringskoder")
+        @Schema(example = "28.930", description = "I hht kodeverk Næringskoder")
         private String naeringskode;
-        @Schema(required = true, example = "6100", description = "I hht kodeverk Sektorkoder")
+        @Schema(example = "6100", description = "I hht kodeverk Sektorkoder")
         private String sektorkode;
-        @Schema(required = true, example = "Oppnå utjevning mellom kulturelle forskjeller", description = "Fritekstfelt opptil 70 tegn")
+        @Schema(example = "Oppnå utjevning mellom kulturelle forskjeller", description = "Fritekstfelt opptil 70 tegn")
         private String formaal;
         private String telefon;
         private String epost;
         private String nettside;
         private MaalformType maalform;
-        private List<Adresse> adresser;
+        private List<AdresseRequest> adresser;
         private List<OrganisasjonRequest> underenheter;
 
-        public List<Adresse> getAdresser() {
+        public List<AdresseRequest> getAdresser() {
             return isNull(adresser) ? (adresser = new ArrayList<>()) : adresser;
         }
 
@@ -56,15 +57,21 @@ public class BestillingRequest {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Adresse {
+    public static class AdresseRequest {
 
         private AdresseType adressetype;
+        @Schema(maxLength = 35, description = "Inntil 3 adresselinjer a 35 tegn")
         private List<String> adresselinjer;
+        @Schema(maxLength = 9, description = "Hvis landkode NOR eller blank landkode: i hht kodeverk Postnummer, ellers fritt")
         private String postnr;
+        @Schema(maxLength = 35, description = "Benyttes for utenlandsk poststed kun")
+        private String poststed;
+        @Schema(maxLength = 9, description = "Hvis landkode NOR eller blank landkode: I hht kodeverk Kommuner")
         private String kommunenr;
+        @Schema(maxLength = 3, description = "I hht kodeverk Landkoder")
         private String landkode;
-        private String gatekode;
-        private String boenhet;
+        @Schema(maxLength = 15, description = "Denne inneholder ID fra matrikkelen (når vi en gang får dette)")
+        private String vegadresseId;
 
         public List<String> getAdresselinjer() {
             return isNull(adresselinjer) ? (adresselinjer = new ArrayList<>()) : adresselinjer;

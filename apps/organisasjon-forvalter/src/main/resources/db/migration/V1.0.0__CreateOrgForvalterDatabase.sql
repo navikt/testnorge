@@ -22,14 +22,13 @@ create table adresse
 (
     id                 integer primary key,
     organisasjon_id    integer references organisasjon (id),
-    adressetype        varchar(15),
-    adresse            varchar(300),
-    gatekode           varchar(5),
-    husnummer          varchar(1),
-    boenhet            varchar(5),
+    adressetype        varchar(4),
+    adresse            varchar(110),
     postnr             varchar(9),
+    poststed           varchar(35),
     kommunenr          varchar(9),
-    landkode           varchar(3)
+    landkode           varchar(3),
+    vegadresseId       varchar(15)
 );
 
 -------------------------------------
