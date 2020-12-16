@@ -23,6 +23,7 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.SyntrestC
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Arbeidsforhold;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Opplysningspliktig;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Organisajon;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.exception.MNOrganisasjonException;
 
 @Slf4j
 @Service
@@ -43,7 +44,7 @@ public class ArbeidsforholdService {
                 .collect(Collectors.toList());
 
         if (organisajoner.isEmpty()) {
-            throw new RuntimeException("Fant ingen opplysningspliktige i Mini-Norge som driver virksomheter");
+            throw new MNOrganisasjonException("Fant ingen opplysningspliktige i Mini-Norge som driver virksomheter");
         }
         return organisajoner;
     }
