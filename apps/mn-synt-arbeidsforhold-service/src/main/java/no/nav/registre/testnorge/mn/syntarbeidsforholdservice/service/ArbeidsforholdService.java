@@ -2,6 +2,7 @@ package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -32,7 +33,6 @@ public class ArbeidsforholdService {
     private final SyntrestConsumer syntrestConsumer;
     private final SyntetiseringProperties syntetiseringProperties;
     private final Random random = new Random();
-
 
     private List<Organisajon> getOpplysningspliktigeorganisasjoner(String miljo) {
         List<Organisajon> organisajoner = mnorganisasjonConsumer
@@ -166,7 +166,6 @@ public class ArbeidsforholdService {
         }
     }
 
-
     private void syntHistory(
             Organisajon opplysningspliktigOrganisajon,
             Arbeidsforhold previous,
@@ -215,14 +214,12 @@ public class ArbeidsforholdService {
             Arbeidsforhold next = syntrestConsumer.getFirstArbeidsforhold(kalendermaaned, previous.getIdent(), previous.getVirksomhentsnummer());
             log.info("Nytt arbeidsforhold id {} for person {}.", next.getArbeidsforholdId(), next.getIdent());
             return Collections.singletonList(next);
-        }
-        else if (historikk.isEmpty()){
+        } else if (historikk.isEmpty()) {
             return syntrestConsumer.getArbeidsforholdHistorikk(previous, kalendermaaned.minusMonths(1));
         } else {
             return historikk;
         }
     }
-
 
     private Arbeidsforhold createArbeidsforhold(boolean newArbeidsforhold, LocalDate kalendermaaned, Arbeidsforhold previous) {
         if (newArbeidsforhold) {
