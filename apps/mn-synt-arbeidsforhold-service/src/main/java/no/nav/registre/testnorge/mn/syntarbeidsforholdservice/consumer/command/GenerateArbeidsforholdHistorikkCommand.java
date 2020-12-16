@@ -27,7 +27,7 @@ public class GenerateArbeidsforholdHistorikkCommand implements Callable<List<Arb
         log.info("Generer arbeidsforhold historikk.");
         return webClient
                 .post()
-                .uri("/api/v1/generate/amelding/arbeidsforhold/charRnn")
+                .uri("/api/v1/generate/amelding/arbeidsforhold/crnn")
                 .body(BodyInserters.fromPublisher(Mono.just(arbeidsforholdDTO), ArbeidsforholdRequest.class))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
