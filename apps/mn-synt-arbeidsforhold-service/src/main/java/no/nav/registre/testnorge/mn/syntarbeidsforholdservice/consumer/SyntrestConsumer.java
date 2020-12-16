@@ -25,6 +25,7 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.G
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GenerateNextArbeidsforholdWithHistorikkCommand;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GenerateStartArbeidsforholdCommand;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Arbeidsforhold;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.exception.SyntetiseringException;
 
 @Slf4j
 @Component
@@ -65,7 +66,7 @@ public class SyntrestConsumer {
         try {
             return new GenerateNextArbeidsforholdCommand(webClient, dto).call();
         } catch (WebClientResponseException.InternalServerError e) {
-            throw new RuntimeException(OPPRETTELSE_FEILMELDING + objectMapper.writeValueAsString(dto), e);
+            throw new SyntetiseringException(OPPRETTELSE_FEILMELDING + objectMapper.writeValueAsString(dto), e);
         }
     }
 
@@ -75,7 +76,7 @@ public class SyntrestConsumer {
         try {
             return new GenerateArbeidsforholdHistorikkCommand(webClient, dto).call();
         } catch (WebClientResponseException.InternalServerError e) {
-            throw new RuntimeException(OPPRETTELSE_FEILMELDING + objectMapper.writeValueAsString(dto), e);
+            throw new SyntetiseringException(OPPRETTELSE_FEILMELDING + objectMapper.writeValueAsString(dto), e);
         }
     }
 
@@ -88,7 +89,7 @@ public class SyntrestConsumer {
             adapter.save(arbeidsforhold.getArbeidsforholdId(), response.getHistorikk());
             return response;
         } catch (WebClientResponseException.InternalServerError e) {
-            throw new RuntimeException(OPPRETTELSE_FEILMELDING + objectMapper.writeValueAsString(dto), e);
+            throw new SyntetiseringException(OPPRETTELSE_FEILMELDING + objectMapper.writeValueAsString(dto), e);
         }
     }
 
@@ -124,7 +125,7 @@ public class SyntrestConsumer {
             ArbeidsforholdResponse response = new GenerateStartArbeidsforholdCommand(webClient, startdato).call();
             return new Arbeidsforhold(response, ident, virksomhetsnummer);
         } catch (WebClientResponseException.InternalServerError e) {
-            throw new RuntimeException("Feil med start av arbeidsforhold for dato: " + startdato, e);
+            throw new SyntetiseringException("Feil med start av arbeidsforhold for dato: " + startdato, e);
         }
     }
 }
