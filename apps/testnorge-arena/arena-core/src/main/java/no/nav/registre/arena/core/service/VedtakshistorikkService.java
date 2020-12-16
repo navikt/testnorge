@@ -180,6 +180,7 @@ public class VedtakshistorikkService {
         opprettVedtakUngUfoer(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakTvungenForvaltning(vedtakshistorikk, personident, miljoe, rettigheter, identerMedKontonummer);
         opprettVedtakFritakMeldekort(vedtakshistorikk, personident, miljoe, rettigheter);
+        oppdaterTiltaksdeltakelse(vedtakshistorikk, personident, miljoe);
         opprettVedtakTiltaksdeltakelse(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettFoersteVedtakEndreDeltakerstatus(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakTiltakspenger(vedtakshistorikk, personident, miljoe, rettigheter);
@@ -447,11 +448,10 @@ public class VedtakshistorikkService {
         }
     }
 
-    private void opprettVedtakTiltaksdeltakelse(
+    private void oppdaterTiltaksdeltakelse(
             Vedtakshistorikk historikk,
             String personident,
-            String miljoe,
-            List<RettighetRequest> rettigheter
+            String miljoe
     ) {
         var tiltaksdeltakelser = historikk.getTiltaksdeltakelse();
         if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
@@ -466,6 +466,7 @@ public class VedtakshistorikkService {
 
                 if (tiltak != null) {
                     deltakelse.setTiltakId(tiltak.getTiltakId());
+                    deltakelse.setTiltakProsentDeltid(tiltak.getTiltakProsentDeltid());
                     deltakelse.setFraDato(tiltak.getFraDato());
                     deltakelse.setTilDato(tiltak.getTilDato());
                 }
@@ -476,19 +477,30 @@ public class VedtakshistorikkService {
 
             nyeTiltaksdeltakelser = vedtakUtils.removeOverlappingTiltakVedtak(nyeTiltaksdeltakelser, historikk.getAap());
 
-            if (nyeTiltaksdeltakelser != null && !nyeTiltaksdeltakelser.isEmpty()) {
-                List<NyttVedtakTiltak> nyeVedtakRequests = new ArrayList<>();
-                for (var deltakelse : nyeTiltaksdeltakelser) {
-                    nyeVedtakRequests.add(vedtakUtils.getVedtakForTiltaksdeltakelseRequest(deltakelse));
-                }
-
-                var rettighetRequest = new RettighetTiltaksdeltakelseRequest(nyeVedtakRequests);
-
-                rettighetRequest.setPersonident(personident);
-                rettighetRequest.setMiljoe(miljoe);
-                rettigheter.add(rettighetRequest);
-            }
             historikk.setTiltaksdeltakelse(nyeTiltaksdeltakelser);
+        }
+    }
+
+    private void opprettVedtakTiltaksdeltakelse(
+            Vedtakshistorikk historikk,
+            String personident,
+            String miljoe,
+            List<RettighetRequest> rettigheter
+    ) {
+        var tiltaksdeltakelser = historikk.getTiltaksdeltakelse();
+        if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
+            List<NyttVedtakTiltak> nyeVedtakRequests = new ArrayList<>();
+
+            for (var deltakelse : tiltaksdeltakelser) {
+                nyeVedtakRequests.add(vedtakUtils.getVedtakForTiltaksdeltakelseRequest(deltakelse));
+            }
+
+            var rettighetRequest = new RettighetTiltaksdeltakelseRequest(nyeVedtakRequests);
+
+            rettighetRequest.setPersonident(personident);
+            rettighetRequest.setMiljoe(miljoe);
+            rettigheter.add(rettighetRequest);
+
         }
     }
 
@@ -607,7 +619,7 @@ public class VedtakshistorikkService {
             String miljoe,
             List<RettighetRequest> rettigheter
     ) {
-        if (vedtak != null && !vedtak.isEmpty()) {
+        if (vedtak != null && !vedtak.isEmpty() && !rettigheter.isEmpty()) {
             var rettighetRequest = new RettighetTilleggRequest(vedtak);
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);
