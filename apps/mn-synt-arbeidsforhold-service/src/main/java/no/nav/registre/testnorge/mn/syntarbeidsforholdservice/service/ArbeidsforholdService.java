@@ -190,22 +190,24 @@ public class ArbeidsforholdService {
             );
         }
         List<Arbeidsforhold> newHistorikk = createArbeidsforholdHistorikk(newArbeidsforhold, kalendermaaned, previous, historikk);
-        Arbeidsforhold next = newHistorikk.get(0);
-        newHistorikk.remove(0);
-        if (newArbeidsforhold) {
-            List<Organisajon> opplysningspliktigeorganisasjoner = getOpplysningspliktigeorganisasjoner(miljo);
-            Organisajon newOpplysningspliktigOrganisajon = opplysningspliktigeorganisasjoner.get(random.nextInt(opplysningspliktigeorganisasjoner.size()));
-            String virksomhentsnummer = newOpplysningspliktigOrganisajon.getRandomVirksomhentsnummer();
-            next.setVirksomhentsnummer(virksomhentsnummer);
-            Opplysningspliktig opplysningspliktig = getOpplysningspliktig(newOpplysningspliktigOrganisajon, kalendermaaned, miljo);
-            opplysningspliktig.addArbeidsforhold(next);
-            arbeidsforholdConsumer.sendOpplysningspliktig(opplysningspliktig, miljo);
-            syntHistory(newOpplysningspliktigOrganisajon, next, miljo, kalendermaander, Collections.emptyList());
-        } else {
-            Opplysningspliktig opplysningspliktig = getOpplysningspliktig(opplysningspliktigOrganisajon, kalendermaaned, miljo);
-            opplysningspliktig.addArbeidsforhold(next);
-            arbeidsforholdConsumer.sendOpplysningspliktig(opplysningspliktig, miljo);
-            syntHistory(opplysningspliktigOrganisajon, next, miljo, kalendermaander, newHistorikk);
+        if (!newHistorikk.isEmpty()){
+            Arbeidsforhold next = newHistorikk.get(0);
+            newHistorikk.remove(0);
+            if (newArbeidsforhold) {
+                List<Organisajon> opplysningspliktigeorganisasjoner = getOpplysningspliktigeorganisasjoner(miljo);
+                Organisajon newOpplysningspliktigOrganisajon = opplysningspliktigeorganisasjoner.get(random.nextInt(opplysningspliktigeorganisasjoner.size()));
+                String virksomhentsnummer = newOpplysningspliktigOrganisajon.getRandomVirksomhentsnummer();
+                next.setVirksomhentsnummer(virksomhentsnummer);
+                Opplysningspliktig opplysningspliktig = getOpplysningspliktig(newOpplysningspliktigOrganisajon, kalendermaaned, miljo);
+                opplysningspliktig.addArbeidsforhold(next);
+                arbeidsforholdConsumer.sendOpplysningspliktig(opplysningspliktig, miljo);
+                syntHistory(newOpplysningspliktigOrganisajon, next, miljo, kalendermaander, Collections.emptyList());
+            } else {
+                Opplysningspliktig opplysningspliktig = getOpplysningspliktig(opplysningspliktigOrganisajon, kalendermaaned, miljo);
+                opplysningspliktig.addArbeidsforhold(next);
+                arbeidsforholdConsumer.sendOpplysningspliktig(opplysningspliktig, miljo);
+                syntHistory(opplysningspliktigOrganisajon, next, miljo, kalendermaander, newHistorikk);
+            }
         }
     }
 
