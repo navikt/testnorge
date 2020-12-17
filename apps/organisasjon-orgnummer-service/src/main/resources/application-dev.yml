@@ -1,7 +1,7 @@
 azure:
   app:
     client:
-      id: 06c9b9c1-d370-40ea-8181-2c4a6858392f
+      id: cc5eab78-8ec7-4f4f-8b2f-7e6f46870a48
 
 spring:
   security:
@@ -10,3 +10,22 @@ spring:
         jwt:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+  h2:
+    console:
+      enabled: true
+      path: /h2
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  datasource:
+    url: jdbc:h2:mem:testdb?useUnicode=yes&characterEncoding=UTF-8
+    username: sa
+    password:
+    driverClassName: org.h2.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+  cloud:
+    vault:
+      enabled: false

@@ -67,15 +67,14 @@ public class OrganisasjonApiConsumer {
 
     OrganisasjonDTO getOrgnrFraMiljoe (String orgnummer, String miljoe, String token) {
         try {
-            OrganisasjonDTO call = new GetOrganisasjonCommand(webClient, token, orgnummer, miljoe).call();
-            return call;
+            return new GetOrganisasjonCommand(webClient, token, orgnummer, miljoe).call();
         } catch (Exception e) {
             throw new RuntimeException("Kunne ikke hente organisasjon " + orgnummer + " fra miljoe " + miljoe);
         }
     }
     public OrganisasjonDTO getOrgnr (String orgnummer) {
         //evt loop gjennom miljø. Lage tråder
-        String miljoe = "q1";
+        String miljoe = "q1"; //"prod"
 
         String token = accessTokenService.generateToken(clientId).getTokenValue();
         return getOrgnrFraMiljoe(orgnummer, miljoe, token);

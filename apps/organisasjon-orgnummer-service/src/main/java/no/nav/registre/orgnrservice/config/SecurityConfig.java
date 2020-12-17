@@ -29,6 +29,8 @@ public class SecurityConfig extends OAuth2ResourceServerConfiguration {
         http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .headers().frameOptions().disable()
+                .and()
                 .csrf()
                 .disable()
                 .authorizeRequests()

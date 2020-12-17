@@ -1,5 +1,0 @@
-CREATE TABLE ORGNUMMER-POOL
-(
-    ORGNUMMER               VARCHAR(255) PRIMARY KEY,
-    LEDIG                   BOOLEAN      NOT NULL
-);

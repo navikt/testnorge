@@ -5,3 +5,29 @@ spring:
         jwt:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+  datasource:
+    url: jdbc:postgresql://b27dbvl023.preprod.local:5432/orgnummer-pool?useUnicode=yes&characterEncoding=UTF-8
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 0
+  flyway:
+    locations: classpath:db/migration
+    enabled: true
+  jpa:
+    database: POSTGRESQL
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  main:
+    banner-mode: off
+  cloud:
+    vault:
+      database:
+        enabled: true
+
+app:
+  db:
+    flyway:
+      role: orgnummer-pool-admin
+      backend: postgresql/preprod-fss/creds
+      baselineOnMigrate: true
