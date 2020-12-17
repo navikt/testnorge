@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -216,7 +218,7 @@ public class ArbeidsforholdService {
             log.info("Bytter jobb for person {} med tidligere arbeidsforhold {}.", previous.getIdent(), previous.getArbeidsforholdId());
             Arbeidsforhold next = syntrestConsumer.getFirstArbeidsforhold(kalendermaaned, previous.getIdent(), previous.getVirksomhentsnummer());
             log.info("Nytt arbeidsforhold id {} for person {}.", next.getArbeidsforholdId(), next.getIdent());
-            return Collections.singletonList(next);
+            return new ArrayList<>(Arrays.asList(next));
         } else if (historikk.isEmpty()) {
             return getArbeidsforholdHistorikk(previous, kalendermaaned.minusMonths(1));
         } else {
