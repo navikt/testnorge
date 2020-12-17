@@ -1,52 +1,34 @@
 package no.nav.organisasjonforvalter.provider.rs.responses;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Value;
+import lombok.*;
+import org.springframework.boot.autoconfigure.info.ProjectInfoProperties;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static java.util.Objects.isNull;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeployResponse {
 
-    private List<OrgStatus> orgStatus;
+    public enum Status {OK, ERROR}
 
-    public List<OrgStatus> getOrgStatus() {
-        if (isNull(orgStatus)) {
-            orgStatus = new ArrayList<>();
-        }
-        return orgStatus;
+    private Map<String, List<EnvStatus>> orgStatus;
+
+    public Map<String, List<EnvStatus>> getOrgStatus() {
+        return isNull(orgStatus) ? (orgStatus = new HashMap<>()) : orgStatus;
     }
 
     @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class OrgStatus {
-
-        private String orgnummer;
-        private List<EnvStatus> envStatus;
-
-        public List<EnvStatus> getEnvStatus() {
-            if (isNull(envStatus)) {
-                envStatus = new ArrayList<>();
-            }
-            return envStatus;
-        }
-    }
-
-    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class EnvStatus {
 
         private String environment;
-        private String status;
+        private Status status;
+        private String details;
     }
 }

@@ -1,6 +1,7 @@
 package no.nav.organisasjonforvalter.jpa.entity;
 
 import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -28,7 +29,7 @@ public class Adresse implements Serializable {
     private Organisasjon organisasjon;
 
     @Column(name = "adressetype")
-    private String adressetype;
+    private AdresseType adressetype;
 
     @Column(name = "adresse")
     private String adresse;
@@ -47,4 +48,14 @@ public class Adresse implements Serializable {
 
     @Column(name = "vegadresse_id")
     private String vegadresseId;
+
+    @JsonIgnore
+    public boolean isForretningsadresse() {
+        return AdresseType.FADR == getAdressetype();
+    }
+
+    @JsonIgnore
+    public boolean isPostadresse() {
+        return AdresseType.PADR == getAdressetype();
+    }
 }
