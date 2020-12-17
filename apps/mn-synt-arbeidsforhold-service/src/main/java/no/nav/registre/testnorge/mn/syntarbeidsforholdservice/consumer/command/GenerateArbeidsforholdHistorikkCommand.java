@@ -24,7 +24,7 @@ public class GenerateArbeidsforholdHistorikkCommand implements Callable<List<Arb
 
     @Override
     public List<ArbeidsforholdResponse> call() {
-        log.info("Generer arbeidsforhold historikk.");
+        log.info("Genererer arbeidsforhold historikk.");
         return webClient
                 .post()
                 .uri("/api/v1/generate/amelding/arbeidsforhold")

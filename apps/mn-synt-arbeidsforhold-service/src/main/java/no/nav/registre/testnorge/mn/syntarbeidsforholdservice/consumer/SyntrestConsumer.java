@@ -103,7 +103,7 @@ public class SyntrestConsumer {
                 response,
                 arbeidsforhold.getIdent(),
                 arbeidsforhold.getArbeidsforholdId(),
-                arbeidsforhold.getVirksomhentsnummer()
+                arbeidsforhold.getVirksomhetsnummer()
         );
     }
 
@@ -115,7 +115,7 @@ public class SyntrestConsumer {
                 res,
                 arbeidsforhold.getIdent(),
                 arbeidsforhold.getArbeidsforholdId(),
-                arbeidsforhold.getVirksomhentsnummer()))
+                arbeidsforhold.getVirksomhetsnummer()))
                 .collect(Collectors.toList());
     }
 

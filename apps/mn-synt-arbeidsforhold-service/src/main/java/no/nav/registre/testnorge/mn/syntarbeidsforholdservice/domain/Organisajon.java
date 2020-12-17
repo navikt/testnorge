@@ -21,7 +21,7 @@ public class Organisajon {
         return !dto.getDriverVirksomheter().isEmpty();
     }
 
-    public String getRandomVirksomhentsnummer(){
+    public String getRandomVirksomhetsnummer(){
         return dto.getDriverVirksomheter().get(RANDOM.nextInt(dto.getDriverVirksomheter().size()));
     }
 

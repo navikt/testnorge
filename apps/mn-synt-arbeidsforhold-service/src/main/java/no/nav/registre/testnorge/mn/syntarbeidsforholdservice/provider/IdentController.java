@@ -36,7 +36,7 @@ public class IdentController {
         if (identService.getIdenterMedArbeidsforhold(miljo).contains(ident)) {
             return ResponseEntity
                     .badRequest()
-                    .body("Kan ikke opprette for ident " + ident + "fordi personen allerede finnes AAREG (" + miljo + ").");
+                    .body("Kan ikke opprette arbeidsforhold for ident " + ident + "fordi personen allerede finnes i AAREG (" + miljo + ").");
         }
         arbeidsforholdService.startArbeidsforhold(ident, fom, tom, miljo);
         return ResponseEntity.noContent().build();
