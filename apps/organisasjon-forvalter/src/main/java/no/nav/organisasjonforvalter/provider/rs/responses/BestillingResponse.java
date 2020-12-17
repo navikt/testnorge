@@ -1,6 +1,7 @@
 package no.nav.organisasjonforvalter.provider.rs.responses;
 
 import java.util.List;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,5 +14,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BestillingResponse {
 
-    private List<String> orgnummer;
+    private Set<String> orgnummer;
 }

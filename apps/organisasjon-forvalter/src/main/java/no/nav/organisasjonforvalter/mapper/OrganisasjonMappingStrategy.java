@@ -17,9 +17,9 @@ public class OrganisasjonMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(OrganisasjonRequest request, Organisasjon organisasjon, MappingContext context) {
 
+                        organisasjon.getAdresser().forEach(adr -> adr.setOrganisasjon(organisasjon));
                     }
                 })
-                .exclude("adresser")
                 .byDefault()
                 .register();
     }

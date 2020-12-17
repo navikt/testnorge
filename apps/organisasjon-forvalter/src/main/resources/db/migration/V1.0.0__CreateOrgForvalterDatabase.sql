@@ -28,7 +28,7 @@ create table adresse
     poststed           varchar(35),
     kommunenr          varchar(9),
     landkode           varchar(3),
-    vegadresseId       varchar(15)
+    vegadresse_id       varchar(15)
 );
 
 -------------------------------------

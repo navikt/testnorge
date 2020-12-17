@@ -1,20 +1,17 @@
 package no.nav.organisasjonforvalter.jpa.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.Objects.isNull;
 
 @Data
+@ToString
 @Entity
 @Builder
 @NoArgsConstructor
@@ -58,18 +55,16 @@ public class Organisasjon implements Serializable {
     @Column(name = "maalform")
     private String maalform;
 
-    @JoinColumn(name = "adresse_id")
-    @OneToMany
+    @OrderBy("id desc")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "organisasjon", cascade = CascadeType.ALL)
     private List<Adresse> adresser;
 
-    @JsonIgnore
-    @JoinColumn(name = "parent_org", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(cascade={CascadeType.ALL})
+    @JoinColumn(name="parent_org")
     private Organisasjon parent;
 
-    @OneToMany
-    @JoinColumn(name = "id", referencedColumnName = "parent_org")
-    private List<Organisasjon> underorgansisjoner;
+    @OneToMany(mappedBy = "parent")
+    private List<Organisasjon> underenheter;
 
     public List<Adresse> getAdresser() {
         if (isNull(adresser)) {
@@ -78,10 +73,10 @@ public class Organisasjon implements Serializable {
         return adresser;
     }
 
-    public List<Organisasjon> getUnderorgansisjoner() {
-        if (isNull(underorgansisjoner)) {
-            underorgansisjoner = new ArrayList<>();
+    public List<Organisasjon> getUnderenheter() {
+        if (isNull(underenheter)) {
+            underenheter = new ArrayList<>();
         }
-        return underorgansisjoner;
+        return underenheter;
     }
 }

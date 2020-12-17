@@ -19,7 +19,9 @@ spring:
   jpa:
     properties:
       hibernate:
+        format_sql: true
         default-schema: public
+    show-sql: false
   cloud:
     vault:
       host: vault.adeo.no

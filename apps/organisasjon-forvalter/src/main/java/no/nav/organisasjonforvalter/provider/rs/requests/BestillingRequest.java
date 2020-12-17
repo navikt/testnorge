@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Length;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,14 +15,15 @@ import static java.util.Objects.isNull;
 @AllArgsConstructor
 public class BestillingRequest {
 
-    public enum MaalformType {B, N}
-    public enum AdresseType {FADR, PADR}
-
     private List<OrganisasjonRequest> organisasjoner;
 
     public List<OrganisasjonRequest> getOrganisasjoner() {
         return isNull(organisasjoner) ? (organisasjoner = new ArrayList<>()) : organisasjoner;
     }
+
+    public enum MaalformType {B, N}
+
+    public enum AdresseType {FADR, PADR}
 
     @Data
     @NoArgsConstructor

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.organisasjonforvalter.jpa.entity.Organisasjon;
 import no.nav.organisasjonforvalter.provider.rs.requests.DeployRequest;
 import no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse;
+import no.nav.organisasjonforvalter.provider.rs.responses.RsOrganisasjon;
 import no.nav.organisasjonforvalter.service.BestillingService;
 import no.nav.organisasjonforvalter.service.DeploymentService;
 import no.nav.organisasjonforvalter.service.OrganisasjonService;
@@ -36,7 +37,7 @@ public class OrganisasjonController {
     }
 
     @GetMapping
-    public List<Organisasjon> getOrganisasjon(@RequestParam List<String> orgnumre) {
+    public List<RsOrganisasjon> getOrganisasjon(@RequestParam List<String> orgnumre) {
 
         return organisasjonService.getOrganisasjoner(orgnumre);
     }

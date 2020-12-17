@@ -8,7 +8,10 @@ import no.nav.organisasjonforvalter.jpa.entity.Organisasjon;
 import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest;
 import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.AdresseRequest;
 import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.OrganisasjonRequest;
+import no.nav.organisasjonforvalter.provider.rs.responses.RsAdresse;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class AdresseMappingStrategy implements MappingStrategy {
@@ -20,6 +23,16 @@ public class AdresseMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(AdresseRequest request, Adresse adresse, MappingContext context) {
                         adresse.setAdresse(String.join(",", request.getAdresselinjer()));
+                    }
+                })
+                .byDefault()
+                .register();
+
+        factory.classMap(Adresse.class, RsAdresse.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(Adresse adresse, RsAdresse rsAdresse, MappingContext context) {
+                        rsAdresse.setAdresselinjer(List.of(adresse.getAdresse().split(",")));
                     }
                 })
                 .byDefault()
