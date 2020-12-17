@@ -33,7 +33,7 @@ const DeleteButton = ({ onClick }) => {
 	return <Button kind="trashcan" onClick={onClick} title="Fjern" />
 }
 
-const Numbering = ({ idx }) => <span className="dfa-blokk-number">{idx + 1}</span>
+const Numbering = ({ idx }) => <span className="dfa-blokk-number">{idx}</span>
 
 export const DollyFieldArrayWrapper = ({
 	header = null,
@@ -58,11 +58,12 @@ export const DollyFaBlokk = ({
 	handleRemove,
 	hjelpetekst,
 	children,
-	showDeleteButton
+	showDeleteButton,
+	number
 }) => (
 	<div className="dfa-blokk">
 		<div className="dfa-blokk_header">
-			<Numbering idx={idx} />
+			<Numbering idx={number || idx + 1} />
 			<h2>{header}</h2>
 			{hjelpetekst && <Hjelpetekst hjelpetekstFor={header}>{hjelpetekst}</Hjelpetekst>}
 			{showDeleteButton && <DeleteButton onClick={handleRemove} />}
@@ -74,7 +75,7 @@ export const DollyFaBlokk = ({
 export const DollyFaBlokkNested = ({ idx, handleRemove, children }) => (
 	<div className="dfa-blokk-nested">
 		<div className="dfa-blokk_header">
-			<Numbering idx={idx} />
+			<Numbering idx={idx + 1} />
 		</div>
 		<div className="dfa-blokk_content">
 			<DeleteButton onClick={handleRemove} />
@@ -127,7 +128,8 @@ export const FormikDollyFieldArray = ({
 	nested = false,
 	children,
 	isFull = false,
-	canBeEmpty = true
+	canBeEmpty = true,
+	tag
 }) => (
 	<FieldArray name={name}>
 		{arrayHelpers => {
@@ -139,6 +141,7 @@ export const FormikDollyFieldArray = ({
 						{values.map((curr, idx) => {
 							const showDeleteButton = canBeEmpty === true ? true : values.length >= 2
 							const path = `${name}.${idx}`
+							const number = tag ? `${tag}.${idx + 1}` : `${idx + 1}`
 							const handleRemove = () => arrayHelpers.remove(idx)
 							return nested ? (
 								<DollyFaBlokkNested key={idx} idx={idx} handleRemove={handleRemove}>
@@ -148,12 +151,13 @@ export const FormikDollyFieldArray = ({
 								<DollyFaBlokk
 									key={idx}
 									idx={idx}
+									number={number}
 									header={header}
 									hjelpetekst={hjelpetekst}
 									handleRemove={handleRemove}
 									showDeleteButton={showDeleteButton}
 								>
-									{children(path, idx, curr)}
+									{children(path, idx, curr, number)}
 								</DollyFaBlokk>
 							)
 						})}

@@ -1,5 +1,6 @@
 import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
+import organisasjon from '~/ducks/organisasjon'
 import { Attributt, AttributtKategori } from '../Attributt'
 
 export const OrganisasjonDetaljerPanel = ({ stateModifier }: any) => {
@@ -11,27 +12,29 @@ export const OrganisasjonDetaljerPanel = ({ stateModifier }: any) => {
 			heading={OrganisasjonDetaljerPanel.heading}
 			startOpen
 			checkAttributeArray={sm.batchAdd}
-			uncheckAttributeArray={sm.batchRemove}
+			uncheckAttributeArray={() => sm.batchRemove('enhetstype')}
+			// uncheckAttributeArray={sm.batchRemove}
 			iconType="personinformasjon"
 		>
-			<AttributtKategori title="Organisasjon">
+			<AttributtKategori title="Enhetstype">
 				<Attributt
-					attr={sm.attrs.organisasjonsform}
+					attr={sm.attrs.enhetstype}
 					disabled={true}
-					title="Det er obligatorisk å velge organisasjonsform for organisasjonen"
+					title="Det er obligatorisk å velge enhetstype for organisasjonen"
 				/>
 				<Attributt attr={sm.attrs.naeringskode} />
 				<Attributt attr={sm.attrs.formaal} />
 			</AttributtKategori>
-			<AttributtKategori title="Adresser">
-				<Attributt attr={sm.attrs.forretningsadresse} />
-				<Attributt attr={sm.attrs.postadresse} />
-			</AttributtKategori>
 			<AttributtKategori title="Kontaktdata">
 				<Attributt attr={sm.attrs.telefon} />
-				<Attributt attr={sm.attrs.mobiltelefon} />
+				{/* <Attributt attr={sm.attrs.mobiltelefon} /> */}
 				<Attributt attr={sm.attrs.epost} />
 				<Attributt attr={sm.attrs.nettadresse} />
+			</AttributtKategori>
+			<AttributtKategori title="Adresser">
+				{/* <Attributt attr={sm.attrs.adresser} /> */}
+				<Attributt attr={sm.attrs.forretningsadresse} />
+				<Attributt attr={sm.attrs.postadresse} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -39,13 +42,13 @@ export const OrganisasjonDetaljerPanel = ({ stateModifier }: any) => {
 
 OrganisasjonDetaljerPanel.heading = 'Detaljer'
 
-OrganisasjonDetaljerPanel.initialValues = ({ set, del, has }: any) => {
+OrganisasjonDetaljerPanel.initialValues = ({ set, setMulti, del, has }: any) => {
 	return {
-		organisasjonsform: {
-			label: 'Organisasjonsform',
-			checked: has('organisasjon.organisasjonsform'),
-			add: () => set('organisasjon.organisasjonsform', null),
-			remove: () => del('organisasjon.organisasjonsform')
+		enhetstype: {
+			label: 'Enhetstype',
+			checked: has('organisasjon.enhetstype'),
+			add: () => set('organisasjon.enhetstype', null),
+			remove: () => del('organisasjon.enhetstype')
 		},
 		naeringskode: {
 			label: 'Næringskode',
@@ -65,12 +68,12 @@ OrganisasjonDetaljerPanel.initialValues = ({ set, del, has }: any) => {
 			add: () => set('organisasjon.telefon', null),
 			remove: () => del('organisasjon.telefon')
 		},
-		mobiltelefon: {
-			label: 'Mobiltelefon',
-			checked: has('organisasjon.mobiltelefon'),
-			add: () => set('organisasjon.mobiltelefon', null),
-			remove: () => del('organisasjon.mobiltelefon')
-		},
+		// mobiltelefon: {
+		// 	label: 'Mobiltelefon',
+		// 	checked: has('organisasjon.mobiltelefon'),
+		// 	add: () => set('organisasjon.mobiltelefon', null),
+		// 	remove: () => del('organisasjon.mobiltelefon')
+		// },
 		epost: {
 			label: 'E-postadresse',
 			checked: has('organisasjon.epost'),
@@ -83,16 +86,34 @@ OrganisasjonDetaljerPanel.initialValues = ({ set, del, has }: any) => {
 			add: () => set('organisasjon.nettadresse', null),
 			remove: () => del('organisasjon.nettadresse')
 		},
+
+		// adresser: {},
+		// forretningsadresse: {
+		// 	label: 'Forretningsadresse',
+		// 	checked: has('organisasjon.forretningsadresse'),
+		// 	add: () =>
+		// 		set('organisasjon.forretningsadresse', {
+		// 			landkode: 'NOR',
+		// 			adresseLinje1: '',
+		// 			adresseLinje2: '',
+		// 			postnr: ''
+		// 		}),
+		// 	remove: () => del('organisasjon.forretningsadresse')
+		// },
+
 		forretningsadresse: {
 			label: 'Forretningsadresse',
 			checked: has('organisasjon.forretningsadresse'),
 			add: () =>
 				set('organisasjon.forretningsadresse', {
+					// adressetype: 'FORRETNING_ADR',
+					adresselinje: [null, null, null],
+					postnr: '',
+					kommunenr: '',
 					landkode: 'NOR',
-					adresseLinje1: '',
-					adresseLinje2: '',
-					postnr: ''
+					poststed: null
 				}),
+
 			remove: () => del('organisasjon.forretningsadresse')
 		},
 		postadresse: {
@@ -100,12 +121,48 @@ OrganisasjonDetaljerPanel.initialValues = ({ set, del, has }: any) => {
 			checked: has('organisasjon.postadresse'),
 			add: () =>
 				set('organisasjon.postadresse', {
+					// adressetype: 'POST_ADR',
+					adresselinje: [null, null, null],
+					postnr: '',
+					kommunenr: '',
 					landkode: 'NOR',
-					adresseLinje1: '',
-					adresseLinje2: '',
-					postnr: ''
+					poststed: null
 				}),
+
 			remove: () => del('organisasjon.postadresse')
 		}
+
+		// ,
+		// adresser: {
+		// 	label: 'Postadresse',
+		// 	checked: has('organisasjon.adresser'),
+		// 	add: () =>
+		// 		set('organisasjon.adresser', [
+		// 			{
+		// 				adressetype: 'POST_ADR',
+		// 				adresselinje: [''],
+		// 				postnr: '',
+		// 				kommunenr: '',
+		// 				landkode: 'NOR'
+		// 			}
+		// 		]),
+		// 	remove: () => del('organisasjon.adresser')
+		// }
+		// postadresse: {
+		// 	label: 'Postadresse',
+		// 	checked: has('organisasjon.postadresse'),
+		// 	add: () =>
+		// 		set('organisasjon.postadresse', {
+		// 			landkode: 'NOR',
+		// 			adresseLinje1: '',
+		// 			adresseLinje2: '',
+		// 			postnr: ''
+		// 		}),
+		// 	remove: () => del('organisasjon.postadresse')
+		// }
+		// ,
+		// adresser: {
+		// 	label
+		// }
 	}
 }

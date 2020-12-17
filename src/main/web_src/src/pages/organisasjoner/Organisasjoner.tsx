@@ -41,8 +41,8 @@ export default function Organisasjoner({ history, isFetching, getOrganisasjoner 
 		return response.value
 	}, [])
 
-	const antallOrg = !tempOrg.loading && tempOrg.value ? tempOrg.value.liste.length : 0
-	// const antallOrg = 0
+	// const antallOrg = !tempOrg.loading && tempOrg.value ? tempOrg.value.liste.length : 0
+	const antallOrg = 0
 	const antallBest = 0
 
 	const startBestilling = (type: string) => {
