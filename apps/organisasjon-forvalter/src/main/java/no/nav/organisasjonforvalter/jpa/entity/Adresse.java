@@ -28,6 +28,7 @@ public class Adresse implements Serializable {
     @JoinColumn(name = "organisasjon_id", nullable = false)
     private Organisasjon organisasjon;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "adressetype")
     private AdresseType adressetype;
 
@@ -51,11 +52,11 @@ public class Adresse implements Serializable {
 
     @JsonIgnore
     public boolean isForretningsadresse() {
-        return AdresseType.FADR == getAdressetype();
+        return AdresseType.FADR.name().equals(getAdressetype());
     }
 
     @JsonIgnore
     public boolean isPostadresse() {
-        return AdresseType.PADR == getAdressetype();
+        return AdresseType.PADR.name().equals(getAdressetype());
     }
 }
