@@ -1,6 +1,5 @@
 package no.nav.organisasjonforvalter.consumer;
 
-import javassist.bytecode.Descriptor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.jpa.entity.Adresse;
@@ -9,9 +8,7 @@ import no.nav.registre.testnorge.libs.avro.organisasjon.*;
 import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.*;
 import org.springframework.stereotype.Service;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
@@ -30,7 +27,25 @@ public class OrganisasjonMottakConsumer {
     private final ForretningsadresseProducer forretningsadresseProducer;
     private final PostadresseProducer postadresseProducer;
 
+    private static Metadata getMetadata(Organisasjon organisasjon, String miljloe) {
+        return Metadata.newBuilder()
+                .setOrgnummer(organisasjon.getOrganisasjonsnummer())
+                .setEnhetstype(organisasjon.getEnhetstype())
+                .setMiljo(miljloe)
+                .build();
+    }
+
+    private static Dato getDate(LocalDate date) {
+        return Dato.newBuilder()
+                .setAar(date.getYear())
+                .setMaaned(date.getMonthValue())
+                .setDag(date.getDayOfMonth())
+                .build();
+    }
+
     public void sendOrgnavn(String key, Organisasjon organisasjon, String env) {
+
+        log.info("Sender Organisasjon {} til Kafa, env {}", organisasjon.getOrganisasjonsnummer(), env);
         organisasjonProducer.send(key, no.nav.registre.testnorge.libs.avro.organisasjon.Organisasjon.newBuilder()
                 .setNavn(organisasjon.getOrganisasjonsnavn())
                 .setMetadata(getMetadata(organisasjon, env))
@@ -40,8 +55,11 @@ public class OrganisasjonMottakConsumer {
     public void sendNaeringskode(String key, Organisasjon organisasjon, String env) {
 
         if (isNotBlank(organisasjon.getNaeringskode())) {
+            log.info("Sender Naeringskode for {} til Kafa, env {}", organisasjon.getOrganisasjonsnummer(), env);
             naeringskodeProducer.send(key, Naeringskode.newBuilder()
                     .setKode(organisasjon.getNaeringskode())
+                    .setGyldighetsdato(getDate(LocalDate.now()))
+                    .setHjelpeenhet(false)
                     .setMetadata(getMetadata(organisasjon, env))
                     .build());
         }
@@ -50,6 +68,7 @@ public class OrganisasjonMottakConsumer {
     public void sendInternetadresse(String key, Organisasjon organisasjon, String env) {
 
         if (isNotBlank(organisasjon.getNettside())) {
+            log.info("Sender Internetadresse for {} til Kafa, env {}", organisasjon.getOrganisasjonsnummer(), env);
             internettadresseProducer.send(key, Internettadresse.newBuilder()
                     .setInternettadresse(organisasjon.getNettside())
                     .setMetadata(getMetadata(organisasjon, env))
@@ -60,6 +79,7 @@ public class OrganisasjonMottakConsumer {
     public void sendEpost(String key, Organisasjon organisasjon, String env) {
 
         if (isNotBlank(organisasjon.getEpost())) {
+            log.info("Sender Epost for {} til Kafa, env {}", organisasjon.getOrganisasjonsnummer(), env);
             epostProducer.send(key, Epost.newBuilder()
                     .setEpost(organisasjon.getEpost())
                     .setMetadata(getMetadata(organisasjon, env))
@@ -73,7 +93,8 @@ public class OrganisasjonMottakConsumer {
                 filter(Adresse::isForretningsadresse).findFirst();
 
         if (adresse.isPresent()) {
-            String[]  adresselinjer = adresse.get().getAdresse().split(",");
+            log.info("Sender Forretningsadresse for {} til Kafa, env {}", organisasjon.getOrganisasjonsnummer(), env);
+            String[] adresselinjer = adresse.get().getAdresse().split(",");
             forretningsadresseProducer.send(key, Forretningsadresse.newBuilder()
                     .setPostadresse1(adresselinjer.length > 0 ? adresselinjer[0] : null)
                     .setPostadresse2(adresselinjer.length > 1 ? adresselinjer[1] : null)
@@ -93,7 +114,8 @@ public class OrganisasjonMottakConsumer {
                 filter(Adresse::isPostadresse).findFirst();
 
         if (adresse.isPresent()) {
-            String[]  adresselinjer = adresse.get().getAdresse().split(",");
+            log.info("Sender Postadresse for {} til Kafa, env {}", organisasjon.getOrganisasjonsnummer(), env);
+            String[] adresselinjer = adresse.get().getAdresse().split(",");
             postadresseProducer.send(key, Postadresse.newBuilder()
                     .setPostadresse1(adresselinjer.length > 0 ? adresselinjer[0] : null)
                     .setPostadresse2(adresselinjer.length > 1 ? adresselinjer[1] : null)
@@ -111,18 +133,11 @@ public class OrganisasjonMottakConsumer {
     public void sendParent(String key, Organisasjon organisasjon, String env) {
 
         if (nonNull(organisasjon.getParent())) {
+            log.info("Sender Parent for {} til Kafa, env {}", organisasjon.getOrganisasjonsnummer(), env);
             knytningProducer.send(key, Knytning.newBuilder()
                     .setJuridiskEnhet(organisasjon.getParent().getOrganisasjonsnummer())
                     .setMetadata(getMetadata(organisasjon, env))
                     .build());
         }
-    }
-
-    private static Metadata getMetadata(Organisasjon organisasjon, String miljloe) {
-        return Metadata.newBuilder()
-                .setOrgnummer(organisasjon.getOrganisasjonsnummer())
-                .setEnhetstype(organisasjon.getEnhetstype())
-                .setMiljo(miljloe)
-                .build();
     }
 }

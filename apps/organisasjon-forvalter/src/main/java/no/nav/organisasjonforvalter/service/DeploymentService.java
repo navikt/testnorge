@@ -32,9 +32,8 @@ public class DeploymentService {
                 .orgStatus(organisasjoner.stream()
                         .collect(Collectors.toMap(Organisasjon::getOrganisasjonsnummer,
                                 organisasjon -> request.getEnvironments().stream().map(env -> {
-                                    String uuid = UUID.randomUUID().toString();
                                     try {
-                                        deployOrganisasjon(uuid, organisasjon, env);
+                                        deployOrganisasjon(UUID.randomUUID().toString(), organisasjon, env);
                                         return DeployResponse.EnvStatus.builder()
                                                 .status(OK)
                                                 .environment(env)
