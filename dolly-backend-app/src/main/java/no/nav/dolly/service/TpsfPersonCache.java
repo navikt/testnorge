@@ -49,7 +49,8 @@ public class TpsfPersonCache {
                 .collect(Collectors.toList());
 
         if (!historikkIdenter.isEmpty()) {
-            tpsPerson.getPersondetaljer().addAll(tpsfService.hentTestpersoner(historikkIdenter));
+            List<Person> historiskeidenter = tpsfService.hentTestpersoner(historikkIdenter);
+            historiskeidenter.forEach(person -> tpsPerson.getPersondetaljer().add(0, person));
         }
 
         List<String> vergeIdenter = tpsPerson.getPersondetaljer().stream()

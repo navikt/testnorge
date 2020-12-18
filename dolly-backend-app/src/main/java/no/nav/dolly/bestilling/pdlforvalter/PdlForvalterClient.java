@@ -225,8 +225,10 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void sendAdressebeskyttelse(Person person) {
 
-        pdlForvalterConsumer.postAdressebeskyttelse(mapperFacade.map(person, PdlAdressebeskyttelse.class),
-                person.getIdent());
+        if ("SPSF".equals(person.getSpesreg()) || "SPFO".equals(person.getSpesreg())) {
+            pdlForvalterConsumer.postAdressebeskyttelse(mapperFacade.map(person, PdlAdressebeskyttelse.class),
+                    person.getIdent());
+        }
     }
 
     private void sendFamilierelasjoner(Person person) {
