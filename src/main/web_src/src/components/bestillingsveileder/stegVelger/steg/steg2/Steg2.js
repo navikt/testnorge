@@ -68,6 +68,6 @@ Steg2.validation = Yup.object({
 	...KrrstubForm.validation,
 	...ArenaForm.validation,
 	...UdistubForm.validation,
-	...DokarkivForm.validation
-	// TODO: Org-validation
+	...DokarkivForm.validation,
+	...OrganisasjonForm.validation
 })

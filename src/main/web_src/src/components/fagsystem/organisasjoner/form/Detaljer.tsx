@@ -1,31 +1,14 @@
 import React from 'react'
 import _get from 'lodash/get'
 import _omit from 'lodash/omit'
-import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import Panel from '~/components/ui/panel/Panel'
-import { erForste, panelError } from '~/components/ui/form/formUtils'
+import { organisasjonPaths, kontaktPaths } from './paths'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { OrganisasjonKodeverk, AdresseKodeverk } from '~/config/kodeverk'
-import Button from '~/components/ui/button/Button'
-
-const organisasjonPaths = [
-	'organisasjon.enhetstype',
-	'organisasjon.naeringskode',
-	'organisasjon.formaal'
-]
-
-const kontaktPaths = ['organisasjon.telefon', 'organisasjon.epost', 'organisasjon.nettadresse']
-
-const adressePaths = ['organisasjon.forretningsadresse', 'organisasjon.postadresse']
-
-const detaljerPaths = [organisasjonPaths, kontaktPaths, adressePaths].flat()
 
 export const Detaljer = ({ formikBag, path, level, number }) => {
-	console.log('path :>> ', path)
 	const initialValues = _omit(formikBag.values.organisasjon, 'underenheter')
 	const landForretningsadresse = _get(formikBag, `values.${path}.forretningsadresse.landkode`)
 	const landPostadresse = _get(formikBag, `values.${path}.postadresse.landkode`)
@@ -48,6 +31,7 @@ export const Detaljer = ({ formikBag, path, level, number }) => {
 							: OrganisasjonKodeverk.EnhetstyperJuridiskEnhet
 					}
 					size="xxlarge"
+					isClearable={false}
 				/>
 				<FormikSelect
 					name={`${path}.naeringskode`}
@@ -55,6 +39,7 @@ export const Detaljer = ({ formikBag, path, level, number }) => {
 					kodeverk={OrganisasjonKodeverk.Næringskoder}
 					size="xlarge"
 					optionHeight={50}
+					isClearable={false}
 					visHvisAvhuket
 				/>
 				<FormikTextInput name={`${path}.formaal`} label="Formål" size="xlarge" />
