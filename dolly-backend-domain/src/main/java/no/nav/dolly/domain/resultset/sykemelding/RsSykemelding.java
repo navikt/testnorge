@@ -1,18 +1,18 @@
 package no.nav.dolly.domain.resultset.sykemelding;
 
-import static java.util.Objects.isNull;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Getter
 @Setter
@@ -131,6 +131,7 @@ public class RsSykemelding {
             private String hprId;
             private String ident;
             private String mellomnavn;
+            private String samhandlerType;
         }
 
         @Getter
