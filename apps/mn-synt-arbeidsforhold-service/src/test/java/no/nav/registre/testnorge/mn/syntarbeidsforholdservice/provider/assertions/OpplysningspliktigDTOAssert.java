@@ -67,24 +67,24 @@ public class OpplysningspliktigDTOAssert extends AbstractAssert<Opplysningsplikt
     }
 
 
-    public OpplysningspliktigDTOAssert hasOneOfVirksomhentsnummer(String... virksomhentsnummer) {
+    public OpplysningspliktigDTOAssert hasOneOfVirksomhetsnummer(String... virksomhetsnummer) {
         isNotNull();
 
         if (actual.getVirksomheter() == null || actual.getVirksomheter().isEmpty()) {
-            failWithMessage("Finner ingen virksomhenter.");
+            failWithMessage("Finner ingen virksomheter.");
         }
 
-        if (virksomhentsnummer == null) {
+        if (virksomhetsnummer == null) {
             return this;
         }
 
-        Set<String> vikrksomhentsnummerSet = Set.of(virksomhentsnummer);
+        Set<String> virksomhetsnummerSet = Set.of(virksomhetsnummer);
         Optional<VirksomhetDTO> optional = actual.getVirksomheter().stream().filter(virksomhet ->
-                vikrksomhentsnummerSet.contains(virksomhet.getOrganisajonsnummer())
+                virksomhetsnummerSet.contains(virksomhet.getOrganisajonsnummer())
         ).findAny();
 
         if (optional.isEmpty()) {
-            failWithMessage("Finner ingen virksomhetner med virksomhetsnummer [<%s>].", String.join(",", virksomhentsnummer));
+            failWithMessage("Finner ingen virksomheter med virksomhetsnummer [<%s>].", String.join(",", virksomhetsnummer));
         }
         return this;
     }

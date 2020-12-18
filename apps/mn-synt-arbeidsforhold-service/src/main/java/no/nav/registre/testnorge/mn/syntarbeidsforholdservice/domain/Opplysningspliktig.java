@@ -36,7 +36,7 @@ public class Opplysningspliktig {
     }
 
     public void addArbeidsforhold(Arbeidsforhold arbeidsforhold) {
-        String virksomhetsnummer = arbeidsforhold.getVirksomhentsnummer();
+        String virksomhetsnummer = arbeidsforhold.getVirksomhetsnummer();
         VirksomhetDTO virksomhet = dto.getVirksomheter()
                 .stream()
                 .filter(value -> value.getOrganisajonsnummer().equals(virksomhetsnummer))
