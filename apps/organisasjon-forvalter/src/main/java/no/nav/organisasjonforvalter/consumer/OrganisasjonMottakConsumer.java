@@ -43,6 +43,11 @@ public class OrganisasjonMottakConsumer {
                 .build();
     }
 
+    //TODO Fjerne så snart producer er oppdatert
+    private static String fixPoststed(String poststed) {
+        return isNotBlank(poststed) ? poststed : "Verdi for poststed";
+    }
+
     public void sendOrgnavn(String key, Organisasjon organisasjon, String env) {
 
         log.info("Sender Organisasjon {} til Kafa, env {}", organisasjon.getOrganisasjonsnummer(), env);
@@ -101,7 +106,7 @@ public class OrganisasjonMottakConsumer {
                     .setPostadresse3(adresselinjer.length > 2 ? adresselinjer[2] : null)
                     .setKommunenummer(adresse.get().getKommunenr())
                     .setPostnummer(adresse.get().getPostnr())
-                    .setPoststed(adresse.get().getPoststed())
+                    .setPoststed(fixPoststed(adresse.get().getPoststed()))
                     .setLandkode(adresse.get().getLandkode())
                     .setVegadresseId(adresse.get().getVegadresseId())
                     .setMetadata(getMetadata(organisasjon, env))
@@ -122,7 +127,7 @@ public class OrganisasjonMottakConsumer {
                     .setPostadresse3(adresselinjer.length > 2 ? adresselinjer[2] : null)
                     .setKommunenummer(adresse.get().getKommunenr())
                     .setPostnummer(adresse.get().getPostnr())
-                    .setPoststed(adresse.get().getPoststed())
+                    .setPoststed(fixPoststed(adresse.get().getPoststed()))
                     .setLandkode(adresse.get().getLandkode())
                     .setVegadresseId(adresse.get().getVegadresseId())
                     .setMetadata(getMetadata(organisasjon, env))
