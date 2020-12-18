@@ -48,6 +48,11 @@ public class OrganisasjonMottakConsumer {
         return isNotBlank(poststed) ? poststed : "Verdi for poststed";
     }
 
+    //TODO Hva er dette
+    private static String fixLinjenr(String vegadresseId) {
+        return nonNull(vegadresseId) ? "1" : null;
+    }
+
     public void sendOrgnavn(String key, Organisasjon organisasjon, String env) {
 
         log.info("Sender Organisasjon {} til Kafa, env {}", organisasjon.getOrganisasjonsnummer(), env);
@@ -108,6 +113,7 @@ public class OrganisasjonMottakConsumer {
                     .setPostnummer(adresse.get().getPostnr())
                     .setPoststed(fixPoststed(adresse.get().getPoststed()))
                     .setLandkode(adresse.get().getLandkode())
+                    .setLinjenummer(fixLinjenr(adresse.get().getVegadresseId()))
                     .setVegadresseId(adresse.get().getVegadresseId())
                     .setMetadata(getMetadata(organisasjon, env))
                     .build());
@@ -129,6 +135,7 @@ public class OrganisasjonMottakConsumer {
                     .setPostnummer(adresse.get().getPostnr())
                     .setPoststed(fixPoststed(adresse.get().getPoststed()))
                     .setLandkode(adresse.get().getLandkode())
+                    .setLinjenummer(fixLinjenr(adresse.get().getVegadresseId()))
                     .setVegadresseId(adresse.get().getVegadresseId())
                     .setMetadata(getMetadata(organisasjon, env))
                     .build());
