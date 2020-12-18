@@ -32,16 +32,19 @@ public class DeploymentService {
                 .orgStatus(organisasjoner.stream()
                         .collect(Collectors.toMap(Organisasjon::getOrganisasjonsnummer,
                                 organisasjon -> request.getEnvironments().stream().map(env -> {
+                                    String uuid = UUID.randomUUID().toString();
                                     try {
-                                        deployOrganisasjon(UUID.randomUUID().toString(), organisasjon, env);
+                                        deployOrganisasjon(uuid, organisasjon, env);
                                         return DeployResponse.EnvStatus.builder()
                                                 .status(OK)
+                                                .uuid(uuid)
                                                 .environment(env)
                                                 .build();
                                     } catch (RuntimeException e) {
                                         log.error(e.getMessage(), e);
                                         return DeployResponse.EnvStatus.builder()
                                                 .status(ERROR)
+                                                .uuid(uuid)
                                                 .details(e.getMessage())
                                                 .environment(env)
                                                 .build();
