@@ -6,6 +6,9 @@ import net.minidev.json.annotate.JsonIgnore;
 import javax.persistence.*;
 import java.io.Serializable;
 
+import static no.nav.organisasjonforvalter.jpa.entity.Adresse.AdresseType.FADR;
+import static no.nav.organisasjonforvalter.jpa.entity.Adresse.AdresseType.PADR;
+
 @Data
 @ToString
 @Entity
@@ -52,11 +55,11 @@ public class Adresse implements Serializable {
 
     @JsonIgnore
     public boolean isForretningsadresse() {
-        return AdresseType.FADR.name().equals(getAdressetype());
+        return FADR == getAdressetype();
     }
 
     @JsonIgnore
     public boolean isPostadresse() {
-        return AdresseType.PADR.name().equals(getAdressetype());
+        return PADR == getAdressetype();
     }
 }
