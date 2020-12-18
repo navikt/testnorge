@@ -71,7 +71,7 @@ public class OpplysningspliktigDTOAssert extends AbstractAssert<Opplysningsplikt
         isNotNull();
 
         if (actual.getVirksomheter() == null || actual.getVirksomheter().isEmpty()) {
-            failWithMessage("Finner ingen virksomhenter.");
+            failWithMessage("Finner ingen virksomheter.");
         }
 
         if (virksomhetsnummer == null) {
@@ -84,7 +84,7 @@ public class OpplysningspliktigDTOAssert extends AbstractAssert<Opplysningsplikt
         ).findAny();
 
         if (optional.isEmpty()) {
-            failWithMessage("Finner ingen virksomhetner med virksomhetsnummer [<%s>].", String.join(",", virksomhetsnummer));
+            failWithMessage("Finner ingen virksomheter med virksomhetsnummer [<%s>].", String.join(",", virksomhetsnummer));
         }
         return this;
     }
