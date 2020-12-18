@@ -7,11 +7,13 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
+import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
@@ -34,7 +36,9 @@ public class KrrstubClient implements ClientRegister {
         if (nonNull(bestilling.getKrrstub()) || (nonNull(bestilling.getTpsf()) && isNotBlank(bestilling.getTpsf().getSprakKode()))) {
 
             try {
-                DigitalKontaktdata digitalKontaktdata = mapperFacade.map(bestilling.getKrrstub(), DigitalKontaktdata.class);
+                DigitalKontaktdata digitalKontaktdata = mapperFacade.map(
+                        nonNull(bestilling.getKrrstub()) ? bestilling.getKrrstub() : new RsDigitalKontaktdata(),
+                        DigitalKontaktdata.class);
                 digitalKontaktdata.setPersonident(tpsPerson.getHovedperson());
 
                 kobleMaalformTilSpraak(bestilling, digitalKontaktdata);
@@ -55,9 +59,14 @@ public class KrrstubClient implements ClientRegister {
     }
 
     private void kobleMaalformTilSpraak(RsDollyUtvidetBestilling bestilling, DigitalKontaktdata digitalKontaktdata) {
-        if (nonNull(bestilling.getTpsf()) && isNotBlank(bestilling.getTpsf().getSprakKode()) && isBlank(digitalKontaktdata.getSpraak()))
-            List.of("NB", "NN", "EN", "SE").forEach(spraakKode -> digitalKontaktdata.setSpraak(
-                    spraakKode.equalsIgnoreCase(bestilling.getTpsf().getSprakKode()) ? spraakKode : ""));
+        if (nonNull(bestilling.getTpsf()) && isNotBlank(bestilling.getTpsf().getSprakKode()) && isBlank(digitalKontaktdata.getSpraak())) {
+            List.of("NB", "NN", "EN", "SE").forEach(spraakKode -> {
+                if (spraakKode.equalsIgnoreCase(bestilling.getTpsf().getSprakKode())) {
+                    digitalKontaktdata.setSpraak(bestilling.getTpsf().getSprakKode());
+                    digitalKontaktdata.setSpraakOppdatert(ZonedDateTime.now());
+                }
+            });
+        }
     }
 
     @Override
