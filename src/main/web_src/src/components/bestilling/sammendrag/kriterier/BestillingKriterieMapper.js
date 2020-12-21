@@ -586,7 +586,11 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj(
 							'Helsepersonell navn',
 							sykemeldingKriterier.detaljertSykemelding.helsepersonell &&
-								`${sykemeldingKriterier.detaljertSykemelding.helsepersonell.fornavn} ${sykemeldingKriterier.detaljertSykemelding.helsepersonell.mellomnavn} ${sykemeldingKriterier.detaljertSykemelding.helsepersonell.etternavn}`
+								`${sykemeldingKriterier.detaljertSykemelding.helsepersonell.fornavn} ${
+									sykemeldingKriterier.detaljertSykemelding.helsepersonell.mellomnavn
+										? sykemeldingKriterier.detaljertSykemelding.helsepersonell.mellomnavn
+										: ''
+								} ${sykemeldingKriterier.detaljertSykemelding.helsepersonell.etternavn}`
 						),
 						obj(
 							'Helsepersonell ident',
@@ -595,6 +599,10 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj(
 							'HPR-nummer',
 							_get(sykemeldingKriterier.detaljertSykemelding, 'helsepersonell.hprId')
+						),
+						obj(
+							'SamhandlerType',
+							_get(sykemeldingKriterier.detaljertSykemelding, 'helsepersonell.samhandlerType')
 						),
 						obj(
 							'Arbeidsgiver',

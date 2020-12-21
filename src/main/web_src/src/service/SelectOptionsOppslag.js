@@ -9,7 +9,7 @@ const uri = `${config.services.dollyBackend}`
 export const SelectOptionsOppslag = {
 	hentOrgnr: () => Api.fetchJson(`${uri}/orgnummer`, { method: 'GET' }),
 
-	hentHelsepersonell: () => Api.fetchJson(`${uri}/helsepersonell`, 'GET'),
+	hentHelsepersonell: () => Api.fetchJson(`${uri}/helsepersonell`, { method: 'GET' }),
 
 	hentKrrLeverandoerer: () => {
 		const sdpLeverandoerer = useAsync(async () => {

@@ -18,9 +18,27 @@ type Option = {
 	mellomnavn?: string
 	etternavn: string
 	hprId: string
+	samhandlerType: string
 }
 
 export default ({ name, label, afterChange }: HelsepersonellSelect) => {
+	function mapSamhandlerType(samhandlerType: string) {
+		switch (samhandlerType) {
+			case 'KI':
+				return 'KIROPRAKTOR'
+			case 'LE':
+				return 'LEGE'
+			case 'FT':
+				return 'FYSIOTERAPEUT'
+			case 'TL':
+				return 'TANNLEGE'
+			case 'MT':
+				return 'MANUELLTERAPEUT'
+			default:
+				return samhandlerType
+		}
+	}
+
 	return (
 		<ErrorBoundary>
 			<LoadableComponent
@@ -28,12 +46,16 @@ export default ({ name, label, afterChange }: HelsepersonellSelect) => {
 					SelectOptionsOppslag.hentHelsepersonell().then(response =>
 						response.helsepersonell.map((helsepersonell: Option) => ({
 							value: helsepersonell.fnr,
-							label: `${helsepersonell.fnr} - ${helsepersonell.fornavn} ${helsepersonell.mellomnavn} ${helsepersonell.etternavn}`,
+							label: `${helsepersonell.fnr} - ${helsepersonell.fornavn} 
+							${helsepersonell.mellomnavn ? helsepersonell.mellomnavn : ''} 
+							${helsepersonell.etternavn} 
+							(${mapSamhandlerType(helsepersonell.samhandlerType)})`,
 							fnr: helsepersonell.fnr,
 							fornavn: helsepersonell.fornavn,
 							mellomnavn: helsepersonell.mellomnavn,
 							etternavn: helsepersonell.etternavn,
-							hprId: helsepersonell.hprId
+							hprId: helsepersonell.hprId,
+							samhandlerType: mapSamhandlerType(helsepersonell.samhandlerType)
 						}))
 					)
 				}
@@ -43,7 +65,7 @@ export default ({ name, label, afterChange }: HelsepersonellSelect) => {
 						label={label}
 						options={data}
 						type="text"
-						size="xxlarge"
+						size="xxxlarge"
 						afterChange={afterChange}
 						isClearable={false}
 						feil={feilmelding}

@@ -37,7 +37,8 @@ const initialValuesDetaljertSykemelding = {
 			fornavn: '',
 			hprId: '',
 			ident: '',
-			mellomnavn: ''
+			mellomnavn: '',
+			samhandlerType: ''
 		},
 		manglendeTilretteleggingPaaArbeidsplassen: false,
 		mottaker: {
