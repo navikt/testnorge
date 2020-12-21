@@ -111,6 +111,7 @@ public class SyntrestConsumer {
     public List<Arbeidsforhold> getArbeidsforholdHistorikk(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned) {
         log.info("Finner arbeidsforhold historikk fra og med {}.", kalendermaaned.plusMonths(1));
         List<ArbeidsforholdResponse> response = getArbeidsforholdHistorikkResponse(arbeidsforhold, kalendermaaned);
+        log.info("Fant historikk for {} måneder.", response.size());
         return response.stream().map(res -> new Arbeidsforhold(
                 res,
                 arbeidsforhold.getIdent(),
