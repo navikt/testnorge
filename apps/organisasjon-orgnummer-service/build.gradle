@@ -72,4 +72,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.5.RELEASE'
     testImplementation project(':testnorge-testing')
 
+    springBoot{
+        buildInfo()
+    }
 }
