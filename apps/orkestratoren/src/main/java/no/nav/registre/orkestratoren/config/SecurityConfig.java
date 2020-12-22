@@ -43,4 +43,3 @@ public class SecurityConfig extends OAuth2ResourceServerConfiguration {
                 .decoder(jwtDecoder());
     }
 }
-

@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -8,8 +9,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumenterCommand;
@@ -19,12 +24,14 @@ import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.credentials.ArbeidsforholdApiClientProperties;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Opplysningspliktig;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Organisajon;
 
 @Component
 public class ArbeidsforholdConsumer {
     private final WebClient webClient;
     private final ArbeidsforholdApiClientProperties arbeidsforholdApiClientProperties;
     private final AccessTokenService accessTokenService;
+    private final Executor executor;
 
     public ArbeidsforholdConsumer(
             ArbeidsforholdApiClientProperties arbeidsforholdApiClientProperties,
@@ -33,9 +40,11 @@ public class ArbeidsforholdConsumer {
     ) {
         this.arbeidsforholdApiClientProperties = arbeidsforholdApiClientProperties;
         this.accessTokenService = accessTokenService;
+        this.executor = Executors.newFixedThreadPool(5);
         this.webClient = WebClient
                 .builder()
                 .codecs(clientDefaultCodecsConfigurer -> {
+                    clientDefaultCodecsConfigurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024);
                     clientDefaultCodecsConfigurer
                             .defaultCodecs()
                             .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper, MediaType.APPLICATION_JSON));
@@ -48,25 +57,47 @@ public class ArbeidsforholdConsumer {
     }
 
 
-    public Optional<Opplysningspliktig> getOpplysningspliktig(String orgnummer, LocalDate kalendermaaned, String miljo) {
+    private CompletableFuture<Void> saveOpplysningspliktig(Opplysningspliktig opplysningspliktig, String miljo) {
         AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties.getClientId());
-        var dto = new GetOppsummeringsdokumentetCommand(webClient, accessToken.getTokenValue(), orgnummer, kalendermaaned, miljo).call();
+        return CompletableFuture.supplyAsync(
+                () -> new SaveOppsummeringsdokumenterCommand(
+                        webClient,
+                        accessToken.getTokenValue(),
+                        opplysningspliktig.toDTO(),
+                        miljo
+                ).call(),
+                executor
+        );
+    }
+
+    public Optional<Opplysningspliktig> getOpplysningspliktig(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {
+        AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties.getClientId());
+        var dto = new GetOppsummeringsdokumentetCommand(webClient, accessToken.getTokenValue(), organisajon.getOrgnummer(), kalendermaaned, miljo).call();
         if (dto == null) {
             return Optional.empty();
         }
 
-        return Optional.of(new Opplysningspliktig(dto));
+        return Optional.of(new Opplysningspliktig(dto, organisajon.getDriverVirksomheter()));
     }
 
     public List<Opplysningspliktig> getAlleOpplysningspliktig(String miljo) {
         AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties.getClientId());
         var list = new GetOppsummeringsdokumenterCommand(webClient, accessToken.getTokenValue(), miljo).call();
-
-        return list.stream().map(Opplysningspliktig::new).collect(Collectors.toList());
+        //TODO: Fix empty array of driver virksomhenter
+        return list.stream().map(value -> new Opplysningspliktig(value, new ArrayList<>())).collect(Collectors.toList());
     }
 
+    @SneakyThrows
     public void sendOpplysningspliktig(Opplysningspliktig opplysningspliktig, String miljo) {
-        AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties.getClientId());
-        new SaveOppsummeringsdokumenterCommand(webClient, accessToken.getTokenValue(), opplysningspliktig.toDTO(), miljo).run();
+        saveOpplysningspliktig(opplysningspliktig, miljo).get();
+    }
+
+
+    @SneakyThrows
+    public void sendOpplysningspliktig(List<Opplysningspliktig> opplysningspliktig, String miljo) {
+        var futures = opplysningspliktig.stream().map(value -> saveOpplysningspliktig(value, miljo)).collect(Collectors.toList());
+        for (var future : futures) {
+            future.get();
+        }
     }
 }

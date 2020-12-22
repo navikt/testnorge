@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.ArbeidsforholdDTO;
@@ -19,9 +20,13 @@ import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.VirksomhetDTO;
 @DependencyOn("testnorge-arbeidsforhold-api")
 @RequiredArgsConstructor
 public class Opplysningspliktig {
+    private static final Random RANDOM = new Random();
     private final OppsummeringsdokumentetDTO dto;
+    private final List<String> driverVirksomhenter;
+    private boolean changed = false;
 
     public Opplysningspliktig(Organisajon organisajon, LocalDate kalendermaand) {
+        driverVirksomhenter = organisajon.getDriverVirksomheter();
         dto = OppsummeringsdokumentetDTO
                 .builder()
                 .version(1L)
@@ -31,11 +36,22 @@ public class Opplysningspliktig {
                 .build();
     }
 
-    public List<VirksomhetDTO> getVirksomheter() {
+    public String getRandomVirksomhetsnummer(){
+        return driverVirksomhenter.get(RANDOM.nextInt(driverVirksomhenter.size()));
+    }
+
+    public boolean driverVirksomhent(String virksomhetesnummer){
+        return driverVirksomhenter.stream().anyMatch(value -> value.equals(virksomhetesnummer));
+    }
+
+
+    public List<VirksomhetDTO> getDriverVirksomhenter() {
         return dto.getVirksomheter();
     }
 
+    //TODO: Fiks muting av object
     public void addArbeidsforhold(Arbeidsforhold arbeidsforhold) {
+        changed = true;
         String virksomhetsnummer = arbeidsforhold.getVirksomhetsnummer();
         VirksomhetDTO virksomhet = dto.getVirksomheter()
                 .stream()
@@ -74,6 +90,14 @@ public class Opplysningspliktig {
         }
     }
 
+    public String getOrgnummer(){
+        return dto.getOpplysningspliktigOrganisajonsnummer();
+    }
+
+    public LocalDate getKalendermaaned(){
+        return dto.getKalendermaaned();
+    }
+
     public void setKalendermaaned(LocalDate kalendermaaned) {
         dto.setKalendermaaned(kalendermaaned);
     }
@@ -88,6 +112,10 @@ public class Opplysningspliktig {
 
     public OppsummeringsdokumentetDTO toDTO() {
         return dto;
+    }
+
+    public boolean isChanged(){
+        return changed;
     }
 
 }

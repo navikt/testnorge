@@ -43,10 +43,11 @@ public class ArbeidsforholdService {
                 .collect(Collectors.toList());
 
         if (organisajoner.isEmpty()) {
-            throw new MNOrganisasjonException("Fant ingen opplysningspliktige i Mini-Norge som driver virksomheter");
+            throw new MNOrganisasjonException("Fant ingen opplysningspliktige i Mini-Norge som driver virksomheter.");
         }
         return organisajoner;
     }
+
 
     public void reportAll(LocalDate kalendermaaned, String miljo) {
         List<Organisajon> organisajoner = getOpplysningspliktigeorganisasjoner(miljo);
@@ -74,7 +75,7 @@ public class ArbeidsforholdService {
     }
 
     private Opplysningspliktig getOpplysningspliktig(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {
-        Optional<Opplysningspliktig> opplysningspliktig = arbeidsforholdConsumer.getOpplysningspliktig(organisajon.getOrgnummer(), kalendermaaned, miljo);
+        Optional<Opplysningspliktig> opplysningspliktig = arbeidsforholdConsumer.getOpplysningspliktig(organisajon, kalendermaaned, miljo);
         if (opplysningspliktig.isPresent()) {
             Opplysningspliktig temp = opplysningspliktig.get();
             temp.setVersion(temp.getVersion() + 1);
@@ -86,7 +87,7 @@ public class ArbeidsforholdService {
 
     private Optional<Opplysningspliktig> getOpplysningspliktigForMonth(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {
         return arbeidsforholdConsumer.getOpplysningspliktig(
-                organisajon.getOrgnummer(),
+                organisajon,
                 kalendermaaned,
                 miljo
         ).map(value -> {
@@ -98,7 +99,7 @@ public class ArbeidsforholdService {
 
     private Optional<Opplysningspliktig> getOpplysningspliktigForPreviousMonth(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {
         return arbeidsforholdConsumer.getOpplysningspliktig(
-                organisajon.getOrgnummer(),
+                organisajon,
                 kalendermaaned.minusMonths(1),
                 miljo
         ).map(value -> {
@@ -109,7 +110,7 @@ public class ArbeidsforholdService {
     }
 
     private void syntHistoryForThisMonth(Opplysningspliktig opplysningspliktig, LocalDate kalendermaaned, String miljo) {
-        opplysningspliktig.getVirksomheter().forEach(
+        opplysningspliktig.getDriverVirksomhenter().forEach(
                 virksomhetDTO -> virksomhetDTO.getPersoner().forEach(personDTO -> personDTO.getArbeidsforhold().forEach(
                         arbeidsforholdDTO -> {
                             if (arbeidsforholdDTO.getSluttdato() == null || !arbeidsforholdDTO.getSluttdato().equals(kalendermaaned.minusMonths(1))) {
@@ -130,7 +131,7 @@ public class ArbeidsforholdService {
     }
 
     private void syntHistoryForPreviousMonth(Opplysningspliktig opplysningspliktig, LocalDate kalendermaaned, String miljo) {
-        opplysningspliktig.getVirksomheter().forEach(
+        opplysningspliktig.getDriverVirksomhenter().forEach(
                 virksomhetDTO -> virksomhetDTO.getPersoner().forEach(
                         personDTO -> personDTO.getArbeidsforhold().forEach(
                                 arbeidsforholdDTO -> {

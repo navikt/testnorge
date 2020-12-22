@@ -78,6 +78,10 @@ public class Arbeidsforhold {
         return dto.getSluttdato();
     }
 
+    public LocalDate getStartdato() {
+        return dto.getStartdato();
+    }
+
     public ArbeidsforholdRequest toSyntrestDTO(LocalDate kaldermaaned) {
         float velferdspermisjon = 0;
         float utdanningspermisjon = 0;
