@@ -7,9 +7,6 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.info.BuildProperties;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -21,9 +18,6 @@ import no.nav.registre.testnorge.libs.core.config.ApplicationProperties;
 
 @Configuration
 public class OpenApiConfig implements WebMvcConfigurer {
-
-    @Autowired
-    BuildProperties buildProperties;
 
     @Bean
     public OpenAPI openApi(ApplicationProperties applicationProperties) {
@@ -40,8 +34,7 @@ public class OpenApiConfig implements WebMvcConfigurer {
                         new SecurityRequirement().addList("bearer-jwt", Arrays.asList("read", "write")))
                 .info(new Info()
                         .title(applicationProperties.getName())
-                        .version(buildProperties.getVersion())
-//                        .version(applicationProperties.getVersion())
+                        .version(applicationProperties.getVersion())
                         .description(applicationProperties.getDescription())
                         .termsOfService("https://nav.no")
                         .contact(new Contact()
