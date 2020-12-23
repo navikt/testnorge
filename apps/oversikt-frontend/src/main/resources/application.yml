@@ -19,3 +19,4 @@ applications:
   organisasjon-bestilling-service: 213b750d-7a71-40bb-ada6-81530e61dcd5
   ereg-batch-status-service: 67f507ff-399c-4853-9eb3-3dc6aabc8289
   organisasjon-forvalter: 80f07134-375b-4df8-be48-2ba877774c6c
+  testnorge-arbeidsforhold-api: 1b2f24c8-a426-47b1-8ff1-7905d6dfddb5
