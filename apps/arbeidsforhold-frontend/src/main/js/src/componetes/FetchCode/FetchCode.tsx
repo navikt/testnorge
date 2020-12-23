@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { CodeView } from "@/componetes";
 import NavFrontendSpinner from "nav-frontend-spinner";
+import Pagination from "paginering";
+
+import "./FetchCode.less";
 
 type Props = {
   fetchFromPosition: (position: number) => Promise<Response>;
@@ -24,21 +27,40 @@ export const FetchCode = ({ fetchFromPosition }: Props) => {
       });
   };
 
+  useEffect(() => {
+    setLoading(true);
+    setPosition(0);
+  }, [fetchFromPosition]);
   useEffect(() => getCode(position), [position, fetchFromPosition]);
 
   const onNext = () => setPosition(position + 1);
   const onPrevious = () => setPosition(position - 1);
 
   return (
-    <div>
+    <div className="fetch-code">
       {loading ? (
-        <NavFrontendSpinner type="XL" aria-label="Laster inn..." />
+        <div className="fetch-code__spinner">
+          <NavFrontendSpinner type="XXL" aria-label="Laster inn..." />
+        </div>
       ) : (
-        <CodeView
-          onPrevious={position > 0 && totalItems !== 0 ? onPrevious : null}
-          onNext={position < totalItems && totalItems !== 0 - 1 ? onNext : null}
-          code={code}
-        />
+        <>
+          <CodeView
+            onPrevious={position > 0 && totalItems !== 0 ? onPrevious : null}
+            onNext={
+              position < totalItems - 1 && totalItems !== 0 ? onNext : null
+            }
+            code={code}
+          >
+            <div className="fetch-code__paging">
+              <Pagination
+                itemsPerPage={1}
+                numberOfItems={totalItems}
+                currentPage={position + 1}
+                onChange={(value) => setPosition(value - 1)}
+              />
+            </div>
+          </CodeView>
+        </>
       )}
     </div>
   );

@@ -9,6 +9,8 @@
     "dayjs": "^1.9.7",
     "lodash.throttle": "^4.1.1",
     "nav-datovelger": "^8.0.4",
+    "nav-frontend-alertstriper": "^3.0.38",
+    "nav-frontend-alertstriper-style": "^2.0.30",
     "nav-frontend-chevron": "^1.0.24",
     "nav-frontend-chevron-style": "^1.0.1",
     "nav-frontend-core": "^5.0.10",
@@ -30,6 +32,7 @@
     "nav-frontend-toggle-style": "0.0.35",
     "nav-frontend-typografi": "^2.0.37",
     "nav-frontend-typografi-style": "^1.0.31",
+    "paginering": "^1.0.6",
     "prop-types": "^15.7.2",
     "react": "^16.14.0",
     "react-copy-to-clipboard": "^5.0.2",
@@ -37,7 +40,8 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
-    "react-syntax-highlighter": "^15.4.3"
+    "react-syntax-highlighter": "^15.4.3",
+    "styled-components": "^5.2.1"
   },
   "devDependencies": {
     "@types/react": "^16.9.49",

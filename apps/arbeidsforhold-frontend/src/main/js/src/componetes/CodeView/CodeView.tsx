@@ -1,15 +1,18 @@
-import React from "react";
-import { Tilbakeknapp, Nesteknapp } from "nav-frontend-ikonknapper";
+import React, { ReactNode } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { a11yDark as customStyle } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
+import Alertstripe from "nav-frontend-alertstriper";
+
 import "./CodeView.less";
+import { SkjemaGruppe } from "nav-frontend-skjema";
 
 type Props = {
   code?: string;
   onNext?: () => void;
   onPrevious?: () => void;
   language?: string;
+  children: ReactNode;
 };
 
 export const CodeView = ({
@@ -17,7 +20,9 @@ export const CodeView = ({
   onNext,
   onPrevious,
   language = "xml",
+  children,
 }: Props) => {
+  // @ts-ignore
   window.onkeydown = (e) => {
     if (e.key === "ArrowLeft") {
       onPrevious();
@@ -28,21 +33,20 @@ export const CodeView = ({
 
   return (
     <div className="code-view">
-      <Tilbakeknapp
-        className="code-view__button"
-        disabled={onPrevious == null}
-        onClick={onPrevious}
-      />
+      {children}
       <div className="code-view__code">
-        <SyntaxHighlighter language={language} style={customStyle}>
-          {code ? code : "Ingent resultat. Prøv å oppdater filteret."}
-        </SyntaxHighlighter>
+        {!code ? (
+          <div className="code-view__alert">
+            <Alertstripe type="advarsel">
+              Fant ingen resulat. Prøv å endre filteret.
+            </Alertstripe>
+          </div>
+        ) : (
+          <SyntaxHighlighter language={language} style={customStyle}>
+            {code}
+          </SyntaxHighlighter>
+        )}
       </div>
-      <Nesteknapp
-        className="code-view__button"
-        disabled={onNext == null}
-        onClick={onNext}
-      />
     </div>
   );
 };

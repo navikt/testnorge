@@ -46,47 +46,48 @@ export const CodeSearch = () => {
   );
 
   return (
-    <>
-      <SkjemaGruppe className="code-search" legend="Filtrering">
-        <Input
-          defaultValue="t4"
-          label="Miljø"
-          onBlur={(e) => {
-            if (e.target.value === "") {
-              setEnv(null);
-            } else {
-              setEnv(e.target.value);
-            }
-          }}
-        />
-        <Label htmlFor="datepicker-fom-input">Fom</Label>
-        <div className="code-search__datepicker">
-          <Datepicker
-            locale={"nb"}
-            inputId="datepicker-fom-input"
-            value={fom}
-            onChange={setFom}
-            calendarSettings={{ showWeekNumbers: true }}
-            showYearSelector={true}
+    <div className="code-search">
+      <div className="code-search__schema">
+        <SkjemaGruppe className="code-search--border" legend="Filtrering">
+          <Input
+            defaultValue="t4"
+            label="Miljø"
+            onBlur={(e) => {
+              if (e.target.value === "") {
+                setEnv(null);
+              } else {
+                setEnv(e.target.value);
+              }
+            }}
           />
-        </div>
-
-        <Label htmlFor="datepicker-tom-input">Tom</Label>
-        <div className="code-search__datepicker">
-          <Datepicker
-            locale={"nb"}
-            inputId="datepicker-tom-input"
-            value={tom}
-            onChange={setTom}
-            calendarSettings={{ showWeekNumbers: true }}
-            showYearSelector={true}
-          />
-        </div>
-        <Hovedknapp onClick={() => setFetchFromPosition(search)}>
-          Søk
-        </Hovedknapp>
-      </SkjemaGruppe>
+          <Label htmlFor="datepicker-fom-input">Fom</Label>
+          <div className="code-search__datepicker">
+            <Datepicker
+              locale={"nb"}
+              inputId="datepicker-fom-input"
+              value={fom}
+              onChange={setFom}
+              calendarSettings={{ showWeekNumbers: true }}
+              showYearSelector={true}
+            />
+          </div>
+          <Label htmlFor="datepicker-tom-input">Tom</Label>
+          <div className="code-search__datepicker">
+            <Datepicker
+              locale={"nb"}
+              inputId="datepicker-tom-input"
+              value={tom}
+              onChange={setTom}
+              calendarSettings={{ showWeekNumbers: true }}
+              showYearSelector={true}
+            />
+          </div>
+          <Hovedknapp onClick={() => setFetchFromPosition(search)}>
+            Filter
+          </Hovedknapp>
+        </SkjemaGruppe>
+      </div>
       <FetchCode fetchFromPosition={fetchFromPosition} />
-    </>
+    </div>
   );
 };
