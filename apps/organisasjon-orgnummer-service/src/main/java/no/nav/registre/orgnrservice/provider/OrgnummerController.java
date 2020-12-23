@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 import no.nav.registre.orgnrservice.domain.Organisasjon;
@@ -18,6 +19,7 @@ import no.nav.registre.orgnrservice.service.OrgnummerService;
 @RequestMapping("/api/v1/orgnummer")
 public class OrgnummerController {
 
+    private static final String ORGNR_REGEX = "^(8|9)\\d{8}$";
     private final OrgnummerService orgnummerService;
 
     @Operation(summary = "Hent gyldige organisasjonsnummer")
@@ -28,7 +30,7 @@ public class OrgnummerController {
 
     @PutMapping
     @Operation( summary = "Sett et organisasjonsnummer til ledig")
-    public Organisasjon setLedig (@RequestHeader String orgnummer) {
+    public Organisasjon setLedig (@RequestHeader @Pattern(regexp = ORGNR_REGEX) String orgnummer) {
         return orgnummerService.setLedigForOrgnummer(orgnummer, true);
     }
 }

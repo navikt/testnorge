@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import no.nav.registre.orgnrservice.adapter.OrganisasjonAdapter;
+import no.nav.registre.orgnrservice.adapter.OrgnummerAdapter;
 import no.nav.registre.orgnrservice.consumer.OrganisasjonApiConsumer;
 import no.nav.registre.orgnrservice.domain.Organisasjon;
 import no.nav.registre.testnorge.libs.core.util.OrgnummerUtil;
@@ -17,7 +17,7 @@ import no.nav.registre.testnorge.libs.core.util.OrgnummerUtil;
 @AllArgsConstructor
 public class OrgnummerService {
 
-    private final OrganisasjonAdapter orgnummerAdapter;
+    private final OrgnummerAdapter orgnummerAdapter;
     private final OrganisasjonApiConsumer organisasjonApiConsumer;
 
     public List<String> hentOrgnr(Integer antall) {
@@ -27,18 +27,21 @@ public class OrgnummerService {
             var manglende = antall - hentedeOrgnummer.size();
             var genererteOrganisasjoner = genererOrgnrsTilDb(manglende, false);
 
-            hentedeOrgnummer.forEach( org -> orgnummerAdapter.save(new Organisasjon(org.getOrgnummer(), false)));
+            hentedeOrgnummer.forEach( org -> setLedigForOrgnummer(org.getOrgnummer(), false));
             return Stream.concat(
                     hentedeOrgnummer.stream(),
                     genererteOrganisasjoner.stream()
             ).map(Organisasjon::getOrgnummer).collect(Collectors.toList());
         }
 
-        return hentedeOrgnummer
+        List<String> orgnummer = hentedeOrgnummer
                 .subList(0, antall)
                 .stream()
-                .map( org -> orgnummerAdapter.save(new Organisasjon(org.getOrgnummer(), false)).getOrgnummer())
+                .map(Organisasjon::getOrgnummer)
                 .collect(Collectors.toList());
+
+        orgnummer.forEach( orgnr -> setLedigForOrgnummer(orgnr, false));
+        return orgnummer;
     }
 
     public Organisasjon setLedigForOrgnummer (String orgnummer, boolean ledig) {
@@ -64,12 +67,12 @@ public class OrgnummerService {
     private String generateOrgnr () {
         var generertOrgnummer = OrgnummerUtil.generateOrgnr();
         if (finnesOrgnr(generertOrgnummer)){
-            generateOrgnr();
+            return generateOrgnr();
         }
         return generertOrgnummer;
     }
+
     public boolean finnesOrgnr(String orgnummer) {
-        return organisasjonApiConsumer.getOrgnr(orgnummer) != null;
-//        return organisasjonApiConsumer.finnesOrgnrIEreg(orgnummer);
+        return organisasjonApiConsumer.finnesOrgnrIEreg(orgnummer);
     }
 }

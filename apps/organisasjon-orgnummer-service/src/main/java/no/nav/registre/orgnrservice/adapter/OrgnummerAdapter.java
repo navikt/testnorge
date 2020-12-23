@@ -8,28 +8,28 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import no.nav.registre.orgnrservice.domain.Organisasjon;
-import no.nav.registre.orgnrservice.repository.OrganisasjonRepository;
-import no.nav.registre.orgnrservice.repository.model.OrganisasjonModel;
+import no.nav.registre.orgnrservice.repository.OrgnummerRepository;
+import no.nav.registre.orgnrservice.repository.model.OrgnummerModel;
 
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class OrganisasjonAdapter {
+public class OrgnummerAdapter {
 
-    private final OrganisasjonRepository organisasjonRepoistory;
+    private final OrgnummerRepository organisasjonRepoistory;
 
     public Organisasjon save(Organisasjon organisasjon) {
         log.info("Lagrer orgnummer {}", organisasjon.getOrgnummer());
-        OrganisasjonModel orgFraDb = organisasjonRepoistory.findByOrgnummer(organisasjon.getOrgnummer());
+        OrgnummerModel orgFraDb = organisasjonRepoistory.findByOrgnummer(organisasjon.getOrgnummer());
 
-        OrganisasjonModel organisasjonModel = organisasjonRepoistory.save(
-                OrganisasjonModel.builder()
+        OrgnummerModel orgnummerModel = organisasjonRepoistory.save(
+                OrgnummerModel.builder()
                         .orgnummer(organisasjon.getOrgnummer())
                         .ledig(organisasjon.isLedig())
                         .id(orgFraDb == null ? null : orgFraDb.getId())
                         .build()
         );
-        return new Organisasjon(organisasjonModel);
+        return new Organisasjon(orgnummerModel);
     }
 
     public List<Organisasjon> saveAll(List<Organisasjon> organisasjoner) {
@@ -52,7 +52,7 @@ public class OrganisasjonAdapter {
     }
 
     public Organisasjon hentByOrgnummer(String orgnummer) {
-        OrganisasjonModel model = organisasjonRepoistory.findByOrgnummer(orgnummer);
+        OrgnummerModel model = organisasjonRepoistory.findByOrgnummer(orgnummer);
         return model == null ? null : new Organisasjon(model);
     }
 }

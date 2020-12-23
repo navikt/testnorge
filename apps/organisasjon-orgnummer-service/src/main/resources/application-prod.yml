@@ -30,4 +30,3 @@ app:
     flyway:
       role: orgnummer-pool-admin
       backend: postgresql/preprod-fss/creds
-      baselineOnMigrate: true

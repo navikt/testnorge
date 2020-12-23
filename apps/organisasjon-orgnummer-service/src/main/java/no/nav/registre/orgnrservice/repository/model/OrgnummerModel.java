@@ -27,7 +27,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "ORGNUMMER_POOL")
-public class OrganisasjonModel {
+public class OrgnummerModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

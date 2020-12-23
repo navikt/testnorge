@@ -9,10 +9,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.4.6'
     compileOnly 'org.projectlombok:lombok:1.18.12'
 
-    testImplementation group: 'junit', name: 'junit', version: '4.12'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE'
-    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE'
-    testImplementation 'org.assertj:assertj-core:3.16.1'
 }
 
 group = 'no.nav.registre.testnorge.libs'

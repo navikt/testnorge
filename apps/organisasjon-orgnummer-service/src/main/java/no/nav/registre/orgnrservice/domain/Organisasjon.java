@@ -2,7 +2,7 @@ package no.nav.registre.orgnrservice.domain;
 
 import lombok.Value;
 
-import no.nav.registre.orgnrservice.repository.model.OrganisasjonModel;
+import no.nav.registre.orgnrservice.repository.model.OrgnummerModel;
 
 @Value
 public class Organisasjon {
@@ -15,7 +15,7 @@ public class Organisasjon {
         this.ledig = ledig;
     }
 
-    public Organisasjon(OrganisasjonModel model) {
+    public Organisasjon(OrgnummerModel model) {
         this.orgnummer = model.getOrgnummer();
         this.ledig = model.isLedig();
     }
