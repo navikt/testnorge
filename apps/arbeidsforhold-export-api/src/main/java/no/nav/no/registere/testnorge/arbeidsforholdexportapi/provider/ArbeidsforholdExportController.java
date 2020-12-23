@@ -17,8 +17,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
-import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.ArbeidsforholdSyntentiseringCsvConverter;
-import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.PermisjonSyntentiseringCsvConverter;
+import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.ArbeidsforholdSyntetiseringCsvConverter;
+import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.PermisjonSyntetiseringCsvConverter;
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.OpplysningspliktigList;
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.service.ArbeidsforholdExportService;
 
@@ -35,8 +35,8 @@ public class ArbeidsforholdExportController {
 
         response.setContentType("text/csv");
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-        response.setHeader("Content-Disposition", "attachment; filename=syntentisering-arbeidesforhold-" + LocalDateTime.now() + ".csv");
-        ArbeidsforholdSyntentiseringCsvConverter.inst().write(response.getWriter(), list.toArbeidsforhold());
+        response.setHeader("Content-Disposition", "attachment; filename=syntetisering-arbeidesforhold-" + LocalDateTime.now() + ".csv");
+        ArbeidsforholdSyntetiseringCsvConverter.inst().write(response.getWriter(), list.toArbeidsforhold());
         return ResponseEntity.ok().build();
     }
 
@@ -47,8 +47,8 @@ public class ArbeidsforholdExportController {
 
         response.setContentType("text/csv");
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-        response.setHeader("Content-Disposition", "attachment; filename=syntentisering-arbeidesforhold-" + LocalDateTime.now() + ".csv");
-        ArbeidsforholdSyntentiseringCsvConverter.inst().write(response.getWriter(), list.toArbeidsforhold());
+        response.setHeader("Content-Disposition", "attachment; filename=syntetisering-arbeidesforhold-" + LocalDateTime.now() + ".csv");
+        ArbeidsforholdSyntetiseringCsvConverter.inst().write(response.getWriter(), list.toArbeidsforhold());
         return ResponseEntity.ok().build();
     }
 
@@ -58,8 +58,8 @@ public class ArbeidsforholdExportController {
 
         response.setContentType("text/csv");
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-        response.setHeader("Content-Disposition", "attachment; filename=syntentisering-permisjoner-" + LocalDateTime.now() + ".csv");
-        PermisjonSyntentiseringCsvConverter.inst().write(response.getWriter(), list.toPermisjoner());
+        response.setHeader("Content-Disposition", "attachment; filename=syntetisering-permisjoner-" + LocalDateTime.now() + ".csv");
+        PermisjonSyntetiseringCsvConverter.inst().write(response.getWriter(), list.toPermisjoner());
         return ResponseEntity.ok().build();
     }
 
@@ -70,8 +70,8 @@ public class ArbeidsforholdExportController {
 
         response.setContentType("text/csv");
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-        response.setHeader("Content-Disposition", "attachment; filename=syntentisering-permisjoner-" + LocalDateTime.now() + ".csv");
-        PermisjonSyntentiseringCsvConverter.inst().write(response.getWriter(), list.toPermisjoner());
+        response.setHeader("Content-Disposition", "attachment; filename=syntetisering-permisjoner-" + LocalDateTime.now() + ".csv");
+        PermisjonSyntetiseringCsvConverter.inst().write(response.getWriter(), list.toPermisjoner());
         return ResponseEntity.ok().build();
     }
 }

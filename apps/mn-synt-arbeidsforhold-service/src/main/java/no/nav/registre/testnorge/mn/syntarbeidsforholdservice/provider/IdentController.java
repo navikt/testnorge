@@ -22,25 +22,7 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.service.IdentServi
 @RequiredArgsConstructor
 @RequestMapping("api/v1/identer")
 public class IdentController {
-
-    private final ArbeidsforholdService arbeidsforholdService;
     private final IdentService identService;
-
-    @PostMapping("/{ident}")
-    public ResponseEntity<?> opprettArbeidsforholdForIdent(
-            @RequestHeader("miljo") String miljo,
-            @PathVariable("ident") String ident,
-            @RequestParam("fom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fom,
-            @RequestParam(value = "tom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate tom
-    ) {
-        if (identService.getIdenterMedArbeidsforhold(miljo).contains(ident)) {
-            return ResponseEntity
-                    .badRequest()
-                    .body("Kan ikke opprette arbeidsforhold for ident " + ident + "fordi personen allerede finnes i AAREG (" + miljo + ").");
-        }
-        arbeidsforholdService.startArbeidsforhold(ident, fom, tom, miljo);
-        return ResponseEntity.noContent().build();
-    }
 
     @GetMapping
     public ResponseEntity<Set<String>> get(@RequestHeader("miljo") String miljo) {

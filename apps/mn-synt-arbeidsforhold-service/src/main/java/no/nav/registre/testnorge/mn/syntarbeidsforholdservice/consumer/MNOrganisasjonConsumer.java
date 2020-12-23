@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -34,17 +35,11 @@ public class MNOrganisasjonConsumer {
                 .build();
     }
 
+    @Cacheable("mini-norge-organiasjoner")
     public List<Organisajon> getOrganisajoner(String miljo) {
         AccessToken accessToken = accessTokenService.generateToken(mnOrganisasjonApiClientProperties.getClientId());
 
         List<OrganisasjonDTO> list = new GetMNOrganisasjonerCommand(webClient, accessToken.getTokenValue(), miljo).call();
         return list.stream().map(Organisajon::new).collect(Collectors.toList());
-    }
-
-    public Optional<Organisajon> getOrganisajon(String miljo, String orgnummer) {
-        AccessToken accessToken = accessTokenService.generateToken(mnOrganisasjonApiClientProperties.getClientId());
-
-        OrganisasjonDTO call = new GetMNOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, miljo).call();
-        return Optional.of(call).map(Organisajon::new);
     }
 }

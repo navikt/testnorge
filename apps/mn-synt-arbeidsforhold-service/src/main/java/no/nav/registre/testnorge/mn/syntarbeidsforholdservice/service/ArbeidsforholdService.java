@@ -2,13 +2,10 @@ package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -46,10 +43,11 @@ public class ArbeidsforholdService {
                 .collect(Collectors.toList());
 
         if (organisajoner.isEmpty()) {
-            throw new MNOrganisasjonException("Fant ingen opplysningspliktige i Mini-Norge som driver virksomheter");
+            throw new MNOrganisasjonException("Fant ingen opplysningspliktige i Mini-Norge som driver virksomheter.");
         }
         return organisajoner;
     }
+
 
     public void reportAll(LocalDate kalendermaaned, String miljo) {
         List<Organisajon> organisajoner = getOpplysningspliktigeorganisasjoner(miljo);
@@ -73,11 +71,11 @@ public class ArbeidsforholdService {
         opplysningspliktig.addArbeidsforhold(arbeidsforhold);
 
         arbeidsforholdConsumer.sendOpplysningspliktig(opplysningspliktig, miljo);
-        syntHistory(organisajon, arbeidsforhold, miljo, findAllDatesBetween(fom, tom).iterator(), Collections.emptyList());
+        syntHistory(organisajon, arbeidsforhold, miljo, findAllDatesBetween(fom, tom).iterator());
     }
 
     private Opplysningspliktig getOpplysningspliktig(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {
-        Optional<Opplysningspliktig> opplysningspliktig = arbeidsforholdConsumer.getOpplysningspliktig(organisajon.getOrgnummer(), kalendermaaned, miljo);
+        Optional<Opplysningspliktig> opplysningspliktig = arbeidsforholdConsumer.getOpplysningspliktig(organisajon, kalendermaaned, miljo);
         if (opplysningspliktig.isPresent()) {
             Opplysningspliktig temp = opplysningspliktig.get();
             temp.setVersion(temp.getVersion() + 1);
@@ -89,7 +87,7 @@ public class ArbeidsforholdService {
 
     private Optional<Opplysningspliktig> getOpplysningspliktigForMonth(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {
         return arbeidsforholdConsumer.getOpplysningspliktig(
-                organisajon.getOrgnummer(),
+                organisajon,
                 kalendermaaned,
                 miljo
         ).map(value -> {
@@ -101,7 +99,7 @@ public class ArbeidsforholdService {
 
     private Optional<Opplysningspliktig> getOpplysningspliktigForPreviousMonth(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {
         return arbeidsforholdConsumer.getOpplysningspliktig(
-                organisajon.getOrgnummer(),
+                organisajon,
                 kalendermaaned.minusMonths(1),
                 miljo
         ).map(value -> {
@@ -112,7 +110,7 @@ public class ArbeidsforholdService {
     }
 
     private void syntHistoryForThisMonth(Opplysningspliktig opplysningspliktig, LocalDate kalendermaaned, String miljo) {
-        opplysningspliktig.getVirksomheter().forEach(
+        opplysningspliktig.getDriverVirksomheter().forEach(
                 virksomhetDTO -> virksomhetDTO.getPersoner().forEach(personDTO -> personDTO.getArbeidsforhold().forEach(
                         arbeidsforholdDTO -> {
                             if (arbeidsforholdDTO.getSluttdato() == null || !arbeidsforholdDTO.getSluttdato().equals(kalendermaaned.minusMonths(1))) {
@@ -133,7 +131,7 @@ public class ArbeidsforholdService {
     }
 
     private void syntHistoryForPreviousMonth(Opplysningspliktig opplysningspliktig, LocalDate kalendermaaned, String miljo) {
-        opplysningspliktig.getVirksomheter().forEach(
+        opplysningspliktig.getDriverVirksomheter().forEach(
                 virksomhetDTO -> virksomhetDTO.getPersoner().forEach(
                         personDTO -> personDTO.getArbeidsforhold().forEach(
                                 arbeidsforholdDTO -> {
@@ -173,76 +171,72 @@ public class ArbeidsforholdService {
             Organisajon opplysningspliktigOrganisajon,
             Arbeidsforhold previous,
             String miljo,
+            Iterator<LocalDate> kalendermaaneder
+    ) {
+        syntHistory(opplysningspliktigOrganisajon, previous, miljo, kalendermaaneder, Collections.emptyIterator());
+    }
+
+    private void syntHistory(
+            Organisajon opplysningspliktigOrganisajon,
+            Arbeidsforhold previous,
+            String miljo,
             Iterator<LocalDate> kalendermaaneder,
-            List<Arbeidsforhold> historikk
+            Iterator<Arbeidsforhold> historikk
     ) {
         if (!kalendermaaneder.hasNext()) {
+            log.info(
+                    "Generering av arbeidsforhold er ferdig for person {} med opplysningspliktig {}",
+                    previous.getIdent(),
+                    opplysningspliktigOrganisajon.getOrgnummer()
+            );
             return;
         }
         LocalDate kalendermaaned = kalendermaaneder.next();
-        boolean newArbeidsforhold = previous.getSluttdato() != null
+        boolean isNewArbeidsforhold = previous.getSluttdato() != null
                 && previous.getSluttdato().getMonth() == kalendermaaned.minusMonths(1).getMonth()
                 && previous.getSluttdato().getYear() == kalendermaaned.minusMonths(1).getYear();
 
         if (previous.getSluttdato() != null) {
-            log.info("Sluttdato er satt til {} og neste mnd er {}. Derfor er nytt arbeidsforhold satt til {}.",
+            log.info("Sluttdato er satt til {} og neste mnd er {}. Derfor er nytt arbeidsforhold={}.",
                     previous.getSluttdato(),
                     kalendermaaned,
-                    newArbeidsforhold
+                    isNewArbeidsforhold
             );
         }
-        List<Arbeidsforhold> newHistorikk = createArbeidsforholdHistorikk(newArbeidsforhold, kalendermaaned, previous, historikk);
-        if (!newHistorikk.isEmpty()){
-            Arbeidsforhold next = newHistorikk.get(0);
-            newHistorikk.remove(0);
-            if (newArbeidsforhold) {
-                List<Organisajon> opplysningspliktigeorganisasjoner = getOpplysningspliktigeorganisasjoner(miljo);
-                Organisajon newOpplysningspliktigOrganisajon = opplysningspliktigeorganisasjoner.get(random.nextInt(opplysningspliktigeorganisasjoner.size()));
-                String virksomhetsnummer = newOpplysningspliktigOrganisajon.getRandomVirksomhetsnummer();
-                next.setVirksomhetsnummer(virksomhetsnummer);
-                Opplysningspliktig opplysningspliktig = getOpplysningspliktig(newOpplysningspliktigOrganisajon, kalendermaaned, miljo);
-                opplysningspliktig.addArbeidsforhold(next);
-                arbeidsforholdConsumer.sendOpplysningspliktig(opplysningspliktig, miljo);
-                syntHistory(newOpplysningspliktigOrganisajon, next, miljo, kalendermaaneder, Collections.emptyList());
-            } else {
-                Opplysningspliktig opplysningspliktig = getOpplysningspliktig(opplysningspliktigOrganisajon, kalendermaaned, miljo);
-                opplysningspliktig.addArbeidsforhold(next);
-                arbeidsforholdConsumer.sendOpplysningspliktig(opplysningspliktig, miljo);
-                syntHistory(opplysningspliktigOrganisajon, next, miljo, kalendermaaneder, newHistorikk);
-            }
-        }
-    }
 
-    private List<Arbeidsforhold> createArbeidsforholdHistorikk(boolean newArbeidsforhold, LocalDate kalendermaaned, Arbeidsforhold previous, List<Arbeidsforhold> historikk) {
-        if (newArbeidsforhold) {
+        if (isNewArbeidsforhold) {
             log.info("Bytter jobb for person {} med tidligere arbeidsforhold {}.", previous.getIdent(), previous.getArbeidsforholdId());
             Arbeidsforhold next = syntrestConsumer.getFirstArbeidsforhold(kalendermaaned, previous.getIdent(), previous.getVirksomhetsnummer());
             log.info("Nytt arbeidsforhold id {} for person {}.", next.getArbeidsforholdId(), next.getIdent());
-            return new ArrayList<>(Arrays.asList(next));
-        } else if (historikk.isEmpty()) {
-            return getArbeidsforholdHistorikk(previous, kalendermaaned.minusMonths(1));
-        } else {
-            return historikk;
+
+            List<Organisajon> opplysningspliktigeorganisasjoner = getOpplysningspliktigeorganisasjoner(miljo);
+            Organisajon newOpplysningspliktigOrganisajon = opplysningspliktigeorganisasjoner.get(random.nextInt(opplysningspliktigeorganisasjoner.size()));
+            String virksomhetsnummer = newOpplysningspliktigOrganisajon.getRandomVirksomhetsnummer();
+            next.setVirksomhetsnummer(virksomhetsnummer);
+            Opplysningspliktig opplysningspliktig = getOpplysningspliktig(newOpplysningspliktigOrganisajon, kalendermaaned, miljo);
+            opplysningspliktig.addArbeidsforhold(next);
+            arbeidsforholdConsumer.sendOpplysningspliktig(opplysningspliktig, miljo);
+            syntHistory(newOpplysningspliktigOrganisajon, next, miljo, kalendermaaneder);
         }
+
+        if (!historikk.hasNext()) {
+            historikk = getArbeidsforholdHistorikk(previous, kalendermaaned.minusMonths(1)).iterator();
+        }
+
+        Arbeidsforhold next = historikk.next();
+        Opplysningspliktig opplysningspliktig = getOpplysningspliktig(opplysningspliktigOrganisajon, kalendermaaned, miljo);
+        opplysningspliktig.addArbeidsforhold(next);
+        arbeidsforholdConsumer.sendOpplysningspliktig(opplysningspliktig, miljo);
+        syntHistory(opplysningspliktigOrganisajon, next, miljo, kalendermaaneder, historikk);
     }
 
     private List<Arbeidsforhold> getArbeidsforholdHistorikk(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned) {
         return syntrestConsumer.getArbeidsforholdHistorikk(arbeidsforhold, kalendermaaned);
     }
 
-    private Arbeidsforhold createArbeidsforhold(boolean newArbeidsforhold, LocalDate kalendermaaned, Arbeidsforhold previous) {
-        if (newArbeidsforhold) {
-            log.info("Bytter job for person {} med tidligere arbeidsforhold {}.", previous.getIdent(), previous.getArbeidsforholdId());
-            Arbeidsforhold next = syntrestConsumer.getFirstArbeidsforhold(kalendermaaned, previous.getIdent(), previous.getVirksomhetsnummer());
-            log.info("Nytt arbeidsforhold id {} for person {}.", next.getArbeidsforholdId(), next.getIdent());
-            return next;
-        }
-        return getNesteArbeidsforhold(previous, kalendermaaned.minusMonths(1));
-    }
-
     private Arbeidsforhold getNesteArbeidsforhold(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned) {
         if (random.nextFloat() > syntetiseringProperties.getEndringssannsynlighet()) {
-            log.info("Returnerer samme arbeidsforhold for arbeidsforholdId {}.", arbeidsforhold.getArbeidsforholdId());
+            log.info("Returnerer samme arbeidsforhold for arbeidsforhold id {}.", arbeidsforhold.getArbeidsforholdId());
             return arbeidsforhold;
         }
         return syntrestConsumer.getNesteArbeidsforhold(arbeidsforhold, kalendermaaned);

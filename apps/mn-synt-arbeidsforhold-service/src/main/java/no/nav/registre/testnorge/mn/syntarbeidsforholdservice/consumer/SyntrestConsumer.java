@@ -1,10 +1,8 @@
 package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
@@ -111,12 +109,20 @@ public class SyntrestConsumer {
     public List<Arbeidsforhold> getArbeidsforholdHistorikk(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned) {
         log.info("Finner arbeidsforhold historikk fra og med {}.", kalendermaaned.plusMonths(1));
         List<ArbeidsforholdResponse> response = getArbeidsforholdHistorikkResponse(arbeidsforhold, kalendermaaned);
-        return response.stream().map(res -> new Arbeidsforhold(
+        log.info("Fant historikk for {} måneder.", response.size());
+
+        var list = response.stream().map(res -> new Arbeidsforhold(
                 res,
                 arbeidsforhold.getIdent(),
                 arbeidsforhold.getArbeidsforholdId(),
                 arbeidsforhold.getVirksomhetsnummer()))
                 .collect(Collectors.toList());
+
+        list.stream()
+                .filter(value -> value.getSluttdato() != null)
+                .filter(value -> value.getStartdato().isAfter(value.getSluttdato()))
+                .forEach(value -> log.warn("Sluttdato er før start dato (ident={}).", value.getIdent()));
+        return list;
     }
 
     public Arbeidsforhold getFirstArbeidsforhold(LocalDate startdato, String ident, String virksomhetsnummer) {
