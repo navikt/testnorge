@@ -1,13 +1,13 @@
-name: Deploy arbeidsforhold-fronted
+name: Deploy arbeidsforhold-frontend
 
 on:
   push:
     paths:
-      - apps/arbeidsforhold-fronted/**
+      - apps/arbeidsforhold-frontend/**
       - libs/testnorge-core/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/arbeidsforhold-fronted:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/arbeidsforhold-frontend:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -32,22 +32,22 @@ jobs:
       - name: Install js libs
         run: |
           npm ci
-        working-directory: ./apps/arbeidsforhold-fronted/src/main/js
+        working-directory: ./apps/arbeidsforhold-frontend/src/main/js
       - name: Build js
         run: |
           npm run build
-        working-directory: ./apps/arbeidsforhold-fronted/src/main/js
+        working-directory: ./apps/arbeidsforhold-frontend/src/main/js
       - name: Move js build
         run: |
           mv build ../resources/static
-        working-directory: ./apps/arbeidsforhold-fronted/src/main/js
+        working-directory: ./apps/arbeidsforhold-frontend/src/main/js
       - name: Compile
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :arbeidsforhold-fronted:build
+        run: ./gradlew :arbeidsforhold-frontend:build
       - name: Build and publish Docker image
-        working-directory: ./apps/arbeidsforhold-fronted/
+        working-directory: ./apps/arbeidsforhold-frontend/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -60,4 +60,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/arbeidsforhold-fronted/config.yml
+          RESOURCE: apps/arbeidsforhold-frontend/config.yml
