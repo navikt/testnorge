@@ -4,7 +4,7 @@ type Fetch = {
     body?: unknown
 }
 
-const _fetch = ({url, method, body}: Fetch) => (
+const _fetch = ({url, method, body}: Fetch): Promise<Response> => (
     window.fetch(url, {
         method: method,
         credentials: 'include',
