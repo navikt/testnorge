@@ -5,12 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.LocalDate;
 
 import no.nav.registre.testnorge.arbeidsforhold.domain.OppsummeringsdokumentetRawList;
 import no.nav.registre.testnorge.arbeidsforhold.repository.OppsummeringsdokumentetRepository;
-import no.nav.registre.testnorge.arbeidsforhold.repository.model.OppsummeringsdokumentetModel;
 
 @Slf4j
 @Component
@@ -18,9 +16,28 @@ import no.nav.registre.testnorge.arbeidsforhold.repository.model.Oppsummeringsdo
 public class OppsummeringsdokumentetRawAdapter {
     private final OppsummeringsdokumentetRepository opplysningspliktigRepository;
 
-    public OppsummeringsdokumentetRawList fetchAllByPosition(String mijlo, int position) {
+    public OppsummeringsdokumentetRawList fetchBy(String mijlo, int position, LocalDate fom, LocalDate tom) {
+        if (fom != null && tom != null) {
+            return new OppsummeringsdokumentetRawList(
+                    opplysningspliktigRepository.findAllByLastWithFomAndTom(mijlo, fom.getYear(), fom.getMonthValue(), tom.getYear(), tom.getMonthValue(), PageRequest.of(position, 1))
+            );
+        }
+
+        if (fom != null) {
+            return new OppsummeringsdokumentetRawList(
+                    opplysningspliktigRepository.findAllByLastWithFom(mijlo, fom.getYear(), fom.getMonthValue(), PageRequest.of(position, 1))
+            );
+        }
+
+        if (tom != null) {
+            return new OppsummeringsdokumentetRawList(
+                    opplysningspliktigRepository.findAllByLastWithTom(mijlo, tom.getYear(), tom.getMonthValue(), PageRequest.of(position, 1))
+            );
+        }
+
         return new OppsummeringsdokumentetRawList(
                 opplysningspliktigRepository.findAllByLast(mijlo, PageRequest.of(position, 1))
         );
     }
+
 }

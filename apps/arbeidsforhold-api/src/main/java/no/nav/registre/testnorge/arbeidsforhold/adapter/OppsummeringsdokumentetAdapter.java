@@ -3,7 +3,6 @@ package no.nav.registre.testnorge.arbeidsforhold.adapter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import javax.xml.bind.JAXBContext;
@@ -12,7 +11,6 @@ import javax.xml.bind.Unmarshaller;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,7 +37,8 @@ public class OppsummeringsdokumentetAdapter {
         OppsummeringsdokumentetModel model = OppsummeringsdokumentetModel.builder()
                 .document(xml)
                 .orgnummer(opplysningspliktig.getOrgnummer())
-                .rapporteringsmaaned(format(opplysningspliktig.getRapporteringsmaaned()))
+                .year(opplysningspliktig.getRapporteringsmaaned().getYear())
+                .month(opplysningspliktig.getRapporteringsmaaned().getMonthValue())
                 .version(opplysningspliktig.getVersion())
                 .miljo(miljo)
                 .build();
@@ -52,7 +51,7 @@ public class OppsummeringsdokumentetAdapter {
 
     public Oppsummeringsdokumentet fetch(String orgnummer, LocalDate rapporteringsmaaned, String mijlo) {
         Optional<OppsummeringsdokumentetModel> opplysningspliktigModel = opplysningspliktigRepository
-                .findBy(format(rapporteringsmaaned), orgnummer, mijlo);
+                .findBy(rapporteringsmaaned.getYear(), rapporteringsmaaned.getMonthValue(), orgnummer, mijlo);
         if (opplysningspliktigModel.isEmpty()) {
             return null;
         }
@@ -65,7 +64,7 @@ public class OppsummeringsdokumentetAdapter {
         return opplysningspliktigRepository
                 .findAllByLast(mijlo)
                 .stream()
-                .map(model ->  new Oppsummeringsdokumentet(toEDAGM(model.getDocument())))
+                .map(model -> new Oppsummeringsdokumentet(toEDAGM(model.getDocument())))
                 .collect(Collectors.toList());
     }
 
@@ -82,8 +81,4 @@ public class OppsummeringsdokumentetAdapter {
         return element.getValue();
     }
 
-
-    private String format(LocalDate value) {
-        return value.format(DateTimeFormatter.ofPattern("yyyy-MM"));
-    }
 }
