@@ -1,20 +1,13 @@
 import React from "react";
 import "./App.less";
-import { CodeView, FetchCode } from "@/componetes";
-import Api from "@/api";
+import { CodeSearch } from "@/componetes";
+import Header from "@/componetes/Header";
 
 function App() {
   return (
     <div className="App">
-      <h1>Arbeidsforhold</h1>
-      <FetchCode
-        fetchFromPosition={(item) =>
-          Api.fetch({
-            url: "/api/v1/oppsummeringsdokumenter/raw/items/" + item,
-            method: "GET",
-          })
-        }
-      />
+      <Header />
+      <CodeSearch />
     </div>
   );
 }

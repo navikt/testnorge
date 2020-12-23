@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { CodeView } from "@/componetes";
+import NavFrontendSpinner from "nav-frontend-spinner";
 
 type Props = {
   fetchFromPosition: (position: number) => Promise<Response>;
@@ -23,7 +24,7 @@ export const FetchCode = ({ fetchFromPosition }: Props) => {
       });
   };
 
-  useEffect(() => getCode(position), ["position"]);
+  useEffect(() => getCode(position), [position, fetchFromPosition]);
 
   const onNext = () => setPosition(position + 1);
   const onPrevious = () => setPosition(position - 1);
@@ -31,11 +32,11 @@ export const FetchCode = ({ fetchFromPosition }: Props) => {
   return (
     <div>
       {loading ? (
-        "Loading..."
+        <NavFrontendSpinner type="XL" aria-label="Laster inn..." />
       ) : (
         <CodeView
-          onPrevious={position > 0 ? onPrevious : null}
-          onNext={position < totalItems - 1 ? onNext : null}
+          onPrevious={position > 0 && totalItems !== 0 ? onPrevious : null}
+          onNext={position < totalItems && totalItems !== 0 - 1 ? onNext : null}
           code={code}
         />
       )}
