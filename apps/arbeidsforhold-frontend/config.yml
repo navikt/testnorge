@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: arbeidsforhold-fronted
+  name: arbeidsforhold-frontend
   namespace: dolly
   labels:
     team: dolly
@@ -12,7 +12,7 @@ spec:
     application:
       enabled: true
       replyURLs:
-        - "https://arbeidsforhold-fronted.dev.intern.nav.no/login/oauth2/code/aad"
+        - "https://arbeidsforhold-frontend.dev.intern.nav.no/login/oauth2/code/aad"
         - "http://localhost:8080/login/oauth2/code/aad"
   liveness:
     path: /internal/isAlive
@@ -37,4 +37,4 @@ spec:
       memory: 1024Mi
   image: {{ image }}
   ingresses:
-    - "https://arbeidsforhold-fronted.dev.intern.nav.no"
+    - "https://arbeidsforhold-frontend.dev.intern.nav.no"
