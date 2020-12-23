@@ -16,12 +16,11 @@ import no.nav.registre.testnorge.arbeidsforhold.repository.model.Oppsummeringsdo
 @Component
 @RequiredArgsConstructor
 public class OppsummeringsdokumentetRawAdapter {
-    private static final int PAGE_SIZE = 1;
     private final OppsummeringsdokumentetRepository opplysningspliktigRepository;
 
-    public OppsummeringsdokumentetRawList fetchAll(String mijlo, int page) {
+    public OppsummeringsdokumentetRawList fetchAllByPosition(String mijlo, int position) {
         return new OppsummeringsdokumentetRawList(
-                opplysningspliktigRepository.findAllByLast(mijlo, PageRequest.of(page, PAGE_SIZE))
+                opplysningspliktigRepository.findAllByLast(mijlo, PageRequest.of(position, 1))
         );
     }
 }
