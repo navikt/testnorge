@@ -17,6 +17,9 @@ public interface OrganisasjonRepository extends CrudRepository<OrganisasjonModel
     List<OrganisasjonModel> findAllByLedigIsTrue();
     OrganisasjonModel findByOrgnummer(String orgnummer);
 
+    @Modifying
+    OrganisasjonModel save(OrganisasjonModel organisasjonModel);
+
     @Transactional
     @Modifying
     @Query( value = "update OrganisasjonModel m set m.ledig=?2 where m.orgnummer=?1")

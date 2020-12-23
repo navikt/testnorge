@@ -2,6 +2,7 @@ package no.nav.registre.orgnrservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -76,7 +77,15 @@ public class OrganisasjonApiConsumer {
         //evt loop gjennom miljø. Lage tråder
         String miljoe = "q1"; //"prod"
 
-        String token = accessTokenService.generateToken(clientId).getTokenValue();
-        return getOrgnrFraMiljoe(orgnummer, miljoe, token);
+        return getOrgnrFraMiljoe(orgnummer, miljoe, getToken());
+    }
+
+    private String getToken () {
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+            // Ikke innlogget ved batchkjøring
+            return accessTokenService.generateClientCredentialAccessToken(clientId).getTokenValue();
+        } else {
+            return accessTokenService.generateToken(clientId).getTokenValue();
+        }
     }
 }
