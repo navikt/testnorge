@@ -5,7 +5,7 @@ type Props = {
   fetchFromPosition: (position: number) => Promise<Response>;
 };
 
-const FetchCode = ({ fetchFromPosition }: Props) => {
+export const FetchCode = ({ fetchFromPosition }: Props) => {
   const [position, setPosition] = useState(0);
   const [code, setCode] = useState<string>();
   const [totalItems, setTotalItems] = useState<number>();

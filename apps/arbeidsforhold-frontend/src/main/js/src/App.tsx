@@ -1,12 +1,20 @@
-import React from 'react';
-import './App.less';
-import {CodeView} from "@/componetes";
+import React from "react";
+import "./App.less";
+import { CodeView, FetchCode } from "@/componetes";
+import Api from "@/api";
 
 function App() {
   return (
     <div className="App">
       <h1>Arbeidsforhold</h1>
-        <CodeView onNext={() => { window.alert("NEste test")}} />
+      <FetchCode
+        fetchFromPosition={(item) =>
+          Api.fetch({
+            url: "/api/v1/oppsummeringsdokumenter/raw/items/" + item,
+            method: "GET",
+          })
+        }
+      />
     </div>
   );
 }

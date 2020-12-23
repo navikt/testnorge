@@ -1,5 +1,3 @@
-CLIENT_SECRET: ${azure.app.client.secret}
-
 spring:
   security:
     oauth2:
