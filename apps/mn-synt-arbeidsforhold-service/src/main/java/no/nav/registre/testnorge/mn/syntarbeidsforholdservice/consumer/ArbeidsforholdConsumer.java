@@ -28,6 +28,7 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Organisajon
 
 @Component
 public class ArbeidsforholdConsumer {
+    private static final int BYTE_COUNT = 16 * 1024 * 1024;
     private final WebClient webClient;
     private final ArbeidsforholdApiClientProperties arbeidsforholdApiClientProperties;
     private final AccessTokenService accessTokenService;
@@ -44,7 +45,7 @@ public class ArbeidsforholdConsumer {
         this.webClient = WebClient
                 .builder()
                 .codecs(clientDefaultCodecsConfigurer -> {
-                    clientDefaultCodecsConfigurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024);
+                    clientDefaultCodecsConfigurer.defaultCodecs().maxInMemorySize(BYTE_COUNT);
                     clientDefaultCodecsConfigurer
                             .defaultCodecs()
                             .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper, MediaType.APPLICATION_JSON));
@@ -83,7 +84,7 @@ public class ArbeidsforholdConsumer {
     public List<Opplysningspliktig> getAlleOpplysningspliktig(String miljo) {
         AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties.getClientId());
         var list = new GetOppsummeringsdokumenterCommand(webClient, accessToken.getTokenValue(), miljo).call();
-        //TODO: Fix empty array of driver virksomhenter
+        //TODO: Fix empty array of driver virksomheter
         return list.stream().map(value -> new Opplysningspliktig(value, new ArrayList<>())).collect(Collectors.toList());
     }
 

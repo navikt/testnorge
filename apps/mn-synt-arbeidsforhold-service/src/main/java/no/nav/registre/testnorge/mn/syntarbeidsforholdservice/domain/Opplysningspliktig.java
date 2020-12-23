@@ -22,11 +22,11 @@ import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.VirksomhetDTO;
 public class Opplysningspliktig {
     private static final Random RANDOM = new Random();
     private final OppsummeringsdokumentetDTO dto;
-    private final List<String> driverVirksomhenter;
+    private final List<String> driverVirksomheter;
     private boolean changed = false;
 
     public Opplysningspliktig(Organisajon organisajon, LocalDate kalendermaand) {
-        driverVirksomhenter = organisajon.getDriverVirksomheter();
+        driverVirksomheter = organisajon.getDriverVirksomheter();
         dto = OppsummeringsdokumentetDTO
                 .builder()
                 .version(1L)
@@ -37,15 +37,15 @@ public class Opplysningspliktig {
     }
 
     public String getRandomVirksomhetsnummer(){
-        return driverVirksomhenter.get(RANDOM.nextInt(driverVirksomhenter.size()));
+        return driverVirksomheter.get(RANDOM.nextInt(driverVirksomheter.size()));
     }
 
-    public boolean driverVirksomhent(String virksomhetesnummer){
-        return driverVirksomhenter.stream().anyMatch(value -> value.equals(virksomhetesnummer));
+    public boolean driverVirksomhet(String virksomhetesnummer){
+        return driverVirksomheter.stream().anyMatch(value -> value.equals(virksomhetesnummer));
     }
 
 
-    public List<VirksomhetDTO> getDriverVirksomhenter() {
+    public List<VirksomhetDTO> getDriverVirksomheter() {
         return dto.getVirksomheter();
     }
 

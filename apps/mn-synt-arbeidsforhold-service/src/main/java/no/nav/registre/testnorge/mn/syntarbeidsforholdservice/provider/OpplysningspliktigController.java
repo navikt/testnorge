@@ -20,7 +20,7 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.service.Arbeidsfor
 @RequestMapping("api/v1/opplysningspliktig")
 public class OpplysningspliktigController {
 
-    private final ArbeidsforholdService syntentiseringService;
+    private final ArbeidsforholdService syntetiseringService;
     private final ArbeidsforholdHistorikkService arbeidsforholdHistorikkService;
 
     @PostMapping
@@ -28,7 +28,7 @@ public class OpplysningspliktigController {
             @RequestHeader("miljo") String miljo,
             @RequestHeader("kalendermaaned") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate kalendermaaned
     ) {
-        syntentiseringService.reportAll(kalendermaaned, miljo);
+        syntetiseringService.reportAll(kalendermaaned, miljo);
         return ResponseEntity.noContent().build();
     }
 

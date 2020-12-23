@@ -9,16 +9,16 @@ import no.nav.registre.testnorge.libs.csvconverter.CsvHeader;
 import no.nav.registre.testnorge.libs.csvconverter.ObjectConverter;
 import no.nav.registre.testnorge.libs.csvconverter.RowConverter;
 
-public class ArbeidsforholdSyntentiseringCsvConverter extends CsvConverter<Arbeidsforhold> {
+public class ArbeidsforholdSyntetiseringCsvConverter extends CsvConverter<Arbeidsforhold> {
 
-    private static ArbeidsforholdSyntentiseringCsvConverter inst;
+    private static ArbeidsforholdSyntetiseringCsvConverter inst;
 
-    private ArbeidsforholdSyntentiseringCsvConverter() {
+    private ArbeidsforholdSyntetiseringCsvConverter() {
     }
 
-    public static ArbeidsforholdSyntentiseringCsvConverter inst() {
+    public static ArbeidsforholdSyntetiseringCsvConverter inst() {
         if (inst == null) {
-            inst = new ArbeidsforholdSyntentiseringCsvConverter();
+            inst = new ArbeidsforholdSyntetiseringCsvConverter();
         }
         return inst;
     }

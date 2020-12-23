@@ -65,7 +65,7 @@ public class ArbeidsforholdHistorikkService {
             }
 
             if (isNewArbeidsforhold || previous.getSluttdato() != null && previous.getSluttdato().isBefore(kalendermaaned)) {
-                log.info("Genrerer nytt arbeidsforhold for {} den {}.", ident, kalendermaaned);
+                log.info("Genererer nytt arbeidsforhold for {} den {}.", ident, kalendermaaned);
                 Arbeidsforhold next = syntrestConsumer.getFirstArbeidsforhold(kalendermaaned, ident, null);
                 map.put(kalendermaaned, next);
                 previous = next;
@@ -95,11 +95,11 @@ public class ArbeidsforholdHistorikkService {
             try {
                 list.add(future.get());
             } catch (Exception e) {
-                log.error("Feil med generering av syntetsik historikk. Forsetter uten.", e);
+                log.error("Feil ved generering av syntetisk historikk. Fortsetter uten.", e);
             }
         }
         if (futures.size() > list.size()) {
-            log.warn("Syntentiserer bare {}/{} personer pga tidligere feil.", list.size(), futures.size());
+            log.warn("Syntetiserer bare {}/{} personer pga tidligere feil.", list.size(), futures.size());
         }
         return list;
     }
@@ -108,11 +108,11 @@ public class ArbeidsforholdHistorikkService {
 
         var startTimeStamp = LocalDateTime.now();
 
-        log.info("Starter syntentisering ({}).", startTimeStamp);
+        log.info("Starter syntetisering ({}).", startTimeStamp);
         var dates = findAllDatesBetween(fom, tom);
         var identer = identService.getIdenterUtenArbeidsforhold(miljo, maxIdenter);
         if (identer.isEmpty()) {
-            log.warn("Fant ingen identer avsluter syntentisering...");
+            log.warn("Fant ingen identer. Avslutter syntetisering.");
         }
 
         log.info("Syntentiser for {} person(er) mellom {} - {}...", identer.size(), fom, tom);
@@ -121,7 +121,7 @@ public class ArbeidsforholdHistorikkService {
         for (var kalenermnd : dates) {
             report(arbeidsforholdMapList, kalenermnd, miljo);
         }
-        log.info("Syntentisering ferdig for {}/{} person(er) ({} - {}).",
+        log.info("Syntetisering ferdig for {}/{} person(er) ({} - {}).",
                 arbeidsforholdMapList.size(),
                 identer.size(),
                 startTimeStamp,
@@ -137,26 +137,26 @@ public class ArbeidsforholdHistorikkService {
             if (arbeidsforholdMap.isNewArbeidsforhold(kalenermnd)) {
                 var opplysningspliktig = opplysningspliktige.get(random.nextInt(opplysningspliktige.size()));
                 arbeidsforhold.setVirksomhetsnummer(opplysningspliktig.getRandomVirksomhetsnummer());
-                log.info("{} starter nytt arbeidsfohold den {}.", arbeidsforhold.getIdent(), kalenermnd);
+                log.info("{} starter nytt arbeidsforhold den {}.", arbeidsforhold.getIdent(), kalenermnd);
             } else {
                 var virksomhetsnummer = arbeidsforholdMap.getArbeidsforhold(kalenermnd.minusMonths(1)).getVirksomhetsnummer();
                 if (virksomhetsnummer == null) {
-                    throw new RuntimeException("Finner ikke forige virksomhentsnummer");
+                    throw new RuntimeException("Finner ikke forrige virksomhetsnummer");
                 }
                 arbeidsforhold.setVirksomhetsnummer(virksomhetsnummer);
             }
-            var opplysningspliktig = findOpplysningspliktigForVirksomhent(arbeidsforhold.getVirksomhetsnummer(), opplysningspliktige);
+            var opplysningspliktig = findOpplysningspliktigForVirksomhet(arbeidsforhold.getVirksomhetsnummer(), opplysningspliktige);
             opplysningspliktig.addArbeidsforhold(arbeidsforhold);
         }
         opplysningspliktigService.send(opplysningspliktige, miljo);
     }
 
 
-    private Opplysningspliktig findOpplysningspliktigForVirksomhent(String virksomhentsnummer, List<Opplysningspliktig> list) {
+    private Opplysningspliktig findOpplysningspliktigForVirksomhet(String virksomhetsnummer, List<Opplysningspliktig> list) {
         return list.stream()
-                .filter(value -> value.driverVirksomhent(virksomhentsnummer))
+                .filter(value -> value.driverVirksomhet(virksomhetsnummer))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Finner ikke opplysningspliktig for virksomhentsnummer: " + virksomhentsnummer));
+                .orElseThrow(() -> new RuntimeException("Finner ikke opplysningspliktig for virksomhetsnummer: " + virksomhetsnummer));
     }
 
 

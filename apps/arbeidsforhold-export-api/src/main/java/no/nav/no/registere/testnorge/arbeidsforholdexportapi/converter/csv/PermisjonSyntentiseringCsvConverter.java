@@ -9,16 +9,16 @@ import no.nav.registre.testnorge.libs.csvconverter.CsvHeader;
 import no.nav.registre.testnorge.libs.csvconverter.ObjectConverter;
 import no.nav.registre.testnorge.libs.csvconverter.RowConverter;
 
-public class PermisjonSyntentiseringCsvConverter extends CsvConverter<Permisjon> {
+public class PermisjonSyntetiseringCsvConverter extends CsvConverter<Permisjon> {
 
-    private static PermisjonSyntentiseringCsvConverter inst;
+    private static PermisjonSyntetiseringCsvConverter inst;
 
-    private PermisjonSyntentiseringCsvConverter() {
+    private PermisjonSyntetiseringCsvConverter() {
     }
 
-    public static PermisjonSyntentiseringCsvConverter inst() {
+    public static PermisjonSyntetiseringCsvConverter inst() {
         if (inst == null) {
-            inst = new PermisjonSyntentiseringCsvConverter();
+            inst = new PermisjonSyntetiseringCsvConverter();
         }
         return inst;
     }

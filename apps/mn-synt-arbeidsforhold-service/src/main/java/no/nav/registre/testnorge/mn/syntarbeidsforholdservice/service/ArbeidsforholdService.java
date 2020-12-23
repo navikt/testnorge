@@ -110,7 +110,7 @@ public class ArbeidsforholdService {
     }
 
     private void syntHistoryForThisMonth(Opplysningspliktig opplysningspliktig, LocalDate kalendermaaned, String miljo) {
-        opplysningspliktig.getDriverVirksomhenter().forEach(
+        opplysningspliktig.getDriverVirksomheter().forEach(
                 virksomhetDTO -> virksomhetDTO.getPersoner().forEach(personDTO -> personDTO.getArbeidsforhold().forEach(
                         arbeidsforholdDTO -> {
                             if (arbeidsforholdDTO.getSluttdato() == null || !arbeidsforholdDTO.getSluttdato().equals(kalendermaaned.minusMonths(1))) {
@@ -131,7 +131,7 @@ public class ArbeidsforholdService {
     }
 
     private void syntHistoryForPreviousMonth(Opplysningspliktig opplysningspliktig, LocalDate kalendermaaned, String miljo) {
-        opplysningspliktig.getDriverVirksomhenter().forEach(
+        opplysningspliktig.getDriverVirksomheter().forEach(
                 virksomhetDTO -> virksomhetDTO.getPersoner().forEach(
                         personDTO -> personDTO.getArbeidsforhold().forEach(
                                 arbeidsforholdDTO -> {

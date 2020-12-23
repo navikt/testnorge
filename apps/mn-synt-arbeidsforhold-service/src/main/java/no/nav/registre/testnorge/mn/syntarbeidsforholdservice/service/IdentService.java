@@ -23,7 +23,7 @@ public class IdentService {
         return arbeidsforholdConsumer
                 .getAlleOpplysningspliktig(mijlo)
                 .stream()
-                .map(Opplysningspliktig::getDriverVirksomhenter)
+                .map(Opplysningspliktig::getDriverVirksomheter)
                 .flatMap(Collection::stream)
                 .map(VirksomhetDTO::getPersoner)
                 .flatMap(Collection::stream)
@@ -71,7 +71,7 @@ public class IdentService {
                 .filter(ident -> !identerMedArbeidsforhold.contains(ident))
                 .collect(Collectors.toSet());
         if (identerUtenArbeidsforhold.isEmpty()) {
-            log.warn("Prøved å finne {} identer men fant ingen uten arbeidsforhold. Prøv å øke antall personer som kan ha arbeidsforhold i Mini-Norge.", max);
+            log.warn("Prøvde å finne {} identer men fant ingen uten arbeidsforhold. Prøv å øke antall personer som kan ha arbeidsforhold i Mini-Norge.", max);
         } else {
             log.info("Fant {}/{} identer uten arbeidsforhold i {}.", identerUtenArbeidsforhold.size(), max, mijlo);
         }
