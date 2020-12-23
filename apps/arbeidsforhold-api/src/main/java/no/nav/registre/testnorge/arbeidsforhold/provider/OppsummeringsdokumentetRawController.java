@@ -31,7 +31,7 @@ public class OppsummeringsdokumentetRawController {
             @RequestParam(value = "fom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fom,
             @RequestParam(value = "tom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate tom
     ) {
-        var list = oppsummeringsdokumentetRawAdapter.fetchBy(miljo, position, fom, tom );
+        var list = oppsummeringsdokumentetRawAdapter.fetchBy(miljo, position, fom, tom);
 
         if (list.getDocuments().isEmpty()) {
             return ResponseEntity

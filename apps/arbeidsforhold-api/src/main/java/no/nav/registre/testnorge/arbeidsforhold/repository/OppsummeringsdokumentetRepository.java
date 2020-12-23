@@ -18,15 +18,15 @@ public interface OppsummeringsdokumentetRepository extends PagingAndSortingRepos
     @Query(value = "from OppsummeringsdokumentetModel o1 where o1.miljo = ?1 AND o1.version = (select max(version) from OppsummeringsdokumentetModel o2 where o2.year = o1.year AND o2.month = o1.month AND o2.orgnummer = o1.orgnummer AND o2.miljo = o1.miljo)")
     List<OppsummeringsdokumentetModel> findAllByLast(String miljo);
 
-    @Query(value = "from OppsummeringsdokumentetModel o1 where o1.miljo = ?1 AND o1.version = (select max(version) from OppsummeringsdokumentetModel o2 where o2.year = o1.year AND o2.month = o1.month AND o2.orgnummer = o1.orgnummer AND o2.miljo = o1.miljo)")
+    @Query(value = "from OppsummeringsdokumentetModel o1 where o1.miljo = ?1 AND o1.version = (select max(version) from OppsummeringsdokumentetModel o2 where o2.year = o1.year AND o2.month = o1.month AND o2.orgnummer = o1.orgnummer AND o2.miljo = o1.miljo) ORDER BY o1.createdAt ASC")
     Page<OppsummeringsdokumentetModel> findAllByLast(String miljo, Pageable pageable);
 
-    @Query(value = "from OppsummeringsdokumentetModel o1 where o1.miljo = ?1 AND (o1.year > ?2 OR o1.year = ?2 AND o1.month >= ?3) AND (o1.year < ?3 OR o1.year = ?3 AND o1.month <= ?4) AND o1.version = (select max(version) from OppsummeringsdokumentetModel o2 where o2.year = o1.year AND o2.month = o1.month AND o2.orgnummer = o1.orgnummer AND o2.miljo = o1.miljo)")
+    @Query(value = "from OppsummeringsdokumentetModel o1 where o1.miljo = ?1 AND (o1.year > ?2 OR o1.year = ?2 AND o1.month >= ?3) AND (o1.year < ?4 OR o1.year = ?4 AND o1.month <= ?5) AND o1.version = (select max(version) from OppsummeringsdokumentetModel o2 where o2.year = o1.year AND o2.month = o1.month AND o2.orgnummer = o1.orgnummer AND o2.miljo = o1.miljo) ORDER BY o1.createdAt ASC")
     Page<OppsummeringsdokumentetModel> findAllByLastWithFomAndTom(String miljo, int fomYear, int fomMonth, int tomYear, int tomMonth, Pageable pageable);
 
-    @Query(value = "from OppsummeringsdokumentetModel o1 where o1.miljo = ?1 AND (o1.year > ?2 OR o1.year = ?2 AND o1.month >= ?3) AND o1.version = (select max(version) from OppsummeringsdokumentetModel o2 where o2.year = o1.year AND o2.month = o1.month AND o2.orgnummer = o1.orgnummer AND o2.miljo = o1.miljo)")
+    @Query(value = "from OppsummeringsdokumentetModel o1 where o1.miljo = ?1 AND (o1.year > ?2 OR o1.year = ?2 AND o1.month >= ?3) AND o1.version = (select max(version) from OppsummeringsdokumentetModel o2 where o2.year = o1.year AND o2.month = o1.month AND o2.orgnummer = o1.orgnummer AND o2.miljo = o1.miljo) ORDER BY o1.createdAt ASC")
     Page<OppsummeringsdokumentetModel> findAllByLastWithFom(String miljo, int fomYear, int fomMonth, Pageable pageable);
 
-    @Query(value = "from OppsummeringsdokumentetModel o1 where o1.miljo = ?1 AND (o1.year < ?2 OR o1.year = ?2 AND o1.month <= ?3) AND o1.version = (select max(version) from OppsummeringsdokumentetModel o2 where o2.year = o1.year AND o2.month = o1.month AND o2.orgnummer = o1.orgnummer AND o2.miljo = o1.miljo)")
+    @Query(value = "from OppsummeringsdokumentetModel o1 where o1.miljo = ?1 AND (o1.year < ?2 OR o1.year = ?2 AND o1.month <= ?3) AND o1.version = (select max(version) from OppsummeringsdokumentetModel o2 where o2.year = o1.year AND o2.month = o1.month AND o2.orgnummer = o1.orgnummer AND o2.miljo = o1.miljo) ORDER BY o1.createdAt ASC")
     Page<OppsummeringsdokumentetModel> findAllByLastWithTom(String miljo, int tomYear, int tomMonth, Pageable pageable);
 }

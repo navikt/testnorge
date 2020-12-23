@@ -18,6 +18,14 @@ export const CodeView = ({
   onPrevious,
   language = "xml",
 }: Props) => {
+  window.onkeydown = (e) => {
+    if (e.key === "ArrowLeft") {
+      onPrevious();
+    } else if (e.key === "ArrowRight") {
+      onNext();
+    }
+  };
+
   return (
     <div className="code-view">
       <Tilbakeknapp
