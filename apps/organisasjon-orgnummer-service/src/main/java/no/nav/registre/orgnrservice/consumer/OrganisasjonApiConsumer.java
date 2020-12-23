@@ -74,7 +74,6 @@ public class OrganisasjonApiConsumer {
         }
     }
     public OrganisasjonDTO getOrgnr (String orgnummer) {
-        //evt loop gjennom miljø. Lage tråder
         String miljoe = "q1"; //"prod"
 
         return getOrgnrFraMiljoe(orgnummer, miljoe, getToken());
@@ -82,7 +81,7 @@ public class OrganisasjonApiConsumer {
 
     private String getToken () {
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            // Ikke innlogget ved batchkjøring
+            // Henter token for batchkjøring (ikke innlogget)
             return accessTokenService.generateClientCredentialAccessToken(clientId).getTokenValue();
         } else {
             return accessTokenService.generateToken(clientId).getTokenValue();

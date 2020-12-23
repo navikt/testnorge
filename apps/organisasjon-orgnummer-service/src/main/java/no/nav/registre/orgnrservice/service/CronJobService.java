@@ -22,9 +22,8 @@ public class CronJobService {
     private final OrgnummerService orgnummerService;
     private final OrganisasjonAdapter organisasjonAdapter;
 
-    @Scheduled(cron = "0 45 * * * *")
+    @Scheduled(cron = "0 0 20 * * *")
     public void execute() {
-        log.info("Batchen har startet (midlertidig infomelding)...");
         var antallLedige = organisasjonAdapter.hentAlleLedige().size();
 
         int manglende = OENSKET_ANTALL - antallLedige;
@@ -36,7 +35,6 @@ public class CronJobService {
 
     @Scheduled(cron = "0 0 22 * * *")
     public void checkProd() {
-        log.info("Batch checkProd har startet (midlertidig infomelding)...");
         var alle = organisasjonAdapter.hentAlleLedige();
         List<String> collect = alle.stream()
                 .map(org -> orgnummerService.finnesOrgnr(org.getOrgnummer()) ? org.getOrgnummer() : null)

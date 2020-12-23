@@ -20,16 +20,15 @@ public class OrganisasjonAdapter {
 
     public Organisasjon save(Organisasjon organisasjon) {
         log.info("Lagrer orgnummer {}", organisasjon.getOrgnummer());
-        OrganisasjonModel organisasjonModel =
-//                organisasjonRepoistory.findByOrgnummer(organisasjon.getOrgnummer()).orElseGet(
-//                () ->
-                organisasjonRepoistory.save(
-                        OrganisasjonModel.builder()
-                                .orgnummer(organisasjon.getOrgnummer())
-                                .ledig(organisasjon.isLedig())
-                                .build()
-//                )
-                );
+        OrganisasjonModel orgFraDb = organisasjonRepoistory.findByOrgnummer(organisasjon.getOrgnummer());
+
+        OrganisasjonModel organisasjonModel = organisasjonRepoistory.save(
+                OrganisasjonModel.builder()
+                        .orgnummer(organisasjon.getOrgnummer())
+                        .ledig(organisasjon.isLedig())
+                        .id(orgFraDb == null ? null : orgFraDb.getId())
+                        .build()
+        );
         return new Organisasjon(organisasjonModel);
     }
 
@@ -37,15 +36,9 @@ public class OrganisasjonAdapter {
         return organisasjoner.stream().map(this::save).collect(Collectors.toList());
     }
 
-    public void delete(Organisasjon organisasjon) {
-        organisasjonRepoistory.delete(
-                OrganisasjonModel.builder().orgnummer(organisasjon.getOrgnummer()).ledig(organisasjon.isLedig()).build()
-        );
-    }
-
     public void deleteByOrgnummer(String orgnummer) {
-        Organisasjon byOrgnummer = hentByOrgnummer(orgnummer);
-        if (byOrgnummer == null) {
+        Organisasjon orgFraDb = hentByOrgnummer(orgnummer);
+        if (orgFraDb == null) {
             return;
         }
         log.info("Sletter orgnummer {}", orgnummer);
@@ -61,10 +54,5 @@ public class OrganisasjonAdapter {
     public Organisasjon hentByOrgnummer(String orgnummer) {
         OrganisasjonModel model = organisasjonRepoistory.findByOrgnummer(orgnummer);
         return model == null ? null : new Organisasjon(model);
-    }
-
-    public Organisasjon setIsLedigByOrgnummer(String orgnummer, boolean ledig) {
-       organisasjonRepoistory.updateIsLedigByOrgnummer(orgnummer, ledig);
-       return hentByOrgnummer(orgnummer);
     }
 }
