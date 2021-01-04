@@ -30,15 +30,15 @@ export const CodeSearch = () => {
       param.push(["tom", tom]);
     }
 
-    return (item) =>
-      Api.fetch({
+    return (page) => {
+      param.push(["page", page.toString()]);
+      return Api.fetch({
         url:
-          "/api/v1/oppsummeringsdokumenter/raw/items/" +
-          item +
-          createQueryParam(param),
+          "/api/v1/oppsummeringsdokumenter/raw/items" + createQueryParam(param),
         method: "GET",
         headers: [["miljo", env]],
       });
+    };
   };
 
   const [fetchFromPosition, setFetchFromPosition] = useState<FetchFromPosition>(

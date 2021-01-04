@@ -10,11 +10,11 @@ import no.nav.registre.testnorge.arbeidsforhold.repository.model.Oppsummeringsdo
 
 @Value
 public class OppsummeringsdokumentetRawList {
-    List<String> documents;
+    List<Document> documents;
     Integer numberOfPages;
 
     public OppsummeringsdokumentetRawList(Page<OppsummeringsdokumentetModel> pages) {
-        this.documents = pages.stream().map(OppsummeringsdokumentetModel::getDocument).collect(Collectors.toList());
+        this.documents = pages.stream().map(value -> new Document(value.getDocument(), value.getId())).collect(Collectors.toList());
         this.numberOfPages = pages.getTotalPages();
     }
 }
