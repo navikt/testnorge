@@ -31,6 +31,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.4.6'
     implementation 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
     implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
+    implementation 'org.postgresql:postgresql:42.2.16'
 
     implementation project(':testnorge-database')
     implementation project(':testnorge-oauth2')
@@ -40,8 +41,7 @@ dependencies {
     implementation project(':testnorge-data-transfer-objects')
     implementation project(':testnorge-common-command')
 
-//    testImplementation group: 'junit', name: 'junit', version: '4.12'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE'
-//    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE'
-//    testImplementation 'org.assertj:assertj-core:3.16.1'
 }
+
+description = 'organisasjon-orgnummer-service'
