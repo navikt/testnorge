@@ -31,10 +31,10 @@ export const CodeSearch = () => {
     }
 
     return (page) => {
-      param.push(["page", page.toString()]);
       return Api.fetch({
         url:
-          "/api/v1/oppsummeringsdokumenter/raw/items" + createQueryParam(param),
+          "/api/v1/oppsummeringsdokumenter/raw/items" +
+          createQueryParam(param.concat([["page", page.toString()]])),
         method: "GET",
         headers: [["miljo", env]],
       });

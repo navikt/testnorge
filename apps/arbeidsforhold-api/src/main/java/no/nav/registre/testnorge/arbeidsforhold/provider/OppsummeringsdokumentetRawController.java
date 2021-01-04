@@ -3,7 +3,6 @@ package no.nav.registre.testnorge.arbeidsforhold.provider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,13 +11,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.time.LocalDate;
 
 import no.nav.registre.testnorge.arbeidsforhold.adapter.OppsummeringsdokumentetRawAdapter;
-import no.nav.registre.testnorge.arbeidsforhold.domain.Document;
 
 @Slf4j
 @RestController
@@ -26,6 +22,7 @@ import no.nav.registre.testnorge.arbeidsforhold.domain.Document;
 @RequiredArgsConstructor
 public class OppsummeringsdokumentetRawController {
     private static final String NUMBER_OF_ELEMENTS = "Number-Of-Elements";
+    private static final String ELEMENT_ID = "Element-Id";
     private final OppsummeringsdokumentetRawAdapter oppsummeringsdokumentetRawAdapter;
 
     @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
@@ -46,16 +43,10 @@ public class OppsummeringsdokumentetRawController {
 
         var document = list.getDocuments().get(0);
 
-        var uri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(document.getId())
-                .toUriString();
-
         return ResponseEntity
                 .ok()
                 .header(NUMBER_OF_ELEMENTS, list.getNumberOfPages().toString())
-                .header(HttpHeaders.LOCATION, uri)
+                .header(ELEMENT_ID, document.getId().toString())
                 .body(document.getXml());
     }
 
