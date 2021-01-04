@@ -2,6 +2,7 @@ name: Deploy organisasjon-orgnummer-service
 
 on:
   push:
+    branches: master
     paths:
       - apps/organisasjon-orgnummer-service/**
       - libs/testnorge-core/**

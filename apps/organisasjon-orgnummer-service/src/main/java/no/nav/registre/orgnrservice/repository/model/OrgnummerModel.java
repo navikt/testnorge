@@ -39,7 +39,7 @@ public class OrgnummerModel {
     private String orgnummer;
 
     @NotNull
-    @Column(name="LEDIG")
+    @Column(name = "LEDIG")
     private boolean ledig;
 
     @Temporal(TemporalType.TIMESTAMP)

@@ -19,18 +19,18 @@ import no.nav.registre.orgnrservice.service.OrgnummerService;
 @RequestMapping("/api/v1/orgnummer")
 public class OrgnummerController {
 
-    private static final String ORGNR_REGEX = "^(8|9)\\d{8}$";
+    private static final String ORGNR_REGEX = "^([8-9])\\d{8}$";
     private final OrgnummerService orgnummerService;
 
     @Operation(summary = "Hent gyldige organisasjonsnummer")
     @GetMapping
-    public List<String> getOrgnummer (@RequestHeader Integer antall) {
+    public List<String> getOrgnummer(@RequestHeader Integer antall) {
         return orgnummerService.hentOrgnr(antall);
     }
 
     @PutMapping
-    @Operation( summary = "Sett et organisasjonsnummer til ledig")
-    public Organisasjon setLedig (@RequestHeader @Pattern(regexp = ORGNR_REGEX) String orgnummer) {
+    @Operation(summary = "Sett et organisasjonsnummer til ledig")
+    public Organisasjon setLedig(@RequestHeader @Pattern(regexp = ORGNR_REGEX) String orgnummer) {
         return orgnummerService.setLedigForOrgnummer(orgnummer, true);
     }
 }

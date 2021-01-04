@@ -5,6 +5,9 @@ import java.util.concurrent.ThreadLocalRandom;
 public class OrgnummerUtil {
     private static final String WEIGHTS = "32765432";
 
+    private OrgnummerUtil() {
+    }
+
     public static String generateOrgnr() {
         int random = ThreadLocalRandom.current().nextInt(80000000, 99999999);
         String randomString = String.valueOf(random);

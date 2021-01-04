@@ -6,7 +6,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -36,13 +35,9 @@ public class CronJobService {
     @Scheduled(cron = "0 0 22 * * *")
     public void checkProd() {
         var alle = orgnummerAdapter.hentAlleLedige();
-        List<String> collect = alle.stream()
-                .map(org -> orgnummerService.finnesOrgnr(org.getOrgnummer()) ? org.getOrgnummer() : null)
-                .filter(Objects::nonNull).collect(Collectors.toList());
-
-        if (collect.isEmpty()) {
-            return;
-        }
-        collect.forEach(orgnummerAdapter::deleteByOrgnummer);
+        alle.stream()
+            .map(org -> orgnummerService.finnesOrgnrIMiljoe(org.getOrgnummer()) ? org.getOrgnummer() : null)
+            .filter(Objects::nonNull).collect(Collectors.toList())
+            .forEach(orgnummerAdapter::deleteByOrgnummer);
     }
 }

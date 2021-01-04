@@ -15,6 +15,7 @@ import no.nav.registre.orgnrservice.repository.model.OrgnummerModel;
 public interface OrgnummerRepository extends CrudRepository<OrgnummerModel, Long> {
 
     List<OrgnummerModel> findAllByLedigIsTrue();
+
     OrgnummerModel findByOrgnummer(String orgnummer);
 
     @Modifying
@@ -22,11 +23,6 @@ public interface OrgnummerRepository extends CrudRepository<OrgnummerModel, Long
 
     @Transactional
     @Modifying
-    @Query( value = "update OrgnummerModel m set m.ledig=?2 where m.orgnummer=?1")
-    int updateIsLedigByOrgnummer(String orgnummer, boolean ledig);
-
-    @Transactional
-    @Modifying
     @Query(value = "delete from OrgnummerModel m where m.orgnummer = ?1")
-    void deleteByOrgnummer( String orgnummer);
+    void deleteByOrgnummer(String orgnummer);
 }

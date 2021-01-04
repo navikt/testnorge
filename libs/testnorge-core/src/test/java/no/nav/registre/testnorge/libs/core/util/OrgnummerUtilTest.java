@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.is;
 
 import org.junit.jupiter.api.Test;
 
-public class OrgnummerUtilTest {
+class OrgnummerUtilTest {
 
     @Test
     void generated_orgnr_should_always_be_of_length_9() {

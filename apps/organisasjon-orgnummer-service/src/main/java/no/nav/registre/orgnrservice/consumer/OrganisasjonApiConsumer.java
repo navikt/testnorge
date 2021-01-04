@@ -15,6 +15,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import no.nav.registre.orgnrservice.consumer.exceptions.OrganisasjonApiException;
 import no.nav.registre.testnorge.libs.common.command.GetOrganisasjonCommand;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
@@ -62,7 +63,7 @@ public class OrganisasjonApiConsumer {
                 OrganisasjonDTO e = future.get();
                 miljoeListe.add(e);
             } catch ( Exception e) {
-                throw new RuntimeException("Klarte ikke hente organisasjon fra et miljø");
+                throw new OrganisasjonApiException("Klarte ikke hente organisasjon fra et miljø", e);
             }
         }
         long antallMiljoerOrgnrFinnes = miljoeListe.stream().filter(Objects::nonNull).count();

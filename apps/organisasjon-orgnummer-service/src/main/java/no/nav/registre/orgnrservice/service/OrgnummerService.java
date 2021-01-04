@@ -27,7 +27,7 @@ public class OrgnummerService {
             var manglende = antall - hentedeOrgnummer.size();
             var genererteOrganisasjoner = genererOrgnrsTilDb(manglende, false);
 
-            hentedeOrgnummer.forEach( org -> setLedigForOrgnummer(org.getOrgnummer(), false));
+            hentedeOrgnummer.forEach(org -> setLedigForOrgnummer(org.getOrgnummer(), false));
             return Stream.concat(
                     hentedeOrgnummer.stream(),
                     genererteOrganisasjoner.stream()
@@ -40,11 +40,11 @@ public class OrgnummerService {
                 .map(Organisasjon::getOrgnummer)
                 .collect(Collectors.toList());
 
-        orgnummer.forEach( orgnr -> setLedigForOrgnummer(orgnr, false));
+        orgnummer.forEach(orgnr -> setLedigForOrgnummer(orgnr, false));
         return orgnummer;
     }
 
-    public Organisasjon setLedigForOrgnummer (String orgnummer, boolean ledig) {
+    public Organisasjon setLedigForOrgnummer(String orgnummer, boolean ledig) {
         return orgnummerAdapter.save(new Organisasjon(orgnummer, ledig));
     }
 
@@ -64,15 +64,23 @@ public class OrgnummerService {
         return orgnrListe;
     }
 
-    private String generateOrgnr () {
+    private String generateOrgnr() {
         var generertOrgnummer = OrgnummerUtil.generateOrgnr();
-        if (finnesOrgnr(generertOrgnummer)){
+        if (finnesOrgnr(generertOrgnummer)) {
             return generateOrgnr();
         }
         return generertOrgnummer;
     }
 
-    public boolean finnesOrgnr(String orgnummer) {
+    private boolean finnesOrgnr(String orgnummer) {
+        return finnesOrgnrIMiljoe(orgnummer) || finnesOrgnrIDb(orgnummer);
+    }
+
+    public boolean finnesOrgnrIMiljoe(String orgnummer) {
         return organisasjonApiConsumer.finnesOrgnrIEreg(orgnummer);
+    }
+
+    private boolean finnesOrgnrIDb(String orgnummer) {
+        return orgnummerAdapter.hentByOrgnummer(orgnummer) != null;
     }
 }
