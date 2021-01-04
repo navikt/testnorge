@@ -41,4 +41,4 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://ereg-batch-status-service.dev.intern.nav.no"
+    - "https://ereg-batch-status-service-v2.dev.intern.nav.no"
