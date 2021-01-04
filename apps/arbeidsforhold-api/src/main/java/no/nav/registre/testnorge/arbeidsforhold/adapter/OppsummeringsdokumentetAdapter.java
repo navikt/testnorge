@@ -49,9 +49,9 @@ public class OppsummeringsdokumentetAdapter {
         log.info("Oppsummeringsdokument opprettet.");
     }
 
-    public Oppsummeringsdokumentet fetch(String orgnummer, LocalDate rapporteringsmaaned, String mijlo) {
+    public Oppsummeringsdokumentet fetch(String orgnummer, LocalDate rapporteringsmaaned, String miljo) {
         Optional<OppsummeringsdokumentetModel> opplysningspliktigModel = opplysningspliktigRepository
-                .findBy(rapporteringsmaaned.getYear(), rapporteringsmaaned.getMonthValue(), orgnummer, mijlo);
+                .findBy(rapporteringsmaaned.getYear(), rapporteringsmaaned.getMonthValue(), orgnummer, miljo);
         if (opplysningspliktigModel.isEmpty()) {
             return null;
         }
@@ -60,9 +60,9 @@ public class OppsummeringsdokumentetAdapter {
         return new Oppsummeringsdokumentet(edagm);
     }
 
-    public List<Oppsummeringsdokumentet> fetchAll(String mijlo) {
+    public List<Oppsummeringsdokumentet> fetchAll(String miljo) {
         return opplysningspliktigRepository
-                .findAllByLast(mijlo)
+                .findAllByLast(miljo)
                 .stream()
                 .map(model -> new Oppsummeringsdokumentet(toEDAGM(model.getDocument())))
                 .collect(Collectors.toList());

@@ -16,27 +16,27 @@ import no.nav.registre.testnorge.arbeidsforhold.repository.Oppsummeringsdokument
 public class OppsummeringsdokumentetRawAdapter {
     private final OppsummeringsdokumentetRepository opplysningspliktigRepository;
 
-    public OppsummeringsdokumentetRawList fetchBy(String mijlo, int position, LocalDate fom, LocalDate tom) {
+    public OppsummeringsdokumentetRawList fetchBy(String miljo, int position, LocalDate fom, LocalDate tom) {
         if (fom != null && tom != null) {
             return new OppsummeringsdokumentetRawList(
-                    opplysningspliktigRepository.findAllByLastWithFomAndTom(mijlo, fom.getYear(), fom.getMonthValue(), tom.getYear(), tom.getMonthValue(), PageRequest.of(position, 1))
+                    opplysningspliktigRepository.findAllByLastWithFomAndTom(miljo, fom.getYear(), fom.getMonthValue(), tom.getYear(), tom.getMonthValue(), PageRequest.of(position, 1))
             );
         }
 
         if (fom != null) {
             return new OppsummeringsdokumentetRawList(
-                    opplysningspliktigRepository.findAllByLastWithFom(mijlo, fom.getYear(), fom.getMonthValue(), PageRequest.of(position, 1))
+                    opplysningspliktigRepository.findAllByLastWithFom(miljo, fom.getYear(), fom.getMonthValue(), PageRequest.of(position, 1))
             );
         }
 
         if (tom != null) {
             return new OppsummeringsdokumentetRawList(
-                    opplysningspliktigRepository.findAllByLastWithTom(mijlo, tom.getYear(), tom.getMonthValue(), PageRequest.of(position, 1))
+                    opplysningspliktigRepository.findAllByLastWithTom(miljo, tom.getYear(), tom.getMonthValue(), PageRequest.of(position, 1))
             );
         }
 
         return new OppsummeringsdokumentetRawList(
-                opplysningspliktigRepository.findAllByLast(mijlo, PageRequest.of(position, 1))
+                opplysningspliktigRepository.findAllByLast(miljo, PageRequest.of(position, 1))
         );
     }
 

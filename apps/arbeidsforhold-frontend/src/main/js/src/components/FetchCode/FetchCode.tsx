@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { CodeView } from "@/componetes";
+import { CodeView } from "@/components";
 import NavFrontendSpinner from "nav-frontend-spinner";
 import Pagination from "paginering";
 

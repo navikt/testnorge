@@ -19,9 +19,9 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Opplysnings
 public class IdentService {
     private final ArbeidsforholdConsumer arbeidsforholdConsumer;
 
-    public Set<String> getIdenterMedArbeidsforhold(String mijlo) {
+    public Set<String> getIdenterMedArbeidsforhold(String miljo) {
         return arbeidsforholdConsumer
-                .getAlleOpplysningspliktig(mijlo)
+                .getAlleOpplysningspliktig(miljo)
                 .stream()
                 .map(Opplysningspliktig::getVirksomheter)
                 .flatMap(Collection::stream)

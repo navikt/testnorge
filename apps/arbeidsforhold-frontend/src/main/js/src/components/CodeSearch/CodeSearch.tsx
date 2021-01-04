@@ -4,7 +4,7 @@ import { Datepicker } from "nav-datovelger";
 
 import "./CodeSearch.less";
 import Api from "@/api";
-import { FetchCode } from "@/componetes";
+import { FetchCode } from "@/components";
 import { Hovedknapp } from "nav-frontend-knapper";
 
 type FetchFromPosition = (position: number) => Promise<Response>;
