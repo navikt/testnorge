@@ -33,7 +33,11 @@ const DeleteButton = ({ onClick }) => {
 	return <Button kind="trashcan" onClick={onClick} title="Fjern" />
 }
 
-const Numbering = ({ idx }) => <span className="dfa-blokk-number">{idx}</span>
+const Numbering = ({ idx, color = '#CCE3ED' }) => (
+	<span className="dfa-blokk-number" style={{ backgroundColor: color }}>
+		{idx}
+	</span>
+)
 
 export const DollyFieldArrayWrapper = ({
 	header = null,
@@ -71,6 +75,46 @@ export const DollyFaBlokk = ({
 		<div className="dfa-blokk_content">{children}</div>
 	</div>
 )
+
+export const DollyFaBlokkOrg = ({
+	header,
+	idx,
+	handleRemove,
+	hjelpetekst,
+	children,
+	showDeleteButton,
+	number
+}) => {
+	const nivaa = (number.match(/\./g) || []).length + 1
+	const name = nivaa & 1 ? 'dfa-blokk-org-odd' : 'dfa-blokk-org-even'
+	const nivaaColor = () => {
+		switch (nivaa) {
+			case 1:
+				return '#CCE3ED'
+			case 2:
+				return '#FFE5C2'
+			case 3:
+				return '#CDE7D8'
+			case 4:
+				return '#C1B5D0'
+			default:
+				return '#CCE3ED'
+		}
+	}
+	const color = nivaaColor()
+
+	return (
+		<div className={name}>
+			<div className={`${name}_header`}>
+				<Numbering idx={number || idx + 1} color={color} />
+				<h2>{header}</h2>
+				{hjelpetekst && <Hjelpetekst hjelpetekstFor={header}>{hjelpetekst}</Hjelpetekst>}
+				{showDeleteButton && <DeleteButton onClick={handleRemove} />}
+			</div>
+			<div className={`${name}_content`}>{children}</div>
+		</div>
+	)
+}
 
 export const DollyFaBlokkNested = ({ idx, handleRemove, children }) => (
 	<div className="dfa-blokk-nested">
@@ -129,7 +173,8 @@ export const FormikDollyFieldArray = ({
 	children,
 	isFull = false,
 	canBeEmpty = true,
-	tag
+	tag,
+	isOrganisasjon = false
 }) => (
 	<FieldArray name={name}>
 		{arrayHelpers => {
@@ -147,6 +192,18 @@ export const FormikDollyFieldArray = ({
 								<DollyFaBlokkNested key={idx} idx={idx} handleRemove={handleRemove}>
 									{children(path, idx, curr)}
 								</DollyFaBlokkNested>
+							) : isOrganisasjon ? (
+								<DollyFaBlokkOrg
+									key={idx}
+									idx={idx}
+									number={number}
+									header={header}
+									hjelpetekst={hjelpetekst}
+									handleRemove={handleRemove}
+									showDeleteButton={showDeleteButton}
+								>
+									{children(path, idx, curr, number)}
+								</DollyFaBlokkOrg>
 							) : (
 								<DollyFaBlokk
 									key={idx}

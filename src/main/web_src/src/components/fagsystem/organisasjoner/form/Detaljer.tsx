@@ -133,6 +133,7 @@ export const Detaljer = ({ formikBag, path, level, number }) => {
 				isFull={level > 3}
 				title={level > 3 ? 'Du kan maksimalt lage fire nivåer av underenheter' : null}
 				tag={number}
+				isOrganisasjon={true}
 			>
 				{(path, idx, curr, number) => {
 					return (
