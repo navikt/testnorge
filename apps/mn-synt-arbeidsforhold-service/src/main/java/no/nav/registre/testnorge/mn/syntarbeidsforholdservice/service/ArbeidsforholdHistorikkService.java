@@ -67,6 +67,7 @@ public class ArbeidsforholdHistorikkService {
             if (isNewArbeidsforhold || previous.getSluttdato() != null && previous.getSluttdato().isBefore(kalendermaaned)) {
                 log.info("Genererer nytt arbeidsforhold for {} den {}.", ident, kalendermaaned);
                 Arbeidsforhold next = syntrestConsumer.getFirstArbeidsforhold(kalendermaaned, ident, null);
+                historikk.remove();
                 map.put(kalendermaaned, next);
                 previous = next;
             } else {
