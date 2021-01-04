@@ -1,0 +1,36 @@
+plugins {
+    id 'no.nav.registre.testnorge.java-conventions'
+    id 'org.springframework.boot' version '2.3.4.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+}
+bootJar {
+    archiveFileName = "app.jar"
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR8'
+    }
+}
+
+dependencies {
+    implementation project(':testnorge-core')
+    implementation project(':testnorge-oauth2')
+
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.security:spring-security-oauth2-client'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-zuul'
+
+    implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
+    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:2.2.5.RELEASE'
+
+    implementation 'org.projectlombok:lombok:1.18.12'
+    implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
+}
+
+description = 'oversikt-frontend'

@@ -257,3 +257,6 @@ project(":organisasjon-bestilling-service").projectDir = file('apps/organisasjon
 
 include 'ereg-batch-status-service'
 project(":ereg-batch-status-service").projectDir = file('apps/ereg-batch-status-service')
+
+include 'arbeidsforhold-frontend'
+project(":arbeidsforhold-frontend").projectDir = file('apps/arbeidsforhold-frontend')
