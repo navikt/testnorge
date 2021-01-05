@@ -6,7 +6,7 @@ import { onSuccess } from '~/ducks/utils/requestActions'
 
 export const actions = createActions(
 	{
-		getOrganisasjoner: Api.fetchJson
+		getOrganisasjoner: Api.fetch
 		// TODO: Byttes når organisasjonsforvalter er klar
 	},
 	{
@@ -15,7 +15,7 @@ export const actions = createActions(
 )
 
 const initialState = {
-	organisasjoner: []
+	organisasjon: []
 }
 
 export default handleActions(
@@ -24,7 +24,7 @@ export default handleActions(
 			return initialState
 		},
 		[onSuccess(actions.getOrganisasjoner)](state, action) {
-			state.organisasjoner = action.payload.data
+			state.organisasjon = action.payload.data
 		}
 	},
 	initialState

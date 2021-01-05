@@ -8,6 +8,13 @@ import antallIdenterOpprettet from '~/components/bestilling/utils/antallIdenterO
 import './MiljoeStatus.less'
 
 const mapStatusrapport = bestillingstatus => {
+	if (bestillingstatus[0].organisasjonsnummer) {
+		const status = bestillingstatus[0]
+		return {
+			organisasjonsnummer: status.organisasjonsnummer,
+			melding: status.organisasjonsforvalterStatus
+		}
+	}
 	const successFirst = a => (a.melding ? 1 : -1)
 	return bestillingstatus
 		.reduce((acc, curr) => {

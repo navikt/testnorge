@@ -15,6 +15,10 @@ export default {
 		return Request.get(Endpoints.gruppeByUser(userId))
 	},
 
+	getOrganisasjonsnummerByUserId(userId) {
+		return Request.get(Endpoints.organisasonStatusByUser(userId))
+	},
+
 	createGruppe(data) {
 		return Request.post(Endpoints.gruppe(), data)
 	},
@@ -33,6 +37,10 @@ export default {
 
 	createBestillingFraEksisterendeIdenter(gruppeId, data) {
 		return Request.post(Endpoints.gruppeBestillingFraEksisterendeIdenter(gruppeId), data)
+	},
+
+	createOrganisasjonBestilling(data) {
+		return Request.post(Endpoints.organisasjonBestilling(), data)
 	},
 
 	updateGruppeLaas(gruppeId) {

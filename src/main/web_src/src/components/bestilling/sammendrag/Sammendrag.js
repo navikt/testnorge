@@ -4,6 +4,13 @@ import MiljoeStatus from './miljoeStatus/MiljoeStatus'
 import JiraLenker from '~/components/bestilling/jiraLenker/JiraLenker'
 
 export default function BestillingSammendrag({ bestilling }) {
+	if (!bestilling.antallIdenter || !bestilling.gruppeId) {
+		return (
+			<div className="bestilling-detaljer">
+				<MiljoeStatus bestilling={bestilling} />
+			</div>
+		)
+	}
 	return (
 		<div className="bestilling-detaljer">
 			<MiljoeStatus bestilling={bestilling} />

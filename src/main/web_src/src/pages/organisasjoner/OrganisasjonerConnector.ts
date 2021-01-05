@@ -11,6 +11,7 @@ const mapStateToProps = (state: any) => {
 	return {
 		isFetching: loadingSelector(state),
 		organisasjoner: state.organisasjon.organisasjoner,
+		brukerId: state.bruker.brukerData.brukerId,
 		brukernavn: state.bruker.brukerData.brukernavn
 	}
 }

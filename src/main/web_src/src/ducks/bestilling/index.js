@@ -13,6 +13,7 @@ export const actions = createActions(
 		postBestillingLeggTilPaaPerson: DollyApi.createBestillingLeggTilPaaPerson,
 		postBestillingFraEksisterendeIdenter: DollyApi.createBestillingFraEksisterendeIdenter,
 		postBestilling: DollyApi.createBestilling,
+		postOrganisasjonBestilling: DollyApi.createOrganisasjonBestilling,
 		bestillingFeilet: error => ({ error })
 	},
 	{ prefix: 'bestveil' }
@@ -60,6 +61,11 @@ export const sendBestilling = (values, opts, gruppeId) => async (dispatch, getSt
 	} else if (opts.is.opprettFraIdenter) {
 		values = _set('opprettFraIdenter', opts.opprettFraIdenter, values)
 		bestillingAction = actions.postBestillingFraEksisterendeIdenter(gruppeId, values)
+	} else if (values.organisasjon) {
+		dispatch(actions.postOrganisasjonBestilling(values))
+		dispatch(push(`/organisasjoner`))
+		//TODO: Håndtere avslutning av bestilling på en bedre måte
+		return
 	} else {
 		// Sett identType (denne blir ikke satt tidligere grunnet at den sitter inne i tpsf-noden)
 		values = _set('tpsf.identtype', opts.identtype, values)

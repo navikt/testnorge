@@ -81,7 +81,7 @@ OrganisasjonDetaljerPanel.initialValues = ({ set, del, has }: any) => {
 			checked: has('organisasjon.forretningsadresse'),
 			add: () =>
 				set('organisasjon.forretningsadresse', {
-					adresselinje: ['', '', ''],
+					adresselinjer: ['', '', ''],
 					postnr: '',
 					kommunenr: '',
 					landkode: 'NOR',
@@ -94,7 +94,7 @@ OrganisasjonDetaljerPanel.initialValues = ({ set, del, has }: any) => {
 			checked: has('organisasjon.postadresse'),
 			add: () =>
 				set('organisasjon.postadresse', {
-					adresselinje: ['', '', ''],
+					adresselinjer: ['', '', ''],
 					postnr: '',
 					kommunenr: '',
 					landkode: 'NOR',

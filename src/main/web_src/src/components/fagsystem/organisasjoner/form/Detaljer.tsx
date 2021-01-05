@@ -81,15 +81,15 @@ export const Detaljer = ({ formikBag, path, level, number }) => {
 				)}
 
 				<FormikTextInput
-					name={`${path}.forretningsadresse.adresselinje[0]`}
+					name={`${path}.forretningsadresse.adresselinjer[0]`}
 					label="Adresselinje 1"
 				/>
 				<FormikTextInput
-					name={`${path}.forretningsadresse.adresselinje[1]`}
+					name={`${path}.forretningsadresse.adresselinjer[1]`}
 					label="Adresselinje 2"
 				/>
 				<FormikTextInput
-					name={`${path}.forretningsadresse.adresselinje[2]`}
+					name={`${path}.forretningsadresse.adresselinjer[2]`}
 					label="Adresselinje 3"
 				/>
 			</Kategori>
@@ -121,9 +121,9 @@ export const Detaljer = ({ formikBag, path, level, number }) => {
 				) : (
 					<FormikTextInput name={`${path}.postadresse.poststed`} label="Poststed" />
 				)}
-				<FormikTextInput name={`${path}.postadresse.adresselinje[0]`} label="Adresselinje 1" />
-				<FormikTextInput name={`${path}.postadresse.adresselinje[1]`} label="Adresselinje 2" />
-				<FormikTextInput name={`${path}.postadresse.adresselinje[2]`} label="Adresselinje 3" />
+				<FormikTextInput name={`${path}.postadresse.adresselinjer[0]`} label="Adresselinje 1" />
+				<FormikTextInput name={`${path}.postadresse.adresselinjer[1]`} label="Adresselinje 2" />
+				<FormikTextInput name={`${path}.postadresse.adresselinjer[2]`} label="Adresselinje 3" />
 			</Kategori>
 
 			<FormikDollyFieldArray

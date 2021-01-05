@@ -9,6 +9,7 @@ DOLLY_BACKEND_API_CLIENT_ID: f0174d28-cb33-44f9-a7b5-09e52582e601
 
 DOLLY_BACKEND_HOST: https://dolly-backend-dev.dev.adeo.no
 TESTNORGE_PROFIL_API_HOST: https://testnorge-profil-api-dev.dev.intern.nav.no
+ORGANISASJON_FORVALTER_HOST: https://organisasjon-forvalter.dev.adeo.no
 
 zuul:
   debug:

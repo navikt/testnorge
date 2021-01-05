@@ -42,6 +42,11 @@ public class ApplicationConfig {
         return createFilterFrom("testnorge-varslinger-api");
     }
 
+    @Bean
+    public AddAuthorizationToRouteFilter organisasjonForvalterAddAuthorizationToRouteFilter() {
+        return createFilterFrom("organisasjon-forvalter");
+    }
+
     private AddAuthorizationToRouteFilter createFilterFrom(String route) {
         return new AddAuthorizationToRouteFilter(
                 () -> tokenService.getAccessToken(new AccessScopes(properties.get(route))).getTokenValue(),
