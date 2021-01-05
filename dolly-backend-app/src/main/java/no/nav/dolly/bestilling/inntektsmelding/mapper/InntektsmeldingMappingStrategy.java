@@ -26,7 +26,7 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
     public void register(MapperFactory factory) {
 
         factory.classMap(RsInntektsmelding.class, InntektsmeldingRequest.class)
-                .customize(new CustomMapper<RsInntektsmelding, InntektsmeldingRequest>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(RsInntektsmelding rsInntektsmelding,
                             InntektsmeldingRequest inntektsmelding, MappingContext context) {
@@ -35,6 +35,7 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                             inntektsmelding.setJoarkMetadata(new JoarkMetadata());
                         }
                         inntektsmelding.getJoarkMetadata().setAvsenderMottakerIdType(
+                                !inntektsmelding.getInntekter().isEmpty() &&
                                 nonNull(inntektsmelding.getInntekter().get(0).getArbeidsgiver()) ?
                                         Avsendertype.ORGNR : Avsendertype.FNR
                         );
@@ -44,7 +45,7 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                 .register();
 
         factory.classMap(RsInntektsmelding.Inntektsmelding.class, Inntektsmelding.class)
-                .customize(new CustomMapper<RsInntektsmelding.Inntektsmelding, Inntektsmelding>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(RsInntektsmelding.Inntektsmelding rsInntektsmelding,
                             Inntektsmelding inntektsmelding, MappingContext context) {
