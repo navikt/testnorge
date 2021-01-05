@@ -48,7 +48,7 @@ public class OrganisasjonMottakConsumer {
         return isNotBlank(poststed) ? poststed : "Verdi for poststed";
     }
 
-    //TODO Hva er dette
+    //TODO Hva er dette?
     private static String fixLinjenr(String vegadresseId) {
         return nonNull(vegadresseId) ? "1" : null;
     }

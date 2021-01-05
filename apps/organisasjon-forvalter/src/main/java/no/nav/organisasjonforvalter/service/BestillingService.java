@@ -4,16 +4,16 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonNavnConsumer;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonNummerConsumer;
+import no.nav.organisasjonforvalter.consumer.TpsfAdresseConsumer;
 import no.nav.organisasjonforvalter.jpa.entity.Organisasjon;
-import no.nav.organisasjonforvalter.jpa.repository.AdresseRepository;
 import no.nav.organisasjonforvalter.jpa.repository.OrganisasjonRepository;
 import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest;
+import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.AdresseRequest;
+import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.AdresseType;
 import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.OrganisasjonRequest;
 import no.nav.organisasjonforvalter.provider.rs.responses.BestillingResponse;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,6 +26,7 @@ public class BestillingService {
     private final OrganisasjonNavnConsumer organisasjonNavnConsumer;
     private final OrganisasjonNummerConsumer organisasjonNummerConsumer;
     private final OrganisasjonRepository organisasjonRepository;
+    private final TpsfAdresseConsumer tpsfAdresseConsumer;
     private final MapperFacade mapperFacade;
 
     public BestillingResponse execute(BestillingRequest request) {
@@ -42,6 +43,8 @@ public class BestillingService {
 
     private Organisasjon processOrganisasjon(OrganisasjonRequest orgRequest, Organisasjon parent) {
 
+        fixAdresseFallback(orgRequest);
+
         Organisasjon organisasjon = mapperFacade.map(orgRequest, Organisasjon.class);
         organisasjon.setOrganisasjonsnummer(organisasjonNummerConsumer.getOrgnummer());
         organisasjon.setOrganisasjonsnavn(organisasjonNavnConsumer.getOrgName());
@@ -52,5 +55,22 @@ public class BestillingService {
             orgRequest.getUnderenheter().forEach(underenhet -> processOrganisasjon(underenhet, organisasjon));
         }
         return organisasjon;
+    }
+
+    private void fixAdresseFallback(OrganisasjonRequest orgRequest) {
+        if (orgRequest.getAdresser().isEmpty()) {
+            orgRequest.getAdresser().add(AdresseRequest.builder()
+                    .adressetype(AdresseType.FADR)
+                    .build());
+        }
+
+        orgRequest.getAdresser().forEach(adresse -> {
+            if (adresse.getAdresselinjer().isEmpty()) {
+                var adresseData = tpsfAdresseConsumer.getAdresser(adresse.getPostnr(), adresse.getKommunenr());
+                if (nonNull(adresseData)) {
+                    mapperFacade.map(adresseData, adresse);
+                }
+            }
+        });
     }
 }
