@@ -20,7 +20,7 @@ spec:
           cluster: dev-fss
     outbound:
       external:
-        - host: ereg-batch-status-service.dev.intern.nav.no
+        - host: ereg-batch-status-service.dev-fss-pub.nais.io
   gcp:
     sqlInstances:
       - type: POSTGRES_12
