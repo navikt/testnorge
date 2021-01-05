@@ -14,7 +14,7 @@ public class OrganisasjonService {
     private final EregConsumer eregConsumer;
 
     public void save(ToFlatfil base, String miljo, String uuid) {
-        log.info("Oppretter item med bestillings id: {}", uuid);
+        log.info("Oppretter item med bestillings uuid: {}", uuid);
         eregConsumer.save(base.toFlatfil(), miljo, uuid);
     }
 }
