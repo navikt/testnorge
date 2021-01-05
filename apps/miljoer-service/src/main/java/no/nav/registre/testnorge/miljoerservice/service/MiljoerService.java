@@ -2,6 +2,7 @@ package no.nav.registre.testnorge.miljoerservice.service;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
