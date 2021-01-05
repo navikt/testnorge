@@ -22,16 +22,17 @@ import no.nav.registre.testnorge.arbeidsforhold.adapter.OppsummeringsdokumentetR
 @RequiredArgsConstructor
 public class OppsummeringsdokumentetRawController {
     private static final String NUMBER_OF_ELEMENTS = "Number-Of-Elements";
+    private static final String ELEMENT_ID = "Element-Id";
     private final OppsummeringsdokumentetRawAdapter oppsummeringsdokumentetRawAdapter;
 
-    @GetMapping(value = "/{position}", produces = MediaType.APPLICATION_XML_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<String> getAllOpplysningspliktig(
             @RequestHeader("miljo") String miljo,
-            @PathVariable("position") Integer position,
+            @RequestParam("page") Integer page,
             @RequestParam(value = "fom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fom,
             @RequestParam(value = "tom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate tom
     ) {
-        var list = oppsummeringsdokumentetRawAdapter.fetchBy(miljo, position, fom, tom);
+        var list = oppsummeringsdokumentetRawAdapter.fetchBy(miljo, page, fom, tom);
 
         if (list.getDocuments().isEmpty()) {
             return ResponseEntity
@@ -40,9 +41,22 @@ public class OppsummeringsdokumentetRawController {
                     .build();
         }
 
+        var document = list.getDocuments().get(0);
+
         return ResponseEntity
                 .ok()
                 .header(NUMBER_OF_ELEMENTS, list.getNumberOfPages().toString())
-                .body(list.getDocuments().get(0));
+                .header(ELEMENT_ID, document.getId().toString())
+                .body(document.getXml());
+    }
+
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_XML_VALUE)
+    public ResponseEntity<String> getItem(@PathVariable("id") Long id) {
+        var document = oppsummeringsdokumentetRawAdapter.findById(id);
+
+        if (document == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(document);
     }
 }

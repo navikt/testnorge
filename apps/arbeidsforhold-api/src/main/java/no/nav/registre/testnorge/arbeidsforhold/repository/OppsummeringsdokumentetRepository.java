@@ -10,7 +10,7 @@ import java.util.Optional;
 
 import no.nav.registre.testnorge.arbeidsforhold.repository.model.OppsummeringsdokumentetModel;
 
-public interface OppsummeringsdokumentetRepository extends PagingAndSortingRepository<OppsummeringsdokumentetModel, String> {
+public interface OppsummeringsdokumentetRepository extends PagingAndSortingRepository<OppsummeringsdokumentetModel, Long> {
 
     @Query(value = "from OppsummeringsdokumentetModel o1 where o1.year = ?1 AND o1.month = ?2 AND o1.orgnummer = ?3 AND o1.miljo = ?4 AND o1.version = (select max(version) from OppsummeringsdokumentetModel o2 where o2.year = ?1 AND o2.month = ?2 AND o2.orgnummer = ?3 AND o2.miljo = ?4)")
     Optional<OppsummeringsdokumentetModel> findBy(Integer year, Integer month, String orgnummer, String miljo);

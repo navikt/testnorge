@@ -9,6 +9,7 @@ import java.time.LocalDate;
 
 import no.nav.registre.testnorge.arbeidsforhold.domain.OppsummeringsdokumentetRawList;
 import no.nav.registre.testnorge.arbeidsforhold.repository.OppsummeringsdokumentetRepository;
+import no.nav.registre.testnorge.arbeidsforhold.repository.model.OppsummeringsdokumentetModel;
 
 @Slf4j
 @Component
@@ -16,27 +17,31 @@ import no.nav.registre.testnorge.arbeidsforhold.repository.Oppsummeringsdokument
 public class OppsummeringsdokumentetRawAdapter {
     private final OppsummeringsdokumentetRepository opplysningspliktigRepository;
 
-    public OppsummeringsdokumentetRawList fetchBy(String miljo, int position, LocalDate fom, LocalDate tom) {
+    public String findById(Long id){
+        return opplysningspliktigRepository.findById(id).map(OppsummeringsdokumentetModel::getDocument).orElse(null);
+    }
+
+    public OppsummeringsdokumentetRawList fetchBy(String miljo, int page, LocalDate fom, LocalDate tom) {
         if (fom != null && tom != null) {
             return new OppsummeringsdokumentetRawList(
-                    opplysningspliktigRepository.findAllByLastWithFomAndTom(miljo, fom.getYear(), fom.getMonthValue(), tom.getYear(), tom.getMonthValue(), PageRequest.of(position, 1))
+                    opplysningspliktigRepository.findAllByLastWithFomAndTom(miljo, fom.getYear(), fom.getMonthValue(), tom.getYear(), tom.getMonthValue(), PageRequest.of(page, 1))
             );
         }
 
         if (fom != null) {
             return new OppsummeringsdokumentetRawList(
-                    opplysningspliktigRepository.findAllByLastWithFom(miljo, fom.getYear(), fom.getMonthValue(), PageRequest.of(position, 1))
+                    opplysningspliktigRepository.findAllByLastWithFom(miljo, fom.getYear(), fom.getMonthValue(), PageRequest.of(page, 1))
             );
         }
 
         if (tom != null) {
             return new OppsummeringsdokumentetRawList(
-                    opplysningspliktigRepository.findAllByLastWithTom(miljo, tom.getYear(), tom.getMonthValue(), PageRequest.of(position, 1))
+                    opplysningspliktigRepository.findAllByLastWithTom(miljo, tom.getYear(), tom.getMonthValue(), PageRequest.of(page, 1))
             );
         }
 
         return new OppsummeringsdokumentetRawList(
-                opplysningspliktigRepository.findAllByLast(miljo, PageRequest.of(position, 1))
+                opplysningspliktigRepository.findAllByLast(miljo, PageRequest.of(page, 1))
         );
     }
 

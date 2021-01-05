@@ -5,7 +5,9 @@ import { Datepicker } from "nav-datovelger";
 import "./CodeSearch.less";
 import Api from "@/api";
 import { FetchCode } from "@/components";
-import { Hovedknapp } from "nav-frontend-knapper";
+import { Hovedknapp, Knapp } from "nav-frontend-knapper";
+// @ts-ignore
+import { CopyToClipboard } from "react-copy-to-clipboard/lib/Component";
 
 type FetchFromPosition = (position: number) => Promise<Response>;
 
@@ -20,6 +22,7 @@ export const CodeSearch = () => {
   const [env, setEnv] = useState<string>("t4");
   const [fom, setFom] = useState<string>("");
   const [tom, setTom] = useState<string>("");
+  const [id, setId] = useState<string>(null);
 
   const search = (): FetchFromPosition => {
     const param: string[][] = [];
@@ -30,15 +33,18 @@ export const CodeSearch = () => {
       param.push(["tom", tom]);
     }
 
-    return (item) =>
-      Api.fetch({
+    return (page) => {
+      return Api.fetch({
         url:
-          "/api/v1/oppsummeringsdokumenter/raw/items/" +
-          item +
-          createQueryParam(param),
+          "/api/v1/oppsummeringsdokumenter/raw/items" +
+          createQueryParam(param.concat([["page", page.toString()]])),
         method: "GET",
         headers: [["miljo", env]],
+      }).then((response) => {
+        setId(response.headers.get("Element-Id"));
+        return response;
       });
+    };
   };
 
   const [fetchFromPosition, setFetchFromPosition] = useState<FetchFromPosition>(
@@ -85,6 +91,17 @@ export const CodeSearch = () => {
           <Hovedknapp onClick={() => setFetchFromPosition(search)}>
             Filter
           </Hovedknapp>
+          {id && (
+            <CopyToClipboard
+              text={
+                window.location.href +
+                "api/v1/oppsummeringsdokumenter/raw/items/" +
+                id
+              }
+            >
+              <Knapp>Kopier lenke</Knapp>
+            </CopyToClipboard>
+          )}
         </SkjemaGruppe>
       </div>
       <FetchCode fetchFromPosition={fetchFromPosition} />
