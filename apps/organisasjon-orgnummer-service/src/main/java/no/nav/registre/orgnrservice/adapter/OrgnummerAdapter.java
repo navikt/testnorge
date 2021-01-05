@@ -3,6 +3,7 @@ package no.nav.registre.orgnrservice.adapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,6 +37,7 @@ public class OrgnummerAdapter {
         return organisasjoner.stream().map(this::save).collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteByOrgnummer(String orgnummer) {
         Organisasjon orgFraDb = hentByOrgnummer(orgnummer);
         if (orgFraDb == null) {

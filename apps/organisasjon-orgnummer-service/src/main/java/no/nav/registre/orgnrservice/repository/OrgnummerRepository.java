@@ -4,7 +4,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,7 +20,6 @@ public interface OrgnummerRepository extends CrudRepository<OrgnummerModel, Long
     @Modifying
     OrgnummerModel save(OrgnummerModel orgnummerModel);
 
-    @Transactional
     @Modifying
     @Query(value = "delete from OrgnummerModel m where m.orgnummer = ?1")
     void deleteByOrgnummer(String orgnummer);

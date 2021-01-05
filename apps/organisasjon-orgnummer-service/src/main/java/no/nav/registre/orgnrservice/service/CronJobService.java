@@ -17,7 +17,7 @@ import no.nav.registre.orgnrservice.adapter.OrgnummerAdapter;
 @RequiredArgsConstructor
 public class CronJobService {
 
-    private static final int OENSKET_ANTALL = 100;
+    private static final int OENSKET_ANTALL = 1000;
     private final OrgnummerService orgnummerService;
     private final OrgnummerAdapter orgnummerAdapter;
 
@@ -33,7 +33,7 @@ public class CronJobService {
     }
 
     @Scheduled(cron = "0 0 22 * * *")
-    public void checkProd() {
+    public void checkMiljoe() {
         var alle = orgnummerAdapter.hentAlleLedige();
         alle.stream()
             .map(org -> orgnummerService.finnesOrgnrIMiljoe(org.getOrgnummer()) ? org.getOrgnummer() : null)
