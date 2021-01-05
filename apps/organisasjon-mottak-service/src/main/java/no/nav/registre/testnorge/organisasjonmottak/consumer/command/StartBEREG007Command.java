@@ -68,7 +68,7 @@ public class StartBEREG007Command implements Callable<Long> {
                 .with("workUnit", "100")
                 .with("FileName", "dolly-" + System.currentTimeMillis() + ".txt")
                 .with("overrideSequenceControl", "true")
-                .with("stepSelection", "2;3;4;5;6")
+                .with("stepSelection", "'2;3;4;5;6'")
                 .with("input_file", fileEntity);
 
         log.info("Jenkins-Crumb: {}", crumb.getCrumb());
