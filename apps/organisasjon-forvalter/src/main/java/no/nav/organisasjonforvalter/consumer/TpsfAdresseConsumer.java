@@ -10,8 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeoutException;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
@@ -21,6 +23,7 @@ import static java.util.Objects.nonNull;
 public class TpsfAdresseConsumer {
 
     private static final String OK_STATUS = "00";
+    private static final Long TIMEOUT = 10_000L;
     private static final String ADRESSE_URL = "/api/v1/gyldigadresse/tilfeldig?maxAntall=";
 
     private final WebClient webClient;
@@ -33,21 +36,27 @@ public class TpsfAdresseConsumer {
 
     public AdresseData getAdresser(String postnr, String kommunenr) {
 
-        ResponseEntity<GyldigeAdresserResponse> response = webClient.get()
-                .uri(format("%s%d%s", ADRESSE_URL, 1, getSuffix(postnr, kommunenr)))
-                .header("Nav-Consumer-Id", "Testnorge")
-                .header("Nav-Call-Id", UUID.randomUUID().toString())
-                .retrieve()
-                .toEntity(GyldigeAdresserResponse.class)
-                .block();
+        try {
+            ResponseEntity<GyldigeAdresserResponse> response = webClient.get()
+                    .uri(format("%s%d%s", ADRESSE_URL, 1, getSuffix(postnr, kommunenr)))
+                    .header("Nav-Consumer-Id", "Testnorge")
+                    .header("Nav-Call-Id", UUID.randomUUID().toString())
+                    .retrieve()
+                    .toEntity(GyldigeAdresserResponse.class)
+                    .block(Duration.ofMillis(TIMEOUT));
 
-        if (response.hasBody() && OK_STATUS.equals(response.getBody().getResponse().getStatus().getKode())) {
-            return response.getBody().getResponse().getData1().getAdrData().get(0);
+            if (response.hasBody() && OK_STATUS.equals(response.getBody().getResponse().getStatus().getKode())) {
+                return response.getBody().getResponse().getData1().getAdrData().get(0);
 
-        } else {
-            log.error("Henting av adresse feilet for postnr {} / kommunenr {} melding {} utfyllende melding {}",
-                    postnr, kommunenr, response.getBody().getResponse().getStatus().getMelding(),
-                    response.getBody().getResponse().getStatus().getUtfyllendeMelding());
+            } else {
+                log.error("Henting av adresse feilet for postnr {} / kommunenr {} melding {} utfyllende melding {}",
+                        postnr, kommunenr, response.getBody().getResponse().getStatus().getMelding(),
+                        response.getBody().getResponse().getStatus().getUtfyllendeMelding());
+                return null;
+            }
+
+        } catch (RuntimeException e) {
+            log.error("Henting av adresse timeout etter {} ms", TIMEOUT, e);
             return null;
         }
     }
