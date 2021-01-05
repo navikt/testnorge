@@ -5,6 +5,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -95,11 +97,11 @@ public class ErrorStatusDecoder {
     }
 
     public static String encodeStatus(String toBeEncoded) {
-        return toBeEncoded
-                .replaceAll("\\[\\s", "")
+        return Objects.nonNull(toBeEncoded) ?
+                toBeEncoded.replaceAll("\\[\\s", "")
                 .replace("[", "")
                 .replace("]", "")
                 .replace(',', ';')
-                .replace(':', '=');
+                .replace(':', '=') : "";
     }
 }
