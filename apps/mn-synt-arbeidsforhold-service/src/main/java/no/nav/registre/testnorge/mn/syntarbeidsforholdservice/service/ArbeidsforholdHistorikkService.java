@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.SyntrestConsumer;
@@ -95,7 +96,8 @@ public class ArbeidsforholdHistorikkService {
         var list = new ArrayList<ArbeidsforholdMap>();
         for (var future : futures) {
             try {
-                list.add(future.get());
+                var map = future.get(10, TimeUnit.MINUTES);
+                list.add(map);
             } catch (Exception e) {
                 log.error("Feil ved generering av syntetisk historikk. Fortsetter uten.", e);
             }
@@ -114,11 +116,17 @@ public class ArbeidsforholdHistorikkService {
         var dates = findAllDatesBetween(fom, tom);
         var identer = identService.getIdenterUtenArbeidsforhold(miljo, maxIdenter);
         if (identer.isEmpty()) {
-            log.warn("Fant ingen identer. Avslutter syntetisering.");
+            log.warn("Fant ingen identer. Avslutter syntetisering...");
+            return;
         }
 
         log.info("Syntentiser for {} person(er) mellom {} - {}...", identer.size(), fom, tom);
         var arbeidsforholdMapList = getArbeidsforholdMapList(identer, dates);
+
+        if(arbeidsforholdMapList.isEmpty()){
+            log.warn("Fikk ikke opprettet syntetisk arbeidsforhold. Avslutter syntetisering...");
+            return;
+        }
 
         for (var kalenermnd : dates) {
             report(arbeidsforholdMapList, kalenermnd, miljo);
