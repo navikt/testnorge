@@ -41,7 +41,7 @@ public class BatchService {
         String id = null;
         while (matcher.find()) {
             if (id == null) {
-                id = matcher.group(1);
+                id = matcher.group(2);
             } else {
                 throw new RuntimeException("Fant flere en ett eksempel som matcher.");
             }
