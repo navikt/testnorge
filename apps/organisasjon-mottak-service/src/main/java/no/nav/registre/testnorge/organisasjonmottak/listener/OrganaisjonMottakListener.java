@@ -3,6 +3,8 @@ package no.nav.registre.testnorge.organisasjonmottak.listener;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.avro.specific.SpecificRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -31,7 +33,16 @@ public class OrganaisjonMottakListener {
     private final OrganisasjonService organisasjonService;
 
     @KafkaListener(topics = OrganisasjonTopic.ORGANISASJON_OPPRETT_ORGANISASJON)
-    public void register(@Payload Organisasjon value, @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String uuid, @Header(KafkaHeaders.RECEIVED_PARTITION_ID) String partitionId) {
+    public void register(ConsumerRecord<String, SpecificRecord> record) {
+        if (record.value() instanceof Organisasjon) {
+            register((Organisasjon) record.value(), record.key(), record.partition());
+        } else {
+            log.error("Fant ikke for type: {}", record.value().getClass());
+        }
+    }
+
+
+    public void register(Organisasjon value, String uuid, int partitionId) {
         log.info("Oppretter ny organisasjon med uuid: {} og partitionId: {}", uuid, partitionId);
         organisasjonService.save(
                 new no.nav.registre.testnorge.organisasjonmottak.domain.Organisasjon(value),
