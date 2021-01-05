@@ -1,4 +1,4 @@
-azure.app.client.id: dummy #TODO: Sette riktig etter clientId er opprettet
+azure.app.client.id: d3dad6bc-9d29-4b98-be0c-a10894cd4076
 
 spring:
   security:

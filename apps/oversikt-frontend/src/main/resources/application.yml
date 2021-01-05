@@ -20,3 +20,4 @@ applications:
   ereg-batch-status-service: 67f507ff-399c-4853-9eb3-3dc6aabc8289
   organisasjon-forvalter: 80f07134-375b-4df8-be48-2ba877774c6c
   testnorge-arbeidsforhold-api: 1b2f24c8-a426-47b1-8ff1-7905d6dfddb5
+  miljoe-service: d3dad6bc-9d29-4b98-be0c-a10894cd4076
