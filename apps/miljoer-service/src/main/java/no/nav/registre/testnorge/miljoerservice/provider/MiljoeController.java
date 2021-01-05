@@ -17,7 +17,7 @@ public class MiljoeController {
     private final MiljoerService service;
 
     @GetMapping
-    @Operation(description = "Hent liste med aktive miljøer fra TPSF")
+    @Operation(description = "Tjeneste for å sjekke hvilke miljøer i test og preprod som er tilgjengelige nå")
     public ResponseEntity<MiljoerResponse> hentAktiveMiljoer() {
         return ResponseEntity.ok(service.getAktiveMiljoer());
     }

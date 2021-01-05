@@ -1,5 +1,5 @@
 # Miljoer-service
-App for å sjekke hvilke miljøer som er aktivt i bruk av Dolly og tilhørende applikasjoner.
+App for å sjekke hvilke miljøer i test og preprod som er tilgjengelige nå.
 
 ## Swagger
 Swagger finnes under [/swagger](https://miljoer-service.dev.adeo.no/swagger) -endepunktet til applikasjonen.

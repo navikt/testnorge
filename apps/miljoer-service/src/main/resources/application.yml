@@ -8,4 +8,4 @@ spring:
   application:
     name: miljoer-service
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
-    description: App for å sjekke hvilke miljøer som er aktivt i bruk av Dolly og tilhørende applikasjoner.
+    description: App for å sjekke hvilke miljøer i test og preprod som er tilgjengelige nå.
