@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.miljoerservice.provider;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.miljoerservice.response.MiljoerResponse;
 import no.nav.registre.testnorge.miljoerservice.service.MiljoerService;
@@ -16,6 +17,7 @@ public class MiljoeController {
     private final MiljoerService service;
 
     @GetMapping
+    @Operation(description = "Hent liste med aktive miljøer fra TPSF")
     public ResponseEntity<MiljoerResponse> hentAktiveMiljoer() {
         return ResponseEntity.ok(service.getAktiveMiljoer());
     }
