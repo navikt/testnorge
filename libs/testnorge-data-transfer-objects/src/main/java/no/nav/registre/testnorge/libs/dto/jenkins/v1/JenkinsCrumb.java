@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.organisasjonmottak.consumer.request;
+package no.nav.registre.testnorge.libs.dto.jenkins.v1;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

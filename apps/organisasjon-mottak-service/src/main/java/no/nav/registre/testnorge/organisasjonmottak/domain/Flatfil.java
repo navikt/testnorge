@@ -1,16 +1,40 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class Flatfil {
-    private List<Record> records = new ArrayList<>();
+
+    private final List<Record> records = new ArrayList<>();
+
+    public static Flatfil create(List<Record> records) {
+        Flatfil flatfil = new Flatfil();
+        records.forEach(flatfil::add);
+        return flatfil;
+    }
+
+    private static String formattedDate(LocalDate localDate) {
+        if (localDate == null) {
+            return null;
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        return localDate.format(formatter);
+    }
 
     private static String getDateNowFormatted() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-        return format.format(new Date());
+        return formattedDate(LocalDate.now());
+    }
+
+    private static StringBuilder createStringBuilderWithReplacement(int size, char replacement) {
+        StringBuilder stringBuilder = new StringBuilder(size);
+        stringBuilder.setLength(size);
+        for (int i = 0; i < stringBuilder.length(); i++) {
+            stringBuilder.setCharAt(i, replacement);
+        }
+        return stringBuilder;
     }
 
     private String createHeader() {
@@ -25,15 +49,6 @@ public class Flatfil {
                 .replace(23 - String.valueOf(records).length(), 24, String.valueOf(records))
                 .append("\n");
         return stringBuilder.toString();
-    }
-
-    private StringBuilder createStringBuilderWithReplacement(int size, char replacement) {
-        StringBuilder stringBuilder = new StringBuilder(size);
-        stringBuilder.setLength(size);
-        for (int i = 0; i < stringBuilder.length(); i++) {
-            stringBuilder.setCharAt(i, replacement);
-        }
-        return stringBuilder;
     }
 
     public void add(Record record) {

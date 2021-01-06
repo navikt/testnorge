@@ -2,33 +2,18 @@ package no.nav.registre.testnorge.organisasjonmottak.domain;
 
 import no.nav.registre.testnorge.libs.avro.organisasjon.Metadata;
 
-public class Sektorkode extends ToFlatfil {
+public class Sektorkode extends ToLine {
     private final String kode;
 
-    public Sektorkode(Metadata metadata, no.nav.registre.testnorge.libs.avro.organisasjon.Sektorkode sektorkode) {
-        super(metadata);
+    public Sektorkode(String uuid, Metadata metadata, no.nav.registre.testnorge.libs.avro.organisasjon.Sektorkode sektorkode) {
+        super(metadata, uuid);
         this.kode = sektorkode.getSektorkode();
     }
 
     @Override
-    public boolean isUpdate() {
-        return true;
-    }
-
-    private String toRecord() {
-        return LineBuilder
+    ValueBuilder builder() {
+        return ValueBuilder
                 .newBuilder("ISEK", 12)
-                .setLine(8, kode)
-                .toString();
-    }
-
-    @Override
-    public Flatfil toFlatfil() {
-        Flatfil flatfil = new Flatfil();
-        Record record = new Record();
-        record.append(createEHN());
-        record.append(toRecord());
-        flatfil.add(record);
-        return flatfil;
+                .setLine(8, kode);
     }
 }

@@ -1,18 +1,18 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-class LineBuilder {
+class ValueBuilder {
     private final StringBuilder builder;
 
-    private LineBuilder(String type, int length, String endringstype) {
+    private ValueBuilder(String type, int length, String endringstype) {
         this.builder = createBaseStringbuilder(length, type, endringstype);
     }
 
-    static LineBuilder newBuilder(String type, int length, String endringstype) {
-        return new LineBuilder(type, length, endringstype);
+    static ValueBuilder newBuilder(String type, int length, String endringstype) {
+        return new ValueBuilder(type, length, endringstype);
     }
 
-    static LineBuilder newBuilder(String type, int length) {
-        return new LineBuilder(type, length, "N");
+    static ValueBuilder newBuilder(String type, int length) {
+        return new ValueBuilder(type, length, "N");
     }
 
     private static StringBuilder createBaseStringbuilder(int size, String type, String endringsType) {
@@ -31,7 +31,7 @@ class LineBuilder {
         return stringBuilder;
     }
 
-    LineBuilder setLine(int exclusiveStart, String value) {
+    ValueBuilder setLine(int exclusiveStart, String value) {
         if (value == null) {
             return this;
         }

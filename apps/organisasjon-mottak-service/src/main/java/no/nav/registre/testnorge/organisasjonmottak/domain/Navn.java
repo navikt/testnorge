@@ -1,32 +1,19 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-public class Navn extends ToFlatfil {
+public class Navn extends ToLine {
     private final String navn;
 
-    public Navn(no.nav.registre.testnorge.libs.avro.organisasjon.Navn navn) {
-        super(navn.getMetadata());
+    public Navn(String uuid, no.nav.registre.testnorge.libs.avro.organisasjon.Navn navn) {
+        super(navn.getMetadata(), uuid);
         this.navn = navn.getNavn();
     }
 
-    private String createNavn() {
-        LineBuilder builder = LineBuilder.newBuilder("NAVN", 219);
-        builder.setLine(8, navn);
-        builder.setLine(183, navn);
-        return builder.toString();
+    @Override
+    ValueBuilder builder() {
+        return ValueBuilder
+                .newBuilder("NAVN", 219)
+                .setLine(8, navn)
+                .setLine(183, navn);
     }
 
-    @Override
-    public boolean isUpdate() {
-        return true;
-    }
-
-    @Override
-    public Flatfil toFlatfil() {
-        Flatfil flatfil = new Flatfil();
-        Record record = new Record();
-        record.append(createEHN());
-        record.append(createNavn());
-        flatfil.add(record);
-        return flatfil;
-    }
 }

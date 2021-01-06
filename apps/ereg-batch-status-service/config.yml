@@ -13,6 +13,8 @@ spec:
     inbound:
       rules:
         - application: testnorge-oversikt-frontend
+        - application: organisasjon-bestilling-service
+          cluster: dev-gcp
   azure:
     application:
       enabled: true
@@ -39,4 +41,4 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://ereg-batch-status-service.dev.intern.nav.no"
+    - "https://ereg-batch-status-service.dev-fss-pub.nais.io"

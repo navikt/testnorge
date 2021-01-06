@@ -2,33 +2,19 @@ package no.nav.registre.testnorge.organisasjonmottak.domain;
 
 import no.nav.registre.testnorge.libs.avro.organisasjon.Metadata;
 
-public class Maalform extends ToFlatfil {
+public class Maalform extends ToLine {
     private final String maalform;
 
-    public Maalform(Metadata metadata, no.nav.registre.testnorge.libs.avro.organisasjon.Maalform maalform) {
-        super(metadata);
+    public Maalform(String uuid, Metadata metadata, no.nav.registre.testnorge.libs.avro.organisasjon.Maalform maalform) {
+        super(metadata, uuid);
         this.maalform = maalform.getMaalform();
     }
 
-    private String toRecordLine() {
-        return LineBuilder
+    @Override
+    ValueBuilder builder() {
+        return ValueBuilder
                 .newBuilder("MÅL", 9)
-                .setLine(8, maalform)
-                .toString();
+                .setLine(8, maalform);
     }
 
-    @Override
-    public boolean isUpdate() {
-        return true;
-    }
-
-    @Override
-    public Flatfil toFlatfil() {
-        Flatfil flatfil = new Flatfil();
-        Record record = new Record();
-        record.append(createEHN());
-        record.append(toRecordLine());
-        flatfil.add(record);
-        return flatfil;
-    }
 }

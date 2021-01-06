@@ -1,6 +1,6 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-public class DetaljertNavn extends ToFlatfil {
+public class DetaljertNavn extends ToLine {
     private final String navn1;
     private final String navn2;
     private final String navn3;
@@ -8,8 +8,8 @@ public class DetaljertNavn extends ToFlatfil {
     private final String navn5;
     private final String redigertNavn;
 
-    public DetaljertNavn(no.nav.registre.testnorge.libs.avro.organisasjon.DetaljertNavn detaljertNavn) {
-        super(detaljertNavn.getMetadata());
+    public DetaljertNavn(String uuid, no.nav.registre.testnorge.libs.avro.organisasjon.DetaljertNavn detaljertNavn) {
+        super(detaljertNavn.getMetadata(), uuid);
         this.navn1 = detaljertNavn.getNavn1();
         this.navn2 = detaljertNavn.getNavn2();
         this.navn3 = detaljertNavn.getNavn3();
@@ -18,30 +18,16 @@ public class DetaljertNavn extends ToFlatfil {
         this.redigertNavn = detaljertNavn.getRedigertNavn();
     }
 
-    private String createNavn() {
-        return LineBuilder
+
+    @Override
+    ValueBuilder builder() {
+        return ValueBuilder
                 .newBuilder("NAVN", 219)
                 .setLine(8, navn1)
                 .setLine(43, navn2)
                 .setLine(78, navn3)
                 .setLine(113, navn4)
                 .setLine(148, navn5)
-                .setLine(183, redigertNavn)
-                .toString();
-    }
-
-    @Override
-    public boolean isUpdate() {
-        return true;
-    }
-
-    @Override
-    public Flatfil toFlatfil() {
-        Flatfil flatfil = new Flatfil();
-        Record record = new Record();
-        record.append(createEHN());
-        record.append(createNavn());
-        flatfil.add(record);
-        return flatfil;
+                .setLine(183, redigertNavn);
     }
 }
