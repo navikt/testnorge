@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 
+import no.nav.registre.arena.core.service.util.IdenterUtils;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import org.junit.Before;
@@ -40,6 +41,8 @@ public class BrukereServiceTest {
     private BrukereArenaForvalterConsumer brukereArenaForvalterConsumer;
     @Mock
     private Random random;
+    @Mock
+    private IdenterUtils identerUtils;
 
     @InjectMocks
     private BrukereService brukereService;
@@ -194,7 +197,7 @@ public class BrukereServiceTest {
     @Test
     public void opprettEksisterendeArbeidssoekerTest() {
         doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
-        doReturn(enNyArbeisoker).when(brukereArenaForvalterConsumer).hentArbeidsoekere(null, null, null);
+        doReturn(Collections.singletonList(enNyArbeisoker.get(0).getPersonident())).when(identerUtils).hentEksisterendeArbeidsoekerIdenter();
         doReturn(enNyArbeisoker).when(brukereArenaForvalterConsumer).hentArbeidsoekere(anyString(), eq(null), eq(null));
 
         NyeBrukereResponse arbeidsoeker = brukereService.opprettArbeidssoeker(fnr2, avspillergruppeId, miljoe);
