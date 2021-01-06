@@ -1,32 +1,17 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-public class Internettadresse extends ToFlatfil {
+public class Internettadresse extends ToLine {
     private final String internettadresse;
 
-    public Internettadresse(no.nav.registre.testnorge.libs.avro.organisasjon.Internettadresse internettadresse) {
-        super(internettadresse.getMetadata());
+    public Internettadresse(String uuid, no.nav.registre.testnorge.libs.avro.organisasjon.Internettadresse internettadresse) {
+        super(internettadresse.getMetadata(), uuid);
         this.internettadresse = internettadresse.getInternettadresse();
     }
 
-    private String toInternettadresse() {
-        return LineBuilder
+    @Override
+    ValueBuilder builder() {
+        return ValueBuilder
                 .newBuilder("IADR", 158)
-                .setLine(8, internettadresse)
-                .toString();
-    }
-
-    @Override
-    public boolean isUpdate() {
-        return true;
-    }
-
-    @Override
-    public Flatfil toFlatfil() {
-        Flatfil flatfil = new Flatfil();
-        Record record = new Record();
-        record.append(createEHN());
-        record.append(toInternettadresse());
-        flatfil.add(record);
-        return flatfil;
+                .setLine(8, internettadresse);
     }
 }

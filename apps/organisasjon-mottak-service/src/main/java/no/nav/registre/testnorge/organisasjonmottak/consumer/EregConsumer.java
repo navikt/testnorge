@@ -6,6 +6,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.organisasjonmottak.config.EregProperties;
@@ -32,8 +33,8 @@ public class EregConsumer {
     }
 
 
-    public void save(Flatfil flatfil, String miljo) {
-        jenkinsConsumer.send(flatfil, miljo);
+    public void save(Flatfil flatfil, String miljo, Set<String> uuids) {
+        jenkinsConsumer.send(flatfil, miljo, uuids);
     }
 
     public void updateIndex(String miljo) {

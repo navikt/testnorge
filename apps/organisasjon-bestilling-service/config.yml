@@ -16,10 +16,11 @@ spec:
       rules:
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
-    outbound:
-      rules:
-        - application: ereg-batch-status-service
+        - application: organisasjon-forvalter
           cluster: dev-fss
+    outbound:
+      external:
+        - host: ereg-batch-status-service.dev-fss-pub.nais.io
   gcp:
     sqlInstances:
       - type: POSTGRES_12

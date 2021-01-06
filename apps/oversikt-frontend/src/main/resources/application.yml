@@ -20,3 +20,5 @@ applications:
   ereg-batch-status-service: 67f507ff-399c-4853-9eb3-3dc6aabc8289
   organisasjon-forvalter: 80f07134-375b-4df8-be48-2ba877774c6c
   testnorge-arbeidsforhold-api: 1b2f24c8-a426-47b1-8ff1-7905d6dfddb5
+  organisasjon-mottak-service: 9da0741a-ff41-4046-8635-6742298d74a4
+  jenkins-batch-status-service: 34c2e87a-0711-4ef1-b644-55d86a375e7a

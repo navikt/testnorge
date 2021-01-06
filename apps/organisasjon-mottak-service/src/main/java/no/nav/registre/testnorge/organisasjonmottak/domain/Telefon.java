@@ -2,33 +2,19 @@ package no.nav.registre.testnorge.organisasjonmottak.domain;
 
 import no.nav.registre.testnorge.libs.avro.organisasjon.Metadata;
 
-public class Telefon extends ToFlatfil {
+public class Telefon extends ToLine {
     private final String tlf;
 
-    public Telefon(Metadata metadata, no.nav.registre.testnorge.libs.avro.organisasjon.Telefon telefon) {
-        super(metadata);
+    public Telefon(String uuid, Metadata metadata, no.nav.registre.testnorge.libs.avro.organisasjon.Telefon telefon) {
+        super(metadata, uuid);
         this.tlf = telefon.getTlf();
     }
 
-    @Override
-    public boolean isUpdate() {
-        return true;
-    }
 
-    private String toRecord() {
-        return LineBuilder
+    @Override
+    ValueBuilder builder() {
+        return ValueBuilder
                 .newBuilder("TFON", 21)
-                .setLine(8, tlf)
-                .toString();
-    }
-
-    @Override
-    public Flatfil toFlatfil() {
-        Flatfil flatfil = new Flatfil();
-        Record record = new Record();
-        record.append(createEHN());
-        record.append(toRecord());
-        flatfil.add(record);
-        return flatfil;
+                .setLine(8, tlf);
     }
 }
