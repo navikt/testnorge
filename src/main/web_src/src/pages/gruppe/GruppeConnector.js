@@ -14,7 +14,8 @@ const mapStateToProps = (state, ownProps) => ({
 	isLockingGruppe: loadingSelectorLaasGruppe(state),
 	gruppe: selectGruppeById(state, ownProps.match.params.gruppeId),
 	identer: state.gruppe.ident,
-	brukernavn: state.bruker.brukerData.brukernavn
+	brukernavn: state.bruker.brukerData.brukernavn,
+	bestillingStatuser: state.bestillingStatuser.byId
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => {
