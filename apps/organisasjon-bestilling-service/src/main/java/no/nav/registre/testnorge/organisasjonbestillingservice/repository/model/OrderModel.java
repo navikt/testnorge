@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
@@ -35,14 +36,19 @@ public class OrderModel {
     @Column(name = "UUID", nullable = false, updatable = false)
     private String uuid;
 
-    @Column(name = "ENVIRONMENT", nullable = false, updatable = false)
+    @Column(name = "ENVIRONMENT")
     private String miljo;
 
-    @Column(name = "BATCH_ID", nullable = false, updatable = false)
+    @Column(name = "BATCH_ID")
     private Long batchId;
 
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATED_AT", nullable = false, updatable = false)
     private Date createdAt;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "UPDATED_AT", nullable = false)
+    @LastModifiedDate
+    private Date updatedAt;
 }

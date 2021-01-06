@@ -2,7 +2,6 @@ package no.nav.registre.testnorge.jenkinsbatchstatusservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.regex.Pattern;
@@ -20,15 +19,16 @@ public class BatchService {
     private final RetryService retryService;
 
     public void registerEregBestilling(String uuid, String miljo, Long itemId) {
+        var id = organisasjonBestillingConsumer.save(uuid);
         var retryConfig = new RetryConfig.Builder()
-                .setRetryAttempts(10)
-                .setSleepSeconds(60)
+                .setRetryAttempts(20)
+                .setSleepSeconds(30)
                 .build();
         retryService.execute(retryConfig, () -> {
             var jobNumber = jenkinsConsumer.getJobNumber(itemId);
             var log = jenkinsConsumer.getJobLog(jobNumber);
             var jobId = findIDFromLog(log);
-            organisasjonBestillingConsumer.registerBestilling(uuid, miljo, jobId);
+            organisasjonBestillingConsumer.update(uuid, miljo, jobId, id);
         });
     }
 
