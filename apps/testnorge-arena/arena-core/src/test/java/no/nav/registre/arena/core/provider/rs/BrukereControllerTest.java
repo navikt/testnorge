@@ -14,10 +14,12 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -32,6 +34,7 @@ public class BrukereControllerTest {
     private BrukereController brukereController;
 
     private SyntetiserArenaRequest syntetiserArenaRequest;
+    private SyntetiserArenaRequest syntetiserArenaRequestSingle;
 
     private String miljoe = "q2";
     private Long avspillegruppeId = 10L;
@@ -47,15 +50,20 @@ public class BrukereControllerTest {
 
     private NyeBrukereResponse response;
     private NyeBrukereResponse singleResponse;
+    private Map<String, NyeBrukereResponse> oppfoelgingResponse;
 
     @Before
     public void setUp() {
         syntetiserArenaRequest = new SyntetiserArenaRequest(avspillegruppeId, miljoe, antallNyeIdenter);
+        syntetiserArenaRequestSingle = new SyntetiserArenaRequest(avspillegruppeId, miljoe, 1);
         response = new NyeBrukereResponse();
         response.setArbeidsoekerList(Arrays.asList(arb1, arb2, arb3));
 
         singleResponse = new NyeBrukereResponse();
         singleResponse.setArbeidsoekerList(Collections.singletonList(arb1));
+
+        oppfoelgingResponse = new HashMap<>();
+        oppfoelgingResponse.put(fnr1, singleResponse);
     }
 
 
@@ -66,8 +74,8 @@ public class BrukereControllerTest {
                 .thenReturn(response);
 
         ResponseEntity<NyeBrukereResponse> result = brukereController.registrerBrukereIArenaForvalter(null, syntetiserArenaRequest);
-        assertThat(result.getBody().getArbeidsoekerList().get(1).getPersonident(), containsString(fnr2));
-        assertThat(result.getBody().getArbeidsoekerList().size(), is(3));
+        assertThat(result.getBody().getArbeidsoekerList()).hasSize(antallNyeIdenter);
+        assertThat(result.getBody().getArbeidsoekerList().get(1).getPersonident()).isEqualTo(fnr2);
     }
 
     @Test
@@ -76,7 +84,20 @@ public class BrukereControllerTest {
                 .opprettArbeidssoeker(fnr1, avspillegruppeId, miljoe);
 
         ResponseEntity<NyeBrukereResponse> response = brukereController.registrerBrukereIArenaForvalter(fnr1, syntetiserArenaRequest);
-        assertThat(response.getBody().getArbeidsoekerList().size(), is(1));
-        assertThat(response.getBody().getArbeidsoekerList().get(0).getPersonident(), containsString(fnr1));
+        assertThat(response.getBody().getArbeidsoekerList()).hasSize(1);
+        assertThat(response.getBody().getArbeidsoekerList().get(0).getPersonident()).isEqualTo(fnr1);
+    }
+
+    @Test
+    public void registrerAntallIdenterMedOppfoelgingIArenaForvalter() {
+        when(brukereService
+                .opprettArbeidssoekereUtenVedtak(1, avspillegruppeId, miljoe))
+                .thenReturn(oppfoelgingResponse);
+
+        ResponseEntity<Map<String,NyeBrukereResponse>> result = brukereController.registrerBrukereIArenaForvalterMedOppfoelging(syntetiserArenaRequestSingle);
+        assertThat(result.getBody().keySet()).hasSize(1);
+        assertThat(result.getBody().keySet().contains(fnr1)).isTrue();
+        assertThat(result.getBody().get(fnr1).getArbeidsoekerList().get(0).getPersonident()).isEqualTo(fnr1);
+        assertThat(result.getBody().get(fnr1).getArbeidsoekerList()).hasSize(1);
     }
 }

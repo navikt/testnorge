@@ -62,10 +62,15 @@ public class BrukereController {
 
     @PostMapping("/generer/oppfoelging")
     @ApiOperation(value = "Legg til identer med oppfoelging i Arena", notes = "Legger til oppgitt antall identer i Arena med oppfoelging.")
-    public Map<String, NyeBrukereResponse> registrerBrukereIArenaForvalterMedOppfoelging(
+    public ResponseEntity<Map<String, NyeBrukereResponse>> registrerBrukereIArenaForvalterMedOppfoelging(
             @RequestBody(required = false) SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        return brukereService.opprettArbeidssoekereUtenVedtak(syntetiserArenaRequest.getAntallNyeIdenter(), syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe());
+        var response = brukereService.opprettArbeidssoekereUtenVedtak(
+                syntetiserArenaRequest.getAntallNyeIdenter(),
+                syntetiserArenaRequest.getAvspillergruppeId(),
+                syntetiserArenaRequest.getMiljoe());
+
+        return ResponseEntity.ok().body(response);
     }
 
 }
