@@ -61,7 +61,7 @@ public class BrukereController {
     }
 
     @PostMapping("/generer/oppfoelging")
-    @ApiOperation(value = "Legg til identer i Arena", notes = "Legger til oppgitt antall identer i Arena med oppfoelging.")
+    @ApiOperation(value = "Legg til identer med oppfoelging i Arena", notes = "Legger til oppgitt antall identer i Arena med oppfoelging.")
     public Map<String, NyeBrukereResponse> registrerBrukereIArenaForvalterMedOppfoelging(
             @RequestBody(required = false) SyntetiserArenaRequest syntetiserArenaRequest
     ) {
