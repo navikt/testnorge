@@ -32,9 +32,10 @@ public class Order {
         return batchId;
     }
 
-    public OrderModel toModel() {
+    public OrderModel toModel(Long id) {
         return OrderModel
                 .builder()
+                .id(id)
                 .batchId(batchId)
                 .miljo(miljo)
                 .uuid(uuid)

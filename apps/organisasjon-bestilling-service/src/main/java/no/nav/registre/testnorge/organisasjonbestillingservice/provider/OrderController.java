@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,9 +34,21 @@ public class OrderController {
         return ResponseEntity.ok(uuids);
     }
 
-    @PutMapping("/{uuid}")
-    public ResponseEntity<HttpStatus> registerBestilling(@PathVariable("uuid") String uuid, @RequestBody OrderDTO dto) {
-        var id = service.register(new Order(dto, uuid));
+    @PostMapping("/{uuid}")
+    public ResponseEntity<Long> registerBestilling(@PathVariable("uuid") String uuid) {
+        var id = service.create(uuid);
+        URI uri = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/items/{id}")
+                .buildAndExpand(id)
+                .toUri();
+        return ResponseEntity.created(uri).body(id);
+    }
+
+
+    @PutMapping("/{uuid}/items/{id}")
+    public ResponseEntity<HttpStatus> updateBestilling(@PathVariable("uuid") String uuid, @PathVariable("id") Long id, @RequestBody OrderDTO dto) {
+        service.update(new Order(dto, uuid), id);
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/items/{id}")
