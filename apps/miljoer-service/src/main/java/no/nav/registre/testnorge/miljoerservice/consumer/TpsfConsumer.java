@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.miljoerservice.service;
+package no.nav.registre.testnorge.miljoerservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
@@ -15,12 +15,11 @@ import static java.util.Objects.isNull;
 @Service
 @DependencyOn(value = "tps-forvalteren", external = true)
 @Slf4j
-public class MiljoerService {
+public class TpsfConsumer {
 
-    private static final String TPSF_GET_ENVIRONMENTS = "/v1/environments";
     private final WebClient webClient;
 
-    public MiljoerService(@Value("${tps-forvalteren.rest-api.url}") String tpsfServerUrl) {
+    public TpsfConsumer(@Value("${tps-forvalteren.rest-api.url}") String tpsfServerUrl) {
         this.webClient = WebClient.builder().baseUrl(tpsfServerUrl).build();
     }
 
@@ -28,15 +27,15 @@ public class MiljoerService {
         log.info("Henter aktive miljøer fra TPSF.");
         ResponseEntity<MiljoerResponse> response = webClient
                 .get()
-                .uri(uriBuilder -> uriBuilder.path(TPSF_GET_ENVIRONMENTS).build())
+                .uri(uriBuilder -> uriBuilder.path("/v1/environments").build())
                 .retrieve()
                 .toEntity(MiljoerResponse.class)
                 .block();
 
-        assert response != null;
-        if (isNull(response.getBody()) || isNull(response.getBody().getEnvironments())) {
+        if (response == null || isNull(response.getBody()) || isNull(response.getBody().getEnvironments())) {
             throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Fant ingen miljøer");
         }
+
         response.getBody().getEnvironments().sort(String::compareTo);
 
         return response.getBody();
