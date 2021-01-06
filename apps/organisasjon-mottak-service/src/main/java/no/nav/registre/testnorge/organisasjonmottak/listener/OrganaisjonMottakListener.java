@@ -7,10 +7,10 @@ import org.apache.avro.specific.SpecificRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.support.KafkaHeaders;
-import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.avro.organisasjon.Ansatte;
 import no.nav.registre.testnorge.libs.avro.organisasjon.DetaljertNavn;
@@ -23,6 +23,10 @@ import no.nav.registre.testnorge.libs.avro.organisasjon.Navn;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Organisasjon;
 import no.nav.registre.testnorge.libs.avro.organisasjon.Postadresse;
 import no.nav.registre.testnorge.libs.kafkaconfig.topic.OrganisasjonTopic;
+import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
+import no.nav.registre.testnorge.organisasjonmottak.domain.Line;
+import no.nav.registre.testnorge.organisasjonmottak.domain.Record;
+import no.nav.registre.testnorge.organisasjonmottak.domain.ToLine;
 import no.nav.registre.testnorge.organisasjonmottak.service.OrganisasjonService;
 
 @Slf4j
@@ -44,124 +48,73 @@ public class OrganaisjonMottakListener {
             OrganisasjonTopic.ORGANISASJON_SET_INTERNETTADRESSE,
             OrganisasjonTopic.ORGANISASJON_SET_NAERINGSKODE,
     })
-    public void register(ConsumerRecord<String, SpecificRecord> record) {
-        if (record.value() instanceof Organisasjon) {
-            register((Organisasjon) record.value(), record.key(), record.partition());
-        } else if (record.value() instanceof Forretningsadresse) {
-            register((Forretningsadresse) record.value(), record.key(), record.partition());
-        } else if (record.value() instanceof Navn) {
-            register((Navn) record.value(), record.key(), record.partition());
-        } else if (record.value() instanceof Ansatte) {
-            register((Ansatte) record.value(), record.key(), record.partition());
-        } else if (record.value() instanceof DetaljertNavn) {
-            register((DetaljertNavn) record.value(), record.key(), record.partition());
-        } else if (record.value() instanceof Knytning) {
-            register((Knytning) record.value(), record.key(), record.partition());
-        } else if (record.value() instanceof Postadresse) {
-            register((Postadresse) record.value(), record.key(), record.partition());
-        } else if (record.value() instanceof Epost) {
-            register((Epost) record.value(), record.key(), record.partition());
-        } else if (record.value() instanceof Internettadresse) {
-            register((Internettadresse) record.value(), record.key(), record.partition());
-        } else if (record.value() instanceof Naeringskode) {
-            register((Naeringskode) record.value(), record.key(), record.partition());
+    public void register(List<ConsumerRecord<String, SpecificRecord>> consumerRecords) {
+        log.info("Kafka batch antall elementer {}.", consumerRecords.size());
+        consumerRecords
+                .stream()
+                .map(this::convert)
+                .map(ToLine::toLine)
+                .collect(Collectors.toList())
+                .stream()
+                .collect(Collectors.groupingBy(value -> value.getUuid() + value.getMiljo() + value.getEnhetstype() + value.getOrgnummer()))
+                .values()
+                .stream()
+                .map(this::toRecord)
+                .collect(Collectors.groupingBy(Record::getMiljo))
+                .forEach((key, list) -> organisasjonService.save(
+                        Flatfil.create(list),
+                        key,
+                        list.stream().map(Record::getUuid).collect(Collectors.toSet())
+                ));
+    }
+
+    public Record toRecord(List<Line> lines) {
+        var first = lines.get(0);
+        return Record.create(
+                lines,
+                first.getOrgnummer(),
+                first.getEnhetstype(),
+                first.getUuid(),
+                first.getMiljo()
+        );
+    }
+
+    public ToLine convert(ConsumerRecord<String, SpecificRecord> consumerRecord) {
+        var specificRecord = consumerRecord.value();
+        var key = consumerRecord.key();
+
+        if (specificRecord instanceof Organisasjon) {
+            log.info("Oppretter ny organisasisjon med uuid: {}.", key);
+            return new no.nav.registre.testnorge.organisasjonmottak.domain.Organisasjon(key, (Organisasjon) specificRecord);
+        } else if (specificRecord instanceof Forretningsadresse) {
+            log.info("Legger til forretningsadresse på organasisjon med uuid: {}.", key);
+            return new no.nav.registre.testnorge.organisasjonmottak.domain.Forretningsadresse(key, (Forretningsadresse) specificRecord);
+        } else if (specificRecord instanceof Navn) {
+            log.info("Legger til navn på organasisjon med uuid: {}.", key);
+            return new no.nav.registre.testnorge.organisasjonmottak.domain.Navn(key, (Navn) specificRecord);
+        } else if (specificRecord instanceof Ansatte) {
+            log.info("Legger til ansatte på organasisjon med uuid: {}.", key);
+            return new no.nav.registre.testnorge.organisasjonmottak.domain.Ansatte(key, (Ansatte) specificRecord);
+        } else if (specificRecord instanceof DetaljertNavn) {
+            log.info("Legger til detaljert navn på organasisjon med uuid: {}.", key);
+            return new no.nav.registre.testnorge.organisasjonmottak.domain.DetaljertNavn(key, (DetaljertNavn) specificRecord);
+        } else if (specificRecord instanceof Knytning) {
+            log.info("Legger til knytning på organasisjon med uuid: {}.", key);
+            return new no.nav.registre.testnorge.organisasjonmottak.domain.Knytning(key, (Knytning) specificRecord);
+        } else if (specificRecord instanceof Postadresse) {
+            log.info("Legger til postadresse på organasisjon med uuid: {}.", key);
+            return new no.nav.registre.testnorge.organisasjonmottak.domain.Postadresse(key, (Postadresse) specificRecord);
+        } else if (specificRecord instanceof Epost) {
+            log.info("Legger til epost på organasisjon med uuid: {}", key);
+            return new no.nav.registre.testnorge.organisasjonmottak.domain.Epost(key, (Epost) specificRecord);
+        } else if (specificRecord instanceof Internettadresse) {
+            log.info("Legger til internettadresse på organasisjon med uuid: {}", key);
+            return new no.nav.registre.testnorge.organisasjonmottak.domain.Internettadresse(key, (Internettadresse) specificRecord);
+        } else if (specificRecord instanceof Naeringskode) {
+            log.info("Legger til næringskode på organasisjon med uuid: {}.", key);
+            return new no.nav.registre.testnorge.organisasjonmottak.domain.Naeringskode(key, (Naeringskode) specificRecord);
         } else {
-            log.error("Fant ikke for type={}.", record.value().getClass());
+            throw new RuntimeException("Fant ikke for type=" + specificRecord.getClass());
         }
-    }
-
-    private void register(Organisasjon value, String uuid, int partition) {
-        log.info("Oppretter ny organisasjon med uuid: {} og partition: {}", uuid, partition);
-        organisasjonService.save(
-                new no.nav.registre.testnorge.organisasjonmottak.domain.Organisasjon(value),
-                value.getMetadata().getMiljo(),
-                uuid
-        );
-    }
-
-
-    private void register(Navn value, String uuid, int partition) {
-        log.info("Legger til navn på organasisjon med uuid: {} og partition: {}", uuid, partition);
-        organisasjonService.save(
-                new no.nav.registre.testnorge.organisasjonmottak.domain.Navn(value),
-                value.getMetadata().getMiljo(),
-                uuid
-        );
-    }
-
-    private void register(Ansatte value, String uuid, int partition) {
-        log.info("Legger til ansatte på organasisjon med uuid: {} og partition: {}", uuid, partition);
-        organisasjonService.save(
-                new no.nav.registre.testnorge.organisasjonmottak.domain.Ansatte(value),
-                value.getMetadata().getMiljo(),
-                uuid
-        );
-    }
-
-    private void register(DetaljertNavn value, String uuid, int partition) {
-        log.info("Legger til detaljert navn på organasisjon med uuid: {} og partition: {}", uuid, partition);
-        organisasjonService.save(
-                new no.nav.registre.testnorge.organisasjonmottak.domain.DetaljertNavn(value),
-                value.getMetadata().getMiljo(),
-                uuid
-        );
-    }
-
-    private void register(Knytning value, String uuid, int partition) {
-        log.info("Legger til knytning på organasisjon med uuid: {} og partition: {}", uuid, partition);
-        organisasjonService.save(
-                new no.nav.registre.testnorge.organisasjonmottak.domain.Knytning(value),
-                value.getMetadata().getMiljo(),
-                uuid
-        );
-    }
-
-
-    private void register(Forretningsadresse value, String uuid, int partition) {
-        log.info("Legger til forretningsadresse på organasisjon med uuid: {} og partition: {}", uuid, partition);
-        organisasjonService.save(
-                new no.nav.registre.testnorge.organisasjonmottak.domain.Forretningsadresse(value),
-                value.getMetadata().getMiljo(),
-                uuid
-        );
-    }
-
-
-    private void register(Postadresse value, String uuid, int partition) {
-        log.info("Legger til postadresse på organasisjon med uuid: {} og partition: {}", uuid, partition);
-        organisasjonService.save(
-                new no.nav.registre.testnorge.organisasjonmottak.domain.Postadresse(value),
-                value.getMetadata().getMiljo(),
-                uuid
-        );
-    }
-
-    private void register(Epost value, String uuid, int partition) {
-        log.info("Legger til epost på organasisjon med uuid: {} og partition: {}", uuid, partition);
-        organisasjonService.save(
-                new no.nav.registre.testnorge.organisasjonmottak.domain.Epost(value),
-                value.getMetadata().getMiljo(),
-                uuid
-        );
-    }
-
-
-    private void register(Internettadresse value,String uuid, int partition) {
-        log.info("Legger til internettadresse på organasisjon med uuid: {} og partition: {}", uuid, partition);
-        organisasjonService.save(
-                new no.nav.registre.testnorge.organisasjonmottak.domain.Internettadresse(value),
-                value.getMetadata().getMiljo(),
-                uuid
-        );
-    }
-
-
-    private void register(Naeringskode value, String uuid, int partition) {
-        log.info("Legger til næringskode på organasisjon med uuid: {} og partition: {}", uuid, partition);
-        organisasjonService.save(
-                new no.nav.registre.testnorge.organisasjonmottak.domain.Naeringskode(value),
-                value.getMetadata().getMiljo(),
-                uuid
-        );
     }
 }
