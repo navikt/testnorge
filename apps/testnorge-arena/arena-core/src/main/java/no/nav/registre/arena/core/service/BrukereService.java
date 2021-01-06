@@ -7,13 +7,17 @@ import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.arena.core.service.util.IdenterUtils;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyBruker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.BrukereArenaForvalterConsumer;
@@ -28,6 +32,8 @@ public class BrukereService {
     private static final double PROSENTANDEL_SOM_SKAL_HA_MELDEKORT = 0.2;
     private static final int MINIMUM_ALDER = 16;
     private static final int MAKSIMUM_ALDER = 67;
+    private static final String INGEN_OPPFOELGING = "N";
+    private static final String MED_OPPFOELGING = "J";
 
     private final HodejegerenConsumer hodejegerenConsumer;
     private final BrukereArenaForvalterConsumer brukereArenaForvalterConsumer;
@@ -55,7 +61,7 @@ public class BrukereService {
         }
 
         var nyeIdenter = hentKvalifiserteIdenter(antallNyeIdenter, levendeIdenter, arbeidsoekerIdenter);
-        return sendArbeidssoekereTilArenaForvalter(nyeIdenter, miljoe, Kvalifiseringsgrupper.IKVAL, "N");
+        return sendArbeidssoekereTilArenaForvalter(nyeIdenter, miljoe, Kvalifiseringsgrupper.IKVAL, INGEN_OPPFOELGING);
     }
 
     public NyeBrukereResponse opprettArbeidssoeker(
@@ -76,7 +82,7 @@ public class BrukereService {
             return new NyeBrukereResponse();
         }
 
-        return sendArbeidssoekereTilArenaForvalter(Collections.singletonList(ident), miljoe, Kvalifiseringsgrupper.IKVAL, "N");
+        return sendArbeidssoekereTilArenaForvalter(Collections.singletonList(ident), miljoe, Kvalifiseringsgrupper.IKVAL, INGEN_OPPFOELGING);
     }
 
     public NyeBrukereResponse sendArbeidssoekereTilArenaForvalter(
@@ -157,7 +163,7 @@ public class BrukereService {
             String miljoe
     ) {
         var kvalifiseringsgruppe = getKvalifiseringsgruppeForOppfoelging();
-        return sendArbeidssoekereTilArenaForvalter(Collections.singletonList(ident), miljoe, kvalifiseringsgruppe, "J");
+        return sendArbeidssoekereTilArenaForvalter(Collections.singletonList(ident), miljoe, kvalifiseringsgruppe, MED_OPPFOELGING);
     }
 
     private Kvalifiseringsgrupper getKvalifiseringsgruppeForOppfoelging() {

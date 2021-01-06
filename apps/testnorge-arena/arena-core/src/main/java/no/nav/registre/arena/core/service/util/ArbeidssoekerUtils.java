@@ -33,6 +33,8 @@ public class ArbeidssoekerUtils {
     private static final Map<String, List<KodeMedSannsynlighet>> aktivitestsfaserMedInnsatsIARBS;
     private static final Map<String, List<KodeMedSannsynlighet>> aktivitestsfaserMedFormidlingsgruppe;
 
+    private static final String INGEN_OPPFOELGING = "N";
+
     private final Random rand;
     private final BrukereService brukereService;
     private final ServiceUtils serviceUtils;
@@ -114,7 +116,7 @@ public class ArbeidssoekerUtils {
 
         if (!uregistrerteBrukere.isEmpty()) {
             var nyeBrukereResponse = brukereService
-                    .sendArbeidssoekereTilArenaForvalter(new ArrayList<>(uregistrerteBrukere), miljoe, kvalifiseringsgruppe, "N");
+                    .sendArbeidssoekereTilArenaForvalter(new ArrayList<>(uregistrerteBrukere), miljoe, kvalifiseringsgruppe, INGEN_OPPFOELGING);
             List<String> feiledeIdenter = new ArrayList<>();
             if (nyeBrukereResponse != null && nyeBrukereResponse.getNyBrukerFeilList() != null && !nyeBrukereResponse.getNyBrukerFeilList().isEmpty()) {
                 nyeBrukereResponse.getNyBrukerFeilList().forEach(nyBrukerFeil -> {
@@ -137,7 +139,7 @@ public class ArbeidssoekerUtils {
 
         if (uregistrertBruker) {
             var nyeBrukereResponse = brukereService
-                    .sendArbeidssoekereTilArenaForvalter(Collections.singletonList(ident), miljoe, kvalifiseringsgruppe, "N");
+                    .sendArbeidssoekereTilArenaForvalter(Collections.singletonList(ident), miljoe, kvalifiseringsgruppe, INGEN_OPPFOELGING);
             if (nyeBrukereResponse != null && nyeBrukereResponse.getNyBrukerFeilList() != null && !nyeBrukereResponse.getNyBrukerFeilList().isEmpty()) {
                 nyeBrukereResponse.getNyBrukerFeilList().forEach(nyBrukerFeil ->
                         log.error("Kunne ikke opprette ny bruker med fnr {} i arena: {}", nyBrukerFeil.getPersonident(), nyBrukerFeil.getMelding())
