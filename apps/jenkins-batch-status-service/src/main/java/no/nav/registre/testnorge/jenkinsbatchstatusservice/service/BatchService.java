@@ -35,7 +35,7 @@ public class BatchService {
     private Long findIDFromLog(String value) {
         log.info("Prøver å hente ut id fra log: {}.", value);
 
-        var pattern = Pattern.compile("(executionId: )(\\d{5})", Pattern.MULTILINE);
+        var pattern = Pattern.compile("(executionId: )(\\d+)", Pattern.MULTILINE);
         var matcher = pattern.matcher(value);
 
         String id = null;
