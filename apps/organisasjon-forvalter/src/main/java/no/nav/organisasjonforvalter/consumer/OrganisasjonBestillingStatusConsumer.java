@@ -64,5 +64,13 @@ public class OrganisasjonBestillingStatusConsumer {
 
         private Integer id;
         private ItemStatus status;
+
+        @Override
+        public String toString() {
+            return "ItemDto{" +
+                    "id=" + id +
+                    ", status=" + status +
+                    '}';
+        }
     }
 }
