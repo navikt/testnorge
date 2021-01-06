@@ -55,7 +55,7 @@ public class BrukereService {
         }
 
         var nyeIdenter = hentKvalifiserteIdenter(antallNyeIdenter, levendeIdenter, arbeidsoekerIdenter);
-        return sendArbeidssoekereTilArenaForvalter(nyeIdenter, miljoe, Kvalifiseringsgrupper.IKVAL);
+        return sendArbeidssoekereTilArenaForvalter(nyeIdenter, miljoe, Kvalifiseringsgrupper.IKVAL, "N");
     }
 
     public NyeBrukereResponse opprettArbeidssoeker(
@@ -76,13 +76,14 @@ public class BrukereService {
             return new NyeBrukereResponse();
         }
 
-        return sendArbeidssoekereTilArenaForvalter(Collections.singletonList(ident), miljoe, Kvalifiseringsgrupper.IKVAL);
+        return sendArbeidssoekereTilArenaForvalter(Collections.singletonList(ident), miljoe, Kvalifiseringsgrupper.IKVAL, "N");
     }
 
     public NyeBrukereResponse sendArbeidssoekereTilArenaForvalter(
             List<String> identer,
             String miljoe,
-            Kvalifiseringsgrupper kvalifiseringsgruppe
+            Kvalifiseringsgrupper kvalifiseringsgruppe,
+            String oppfolging
     ) {
         var nyeBrukere = identer.stream().map(ident ->
                 NyBruker.builder()
@@ -90,6 +91,7 @@ public class BrukereService {
                         .miljoe(miljoe)
                         .kvalifiseringsgruppe(kvalifiseringsgruppe)
                         .automatiskInnsendingAvMeldekort(true)
+                        .oppfolging(oppfolging)
                         .build())
                 .collect(Collectors.toList());
 
@@ -128,7 +130,6 @@ public class BrukereService {
     }
 
 
-
     private int getAntallBrukereForAaFylleArenaForvalteren(
             int antallLevendeIdenter,
             int antallEksisterendeIdenter
@@ -155,19 +156,8 @@ public class BrukereService {
             String ident,
             String miljoe
     ) {
-
         var kvalifiseringsgruppe = getKvalifiseringsgruppeForOppfoelging();
-
-        var nyBruker = NyBruker.builder()
-                .personident(ident)
-                .miljoe(miljoe)
-                .kvalifiseringsgruppe(kvalifiseringsgruppe)
-                .automatiskInnsendingAvMeldekort(true)
-                .oppfolging("J")
-                .build();
-
-        return brukereArenaForvalterConsumer.sendTilArenaForvalter(Collections.singletonList(nyBruker));
-
+        return sendArbeidssoekereTilArenaForvalter(Collections.singletonList(ident), miljoe, kvalifiseringsgruppe, "J");
     }
 
     private Kvalifiseringsgrupper getKvalifiseringsgruppeForOppfoelging() {
