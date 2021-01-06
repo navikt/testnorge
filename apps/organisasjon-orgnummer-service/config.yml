@@ -1,7 +1,7 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnorge-organisasjon-api
+  name: organisasjon-orgnummer-service
   namespace: dolly
   labels:
     team: dolly
@@ -12,12 +12,11 @@ spec:
   azure:
     application:
       enabled: true
-  accessPolicy:
-    inbound:
-      rules:
-        - application: mn-organisasjon-api
-        - application: organisasjon-orgnummer-service
-        - application: testnorge-synt-sykemelding-api
+    accessPolicy:
+      inbound:
+        rules:
+          - application: organisasjon-forvalter
+          - application: testnorge-oversikt-frontend
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -41,5 +40,4 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://testnorge-organisasjon-api.dev.adeo.no"
-    - "https://testnorge-organisasjon-api.dev.intern.nav.no"
+    - "https://organisasjon-orgnummer-service.dev.intern.nav.no"
