@@ -5,6 +5,7 @@ import static java.lang.Math.floor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import no.nav.registre.arena.core.service.util.IdenterUtils;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
@@ -33,6 +34,7 @@ public class BrukereService {
 
     private final HodejegerenConsumer hodejegerenConsumer;
     private final BrukereArenaForvalterConsumer brukereArenaForvalterConsumer;
+    private final IdenterUtils identerUtils;
     private final Random random;
 
     public NyeBrukereResponse opprettArbeidsoekere(
@@ -154,5 +156,25 @@ public class BrukereService {
             int antallEksisterendeIdenter
     ) {
         return (int) (floor(antallLevendeIdenter * PROSENTANDEL_SOM_SKAL_HA_MELDEKORT) - antallEksisterendeIdenter);
+    }
+
+    public void opprettArbeidssoekereUtenVedtak(
+            int antallIdenter,
+            Long avspillergruppeId,
+            String miljoe
+    ){
+        var identer = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallIdenter, MINIMUM_ALDER, MAKSIMUM_ALDER, miljoe);
+
+        for(var ident: identer){
+            opprettArbeidssoekerUtenVedtak(ident, avspillergruppeId, miljoe);
+        }
+    }
+
+    public void opprettArbeidssoekerUtenVedtak(
+            String ident,
+            long avspillergruppeId,
+            String miljoe
+    ){
+
     }
 }

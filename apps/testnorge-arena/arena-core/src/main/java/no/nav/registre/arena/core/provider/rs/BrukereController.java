@@ -57,4 +57,18 @@ public class BrukereController {
 
         return ResponseEntity.ok().body(response);
     }
+
+    @PostMapping("/generer/oppfoelging")
+    @ApiOperation(value = "Legg til identer i Arena", notes = "Legger til oppgitt antall identer i Arena. Dersom ingen antall identer blir oppgitt fyller den opp slik at 20% tilgjengelige gyldige identer ligger i Arena. \nResponse: liste av opprettede identer.")
+    public void registrerBrukereIArenaForvalterMedOppfoelging(
+            @RequestParam(required = false) String personident,
+            @RequestBody(required = false) SyntetiserArenaRequest syntetiserArenaRequest
+    ) {
+        if (personident == null || personident.isEmpty()) {
+            brukereService.opprettArbeidssoekerUtenVedtak(personident, syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe());
+        }
+
+        brukereService.opprettArbeidssoekereUtenVedtak(syntetiserArenaRequest.getAntallNyeIdenter(), syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe());
+    }
+
 }
