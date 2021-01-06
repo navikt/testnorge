@@ -64,13 +64,13 @@ public class BestillingRequest {
         private AdresseType adressetype;
         @Schema(maxLength = 35, description = "Inntil 3 adresselinjer a 35 tegn")
         private List<String> adresselinjer;
-        @Schema(maxLength = 9, description = "Hvis landkode NOR eller blank landkode: i hht kodeverk Postnummer, ellers fritt")
+        @Schema(maxLength = 9, description = "Hvis landkode NO eller blank landkode: i hht kodeverk Postnummer, ellers fritt")
         private String postnr;
         @Schema(maxLength = 35, description = "Benyttes for utenlandsk poststed kun")
         private String poststed;
-        @Schema(maxLength = 9, description = "Hvis landkode NOR eller blank landkode: I hht kodeverk Kommuner")
+        @Schema(maxLength = 9, description = "Hvis landkode NO eller blank landkode: I hht kodeverk Kommuner")
         private String kommunenr;
-        @Schema(maxLength = 3, description = "I hht kodeverk Landkoder")
+        @Schema(maxLength = 3, description = "I hht kodeverk LandkoderISO2")
         private String landkode;
         @Schema(maxLength = 15, description = "Denne inneholder ID fra matrikkelen (når vi en gang får dette)")
         private String vegadresseId;

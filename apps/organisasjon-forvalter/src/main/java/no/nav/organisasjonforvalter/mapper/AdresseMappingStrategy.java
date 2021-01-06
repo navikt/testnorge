@@ -14,7 +14,7 @@ import java.util.List;
 @Component
 public class AdresseMappingStrategy implements MappingStrategy {
 
-    private static final String NORGE = "NOR";
+    private static final String NORGE = "NO";
 
     private static String fixHusnummer(String husnummer) {
         // Remove leading zeros
