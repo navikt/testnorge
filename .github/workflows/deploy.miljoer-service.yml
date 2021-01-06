@@ -2,7 +2,7 @@ name: Deploy miljoer-service
 
 on:
   push:
-    branches: master
+#    branches: master
     paths:
       - apps/miljoer-service/**
       - libs/testnorge-core/**
