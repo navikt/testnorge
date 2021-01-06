@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.SyntConsumer;
 
 import org.apache.commons.lang.time.DateUtils;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Date;
 import java.util.Map;
