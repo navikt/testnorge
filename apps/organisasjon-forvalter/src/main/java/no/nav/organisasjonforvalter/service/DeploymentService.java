@@ -14,7 +14,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse.Status.ERROR;
-import static no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse.Status.OK;
 
 @Slf4j
 @Service
@@ -23,6 +22,7 @@ public class DeploymentService {
 
     private final OrganisasjonRepository organisasjonRepository;
     private final OrganisasjonMottakConsumer organisasjonMottakConsumer;
+    private final DeployStatusService deployStatusService;
 
     public DeployResponse deploy(DeployRequest request) {
 
@@ -36,7 +36,7 @@ public class DeploymentService {
                                     try {
                                         deployOrganisasjon(uuid, organisasjon, env);
                                         return DeployResponse.EnvStatus.builder()
-                                                .status(OK)
+                                                .status(deployStatusService.checkStatus(uuid))
                                                 .uuid(uuid)
                                                 .environment(env)
                                                 .build();

@@ -1,6 +1,7 @@
 package no.nav.organisasjonforvalter.consumer;
 
 import static java.lang.String.format;
+import static java.util.Collections.emptyList;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +23,7 @@ import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 @Service
 public class OrganisasjonBestillingStatusConsumer {
 
-    public enum ItemStatus {RUNNING, COMPLETED, ERROR, FAILED}
+    public enum ItemStatus {NOT_STARTED, RUNNING, COMPLETED, ERROR, FAILED}
 
     private static final String STATUS_URL = "/api/v1/order/{uuid}/items";
 
@@ -53,7 +54,7 @@ public class OrganisasjonBestillingStatusConsumer {
                 .toEntity(ItemDto[].class)
                 .block();
 
-        return response.hasBody() ? List.of(response.getBody()) : Collections.emptyList();
+        return response.hasBody() ? List.of(response.getBody()) : emptyList();
     }
 
     @Data

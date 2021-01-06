@@ -41,6 +41,4 @@ public class OrganisasjonController {
 
         return organisasjonService.getOrganisasjoner(orgnumre);
     }
-
-    //TODO
 }
