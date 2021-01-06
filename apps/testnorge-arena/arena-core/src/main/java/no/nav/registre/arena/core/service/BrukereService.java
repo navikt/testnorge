@@ -13,10 +13,7 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyBruker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.BrukereArenaForvalterConsumer;
@@ -43,7 +40,7 @@ public class BrukereService {
             String miljoe
     ) {
         var levendeIdenter = hentLevendeIdenter(avspillergruppeId);
-        var arbeidsoekerIdenter = hentEksisterendeArbeidsoekerIdenter();
+        var arbeidsoekerIdenter = identerUtils.hentEksisterendeArbeidsoekerIdenter();
 
         if (antallNyeIdenter == null) {
             var antallArbeidsoekereAaOpprette = getAntallBrukereForAaFylleArenaForvalteren(levendeIdenter.size(), arbeidsoekerIdenter.size());
@@ -67,7 +64,7 @@ public class BrukereService {
             String miljoe
     ) {
         var levendeIdenter = hentLevendeIdenter(avspillergruppeId);
-        var arbeidsoekerIdenter = hentEksisterendeArbeidsoekerIdenter();
+        var arbeidsoekerIdenter = identerUtils.hentEksisterendeArbeidsoekerIdenter();
 
         if (arbeidsoekerIdenter.contains(ident)) {
             log.info("Ident {} er allerede registrert som arbeidsøker.", ident.replaceAll("[\r\n]", ""));
@@ -80,16 +77,6 @@ public class BrukereService {
         }
 
         return sendArbeidssoekereTilArenaForvalter(Collections.singletonList(ident), miljoe, Kvalifiseringsgrupper.IKVAL);
-    }
-
-    public List<String> hentEksisterendeArbeidsoekerIdenter() {
-        var arbeidsoekere = brukereArenaForvalterConsumer.hentArbeidsoekere(null, null, null);
-        return hentIdentListe(arbeidsoekere);
-    }
-
-    public List<String> hentEksisterendeArbeidsoekerIdenter(String eier, String miljoe) {
-        var arbeidsoekere = brukereArenaForvalterConsumer.hentArbeidsoekere(null, eier, miljoe);
-        return hentIdentListe(arbeidsoekere);
     }
 
     public NyeBrukereResponse sendArbeidssoekereTilArenaForvalter(
@@ -140,16 +127,7 @@ public class BrukereService {
         return hodejegerenConsumer.getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
     }
 
-    private List<String> hentIdentListe(
-            List<Arbeidsoeker> arbeidsoekere
-    ) {
-        if (arbeidsoekere.isEmpty()) {
-            log.info("Fant ingen eksisterende identer.");
-            return new ArrayList<>();
-        }
 
-        return arbeidsoekere.stream().map(Arbeidsoeker::getPersonident).collect(Collectors.toList());
-    }
 
     private int getAntallBrukereForAaFylleArenaForvalteren(
             int antallLevendeIdenter,
@@ -158,23 +136,45 @@ public class BrukereService {
         return (int) (floor(antallLevendeIdenter * PROSENTANDEL_SOM_SKAL_HA_MELDEKORT) - antallEksisterendeIdenter);
     }
 
-    public void opprettArbeidssoekereUtenVedtak(
+    public Map<String, NyeBrukereResponse> opprettArbeidssoekereUtenVedtak(
             int antallIdenter,
             Long avspillergruppeId,
             String miljoe
-    ){
+    ) {
         var identer = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallIdenter, MINIMUM_ALDER, MAKSIMUM_ALDER, miljoe);
 
-        for(var ident: identer){
-            opprettArbeidssoekerUtenVedtak(ident, avspillergruppeId, miljoe);
+        Map<String, NyeBrukereResponse> responses = new HashMap<>();
+        for (var ident : identer) {
+            var res = opprettArbeidssoekerUtenVedtak(ident, miljoe);
+            responses.put(ident, res);
         }
+        return responses;
     }
 
-    public void opprettArbeidssoekerUtenVedtak(
+    private NyeBrukereResponse opprettArbeidssoekerUtenVedtak(
             String ident,
-            long avspillergruppeId,
             String miljoe
-    ){
+    ) {
 
+        var kvalifiseringsgruppe = getKvalifiseringsgruppeForOppfoelging();
+
+        var nyBruker = NyBruker.builder()
+                .personident(ident)
+                .miljoe(miljoe)
+                .kvalifiseringsgruppe(kvalifiseringsgruppe)
+                .automatiskInnsendingAvMeldekort(true)
+                .oppfolging("J")
+                .build();
+
+        return brukereArenaForvalterConsumer.sendTilArenaForvalter(Collections.singletonList(nyBruker));
+
+    }
+
+    private Kvalifiseringsgrupper getKvalifiseringsgruppeForOppfoelging() {
+        var r = random.nextDouble();
+        if (r > 0.5) {
+            return Kvalifiseringsgrupper.IKVAL;
+        }
+        return r > 0.2 ? Kvalifiseringsgrupper.BFORM : Kvalifiseringsgrupper.BKART;
     }
 }

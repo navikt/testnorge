@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import no.nav.registre.arena.core.provider.rs.request.SyntetiserArenaRequest;
 import no.nav.registre.arena.core.service.BrukereService;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("api/v1/syntetisering")
 @RequiredArgsConstructor
@@ -60,15 +62,10 @@ public class BrukereController {
 
     @PostMapping("/generer/oppfoelging")
     @ApiOperation(value = "Legg til identer i Arena", notes = "Legger til oppgitt antall identer i Arena. Dersom ingen antall identer blir oppgitt fyller den opp slik at 20% tilgjengelige gyldige identer ligger i Arena. \nResponse: liste av opprettede identer.")
-    public void registrerBrukereIArenaForvalterMedOppfoelging(
-            @RequestParam(required = false) String personident,
+    public Map<String, NyeBrukereResponse> registrerBrukereIArenaForvalterMedOppfoelging(
             @RequestBody(required = false) SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        if (personident == null || personident.isEmpty()) {
-            brukereService.opprettArbeidssoekerUtenVedtak(personident, syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe());
-        }
-
-        brukereService.opprettArbeidssoekereUtenVedtak(syntetiserArenaRequest.getAntallNyeIdenter(), syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe());
+        return brukereService.opprettArbeidssoekereUtenVedtak(syntetiserArenaRequest.getAntallNyeIdenter(), syntetiserArenaRequest.getAvspillergruppeId(), syntetiserArenaRequest.getMiljoe());
     }
 
 }

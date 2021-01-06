@@ -37,6 +37,7 @@ public class ArbeidssoekerUtils {
     private final BrukereService brukereService;
     private final ServiceUtils serviceUtils;
     private final InnsatsService innsatsService;
+    private final IdenterUtils identerUtils;
 
     static {
         aktivitestsfaserMedInnsatsARBS = new HashMap<>();
@@ -107,7 +108,7 @@ public class ArbeidssoekerUtils {
             String miljoe,
             Kvalifiseringsgrupper kvalifiseringsgruppe
     ) {
-        var identerIArena = brukereService.hentEksisterendeArbeidsoekerIdenter();
+        var identerIArena = identerUtils.hentEksisterendeArbeidsoekerIdenter();
         var uregistrerteBrukere = rettigheter.stream().filter(rettighet -> !identerIArena.contains(rettighet.getPersonident())).map(RettighetRequest::getPersonident)
                 .collect(Collectors.toSet());
 
@@ -131,7 +132,7 @@ public class ArbeidssoekerUtils {
             String miljoe
     ) {
         var kvalifiseringsgruppe = rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM;
-        var identerIArena = brukereService.hentEksisterendeArbeidsoekerIdenter();
+        var identerIArena = identerUtils.hentEksisterendeArbeidsoekerIdenter();
         var uregistrertBruker = !identerIArena.contains(ident);
 
         if (uregistrertBruker) {

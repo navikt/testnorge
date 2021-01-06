@@ -18,4 +18,5 @@ public class NyBruker {
     private Kvalifiseringsgrupper kvalifiseringsgruppe;
     private UtenServicebehov utenServicebehov;
     private Boolean automatiskInnsendingAvMeldekort;
+    private String oppfolging;
 }

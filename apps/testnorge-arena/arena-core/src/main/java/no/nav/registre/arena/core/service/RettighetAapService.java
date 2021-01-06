@@ -46,7 +46,6 @@ public class RettighetAapService {
 
     private final AapSyntConsumer aapSyntConsumer;
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
-    private final BrukereService brukereService;
     private final ServiceUtils serviceUtils;
     private final IdenterUtils identerUtils;
     private final ArbeidssoekerUtils arbeidsoekerUtils;
@@ -209,7 +208,7 @@ public class RettighetAapService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        var utvalgteIdenter = brukereService.hentEksisterendeArbeidsoekerIdenter();
+        var utvalgteIdenter = identerUtils.hentEksisterendeArbeidsoekerIdenter();
         var identerIAvspillergruppe = new HashSet<>(identerUtils.getLevende(avspillergruppeId, miljoe));
         utvalgteIdenter.retainAll(identerIAvspillergruppe);
         Collections.shuffle(utvalgteIdenter);
