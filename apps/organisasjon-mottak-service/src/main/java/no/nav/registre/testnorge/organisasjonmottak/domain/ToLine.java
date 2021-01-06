@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import no.nav.registre.testnorge.libs.avro.organisasjon.Metadata;
 
@@ -20,8 +20,10 @@ public abstract class ToLine {
     }
 
     String getDateFormatted(LocalDate localDate) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-        return format.format(localDate);
+        if (localDate == null) {
+            return null;
+        }
+        return localDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
     }
 
     abstract ValueBuilder builder();
