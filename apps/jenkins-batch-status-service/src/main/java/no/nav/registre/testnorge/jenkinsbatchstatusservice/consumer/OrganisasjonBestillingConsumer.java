@@ -32,7 +32,7 @@ public class OrganisasjonBestillingConsumer {
 
     public Long save(String uuid) {
         AccessToken accessToken = accessTokenService.generateToken(clientId);
-        log.info("Registerer jobb med uuid: {}.", uuid);
+        log.info("Registrerer jobb med uuid: {}.", uuid);
         return new SaveOrganisasjonBestillingCommand(webClient, accessToken.getTokenValue(), uuid).call();
     }
 
