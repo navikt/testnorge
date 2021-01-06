@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -38,7 +37,7 @@ public class GetOrganisasjonCommand implements Callable<OrganisasjonDTO> {
                     .retrieve()
                     .bodyToMono(OrganisasjonDTO.class)
                     .block();
-        } catch (HttpClientErrorException.NotFound | WebClientResponseException.NotFound e) {
+        } catch (WebClientResponseException.NotFound e) {
             return null;
         }
     }

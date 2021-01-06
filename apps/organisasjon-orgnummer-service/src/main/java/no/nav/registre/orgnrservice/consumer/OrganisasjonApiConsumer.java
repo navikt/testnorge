@@ -51,7 +51,7 @@ public class OrganisasjonApiConsumer {
     }
 
     public boolean finnesOrgnrIEreg(String orgnummer) {
-        List<String> miljoer = Arrays.asList("q0", "q1", "q2"); //TODO: Legg til flere miljø
+        List<String> miljoer = Arrays.asList("q0", "q1", "q2");
 
         var futures = miljoer.stream()
                 .map( enkeltmiljoe -> getOrgnrFraMiljoeThreads(orgnummer, enkeltmiljoe, getToken()))
