@@ -31,7 +31,7 @@ public class OrganisasjonBestillingConsumer {
 
     public void registerBestilling(String uuid, String miljo, Long jobId) {
         AccessToken accessToken = accessTokenService.generateToken(clientId);
-        log.info("Oppretter organiasjon bestilling for uuid {} med job id: {}", uuid, jobId);
+        log.info("Oppretter organisasjon bestilling for uuid {} med job id: {}", uuid, jobId);
         var dto = new OrderDTO(miljo, jobId);
         new SaveOrganisasjonBestillingCommand(webClient, dto, accessToken.getTokenValue(), uuid).run();
     }

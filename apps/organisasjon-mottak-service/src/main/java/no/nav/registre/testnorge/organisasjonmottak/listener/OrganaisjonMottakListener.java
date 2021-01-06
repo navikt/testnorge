@@ -49,7 +49,7 @@ public class OrganaisjonMottakListener {
             OrganisasjonTopic.ORGANISASJON_SET_NAERINGSKODE,
     })
     public void register(List<ConsumerRecord<String, SpecificRecord>> consumerRecords) {
-        log.info("Kafka batch antall elementer {}.", consumerRecords.size());
+        log.info("Starter innsending til organisasjon batch med antall records {}.", consumerRecords.size());
         consumerRecords
                 .stream()
                 .map(this::convert)
@@ -87,34 +87,34 @@ public class OrganaisjonMottakListener {
             log.info("Oppretter ny organisasisjon med uuid: {}.", key);
             return new no.nav.registre.testnorge.organisasjonmottak.domain.Organisasjon(key, (Organisasjon) specificRecord);
         } else if (specificRecord instanceof Forretningsadresse) {
-            log.info("Legger til forretningsadresse på organasisjon med uuid: {}.", key);
+            log.info("Legger til forretningsadresse på organisasjon med uuid: {}.", key);
             return new no.nav.registre.testnorge.organisasjonmottak.domain.Forretningsadresse(key, (Forretningsadresse) specificRecord);
         } else if (specificRecord instanceof Navn) {
-            log.info("Legger til navn på organasisjon med uuid: {}.", key);
+            log.info("Legger til navn på organisasjon med: {}.", key);
             return new no.nav.registre.testnorge.organisasjonmottak.domain.Navn(key, (Navn) specificRecord);
         } else if (specificRecord instanceof Ansatte) {
-            log.info("Legger til ansatte på organasisjon med uuid: {}.", key);
+            log.info("Legger til ansatte på organisasjon med uuid: {}.", key);
             return new no.nav.registre.testnorge.organisasjonmottak.domain.Ansatte(key, (Ansatte) specificRecord);
         } else if (specificRecord instanceof DetaljertNavn) {
-            log.info("Legger til detaljert navn på organasisjon med uuid: {}.", key);
+            log.info("Legger til detaljert navn på organisasjon med uuid: {}.", key);
             return new no.nav.registre.testnorge.organisasjonmottak.domain.DetaljertNavn(key, (DetaljertNavn) specificRecord);
         } else if (specificRecord instanceof Knytning) {
-            log.info("Legger til knytning på organasisjon med uuid: {}.", key);
+            log.info("Legger til knytning på organisasjon med uuid: {}.", key);
             return new no.nav.registre.testnorge.organisasjonmottak.domain.Knytning(key, (Knytning) specificRecord);
         } else if (specificRecord instanceof Postadresse) {
-            log.info("Legger til postadresse på organasisjon med uuid: {}.", key);
+            log.info("Legger til postadresse på organisasjon med uuid: {}.", key);
             return new no.nav.registre.testnorge.organisasjonmottak.domain.Postadresse(key, (Postadresse) specificRecord);
         } else if (specificRecord instanceof Epost) {
-            log.info("Legger til epost på organasisjon med uuid: {}", key);
+            log.info("Legger til epost på organisasjon med uuid: {}.", key);
             return new no.nav.registre.testnorge.organisasjonmottak.domain.Epost(key, (Epost) specificRecord);
         } else if (specificRecord instanceof Internettadresse) {
-            log.info("Legger til internettadresse på organasisjon med uuid: {}", key);
+            log.info("Legger til internettadresse på organisasjon med uuid: {}.", key);
             return new no.nav.registre.testnorge.organisasjonmottak.domain.Internettadresse(key, (Internettadresse) specificRecord);
         } else if (specificRecord instanceof Naeringskode) {
-            log.info("Legger til næringskode på organasisjon med uuid: {}.", key);
+            log.info("Legger til næringskode på organisasjon med uuid: {}.", key);
             return new no.nav.registre.testnorge.organisasjonmottak.domain.Naeringskode(key, (Naeringskode) specificRecord);
         } else {
-            throw new RuntimeException("Fant ikke for type=" + specificRecord.getClass());
+            throw new RuntimeException("Fikk ikke registrert verdi for type={}." + specificRecord.getClass());
         }
     }
 }

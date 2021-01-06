@@ -43,11 +43,11 @@ public class BatchService {
             if (id == null) {
                 id = matcher.group(2);
             } else {
-                throw new RuntimeException("Fant flere en ett eksempel som matcher.");
+                throw new RuntimeException("Fant flere enn ett eksempel som matcher.");
             }
         }
         if (id == null) {
-            throw new RuntimeException("Fant ikke ingen som match for id'en.");
+            throw new RuntimeException("Fant ingen id som matchet.");
         }
         return Long.valueOf(id);
     }
