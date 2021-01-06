@@ -9,6 +9,8 @@ import no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse.Status;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingStatusConsumer.ItemStatus.COMPLETED;
@@ -26,7 +28,10 @@ public class DeployStatusService {
 
     private static boolean isDone(String uuid, List<ItemDto> statusTotal) {
 
-        log.info("Deploystatus for {}, {}", uuid, statusTotal.stream().map(ItemDto::toString).toString());
+        log.info("Deploystatus for {}, {}", uuid, statusTotal.stream()
+                .map(ItemDto::toString)
+                .collect(Collectors.joining(", ")));
+
         return !statusTotal.isEmpty() && (statusTotal.stream().allMatch(status -> status.getStatus() == COMPLETED) ||
                 statusTotal.stream().anyMatch(status -> status.getStatus() == ERROR));
     }
