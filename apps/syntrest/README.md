@@ -109,12 +109,15 @@ De filene som må endres når man legger til synt-pakkene er:
 ## Lokal kjøring
 Oppdater `kube-config-path` i `application-dev.properties` til din lokale kubeconfigs path.
 Kjør så ApplicationStarter med følgende argumenter:
- - -Djavax.net.ssl.trustStore=[path til lokal truststore]
- - -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
- - -Dspring.profiles.active=dev
- - -DGITHUB_USERNAME=[github brukernavn, kan finnes i syntrest secrets i vault]
- - -DGITHUB_PASSWORD=[github passord, kan finnes i syntrest secrets i vault]
- 
+
+```
+ -Djavax.net.ssl.trustStore=[path til lokal truststore]
+ -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
+ -Dspring.profiles.active=dev
+ -DGITHUB_USERNAME=[github brukernavn, kan finnes i syntrest secrets i vault]
+ -DGITHUB_PASSWORD=[github passord, kan finnes i syntrest secrets i vault]
+```
+Utenfor utviklerimage er det unødvendig med `trustStore`.
 Hvis ApplicationStarter ikke vil kjøre sjekk at du fremdeles har gyldig Kubectl token (`kubectl get pods` kommando fungerer lokalt.)
 
 ### Image tag - Deploye synt-applikasjoner lokalt
