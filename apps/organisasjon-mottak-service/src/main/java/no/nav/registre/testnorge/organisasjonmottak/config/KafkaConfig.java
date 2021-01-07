@@ -4,8 +4,10 @@ import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.config.SaslConfigs;
 import org.apache.kafka.common.config.SslConfigs;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -15,15 +17,20 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.util.backoff.BackOff;
+import org.springframework.util.backoff.FixedBackOff;
 
 import java.io.File;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 import no.nav.registre.testnorge.libs.kafkaconfig.config.KafkaProperties;
 
+@Slf4j
 @EnableKafka
 @Component
 @Profile("prod")
@@ -64,6 +71,11 @@ public class KafkaConfig {
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         factory.setBatchListener(true);
+        factory.setErrorHandler(new SeekToCurrentErrorHandler(getConsumerRecordExceptionBiConsumer(), new FixedBackOff(30 * 1000, 3)));
         return factory;
+    }
+
+    private BiConsumer<ConsumerRecord<?, ?>, Exception> getConsumerRecordExceptionBiConsumer() {
+        return (consumerRecord, exception) -> log.error("Klarte ikke å prossesere bestilling med uuid: {}", consumerRecord.key());
     }
 }
