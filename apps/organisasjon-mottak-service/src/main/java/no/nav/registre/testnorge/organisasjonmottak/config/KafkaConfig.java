@@ -17,6 +17,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.listener.SeekToCurrentBatchErrorHandler;
 import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.util.backoff.BackOff;
@@ -71,11 +72,10 @@ public class KafkaConfig {
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         factory.setBatchListener(true);
-        factory.setErrorHandler(new SeekToCurrentErrorHandler(getConsumerRecordExceptionBiConsumer(), new FixedBackOff(30 * 1000, 3)));
-        return factory;
-    }
 
-    private BiConsumer<ConsumerRecord<?, ?>, Exception> getConsumerRecordExceptionBiConsumer() {
-        return (consumerRecord, exception) -> log.error("Klarte ikke å prossesere bestilling med uuid: {}", consumerRecord.key());
+        var seekToCurrentBatchErrorHandler = new SeekToCurrentBatchErrorHandler();
+        seekToCurrentBatchErrorHandler.setBackOff(new FixedBackOff(30 * 1000, 3));
+        factory.setBatchErrorHandler(seekToCurrentBatchErrorHandler);
+        return factory;
     }
 }
