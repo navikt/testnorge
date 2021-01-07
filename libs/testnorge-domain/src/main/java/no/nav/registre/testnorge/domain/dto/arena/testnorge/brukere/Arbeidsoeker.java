@@ -23,4 +23,5 @@ public class Arbeidsoeker {
     private Boolean automatiskInnsendingAvMeldekort;
     private Boolean aap115;
     private Boolean aap;
+    private String oppfolging;
 }

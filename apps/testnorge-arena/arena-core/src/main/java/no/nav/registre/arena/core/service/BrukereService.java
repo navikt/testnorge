@@ -5,8 +5,8 @@ import static java.lang.Math.floor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import no.nav.registre.arena.core.service.util.IdenterUtils;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyBruker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -30,9 +32,12 @@ public class BrukereService {
     private static final double PROSENTANDEL_SOM_SKAL_HA_MELDEKORT = 0.2;
     private static final int MINIMUM_ALDER = 16;
     private static final int MAKSIMUM_ALDER = 67;
+    private static final String INGEN_OPPFOELGING = "N";
+    private static final String MED_OPPFOELGING = "J";
 
     private final HodejegerenConsumer hodejegerenConsumer;
     private final BrukereArenaForvalterConsumer brukereArenaForvalterConsumer;
+    private final IdenterUtils identerUtils;
     private final Random random;
 
     public NyeBrukereResponse opprettArbeidsoekere(
@@ -41,7 +46,7 @@ public class BrukereService {
             String miljoe
     ) {
         var levendeIdenter = hentLevendeIdenter(avspillergruppeId);
-        var arbeidsoekerIdenter = hentEksisterendeArbeidsoekerIdenter();
+        var arbeidsoekerIdenter = identerUtils.hentEksisterendeArbeidsoekerIdenter();
 
         if (antallNyeIdenter == null) {
             var antallArbeidsoekereAaOpprette = getAntallBrukereForAaFylleArenaForvalteren(levendeIdenter.size(), arbeidsoekerIdenter.size());
@@ -56,7 +61,7 @@ public class BrukereService {
         }
 
         var nyeIdenter = hentKvalifiserteIdenter(antallNyeIdenter, levendeIdenter, arbeidsoekerIdenter);
-        return sendArbeidssoekereTilArenaForvalter(nyeIdenter, miljoe, Kvalifiseringsgrupper.IKVAL);
+        return sendArbeidssoekereTilArenaForvalter(nyeIdenter, miljoe, Kvalifiseringsgrupper.IKVAL, INGEN_OPPFOELGING);
     }
 
     public NyeBrukereResponse opprettArbeidssoeker(
@@ -65,7 +70,7 @@ public class BrukereService {
             String miljoe
     ) {
         var levendeIdenter = hentLevendeIdenter(avspillergruppeId);
-        var arbeidsoekerIdenter = hentEksisterendeArbeidsoekerIdenter();
+        var arbeidsoekerIdenter = identerUtils.hentEksisterendeArbeidsoekerIdenter();
 
         if (arbeidsoekerIdenter.contains(ident)) {
             log.info("Ident {} er allerede registrert som arbeidsøker.", ident.replaceAll("[\r\n]", ""));
@@ -77,23 +82,14 @@ public class BrukereService {
             return new NyeBrukereResponse();
         }
 
-        return sendArbeidssoekereTilArenaForvalter(Collections.singletonList(ident), miljoe, Kvalifiseringsgrupper.IKVAL);
-    }
-
-    public List<String> hentEksisterendeArbeidsoekerIdenter() {
-        var arbeidsoekere = brukereArenaForvalterConsumer.hentArbeidsoekere(null, null, null);
-        return hentIdentListe(arbeidsoekere);
-    }
-
-    public List<String> hentEksisterendeArbeidsoekerIdenter(String eier, String miljoe) {
-        var arbeidsoekere = brukereArenaForvalterConsumer.hentArbeidsoekere(null, eier, miljoe);
-        return hentIdentListe(arbeidsoekere);
+        return sendArbeidssoekereTilArenaForvalter(Collections.singletonList(ident), miljoe, Kvalifiseringsgrupper.IKVAL, INGEN_OPPFOELGING);
     }
 
     public NyeBrukereResponse sendArbeidssoekereTilArenaForvalter(
             List<String> identer,
             String miljoe,
-            Kvalifiseringsgrupper kvalifiseringsgruppe
+            Kvalifiseringsgrupper kvalifiseringsgruppe,
+            String oppfolging
     ) {
         var nyeBrukere = identer.stream().map(ident ->
                 NyBruker.builder()
@@ -101,6 +97,7 @@ public class BrukereService {
                         .miljoe(miljoe)
                         .kvalifiseringsgruppe(kvalifiseringsgruppe)
                         .automatiskInnsendingAvMeldekort(true)
+                        .oppfolging(oppfolging)
                         .build())
                 .collect(Collectors.toList());
 
@@ -138,21 +135,42 @@ public class BrukereService {
         return hodejegerenConsumer.getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
     }
 
-    private List<String> hentIdentListe(
-            List<Arbeidsoeker> arbeidsoekere
-    ) {
-        if (arbeidsoekere.isEmpty()) {
-            log.info("Fant ingen eksisterende identer.");
-            return new ArrayList<>();
-        }
-
-        return arbeidsoekere.stream().map(Arbeidsoeker::getPersonident).collect(Collectors.toList());
-    }
 
     private int getAntallBrukereForAaFylleArenaForvalteren(
             int antallLevendeIdenter,
             int antallEksisterendeIdenter
     ) {
         return (int) (floor(antallLevendeIdenter * PROSENTANDEL_SOM_SKAL_HA_MELDEKORT) - antallEksisterendeIdenter);
+    }
+
+    public Map<String, NyeBrukereResponse> opprettArbeidssoekereUtenVedtak(
+            int antallIdenter,
+            Long avspillergruppeId,
+            String miljoe
+    ) {
+        var identer = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallIdenter, MINIMUM_ALDER, MAKSIMUM_ALDER, miljoe);
+
+        Map<String, NyeBrukereResponse> responses = new HashMap<>();
+        for (var ident : identer) {
+            var res = opprettArbeidssoekerUtenVedtak(ident, miljoe);
+            responses.put(ident, res);
+        }
+        return responses;
+    }
+
+    private NyeBrukereResponse opprettArbeidssoekerUtenVedtak(
+            String ident,
+            String miljoe
+    ) {
+        var kvalifiseringsgruppe = getKvalifiseringsgruppeForOppfoelging();
+        return sendArbeidssoekereTilArenaForvalter(Collections.singletonList(ident), miljoe, kvalifiseringsgruppe, MED_OPPFOELGING);
+    }
+
+    private Kvalifiseringsgrupper getKvalifiseringsgruppeForOppfoelging() {
+        var r = random.nextDouble();
+        if (r > 0.5) {
+            return Kvalifiseringsgrupper.IKVAL;
+        }
+        return r > 0.2 ? Kvalifiseringsgrupper.BFORM : Kvalifiseringsgrupper.BKART;
     }
 }

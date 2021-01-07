@@ -37,8 +37,8 @@ public class TestnorgeArenaService {
     private final TestnorgeArenaTiltakConsumer tiltakConsumer;
     private final TestnorgeArenaTilleggstoenadConsumer tilleggstoenadConsumer;
 
-    public List<String> opprettArbeidssokereIArena(SyntetiserArenaRequest arenaRequest) {
-        return testnorgeArenaConsumer.opprettArbeidsoekere(arenaRequest);
+    public List<String> opprettArbeidssokereIArena(SyntetiserArenaRequest arenaRequest, boolean medOppfoelging) {
+        return testnorgeArenaConsumer.opprettArbeidsoekere(arenaRequest, medOppfoelging);
     }
 
     public void opprettArenaVedtakshistorikk(SyntetiserArenaVedtakshistorikkRequest vedtakshistorikkRequest) {

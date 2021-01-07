@@ -3,15 +3,14 @@ package no.nav.registre.testnorge.organisasjonmottak.domain;
 public class Epost extends ToLine {
     private final String epost;
 
-    public Epost(String uuid, no.nav.registre.testnorge.libs.avro.organisasjon.Epost epost) {
-        super(epost.getMetadata(), uuid);
+    public Epost(no.nav.registre.testnorge.libs.avro.organisasjon.v1.Epost epost) {
         this.epost = epost.getEpost();
     }
 
     @Override
-    ValueBuilder builder() {
-        return ValueBuilder
+    FlatfilValueBuilder builder() {
+        return FlatfilValueBuilder
                 .newBuilder("EPOS", 158)
-                .setLine(8, epost);
+                .append(8, epost);
     }
 }

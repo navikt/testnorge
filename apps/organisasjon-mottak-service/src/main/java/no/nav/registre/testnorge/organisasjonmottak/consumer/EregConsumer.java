@@ -33,8 +33,8 @@ public class EregConsumer {
     }
 
 
-    public void save(Flatfil flatfil, String miljo, Set<String> uuids) {
-        jenkinsConsumer.send(flatfil, miljo, uuids);
+    public void save(Flatfil flatfil, String miljo, String uuid) {
+        jenkinsConsumer.send(flatfil, miljo, uuid);
     }
 
     public void updateIndex(String miljo) {

@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "name": "Metadata",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon.v1",
+  "fields": [
+    {
+      "name": "miljo",
+      "type": "string"
+    }
+  ]
+}

@@ -21,11 +21,13 @@ public class OrderService {
     private final OrderRepository repository;
     private final EregBatchStatusConsumer consumer;
 
-    public Long register(Order order) {
-        return repository
-                .findBy(order.getMiljo(), order.getBatchId(), order.getUuid())
-                .orElseGet(() -> repository.save(order.toModel()))
-                .getId();
+    public Long create(String uuid) {
+        return repository.save(OrderModel.builder().uuid(uuid).build()).getId();
+    }
+
+
+    public Long update(Order order, Long id) {
+        return repository.save(order.toModel(id)).getId();
     }
 
     public Set<String> getOrderUuids() {
@@ -40,7 +42,11 @@ public class OrderService {
         if (model.isEmpty()) {
             return null;
         }
-        var order = new Order(model.get());
+        var value = model.get();
+        if (value.getBatchId() == null) {
+            return new ItemDTO(id, Status.NOT_STARTED);
+        }
+        var order = new Order(value);
         var kode = consumer.getStatusKode(order);
         return new ItemDTO(id, toStatus(kode));
     }

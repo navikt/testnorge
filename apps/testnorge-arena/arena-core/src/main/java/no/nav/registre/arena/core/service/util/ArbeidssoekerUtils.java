@@ -33,10 +33,13 @@ public class ArbeidssoekerUtils {
     private static final Map<String, List<KodeMedSannsynlighet>> aktivitestsfaserMedInnsatsIARBS;
     private static final Map<String, List<KodeMedSannsynlighet>> aktivitestsfaserMedFormidlingsgruppe;
 
+    private static final String INGEN_OPPFOELGING = "N";
+
     private final Random rand;
     private final BrukereService brukereService;
     private final ServiceUtils serviceUtils;
     private final InnsatsService innsatsService;
+    private final IdenterUtils identerUtils;
 
     static {
         aktivitestsfaserMedInnsatsARBS = new HashMap<>();
@@ -107,13 +110,13 @@ public class ArbeidssoekerUtils {
             String miljoe,
             Kvalifiseringsgrupper kvalifiseringsgruppe
     ) {
-        var identerIArena = brukereService.hentEksisterendeArbeidsoekerIdenter();
+        var identerIArena = identerUtils.hentEksisterendeArbeidsoekerIdenter();
         var uregistrerteBrukere = rettigheter.stream().filter(rettighet -> !identerIArena.contains(rettighet.getPersonident())).map(RettighetRequest::getPersonident)
                 .collect(Collectors.toSet());
 
         if (!uregistrerteBrukere.isEmpty()) {
             var nyeBrukereResponse = brukereService
-                    .sendArbeidssoekereTilArenaForvalter(new ArrayList<>(uregistrerteBrukere), miljoe, kvalifiseringsgruppe);
+                    .sendArbeidssoekereTilArenaForvalter(new ArrayList<>(uregistrerteBrukere), miljoe, kvalifiseringsgruppe, INGEN_OPPFOELGING);
             List<String> feiledeIdenter = new ArrayList<>();
             if (nyeBrukereResponse != null && nyeBrukereResponse.getNyBrukerFeilList() != null && !nyeBrukereResponse.getNyBrukerFeilList().isEmpty()) {
                 nyeBrukereResponse.getNyBrukerFeilList().forEach(nyBrukerFeil -> {
@@ -131,12 +134,12 @@ public class ArbeidssoekerUtils {
             String miljoe
     ) {
         var kvalifiseringsgruppe = rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM;
-        var identerIArena = brukereService.hentEksisterendeArbeidsoekerIdenter();
+        var identerIArena = identerUtils.hentEksisterendeArbeidsoekerIdenter();
         var uregistrertBruker = !identerIArena.contains(ident);
 
         if (uregistrertBruker) {
             var nyeBrukereResponse = brukereService
-                    .sendArbeidssoekereTilArenaForvalter(Collections.singletonList(ident), miljoe, kvalifiseringsgruppe);
+                    .sendArbeidssoekereTilArenaForvalter(Collections.singletonList(ident), miljoe, kvalifiseringsgruppe, INGEN_OPPFOELGING);
             if (nyeBrukereResponse != null && nyeBrukereResponse.getNyBrukerFeilList() != null && !nyeBrukereResponse.getNyBrukerFeilList().isEmpty()) {
                 nyeBrukereResponse.getNyBrukerFeilList().forEach(nyBrukerFeil ->
                         log.error("Kunne ikke opprette ny bruker med fnr {} i arena: {}", nyBrukerFeil.getPersonident(), nyBrukerFeil.getMelding())

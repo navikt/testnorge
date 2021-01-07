@@ -1,20 +1,23 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
+import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon;
+
 public class Knytning extends ToLine {
     private final String juridiskEnhet;
+    private final String enhetstype;
 
-    public Knytning(String uuid, no.nav.registre.testnorge.libs.avro.organisasjon.Knytning knytning) {
-        super(knytning.getMetadata(), uuid);
+    public Knytning(no.nav.registre.testnorge.libs.avro.organisasjon.v1.Knytning knytning, Organisasjon organisasjon) {
+        enhetstype = organisasjon.getEnhetstype();
         juridiskEnhet = knytning.getJuridiskEnhet();
     }
 
     @Override
-    ValueBuilder builder() {
-        return ValueBuilder
-                .newBuilder(this.getEnhetstype(), 66)
-                .setLine(5, "SSY")
-                .setLine(8, "K")
-                .setLine(9, "D")
-                .setLine(41, juridiskEnhet);
+    FlatfilValueBuilder builder() {
+        return FlatfilValueBuilder
+                .newBuilder(enhetstype, 66)
+                .append(5, "SSY")
+                .append(8, "K")
+                .append(9, "D")
+                .append(41, juridiskEnhet);
     }
 }

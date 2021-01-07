@@ -2,13 +2,10 @@ package no.nav.registre.testnorge.organisasjonmottak.domain;
 
 import java.time.LocalDate;
 
-import no.nav.registre.testnorge.libs.avro.organisasjon.Metadata;
-
 public class Stiftelsesdato extends ToLine {
     private final LocalDate localDate;
 
-    public Stiftelsesdato(String uuid, Metadata metadata, no.nav.registre.testnorge.libs.avro.organisasjon.Stiftelsesdato stiftelsesdato) {
-        super(metadata, uuid);
+    public Stiftelsesdato(no.nav.registre.testnorge.libs.avro.organisasjon.v1.Stiftelsesdato stiftelsesdato) {
         localDate = LocalDate.of(
                 stiftelsesdato.getDato().getAar(),
                 stiftelsesdato.getDato().getMaaned(),
@@ -17,9 +14,9 @@ public class Stiftelsesdato extends ToLine {
     }
 
     @Override
-    ValueBuilder builder() {
-        return ValueBuilder
+    FlatfilValueBuilder builder() {
+        return FlatfilValueBuilder
                 .newBuilder("STID", 16)
-                .setLine(8, getDateFormatted(localDate));
+                .append(8, getDateFormatted(localDate));
     }
 }

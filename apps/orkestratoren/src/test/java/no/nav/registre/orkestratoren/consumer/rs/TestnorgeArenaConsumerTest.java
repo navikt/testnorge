@@ -61,7 +61,7 @@ public class TestnorgeArenaConsumerTest {
         var expectedUri = serverUrl + "/v1/syntetisering/generer";
         stubArenaConsumerLeggTilIdenter(expectedUri);
 
-        var opprettedeIdenter = testnorgeArenaConsumer.opprettArbeidsoekere(syntetiserArenaRequest);
+        var opprettedeIdenter = testnorgeArenaConsumer.opprettArbeidsoekere(syntetiserArenaRequest, false);
         assertThat(opprettedeIdenter.size(), is(2));
         assertThat(opprettedeIdenter.get(1), containsString(fnr3));
     }

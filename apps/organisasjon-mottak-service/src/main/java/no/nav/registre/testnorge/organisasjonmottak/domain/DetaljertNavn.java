@@ -8,8 +8,7 @@ public class DetaljertNavn extends ToLine {
     private final String navn5;
     private final String redigertNavn;
 
-    public DetaljertNavn(String uuid, no.nav.registre.testnorge.libs.avro.organisasjon.DetaljertNavn detaljertNavn) {
-        super(detaljertNavn.getMetadata(), uuid);
+    public DetaljertNavn(no.nav.registre.testnorge.libs.avro.organisasjon.v1.DetaljertNavn detaljertNavn) {
         this.navn1 = detaljertNavn.getNavn1();
         this.navn2 = detaljertNavn.getNavn2();
         this.navn3 = detaljertNavn.getNavn3();
@@ -20,14 +19,14 @@ public class DetaljertNavn extends ToLine {
 
 
     @Override
-    ValueBuilder builder() {
-        return ValueBuilder
+    FlatfilValueBuilder builder() {
+        return FlatfilValueBuilder
                 .newBuilder("NAVN", 219)
-                .setLine(8, navn1)
-                .setLine(43, navn2)
-                .setLine(78, navn3)
-                .setLine(113, navn4)
-                .setLine(148, navn5)
-                .setLine(183, redigertNavn);
+                .append(8, navn1)
+                .append(43, navn2)
+                .append(78, navn3)
+                .append(113, navn4)
+                .append(148, navn5)
+                .append(183, redigertNavn);
     }
 }
