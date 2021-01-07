@@ -16,7 +16,8 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 @DependenciesOn({
         @DependencyOn("dolly-backend"),
         @DependencyOn("testnorge-profil-api"),
-        @DependencyOn("testnorge-varslinger-api")
+        @DependencyOn("testnorge-varslinger-api"),
+        @DependencyOn("testnorge-miljoer-service")
 })
 public class ApplicationConfig {
     private final RemoteApplicationsProperties properties;
@@ -40,6 +41,11 @@ public class ApplicationConfig {
     @Bean
     public AddAuthorizationToRouteFilter varslingerApiAddAuthorizationToRouteFilter() {
         return createFilterFrom("testnorge-varslinger-api");
+    }
+
+    @Bean
+    public AddAuthorizationToRouteFilter miljoerServiceAddAuthorizationToRouteFilter() {
+        return createFilterFrom("testnorge-miljoer-service");
     }
 
     private AddAuthorizationToRouteFilter createFilterFrom(String route) {

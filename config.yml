@@ -46,12 +46,16 @@ spec:
       memory: 2048Mi
   image: {{ image }}
   env:
+    - name: TESTNORGE_MILJOER_SERVICE_CLIENT_ID
+      value: 30003084-1585-4629-a017-686b4387b12e
     - name: TESTNORGE_PROFIL_API_CLIENT_ID
       value: e8e0772f-8204-4b88-88ad-233d62863f47
     - name: DOLLY_BACKEND_API_CLIENT_ID
       value: 787eb670-2731-49b4-8be1-2385990370a9
     - name: DOLLY_BACKEND_HOST
       value: https://dolly-backend.dev.adeo.no
+    - name: TESTNORGE_MILJOER_SERVICE_HOST
+      value: https://testnorge-miljoer-service.dev.intern.nav.no
     - name: TESTNORGE_PROFIL_API_HOST
       value: https://testnorge-profil-api.dev.intern.nav.no
   vault:

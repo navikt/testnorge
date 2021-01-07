@@ -12,6 +12,7 @@ import InntektstubService from './services/inntektstub/InntektstubService'
 import BrregstubService from './services/brregstub/BrregstubService'
 import HodejegerenService from '~/service/services/hodejegeren/HodejegerenService'
 import VarslingerService from './services/varslinger/VarslingerService'
+import MiljoeService from '~/service/services/miljoe/MiljoeService'
 
 export const DollyApi = DollyService
 export const ProfilApi = ProfilService
@@ -27,6 +28,7 @@ export const InntektstubApi = InntektstubService
 export const BrregstubApi = BrregstubService
 export const HodejegerenApi = HodejegerenService
 export const VarslingerApi = VarslingerService
+export const MiljoeApi = MiljoeService
 
 export default {
 	DollyApi: DollyService,
@@ -42,5 +44,6 @@ export default {
 	InntektstubApi: InntektstubService,
 	HodejegerenApi: HodejegerenService,
 	BrregstubApi: BrregstubService,
-	VarslingerApi: VarslingerService
+	VarslingerApi: VarslingerService,
+	MiljoeApi: MiljoeService
 }

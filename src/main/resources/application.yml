@@ -17,12 +17,17 @@ zuul:
       path: /api/testnorge-varslinger-api/**
       url: https://testnorge-varslinger-api.dev.adeo.no/api/v1
       sensitiveHeaders: Cookie,Set-Cookie
+    testnorge-miljoer-service:
+      path: /api/testnorge-miljoer-service/**
+      url: https://miljoer-service.dev.intern.nav.no/api/v1
+      sensitiveHeaders: Cookie,Set-Cookie
 
 applications:
   testnorge-profil-api: ${TESTNORGE_PROFIL_API_CLIENT_ID}
   dolly-backend: ${DOLLY_BACKEND_API_CLIENT_ID}
   testnorge-varslinger-api: a1dca941-bdd5-4705-a1a4-04cf76473040
   testnorge-tilbakemelding-api: 0f8c4430-19e4-4628-8e89-1dd89a1d613d
+  testnorge-miljoer-service: 30003084-1585-4629-a017-686b4387b12e
 
 
 application:
@@ -30,6 +35,7 @@ application:
 
 consumers:
   testnorge-tilbakemelding-api.baseUrl: https://testnorge-tilbakemelding-api.dev.intern.nav.no
+  testnorge-miljoer-service.baseUrl: https://miljoer-service.dev.intern.nav.no
 
 spring:
   application:
