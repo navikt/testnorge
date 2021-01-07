@@ -2,9 +2,9 @@ package no.nav.registre.syntrest.consumer;
 
 import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdCommand;
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdHistorikkCommand;
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdStartCommand;
+import no.nav.registre.syntrest.consumer.response.AmeldingHistorikkResponse;
 import no.nav.registre.syntrest.domain.amelding.ArbeidsforholdAmelding;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 
@@ -27,26 +27,6 @@ public class SyntAmeldingConsumer extends SyntConsumer {
         this.webClient = WebClient.builder().baseUrl(synthAmeldingUrl).build();
     }
 
-    public ArbeidsforholdAmelding synthesizeArbeidsforhold(ArbeidsforholdAmelding tidligereArbeidsforhold, String syntAmeldingUrlPath) {
-        try {
-            startSyntApplication();
-        } catch (ApiException e) {
-            return null;
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return null;
-        }
-
-        try {
-            return new PostArbeidsforholdCommand(tidligereArbeidsforhold, syntAmeldingUrlPath, webClient).call();
-        } catch (RestClientException e) {
-            log.error(REST_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
-            throw e;
-        } finally {
-            scheduleShutdown(SHUTDOWN_TIME_DELAY_SECONDS);
-        }
-    }
-
     public List<ArbeidsforholdAmelding> synthesizeArbeidsforholdStart(List<String> datoer, String url) {
         try {
             startSyntApplication();
@@ -67,14 +47,14 @@ public class SyntAmeldingConsumer extends SyntConsumer {
         }
     }
 
-    public List<ArbeidsforholdAmelding> synthesizeArbeidsforholdHistorikk(ArbeidsforholdAmelding tidligereArbeidsforhold, String syntAmeldingUrlPath) {
+    public AmeldingHistorikkResponse synthesizeArbeidsforholdHistorikk(ArbeidsforholdAmelding tidligereArbeidsforhold, String syntAmeldingUrlPath) {
         try {
             startSyntApplication();
         } catch (ApiException e) {
-            return Collections.emptyList();
+            return new AmeldingHistorikkResponse();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            return Collections.emptyList();
+            return new AmeldingHistorikkResponse();
         }
 
         try {
