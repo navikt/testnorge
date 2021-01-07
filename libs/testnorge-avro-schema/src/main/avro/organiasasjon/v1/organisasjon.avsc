@@ -79,6 +79,13 @@
       ]
     },
     {
+      "name": "formaal",
+      "type": [
+        "Formaal",
+        "null"
+      ]
+    },
+    {
       "name": "knytning",
       "type": [
         "Knytning",

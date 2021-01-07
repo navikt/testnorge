@@ -21,6 +21,7 @@ import no.nav.registre.testnorge.organisasjonmottak.domain.Ansatte;
 import no.nav.registre.testnorge.organisasjonmottak.domain.DetaljertNavn;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Epost;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
+import no.nav.registre.testnorge.organisasjonmottak.domain.Formaal;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Forretningsadresse;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Internettadresse;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Knytning;
@@ -72,6 +73,7 @@ public class OrganaisjonMottakListener {
         Optional.of(organisasjon.getKnytning()).ifPresent(value -> list.add(new Knytning(value, organisasjon)));
         Optional.of(organisasjon.getForretningsadresse()).ifPresent(value -> list.add(new Forretningsadresse(value)));
         Optional.of(organisasjon.getPostadresse()).ifPresent(value -> list.add(new Postadresse(value)));
+        Optional.of(organisasjon.getFormaal()).ifPresent(value -> list.add(new Formaal(value)));
 
         var record = Record.create(
                 list.stream().map(ToLine::toLine).collect(Collectors.toList()),
