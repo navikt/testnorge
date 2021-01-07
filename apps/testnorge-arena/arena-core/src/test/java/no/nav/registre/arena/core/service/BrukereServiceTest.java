@@ -56,11 +56,9 @@ public class BrukereServiceTest {
     private List<String> toIdenterOverAlder;
     private List<String> hundreIdenterOverAlder;
 
-    private List<Arbeidsoeker> opprettedeArbeidsokere;
     private List<Arbeidsoeker> enNyArbeisoker;
-    private List<Arbeidsoeker> tyveNyeArbeidsokere;
-    private List<Arbeidsoeker> toEksisterendeArbeidsokere;
-    private List<Arbeidsoeker> femtenEksisterendeArbeidsokere;
+
+    private List<String> femtenFnr;
 
     private NyeBrukereResponse opprettedeArbeidsoekereResponse;
     private NyeBrukereResponse enNyArbeidsoekerResponse;
@@ -68,6 +66,7 @@ public class BrukereServiceTest {
 
     @Before
     public void setUp() {
+
         toIdenterOverAlder = new ArrayList<>(Arrays.asList(fnr1, fnr2));
         hundreIdenterOverAlder = new ArrayList<>(ANTALL_LEVENDE_IDENTER);
 
@@ -76,21 +75,17 @@ public class BrukereServiceTest {
         enNyArbeidsoekerResponse = new NyeBrukereResponse();
         enNyArbeidsoekerResponse.setArbeidsoekerList(enNyArbeisoker);
 
-        toEksisterendeArbeidsokere = Arrays.asList(
-                buildArbeidsoker(fnr1),
-                buildArbeidsoker(fnr3));
-
-        femtenEksisterendeArbeidsokere = new ArrayList<>(ANTALL_EKSISTERENDE_ARBEIDSSOKERE);
+        femtenFnr = new ArrayList<>();
         for (int i = 1; i < ANTALL_EKSISTERENDE_ARBEIDSSOKERE + 1; i++)
-            femtenEksisterendeArbeidsokere.add(buildArbeidsoker(buildFnr(i)));
+            femtenFnr.add(buildFnr(i));
 
-        opprettedeArbeidsokere = new ArrayList<>(ANTALL_OPPRETTEDE_ARBEIDSSOKERE);
+        List<Arbeidsoeker> opprettedeArbeidsokere = new ArrayList<>(ANTALL_OPPRETTEDE_ARBEIDSSOKERE);
         opprettedeArbeidsoekereResponse = new NyeBrukereResponse();
         for (int i = 1; i < ANTALL_OPPRETTEDE_ARBEIDSSOKERE + 1; i++)
             opprettedeArbeidsokere.add(buildArbeidsoker(buildFnr(i)));
         opprettedeArbeidsoekereResponse.setArbeidsoekerList(opprettedeArbeidsokere);
 
-        tyveNyeArbeidsokere = new ArrayList<>(21);
+        List<Arbeidsoeker> tyveNyeArbeidsokere = new ArrayList<>(21);
         tyveNyeArbeidsoekereResponse = new NyeBrukereResponse();
         for (int i = 1; i < 21; i++)
             tyveNyeArbeidsokere.add(buildArbeidsoker(buildFnr(i)));
@@ -124,7 +119,7 @@ public class BrukereServiceTest {
 
     private NyeBrukereResponse opprettIdenter(Integer antallNyeIdenter, String miljoe) {
         doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
-        doReturn(toEksisterendeArbeidsokere).when(brukereArenaForvalterConsumer).hentArbeidsoekere(null, null, null);
+        doReturn(toIdenterOverAlder).when(identerUtils).hentEksisterendeArbeidsoekerIdenter();
         doReturn(enNyArbeidsoekerResponse).when(brukereArenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
         return brukereService.opprettArbeidsoekere(antallNyeIdenter, avspillergruppeId, miljoe);
@@ -141,13 +136,13 @@ public class BrukereServiceTest {
     @Test
     public void fyllFraTomArenaForvalter() {
         doReturn(hundreIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
-        doReturn(Collections.EMPTY_LIST).when(brukereArenaForvalterConsumer).hentArbeidsoekere(null, null, null);
+        doReturn(Collections.EMPTY_LIST).when(identerUtils).hentEksisterendeArbeidsoekerIdenter();
         doReturn(tyveNyeArbeidsoekereResponse).when(brukereArenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
         NyeBrukereResponse arbeidsokere =
                 brukereService.opprettArbeidsoekere(null, avspillergruppeId, miljoe);
         assertThat(arbeidsokere.getArbeidsoekerList().size(), is(20));
-        assertThat(arbeidsokere.getArbeidsoekerList().get(0).getPersonident(), is("10101010101"));
+        assertThat(arbeidsokere.getArbeidsoekerList().get(0).getPersonident(), is(fnr1));
         assertThat(arbeidsokere.getArbeidsoekerList().get(4).getPersonident(), is("50505050505"));
 
     }
@@ -171,21 +166,21 @@ public class BrukereServiceTest {
     @Test
     public void fyllOppForvalterenTest() {
         doReturn(hundreIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
-        doReturn(femtenEksisterendeArbeidsokere).when(brukereArenaForvalterConsumer).hentArbeidsoekere(null, null, null);
+        doReturn(femtenFnr).when(identerUtils).hentEksisterendeArbeidsoekerIdenter();
         doReturn(opprettedeArbeidsoekereResponse).when(brukereArenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
         NyeBrukereResponse arbeidsokere =
                 brukereService.opprettArbeidsoekere(null, avspillergruppeId, miljoe);
 
         assertThat(arbeidsokere.getArbeidsoekerList().size(), is(5));
-        assertThat(arbeidsokere.getArbeidsoekerList().get(2).getPersonident(), is("30303030303"));
+        assertThat(arbeidsokere.getArbeidsoekerList().get(2).getPersonident(), is(fnr3));
         assertThat(arbeidsokere.getArbeidsoekerList().get(3).getPersonident(), is("40404040404"));
     }
 
     @Test
     public void opprettArbeidssoekerTest() {
         doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
-        doReturn(Collections.EMPTY_LIST).when(brukereArenaForvalterConsumer).hentArbeidsoekere(null, null, null);
+        doReturn(Collections.emptyList()).when(identerUtils).hentEksisterendeArbeidsoekerIdenter();
         doReturn(enNyArbeidsoekerResponse).when(brukereArenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
         NyeBrukereResponse arbeidsoeker = brukereService.opprettArbeidssoeker(fnr2, avspillergruppeId, miljoe);
@@ -197,7 +192,7 @@ public class BrukereServiceTest {
     @Test
     public void opprettEksisterendeArbeidssoekerTest() {
         doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
-        doReturn(Collections.singletonList(enNyArbeisoker.get(0).getPersonident())).when(identerUtils).hentEksisterendeArbeidsoekerIdenter();
+        doReturn(Collections.singletonList(fnr2)).when(identerUtils).hentEksisterendeArbeidsoekerIdenter();
         doReturn(enNyArbeisoker).when(brukereArenaForvalterConsumer).hentArbeidsoekere(anyString(), eq(null), eq(null));
 
         NyeBrukereResponse arbeidsoeker = brukereService.opprettArbeidssoeker(fnr2, avspillergruppeId, miljoe);
@@ -209,7 +204,7 @@ public class BrukereServiceTest {
     @Test
     public void opprettIkkeEksisterendeIdentTest() {
         doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
-        doReturn(Collections.EMPTY_LIST).when(brukereArenaForvalterConsumer).hentArbeidsoekere(null, null, null);
+        doReturn(Collections.emptyList()).when(identerUtils).hentEksisterendeArbeidsoekerIdenter();
 
         NyeBrukereResponse arbeidsoeker = brukereService.opprettArbeidssoeker(fnr3, avspillergruppeId, miljoe);
 
