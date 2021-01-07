@@ -2,6 +2,11 @@ package no.nav.registre.aareg.provider.rs;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import no.nav.registre.aareg.consumer.rs.MiljoerConsumer;
+import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
+import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
+import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
+import no.nav.registre.aareg.service.AaregService;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import no.nav.registre.aareg.consumer.rs.TpsfConsumer;
-import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
-import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
-import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
-import no.nav.registre.aareg.service.AaregService;
-
 @RestController
 @CrossOrigin
 @RequestMapping("api/v1/arbeidsforhold")
@@ -32,7 +31,7 @@ import no.nav.registre.aareg.service.AaregService;
 public class ArbeidsforholdController {
 
     private final AaregService aaregService;
-    private final TpsfConsumer tpsfConsumer;
+    private final MiljoerConsumer miljoerConsumer;
 
     @PostMapping
     @ApiOperation(value = "Legg arbeidsforhold inn i aareg.")
@@ -67,6 +66,7 @@ public class ArbeidsforholdController {
             @RequestParam String ident,
             @RequestParam String miljoe
     ) {
+        System.out.println(miljoerConsumer.hentMiljoer()); //TODO FJERNE
         return aaregService.hentArbeidsforhold(ident, miljoe);
     }
 
@@ -80,7 +80,7 @@ public class ArbeidsforholdController {
             @RequestParam(required = false, defaultValue = "") List<String> miljoer
     ) {
         if (miljoer == null || miljoer.isEmpty()) {
-            miljoer = tpsfConsumer.hentMiljoer().getEnvironments();
+            miljoer = miljoerConsumer.hentMiljoer().getEnvironments();
         }
         return aaregService.slettArbeidsforhold(ident, miljoer, navCallId);
     }

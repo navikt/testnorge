@@ -18,9 +18,11 @@ dependencies {
     implementation 'com.sun.xml.ws:jaxws-ri:2.3.3'
     implementation project(':testnorge-core')
     implementation project(':testnorge-dependency-analysis')
+    implementation project(':testnorge-oauth2')
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:2.2.5.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-actuator:2.3.4.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.2'
     implementation 'org.aspectj:aspectjweaver:1.9.6'
