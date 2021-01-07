@@ -1,33 +1,16 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-public class Ansatte extends ToFlatfil {
+public class Ansatte extends ToLine {
     private final boolean ansatte;
 
-    public Ansatte(no.nav.registre.testnorge.libs.avro.organisasjon.Ansatte ansatte) {
-        super(ansatte.getMetadata());
+    public Ansatte(no.nav.registre.testnorge.libs.avro.organisasjon.v1.Ansatte ansatte) {
         this.ansatte = ansatte.getHarAnsatte();
     }
 
     @Override
-    public boolean isUpdate() {
-        return true;
-    }
-
-
-    private String toRecordLine() {
-        return LineBuilder
+    FlatfilValueBuilder builder() {
+        return FlatfilValueBuilder
                 .newBuilder("MÅL", 9)
-                .setLine(8, ansatte ? "J" : "N")
-                .toString();
-    }
-
-    @Override
-    public Flatfil toFlatfil() {
-        Flatfil flatfil = new Flatfil();
-        Record record = new Record();
-        record.append(createEHN());
-        record.append(toRecordLine());
-        flatfil.add(record);
-        return flatfil;
+                .append(8, ansatte ? "J" : "N");
     }
 }

@@ -22,6 +22,9 @@
                 <charset>utf8</charset>
             </encoder>
         </appender>
+        <logger name="no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService">
+            <level value="ERROR"/>
+        </logger>
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
         </root>

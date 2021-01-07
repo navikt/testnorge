@@ -35,8 +35,11 @@ public class OppsummeringsdokumentetModel {
     @Column(name = "ORGNUMMER", nullable = false, updatable = false)
     private String orgnummer;
 
-    @Column(name = "RAPPORTERINGSMAANED", nullable = false, updatable = false)
-    private String rapporteringsmaaned;
+    @Column(name = "YEAR", nullable = false, updatable = false)
+    private Integer year;
+
+    @Column(name = "MONTH", nullable = false, updatable = false)
+    private Integer month;
 
     @Column(name = "VERSION", nullable = false, updatable = false)
     private Long version;

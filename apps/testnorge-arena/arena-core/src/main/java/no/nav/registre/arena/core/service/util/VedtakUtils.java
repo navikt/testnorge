@@ -196,15 +196,10 @@ public class VedtakUtils {
 
         List<NyttVedtakTiltak> nyeVedtak = new ArrayList<>();
 
-        List<NyttVedtak> vedtakToCompare = new ArrayList<>();
-        if (relatedVedtak != null && !relatedVedtak.isEmpty()) {
-            vedtakToCompare.addAll(relatedVedtak);
-        }
-
         for (var vedtak : vedtaksliste) {
-            if (nyeVedtak.isEmpty() || (!harOverlappendeVedtak(vedtak, vedtakToCompare))) {
+            if (nyeVedtak.isEmpty() || ((!harOverlappendeVedtak(vedtak, relatedVedtak)) &&
+                    !harOverlappendeTiltakOver100Prosent(vedtak, nyeVedtak))) {
                 nyeVedtak.add(vedtak);
-                vedtakToCompare.add(vedtak);
             }
         }
 
@@ -237,6 +232,9 @@ public class VedtakUtils {
     }
 
     private boolean harOverlappendeVedtak(NyttVedtakTiltak vedtak, List<? extends NyttVedtak> vedtaksliste) {
+        if (vedtaksliste == null || vedtaksliste.isEmpty()){
+            return false;
+        }
         var fraDato = vedtak.getFraDato();
         var tilDato = vedtak.getTilDato();
 
@@ -250,6 +248,33 @@ public class VedtakUtils {
 
             if (datoerOverlapper(fraDato, tilDato, fraDatoItem, tilDatoItem)) {
                 return true;
+            }
+        }
+        return false;
+    }
+
+
+    private boolean harOverlappendeTiltakOver100Prosent(
+            NyttVedtakTiltak vedtak,
+            List<NyttVedtakTiltak> vedtaksliste
+    ) {
+        var prosent = vedtak.getTiltakProsentDeltid();
+        var fraDato = vedtak.getFraDato();
+        var tilDato = vedtak.getTilDato();
+
+        if (fraDato == null) {
+            return false;
+        }
+
+        for (var item : vedtaksliste) {
+            var fraDatoItem = item.getFraDato();
+            var tilDatoItem = item.getTilDato();
+
+            if (datoerOverlapper(fraDato, tilDato, fraDatoItem, tilDatoItem)) {
+                prosent += item.getTiltakProsentDeltid();
+                if (prosent > 100) {
+                    return true;
+                }
             }
         }
         return false;
@@ -284,7 +309,7 @@ public class VedtakUtils {
             }
             sequence.add(tiltak);
         }
-        if (!sequence.isEmpty()){
+        if (!sequence.isEmpty()) {
             vedtakSequences.add(sequence);
         }
 

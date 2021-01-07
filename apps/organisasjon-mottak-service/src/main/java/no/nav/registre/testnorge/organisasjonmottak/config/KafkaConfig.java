@@ -4,6 +4,7 @@ import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.config.SaslConfigs;
@@ -15,7 +16,9 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.util.backoff.FixedBackOff;
 
 import java.io.File;
 import java.net.InetSocketAddress;
@@ -24,6 +27,7 @@ import java.util.Map;
 
 import no.nav.registre.testnorge.libs.kafkaconfig.config.KafkaProperties;
 
+@Slf4j
 @EnableKafka
 @Component
 @Profile("prod")
@@ -63,6 +67,10 @@ public class KafkaConfig {
         ConcurrentKafkaListenerContainerFactory<String, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
+        factory.setErrorHandler(new SeekToCurrentErrorHandler(
+                (consumer, exception) -> log.error("Klarer ikke å opprette bestilling med uuid: {}", consumer.key()),
+                new FixedBackOff(30 * 1000, 3)
+        ));
         return factory;
     }
 }

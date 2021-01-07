@@ -16,5 +16,10 @@ applications:
   testnorge-person-api-dev: 51ec8e6e-20a1-4b8f-b66a-66dd6a9b00b9
   endringsmelding-service: 7f00fa49-869e-4a1a-b4a0-e0c1d556dc38
   generer-navn-service: 92e61fa8-6fca-48e2-87b9-29d8bb6cf850
-  organisasjon-forvalter: 80f07134-375b-4df8-be48-2ba877774c6c
+  organisasjon-bestilling-service: 213b750d-7a71-40bb-ada6-81530e61dcd5
   ereg-batch-status-service: 67f507ff-399c-4853-9eb3-3dc6aabc8289
+  organisasjon-forvalter: 80f07134-375b-4df8-be48-2ba877774c6c
+  testnorge-arbeidsforhold-api: 1b2f24c8-a426-47b1-8ff1-7905d6dfddb5
+  organisasjon-mottak-service: 9da0741a-ff41-4046-8635-6742298d74a4
+  jenkins-batch-status-service: 34c2e87a-0711-4ef1-b644-55d86a375e7a
+  miljoer-service: 30003084-1585-4629-a017-686b4387b12e

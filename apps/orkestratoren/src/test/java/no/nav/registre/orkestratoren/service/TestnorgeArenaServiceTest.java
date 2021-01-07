@@ -38,11 +38,23 @@ public class TestnorgeArenaServiceTest {
     public void shouldOppretteArbeidssokereIArena() {
         var syntetiserArenaRequest = new SyntetiserArenaRequest(avspillergruppeId, miljoe, antallNyeIdenter);
 
-        when(testnorgeArenaConsumer.opprettArbeidsoekere(syntetiserArenaRequest)).thenReturn(expectedIdenter);
+        when(testnorgeArenaConsumer.opprettArbeidsoekere(syntetiserArenaRequest, false)).thenReturn(expectedIdenter);
 
-        var response = testnorgeArenaService.opprettArbeidssokereIArena(syntetiserArenaRequest);
+        var response = testnorgeArenaService.opprettArbeidssokereIArena(syntetiserArenaRequest, false);
 
         assertThat(response, IsIterableContainingInOrder.contains(fnr1, fnr2));
-        verify(testnorgeArenaConsumer).opprettArbeidsoekere(syntetiserArenaRequest);
+        verify(testnorgeArenaConsumer).opprettArbeidsoekere(syntetiserArenaRequest, false);
+    }
+
+    @Test
+    public void shouldOppretteArbeidssokereMedOppfoelgingIArena() {
+        var syntetiserArenaRequest = new SyntetiserArenaRequest(avspillergruppeId, miljoe, antallNyeIdenter);
+
+        when(testnorgeArenaConsumer.opprettArbeidsoekere(syntetiserArenaRequest, true)).thenReturn(expectedIdenter);
+
+        var response = testnorgeArenaService.opprettArbeidssokereIArena(syntetiserArenaRequest, true);
+
+        assertThat(response, IsIterableContainingInOrder.contains(fnr1, fnr2));
+        verify(testnorgeArenaConsumer).opprettArbeidsoekere(syntetiserArenaRequest, true);
     }
 }

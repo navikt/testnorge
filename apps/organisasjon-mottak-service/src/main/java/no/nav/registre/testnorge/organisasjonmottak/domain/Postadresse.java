@@ -2,9 +2,8 @@ package no.nav.registre.testnorge.organisasjonmottak.domain;
 
 public class Postadresse extends Adresse {
 
-    public Postadresse(no.nav.registre.testnorge.libs.avro.organisasjon.Postadresse postadresse) {
+    public Postadresse(no.nav.registre.testnorge.libs.avro.organisasjon.v1.Adresse postadresse) {
         super(
-                postadresse.getMetadata(),
                 postadresse.getPostnummer(),
                 postadresse.getLandkode(),
                 postadresse.getKommunenummer(),
@@ -21,4 +20,5 @@ public class Postadresse extends Adresse {
     public String getFelttype() {
         return "PADR";
     }
+
 }

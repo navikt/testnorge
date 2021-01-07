@@ -114,6 +114,22 @@ Kjør så ApplicationStarter med følgende argumenter:
  - -Dspring.profiles.active=dev
  - -DGITHUB_USERNAME=[github brukernavn, kan finnes i syntrest secrets i vault]
  - -DGITHUB_PASSWORD=[github passord, kan finnes i syntrest secrets i vault]
+ 
+Hvis ApplicationStarter ikke vil kjøre sjekk at du fremdeles har gyldig Kubectl token (`kubectl get pods` kommando fungerer lokalt.)
+
+### Image tag - Deploye synt-applikasjoner lokalt
+Når syntrest kjøres lokalt så klarer den ikke alltid å hente korrekt/siste image tag fra github for synt-applikasjon som skal deployes. 
+En manuell fiks for dette er å gå til [packages](https://github.com/orgs/navikt/packages?repo_name=testnorge-syntetiseringspakker) og hente siste versjon for ønsket 
+applikasjon og bytte ut `latest` med denne versjonen i image-delen i relevant nais.yaml (resources/nais/{app-name}.yaml). Deretter må følgende kode kommenteres ut i 
+`KubernetesController` `prepareYaml`-metode:
+```
+Map<String, Object> spec = (Map) manifestFile.get("spec");
+String imageBase = spec.get("image").toString();
+String latestImage = imageBase.replace("latest", getApplicationTag(appName).orElse("latest"));
+spec.put("image", latestImage);
+```
+
+NB: Pass på at denne manuelle fiksen ikke pushes til master.
 
 ## Kubeconfig
 I vault er det lagret en kubeconfig fil som syntrest bruker til å kunne deploye/shutdown appene. Hvis denne filen må 

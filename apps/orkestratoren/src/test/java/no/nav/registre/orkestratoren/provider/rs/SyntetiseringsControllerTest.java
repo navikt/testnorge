@@ -197,7 +197,15 @@ public class SyntetiseringsControllerTest {
         var syntetiserArenaRequest = new SyntetiserArenaRequest(avspillergruppeId, miljoe, 2);
         syntetiseringsController.opprettArbeidssoekereIArena(syntetiserArenaRequest);
 
-        verify(testnorgeArenaService).opprettArbeidssokereIArena(syntetiserArenaRequest);
+        verify(testnorgeArenaService).opprettArbeidssokereIArena(syntetiserArenaRequest, false);
+    }
+
+    @Test
+    public void shouldOppretteArbeidssoekereMedOppfoelgingIArena() {
+        var syntetiserArenaRequest = new SyntetiserArenaRequest(avspillergruppeId, miljoe, 2);
+        syntetiseringsController.opprettArbeidssoekereMedOppfoelgingIArena(syntetiserArenaRequest);
+
+        verify(testnorgeArenaService).opprettArbeidssokereIArena(syntetiserArenaRequest, true);
     }
 
     @Test

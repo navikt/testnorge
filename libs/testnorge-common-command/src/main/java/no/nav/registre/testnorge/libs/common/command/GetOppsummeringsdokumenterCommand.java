@@ -27,7 +27,7 @@ public class GetOppsummeringsdokumenterCommand implements Callable<List<Oppsumme
     @SneakyThrows
     @Override
     public List<OppsummeringsdokumentetDTO> call() {
-        log.info("Henter alle oppsummeringsdokumenter.");
+        log.info("Henter alle oppsummeringsdokumenter i {}...", miljo);
         try {
             OppsummeringsdokumentetDTO[] array = webClient
                     .get()
@@ -40,7 +40,9 @@ public class GetOppsummeringsdokumenterCommand implements Callable<List<Oppsumme
                     .retrieve()
                     .bodyToMono(OppsummeringsdokumentetDTO[].class)
                     .block();
-            return Arrays.stream(array).collect(Collectors.toList());
+            var list = Arrays.stream(array).collect(Collectors.toList());
+            log.info("Fant {} dokumenter i {}.", list.size(), miljo);
+            return list;
         } catch (WebClientResponseException.NotFound e) {
             return null;
         }

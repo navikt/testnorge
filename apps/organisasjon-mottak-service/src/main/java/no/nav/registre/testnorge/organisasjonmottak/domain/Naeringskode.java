@@ -1,14 +1,14 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
+
 import java.time.LocalDate;
 
-public class Naeringskode extends ToFlatfil {
+public class Naeringskode extends ToLine {
     private final String kode;
     private final LocalDate gyldighetsdato;
     private final boolean hjelpeenhet;
 
-    public Naeringskode(no.nav.registre.testnorge.libs.avro.organisasjon.Naeringskode naeringskode) {
-        super(naeringskode.getMetadata());
+    public Naeringskode( no.nav.registre.testnorge.libs.avro.organisasjon.v1.Naeringskode naeringskode) {
         this.kode = naeringskode.getKode();
         this.gyldighetsdato = LocalDate.of(
                 naeringskode.getGyldighetsdato().getAar(),
@@ -18,27 +18,13 @@ public class Naeringskode extends ToFlatfil {
         this.hjelpeenhet = naeringskode.getHjelpeenhet();
     }
 
-    private String toRecordLine() {
-        return LineBuilder
+    @Override
+    FlatfilValueBuilder builder() {
+        return FlatfilValueBuilder
                 .newBuilder("NACE", 23)
-                .setLine(8, kode)
-                .setLine(14, formattedDate(gyldighetsdato))
-                .setLine(22, hjelpeenhet ? "J" : "N")
-                .toString();
+                .append(8, kode)
+                .append(14, getDateFormatted(gyldighetsdato))
+                .append(22, hjelpeenhet ? "J" : "N");
     }
 
-    @Override
-    public boolean isUpdate() {
-        return true;
-    }
-
-    @Override
-    public Flatfil toFlatfil() {
-        Flatfil flatfil = new Flatfil();
-        Record record = new Record();
-        record.append(createEHN());
-        record.append(toRecordLine());
-        flatfil.add(record);
-        return flatfil;
-    }
 }

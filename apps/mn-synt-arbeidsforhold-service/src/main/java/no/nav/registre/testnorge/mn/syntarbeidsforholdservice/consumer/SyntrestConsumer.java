@@ -12,14 +12,18 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.adapter.ArbeidsforholdHistorikkAdapter;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.SyntetiseringProperties;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GenerateArbeidsforholdHistorikkCommand;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GenerateNextArbeidsforholdCommand;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GenerateNextArbeidsforholdWithHistorikkCommand;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GenerateStartArbeidsforholdCommand;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Arbeidsforhold;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.exception.SyntetiseringException;
 
 @Slf4j
 @Component
@@ -29,6 +33,7 @@ public class SyntrestConsumer {
     private final ArbeidsforholdHistorikkAdapter adapter;
     private final SyntetiseringProperties properties;
 
+    private static final String OPPRETTELSE_FEILMELDING = "Feil med opprettelse av arbeidsforhold: ";
 
     public SyntrestConsumer(
             @Value("${consumers.syntrest.url}") String url,
@@ -53,42 +58,71 @@ public class SyntrestConsumer {
                 .build();
     }
 
-
     @SneakyThrows
-    public ArbeidsforholdResponse getNesteArbeidsforholdResponse(Arbeidsforhold arbeidsforhold, LocalDate kaldermaaned) {
-        var dto = arbeidsforhold.toSyntrestDTO(kaldermaaned);
+    private ArbeidsforholdResponse getNesteArbeidsforholdResponse(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned) {
+        var dto = arbeidsforhold.toSyntrestDTO(kalendermaaned);
         try {
             return new GenerateNextArbeidsforholdCommand(webClient, dto).call();
         } catch (WebClientResponseException.InternalServerError e) {
-            throw new RuntimeException("Feil med opprettelse av arbeidsforhold: " + objectMapper.writeValueAsString(dto), e);
+            throw new SyntetiseringException(OPPRETTELSE_FEILMELDING + objectMapper.writeValueAsString(dto), e);
         }
     }
 
     @SneakyThrows
-    public ArbeidsforholdResponse getNesteArbeidsforholdWithHistorikkResponse(Arbeidsforhold arbeidsforhold, LocalDate kaldermaaned) {
+    private List<ArbeidsforholdResponse> getArbeidsforholdHistorikkResponse(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned) {
+        var dto = arbeidsforhold.toSyntrestDTO(kalendermaaned);
+        try {
+            return new GenerateArbeidsforholdHistorikkCommand(webClient, dto).call();
+        } catch (WebClientResponseException.InternalServerError e) {
+            throw new SyntetiseringException(OPPRETTELSE_FEILMELDING + objectMapper.writeValueAsString(dto), e);
+        }
+    }
+
+    @SneakyThrows
+    private ArbeidsforholdResponse getNesteArbeidsforholdWithHistorikkResponse(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned) {
         String historikk = adapter.get(arbeidsforhold.getArbeidsforholdId()).getHistorikk();
-        var dto = arbeidsforhold.toSyntrestDTO(kaldermaaned, historikk);
+        var dto = arbeidsforhold.toSyntrestDTO(kalendermaaned, historikk);
         try {
             ArbeidsforholdResponse response = new GenerateNextArbeidsforholdWithHistorikkCommand(webClient, dto).call();
             adapter.save(arbeidsforhold.getArbeidsforholdId(), response.getHistorikk());
             return response;
         } catch (WebClientResponseException.InternalServerError e) {
-            throw new RuntimeException("Feil med opprettelse av arbeidsforhold: " + objectMapper.writeValueAsString(dto), e);
+            throw new SyntetiseringException(OPPRETTELSE_FEILMELDING + objectMapper.writeValueAsString(dto), e);
         }
     }
 
     @SneakyThrows
-    public Arbeidsforhold getNesteArbeidsforhold(Arbeidsforhold arbeidsforhold, LocalDate kaldermaaned) {
-        log.info("Finner neste arbeidsforhold den {}.", kaldermaaned.plusMonths(1));
+    public Arbeidsforhold getNesteArbeidsforhold(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned) {
+        log.info("Finner neste arbeidsforhold den {}.", kalendermaaned.plusMonths(1));
         ArbeidsforholdResponse response = properties.isSaveHistory()
-                ? getNesteArbeidsforholdWithHistorikkResponse(arbeidsforhold, kaldermaaned)
-                : getNesteArbeidsforholdResponse(arbeidsforhold, kaldermaaned);
+                ? getNesteArbeidsforholdWithHistorikkResponse(arbeidsforhold, kalendermaaned)
+                : getNesteArbeidsforholdResponse(arbeidsforhold, kalendermaaned);
         return new Arbeidsforhold(
                 response,
                 arbeidsforhold.getIdent(),
                 arbeidsforhold.getArbeidsforholdId(),
-                arbeidsforhold.getVirksomhentsnummer()
+                arbeidsforhold.getVirksomhetsnummer()
         );
+    }
+
+    @SneakyThrows
+    public List<Arbeidsforhold> getArbeidsforholdHistorikk(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned) {
+        log.info("Finner arbeidsforhold historikk fra og med {}.", kalendermaaned.plusMonths(1));
+        List<ArbeidsforholdResponse> response = getArbeidsforholdHistorikkResponse(arbeidsforhold, kalendermaaned);
+        log.info("Fant historikk for {} måneder.", response.size());
+
+        var list = response.stream().map(res -> new Arbeidsforhold(
+                res,
+                arbeidsforhold.getIdent(),
+                arbeidsforhold.getArbeidsforholdId(),
+                arbeidsforhold.getVirksomhetsnummer()))
+                .collect(Collectors.toList());
+
+        list.stream()
+                .filter(value -> value.getSluttdato() != null)
+                .filter(value -> value.getStartdato().isAfter(value.getSluttdato()))
+                .forEach(value -> log.warn("Sluttdato er før start dato (ident={}).", value.getIdent()));
+        return list;
     }
 
     public Arbeidsforhold getFirstArbeidsforhold(LocalDate startdato, String ident, String virksomhetsnummer) {
@@ -97,7 +131,7 @@ public class SyntrestConsumer {
             ArbeidsforholdResponse response = new GenerateStartArbeidsforholdCommand(webClient, startdato).call();
             return new Arbeidsforhold(response, ident, virksomhetsnummer);
         } catch (WebClientResponseException.InternalServerError e) {
-            throw new RuntimeException("Feil med start av arbeidsforhold for dato: " + startdato, e);
+            throw new SyntetiseringException("Feil med start av arbeidsforhold for dato: " + startdato, e);
         }
     }
 }

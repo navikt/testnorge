@@ -75,6 +75,15 @@ public class AccessTokenService {
         return generateOnBehalfOfAccessToken(accessScopes);
     }
 
+    /**
+     * Skal kun brukes av operasjoner startet av batcher/kafka.
+     *
+     * @param clientId appen som skal kontaktes
+     * @return access token som tilsvarer appen som skal kontaktes.
+     */
+    public AccessToken generateClientCredentialAccessToken(String clientId) {
+        return generateClientCredentialAccessToken(new AccessScopes("api://" + clientId + "/.default"));
+    }
 
     private AccessToken generateClientCredentialAccessToken(AccessScopes accessScopes) {
         log.trace("Henter OAuth2 access token fra client credential...");

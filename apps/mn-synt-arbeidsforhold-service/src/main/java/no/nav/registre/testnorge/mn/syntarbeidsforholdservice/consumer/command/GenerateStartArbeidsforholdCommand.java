@@ -32,6 +32,11 @@ public class GenerateStartArbeidsforholdCommand implements Callable<Arbeidsforho
                 .retrieve()
                 .bodyToMono(ArbeidsforholdResponse[].class)
                 .block();
+
+        if(array == null || array.length < 1){
+            throw new RuntimeException("Fikk ikke generert start arbeidsforhold for dato " + startdate.toString());
+        }
+
         return array[0];
     }
 }

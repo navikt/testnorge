@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,10 @@ public class SyntConsumer {
 
     final ApplicationManager applicationManager;
     final String appName;
+
+    @Value("${synth-package-unused-uptime}")
+    private long shutdownTimeDelaySeconds;
+
     @Autowired
     private RestTemplate restTemplate;
 
@@ -53,12 +58,12 @@ public class SyntConsumer {
             log.error("Unexpected Rest Client Exception: {}", Arrays.toString(e.getStackTrace()));
             throw e;
         } finally {
-            scheduleShutdown();
+            scheduleShutdown(shutdownTimeDelaySeconds);
         }
     }
 
-    synchronized void scheduleShutdown() {
-        applicationManager.scheduleShutdown(this);
+    synchronized void scheduleShutdown(long shutdownTimeDelaySeconds) {
+        applicationManager.scheduleShutdown(this, shutdownTimeDelaySeconds);
     }
 
     public synchronized void shutdownApplication() {

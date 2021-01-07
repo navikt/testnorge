@@ -1,9 +1,10 @@
 package no.nav.registre.aareg.consumer.ws;
 
-import static java.util.Objects.isNull;
-
 import lombok.RequiredArgsConstructor;
-
+import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.aareg.cxf.TimeoutFeature;
+import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
+import no.nav.registre.aareg.security.sts.StsSamlTokenService;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.BehandleArbeidsforholdPortType;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
@@ -15,13 +16,12 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import no.nav.registre.aareg.cxf.TimeoutFeature;
-import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
-import no.nav.registre.aareg.security.sts.StsSamlTokenService;
+import static java.util.Objects.isNull;
 
 @Component
 @RequiredArgsConstructor
 @DependencyOn(value = "aareg-ws", external = true)
+@Slf4j
 public class BehandleArbeidsforholdV1Proxy {
 
     private static final int DEFAULT_TIMEOUT = 5_000;
@@ -31,16 +31,17 @@ public class BehandleArbeidsforholdV1Proxy {
     private static final QName BEHANDLE_ARBEIDSFORHOLD_V1 = new QName(NAMESPACE, "BehandleArbeidsforhold_v1");
 
     private final StsSamlTokenService stsSamlTokenService;
-    private final AaregBehandleArbeidsforholdFasitConsumer behandleArbeidsforholdFasitConsumer;
+    private final AaregBehandleArbeidsforhold aaregBehandleArbeidsforhold;
 
     private final Map<String, BehandleArbeidsforholdPortType> wsServiceByEnvironment = new HashMap<>();
     private LocalDateTime expiry;
 
     public BehandleArbeidsforholdPortType getServiceByEnvironment(String environment) {
+        log.info("Ser etter service i miljo: " + environment);
         if (hasExpired()) {
             synchronized (this) {
                 if (hasExpired()) {
-                    var urlByEnvironment = behandleArbeidsforholdFasitConsumer.fetchWsUrlsAllEnvironments();
+                    var urlByEnvironment = aaregBehandleArbeidsforhold.fetchWsUrlsAllEnvironments();
                     urlByEnvironment.forEach((env, url) -> wsServiceByEnvironment.put(env, createBehandleArbeidsforholdPortType(env, url)));
                     expiry = LocalDateTime.now().plusHours(4);
                 }

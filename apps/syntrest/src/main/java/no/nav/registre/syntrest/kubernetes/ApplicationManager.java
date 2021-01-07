@@ -3,8 +3,8 @@ package no.nav.registre.syntrest.kubernetes;
 import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.SyntConsumer;
+
 import org.apache.commons.lang.time.DateUtils;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Date;
 import java.util.Map;
@@ -12,7 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
 
 /**
  * Manages lifecycle of the app. Abstracts away the call to the KubernetesController.
@@ -29,8 +28,7 @@ public class ApplicationManager {
 
     private final KubernetesController kubernetesController;
     private final ScheduledExecutorService scheduledExecutorService;
-    @Value("${synth-package-unused-uptime}")
-    private long SHUTDOWN_TIME_DELAY_SECONDS;
+
     private Map<String, ScheduledFuture<?>> activeApplications;
 
     public ApplicationManager(KubernetesController kubernetesController, ScheduledExecutorService scheduledExecutorService) {
@@ -50,13 +48,13 @@ public class ApplicationManager {
         }
     }
 
-    public synchronized void scheduleShutdown(SyntConsumer app) {
+    public synchronized void scheduleShutdown(SyntConsumer app, long shutdownTimeDelaySeconds) {
         log.info("Scheduling shutdown for \'{}\' at {}.",
                 app.getAppName(),
-                DateUtils.addSeconds(new Date(), (int) SHUTDOWN_TIME_DELAY_SECONDS));
+                DateUtils.addSeconds(new Date(), (int) shutdownTimeDelaySeconds));
         activeApplications.put(
                 app.getAppName(),
-                scheduledExecutorService.schedule(app::shutdownApplication, SHUTDOWN_TIME_DELAY_SECONDS, TimeUnit.SECONDS));
+                scheduledExecutorService.schedule(app::shutdownApplication, shutdownTimeDelaySeconds, TimeUnit.SECONDS));
     }
 
     public void shutdownApplication(String appId) {

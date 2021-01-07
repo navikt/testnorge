@@ -14,23 +14,23 @@ import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdWithHistorik
 @Slf4j
 public class Arbeidsforhold {
 
-    public Arbeidsforhold(ArbeidsforholdDTO dto, String ident, String virksomhentsnummer) {
+    public Arbeidsforhold(ArbeidsforholdDTO dto, String ident, String virksomhetsnummer) {
         this.dto = dto;
         this.ident = ident;
-        this.virksomhentsnummer = virksomhentsnummer;
+        this.virksomhetsnummer = virksomhetsnummer;
     }
 
     private final ArbeidsforholdDTO dto;
     private final String ident;
-    private String virksomhentsnummer;
+    private String virksomhetsnummer;
 
     public Arbeidsforhold(
             ArbeidsforholdResponse response,
             String ident,
             String arbeidsforholdId,
-            String virksomhentsnummer
+            String virksomhetsnummer
     ) {
-        this.virksomhentsnummer = virksomhentsnummer;
+        this.virksomhetsnummer = virksomhetsnummer;
         this.ident = ident;
         this.dto = ArbeidsforholdDTO
                 .builder()
@@ -49,17 +49,17 @@ public class Arbeidsforhold {
     public Arbeidsforhold(
             ArbeidsforholdResponse response,
             String ident,
-            String virksomhentsnummer
+            String virksomhetsnummer
     ) {
-        this(response, ident, UUID.randomUUID().toString(), virksomhentsnummer);
+        this(response, ident, UUID.randomUUID().toString(), virksomhetsnummer);
     }
 
-    public String getVirksomhentsnummer() {
-        return virksomhentsnummer;
+    public String getVirksomhetsnummer() {
+        return virksomhetsnummer;
     }
 
-    public void setVirksomhentsnummer(String virksomhentsnummer) {
-        this.virksomhentsnummer = virksomhentsnummer;
+    public void setVirksomhetsnummer(String virksomhetsnummer) {
+        this.virksomhetsnummer = virksomhetsnummer;
     }
 
     public String getIdent() {
@@ -76,6 +76,10 @@ public class Arbeidsforhold {
 
     public LocalDate getSluttdato() {
         return dto.getSluttdato();
+    }
+
+    public LocalDate getStartdato() {
+        return dto.getStartdato();
     }
 
     public ArbeidsforholdRequest toSyntrestDTO(LocalDate kaldermaaned) {
