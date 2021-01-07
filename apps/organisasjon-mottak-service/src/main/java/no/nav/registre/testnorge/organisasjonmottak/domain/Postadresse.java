@@ -2,9 +2,8 @@ package no.nav.registre.testnorge.organisasjonmottak.domain;
 
 public class Postadresse extends Adresse {
 
-    public Postadresse(String uuid, no.nav.registre.testnorge.libs.avro.organisasjon.Postadresse postadresse) {
+    public Postadresse(no.nav.registre.testnorge.libs.avro.organisasjon.v1.Adresse postadresse) {
         super(
-                postadresse.getMetadata(),
                 postadresse.getPostnummer(),
                 postadresse.getLandkode(),
                 postadresse.getKommunenummer(),
@@ -13,8 +12,7 @@ public class Postadresse extends Adresse {
                 postadresse.getPostadresse2(),
                 postadresse.getPostadresse3(),
                 postadresse.getLinjenummer(),
-                postadresse.getVegadresseId(),
-                uuid
+                postadresse.getVegadresseId()
         );
     }
 

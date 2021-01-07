@@ -3,15 +3,14 @@ package no.nav.registre.testnorge.organisasjonmottak.domain;
 public class Internettadresse extends ToLine {
     private final String internettadresse;
 
-    public Internettadresse(String uuid, no.nav.registre.testnorge.libs.avro.organisasjon.Internettadresse internettadresse) {
-        super(internettadresse.getMetadata(), uuid);
+    public Internettadresse(no.nav.registre.testnorge.libs.avro.organisasjon.v1.Internettadresse internettadresse) {
         this.internettadresse = internettadresse.getInternettadresse();
     }
 
     @Override
-    ValueBuilder builder() {
-        return ValueBuilder
+    FlatfilValueBuilder builder() {
+        return FlatfilValueBuilder
                 .newBuilder("IADR", 158)
-                .setLine(8, internettadresse);
+                .append(8, internettadresse);
     }
 }

@@ -3,11 +3,16 @@ package no.nav.registre.testnorge.organisasjonmottak.domain;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Flatfil {
 
     private final List<Record> records = new ArrayList<>();
+
+    public static Flatfil create(Record... records) {
+        return create(Arrays.asList(records));
+    }
 
     public static Flatfil create(List<Record> records) {
         Flatfil flatfil = new Flatfil();

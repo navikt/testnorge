@@ -6,9 +6,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.List;
-import java.util.Set;
-
 import no.nav.registre.testnorge.libs.common.command.GetCrumbCommand;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.jenkins.v1.JenkinsCrumb;
@@ -37,13 +34,13 @@ public class JenkinsConsumer {
         this.env = env;
     }
 
-    public void send(Flatfil flatFile, String miljo, Set<String> uuids) {
+    public void send(Flatfil flatFile, String miljo, String uuid) {
         var server = env.getProperty("JENKINS_SERVER_" + miljo.toUpperCase());
         if (server == null) {
             throw new RuntimeException("Finner ikke url for miljo: " + miljo);
         }
         JenkinsCrumb jenkinsCrumb = new GetCrumbCommand(webClient).call();
         var id = new StartBEREG007Command(webClient, server, miljo, jenkinsCrumb, flatFile).call();
-        uuids.forEach(uuid -> jenkinsBatchStatusConsumer.registerBestilling(uuid, miljo, id));
+        jenkinsBatchStatusConsumer.registerBestilling(uuid, miljo, id);
     }
 }

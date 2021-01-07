@@ -1,19 +1,17 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-import no.nav.registre.testnorge.libs.avro.organisasjon.Metadata;
 
 public class Sektorkode extends ToLine {
     private final String kode;
 
-    public Sektorkode(String uuid, Metadata metadata, no.nav.registre.testnorge.libs.avro.organisasjon.Sektorkode sektorkode) {
-        super(metadata, uuid);
+    public Sektorkode(no.nav.registre.testnorge.libs.avro.organisasjon.v1.Sektorkode sektorkode) {
         this.kode = sektorkode.getSektorkode();
     }
 
     @Override
-    ValueBuilder builder() {
-        return ValueBuilder
+    FlatfilValueBuilder builder() {
+        return FlatfilValueBuilder
                 .newBuilder("ISEK", 12)
-                .setLine(8, kode);
+                .append(8, kode);
     }
 }
