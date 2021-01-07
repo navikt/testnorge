@@ -9,12 +9,10 @@ import no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse.Status;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
-import static no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingStatusConsumer.ItemStatus.COMPLETED;
-import static no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingStatusConsumer.ItemStatus.ERROR;
+import static no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingStatusConsumer.ItemStatus.*;
 
 @Slf4j
 @Service
@@ -26,14 +24,17 @@ public class DeployStatusService {
 
     private final OrganisasjonBestillingStatusConsumer bestillingStatusConsumer;
 
-    private static boolean isDone(String uuid, List<ItemDto> statusTotal) {
+    private static boolean isDone(List<ItemDto> statusTotal) {
 
-        log.info("Deploystatus for {}, {}", uuid, statusTotal.stream()
-                .map(ItemDto::toString)
-                .collect(Collectors.joining(", ")));
+        return !statusTotal.isEmpty() && (isOK(statusTotal) ||
+                statusTotal.stream().anyMatch(status ->
+                        status.getStatus() == ERROR ||
+                        status.getStatus() == FAILED));
+    }
 
-        return !statusTotal.isEmpty() && (statusTotal.stream().allMatch(status -> status.getStatus() == COMPLETED) ||
-                statusTotal.stream().anyMatch(status -> status.getStatus() == ERROR));
+    private static boolean isOK(List<ItemDto> items) {
+
+        return items.stream().allMatch(status -> status.getStatus() == COMPLETED);
     }
 
     @SneakyThrows
@@ -42,12 +43,19 @@ public class DeployStatusService {
         List<ItemDto> statusTotal = emptyList();
         var attemptsLeft = MAX_ITERATIONS;
 
-        while (attemptsLeft-- > 0 && !isDone(uuid, statusTotal)) {
+        while (attemptsLeft > 0 && !isDone(statusTotal)) {
+
             Thread.sleep(SLEEP_TIME);
             statusTotal = bestillingStatusConsumer.getBestillingStatus(uuid);
+
+            if (attemptsLeft-- % 5 == 0) {
+                log.info("Deploystatus for {}, {}", uuid, statusTotal.stream()
+                        .map(ItemDto::toString)
+                        .collect(Collectors.joining(", ")));
+            }
         }
 
-        return !statusTotal.isEmpty() && statusTotal.stream().allMatch(status -> status.getStatus() == COMPLETED) ?
+        return !statusTotal.isEmpty() && isOK(statusTotal) ?
                 Status.OK : Status.ERROR;
     }
 }
