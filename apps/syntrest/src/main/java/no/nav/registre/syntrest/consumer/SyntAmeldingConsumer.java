@@ -4,13 +4,13 @@ import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdHistorikkCommand;
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdStartCommand;
-import no.nav.registre.syntrest.consumer.response.AmeldingHistorikkResponse;
 import no.nav.registre.syntrest.domain.amelding.ArbeidsforholdAmelding;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -47,14 +47,14 @@ public class SyntAmeldingConsumer extends SyntConsumer {
         }
     }
 
-    public AmeldingHistorikkResponse synthesizeArbeidsforholdHistorikk(ArbeidsforholdAmelding tidligereArbeidsforhold, String syntAmeldingUrlPath) {
+    public List<ArbeidsforholdAmelding> synthesizeArbeidsforholdHistorikk(ArbeidsforholdAmelding tidligereArbeidsforhold, String syntAmeldingUrlPath) {
         try {
             startSyntApplication();
         } catch (ApiException e) {
-            return new AmeldingHistorikkResponse();
+            return new ArrayList<>();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            return new AmeldingHistorikkResponse();
+            return new ArrayList<>();
         }
 
         try {
