@@ -2,7 +2,7 @@ name: Deploy testnorge-ereg-mapper
 
 on:
   push:
-#    branches: master
+    branches: master
     paths:
       - apps/testnorge-ereg-mapper/**
       - libs/testnorge-core/**
