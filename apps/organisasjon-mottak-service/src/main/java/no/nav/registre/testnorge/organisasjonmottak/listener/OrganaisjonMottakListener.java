@@ -49,7 +49,7 @@ public class OrganaisjonMottakListener {
         save(key, record.value().getMetadata().getMiljo(), organisasjon, false);
     }
 
-    @KafkaListener(topics = OrganisasjonTopic.ORGANISASJON_OPPRETT_ORGANISASJON)
+    @KafkaListener(topics = OrganisasjonTopic.ORGANISASJON_ENDRE_ORGANISASJON)
     public void update(ConsumerRecord<String, Endringsdokument> record) {
         var key = record.key();
         var organisasjon = record.value().getOrganisasjon();
