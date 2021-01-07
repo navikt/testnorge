@@ -22,7 +22,8 @@ public class OrderService {
     private final EregBatchStatusConsumer consumer;
 
     public Long create(String uuid) {
-        return repository.save(OrderModel.builder().uuid(uuid).build()).getId();
+        return repository.findBy(uuid).map(OrderModel::getId)
+                .orElse(repository.save(OrderModel.builder().uuid(uuid).build()).getId());
     }
 
 
@@ -59,10 +60,7 @@ public class OrderService {
     }
 
     public void delete(String uuid) {
-        var orders = repository.findBy(uuid);
-        orders.forEach(order -> {
-            repository.deleteById(order.getId());
-        });
+        repository.findBy(uuid).ifPresent(value -> repository.deleteById(value.getId()));
     }
 
     private Status toStatus(Long kode) {
