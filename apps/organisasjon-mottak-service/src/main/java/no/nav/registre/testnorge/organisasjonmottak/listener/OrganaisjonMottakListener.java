@@ -46,7 +46,7 @@ public class OrganaisjonMottakListener {
     public void create(ConsumerRecord<String, Opprettelsesdokument> record) {
         var key = record.key();
         var organisasjon = record.value().getOrganisasjon();
-        log.info("Oppretter ny organisasisjon {} med uuid: {}.", organisasjon.getOrgnummer(), key);
+        log.info("Oppretter ny organisasjon {} med uuid: {}.", organisasjon.getOrgnummer(), key);
         save(key, record.value().getMetadata().getMiljo(), organisasjon, false);
     }
 
@@ -54,7 +54,7 @@ public class OrganaisjonMottakListener {
     public void update(ConsumerRecord<String, Endringsdokument> record) {
         var key = record.key();
         var organisasjon = record.value().getOrganisasjon();
-        log.info("Endrer organisasisjon {} med uuid: {}.", organisasjon.getOrgnummer(), key);
+        log.info("Endrer organisasjon {} med uuid: {}.", organisasjon.getOrgnummer(), key);
         save(key, record.value().getMetadata().getMiljo(), organisasjon, true);
     }
 
