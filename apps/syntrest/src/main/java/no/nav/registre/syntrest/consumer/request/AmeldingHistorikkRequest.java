@@ -1,4 +1,4 @@
-package no.nav.registre.syntrest.domain.amelding;
+package no.nav.registre.syntrest.consumer.request;
 
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonAlias;
@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.registre.syntrest.domain.amelding.Permisjon;
 
 @Getter
 @Setter
@@ -18,7 +19,7 @@ import lombok.Setter;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ArbeidsforholdAmelding {
+public class AmeldingHistorikkRequest {
 
     @JsonAlias({ "RAPPORTERINGSMAANED", "rapporteringsmaaned" })
     private String rapporteringsmaaned;
@@ -50,7 +51,31 @@ public class ArbeidsforholdAmelding {
     @JsonAlias({ "SISTE_DATO_FOR_STILLINGSPROSENTENDRING", "sisteDatoForStillingsprosentendring" })
     private String sisteDatoForStillingsprosentendring;
 
+    @JsonAlias({ "PERMISJON_MED_FORELDREPENGER", "permisjonMedForeldrepenger" })
+    private Integer permisjonMedForeldrepenger;
+
+    @JsonAlias({ "PERMITTERING", "permittering" })
+    private Integer permittering;
+
+    @JsonAlias({ "PERMISJON", "permisjon" })
+    private Integer permisjon;
+
+    @JsonAlias({ "PERMISJON_VED_MILITAERTJENESTE", "permisjonVedMilitaertjeneste" })
+    private Integer permisjonVedMilitaertjeneste;
+
+    @JsonAlias({ "VELFERDSPERMISJON", "velferdspermisjon" })
+    private Integer velferdspermisjon;
+
+    @JsonAlias({ "UTDANNINGSPERMISJON", "utdanningspermisjon" })
+    private Integer utdanningspermisjon;
+
     @JsonAlias({ "PERMISJONER", "permisjoner" })
     private List<Permisjon> permisjoner;
+
+    @JsonAlias({ "HISTORIKK", "historikk", "change_history" })
+    private String historikk;
+
+    @JsonAlias({ "NUM_ENDRINGER", "numEndringer", "num_changes" })
+    private Integer numEndringer;
 
 }
