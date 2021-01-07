@@ -7,18 +7,18 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.syntrest.consumer.request.AmeldingHistorikkRequest;
 import no.nav.registre.syntrest.consumer.response.AmeldingHistorikkResponse;
+import no.nav.registre.syntrest.domain.amelding.ArbeidsforholdAmelding;
 import reactor.core.publisher.Mono;
 
 @Slf4j
 public class PostArbeidsforholdHistorikkCommand implements Callable<AmeldingHistorikkResponse> {
 
     private final WebClient webClient;
-    private final AmeldingHistorikkRequest arbeidsforhold;
+    private final ArbeidsforholdAmelding arbeidsforhold;
     private final String syntAmeldingUrlPath;
 
-    public PostArbeidsforholdHistorikkCommand(AmeldingHistorikkRequest arbeidsforhold, String syntAmeldingUrlPath, WebClient webClient) {
+    public PostArbeidsforholdHistorikkCommand(ArbeidsforholdAmelding arbeidsforhold, String syntAmeldingUrlPath, WebClient webClient) {
         this.webClient = webClient;
         this.arbeidsforhold = arbeidsforhold;
         this.syntAmeldingUrlPath = syntAmeldingUrlPath;
@@ -28,7 +28,7 @@ public class PostArbeidsforholdHistorikkCommand implements Callable<AmeldingHist
     public AmeldingHistorikkResponse call() {
         AmeldingHistorikkResponse response;
         try {
-            var body = BodyInserters.fromPublisher(Mono.just(arbeidsforhold), AmeldingHistorikkRequest.class);
+            var body = BodyInserters.fromPublisher(Mono.just(arbeidsforhold), ArbeidsforholdAmelding.class);
 
             response = webClient.post()
                     .uri(builder -> builder.path(syntAmeldingUrlPath).build())
