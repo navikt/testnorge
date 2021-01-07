@@ -2,16 +2,8 @@ package no.nav.registre.orkestratoren.batch.v1;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpStatusCodeException;
-
-import java.util.Map;
-
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaVedtakshistorikkRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortRequest;
@@ -22,6 +14,15 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldinger
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
+
+import java.util.Map;
+
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeBisysService;
@@ -194,7 +195,8 @@ public class JobController {
     }
 
     /**
-    * Denne metoden oppretter vedtakshistorikk i Arena og kjøres annen hver time.
+    * Denne metoden oppretter vedtakshistorikk i Arena og registerer brukere med oppfølging (uten vedtak) i Arena.
+     * Metoden kjøres annen hver time.
     * */
     @Scheduled(cron = "0 0 0-23/2 * * *")
     public void arenaSyntBatch() {
@@ -206,6 +208,12 @@ public class JobController {
                         .antallVedtakshistorikker(1)
                         .build());
             }
+
+            testnorgeArenaService.opprettArbeidssokereIArena(SyntetiserArenaRequest.builder()
+                    .avspillergruppeId(entry.getKey())
+                    .miljoe(entry.getValue())
+                    .antallNyeIdenter(2)
+                    .build(), true);
         }
     }
 

@@ -4,6 +4,8 @@ import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.EIER;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.arena.core.consumer.rs.BrukereArenaForvalterConsumer;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,7 +22,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import no.nav.registre.arena.core.consumer.rs.AktoerRegisteretConsumer;
-import no.nav.registre.arena.core.service.BrukereService;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.Relasjon;
@@ -39,7 +40,7 @@ public class IdenterUtils {
     private static final String RELASJON_BARN = "BARN";
 
     private final HodejegerenConsumer hodejegerenConsumer;
-    private final BrukereService brukereService;
+    private final BrukereArenaForvalterConsumer brukereArenaForvalterConsumer;
     private final AktoerRegisteretConsumer aktoerRegisteretConsumer;
 
 
@@ -168,7 +169,7 @@ public class IdenterUtils {
             Set<String> identerAsSet,
             String miljoe
     ) {
-        var eksisterendeBrukere = new HashSet<>(brukereService.hentEksisterendeArbeidsoekerIdenter(EIER, miljoe));
+        var eksisterendeBrukere = new HashSet<>(hentEksisterendeArbeidsoekerIdenter(EIER, miljoe));
         identerAsSet.removeAll(eksisterendeBrukere);
         var identer = new ArrayList<>(identerAsSet);
         Collections.shuffle(identer);
@@ -198,6 +199,27 @@ public class IdenterUtils {
                 .stream()
                 .collect(Collectors.groupingBy(it -> counter.getAndIncrement() / partitionSize))
                 .values();
+    }
+
+    public List<String> hentEksisterendeArbeidsoekerIdenter() {
+        var arbeidsoekere = brukereArenaForvalterConsumer.hentArbeidsoekere(null, null, null);
+        return hentIdentListe(arbeidsoekere);
+    }
+
+    public List<String> hentEksisterendeArbeidsoekerIdenter(String eier, String miljoe) {
+        var arbeidsoekere = brukereArenaForvalterConsumer.hentArbeidsoekere(null, eier, miljoe);
+        return hentIdentListe(arbeidsoekere);
+    }
+
+    private List<String> hentIdentListe(
+            List<Arbeidsoeker> arbeidsoekere
+    ) {
+        if (arbeidsoekere.isEmpty()) {
+            log.info("Fant ingen eksisterende identer.");
+            return new ArrayList<>();
+        }
+
+        return arbeidsoekere.stream().map(Arbeidsoeker::getPersonident).collect(Collectors.toList());
     }
 
 }

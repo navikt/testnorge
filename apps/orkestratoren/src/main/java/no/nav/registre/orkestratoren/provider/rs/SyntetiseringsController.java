@@ -159,7 +159,14 @@ public class SyntetiseringsController {
     public List<String> opprettArbeidssoekereIArena(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        return testnorgeArenaService.opprettArbeidssokereIArena(syntetiserArenaRequest);
+        return testnorgeArenaService.opprettArbeidssokereIArena(syntetiserArenaRequest, false);
+    }
+
+    @PostMapping(value = "/arena/arbeidsoeker/generer/oppfoelging")
+    public List<String> opprettArbeidssoekereMedOppfoelgingIArena(
+            @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
+    ) {
+        return testnorgeArenaService.opprettArbeidssokereIArena(syntetiserArenaRequest, true);
     }
 
     @PostMapping(value = "/arena/vedtakshistorikk/generer")
