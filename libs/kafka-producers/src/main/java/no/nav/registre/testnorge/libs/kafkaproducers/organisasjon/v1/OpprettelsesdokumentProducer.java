@@ -2,14 +2,14 @@ package no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1;
 
 import org.springframework.stereotype.Component;
 
-import no.nav.registre.testnorge.libs.avro.organisasjon.Postadresse;
+import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Opprettelsesdokument;
 import no.nav.registre.testnorge.libs.kafkaconfig.config.KafkaProperties;
 import no.nav.registre.testnorge.libs.kafkaconfig.topic.OrganisasjonTopic;
 import no.nav.registre.testnorge.libs.kafkaproducers.KafkaProducer;
 
 @Component
-public class PostadresseProducer extends KafkaProducer<Postadresse> {
-    PostadresseProducer(KafkaProperties properties) {
+public class OpprettelsesdokumentProducer extends KafkaProducer<Opprettelsesdokument> {
+    OpprettelsesdokumentProducer(KafkaProperties properties) {
         super(
                 properties.getBootstrapAddress(),
                 properties.getGroupId(),
@@ -20,7 +20,7 @@ public class PostadresseProducer extends KafkaProducer<Postadresse> {
     }
 
     @Override
-    public void send(String key, Postadresse value) {
-        getKafkaTemplate().send(OrganisasjonTopic.ORGANISASJON_SET_POSTADRESSE, key, value);
+    public void send(String key, Opprettelsesdokument value) {
+        getKafkaTemplate().send(OrganisasjonTopic.ORGANISASJON_OPPRETT_ORGANISASJON, key, value);
     }
 }

@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "Endringsdokument",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon.v1",
+  "fields": [
+    {
+      "name": "organisasjon",
+      "type": "Organisasjon"
+    },
+    {
+      "name": "metadata",
+      "type": "Metadata"
+    }
+  ]
+}

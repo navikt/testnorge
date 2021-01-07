@@ -1,18 +1,18 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-class ValueBuilder {
+class FlatfilValueBuilder {
     private final StringBuilder builder;
 
-    private ValueBuilder(String type, int length, String endringstype) {
+    private FlatfilValueBuilder(String type, int length, String endringstype) {
         this.builder = createBaseStringbuilder(length, type, endringstype);
     }
 
-    static ValueBuilder newBuilder(String type, int length, String endringstype) {
-        return new ValueBuilder(type, length, endringstype);
+    static FlatfilValueBuilder newBuilder(String type, int length, String endringstype) {
+        return new FlatfilValueBuilder(type, length, endringstype);
     }
 
-    static ValueBuilder newBuilder(String type, int length) {
-        return new ValueBuilder(type, length, "N");
+    static FlatfilValueBuilder newBuilder(String type, int length) {
+        return new FlatfilValueBuilder(type, length, "N");
     }
 
     private static StringBuilder createBaseStringbuilder(int size, String type, String endringsType) {
@@ -31,7 +31,7 @@ class ValueBuilder {
         return stringBuilder;
     }
 
-    ValueBuilder setLine(int exclusiveStart, String value) {
+    FlatfilValueBuilder append(int exclusiveStart, String value) {
         if (value == null) {
             return this;
         }

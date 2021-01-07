@@ -1,20 +1,17 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-import no.nav.registre.testnorge.libs.avro.organisasjon.Metadata;
-
 public class Mobiltelefon extends ToLine {
     private final String tlf;
 
-    public Mobiltelefon(String uuid, Metadata metadata, no.nav.registre.testnorge.libs.avro.organisasjon.Mobiltelefon mobiltelefon) {
-        super(metadata, uuid);
+    public Mobiltelefon(no.nav.registre.testnorge.libs.avro.organisasjon.v1.Telefon mobiltelefon) {
         this.tlf = mobiltelefon.getTlf();
     }
 
     @Override
-    ValueBuilder builder() {
-        return ValueBuilder
+    FlatfilValueBuilder builder() {
+        return FlatfilValueBuilder
                 .newBuilder("MTLF", 21)
-                .setLine(8, tlf);
+                .append(8, tlf);
     }
 
 }

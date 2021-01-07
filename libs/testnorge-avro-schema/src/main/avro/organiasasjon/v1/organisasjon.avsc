@@ -1,0 +1,103 @@
+{
+  "type": "record",
+  "name": "Organisasjon",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon.v1",
+  "fields": [
+    {
+      "name": "orgnummer",
+      "type": "string"
+    },
+    {
+      "name": "enhetstype",
+      "type": "string"
+    },
+    {
+      "name": "navn",
+      "type": "DetaljertNavn"
+    },
+    {
+      "name": "ansatte",
+      "type": [
+        "Ansatte",
+        "null"
+      ]
+    },
+    {
+      "name": "internettadresse",
+      "type": [
+        "Internettadresse",
+        "null"
+      ]
+    },
+    {
+      "name": "epost",
+      "type": [
+        "Epost",
+        "null"
+      ]
+    },
+    {
+      "name": "sektorkode",
+      "type": [
+        "Sektorkode",
+        "null"
+      ]
+    },
+    {
+      "name": "stiftelsesdato",
+      "type": [
+        "Stiftelsesdato",
+        "null"
+      ]
+    },
+    {
+      "name": "mobiltelefon",
+      "type": [
+        "Telefon",
+        "null"
+      ]
+    },
+    {
+      "name": "naeringskode",
+      "type": [
+        "Naeringskode",
+        "null"
+      ]
+    },
+    {
+      "name": "maalform",
+      "type": [
+        "Maalform",
+        "null"
+      ]
+    },
+    {
+      "name": "telefon",
+      "type": [
+        "Telefon",
+        "null"
+      ]
+    },
+    {
+      "name": "knytning",
+      "type": [
+        "Knytning",
+        "null"
+      ]
+    },
+    {
+      "name": "forretningsadresse",
+      "type": [
+        "Adresse",
+        "null"
+      ]
+    },
+    {
+      "name": "postadresse",
+      "type": [
+        "Adresse",
+        "null"
+      ]
+    }
+  ]
+}

@@ -3,15 +3,14 @@ package no.nav.registre.testnorge.organisasjonmottak.domain;
 public class Ansatte extends ToLine {
     private final boolean ansatte;
 
-    public Ansatte(String uuid, no.nav.registre.testnorge.libs.avro.organisasjon.Ansatte ansatte) {
-        super(ansatte.getMetadata(), uuid);
+    public Ansatte(no.nav.registre.testnorge.libs.avro.organisasjon.v1.Ansatte ansatte) {
         this.ansatte = ansatte.getHarAnsatte();
     }
 
     @Override
-    ValueBuilder builder() {
-        return ValueBuilder
+    FlatfilValueBuilder builder() {
+        return FlatfilValueBuilder
                 .newBuilder("MÅL", 9)
-                .setLine(8, ansatte ? "J" : "N");
+                .append(8, ansatte ? "J" : "N");
     }
 }

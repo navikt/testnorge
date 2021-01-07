@@ -1,7 +1,7 @@
 {
   "type": "record",
   "name": "Naeringskode",
-  "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon.v1",
   "fields": [
     {
       "name": "kode",
@@ -17,10 +17,6 @@
     {
       "name": "hjelpeenhet",
        "type": "boolean"
-    },
-    {
-      "name": "metadata",
-      "type": "Metadata"
     }
   ]
 }

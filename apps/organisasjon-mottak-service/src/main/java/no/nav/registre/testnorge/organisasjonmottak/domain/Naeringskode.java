@@ -8,8 +8,7 @@ public class Naeringskode extends ToLine {
     private final LocalDate gyldighetsdato;
     private final boolean hjelpeenhet;
 
-    public Naeringskode(String uuid, no.nav.registre.testnorge.libs.avro.organisasjon.Naeringskode naeringskode) {
-        super(naeringskode.getMetadata(), uuid);
+    public Naeringskode( no.nav.registre.testnorge.libs.avro.organisasjon.v1.Naeringskode naeringskode) {
         this.kode = naeringskode.getKode();
         this.gyldighetsdato = LocalDate.of(
                 naeringskode.getGyldighetsdato().getAar(),
@@ -20,12 +19,12 @@ public class Naeringskode extends ToLine {
     }
 
     @Override
-    ValueBuilder builder() {
-        return ValueBuilder
+    FlatfilValueBuilder builder() {
+        return FlatfilValueBuilder
                 .newBuilder("NACE", 23)
-                .setLine(8, kode)
-                .setLine(14, getDateFormatted(gyldighetsdato))
-                .setLine(22, hjelpeenhet ? "J" : "N");
+                .append(8, kode)
+                .append(14, getDateFormatted(gyldighetsdato))
+                .append(22, hjelpeenhet ? "J" : "N");
     }
 
 }

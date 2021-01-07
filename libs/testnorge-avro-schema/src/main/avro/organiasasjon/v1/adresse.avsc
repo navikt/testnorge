@@ -1,7 +1,7 @@
 {
   "type": "record",
-  "name": "Postadresse",
-  "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon",
+  "name": "Adresse",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon.v1",
   "fields": [
     {
       "name": "postnummer",
@@ -50,10 +50,6 @@
         "string",
         "null"
       ]
-    },
-    {
-      "name": "metadata",
-      "type": "Metadata"
     }
   ]
 }
