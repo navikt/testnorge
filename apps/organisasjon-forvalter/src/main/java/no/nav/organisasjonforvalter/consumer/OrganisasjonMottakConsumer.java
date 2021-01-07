@@ -50,7 +50,7 @@ public class OrganisasjonMottakConsumer {
 
     //TODO Hva er dette?
     private static String fixLinjenr(String vegadresseId) {
-        return nonNull(vegadresseId) ? "1" : null;
+        return isNotBlank(vegadresseId) ? "1" : null;
     }
 
     public void sendOrgnavn(String key, Organisasjon organisasjon, String env) {
