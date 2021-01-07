@@ -14,5 +14,5 @@ public interface OrderRepository extends CrudRepository<OrderModel, Long> {
     Optional<OrderModel> findBy(String miljo, Long id, String uuid);
 
     @Query(value = "from OrderModel o1 where o1.uuid = ?1")
-    List<OrderModel> findBy(String uuid);
+    Optional<OrderModel> findBy(String uuid);
 }
