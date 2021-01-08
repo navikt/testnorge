@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PdlAdressebeskyttelse {
 
-    public enum AdresseBeskyttelse {STRENGT_FORTROLIG, FORTROLIG, UGRADERT}
+    public enum AdresseBeskyttelse {STRENGT_FORTROLIG_UTLAND, STRENGT_FORTROLIG, FORTROLIG, UGRADERT}
 
     private AdresseBeskyttelse gradering;
     private String kilde;

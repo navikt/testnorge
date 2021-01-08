@@ -1,19 +1,19 @@
 package no.nav.dolly.metrics;
 
+import io.micrometer.core.instrument.MeterRegistry;
+import lombok.RequiredArgsConstructor;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.tpsf.adresse.AdresseNrInfo.AdresseNr.KOMMUNENR;
 import static no.nav.dolly.domain.resultset.tpsf.adresse.AdresseNrInfo.AdresseNr.POSTNR;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
-import java.util.ArrayList;
-import java.util.List;
-import org.springframework.stereotype.Component;
-
-import io.micrometer.core.instrument.MeterRegistry;
-import lombok.RequiredArgsConstructor;
-import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 
 @Component
 @RequiredArgsConstructor
@@ -40,10 +40,12 @@ public class CounterCustomRegistry {
 
             addTag(tags, "SPSF".equals(bestilling.getTpsf().getSpesreg()), "KODE6");
             addTag(tags, "SPFO".equals(bestilling.getTpsf().getSpesreg()), "KODE7");
+            addTag(tags, "SFU".equals(bestilling.getTpsf().getSpesreg()), "KODE19");
 
             addTag(tags, isNotBlank(bestilling.getTpsf().getSpesreg()) &&
                     !"SPSF".equals(bestilling.getTpsf().getSpesreg()) &&
-                    !"SPFO".equals(bestilling.getTpsf().getSpesreg()), "SPESREG");
+                    !"SPFO".equals(bestilling.getTpsf().getSpesreg()) &&
+                    !"SFU".equals(bestilling.getTpsf().getSpesreg()), "SPESREG");
 
             addTag(tags, isTrue(bestilling.getTpsf().getHarMellomnavn()), "MELLOMNAVN");
             addTag(tags, isTrue(bestilling.getTpsf().getHarBankkontonr()), "BANKKONTONUMMER");

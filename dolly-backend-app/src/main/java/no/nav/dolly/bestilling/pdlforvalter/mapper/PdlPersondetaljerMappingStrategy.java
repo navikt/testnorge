@@ -1,17 +1,5 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
-import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.FORTROLIG;
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.STRENGT_FORTROLIG;
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.UGRADERT;
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.stream.Collectors;
-import org.springframework.stereotype.Component;
-
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
@@ -27,6 +15,19 @@ import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.Statsborgerskap;
 import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
 import no.nav.dolly.mapper.MappingStrategy;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.stream.Collectors;
+
+import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.FORTROLIG;
+import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.STRENGT_FORTROLIG;
+import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.STRENGT_FORTROLIG_UTLAND;
+import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.UGRADERT;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
 public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
@@ -99,10 +100,10 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
 
                         if ("SPSF".equals(person.getSpesreg())) {
                             adressebeskyttelse.setGradering(STRENGT_FORTROLIG);
-
+                        } else if ("SFU".equals(person.getSpesreg())) {
+                            adressebeskyttelse.setGradering(STRENGT_FORTROLIG_UTLAND);
                         } else if ("SPFO".equals(person.getSpesreg())) {
                             adressebeskyttelse.setGradering(FORTROLIG);
-
                         } else {
                             adressebeskyttelse.setGradering(UGRADERT);
                         }
