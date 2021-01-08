@@ -10,7 +10,6 @@ import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -51,10 +50,10 @@ public class SyntAmeldingConsumer extends SyntConsumer {
         try {
             startSyntApplication();
         } catch (ApiException e) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
         try {
