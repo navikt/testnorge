@@ -2,7 +2,7 @@ name: Deploy testnorge-populasjoner
 
 on:
   push:
-#    branches: master
+    branches: master
     paths:
       - apps/testnorge-populasjoner/**
       - libs/testnorge-core/**
