@@ -50,7 +50,7 @@ const SessionTimer = () => {
   return (
     <ProgressBar
       now={milliseconds < 0 ? 0 : Math.round(now)}
-      status="inprogress"
+      status={milliseconds < 0 ? "error" : "inprogress"}
     >
       <p>
         {Math.round(milliseconds / 1000) < 0
