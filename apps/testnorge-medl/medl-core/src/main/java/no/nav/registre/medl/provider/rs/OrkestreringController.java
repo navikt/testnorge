@@ -2,7 +2,6 @@ package no.nav.registre.medl.provider.rs;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.medl.adapter.AktoerAdapter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import no.nav.registre.medl.adapter.AktoerAdapter;
 import no.nav.registre.medl.consumer.rs.response.MedlSyntResponse;
 import no.nav.registre.medl.database.model.TMedlemPeriode;
 import no.nav.registre.medl.database.multitenancy.TenantContext;
