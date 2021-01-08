@@ -2,7 +2,7 @@ name: Deploy testnorge-nav-endringsmeldinger
 
 on:
   push:
-    branches: master
+#    branches: master
     paths:
       - apps/testnorge-nav-endringsmeldinger/**
       - libs/testnorge-core/**

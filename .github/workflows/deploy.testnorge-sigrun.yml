@@ -2,7 +2,7 @@ name: Deploy testnorge-sigrun
 
 on:
   push:
-    branches: master
+#    branches: master
     paths:
       - apps/testnorge-sigrun/**
       - libs/testnorge-core/**
