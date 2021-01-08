@@ -17,7 +17,7 @@ public class BehandleArbeidsforholdV1ProxyTest {
     public ExpectedException expectedException = ExpectedException.none();
 
     @Mock
-    private AaregBehandleArbeidsforhold behandleArbeidsforholdFasitConsumer;
+    private AaregBehandleArbeidsforhold behandleArbeidsforhold;
 
     @Mock
     private StsSamlTokenService stsSamlTokenService;

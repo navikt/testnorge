@@ -7,6 +7,15 @@ metadata:
     team: dolly
 spec:
   port: 8080
+  accessPolicy:
+    outbound:
+      rules:
+        - application: testnorge-miljoer-service
+      external:
+        - host: login.microsoftonline.com
+  azure:
+    application:
+      enabled: true
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
