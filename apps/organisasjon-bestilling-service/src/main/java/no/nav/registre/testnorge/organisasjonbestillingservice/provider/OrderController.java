@@ -34,7 +34,7 @@ public class OrderController {
         return ResponseEntity.ok(uuids);
     }
 
-    @PostMapping("/{uuid}")
+    @PutMapping("/{uuid}")
     public ResponseEntity<Long> registerBestilling(@PathVariable("uuid") String uuid) {
         var id = service.create(uuid);
         URI uri = ServletUriComponentsBuilder

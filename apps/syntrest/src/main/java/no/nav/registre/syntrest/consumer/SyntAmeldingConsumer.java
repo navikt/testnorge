@@ -4,7 +4,6 @@ import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdHistorikkCommand;
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdStartCommand;
-import no.nav.registre.syntrest.consumer.response.AmeldingHistorikkResponse;
 import no.nav.registre.syntrest.domain.amelding.ArbeidsforholdAmelding;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 
@@ -47,14 +46,14 @@ public class SyntAmeldingConsumer extends SyntConsumer {
         }
     }
 
-    public AmeldingHistorikkResponse synthesizeArbeidsforholdHistorikk(ArbeidsforholdAmelding tidligereArbeidsforhold, String syntAmeldingUrlPath) {
+    public List<ArbeidsforholdAmelding> synthesizeArbeidsforholdHistorikk(ArbeidsforholdAmelding tidligereArbeidsforhold, String syntAmeldingUrlPath) {
         try {
             startSyntApplication();
         } catch (ApiException e) {
-            return new AmeldingHistorikkResponse();
+            return Collections.emptyList();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            return new AmeldingHistorikkResponse();
+            return Collections.emptyList();
         }
 
         try {

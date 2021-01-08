@@ -1,5 +1,6 @@
 package no.nav.registre.syntrest.consumer.command;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -7,12 +8,11 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.syntrest.consumer.response.AmeldingHistorikkResponse;
 import no.nav.registre.syntrest.domain.amelding.ArbeidsforholdAmelding;
 import reactor.core.publisher.Mono;
 
 @Slf4j
-public class PostArbeidsforholdHistorikkCommand implements Callable<AmeldingHistorikkResponse> {
+public class PostArbeidsforholdHistorikkCommand implements Callable<List<ArbeidsforholdAmelding>> {
 
     private final WebClient webClient;
     private final ArbeidsforholdAmelding arbeidsforhold;
@@ -25,8 +25,8 @@ public class PostArbeidsforholdHistorikkCommand implements Callable<AmeldingHist
     }
 
     @Override
-    public AmeldingHistorikkResponse call() {
-        AmeldingHistorikkResponse response;
+    public List<ArbeidsforholdAmelding> call() {
+        List<ArbeidsforholdAmelding> response;
         try {
             var body = BodyInserters.fromPublisher(Mono.just(arbeidsforhold), ArbeidsforholdAmelding.class);
 
@@ -35,7 +35,8 @@ public class PostArbeidsforholdHistorikkCommand implements Callable<AmeldingHist
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .body(body)
                     .retrieve()
-                    .bodyToMono(AmeldingHistorikkResponse.class)
+                    .bodyToFlux(ArbeidsforholdAmelding.class)
+                    .collectList()
                     .block();
         } catch (Exception e) {
             log.error("Unexpected Rest Client Exception.", e);
