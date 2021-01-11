@@ -21,6 +21,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 import org.yaml.snakeyaml.Yaml;
@@ -158,7 +159,7 @@ public class KubernetesController {
         String response = "404";
         try {
             response = noAuthRestTemplate.getForObject(isAliveUri.expand(appName), String.class);
-        } catch (HttpClientErrorException | HttpServerErrorException ignored) {
+        } catch (HttpClientErrorException | HttpServerErrorException | ResourceAccessException ignored) {
         }
         return "1".equals(response);
     }
