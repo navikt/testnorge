@@ -33,6 +33,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import static java.util.Objects.isNull;
+
 @Slf4j
 public class KubernetesController {
 
@@ -72,12 +74,22 @@ public class KubernetesController {
         this.api = customObjectsApi;
 
 
-        this.authRestTemplate = restTemplateBuilder
+        // nullcheck proxy port/url -> settes i run configuration på utvimage.
+
+
+        if (!isNull(proxyUrl) && !isNull(proxyPort)) {
+            this.authRestTemplate = restTemplateBuilder
                 .requestFactory(() -> new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create()
                         .setRoutePlanner(new DefaultProxyRoutePlanner(new HttpHost(proxyUrl, proxyPort)))
                         .build()))
                 .additionalInterceptors(new BasicAuthenticationInterceptor(github_username, github_password))
                 .build();
+        } else {
+            this.authRestTemplate = restTemplateBuilder
+                .requestFactory(() -> new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create().build()))
+                .additionalInterceptors(new BasicAuthenticationInterceptor(github_username, github_password))
+                .build();
+        }
 
         this.noAuthRestTemplate = restTemplateBuilder.requestFactory(() -> new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create()
                 .setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
@@ -123,7 +135,7 @@ public class KubernetesController {
 
                 if (e.getCause() instanceof IllegalStateException) {
                     IllegalStateException ise = (IllegalStateException) e.getCause();
-                    if (!Objects.isNull(ise.getMessage()) && ise.getMessage().contains("Expected a string but was BEGIN_OBJECT")) {
+                    if (!isNull(ise.getMessage()) && ise.getMessage().contains("Expected a string but was BEGIN_OBJECT")) {
                         log.info("Successfully deleted application \'{}\'", appName);
                     } else {
                         throw e;
@@ -215,6 +227,7 @@ public class KubernetesController {
         QueryObject query = QueryObject.builder().query(getCorrectTagQuery(appName)).build();
 
         try {
+            log.info("Retrieving tag for synth package: {}", getCorrectGithubPackageName(appName));
             RequestEntity requestLatestTag = RequestEntity.post(new UriTemplate(apiUrl).expand()).header("Content-Type", "application/json").body(query);
             ResponseEntity<JsonNode> response = authRestTemplate.exchange(requestLatestTag, JsonNode.class);
 
