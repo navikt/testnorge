@@ -30,7 +30,8 @@ public enum SystemTyper {
     SYKEMELDING("Testnorge Sykemelding"),
     TPSIMPORT("Import av identer (MINI-NORGE)"),
     SKJERMINGSREGISTER("NAV-ansatt Skjermingsregister"),
-    SAKOGARKIV("Sak og arkivfasade (SAF)");
+    SAKOGARKIV("Sak og arkivfasade (SAF)"),
+    ORGANISASJON_FORVALTER("Forvalter av syntetiske organisasjoner");
 
     private String beskrivelse;
 

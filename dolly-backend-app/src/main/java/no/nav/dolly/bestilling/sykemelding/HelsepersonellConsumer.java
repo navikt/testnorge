@@ -29,7 +29,7 @@ public class HelsepersonellConsumer {
     @Value("${HELSEPERSONELL_CLIENT_ID}")
     private String helsepersonellClientId;
 
-    @Timed(name = "providers", tags = {"operation", "leger-hent"})
+    @Timed(name = "providers", tags = { "operation", "leger-hent" })
     public ResponseEntity<HelsepersonellListeDTO> getHelsepersonell() {
 
         AccessToken accessToken = accessTokenService.getAccessToken(

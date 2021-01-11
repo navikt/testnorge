@@ -1,16 +1,17 @@
 package no.nav.dolly.mapper.strategy;
 
-import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
-import java.io.IOException;
-import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling.SyntetiskOrganisasjon;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+
+import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Component
@@ -43,5 +44,14 @@ public class JsonBestillingMapper {
             log.error("Mapping av JSON fra database bestKriterier feilet. {}", e.getMessage(), e);
         }
         return new RsDollyBestillingRequest();
+    }
+
+    public SyntetiskOrganisasjon mapOrganisasjonBestillingRequest(String jsonInput) {
+        try {
+            return objectMapper.readValue(nonNull(jsonInput) ? jsonInput : "{}", SyntetiskOrganisasjon.class);
+        } catch (IOException e) {
+            log.error("Mapping av JSON fra database bestKriterier feilet. {}", e.getMessage(), e);
+        }
+        return new SyntetiskOrganisasjon();
     }
 }
