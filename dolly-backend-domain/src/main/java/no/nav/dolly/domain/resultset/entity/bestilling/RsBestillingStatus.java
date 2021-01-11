@@ -1,12 +1,6 @@
 package no.nav.dolly.domain.resultset.entity.bestilling;
 
-import static java.util.Objects.isNull;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,6 +23,12 @@ import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Objects.isNull;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -50,6 +50,7 @@ public class RsBestillingStatus {
     private List<RsStatusRapport> status;
 
     private Long opprettetFraId;
+    private Long opprettetFraGruppeId;
     private RsBestilling bestilling;
     private String openamSent;
     private String opprettFraIdenter;

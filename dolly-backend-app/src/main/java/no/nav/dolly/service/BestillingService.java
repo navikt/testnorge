@@ -174,7 +174,7 @@ public class BestillingService {
 
     @Transactional
     // Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
-    public Bestilling createBestillingForGjenopprett(Long bestillingId, List<String> miljoer) {
+    public Bestilling createBestillingForGjenopprettFraBestilling(Long bestillingId, List<String> miljoer) {
         Bestilling bestilling = fetchBestillingById(bestillingId);
         if (!bestilling.isFerdig()) {
             throw new DollyFunctionalException(format("Du kan ikke starte gjenopprett før bestilling %d er ferdigstilt.", bestillingId));
@@ -192,6 +192,29 @@ public class BestillingService {
                         .opprettetFraId(bestillingId)
                         .tpsfKriterier(bestilling.getTpsfKriterier())
                         .bestKriterier(bestilling.getBestKriterier())
+                        .bruker(brukerService.fetchOrCreateBruker(getUserId()))
+                        .build());
+    }
+
+    @Transactional
+    // Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
+    public Bestilling createBestillingForGjenopprettFraGruppe(Long gruppeId, String miljoer) {
+
+        Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
+
+        if (!testgruppe.isPresent() || testgruppe.get().getTestidenter().isEmpty()) {
+            throw new NotFoundException(format("Ingen testpersoner funnet i gruppe: %d", gruppeId));
+        }
+
+        return saveBestillingToDB(
+                Bestilling.builder()
+                        .gruppe(testgruppe.get())
+                        .antallIdenter(testgruppe.get().getTestidenter().size())
+                        .tpsfKriterier("{}")
+                        .bestKriterier("{}")
+                        .sistOppdatert(now())
+                        .miljoer(miljoer)
+                        .opprettetFraGruppeId(gruppeId)
                         .bruker(brukerService.fetchOrCreateBruker(getUserId()))
                         .build());
     }

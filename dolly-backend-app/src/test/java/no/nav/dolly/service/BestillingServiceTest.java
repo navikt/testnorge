@@ -160,7 +160,7 @@ public class BestillingServiceTest {
                 .ferdig(true).build()));
         when(brukerService.fetchOrCreateBruker(BRUKERID)).thenReturn(Bruker.builder().build());
 
-        bestillingService.createBestillingForGjenopprett(BEST_ID, singletonList("u1"));
+        bestillingService.createBestillingForGjenopprettFraBestilling(BEST_ID, singletonList("u1"));
 
         verify(bestillingRepository).save(any(Bestilling.class));
     }
@@ -170,7 +170,7 @@ public class BestillingServiceTest {
 
         when(bestillingRepository.findById(BEST_ID)).thenReturn(Optional.of(Bestilling.builder().build()));
 
-        bestillingService.createBestillingForGjenopprett(BEST_ID, singletonList("u1"));
+        bestillingService.createBestillingForGjenopprettFraBestilling(BEST_ID, singletonList("u1"));
     }
 
     @Test(expected = NotFoundException.class)
@@ -181,7 +181,7 @@ public class BestillingServiceTest {
                         .gruppe(Testgruppe.builder().build())
                         .build()));
 
-        bestillingService.createBestillingForGjenopprett(BEST_ID, singletonList("u1"));
+        bestillingService.createBestillingForGjenopprettFraBestilling(BEST_ID, singletonList("u1"));
     }
 
     @Test

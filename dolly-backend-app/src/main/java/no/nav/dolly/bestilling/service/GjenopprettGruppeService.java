@@ -23,30 +23,27 @@ import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 
 @Service
-public class GjenopprettBestillingService extends DollyBestillingService {
+public class GjenopprettGruppeService extends DollyBestillingService {
 
     private BestillingService bestillingService;
     private ErrorStatusDecoder errorStatusDecoder;
     private TpsfService tpsfService;
-    private BestillingProgressService bestillingProgressService;
     private ForkJoinPool dollyForkJoinPool;
 
-    public GjenopprettBestillingService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService, TpsfPersonCache tpsfPersonCache,
-                                        IdentService identService, BestillingProgressService bestillingProgressService,
-                                        BestillingService bestillingService, MapperFacade mapperFacade, CacheManager cacheManager,
-                                        ObjectMapper objectMapper, List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
-                                        ErrorStatusDecoder errorStatusDecoder, ForkJoinPool dollyForkJoinPool) {
+    public GjenopprettGruppeService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService, TpsfPersonCache tpsfPersonCache,
+                                    IdentService identService, BestillingProgressService bestillingProgressService,
+                                    BestillingService bestillingService, MapperFacade mapperFacade, CacheManager cacheManager,
+                                    ObjectMapper objectMapper, List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
+                                    ErrorStatusDecoder errorStatusDecoder, ForkJoinPool dollyForkJoinPool) {
         super(tpsfResponseHandler, tpsfService, tpsfPersonCache, identService, bestillingProgressService, bestillingService,
                 mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry);
 
         this.bestillingService = bestillingService;
         this.errorStatusDecoder = errorStatusDecoder;
         this.tpsfService = tpsfService;
-        this.bestillingProgressService = bestillingProgressService;
         this.dollyForkJoinPool = dollyForkJoinPool;
     }
 
@@ -57,13 +54,13 @@ public class GjenopprettBestillingService extends DollyBestillingService {
 
         if (nonNull(bestKriterier)) {
             dollyForkJoinPool.submit(() -> {
-                bestillingProgressService.fetchBestillingProgressByBestillingId(bestilling.getOpprettetFraId()).parallelStream()
-                        .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
-                        .map(gjenopprettFraProgress -> {
+                bestilling.getGruppe().getTestidenter().parallelStream()
+                        .filter(testident -> !bestillingService.isStoppet(bestilling.getId()))
+                        .map(testident -> {
 
-                            BestillingProgress progress = new BestillingProgress(bestilling.getId(), gjenopprettFraProgress.getIdent());
+                            BestillingProgress progress = new BestillingProgress(bestilling.getId(), testident.getIdent());
                             try {
-                                List<Person> personer = tpsfService.hentTestpersoner(singletonList(gjenopprettFraProgress.getIdent()));
+                                List<Person> personer = tpsfService.hentTestpersoner(List.of(testident.getIdent()));
 
                                 if (!personer.isEmpty()) {
                                     sendTestidenter(bestilling, bestKriterier, progress, personer.get(0));
@@ -82,9 +79,6 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                         .collect(Collectors.toList());
                 oppdaterBestillingFerdig(bestilling);
             });
-        } else {
-            bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
-            oppdaterBestillingFerdig(bestilling);
         }
     }
 }

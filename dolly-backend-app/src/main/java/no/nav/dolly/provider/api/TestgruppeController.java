@@ -1,29 +1,9 @@
 package no.nav.dolly.provider.api;
 
-import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
-import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
-
-import java.util.List;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.service.DollyBestillingService;
+import no.nav.dolly.bestilling.service.GjenopprettGruppeService;
 import no.nav.dolly.bestilling.service.ImportAvPersonerFraTpsService;
 import no.nav.dolly.bestilling.service.LeggTilPaaGruppeService;
 import no.nav.dolly.bestilling.service.OpprettPersonerByKriterierService;
@@ -42,6 +22,26 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestilling
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppePage;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.TestgruppeService;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
+import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
 @RestController
 @RequiredArgsConstructor
@@ -49,13 +49,13 @@ import no.nav.dolly.service.TestgruppeService;
 public class TestgruppeController {
 
     private final BestillingService bestillingService;
-    private final DollyBestillingService dollyBestillingService;
     private final MapperFacade mapperFacade;
     private final ImportAvPersonerFraTpsService importAvPersonerFraTpsService;
     private final LeggTilPaaGruppeService leggTilPaaGruppeService;
     private final TestgruppeService testgruppeService;
     private final OpprettPersonerByKriterierService opprettPersonerByKriterierService;
     private final OpprettPersonerFraIdenterMedKriterierService opprettPersonerFraIdenterMedKriterierService;
+    private final GjenopprettGruppeService gjenopprettGruppeService;
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @Transactional
@@ -71,12 +71,12 @@ public class TestgruppeController {
     @PutMapping(value = "/{gruppeId}/laas")
     @Operation(description = "Oppdater testgruppe Laas")
     public RsTestgruppe oppdaterTestgruppeLaas(@PathVariable("gruppeId") Long gruppeId,
-            @RequestBody RsLockTestgruppe lockTestgruppe) {
+                                               @RequestBody RsLockTestgruppe lockTestgruppe) {
         Testgruppe gruppe = testgruppeService.oppdaterTestgruppeMedLaas(gruppeId, lockTestgruppe);
         return mapperFacade.map(gruppe, RsTestgruppe.class);
     }
 
-    @CacheEvict(value = { CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_GRUPPE}, allEntries = true)
     @PostMapping
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)
@@ -125,7 +125,7 @@ public class TestgruppeController {
         testgruppeService.deleteGruppeById(gruppeId);
     }
 
-    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling")
     @Operation(description = "Opprett berikede testpersoner basert på fødselsdato, kjønn og identtype")
@@ -137,7 +137,7 @@ public class TestgruppeController {
     }
 
     @Operation(description = "Opprett berikede testpersoner basert på eskisterende identer")
-    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling/fraidenter")
     public RsBestillingStatus opprettIdentBestillingFraIdenter(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingFraIdenterRequest request) {
@@ -149,7 +149,7 @@ public class TestgruppeController {
     }
 
     @Operation(description = "Importere testpersoner fra TPS og legg til berikning non-TPS artifacter")
-    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{gruppeId}/bestilling/importFraTps")
     public RsBestillingStatus importAvIdenterBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyImportFraTpsRequest request) {
@@ -161,7 +161,7 @@ public class TestgruppeController {
     }
 
     @Operation(description = "Legg til berikning på alle i gruppe")
-    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{gruppeId}/leggtilpaagruppe")
     public RsBestillingStatus endreGruppeLeggTil(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingLeggTilPaaGruppe request) {
@@ -169,6 +169,16 @@ public class TestgruppeController {
         Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request);
 
         leggTilPaaGruppeService.executeAsync(bestilling);
+        return mapperFacade.map(bestilling, RsBestillingStatus.class);
+    }
+
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
+    @PutMapping("/{gruppeId}/gjenopprett")
+    @Operation(description = "Gjenopprett testidenter tilhørende en gruppe med liste for tilhørende miljoer")
+    public RsBestillingStatus gjenopprettBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestParam(value = "miljoer") String miljoer) {
+
+        Bestilling bestilling = bestillingService.createBestillingForGjenopprettFraGruppe(gruppeId, miljoer);
+        gjenopprettGruppeService.executeAsync(bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 }

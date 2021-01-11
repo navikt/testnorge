@@ -1,32 +1,7 @@
 package no.nav.dolly.bestilling.service;
 
-import static java.lang.String.format;
-import static java.lang.String.join;
-import static java.time.LocalDateTime.now;
-import static java.util.Objects.nonNull;
-import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
-import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
-import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
-import static no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse.getIdentResponse;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import org.springframework.cache.CacheManager;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -54,14 +29,41 @@ import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TpsfPersonCache;
+import org.springframework.cache.CacheManager;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.lang.String.format;
+import static java.lang.String.join;
+import static java.time.LocalDateTime.now;
+import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
+import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
+import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
+import static no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse.getIdentResponse;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class DollyBestillingService {
 
-    private static final String FEIL_KUNNE_IKKE_UTFORES = "FEIL: Bestilling kunne ikke utføres: %s";
     protected static final String SUCCESS = "OK";
+    private static final String FEIL_KUNNE_IKKE_UTFORES = "FEIL: Bestilling kunne ikke utføres: %s";
     private static final String OUT_FMT = "%s: %s";
 
     private final TpsfResponseHandler tpsfResponseHandler;
@@ -75,6 +77,93 @@ public class DollyBestillingService {
     private final ObjectMapper objectMapper;
     private final List<ClientRegister> clientRegisters;
     private final CounterCustomRegistry counterCustomRegistry;
+
+    private static String getHovedpersonAvBestillingsidenter(List<String> identer) {
+        return identer.get(0); //Rask fix for å hente hoveperson i bestilling. Vet at den er første, men burde gjøre en sikrere sjekk
+    }
+
+    private static List<String> extraxtSuccessMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
+        Set<String> successMiljoer = new TreeSet<>();
+
+        // Add successful messages
+        addSuccessfulMessages(hovedperson, response, successMiljoer);
+
+        // Remove unsuccessful messages
+        removeUnsuccessfulMessages(hovedperson, response, successMiljoer);
+
+        return new ArrayList<>(successMiljoer);
+    }
+
+    private static void removeUnsuccessfulMessages(String hovedperson, RsSkdMeldingResponse response, Set<String> successMiljoer) {
+        for (SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()) {
+            if (hovedperson.equals(sendSkdMldResponse.getPersonId())) {
+                for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
+                    if (!entry.getValue().contains(SUCCESS)) {
+                        successMiljoer.remove(entry.getKey());
+                    }
+                }
+            }
+        }
+    }
+
+    private static void addSuccessfulMessages(String hovedperson, RsSkdMeldingResponse response, Set<String> successMiljoer) {
+        for (SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()) {
+            if (hovedperson.equals(sendSkdMldResponse.getPersonId())) {
+                for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
+                    if (entry.getValue().contains(SUCCESS)) {
+                        successMiljoer.add(entry.getKey());
+                    }
+                }
+            }
+        }
+    }
+
+    private static List<String> extraxtFailureMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
+        Map<String, List<String>> failures = new TreeMap<>();
+
+        addFeilmeldingSkdMeldinger(hovedperson, response.getSendSkdMeldingTilTpsResponsene(), failures);
+
+        addFeilmeldingServicerutiner(hovedperson, response.getServiceRoutineStatusResponsene(), failures);
+
+        List<String> errors = new ArrayList<>();
+        failures.keySet().forEach(miljoe -> errors.add(format(OUT_FMT, miljoe, join(" + ", failures.get(miljoe)))));
+
+        return errors;
+    }
+
+    private static void addFeilmeldingSkdMeldinger(String hovedperson, List<SendSkdMeldingTilTpsResponse> responseStatus, Map<String, List<String>> failures) {
+        for (SendSkdMeldingTilTpsResponse response : responseStatus) {
+            if (hovedperson.equals(response.getPersonId())) {
+                for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
+                    if (isFaulty(entry.getValue()) && failures.containsKey(entry.getKey())) {
+                        failures.get(entry.getKey()).add(format(OUT_FMT, response.getSkdmeldingstype(), encodeStatus(entry.getValue())));
+                    } else if (isFaulty(entry.getValue())) {
+                        failures.put(entry.getKey(), new ArrayList<>(List.of(format(OUT_FMT, response.getSkdmeldingstype(),
+                                encodeStatus(entry.getValue())))));
+                    }
+                }
+            }
+        }
+    }
+
+    private static void addFeilmeldingServicerutiner(String hovedperson, List<ServiceRoutineResponseStatus> responseStatus, Map<String, List<String>> failures) {
+        for (ServiceRoutineResponseStatus response : responseStatus) {
+            if (hovedperson.equals(response.getPersonId())) {
+                for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
+                    if (isFaulty(entry.getValue()) && failures.containsKey(entry.getKey())) {
+                        failures.get(entry.getKey()).add(format(OUT_FMT, response.getServiceRutinenavn(), encodeStatus(entry.getValue())));
+                    } else if (isFaulty(entry.getValue())) {
+                        failures.put(entry.getKey(), new ArrayList<>(List.of(format(OUT_FMT, response.getServiceRutinenavn(),
+                                encodeStatus(entry.getValue())))));
+                    }
+                }
+            }
+        }
+    }
+
+    private static boolean isFaulty(String value) {
+        return isNotBlank(value) && !SUCCESS.equals(value);
+    }
 
     @Async
     public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling) {
@@ -157,7 +246,7 @@ public class DollyBestillingService {
     }
 
     protected void gjenopprettNonTpsf(TpsPerson tpsPerson, RsDollyBestillingRequest bestKriterier,
-            BestillingProgress progress, boolean isOpprettEndre) {
+                                      BestillingProgress progress, boolean isOpprettEndre) {
 
         counterCustomRegistry.invoke(bestKriterier);
         clientRegisters.forEach(clientRegister ->
@@ -257,90 +346,15 @@ public class DollyBestillingService {
         }
     }
 
-    private static String getHovedpersonAvBestillingsidenter(List<String> identer) {
-        return identer.get(0); //Rask fix for å hente hoveperson i bestilling. Vet at den er første, men burde gjøre en sikrere sjekk
-    }
+    protected void sendTestidenter(Bestilling bestilling, RsDollyBestillingRequest bestKriterier, BestillingProgress progress, Person person) {
 
-    private static List<String> extraxtSuccessMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
-        Set<String> successMiljoer = new TreeSet<>();
+        TpsPerson tpsPerson = tpsfPersonCache.prepareTpsPersoner(person);
+        sendIdenterTilTPS(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))),
+                Stream.of(List.of(tpsPerson.getHovedperson()), tpsPerson.getPartnere(), tpsPerson.getBarn())
+                        .flatMap(list -> list.stream())
+                        .collect(Collectors.toList()),
+                bestilling.getGruppe(), progress);
 
-        // Add successful messages
-        addSuccessfulMessages(hovedperson, response, successMiljoer);
-
-        // Remove unsuccessful messages
-        removeUnsuccessfulMessages(hovedperson, response, successMiljoer);
-
-        return new ArrayList<>(successMiljoer);
-    }
-
-    private static void removeUnsuccessfulMessages(String hovedperson, RsSkdMeldingResponse response, Set<String> successMiljoer) {
-        for (SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()) {
-            if (hovedperson.equals(sendSkdMldResponse.getPersonId())) {
-                for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
-                    if (!entry.getValue().contains(SUCCESS)) {
-                        successMiljoer.remove(entry.getKey());
-                    }
-                }
-            }
-        }
-    }
-
-    private static void addSuccessfulMessages(String hovedperson, RsSkdMeldingResponse response, Set<String> successMiljoer) {
-        for (SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()) {
-            if (hovedperson.equals(sendSkdMldResponse.getPersonId())) {
-                for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
-                    if (entry.getValue().contains(SUCCESS)) {
-                        successMiljoer.add(entry.getKey());
-                    }
-                }
-            }
-        }
-    }
-
-    private static List<String> extraxtFailureMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
-        Map<String, List<String>> failures = new TreeMap<>();
-
-        addFeilmeldingSkdMeldinger(hovedperson, response.getSendSkdMeldingTilTpsResponsene(), failures);
-
-        addFeilmeldingServicerutiner(hovedperson, response.getServiceRoutineStatusResponsene(), failures);
-
-        List<String> errors = new ArrayList<>();
-        failures.keySet().forEach(miljoe -> errors.add(format(OUT_FMT, miljoe, join(" + ", failures.get(miljoe)))));
-
-        return errors;
-    }
-
-    private static void addFeilmeldingSkdMeldinger(String hovedperson, List<SendSkdMeldingTilTpsResponse> responseStatus, Map<String, List<String>> failures) {
-        for (SendSkdMeldingTilTpsResponse response : responseStatus) {
-            if (hovedperson.equals(response.getPersonId())) {
-                for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
-                    if (isFaulty(entry.getValue()) && failures.containsKey(entry.getKey())) {
-                        failures.get(entry.getKey()).add(format(OUT_FMT, response.getSkdmeldingstype(), encodeStatus(entry.getValue())));
-                    } else if (isFaulty(entry.getValue())) {
-                        failures.put(entry.getKey(), new ArrayList<>(List.of(format(OUT_FMT, response.getSkdmeldingstype(),
-                                encodeStatus(entry.getValue())))));
-                    }
-                }
-            }
-        }
-    }
-
-    private static void addFeilmeldingServicerutiner(String hovedperson, List<ServiceRoutineResponseStatus> responseStatus, Map<String, List<String>> failures) {
-        for (ServiceRoutineResponseStatus response : responseStatus) {
-            if (hovedperson.equals(response.getPersonId())) {
-                for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
-                    if (isFaulty(entry.getValue()) && failures.containsKey(entry.getKey())) {
-                        failures.get(entry.getKey()).add(format(OUT_FMT, response.getServiceRutinenavn(), encodeStatus(entry.getValue())));
-                    } else if (isFaulty(entry.getValue())) {
-                        failures.put(entry.getKey(), new ArrayList<>(List.of(format(OUT_FMT, response.getServiceRutinenavn(),
-                                encodeStatus(entry.getValue())))));
-                    }
-                }
-            }
-        }
-    }
-
-    private static boolean isFaulty(String value) {
-        return isNotBlank(value) && !SUCCESS.equals(value);
+        gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, false);
     }
 }

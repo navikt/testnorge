@@ -87,6 +87,9 @@ public class Bestilling {
     @Column(name = "IDENT")
     private String ident;
 
+    @Column(name = "OPPRETT_FRA_GRUPPE")
+    private Long opprettetFraGruppeId;
+
     @ManyToOne
     @JoinColumn(name = "BRUKER_ID")
     private Bruker bruker;

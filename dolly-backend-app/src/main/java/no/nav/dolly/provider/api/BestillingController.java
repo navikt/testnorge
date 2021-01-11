@@ -71,7 +71,7 @@ public class BestillingController {
     @PostMapping("/gjenopprett/{bestillingId}")
     @Operation(description = "Gjenopprett en bestilling med bestillingsId, for en liste med miljoer")
     public RsBestillingStatus gjenopprettBestilling(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "miljoer", required = false) String miljoer) {
-        Bestilling bestilling = bestillingService.createBestillingForGjenopprett(bestillingId, nonNull(miljoer) ? asList(miljoer.split(",")) : emptyList());
+        Bestilling bestilling = bestillingService.createBestillingForGjenopprettFraBestilling(bestillingId, nonNull(miljoer) ? asList(miljoer.split(",")) : emptyList());
         gjenopprettBestillingService.executeAsync(bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
