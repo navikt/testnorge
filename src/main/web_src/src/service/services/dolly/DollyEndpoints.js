@@ -48,6 +48,10 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/bestillingStatus`
 	}
 
+	static gjenopprettGruppe(gruppeId, envs) {
+		return `${groupBase}/${gruppeId}/gjenopprett?miljoer=${envs}`
+	}
+
 	static bruker() {
 		return brukerBase
 	}

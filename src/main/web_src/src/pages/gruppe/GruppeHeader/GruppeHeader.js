@@ -9,6 +9,7 @@ import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { LaasButton } from '~/components/ui/button/LaasButton/LaasButton.tsx'
 import { Header } from '~/components/ui/header/Header'
 import Formatters from '~/utils/DataFormatter'
+import GjenopprettGruppeConnector from '~/components/bestilling/gjenopprett/GjenopprettGruppeConnector'
 
 import './GruppeHeader.less'
 
@@ -18,9 +19,11 @@ export default function GruppeHeader({
 	isDeletingGruppe,
 	deleteGruppe,
 	laasGruppe,
-	isLockingGruppe
+	isLockingGruppe,
+	bestillingStatuser
 }) {
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
+	const [viserGjenopprettModal, visGjenopprettModal, skjulGjenopprettModal] = useBoolean(false)
 
 	const erLaast = gruppe.erLaast
 
@@ -63,6 +66,14 @@ export default function GruppeHeader({
 							REDIGER
 						</Button>
 					)}
+					<Button
+						onClick={visGjenopprettModal}
+						kind="synchronize"
+						disabled={gruppe.antallIdenter < 1}
+						title={gruppe.antallIdenter < 1 ? 'Kan ikke gjenopprette en tom gruppe' : null}
+					>
+						GJENOPPRETT
+					</Button>
 					{!erLaast && (
 						<LaasButton action={laasGruppe} loading={isLockingGruppe}>
 							Er du sikker på at du vil låse denne gruppen? <br />
@@ -83,6 +94,13 @@ export default function GruppeHeader({
 			</Header>
 
 			{visRedigerState && <RedigerGruppeConnector gruppe={gruppe} onCancel={skjulRediger} />}
+			{viserGjenopprettModal && (
+				<GjenopprettGruppeConnector
+					onCancel={skjulGjenopprettModal}
+					gruppe={gruppe}
+					bestillingStatuser={bestillingStatuser}
+				/>
+			)}
 		</Fragment>
 	)
 }

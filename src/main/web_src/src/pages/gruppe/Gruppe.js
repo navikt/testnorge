@@ -66,6 +66,7 @@ export default function Gruppe({
 				isDeletingGruppe={isDeletingGruppe}
 				laasGruppe={laasGruppe}
 				isLockingGruppe={isLockingGruppe}
+				bestillingStatuser={bestillingStatuser}
 			/>
 
 			<StatusListeConnector gruppeId={gruppe.id} />
