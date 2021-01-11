@@ -16,39 +16,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OrganisasjonMottakConsumer {
 
-    private final OrganisasjonProducer organisasjonProducer;
-    private final KnytningProducer knytningProducer;
-    private final InternettadresseProducer internettadresseProducer;
-    private final EpostProducer epostProducer;
-    private final NaeringskodeProducer naeringskodeProducer;
-    private final ForretningsadresseProducer forretningsadresseProducer;
-    private final PostadresseProducer postadresseProducer;
-
-    private static Metadata getMetadata(Organisasjon organisasjon, String miljloe) {
-        return Metadata.newBuilder()
-                .setOrgnummer(organisasjon.getOrganisasjonsnummer())
-                .setEnhetstype(organisasjon.getEnhetstype())
-                .setMiljo(miljloe)
-                .build();
-    }
-
-    private static Dato getDate(LocalDate date) {
-        return Dato.newBuilder()
-                .setAar(date.getYear())
-                .setMaaned(date.getMonthValue())
-                .setDag(date.getDayOfMonth())
-                .build();
-    }
-
-    //TODO Fjerne så snart producer er oppdatert
-    private static String fixPoststed(String poststed) {
-        return isNotBlank(poststed) ? poststed : "Verdi for poststed";
-    }
-
-    //TODO Hva er dette?
-    private static String fixLinjenr(String vegadresseId) {
-        return isNotBlank(vegadresseId) ? "1" : null;
-    }
+    private final OpprettelsesdokumentProducer opprettelsesdokumentProducer;
+    private final EndringsdokumentProducer endringsdokumentProducer;
+    private final MapperFacade mapperFacade;
 
     private static Metadata getMetadata(String miljoe) {
         return Metadata.newBuilder()
