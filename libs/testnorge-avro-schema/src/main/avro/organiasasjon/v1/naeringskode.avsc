@@ -10,8 +10,8 @@
     {
       "name": "gyldighetsdato",
       "type": [
-        "Dato",
-        "null"
+        "null",
+        "Dato"
       ]
     },
     {
