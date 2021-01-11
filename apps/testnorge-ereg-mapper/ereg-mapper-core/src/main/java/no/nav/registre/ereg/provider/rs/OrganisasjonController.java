@@ -14,7 +14,8 @@ import no.nav.registre.ereg.service.FlatfileService;
 public class OrganisasjonController {
 
     private final FlatfileService flatfileService;
-    public OrganisasjonController( FlatfileService flatfileService){
+
+    public OrganisasjonController(FlatfileService flatfileService) {
         this.flatfileService = flatfileService;
     }
 

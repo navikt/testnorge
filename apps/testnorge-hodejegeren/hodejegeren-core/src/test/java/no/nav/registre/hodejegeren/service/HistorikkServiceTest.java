@@ -16,7 +16,9 @@ import static org.mockito.Mockito.when;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.common.io.Resources;
+
 import no.nav.registre.testnorge.domain.dto.namespacetps.TpsPersonDokumentType;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

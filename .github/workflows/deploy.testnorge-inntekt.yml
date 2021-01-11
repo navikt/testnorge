@@ -39,8 +39,8 @@ jobs:
           docker build --tag ${IMAGE} . -f ./apps/testnorge-inntekt/Dockerfile
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}
-  deploy-default:
-    name: "Deploy default"
+  deploy-dolly:
+    name: Deploy dolly
     needs: build-jar
     runs-on: ubuntu-latest
     steps:
@@ -51,7 +51,7 @@ jobs:
           CLUSTER: dev-fss
           RESOURCE: apps/testnorge-inntekt/nais.yaml
   deploy-t6:
-    name: "Deploy t6"
+    name: Deploy t6
     needs: build-jar
     runs-on: ubuntu-latest
     steps:

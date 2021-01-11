@@ -60,8 +60,8 @@ public class OrganaisjonMottakListener {
 
     private void save(String uuid, String miljo, Organisasjon organisasjon, boolean update) {
         var list = new ArrayList<ToLine>();
-        list.add(new DetaljertNavn(organisasjon.getNavn()));
 
+        Optional.of(organisasjon.getNavn()).ifPresent(value -> list.add(new DetaljertNavn(value)));
         Optional.of(organisasjon.getAnsatte()).ifPresent(value -> list.add(new Ansatte(value)));
         Optional.of(organisasjon.getInternettadresse()).ifPresent(value -> list.add(new Internettadresse(value)));
         Optional.of(organisasjon.getEpost()).ifPresent(value -> list.add(new Epost(value)));

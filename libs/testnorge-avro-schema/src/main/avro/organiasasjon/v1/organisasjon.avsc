@@ -13,7 +13,10 @@
     },
     {
       "name": "navn",
-      "type": "DetaljertNavn"
+      "type": [
+        "DetaljertNavn",
+        "null"
+      ]
     },
     {
       "name": "ansatte",
