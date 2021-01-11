@@ -14,14 +14,16 @@ import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdWithHistorik
 @Slf4j
 public class Arbeidsforhold {
 
-    public Arbeidsforhold(ArbeidsforholdDTO dto, String ident, String virksomhetsnummer) {
+    public Arbeidsforhold(ArbeidsforholdDTO dto, String ident, String virksomhetsnummer, String historikk) {
         this.dto = dto;
         this.ident = ident;
         this.virksomhetsnummer = virksomhetsnummer;
+        this.historikk = historikk;
     }
 
     private final ArbeidsforholdDTO dto;
     private final String ident;
+    private final String historikk;
     private String virksomhetsnummer;
 
     public Arbeidsforhold(
@@ -32,6 +34,7 @@ public class Arbeidsforhold {
     ) {
         this.virksomhetsnummer = virksomhetsnummer;
         this.ident = ident;
+        this.historikk = response.getHistorikk();
         this.dto = ArbeidsforholdDTO
                 .builder()
                 .typeArbeidsforhold(emptyToNull(response.getArbeidsforholdType()))
@@ -82,7 +85,7 @@ public class Arbeidsforhold {
         return dto.getStartdato();
     }
 
-    public ArbeidsforholdRequest toSyntrestDTO(LocalDate kaldermaaned) {
+    public ArbeidsforholdRequest toSyntrestDTO(LocalDate kaldermaaned, Integer count) {
         float velferdspermisjon = 0;
         float utdanningspermisjon = 0;
         float permisjonMedForeldrepenger = 0;
@@ -134,11 +137,18 @@ public class Arbeidsforhold {
                 .utdanningspermisjon(utdanningspermisjon)
                 .yrke(nullToEmpty(dto.getYrke()))
                 .velferdspermisjon(velferdspermisjon)
+                .historikk(historikk)
+                .numEndringer(count)
                 .build();
     }
 
-    public ArbeidsforholdWithHistorikkRequest toSyntrestDTO(LocalDate kaldermaaned, String historikk) {
-        return new ArbeidsforholdWithHistorikkRequest(this.toSyntrestDTO(kaldermaaned), historikk);
+    public ArbeidsforholdHistorikk toHistorikk(String miljo) {
+        return new ArbeidsforholdHistorikk(getArbeidsforholdId(), historikk, miljo);
+    }
+
+
+    public ArbeidsforholdWithHistorikkRequest toSyntrestDTO(LocalDate kaldermaaned, String historikk, Integer count) {
+        return new ArbeidsforholdWithHistorikkRequest(this.toSyntrestDTO(kaldermaaned, count), historikk);
     }
 
     private Float nullToEmpty(Float value) {

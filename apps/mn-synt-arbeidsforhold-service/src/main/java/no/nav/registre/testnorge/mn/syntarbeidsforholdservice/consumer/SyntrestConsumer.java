@@ -20,7 +20,6 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.adapter.Arbeidsfor
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.SyntetiseringProperties;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GenerateArbeidsforholdHistorikkCommand;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GenerateNextArbeidsforholdCommand;
-import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GenerateNextArbeidsforholdWithHistorikkCommand;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GenerateStartArbeidsforholdCommand;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Arbeidsforhold;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.exception.SyntetiseringException;
@@ -30,20 +29,14 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.exception.Syntetis
 public class SyntrestConsumer {
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
-    private final ArbeidsforholdHistorikkAdapter adapter;
-    private final SyntetiseringProperties properties;
 
     private static final String OPPRETTELSE_FEILMELDING = "Feil med opprettelse av arbeidsforhold: ";
 
     public SyntrestConsumer(
             @Value("${consumers.syntrest.url}") String url,
-            ObjectMapper objectMapper,
-            ArbeidsforholdHistorikkAdapter adapter,
-            SyntetiseringProperties properties
+            ObjectMapper objectMapper
     ) {
         this.objectMapper = objectMapper;
-        this.adapter = adapter;
-        this.properties = properties;
         this.webClient = WebClient
                 .builder()
                 .codecs(clientDefaultCodecsConfigurer -> {
@@ -60,7 +53,7 @@ public class SyntrestConsumer {
 
     @SneakyThrows
     private ArbeidsforholdResponse getNesteArbeidsforholdResponse(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned) {
-        var dto = arbeidsforhold.toSyntrestDTO(kalendermaaned);
+        var dto = arbeidsforhold.toSyntrestDTO(kalendermaaned, null);
         try {
             return new GenerateNextArbeidsforholdCommand(webClient, dto).call();
         } catch (WebClientResponseException.InternalServerError e) {
@@ -69,8 +62,8 @@ public class SyntrestConsumer {
     }
 
     @SneakyThrows
-    private List<ArbeidsforholdResponse> getArbeidsforholdHistorikkResponse(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned) {
-        var dto = arbeidsforhold.toSyntrestDTO(kalendermaaned);
+    private List<ArbeidsforholdResponse> getArbeidsforholdHistorikkResponse(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned, Integer count) {
+        var dto = arbeidsforhold.toSyntrestDTO(kalendermaaned, count);
         try {
             return new GenerateArbeidsforholdHistorikkCommand(webClient, dto).call();
         } catch (WebClientResponseException.InternalServerError e) {
@@ -78,25 +71,11 @@ public class SyntrestConsumer {
         }
     }
 
-    @SneakyThrows
-    private ArbeidsforholdResponse getNesteArbeidsforholdWithHistorikkResponse(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned) {
-        String historikk = adapter.get(arbeidsforhold.getArbeidsforholdId()).getHistorikk();
-        var dto = arbeidsforhold.toSyntrestDTO(kalendermaaned, historikk);
-        try {
-            ArbeidsforholdResponse response = new GenerateNextArbeidsforholdWithHistorikkCommand(webClient, dto).call();
-            adapter.save(arbeidsforhold.getArbeidsforholdId(), response.getHistorikk());
-            return response;
-        } catch (WebClientResponseException.InternalServerError e) {
-            throw new SyntetiseringException(OPPRETTELSE_FEILMELDING + objectMapper.writeValueAsString(dto), e);
-        }
-    }
 
     @SneakyThrows
     public Arbeidsforhold getNesteArbeidsforhold(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned) {
         log.info("Finner neste arbeidsforhold den {}.", kalendermaaned.plusMonths(1));
-        ArbeidsforholdResponse response = properties.isSaveHistory()
-                ? getNesteArbeidsforholdWithHistorikkResponse(arbeidsforhold, kalendermaaned)
-                : getNesteArbeidsforholdResponse(arbeidsforhold, kalendermaaned);
+        ArbeidsforholdResponse response = getNesteArbeidsforholdResponse(arbeidsforhold, kalendermaaned);
         return new Arbeidsforhold(
                 response,
                 arbeidsforhold.getIdent(),
@@ -105,10 +84,14 @@ public class SyntrestConsumer {
         );
     }
 
-    @SneakyThrows
     public List<Arbeidsforhold> getArbeidsforholdHistorikk(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned) {
+        return getArbeidsforholdHistorikk(arbeidsforhold, kalendermaaned, null);
+    }
+
+    @SneakyThrows
+    public List<Arbeidsforhold> getArbeidsforholdHistorikk(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned, Integer count) {
         log.info("Finner arbeidsforhold historikk fra og med {}.", kalendermaaned.plusMonths(1));
-        List<ArbeidsforholdResponse> response = getArbeidsforholdHistorikkResponse(arbeidsforhold, kalendermaaned);
+        List<ArbeidsforholdResponse> response = getArbeidsforholdHistorikkResponse(arbeidsforhold, kalendermaaned, count);
         log.info("Fant historikk for {} måneder.", response.size());
 
         var list = response.stream().map(res -> new Arbeidsforhold(

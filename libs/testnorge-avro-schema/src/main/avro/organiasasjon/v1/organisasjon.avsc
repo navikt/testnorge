@@ -14,99 +14,99 @@
     {
       "name": "navn",
       "type": [
-        "DetaljertNavn",
-        "null"
+        "null",
+        "DetaljertNavn"
       ]
     },
     {
       "name": "ansatte",
       "type": [
-        "Ansatte",
-        "null"
+        "null",
+        "Ansatte"
       ]
     },
     {
       "name": "internettadresse",
       "type": [
-        "Internettadresse",
-        "null"
+        "null",
+        "Internettadresse"
       ]
     },
     {
       "name": "epost",
       "type": [
-        "Epost",
-        "null"
+        "null",
+        "Epost"
       ]
     },
     {
       "name": "sektorkode",
       "type": [
-        "Sektorkode",
-        "null"
+        "null",
+        "Sektorkode"
       ]
     },
     {
       "name": "stiftelsesdato",
       "type": [
-        "Stiftelsesdato",
-        "null"
+        "null",
+        "Stiftelsesdato"
       ]
     },
     {
       "name": "mobiltelefon",
       "type": [
-        "Telefon",
-        "null"
+        "null",
+        "Telefon"
       ]
     },
     {
       "name": "naeringskode",
       "type": [
-        "Naeringskode",
-        "null"
+        "null",
+        "Naeringskode"
       ]
     },
     {
       "name": "maalform",
       "type": [
-        "Maalform",
-        "null"
+        "null",
+        "Maalform"
       ]
     },
     {
       "name": "telefon",
       "type": [
-        "Telefon",
-        "null"
+        "null",
+        "Telefon"
       ]
     },
     {
       "name": "formaal",
       "type": [
-        "Formaal",
-        "null"
+        "null",
+        "Formaal"
       ]
     },
     {
       "name": "knytning",
       "type": [
-        "Knytning",
-        "null"
+        "null",
+        "Knytning"
       ]
     },
     {
       "name": "forretningsadresse",
       "type": [
-        "Adresse",
-        "null"
+        "null",
+        "Adresse"
       ]
     },
     {
       "name": "postadresse",
       "type": [
-        "Adresse",
-        "null"
+        "null",
+        "Adresse"
       ]
     }
   ]

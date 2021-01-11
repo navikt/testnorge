@@ -1,4 +1,4 @@
-package no.nav.identpool.repository.postgres;
+package no.nav.identpool.repository;
 
 import java.time.LocalDate;
 import java.util.List;

@@ -1,4 +1,4 @@
-package no.nav.identpool.repository.postgres;
+package no.nav.identpool.repository;
 
 import java.util.List;
 import org.springframework.data.repository.CrudRepository;

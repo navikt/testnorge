@@ -6,7 +6,7 @@ spring:
       minimum-idle: 1
   flyway:
     enabled: true
-    locations: classpath:/db/migration/postgres
+    locations: classpath:/db/migration
     baseline-on-migrate: true
   jpa:
     properties:

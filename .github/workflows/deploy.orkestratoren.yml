@@ -6,6 +6,10 @@ on:
     paths:
       - apps/orkestratoren/**
       - libs/testnorge-core/**
+  workflow_dispatch:
+    paths:
+      - apps/orkestratoren/**
+      - libs/testnorge-core/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/orkestrator:${{ github.sha }}
