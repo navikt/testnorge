@@ -29,6 +29,7 @@ public class MiljoerConsumer {
         this.webClient = WebClient.builder()
                 .baseUrl(miljoeUrl)
                 .build();
+
     }
 
     public MiljoerResponse hentMiljoer() {
