@@ -77,7 +77,7 @@ public class KubernetesController {
         // nullcheck proxy port/url -> settes i run configuration på utvimage.
 
 
-        if (!isNull(proxyUrl) && !isNull(proxyPort)) {
+        if (!"local".equals(proxyUrl) && proxyPort != 0) {
             this.authRestTemplate = restTemplateBuilder
                 .requestFactory(() -> new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create()
                         .setRoutePlanner(new DefaultProxyRoutePlanner(new HttpHost(proxyUrl, proxyPort)))
