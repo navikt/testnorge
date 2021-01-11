@@ -118,7 +118,8 @@ public class ArbeidsforholdService {
                                         new Arbeidsforhold(
                                                 arbeidsforholdDTO,
                                                 personDTO.getIdent(),
-                                                virksomhetDTO.getOrganisajonsnummer()
+                                                virksomhetDTO.getOrganisajonsnummer(),
+                                                null
                                         ),
                                         kalendermaaned.minusMonths(1)
                                 );
@@ -143,7 +144,8 @@ public class ArbeidsforholdService {
                                                 new Arbeidsforhold(
                                                         arbeidsforholdDTO,
                                                         personDTO.getIdent(),
-                                                        virksomhetDTO.getOrganisajonsnummer()
+                                                        virksomhetDTO.getOrganisajonsnummer(),
+                                                        null
                                                 ),
                                                 kalendermaaned.minusMonths(1)
                                         );

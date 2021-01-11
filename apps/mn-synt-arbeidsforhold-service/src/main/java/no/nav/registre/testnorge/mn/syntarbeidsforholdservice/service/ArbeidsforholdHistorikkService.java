@@ -21,6 +21,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.adapter.ArbeidsforholdHistorikkAdapter;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.SyntrestConsumer;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Arbeidsforhold;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.ArbeidsforholdMap;
@@ -35,9 +36,10 @@ public class ArbeidsforholdHistorikkService {
     private final IdentService identService;
     private final OpplysningspliktigService opplysningspliktigService;
     private final Random random = new Random();
+    private final ArbeidsforholdHistorikkAdapter historikkAdapter;
 
 
-    private Map<LocalDate, Arbeidsforhold> createArbeidsforholdHistorikk(final String ident, Iterator<LocalDate> dates) {
+    private Map<LocalDate, Arbeidsforhold> createArbeidsforholdHistorikk(final String ident, Iterator<LocalDate> dates, int count) {
         var map = new HashMap<LocalDate, Arbeidsforhold>();
         var startdato = dates.next();
         log.info("Generer for {} den {}.", ident, startdato);
@@ -49,7 +51,7 @@ public class ArbeidsforholdHistorikkService {
         }
 
         var previous = first;
-        var historikk = syntrestConsumer.getArbeidsforholdHistorikk(previous, startdato).iterator();
+        var historikk = syntrestConsumer.getArbeidsforholdHistorikk(previous, startdato, count).iterator();
 
         while (dates.hasNext()) {
             LocalDate kalendermaaned = dates.next();
@@ -75,6 +77,10 @@ public class ArbeidsforholdHistorikkService {
             } else {
                 if (!historikk.hasNext()) {
                     historikk = syntrestConsumer.getArbeidsforholdHistorikk(previous, kalendermaaned.minusMonths(1)).iterator();
+                    if (!historikk.hasNext()) {
+                        log.warn("Forsetter ikke pa arbeidsforhold da historikk ikke finnes for {}.", ident);
+                        return map;
+                    }
                 }
                 var next = historikk.next();
                 map.put(kalendermaaned, next);
@@ -85,14 +91,14 @@ public class ArbeidsforholdHistorikkService {
         return map;
     }
 
-    private CompletableFuture<ArbeidsforholdMap> futureMap(final String ident, Iterator<LocalDate> dates) {
+    private CompletableFuture<ArbeidsforholdMap> futureMap(final String ident, Set<LocalDate> dates) {
         return CompletableFuture.supplyAsync(
-                () -> createArbeidsforholdHistorikk(ident, dates), executor
+                () -> createArbeidsforholdHistorikk(ident, dates.iterator(), dates.size()), executor
         ).thenApply(map -> new ArbeidsforholdMap(ident, map));
     }
 
     private List<ArbeidsforholdMap> getArbeidsforholdMapList(Set<String> identer, Set<LocalDate> dates) {
-        var futures = identer.stream().map(ident -> futureMap(ident, dates.iterator())).collect(Collectors.toList());
+        var futures = identer.stream().map(ident -> futureMap(ident, dates)).collect(Collectors.toList());
         var list = new ArrayList<ArbeidsforholdMap>();
         for (var future : futures) {
             try {
@@ -102,7 +108,9 @@ public class ArbeidsforholdHistorikkService {
                 log.error("Feil ved generering av syntetisk historikk. Fortsetter uten.", e);
             }
         }
-        if (futures.size() > list.size()) {
+        if (list.isEmpty()) {
+            log.warn("Fikk ikke syntentisert {} identer pga tidligere feil.", futures.size());
+        } else if (futures.size() > list.size()) {
             log.warn("Syntetiserer bare {}/{} personer pga tidligere feil.", list.size(), futures.size());
         }
         return list;
@@ -123,7 +131,7 @@ public class ArbeidsforholdHistorikkService {
         log.info("Syntentiser for {} person(er) mellom {} - {}...", identer.size(), fom, tom);
         var arbeidsforholdMapList = getArbeidsforholdMapList(identer, dates);
 
-        if(arbeidsforholdMapList.isEmpty()){
+        if (arbeidsforholdMapList.isEmpty()) {
             log.warn("Fikk ikke opprettet syntetisk arbeidsforhold. Avslutter syntetisering...");
             return;
         }
@@ -157,6 +165,7 @@ public class ArbeidsforholdHistorikkService {
             }
             var opplysningspliktig = findOpplysningspliktigForVirksomhet(arbeidsforhold.getVirksomhetsnummer(), opplysningspliktige);
             opplysningspliktig.addArbeidsforhold(arbeidsforhold);
+            historikkAdapter.save(arbeidsforhold.toHistorikk(miljo));
         }
         opplysningspliktigService.send(opplysningspliktige, miljo);
     }
