@@ -66,7 +66,6 @@ public class ArbeidsforholdController {
             @RequestParam String ident,
             @RequestParam String miljoe
     ) {
-        System.out.println(miljoerConsumer.hentMiljoer()); //TODO FJERNE
         return aaregService.hentArbeidsforhold(ident, miljoe);
     }
 
