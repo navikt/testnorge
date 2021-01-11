@@ -1,7 +1,7 @@
 package no.nav.identpool.ajourhold;
 
 import no.nav.identpool.domain.postgres.Ajourhold;
-import no.nav.identpool.repository.postgres.AjourholdRepository;
+import no.nav.identpool.repository.AjourholdRepository;
 import no.nav.identpool.test.mockito.MockitoExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

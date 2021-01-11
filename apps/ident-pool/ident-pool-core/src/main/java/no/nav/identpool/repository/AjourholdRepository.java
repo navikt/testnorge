@@ -1,4 +1,4 @@
-package no.nav.identpool.repository.postgres;
+package no.nav.identpool.repository;
 
 import java.time.LocalDateTime;
 import org.springframework.data.jpa.repository.JpaRepository;
