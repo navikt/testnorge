@@ -24,8 +24,13 @@ public class ArbeidsforholdHistorikk {
     }
 
     public ArbeidsforholdHistorikkModel toModel() {
+        return toModel(null);
+    }
+
+    public ArbeidsforholdHistorikkModel toModel(Long id) {
         return ArbeidsforholdHistorikkModel
                 .builder()
+                .id(id)
                 .arbeidsforholdId(arbeidsforholdId)
                 .historikk(historikk)
                 .miljo(miljo)
