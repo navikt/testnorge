@@ -29,7 +29,7 @@ import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.domain.TpsStatus;
 import no.nav.identpool.domain.postgres.Ident;
-import no.nav.identpool.repository.postgres.IdentRepository;
+import no.nav.identpool.repository.IdentRepository;
 import no.nav.identpool.service.IdentGeneratorService;
 import no.nav.identpool.service.IdentTpsService;
 import no.nav.identpool.test.mockito.MockitoExtension;
