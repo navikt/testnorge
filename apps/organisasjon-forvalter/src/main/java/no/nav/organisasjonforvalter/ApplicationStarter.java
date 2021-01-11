@@ -19,6 +19,7 @@ public class ApplicationStarter {
                     .build();
         }
 
+
         new SpringApplicationBuilder()
                 .sources(AppConfig.class)
                 .properties(properties)
