@@ -1,5 +1,7 @@
 package no.nav.identpool.service;
 
+import static java.lang.String.format;
+import static java.time.format.DateTimeFormatter.ISO_DATE;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static no.nav.identpool.domain.Rekvireringsstatus.I_BRUK;
 import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
@@ -96,7 +98,11 @@ public class IdentpoolService {
             int daysInRange = Math.toIntExact(DAYS.between(request.getFoedtEtter(), request.getFoedtFoer())) + 1;
             Set<String> usedIdents = hentBrukteIdenterFraDatabase(request, daysInRange);
             if (daysInRange == 1 && usedIdents.size() >= MAKS_ANTALL_OPPRETTINGER_ONTHEFLY_PER_DAG * daysInRange) {
-                throw new ForFaaLedigeIdenterException("Det er for få ledige identer i TPS - prøv med et annet dato-intervall.");
+                throw new ForFaaLedigeIdenterException(format("Det er for få ledige identer i TPS: " +
+                                "identType %s, kjønn %s, fødtEtter %s, fødtFør %s",
+                        request.getIdenttype(), request.getKjoenn(),
+                        request.getFoedtEtter().format(ISO_DATE),
+                        request.getFoedtFoer().format(ISO_DATE)));
             }
 
             List<String> newIdents = hentIdenterFraTps(request, usedIdents);
@@ -107,8 +113,18 @@ public class IdentpoolService {
                     saveIdents(newIdents.subList(missingIdentCount, newIdents.size()), LEDIG, null);
                 }
             } else {
-                throw new ForFaaLedigeIdenterException("Det er for få ledige identer i TPS - prøv med et annet dato-intervall.");
+                throw new ForFaaLedigeIdenterException(format("Det er for få ledige identer i TPS: " +
+                                "identType %s, kjønn %s, fødtEtter %s, fødtFør %s",
+                        request.getIdenttype(), request.getKjoenn(),
+                        request.getFoedtEtter().format(ISO_DATE),
+                        request.getFoedtFoer().format(ISO_DATE)));
             }
+
+            throw new ForFaaLedigeIdenterException(format("Identpool finner ikke ledige identer i hht forespørsel: " +
+                            "identType %s, kjønn %s, fødtEtter %s, fødtFør %s. \nForsøk å bestille med andre kriterier.",
+                    request.getIdenttype(), request.getKjoenn(),
+                    request.getFoedtEtter().format(ISO_DATE),
+                    request.getFoedtFoer().format(ISO_DATE)));
         }
 
         //Sier at request har tatt disse i bruk
