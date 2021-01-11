@@ -127,7 +127,7 @@ Når syntrest kjøres lokalt i utviklerimage så klarer den ikke alltid å hente
 En manuell fiks for dette er å gå til [packages](https://github.com/orgs/navikt/packages?repo_name=testnorge-syntetiseringspakker) og hente siste versjon for ønsket 
 applikasjon og bytte ut `latest` med denne versjonen i image-delen i relevant nais.yaml (resources/nais/{app-name}.yaml). Deretter må følgende kode kommenteres ut i 
 `KubernetesController` `prepareYaml`-metode:
-```
+```java
 Map<String, Object> spec = (Map) manifestFile.get("spec");
 String imageBase = spec.get("image").toString();
 String latestImage = imageBase.replace("latest", getApplicationTag(appName).orElse("latest"));
