@@ -55,5 +55,20 @@ public class AdresseMappingStrategy implements MappingStrategy {
                 })
                 .byDefault()
                 .register();
+
+        factory.classMap(Adresse.class, no.nav.registre.testnorge.libs.avro.organisasjon.v1.Adresse.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(Adresse source, no.nav.registre.testnorge.libs.avro.organisasjon.v1.Adresse target, MappingContext context) {
+                        String[] adresselinjer = source.getAdresse().split(",");
+                        target.setPostadresse1(adresselinjer.length > 0 ? adresselinjer[0] : null);
+                        target.setPostadresse2(adresselinjer.length > 1 ? adresselinjer[1] : null);
+                        target.setPostadresse3(adresselinjer.length > 2 ? adresselinjer[2] : null);
+                        target.setKommunenummer(source.getKommunenr());
+                        target.setPostnummer(source.getPostnr());
+                    }
+                })
+                .byDefault()
+                .register();
     }
 }
