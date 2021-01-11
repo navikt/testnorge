@@ -19,6 +19,7 @@ spec:
         - application: dolly-frontend-dev
         - application: dolly-backend
         - application: dolly-backend-dev
+        - application: testnorge-aareg
   azure:
     application:
       enabled: true

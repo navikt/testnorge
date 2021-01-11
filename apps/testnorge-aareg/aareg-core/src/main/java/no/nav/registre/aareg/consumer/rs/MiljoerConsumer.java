@@ -29,8 +29,6 @@ public class MiljoerConsumer {
         this.webClient = WebClient.builder()
                 .baseUrl(miljoeUrl)
                 .build();
-
-        System.out.println(hentMiljoer()); //TODO FJERNE NÅR DEN FUNGERER
     }
 
     public MiljoerResponse hentMiljoer() {
@@ -44,8 +42,6 @@ public class MiljoerConsumer {
                 .retrieve()
                 .bodyToMono(MiljoerResponse.class)
                 .block();
-
-        System.out.println(response); //TODO FJERNE
 
         if (response == null) {
             throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Fant ingen miljøer");
