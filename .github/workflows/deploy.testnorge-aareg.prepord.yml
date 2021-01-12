@@ -2,7 +2,7 @@ name: Deploy testnorge-aareg
 
 on:
   push:
-    branches: aareg-fix-kommentarer
+    branches: aareg-fix
     paths:
       - apps/testnorge-aareg/**
       - libs/testnorge-core/**
