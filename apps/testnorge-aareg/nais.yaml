@@ -7,6 +7,9 @@ metadata:
     team: dolly
 spec:
   port: 8080
+  azure:
+    application:
+      enabled: true
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
@@ -34,3 +37,5 @@ spec:
     - "https://testnorge-aareg.dev-fss.nais.io"
     - "https://testnorge-aareg.dev.adeo.no"
     - "https://testnorge-aareg.dev.intern.nav.no"
+    - "https://testnorge-aareg-u2.nais.preprod.local"
+    - "https://testnorge-aareg-u2.dev-fss.nais.io"
