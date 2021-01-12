@@ -1,5 +1,17 @@
 package no.nav.identpool.service.ny;
 
+import static java.lang.String.format;
+import static java.time.format.DateTimeFormatter.ISO_DATE;
+import static java.util.Objects.nonNull;
+import static no.nav.identpool.domain.Rekvireringsstatus.I_BRUK;
+import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.domain.Rekvireringsstatus;
@@ -8,17 +20,6 @@ import no.nav.identpool.domain.postgres.Ident;
 import no.nav.identpool.exception.ForFaaLedigeIdenterException;
 import no.nav.identpool.repository.IdentRepository;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;
-import org.springframework.stereotype.Service;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static java.lang.String.format;
-import static java.time.format.DateTimeFormatter.ISO_DATE;
-import static no.nav.identpool.domain.Rekvireringsstatus.I_BRUK;
-import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
 
 @Slf4j
 @Service
@@ -62,15 +63,19 @@ public class PoolService {
             }
 
             log.info("Leverte identer: antall {}, rekvirertAv {}, identType {}, kjønn {}, fødtEtter {}, fødtFør {}",
-                    request.getAntall(), request.getRekvirertAv(), request.getIdenttype().name(), request.getKjoenn().name(),
-                    request.getFoedtEtter().format(ISO_DATE), request.getFoedtFoer().format(ISO_DATE));
+                    request.getAntall(), request.getRekvirertAv(),
+                    nonNull(request.getIdenttype()) ? request.getIdenttype().name() : null,
+                    nonNull(request.getKjoenn()) ? request.getKjoenn().name() : null,
+                    nonNull(request.getFoedtEtter()) ? request.getFoedtEtter().format(ISO_DATE) : null,
+                    nonNull(request.getFoedtFoer()) ? request.getFoedtFoer().format(ISO_DATE) : null);
 
             if (identEntities.size() < request.getAntall()) {
                 throw new ForFaaLedigeIdenterException(format("Identpool finner ikke ledige identer i hht forespørsel: " +
                                 "identType %s, kjønn %s, fødtEtter %s, fødtFør %s. \nForsøk å bestille med andre kriterier.",
-                        request.getIdenttype(), request.getKjoenn(),
-                        request.getFoedtEtter().format(ISO_DATE),
-                        request.getFoedtFoer().format(ISO_DATE)));
+                        nonNull(request.getIdenttype()) ? request.getIdenttype().name() : null,
+                        nonNull(request.getKjoenn()) ? request.getKjoenn().name() : null,
+                        nonNull(request.getFoedtEtter()) ? request.getFoedtEtter().format(ISO_DATE) : null,
+                        nonNull(request.getFoedtFoer()) ? request.getFoedtFoer().format(ISO_DATE) : null));
             }
         }
 
