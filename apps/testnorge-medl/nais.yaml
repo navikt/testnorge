@@ -2,7 +2,7 @@ apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: testnorge-medl
-  namespace: default
+  namespace: dolly
   labels:
     team: dolly
 spec:
@@ -22,12 +22,12 @@ spec:
   vault:
     enabled: true
   resources:
-    limits:
-      cpu: 500m
-      memory: 2048Mi
     requests:
       cpu: 200m
       memory: 1024Mi
+    limits:
+      cpu: 500m
+      memory: 2048Mi
   image: {{ image }}
   ingresses:
     - "https://testnorge-medl.nais.preprod.local"

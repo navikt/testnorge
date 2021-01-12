@@ -112,7 +112,7 @@
         }
       ],
       "numPartitions": 5,
-      "topicName": "tn-opprett-organisasjon-v2"
+      "topicName": "tn-opprett-organisasjon-v2-1"
     },
     {
       "configEntries": {
@@ -134,7 +134,7 @@
         }
       ],
       "numPartitions": 5,
-      "topicName": "tn-endre-organisasjon-v1"
+      "topicName": "tn-endre-organisasjon-v1-1"
     }
   ]
 }

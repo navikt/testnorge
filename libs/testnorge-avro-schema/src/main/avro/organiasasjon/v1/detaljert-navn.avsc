@@ -10,36 +10,36 @@
     {
       "name": "navn2",
       "type": [
-        "string",
-        "null"
+        "null",
+        "string"
       ]
     },
     {
       "name": "navn3",
       "type": [
-        "string",
-        "null"
+        "null",
+        "string"
       ]
     },
     {
       "name": "navn4",
       "type": [
-        "string",
-        "null"
+        "null",
+        "string"
       ]
     },
     {
       "name": "navn5",
       "type": [
-        "string",
-        "null"
+        "null",
+        "string"
       ]
     },
     {
       "name": "redigertNavn",
       "type": [
-        "string",
-        "null"
+        "null",
+        "string"
       ]
     }
   ]

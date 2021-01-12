@@ -25,7 +25,7 @@ import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
 import no.nav.identpool.domain.TpsStatus;
 import no.nav.identpool.domain.postgres.Ident;
-import no.nav.identpool.repository.postgres.IdentRepository;
+import no.nav.identpool.repository.IdentRepository;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;
 import no.nav.identpool.service.IdentGeneratorService;
 

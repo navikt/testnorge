@@ -18,7 +18,7 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component
-@DependencyOn(value = "syntrest",external = true)
+@DependencyOn(value = "syntrest", external = true)
 public class NavEndringsmeldingerSyntetisererenConsumer {
 
     private static final ParameterizedTypeReference<List<Document>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

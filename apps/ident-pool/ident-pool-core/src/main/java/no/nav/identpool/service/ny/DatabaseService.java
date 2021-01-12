@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.domain.postgres.Ident;
-import no.nav.identpool.repository.postgres.IdentRepository;
+import no.nav.identpool.repository.IdentRepository;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;
 
 @Service
@@ -30,8 +30,8 @@ public class DatabaseService {
 
         HentIdenterRequest availableIdentsRequest = HentIdenterRequest.builder()
                 .identtype(request.getIdenttype())
-                .foedtEtter(request.getFoedtEtter().minusDays(1))
-                .foedtFoer(request.getFoedtFoer().plusDays(1))
+                .foedtEtter(request.getFoedtEtter())
+                .foedtFoer(request.getFoedtFoer())
                 .kjoenn(request.getKjoenn())
                 .antall(request.getAntall())
                 .build();

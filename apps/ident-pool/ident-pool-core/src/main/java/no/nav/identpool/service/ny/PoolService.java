@@ -1,5 +1,8 @@
 package no.nav.identpool.service.ny;
 
+import static java.lang.String.format;
+import static java.time.format.DateTimeFormatter.ISO_DATE;
+import static java.util.Objects.nonNull;
 import static no.nav.identpool.domain.Rekvireringsstatus.I_BRUK;
 import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
 
@@ -10,13 +13,15 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.domain.TpsStatus;
 import no.nav.identpool.domain.postgres.Ident;
 import no.nav.identpool.exception.ForFaaLedigeIdenterException;
-import no.nav.identpool.repository.postgres.IdentRepository;
+import no.nav.identpool.repository.IdentRepository;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PoolService {
@@ -28,6 +33,10 @@ public class PoolService {
     private final DatoFraIdentService datoFraIdentService;
     private final KjoennFraIdentService kjoennFraIdentService;
     private final IdenttypeFraIdentService identtypeFraIdentService;
+
+    private static Rekvireringsstatus getRekvireringsstatus(boolean inUse) {
+        return inUse ? I_BRUK : LEDIG;
+    }
 
     public synchronized List<String> allocateIdenter(HentIdenterRequest request) {
 
@@ -53,8 +62,20 @@ public class PoolService {
                 i++;
             }
 
+            log.info("Leverte identer: antall {}, rekvirertAv {}, identType {}, kjønn {}, fødtEtter {}, fødtFør {}",
+                    request.getAntall(), request.getRekvirertAv(),
+                    nonNull(request.getIdenttype()) ? request.getIdenttype().name() : null,
+                    nonNull(request.getKjoenn()) ? request.getKjoenn().name() : null,
+                    nonNull(request.getFoedtEtter()) ? request.getFoedtEtter().format(ISO_DATE) : null,
+                    nonNull(request.getFoedtFoer()) ? request.getFoedtFoer().format(ISO_DATE) : null);
+
             if (identEntities.size() < request.getAntall()) {
-                throw new ForFaaLedigeIdenterException("Det er for få ledige identer i TPS - prøv med et annet dato-intervall.");
+                throw new ForFaaLedigeIdenterException(format("Identpool finner ikke ledige identer i hht forespørsel: " +
+                                "identType %s, kjønn %s, fødtEtter %s, fødtFør %s. \nForsøk å bestille med andre kriterier.",
+                        nonNull(request.getIdenttype()) ? request.getIdenttype().name() : null,
+                        nonNull(request.getKjoenn()) ? request.getKjoenn().name() : null,
+                        nonNull(request.getFoedtEtter()) ? request.getFoedtEtter().format(ISO_DATE) : null,
+                        nonNull(request.getFoedtFoer()) ? request.getFoedtFoer().format(ISO_DATE) : null));
             }
         }
 
@@ -83,9 +104,5 @@ public class PoolService {
                 .rekvirertAv(rekvireringsstatus == LEDIG ? null : rekvirertAv)
                 .rekvireringsstatus(rekvireringsstatus)
                 .build();
-    }
-
-    private static Rekvireringsstatus getRekvireringsstatus(boolean inUse) {
-        return inUse ? I_BRUK : LEDIG;
     }
 }
