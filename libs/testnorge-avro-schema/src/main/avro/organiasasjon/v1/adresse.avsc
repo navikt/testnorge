@@ -17,7 +17,11 @@
     },
     {
       "name": "poststed",
-      "type": "string"
+      "default": null,
+      "type": [
+        "null",
+        "string"
+      ]
     },
     {
       "name": "postadresse1",
