@@ -1,6 +1,5 @@
 package no.nav.registre.syntrest.domain.amelding;
 
-import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
