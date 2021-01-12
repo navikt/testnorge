@@ -1,7 +1,5 @@
 import { useSelector } from 'react-redux'
 import DollyModal from '~/components/ui/modal/DollyModal'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
 import { Formik } from 'formik'
 import { filterMiljoe } from '~/components/miljoVelger/MiljoeInfo/TilgjengeligeMiljoer'
 import React, { Fragment } from 'react'
@@ -32,7 +30,7 @@ export const GjenopprettModal = ({
 	})
 
 	return (
-		<DollyModal isOpen={true} closeModal={closeModal} width="25%" overflow="auto">
+		<DollyModal isOpen={true} closeModal={closeModal} width="50%" overflow="auto">
 			<ErrorBoundary>
 				{gjenopprettHeader}
 				<Formik

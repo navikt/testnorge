@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { GjenopprettGruppe } from './GjenopprettGruppe'
-import { getBestillinger, gjenopprettBestilling } from '~/ducks/bestillingStatus'
+import { getBestillinger } from '~/ducks/bestillingStatus'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
 	const { id } = ownProps.gruppe
