@@ -25,16 +25,26 @@ public class SecurityConfig extends OAuth2ResourceServerConfiguration {
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+    public void configure(HttpSecurity http) throws Exception {
+        http
+                .httpBasic()
                 .and()
-                .authorizeRequests()
-                .antMatchers("/api/**")
-                .fullyAuthenticated()
+                .headers().frameOptions().disable()
                 .and()
-                .oauth2ResourceServer()
-                .jwt()
-                .decoder(jwtDecoder());
+                .csrf().disable()
+                .formLogin().disable();
     }
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http.sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .and()
+//                .authorizeRequests()
+//                .antMatchers("/api/**")
+//                .fullyAuthenticated()
+//                .and()
+//                .oauth2ResourceServer()
+//                .jwt()
+//                .decoder(jwtDecoder());
+//    }
 }

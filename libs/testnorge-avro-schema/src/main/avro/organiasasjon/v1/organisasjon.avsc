@@ -13,6 +13,7 @@
     },
     {
       "name": "navn",
+      "default": null,
       "type": [
         "null",
         "DetaljertNavn"
@@ -20,6 +21,7 @@
     },
     {
       "name": "ansatte",
+      "default": null,
       "type": [
         "null",
         "Ansatte"
@@ -27,6 +29,7 @@
     },
     {
       "name": "internettadresse",
+      "default": null,
       "type": [
         "null",
         "Internettadresse"
@@ -34,6 +37,7 @@
     },
     {
       "name": "epost",
+      "default": null,
       "type": [
         "null",
         "Epost"
@@ -41,6 +45,7 @@
     },
     {
       "name": "sektorkode",
+      "default": null,
       "type": [
         "null",
         "Sektorkode"
@@ -48,6 +53,7 @@
     },
     {
       "name": "stiftelsesdato",
+      "default": null,
       "type": [
         "null",
         "Stiftelsesdato"
@@ -55,6 +61,7 @@
     },
     {
       "name": "mobiltelefon",
+      "default": null,
       "type": [
         "null",
         "Telefon"
@@ -62,6 +69,7 @@
     },
     {
       "name": "naeringskode",
+      "default": null,
       "type": [
         "null",
         "Naeringskode"
@@ -69,6 +77,7 @@
     },
     {
       "name": "maalform",
+      "default": null,
       "type": [
         "null",
         "Maalform"
@@ -76,6 +85,7 @@
     },
     {
       "name": "telefon",
+      "default": null,
       "type": [
         "null",
         "Telefon"
@@ -83,6 +93,7 @@
     },
     {
       "name": "formaal",
+      "default": null,
       "type": [
         "null",
         "Formaal"
@@ -90,6 +101,7 @@
     },
     {
       "name": "knytning",
+      "default": null,
       "type": [
         "null",
         "Knytning"
@@ -97,6 +109,7 @@
     },
     {
       "name": "forretningsadresse",
+      "default": null,
       "type": [
         "null",
         "Adresse"
@@ -104,6 +117,7 @@
     },
     {
       "name": "postadresse",
+      "default": null,
       "type": [
         "null",
         "Adresse"

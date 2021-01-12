@@ -17,7 +17,11 @@
     },
     {
       "name": "poststed",
-      "type": "string"
+      "default": null,
+      "type": [
+        "null",
+        "string"
+      ]
     },
     {
       "name": "postadresse1",
@@ -25,6 +29,7 @@
     },
     {
       "name": "postadresse2",
+      "default": null,
       "type": [
         "null",
         "string"
@@ -32,6 +37,7 @@
     },
     {
       "name": "postadresse3",
+      "default": null,
       "type": [
         "null",
         "string"
@@ -39,6 +45,7 @@
     },
     {
       "name": "linjenummer",
+      "default": null,
       "type": [
         "null",
         "string"
@@ -46,6 +53,7 @@
     },
     {
       "name": "vegadresseId",
+      "default": null,
       "type": [
         "null",
         "string"
