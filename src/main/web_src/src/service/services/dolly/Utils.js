@@ -1,7 +1,7 @@
 // Specialbehov for modifisering og sortering av kodeverk
 export const SortKodeverkArray = data => {
 	const kodeverk = data.koder
-	if (data.name == 'Språk') {
+	if (data.name === 'Språk') {
 		const spesKoder = ['ES', 'EN', 'NN', 'NB']
 
 		spesKoder.forEach(value => {
@@ -21,18 +21,23 @@ export const SortKodeverkArray = data => {
 		return kodeverk.filter(kode => kode.value !== 'NULL' && kode.value !== 'GLAD')
 	}
 
-	if (data.name == 'Diskresjonskoder') {
-		return kodeverk
+	if (data.name === 'Diskresjonskoder') {
+		const diskresjonskoder = [
+			...kodeverk,
+			{ label: 'KODE 19 - Strengt fortrolig utland', value: 'SFU' }
+		]
+		return diskresjonskoder
 			.map(kode => {
 				if (kode.value === 'SPFO') {
-					kode.label = 'KODE 7 - Sperret adresse, fortrolig'
+					kode.label = 'KODE 07 - Sperret adresse, fortrolig'
 				}
 				if (kode.value === 'SPSF') {
-					kode.label = 'KODE 6 - Sperret adresse, strengt fortrolig'
+					kode.label = 'KODE 06 - Sperret adresse, strengt fortrolig'
 				}
 				return kode
 			})
 			.filter(kode => kode.value !== 'UFB')
+			.sort((first, second) => (first.label > second.label ? 1 : -1))
 	}
 
 	if (
