@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.ArbeidsforholdHistorikk;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.repository.ArbeidsforholdHistorikkRepository;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.repository.model.ArbeidsforholdHistorikkModel;
 
 @Component
 @RequiredArgsConstructor
@@ -24,8 +25,10 @@ public class ArbeidsforholdHistorikkAdapter {
     }
 
     public void save(ArbeidsforholdHistorikk historikk) {
-        repository.findByArbeidsforholdIdAndMiljo(historikk.getArbeidsforholdId(), historikk.getMiljo())
-                .map(value -> historikk.toModel(value.getId())).orElseGet(() -> repository.save(historikk.toModel()));
+        var model = repository.findByArbeidsforholdIdAndMiljo(historikk.getArbeidsforholdId(), historikk.getMiljo())
+                .map(value -> historikk.toModel(value.getId()))
+                .orElse(historikk.toModel());
+        repository.save(model);
     }
 
     public void deleteBy(String arbeidsforholdId, String miljo) {

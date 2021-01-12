@@ -146,11 +146,6 @@ public class Arbeidsforhold {
         return new ArbeidsforholdHistorikk(getArbeidsforholdId(), historikk, miljo);
     }
 
-
-    public ArbeidsforholdWithHistorikkRequest toSyntrestDTO(LocalDate kaldermaaned, String historikk, Integer count) {
-        return new ArbeidsforholdWithHistorikkRequest(this.toSyntrestDTO(kaldermaaned, count), historikk);
-    }
-
     private Float nullToEmpty(Float value) {
         return value == null ? 0f : value;
     }
