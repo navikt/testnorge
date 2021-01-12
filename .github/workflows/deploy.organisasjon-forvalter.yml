@@ -5,6 +5,9 @@ on:
     branches: feature/organisasjon-forvalter
     paths:
       - apps/organisasjon-forvalter/**
+      - libs/kafka-config/**
+      - libs/kafka-producers/**
+      - libs/testnorge-avro-schema/**
       - libs/testnorge-core/**
       - libs/testnorge-oauth2/**
 
