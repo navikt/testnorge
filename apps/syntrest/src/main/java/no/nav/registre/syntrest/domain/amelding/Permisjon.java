@@ -21,10 +21,10 @@ import lombok.Setter;
 public class Permisjon {
 
     @JsonAlias({"STARTDATO", "startdato"})
-    private LocalDate startdato;
+    private String startdato;
 
     @JsonAlias({"SLUTTDATO", "sluttdato"})
-    private LocalDate sluttdato;
+    private String sluttdato;
 
     @JsonAlias({"PERMISJONSPROSENT", "permisjonsprosent"})
     private float permisjonsprosent;
