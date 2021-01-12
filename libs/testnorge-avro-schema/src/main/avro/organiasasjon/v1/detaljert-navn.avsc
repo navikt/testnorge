@@ -9,6 +9,7 @@
     },
     {
       "name": "navn2",
+      "default": null,
       "type": [
         "null",
         "string"
@@ -16,6 +17,7 @@
     },
     {
       "name": "navn3",
+      "default": null,
       "type": [
         "null",
         "string"
@@ -23,6 +25,7 @@
     },
     {
       "name": "navn4",
+      "default": null,
       "type": [
         "null",
         "string"
@@ -30,6 +33,7 @@
     },
     {
       "name": "navn5",
+      "default": null,
       "type": [
         "null",
         "string"
@@ -37,6 +41,7 @@
     },
     {
       "name": "redigertNavn",
+      "default": null,
       "type": [
         "null",
         "string"
