@@ -39,6 +39,10 @@ export default {
 		return Request.put(Endpoints.laasGruppe(gruppeId))
 	},
 
+	gjenopprettGruppe(gruppeId, envs) {
+		return Request.put(Endpoints.gjenopprettGruppe(gruppeId, envs))
+	},
+
 	//* Ident
 	updateIdentBeskrivelse(ident, beskrivelse) {
 		return Request.put(Endpoints.identBeskrivelse(ident), { beskrivelse })

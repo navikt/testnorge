@@ -74,9 +74,11 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				),
 				obj('Sist Oppdatert', Formatters.formatDate(bestillingsinformasjon.sistOppdatert)),
 				obj(
-					'Gjenopprett fra',
-					bestillingsinformasjon.opprettetFraId &&
-						`Bestilling # ${bestillingsinformasjon.opprettetFraId}`
+					'Gjenopprettet fra',
+					bestillingsinformasjon.opprettetFraId
+						? `Bestilling # ${bestillingsinformasjon.opprettetFraId}`
+						: bestillingsinformasjon.opprettetFraGruppeId &&
+								`Gruppe # ${bestillingsinformasjon.opprettetFraGruppeId}`
 				)
 			]
 		}
