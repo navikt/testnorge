@@ -22,8 +22,10 @@ public class OrderService {
     private final EregBatchStatusConsumer consumer;
 
     public Long create(String uuid) {
-        return repository.findBy(uuid).map(OrderModel::getId)
-                .orElse(repository.save(OrderModel.builder().uuid(uuid).build()).getId());
+        return repository
+                .findBy(uuid)
+                .map(OrderModel::getId)
+                .orElseGet(() -> repository.save(OrderModel.builder().uuid(uuid).build()).getId());
     }
 
 
@@ -57,6 +59,10 @@ public class OrderService {
         return list.stream()
                 .map(value -> getStatusBy(value.getId()))
                 .collect(Collectors.toList());
+    }
+
+    public void deleteAll() {
+        repository.deleteAll();
     }
 
     public void delete(String uuid) {

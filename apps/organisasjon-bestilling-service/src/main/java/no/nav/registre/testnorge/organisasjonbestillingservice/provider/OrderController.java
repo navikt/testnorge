@@ -80,4 +80,10 @@ public class OrderController {
         service.delete(uuid);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping
+    public ResponseEntity<HttpStatus> deleteAll() {
+        service.deleteAll();
+        return ResponseEntity.noContent().build();
+    }
 }
