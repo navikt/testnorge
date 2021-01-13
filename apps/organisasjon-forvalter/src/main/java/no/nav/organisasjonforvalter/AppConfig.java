@@ -11,5 +11,5 @@ import org.springframework.context.annotation.Import;
         InsecureOAuth2ServerToServerConfiguration.class
 })
 public class AppConfig {
-//
+
 }

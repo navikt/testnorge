@@ -1,6 +1,7 @@
 package no.nav.organisasjonforvalter.consumer;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +14,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeoutException;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
@@ -34,6 +34,19 @@ public class TpsfAdresseConsumer {
         this.webClient = WebClient.builder().baseUrl(baseUrl).build();
     }
 
+    private static AdresseData getDefaultADresse() {
+
+        return AdresseData.builder()
+                .adrnavn("FYRSTIKKALLÉEN")
+                .husnrfra("0001")
+                .husnrtil("0018")
+                .geotilk("030101")
+                .knr("0301")
+                .pnr("0661")
+                .gkode("12133")
+                .build();
+    }
+
     public AdresseData getAdresser(String postnr, String kommunenr) {
 
         try {
@@ -52,12 +65,14 @@ public class TpsfAdresseConsumer {
                 log.error("Henting av adresse feilet for postnr {} / kommunenr {} melding {} utfyllende melding {}",
                         postnr, kommunenr, response.getBody().getResponse().getStatus().getMelding(),
                         response.getBody().getResponse().getStatus().getUtfyllendeMelding());
-                return null;
+
+                return getDefaultADresse();
             }
 
         } catch (RuntimeException e) {
+
             log.error("Henting av adresse timeout etter {} ms", TIMEOUT, e);
-            return null;
+            return getDefaultADresse();
         }
     }
 
@@ -110,6 +125,7 @@ public class TpsfAdresseConsumer {
         }
 
         @Data
+        @Builder
         @NoArgsConstructor
         @AllArgsConstructor
         public static class AdresseData {

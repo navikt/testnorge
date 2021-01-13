@@ -17,8 +17,6 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.nonNull;
-
 @Service
 @RequiredArgsConstructor
 public class BestillingService {
@@ -58,6 +56,7 @@ public class BestillingService {
     }
 
     private void fixAdresseFallback(OrganisasjonRequest orgRequest) {
+
         if (orgRequest.getAdresser().isEmpty()) {
             orgRequest.getAdresser().add(AdresseRequest.builder()
                     .adressetype(AdresseType.FADR)
@@ -66,10 +65,7 @@ public class BestillingService {
 
         orgRequest.getAdresser().forEach(adresse -> {
             if (adresse.getAdresselinjer().isEmpty()) {
-                var adresseData = tpsfAdresseConsumer.getAdresser(adresse.getPostnr(), adresse.getKommunenr());
-                if (nonNull(adresseData)) {
-                    mapperFacade.map(adresseData, adresse);
-                }
+                mapperFacade.map(tpsfAdresseConsumer.getAdresser(adresse.getPostnr(), adresse.getKommunenr()), adresse);
             }
         });
     }
