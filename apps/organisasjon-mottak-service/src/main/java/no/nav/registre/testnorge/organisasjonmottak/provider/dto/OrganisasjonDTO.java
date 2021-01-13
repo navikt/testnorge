@@ -15,7 +15,7 @@ import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon;
 @NoArgsConstructor(force = true)
 public class OrganisasjonDTO {
     String orgnummer;
-    String enhtestype;
+    String enhetstype;
     NavnDTO navn;
     AdresseDTO forretningsadresse;
 
@@ -25,7 +25,7 @@ public class OrganisasjonDTO {
                 .setOrganisasjonBuilder(Organisasjon
                         .newBuilder()
                         .setOrgnummer(orgnummer)
-                        .setEnhetstype(enhtestype)
+                        .setEnhetstype(enhetstype)
                         .setNavnBuilder(DetaljertNavn.newBuilder().setNavn1(navn.getNavn1()))
                         .setPostadresseBuilder(Adresse.newBuilder()
                                 .setPostadresse1(forretningsadresse.getPostadresse1())
