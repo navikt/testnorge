@@ -30,8 +30,8 @@ public class DatabaseService {
 
         HentIdenterRequest availableIdentsRequest = HentIdenterRequest.builder()
                 .identtype(request.getIdenttype())
-                .foedtEtter(request.getFoedtEtter().minusDays(1))
-                .foedtFoer(request.getFoedtFoer().plusDays(1))
+                .foedtEtter(request.getFoedtEtter())
+                .foedtFoer(request.getFoedtFoer())
                 .kjoenn(request.getKjoenn())
                 .antall(request.getAntall())
                 .build();

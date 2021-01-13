@@ -1,8 +1,10 @@
 package no.nav.registre.aareg.provider.rs;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+import no.nav.registre.aareg.consumer.rs.MiljoerConsumer;
+import no.nav.registre.aareg.consumer.rs.response.MiljoerResponse;
+import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
+import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
+import no.nav.registre.aareg.service.AaregService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -12,11 +14,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Arrays;
 import java.util.Collections;
 
-import no.nav.registre.aareg.consumer.rs.TpsfConsumer;
-import no.nav.registre.aareg.consumer.rs.response.MiljoerResponse;
-import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
-import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
-import no.nav.registre.aareg.service.AaregService;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ArbeidsforholdControllerTest {
@@ -25,7 +24,7 @@ public class ArbeidsforholdControllerTest {
     private AaregService aaregService;
 
     @Mock
-    private TpsfConsumer tpsfConsumer;
+    private MiljoerConsumer miljoerConsumer;
 
     @InjectMocks
     private ArbeidsforholdController arbeidsforholdController;
@@ -66,11 +65,11 @@ public class ArbeidsforholdControllerTest {
         var miljoer = Arrays.asList("t0", "t1", "t2");
         var miljoerResponse = new MiljoerResponse();
         miljoerResponse.setEnvironments(miljoer);
-        when(tpsfConsumer.hentMiljoer()).thenReturn(miljoerResponse);
+        when(miljoerConsumer.hentMiljoer()).thenReturn(miljoerResponse);
 
         arbeidsforholdController.slettArbeidsforhold(navCallId, ident, null);
 
-        verify(tpsfConsumer).hentMiljoer();
+        verify(miljoerConsumer).hentMiljoer();
         verify(aaregService).slettArbeidsforhold(ident, miljoer, navCallId);
     }
 }

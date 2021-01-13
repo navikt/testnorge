@@ -61,19 +61,32 @@ public class OrganaisjonMottakListener {
     private void save(String uuid, String miljo, Organisasjon organisasjon, boolean update) {
         var list = new ArrayList<ToLine>();
 
-        Optional.of(organisasjon.getNavn()).ifPresent(value -> list.add(new DetaljertNavn(value)));
-        Optional.of(organisasjon.getAnsatte()).ifPresent(value -> list.add(new Ansatte(value)));
-        Optional.of(organisasjon.getInternettadresse()).ifPresent(value -> list.add(new Internettadresse(value)));
-        Optional.of(organisasjon.getEpost()).ifPresent(value -> list.add(new Epost(value)));
-        Optional.of(organisasjon.getSektorkode()).ifPresent(value -> list.add(new Sektorkode(value)));
-        Optional.of(organisasjon.getStiftelsesdato()).ifPresent(value -> list.add(new Stiftelsesdato(value)));
-        Optional.of(organisasjon.getTelefon()).ifPresent(value -> list.add(new Telefon(value)));
-        Optional.of(organisasjon.getNaeringskode()).ifPresent(value -> list.add(new Naeringskode(value)));
-        Optional.of(organisasjon.getMaalform()).ifPresent(value -> list.add(new Maalform(value)));
-        Optional.of(organisasjon.getKnytning()).ifPresent(value -> list.add(new Knytning(value, organisasjon)));
-        Optional.of(organisasjon.getForretningsadresse()).ifPresent(value -> list.add(new Forretningsadresse(value)));
-        Optional.of(organisasjon.getPostadresse()).ifPresent(value -> list.add(new Postadresse(value)));
-        Optional.of(organisasjon.getFormaal()).ifPresent(value -> list.add(new Formaal(value)));
+        Optional.ofNullable(organisasjon.getNavn())
+                .ifPresent(value -> list.add(new DetaljertNavn(value)));
+        Optional.ofNullable(organisasjon.getAnsatte())
+                .ifPresent(value -> list.add(new Ansatte(value)));
+        Optional.ofNullable(organisasjon.getInternettadresse())
+                .ifPresent(value -> list.add(new Internettadresse(value)));
+        Optional.ofNullable(organisasjon.getEpost())
+                .ifPresent(value -> list.add(new Epost(value)));
+        Optional.ofNullable(organisasjon.getSektorkode())
+                .ifPresent(value -> list.add(new Sektorkode(value)));
+        Optional.ofNullable(organisasjon.getStiftelsesdato())
+                .ifPresent(value -> list.add(new Stiftelsesdato(value)));
+        Optional.ofNullable(organisasjon.getTelefon())
+                .ifPresent(value -> list.add(new Telefon(value)));
+        Optional.ofNullable(organisasjon.getNaeringskode())
+                .ifPresent(value -> list.add(new Naeringskode(value)));
+        Optional.ofNullable(organisasjon.getMaalform())
+                .ifPresent(value -> list.add(new Maalform(value)));
+        Optional.ofNullable(organisasjon.getKnytning())
+                .ifPresent(value -> list.add(new Knytning(value, organisasjon)));
+        Optional.ofNullable(organisasjon.getForretningsadresse())
+                .ifPresent(value -> list.add(new Forretningsadresse(value)));
+        Optional.ofNullable(organisasjon.getPostadresse())
+                .ifPresent(value -> list.add(new Postadresse(value)));
+        Optional.ofNullable(organisasjon.getFormaal())
+                .ifPresent(value -> list.add(new Formaal(value)));
 
         var record = Record.create(
                 list.stream().map(ToLine::toLine).collect(Collectors.toList()),

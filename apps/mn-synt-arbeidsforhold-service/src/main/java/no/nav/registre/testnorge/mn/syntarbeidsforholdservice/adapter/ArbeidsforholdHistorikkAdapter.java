@@ -24,15 +24,15 @@ public class ArbeidsforholdHistorikkAdapter {
     }
 
     public void save(ArbeidsforholdHistorikk historikk) {
-        repository.save(historikk.toModel());
+        repository.findByArbeidsforholdIdAndMiljo(historikk.getArbeidsforholdId(), historikk.getMiljo())
+                .map(value -> historikk.toModel(value.getId())).orElseGet(() -> repository.save(historikk.toModel()));
     }
 
     public void deleteBy(String arbeidsforholdId, String miljo) {
         repository.deleteByArbeidsforholdIdAndMiljo(arbeidsforholdId, miljo);
     }
 
-    public void deleteBy(String miljo){
-        repository.findAllByMiljo(miljo);
+    public void deleteBy(String miljo) {
+        repository.deleteAllByMiljo(miljo);
     }
-
 }

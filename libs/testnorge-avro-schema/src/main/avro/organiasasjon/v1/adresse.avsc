@@ -29,6 +29,7 @@
     },
     {
       "name": "postadresse2",
+      "default": null,
       "type": [
         "null",
         "string"
@@ -36,6 +37,7 @@
     },
     {
       "name": "postadresse3",
+      "default": null,
       "type": [
         "null",
         "string"
@@ -43,6 +45,7 @@
     },
     {
       "name": "linjenummer",
+      "default": null,
       "type": [
         "null",
         "string"
@@ -50,6 +53,7 @@
     },
     {
       "name": "vegadresseId",
+      "default": null,
       "type": [
         "null",
         "string"
