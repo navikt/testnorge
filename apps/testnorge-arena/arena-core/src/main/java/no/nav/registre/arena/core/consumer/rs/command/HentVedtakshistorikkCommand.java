@@ -25,15 +25,15 @@ import static no.nav.registre.arena.core.consumer.rs.util.Headers.NAV_CONSUMER_I
 @Slf4j
 public class HentVedtakshistorikkCommand implements Callable<List<Vedtakshistorikk>> {
 
-    private final List<LocalDate> oppstartsdatoer;
+    private final List<String> oppstartsdatoer;
     private final WebClient webClient;
 
-    private static final ParameterizedTypeReference<List<LocalDate>> REQUEST_TYPE = new ParameterizedTypeReference<>() {
+    private static final ParameterizedTypeReference<List<String>> REQUEST_TYPE = new ParameterizedTypeReference<>() {
     };
     private static final ParameterizedTypeReference<List<Vedtakshistorikk>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
-    public HentVedtakshistorikkCommand(WebClient webClient, List<LocalDate> oppstartsdatoer) {
+    public HentVedtakshistorikkCommand(WebClient webClient, List<String> oppstartsdatoer) {
         this.webClient = webClient;
         this.oppstartsdatoer = oppstartsdatoer;
     }

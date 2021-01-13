@@ -35,10 +35,11 @@ public class VedtakshistorikkSyntConsumer {
     }
 
     public List<Vedtakshistorikk> syntetiserVedtakshistorikk(int antallIdenter) {
-        List<LocalDate> oppstartsdatoer = new ArrayList<>(antallIdenter);
+        List<String> oppstartsdatoer = new ArrayList<>(antallIdenter);
 
         for (int i = 0; i < antallIdenter; i++) {
-            oppstartsdatoer.add(LocalDate.now().minusMonths(rand.nextInt(Math.toIntExact(ChronoUnit.MONTHS.between(MIDLERTIDIG_MINIMUM_DATE, LocalDate.now())))));
+            var dato = LocalDate.now().minusMonths(rand.nextInt(Math.toIntExact(ChronoUnit.MONTHS.between(MIDLERTIDIG_MINIMUM_DATE, LocalDate.now()))));
+            oppstartsdatoer.add(dato.toString());
         }
 
         return new HentVedtakshistorikkCommand(webClient, oppstartsdatoer).call();
