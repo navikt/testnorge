@@ -1,6 +1,5 @@
 package no.nav.registre.arena.core.consumer.rs.command;
 
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
