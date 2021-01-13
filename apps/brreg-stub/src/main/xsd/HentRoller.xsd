@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2006 sp2 U (http://www.altova.com) by Bronnoysundregistrene (Bronnoysundregistrene) -->
 <!-- edited with XMLSPY v5 rel. 3 U (http://www.xmlspy.com) by Stein Ivar Olsen (Bronnoysundregistrene) -->
-<xs:schema xmlns="no:nav:brregstub:tjenestekontrakter:hentroller" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="no:nav:brregstub:tjenestekontrakter:hentroller">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
     <xs:element name="grunndata">
         <xs:annotation>
             <xs:documentation>Bekskriver tjenesten hentRoller</xs:documentation>
