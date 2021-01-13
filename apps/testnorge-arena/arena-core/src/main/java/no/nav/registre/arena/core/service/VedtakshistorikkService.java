@@ -14,6 +14,7 @@ import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_UNG
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import no.nav.registre.arena.core.consumer.rs.VedtakshistorikkSyntConsumer;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import no.nav.registre.arena.core.consumer.rs.AapSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetAap115Request;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetAapRequest;
@@ -59,7 +59,7 @@ import no.nav.registre.testnorge.libs.core.util.IdentUtil;
 @RequiredArgsConstructor
 public class VedtakshistorikkService {
 
-    private final AapSyntConsumer aapSyntConsumer;
+    private final VedtakshistorikkSyntConsumer vedtakshistorikkSyntConsumer;
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final IdenterUtils identerUtils;
     private final ArbeidssoekerUtils arbeidsoekerUtils;
@@ -72,7 +72,7 @@ public class VedtakshistorikkService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        var vedtakshistorikk = aapSyntConsumer.syntetiserVedtakshistorikk(antallNyeIdenter);
+        var vedtakshistorikk = vedtakshistorikkSyntConsumer.syntetiserVedtakshistorikk(antallNyeIdenter);
         Map<String, List<NyttVedtakResponse>> responses = new HashMap<>();
         for (var vedtakshistorikken : vedtakshistorikk) {
             vedtakshistorikken.setTilsynFamiliemedlemmer(fjernTilsynFamiliemedlemmerVedtakMedUgyldigeDatoer(vedtakshistorikken.getTilsynFamiliemedlemmer()));

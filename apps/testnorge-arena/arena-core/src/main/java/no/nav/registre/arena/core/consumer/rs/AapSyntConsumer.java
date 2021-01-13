@@ -12,17 +12,15 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import no.nav.registre.arena.core.consumer.rs.request.RettighetSyntRequest;
 import no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependenciesOn;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
+
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 
 @Component
@@ -32,16 +30,12 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap
 })
 public class AapSyntConsumer {
 
-    private static final LocalDate MINIMUM_DATE = LocalDate.of(2010, 10, 1); // krav i arena
-    // mangler støtte for tiltakspenger bak i tid
-    private static final LocalDate MIDLERTIDIG_MINIMUM_DATE = LocalDate.of(2017, 6, 1);
+
     public static final LocalDate ARENA_AAP_UNG_UFOER_DATE_LIMIT = LocalDate.of(2020, 1, 31);
 
     private RestTemplate restTemplate;
     private ConsumerUtils consumerUtils;
-    private Random rand;
 
-    private UriTemplate arenaVedtakshistorikkUrl;
     private UriTemplate arenaAapUrl;
     private UriTemplate arenaAap115Url;
     private UriTemplate arenaAapUngUfoerUrl;
@@ -51,31 +45,15 @@ public class AapSyntConsumer {
     public AapSyntConsumer(
             RestTemplateBuilder restTemplateBuilder,
             ConsumerUtils consumerUtils,
-            Random rand,
-            @Value("${synt-arena.rest-api.url}") String arenaAapServerUrl,
-            @Value("${synt-arena-vedtakshistorikk.rest-api.url}") String arenaVedtakshistorikkServerUrl
+            @Value("${synt-arena.rest-api.url}") String arenaAapServerUrl
     ) {
         this.restTemplate = restTemplateBuilder.build();
         this.consumerUtils = consumerUtils;
-        this.rand = rand;
-        this.arenaVedtakshistorikkUrl = new UriTemplate(arenaVedtakshistorikkServerUrl + "/v1/arena/vedtakshistorikk");
         this.arenaAapUrl = new UriTemplate(arenaAapServerUrl + "/v1/arena/aap");
         this.arenaAap115Url = new UriTemplate(arenaAapServerUrl + "/v1/arena/aap/11_5");
         this.arenaAapUngUfoerUrl = new UriTemplate(arenaAapServerUrl + "/v1/arena/aap/aaungufor");
         this.arenaAapTvungenForvaltningUrl = new UriTemplate(arenaAapServerUrl + "/v1/arena/aap/aatfor");
         this.arenaAapFritakMeldekortUrl = new UriTemplate(arenaAapServerUrl + "/v1/arena/aap/fri_mk");
-    }
-
-    public List<Vedtakshistorikk> syntetiserVedtakshistorikk(int antallIdenter) {
-        List<LocalDate> oppstartsdatoer = new ArrayList<>(antallIdenter);
-
-        for (int i = 0; i < antallIdenter; i++) {
-            oppstartsdatoer.add(LocalDate.now().minusMonths(rand.nextInt(Math.toIntExact(ChronoUnit.MONTHS.between(MIDLERTIDIG_MINIMUM_DATE, LocalDate.now())))));
-        }
-
-        var postRequest = RequestEntity.post(arenaVedtakshistorikkUrl.expand()).body(oppstartsdatoer);
-        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<Vedtakshistorikk>>() {
-        }).getBody();
     }
 
     public List<NyttVedtakAap> syntetiserRettighetAap(int antallMeldinger) {
