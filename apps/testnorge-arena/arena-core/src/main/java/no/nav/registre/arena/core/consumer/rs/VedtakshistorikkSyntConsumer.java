@@ -19,9 +19,9 @@ import java.util.Random;
 @DependencyOn(value = "nais-synthdata-arena-vedtakshistorikk", external = true)
 public class VedtakshistorikkSyntConsumer {
 
-    private static final LocalDate MINIMUM_DATE = LocalDate.of(2010, 10, 1); // krav i arena
-    // mangler støtte for tiltakspenger bak i tid
-    private static final LocalDate MIDLERTIDIG_MINIMUM_DATE = LocalDate.of(2017, 6, 1);
+    // Krav fra Arena et at tidligste dato(minimumsdato) for innsending av vedtakshistorikk er 01.10.2010.
+    // Har satt datoen nå til 01.06.2017 siden Arena mangler støtte for tiltakspenger bak i tid.
+    private static final LocalDate MINIMUM_DATE = LocalDate.of(2017, 6, 1);
 
     private final WebClient webClient;
     private Random rand;
@@ -38,7 +38,7 @@ public class VedtakshistorikkSyntConsumer {
         List<String> oppstartsdatoer = new ArrayList<>(antallIdenter);
 
         for (int i = 0; i < antallIdenter; i++) {
-            var dato = LocalDate.now().minusMonths(rand.nextInt(Math.toIntExact(ChronoUnit.MONTHS.between(MIDLERTIDIG_MINIMUM_DATE, LocalDate.now()))));
+            var dato = LocalDate.now().minusMonths(rand.nextInt(Math.toIntExact(ChronoUnit.MONTHS.between(MINIMUM_DATE, LocalDate.now()))));
             oppstartsdatoer.add(dato.toString());
         }
 
