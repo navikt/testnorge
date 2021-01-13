@@ -5,6 +5,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.organisasjonforvalter.jpa.entity.Organisasjon;
 import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.OrganisasjonRequest;
+import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Adresse;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Dato;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.DetaljertNavn;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Epost;
@@ -14,6 +15,8 @@ import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Knytning;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Maalform;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Naeringskode;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Sektorkode;
+import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Stiftelsesdato;
+import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Telefon;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
@@ -52,25 +55,21 @@ public class OrganisasjonMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Organisasjon source, no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon target, MappingContext context) {
                         target.setOrgnummer(source.getOrganisasjonsnummer());
                         target.setNavn(DetaljertNavn.newBuilder().setNavn1(source.getOrganisasjonsnavn()).build());
+                        target.setStiftelsesdato(Stiftelsesdato.newBuilder()
+                                .setDato(getDate(LocalDate.now()))
+                                .build());
                         target.setNaeringskode(isNotBlank(source.getNaeringskode()) ? Naeringskode.newBuilder().setKode(source.getNaeringskode())
                                 .setHjelpeenhet(false)
                                 .setGyldighetsdato(getDate(LocalDate.now()))
                                 .build() : null);
-                        target.setSektorkode(isNotBlank(source.getSektorkode()) ?
-                                Sektorkode.newBuilder().setSektorkode(source.getSektorkode()).build(): null);
-                        target.setFormaal(isNotBlank(source.getFormaal()) ?
-                                Formaal.newBuilder().setFormaal(source.getFormaal()).build() : null);
-                        target.setMaalform(isNotBlank(source.getMaalform()) ?
-                                Maalform.newBuilder().setMaalform(source.getMaalform()).build() : null);
-                        target.setEpost(isNotBlank(source.getEpost()) ?
-                                Epost.newBuilder().setEpost(source.getEpost()).build() : null);
                         target.setInternettadresse(isNotBlank(source.getNettside()) ?
                                 Internettadresse.newBuilder().setInternettadresse(source.getNettside()).build() : null);
+                        target.setMobiltelefon(isNotBlank(source.getTelefon()) ? Telefon.newBuilder().setTlf(source.getTelefon()).build() : null);
                         source.getAdresser().forEach(adresse -> {
                             if (adresse.isForretningsadresse()) {
-                                target.setForretningsadresse(mapperFacade.map(adresse, no.nav.registre.testnorge.libs.avro.organisasjon.v1.Adresse.class));
+                                target.setForretningsadresse(mapperFacade.map(adresse, Adresse.class));
                             } else if (adresse.isPostadresse()) {
-                                target.setPostadresse(mapperFacade.map(adresse, no.nav.registre.testnorge.libs.avro.organisasjon.v1.Adresse.class));
+                                target.setPostadresse(mapperFacade.map(adresse, Adresse.class));
                             }
                         });
                         if (nonNull(source.getParent())) {
