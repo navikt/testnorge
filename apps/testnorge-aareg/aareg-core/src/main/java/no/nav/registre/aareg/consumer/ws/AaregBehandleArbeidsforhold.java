@@ -15,6 +15,7 @@ import java.util.Map;
 public class AaregBehandleArbeidsforhold {
 
     private static final String BEHANDLE_ARBEIDSFORHOLD_SERVICE_URL = "https://modapp-$.adeo.no/aareg-services/BehandleArbeidsforholdService/v1";
+
     private final MiljoerConsumer miljoerConsumer;
 
     public Map<String, String> fetchWsUrlsAllEnvironments() {
