@@ -20,6 +20,7 @@ import no.nav.registre.testnorge.organisasjonmottak.provider.dto.OrganisasjonDTO
 public class OranisasjonController {
     private final OpprettelsesdokumentProducer opprettelsesdokumentProducer;
 
+
     @PostMapping
     public ResponseEntity<HttpStatus> create(@RequestHeader String miljo, @RequestBody OrganisasjonDTO dto) {
         opprettelsesdokumentProducer.send(
