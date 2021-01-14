@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
@@ -42,7 +43,9 @@ public class OrganisasjonMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(OrganisasjonRequest request, Organisasjon organisasjon, MappingContext context) {
-
+                        if (isNull(request.getStiftelsesdato())) {
+                            organisasjon.setStiftelsesdato(LocalDate.now());
+                        }
                         organisasjon.getAdresser().forEach(adr -> adr.setOrganisasjon(organisasjon));
                     }
                 })
@@ -55,9 +58,6 @@ public class OrganisasjonMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Organisasjon source, no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon target, MappingContext context) {
                         target.setOrgnummer(source.getOrganisasjonsnummer());
                         target.setNavn(DetaljertNavn.newBuilder().setNavn1(source.getOrganisasjonsnavn()).build());
-                        target.setStiftelsesdato(Stiftelsesdato.newBuilder()
-                                .setDato(getDate(LocalDate.now()))
-                                .build());
                         target.setNaeringskode(isNotBlank(source.getNaeringskode()) ? Naeringskode.newBuilder().setKode(source.getNaeringskode())
                                 .setHjelpeenhet(false)
                                 .setGyldighetsdato(getDate(LocalDate.now()))

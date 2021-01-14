@@ -5,6 +5,7 @@ import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +55,9 @@ public class Organisasjon implements Serializable {
 
     @Column(name = "maalform")
     private String maalform;
+
+    @Column(name = "stiftelsesdato")
+    private LocalDate stiftelsesdato;
 
     @OrderBy("id desc")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "organisasjon", cascade = CascadeType.ALL)

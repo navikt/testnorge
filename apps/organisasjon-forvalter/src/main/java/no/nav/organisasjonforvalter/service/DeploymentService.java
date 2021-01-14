@@ -3,6 +3,7 @@ package no.nav.organisasjonforvalter.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.organisasjonforvalter.consumer.OrganisasjonApiConsumer;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonMottakConsumer;
 import no.nav.organisasjonforvalter.jpa.entity.Organisasjon;
 import no.nav.organisasjonforvalter.jpa.repository.OrganisasjonRepository;
@@ -33,6 +34,7 @@ public class DeploymentService {
     private final OrganisasjonRepository organisasjonRepository;
     private final OrganisasjonMottakConsumer organisasjonMottakConsumer;
     private final DeployStatusService deployStatusService;
+    private final OrganisasjonApiConsumer organisasjonApiConsumer;
 
     public DeployResponse deploy(DeployRequest request) {
 
@@ -69,7 +71,13 @@ public class DeploymentService {
 
     private void deployOrganisasjon(String uuid, Organisasjon organisasjon, String env) {
 
-        organisasjonMottakConsumer.opprettOrganisasjon(uuid, organisasjon, env);
+        if (!organisasjon.getOrganisasjonsnummer().equals(
+                organisasjonApiConsumer.getStatus(organisasjon.getOrganisasjonsnummer(), env).getOrgnummer())) {
+
+            organisasjonMottakConsumer.opprettOrganisasjon(uuid, organisasjon, env);
+        } else {
+            organisasjonMottakConsumer.endreOrganisasjon(uuid, organisasjon, env);
+        }
 
         if (!organisasjon.getUnderenheter().isEmpty()) {
             organisasjon.getUnderenheter().forEach(org -> deployOrganisasjon(uuid, org, env));

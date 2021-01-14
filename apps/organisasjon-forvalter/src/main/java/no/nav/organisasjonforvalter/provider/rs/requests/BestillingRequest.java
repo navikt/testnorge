@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +45,7 @@ public class BestillingRequest {
         private String nettside;
         private MaalformType maalform;
         private List<AdresseRequest> adresser;
+        private LocalDate stiftelsesdato;
         private List<OrganisasjonRequest> underenheter;
 
         public List<AdresseRequest> getAdresser() {

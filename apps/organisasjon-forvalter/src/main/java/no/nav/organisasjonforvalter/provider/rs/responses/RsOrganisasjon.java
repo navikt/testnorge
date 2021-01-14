@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.minidev.json.annotate.JsonIgnore;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class RsOrganisasjon {
     private String sektorkode;
     private String formaal;
     private String organisasjonsnavn;
+    private LocalDate stiftelsesdato;
     private String telefon;
     private String epost;
     private String nettside;

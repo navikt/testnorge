@@ -1,6 +1,10 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
 organisasjon:
+  api:
+    url: https://testnorge-organisasjon-api.dev.adeo.no
+    client:
+      id: f4167796-bf43-438b-a282-a480e8108d0c
   bestilling:
     url: https://organisasjon-bestilling-service.dev.intern.nav.no
     client:
