@@ -22,7 +22,7 @@ spec:
   vault:
     enabled: true
     paths:
-      - kvPath: /kv/preprod/fss/testnorge-inntekt/default
+      - kvPath: /kv/preprod/fss/testnorge-inntekt/dolly
         mountPath: /var/run/secrets/nais.io/vault
   resources:
     requests:
