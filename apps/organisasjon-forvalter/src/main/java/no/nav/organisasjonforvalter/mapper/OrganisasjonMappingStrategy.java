@@ -8,16 +8,11 @@ import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.Organ
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Adresse;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Dato;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.DetaljertNavn;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Epost;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Formaal;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Internettadresse;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Knytning;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Maalform;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Naeringskode;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Sektorkode;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Stiftelsesdato;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Telefon;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -62,6 +57,10 @@ public class OrganisasjonMappingStrategy implements MappingStrategy {
                                 .setHjelpeenhet(false)
                                 .setGyldighetsdato(getDate(LocalDate.now()))
                                 .build() : null);
+                        target.setStiftelsesdato(Stiftelsesdato.newBuilder()
+                                .setDato(getDate(nonNull(source.getStiftelsesdato()) ?
+                                        source.getStiftelsesdato() : LocalDate.now()))
+                                .build());
                         target.setInternettadresse(isNotBlank(source.getNettside()) ?
                                 Internettadresse.newBuilder().setInternettadresse(source.getNettside()).build() : null);
                         target.setMobiltelefon(isNotBlank(source.getTelefon()) ? Telefon.newBuilder().setTlf(source.getTelefon()).build() : null);
