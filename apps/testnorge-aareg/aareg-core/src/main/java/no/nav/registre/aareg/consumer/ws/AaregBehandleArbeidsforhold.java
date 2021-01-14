@@ -17,14 +17,16 @@ import java.util.Map;
 public class AaregBehandleArbeidsforhold {
 
     private static final String BEHANDLE_ARBEIDSFORHOLD_SERVICE_URL = "https://modapp-$.adeo.no/aareg-services/BehandleArbeidsforholdService/v1";
+    private static final List<String> validEnvironments =
+            List.of("q0", "q1", "q2", "q4", "q5", "q6", "t0", "t1", "t2", "t3", "t4", "t5", "t6", "u1", "u2", "u4", "u5");
 
     private final MiljoerConsumer miljoerConsumer;
 
     public Map<String, String> fetchWsUrlsAllEnvironments() {
 
         Map<String, String> allEnvironmentUrls = new HashMap<>();
-        List<String> validEnvironments = miljoerConsumer.hentMiljoer().getEnvironments();
-        log.info("Gjeldende miljøer i bruk er: " + validEnvironments);
+//        List<String> validEnvironments = miljoerConsumer.hentMiljoer().getEnvironments();
+        log.info("Gjeldende miljøer i bruk er: " + validEnvironments.toString());
 
         validEnvironments.forEach(env -> allEnvironmentUrls.put(env, BEHANDLE_ARBEIDSFORHOLD_SERVICE_URL.replace("$", env)));
 
