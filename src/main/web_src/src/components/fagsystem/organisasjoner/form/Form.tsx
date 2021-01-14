@@ -31,7 +31,7 @@ const adresse = Yup.object({
 	adresselinje: Yup.array().of(Yup.string()),
 	postnr: Yup.string()
 		.when('landkode', {
-			is: 'NOR',
+			is: 'NO',
 			then: Yup.string().when('kommunenr', {
 				is: val => val === '' || val === null,
 				then: requiredString
@@ -40,7 +40,7 @@ const adresse = Yup.object({
 		.nullable(),
 	kommunenr: Yup.string()
 		.when('landkode', {
-			is: 'NOR',
+			is: 'NO',
 			then: Yup.string().when('postnr', {
 				is: val => val === '' || val === null,
 				then: requiredString
@@ -60,7 +60,7 @@ OrganisasjonForm.validation = {
 			formaal: ifPresent('$organisasjon.formaal', requiredString),
 			telefon: ifPresent('$organisasjon.telefon', requiredString),
 			epost: ifPresent('$organisasjon.epost', requiredString),
-			nettadresse: ifPresent('$organisasjon.nettadresse', requiredString),
+			nettside: ifPresent('$organisasjon.nettside', requiredString),
 			forretningsadresse: ifPresent('$organisasjon.forretningsadresse', adresse),
 			postadresse: ifPresent('$organisasjon.postadresse', adresse)
 		})

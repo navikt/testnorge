@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
+import _orderBy from 'lodash/orderBy'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Tooltip from 'rc-tooltip'
 import 'rc-tooltip/assets/bootstrap.css'
@@ -6,7 +7,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import { OrganisasjonItem } from '~/components/ui/icon/IconItem'
 import Icon from '~/components/ui/icon/Icon'
-import { Enhetstre } from '~/components/enhetstre'
+import { OrganisasjonVisning } from '~/components/fagsystem/organisasjoner/visning/Visning'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -20,7 +21,7 @@ export default function OrganisasjonListe({ orgListe }) {
 		return null
 	}
 
-	const [selectedId, setSelectedId] = useState(null)
+	const sortedOrgliste = _orderBy(orgListe, ['id'], ['desc'])
 
 	const columns = [
 		{
@@ -90,18 +91,12 @@ export default function OrganisasjonListe({ orgListe }) {
 	return (
 		<ErrorBoundary>
 			<DollyTable
-				data={orgListe}
+				data={sortedOrgliste}
 				columns={columns}
 				pagination={false}
 				visSide={null}
 				iconItem={<OrganisasjonItem />}
-				onExpand={organisasjon => (
-					<Enhetstre
-						enheter={Array.of(organisasjon)}
-						selectedEnhet={selectedId ? selectedId : Array.of(organisasjon)[0].id}
-						onNodeClick={setSelectedId}
-					/>
-				)}
+				onExpand={organisasjon => <OrganisasjonVisning data={organisasjon} />}
 			/>
 		</ErrorBoundary>
 	)

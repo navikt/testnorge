@@ -181,7 +181,6 @@ export default function Organisasjoner({ history, isFetching, brukerId }: Organi
 							</NavButton>
 						</ContentContainer>
 					))}
-				{/* //TODO: Lag bestillingsoversikt */}
 			</div>
 		</ErrorBoundary>
 	)

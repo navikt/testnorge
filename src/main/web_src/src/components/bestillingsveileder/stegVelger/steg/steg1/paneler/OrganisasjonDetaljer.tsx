@@ -14,7 +14,7 @@ export const OrganisasjonDetaljerPanel = ({ stateModifier }: any) => {
 			uncheckAttributeArray={() => sm.batchRemove('enhetstype')}
 			iconType="personinformasjon"
 		>
-			<AttributtKategori title="Enhetstype">
+			<AttributtKategori title="Organisasjon">
 				<Attributt
 					attr={sm.attrs.enhetstype}
 					disabled={true}
@@ -26,7 +26,7 @@ export const OrganisasjonDetaljerPanel = ({ stateModifier }: any) => {
 			<AttributtKategori title="Kontaktdata">
 				<Attributt attr={sm.attrs.telefon} />
 				<Attributt attr={sm.attrs.epost} />
-				<Attributt attr={sm.attrs.nettadresse} />
+				<Attributt attr={sm.attrs.nettside} />
 			</AttributtKategori>
 			<AttributtKategori title="Adresser">
 				<Attributt attr={sm.attrs.forretningsadresse} />
@@ -70,11 +70,11 @@ OrganisasjonDetaljerPanel.initialValues = ({ set, del, has }: any) => {
 			add: () => set('organisasjon.epost', ''),
 			remove: () => del('organisasjon.epost')
 		},
-		nettadresse: {
+		nettside: {
 			label: 'Internettadresse',
-			checked: has('organisasjon.nettadresse'),
-			add: () => set('organisasjon.nettadresse', ''),
-			remove: () => del('organisasjon.nettadresse')
+			checked: has('organisasjon.nettside'),
+			add: () => set('organisasjon.nettside', ''),
+			remove: () => del('organisasjon.nettside')
 		},
 		forretningsadresse: {
 			label: 'Forretningsadresse',
@@ -84,7 +84,7 @@ OrganisasjonDetaljerPanel.initialValues = ({ set, del, has }: any) => {
 					adresselinjer: ['', '', ''],
 					postnr: '',
 					kommunenr: '',
-					landkode: 'NOR',
+					landkode: 'NO',
 					poststed: ''
 				}),
 			remove: () => del('organisasjon.forretningsadresse')
@@ -97,7 +97,7 @@ OrganisasjonDetaljerPanel.initialValues = ({ set, del, has }: any) => {
 					adresselinjer: ['', '', ''],
 					postnr: '',
 					kommunenr: '',
-					landkode: 'NOR',
+					landkode: 'NO',
 					poststed: ''
 				}),
 			remove: () => del('organisasjon.postadresse')

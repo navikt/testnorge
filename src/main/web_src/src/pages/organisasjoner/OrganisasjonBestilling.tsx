@@ -1,4 +1,5 @@
 import React from 'react'
+import _orderBy from 'lodash/orderBy'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import { OrganisasjonItem } from '~/components/ui/icon/IconItem'
@@ -16,6 +17,9 @@ export default function OrganisasjonBestilling({ orgListe }) {
 	if (!orgListe) {
 		return null
 	}
+
+	const sortedOrgliste = _orderBy(orgListe, ['id'], ['desc'])
+
 	const columns = [
 		{
 			text: 'ID.',
@@ -64,7 +68,7 @@ export default function OrganisasjonBestilling({ orgListe }) {
 	return (
 		<ErrorBoundary>
 			<DollyTable
-				data={orgListe}
+				data={sortedOrgliste}
 				columns={columns}
 				pagination
 				iconItem={<OrganisasjonItem />}

@@ -63,7 +63,7 @@ export const erForste = (values, attributt) => {
 		'organisasjon.formaal',
 		'organisasjon.telefon',
 		'organisasjon.epost',
-		'organisasjon.nettadresse',
+		'organisasjon.nettside',
 		'organisasjon.forretningsadresse',
 		'organisasjon.postadresse'
 	]

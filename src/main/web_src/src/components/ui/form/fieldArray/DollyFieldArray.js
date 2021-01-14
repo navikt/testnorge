@@ -171,7 +171,7 @@ export const FormikDollyFieldArray = ({
 	hjelpetekst = null,
 	nested = false,
 	children,
-	isFull = false,
+	disabled = false,
 	canBeEmpty = true,
 	tag,
 	isOrganisasjon = false
@@ -222,7 +222,7 @@ export const FormikDollyFieldArray = ({
 							hoverText={title}
 							addEntryButtonText={header}
 							onClick={addNewEntry}
-							disabled={isFull}
+							disabled={disabled}
 						/>
 					</DollyFieldArrayWrapper>
 				</ErrorBoundary>

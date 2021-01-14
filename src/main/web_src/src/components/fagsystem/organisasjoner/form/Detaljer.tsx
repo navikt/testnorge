@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import _get from 'lodash/get'
+import _has from 'lodash/has'
 import _omit from 'lodash/omit'
 import { organisasjonPaths, kontaktPaths } from './paths'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
@@ -7,9 +8,21 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { OrganisasjonKodeverk, AdresseKodeverk } from '~/config/kodeverk'
+import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
+
+enum TypeUnderenhet {
+	JURIDISKENHET = 'JURIDISKENHET',
+	VIRKSOMHET = 'VIRKSOMHET'
+}
 
 export const Detaljer = ({ formikBag, path, level, number }) => {
 	const initialValues = _omit(formikBag.values.organisasjon, 'underenheter')
+	initialValues.enhetstype = ''
+
+	if (level === 0 && !_get(formikBag, `values.${path}.underenheter`)) {
+		formikBag.setFieldValue(`${path}.underenheter`, [initialValues])
+	}
+
 	const landForretningsadresse = _get(formikBag, `values.${path}.forretningsadresse.landkode`)
 	const landPostadresse = _get(formikBag, `values.${path}.postadresse.landkode`)
 
@@ -19,20 +32,58 @@ export const Detaljer = ({ formikBag, path, level, number }) => {
 		formikBag.setFieldValue(`${adressePath}.poststed`, '')
 	}
 
+	const [typeUnderenhet, setTypeUnderenhet] = useState(
+		level === 0 ||
+			(_has(formikBag.values, `${path}.underenheter`) &&
+				_get(formikBag.values, `${path}.underenheter`))
+			? TypeUnderenhet.JURIDISKENHET
+			: TypeUnderenhet.VIRKSOMHET
+	)
+
+	const handleToggleChange = event => {
+		setTypeUnderenhet(event.target.value)
+		formikBag.setFieldValue(`${path}.enhetstype`, '')
+		if (event.target.value === TypeUnderenhet.VIRKSOMHET) {
+			formikBag.setFieldValue(`${path}.underenheter`, [])
+		} else if (event.target.value === TypeUnderenhet.JURIDISKENHET && level < 4) {
+			formikBag.setFieldValue(`${path}.underenheter`, [initialValues])
+		}
+	}
+
 	return (
 		<>
 			<Kategori title={!number ? 'Organisasjon' : null} vis={organisasjonPaths}>
-				<FormikSelect
-					name={`${path}.enhetstype`}
-					label="Enhetstype"
-					kodeverk={
-						number
-							? OrganisasjonKodeverk.EnhetstyperVirksomhet
-							: OrganisasjonKodeverk.EnhetstyperJuridiskEnhet
-					}
-					size="xxlarge"
-					isClearable={false}
-				/>
+				<div className="toggle--wrapper">
+					{level > 0 && (
+						<ToggleGruppe onChange={handleToggleChange} name={path}>
+							<ToggleKnapp
+								key={TypeUnderenhet.JURIDISKENHET}
+								value={TypeUnderenhet.JURIDISKENHET}
+								checked={typeUnderenhet === TypeUnderenhet.JURIDISKENHET}
+							>
+								Juridisk enhet
+							</ToggleKnapp>
+							<ToggleKnapp
+								key={TypeUnderenhet.VIRKSOMHET}
+								value={TypeUnderenhet.VIRKSOMHET}
+								checked={typeUnderenhet === TypeUnderenhet.VIRKSOMHET}
+							>
+								Virksomhet
+							</ToggleKnapp>
+						</ToggleGruppe>
+					)}
+					<FormikSelect
+						name={`${path}.enhetstype`}
+						label="Enhetstype"
+						kodeverk={
+							typeUnderenhet === TypeUnderenhet.JURIDISKENHET
+								? OrganisasjonKodeverk.EnhetstyperJuridiskEnhet
+								: OrganisasjonKodeverk.EnhetstyperVirksomhet
+						}
+						size="xxlarge"
+						isClearable={false}
+					/>
+				</div>
 				<FormikSelect
 					name={`${path}.naeringskode`}
 					label="Næringskode"
@@ -48,20 +99,20 @@ export const Detaljer = ({ formikBag, path, level, number }) => {
 			<Kategori title="Kontaktdata" vis={kontaktPaths}>
 				<FormikTextInput name={`${path}.telefon`} label="Telefon" size="large" type="number" />
 				<FormikTextInput name={`${path}.epost`} label="E-postadresse" size="large" />
-				<FormikTextInput name={`${path}.nettadresse`} label="Internettadresse" size="large" />
+				<FormikTextInput name={`${path}.nettside`} label="Internettadresse" size="large" />
 			</Kategori>
 
 			<Kategori title="Forretningsadresse" vis="organisasjon.forretningsadresse">
 				<FormikSelect
 					name={`${path}.forretningsadresse.landkode`}
 					label="Land"
-					kodeverk={AdresseKodeverk.PostadresseLand}
+					kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
 					afterChange={() => handleLandChange(`${path}.forretningsadresse`)}
 					isClearable={false}
 					size="large"
 				/>
 
-				{landForretningsadresse === 'NOR' ? (
+				{landForretningsadresse === 'NO' ? (
 					<>
 						<FormikSelect
 							name={`${path}.forretningsadresse.postnr`}
@@ -98,12 +149,12 @@ export const Detaljer = ({ formikBag, path, level, number }) => {
 				<FormikSelect
 					name={`${path}.postadresse.landkode`}
 					label="Land"
-					kodeverk={AdresseKodeverk.PostadresseLand}
+					kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
 					afterChange={() => handleLandChange(`${path}.postadresse`)}
 					isClearable={false}
 					size="large"
 				/>
-				{landPostadresse === 'NOR' ? (
+				{landPostadresse === 'NO' ? (
 					<>
 						<FormikSelect
 							name={`${path}.postadresse.postnr`}
@@ -130,8 +181,14 @@ export const Detaljer = ({ formikBag, path, level, number }) => {
 				name={`${path}.underenheter`}
 				header="Underenhet"
 				newEntry={initialValues}
-				isFull={level > 3}
-				title={level > 3 ? 'Du kan maksimalt lage fire nivåer av underenheter' : null}
+				disabled={level > 3 || typeUnderenhet === TypeUnderenhet.VIRKSOMHET}
+				title={
+					level > 3
+						? 'Du kan maksimalt lage fire nivåer av underenheter'
+						: typeUnderenhet === TypeUnderenhet.VIRKSOMHET
+						? 'Du kan ikke legge til underenheter på enhet av type virksomhet'
+						: null
+				}
 				tag={number}
 				isOrganisasjon={true}
 			>

@@ -1117,12 +1117,49 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	const organisasjonKriterier = bestillingData.organisasjon
 
 	if (organisasjonKriterier) {
+		const forretningsadresse = organisasjonKriterier[0].forretningsadresse
+		const postadresse = organisasjonKriterier[0].postadresse
 		const organisasjon = {
 			header: 'Organisasjonsdetaljer',
-			items: []
+			items: [
+				obj('Enhetstype', organisasjonKriterier[0].enhetstype),
+				obj('Næringskode', organisasjonKriterier[0].naeringskode),
+				obj('Formål', organisasjonKriterier[0].formaal),
+				obj('Telefon', organisasjonKriterier[0].telefon),
+				obj('E-postadresse', organisasjonKriterier[0].epost),
+				obj('Internettadresse', organisasjonKriterier[0].nettside)
+			]
 		}
-		// TODO: Lages ferdig sammen med form eller visning av bestilling
+
+		const forretningsadresseKriterier = {
+			header: 'Forretningsadresse',
+			items: [
+				obj('Land', forretningsadresse && forretningsadresse.landkode),
+				obj('Postnummer', forretningsadresse && forretningsadresse.postnr),
+				obj('Poststed', forretningsadresse && forretningsadresse.poststed),
+				obj('Kommunenummer', forretningsadresse && forretningsadresse.kommunenr),
+				obj('Adresselinje 1', forretningsadresse && forretningsadresse.adresselinjer[0]),
+				obj('Adresselinje 2', forretningsadresse && forretningsadresse.adresselinjer[1]),
+				obj('Adresselinje 3', forretningsadresse && forretningsadresse.adresselinjer[2])
+			]
+		}
+
+		const postadresseKriterier = {
+			header: 'Postadresse',
+			items: [
+				obj('Land', postadresse && postadresse.landkode),
+				obj('Postnummer', postadresse && postadresse.postnr),
+				obj('Poststed', postadresse && postadresse.poststed),
+				obj('Kommunenummer', postadresse && postadresse.kommunenr),
+				obj('Adresselinje 1', postadresse && postadresse.adresselinjer[0]),
+				obj('Adresselinje 2', postadresse && postadresse.adresselinjer[1]),
+				obj('Adresselinje 3', postadresse && postadresse.adresselinjer[2])
+			]
+		}
+
 		data.push(organisasjon)
+		forretningsadresse && data.push(forretningsadresseKriterier)
+		postadresse && data.push(postadresseKriterier)
 	}
 
 	const importFraTps = bestillingData.importFraTps
