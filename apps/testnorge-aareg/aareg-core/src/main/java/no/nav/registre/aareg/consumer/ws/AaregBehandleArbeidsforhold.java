@@ -25,8 +25,8 @@ public class AaregBehandleArbeidsforhold {
     public Map<String, String> fetchWsUrlsAllEnvironments() {
 
         Map<String, String> allEnvironmentUrls = new HashMap<>();
-//        List<String> validEnvironments = miljoerConsumer.hentMiljoer().getEnvironments();
-        log.info("Gjeldende miljøer i bruk er: " + validEnvironments.toString());
+        List<String> miljoeEnvironments = miljoerConsumer.hentMiljoer().getEnvironments();
+        log.info("Gjeldende miljøer i bruk er: " + miljoeEnvironments.toString());
 
         validEnvironments.forEach(env -> allEnvironmentUrls.put(env, BEHANDLE_ARBEIDSFORHOLD_SERVICE_URL.replace("$", env)));
 
