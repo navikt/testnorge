@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import static no.nav.registre.arena.core.consumer.rs.AapSyntConsumer.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
 
+import no.nav.registre.arena.core.consumer.rs.VedtakshistorikkSyntConsumer;
 import no.nav.registre.arena.core.service.util.IdenterUtils;
 import no.nav.registre.arena.core.service.util.ArbeidssoekerUtils;
 import no.nav.registre.arena.core.service.util.VedtakUtils;
@@ -40,7 +41,7 @@ import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoRespons
 public class VedtakshistorikkServiceTest {
 
     @Mock
-    private AapSyntConsumer aapSyntConsumer;
+    private VedtakshistorikkSyntConsumer vedtakshistorikkSyntConsumer;
 
     @Mock
     private IdenterUtils identerUtils;
@@ -118,7 +119,7 @@ public class VedtakshistorikkServiceTest {
                         .fnr(forvalterFnr)
                         .kontonummer(kontonummer)
                         .build())));
-        when(aapSyntConsumer.syntetiserVedtakshistorikk(antallIdenter)).thenReturn(vedtakshistorikkListe);
+        when(vedtakshistorikkSyntConsumer.syntetiserVedtakshistorikk(antallIdenter)).thenReturn(vedtakshistorikkListe);
 
         var nyRettighetAapResponse = NyttVedtakResponse.builder()
                 .nyeRettigheterAap(aapRettigheter)
@@ -150,7 +151,7 @@ public class VedtakshistorikkServiceTest {
         var response = vedtakshistorikkService.genererVedtakshistorikk(avspillergruppeId, miljoe, antallIdenter);
 
         verify(identerUtils).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(1), anyInt(), anyInt(), eq(miljoe));
-        verify(aapSyntConsumer).syntetiserVedtakshistorikk(antallIdenter);
+        verify(vedtakshistorikkSyntConsumer).syntetiserVedtakshistorikk(antallIdenter);
         verify(rettighetAapService).opprettPersonOgInntektIPopp(anyString(), anyString(), any(NyttVedtakAap.class));
         verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
 
