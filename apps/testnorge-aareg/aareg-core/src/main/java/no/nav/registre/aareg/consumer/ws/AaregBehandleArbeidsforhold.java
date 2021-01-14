@@ -24,15 +24,18 @@ public class AaregBehandleArbeidsforhold {
 
     public Map<String, String> fetchWsUrlsAllEnvironments() {
 
+        List<String> miljoeEnvironments;
         Map<String, String> allEnvironmentUrls = new HashMap<>();
         try {
-        List<String> miljoeEnvironments = miljoerConsumer.hentMiljoer().getEnvironments();
-        log.info("Gjeldende miljøer i bruk er: " + miljoeEnvironments.toString());
+            log.info("Henter miljøer fra miljoeConsumer..");
+            miljoeEnvironments = miljoerConsumer.hentMiljoer().getEnvironments();
+            log.info("Gjeldende miljøer i bruk er: " + miljoeEnvironments.toString());
         } catch (Exception e) {
-            log.error("Klarte ikke å hente fra MiljoerConsumer", e);
+            log.error("Klarte ikke å hente miljoer fra MiljoerConsumer, bruker statiske verdier", e);
+            miljoeEnvironments = validEnvironments;
         }
 
-        validEnvironments.forEach(env -> allEnvironmentUrls.put(env, BEHANDLE_ARBEIDSFORHOLD_SERVICE_URL.replace("$", env)));
+        miljoeEnvironments.forEach(env -> allEnvironmentUrls.put(env, BEHANDLE_ARBEIDSFORHOLD_SERVICE_URL.replace("$", env)));
 
         return allEnvironmentUrls;
     }
