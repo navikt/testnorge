@@ -62,7 +62,7 @@ public class OrderService {
     }
 
     public void delete(String uuid) {
-        repository.findBy(uuid).ifPresent(value -> repository.deleteById(value.getId()));
+        repository.findBy(uuid).forEach(value -> repository.deleteById(value.getId()));
     }
 
     private Status toStatus(Long kode) {

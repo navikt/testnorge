@@ -42,5 +42,6 @@ public class JenkinsConsumer {
         JenkinsCrumb jenkinsCrumb = new GetCrumbCommand(webClient).call();
         var id = new StartBEREG007Command(webClient, server, miljo, jenkinsCrumb, flatFile).call();
         jenkinsBatchStatusConsumer.registerBestilling(uuid, miljo, id);
+        log.info("Bestilling sendt til jenkins {}.", uuid);
     }
 }
