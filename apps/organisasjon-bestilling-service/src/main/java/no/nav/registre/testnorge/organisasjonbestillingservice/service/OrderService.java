@@ -22,12 +22,8 @@ public class OrderService {
     private final EregBatchStatusConsumer consumer;
 
     public Long create(String uuid) {
-        return repository
-                .findBy(uuid)
-                .map(OrderModel::getId)
-                .orElseGet(() -> repository.save(OrderModel.builder().uuid(uuid).build()).getId());
+        return repository.save(OrderModel.builder().uuid(uuid).build()).getId();
     }
-
 
     public Long update(Order order, Long id) {
         return repository.save(order.toModel(id)).getId();
