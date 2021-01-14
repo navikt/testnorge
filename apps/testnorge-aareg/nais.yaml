@@ -10,6 +10,7 @@ spec:
   azure:
     application:
       enabled: true
+  webproxy: true
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
