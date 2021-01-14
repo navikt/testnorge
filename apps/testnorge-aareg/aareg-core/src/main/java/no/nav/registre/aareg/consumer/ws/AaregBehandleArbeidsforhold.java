@@ -1,6 +1,7 @@
 package no.nav.registre.aareg.consumer.ws;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.aareg.consumer.rs.MiljoerConsumer;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 @DependencyOn(value = "aareg-ws", external = true)
 public class AaregBehandleArbeidsforhold {
 
@@ -22,6 +24,7 @@ public class AaregBehandleArbeidsforhold {
 
         Map<String, String> allEnvironmentUrls = new HashMap<>();
         List<String> validEnvironments = miljoerConsumer.hentMiljoer().getEnvironments();
+        log.info("Gjeldende miljøer i bruk er: " + validEnvironments);
 
         validEnvironments.forEach(env -> allEnvironmentUrls.put(env, BEHANDLE_ARBEIDSFORHOLD_SERVICE_URL.replace("$", env)));
 
