@@ -39,7 +39,7 @@ public class ArbeidsforholdHistorikkService {
     private final ArbeidsforholdHistorikkAdapter historikkAdapter;
 
 
-    private Map<LocalDate, Arbeidsforhold> createArbeidsforholdHistorikk(final String ident, Iterator<LocalDate> dates, int count) {
+    private Map<LocalDate, Arbeidsforhold> createArbeidsforholdHistorikk(final String ident, Iterator<LocalDate> dates) {
         var map = new HashMap<LocalDate, Arbeidsforhold>();
         var startdato = dates.next();
         log.info("Generer for {} den {}.", ident, startdato);
@@ -51,7 +51,7 @@ public class ArbeidsforholdHistorikkService {
         }
 
         var previous = first;
-        var historikk = syntrestConsumer.getArbeidsforholdHistorikk(previous, startdato, count).iterator();
+        var historikk = syntrestConsumer.getArbeidsforholdHistorikk(previous, startdato).iterator();
 
         while (dates.hasNext()) {
             LocalDate kalendermaaned = dates.next();
@@ -93,7 +93,7 @@ public class ArbeidsforholdHistorikkService {
 
     private CompletableFuture<ArbeidsforholdMap> futureMap(final String ident, Set<LocalDate> dates) {
         return CompletableFuture.supplyAsync(
-                () -> createArbeidsforholdHistorikk(ident, dates.iterator(), dates.size()), executor
+                () -> createArbeidsforholdHistorikk(ident, dates.iterator()), executor
         ).thenApply(map -> new ArbeidsforholdMap(ident, map));
     }
 
