@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Opprettelsesdokument;
@@ -7,6 +8,7 @@ import no.nav.registre.testnorge.libs.kafkaconfig.config.KafkaProperties;
 import no.nav.registre.testnorge.libs.kafkaconfig.topic.OrganisasjonTopic;
 import no.nav.registre.testnorge.libs.kafkaproducers.KafkaProducer;
 
+@Slf4j
 @Component
 public class OpprettelsesdokumentProducer extends KafkaProducer<Opprettelsesdokument> {
     OpprettelsesdokumentProducer(KafkaProperties properties) {
@@ -21,6 +23,7 @@ public class OpprettelsesdokumentProducer extends KafkaProducer<Opprettelsesdoku
 
     @Override
     public void send(String key, Opprettelsesdokument value) {
+        log.info("Sender opprettelsesdokument {} for organisasjon {}.", key, value.getOrganisasjon().getOrgnummer());
         getKafkaTemplate().send(OrganisasjonTopic.ORGANISASJON_OPPRETT_ORGANISASJON, key, value);
     }
 }
