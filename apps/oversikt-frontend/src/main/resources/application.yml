@@ -23,3 +23,4 @@ applications:
   organisasjon-mottak-service: 9da0741a-ff41-4046-8635-6742298d74a4
   jenkins-batch-status-service: 34c2e87a-0711-4ef1-b644-55d86a375e7a
   miljoer-service: 30003084-1585-4629-a017-686b4387b12e
+  testnorge-organisasjon-api: f4167796-bf43-438b-a282-a480e8108d0c
