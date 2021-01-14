@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
-import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.adapter.ArbeidsforholdHistorikkAdapter;
-import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.SyntetiseringProperties;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GenerateArbeidsforholdHistorikkCommand;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GenerateNextArbeidsforholdCommand;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GenerateStartArbeidsforholdCommand;
@@ -92,6 +90,13 @@ public class SyntrestConsumer {
     public List<Arbeidsforhold> getArbeidsforholdHistorikk(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned, Integer count) {
         log.info("Finner arbeidsforhold historikk fra og med {}.", kalendermaaned.plusMonths(1));
         List<ArbeidsforholdResponse> response = getArbeidsforholdHistorikkResponse(arbeidsforhold, kalendermaaned, count);
+
+
+        if (response.isEmpty()) {
+            log.info("Fant ikke historikk. Prøver på nytt.");
+            return getArbeidsforholdHistorikk(arbeidsforhold, kalendermaaned, count);
+        }
+
         log.info("Fant historikk for {} måneder.", response.size());
 
         var list = response.stream().map(res -> new Arbeidsforhold(
@@ -100,6 +105,7 @@ public class SyntrestConsumer {
                 arbeidsforhold.getArbeidsforholdId(),
                 arbeidsforhold.getVirksomhetsnummer()))
                 .collect(Collectors.toList());
+
 
         list.stream()
                 .filter(value -> value.getSluttdato() != null)

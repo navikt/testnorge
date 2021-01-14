@@ -21,7 +21,7 @@ public class ArbeidsforholdMap {
     }
 
     public Arbeidsforhold getArbeidsforhold(LocalDate date) {
-        return Optional.of(map.get(date))
+        return Optional.ofNullable(map.get(date))
                 .orElseThrow(() -> new RuntimeException("Finner ikke arbeidsforhold for dato=" + date));
     }
 
