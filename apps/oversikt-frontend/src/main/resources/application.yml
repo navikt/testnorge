@@ -1,5 +1,4 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-azure.app.client.id: 568d8ca9-8b52-4473-ac3e-21865893419c
 
 applications:
   testnorge-profil-api-dev: f73bfcd0-a1f5-4d3f-bfb4-4d0361191438

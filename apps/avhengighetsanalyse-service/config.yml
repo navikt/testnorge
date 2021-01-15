@@ -13,6 +13,8 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
         - application: testnorge-avhengighetsanalyse-frontend
         - application: testnorge-oversikt-frontend
   azure:

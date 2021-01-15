@@ -1,3 +1,6 @@
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
+
 consumers:
   personapi:
     client_id: 51ec8e6e-20a1-4b8f-b66a-66dd6a9b00b9
@@ -9,4 +12,4 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}

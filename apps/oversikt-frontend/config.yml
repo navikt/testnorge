@@ -13,7 +13,7 @@ spec:
     application:
       enabled: true
       replyURLs:
-       - "https://testnorge-oversikt-frontend.dev.adeo.no/login/oauth2/code/aad"
+       - "https://testnorge-oversikt-frontend.dev.intern.nav.no/login/oauth2/code/aad"
        - "http://localhost:8080/login/oauth2/code/aad"
   liveness:
     path: /internal/isAlive
@@ -38,5 +38,4 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://testnorge-oversikt-frontend.dev.adeo.no"
     - "https://testnorge-oversikt-frontend.dev.intern.nav.no"

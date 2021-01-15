@@ -1,5 +1,5 @@
-azure.app.client.id: ${LOCAL_DEV_ID}
-azure.app.client.secret: ${LOCAL_DEV_SECRET}
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
 
 spring:
   security:

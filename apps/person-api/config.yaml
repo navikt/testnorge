@@ -15,6 +15,8 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
         - application: orkestratoren
         - application: testnorge-oversikt-frontend
   liveness:

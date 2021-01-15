@@ -6,7 +6,7 @@ import Header from "@/components/Header";
 import NavigationBar from "@/components/NavigationBar";
 
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
-import MagicLocalTokenPage from "@/pages/OversiktPage";
+import MagicTokenPage from "@/pages/MagicTokenPage";
 import AccessTokenPage from "@/pages/AccessTokenPage";
 import NavFrontendSpinner from "nav-frontend-spinner";
 import SessionTimer from "@/components/SessionTimer";
@@ -52,7 +52,7 @@ function App() {
               />
             </Route>
             <Route path="/">
-              <MagicLocalTokenPage />
+              <MagicTokenPage />
             </Route>
           </Switch>
         </Router>

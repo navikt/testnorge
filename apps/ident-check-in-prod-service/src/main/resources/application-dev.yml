@@ -1,5 +1,5 @@
-CLIENT_ID: bb4aa476-9040-48a1-bcac-79370c530f58
-CLIENT_SECRET: dummy
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
 
 MQ_USERNAME: dummy
 MQ_PASSWORD: dummy
@@ -16,4 +16,4 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}

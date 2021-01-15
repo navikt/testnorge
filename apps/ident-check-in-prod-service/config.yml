@@ -15,6 +15,8 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
         - application: dolly-backend-dev
         - application: dolly-backend
         - application: testnorge-oversikt-frontend

@@ -12,8 +12,8 @@ public class AzureClientCredentials {
      * @param clientId TODO nullable fra client id når alle apper er overført til AzureAd
      */
     public AzureClientCredentials(
-            @Value("${azure.app.client.id:client_id:#{null}}") String clientId,
-            @Value("${azure.app.client.secret:client_secret:#{null}}") String clientSecret
+            @Value("${azure.app.client.id:#{null}}") String clientId,
+            @Value("${azure.app.client.secret:#{null}}") String clientSecret
     ) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;

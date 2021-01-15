@@ -12,6 +12,8 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
         - application: testnorge-oversikt-frontend
         - application: organisasjon-bestilling-service
           cluster: dev-gcp

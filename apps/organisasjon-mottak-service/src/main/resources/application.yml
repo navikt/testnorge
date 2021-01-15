@@ -2,7 +2,7 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 
 spring:
   application:
-    name: organisasjon-mottak
+    name: organisasjon-mottak-service
     description: Testtjeneste for å vise hvilke tjenester som er tilgjenelig. Skal ikke brukes til noe annet enn for å test lokalt. For integrasjon bruk kafka.
 
 jenkins:

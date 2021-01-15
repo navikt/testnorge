@@ -8,12 +8,20 @@ bootJar {
 }
 
 dependencies {
+
+    compile('com.google.guava:guava') {
+        version {
+            strictly '20.0'
+        }
+    }
+
     implementation project(':testnorge-core')
     implementation project(':testnorge-database')
     implementation project(':testnorge-dependency-analysis-auto-configuration')
     implementation project(':testnorge-data-transfer-objects')
     implementation project(':testnorge-oauth2')
     implementation project(':testnorge-avro-schema')
+    implementation project(':local-development')
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server:2.3.4.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'

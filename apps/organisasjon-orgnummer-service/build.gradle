@@ -15,6 +15,15 @@ dependencyManagement {
 }
 
 dependencies {
+    implementation project(':local-development')
+    implementation project(':testnorge-database')
+    implementation project(':testnorge-oauth2')
+    implementation project(':testnorge-dependency-analysis')
+    implementation project(':testnorge-dependency-analysis-auto-configuration')
+    implementation project(':testnorge-core')
+    implementation project(':testnorge-data-transfer-objects')
+    implementation project(':testnorge-common-command')
+
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -32,14 +41,6 @@ dependencies {
     implementation 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
     implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
     implementation 'org.postgresql:postgresql:42.2.16'
-
-    implementation project(':testnorge-database')
-    implementation project(':testnorge-oauth2')
-    implementation project(':testnorge-dependency-analysis')
-    implementation project(':testnorge-dependency-analysis-auto-configuration')
-    implementation project(':testnorge-core')
-    implementation project(':testnorge-data-transfer-objects')
-    implementation project(':testnorge-common-command')
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

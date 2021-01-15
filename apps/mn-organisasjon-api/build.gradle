@@ -8,6 +8,7 @@ bootJar {
 }
 
 dependencies {
+    implementation project(':local-development')
     implementation project(':testnorge-core')
     implementation project(':testnorge-dependency-analysis-auto-configuration')
     implementation project(':testnorge-common-command')

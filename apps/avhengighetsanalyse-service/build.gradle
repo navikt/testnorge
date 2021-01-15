@@ -13,7 +13,7 @@ dependencies {
             strictly '20.0'
         }
     }
-
+    implementation project(':local-development')
     implementation project(':testnorge-core')
     implementation project(':testnorge-avro-schema')
     implementation project(':testnorge-common-command')
@@ -43,6 +43,7 @@ dependencies {
     implementation 'org.postgresql:postgresql:42.2.16'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:2.3.4.RELEASE'
     implementation 'org.springframework.security:spring-security-oauth2-client:5.3.4.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:2.2.4.RELEASE'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE'
     testImplementation project(':testnorge-testing')

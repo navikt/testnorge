@@ -1,3 +1,6 @@
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
+
 spring:
   h2:
     console:
@@ -21,7 +24,7 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
 
 SERVICEUSER_USERNAME: dummy
 SERVICEUSER_PASSWORD: dummy
