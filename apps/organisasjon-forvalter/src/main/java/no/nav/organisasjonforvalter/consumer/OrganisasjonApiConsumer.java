@@ -3,6 +3,7 @@ package no.nav.organisasjonforvalter.consumer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
@@ -13,12 +14,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import javax.ws.rs.ClientErrorException;
 import java.util.List;
 import java.util.UUID;
 
-import static java.util.Collections.emptyList;
+import static java.lang.System.currentTimeMillis;
 
+@Slf4j
 @Service
 public class OrganisasjonApiConsumer {
 
@@ -40,6 +41,8 @@ public class OrganisasjonApiConsumer {
 
     public Response getStatus(String orgnummer, String miljoe) {
 
+        long startTime = currentTimeMillis();
+
         try {
             AccessToken accessToken = accessTokenService.generateToken(accessScopes);
             ResponseEntity<Response> response = webClient.get()
@@ -52,14 +55,15 @@ public class OrganisasjonApiConsumer {
                     .toEntity(Response.class)
                     .block();
 
+            log.info("Organisasjon-API svarte med funnet etter {} ms", currentTimeMillis() - startTime);
             return response.hasBody() ? response.getBody() : new Response();
 
         } catch (WebClientResponseException e) {
 
+            log.info("Organisasjon-API svarte med ikke funnet etter {} ms", currentTimeMillis() - startTime);
             return new Response();
         }
     }
-
 
     @Data
     @NoArgsConstructor

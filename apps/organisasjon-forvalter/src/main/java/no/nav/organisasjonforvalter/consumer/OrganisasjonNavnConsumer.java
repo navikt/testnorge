@@ -1,10 +1,9 @@
 package no.nav.organisasjonforvalter.consumer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
@@ -20,7 +19,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
+import static java.lang.System.currentTimeMillis;
 
+@Slf4j
 @Service
 public class OrganisasjonNavnConsumer {
 
@@ -42,6 +43,8 @@ public class OrganisasjonNavnConsumer {
 
     public List<String> getOrgName(Integer antall) {
 
+        long startTime = currentTimeMillis();
+
         AccessToken accessToken = accessTokenService.generateToken(accessScopes);
         ResponseEntity<Navn[]> response = webClient.get()
                 .uri(NAME_URL + antall.toString())
@@ -54,6 +57,7 @@ public class OrganisasjonNavnConsumer {
                 .block();
 
         List<Navn> orgNavn = response.hasBody() ? List.of(response.getBody()) : Collections.emptyList();
+        log.info("Generer-navn-service svarte etter {} ms", currentTimeMillis() - startTime);
 
         return orgNavn.stream().map(Navn::toString).collect(Collectors.toList());
     }

@@ -1,25 +1,25 @@
 package no.nav.organisasjonforvalter.consumer;
 
-import static java.lang.String.format;
-import static java.util.Collections.emptyList;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import java.util.List;
+import java.util.UUID;
 
+import static java.lang.System.currentTimeMillis;
+import static java.util.Collections.emptyList;
+
+@Slf4j
 @Service
 public class OrganisasjonBestillingStatusConsumer {
 
@@ -43,6 +43,7 @@ public class OrganisasjonBestillingStatusConsumer {
 
     public List<ItemDto> getBestillingStatus(String uuid) {
 
+        long startTime = currentTimeMillis();
         AccessToken accessToken = accessTokenService.generateToken(accessScopes);
         ResponseEntity<ItemDto[]> response = webClient.get()
                 .uri(STATUS_URL.replace("{uuid}", uuid))
@@ -54,6 +55,7 @@ public class OrganisasjonBestillingStatusConsumer {
                 .toEntity(ItemDto[].class)
                 .block();
 
+        log.info("Organisasjon-bestilling-status tok {} ms", currentTimeMillis() - startTime);
         return response.hasBody() ? List.of(response.getBody()) : emptyList();
     }
 

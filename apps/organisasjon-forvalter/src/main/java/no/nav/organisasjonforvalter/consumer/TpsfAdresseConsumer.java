@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static java.lang.String.format;
+import static java.lang.System.currentTimeMillis;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -49,6 +50,8 @@ public class TpsfAdresseConsumer {
 
     public AdresseData getAdresser(String postnr, String kommunenr) {
 
+        long startTime = currentTimeMillis();
+
         try {
             ResponseEntity<GyldigeAdresserResponse> response = webClient.get()
                     .uri(format("%s%d%s", ADRESSE_URL, 1, getSuffix(postnr, kommunenr)))
@@ -57,6 +60,8 @@ public class TpsfAdresseConsumer {
                     .retrieve()
                     .toEntity(GyldigeAdresserResponse.class)
                     .block(Duration.ofMillis(TIMEOUT));
+
+            log.info("Adresseoppslag tok {} ms", currentTimeMillis() - startTime);
 
             if (response.hasBody() && OK_STATUS.equals(response.getBody().getResponse().getStatus().getKode())) {
                 return response.getBody().getResponse().getData1().getAdrData().get(0);

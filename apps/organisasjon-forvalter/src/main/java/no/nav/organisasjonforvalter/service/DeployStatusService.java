@@ -48,10 +48,12 @@ public class DeployStatusService {
             Thread.sleep(SLEEP_TIME);
             statusTotal = bestillingStatusConsumer.getBestillingStatus(uuid);
 
-            if (attemptsLeft-- % 5 == 0) {
-                log.info("Deploystatus for {}, {}", uuid, statusTotal.stream()
+            if (attemptsLeft-- % 5 == 0 || isDone(statusTotal)) {
+                log.info("Deploystatus for {}, {}, time elapsed {} ms",
+                        uuid, statusTotal.stream()
                         .map(ItemDto::toString)
-                        .collect(Collectors.joining(", ")));
+                        .collect(Collectors.joining(", ")),
+                        (MAX_ITERATIONS - attemptsLeft) * SLEEP_TIME);
             }
         }
 
