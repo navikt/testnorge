@@ -1,0 +1,30 @@
+package no.nav.registre.testnorge.libs.common.command;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.concurrent.Callable;
+
+import no.nav.registre.testnorge.libs.dto.jenkins.v1.JenkinsCrumb;
+
+
+@Slf4j
+@RequiredArgsConstructor
+public class GetCrumbCommand implements Callable<JenkinsCrumb> {
+    private final WebClient webClient;
+
+    @Override
+    public JenkinsCrumb call() {
+        log.info("Henter crumb issuer fra jenkins");
+        JenkinsCrumb crumb = webClient
+                .get()
+                .uri("/crumbIssuer/api/json")
+                .retrieve()
+                .bodyToMono(JenkinsCrumb.class)
+                .block();
+
+        log.info("Hentet crumb {}.", crumb);
+        return crumb;
+    }
+}

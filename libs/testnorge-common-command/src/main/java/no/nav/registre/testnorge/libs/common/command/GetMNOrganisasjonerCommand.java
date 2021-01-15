@@ -25,7 +25,7 @@ public class GetMNOrganisasjonerCommand implements Callable<List<OrganisasjonDTO
     @SneakyThrows
     @Override
     public List<OrganisasjonDTO> call() {
-        log.info("Henter alle Mini-Norge organisasjoner");
+        log.info("Henter alle Mini-Norge organisasjoner...");
         try {
             OrganisasjonDTO[] array = webClient
                     .get()
@@ -38,7 +38,9 @@ public class GetMNOrganisasjonerCommand implements Callable<List<OrganisasjonDTO
                     .retrieve()
                     .bodyToMono(OrganisasjonDTO[].class)
                     .block();
-            return Arrays.asList(array);
+            var list = Arrays.asList(array);
+            log.info("Fant {} Mini-Norge organisasjoner.", list.size());
+            return list;
         } catch (HttpClientErrorException.NotFound e) {
             return null;
         }

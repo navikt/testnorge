@@ -1,0 +1,51 @@
+{
+  "type": "record",
+  "name": "DetaljertNavn",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon.v1",
+  "fields": [
+    {
+      "name": "navn1",
+      "type": "string"
+    },
+    {
+      "name": "navn2",
+      "default": null,
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "name": "navn3",
+      "default": null,
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "name": "navn4",
+      "default": null,
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "name": "navn5",
+      "default": null,
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    {
+      "name": "redigertNavn",
+      "default": null,
+      "type": [
+        "null",
+        "string"
+      ]
+    }
+  ]
+}

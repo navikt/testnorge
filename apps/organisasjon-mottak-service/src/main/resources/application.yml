@@ -1,12 +1,6 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
 spring:
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
   application:
     name: organisasjon-mottak
     description: Testtjeneste for å vise hvilke tjenester som er tilgjenelig. Skal ikke brukes til noe annet enn for å test lokalt. For integrasjon bruk kafka.
@@ -15,6 +9,11 @@ jenkins:
   rest.api.url: https://batch.adeo.no
   password: ${JENKINS_PASSWORD}
   username: ${JENKINS_USERNAME}
+
+consumers:
+  jenkins-batch-status-service:
+    url: https://jenkins-batch-status-service.dev.intern.nav.no
+    client-id: 34c2e87a-0711-4ef1-b644-55d86a375e7a
 
 kafka:
   bootstrapservers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443

@@ -1,15 +1,11 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 
-import no.nav.registre.testnorge.libs.avro.organisasjon.Metadata;
-
-public class Stiftelsesdato extends ToFlatfil {
+public class Stiftelsesdato extends ToLine {
     private final LocalDate localDate;
 
-    public Stiftelsesdato(Metadata metadata, no.nav.registre.testnorge.libs.avro.organisasjon.Stiftelsesdato stiftelsesdato) {
-        super(metadata);
+    public Stiftelsesdato(no.nav.registre.testnorge.libs.avro.organisasjon.v1.Stiftelsesdato stiftelsesdato) {
         localDate = LocalDate.of(
                 stiftelsesdato.getDato().getAar(),
                 stiftelsesdato.getDato().getMaaned(),
@@ -18,29 +14,9 @@ public class Stiftelsesdato extends ToFlatfil {
     }
 
     @Override
-    public boolean isUpdate() {
-        return true;
-    }
-
-    private String getDateFormatted() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-        return format.format(localDate);
-    }
-
-    private String toRecord() {
-        return LineBuilder
+    FlatfilValueBuilder builder() {
+        return FlatfilValueBuilder
                 .newBuilder("STID", 16)
-                .setLine(8, getDateFormatted())
-                .toString();
-    }
-
-    @Override
-    public Flatfil toFlatfil() {
-        Flatfil flatfil = new Flatfil();
-        Record record = new Record();
-        record.append(createEHN());
-        record.append(toRecord());
-        flatfil.add(record);
-        return flatfil;
+                .append(8, getDateFormatted(localDate));
     }
 }

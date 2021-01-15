@@ -1,29 +1,41 @@
 package no.nav.registre.testnorge.organisasjonmottak.provider.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import no.nav.registre.testnorge.libs.avro.organisasjon.Metadata;
-import no.nav.registre.testnorge.libs.avro.organisasjon.Organisasjon;
+import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Adresse;
+import no.nav.registre.testnorge.libs.avro.organisasjon.v1.DetaljertNavn;
+import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Metadata;
+import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Opprettelsesdokument;
+import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon;
 
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-@EqualsAndHashCode(callSuper = true)
-public class OrganisasjonDTO extends BaseDTO<Organisasjon> {
-    String navn;
+public class OrganisasjonDTO {
+    String orgnummer;
+    String enhetstype;
+    NavnDTO navn;
+    AdresseDTO forretningsadresse;
 
-    @Override
-    public Organisasjon toRecord(String miljoe) {
-        var value = new Organisasjon();
-        var metadata = new Metadata();
-        metadata.setOrgnummer(getOrgnummer());
-        metadata.setEnhetstype(getEnhetstype());
-        metadata.setMiljo(miljoe);
-        value.setMetadata(metadata);
-        value.setNavn(navn);
-        return value;
+    public Opprettelsesdokument toOrganisasjonOpprettelsesdokument(String miljo) {
+        return Opprettelsesdokument
+                .newBuilder()
+                .setOrganisasjonBuilder(Organisasjon
+                        .newBuilder()
+                        .setOrgnummer(orgnummer)
+                        .setEnhetstype(enhetstype)
+                        .setNavnBuilder(DetaljertNavn.newBuilder().setNavn1(navn.getNavn1()))
+                        .setPostadresseBuilder(Adresse.newBuilder()
+                                .setPostadresse1(forretningsadresse.getPostadresse1())
+                                .setKommunenummer(forretningsadresse.getKommunenummer())
+                                .setPostnummer(forretningsadresse.getPostnummer())
+                                .setLandkode(forretningsadresse.getLandkode())
+                        )
+                )
+                .setMetadataBuilder(Metadata.newBuilder().setMiljo(miljo))
+                .build();
     }
+
 }

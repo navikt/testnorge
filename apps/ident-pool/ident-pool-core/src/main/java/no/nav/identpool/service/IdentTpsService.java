@@ -28,7 +28,7 @@ public class IdentTpsService {
     private MessageQueue messageQueue;
 
     @Timed(value = "ident_pool.resource.latency", extraTags = { "operation", "TPS" })
-    public Set<TpsStatus> checkIdentsInTps(List<String> idents) {
+    public Set<TpsStatus> checkIdentsInTps(Set<String> idents) {
 
         TpsfStatusResponse response = tpsfConsumer.getStatusFromTpsf(idents, true);
         return response.getStatusPaaIdenter().stream().map(status -> TpsStatus.builder()
@@ -39,7 +39,7 @@ public class IdentTpsService {
     }
 
     @Timed(value = "ident_pool.resource.latency", extraTags = { "operation", "TPS" })
-    public Set<TpsStatus> checkIdentsInTps(List<String> idents, List<String> environments) {
+    public Set<TpsStatus> checkIdentsInTps(Set<String> idents, List<String> environments) {
 
         return checkIdentsInTps(idents);
     }

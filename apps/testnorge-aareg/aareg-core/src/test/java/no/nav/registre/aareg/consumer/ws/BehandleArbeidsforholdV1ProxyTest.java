@@ -1,5 +1,7 @@
 package no.nav.registre.aareg.consumer.ws;
 
+import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
+import no.nav.registre.aareg.security.sts.StsSamlTokenService;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -8,9 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
-import no.nav.registre.aareg.security.sts.StsSamlTokenService;
-
 @RunWith(MockitoJUnitRunner.class)
 public class BehandleArbeidsforholdV1ProxyTest {
 
@@ -18,7 +17,7 @@ public class BehandleArbeidsforholdV1ProxyTest {
     public ExpectedException expectedException = ExpectedException.none();
 
     @Mock
-    private AaregBehandleArbeidsforholdFasitConsumer behandleArbeidsforholdFasitConsumer;
+    private AaregBehandleArbeidsforhold behandleArbeidsforhold;
 
     @Mock
     private StsSamlTokenService stsSamlTokenService;

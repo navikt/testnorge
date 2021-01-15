@@ -73,7 +73,7 @@ public class ApplicationManagerTest {
         } catch (InterruptedException e) {
             fail();
         }
-        manager.scheduleShutdown(syntConsumerFrikort);
+        manager.scheduleShutdown(syntConsumerFrikort, SHUTDOWN_TIME_DELAY_SECONDS);
         assertEquals(1, manager.getActiveApplications().size());
         assertTrue(manager.getActiveApplications().containsKey(syntConsumerFrikort.getAppName()));
     }
@@ -100,7 +100,7 @@ public class ApplicationManagerTest {
         Mockito.when(kubernetesController.isAlive(Mockito.anyString())).thenReturn(true);
 
         manager.startApplication(syntConsumerInntekt);
-        manager.scheduleShutdown(syntConsumerInntekt);
+        manager.scheduleShutdown(syntConsumerInntekt, SHUTDOWN_TIME_DELAY_SECONDS);
         assertEquals(1, manager.getActiveApplications().size());
         assertTrue(manager.getActiveApplications().keySet().contains("synthdata-inntekt"));
         Thread.sleep((SHUTDOWN_TIME_DELAY_SECONDS * 1000) + 100);

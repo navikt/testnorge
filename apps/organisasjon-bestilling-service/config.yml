@@ -1,0 +1,52 @@
+﻿apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: organisasjon-bestilling-service
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  image: {{ image }}
+  port: 8080
+  azure:
+    application:
+      enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: testnorge-oversikt-frontend
+          cluster: dev-fss
+        - application: organisasjon-forvalter
+          cluster: dev-fss
+    outbound:
+      external:
+        - host: ereg-batch-status-service.dev-fss-pub.nais.io
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_12
+        databases:
+          - name: organisasjon-bestilling-db
+  liveness:
+    path: /internal/isAlive
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  readiness:
+    path: /internal/isReady
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  replicas:
+    min: 1
+    max: 2
+  resources:
+    requests:
+      cpu: 200m
+      memory: 4000Mi
+    limits:
+      cpu: 500m
+      memory: 5000Mi
+  envFrom:
+    - secret: google-sql-organisasjon-bestilling-service
+  ingresses:
+    - "https://organisasjon-bestilling-service.dev.intern.nav.no"

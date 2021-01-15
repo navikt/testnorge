@@ -34,6 +34,7 @@ public class TestnorgeArenaConsumer {
 
     private final RestTemplate restTemplate;
     private final UriTemplate arenaOpprettArbeidsoekereUrl;
+    private final UriTemplate arenaOpprettArbeidsoekereMedOppfoelgingUrl;
     private final UriTemplate arenaSlettArbeidsoekereUrl;
 
     public TestnorgeArenaConsumer(
@@ -42,14 +43,17 @@ public class TestnorgeArenaConsumer {
     ) {
         this.restTemplate = restTemplateBuilder.build();
         this.arenaOpprettArbeidsoekereUrl = new UriTemplate(arenaServerUrl + "/v1/syntetisering/generer");
+        this.arenaOpprettArbeidsoekereMedOppfoelgingUrl = new UriTemplate(arenaServerUrl + "/v1/syntetisering/generer/oppfoelging");
         this.arenaSlettArbeidsoekereUrl = new UriTemplate(arenaServerUrl + "/v1/ident/slett?miljoe={miljoe}");
     }
 
-    @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
+    @Timed(value = "orkestratoren.resource.latency", extraTags = {"operation", "arena"})
     public List<String> opprettArbeidsoekere(
-            SyntetiserArenaRequest syntetiserArenaRequest
+            SyntetiserArenaRequest syntetiserArenaRequest,
+            boolean medOppfoelging
     ) {
-        var postRequest = RequestEntity.post(arenaOpprettArbeidsoekereUrl.expand())
+        var url = medOppfoelging ? arenaOpprettArbeidsoekereMedOppfoelgingUrl : arenaOpprettArbeidsoekereUrl;
+        var postRequest = RequestEntity.post(url.expand())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(syntetiserArenaRequest);
 
@@ -62,7 +66,7 @@ public class TestnorgeArenaConsumer {
         }
     }
 
-    @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
+    @Timed(value = "orkestratoren.resource.latency", extraTags = {"operation", "arena"})
     public SletteArenaResponse slettIdenter(
             String miljoe,
             List<String> identer

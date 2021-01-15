@@ -28,10 +28,10 @@ spec:
   resources:
     requests:
       cpu: 200m
-      memory: 1000Mi
+      memory: 2000Mi
     limits:
       cpu: 500m
-      memory: 1500Mi
+      memory: 3000Mi
   ingresses:
     - "https://nais-synthdata-amelding.nais.preprod.local"
     - "https://nais-synthdata-amelding.dev.adeo.no"

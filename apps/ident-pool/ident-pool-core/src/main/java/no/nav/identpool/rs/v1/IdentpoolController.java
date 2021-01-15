@@ -1,5 +1,6 @@
 package no.nav.identpool.rs.v1;
 
+import static java.util.Objects.isNull;
 import static no.nav.identpool.util.PersonidentUtil.validate;
 import static no.nav.identpool.util.PersonidentUtil.validateMultiple;
 import static no.nav.identpool.util.ValiderRequestUtil.validateDatesInRequest;
@@ -21,8 +22,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.ajourhold.BatchService;
-import no.nav.identpool.domain.postgres.Ident;
 import no.nav.identpool.domain.Identtype;
+import no.nav.identpool.domain.postgres.Ident;
 import no.nav.identpool.exception.IdentAlleredeIBrukException;
 import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;
@@ -58,8 +59,11 @@ public class IdentpoolController {
             @RequestBody @Valid HentIdenterRequest hentIdenterRequest) {
 
         validateDatesInRequest(hentIdenterRequest);
-        if (hentIdenterRequest.getFoedtFoer() == null) {
-            hentIdenterRequest.setFoedtFoer(hentIdenterRequest.getFoedtEtter().plusDays(1));
+        if (isNull(hentIdenterRequest.getFoedtFoer())) {
+            hentIdenterRequest.setFoedtFoer(LocalDate.now());
+        }
+        if (isNull(hentIdenterRequest.getFoedtEtter())) {
+            hentIdenterRequest.setFoedtEtter(LocalDate.of(1900,1,1));
         }
         if (Identtype.FDAT == hentIdenterRequest.getIdenttype()) {
             hentIdenterRequest.setKjoenn(null); // ident-pool ignorerer kjønn hos FDAT-identer

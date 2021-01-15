@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "name": "Epost",
+  "namespace": "no.nav.registre.testnorge.libs.avro.organisasjon.v1",
+  "fields": [
+    {
+      "name": "epost",
+      "type": "string"
+    }
+  ]
+}

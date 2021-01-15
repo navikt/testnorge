@@ -111,8 +111,8 @@
           "role": "CONSUMER"
         }
       ],
-      "numPartitions": 10,
-      "topicName": "tn-opprett-organisasjon-v1"
+      "numPartitions": 5,
+      "topicName": "tn-opprett-organisasjon-v2-1"
     },
     {
       "configEntries": {
@@ -133,74 +133,8 @@
           "role": "CONSUMER"
         }
       ],
-      "numPartitions": 10,
-      "topicName": "tn-organisasjon-set-navn-v1"
-    },
-    {
-      "configEntries": {
-        "retention.ms": "86400000",
-        "cleanup.policy": "delete"
-      },
-      "members": [
-        {
-          "member": "L143684",
-          "role": "MANAGER"
-        },
-        {
-          "member": "srvtestnorge",
-          "role": "PRODUCER"
-        },
-        {
-          "member": "srvtestnorge",
-          "role": "CONSUMER"
-        }
-      ],
-      "numPartitions": 10,
-      "topicName": "tn-organisasjon-set-ansatte-v1"
-    },
-    {
-      "configEntries": {
-        "retention.ms": "86400000",
-        "cleanup.policy": "delete"
-      },
-      "members": [
-        {
-          "member": "L143684",
-          "role": "MANAGER"
-        },
-        {
-          "member": "srvtestnorge",
-          "role": "PRODUCER"
-        },
-        {
-          "member": "srvtestnorge",
-          "role": "CONSUMER"
-        }
-      ],
-      "numPartitions": 10,
-      "topicName": "tn-organisasjon-set-navn-detaljer-v1"
-    },
-    {
-      "configEntries": {
-        "retention.ms": "86400000",
-        "cleanup.policy": "delete"
-      },
-      "members": [
-        {
-          "member": "L143684",
-          "role": "MANAGER"
-        },
-        {
-          "member": "srvtestnorge",
-          "role": "PRODUCER"
-        },
-        {
-          "member": "srvtestnorge",
-          "role": "CONSUMER"
-        }
-      ],
-      "numPartitions": 10,
-      "topicName": "tn-organisasjon-set-knytning-v2"
+      "numPartitions": 5,
+      "topicName": "tn-endre-organisasjon-v1-1"
     }
   ]
 }

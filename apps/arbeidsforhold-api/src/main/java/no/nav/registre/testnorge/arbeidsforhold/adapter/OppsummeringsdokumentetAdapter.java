@@ -11,7 +11,6 @@ import javax.xml.bind.Unmarshaller;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,7 +37,8 @@ public class OppsummeringsdokumentetAdapter {
         OppsummeringsdokumentetModel model = OppsummeringsdokumentetModel.builder()
                 .document(xml)
                 .orgnummer(opplysningspliktig.getOrgnummer())
-                .rapporteringsmaaned(format(opplysningspliktig.getRapporteringsmaaned()))
+                .year(opplysningspliktig.getRapporteringsmaaned().getYear())
+                .month(opplysningspliktig.getRapporteringsmaaned().getMonthValue())
                 .version(opplysningspliktig.getVersion())
                 .miljo(miljo)
                 .build();
@@ -49,9 +49,9 @@ public class OppsummeringsdokumentetAdapter {
         log.info("Oppsummeringsdokument opprettet.");
     }
 
-    public Oppsummeringsdokumentet fetch(String orgnummer, LocalDate rapporteringsmaaned, String mijlo) {
+    public Oppsummeringsdokumentet fetch(String orgnummer, LocalDate rapporteringsmaaned, String miljo) {
         Optional<OppsummeringsdokumentetModel> opplysningspliktigModel = opplysningspliktigRepository
-                .findBy(format(rapporteringsmaaned), orgnummer, mijlo);
+                .findBy(rapporteringsmaaned.getYear(), rapporteringsmaaned.getMonthValue(), orgnummer, miljo);
         if (opplysningspliktigModel.isEmpty()) {
             return null;
         }
@@ -60,11 +60,11 @@ public class OppsummeringsdokumentetAdapter {
         return new Oppsummeringsdokumentet(edagm);
     }
 
-    public List<Oppsummeringsdokumentet> fetchAll(String mijlo) {
+    public List<Oppsummeringsdokumentet> fetchAll(String miljo) {
         return opplysningspliktigRepository
-                .findAllByLast(mijlo)
+                .findAllByLast(miljo)
                 .stream()
-                .map(model ->  new Oppsummeringsdokumentet(toEDAGM(model.getDocument())))
+                .map(model -> new Oppsummeringsdokumentet(toEDAGM(model.getDocument())))
                 .collect(Collectors.toList());
     }
 
@@ -81,8 +81,4 @@ public class OppsummeringsdokumentetAdapter {
         return element.getValue();
     }
 
-
-    private String format(LocalDate value) {
-        return value.format(DateTimeFormatter.ofPattern("yyyy-MM"));
-    }
 }

@@ -28,6 +28,8 @@ public class ArbeidsforholdRequest {
     private final Float permisjonVedMilitaertjeneste;
     private final Float velferdspermisjon;
     private final Float utdanningspermisjon;
+    private final String historikk;
+    private final Integer numEndringer;
 
     public ArbeidsforholdRequest(ArbeidsforholdRequest request) {
         this.rapporteringsmaaned = request.rapporteringsmaaned;
@@ -46,5 +48,7 @@ public class ArbeidsforholdRequest {
         this.permisjonVedMilitaertjeneste = request.permisjonVedMilitaertjeneste;
         this.velferdspermisjon = request.velferdspermisjon;
         this.utdanningspermisjon = request.utdanningspermisjon;
+        this.historikk = request.historikk;
+        this.numEndringer = request.numEndringer;
     }
 }

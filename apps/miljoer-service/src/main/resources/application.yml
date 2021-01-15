@@ -1,0 +1,11 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+tps-forvalteren.rest-api.url: https://tps-forvalteren.dev.adeo.no/api
+
+spring:
+  main:
+    banner-mode: off
+  application:
+    name: miljoer-service
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
+    description: App for å sjekke hvilke miljøer i test og preprod som er tilgjengelige nå.

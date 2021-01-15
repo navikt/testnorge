@@ -2,9 +2,8 @@ package no.nav.registre.testnorge.organisasjonmottak.domain;
 
 public class Forretningsadresse extends Adresse {
 
-    public Forretningsadresse(no.nav.registre.testnorge.libs.avro.organisasjon.Forretningsadresse forretningsadresse) {
+    public Forretningsadresse(no.nav.registre.testnorge.libs.avro.organisasjon.v1.Adresse forretningsadresse) {
         super(
-                forretningsadresse.getMetadata(),
                 forretningsadresse.getPostnummer(),
                 forretningsadresse.getLandkode(),
                 forretningsadresse.getKommunenummer(),

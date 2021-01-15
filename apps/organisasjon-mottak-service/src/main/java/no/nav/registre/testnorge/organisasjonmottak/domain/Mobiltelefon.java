@@ -1,34 +1,17 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-import no.nav.registre.testnorge.libs.avro.organisasjon.Metadata;
-
-public class Mobiltelefon extends ToFlatfil {
+public class Mobiltelefon extends ToLine {
     private final String tlf;
 
-    public Mobiltelefon(Metadata metadata, no.nav.registre.testnorge.libs.avro.organisasjon.Mobiltelefon mobiltelefon) {
-        super(metadata);
+    public Mobiltelefon(no.nav.registre.testnorge.libs.avro.organisasjon.v1.Telefon mobiltelefon) {
         this.tlf = mobiltelefon.getTlf();
     }
 
     @Override
-    public boolean isUpdate() {
-        return true;
-    }
-
-    private String toRecord() {
-        return LineBuilder
+    FlatfilValueBuilder builder() {
+        return FlatfilValueBuilder
                 .newBuilder("MTLF", 21)
-                .setLine(8, tlf)
-                .toString();
+                .append(8, tlf);
     }
 
-    @Override
-    public Flatfil toFlatfil() {
-        Flatfil flatfil = new Flatfil();
-        Record record = new Record();
-        record.append(createEHN());
-        record.append(toRecord());
-        flatfil.add(record);
-        return flatfil;
-    }
 }

@@ -16,6 +16,8 @@ spec:
     inbound:
       rules:
         - application: mn-synt-arbeidsforhold-service
+        - application: arbeidsforhold-frontend
+        - application: testnorge-oversikt-frontend
   liveness:
     path: /internal/isAlive
     initialDelay: 4

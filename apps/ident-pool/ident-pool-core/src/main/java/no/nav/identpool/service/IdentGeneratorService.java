@@ -7,13 +7,10 @@ import static no.nav.identpool.util.IdentGeneratorUtil.getStartIndex;
 import static no.nav.identpool.util.IdentGeneratorUtil.getYearRange;
 import static no.nav.identpool.util.IdentGeneratorUtil.numberFormatter;
 import static no.nav.identpool.util.PersonidentUtil.generateFnr;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -49,9 +46,9 @@ public class IdentGeneratorService {
                         numberGenerator));
     }
 
-    public List<String> genererIdenterFdat(
+    public Set<String> genererIdenterFdat(
             HentIdenterRequest request,
-            List<String> identerIIdentPool
+            Set<String> identerIIdentPool
     ) {
         Assert.notNull(request.getFoedtEtter(), "FOM dato ikke oppgitt");
 
@@ -60,7 +57,7 @@ public class IdentGeneratorService {
             request.setFoedtFoer(request.getFoedtEtter().plusDays(1));
         }
 
-        Set<String> identer = new HashSet<>(identerIIdentPool);
+        Set<String> identer = identerIIdentPool;
         int antall = request.getAntall() + identer.size();
         int numberOfDates = toIntExact(ChronoUnit.DAYS.between(request.getFoedtEtter(), request.getFoedtFoer()));
 
@@ -84,12 +81,12 @@ public class IdentGeneratorService {
                 throw new IllegalArgumentException("Kan ikke finne ønsket antall fødselsnummer med angitte kriterier");
             }
         }
-        return new ArrayList<>(identer);
+        return identer;
     }
 
-    public List<String> genererIdenter(
+    public Set<String> genererIdenter(
             HentIdenterRequest request,
-            List<String> identerIIdentPool
+            Set<String> identerIIdentPool
     ) {
         Assert.notNull(request.getFoedtEtter(), "FOM dato ikke oppgitt");
 
@@ -101,7 +98,7 @@ public class IdentGeneratorService {
         Kjoenn kjoenn = request.getKjoenn();
         Identtype identtype = request.getIdenttype();
 
-        Set<String> identer = new HashSet<>(identerIIdentPool);
+        Set<String> identer = identerIIdentPool;
         int antall = request.getAntall() + identer.size();
         int iteratorRange = (kjoenn == null) ? 1 : 2;
         int numberOfDates = toIntExact(ChronoUnit.DAYS.between(request.getFoedtEtter(), request.getFoedtFoer()));
@@ -139,7 +136,7 @@ public class IdentGeneratorService {
                 throw new IllegalArgumentException("Kan ikke finne ønsket antall fødselsnummer med angitte kriterier");
             }
         }
-        return new ArrayList<>(identer);
+        return identer;
     }
 
     private void validateDates(

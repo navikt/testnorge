@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -24,11 +25,11 @@ import io.micrometer.core.instrument.Counter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.consumers.TpsfConsumer;
-import no.nav.identpool.domain.postgres.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.domain.TpsStatus;
-import no.nav.identpool.repository.postgres.IdentRepository;
+import no.nav.identpool.domain.postgres.Ident;
+import no.nav.identpool.repository.IdentRepository;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;
 import no.nav.identpool.service.IdentGeneratorService;
 import no.nav.identpool.service.IdentTpsService;
@@ -145,7 +146,7 @@ public class AjourholdService {
             Map<LocalDate, List<String>> pinMap,
             int numberOfIdents) {
 
-        List<String> identsNotInDatabase = filterAgainstDatabase(identsPerDay, pinMap);
+        Set<String> identsNotInDatabase = filterAgainstDatabase(identsPerDay, pinMap);
         Set<TpsStatus> tpsStatuses = identTpsService.checkIdentsInTps(identsNotInDatabase);
 
         List<String> rekvirert = tpsStatuses.stream()
@@ -170,19 +171,19 @@ public class AjourholdService {
         saveIdents(ledig, LEDIG, null);
     }
 
-    private List<String> filterAgainstDatabase(
+    private Set<String> filterAgainstDatabase(
             int antallPerDag,
             Map<LocalDate, List<String>> pinMap) {
 
-        final List<String> arrayList = new ArrayList<>();
-        pinMap.forEach((d, value) -> arrayList.addAll(
+        final Set<String> dbCleaned = new HashSet<>();
+        pinMap.forEach((d, value) -> dbCleaned.addAll(
                 value.stream()
                         .map(v -> identRepository.existsByPersonidentifikator(v) ? null : v)
                         .filter(Objects::nonNull)
                         .limit(antallPerDag)
-                        .collect(Collectors.toList())
+                        .collect(Collectors.toSet())
         ));
-        return arrayList;
+        return dbCleaned;
     }
 
     private List<Ident> saveIdents(

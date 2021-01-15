@@ -16,7 +16,10 @@ spec:
     inbound:
       rules:
         - application: mn-organisasjon-api
+        - application: organisasjon-orgnummer-service
         - application: testnorge-synt-sykemelding-api
+        - application: organisasjon-forvalter
+        - application: testnorge-oversikt-frontend
   liveness:
     path: /internal/isAlive
     initialDelay: 4

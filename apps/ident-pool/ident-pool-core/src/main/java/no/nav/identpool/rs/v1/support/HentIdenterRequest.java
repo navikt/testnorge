@@ -21,7 +21,6 @@ import no.nav.identpool.domain.Kjoenn;
 @Builder
 public class HentIdenterRequest {
     private Identtype identtype;
-    @NotNull
     private LocalDate foedtEtter;
     private LocalDate foedtFoer;
     private Kjoenn kjoenn;

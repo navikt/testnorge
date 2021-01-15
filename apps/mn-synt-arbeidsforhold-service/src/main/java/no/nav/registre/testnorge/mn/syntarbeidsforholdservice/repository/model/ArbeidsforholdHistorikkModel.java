@@ -11,6 +11,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -25,12 +27,20 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ArbeidsforholdHistorikkModel {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long id;
+
     @Column(name = "ARBEIDSFORHOLD_ID", nullable = false, updatable = false)
     private String arbeidsforholdId;
 
-    @Column(name = "HISTORIKK", nullable = false)
+    @Column(name = "HISTORIKK")
     private String historikk;
+
+    @Column(name = "ENVIRONMENT", nullable = false, updatable = false)
+    private String miljo;
 
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)

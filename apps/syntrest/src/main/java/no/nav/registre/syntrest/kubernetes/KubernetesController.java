@@ -21,6 +21,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 import org.yaml.snakeyaml.Yaml;
@@ -32,6 +33,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+
+import static java.util.Objects.isNull;
 
 @Slf4j
 public class KubernetesController {
@@ -72,12 +75,22 @@ public class KubernetesController {
         this.api = customObjectsApi;
 
 
-        this.authRestTemplate = restTemplateBuilder
+        // nullcheck proxy port/url -> settes i run configuration på utvimage.
+
+
+        if (!"local".equals(proxyUrl) && proxyPort != 0) {
+            this.authRestTemplate = restTemplateBuilder
                 .requestFactory(() -> new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create()
                         .setRoutePlanner(new DefaultProxyRoutePlanner(new HttpHost(proxyUrl, proxyPort)))
                         .build()))
                 .additionalInterceptors(new BasicAuthenticationInterceptor(github_username, github_password))
                 .build();
+        } else {
+            this.authRestTemplate = restTemplateBuilder
+                .requestFactory(() -> new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create().build()))
+                .additionalInterceptors(new BasicAuthenticationInterceptor(github_username, github_password))
+                .build();
+        }
 
         this.noAuthRestTemplate = restTemplateBuilder.requestFactory(() -> new HttpComponentsClientHttpRequestFactory(HttpClientBuilder.create()
                 .setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
@@ -123,7 +136,7 @@ public class KubernetesController {
 
                 if (e.getCause() instanceof IllegalStateException) {
                     IllegalStateException ise = (IllegalStateException) e.getCause();
-                    if (!Objects.isNull(ise.getMessage()) && ise.getMessage().contains("Expected a string but was BEGIN_OBJECT")) {
+                    if (!isNull(ise.getMessage()) && ise.getMessage().contains("Expected a string but was BEGIN_OBJECT")) {
                         log.info("Successfully deleted application \'{}\'", appName);
                     } else {
                         throw e;
@@ -146,7 +159,7 @@ public class KubernetesController {
         String response = "404";
         try {
             response = noAuthRestTemplate.getForObject(isAliveUri.expand(appName), String.class);
-        } catch (HttpClientErrorException | HttpServerErrorException ignored) {
+        } catch (HttpClientErrorException | HttpServerErrorException | ResourceAccessException ignored) {
         }
         return "1".equals(response);
     }
@@ -215,6 +228,7 @@ public class KubernetesController {
         QueryObject query = QueryObject.builder().query(getCorrectTagQuery(appName)).build();
 
         try {
+            log.info("Retrieving tag for synth package: {}", getCorrectGithubPackageName(appName));
             RequestEntity requestLatestTag = RequestEntity.post(new UriTemplate(apiUrl).expand()).header("Content-Type", "application/json").body(query);
             ResponseEntity<JsonNode> response = authRestTemplate.exchange(requestLatestTag, JsonNode.class);
 

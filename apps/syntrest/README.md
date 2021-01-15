@@ -107,13 +107,45 @@ De filene som må endres når man legger til synt-pakkene er:
    _key=personnummer for pasienten, value=xml for legeerklæringen_
 
 ## Lokal kjøring
+
+
+### I utviklerimage
+Oppdater `kube-config-path` i `application-utviklerimage.properties` til din lokale kubeconfigs path.
+Kjør så ApplicationStarter med følgende argumenter:
+```
+ -Djavax.net.ssl.trustStore=[path til lokal truststore]
+ -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
+ -Dspring.profiles.active=utviklerimage
+ -DGITHUB_USERNAME=[github brukernavn, kan finnes i syntrest secrets i vault]
+ -DGITHUB_PASSWORD=[github passord, kan finnes i syntrest secrets i vault]
+```
+
+Dersom ApplicationStarter ikke vil kjøre sjekk at du fremdeles har gyldig Kubectl token (`kubectl get pods` kommando fungerer lokalt.)
+
+#### Image tag - Deploye synt-applikasjoner lokalt
+Når syntrest kjøres lokalt i utviklerimage så klarer den ikke alltid å hente korrekt/siste image tag fra github for synt-applikasjon som skal deployes. 
+En manuell fiks for dette er å gå til [packages](https://github.com/orgs/navikt/packages?repo_name=testnorge-syntetiseringspakker) og hente siste versjon for ønsket 
+applikasjon og bytte ut `latest` med denne versjonen i image-delen i relevant nais.yaml (resources/nais/{app-name}.yaml). Deretter må følgende kode kommenteres ut i 
+`KubernetesController` `prepareYaml`-metode:
+```java
+Map<String, Object> spec = (Map) manifestFile.get("spec");
+String imageBase = spec.get("image").toString();
+String latestImage = imageBase.replace("latest", getApplicationTag(appName).orElse("latest"));
+spec.put("image", latestImage);
+```
+
+NB: Pass på at denne manuelle fiksen ikke pushes til master.
+
+### Utenfor utviklerimage
 Oppdater `kube-config-path` i `application-dev.properties` til din lokale kubeconfigs path.
 Kjør så ApplicationStarter med følgende argumenter:
- - -Djavax.net.ssl.trustStore=[path til lokal truststore]
- - -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
- - -Dspring.profiles.active=dev
- - -DGITHUB_USERNAME=[github brukernavn, kan finnes i syntrest secrets i vault]
- - -DGITHUB_PASSWORD=[github passord, kan finnes i syntrest secrets i vault]
+```
+ -DGITHUB_USERNAME=[github brukernavn, kan finnes i syntrest secrets i vault]
+ -DGITHUB_PASSWORD=[github passord, kan finnes i syntrest secrets i vault]
+ -Dspring.profiles.active=dev
+```
+
+Dersom ApplicationStarter ikke vil kjøre sjekk at du fremdeles har gyldig Kubectl token (`kubectl get pods` kommando fungerer lokalt.)
 
 ## Kubeconfig
 I vault er det lagret en kubeconfig fil som syntrest bruker til å kunne deploye/shutdown appene. Hvis denne filen må 

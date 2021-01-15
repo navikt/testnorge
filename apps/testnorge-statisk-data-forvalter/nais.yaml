@@ -2,7 +2,7 @@ apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: testnorge-statisk-data-forvalter
-  namespace: default
+  namespace: dolly
   labels:
     team: dolly
 spec:
@@ -22,6 +22,9 @@ spec:
     max: 1
   vault:
     enabled: true
+    paths:
+      - kvPath: /serviceuser/data/dev/srvtestnorge
+        mountPath: /secret/serviceuser
   resources:
     limits:
       cpu: 500m

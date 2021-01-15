@@ -39,5 +39,5 @@ public class ArbeidsforholdResponse {
     LocalDate sisteDatoForStillingsprosentendring;
     @JsonAlias("PERMISJONER")
     List<PermisjonDTO> permisjoner;
-    private String historikk;
+    String historikk;
 }

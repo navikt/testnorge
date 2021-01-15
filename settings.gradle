@@ -124,6 +124,7 @@ include(':ident-check-in-prod-service')
 include(':mn-person-service')
 include(':mn-synt-arbeidsforhold-service')
 include(':avhengighetsanalyse-service')
+include(':organisasjon-orgnummer-service')
 project(":inntektsmelding-stub").projectDir = file('apps/inntektsmelding-stub')
 project(":testnorge-tss").projectDir = file('apps/testnorge-tss')
 project(":profil-api").projectDir = file('apps/profil-api')
@@ -226,6 +227,7 @@ project(":mn-person-service").projectDir = file('apps/mn-person-service')
 project(":mn-synt-arbeidsforhold-service").projectDir = file('apps/mn-synt-arbeidsforhold-service')
 project(":ident-check-in-prod-service").projectDir = file('apps/ident-check-in-prod-service')
 project(":avhengighetsanalyse-service").projectDir = file('apps/avhengighetsanalyse-service')
+project(":organisasjon-orgnummer-service").projectDir = file('apps/organisasjon-orgnummer-service')
 project(":testnorge-dependency-analysis-auto-configuration").projectDir = file('libs/testnorge-dependency-analysis-auto-configuration')
 
 gradleEnterprise {
@@ -245,3 +247,24 @@ project(":endringsmelding-service").projectDir = file('apps/endringsmelding-serv
 
 include 'generer-navn-service'
 project(":generer-navn-service").projectDir = file('apps/generer-navn-service')
+
+include 'miljoer-service'
+project(":miljoer-service").projectDir = file('apps/miljoer-service')
+
+include 'kafka-config'
+project(":kafka-config").projectDir = file('libs/kafka-config')
+
+include 'kafka-producers'
+project(":kafka-producers").projectDir = file('libs/kafka-producers')
+
+include 'organisasjon-bestilling-service'
+project(":organisasjon-bestilling-service").projectDir = file('apps/organisasjon-bestilling-service')
+
+include 'ereg-batch-status-service'
+project(":ereg-batch-status-service").projectDir = file('apps/ereg-batch-status-service')
+
+include 'arbeidsforhold-frontend'
+project(":arbeidsforhold-frontend").projectDir = file('apps/arbeidsforhold-frontend')
+
+include 'jenkins-batch-status-service:'
+project(":jenkins-batch-status-service").projectDir = file('apps/jenkins-batch-status-service')

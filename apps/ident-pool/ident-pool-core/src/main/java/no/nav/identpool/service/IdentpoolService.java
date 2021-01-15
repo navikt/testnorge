@@ -1,6 +1,9 @@
 package no.nav.identpool.service;
 
+import static java.lang.String.format;
+import static java.time.format.DateTimeFormatter.ISO_DATE;
 import static java.time.temporal.ChronoUnit.DAYS;
+import static java.util.Objects.nonNull;
 import static no.nav.identpool.domain.Rekvireringsstatus.I_BRUK;
 import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
 import static no.nav.identpool.util.PersonidentUtil.getIdentType;
@@ -32,8 +35,8 @@ import no.nav.identpool.domain.postgres.Ident;
 import no.nav.identpool.exception.ForFaaLedigeIdenterException;
 import no.nav.identpool.exception.IdentAlleredeIBrukException;
 import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
-import no.nav.identpool.repository.postgres.IdentRepository;
-import no.nav.identpool.repository.postgres.WhitelistRepository;
+import no.nav.identpool.repository.IdentRepository;
+import no.nav.identpool.repository.WhitelistRepository;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;
 import no.nav.identpool.rs.v1.support.MarkerBruktRequest;
 import no.nav.identpool.util.IdentGeneratorUtil;
@@ -95,9 +98,14 @@ public class IdentpoolService {
         if (missingIdentCount > 0) {
             // hent identer som er i bruk i ident-pool-databasen allerede, for ikke å opprette eksisterende identifikasjonsnumre:
             int daysInRange = Math.toIntExact(DAYS.between(request.getFoedtEtter(), request.getFoedtFoer())) + 1;
-            List<String> usedIdents = hentBrukteIdenterFraDatabase(request, daysInRange);
+            Set<String> usedIdents = hentBrukteIdenterFraDatabase(request, daysInRange);
             if (daysInRange == 1 && usedIdents.size() >= MAKS_ANTALL_OPPRETTINGER_ONTHEFLY_PER_DAG * daysInRange) {
-                throw new ForFaaLedigeIdenterException("Det er for få ledige identer i TPS - prøv med et annet dato-intervall.");
+                throw new ForFaaLedigeIdenterException(format("Identpool finner ikke ledige identer i hht forespørsel: " +
+                                "identType %s, kjønn %s, fødtEtter %s, fødtFør %s. \nForsøk å bestille med andre kriterier.",
+                        nonNull(request.getIdenttype()) ? request.getIdenttype().name() : null,
+                        nonNull(request.getKjoenn()) ? request.getKjoenn().name() : null,
+                        nonNull(request.getFoedtEtter()) ? request.getFoedtEtter().format(ISO_DATE) : null,
+                        nonNull(request.getFoedtFoer()) ? request.getFoedtFoer().format(ISO_DATE) : null));
             }
 
             List<String> newIdents = hentIdenterFraTps(request, usedIdents);
@@ -107,9 +115,14 @@ public class IdentpoolService {
                 if (newIdents.size() > missingIdentCount) {
                     saveIdents(newIdents.subList(missingIdentCount, newIdents.size()), LEDIG, null);
                 }
-            } else {
-                throw new ForFaaLedigeIdenterException("Det er for få ledige identer i TPS - prøv med et annet dato-intervall.");
             }
+
+            throw new ForFaaLedigeIdenterException(format("Identpool finner ikke ledige identer i hht forespørsel: " +
+                            "identType %s, kjønn %s, fødtEtter %s, fødtFør %s. \nForsøk å bestille med andre kriterier.",
+                    nonNull(request.getIdenttype()) ? request.getIdenttype().name() : null,
+                    nonNull(request.getKjoenn()) ? request.getKjoenn().name() : null,
+                    nonNull(request.getFoedtEtter()) ? request.getFoedtEtter().format(ISO_DATE) : null,
+                    nonNull(request.getFoedtFoer()) ? request.getFoedtFoer().format(ISO_DATE) : null));
         }
 
         //Sier at request har tatt disse i bruk
@@ -130,11 +143,11 @@ public class IdentpoolService {
         if (ident != null) {
             return ident.getRekvireringsstatus().equals(Rekvireringsstatus.LEDIG) ? Boolean.TRUE : Boolean.FALSE;
         } else {
-            List<TpsStatus> tpsStatus = new ArrayList<>(identTpsService.checkIdentsInTps(Collections.singletonList(personidentifikator), miljoer));
+            Set<TpsStatus> tpsStatus = identTpsService.checkIdentsInTps(Collections.singleton(personidentifikator), miljoer);
             if (tpsStatus.size() != 1) {
                 throw new HttpServerErrorException(INTERNAL_SERVER_ERROR, "Fikk ikke riktig antall statuser tilbake på metodekall til checkIdentsInTps");
             }
-            TpsStatus identStatus = tpsStatus.get(0);
+            TpsStatus identStatus = tpsStatus.iterator().next();
 
             return !identStatus.isInUse();
         }
@@ -174,7 +187,7 @@ public class IdentpoolService {
             List<String> identer
     ) {
         List<String> identerMarkertSomIBruk = new ArrayList<>(identer.size());
-        List<String> identerSomSkalSjekkes = new ArrayList<>(identer.size());
+        Set<String> identerSomSkalSjekkes = new HashSet<>(identer.size());
         for (String id : identer) {
             Ident ident = identRepository.findTopByPersonidentifikator(id);
             if (ident == null) {
@@ -187,7 +200,7 @@ public class IdentpoolService {
             }
         }
 
-        List<TpsStatus> tpsStatuses = new ArrayList<>(identTpsService.checkIdentsInTps(identerSomSkalSjekkes, Collections.singletonList("q0")));
+        Set<TpsStatus> tpsStatuses = identTpsService.checkIdentsInTps(identerSomSkalSjekkes, Collections.singletonList("q0"));
 
         for (TpsStatus tpsStatus : tpsStatuses) {
             if (!tpsStatus.isInUse()) {
@@ -215,7 +228,7 @@ public class IdentpoolService {
     ) {
         List<String> ledigeIdenter = new ArrayList<>(identer.size());
         Map<String, Ident> fnrMedIdent = new HashMap<>(identer.size());
-        List<String> identerSomSkalSjekkes = new ArrayList<>(identer.size());
+        Set<String> identerSomSkalSjekkes = new HashSet<>(identer.size());
         for (String id : identer) {
             Ident ident = identRepository.findTopByPersonidentifikator(id);
             if (ident != null) {
@@ -228,14 +241,14 @@ public class IdentpoolService {
             }
         }
 
-        List<TpsStatus> tpsStatuses = new ArrayList<>(identTpsService.checkIdentsInTps(identerSomSkalSjekkes, Collections.singletonList("q0")));
+        Set<TpsStatus> tpsStatuses = identTpsService.checkIdentsInTps(identerSomSkalSjekkes, Collections.singletonList("q0"));
         return leggTilLedigeIdenterIMiljoer(ledigeIdenter, fnrMedIdent, tpsStatuses);
     }
 
     public List<String> frigjoerLedigeIdenter(List<String> identer) {
         List<String> ledigeIdenter = new ArrayList<>(identer.size());
         Map<String, Ident> fnrMedIdent = new HashMap<>(identer.size());
-        List<String> identerSomSkalSjekkes = new ArrayList<>(identer.size());
+        Set<String> identerSomSkalSjekkes = new HashSet<>(identer.size());
         for (String id : identer) {
             Ident ident = identRepository.findTopByPersonidentifikator(id);
             if (ident != null) {
@@ -247,15 +260,14 @@ public class IdentpoolService {
                 }
             }
         }
-
-        List<TpsStatus> tpsStatuses = new ArrayList<>(identTpsService.checkIdentsInTps(identerSomSkalSjekkes));
+        Set<TpsStatus> tpsStatuses = identTpsService.checkIdentsInTps(identerSomSkalSjekkes);
         return leggTilLedigeIdenterIMiljoer(ledigeIdenter, fnrMedIdent, tpsStatuses);
     }
 
     private List<String> leggTilLedigeIdenterIMiljoer(
             List<String> ledigeIdenter,
             Map<String, Ident> fnrMedIdent,
-            List<TpsStatus> tpsStatuses
+            Set<TpsStatus> tpsStatuses
     ) {
         for (TpsStatus tpsStatus : tpsStatuses) {
             if (!tpsStatus.isInUse()) {
@@ -313,12 +325,12 @@ public class IdentpoolService {
 
     private List<String> hentIdenterFraTps(
             HentIdenterRequest request,
-            List<String> identerIIdentPool
+            Set<String> identerIIdentPool
     ) {
         Set<String> temp = new HashSet<>();
         for (int i = 1; i < MAKS_ANTALL_KALL_MOT_TPS && temp.size() < request.getAntall(); i++) {
 
-            List<String> genererteIdenter;
+            Set<String> genererteIdenter;
             if (request.getIdenttype() == Identtype.FDAT) {
                 genererteIdenter = identGeneratorService.genererIdenterFdat(request, identerIIdentPool);
             } else {
@@ -326,9 +338,9 @@ public class IdentpoolService {
             }
 
             // filtrer vekk eksisterende
-            List<String> finnesIkkeAllerede = genererteIdenter.stream()
+            Set<String> finnesIkkeAllerede = genererteIdenter.stream()
                     .filter(ident -> !identRepository.existsByPersonidentifikator(ident))
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toSet());
 
             Set<TpsStatus> kontrollerteIdenter = identTpsService.checkIdentsInTps(finnesIkkeAllerede);
 
@@ -384,7 +396,7 @@ public class IdentpoolService {
         return identEntities;
     }
 
-    private List<String> hentBrukteIdenterFraDatabase(
+    private Set<String> hentBrukteIdenterFraDatabase(
             HentIdenterRequest request,
             int daysInRange) {
 
@@ -399,7 +411,7 @@ public class IdentpoolService {
         return StreamSupport.stream(
                 findPage(usedIdentsRequest, I_BRUK, 0).spliterator(), false)
                 .map(Ident::getPersonidentifikator)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     private void saveIdents(

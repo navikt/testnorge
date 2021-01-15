@@ -9,7 +9,7 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
-import no.nav.identpool.repository.postgres.IdentRepository;
+import no.nav.identpool.repository.IdentRepository;
 
 @Configuration
 @EnableAspectJAutoProxy

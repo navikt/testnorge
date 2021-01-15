@@ -1,34 +1,23 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon;
 
-public class Knytning extends ToFlatfil {
-    private final List<Virksomhet> driverVirksomheter;
+public class Knytning extends ToLine {
+    private final String juridiskEnhet;
+    private final String enhetstype;
 
-    public Knytning(no.nav.registre.testnorge.libs.avro.organisasjon.Knytning knytning) {
-        super(knytning.getMetadata());
-        driverVirksomheter = knytning
-                .getDriverVirksomhenter()
-                .stream()
-                .map(Virksomhet::new)
-                .collect(Collectors.toList());
+    public Knytning(no.nav.registre.testnorge.libs.avro.organisasjon.v1.Knytning knytning, Organisasjon organisasjon) {
+        enhetstype = organisasjon.getEnhetstype();
+        juridiskEnhet = knytning.getJuridiskEnhet();
     }
 
     @Override
-    public boolean isUpdate() {
-        return true;
-    }
-
-    @Override
-    public Flatfil toFlatfil() {
-        Flatfil flatfil = new Flatfil();
-        Record record = new Record();
-        record.append(createEHN());
-        driverVirksomheter.forEach(value -> {
-            record.append(value.toRecordLine());
-        });
-        flatfil.add(record);
-        return flatfil;
+    FlatfilValueBuilder builder() {
+        return FlatfilValueBuilder
+                .newBuilder(enhetstype, 66)
+                .append(5, "SSY")
+                .append(8, "K")
+                .append(9, "D")
+                .append(41, juridiskEnhet);
     }
 }

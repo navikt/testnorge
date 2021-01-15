@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@types/react-router-dom": "^5.1.5",
     "classnames": "^2.2.6",
+    "fremdriftslinje": "^1.0.3",
     "lodash.throttle": "^4.1.1",
     "nav-frontend-core": "^5.0.1",
     "nav-frontend-ikoner-assets": "^2.0.3",
@@ -28,6 +28,7 @@
     "react-scripts": "3.4.3"
   },
   "devDependencies": {
+    "@types/react-router-dom": "^5.1.5",
     "@types/react": "^16.9.49",
     "@types/react-dom": "^16.9.8",
     "@types/webpack": "^4.41.22",

@@ -4,6 +4,7 @@ import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.config.SaslConfigs;
@@ -15,21 +16,25 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.util.backoff.FixedBackOff;
 
 import java.io.File;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 
+import no.nav.registre.testnorge.libs.kafkaconfig.config.KafkaProperties;
+
+@Slf4j
 @EnableKafka
 @Component
 @Profile("prod")
 @RequiredArgsConstructor
 public class KafkaConfig {
-    private final ApplicationKafkaProperties properties;
+    private final KafkaProperties properties;
 
-    @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         InetSocketAddress inetSocketAddress = new InetSocketAddress(0);
         Map<String, Object> props = new HashMap<>();
@@ -40,6 +45,7 @@ public class KafkaConfig {
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, 1000 * 60 * 10);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
         props.put(SaslConfigs.SASL_MECHANISM, "PLAIN");
         props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true);
@@ -62,6 +68,10 @@ public class KafkaConfig {
         ConcurrentKafkaListenerContainerFactory<String, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
+        factory.setErrorHandler(new SeekToCurrentErrorHandler(
+                (consumer, exception) -> log.error("Klarer ikke å opprette bestilling med uuid: {}", consumer.key()),
+                new FixedBackOff(30 * 1000, 3)
+        ));
         return factory;
     }
 }
