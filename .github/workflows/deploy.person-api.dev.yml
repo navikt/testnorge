@@ -1,8 +1,7 @@
-name: Deploy person-api
+name: Deploy person-api dev
 
 on:
   push:
-    branches: master
     paths:
       - apps/person-api/**
       - libs/testnorge-core/**
@@ -44,5 +43,5 @@ jobs:
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-          CLUSTER: dev-gcp
-          RESOURCE: apps/person-api/config.yaml
+          CLUSTER: dev-fss
+          RESOURCE: apps/person-api/config.dev.yaml

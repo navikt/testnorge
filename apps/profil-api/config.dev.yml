@@ -17,7 +17,7 @@ spec:
     inbound:
       rules:
         - application: testnorge-tilbakemelding-api
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: team-dolly-lokal-app
           cluster: dev-gcp
         - application: dolly-frontend-dev
