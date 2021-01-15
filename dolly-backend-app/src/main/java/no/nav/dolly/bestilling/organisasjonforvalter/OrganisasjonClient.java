@@ -17,8 +17,10 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.service.OrganisasjonBestillingService;
 import no.nav.dolly.service.OrganisasjonNummerService;
 import no.nav.dolly.service.OrganisasjonProgressService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -75,6 +77,18 @@ public class OrganisasjonClient implements OrganisasjonRegister {
         organisasjonBestillingService.setBestillingFerdig(bestillingId);
     }
 
+    @Override
+    public DeployResponse gjenopprett(DeployRequest request) {
+
+        ResponseEntity<DeployResponse> deployResponseResponseEntity = organisasjonConsumer.gjenopprettOrganisasjon(request);
+
+        if (deployResponseResponseEntity.hasBody()) {
+            return deployResponseResponseEntity.getBody();
+        }
+
+        throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, FEIL_STATUS_ORGFORVALTER_DEPLOY);
+    }
+
     private void saveOrgnumreToDbAndDeploy(Set<String> orgnumre, Long bestillingId, List<String> environments) {
 
         log.info("Deployer orgnumre fra Organisasjon Forvalter");
@@ -101,12 +115,6 @@ public class OrganisasjonClient implements OrganisasjonRegister {
         }
     }
 
-
-    @Override
-    public void gjenopprett(OrganisasjonBestillingProgress progress, List<String> miljoer) {
-
-        throw new UnsupportedOperationException("Gjenopprett ikke implementert");
-    }
 
     private String mapStatusFraDeploy(Entry<String, List<EnvStatus>> orgStatus) {
 

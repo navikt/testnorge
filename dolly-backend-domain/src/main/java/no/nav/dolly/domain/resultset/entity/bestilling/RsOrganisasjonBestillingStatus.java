@@ -30,7 +30,7 @@ public class RsOrganisasjonBestillingStatus {
     private LocalDateTime sistOppdatert;
     private List<String> environments;
     private List<OrganisasjonBestillingProgress> status;
-    private Long organisasjonNummer;
+    private String organisasjonNummer;
 
     private SyntetiskOrganisasjon bestilling;
 

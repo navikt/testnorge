@@ -46,8 +46,7 @@ public class OrganisasjonConsumer {
     @Timed(name = "providers", tags = { "operation", "organisasjon-hent" })
     public ResponseEntity<BestillingRequest> hentOrganisasjon(List<Long> orgnumre) {
 
-        String callId = getNavCallId();
-        AccessToken accessToken = getAccessToken(callId, "Organisasjon hent request sendt, callId: {}, consumerId: {}");
+        AccessToken accessToken = getAccessToken("Organisasjon hent request sendt, callId: {}, consumerId: {}");
 
         return webClient
                 .get()
@@ -56,7 +55,7 @@ public class OrganisasjonConsumer {
                                 .queryParam("orgnumre", orgnumre)
                                 .build())
                 .header(AUTHORIZATION, BEARER + accessToken.getTokenValue())
-                .header(HEADER_NAV_CALL_ID, callId)
+                .header(HEADER_NAV_CALL_ID, getNavCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve()
                 .toEntity(BestillingRequest.class)
@@ -67,14 +66,13 @@ public class OrganisasjonConsumer {
     @Timed(name = "providers", tags = { "operation", "organisasjon-opprett" })
     public ResponseEntity<BestillingResponse> postOrganisasjon(BestillingRequest bestillingRequest) {
 
-        String callId = getNavCallId();
-        AccessToken accessToken = getAccessToken(callId, "Organisasjon oppretting sendt, callId: {}, consumerId: {}");
+        AccessToken accessToken = getAccessToken("Organisasjon oppretting sendt, callId: {}, consumerId: {}");
 
         return webClient
                 .post()
                 .uri(URI.create(providersProps.getOrganisasjonForvalter().getUrl() + ORGANISASJON_BESTILLING_URL))
                 .header(AUTHORIZATION, BEARER + accessToken.getTokenValue())
-                .header(HEADER_NAV_CALL_ID, callId)
+                .header(HEADER_NAV_CALL_ID, getNavCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(bestillingRequest)
                 .retrieve()
@@ -82,19 +80,30 @@ public class OrganisasjonConsumer {
                 .block();
     }
 
+    @Timed(name = "providers", tags = { "operation", "organisasjon-gjenopprett" })
+    public ResponseEntity<DeployResponse> gjenopprettOrganisasjon(DeployRequest request) {
+
+        AccessToken accessToken = getAccessToken("Organisasjon gjenoppretting sendt, callId: {}, consumerId: {}");
+        return sendDeployOrganisasjonRequest(request, getNavCallId(), accessToken);
+    }
+
+
     @Timed(name = "providers", tags = { "operation", "organisasjon-deploy" })
     public ResponseEntity<DeployResponse> deployOrganisasjon(DeployRequest request) {
 
-        String callId = getNavCallId();
-        AccessToken accessToken = getAccessToken(callId, "Organisasjon deploy sendt, callId: {}, consumerId: {}");
+        AccessToken accessToken = getAccessToken("Organisasjon deploy sendt, callId: {}, consumerId: {}");
+        return sendDeployOrganisasjonRequest(request, getNavCallId(), accessToken);
+    }
 
+
+    private ResponseEntity<DeployResponse> sendDeployOrganisasjonRequest(DeployRequest deployRequest, String callId, AccessToken accessToken) {
         return webClient
                 .post()
                 .uri(URI.create(providersProps.getOrganisasjonForvalter().getUrl() + ORGANISASJON_DEPLOYMENT_URL))
                 .header(AUTHORIZATION, BEARER + accessToken.getTokenValue())
                 .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .bodyValue(request)
+                .bodyValue(deployRequest)
                 .retrieve()
                 .toEntity(DeployResponse.class)
                 .block();
@@ -104,8 +113,8 @@ public class OrganisasjonConsumer {
         return format("%s %s", CONSUMER, UUID.randomUUID().toString());
     }
 
-    private AccessToken getAccessToken(String callId, String s) {
-        log.info(s, callId, CONSUMER);
+    private AccessToken getAccessToken(String s) {
+        log.info(s, getNavCallId(), CONSUMER);
 
         return tokenService.getAccessToken(
                 new AccessScopes("api://" + organisasjonerClientId + "/.default")
