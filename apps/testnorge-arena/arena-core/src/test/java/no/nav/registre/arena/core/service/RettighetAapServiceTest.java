@@ -1,5 +1,8 @@
 package no.nav.registre.arena.core.service;
 
+import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.UTFALL_JA;
+import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.VEDTAK_TYPE_KODE_O;
+import static no.nav.registre.arena.core.service.RettighetAapService.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
@@ -9,6 +12,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import no.nav.registre.arena.core.consumer.rs.request.RettighetSyntRequest;
+import no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
@@ -44,6 +49,9 @@ import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoRespons
 
 @RunWith(MockitoJUnitRunner.class)
 public class RettighetAapServiceTest {
+
+    @Mock
+    private ConsumerUtils consumerUtils;
 
     @Mock
     private AapSyntConsumer aapSyntConsumer;
@@ -82,9 +90,20 @@ public class RettighetAapServiceTest {
     private List<NyttVedtakAap> ungUfoerRettigheter;
     private List<NyttVedtakAap> tvungenForvaltningRettigheter;
     private List<NyttVedtakAap> fritakMeldekortRettigheter;
+    private List<RettighetSyntRequest> syntRequest;
 
     @Before
     public void setUp() {
+        syntRequest = new ArrayList<>(Collections.singletonList(
+                RettighetSyntRequest.builder()
+                        .fraDato(LocalDate.now().toString())
+                        .tilDato(LocalDate.now().toString())
+                        .utfall(UTFALL_JA)
+                        .vedtakTypeKode(VEDTAK_TYPE_KODE_O)
+                        .vedtakDato(LocalDate.now().toString())
+                        .build()
+        ));
+
         identer = new ArrayList<>(Collections.singletonList(fnr1));
 
         aap115Rettighet = NyttVedtakAap.builder()
@@ -122,8 +141,10 @@ public class RettighetAapServiceTest {
         Map<String, List<NyttVedtakResponse>> expectedResponsesFromArenaForvalter = new HashMap<>();
         expectedResponsesFromArenaForvalter.put(fnr1, new ArrayList<>(Collections.singletonList(nyRettighetAapResponse)));
 
-        when(aapSyntConsumer.syntetiserRettighetAap115(any(LocalDate.class), any(LocalDate.class))).thenReturn(new ArrayList<>(Collections.singletonList(aap115Rettighet)));
-        when(aapSyntConsumer.syntetiserRettighetAap(antallIdenter)).thenReturn(aapRettigheter);
+        when(consumerUtils.createSyntRequest(any(LocalDate.class), any(LocalDate.class))).thenReturn(syntRequest);
+        when(consumerUtils.createSyntRequest(antallIdenter)).thenReturn(syntRequest);
+        when(aapSyntConsumer.syntetiserRettighetAap115(syntRequest)).thenReturn(new ArrayList<>(Collections.singletonList(aap115Rettighet)));
+        when(aapSyntConsumer.syntetiserRettighetAap(syntRequest)).thenReturn(aapRettigheter);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(expectedResponsesFromArenaForvalter);
         when(pensjonTestdataFacadeConsumer.opprettPerson(any(PensjonTestdataPerson.class))).thenReturn(PensjonTestdataResponse.builder()
                 .status(Collections.singletonList(PensjonTestdataStatus.builder()
@@ -167,7 +188,8 @@ public class RettighetAapServiceTest {
         expectedResponsesFromArenaForvalter.put(fnr1, new ArrayList<>(Collections.singletonList(nyRettighetungUfoerResponse)));
 
         when(identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallIdenter, 18, 35, miljoe)).thenReturn(identer);
-        when(aapSyntConsumer.syntetiserRettighetUngUfoer(antallIdenter)).thenReturn(ungUfoerRettigheter);
+        when(consumerUtils.createSyntRequest(antallIdenter, ARENA_AAP_UNG_UFOER_DATE_LIMIT)).thenReturn(syntRequest);
+        when(aapSyntConsumer.syntetiserRettighetUngUfoer(syntRequest)).thenReturn(ungUfoerRettigheter);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(expectedResponsesFromArenaForvalter);
 
         var response = rettighetAapService.genererUngUfoer(avspillergruppeId, miljoe, antallIdenter);
@@ -194,7 +216,8 @@ public class RettighetAapServiceTest {
         Map<String, List<NyttVedtakResponse>> expectedResponsesFromArenaForvalter = new HashMap<>();
         expectedResponsesFromArenaForvalter.put(fnr1, new ArrayList<>(Collections.singletonList(nyRettighetTvungenForvaltningResponse)));
 
-        when(aapSyntConsumer.syntetiserRettighetTvungenForvaltning(antallIdenter)).thenReturn(tvungenForvaltningRettigheter);
+        when(consumerUtils.createSyntRequest(antallIdenter)).thenReturn(syntRequest);
+        when(aapSyntConsumer.syntetiserRettighetTvungenForvaltning(syntRequest)).thenReturn(tvungenForvaltningRettigheter);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(expectedResponsesFromArenaForvalter);
 
         var response = rettighetAapService.genererTvungenForvaltning(avspillergruppeId, miljoe, antallIdenter);
@@ -217,7 +240,8 @@ public class RettighetAapServiceTest {
 
         when(identerUtils.hentEksisterendeArbeidsoekerIdenter()).thenReturn(identer);
         when(identerUtils.getLevende(avspillergruppeId, miljoe)).thenReturn(identer);
-        when(aapSyntConsumer.syntetiserRettighetFritakMeldekort(antallIdenter)).thenReturn(fritakMeldekortRettigheter);
+        when(consumerUtils.createSyntRequest(antallIdenter)).thenReturn(syntRequest);
+        when(aapSyntConsumer.syntetiserRettighetFritakMeldekort(syntRequest)).thenReturn(fritakMeldekortRettigheter);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(expectedResponsesFromArenaForvalter);
 
         var response = rettighetAapService.genererFritakMeldekort(avspillergruppeId, miljoe, antallIdenter);

@@ -1,8 +1,8 @@
 package no.nav.registre.arena.core.service;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static no.nav.registre.arena.core.consumer.rs.AapSyntConsumer.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
-import static no.nav.registre.arena.core.consumer.rs.TilleggSyntConsumer.ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT;
+import static no.nav.registre.arena.core.service.RettighetAapService.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
+import static no.nav.registre.arena.core.service.RettighetTilleggService.ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT;
 import static no.nav.registre.arena.core.service.RettighetAapService.SYKEPENGEERSTATNING_MAKS_PERIODE;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.AKTIVITETSFASE_SYKEPENGEERSTATNING;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.BEGRUNNELSE;

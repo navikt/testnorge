@@ -1,72 +1,50 @@
 package no.nav.registre.arena.core.consumer.rs;
 
+import no.nav.registre.arena.core.consumer.rs.command.PostSyntTiltakRequestCommand;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetSyntRequest;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
-
-import no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils;
 
 @Component
 @DependencyOn(value = "nais-synthdata-arena-tiltak", external = true)
 public class TiltakSyntConsumer {
 
-    private RestTemplate restTemplate;
-    private ConsumerUtils consumerUtils;
+    private final WebClient webClient;
 
-    private UriTemplate arenaTiltaksdeltakelseUrl;
-    private UriTemplate arenaTiltakspengerUrl;
-    private UriTemplate arenaBarnetilleggUrl;
-    private UriTemplate arenaDeltakerstatusUrl;
-    private UriTemplate arenaTiltaksaktivitetUrl;
+    private static final String ARENA_TILTAKSDELTAKELSE_URL = "/v1/arena/tiltak/deltakelse";
+    private static final String ARENA_TILTAKSPENGER_URL = "/v1/arena/tiltak/basi";
+    private static final String ARENA_BARNETILLEGG_URL = "/v1/arena/tiltak/btil";
+    private static final String ARENA_DELTAKERSTATUS_URL = "/v1/arena/tiltak/deltakerstatus";
+    private static final String ARENA_TILTAKSAKTIVITET_URL = "/v1/arena/tiltak/aktivitet";
 
     public TiltakSyntConsumer(
-            RestTemplateBuilder restTemplateBuilder,
-            ConsumerUtils consumerUtils,
             @Value("${synt-arena-tiltak.rest-api.url}") String arenaTiltakServerUrl
     ) {
-        this.restTemplate = restTemplateBuilder.build();
-        this.consumerUtils = consumerUtils;
-        this.arenaTiltaksdeltakelseUrl = new UriTemplate(arenaTiltakServerUrl + "/v1/arena/tiltak/deltakelse");
-        this.arenaTiltakspengerUrl = new UriTemplate(arenaTiltakServerUrl + "/v1/arena/tiltak/basi");
-        this.arenaBarnetilleggUrl = new UriTemplate(arenaTiltakServerUrl + "/v1/arena/tiltak/btil");
-        this.arenaDeltakerstatusUrl = new UriTemplate(arenaTiltakServerUrl + "/v1/arena/tiltak/deltakerstatus");
-        this.arenaTiltaksaktivitetUrl = new UriTemplate(arenaTiltakServerUrl + "/v1/arena/tiltak/aktivitet");
+        this.webClient = WebClient.builder().baseUrl(arenaTiltakServerUrl).build();
     }
 
-    public List<NyttVedtakTiltak> opprettTiltaksdeltakelse(int antallMeldinger) {
-        var postRequest = consumerUtils.createPostRequest(arenaTiltaksdeltakelseUrl, antallMeldinger);
-        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakTiltak>>() {
-        }).getBody();
+    public List<NyttVedtakTiltak> opprettTiltaksdeltakelse(List<RettighetSyntRequest> syntRequest) {
+        return new PostSyntTiltakRequestCommand(webClient, syntRequest, ARENA_TILTAKSDELTAKELSE_URL).call();
     }
 
-    public List<NyttVedtakTiltak> opprettTiltakspenger(int antallMeldinger) {
-        var postRequest = consumerUtils.createPostRequest(arenaTiltakspengerUrl, antallMeldinger);
-        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakTiltak>>() {
-        }).getBody();
+    public List<NyttVedtakTiltak> opprettTiltakspenger(List<RettighetSyntRequest> syntRequest) {
+        return new PostSyntTiltakRequestCommand(webClient, syntRequest, ARENA_TILTAKSPENGER_URL).call();
     }
 
-    public List<NyttVedtakTiltak> opprettBarnetillegg(int antallMeldinger) {
-        var postRequest = consumerUtils.createPostRequest(arenaBarnetilleggUrl, antallMeldinger);
-        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakTiltak>>() {
-        }).getBody();
+    public List<NyttVedtakTiltak> opprettBarnetillegg(List<RettighetSyntRequest> syntRequest) {
+        return new PostSyntTiltakRequestCommand(webClient, syntRequest, ARENA_BARNETILLEGG_URL).call();
     }
 
-    public List<NyttVedtakTiltak> opprettDeltakerstatus(int antallMeldinger) {
-        var postRequest = consumerUtils.createPostRequest(arenaDeltakerstatusUrl, antallMeldinger);
-        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakTiltak>>() {
-        }).getBody();
+    public List<NyttVedtakTiltak> opprettDeltakerstatus(List<RettighetSyntRequest> syntRequest) {
+        return new PostSyntTiltakRequestCommand(webClient, syntRequest, ARENA_DELTAKERSTATUS_URL).call();
     }
 
-    public List<NyttVedtakTiltak> opprettTiltaksaktivitet(int antallMeldinger) {
-        var postRequest = consumerUtils.createPostRequest(arenaTiltaksaktivitetUrl, antallMeldinger);
-        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakTiltak>>() {
-        }).getBody();
+    public List<NyttVedtakTiltak> opprettTiltaksaktivitet(List<RettighetSyntRequest> syntRequest) {
+        return new PostSyntTiltakRequestCommand(webClient, syntRequest, ARENA_TILTAKSAKTIVITET_URL).call();
     }
 }

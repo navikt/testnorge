@@ -1,160 +1,111 @@
 package no.nav.registre.arena.core.consumer.rs;
 
+import no.nav.registre.arena.core.consumer.rs.command.PostSyntTilleggRequestCommand;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetSyntRequest;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
-import java.time.LocalDate;
 import java.util.List;
 
-import no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils;
 
 @Component
 @DependencyOn(value = "nais-synthdata-arena-tilleggsstonad", external = true)
 public class TilleggSyntConsumer {
 
-    private RestTemplate restTemplate;
-    private ConsumerUtils consumerUtils;
+    private final WebClient webClient;
 
-    private UriTemplate arenaTilleggBoutgiftUrl;
-    private UriTemplate arenaTilleggDagligReiseUrl;
-    private UriTemplate arenaTilleggFlyttingUrl;
-    private UriTemplate arenaTilleggLaeremidlerUrl;
-    private UriTemplate arenaTilleggHjemreiseUrl;
-    private UriTemplate arenaTilleggReiseObligatoriskSamlingUrl;
-
-    private UriTemplate arenaTilleggTilsynBarnUrl;
-    private UriTemplate arenaTilleggTilsynFamiliemedlemmerUrl;
-    private UriTemplate arenaTilleggTilsynBarnArbeidssoekereUrl;
-    private UriTemplate arenaTilleggTilsynFamiliemedlemmerArbeidssoekereUrl;
-
-    private UriTemplate arenaTilleggBoutgifterArbeidssoekereUrl;
-    private UriTemplate arenaTilleggDagligReiseArbeidssoekereUrl;
-    private UriTemplate arenaTilleggFlyttingArbeidssoekereUrl;
-    private UriTemplate arenaTilleggLaeremidlerArbeidssoekereUrl;
-    private UriTemplate arenaTilleggHjemreiseArbeidssoekereUrl;
-    private UriTemplate arenaTilleggReiseObligatoriskSamlingArbeidssoekereUrl;
-    private UriTemplate arenaTilleggReisestoenadArbeidssoekereUrl;
-
-    public static final LocalDate ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT = LocalDate.of(2020, 02, 29);
+    private static final String BOUTGIFT_URL = "/v1/arena/tilleggsstonad/boutgift";
+    private static final String BOUTGIFTER_ARBEIDSSOEKERE_URL = "/v1/arena/tilleggsstonad/boutgifter_arbeidssokere";
+    private static final String DAGLIG_REISE_URL = "/v1/arena/tilleggsstonad/daglig_reise";
+    private static final String DAGLIG_REISE_ARBEIDSSOEKER_URL = "/v1/arena/tilleggsstonad/daglig_reise_arbeidssoker";
+    private static final String FLYTTING_URL = "/v1/arena/tilleggsstonad/flytting";
+    private static final String FLYTTING_ARBEIDSSOEKERE_URL = "/v1/arena/tilleggsstonad/flytting_arbeidssokere";
+    private static final String LAEREMIDLER_URL = "/v1/arena/tilleggsstonad/laeremidler";
+    private static final String LAEREMIDLER_ARBEIDSSOEKERE_URL = "/v1/arena/tilleggsstonad/laeremidler_arbeidssokere";
+    private static final String HJEMREISE_URL = "/v1/arena/tilleggsstonad/reise_aktivitet_og_hjemreiser";
+    private static final String HJEMREISE_ARBEIDSSOEKERE_URL = "/v1/arena/tilleggsstonad/reise_aktivitet_og_hjemreiser_arbeidssokere";
+    private static final String OBLIGATORISK_SAMLING_URL = "/v1/arena/tilleggsstonad/reise_til_obligatorisk_samling";
+    private static final String OBLIGATORISK_SAMLING_ARBEIDSSOEKERE_URL = "/v1/arena/tilleggsstonad/reise_til_obligatorisk_samling_arbeidssokere";
+    private static final String REISESTONAD_URL = "/v1/arena/tilleggsstonad/reisestonad_til_arbeidssokere";
+    private static final String TILSYN_BARN_URL = "/v1/arena/tilleggsstonad/tilsyn_barn";
+    private static final String TILSYN_BARN_ARBEIDSSOEKER_URL = "/v1/arena/tilleggsstonad/tilsyn_barn_arbeidssoker";
+    private static final String TILSYN_FAMILIEMEDLEMMER_URL = "/v1/arena/tilleggsstonad/tilsyn_familiemedlemmer";
+    private static final String TILSYN_FAMILIEMEDLEMMER_ARBEIDSSOEKERE_URL = "/v1/arena/tilleggsstonad/tilsyn_familiemedlemmer_arbeidssokere";
 
     public TilleggSyntConsumer(
-            RestTemplateBuilder restTemplateBuilder,
-            ConsumerUtils consumerUtils,
             @Value("${synt-arena-tillegg.rest-api.url}") String arenaTilleggServerUrl
     ) {
-        this.restTemplate = restTemplateBuilder.build();
-        this.consumerUtils = consumerUtils;
-        this.arenaTilleggBoutgiftUrl = new UriTemplate(arenaTilleggServerUrl + "/v1/arena/tilleggsstonad/boutgift");
-        this.arenaTilleggDagligReiseUrl = new UriTemplate(arenaTilleggServerUrl + "/v1/arena/tilleggsstonad/daglig_reise");
-        this.arenaTilleggFlyttingUrl = new UriTemplate(arenaTilleggServerUrl + "/v1/arena/tilleggsstonad/flytting");
-        this.arenaTilleggLaeremidlerUrl = new UriTemplate(arenaTilleggServerUrl + "/v1/arena/tilleggsstonad/laeremidler");
-        this.arenaTilleggHjemreiseUrl = new UriTemplate(arenaTilleggServerUrl + "/v1/arena/tilleggsstonad/reise_aktivitet_og_hjemreiser");
-        this.arenaTilleggReiseObligatoriskSamlingUrl = new UriTemplate(arenaTilleggServerUrl + "/v1/arena/tilleggsstonad/reise_til_obligatorisk_samling");
-
-        this.arenaTilleggTilsynBarnUrl = new UriTemplate(arenaTilleggServerUrl + "/v1/arena/tilleggsstonad/tilsyn_barn");
-        this.arenaTilleggTilsynFamiliemedlemmerUrl = new UriTemplate(arenaTilleggServerUrl + "/v1/arena/tilleggsstonad/tilsyn_familiemedlemmer");
-        this.arenaTilleggTilsynBarnArbeidssoekereUrl = new UriTemplate(arenaTilleggServerUrl + "/v1/arena/tilleggsstonad/tilsyn_barn_arbeidssoker");
-        this.arenaTilleggTilsynFamiliemedlemmerArbeidssoekereUrl = new UriTemplate(arenaTilleggServerUrl + "/v1/arena/tilleggsstonad/tilsyn_familiemedlemmer_arbeidssokere");
-
-        this.arenaTilleggBoutgifterArbeidssoekereUrl = new UriTemplate(arenaTilleggServerUrl + "/v1/arena/tilleggsstonad/boutgifter_arbeidssokere");
-        this.arenaTilleggDagligReiseArbeidssoekereUrl = new UriTemplate(arenaTilleggServerUrl + "/v1/arena/tilleggsstonad/daglig_reise_arbeidssoker");
-        this.arenaTilleggFlyttingArbeidssoekereUrl = new UriTemplate(arenaTilleggServerUrl + "/v1/arena/tilleggsstonad/flytting_arbeidssokere");
-        this.arenaTilleggLaeremidlerArbeidssoekereUrl = new UriTemplate(arenaTilleggServerUrl + "/v1/arena/tilleggsstonad/laeremidler_arbeidssokere");
-        this.arenaTilleggHjemreiseArbeidssoekereUrl = new UriTemplate(arenaTilleggServerUrl + "/v1/arena/tilleggsstonad/reise_aktivitet_og_hjemreiser_arbeidssokere");
-        this.arenaTilleggReiseObligatoriskSamlingArbeidssoekereUrl = new UriTemplate(arenaTilleggServerUrl + "/v1/arena/tilleggsstonad/reise_til_obligatorisk_samling_arbeidssokere");
-        this.arenaTilleggReisestoenadArbeidssoekereUrl = new UriTemplate(arenaTilleggServerUrl + "/v1/arena/tilleggsstonad/reisestonad_til_arbeidssokere");
+        this.webClient = WebClient.builder().baseUrl(arenaTilleggServerUrl).build();
     }
 
-    public List<NyttVedtakTillegg> opprettBoutgifter(int antallMeldinger) {
-        return opprettTilleggstoenad(antallMeldinger, arenaTilleggBoutgiftUrl);
+    public List<NyttVedtakTillegg> opprettBoutgifter(List<RettighetSyntRequest> syntRequest) {
+        return new PostSyntTilleggRequestCommand(webClient, syntRequest, BOUTGIFT_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettDagligReise(int antallMeldinger) {
-        return opprettTilleggstoenad(antallMeldinger, arenaTilleggDagligReiseUrl);
+    public List<NyttVedtakTillegg> opprettDagligReise(List<RettighetSyntRequest> syntRequest) {
+        return new PostSyntTilleggRequestCommand(webClient, syntRequest, DAGLIG_REISE_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettFlytting(int antallMeldinger) {
-        return opprettTilleggstoenad(antallMeldinger, arenaTilleggFlyttingUrl);
+    public List<NyttVedtakTillegg> opprettFlytting(List<RettighetSyntRequest> syntRequest) {
+        return new PostSyntTilleggRequestCommand(webClient, syntRequest, FLYTTING_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettLaeremidler(int antallMeldinger) {
-        return opprettTilleggstoenad(antallMeldinger, arenaTilleggLaeremidlerUrl);
+    public List<NyttVedtakTillegg> opprettLaeremidler(List<RettighetSyntRequest> syntRequest) {
+        return new PostSyntTilleggRequestCommand(webClient, syntRequest, LAEREMIDLER_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettHjemreise(int antallMeldinger) {
-        return opprettTilleggstoenad(antallMeldinger, arenaTilleggHjemreiseUrl);
+    public List<NyttVedtakTillegg> opprettHjemreise(List<RettighetSyntRequest> syntRequest) {
+        return new PostSyntTilleggRequestCommand(webClient, syntRequest, HJEMREISE_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettReiseObligatoriskSamling(int antallMeldinger) {
-        return opprettTilleggstoenad(antallMeldinger, arenaTilleggReiseObligatoriskSamlingUrl);
+    public List<NyttVedtakTillegg> opprettReiseObligatoriskSamling(List<RettighetSyntRequest> syntRequest) {
+        return new PostSyntTilleggRequestCommand(webClient, syntRequest, OBLIGATORISK_SAMLING_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettTilsynBarn(int antallMeldinger) {
-        return opprettTilleggstoenad(antallMeldinger, arenaTilleggTilsynBarnUrl);
+    public List<NyttVedtakTillegg> opprettTilsynBarn(List<RettighetSyntRequest> syntRequest) {
+        return new PostSyntTilleggRequestCommand(webClient, syntRequest, TILSYN_BARN_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettTilsynFamiliemedlemmer(int antallMeldinger) {
-        return opprettTilleggstoenad(antallMeldinger, arenaTilleggTilsynFamiliemedlemmerUrl, ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT);
+    public List<NyttVedtakTillegg> opprettTilsynFamiliemedlemmer(List<RettighetSyntRequest> syntRequest) {
+        return new PostSyntTilleggRequestCommand(webClient, syntRequest, TILSYN_FAMILIEMEDLEMMER_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettTilsynBarnArbeidssoekere(int antallMeldinger) {
-        return opprettTilleggstoenad(antallMeldinger, arenaTilleggTilsynBarnArbeidssoekereUrl);
+    public List<NyttVedtakTillegg> opprettTilsynBarnArbeidssoekere(List<RettighetSyntRequest> syntRequest) {
+        return new PostSyntTilleggRequestCommand(webClient, syntRequest, TILSYN_BARN_ARBEIDSSOEKER_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettTilsynFamiliemedlemmerArbeidssoekere(int antallMeldinger) {
-        return opprettTilleggstoenad(antallMeldinger, arenaTilleggTilsynFamiliemedlemmerArbeidssoekereUrl);
+    public List<NyttVedtakTillegg> opprettTilsynFamiliemedlemmerArbeidssoekere(List<RettighetSyntRequest> syntRequest) {
+        return new PostSyntTilleggRequestCommand(webClient, syntRequest, TILSYN_FAMILIEMEDLEMMER_ARBEIDSSOEKERE_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettBoutgifterArbeidssoekere(int antallMeldinger) {
-        return opprettTilleggstoenad(antallMeldinger, arenaTilleggBoutgifterArbeidssoekereUrl);
+    public List<NyttVedtakTillegg> opprettBoutgifterArbeidssoekere(List<RettighetSyntRequest> syntRequest) {
+        return new PostSyntTilleggRequestCommand(webClient, syntRequest, BOUTGIFTER_ARBEIDSSOEKERE_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettDagligReiseArbeidssoekere(int antallMeldinger) {
-        return opprettTilleggstoenad(antallMeldinger, arenaTilleggDagligReiseArbeidssoekereUrl);
+    public List<NyttVedtakTillegg> opprettDagligReiseArbeidssoekere(List<RettighetSyntRequest> syntRequest) {
+        return new PostSyntTilleggRequestCommand(webClient, syntRequest, DAGLIG_REISE_ARBEIDSSOEKER_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettFlyttingArbeidssoekere(int antallMeldinger) {
-        return opprettTilleggstoenad(antallMeldinger, arenaTilleggFlyttingArbeidssoekereUrl);
+    public List<NyttVedtakTillegg> opprettFlyttingArbeidssoekere(List<RettighetSyntRequest> syntRequest) {
+        return new PostSyntTilleggRequestCommand(webClient, syntRequest, FLYTTING_ARBEIDSSOEKERE_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettLaeremidlerArbeidssoekere(int antallMeldinger) {
-        return opprettTilleggstoenad(antallMeldinger, arenaTilleggLaeremidlerArbeidssoekereUrl);
+    public List<NyttVedtakTillegg> opprettLaeremidlerArbeidssoekere(List<RettighetSyntRequest> syntRequest) {
+        return new PostSyntTilleggRequestCommand(webClient, syntRequest, LAEREMIDLER_ARBEIDSSOEKERE_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettHjemreiseArbeidssoekere(int antallMeldinger) {
-        return opprettTilleggstoenad(antallMeldinger, arenaTilleggHjemreiseArbeidssoekereUrl);
+    public List<NyttVedtakTillegg> opprettHjemreiseArbeidssoekere(List<RettighetSyntRequest> syntRequest) {
+        return new PostSyntTilleggRequestCommand(webClient, syntRequest, HJEMREISE_ARBEIDSSOEKERE_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettReiseObligatoriskSamlingArbeidssoekere(int antallMeldinger) {
-        return opprettTilleggstoenad(antallMeldinger, arenaTilleggReiseObligatoriskSamlingArbeidssoekereUrl);
+    public List<NyttVedtakTillegg> opprettReiseObligatoriskSamlingArbeidssoekere(List<RettighetSyntRequest> syntRequest) {
+        return new PostSyntTilleggRequestCommand(webClient, syntRequest, OBLIGATORISK_SAMLING_ARBEIDSSOEKERE_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettReisestoenadArbeidssoekere(int antallMeldinger) {
-        return opprettTilleggstoenad(antallMeldinger, arenaTilleggReisestoenadArbeidssoekereUrl);
-    }
-
-    private List<NyttVedtakTillegg> opprettTilleggstoenad(
-            int antallMeldinger,
-            UriTemplate uri
-    ) {
-        var postRequest = consumerUtils.createPostRequest(uri, antallMeldinger);
-        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakTillegg>>() {
-        }).getBody();
-    }
-
-    private List<NyttVedtakTillegg> opprettTilleggstoenad(
-            int antallMeldinger,
-            UriTemplate uri,
-            LocalDate startDatoLimit
-    ) {
-        var postRequest = consumerUtils.createPostRequest(uri, antallMeldinger, startDatoLimit);
-        return restTemplate.exchange(postRequest, new ParameterizedTypeReference<List<NyttVedtakTillegg>>() {
-        }).getBody();
+    public List<NyttVedtakTillegg> opprettReisestoenadArbeidssoekere(List<RettighetSyntRequest> syntRequest) {
+        return new PostSyntTilleggRequestCommand(webClient, syntRequest, REISESTONAD_URL).call();
     }
 }

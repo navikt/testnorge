@@ -4,53 +4,65 @@ import static no.nav.registre.arena.core.testutils.ResourceUtils.getResourceFile
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
+import no.nav.registre.arena.core.consumer.rs.request.RettighetSyntRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.GensakKoder;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.GensakOvKoder;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.client.MockRestServiceServer;
 
-import no.nav.registre.arena.core.config.AppConfig;
-import no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-@RunWith(SpringRunner.class)
-@AutoConfigureWireMock(port = 0)
+import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.UTFALL_JA;
+import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.VEDTAK_TYPE_KODE_O;
+
 @TestPropertySource(locations = "classpath:application-test.properties")
-@ContextConfiguration(classes = {AapSyntConsumer.class, AppConfig.class, ConsumerUtils.class})
-@RestClientTest(AapSyntConsumer.class)
+@ActiveProfiles("test")
 public class AapSyntConsumerTest {
 
-    @Autowired
     private AapSyntConsumer syntConsumer;
 
-    @Autowired
-    private MockRestServiceServer server;
+    private MockWebServer mockWebServer;
 
     @Value("${synt-arena.rest-api.url}")
     private String serverUrl;
 
-    private int antallMeldinger = 1;
+    private List<RettighetSyntRequest> syntRequest;
+
+    @Before
+    public void setUp() throws IOException {
+        this.mockWebServer = new MockWebServer();
+        this.mockWebServer.start();
+        this.syntConsumer = new AapSyntConsumer(mockWebServer.url("/").toString());
+
+        syntRequest = new ArrayList<>(Collections.singletonList(
+                RettighetSyntRequest.builder()
+                        .fraDato(LocalDate.now().toString())
+                        .tilDato(LocalDate.now().toString())
+                        .utfall(UTFALL_JA)
+                        .vedtakTypeKode(VEDTAK_TYPE_KODE_O)
+                        .vedtakDato(LocalDate.now().toString())
+                        .build()
+        ));
+    }
 
     @Test
     public void shouldSyntetisereAapRettighet() {
         var expectedUri = serverUrl + "/v1/arena/aap";
-        stubSyntetiserAapRettighet(expectedUri);
+        stubSyntetiserAapRettighet();
 
-        var response = syntConsumer.syntetiserRettighetAap(antallMeldinger);
+        var response = syntConsumer.syntetiserRettighetAap(syntRequest);
 
         NyttVedtakAap rettighet = response.get(0);
         assertThat(rettighet.getAktivitetsfase(), equalTo("UA"));
@@ -86,9 +98,9 @@ public class AapSyntConsumerTest {
     @Test
     public void shouldSyntetisereUngUfoerRettighet() {
         var expectedUri = serverUrl + "/v1/arena/aap/aaungufor";
-        stubSyntetiserUngUfoerRettighet(expectedUri);
+        stubSyntetiserUngUfoerRettighet();
 
-        var response = syntConsumer.syntetiserRettighetUngUfoer(antallMeldinger);
+        var response = syntConsumer.syntetiserRettighetUngUfoer(syntRequest);
 
         var rettighet = response.get(0);
         var vilkaar = rettighet.getVilkaar();
@@ -112,9 +124,9 @@ public class AapSyntConsumerTest {
     @Test
     public void shouldSyntetisereTvungenForvaltningRettighet() {
         var expectedUri = serverUrl + "/v1/arena/aap/aatfor";
-        stubSyntetiserTvungenForvaltningRettighet(expectedUri);
+        stubSyntetiserTvungenForvaltningRettighet();
 
-        var response = syntConsumer.syntetiserRettighetTvungenForvaltning(antallMeldinger);
+        var response = syntConsumer.syntetiserRettighetTvungenForvaltning(syntRequest);
 
         var rettighet = response.get(0);
         var vilkaar = rettighet.getVilkaar();
@@ -135,9 +147,9 @@ public class AapSyntConsumerTest {
     @Test
     public void shouldSyntetisereFritakMeldekortRettighet() {
         var expectedUri = serverUrl + "/v1/arena/aap/fri_mk";
-        stubSyntetiserFritakMeldekortRettighet(expectedUri);
+        stubSyntetiserFritakMeldekortRettighet();
 
-        var response = syntConsumer.syntetiserRettighetFritakMeldekort(antallMeldinger);
+        var response = syntConsumer.syntetiserRettighetFritakMeldekort(syntRequest);
 
         var rettighet = response.get(0);
         var vilkaar = rettighet.getVilkaar();
@@ -166,35 +178,48 @@ public class AapSyntConsumerTest {
         assertThat(vilkaar.get(6).getStatus(), equalTo("J"));
     }
 
-    private void stubSyntetiserAapRettighet(String expectedUri) {
-        server.expect(requestToUriTemplate(expectedUri))
-                .andExpect(method(HttpMethod.POST))
-                .andRespond(withSuccess()
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(getResourceFileContent("files/aap/aap_synt_response.json")));
+    private void stubSyntetiserAapRettighet() {
+        MockResponse mockResponse = new MockResponse()
+                .addHeader("Content-Type", "application/json; charset=utf-8")
+                .setBody(getResourceFileContent("files/aap/aap_synt_response.json"))
+                .setResponseCode(200);
+
+        mockWebServer.enqueue(mockResponse);
     }
 
-    private void stubSyntetiserUngUfoerRettighet(String expectedUri) {
-        server.expect(requestToUriTemplate(expectedUri))
-                .andExpect(method(HttpMethod.POST))
-                .andRespond(withSuccess()
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(getResourceFileContent("files/aap/ung_ufoer_synt_response.json")));
+
+    private void stubSyntetiserUngUfoerRettighet() {
+        MockResponse mockResponse = new MockResponse()
+                .addHeader("Content-Type", "application/json; charset=utf-8")
+                .setBody(getResourceFileContent("files/aap/ung_ufoer_synt_response.json"))
+                .setResponseCode(200);
+
+        mockWebServer.enqueue(mockResponse);
     }
 
-    private void stubSyntetiserTvungenForvaltningRettighet(String expectedUri) {
-        server.expect(requestToUriTemplate(expectedUri))
-                .andExpect(method(HttpMethod.POST))
-                .andRespond(withSuccess()
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(getResourceFileContent("files/aap/tvungen_forvaltning_synt_response.json")));
+
+    private void stubSyntetiserTvungenForvaltningRettighet() {
+        MockResponse mockResponse = new MockResponse()
+                .addHeader("Content-Type", "application/json; charset=utf-8")
+                .setBody(getResourceFileContent("files/aap/tvungen_forvaltning_synt_response.json"))
+                .setResponseCode(200);
+
+        mockWebServer.enqueue(mockResponse);
     }
 
-    private void stubSyntetiserFritakMeldekortRettighet(String expectedUri) {
-        server.expect(requestToUriTemplate(expectedUri))
-                .andExpect(method(HttpMethod.POST))
-                .andRespond(withSuccess()
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(getResourceFileContent("files/aap/fritak_meldekort_synt_response.json")));
+
+    private void stubSyntetiserFritakMeldekortRettighet() {
+        MockResponse mockResponse = new MockResponse()
+                .addHeader("Content-Type", "application/json; charset=utf-8")
+                .setBody(getResourceFileContent("files/aap/fritak_meldekort_synt_response.json"))
+                .setResponseCode(200);
+
+        mockWebServer.enqueue(mockResponse);
+    }
+
+
+    @After
+    public void tearDown() throws IOException {
+        mockWebServer.shutdown();
     }
 }

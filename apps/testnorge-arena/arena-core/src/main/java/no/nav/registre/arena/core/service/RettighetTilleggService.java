@@ -4,10 +4,12 @@ import static no.nav.registre.arena.core.service.util.ServiceUtils.BEGRUNNELSE;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils;
 import no.nav.registre.arena.core.service.util.ArbeidssoekerUtils;
 import no.nav.registre.arena.core.service.util.IdenterUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,13 +34,17 @@ public class RettighetTilleggService {
     private final ServiceUtils serviceUtils;
     private final IdenterUtils identerUtils;
     private final ArbeidssoekerUtils arbeidssoekerUtils;
+    private final ConsumerUtils consumerUtils;
+
+    public static final LocalDate ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT = LocalDate.of(2020, 02, 29);
 
     public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadBoutgifter(
             Long avspillergruppeId,
             String miljoe,
             int antallNyeIdenter
     ) {
-        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettBoutgifter(antallNyeIdenter));
+        var syntRequest = consumerUtils.createSyntRequest(antallNyeIdenter);
+        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettBoutgifter(syntRequest));
     }
 
     public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadDagligReise(
@@ -46,7 +52,8 @@ public class RettighetTilleggService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettDagligReise(antallNyeIdenter));
+        var syntRequest = consumerUtils.createSyntRequest(antallNyeIdenter);
+        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettDagligReise(syntRequest));
     }
 
     public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadFlytting(
@@ -54,7 +61,8 @@ public class RettighetTilleggService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettFlytting(antallNyeIdenter));
+        var syntRequest = consumerUtils.createSyntRequest(antallNyeIdenter);
+        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettFlytting(syntRequest));
     }
 
     public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadLaeremidler(
@@ -62,7 +70,8 @@ public class RettighetTilleggService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettLaeremidler(antallNyeIdenter));
+        var syntRequest = consumerUtils.createSyntRequest(antallNyeIdenter);
+        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettLaeremidler(syntRequest));
     }
 
     public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadHjemreise(
@@ -70,7 +79,8 @@ public class RettighetTilleggService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettHjemreise(antallNyeIdenter));
+        var syntRequest = consumerUtils.createSyntRequest(antallNyeIdenter);
+        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettHjemreise(syntRequest));
     }
 
     public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadReiseObligatoriskSamling(
@@ -78,7 +88,8 @@ public class RettighetTilleggService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettReiseObligatoriskSamling(antallNyeIdenter));
+        var syntRequest = consumerUtils.createSyntRequest(antallNyeIdenter);
+        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettReiseObligatoriskSamling(syntRequest));
     }
 
     public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadTilsynBarn(
@@ -86,7 +97,8 @@ public class RettighetTilleggService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettTilsynBarn(antallNyeIdenter));
+        var syntRequest = consumerUtils.createSyntRequest(antallNyeIdenter);
+        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettTilsynBarn(syntRequest));
     }
 
     public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadTilsynFamiliemedlemmer(
@@ -94,7 +106,8 @@ public class RettighetTilleggService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettTilsynFamiliemedlemmer(antallNyeIdenter));
+        var syntRequest = consumerUtils.createSyntRequest(antallNyeIdenter, ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT);
+        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettTilsynFamiliemedlemmer(syntRequest));
     }
 
     public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadTilsynBarnArbeidssoekere(
@@ -102,7 +115,8 @@ public class RettighetTilleggService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettTilsynBarnArbeidssoekere(antallNyeIdenter));
+        var syntRequest = consumerUtils.createSyntRequest(antallNyeIdenter);
+        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettTilsynBarnArbeidssoekere(syntRequest));
     }
 
     public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadTilsynFamiliemedlemmerArbeidssoekere(
@@ -110,7 +124,8 @@ public class RettighetTilleggService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettTilsynFamiliemedlemmerArbeidssoekere(antallNyeIdenter));
+        var syntRequest = consumerUtils.createSyntRequest(antallNyeIdenter);
+        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettTilsynFamiliemedlemmerArbeidssoekere(syntRequest));
     }
 
     public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadBoutgifterArbeidssoekere(
@@ -118,7 +133,8 @@ public class RettighetTilleggService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettBoutgifterArbeidssoekere(antallNyeIdenter));
+        var syntRequest = consumerUtils.createSyntRequest(antallNyeIdenter);
+        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettBoutgifterArbeidssoekere(syntRequest));
     }
 
     public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadDagligReiseArbeidssoekere(
@@ -126,7 +142,8 @@ public class RettighetTilleggService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettDagligReiseArbeidssoekere(antallNyeIdenter));
+        var syntRequest = consumerUtils.createSyntRequest(antallNyeIdenter);
+        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettDagligReiseArbeidssoekere(syntRequest));
     }
 
     public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadFlyttingArbeidssoekere(
@@ -134,7 +151,8 @@ public class RettighetTilleggService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettFlyttingArbeidssoekere(antallNyeIdenter));
+        var syntRequest = consumerUtils.createSyntRequest(antallNyeIdenter);
+        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettFlyttingArbeidssoekere(syntRequest));
     }
 
     public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadLaeremidlerArbeidssoekere(
@@ -142,7 +160,8 @@ public class RettighetTilleggService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettLaeremidlerArbeidssoekere(antallNyeIdenter));
+        var syntRequest = consumerUtils.createSyntRequest(antallNyeIdenter);
+        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettLaeremidlerArbeidssoekere(syntRequest));
     }
 
     public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadHjemreiseArbeidssoekere(
@@ -150,7 +169,8 @@ public class RettighetTilleggService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettHjemreiseArbeidssoekere(antallNyeIdenter));
+        var syntRequest = consumerUtils.createSyntRequest(antallNyeIdenter);
+        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettHjemreiseArbeidssoekere(syntRequest));
     }
 
     public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadReiseObligatoriskSamlingArbeidssoekere(
@@ -158,7 +178,8 @@ public class RettighetTilleggService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettReiseObligatoriskSamlingArbeidssoekere(antallNyeIdenter));
+        var syntRequest = consumerUtils.createSyntRequest(antallNyeIdenter);
+        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettReiseObligatoriskSamlingArbeidssoekere(syntRequest));
     }
 
     public Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenadReisestoenadArbeidssoekere(
@@ -166,7 +187,8 @@ public class RettighetTilleggService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettReisestoenadArbeidssoekere(antallNyeIdenter));
+        var syntRequest = consumerUtils.createSyntRequest(antallNyeIdenter);
+        return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettReisestoenadArbeidssoekere(syntRequest));
     }
 
     public void opprettTiltaksaktiviteter(List<RettighetRequest> rettigheter) {

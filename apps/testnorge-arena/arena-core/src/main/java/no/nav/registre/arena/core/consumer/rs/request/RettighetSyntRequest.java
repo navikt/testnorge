@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -15,13 +14,13 @@ import java.time.LocalDate;
 @Builder
 public class RettighetSyntRequest {
 
-    private LocalDate fraDato;
+    private String fraDato;
 
-    private LocalDate tilDato;
+    private String tilDato;
 
     private String utfall;
 
-    private LocalDate vedtakDato;
+    private String vedtakDato;
 
     private String vedtakTypeKode;
 }
