@@ -9,6 +9,7 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.ProxyProvider;
 
@@ -126,13 +127,22 @@ public class AccessTokenService {
                 .with("requested_token_use", "on_behalf_of")
                 .with("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
 
-        AccessToken accessToken = webClient.post()
-                .body(body)
-                .retrieve()
-                .bodyToMono(AccessToken.class)
-                .block();
+        try {
+            AccessToken accessToken = webClient.post()
+                    .body(body)
+                    .retrieve()
+                    .bodyToMono(AccessToken.class)
+                    .block();
 
-        log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow");
-        return accessToken;
+            log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow");
+            return accessToken;
+        } catch (WebClientResponseException e) {
+            log.error(
+                    "Feil ved henting av access token for {}. Feilmelding: {}.",
+                    String.join(" ", accessScopes.getScopes()),
+                    e.getResponseBodyAsString()
+            );
+            throw e;
+        }
     }
 }
