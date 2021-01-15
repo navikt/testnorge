@@ -1,3 +1,3 @@
-import OversiktPage from "./OversiktPage";
+import MagicLocalTokenPage from "./MagicLocalTokenPage";
 
-export default OversiktPage;
+export default MagicLocalTokenPage;
