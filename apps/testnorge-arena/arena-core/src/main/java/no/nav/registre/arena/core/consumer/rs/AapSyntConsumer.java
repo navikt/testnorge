@@ -14,10 +14,7 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 
 @Component
-@DependenciesOn(value = {
-        @DependencyOn(value = "nais-synthdata-arena-aap", external = true),
-        @DependencyOn(value = "nais-synthdata-arena-vedtakshistorikk", external = true)
-})
+@DependencyOn(value = "nais-synthdata-arena-aap", external = true)
 public class AapSyntConsumer {
 
     private final WebClient webClient;
