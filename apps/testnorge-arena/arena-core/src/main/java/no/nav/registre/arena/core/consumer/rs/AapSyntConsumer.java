@@ -8,7 +8,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.List;
 
 import no.nav.registre.arena.core.consumer.rs.request.RettighetSyntRequest;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependenciesOn;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
