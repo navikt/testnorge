@@ -11,13 +11,13 @@ spec:
     application:
       enabled: true
   port: 8080
-  webproxy: true
   tracing:
     enabled: true
   accessPolicy:
     inbound:
       rules:
         - application: testnorge-tilbakemelding-api
+          cluster: dev-fss
         - application: team-dolly-lokal-app
           cluster: dev-gcp
         - application: dolly-frontend-dev
@@ -47,4 +47,4 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://testnorge-profil-api-dev.dev.intern.nav.no"
+    - "https://testnorge-profil-api-dev-gcp.dev.intern.nav.no"

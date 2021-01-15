@@ -17,7 +17,12 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: team-dolly-lokal-app
+          cluster: dev-gcp
+        - application: dolly-frontend-dev
+          cluster: dev-fss
         - application: testnorge-tilbakemelding-api
+          cluster: dev-fss
         - application: dolly-frontend
           cluster: dev-fss
   liveness:
@@ -43,4 +48,4 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://testnorge-profil-api.dev.intern.nav.no"
+    - "https://testnorge-profil-api-gcp.dev.intern.nav.no"
