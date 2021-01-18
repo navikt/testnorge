@@ -5,11 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdRequest;
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdWithHistorikkRequest;
+import no.nav.registre.testnorge.libs.dto.syntrest.v1.PermisjonDTO;
 
 @Slf4j
 public class Arbeidsforhold {
@@ -139,16 +141,17 @@ public class Arbeidsforhold {
                 .velferdspermisjon(velferdspermisjon)
                 .historikk(historikk)
                 .numEndringer(count)
+                .permisjoner(dto.getPermisjoner().stream().map(value -> new PermisjonDTO(
+                        value.getBeskrivelse(),
+                        value.getPermisjonsprosent() != null ? value.getPermisjonsprosent().toString() : null,
+                        value.getStartdato(),
+                        value.getSluttdato()
+                )).collect(Collectors.toList()))
                 .build();
     }
 
     public ArbeidsforholdHistorikk toHistorikk(String miljo) {
         return new ArbeidsforholdHistorikk(getArbeidsforholdId(), historikk, miljo);
-    }
-
-
-    public ArbeidsforholdWithHistorikkRequest toSyntrestDTO(LocalDate kaldermaaned, String historikk, Integer count) {
-        return new ArbeidsforholdWithHistorikkRequest(this.toSyntrestDTO(kaldermaaned, count), historikk);
     }
 
     private Float nullToEmpty(Float value) {
