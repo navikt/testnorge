@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
@@ -30,6 +31,7 @@ public class ArbeidsforholdRequest {
     private final Float utdanningspermisjon;
     private final String historikk;
     private final Integer numEndringer;
+    private final List<PermisjonDTO> permisjoner;
 
     public ArbeidsforholdRequest(ArbeidsforholdRequest request) {
         this.rapporteringsmaaned = request.rapporteringsmaaned;
@@ -50,5 +52,6 @@ public class ArbeidsforholdRequest {
         this.utdanningspermisjon = request.utdanningspermisjon;
         this.historikk = request.historikk;
         this.numEndringer = request.numEndringer;
+        this.permisjoner = request.permisjoner;
     }
 }
