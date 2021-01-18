@@ -16,7 +16,7 @@ dependencies {
 
     implementation project(':kafka-config')
     implementation project(':kafka-producers')
-
+    implementation project(':local-development')
     implementation project(':testnorge-core')
     implementation project(':testnorge-dependency-analysis')
     implementation project(':testnorge-dependency-analysis-auto-configuration')

@@ -1,5 +1,4 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-azure.app.client.id: 568d8ca9-8b52-4473-ac3e-21865893419c
 
 applications:
   testnorge-profil-api-dev: f73bfcd0-a1f5-4d3f-bfb4-4d0361191438
@@ -24,3 +23,10 @@ applications:
   jenkins-batch-status-service: 34c2e87a-0711-4ef1-b644-55d86a375e7a
   miljoer-service: 30003084-1585-4629-a017-686b4387b12e
   testnorge-organisasjon-api: f4167796-bf43-438b-a282-a480e8108d0c
+  team-dolly-lokal-app: 99862a5d-72f4-4286-8e58-458a9ff1f964
+
+
+server:
+  servlet:
+    session:
+      timeout: 120m

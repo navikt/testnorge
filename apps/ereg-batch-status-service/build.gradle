@@ -14,6 +14,7 @@ dependencyManagement {
 }
 
 dependencies {
+    implementation project(':local-development')
     implementation project(':testnorge-core')
     implementation project(':testnorge-data-transfer-objects')
     implementation project(':testnorge-oauth2')
@@ -32,7 +33,7 @@ dependencies {
     implementation 'org.springframework.security:spring-security-config'
     implementation 'org.springframework.security:spring-security-core'
     implementation 'org.springframework.security:spring-security-oauth2-client'
-
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:2.2.4.RELEASE'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:2.2.5.RELEASE'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE'

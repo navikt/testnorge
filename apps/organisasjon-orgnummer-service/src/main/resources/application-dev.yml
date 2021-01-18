@@ -1,7 +1,5 @@
-azure:
-  app:
-    client:
-      id: cc5eab78-8ec7-4f4f-8b2f-7e6f46870a48
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
 
 spring:
   security:

@@ -1,6 +1,9 @@
 SERVICEUSER_USERNAME: dummy
 SERVICEUSER_PASSWORD: dummy
 
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
+
 consumers:
   organisasjonapi:
     url: https://testnorge-organisasjon-api-dev.dev.adeo.no
@@ -12,7 +15,7 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
   h2:
     console:
       enabled: true

@@ -12,7 +12,8 @@ import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerCo
         ApplicationCoreConfig.class,
         SecureOAuth2ServerToServerConfiguration.class
 })
-public class ProfilApiApplicationStarter {
+public class
+ProfilApiApplicationStarter {
 
     public static void main(String[] args) {
         SpringApplication.run(ProfilApiApplicationStarter.class, args);

@@ -1,4 +1,5 @@
-CLIENT_ID: 607ab2ee-2473-4bfd-8d48-03a7aaceeda6
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
 
 spring:
   security:
@@ -7,4 +8,4 @@ spring:
         jwt:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           #The client_id of this application
-          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}

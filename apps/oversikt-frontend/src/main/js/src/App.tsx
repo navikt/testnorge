@@ -6,7 +6,7 @@ import Header from "@/components/Header";
 import NavigationBar from "@/components/NavigationBar";
 
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
-import OversiktPage from "@/pages/OversiktPage";
+import MagicTokenPage from "@/pages/MagicTokenPage";
 import AccessTokenPage from "@/pages/AccessTokenPage";
 import NavFrontendSpinner from "nav-frontend-spinner";
 import SessionTimer from "@/components/SessionTimer";
@@ -34,7 +34,7 @@ function App() {
             navigations={[
               {
                 href: "/",
-                label: "Oversikt",
+                label: "Magic Token",
               },
               {
                 href: "/access-token/" + items[0],
@@ -52,7 +52,7 @@ function App() {
               />
             </Route>
             <Route path="/">
-              <OversiktPage />
+              <MagicTokenPage />
             </Route>
           </Switch>
         </Router>

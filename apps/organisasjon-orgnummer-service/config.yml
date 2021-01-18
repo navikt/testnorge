@@ -12,11 +12,13 @@ spec:
   azure:
     application:
       enabled: true
-    accessPolicy:
-      inbound:
-        rules:
-          - application: organisasjon-forvalter
-          - application: testnorge-oversikt-frontend
+  accessPolicy:
+    inbound:
+      rules:
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
+        - application: organisasjon-forvalter
+        - application: testnorge-oversikt-frontend
   liveness:
     path: /internal/isAlive
     initialDelay: 4
