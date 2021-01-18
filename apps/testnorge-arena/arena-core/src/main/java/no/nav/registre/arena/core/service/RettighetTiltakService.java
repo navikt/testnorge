@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
 import no.nav.registre.arena.core.service.util.ArbeidssoekerUtils;
 import no.nav.registre.arena.core.service.util.IdenterUtils;
@@ -45,6 +46,7 @@ public class RettighetTiltakService {
     private static final String RELASJON_MOR = "MORA";
     private static final String RELASJON_FAR = "FARA";
 
+    private final ConsumerUtils consumerUtils;
     private final TiltakSyntConsumer tiltakSyntConsumer;
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final ServiceUtils serviceUtils;
@@ -110,7 +112,8 @@ public class RettighetTiltakService {
         }
         var utvalgteIdenter = identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
 
-        var syntetiserteRettigheter = tiltakSyntConsumer.opprettTiltakspenger(antallNyeIdenter);
+        var syntRequest = consumerUtils.createSyntRequest(antallNyeIdenter);
+        var syntetiserteRettigheter = tiltakSyntConsumer.opprettTiltakspenger(syntRequest);
 
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
@@ -142,7 +145,8 @@ public class RettighetTiltakService {
             int antallNyeIdenter
     ) {
         var utvalgteIdenter = finnIdenterMedBarn(avspillergruppeId, miljoe, antallNyeIdenter);
-        var syntetiserteRettigheter = tiltakSyntConsumer.opprettBarnetillegg(antallNyeIdenter);
+        var syntRequest = consumerUtils.createSyntRequest(antallNyeIdenter);
+        var syntetiserteRettigheter = tiltakSyntConsumer.opprettBarnetillegg(syntRequest);
 
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
@@ -187,7 +191,8 @@ public class RettighetTiltakService {
                 vedtakMedStatuskoder.get("AKTIVITET")).getKode();
 
         if (!erHistoriskAktivitet) {
-            statuskode = tiltakSyntConsumer.opprettTiltaksaktivitet(1).get(0).getAktivitetStatuskode();
+            var syntRequest = consumerUtils.createSyntRequest(1);
+            statuskode = tiltakSyntConsumer.opprettTiltaksaktivitet(syntRequest).get(0).getAktivitetStatuskode();
         }
 
         var nyttVedtakTiltak = new NyttVedtakTiltak();
@@ -216,7 +221,8 @@ public class RettighetTiltakService {
     ) {
         var utvalgteIdenter = identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
 
-        var syntetiserteRettigheter = tiltakSyntConsumer.opprettTiltaksaktivitet(utvalgteIdenter.size());
+        var syntRequest = consumerUtils.createSyntRequest(utvalgteIdenter.size());
+        var syntetiserteRettigheter = tiltakSyntConsumer.opprettTiltaksaktivitet(syntRequest);
 
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
@@ -290,7 +296,8 @@ public class RettighetTiltakService {
     ) {
         List<RettighetRequest> rettigheter = new ArrayList<>();
         for (var ident : identer) {
-            var syntetisertDeltakelser = tiltakSyntConsumer.opprettTiltaksdeltakelse(1);
+            var syntRequest = consumerUtils.createSyntRequest(1);
+            var syntetisertDeltakelser = tiltakSyntConsumer.opprettTiltaksdeltakelse(syntRequest);
 
             if (syntetisertDeltakelser != null && !syntetisertDeltakelser.isEmpty()) {
                 var deltakelse = syntetisertDeltakelser.get(0);

@@ -1,10 +1,15 @@
 package no.nav.registre.arena.core.service;
 
+import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.UTFALL_JA;
+import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.VEDTAK_TYPE_KODE_O;
+import static no.nav.registre.arena.core.service.RettighetTilleggService.ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import no.nav.registre.arena.core.consumer.rs.request.RettighetSyntRequest;
+import no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils;
 import no.nav.registre.arena.core.service.util.ArbeidssoekerUtils;
 import no.nav.registre.arena.core.service.util.IdenterUtils;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
@@ -16,6 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,6 +32,9 @@ import no.nav.registre.arena.core.consumer.rs.TilleggSyntConsumer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RettighetTilleggServiceTest {
+
+    @Mock
+    private ConsumerUtils consumerUtils;
 
     @Mock
     private TilleggSyntConsumer tilleggSyntConsumer;
@@ -52,22 +61,33 @@ public class RettighetTilleggServiceTest {
     private String miljoe = "t1";
     private int antallNyeIdenter = 1;
     private List<String> identer;
+    private List<RettighetSyntRequest> syntRequest;
 
     @Before
     public void setUp() {
         identer = new ArrayList<>(Collections.singletonList("01010101010"));
+        syntRequest = new ArrayList<>(Collections.singletonList(
+                RettighetSyntRequest.builder()
+                        .fraDato(LocalDate.now().toString())
+                        .tilDato(LocalDate.now().toString())
+                        .utfall(UTFALL_JA)
+                        .vedtakTypeKode(VEDTAK_TYPE_KODE_O)
+                        .vedtakDato(LocalDate.now().toString())
+                        .build()
+        ));
     }
 
     @Test
     public void shouldOppretteTilleggsstoenadBoutgifter() {
-        when(tilleggSyntConsumer.opprettBoutgifter(antallNyeIdenter)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
+        when(consumerUtils.createSyntRequest(antallNyeIdenter)).thenReturn(syntRequest);
+        when(tilleggSyntConsumer.opprettBoutgifter(syntRequest)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
         when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetTiltakService.opprettTiltaksaktiviteter(anyList())).thenReturn(new HashMap<>());
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
 
         rettighetTilleggService.opprettTilleggsstoenadBoutgifter(avspillergruppeId, miljoe, antallNyeIdenter);
 
-        verify(tilleggSyntConsumer).opprettBoutgifter(antallNyeIdenter);
+        verify(tilleggSyntConsumer).opprettBoutgifter(syntRequest);
         verify(identerUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(arbeidssoekerUtils).opprettArbeidssoekerTillegg(anyList(), eq(miljoe));
         verify(rettighetTiltakService).opprettTiltaksaktiviteter(anyList());
@@ -76,14 +96,15 @@ public class RettighetTilleggServiceTest {
 
     @Test
     public void shouldOppretteTilleggsstoenadDagligReise() {
-        when(tilleggSyntConsumer.opprettDagligReise(antallNyeIdenter)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
+        when(consumerUtils.createSyntRequest(antallNyeIdenter)).thenReturn(syntRequest);
+        when(tilleggSyntConsumer.opprettDagligReise(syntRequest)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
         when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetTiltakService.opprettTiltaksaktiviteter(anyList())).thenReturn(new HashMap<>());
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
 
         rettighetTilleggService.opprettTilleggsstoenadDagligReise(avspillergruppeId, miljoe, antallNyeIdenter);
 
-        verify(tilleggSyntConsumer).opprettDagligReise(antallNyeIdenter);
+        verify(tilleggSyntConsumer).opprettDagligReise(syntRequest);
         verify(identerUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(arbeidssoekerUtils).opprettArbeidssoekerTillegg(anyList(), eq(miljoe));
         verify(rettighetTiltakService).opprettTiltaksaktiviteter(anyList());
@@ -92,14 +113,15 @@ public class RettighetTilleggServiceTest {
 
     @Test
     public void shouldOppretteTilleggsstoenadFlytting() {
-        when(tilleggSyntConsumer.opprettFlytting(antallNyeIdenter)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
+        when(consumerUtils.createSyntRequest(antallNyeIdenter)).thenReturn(syntRequest);
+        when(tilleggSyntConsumer.opprettFlytting(syntRequest)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
         when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetTiltakService.opprettTiltaksaktiviteter(anyList())).thenReturn(new HashMap<>());
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
 
         rettighetTilleggService.opprettTilleggsstoenadFlytting(avspillergruppeId, miljoe, antallNyeIdenter);
 
-        verify(tilleggSyntConsumer).opprettFlytting(antallNyeIdenter);
+        verify(tilleggSyntConsumer).opprettFlytting(syntRequest);
         verify(identerUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(arbeidssoekerUtils).opprettArbeidssoekerTillegg(anyList(), eq(miljoe));
         verify(rettighetTiltakService).opprettTiltaksaktiviteter(anyList());
@@ -108,14 +130,15 @@ public class RettighetTilleggServiceTest {
 
     @Test
     public void shouldOppretteTilleggsstoenadLaeremidler() {
-        when(tilleggSyntConsumer.opprettLaeremidler(antallNyeIdenter)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
+        when(consumerUtils.createSyntRequest(antallNyeIdenter)).thenReturn(syntRequest);
+        when(tilleggSyntConsumer.opprettLaeremidler(syntRequest)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
         when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetTiltakService.opprettTiltaksaktiviteter(anyList())).thenReturn(new HashMap<>());
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
 
         rettighetTilleggService.opprettTilleggsstoenadLaeremidler(avspillergruppeId, miljoe, antallNyeIdenter);
 
-        verify(tilleggSyntConsumer).opprettLaeremidler(antallNyeIdenter);
+        verify(tilleggSyntConsumer).opprettLaeremidler(syntRequest);
         verify(identerUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(arbeidssoekerUtils).opprettArbeidssoekerTillegg(anyList(), eq(miljoe));
         verify(rettighetTiltakService).opprettTiltaksaktiviteter(anyList());
@@ -124,14 +147,15 @@ public class RettighetTilleggServiceTest {
 
     @Test
     public void shouldOppretteTilleggsstoenadHjemreise() {
-        when(tilleggSyntConsumer.opprettHjemreise(antallNyeIdenter)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
+        when(consumerUtils.createSyntRequest(antallNyeIdenter)).thenReturn(syntRequest);
+        when(tilleggSyntConsumer.opprettHjemreise(syntRequest)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
         when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetTiltakService.opprettTiltaksaktiviteter(anyList())).thenReturn(new HashMap<>());
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
 
         rettighetTilleggService.opprettTilleggsstoenadHjemreise(avspillergruppeId, miljoe, antallNyeIdenter);
 
-        verify(tilleggSyntConsumer).opprettHjemreise(antallNyeIdenter);
+        verify(tilleggSyntConsumer).opprettHjemreise(syntRequest);
         verify(identerUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(arbeidssoekerUtils).opprettArbeidssoekerTillegg(anyList(), eq(miljoe));
         verify(rettighetTiltakService).opprettTiltaksaktiviteter(anyList());
@@ -140,14 +164,15 @@ public class RettighetTilleggServiceTest {
 
     @Test
     public void shouldOppretteTilleggsstoenadReiseObligatoriskSamling() {
-        when(tilleggSyntConsumer.opprettReiseObligatoriskSamling(antallNyeIdenter)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
+        when(consumerUtils.createSyntRequest(antallNyeIdenter)).thenReturn(syntRequest);
+        when(tilleggSyntConsumer.opprettReiseObligatoriskSamling(syntRequest)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
         when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetTiltakService.opprettTiltaksaktiviteter(anyList())).thenReturn(new HashMap<>());
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
 
         rettighetTilleggService.opprettTilleggsstoenadReiseObligatoriskSamling(avspillergruppeId, miljoe, antallNyeIdenter);
 
-        verify(tilleggSyntConsumer).opprettReiseObligatoriskSamling(antallNyeIdenter);
+        verify(tilleggSyntConsumer).opprettReiseObligatoriskSamling(syntRequest);
         verify(identerUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(arbeidssoekerUtils).opprettArbeidssoekerTillegg(anyList(), eq(miljoe));
         verify(rettighetTiltakService).opprettTiltaksaktiviteter(anyList());
@@ -156,14 +181,15 @@ public class RettighetTilleggServiceTest {
 
     @Test
     public void shouldOppretteTilleggsstoenadTilsynBarn() {
-        when(tilleggSyntConsumer.opprettTilsynBarn(antallNyeIdenter)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
+        when(consumerUtils.createSyntRequest(antallNyeIdenter)).thenReturn(syntRequest);
+        when(tilleggSyntConsumer.opprettTilsynBarn(syntRequest)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
         when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetTiltakService.opprettTiltaksaktiviteter(anyList())).thenReturn(new HashMap<>());
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
 
         rettighetTilleggService.opprettTilleggsstoenadTilsynBarn(avspillergruppeId, miljoe, antallNyeIdenter);
 
-        verify(tilleggSyntConsumer).opprettTilsynBarn(antallNyeIdenter);
+        verify(tilleggSyntConsumer).opprettTilsynBarn(syntRequest);
         verify(identerUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(arbeidssoekerUtils).opprettArbeidssoekerTillegg(anyList(), eq(miljoe));
         verify(rettighetTiltakService).opprettTiltaksaktiviteter(anyList());
@@ -172,14 +198,15 @@ public class RettighetTilleggServiceTest {
 
     @Test
     public void shouldOppretteTilleggsstoenadTilsynFamiliemedlemmer() {
-        when(tilleggSyntConsumer.opprettTilsynFamiliemedlemmer(antallNyeIdenter)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
+        when(consumerUtils.createSyntRequest(antallNyeIdenter, ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT)).thenReturn(syntRequest);
+        when(tilleggSyntConsumer.opprettTilsynFamiliemedlemmer(syntRequest)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
         when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetTiltakService.opprettTiltaksaktiviteter(anyList())).thenReturn(new HashMap<>());
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
 
         rettighetTilleggService.opprettTilleggsstoenadTilsynFamiliemedlemmer(avspillergruppeId, miljoe, antallNyeIdenter);
 
-        verify(tilleggSyntConsumer).opprettTilsynFamiliemedlemmer(antallNyeIdenter);
+        verify(tilleggSyntConsumer).opprettTilsynFamiliemedlemmer(syntRequest);
         verify(identerUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(arbeidssoekerUtils).opprettArbeidssoekerTillegg(anyList(), eq(miljoe));
         verify(rettighetTiltakService).opprettTiltaksaktiviteter(anyList());
@@ -188,14 +215,15 @@ public class RettighetTilleggServiceTest {
 
     @Test
     public void shouldOppretteTilleggsstoenadTilsynBarnArbeidssoekere() {
-        when(tilleggSyntConsumer.opprettTilsynBarnArbeidssoekere(antallNyeIdenter)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
+        when(consumerUtils.createSyntRequest(antallNyeIdenter)).thenReturn(syntRequest);
+        when(tilleggSyntConsumer.opprettTilsynBarnArbeidssoekere(syntRequest)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
         when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetTiltakService.opprettTiltaksaktiviteter(anyList())).thenReturn(new HashMap<>());
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
 
         rettighetTilleggService.opprettTilleggsstoenadTilsynBarnArbeidssoekere(avspillergruppeId, miljoe, antallNyeIdenter);
 
-        verify(tilleggSyntConsumer).opprettTilsynBarnArbeidssoekere(antallNyeIdenter);
+        verify(tilleggSyntConsumer).opprettTilsynBarnArbeidssoekere(syntRequest);
         verify(identerUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(arbeidssoekerUtils).opprettArbeidssoekerTillegg(anyList(), eq(miljoe));
         verify(rettighetTiltakService).opprettTiltaksaktiviteter(anyList());
@@ -204,14 +232,15 @@ public class RettighetTilleggServiceTest {
 
     @Test
     public void shouldOppretteTilleggsstoenadTilsynFamiliemedlemmerArbeidssoekere() {
-        when(tilleggSyntConsumer.opprettTilsynFamiliemedlemmerArbeidssoekere(antallNyeIdenter)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
+        when(consumerUtils.createSyntRequest(antallNyeIdenter)).thenReturn(syntRequest);
+        when(tilleggSyntConsumer.opprettTilsynFamiliemedlemmerArbeidssoekere(syntRequest)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
         when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetTiltakService.opprettTiltaksaktiviteter(anyList())).thenReturn(new HashMap<>());
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
 
         rettighetTilleggService.opprettTilleggsstoenadTilsynFamiliemedlemmerArbeidssoekere(avspillergruppeId, miljoe, antallNyeIdenter);
 
-        verify(tilleggSyntConsumer).opprettTilsynFamiliemedlemmerArbeidssoekere(antallNyeIdenter);
+        verify(tilleggSyntConsumer).opprettTilsynFamiliemedlemmerArbeidssoekere(syntRequest);
         verify(identerUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(arbeidssoekerUtils).opprettArbeidssoekerTillegg(anyList(), eq(miljoe));
         verify(rettighetTiltakService).opprettTiltaksaktiviteter(anyList());
@@ -220,14 +249,15 @@ public class RettighetTilleggServiceTest {
 
     @Test
     public void shouldOppretteTilleggsstoenadBoutgifterArbeidssoekere() {
-        when(tilleggSyntConsumer.opprettBoutgifterArbeidssoekere(antallNyeIdenter)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
+        when(consumerUtils.createSyntRequest(antallNyeIdenter)).thenReturn(syntRequest);
+        when(tilleggSyntConsumer.opprettBoutgifterArbeidssoekere(syntRequest)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
         when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetTiltakService.opprettTiltaksaktiviteter(anyList())).thenReturn(new HashMap<>());
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
 
         rettighetTilleggService.opprettTilleggsstoenadBoutgifterArbeidssoekere(avspillergruppeId, miljoe, antallNyeIdenter);
 
-        verify(tilleggSyntConsumer).opprettBoutgifterArbeidssoekere(antallNyeIdenter);
+        verify(tilleggSyntConsumer).opprettBoutgifterArbeidssoekere(syntRequest);
         verify(identerUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(arbeidssoekerUtils).opprettArbeidssoekerTillegg(anyList(), eq(miljoe));
         verify(rettighetTiltakService).opprettTiltaksaktiviteter(anyList());
@@ -236,14 +266,15 @@ public class RettighetTilleggServiceTest {
 
     @Test
     public void shouldOppretteTilleggsstoenadDagligReiseArbeidssoekere() {
-        when(tilleggSyntConsumer.opprettDagligReiseArbeidssoekere(antallNyeIdenter)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
+        when(consumerUtils.createSyntRequest(antallNyeIdenter)).thenReturn(syntRequest);
+        when(tilleggSyntConsumer.opprettDagligReiseArbeidssoekere(syntRequest)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
         when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetTiltakService.opprettTiltaksaktiviteter(anyList())).thenReturn(new HashMap<>());
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
 
         rettighetTilleggService.opprettTilleggsstoenadDagligReiseArbeidssoekere(avspillergruppeId, miljoe, antallNyeIdenter);
 
-        verify(tilleggSyntConsumer).opprettDagligReiseArbeidssoekere(antallNyeIdenter);
+        verify(tilleggSyntConsumer).opprettDagligReiseArbeidssoekere(syntRequest);
         verify(identerUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(arbeidssoekerUtils).opprettArbeidssoekerTillegg(anyList(), eq(miljoe));
         verify(rettighetTiltakService).opprettTiltaksaktiviteter(anyList());
@@ -252,14 +283,15 @@ public class RettighetTilleggServiceTest {
 
     @Test
     public void shouldOppretteTilleggsstoenadFlyttingArbeidssoekere() {
-        when(tilleggSyntConsumer.opprettFlyttingArbeidssoekere(antallNyeIdenter)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
+        when(consumerUtils.createSyntRequest(antallNyeIdenter)).thenReturn(syntRequest);
+        when(tilleggSyntConsumer.opprettFlyttingArbeidssoekere(syntRequest)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
         when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetTiltakService.opprettTiltaksaktiviteter(anyList())).thenReturn(new HashMap<>());
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
 
         rettighetTilleggService.opprettTilleggsstoenadFlyttingArbeidssoekere(avspillergruppeId, miljoe, antallNyeIdenter);
 
-        verify(tilleggSyntConsumer).opprettFlyttingArbeidssoekere(antallNyeIdenter);
+        verify(tilleggSyntConsumer).opprettFlyttingArbeidssoekere(syntRequest);
         verify(identerUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(arbeidssoekerUtils).opprettArbeidssoekerTillegg(anyList(), eq(miljoe));
         verify(rettighetTiltakService).opprettTiltaksaktiviteter(anyList());
@@ -268,14 +300,15 @@ public class RettighetTilleggServiceTest {
 
     @Test
     public void shouldOppretteTilleggsstoenadLaeremidlerArbeidssoekere() {
-        when(tilleggSyntConsumer.opprettLaeremidlerArbeidssoekere(antallNyeIdenter)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
+        when(consumerUtils.createSyntRequest(antallNyeIdenter)).thenReturn(syntRequest);
+        when(tilleggSyntConsumer.opprettLaeremidlerArbeidssoekere(syntRequest)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
         when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetTiltakService.opprettTiltaksaktiviteter(anyList())).thenReturn(new HashMap<>());
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
 
         rettighetTilleggService.opprettTilleggsstoenadLaeremidlerArbeidssoekere(avspillergruppeId, miljoe, antallNyeIdenter);
 
-        verify(tilleggSyntConsumer).opprettLaeremidlerArbeidssoekere(antallNyeIdenter);
+        verify(tilleggSyntConsumer).opprettLaeremidlerArbeidssoekere(syntRequest);
         verify(identerUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(arbeidssoekerUtils).opprettArbeidssoekerTillegg(anyList(), eq(miljoe));
         verify(rettighetTiltakService).opprettTiltaksaktiviteter(anyList());
@@ -284,14 +317,15 @@ public class RettighetTilleggServiceTest {
 
     @Test
     public void shouldOppretteTilleggsstoenadHjemreiseArbeidssoekere() {
-        when(tilleggSyntConsumer.opprettHjemreiseArbeidssoekere(antallNyeIdenter)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
+        when(consumerUtils.createSyntRequest(antallNyeIdenter)).thenReturn(syntRequest);
+        when(tilleggSyntConsumer.opprettHjemreiseArbeidssoekere(syntRequest)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
         when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetTiltakService.opprettTiltaksaktiviteter(anyList())).thenReturn(new HashMap<>());
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
 
         rettighetTilleggService.opprettTilleggsstoenadHjemreiseArbeidssoekere(avspillergruppeId, miljoe, antallNyeIdenter);
 
-        verify(tilleggSyntConsumer).opprettHjemreiseArbeidssoekere(antallNyeIdenter);
+        verify(tilleggSyntConsumer).opprettHjemreiseArbeidssoekere(syntRequest);
         verify(identerUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(arbeidssoekerUtils).opprettArbeidssoekerTillegg(anyList(), eq(miljoe));
         verify(rettighetTiltakService).opprettTiltaksaktiviteter(anyList());
@@ -300,14 +334,15 @@ public class RettighetTilleggServiceTest {
 
     @Test
     public void shouldOppretteTilleggsstoenadReiseObligatoriskSamlingArbeidssoekere() {
-        when(tilleggSyntConsumer.opprettReiseObligatoriskSamlingArbeidssoekere(antallNyeIdenter)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
+        when(consumerUtils.createSyntRequest(antallNyeIdenter)).thenReturn(syntRequest);
+        when(tilleggSyntConsumer.opprettReiseObligatoriskSamlingArbeidssoekere(syntRequest)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
         when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetTiltakService.opprettTiltaksaktiviteter(anyList())).thenReturn(new HashMap<>());
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
 
         rettighetTilleggService.opprettTilleggsstoenadReiseObligatoriskSamlingArbeidssoekere(avspillergruppeId, miljoe, antallNyeIdenter);
 
-        verify(tilleggSyntConsumer).opprettReiseObligatoriskSamlingArbeidssoekere(antallNyeIdenter);
+        verify(tilleggSyntConsumer).opprettReiseObligatoriskSamlingArbeidssoekere(syntRequest);
         verify(identerUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(arbeidssoekerUtils).opprettArbeidssoekerTillegg(anyList(), eq(miljoe));
         verify(rettighetTiltakService).opprettTiltaksaktiviteter(anyList());
@@ -316,14 +351,15 @@ public class RettighetTilleggServiceTest {
 
     @Test
     public void shouldOppretteTilleggsstoenadReisestoenadArbeidssoekere() {
-        when(tilleggSyntConsumer.opprettReisestoenadArbeidssoekere(antallNyeIdenter)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
+        when(consumerUtils.createSyntRequest(antallNyeIdenter)).thenReturn(syntRequest);
+        when(tilleggSyntConsumer.opprettReisestoenadArbeidssoekere(syntRequest)).thenReturn(Collections.singletonList(new NyttVedtakTillegg()));
         when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetTiltakService.opprettTiltaksaktiviteter(anyList())).thenReturn(new HashMap<>());
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
 
         rettighetTilleggService.opprettTilleggsstoenadReisestoenadArbeidssoekere(avspillergruppeId, miljoe, antallNyeIdenter);
 
-        verify(tilleggSyntConsumer).opprettReisestoenadArbeidssoekere(antallNyeIdenter);
+        verify(tilleggSyntConsumer).opprettReisestoenadArbeidssoekere(syntRequest);
         verify(identerUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(arbeidssoekerUtils).opprettArbeidssoekerTillegg(anyList(), eq(miljoe));
         verify(rettighetTiltakService).opprettTiltaksaktiviteter(anyList());

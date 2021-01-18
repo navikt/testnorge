@@ -9,8 +9,10 @@ import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_UNG
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -45,6 +47,7 @@ public class RettighetAapService {
     private static final String REGEX_RN = "[\r\n]";
 
     private final AapSyntConsumer aapSyntConsumer;
+    private final ConsumerUtils consumerUtils;
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final ServiceUtils serviceUtils;
     private final IdenterUtils identerUtils;
@@ -54,6 +57,7 @@ public class RettighetAapService {
     private final Random rand;
 
     public static final int SYKEPENGEERSTATNING_MAKS_PERIODE = 6;
+    public static final LocalDate ARENA_AAP_UNG_UFOER_DATE_LIMIT = LocalDate.of(2020, 1, 31);
 
     public Map<String, List<NyttVedtakResponse>> genererAapMedTilhoerende115(
             Long avspillergruppeId,
@@ -61,7 +65,8 @@ public class RettighetAapService {
             int antallNyeIdenter
     ) {
         var utvalgteIdenter = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_AAP, MAX_ALDER_AAP - 1, miljoe);
-        var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetAap(utvalgteIdenter.size());
+        var syntRequest = consumerUtils.createSyntRequest(utvalgteIdenter.size());
+        var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetAap(syntRequest);
 
         List<RettighetRequest> aap115Rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
@@ -70,7 +75,8 @@ public class RettighetAapService {
 
             opprettPersonOgInntektIPopp(ident, miljoe, syntetisertRettighet);
 
-            var aap115 = aapSyntConsumer.syntetiserRettighetAap115(syntetisertRettighet.getFraDato().minusDays(1), syntetisertRettighet.getTilDato()).get(0);
+            var syntRequest115 = consumerUtils.createSyntRequest(syntetisertRettighet.getFraDato().minusDays(1), syntetisertRettighet.getTilDato());
+            var aap115 = aapSyntConsumer.syntetiserRettighetAap115(syntRequest115).get(0);
             aap115.setBegrunnelse(BEGRUNNELSE);
             var aap115Rettighet = new RettighetAap115Request(Collections.singletonList(aap115));
             aap115Rettighet.setPersonident(ident);
@@ -83,7 +89,7 @@ public class RettighetAapService {
             rettighetRequest.setMiljoe(miljoe);
 
             rettighetRequest.getNyeAap().forEach(rettighet -> {
-                if(AKTIVITETSFASE_SYKEPENGEERSTATNING.equals(rettighet.getAktivitetsfase())){
+                if (AKTIVITETSFASE_SYKEPENGEERSTATNING.equals(rettighet.getAktivitetsfase())) {
                     vedtakUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(rettighet, SYKEPENGEERSTATNING_MAKS_PERIODE);
                 }
             });
@@ -103,11 +109,13 @@ public class RettighetAapService {
             String ident,
             String miljoe
     ) {
-        var syntetisertRettighet = aapSyntConsumer.syntetiserRettighetAap(1).get(0);
+        var syntRequestAap = consumerUtils.createSyntRequest(1);
+        var syntetisertRettighet = aapSyntConsumer.syntetiserRettighetAap(syntRequestAap).get(0);
 
         opprettPersonOgInntektIPopp(ident, miljoe, syntetisertRettighet);
 
-        var aap115 = aapSyntConsumer.syntetiserRettighetAap115(syntetisertRettighet.getFraDato().minusDays(1), syntetisertRettighet.getTilDato()).get(0);
+        var syntRequest115 = consumerUtils.createSyntRequest(syntetisertRettighet.getFraDato().minusDays(1), syntetisertRettighet.getTilDato());
+        var aap115 = aapSyntConsumer.syntetiserRettighetAap115(syntRequest115).get(0);
         aap115.setBegrunnelse(BEGRUNNELSE);
         var aap115Rettighet = new RettighetAap115Request(Collections.singletonList(aap115));
         aap115Rettighet.setPersonident(ident);
@@ -118,7 +126,7 @@ public class RettighetAapService {
         rettighetRequest.setPersonident(ident);
         rettighetRequest.setMiljoe(miljoe);
 
-        if(AKTIVITETSFASE_SYKEPENGEERSTATNING.equals(rettighetRequest.getNyeAap().get(0).getAktivitetsfase())){
+        if (AKTIVITETSFASE_SYKEPENGEERSTATNING.equals(rettighetRequest.getNyeAap().get(0).getAktivitetsfase())) {
             vedtakUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(rettighetRequest.getNyeAap().get(0), SYKEPENGEERSTATNING_MAKS_PERIODE);
         }
 
@@ -132,7 +140,8 @@ public class RettighetAapService {
             int antallNyeIdenter
     ) {
         var utvalgteIdenter = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_AAP, MAX_ALDER_AAP - 1, miljoe);
-        var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetAap115(utvalgteIdenter.size());
+        var syntRequest = consumerUtils.createSyntRequest(utvalgteIdenter.size());
+        var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetAap115(syntRequest);
 
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
@@ -157,7 +166,8 @@ public class RettighetAapService {
             int antallNyeIdenter
     ) {
         var utvalgteIdenter = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_UNG_UFOER, MAX_ALDER_UNG_UFOER - 1, miljoe);
-        var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetUngUfoer(utvalgteIdenter.size());
+        var syntRequest = consumerUtils.createSyntRequest(utvalgteIdenter.size(), ARENA_AAP_UNG_UFOER_DATE_LIMIT);
+        var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetUngUfoer(syntRequest);
 
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
@@ -183,7 +193,8 @@ public class RettighetAapService {
     ) {
         var identerMedKontonummer = identerUtils.getIdenterMedKontoinformasjon(avspillergruppeId, miljoe, antallNyeIdenter);
         var utvalgteIdenter = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_AAP, MAX_ALDER_AAP - 1, miljoe);
-        var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetTvungenForvaltning(utvalgteIdenter.size());
+        var syntRequest = consumerUtils.createSyntRequest(utvalgteIdenter.size());
+        var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetTvungenForvaltning(syntRequest);
 
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
@@ -213,7 +224,8 @@ public class RettighetAapService {
         utvalgteIdenter.retainAll(identerIAvspillergruppe);
         Collections.shuffle(utvalgteIdenter);
         utvalgteIdenter = utvalgteIdenter.subList(0, antallNyeIdenter);
-        var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetFritakMeldekort(utvalgteIdenter.size());
+        var syntRequest = consumerUtils.createSyntRequest(utvalgteIdenter.size());
+        var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetFritakMeldekort(syntRequest);
 
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {

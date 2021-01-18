@@ -9,7 +9,9 @@ import java.util.HashMap;
 
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.TiltakSyntConsumer;
+import no.nav.registre.arena.core.consumer.rs.request.RettighetSyntRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTilleggRequest;
+import no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils;
 import no.nav.registre.arena.core.service.util.IdenterUtils;
 import no.nav.registre.arena.core.service.util.ArbeidssoekerUtils;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
@@ -28,6 +30,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.UTFALL_JA;
+import static no.nav.registre.arena.core.consumer.rs.util.ConsumerUtils.VEDTAK_TYPE_KODE_O;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -37,6 +41,8 @@ import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RettighetTiltakServiceTest {
+    @Mock
+    private ConsumerUtils consumerUtils;
 
     @Mock
     private TiltakSyntConsumer tiltakSyntConsumer;
@@ -65,9 +71,19 @@ public class RettighetTiltakServiceTest {
     private List<String> identer;
     private NyttVedtakTiltak tiltakMedTilDatoFremITid;
     private NyttVedtakTiltak tiltakMedTilDatoLikDagens;
+    private List<RettighetSyntRequest> syntRequest;
 
     @Before
     public void setUp() {
+        syntRequest = new ArrayList<>(Collections.singletonList(
+                RettighetSyntRequest.builder()
+                        .fraDato(LocalDate.now().toString())
+                        .tilDato(LocalDate.now().toString())
+                        .utfall(UTFALL_JA)
+                        .vedtakTypeKode(VEDTAK_TYPE_KODE_O)
+                        .vedtakDato(LocalDate.now().toString())
+                        .build()
+        ));
         identer = new ArrayList<>(Collections.singletonList("01010101010"));
 
         Map<String, List<NyttVedtakResponse>> response = new HashMap<>();
@@ -98,7 +114,8 @@ public class RettighetTiltakServiceTest {
     @Test
     public void shouldOnlyOppretteTiltaksdeltakelseOgEndreDeltakerstatusGjennomfoeres() {
         var vedtak = Collections.singletonList(tiltakMedTilDatoFremITid);
-        when(tiltakSyntConsumer.opprettTiltaksdeltakelse(antallNyeIdenter)).thenReturn(vedtak);
+        when(consumerUtils.createSyntRequest(antallNyeIdenter)).thenReturn(syntRequest);
+        when(tiltakSyntConsumer.opprettTiltaksdeltakelse(syntRequest)).thenReturn(vedtak);
         when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
         when(vedtakUtils.finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoFremITid)).thenReturn(tiltakMedTilDatoFremITid);
@@ -109,7 +126,7 @@ public class RettighetTiltakServiceTest {
 
         rettighetTiltakService.opprettTiltaksdeltakelse(avspillergruppeId, miljoe, antallNyeIdenter);
 
-        verify(tiltakSyntConsumer).opprettTiltaksdeltakelse(antallNyeIdenter);
+        verify(tiltakSyntConsumer).opprettTiltaksdeltakelse(syntRequest);
         verify(identerUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(rettighetArenaForvalterConsumer, times(2)).opprettRettighet(anyList());
         verify(vedtakUtils).finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoFremITid);
@@ -120,7 +137,8 @@ public class RettighetTiltakServiceTest {
     @Test
     public void shouldOppretteTiltaksdeltakelseOgEndreDeltakerstatusAvsluttet() {
         var vedtak = Collections.singletonList(tiltakMedTilDatoLikDagens);
-        when(tiltakSyntConsumer.opprettTiltaksdeltakelse(antallNyeIdenter)).thenReturn(vedtak);
+        when(consumerUtils.createSyntRequest(antallNyeIdenter)).thenReturn(syntRequest);
+        when(tiltakSyntConsumer.opprettTiltaksdeltakelse(syntRequest)).thenReturn(vedtak);
         when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
         when(vedtakUtils.finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoLikDagens)).thenReturn(tiltakMedTilDatoLikDagens);
@@ -133,7 +151,7 @@ public class RettighetTiltakServiceTest {
 
         rettighetTiltakService.opprettTiltaksdeltakelse(avspillergruppeId, miljoe, antallNyeIdenter);
 
-        verify(tiltakSyntConsumer).opprettTiltaksdeltakelse(antallNyeIdenter);
+        verify(tiltakSyntConsumer).opprettTiltaksdeltakelse(syntRequest);
         verify(identerUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(rettighetArenaForvalterConsumer, times(2)).opprettRettighet(anyList());
         verify(vedtakUtils).finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoLikDagens);
