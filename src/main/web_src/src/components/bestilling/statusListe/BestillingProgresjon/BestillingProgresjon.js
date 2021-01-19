@@ -11,6 +11,8 @@ import './BestillingProgresjon.less'
 export default class BestillingProgresjon extends PureComponent {
 	static propTypes = {
 		bestilling: PropTypes.object.isRequired
+		// orgBestilling: PropTypes.object.isRequired
+		//TODO: Noe som dette for å skille på bestilling av ident og org?
 	}
 
 	constructor(props) {
@@ -30,8 +32,11 @@ export default class BestillingProgresjon extends PureComponent {
 	}
 
 	componentDidMount() {
-		if (!this.state.ferdig) {
+		if (!this.state.ferdig && !this.props.orgBestilling) {
 			this.interval = setInterval(() => this.getBestillingStatus(), this.PULL_INTERVAL)
+		}
+		if (!this.state.ferdig && this.props.orgBestilling) {
+			this.interval = setInterval(() => this.getOrganisasjonBestillingStatus(), this.PULL_INTERVAL)
 		}
 	}
 
@@ -40,6 +45,21 @@ export default class BestillingProgresjon extends PureComponent {
 	}
 
 	stopPolling = () => clearInterval(this.interval)
+
+	getOrganisasjonBestillingStatus = async () => {
+		const bestillingId = this.props.bestilling.id
+
+		try {
+			const { data } = await DollyApi.getOrganisasjonBestillingStatus(bestillingId)
+
+			if (data.ferdig) {
+				this.stopPolling()
+			}
+			this.updateOrgStatus(data)
+		} catch (error) {
+			console.error(error)
+		}
+	}
 
 	getBestillingStatus = async () => {
 		const bestillingId = this.props.bestilling.id
@@ -53,6 +73,24 @@ export default class BestillingProgresjon extends PureComponent {
 			this.updateStatus(data)
 		} catch (error) {
 			console.error(error)
+		}
+	}
+
+	updateOrgStatus = data => {
+		// Setter alltid status til IKKE FERDIG, sånn at vi kan vise
+		// en kort melding som sier at prosessen er ferdig
+		const newState = {
+			ferdig: false,
+			sistOppdatert: data.sistOppdatert
+		}
+		this.setState(newState)
+
+		if (data.ferdig) {
+			setTimeout(async () => {
+				await this.props.getBestillinger() // state.ferdig = true
+			}, this.TIMEOUT_BEFORE_HIDE)
+		} else {
+			this.harBestillingFeilet(data.sistOppdatert)
 		}
 	}
 
