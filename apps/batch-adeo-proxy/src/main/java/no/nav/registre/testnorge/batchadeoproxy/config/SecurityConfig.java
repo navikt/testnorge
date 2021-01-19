@@ -35,6 +35,7 @@ public class SecurityConfig extends OAuth2ResourceServerConfiguration {
                 .csrf()
                 .disable()
                 .authorizeRequests()
+                .antMatchers("/internal/isReady", "/internal/isAlive").permitAll()
                 .anyRequest()
                 .fullyAuthenticated()
                 .and()

@@ -10,8 +10,9 @@ consumers:
     url: https://tps-forvalteren.dev.adeo.no
 
 zuul:
+  ignoredPatterns: /internal/isReady, /internal/isAlive
   routes:
     batch-adeo:
-      path: /**
+      path: /**/api/**, /view/**, /api/**
       url: https://batch.adeo.no/
-      sensitiveHeaders: Cookie,Set-Cookie
+      sensitiveHeaders: Cookie,Set-Cookiegi
