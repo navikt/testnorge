@@ -29,7 +29,6 @@ public class GetArenaBrukereCommand implements Callable<NyeBrukereResponse> {
     public NyeBrukereResponse call() {
         NyeBrukereResponse response = null;
         try {
-            log.info("Henter arbeidssoekere fra Arena-forvalteren.");
             response = webClient.get()
                     .uri(builder ->
                             builder.path(ARENA_URL)
