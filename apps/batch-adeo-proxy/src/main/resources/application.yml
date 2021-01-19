@@ -15,4 +15,4 @@ zuul:
     batch-adeo:
       path: /**/api/**, /view/**, /api/**
       url: https://batch.adeo.no/
-      sensitiveHeaders: Cookie,Set-Cookiegi
+      sensitiveHeaders: Cookie,Set-Cookie
