@@ -39,7 +39,7 @@ public class JenkinsConsumer {
         if (server == null) {
             throw new RuntimeException("Finner ikke url for miljo: " + miljo);
         }
-        JenkinsCrumb jenkinsCrumb = new GetCrumbCommand(webClient).call();
+        JenkinsCrumb jenkinsCrumb = new GetCrumbCommand(webClient, "dummy").call();
         var id = new StartBEREG007Command(webClient, server, miljo, jenkinsCrumb, flatFile).call();
         jenkinsBatchStatusConsumer.registerBestilling(uuid, miljo, id);
         log.info("Bestilling sendt til jenkins {}.", uuid);
