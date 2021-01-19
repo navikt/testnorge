@@ -25,7 +25,7 @@ public class OrganisasjonProgressService {
         Optional<List<OrganisasjonBestillingProgress>> bestillingProgress =
                 organisasjonProgressRepository.findByBestillingId(bestillingsId);
         if (bestillingProgress.isEmpty()) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND,
                     "Fant ikke noen bestillingStatus med bestillingId: " + bestillingsId);
         }
         return bestillingProgress.get();
@@ -36,7 +36,7 @@ public class OrganisasjonProgressService {
         Optional<List<OrganisasjonBestillingProgress>> bestillingProgress =
                 organisasjonProgressRepository.findbyBrukerId(brukerId);
         if (bestillingProgress.isEmpty()) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND,
                     "Fant ikke noen bestillingStatus med brukerId: " + brukerId);
         }
         return bestillingProgress.get();

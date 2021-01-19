@@ -3,14 +3,14 @@ package no.nav.dolly.provider.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonClient;
+import no.nav.dolly.bestilling.OrganisasjonRegister;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
-import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployResponse;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonBestillingStatus;
 import no.nav.dolly.service.OrganisasjonBestillingService;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,17 +26,18 @@ import java.util.List;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
+import static no.nav.dolly.config.CachingConfig.CACHE_ORG_BESTILLING;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "api/v1/organisasjon")
 public class OrganisasjonController {
 
-    private final OrganisasjonClient organisasjonClient;
+    private final OrganisasjonRegister organisasjonClient;
     private final OrganisasjonBestillingService bestillingService;
-    private final MapperFacade mapperFacade;
 
     @ResponseStatus(HttpStatus.CREATED)
+    @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
     @PostMapping("/bestilling")
     @Operation(description = "Opprett organisasjon")
     public RsOrganisasjonBestillingStatus opprettOrganisasjonBestilling(@RequestBody RsOrganisasjonBestilling request) {
@@ -44,21 +45,30 @@ public class OrganisasjonController {
         OrganisasjonBestilling bestilling = bestillingService.saveBestilling(request);
         organisasjonClient.opprett(request, bestilling.getId());
 
-        return mapperFacade.map(bestilling, RsOrganisasjonBestillingStatus.class);
+        return bestillingService.fetchBestillingStatusById(bestilling.getId());
     }
 
     @PutMapping("/gjenopprett/{bestillingId}")
+    @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
     @Operation(description = "Gjenopprett organisasjon")
-    public DeployResponse gjenopprettOrganisasjon(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "miljoer", required = false) String miljoer) {
+    public RsOrganisasjonBestillingStatus gjenopprettOrganisasjon(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "miljoer", required = false) String miljoer) {
 
         DeployRequest request = new DeployRequest(
                 Set.of(bestillingService.fetchBestillingStatusById(bestillingId).getOrganisasjonNummer()),
                 asList(miljoer.split(",")));
 
-        return organisasjonClient.gjenopprett(request);
+        RsOrganisasjonBestillingStatus status = bestillingService.fetchBestillingStatusById(bestillingId);
+        status.setEnvironments(request.getEnvironments());
+
+        OrganisasjonBestilling bestilling = bestillingService.saveBestilling(status);
+
+        organisasjonClient.gjenopprett(request);
+
+        return bestillingService.fetchBestillingStatusById(bestilling.getId());
     }
 
     @GetMapping("/bestilling")
+    @Cacheable(value = CACHE_ORG_BESTILLING)
     @Operation(description = "Hent status på bestilling basert på bestillingId")
     public RsOrganisasjonBestillingStatus hentBestilling(
             @Parameter(description = "ID på bestilling av organisasjon", example = "123") @RequestParam Long bestillingId) {
@@ -67,6 +77,7 @@ public class OrganisasjonController {
     }
 
     @GetMapping("/bestillingsstatus")
+    @Cacheable(value = CACHE_ORG_BESTILLING)
     @Operation(description = "Hent status på bestilling basert på brukerId")
     public List<RsOrganisasjonBestillingStatus> hentBestillingStatus(
             @Parameter(description = "BrukerID som er unik til en Azure bruker (Dolly autensiering)", example = "1k9242uc-638g-1234-5678-7894k0j7lu6n") @RequestParam String brukerId) {

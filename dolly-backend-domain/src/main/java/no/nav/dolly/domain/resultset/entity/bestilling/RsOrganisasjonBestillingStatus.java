@@ -26,7 +26,7 @@ public class RsOrganisasjonBestillingStatus {
     private Long id;
     private Integer antallLevert;
     private String feil;
-    private boolean ferdig;
+    private Boolean ferdig;
     private LocalDateTime sistOppdatert;
     private List<String> environments;
     private List<OrganisasjonBestillingProgress> status;

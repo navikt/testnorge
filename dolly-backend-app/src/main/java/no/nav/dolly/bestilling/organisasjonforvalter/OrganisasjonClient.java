@@ -19,6 +19,7 @@ import no.nav.dolly.service.OrganisasjonNummerService;
 import no.nav.dolly.service.OrganisasjonProgressService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -47,6 +48,7 @@ public class OrganisasjonClient implements OrganisasjonRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
 
+    @Async
     @Override
     public void opprett(RsOrganisasjonBestilling bestilling, Long bestillingId) {
 
@@ -55,6 +57,13 @@ public class OrganisasjonClient implements OrganisasjonRegister {
                 .build();
 
         Set<String> orgnumre = new HashSet<>();
+
+        organisasjonProgressService.save(OrganisasjonBestillingProgress.builder()
+                .bestillingId(bestillingId)
+                .organisasjonsnummer("NA")
+                .uuid("NA")
+                .organisasjonsforvalterStatus("Pågående")
+                .build());
 
         bestillingRequest.getOrganisasjoner().forEach(organisasjon -> {
 
@@ -77,16 +86,18 @@ public class OrganisasjonClient implements OrganisasjonRegister {
         organisasjonBestillingService.setBestillingFerdig(bestillingId);
     }
 
+    @Async
     @Override
     public DeployResponse gjenopprett(DeployRequest request) {
 
         ResponseEntity<DeployResponse> deployResponseResponseEntity = organisasjonConsumer.gjenopprettOrganisasjon(request);
 
-        if (deployResponseResponseEntity.hasBody()) {
-            return deployResponseResponseEntity.getBody();
+        if (!deployResponseResponseEntity.hasBody()) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, FEIL_STATUS_ORGFORVALTER_DEPLOY);
         }
 
-        throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, FEIL_STATUS_ORGFORVALTER_DEPLOY);
+        return deployResponseResponseEntity.getBody();
+
     }
 
     private void saveOrgnumreToDbAndDeploy(Set<String> orgnumre, Long bestillingId, List<String> environments) {
@@ -100,6 +111,8 @@ public class OrganisasjonClient implements OrganisasjonRegister {
                 .bestillingId(bestillingId)
                 .organisasjonsnr(orgnummer)
                 .build()));
+
+
         ResponseEntity<DeployResponse> deployResponse = organisasjonConsumer.deployOrganisasjon(new DeployRequest(orgnumre, environments));
 
         if (deployResponse.hasBody()) {

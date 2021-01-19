@@ -10,7 +10,6 @@ import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonBestillingStatus;
 import no.nav.dolly.exceptions.ConstraintViolationException;
-import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.mapper.strategy.JsonBestillingMapper;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -28,6 +27,7 @@ import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.singletonList;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 
@@ -45,18 +45,23 @@ public class OrganisasjonBestillingService {
 
     public RsOrganisasjonBestillingStatus fetchBestillingStatusById(Long bestillingId) {
         OrganisasjonBestilling bestilling = bestillingRepository.findById(bestillingId)
-                .orElseThrow(() -> new NotFoundException(format("Fant ikke bestilling på bestillingId %d", bestillingId)));
+                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND, format("Fant ikke bestilling på bestillingId %d", bestillingId)));
 
-        List<OrganisasjonBestillingProgress> bestillingProgress =
-                progressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId);
+        List<OrganisasjonBestillingProgress> bestillingProgress = new ArrayList<>();
+
+        try {
+            bestillingProgress = progressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId);
+        } catch (HttpClientErrorException e) {
+            log.info("Status ikke opprettet for bestilling enda");
+        }
 
         return RsOrganisasjonBestillingStatus.builder()
                 .status(bestillingProgress)
                 .bestilling(jsonBestillingMapper.mapOrganisasjonBestillingRequest(bestilling.getBestKriterier()))
                 .sistOppdatert(bestilling.getSistOppdatert())
-                .organisasjonNummer(bestillingProgress.get(0).getOrganisasjonsnummer())
+                .organisasjonNummer(bestillingProgress.isEmpty() ? null : bestillingProgress.get(0).getOrganisasjonsnummer())
                 .id(bestillingId)
-                .ferdig(bestilling.getFerdig())
+                .ferdig(!isNull(bestilling.getFerdig()) && bestilling.getFerdig())
                 .feil(bestilling.getFeil())
                 .environments(Arrays.asList(bestilling.getMiljoer().split(",")))
                 .antallLevert(bestilling.getAntall())
@@ -80,7 +85,7 @@ public class OrganisasjonBestillingService {
                             .sistOppdatert(orgBestilling.getSistOppdatert())
                             .organisasjonNummer(bestillingStatus.getOrganisasjonsnummer())
                             .id(bestillingStatus.getBestillingId())
-                            .ferdig(orgBestilling.getFerdig())
+                            .ferdig(!isNull(orgBestilling.getFerdig()) && orgBestilling.getFerdig())
                             .feil(orgBestilling.getFeil())
                             .environments(Arrays.asList(orgBestilling.getMiljoer().split(",")))
                             .antallLevert(orgBestilling.getAntall())
@@ -108,6 +113,18 @@ public class OrganisasjonBestillingService {
                         .sistOppdatert(now())
                         .miljoer(join(",", request.getEnvironments()))
                         .bestKriterier(toJson(request.getOrganisasjon()))
+                        .bruker(brukerService.fetchOrCreateBruker(getUserId()))
+                        .build());
+    }
+
+    @Transactional
+    public OrganisasjonBestilling saveBestilling(RsOrganisasjonBestillingStatus status) {
+        return saveBestillingToDB(
+                OrganisasjonBestilling.builder()
+                        .antall(1)
+                        .sistOppdatert(now())
+                        .miljoer(join(",", status.getEnvironments()))
+                        .bestKriterier(toJson(status.getBestilling()))
                         .bruker(brukerService.fetchOrCreateBruker(getUserId()))
                         .build());
     }
