@@ -43,7 +43,7 @@ export default function FinnPerson({ naviger }: FinnPerson) {
 	const [isFinnModalOpen, openFinnModal, closeFinnModal] = useBoolean(false)
 	const [redirectToGruppe, setRedirect] = useBoolean()
 
-	const [ident, setIdent] = useState(null)
+	const [ident, setIdent] = useState('')
 	const [gruppe, setGruppe] = useState(null)
 	const [feilmelding, setFeilmelding] = useState(null)
 

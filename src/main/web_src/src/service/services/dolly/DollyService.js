@@ -136,7 +136,7 @@ export default {
 		return Request.get(Endpoints.enhetByTknr(tknr))
 	},
 
-	getPersonFraPdlperson(ident) {
+	getPersonFraPdl(ident) {
 		return Request.get(Endpoints.personoppslag(ident))
 	},
 
