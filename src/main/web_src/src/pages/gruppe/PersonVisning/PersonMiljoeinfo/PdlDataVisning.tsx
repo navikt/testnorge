@@ -26,20 +26,22 @@ type HentPerson = {
 }
 
 export const PdlDataVisning = ({ data }: PdlData) => {
-	if (!data) {
+	if (!data || !data.hentPerson) {
 		return null
 	}
 
-	const getPersonInfo = (identInfo: Data) => (
-		<div className="boks">
-			<PdlPersonInfo data={identInfo.hentPerson} />
-			<IdentInfo data={identInfo.hentIdenter} />
-			<GeografiskTilknytning data={identInfo.hentGeografiskTilknytning} />
-			<PdlNasjonalitet data={identInfo.hentPerson} />
-			<PdlBoadresse data={identInfo.hentPerson.bostedsadresse[0]} />
-			<PdlFullmakt data={identInfo.hentPerson.fullmakt[0]} />
-		</div>
-	)
+	const getPersonInfo = (identInfo: Data) => {
+		return (
+			<div className="boks">
+				<PdlPersonInfo data={identInfo.hentPerson} />
+				<IdentInfo data={identInfo.hentIdenter} />
+				<GeografiskTilknytning data={identInfo.hentGeografiskTilknytning} />
+				<PdlNasjonalitet data={identInfo.hentPerson} />
+				<PdlBoadresse data={identInfo.hentPerson.bostedsadresse[0]} />
+				<PdlFullmakt data={identInfo.hentPerson.fullmakt[0]} />
+			</div>
+		)
+	}
 
 	return (
 		<div className="flexbox--flex-wrap">
