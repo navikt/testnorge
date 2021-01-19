@@ -19,6 +19,8 @@ spec:
           cluster: dev-gcp
         - application: jenkins-batch-status-service
           cluster: dev-fss
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
   liveness:
     path: /internal/isAlive
     initialDelay: 4
