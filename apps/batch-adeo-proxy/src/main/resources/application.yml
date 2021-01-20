@@ -13,6 +13,6 @@ zuul:
   ignoredPatterns: /internal/isReady, /internal/isAlive
   routes:
     batch-adeo:
-      path: /**/api/**, /view/**, /api/**
+      path: /**/api/**, /view/**, /api/**, /crumbIssuer/api/json
       url: https://batch.adeo.no/
       sensitiveHeaders: Cookie,Set-Cookie
