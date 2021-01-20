@@ -271,3 +271,6 @@ project(":jenkins-batch-status-service").projectDir = file('apps/jenkins-batch-s
 
 include 'local-development'
 project(":local-development").projectDir = file('libs/local-development')
+
+include 'batch-adeo-proxy'
+project(":batch-adeo-proxy").projectDir = file('apps/batch-adeo-proxy')

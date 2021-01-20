@@ -1,14 +1,13 @@
-name: Deploy organisasjon-mottak-service
+name: Deploy batch-adeo-proxy
 
 on:
   push:
-    branches: master
     paths:
-      - apps/organisasjon-mottak-service/**
+      - apps/batch-adeo-proxy/**
       - libs/testnorge-core/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/organisasjon-mottak-service:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/batch-adeo-proxy:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -31,9 +30,9 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :organisasjon-mottak-service:build
+        run: ./gradlew :batch-adeo-proxy:build
       - name: Build and publish Docker image
-        working-directory: apps/organisasjon-mottak-service/
+        working-directory: apps/batch-adeo-proxy/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -46,4 +45,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/organisasjon-mottak-service/config.yml
+          RESOURCE: apps/batch-adeo-proxy/config.yml

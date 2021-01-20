@@ -2,6 +2,7 @@ name: Deploy organisasjon-bestilling-service
 
 on:
   push:
+    branches: master
     paths:
       - apps/organisasjon-bestilling-service/**
       - libs/testnorge-core/**

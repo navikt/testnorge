@@ -1,10 +1,10 @@
 package no.nav.registre.testnorge.organisasjonmottak.consumer;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.registre.testnorge.organisasjonmottak.config.properties.JenkinsBatchStatusServiceProperties;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.command.RegisterEregBestillingCommand;
 
 @Component
@@ -14,14 +14,13 @@ public class JenkinsBatchStatusConsumer {
     private final String clientId;
 
     public JenkinsBatchStatusConsumer(
-            @Value("${consumers.jenkins-batch-status-service.url}") String url,
-            @Value("${consumers.jenkins-batch-status-service.client-id}") String clientId,
+            JenkinsBatchStatusServiceProperties properties,
             AccessTokenService accessTokenService
     ) {
-        this.clientId = clientId;
+        this.clientId = properties.getClientId();
         this.accessTokenService = accessTokenService;
         this.webClient = WebClient.builder()
-                .baseUrl(url)
+                .baseUrl(properties.getUrl())
                 .build();
     }
 
