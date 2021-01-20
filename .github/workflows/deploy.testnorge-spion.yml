@@ -2,7 +2,7 @@ name: Deploy testnorge-spion
 
 on:
   push:
-#    branches: master
+    branches: master
     paths:
       - apps/testnorge-spion/**
       - libs/testnorge-core/**
