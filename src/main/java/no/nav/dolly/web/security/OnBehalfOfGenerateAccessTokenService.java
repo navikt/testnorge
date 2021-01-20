@@ -1,6 +1,6 @@
 package no.nav.dolly.web.security;
 
-import java.net.URI;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -9,14 +9,16 @@ import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.tcp.ProxyProvider;
 
-import lombok.extern.slf4j.Slf4j;
+import java.net.URI;
+
 import no.nav.dolly.web.security.domain.AccessScopes;
 import no.nav.dolly.web.security.domain.AccessToken;
 import no.nav.dolly.web.security.domain.ClientCredential;
 import no.nav.dolly.web.security.domain.DollyFrontendClientCredential;
-import reactor.netty.http.client.HttpClient;
-import reactor.netty.tcp.ProxyProvider;
 
 
 @Slf4j
@@ -71,13 +73,22 @@ class OnBehalfOfGenerateAccessTokenService {
                 .with("requested_token_use", "on_behalf_of")
                 .with("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
 
-        AccessToken token = webClient.post()
-                .body(body)
-                .retrieve()
-                .bodyToMono(AccessToken.class)
-                .block();
+        try {
+            AccessToken token = webClient.post()
+                    .body(body)
+                    .retrieve()
+                    .bodyToMono(AccessToken.class)
+                    .block();
 
-        log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow");
-        return token;
+            log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow");
+            return token;
+        } catch (WebClientResponseException e) {
+            log.error(
+                    "Feil ved henting av access token for {}. Feilmelding: {}.",
+                    String.join(" ", accessScopes.getScopes()),
+                    e.getResponseBodyAsString()
+            );
+            throw e;
+        }
     }
 }
