@@ -82,6 +82,13 @@ public class VedtakshistorikkService {
             vedtakshistorikken.setUngUfoer(fjernAapUngUfoerMedUgyldigeDatoer(vedtakshistorikken.getUngUfoer()));
             oppdaterAapSykepengeerstatningDatoer(vedtakshistorikken.getAap());
 
+            if (vedtakshistorikken.getAlleTilleggVedtak() == null || vedtakshistorikken.getAlleTilleggVedtak().isEmpty()){
+                log.info("Mangler tillegg");
+                continue;
+            }else{
+                log.info("Har tillegg.");
+            }
+
             LocalDate tidligsteDato = datoUtils.finnTidligsteDato(vedtakshistorikken);
             LocalDate tidligsteDatoBarnetillegg = datoUtils.finnTidligeDatoBarnetillegg(vedtakshistorikken.getBarnetillegg());
 
@@ -587,7 +594,7 @@ public class VedtakshistorikkService {
         if (vedtaksliste == null || vedtaksliste.isEmpty()) {
             return false;
         }
-        var fraDato = vedtak.getFraDato();
+        var fraDato = vedtak.getVedtaksperiode().getFom();
 
         if (fraDato == null) {
             return false;
