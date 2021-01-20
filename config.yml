@@ -11,6 +11,7 @@ spec:
     application:
       enabled: true
       replyURLs:
+        - https://dolly.dev.intern.nav.no/login/oauth2/code/aad
         - https://dolly-frontend.dev.adeo.no/login/oauth2/code/aad
         - https://dolly.nais.preprod.local/login/oauth2/code/aad
         - https://dolly.nais-dev-fss.adeo.no/login/oauth2/code/aad
@@ -20,6 +21,7 @@ spec:
     max: 2
   port: 8080
   ingresses:
+    - https://dolly.dev.intern.nav.no
     - https://dolly-frontend.dev.adeo.no
     - https://dolly.nais.preprod.local
     - https://dolly.nais-dev-fss.adeo.no
