@@ -21,6 +21,8 @@ spec:
           cluster: dev-fss
         - application: team-dolly-lokal-app
           cluster: dev-fss
+        - application: organisasjon-bestilling-service
+          cluster: dev-fss
   liveness:
     path: /internal/isAlive
     initialDelay: 4

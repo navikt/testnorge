@@ -24,16 +24,6 @@ public class GetQueueItemCommand implements Callable<ItemDTO> {
 
         log.info("{}:{}", crumb.getCrumbRequestField(), crumb.getCrumb());
 
-        log.info(webClient
-                .get()
-                .uri(uriBuilder -> uriBuilder.path("/queue/item/{itemId}/api/json").build(itemId))
-                .header(crumb.getCrumbRequestField(), crumb.getCrumb())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block());
-
-
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder.path("/queue/item/{itemId}/api/json").build(itemId))

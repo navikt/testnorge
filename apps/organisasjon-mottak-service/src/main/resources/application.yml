@@ -5,15 +5,13 @@ spring:
     name: organisasjon-mottak-service
     description: Testtjeneste for å vise hvilke tjenester som er tilgjenelig. Skal ikke brukes til noe annet enn for å test lokalt. For integrasjon bruk kafka.
 
-jenkins:
-  rest.api.url: https://batch.adeo.no
-  password: ${JENKINS_PASSWORD}
-  username: ${JENKINS_USERNAME}
-
 consumers:
   jenkins-batch-status-service:
     url: https://jenkins-batch-status-service.dev.intern.nav.no
     client-id: 34c2e87a-0711-4ef1-b644-55d86a375e7a
+  jenkins:
+    url: http://testnorge-batch-adeo-proxy.dolly.svc.nais.local
+    clientId: cbdc5022-17ed-48fd-9916-857e5df1e88b
 
 kafka:
   bootstrapservers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
