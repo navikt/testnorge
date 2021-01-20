@@ -73,6 +73,15 @@ public class OrganisasjonClient implements OrganisasjonRegister {
                 if (response.hasBody()) {
 
                     orgnumre.addAll(requireNonNull(response.getBody()).getOrgnummer());
+                    if (!organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId).isEmpty()) {
+                        List<OrganisasjonBestillingProgress> organisasjonBestillingProgresses = organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId);
+                        OrganisasjonBestillingProgress organisasjonBestillingProgress = organisasjonBestillingProgresses.get(0);
+                        organisasjonBestillingProgress.setBestillingId(bestillingId);
+                        organisasjonBestillingProgress.setOrganisasjonsnummer(requireNonNull(response.getBody().getOrgnummer().iterator().next()));
+                        organisasjonBestillingProgress.setOrganisasjonsforvalterStatus("Deployer");
+
+                        organisasjonProgressService.save(organisasjonBestillingProgress);
+                    }
                 }
             } catch (RuntimeException e) {
 
@@ -116,12 +125,18 @@ public class OrganisasjonClient implements OrganisasjonRegister {
         ResponseEntity<DeployResponse> deployResponse = organisasjonConsumer.deployOrganisasjon(new DeployRequest(orgnumre, environments));
 
         if (deployResponse.hasBody()) {
-            requireNonNull(deployResponse.getBody()).getOrgStatus().entrySet().forEach(orgStatus -> organisasjonProgressService.save(OrganisasjonBestillingProgress.builder()
-                    .bestillingId(bestillingId)
-                    .organisasjonsnummer(orgStatus.getKey())
-                    .organisasjonsforvalterStatus(mapStatusFraDeploy(orgStatus))
-                    .uuid(mapUuidFraDeploy(orgStatus))
-                    .build()));
+            requireNonNull(deployResponse.getBody()).getOrgStatus().entrySet().forEach(orgStatus -> {
+                if (!organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId).isEmpty()) {
+                    List<OrganisasjonBestillingProgress> organisasjonBestillingProgresses = organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId);
+                    OrganisasjonBestillingProgress organisasjonBestillingProgress = organisasjonBestillingProgresses.get(0);
+                    organisasjonBestillingProgress.setBestillingId(bestillingId);
+                    organisasjonBestillingProgress.setOrganisasjonsnummer(orgStatus.getKey());
+                    organisasjonBestillingProgress.setOrganisasjonsforvalterStatus(mapStatusFraDeploy(orgStatus));
+                    organisasjonBestillingProgress.setUuid(mapUuidFraDeploy(orgStatus));
+
+                    organisasjonProgressService.save(organisasjonBestillingProgress);
+                }
+            });
         } else {
             organisasjonBestillingService.setBestillingFeil(bestillingId, FEIL_STATUS_ORGFORVALTER_DEPLOY);
             log.error(FEIL_STATUS_ORGFORVALTER_DEPLOY);

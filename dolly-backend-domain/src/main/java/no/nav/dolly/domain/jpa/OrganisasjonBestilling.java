@@ -35,8 +35,8 @@ import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATO
 public class OrganisasjonBestilling {
 
     @Id
-    @GeneratedValue(generator = "bestillingIdGenerator")
-    @GenericGenerator(name = "bestillingIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
+    @GeneratedValue(generator = "organisasjonBestillingIdGenerator")
+    @GenericGenerator(name = "organisasjonBestillingIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
             @Parameter(name = "sequence_name", value = "ORGANISASJON_BESTILLING_SEQ"),
             @Parameter(name = "initial_value", value = "1"),
             @Parameter(name = "increment_size", value = "1")

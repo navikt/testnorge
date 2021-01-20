@@ -16,6 +16,7 @@ public interface OrganisasjonBestillingRepository extends Repository<Organisasjo
     @Query("from OrganisasjonBestilling ob where ob.bruker.brukerId = :brukerId")
     Optional<List<OrganisasjonBestilling>> findbyBrukerId(String brukerId);
 
+    @Modifying
     OrganisasjonBestilling save(OrganisasjonBestilling bestilling);
 
     @Modifying
