@@ -1,11 +1,7 @@
 package no.nav.dolly.bestilling.aareg.util;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.aareg.domain.Aktoer;
 import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
@@ -13,11 +9,17 @@ import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.aareg.RsPersonAareg;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
 @UtilityClass
+@Slf4j
 public class AaregMergeUtil {
 
     public List<Arbeidsforhold> merge(List<Arbeidsforhold> nyeArbeidsforhold,
-            List<ArbeidsforholdResponse> eksisterendeArbeidsforhold, String ident, boolean isLeggTil) {
+                                      List<ArbeidsforholdResponse> eksisterendeArbeidsforhold, String ident, boolean isLeggTil) {
 
         if (eksisterendeArbeidsforhold.isEmpty() || isLeggTil) {
 
@@ -64,11 +66,17 @@ public class AaregMergeUtil {
     }
 
     private static List<Arbeidsforhold> appendIds(List<Arbeidsforhold> nyeArbeidsforhold,
-            List<ArbeidsforholdResponse> eksisterendeArbeidsforhold, String ident) {
+                                                  List<ArbeidsforholdResponse> eksisterendeArbeidsforhold,
+                                                  String ident) {
+
+        eksisterendeArbeidsforhold.stream()
+                .map(ArbeidsforholdResponse::getArbeidsforholdId)
+                .forEach(arbeidsforholdId -> log.info("Appender arbeidsforholdId {} til ident {}", arbeidsforholdId, ident));
 
         AtomicInteger arbeidsforholdId = new AtomicInteger(
                 eksisterendeArbeidsforhold.stream()
                         .map(ArbeidsforholdResponse::getArbeidsforholdId)
+                        .map(id -> id.replace("-", ""))
                         .mapToInt(Integer::valueOf)
                         .max().orElse(0)
         );
