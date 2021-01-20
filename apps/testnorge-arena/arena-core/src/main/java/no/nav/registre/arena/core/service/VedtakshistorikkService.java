@@ -82,13 +82,6 @@ public class VedtakshistorikkService {
             vedtakshistorikken.setUngUfoer(fjernAapUngUfoerMedUgyldigeDatoer(vedtakshistorikken.getUngUfoer()));
             oppdaterAapSykepengeerstatningDatoer(vedtakshistorikken.getAap());
 
-            if (vedtakshistorikken.getAlleTilleggVedtak() == null || vedtakshistorikken.getAlleTilleggVedtak().isEmpty()){
-                log.info("Mangler tillegg");
-                continue;
-            }else{
-                log.info("Har tillegg.");
-            }
-
             LocalDate tidligsteDato = datoUtils.finnTidligsteDato(vedtakshistorikken);
             LocalDate tidligsteDatoBarnetillegg = datoUtils.finnTidligeDatoBarnetillegg(vedtakshistorikken.getBarnetillegg());
 
