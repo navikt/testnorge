@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.hendelse;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import no.nav.registre.testnorge.hendelse.util.VaultUtil;
+import no.nav.registre.testnorge.libs.core.util.VaultUtil;
 
 @SpringBootApplication
 public class HendelseApiApplicationStarter {
