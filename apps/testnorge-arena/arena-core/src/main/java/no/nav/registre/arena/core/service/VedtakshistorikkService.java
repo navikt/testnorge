@@ -10,22 +10,6 @@ import static no.nav.registre.arena.core.service.util.ServiceUtils.MAX_ALDER_UNG
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_AAP;
 import static no.nav.registre.arena.core.service.util.ServiceUtils.MIN_ALDER_UNG_UFOER;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import no.nav.registre.arena.core.consumer.rs.VedtakshistorikkSyntConsumer;
-import no.nav.registre.arena.core.service.util.ArbeidssoekerUtils;
-import no.nav.registre.arena.core.service.util.DatoUtils;
-import no.nav.registre.arena.core.service.util.IdenterUtils;
-import no.nav.registre.arena.core.service.util.ServiceUtils;
-import no.nav.registre.arena.core.service.util.VedtakUtils;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -34,6 +18,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetAap115Request;
@@ -46,11 +33,25 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltaksdeltakelse
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
+import no.nav.registre.arena.core.consumer.rs.VedtakshistorikkSyntConsumer;
 import no.nav.registre.arena.core.service.exception.VedtakshistorikkException;
+import no.nav.registre.arena.core.service.util.ArbeidssoekerUtils;
+import no.nav.registre.arena.core.service.util.DatoUtils;
+import no.nav.registre.arena.core.service.util.IdenterUtils;
+import no.nav.registre.arena.core.service.util.ServiceUtils;
+import no.nav.registre.arena.core.service.util.VedtakUtils;
+
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import no.nav.registre.testnorge.libs.core.util.IdentUtil;
+
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service

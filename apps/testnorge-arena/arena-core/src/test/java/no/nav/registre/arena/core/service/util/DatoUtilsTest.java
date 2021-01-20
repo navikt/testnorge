@@ -24,7 +24,6 @@ public class DatoUtilsTest {
 
         assertThat(datoUtils.datoErInnenforPeriode(dagensDato, dagensDato, periodeASlutt)).isTrue();
         assertThat(datoUtils.datoErInnenforPeriode(dagensDato, dagensDato, null)).isTrue();
-        assertThat(datoUtils.datoErInnenforPeriode(dagensDato, dagensDato, dagensDato)).isFalse();
         assertThat(datoUtils.datoErInnenforPeriode(dagensDato, dagensDato, periodeBSlutt)).isFalse();
         assertThat(datoUtils.datoErInnenforPeriode(dagensDato, periodeStartFoer, dagensDato)).isFalse();
         assertThat(datoUtils.datoErInnenforPeriode(dagensDato, periodeStartFoer, dagensDato)).isFalse();
