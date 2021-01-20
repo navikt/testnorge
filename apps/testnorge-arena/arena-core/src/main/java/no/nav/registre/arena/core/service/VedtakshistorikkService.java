@@ -1,6 +1,5 @@
 package no.nav.registre.arena.core.service;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static no.nav.registre.arena.core.service.RettighetAapService.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
 import static no.nav.registre.arena.core.service.RettighetTilleggService.ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT;
 import static no.nav.registre.arena.core.service.RettighetAapService.SYKEPENGEERSTATNING_MAKS_PERIODE;
@@ -15,11 +14,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.arena.core.consumer.rs.VedtakshistorikkSyntConsumer;
+import no.nav.registre.arena.core.service.util.ArbeidssoekerUtils;
+import no.nav.registre.arena.core.service.util.DatoUtils;
+import no.nav.registre.arena.core.service.util.IdenterUtils;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
+import no.nav.registre.arena.core.service.util.VedtakUtils;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,18 +47,9 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetTiltakspengerRequ
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
 import no.nav.registre.arena.core.service.exception.VedtakshistorikkException;
-import no.nav.registre.arena.core.service.util.ArbeidssoekerUtils;
-import no.nav.registre.arena.core.service.util.IdenterUtils;
-import no.nav.registre.arena.core.service.util.VedtakUtils;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.GensakKoder;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import no.nav.registre.testnorge.libs.core.util.IdentUtil;
 
 @Slf4j
@@ -66,6 +64,10 @@ public class VedtakshistorikkService {
     private final VedtakUtils vedtakUtils;
     private final RettighetAapService rettighetAapService;
     private final RettighetTiltakService rettighetTiltakService;
+    private final DatoUtils datoUtils;
+
+    public static final String MAALGRUPPEKODE_TILKNYTTET_AAP = "NEDSARBEVN";
+    public static final String MAALGRUPPEKODE_TILKNYTTET_TILTAKSPENGER = "MOTTILTPEN";
 
     public Map<String, List<NyttVedtakResponse>> genererVedtakshistorikk(
             Long avspillergruppeId,
@@ -79,35 +81,39 @@ public class VedtakshistorikkService {
             vedtakshistorikken.setUngUfoer(fjernAapUngUfoerMedUgyldigeDatoer(vedtakshistorikken.getUngUfoer()));
             oppdaterAapSykepengeerstatningDatoer(vedtakshistorikken.getAap());
 
-            LocalDate tidligsteDato = settTidligsteDato(vedtakshistorikken);
-            LocalDate tidligsteDatoBarnetillegg = settTidligeDatoBarnetillegg(vedtakshistorikken.getBarnetillegg());
+            LocalDate tidligsteDato = datoUtils.finnTidligsteDato(vedtakshistorikken);
+            LocalDate tidligsteDatoBarnetillegg = datoUtils.finnTidligeDatoBarnetillegg(vedtakshistorikken.getBarnetillegg());
 
             if (tidligsteDato == null) {
                 continue;
             }
 
             var minimumAlder = Math.toIntExact(ChronoUnit.YEARS.between(tidligsteDato.minusYears(MIN_ALDER_AAP), LocalDate.now()));
-            if (minimumAlder > MAX_ALDER_AAP) {
-                log.error("Kunne ikke opprette vedtakshistorikk på ident med minimum alder {}", minimumAlder);
-                continue;
-            }
-            var maksimumAlder = minimumAlder + 50;
-            if (maksimumAlder > MAX_ALDER_AAP) {
-                maksimumAlder = MAX_ALDER_AAP;
-            }
-
-            var ungUfoer = vedtakshistorikken.getUngUfoer();
-            if (ungUfoer != null && !ungUfoer.isEmpty()) {
-                maksimumAlder = MAX_ALDER_UNG_UFOER;
-            }
+            var maksimumAlder = getMaksimumAlder(vedtakshistorikken, minimumAlder);
 
             if (minimumAlder > maksimumAlder) {
-                log.error("Kunne ikke finne ident i riktig aldersgruppe");
+                log.error("Kunne ikke opprette vedtakshistorikk på ident med minimum alder {}.", minimumAlder);
             } else {
                 opprettVedtaksHistorikkResponse(avspillergruppeId, miljoe, responses, vedtakshistorikken, tidligsteDatoBarnetillegg, minimumAlder, maksimumAlder);
             }
         }
         return responses;
+    }
+
+    private int getMaksimumAlder(
+            Vedtakshistorikk historikk,
+            int minimumAlder
+    ) {
+        var maksimumAlder = minimumAlder + 50;
+        if (maksimumAlder > MAX_ALDER_AAP) {
+            maksimumAlder = MAX_ALDER_AAP;
+        }
+
+        var ungUfoer = historikk.getUngUfoer();
+        if (ungUfoer != null && !ungUfoer.isEmpty()) {
+            maksimumAlder = MAX_ALDER_UNG_UFOER;
+        }
+        return maksimumAlder;
     }
 
     private void opprettVedtaksHistorikkResponse(Long avspillergruppeId, String miljoe, Map<String, List<NyttVedtakResponse>> responses, Vedtakshistorikk vedtakshistorikken, LocalDate tidligsteDatoBarnetillegg,
@@ -128,34 +134,6 @@ public class VedtakshistorikkService {
         }
     }
 
-    private LocalDate settTidligsteDato(Vedtakshistorikk vedtakshistorikken) {
-
-        LocalDate tidligsteDato;
-        var aap = finnUtfyltAap(vedtakshistorikken);
-        var aapType = vedtakshistorikken.getAlleAapVedtak();
-        var tiltak = vedtakshistorikken.getAlleTiltakVedtak();
-        var tillegg = vedtakshistorikken.getAlleTilleggVedtak();
-
-        if (!aap.isEmpty()) {
-            tidligsteDato = finnTidligsteDatoAap(aap);
-        } else if (!aapType.isEmpty()) {
-            tidligsteDato = finnTidligsteDatoAapType(aapType);
-        } else if (!tiltak.isEmpty()) {
-            tidligsteDato = finnTidligsteDatoTiltak(tiltak);
-        } else if (!tillegg.isEmpty()) {
-            tidligsteDato = finnTidligsteDatoTillegg(tillegg);
-        } else {
-            return null;
-        }
-        return tidligsteDato;
-    }
-
-    private LocalDate settTidligeDatoBarnetillegg(List<NyttVedtakTiltak> barnetillegg) {
-        if (barnetillegg != null && !barnetillegg.isEmpty()) {
-            return finnTidligsteDatoTiltak(barnetillegg);
-        }
-        return null;
-    }
 
     private Map<String, List<NyttVedtakResponse>> opprettHistorikkOgSendTilArena(
             Long avspillergruppeId,
@@ -186,9 +164,9 @@ public class VedtakshistorikkService {
         opprettVedtakTiltakspenger(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakBarnetillegg(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettAvsluttendeVedtakEndreDeltakerstatus(vedtakshistorikk, personident, miljoe, rettigheter);
-        opprettVedtakTillegg(vedtakshistorikk.getAlleTilleggVedtak(), personident, miljoe, rettigheter);
+        opprettVedtakTillegg(vedtakshistorikk, personident, miljoe, rettigheter);
 
-        var senesteVedtak = finnSenesteVedtak(vedtakshistorikk.getAlleVedtak());
+        var senesteVedtak = datoUtils.finnSenesteVedtak(vedtakshistorikk.getAlleVedtak());
 
         List<RettighetRequest> rettighetRequests;
 
@@ -206,28 +184,6 @@ public class VedtakshistorikkService {
         }
 
         return rettighetArenaForvalterConsumer.opprettRettighet(rettighetRequests);
-    }
-
-    private List<NyttVedtakTillegg> fjernTilsynFamiliemedlemmerVedtakMedUgyldigeDatoer(List<NyttVedtakTillegg> tilsynFamiliemedlemmer) {
-        List<NyttVedtakTillegg> nyTilsynFamiliemedlemmer = new ArrayList<>();
-        if (tilsynFamiliemedlemmer != null) {
-            nyTilsynFamiliemedlemmer = tilsynFamiliemedlemmer.stream().filter(vedtak ->
-                    !vedtak.getFraDato().isAfter(ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT))
-                    .collect(Collectors.toList());
-        }
-
-        return nyTilsynFamiliemedlemmer.isEmpty() ? null : nyTilsynFamiliemedlemmer;
-    }
-
-    private List<NyttVedtakAap> fjernAapUngUfoerMedUgyldigeDatoer(List<NyttVedtakAap> ungUfoer) {
-        List<NyttVedtakAap> nyUngUfoer = new ArrayList<>();
-        if (ungUfoer != null) {
-            nyUngUfoer = ungUfoer.stream().filter(vedtak ->
-                    !vedtak.getFraDato().isAfter(ARENA_AAP_UNG_UFOER_DATE_LIMIT))
-                    .collect(Collectors.toList());
-        }
-
-        return nyUngUfoer.isEmpty() ? null : nyUngUfoer;
     }
 
     private void oppdaterAapSykepengeerstatningDatoer(List<NyttVedtakAap> aapVedtak) {
@@ -252,81 +208,26 @@ public class VedtakshistorikkService {
         }
     }
 
-    private LocalDate finnTidligsteDatoAap(List<NyttVedtakAap> vedtak) {
-        var tidligsteDato = LocalDate.now();
-        for (var vedtaket : vedtak) {
-            tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, vedtaket.getFraDato());
-            var genSaksopplysninger = vedtaket.getGenSaksopplysninger();
-            for (var saksopplysning : genSaksopplysninger) {
-                if (isNullOrEmpty(saksopplysning.getVerdi())) {
-                    continue;
-                }
-                if (GensakKoder.KDATO.equals(saksopplysning.getKode())
-                        || GensakKoder.BTID.equals(saksopplysning.getKode())
-                        || GensakKoder.UFTID.equals(saksopplysning.getKode())
-                        || GensakKoder.YDATO.equals(saksopplysning.getKode())) {
-                    tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, LocalDate.parse(saksopplysning.getVerdi(), DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-                }
-            }
+    private List<NyttVedtakTillegg> fjernTilsynFamiliemedlemmerVedtakMedUgyldigeDatoer(List<NyttVedtakTillegg> tilsynFamiliemedlemmer) {
+        List<NyttVedtakTillegg> nyTilsynFamiliemedlemmer = new ArrayList<>();
+        if (tilsynFamiliemedlemmer != null) {
+            nyTilsynFamiliemedlemmer = tilsynFamiliemedlemmer.stream().filter(vedtak ->
+                    !vedtak.getFraDato().isAfter(ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT))
+                    .collect(Collectors.toList());
         }
-        return tidligsteDato;
+
+        return nyTilsynFamiliemedlemmer.isEmpty() ? null : nyTilsynFamiliemedlemmer;
     }
 
-    private LocalDate finnTidligsteDatoAapType(List<NyttVedtakAap> vedtak) {
-        var tidligsteDato = LocalDate.now();
-        for (var vedtaket : vedtak) {
-            tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, vedtaket.getFraDato());
+    private List<NyttVedtakAap> fjernAapUngUfoerMedUgyldigeDatoer(List<NyttVedtakAap> ungUfoer) {
+        List<NyttVedtakAap> nyUngUfoer = new ArrayList<>();
+        if (ungUfoer != null) {
+            nyUngUfoer = ungUfoer.stream().filter(vedtak ->
+                    !vedtak.getFraDato().isAfter(ARENA_AAP_UNG_UFOER_DATE_LIMIT))
+                    .collect(Collectors.toList());
         }
-        return tidligsteDato;
-    }
 
-    private LocalDate finnTidligsteDatoTiltak(List<NyttVedtakTiltak> vedtak) {
-        var tidligsteDato = LocalDate.now();
-        for (var vedtaket : vedtak) {
-            tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, vedtaket.getFraDato());
-        }
-        return tidligsteDato;
-    }
-
-    private LocalDate finnTidligsteDatoTillegg(List<NyttVedtakTillegg> vedtak) {
-        var tidligsteDato = LocalDate.now();
-        for (var vedtaket : vedtak) {
-            tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, vedtaket.getFraDato());
-            tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, vedtaket.getVedtaksperiode().getFom());
-        }
-        return tidligsteDato;
-    }
-
-    private LocalDate finnTidligsteDatoAvTo(
-            LocalDate date1,
-            LocalDate date2
-    ) {
-        if (date2 == null) {
-            return date1;
-        }
-        if (date2.isBefore(date1)) {
-            return date2;
-        } else {
-            return date1;
-        }
-    }
-
-    private NyttVedtak finnSenesteVedtak(List<? extends NyttVedtak> vedtak) {
-        var senesteDato = LocalDate.MIN;
-        NyttVedtak senesteVedtak = null;
-        for (var vedtaket : vedtak) {
-            LocalDate vedtakFraDato;
-            if (vedtaket instanceof NyttVedtakTillegg) {
-                vedtakFraDato = ((NyttVedtakTillegg) vedtaket).getVedtaksperiode().getFom();
-            } else {
-                vedtakFraDato = vedtaket.getFraDato();
-            }
-            if (vedtakFraDato != null && senesteDato.isBefore(vedtakFraDato)) {
-                senesteDato = vedtakFraDato;
-                senesteVedtak = vedtaket;
-            }
-        }
-        return senesteVedtak;
+        return nyUngUfoer.isEmpty() ? null : nyUngUfoer;
     }
 
     private List<NyttVedtakAap> getIkkeAvsluttendeVedtakAap115(
@@ -614,11 +515,13 @@ public class VedtakshistorikkService {
     }
 
     private void opprettVedtakTillegg(
-            List<NyttVedtakTillegg> vedtak,
+            Vedtakshistorikk historikk,
             String personident,
             String miljoe,
             List<RettighetRequest> rettigheter
     ) {
+        var vedtak = oppdaterVedtakTillegg(historikk);
+
         if (vedtak != null && !vedtak.isEmpty() && !rettigheter.isEmpty()) {
             var rettighetRequest = new RettighetTilleggRequest(vedtak);
             rettighetRequest.setPersonident(personident);
@@ -631,6 +534,75 @@ public class VedtakshistorikkService {
         }
     }
 
+
+    private List<NyttVedtakTillegg> oppdaterVedtakTillegg(Vedtakshistorikk historikk) {
+        var tillegg = historikk.getAlleTilleggVedtak();
+
+        if (historikk.getAap() == null || historikk.getAap().isEmpty()) {
+            tillegg = filtrerBortTilleggMedUoensketMaalgruppekode(tillegg, MAALGRUPPEKODE_TILKNYTTET_AAP);
+        } else {
+            tillegg = filtrerBortTilleggUtenGyldigTilknyttetVedtak(tillegg, historikk.getAap(),
+                    MAALGRUPPEKODE_TILKNYTTET_AAP);
+        }
+
+        if (historikk.getTiltakspenger() == null || historikk.getTiltakspenger().isEmpty()) {
+            tillegg = filtrerBortTilleggMedUoensketMaalgruppekode(tillegg, MAALGRUPPEKODE_TILKNYTTET_TILTAKSPENGER);
+        } else {
+            tillegg = filtrerBortTilleggUtenGyldigTilknyttetVedtak(tillegg, historikk.getTiltakspenger(),
+                    MAALGRUPPEKODE_TILKNYTTET_TILTAKSPENGER);
+        }
+        return tillegg;
+
+    }
+
+    private List<NyttVedtakTillegg> filtrerBortTilleggMedUoensketMaalgruppekode(
+            List<NyttVedtakTillegg> vedtak,
+            String maalgruppekode
+    ) {
+        var filterteVedtak = vedtak;
+        if (vedtak != null && !vedtak.isEmpty()) {
+            filterteVedtak = vedtak.stream().filter(tillegg -> !tillegg.getMaalgruppeKode()
+                    .equals(maalgruppekode)).collect(Collectors.toList());
+        }
+        return filterteVedtak;
+    }
+
+    private List<NyttVedtakTillegg> filtrerBortTilleggUtenGyldigTilknyttetVedtak(
+            List<NyttVedtakTillegg> vedtak,
+            List<? extends NyttVedtak> tilknyttetVedtak,
+            String maalgruppekode
+    ) {
+        var filterteVedtak = vedtak;
+        if (vedtak != null && !vedtak.isEmpty()) {
+            filterteVedtak = vedtak.stream().filter(tillegg -> !tillegg.getMaalgruppeKode()
+                    .equals(maalgruppekode) || (tillegg.getMaalgruppeKode()
+                    .equals(maalgruppekode) && harGyldigTilknyttetVedtak(tillegg, tilknyttetVedtak)))
+                    .collect(Collectors.toList());
+        }
+        return filterteVedtak;
+    }
+
+    private boolean harGyldigTilknyttetVedtak(NyttVedtakTillegg vedtak, List<? extends NyttVedtak> vedtaksliste) {
+        if (vedtaksliste == null || vedtaksliste.isEmpty()) {
+            return false;
+        }
+        var fraDato = vedtak.getFraDato();
+
+        if (fraDato == null) {
+            return false;
+        }
+
+        for (var item : vedtaksliste) {
+            var fraDatoItem = item.getFraDato();
+            var tilDatoItem = item.getTilDato();
+
+            if (datoUtils.datoErInnenforPeriode(fraDato, fraDatoItem, tilDatoItem)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void opprettTiltaksaktivitet(List<RettighetRequest> rettigheter, RettighetTilleggRequest request) {
         if (request.getVedtakTillegg() != null && !request.getVedtakTillegg().isEmpty()) {
             rettigheter.add(rettighetTiltakService.opprettRettighetTiltaksaktivitetRequest(
@@ -638,14 +610,5 @@ public class VedtakshistorikkService {
         }
     }
 
-    private List<NyttVedtakAap> finnUtfyltAap(Vedtakshistorikk vedtakshistorikk) {
-        var aap = vedtakshistorikk.getAap();
-
-        if (aap != null && !aap.isEmpty()) {
-            return aap;
-        }
-
-        return Collections.emptyList();
-    }
 
 }
