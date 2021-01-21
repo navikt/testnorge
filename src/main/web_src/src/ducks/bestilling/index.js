@@ -63,9 +63,8 @@ export const sendBestilling = (values, opts, gruppeId) => async (dispatch, getSt
 		bestillingAction = actions.postBestillingFraEksisterendeIdenter(gruppeId, values)
 	} else if (values.organisasjon) {
 		bestillingAction = actions.postOrganisasjonBestilling(values)
-		dispatch(push(`/organisasjoner`))
+		trackBestilling(values)
 		//TODO: Håndtere avslutning av bestilling på en bedre måte
-		return
 	} else {
 		// Sett identType (denne blir ikke satt tidligere grunnet at den sitter inne i tpsf-noden)
 		values = _set('tpsf.identtype', opts.identtype, values)
@@ -78,8 +77,11 @@ export const sendBestilling = (values, opts, gruppeId) => async (dispatch, getSt
 
 	//IF ALL IS GOOD - REDIRECT
 	const res = _get(response, 'action.payload.data', null)
+	const type = _get(response, 'action.type', null)
 	if (res.error) {
 		dispatch(actions.bestillingFeilet(res))
+	} else if (type.includes('OrganisasjonBestilling')) {
+		dispatch(push(`/organisasjoner`))
 	} else {
 		dispatch(push(`/gruppe/${gruppeId}`))
 	}
