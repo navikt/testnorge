@@ -9,6 +9,7 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.tpsf.Person;
+import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingProgressService;
@@ -19,9 +20,12 @@ import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
@@ -34,6 +38,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
     private TpsfService tpsfService;
     private BestillingProgressService bestillingProgressService;
     private ForkJoinPool dollyForkJoinPool;
+    private TpsfPersonCache tpsfPersonCache;
 
     public GjenopprettBestillingService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService, TpsfPersonCache tpsfPersonCache,
                                         IdentService identService, BestillingProgressService bestillingProgressService,
@@ -48,6 +53,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
         this.tpsfService = tpsfService;
         this.bestillingProgressService = bestillingProgressService;
         this.dollyForkJoinPool = dollyForkJoinPool;
+        this.tpsfPersonCache = tpsfPersonCache;
     }
 
     @Async
@@ -66,7 +72,14 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                                 List<Person> personer = tpsfService.hentTestpersoner(singletonList(gjenopprettFraProgress.getIdent()));
 
                                 if (!personer.isEmpty()) {
-                                    sendTestidenter(bestilling, bestKriterier, progress, personer.get(0));
+                                    TpsPerson tpsPerson = tpsfPersonCache.prepareTpsPersoner(personer.get(0));
+                                    sendIdenterTilTPS(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))),
+                                            Stream.of(List.of(tpsPerson.getHovedperson()), tpsPerson.getPartnere(), tpsPerson.getBarn())
+                                                    .flatMap(Collection::stream)
+                                                    .collect(Collectors.toList()),
+                                            bestilling.getGruppe(), progress);
+
+                                    gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, false);
                                 } else {
                                     progress.setFeil("NA:Feil= Finner ikke personen i database");
                                 }

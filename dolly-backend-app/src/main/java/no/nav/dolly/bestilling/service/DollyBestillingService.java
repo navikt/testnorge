@@ -42,8 +42,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static java.lang.String.join;
@@ -344,17 +342,5 @@ public class DollyBestillingService {
         } catch (TpsfException e) {
             tpsfResponseHandler.setErrorMessageToBestillingsProgress(e, progress);
         }
-    }
-
-    protected void sendTestidenter(Bestilling bestilling, RsDollyBestillingRequest bestKriterier, BestillingProgress progress, Person person) {
-
-        TpsPerson tpsPerson = tpsfPersonCache.prepareTpsPersoner(person);
-        sendIdenterTilTPS(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))),
-                Stream.of(List.of(tpsPerson.getHovedperson()), tpsPerson.getPartnere(), tpsPerson.getBarn())
-                        .flatMap(list -> list.stream())
-                        .collect(Collectors.toList()),
-                bestilling.getGruppe(), progress);
-
-        gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, false);
     }
 }

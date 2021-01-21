@@ -1,14 +1,5 @@
 package no.nav.dolly.service;
 
-import static java.lang.String.format;
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-
-import java.util.List;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -17,6 +8,16 @@ import no.nav.dolly.domain.resultset.entity.testident.RsTestident;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.IdentRepository;
+import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+import static java.lang.String.format;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Service
 @RequiredArgsConstructor
@@ -80,5 +81,10 @@ public class IdentService {
         } else {
             throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident));
         }
+    }
+
+    public List<GruppeBestillingIdent> getBestillingerFromGruppe(Testgruppe gruppe) {
+
+        return identRepository.getBestillingerFromGruppe(gruppe);
     }
 }
