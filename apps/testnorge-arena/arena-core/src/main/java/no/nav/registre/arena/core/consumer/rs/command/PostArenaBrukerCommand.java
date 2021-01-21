@@ -26,7 +26,6 @@ public class PostArenaBrukerCommand implements Callable<NyeBrukereResponse> {
 
     private final WebClient webClient;
     private final Map<String, List<NyBruker>> nyeBrukere;
-    private final String ARENA_URL = "/v1/bruker";
 
     private static final ParameterizedTypeReference<Map<String, List<NyBruker>>> REQUEST_TYPE = new ParameterizedTypeReference<>() {
     };
@@ -38,12 +37,12 @@ public class PostArenaBrukerCommand implements Callable<NyeBrukereResponse> {
 
     @Override
     public NyeBrukereResponse call() {
-        NyeBrukereResponse response = null;
+        NyeBrukereResponse response = NyeBrukereResponse.builder().arbeidsoekerList(Collections.emptyList()).build();
         try {
             log.info("Sender inn ny(e) bruker(e) til Arena-forvalteren.");
             response = webClient.post()
                     .uri(builder ->
-                            builder.path(ARENA_URL)
+                            builder.path("/v1/bruker")
                                     .queryParam("eier", EIER)
                                     .build()
                     )

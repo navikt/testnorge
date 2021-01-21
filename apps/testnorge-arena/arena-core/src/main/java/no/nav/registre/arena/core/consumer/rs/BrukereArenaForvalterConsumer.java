@@ -33,17 +33,18 @@ public class BrukereArenaForvalterConsumer {
 
     private final WebClient webClient;
 
-    @Autowired
     private ArbeidssoekerCacheUtil arbeidssoekerCacheUtil;
 
     private UriTemplate hentBrukere;
 
 
     public BrukereArenaForvalterConsumer(
+            ArbeidssoekerCacheUtil arbeidssoekerCacheUtil,
             @Value("${arena-forvalteren.rest-api.url}") String arenaForvalterServerUrl
     ) {
         this.webClient = WebClient.builder().baseUrl(arenaForvalterServerUrl).build();
         this.hentBrukere = new UriTemplate(arenaForvalterServerUrl + "/v1/bruker");
+        this.arbeidssoekerCacheUtil = arbeidssoekerCacheUtil;
     }
 
     @Timed(value = "testnorge.arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
@@ -63,7 +64,7 @@ public class BrukereArenaForvalterConsumer {
         var refinedUrl = getFullstendigHentArbeidsoekereUrl(personident, eier, miljoe);
 
         var cachedeArbeidssoekere = arbeidssoekerCacheUtil.hentArbeidssoekere(refinedUrl);
-        if (!cachedeArbeidssoekere.isEmpty()) {
+        if (cachedeArbeidssoekere != null && !cachedeArbeidssoekere.isEmpty()) {
             return cachedeArbeidssoekere;
         }
 
