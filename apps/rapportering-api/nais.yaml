@@ -2,7 +2,7 @@
 kind: "Application"
 metadata:
   name: testnorge-rapportering-api
-  namespace: default
+  namespace: dolly
   labels:
     team: dolly
 spec:
