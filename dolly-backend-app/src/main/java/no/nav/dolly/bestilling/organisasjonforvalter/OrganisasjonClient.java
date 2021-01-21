@@ -70,28 +70,29 @@ public class OrganisasjonClient implements OrganisasjonRegister {
             try {
                 log.info("Bestiller orgnumre fra Organisasjon Forvalter");
                 ResponseEntity<BestillingResponse> response = organisasjonConsumer.postOrganisasjon(bestillingRequest);
-                if (response.hasBody()) {
 
-                    orgnumre.addAll(requireNonNull(response.getBody()).getOrgnummer());
-                    if (!organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId).isEmpty()) {
-                        List<OrganisasjonBestillingProgress> organisasjonBestillingProgresses = organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId);
-                        OrganisasjonBestillingProgress organisasjonBestillingProgress = organisasjonBestillingProgresses.get(0);
-                        organisasjonBestillingProgress.setBestillingId(bestillingId);
-                        organisasjonBestillingProgress.setOrganisasjonsnummer(requireNonNull(response.getBody().getOrgnummer().iterator().next()));
-                        organisasjonBestillingProgress.setOrganisasjonsforvalterStatus("Deployer");
+                if (!response.hasBody()) {
+                    throw new DollyFunctionalException("Response fra org forvalteren mangler body");
+                }
 
-                        organisasjonProgressService.save(organisasjonBestillingProgress);
-                    }
+                orgnumre.addAll(requireNonNull(response.getBody()).getOrgnummer());
+                if (!organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId).isEmpty()) {
+                    List<OrganisasjonBestillingProgress> organisasjonBestillingProgresses = organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId);
+                    OrganisasjonBestillingProgress organisasjonBestillingProgress = organisasjonBestillingProgresses.get(0);
+                    organisasjonBestillingProgress.setBestillingId(bestillingId);
+                    organisasjonBestillingProgress.setOrganisasjonsnummer(requireNonNull(response.getBody().getOrgnummer().iterator().next()));
+                    organisasjonBestillingProgress.setOrganisasjonsforvalterStatus("Deployer");
+
+                    organisasjonProgressService.save(organisasjonBestillingProgress);
+                    saveOrgnumreToDbAndDeploy(orgnumre, bestillingId, bestilling.getEnvironments());
                 }
             } catch (RuntimeException e) {
 
                 log.error("Feilet med å opprette organisasjon(er)", e);
-
                 organisasjonBestillingService.setBestillingFeil(bestillingId, errorStatusDecoder.decodeRuntimeException(e));
+                throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Feilet med å opprette organisasjon(er)");
             }
         });
-        saveOrgnumreToDbAndDeploy(orgnumre, bestillingId, bestilling.getEnvironments());
-
         organisasjonBestillingService.setBestillingFerdig(bestillingId);
     }
 
