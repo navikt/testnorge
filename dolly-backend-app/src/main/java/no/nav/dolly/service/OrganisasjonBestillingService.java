@@ -30,6 +30,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
@@ -64,7 +65,7 @@ public class OrganisasjonBestillingService {
                 .ferdig(!isNull(bestilling.getFerdig()) && bestilling.getFerdig())
                 .feil(bestilling.getFeil())
                 .environments(Arrays.asList(bestilling.getMiljoer().split(",")))
-                .antallLevert(bestilling.getAntall())
+                .antallLevert(isTrue(bestilling.getFerdig()) ? 1 : 0)
                 .build();
     }
 
@@ -88,7 +89,7 @@ public class OrganisasjonBestillingService {
                             .ferdig(!isNull(orgBestilling.getFerdig()) && orgBestilling.getFerdig())
                             .feil(orgBestilling.getFeil())
                             .environments(Arrays.asList(orgBestilling.getMiljoer().split(",")))
-                            .antallLevert(orgBestilling.getAntall())
+                            .antallLevert(isTrue(orgBestilling.getFerdig()) ? 1 : 0)
                             .build());
 
                 }
@@ -135,6 +136,8 @@ public class OrganisasjonBestillingService {
 
         byId.ifPresent(bestilling -> {
             bestilling.setFeil(feil);
+            bestilling.setFerdig(Boolean.TRUE);
+            bestilling.setSistOppdatert(now());
             bestillingRepository.save(bestilling);
         });
     }
@@ -145,6 +148,7 @@ public class OrganisasjonBestillingService {
 
         byId.ifPresent(bestilling -> {
             bestilling.setFerdig(Boolean.TRUE);
+            bestilling.setSistOppdatert(now());
             bestillingRepository.save(bestilling);
         });
     }
