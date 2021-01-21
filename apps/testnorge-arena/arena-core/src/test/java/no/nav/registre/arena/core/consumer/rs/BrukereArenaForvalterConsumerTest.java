@@ -94,7 +94,6 @@ public class BrukereArenaForvalterConsumerTest {
         return new Dispatcher() {
             @Override
             public MockResponse dispatch(RecordedRequest request) {
-                System.out.println(request.getPath());
                 switch (request.getPath()) {
                     case "/api/v1/bruker?eier=ORKESTRATOREN":
                         return new MockResponse().setResponseCode(400);
