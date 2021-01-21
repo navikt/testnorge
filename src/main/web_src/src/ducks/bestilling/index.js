@@ -62,7 +62,7 @@ export const sendBestilling = (values, opts, gruppeId) => async (dispatch, getSt
 		values = _set('opprettFraIdenter', opts.opprettFraIdenter, values)
 		bestillingAction = actions.postBestillingFraEksisterendeIdenter(gruppeId, values)
 	} else if (values.organisasjon) {
-		dispatch(actions.postOrganisasjonBestilling(values))
+		bestillingAction = actions.postOrganisasjonBestilling(values)
 		dispatch(push(`/organisasjoner`))
 		//TODO: Håndtere avslutning av bestilling på en bedre måte
 		return

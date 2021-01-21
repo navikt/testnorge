@@ -1,6 +1,7 @@
 // @ts-ignore
 import { connect } from 'react-redux'
-import { actions } from '~/ducks/organisasjon'
+import { actions, fetchOrganisasjoner } from '~/ducks/organisasjon'
+import { getOrganisasjonBestilling } from '~/ducks/bestillingStatus'
 import { createLoadingSelector } from '~/ducks/loading'
 import Organisasjoner from './Organisasjoner'
 import config from '~/config'
@@ -16,11 +17,13 @@ const mapStateToProps = (state: any) => {
 	}
 }
 
-const mapDispatchToProps = (dispatch: React.Dispatch<React.SetStateAction<string>>) => {
-	const uri = `${config.services.dollyBackend}`
+const mapDispatchToProps = (dispatch: React.Dispatch<React.SetStateAction<string>>, ownProps) => {
 	return {
-		getOrganisasjoner: () =>
-			dispatch(actions.getOrganisasjoner(`${uri}/orgnummer`, { method: 'GET' }))
+		fetchOrganisasjoner,
+		// TODO: Få disse to til å hente bruker-id og org.nr.liste, slik at de kan brukes i Organisasjoner.tsx
+		getOrganisasjonBestilling: () =>
+			dispatch(getOrganisasjonBestilling('952ab92e-926f-4ac4-93d7-f2d552025caf')),
+		getOrganisasjoner: () => dispatch(actions.getOrganisasjoner(['958741839']))
 	}
 }
 

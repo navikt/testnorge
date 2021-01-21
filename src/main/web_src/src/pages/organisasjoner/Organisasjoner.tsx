@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useMount } from 'react-use'
 import Hjelpetekst from '~/components/hjelpetekst'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
@@ -13,6 +14,7 @@ import { useAsync } from 'react-use'
 import { DollyApi, OrgforvalterApi } from '~/service/Api'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import OrganisasjonBestilling from '~/pages/organisasjoner/OrganisasjonBestilling'
+import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 
 type Organisasjoner = {
 	history: History
@@ -42,11 +44,23 @@ enum BestillingType {
 const VISNING_ORGANISASJONER = 'organisasjoner'
 const VISNING_BESTILLINGER = 'bestillinger'
 
-export default function Organisasjoner({ history, isFetching, brukerId }: Organisasjoner) {
+export default function Organisasjoner({
+	history,
+	isFetching,
+	brukerId,
+	organisasjoner,
+	getOrganisasjonBestilling,
+	getOrganisasjoner,
+	fetchOrganisasjoner
+}: Organisasjoner) {
 	const [visning, setVisning] = useState(VISNING_ORGANISASJONER)
 	const [brukerOrganisasjoner, setBrukerorganisasjoner] = useState(null)
 
 	const byttVisning = (event: React.ChangeEvent<any>) => setVisning(event.target.value)
+
+	useEffect(() => {
+		getOrganisasjonBestilling()
+	}, [])
 
 	const searchfieldPlaceholderSelector = () => {
 		if (visning === VISNING_BESTILLINGER) return 'Søk i bestillinger'
@@ -61,7 +75,8 @@ export default function Organisasjoner({ history, isFetching, brukerId }: Organi
 
 	const organisasjonerInfo = useAsync(async () => {
 		const response = await DollyApi.getOrganisasjonsnummerByUserId(brukerId)
-
+		// TODO: vil helst bruke getOrganisasjonBestilling(brukerId)
+		// const response = await getOrganisasjonBestilling(brukerId)
 		setBrukerorganisasjoner(response.data)
 
 		let orgNumre: string[] = []
@@ -70,6 +85,9 @@ export default function Organisasjoner({ history, isFetching, brukerId }: Organi
 		})
 
 		return OrgforvalterApi.getOrganisasjonerInfo(orgNumre).then((orgInfo: OrganisasjonResponse) => {
+			//TODO: getOrganisasjoner her???
+			// return getOrganisasjoner(orgNumre).then((orgInfo: OrganisasjonResponse) => {
+			console.log('orgInfo :>> ', orgInfo)
 			return orgInfo.data.map(orgElement => ({
 				...orgElement,
 				status: 'Ferdig',
@@ -111,7 +129,7 @@ export default function Organisasjoner({ history, isFetching, brukerId }: Organi
 					</div>
 				</div>
 
-				{/* // TODO: StatusListeConnector for bestillinger */}
+				<StatusListeConnector brukerId={brukerId} />
 
 				<div className="toolbar">
 					<NavButton type="hoved" onClick={() => startBestilling(BestillingType.NY)}>
@@ -142,7 +160,9 @@ export default function Organisasjoner({ history, isFetching, brukerId }: Organi
 				</div>
 
 				{visning === VISNING_ORGANISASJONER &&
-					(isFetching ? (
+					(organisasjonerInfo.loading ? (
+						// TODO: Bytt til isFetching når connector er fikset
+						// (isFetching ? (
 						<Loading label="laster organisasjoner" panel />
 					) : antallOrg > 0 ? (
 						<OrganisasjonListe orgListe={organisasjonerInfo && organisasjonerInfo.value} />

@@ -74,11 +74,6 @@ export default function OrganisasjonListe({ orgListe }) {
 			dataField: 'bestillingId'
 		},
 		{
-			text: 'Orgforvalter-ID',
-			width: '20',
-			dataField: 'id'
-		},
-		{
 			text: 'Status',
 			width: '10',
 			dataField: 'status',

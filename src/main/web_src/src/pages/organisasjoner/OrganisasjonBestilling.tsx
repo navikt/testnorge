@@ -22,7 +22,7 @@ export default function OrganisasjonBestilling({ orgListe }) {
 
 	const columns = [
 		{
-			text: 'ID.',
+			text: 'ID',
 			width: '10',
 			dataField: 'id',
 			unique: true
