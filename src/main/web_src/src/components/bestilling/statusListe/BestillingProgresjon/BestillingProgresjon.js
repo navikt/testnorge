@@ -11,8 +11,6 @@ import './BestillingProgresjon.less'
 export default class BestillingProgresjon extends PureComponent {
 	static propTypes = {
 		bestilling: PropTypes.object.isRequired
-		// orgBestilling: PropTypes.object.isRequired
-		//TODO: Noe som dette for å skille på bestilling av ident og org?
 	}
 
 	constructor(props) {
@@ -32,10 +30,10 @@ export default class BestillingProgresjon extends PureComponent {
 	}
 
 	componentDidMount() {
-		if (!this.state.ferdig && !this.props.orgBestilling) {
+		if (!this.state.ferdig && !this.props.bestilling.organisasjonNummer) {
 			this.interval = setInterval(() => this.getBestillingStatus(), this.PULL_INTERVAL)
 		}
-		if (!this.state.ferdig && this.props.orgBestilling) {
+		if (!this.state.ferdig && this.props.bestilling.organisasjonNummer) {
 			this.interval = setInterval(() => this.getOrganisasjonBestillingStatus(), this.PULL_INTERVAL)
 		}
 	}
@@ -81,6 +79,7 @@ export default class BestillingProgresjon extends PureComponent {
 		// en kort melding som sier at prosessen er ferdig
 		const newState = {
 			ferdig: false,
+			antallLevert: data.antallLevert,
 			sistOppdatert: data.sistOppdatert
 		}
 		this.setState(newState)
@@ -89,8 +88,6 @@ export default class BestillingProgresjon extends PureComponent {
 			setTimeout(async () => {
 				await this.props.getBestillinger() // state.ferdig = true
 			}, this.TIMEOUT_BEFORE_HIDE)
-		} else {
-			this.harBestillingFeilet(data.sistOppdatert)
 		}
 	}
 
@@ -130,10 +127,11 @@ export default class BestillingProgresjon extends PureComponent {
 	}
 
 	calculateStatus = () => {
-		const total = this.props.bestilling.antallIdenter
+		const total = this.props.bestilling.organisasjonNummer ? 1 : this.props.bestilling.antallIdenter
 		const sykemelding =
 			this.props.bestilling.bestilling.sykemelding != null &&
 			this.props.bestilling.bestilling.sykemelding.syntSykemelding != null
+		const organisasjon = this.props.bestilling.hasOwnProperty('organisasjonNummer')
 		const { antallLevert } = this.state
 
 		// Percent
@@ -147,6 +145,8 @@ export default class BestillingProgresjon extends PureComponent {
 
 		const aktivBestilling = sykemelding
 			? 'AKTIV BESTILLING (Syntetisert sykemelding behandler mye data og kan derfor ta litt tid)'
+			: organisasjon
+			? 'AKTIV BESTILLING (Organisasjoner tar opp til 15 minutter å bestille)'
 			: 'AKTIV BESTILLING'
 		const title = percent === 100 ? 'FERDIG' : aktivBestilling
 

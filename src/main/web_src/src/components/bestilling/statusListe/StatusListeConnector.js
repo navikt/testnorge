@@ -25,9 +25,8 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-	console.log('ownProps :>> ', ownProps)
 	return {
-		getGruppe: () => dispatch(actions.getById(ownProps.gruppeId)),
+		getGruppe: () => ownProps.gruppeId && dispatch(actions.getById(ownProps.gruppeId)),
 		getBestillinger: () =>
 			ownProps.brukerId
 				? dispatch(getOrganisasjonBestilling(ownProps.brukerId))
