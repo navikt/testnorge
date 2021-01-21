@@ -22,7 +22,7 @@ import javax.persistence.TemporalType;
 import java.util.Date;
 
 @Entity
-@Table(name = "APPLICATION_DEPENDENCY")
+@Table(name = "APPLICATION_INFO_DEPENDENCY")
 @Builder
 @Getter
 @EntityListeners(AuditingEntityListener.class)
@@ -35,11 +35,11 @@ public class ApplicationInfoDependencyModel {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID")
+    @JoinColumn(name = "APPLICATION_INFO_ID")
     private ApplicationInfoModel infoModel;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID")
+    @JoinColumn(name = "APPLICATION_DEPENDENCY_ID")
     private ApplicationDependencyModel dependencyModel;
 
     @CreatedDate

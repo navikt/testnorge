@@ -19,7 +19,7 @@ import javax.persistence.TemporalType;
 import java.util.Date;
 
 @Entity
-@Table(name = "APPLICATION_DEPENDENCY")
+@Table(name = "APPLICATION_INFO")
 @Builder
 @Getter
 @EntityListeners(AuditingEntityListener.class)

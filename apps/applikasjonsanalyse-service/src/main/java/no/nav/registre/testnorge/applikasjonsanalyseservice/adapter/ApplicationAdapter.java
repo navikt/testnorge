@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import no.nav.registre.testnorge.applikasjonsanalyseservice.domain.ApplicationInfo;
 import no.nav.registre.testnorge.applikasjonsanalyseservice.domain.Dependency;
@@ -22,6 +23,21 @@ public class ApplicationAdapter {
     private final ApplicationDependencyRepository applicationDependencyRepository;
     private final ApplicationInfoRepository applicationInfoRepository;
     private final ApplicationInfoDependencyRepository applicationInfoDependencyRepository;
+
+    public List<ApplicationInfo> getAll() {
+        return StreamSupport
+                .stream(applicationInfoRepository.findAll().spliterator(), false)
+                .map(infoModel -> new ApplicationInfo(infoModel, findBy(infoModel)
+                )).collect(Collectors.toList());
+    }
+
+    private List<ApplicationDependencyModel> findBy(ApplicationInfoModel infoModel) {
+        return applicationInfoDependencyRepository
+                .findByInfoModel(infoModel)
+                .stream()
+                .map(ApplicationInfoDependencyModel::getDependencyModel)
+                .collect(Collectors.toList());
+    }
 
     public Long save(ApplicationInfo applicationInfo) {
         ApplicationInfoModel model = applicationInfoRepository.findByNameAndClusterAndNamespace(
@@ -64,9 +80,16 @@ public class ApplicationAdapter {
     }
 
     private void deleteNotInListForModel(List<ApplicationInfoDependencyModel> list, ApplicationInfoModel infoModel) {
-        applicationInfoDependencyRepository.deleteByInfoModelAndIdNotIn(
-                infoModel,
-                list.stream().map(ApplicationInfoDependencyModel::getId).toArray(Long[]::new)
-        );
+        if (list.isEmpty()) {
+            applicationInfoDependencyRepository
+                    .findByInfoModel(infoModel)
+                    .forEach(applicationInfoDependencyRepository::delete);
+        } else {
+            applicationInfoDependencyRepository
+                    .findByInfoModelAndIdNotIn(
+                            infoModel,
+                            list.stream().map(ApplicationInfoDependencyModel::getId).collect(Collectors.toList())
+                    ).forEach(applicationInfoDependencyRepository::delete);
+        }
     }
 }

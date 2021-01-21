@@ -1,28 +1,31 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnorge-batch-adeo-proxy
+  name: applikasjonsanalyse-service
   namespace: dolly
   labels:
     team: dolly
 spec:
   image: {{ image }}
   port: 8080
-  webproxy: true
   azure:
     application:
       enabled: true
   accessPolicy:
     inbound:
       rules:
-        - application: jenkins-batch-status-service
-          cluster: dev-gcp
-        - application: jenkins-batch-status-service
-          cluster: dev-fss
         - application: team-dolly-lokal-app
           cluster: dev-fss
-        - application: organisasjon-bestilling-service
+        - application: testnorge-avhengighetsanalyse-frontend
           cluster: dev-fss
+        - application: testnorge-oversikt-frontend
+          cluster: dev-fss
+        - application: testnorge-tilbakemelding-api
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_12
+        databases:
+          - name: applikasjonsanalyse-service-db
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -45,5 +48,7 @@ spec:
     limits:
       cpu: 500m
       memory: 5000Mi
+  envFrom:
+    - secret: google-sql-applikasjonsanalyse-service
   ingresses:
-    - "https://testnorge-batch-adeo-proxy.dev-fss-pub.nais.io"
+    - "https://applikasjonsanalyse-service.dev.intern.nav.no"
