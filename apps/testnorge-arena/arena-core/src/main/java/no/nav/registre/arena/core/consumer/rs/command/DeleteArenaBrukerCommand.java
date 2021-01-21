@@ -14,14 +14,12 @@ import static no.nav.registre.arena.core.consumer.rs.util.Headers.NAV_CONSUMER_I
 @Slf4j
 public class DeleteArenaBrukerCommand implements Callable<Boolean> {
     private final WebClient webClient;
-    private final String arenaUrl;
     private final String personident;
     private final String miljoe;
 
     public DeleteArenaBrukerCommand(String personident,
                                     String miljoe, WebClient webClient) {
         this.webClient = webClient;
-        this.arenaUrl = "/v1/bruker";
         this.personident = personident;
         this.miljoe = miljoe;
     }
@@ -34,7 +32,7 @@ public class DeleteArenaBrukerCommand implements Callable<Boolean> {
 
             var statusCode = webClient.delete()
                     .uri(builder ->
-                            builder.path(arenaUrl)
+                            builder.path("/v1/bruker")
                                     .queryParam("miljoe", miljoe)
                                     .queryParam("personident", personident)
                                     .build()

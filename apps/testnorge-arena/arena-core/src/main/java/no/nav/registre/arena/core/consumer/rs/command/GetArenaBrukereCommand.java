@@ -18,8 +18,6 @@ public class GetArenaBrukereCommand implements Callable<NyeBrukereResponse> {
     private final WebClient webClient;
     private final MultiValueMap<String, String> queryParams;
 
-    private static final String ARENA_URL = "/v1/bruker";
-
     public GetArenaBrukereCommand(MultiValueMap<String, String> queryParams, WebClient webClient) {
         this.webClient = webClient;
         this.queryParams = queryParams;
@@ -31,7 +29,7 @@ public class GetArenaBrukereCommand implements Callable<NyeBrukereResponse> {
         try {
             response = webClient.get()
                     .uri(builder ->
-                            builder.path(ARENA_URL)
+                            builder.path("/v1/bruker")
                                     .queryParams(queryParams)
                                     .build()
                     )
