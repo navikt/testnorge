@@ -1,5 +1,7 @@
 package no.nav.identpool;
 
+import static no.nav.identpool.util.PersonidentUtil.isSyntetisk;
+
 import java.net.URI;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import no.nav.identpool.domain.postgres.Ident;
+import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
 import no.nav.identpool.domain.Rekvireringsstatus;
@@ -51,6 +53,7 @@ public abstract class ComponentTestbase {
                 .finnesHosSkatt(false)
                 .kjoenn(Kjoenn.MANN)
                 .foedselsdato(LocalDate.of(1980, 10, day))
+                .syntetisk(isSyntetisk(ident))
                 .build();
     }
 

@@ -25,7 +25,7 @@ public class TpsfService {
                             .ident(ident)
                             .inUse(false)
                             .build())
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toSet());
         }
 
         TpsfStatusResponse response = tpsfConsumer.getStatusFromTpsf(idents, true);

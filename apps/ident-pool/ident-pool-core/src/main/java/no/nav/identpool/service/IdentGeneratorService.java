@@ -7,6 +7,7 @@ import static no.nav.identpool.util.IdentGeneratorUtil.getStartIndex;
 import static no.nav.identpool.util.IdentGeneratorUtil.getYearRange;
 import static no.nav.identpool.util.IdentGeneratorUtil.numberFormatter;
 import static no.nav.identpool.util.PersonidentUtil.generateFnr;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 import java.security.SecureRandom;
 import java.time.LocalDate;

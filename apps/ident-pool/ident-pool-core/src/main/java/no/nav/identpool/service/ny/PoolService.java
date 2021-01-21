@@ -5,6 +5,8 @@ import static java.time.format.DateTimeFormatter.ISO_DATE;
 import static java.util.Objects.nonNull;
 import static no.nav.identpool.domain.Rekvireringsstatus.I_BRUK;
 import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
+import static no.nav.identpool.util.PersonidentUtil.isSyntetisk;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 import java.util.Iterator;
 import java.util.List;
@@ -14,9 +16,9 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.domain.TpsStatus;
-import no.nav.identpool.domain.postgres.Ident;
 import no.nav.identpool.exception.ForFaaLedigeIdenterException;
 import no.nav.identpool.repository.IdentRepository;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;
@@ -62,20 +64,23 @@ public class PoolService {
                 i++;
             }
 
-            log.info("Leverte identer: antall {}, rekvirertAv {}, identType {}, kjønn {}, fødtEtter {}, fødtFør {}",
+            log.info("Leverte identer: antall {}, rekvirertAv {}, identType {}, kjønn {}, fødtEtter {}, fødtFør {}, syntetisk {}",
                     request.getAntall(), request.getRekvirertAv(),
                     nonNull(request.getIdenttype()) ? request.getIdenttype().name() : null,
                     nonNull(request.getKjoenn()) ? request.getKjoenn().name() : null,
                     nonNull(request.getFoedtEtter()) ? request.getFoedtEtter().format(ISO_DATE) : null,
-                    nonNull(request.getFoedtFoer()) ? request.getFoedtFoer().format(ISO_DATE) : null);
+                    nonNull(request.getFoedtFoer()) ? request.getFoedtFoer().format(ISO_DATE) : null,
+                    isTrue(request.getSyntetisk()));
 
             if (identEntities.size() < request.getAntall()) {
                 throw new ForFaaLedigeIdenterException(format("Identpool finner ikke ledige identer i hht forespørsel: " +
-                                "identType %s, kjønn %s, fødtEtter %s, fødtFør %s. \nForsøk å bestille med andre kriterier.",
+                                "identType %s, kjønn %s, fødtEtter %s, fødtFør %s, syntetisk %b -- "
+                                + "forsøk å bestille med andre kriterier.",
                         nonNull(request.getIdenttype()) ? request.getIdenttype().name() : null,
                         nonNull(request.getKjoenn()) ? request.getKjoenn().name() : null,
                         nonNull(request.getFoedtEtter()) ? request.getFoedtEtter().format(ISO_DATE) : null,
-                        nonNull(request.getFoedtFoer()) ? request.getFoedtFoer().format(ISO_DATE) : null));
+                        nonNull(request.getFoedtFoer()) ? request.getFoedtFoer().format(ISO_DATE) : null,
+                        request.getSyntetisk()));
             }
         }
 
@@ -105,13 +110,5 @@ public class PoolService {
                 .rekvireringsstatus(rekvireringsstatus)
                 .syntetisk(isSyntetisk(ident))
                 .build();
-    }
-
-    private static Rekvireringsstatus getRekvireringsstatus(boolean inUse) {
-        return inUse ? I_BRUK : LEDIG;
-    }
-
-    private static boolean isSyntetisk(String ident) {
-        return ident.charAt(2) > '3';
     }
 }

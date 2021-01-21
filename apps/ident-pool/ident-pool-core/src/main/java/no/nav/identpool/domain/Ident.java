@@ -1,4 +1,4 @@
-package no.nav.identpool.domain.postgres;
+package no.nav.identpool.domain;
 
 import static no.nav.identpool.domain.Rekvireringsstatus.I_BRUK;
 import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
@@ -20,9 +20,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.identpool.domain.Identtype;
-import no.nav.identpool.domain.Kjoenn;
-import no.nav.identpool.domain.Rekvireringsstatus;
 
 @Data
 @Entity
@@ -80,5 +77,9 @@ public class Ident {
     @JsonIgnore
     public boolean isIBruk() {
         return I_BRUK == getRekvireringsstatus();
+    }
+
+    public boolean isSyntetisk() {
+        return getPersonidentifikator().charAt(2) > '3';
     }
 }

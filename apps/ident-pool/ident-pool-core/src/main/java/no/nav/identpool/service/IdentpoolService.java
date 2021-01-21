@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.domain.TpsStatus;
-import no.nav.identpool.domain.postgres.Ident;
+import no.nav.identpool.domain.Ident;
 import no.nav.identpool.exception.ForFaaLedigeIdenterException;
 import no.nav.identpool.exception.IdentAlleredeIBrukException;
 import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
@@ -101,11 +101,13 @@ public class IdentpoolService {
             Set<String> usedIdents = hentBrukteIdenterFraDatabase(request, daysInRange);
             if (daysInRange == 1 && usedIdents.size() >= MAKS_ANTALL_OPPRETTINGER_ONTHEFLY_PER_DAG * daysInRange) {
                 throw new ForFaaLedigeIdenterException(format("Identpool finner ikke ledige identer i hht forespørsel: " +
-                                "identType %s, kjønn %s, fødtEtter %s, fødtFør %s. \nForsøk å bestille med andre kriterier.",
+                                "identType %s, kjønn %s, fødtEtter %s, fødtFør %s, syntetisk %b -- "
+                                + "forsøk å bestille med andre kriterier.",
                         nonNull(request.getIdenttype()) ? request.getIdenttype().name() : null,
                         nonNull(request.getKjoenn()) ? request.getKjoenn().name() : null,
                         nonNull(request.getFoedtEtter()) ? request.getFoedtEtter().format(ISO_DATE) : null,
-                        nonNull(request.getFoedtFoer()) ? request.getFoedtFoer().format(ISO_DATE) : null));
+                        nonNull(request.getFoedtFoer()) ? request.getFoedtFoer().format(ISO_DATE) : null,
+                        request.getSyntetisk()));
             }
 
             List<String> newIdents = hentIdenterFraTps(request, usedIdents);
@@ -118,11 +120,13 @@ public class IdentpoolService {
             }
 
             throw new ForFaaLedigeIdenterException(format("Identpool finner ikke ledige identer i hht forespørsel: " +
-                            "identType %s, kjønn %s, fødtEtter %s, fødtFør %s. \nForsøk å bestille med andre kriterier.",
+                            "identType %s, kjønn %s, fødtEtter %s, fødtFør %s, syntetisk %b -- "
+                            + "forsøk å bestille med andre kriterier.",
                     nonNull(request.getIdenttype()) ? request.getIdenttype().name() : null,
                     nonNull(request.getKjoenn()) ? request.getKjoenn().name() : null,
                     nonNull(request.getFoedtEtter()) ? request.getFoedtEtter().format(ISO_DATE) : null,
-                    nonNull(request.getFoedtFoer()) ? request.getFoedtFoer().format(ISO_DATE) : null));
+                    nonNull(request.getFoedtFoer()) ? request.getFoedtFoer().format(ISO_DATE) : null,
+                    request.getSyntetisk()));
         }
 
         //Sier at request har tatt disse i bruk
@@ -300,6 +304,7 @@ public class IdentpoolService {
             ident = IdentGeneratorUtil.createIdent(personidentifikator, I_BRUK, "DREK");
             ident.setFinnesHosSkatt(true);
         }
+        ident.setSyntetisk(ident.isSyntetisk());
         identRepository.save(ident);
     }
 
