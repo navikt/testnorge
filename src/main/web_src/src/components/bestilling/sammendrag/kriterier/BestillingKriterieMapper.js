@@ -372,7 +372,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				header: 'Fullmakt',
 				items: [
 					obj('Kilde', fullmakt.kilde),
-					obj('Områder', Formatters.arrayToString(fullmakt.omraader)),
+					obj('Områder', Formatters.omraaderArrayToString(fullmakt.omraader)),
 					obj('Gyldig fra og med', Formatters.formatDate(fullmakt.gyldigFom)),
 					obj('Gyldig til og med', Formatters.formatDate(fullmakt.gyldigTom)),
 					obj('Fullmektiges identtype', fullmakt.identType),

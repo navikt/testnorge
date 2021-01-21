@@ -46,6 +46,14 @@ export const SelectOptionsOppslag = {
 		return arbeidsforholdstyper
 	},
 
+	hentFullmaktOmraader: () => {
+		const omraader = useAsync(async () => {
+			const response = await DollyApi.getKodeverkByNavn('Tema')
+			return response
+		}, [DollyApi.getKodeverkByNavn])
+		return omraader
+	},
+
 	hentRollerFraBrregstub: () => {
 		const rollerInfo = useAsync(async () => {
 			const response = await BrregstubApi.getRoller()
@@ -123,6 +131,15 @@ SelectOptionsOppslag.formatOptions = (type, data) => {
 		leverandoerer.forEach(leverandoer => {
 			data = leverandoer[1]
 			options.push({ value: parseInt(data.id), label: data.navn })
+		})
+		return options
+	} else if (type === 'fullmaktOmraader') {
+		const omraader = data.value ? Object.entries(data.value.data.koder) : []
+		const options = []
+		options.push({ value: '*', label: '* (Alle)' })
+		omraader.forEach(omraade => {
+			data = omraade[1]
+			options.push({ value: data.value, label: data.label })
 		})
 		return options
 	}

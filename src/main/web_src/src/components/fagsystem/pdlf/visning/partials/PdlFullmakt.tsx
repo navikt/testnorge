@@ -21,7 +21,7 @@ export const Visning = ({ data }: Data) => {
 		<>
 			<div className="person-visning_content">
 				<ErrorBoundary>
-					<TitleValue title="Områder" value={Formatters.arrayToString(data.omraader)} />
+					<TitleValue title="Områder" value={Formatters.omraaderArrayToString(data.omraader)} />
 					<TitleValue title="Motparts personident" value={data.motpartsPersonident} />
 					<TitleValue title="Motparts rolle" value={data.motpartsRolle} />
 					<TitleValue
