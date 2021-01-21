@@ -12,12 +12,14 @@ export const {
 	getBestillinger,
 	cancelBestilling,
 	gjenopprettBestilling,
+	getOrganisasjonBestilling,
 	removeNyBestillingStatus
 } = createActions(
 	{
 		getBestillinger: DollyApi.getBestillinger,
 		cancelBestilling: DollyApi.cancelBestilling,
-		gjenopprettBestilling: DollyApi.gjenopprettBestilling
+		gjenopprettBestilling: DollyApi.gjenopprettBestilling,
+		getOrganisasjonBestilling: DollyApi.getOrganisasjonsnummerByUserId
 	},
 	'removeNyBestillingStatus',
 	{ prefix: 'bestillingStatus' }
@@ -41,6 +43,23 @@ export default handleActions(
 				state.ny = state.ny.concat(nyeBestillinger)
 			}
 
+			bestillingStatusMapper(data).map(best => {
+				state.byId[best.id] = best
+			})
+		},
+		// TODO: Nesten helt lik som getBestillinger - kan de slås sammen?
+		// TODO: Fjerne && !bestilling.feil når vi får returnert ferdig også for bestillinger som feilet
+		[onSuccess(getOrganisasjonBestilling)](state, action) {
+			const { data } = action.payload
+			console.log('data :>> ', data)
+			const nyeBestillinger = data
+				.filter(
+					bestilling => !bestilling.ferdig && !bestilling.feil && !state.ny.includes(bestilling.id)
+				)
+				.map(bestilling => bestilling.id)
+			if (nyeBestillinger.length > 0) {
+				state.ny = state.ny.concat(nyeBestillinger)
+			}
 			bestillingStatusMapper(data).map(best => {
 				state.byId[best.id] = best
 			})

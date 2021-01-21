@@ -12,7 +12,6 @@ export const Detaljer = ({ data }) => {
 			<div className="person-visning_content">
 				<TitleValue title="Orgnr." value={data[0].organisasjonsnummer} />
 				<TitleValue title="Navn" value={data[0].organisasjonsnavn} />
-				<TitleValue title="Orgforvalter-ID" value={data[0].id} />
 				<TitleValue title="Enhetstype" value={data[0].enhetstype} />
 				<TitleValue
 					title="Næringskode"
