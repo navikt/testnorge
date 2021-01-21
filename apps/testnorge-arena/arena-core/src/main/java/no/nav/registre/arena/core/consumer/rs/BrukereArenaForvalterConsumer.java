@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.arena.core.consumer.rs.command.DeleteArenaBrukerCommand;
 import no.nav.registre.arena.core.consumer.rs.command.GetArenaBrukereCommand;
 import no.nav.registre.arena.core.consumer.rs.command.PostArenaBrukerCommand;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;

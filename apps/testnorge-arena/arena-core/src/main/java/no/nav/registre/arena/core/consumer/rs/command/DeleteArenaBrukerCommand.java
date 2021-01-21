@@ -45,12 +45,13 @@ public class DeleteArenaBrukerCommand implements Callable<Boolean> {
                     .map(ClientResponse::statusCode)
                     .block();
 
+            assert statusCode != null;
             if (!statusCode.is2xxSuccessful()) {
                 log.error("Kunne ikke slette ident {} fra Arena-forvalteren. Status: {}", personident, statusCode.toString());
                 response = false;
             }
 
-        } catch (Exception e) {
+        } catch (Exception | AssertionError e) {
             log.error("Klarte ikke slette ident {} fra Arena-forvalteren.", personident, e);
             response = false;
         }
