@@ -1,6 +1,22 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
+import ma.glasnost.orika.CustomMapper;
+import ma.glasnost.orika.MapperFactory;
+import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand;
+import no.nav.dolly.bestilling.pdlforvalter.domain.SivilstandWrapper;
+import no.nav.dolly.domain.resultset.tpsf.Person;
+import no.nav.dolly.domain.resultset.tpsf.Relasjon;
+import no.nav.dolly.domain.resultset.tpsf.Sivilstand.Sivilstatus;
+import no.nav.dolly.mapper.MappingStrategy;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon.decode;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand.ENKE_ELLER_ENKEMANN;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand.GIFT;
@@ -13,21 +29,6 @@ import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilsta
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand.UGIFT;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand.UOPPGITT;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-
-import java.time.LocalDate;
-import org.springframework.stereotype.Component;
-
-import ma.glasnost.orika.CustomMapper;
-import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand;
-import no.nav.dolly.bestilling.pdlforvalter.domain.SivilstandWrapper;
-import no.nav.dolly.domain.resultset.tpsf.Person;
-import no.nav.dolly.domain.resultset.tpsf.Relasjon;
-import no.nav.dolly.domain.resultset.tpsf.Sivilstand.Sivilstatus;
-import no.nav.dolly.mapper.MappingStrategy;
 
 @Component
 public class PdlRelasjonerMappingStrategy implements MappingStrategy {
@@ -42,11 +43,13 @@ public class PdlRelasjonerMappingStrategy implements MappingStrategy {
 
                         familierelasjon.setRelatertPerson(relasjon.getPersonRelasjonMed().getIdent());
                         familierelasjon.setRelatertPersonsRolle(decode(relasjon.getRelasjonTypeNavn()));
-                        relasjon.getPersonRelasjonTil().getRelasjoner().forEach(relasjon1 -> {
-                            if (relasjon1.getPersonRelasjonMed().getIdent().equals(relasjon.getPerson().getIdent())) {
-                                familierelasjon.setMinRolleForPerson(decode(relasjon1.getRelasjonTypeNavn()));
-                            }
-                        });
+                        if (nonNull(relasjon.getPersonRelasjonTil())) {
+                            relasjon.getPersonRelasjonTil().getRelasjoner().forEach(relasjon1 -> {
+                                if (relasjon1.getPersonRelasjonMed().getIdent().equals(relasjon.getPerson().getIdent())) {
+                                    familierelasjon.setMinRolleForPerson(decode(relasjon1.getRelasjonTypeNavn()));
+                                }
+                            });
+                        }
                         familierelasjon.setKilde(CONSUMER);
                     }
                 })
