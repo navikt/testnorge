@@ -5,12 +5,17 @@ spring:
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     name: testnorge-tilbakemelding-api
     description: App for innsending av tilbakemeldinger. Tilbakemeldingene blir publisert i slack
+    cluster: dev-gcp
+    namespace: dolly
 
-consumer:
+consumers:
   slack:
     token: ${SLACK_TOKEN}
     baseUrl: https://slack.com
     channel: ${SLACK_CHANNEL}
   profil-api:
-    url: https://testnorge-profil-api.dev.intern.nav.no
-    client-id: e8e0772f-8204-4b88-88ad-233d62863f47
+    url: http://testnorge-profil-api.dolly.svc.cluster.local
+    clientId: e8e0772f-8204-4b88-88ad-233d62863f47
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnorge-profil-api

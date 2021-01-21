@@ -274,3 +274,9 @@ project(":local-development").projectDir = file('libs/local-development')
 
 include 'batch-adeo-proxy'
 project(":batch-adeo-proxy").projectDir = file('apps/batch-adeo-proxy')
+
+include 'applikasjonsanalyse-service'
+project(":applikasjonsanalyse-service").projectDir = file('apps/applikasjonsanalyse-service')
+
+include 'analysis-auto-configuration'
+project(":analysis-auto-configuration").projectDir = file('libs/analysis-auto-configuration')

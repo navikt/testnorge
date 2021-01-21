@@ -1,16 +1,19 @@
 package no.nav.registre.testnorge.tilbakemeldingapi.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.List;
+
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.profil.v1.ProfilDTO;
+import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.registre.testnorge.tilbakemeldingapi.config.credentials.ProfilServiceProperties;
 
 @Slf4j
 @Component
@@ -22,14 +25,13 @@ public class ProfilApiConsumer {
     private final AccessScopes accessScopes;
 
     public ProfilApiConsumer(
-            @Value("${consumer.profil-api.url}") String url,
-            @Value("${consumer.profil-api.client-id}") String clientId,
+            ProfilServiceProperties properties,
             AccessTokenService accessTokenService
     ) {
-        this.accessScopes = new AccessScopes("api://" + clientId + "/.default");
+        this.accessScopes = new AccessScopes(properties);
         this.accessTokenService = accessTokenService;
         this.webClient = WebClient.builder()
-                .baseUrl(url)
+                .baseUrl(properties.getUrl())
                 .build();
     }
 

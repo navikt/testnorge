@@ -16,6 +16,7 @@ import reactor.netty.tcp.ProxyProvider;
 import java.net.URI;
 import java.util.Map;
 
+import no.nav.registre.testnorge.libs.oauth2.config.Scopeable;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.domain.AzureClientCredentials;
@@ -61,13 +62,17 @@ public class AccessTokenService {
         return generateToken(new AccessScopes("api://" + clientId + "/.default"));
     }
 
+    public AccessToken generateToken(Scopeable scopeable) {
+        return generateToken(new AccessScopes(scopeable.toScope()));
+    }
+
+
     public AccessToken generateToken(AccessScopes accessScopes) {
         tokenResolver.verifyAuthentication();
 
         if (accessScopes.getScopes().isEmpty()) {
             throw new RuntimeException("Kan ikke opprette accessToken uten scopes (clienter).");
         }
-
 
         if (tokenResolver.isClientCredentials()) {
             return generateClientCredentialAccessToken(accessScopes);
