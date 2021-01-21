@@ -150,7 +150,7 @@ public class BrukereArenaForvalterConsumer {
     }
 
     @Timed(value = "testnorge.arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
-    public Boolean slettBruker(
+    public boolean slettBruker(
             String personident,
             String miljoe
     ) {
