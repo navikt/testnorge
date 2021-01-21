@@ -20,7 +20,7 @@ import static no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingStatus
 public class DeployStatusService {
 
     private static final long SLEEP_TIME = 1000L;
-    private static final long MAX_ITERATIONS = 60 * 15;
+    private static final long MAX_ITERATIONS = 60 * 10;
 
     private final OrganisasjonBestillingStatusConsumer bestillingStatusConsumer;
 
