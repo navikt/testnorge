@@ -4,7 +4,7 @@ spring:
   application:
     name: organisasjon-bestilling-service
     description: Tjeneste for å registere og hente ut organiasjonsbestilling status
-    cluster: dev-fss
+    cluster: dev-gcp
     namespace: dolly
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
