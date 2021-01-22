@@ -1,6 +1,6 @@
-package no.nav.registre.aareg.consumer.rs;
+package no.nav.registre.orgnrservice.consumer;
 
-import no.nav.registre.aareg.consumer.rs.response.MiljoerResponse;
+import no.nav.registre.orgnrservice.consumer.response.MiljoerResponse;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
@@ -23,11 +23,11 @@ public class MiljoerConsumer {
     private final AccessTokenService accessTokenService;
     private final AccessScopes accessScopes;
 
-    public MiljoerConsumer(@Value("${miljoer-service.rest-api.url}") String miljoeUrl,
-                           @Value("${miljoer-service.client-id}") String miljoeServiceClientId,
+    public MiljoerConsumer(@Value("${consumers.miljoer-service.url}") String miljoeUrl,
+                           @Value("${consumers.miljoer-service.client_id}") String clientId,
                            AccessTokenService accessTokenService
     ) {
-        this.accessScopes = new AccessScopes("api://" + miljoeServiceClientId + "/.default");
+        this.accessScopes = new AccessScopes("api://" + clientId + "/.default");
         this.accessTokenService = accessTokenService;
         this.webClient = WebClient.builder()
                 .baseUrl(miljoeUrl)
