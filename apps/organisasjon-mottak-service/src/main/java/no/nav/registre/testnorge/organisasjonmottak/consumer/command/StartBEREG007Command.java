@@ -88,9 +88,13 @@ public class StartBEREG007Command implements Callable<Long> {
                     .exchange()
                     .flatMap(response -> {
                         try {
-                            var location = response.headers().asHttpHeaders().getLocation().toString();
+                            var location = response.headers().asHttpHeaders().getLocation();
+                            if (location == null) {
+                                return Mono.error(new RuntimeException("Klarer ikke å finne location"));
+                            }
+
                             var pattern = Pattern.compile("\\d+");
-                            var matcher = pattern.matcher(location);
+                            var matcher = pattern.matcher(location.toString());
                             if (matcher.find()) {
                                 return Mono.just(Long.valueOf(matcher.group()));
                             } else {
@@ -98,11 +102,8 @@ public class StartBEREG007Command implements Callable<Long> {
                             }
                         } catch (Exception e) {
                             log.error(
-                                    "Klarer ikke å finne location. \nResponse body: {}\nLocation: {}\nRequest body: {}\nFile: {}",
+                                    "Klarer ikke å finne location.\nResponse body: {}.",
                                     response.bodyToMono(String.class),
-                                    response.headers().asHttpHeaders().getLocation(),
-                                    body,
-                                    new String(fileEntity.getBody()),
                                     e
                             );
                             return Mono.error(e);
@@ -110,7 +111,9 @@ public class StartBEREG007Command implements Callable<Long> {
                     }).block();
         } catch (WebClientResponseException e) {
             log.error(
-                    "Feil ved innsending til jenkens batch BEREG007. Response: {}", e.getResponseBodyAsString(), e
+                    "Feil ved innsending til jenkens batch BEREG007. Response: {}",
+                    e.getResponseBodyAsString(),
+                    e
             );
             throw e;
         } catch (Exception e) {
