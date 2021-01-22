@@ -14,6 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -33,7 +34,8 @@ public class OrganisasjonApiConsumer {
     OrganisasjonApiConsumer(@Value("${consumers.organisasjon-api.url}") String url,
                             @Value("${consumers.organisasjon-api.client_id}") String clientId,
                             @Value("${consumers.organisasjon-api.threads}") Integer threads,
-                            AccessTokenService accessTokenService, MiljoerConsumer miljoerConsumer) {
+                            AccessTokenService accessTokenService,
+                            MiljoerConsumer miljoerConsumer) {
         this.clientId = clientId;
         this.accessTokenService = accessTokenService;
         this.executorService = Executors.newFixedThreadPool(threads);
@@ -53,9 +55,10 @@ public class OrganisasjonApiConsumer {
     public boolean finnesOrgnrIEreg(String orgnummer) {
 
         List<String> miljoer = miljoerConsumer.hentMiljoer().getEnvironments();
+        Set<String> ekskluderteMiljoer = Set.of("qx", "u5");
 
         var futures = miljoer.stream()
-                .filter(miljoe -> !miljoe.equals("qx") && !miljoe.equals("u5"))
+                .filter(miljoe -> !ekskluderteMiljoer.contains(miljoe))
                 .map(enkeltmiljoe -> getOrgnrFraMiljoeThreads(orgnummer, enkeltmiljoe, getToken()))
                 .collect(Collectors.toList());
 
