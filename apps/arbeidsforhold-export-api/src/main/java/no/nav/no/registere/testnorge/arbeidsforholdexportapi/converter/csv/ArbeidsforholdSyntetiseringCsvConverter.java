@@ -44,6 +44,9 @@ public class ArbeidsforholdSyntetiseringCsvConverter extends CsvConverter<Arbeid
         PERMISJON("PERMISJON"),
         PERMISJON_VED_MILITAERTJENESTE("PERMISJON_VED_MILITAERTJENESTE"),
         VELFERDSPERMISJON("VELFERDSPERMISJON"),
+        SKIPSREGISTER("SKIPSREGISTER"),
+        SKIPSTYPE("SKIPSTYPE"),
+        FARTSOMRAADE("FARTSOMRAADE"),
         UTDANNINGSPERMISJON("UTDANNINGSPERMISJON");
 
         private final String header;
@@ -88,6 +91,9 @@ public class ArbeidsforholdSyntetiseringCsvConverter extends CsvConverter<Arbeid
             map.put(Headers.PERMISJON_VED_MILITAERTJENESTE.getValue(), arbeidsforhold.getAntallPermisjonVedMilitaertjeneste());
             map.put(Headers.VELFERDSPERMISJON.getValue(), arbeidsforhold.getAntallVelferdspermisjon());
             map.put(Headers.UTDANNINGSPERMISJON.getValue(), arbeidsforhold.getAntallUtdanningspermisjon());
+            map.put(Headers.SKIPSREGISTER.getValue(), arbeidsforhold.getSkipsregister());
+            map.put(Headers.SKIPSTYPE.getValue(), arbeidsforhold.getSkipstype());
+            map.put(Headers.FARTSOMRAADE.getValue(), arbeidsforhold.getFartsomraade());
             return map;
         };
     }
