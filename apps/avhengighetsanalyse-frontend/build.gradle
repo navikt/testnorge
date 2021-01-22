@@ -13,10 +13,10 @@ dependencyManagement {
     }
 }
 dependencies {
+
+    implementation project(':local-development')
     implementation project(':testnorge-core')
     implementation project(':testnorge-oauth2')
-
-
 
     implementation 'org.springframework.boot:spring-boot-starter-security:2.3.4.RELEASE'
     implementation project(':testnorge-data-transfer-objects')

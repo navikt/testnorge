@@ -17,6 +17,7 @@ spec:
         - application: team-dolly-lokal-app
           cluster: dev-fss
         - application: avhengighetsanalyse-frontend
+          cluster: dev-gcp
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
         - application: testnorge-tilbakemelding-api
