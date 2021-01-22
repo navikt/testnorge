@@ -51,7 +51,7 @@ public class StartBEREG007Command implements Callable<Long> {
         log.info("Sender flatfil til server {} ({})", server, miljo);
 
         String content = flatfil.build();
-        log.info("Flatfil inneholder: {}", content);
+        log.info("Flatfil inneholder: \n{}", content);
 
         Resource resource = getFileResource(content);
 
@@ -93,6 +93,7 @@ public class StartBEREG007Command implements Callable<Long> {
                         if (matcher.find()) {
                             return Mono.just(Long.valueOf(matcher.group()));
                         } else {
+                            log.error("Finner ikke id fra location: {}", location);
                             return Mono.error(new RuntimeException("Klarer ikke å finne item id fra location: " + location));
                         }
                     }).block();
@@ -100,6 +101,9 @@ public class StartBEREG007Command implements Callable<Long> {
             log.error(
                     "Feil ved innsending til jenkens batch BEREG007. Response: {}", e.getResponseBodyAsString(), e
             );
+            throw e;
+        } catch (Exception e) {
+            log.error("Feil ved innsending til jenkens batch BEREG007.", e);
             throw e;
         }
 
