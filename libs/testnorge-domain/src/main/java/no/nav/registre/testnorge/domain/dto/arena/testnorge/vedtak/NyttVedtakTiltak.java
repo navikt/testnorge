@@ -89,4 +89,9 @@ public class NyttVedtakTiltak extends NyttVedtak {
 
     @JsonAlias({ "AVBRUDD_KODE", "avbruddKode" })
     private String avbruddKode;
+
+    @Override
+    public RettighetType getRettighetType(){
+        return RettighetType.TILTAK;
+    }
 }

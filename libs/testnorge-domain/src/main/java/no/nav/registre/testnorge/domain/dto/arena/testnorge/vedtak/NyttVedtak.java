@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -55,4 +56,8 @@ public class NyttVedtak {
 
     @JsonAlias({ "VEDTAKTYPE", "vedtaktype" })
     private String vedtaktype;
+
+    public RettighetType getRettighetType() {
+        return RettighetType.UKJENT;
+    }
 }

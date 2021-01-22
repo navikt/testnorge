@@ -72,4 +72,9 @@ public class NyttVedtakTillegg extends NyttVedtak {
 
     @JsonAlias({ "REISESTONAD_ARBEIDSSOKER", "reisestonadArbeidssoker" })
     private List<ReisestoenadArbeidssoeker> reisestonadArbeidssoker;
+
+    @Override
+    public RettighetType getRettighetType(){
+        return RettighetType.TILLEGG;
+    }
 }
