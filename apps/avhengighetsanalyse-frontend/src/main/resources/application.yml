@@ -17,5 +17,5 @@ zuul:
   routes:
     testnorge-avhengighetsanalyse-service:
       path: /api/**
-      url: https://testnorge-avhengighetsanalyse-service.dev.adeo.no/api
+      url: https://applikasjonsanalyse-service.dev.intern.nav.no/api
       sensitiveHeaders: Cookie,Set-Cookie
