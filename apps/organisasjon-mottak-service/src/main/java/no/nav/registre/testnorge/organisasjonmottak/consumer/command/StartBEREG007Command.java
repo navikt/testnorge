@@ -14,6 +14,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.io.File;
@@ -50,6 +51,7 @@ public class StartBEREG007Command implements Callable<Long> {
         log.info("Sender flatfil til server {} ({})", server, miljo);
 
         String content = flatfil.build();
+        log.info("Flatfil inneholder: {}", content);
 
         Resource resource = getFileResource(content);
 
@@ -73,24 +75,33 @@ public class StartBEREG007Command implements Callable<Long> {
                 .with("input_file", fileEntity);
 
         log.info("Jenkins-Crumb: {}", crumb.getCrumb());
-        return webClient
-                .post()
-                .uri("/view/Registre/job/Start_BEREG007/buildWithParameters")
-                .header("Jenkins-Crumb", crumb.getCrumb())
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .body(body)
-                .exchange()
-                .flatMap(response -> {
-                    log.trace("{}:{}", HttpHeaders.LOCATION, String.join(", ", response.headers().header(HttpHeaders.LOCATION)));
-                    var location = response.headers().header(HttpHeaders.LOCATION).get(0);
-                    var pattern = Pattern.compile("\\d+");
-                    var matcher = pattern.matcher(location);
-                    if (matcher.find()) {
-                        return Mono.just(Long.valueOf(matcher.group()));
-                    } else {
-                        return Mono.error(new RuntimeException("Klarer ikke å finne item id fra location: " + location));
-                    }
-                }).block();
+
+        try {
+            return webClient
+                    .post()
+                    .uri("/view/Registre/job/Start_BEREG007/buildWithParameters")
+                    .header("Jenkins-Crumb", crumb.getCrumb())
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .body(body)
+                    .exchange()
+                    .flatMap(response -> {
+                        log.trace("{}:{}", HttpHeaders.LOCATION, String.join(", ", response.headers().header(HttpHeaders.LOCATION)));
+                        var location = response.headers().header(HttpHeaders.LOCATION).get(0);
+                        var pattern = Pattern.compile("\\d+");
+                        var matcher = pattern.matcher(location);
+                        if (matcher.find()) {
+                            return Mono.just(Long.valueOf(matcher.group()));
+                        } else {
+                            return Mono.error(new RuntimeException("Klarer ikke å finne item id fra location: " + location));
+                        }
+                    }).block();
+        } catch (WebClientResponseException e) {
+            log.error(
+                    "Feil ved innsending til jenkens batch BEREG007. Response: {}", e.getResponseBodyAsString(), e
+            );
+            throw e;
+        }
+
     }
 }
