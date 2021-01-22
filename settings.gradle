@@ -17,6 +17,13 @@ plugins {
 
 rootProject.name = 'testnorge'
 
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+    }
+}
+
 include(':testnorge-dependency-analysis-auto-configuration')
 
 include(':inntektsmelding-stub')
@@ -123,7 +130,6 @@ include(':ident-pool-core')
 include(':ident-check-in-prod-service')
 include(':mn-person-service')
 include(':mn-synt-arbeidsforhold-service')
-include(':avhengighetsanalyse-service')
 include(':organisasjon-orgnummer-service')
 project(":inntektsmelding-stub").projectDir = file('apps/inntektsmelding-stub')
 project(":testnorge-tss").projectDir = file('apps/testnorge-tss')
@@ -226,16 +232,10 @@ project(":ident-pool-core").projectDir = file('apps/ident-pool/ident-pool-core')
 project(":mn-person-service").projectDir = file('apps/mn-person-service')
 project(":mn-synt-arbeidsforhold-service").projectDir = file('apps/mn-synt-arbeidsforhold-service')
 project(":ident-check-in-prod-service").projectDir = file('apps/ident-check-in-prod-service')
-project(":avhengighetsanalyse-service").projectDir = file('apps/avhengighetsanalyse-service')
 project(":organisasjon-orgnummer-service").projectDir = file('apps/organisasjon-orgnummer-service')
 project(":testnorge-dependency-analysis-auto-configuration").projectDir = file('libs/testnorge-dependency-analysis-auto-configuration')
 
-gradleEnterprise {
-    buildScan {
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        termsOfServiceAgree = "yes"
-    }
-}
+
 include 'organisasjon-mottak-service'
 project(":organisasjon-mottak-service").projectDir = file('apps/organisasjon-mottak-service')
 
