@@ -86,15 +86,23 @@ public class StartBEREG007Command implements Callable<Long> {
                     .body(body)
                     .exchange()
                     .flatMap(response -> {
-                        log.trace("{}:{}", HttpHeaders.LOCATION, String.join(", ", response.headers().header(HttpHeaders.LOCATION)));
-                        var location = response.headers().header(HttpHeaders.LOCATION).get(0);
-                        var pattern = Pattern.compile("\\d+");
-                        var matcher = pattern.matcher(location);
-                        if (matcher.find()) {
-                            return Mono.just(Long.valueOf(matcher.group()));
-                        } else {
-                            log.error("Finner ikke id fra location: {}, response body: {}.", location, response.bodyToMono(String.class));
-                            return Mono.error(new RuntimeException("Klarer ikke å finne item id fra location: " + location));
+                        try {
+                            var location = response.headers().header(HttpHeaders.LOCATION).get(0);
+                            var pattern = Pattern.compile("\\d+");
+                            var matcher = pattern.matcher(location);
+                            if (matcher.find()) {
+                                return Mono.just(Long.valueOf(matcher.group()));
+                            } else {
+                                return Mono.error(new RuntimeException("Klarer ikke å finne item id fra location: " + location));
+                            }
+                        } catch (Exception e) {
+                            log.error(
+                                    "Klarer ikke å finne location, response body: {}, headers: {}.",
+                                    response.bodyToMono(String.class),
+                                    response.headers(),
+                                    e
+                            );
+                            return Mono.error(e);
                         }
                     }).block();
         } catch (WebClientResponseException e) {
