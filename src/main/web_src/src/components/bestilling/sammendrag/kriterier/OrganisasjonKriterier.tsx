@@ -20,6 +20,7 @@ export const OrganisasjonKriterier = ({ data, render }) => {
 		})
 	}
 
+	// Lager en kopi av data, hvor hver organisasjon får en unik id og navn, slik at den kan brukes i Enhetstre
 	addId(Array.of(dataCopy), 'Organisasjon', 0, null)
 
 	let enheterListe = []
@@ -33,6 +34,7 @@ export const OrganisasjonKriterier = ({ data, render }) => {
 		})
 	}
 
+	// Array av alle organisasjoner på samme nivå, slik at data enkelt kan hentes ut fra hver av dem
 	enheterFlat(Array.of(dataCopy))
 
 	return (

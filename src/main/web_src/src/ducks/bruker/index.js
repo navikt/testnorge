@@ -46,10 +46,3 @@ export default handleActions(
 	},
 	initialState
 )
-
-// Thunk
-// TODO: Funker ikke, og brukes heller ikke for øyeblikket, kan sikkert fjernes
-export const fetchCurrentBruker = () => async (dispatch, getState) => {
-	// const { brukerId } = getState().bruker.brukerData
-	return dispatch(getCurrentBruker())
-}

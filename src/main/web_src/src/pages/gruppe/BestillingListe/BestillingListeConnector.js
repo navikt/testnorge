@@ -9,7 +9,6 @@ const mapStateToProps = (state, ownProps) => ({
 	searchActive: Boolean(state.search),
 	isFetchingBestillinger: loadingBestillingerSelector(state),
 	bestillinger: sokSelector(state, state.search)
-	// TODO: Ta inn getOrganisasjonBestilling også?
 })
 
 export default connect(mapStateToProps)(BestillingListe)

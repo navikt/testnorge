@@ -29,14 +29,6 @@ export default class DollyEndpoints {
 		return `${groupBase}?brukerId=${userId}`
 	}
 
-	static organisasonStatusByBestillingId(bestillingId) {
-		return `${organisasjonBase}/bestilling?bestillingId=${bestillingId}`
-	}
-
-	static organisasonStatusByUser(userId) {
-		return `${organisasjonBase}/bestillingsstatus?brukerId=${userId}`
-	}
-
 	static gruppeBestilling(gruppeId) {
 		return `${groupBase}/${gruppeId}/bestilling`
 	}
@@ -49,16 +41,24 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/bestilling/importFraTps`
 	}
 
-	static organisasjonBestilling() {
-		return `${organisasjonBase}/bestilling`
-	}
-
 	static laasGruppe(gruppeId) {
 		return `${groupBase}/${gruppeId}/laas?erLaast=true`
 	}
 
 	static gruppeBestillingStatus(gruppeId) {
 		return `${groupBase}/${gruppeId}/bestillingStatus`
+	}
+
+	static organisasjonBestilling() {
+		return `${organisasjonBase}/bestilling`
+	}
+
+	static organisasonStatusByBestillingId(bestillingId) {
+		return `${organisasjonBase}/bestilling?bestillingId=${bestillingId}`
+	}
+
+	static organisasonStatusByUser(userId) {
+		return `${organisasjonBase}/bestillingsstatus?brukerId=${userId}`
 	}
 
 	static bruker() {

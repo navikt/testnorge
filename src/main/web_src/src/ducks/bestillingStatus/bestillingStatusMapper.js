@@ -14,9 +14,11 @@ import _get from 'lodash/get'
 import Formatters from '~/utils/DataFormatter'
 
 const finnesDetAvvikForBestillinger = status => {
-	// TODO: Juks - fiks denne
-	if (!status || status.length < 2) return false
+	if (!status) return false
 	return status.some(source => {
+		if (source.organisasjonsforvalterStatus) {
+			return source.organisasjonsforvalterStatus !== 'OK'
+		}
 		return source.statuser.some(status => status.melding !== 'OK')
 	})
 }
@@ -66,8 +68,7 @@ const extractBestillingstatusKode = (bestilling, harAvvik, antallIdenterOpprette
 const extractValuesForBestillingListe = (data, statusKode) => {
 	const values = {
 		id: data.id.toString(),
-		// TODO: Juks - fiks denne
-		antallIdenter: data.antallIdenter ? data.antallIdenter.toString() : '1',
+		antallIdenter: data.antallIdenter ? data.antallIdenter.toString() : 0,
 		sistOppdatert: Formatters.formatDate(data.sistOppdatert),
 		environments: Formatters.arrayToString(data.environments),
 		statusKode

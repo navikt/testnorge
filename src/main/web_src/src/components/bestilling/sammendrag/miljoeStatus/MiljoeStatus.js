@@ -7,8 +7,8 @@ import antallIdenterOpprettet from '~/components/bestilling/utils/antallIdenterO
 
 import './MiljoeStatus.less'
 
-const mapStatusrapport = bestillingstatus => {
-	if (bestillingstatus[0].organisasjonsnummer) {
+const mapStatusrapport = (bestillingstatus, erOrganisasjon) => {
+	if (erOrganisasjon) {
 		const status = bestillingstatus[0]
 		return {
 			organisasjonsnummer: status.organisasjonsnummer,
@@ -45,7 +45,8 @@ const mapStatusrapport = bestillingstatus => {
 }
 
 export default function MiljoeStatus({ bestilling }) {
-	const statusrapport = mapStatusrapport(bestilling.status)
+	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
+	const statusrapport = mapStatusrapport(bestilling.status, erOrganisasjon)
 	const { tekst } = antallIdenterOpprettet(bestilling)
 
 	return (
@@ -53,7 +54,7 @@ export default function MiljoeStatus({ bestilling }) {
 			<SubOverskrift label="Bestillingsstatus" />
 			{bestilling.feil && (
 				<div className="feilmelding_generell">
-					<p>{tekst}</p>
+					{!erOrganisasjon && <p>{tekst}</p>}
 					<ApiFeilmelding feilmelding={bestilling.feil} container />
 				</div>
 			)}

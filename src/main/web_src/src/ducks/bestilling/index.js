@@ -64,7 +64,6 @@ export const sendBestilling = (values, opts, gruppeId) => async (dispatch, getSt
 	} else if (values.organisasjon) {
 		bestillingAction = actions.postOrganisasjonBestilling(values)
 		trackBestilling(values)
-		//TODO: Håndtere avslutning av bestilling på en bedre måte
 	} else {
 		// Sett identType (denne blir ikke satt tidligere grunnet at den sitter inne i tpsf-noden)
 		values = _set('tpsf.identtype', opts.identtype, values)

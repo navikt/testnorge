@@ -1,6 +1,6 @@
 // @ts-ignore
 import { connect } from 'react-redux'
-import { actions, fetchOrganisasjoner } from '~/ducks/organisasjon'
+import { actions } from '~/ducks/organisasjon'
 import { getOrganisasjonBestilling } from '~/ducks/bestillingStatus'
 import { createLoadingSelector } from '~/ducks/loading'
 import Organisasjoner from './Organisasjoner'
@@ -18,7 +18,6 @@ const mapStateToProps = (state: any) => {
 
 const mapDispatchToProps = (dispatch: React.Dispatch<React.SetStateAction<string>>) => {
 	return {
-		fetchOrganisasjoner,
 		getOrganisasjonBestilling: brukerId => dispatch(getOrganisasjonBestilling(brukerId)),
 		getOrganisasjoner: orgListe => dispatch(actions.getOrganisasjoner(orgListe))
 	}

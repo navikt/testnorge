@@ -22,7 +22,6 @@ export const OrganisasjonForm = ({ formikBag }) => {
 					<Detaljer formikBag={formikBag} path="organisasjon" level={0} />
 				</Panel>
 			</Vis>
-			{/* Flere kategorier legges inn her */}
 		</>
 	)
 }

@@ -47,11 +47,8 @@ export default handleActions(
 				state.byId[best.id] = best
 			})
 		},
-		// TODO: Nesten helt lik som getBestillinger - kan de slås sammen?
-		// TODO: Fjerne && !bestilling.feil når vi får returnert ferdig også for bestillinger som feilet
 		[onSuccess(getOrganisasjonBestilling)](state, action) {
 			const { data } = action.payload
-			console.log('data :>> ', data)
 			const nyeBestillinger = data
 				.filter(
 					bestilling => !bestilling.ferdig && !bestilling.feil && !state.ny.includes(bestilling.id)
