@@ -16,6 +16,8 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-fss
+        - application: testnorge-varslinger-api
+          cluster: dev-fss
         - application: testnorge-profil-api
           cluster: dev-gcp
         - application: testnorge-profil-api-dev
