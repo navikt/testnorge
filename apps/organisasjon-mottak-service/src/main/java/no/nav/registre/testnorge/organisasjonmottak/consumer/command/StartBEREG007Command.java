@@ -101,8 +101,8 @@ public class StartBEREG007Command implements Callable<Long> {
                                     "Klarer ikke å finne location. \nResponse body: {}\nLocation: {}\nRequest body: {}\nFile: {}",
                                     response.bodyToMono(String.class),
                                     response.headers().asHttpHeaders().getLocation(),
-                                    Mono.just(body),
-                                    Mono.just(fileEntity),
+                                    body,
+                                    fileEntity,
                                     e
                             );
                             return Mono.error(e);
