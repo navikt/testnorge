@@ -16,6 +16,7 @@ import reactor.netty.tcp.ProxyProvider;
 import java.net.URI;
 import java.util.Map;
 
+import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.config.Scopeable;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
@@ -90,6 +91,12 @@ public class AccessTokenService {
     public AccessToken generateClientCredentialAccessToken(String clientId) {
         return generateClientCredentialAccessToken(new AccessScopes("api://" + clientId + "/.default"));
     }
+
+
+    public AccessToken generateClientCredentialAccessToken(NaisServerProperties serverProperties) {
+        return generateClientCredentialAccessToken(new AccessScopes(serverProperties.toScope()));
+    }
+
 
     private AccessToken generateClientCredentialAccessToken(AccessScopes accessScopes) {
         log.trace("Henter OAuth2 access token fra client credential...");

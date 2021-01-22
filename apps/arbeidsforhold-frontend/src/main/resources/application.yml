@@ -8,7 +8,7 @@ spring:
 
 zuul:
   routes:
-    testnorge-arbeidsforhold-api:
+    applikasjonsanalyse-service:
       path: /api/**
-      url: https://testnorge-arbeidsforhold-api.dev.adeo.no/api
+      url: https://applikasjonsanalyse-service.dev.intern.nav.no/api
       sensitiveHeaders: Cookie,Set-Cookie
