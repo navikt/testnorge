@@ -98,10 +98,11 @@ public class StartBEREG007Command implements Callable<Long> {
                             }
                         } catch (Exception e) {
                             log.error(
-                                    "Klarer ikke å finne location. \n Response body: {}\n location: {}\n Request body {},",
+                                    "Klarer ikke å finne location. \nResponse body: {}\nLocation: {}\nRequest body: {}\nFile: {}",
                                     response.bodyToMono(String.class),
                                     response.headers().asHttpHeaders().getLocation(),
                                     Mono.just(body),
+                                    Mono.just(fileEntity),
                                     e
                             );
                             return Mono.error(e);
