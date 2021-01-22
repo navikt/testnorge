@@ -24,7 +24,7 @@ import no.nav.registre.testnorge.libs.analysisautoconfiguration.service.AutoAnal
 })
 @EnableAsync
 @RequiredArgsConstructor
-@Profile("dev")
+@Profile("prod")
 public class AnalysisFSSAutoConfiguration {
 
     private final ApplicationProperties properties;
