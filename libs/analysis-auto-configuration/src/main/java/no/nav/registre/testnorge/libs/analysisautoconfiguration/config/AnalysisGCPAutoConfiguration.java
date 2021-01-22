@@ -24,7 +24,7 @@ import no.nav.registre.testnorge.libs.analysisautoconfiguration.service.AutoAnal
 })
 @EnableAsync
 @RequiredArgsConstructor
-@Profile("dev")
+@Profile("prod")
 public class AnalysisGCPAutoConfiguration {
 
     private final ApplicationProperties properties;
