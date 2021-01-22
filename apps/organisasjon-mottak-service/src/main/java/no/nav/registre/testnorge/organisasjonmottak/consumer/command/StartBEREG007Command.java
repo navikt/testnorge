@@ -99,7 +99,7 @@ public class StartBEREG007Command implements Callable<Long> {
                             log.error(
                                     "Klarer ikke å finne location, response body: {}, headers: {}.",
                                     response.bodyToMono(String.class),
-                                    response.headers(),
+                                    response.headers().asHttpHeaders().getLocation(),
                                     e
                             );
                             return Mono.error(e);
