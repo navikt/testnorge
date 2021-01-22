@@ -1,12 +1,18 @@
-name: Deploy ident-pool
+name: Deploy organisasjon-forvalter
 
 on:
   push:
-    branches: master
+    branches: feature/organisasjon-forvalter
     paths:
-      - apps/ident-pool/**
+      - apps/organisasjon-forvalter/**
+      - libs/kafka-config/**
+      - libs/kafka-producers/**
+      - libs/testnorge-avro-schema/**
+      - libs/testnorge-core/**
+      - libs/testnorge-oauth2/**
+
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/ident-pool:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/organisasjon-forvalter:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -15,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Gradle cache
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: |
             ~/.gradle
@@ -25,24 +31,26 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '11.x'
+
       - name: Compile
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :ident-pool-app:build
+        run: ./gradlew :organisasjon-forvalter:build
 
       - name: Build and publish Docker image
-        working-directory: apps/ident-pool/
+        working-directory: apps/organisasjon-forvalter/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker build --tag ${IMAGE} .
+          docker build --tag $IMAGE .
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}
+
       - name: Deploy to nais
         timeout-minutes: 5
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/ident-pool/nais.yml
+          RESOURCE: apps/organisasjon-forvalter/config.yml

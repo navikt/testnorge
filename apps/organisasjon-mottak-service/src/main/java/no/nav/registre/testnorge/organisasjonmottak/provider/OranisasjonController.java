@@ -1,6 +1,8 @@
 package no.nav.registre.testnorge.organisasjonmottak.provider;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.OpprettelsesdokumentProducer;
+import no.nav.registre.testnorge.organisasjonmottak.provider.dto.OrganisasjonDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,9 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
-
-import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.OpprettelsesdokumentProducer;
-import no.nav.registre.testnorge.organisasjonmottak.provider.dto.OrganisasjonDTO;
 
 @RestController
 @RequestMapping("/api/v1/organisasjoner")

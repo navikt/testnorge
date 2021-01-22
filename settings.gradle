@@ -125,6 +125,8 @@ include(':mn-person-service')
 include(':mn-synt-arbeidsforhold-service')
 include(':avhengighetsanalyse-service')
 include(':organisasjon-orgnummer-service')
+include(':organisasjon-forvalter')
+
 project(":inntektsmelding-stub").projectDir = file('apps/inntektsmelding-stub')
 project(":testnorge-tss").projectDir = file('apps/testnorge-tss')
 project(":profil-api").projectDir = file('apps/profil-api')
@@ -228,6 +230,7 @@ project(":mn-synt-arbeidsforhold-service").projectDir = file('apps/mn-synt-arbei
 project(":ident-check-in-prod-service").projectDir = file('apps/ident-check-in-prod-service')
 project(":avhengighetsanalyse-service").projectDir = file('apps/avhengighetsanalyse-service')
 project(":organisasjon-orgnummer-service").projectDir = file('apps/organisasjon-orgnummer-service')
+project(":organisasjon-forvalter").projectDir = file('apps/organisasjon-forvalter')
 project(":testnorge-dependency-analysis-auto-configuration").projectDir = file('libs/testnorge-dependency-analysis-auto-configuration')
 
 gradleEnterprise {

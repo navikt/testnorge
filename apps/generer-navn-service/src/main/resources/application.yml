@@ -5,5 +5,5 @@ spring:
     banner-mode: off
   application:
     name: generer-navn-service
-    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra Gradle
     description: App for å generere fiktive navn.
