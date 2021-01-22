@@ -2,7 +2,7 @@ name: Deploy inntektsmelding-stub
 
 on:
   push:
-    branches: master
+#    branches: master
     paths:
       - apps/inntektsmelding-stub/**
       - libs/testnorge-core/**
@@ -33,12 +33,13 @@ jobs:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
         run: ./gradlew :inntektsmelding-stub:build
       - name: Build and publish Docker image
+        working-directory: apps/inntektsmelding-stub/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker build --tag ${IMAGE} . -f ./apps/inntektsmelding-stub/Dockerfile
-          docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
-          docker push ${IMAGE}
+          docker build --tag $IMAGE .
+          docker login docker.pkg.github.com -u $GITHUB_REPOSITORY -p $GITHUB_TOKEN
+          docker push $IMAGE
       - name: Deploy to nais
         timeout-minutes: 5
         uses: nais/deploy/actions/deploy@v1
