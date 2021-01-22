@@ -23,7 +23,8 @@ import static java.lang.System.currentTimeMillis;
 @Service
 public class OrganisasjonApiConsumer {
 
-    private static final String STATUS_URL = "/api/v1/organisasjoner/{orgnummer}?miljo=";
+    private static final String STATUS_URL = "/api/v1/organisasjoner/{orgnummer}";
+    private static final String MILJOE = "miljo";
 
     private final AccessTokenService accessTokenService;
     private final AccessScopes accessScopes;
@@ -46,11 +47,12 @@ public class OrganisasjonApiConsumer {
         try {
             AccessToken accessToken = accessTokenService.generateToken(accessScopes);
             ResponseEntity<Response> response = webClient.get()
-                    .uri(STATUS_URL.replace("{orgnummer}", orgnummer) + miljoe)
+                    .uri(STATUS_URL.replace("{orgnummer}", orgnummer))
                     .header("Nav-Consumer-Id", "Testnorge")
                     .header("Nav-Call-Id", UUID.randomUUID().toString())
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " +
                             accessToken.getTokenValue())
+                    .header(MILJOE, miljoe)
                     .retrieve()
                     .toEntity(Response.class)
                     .block();
