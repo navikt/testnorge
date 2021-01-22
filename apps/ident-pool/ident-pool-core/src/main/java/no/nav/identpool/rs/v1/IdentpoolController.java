@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.ajourhold.BatchService;
 import no.nav.identpool.domain.Identtype;
-import no.nav.identpool.domain.postgres.Ident;
+import no.nav.identpool.domain.Ident;
 import no.nav.identpool.exception.IdentAlleredeIBrukException;
 import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;

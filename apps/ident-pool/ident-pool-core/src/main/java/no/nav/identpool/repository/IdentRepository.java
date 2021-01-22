@@ -13,7 +13,7 @@ import org.springframework.data.repository.query.Param;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
 import no.nav.identpool.domain.Rekvireringsstatus;
-import no.nav.identpool.domain.postgres.Ident;
+import no.nav.identpool.domain.Ident;
 
 public interface IdentRepository extends PagingAndSortingRepository<Ident, Long> {
 
@@ -42,8 +42,10 @@ public interface IdentRepository extends PagingAndSortingRepository<Ident, Long>
     @Query(value = "from Ident i where i.rekvireringsstatus = :rekvireringsstatus and "
             + "(:kjoenn is null or (:kjoenn is not null and i.kjoenn = :kjoenn)) and "
             + "(:identtype is null or (:identtype is not null and i.identtype = :identtype)) and "
-            + "i.foedselsdato between :foedtEtter and :foedtFoer")
+            + "i.foedselsdato between :foedtEtter and :foedtFoer and "
+            + "i.syntetisk = :syntetisk")
     Page<Ident> findAll(@Param("rekvireringsstatus") Rekvireringsstatus rekvireringsstatus,
             @Param("identtype") Identtype identtype, @Param("kjoenn") Kjoenn kjoenn,
-            @Param("foedtFoer") LocalDate foedtFoer, @Param("foedtEtter") LocalDate foedtEtter, Pageable pageable);
+            @Param("foedtFoer") LocalDate foedtFoer, @Param("foedtEtter") LocalDate foedtEtter,
+            @Param("syntetisk") boolean syntetisk, Pageable pageable);
 }

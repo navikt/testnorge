@@ -3,13 +3,8 @@ package no.nav.identpool.util;
 import static java.lang.Character.getNumericValue;
 import static no.nav.identpool.util.PersonidentUtil.generateFnr;
 import static no.nav.identpool.util.PersonidentUtil.getKjonn;
+import static no.nav.identpool.util.PersonidentUtil.isSyntetisk;
 import static no.nav.identpool.util.PersonidentUtil.toBirthdate;
-
-import com.google.common.collect.ImmutableMap;
-import no.nav.identpool.domain.postgres.Ident;
-import no.nav.identpool.domain.Identtype;
-import no.nav.identpool.domain.Kjoenn;
-import no.nav.identpool.domain.Rekvireringsstatus;
 
 import java.security.SecureRandom;
 import java.time.LocalDate;
@@ -21,6 +16,12 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import com.google.common.collect.ImmutableMap;
+
+import no.nav.identpool.domain.Ident;
+import no.nav.identpool.domain.Identtype;
+import no.nav.identpool.domain.Kjoenn;
+import no.nav.identpool.domain.Rekvireringsstatus;
 
 public final class IdentGeneratorUtil {
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
@@ -83,6 +84,7 @@ public final class IdentGeneratorUtil {
                 .rekvireringsstatus(status)
                 .rekvirertAv(rekvirertAv)
                 .identtype(identtype)
+                .syntetisk(isSyntetisk(fnr))
                 .build();
     }
 
