@@ -31,10 +31,10 @@ spec:
     max: 1
   resources:
     limits:
-      cpu: 200m
+      cpu: 500m
       memory: 2048Mi
     requests:
-      cpu: 500m
+      cpu: 200m
       memory: 1024Mi
   image: {{ image }}
   ingresses:
