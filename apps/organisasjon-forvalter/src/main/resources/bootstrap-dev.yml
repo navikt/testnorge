@@ -1,9 +1,5 @@
-
-
-azure:
-  app:
-    client:
-      id: 80f07134-375b-4df8-be48-2ba877774c6c
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
 
 spring:
   flyway:
