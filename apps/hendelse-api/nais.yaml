@@ -2,7 +2,7 @@ apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: testnorge-hendelse-api
-  namespace: dolly
+  namespace: default
   labels:
     team: dolly
 spec:

@@ -10,8 +10,8 @@ spring.cloud.vault:
   generic:
     enabled: true
     backend: kv
-    application-name: preprod/fss/testnorge-hendelse-api/dolly
-    default-context: preprod/fss/testnorge-hendelse-api/dolly
+    application-name: preprod/fss/testnorge-hendelse-api/default
+    default-context: preprod/fss/testnorge-hendelse-api/default
   database:
     enabled: true
     role: testnorge-hendelse-user
