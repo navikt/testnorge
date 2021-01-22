@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.libs.analysisautoconfiguration.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import no.nav.registre.testnorge.libs.dto.applikasjonsanalyseservice.v1.Applicat
 import no.nav.registre.testnorge.libs.dto.applikasjonsanalyseservice.v1.DependencyDTO;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AutoAnalyseService {
@@ -22,6 +24,7 @@ public class AutoAnalyseService {
 
     @Async
     public void analyse() {
+        log.info("Sender applikasjon informasjon...");
         applikasjonsanalyseConsumer.save(ApplicationInfoDTO
                 .builder()
                 .cluster(properties.getCluster())
@@ -36,5 +39,6 @@ public class AutoAnalyseService {
                 ).collect(Collectors.toSet()))
                 .build()
         );
+        log.info("Applikasjon informasjon sent.");
     }
 }

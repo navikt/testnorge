@@ -30,7 +30,6 @@ public class AnalysisGCPAutoConfiguration {
     private final ApplicationProperties properties;
     private final AutoAnalyseService analyseService;
 
-    @Async
     @PostConstruct
     public void init() {
         log.info("Analyserer {}...", properties.getName());
