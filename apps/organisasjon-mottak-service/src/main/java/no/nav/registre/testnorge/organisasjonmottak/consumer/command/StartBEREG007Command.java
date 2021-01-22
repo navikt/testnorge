@@ -93,7 +93,7 @@ public class StartBEREG007Command implements Callable<Long> {
                         if (matcher.find()) {
                             return Mono.just(Long.valueOf(matcher.group()));
                         } else {
-                            log.error("Finner ikke id fra location: {}", location);
+                            log.error("Finner ikke id fra location: {}, response body: {}.", location, response.bodyToMono(String.class));
                             return Mono.error(new RuntimeException("Klarer ikke å finne item id fra location: " + location));
                         }
                     }).block();
