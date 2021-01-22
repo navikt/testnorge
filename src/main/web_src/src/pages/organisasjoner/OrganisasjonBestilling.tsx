@@ -5,6 +5,11 @@ import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import { OrganisasjonItem } from '~/components/ui/icon/IconItem'
 import Icon from '~/components/ui/icon/Icon'
 import BestillingDetaljer from '~/components/bestilling/detaljer/Detaljer'
+import { OrgStatus } from '~/components/fagsystem/organisasjoner/types'
+
+type OrganisasjonBestilling = {
+	orgListe: OrgStatus
+}
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -13,7 +18,7 @@ const ikonTypeMap = {
 	Stoppet: 'report-problem-triangle'
 }
 
-export default function OrganisasjonBestilling({ orgListe }) {
+export default function OrganisasjonBestilling({ orgListe }: OrganisasjonBestilling) {
 	if (!orgListe) {
 		return null
 	}
@@ -58,7 +63,7 @@ export default function OrganisasjonBestilling({ orgListe }) {
 			text: 'Status',
 			width: '10',
 			dataField: 'status[0].organisasjonsforvalterStatus',
-			formatter: cell => {
+			formatter: (cell: string) => {
 				const status = cell.toUpperCase().includes('FEIL') ? 'Avvik' : 'Ferdig'
 				return <Icon kind={ikonTypeMap[status]} title={status} />
 			}
@@ -67,12 +72,13 @@ export default function OrganisasjonBestilling({ orgListe }) {
 
 	return (
 		<ErrorBoundary>
+			{/* @ts-ignore */}
 			<DollyTable
 				data={sortedOrgliste}
 				columns={columns}
 				pagination
 				iconItem={<OrganisasjonItem />}
-				onExpand={bestilling => {
+				onExpand={(bestilling: OrgStatus) => {
 					return <BestillingDetaljer bestilling={bestilling} iLaastGruppe={null} />
 				}}
 			/>

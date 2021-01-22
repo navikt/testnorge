@@ -1,16 +1,27 @@
 import React, { useState } from 'react'
 import { Enhetstre } from '~/components/enhetstre'
 import { mapBestillingData } from './BestillingKriterieMapper'
+import { EnhetBestilling } from '~/components/fagsystem/organisasjoner/types'
 
-export const OrganisasjonKriterier = ({ data, render }) => {
+type OrganisasjonKriterier = {
+	data: EnhetBestilling
+	render: Function
+}
+
+export const OrganisasjonKriterier = ({ data, render }: OrganisasjonKriterier) => {
 	if (!data) return null
 
 	const [selectedId, setSelectedId] = useState(0)
 
 	const dataCopy = JSON.parse(JSON.stringify(data))
 
-	const addId = (data, type, nivaa, path) => {
-		data.forEach((enhet, idx) => {
+	const addId = (
+		data: Array<EnhetBestilling>,
+		type: string,
+		nivaa: number,
+		path: number | string
+	) => {
+		data.forEach((enhet: EnhetBestilling, idx: number) => {
 			const id = nivaa === 0 ? 0 : !path ? idx + 1 : `${path}.${idx + 1}`
 			enhet.id = id
 			enhet.organisasjonsnavn = id !== 0 ? `${type} ${id}` : type
@@ -23,10 +34,10 @@ export const OrganisasjonKriterier = ({ data, render }) => {
 	// Lager en kopi av data, hvor hver organisasjon får en unik id og navn, slik at den kan brukes i Enhetstre
 	addId(Array.of(dataCopy), 'Organisasjon', 0, null)
 
-	let enheterListe = []
+	let enheterListe: Array<EnhetBestilling> = []
 
-	const enheterFlat = enheter => {
-		enheter.forEach(enhet => {
+	const enheterFlat = (enheter: Array<EnhetBestilling>) => {
+		enheter.forEach((enhet: EnhetBestilling) => {
 			enheterListe.push(enhet)
 			if (enhet.underenheter && enhet.underenheter.length > 0) {
 				enheterFlat(enhet.underenheter)

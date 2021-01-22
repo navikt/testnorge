@@ -4,8 +4,13 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { OrganisasjonKodeverk } from '~/config/kodeverk'
 import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
 import '~/pages/gruppe/PersonVisning/PersonVisning.less'
+import { EnhetData } from '../types'
 
-export const Detaljer = ({ data }) => {
+type Detaljer = {
+	data: Array<EnhetData>
+}
+
+export const Detaljer = ({ data }: Detaljer) => {
 	return (
 		<div className="person-visning">
 			<SubOverskrift label="Detaljer" iconKind="personinformasjon" />
@@ -47,12 +52,16 @@ export const Detaljer = ({ data }) => {
 									<div>{adresse.adresselinjer[2]}</div>
 									<div>
 										<KodeverkConnector navn="Postnummer" value={adresse.postnr}>
-											{(v, verdi) => <span>{verdi ? verdi.label : adresse.postnummer}</span>}
+											{(v: any, verdi: any) => (
+												<span>{verdi ? verdi.label : adresse.postnummer}</span>
+											)}
 										</KodeverkConnector>
 									</div>
 									<div>
 										<KodeverkConnector navn="LandkoderISO2" value={adresse.landkode}>
-											{(v, verdi) => <span>{verdi ? verdi.label : adresse.landkode}</span>}
+											{(v: any, verdi: any) => (
+												<span>{verdi ? verdi.label : adresse.landkode}</span>
+											)}
 										</KodeverkConnector>
 									</div>
 								</TitleValue>

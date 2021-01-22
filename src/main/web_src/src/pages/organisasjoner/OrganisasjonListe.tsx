@@ -1,13 +1,20 @@
 import React from 'react'
 import _orderBy from 'lodash/orderBy'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+// @ts-ignore
 import Tooltip from 'rc-tooltip'
 import 'rc-tooltip/assets/bootstrap.css'
+//@ts-ignore
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import { OrganisasjonItem } from '~/components/ui/icon/IconItem'
 import Icon from '~/components/ui/icon/Icon'
 import { OrganisasjonVisning } from '~/components/fagsystem/organisasjoner/visning/Visning'
+import { OrgStatus, EnhetData } from '~/components/fagsystem/organisasjoner/types'
+
+type OrganisasjonListe = {
+	orgListe: OrgStatus
+}
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -16,7 +23,7 @@ const ikonTypeMap = {
 	Stoppet: 'report-problem-triangle'
 }
 
-export default function OrganisasjonListe({ orgListe }) {
+export default function OrganisasjonListe({ orgListe }: OrganisasjonListe) {
 	if (!orgListe) {
 		return null
 	}
@@ -30,7 +37,7 @@ export default function OrganisasjonListe({ orgListe }) {
 			dataField: 'organisasjonsnummer',
 			unique: true,
 
-			formatter: (cell, row) => (
+			formatter: (cell: string, row: EnhetData) => (
 				<div className="identnummer-cell">
 					{row.organisasjonsnummer}
 					<CopyToClipboard text={row.organisasjonsnummer}>
@@ -77,7 +84,8 @@ export default function OrganisasjonListe({ orgListe }) {
 			text: 'Status',
 			width: '10',
 			dataField: 'status',
-			formatter(cell) {
+			formatter(cell: string) {
+				// @ts-ignore
 				return <Icon kind={ikonTypeMap[cell]} title={cell} />
 			}
 		}
@@ -91,7 +99,7 @@ export default function OrganisasjonListe({ orgListe }) {
 				pagination={false}
 				visSide={null}
 				iconItem={<OrganisasjonItem />}
-				onExpand={organisasjon => <OrganisasjonVisning data={organisasjon} />}
+				onExpand={(organisasjon: EnhetData) => <OrganisasjonVisning data={organisasjon} />}
 			/>
 		</ErrorBoundary>
 	)

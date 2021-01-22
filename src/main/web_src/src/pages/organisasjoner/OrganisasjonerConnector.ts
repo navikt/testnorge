@@ -18,8 +18,8 @@ const mapStateToProps = (state: any) => {
 
 const mapDispatchToProps = (dispatch: React.Dispatch<React.SetStateAction<string>>) => {
 	return {
-		getOrganisasjonBestilling: brukerId => dispatch(getOrganisasjonBestilling(brukerId)),
-		getOrganisasjoner: orgListe => dispatch(actions.getOrganisasjoner(orgListe))
+		getOrganisasjonBestilling: (brukerId: string) => dispatch(getOrganisasjonBestilling(brukerId)),
+		getOrganisasjoner: (orgListe: Array<string>) => dispatch(actions.getOrganisasjoner(orgListe))
 	}
 }
 

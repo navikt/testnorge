@@ -9,13 +9,22 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { OrganisasjonKodeverk, AdresseKodeverk } from '~/config/kodeverk'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
+import { FormikProps } from 'formik'
+import { EnhetBestilling } from '../types'
+
+type Detaljer = {
+	formikBag: FormikProps<{ organisasjon: EnhetBestilling }>
+	path: string
+	level: number
+	number?: string
+}
 
 enum TypeUnderenhet {
 	JURIDISKENHET = 'JURIDISKENHET',
 	VIRKSOMHET = 'VIRKSOMHET'
 }
 
-export const Detaljer = ({ formikBag, path, level, number }) => {
+export const Detaljer = ({ formikBag, path, level, number }: Detaljer) => {
 	const initialValues = _omit(formikBag.values.organisasjon, 'underenheter')
 	initialValues.enhetstype = ''
 
@@ -26,7 +35,7 @@ export const Detaljer = ({ formikBag, path, level, number }) => {
 	const landForretningsadresse = _get(formikBag, `values.${path}.forretningsadresse.landkode`)
 	const landPostadresse = _get(formikBag, `values.${path}.postadresse.landkode`)
 
-	const handleLandChange = adressePath => {
+	const handleLandChange = (adressePath: string) => {
 		formikBag.setFieldValue(`${adressePath}.postnr`, '')
 		formikBag.setFieldValue(`${adressePath}.kommunenr`, '')
 		formikBag.setFieldValue(`${adressePath}.poststed`, '')
@@ -40,7 +49,7 @@ export const Detaljer = ({ formikBag, path, level, number }) => {
 			: TypeUnderenhet.VIRKSOMHET
 	)
 
-	const handleToggleChange = event => {
+	const handleToggleChange = (event: React.ChangeEvent<any>) => {
 		setTypeUnderenhet(event.target.value)
 		formikBag.setFieldValue(`${path}.enhetstype`, '')
 		if (event.target.value === TypeUnderenhet.VIRKSOMHET) {
@@ -192,7 +201,7 @@ export const Detaljer = ({ formikBag, path, level, number }) => {
 				tag={number}
 				isOrganisasjon={true}
 			>
-				{(path, idx, curr, number) => {
+				{(path: string, idx: number, curr: any, number: string) => {
 					return (
 						<React.Fragment key={idx}>
 							<Detaljer

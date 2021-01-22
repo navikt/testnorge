@@ -6,17 +6,24 @@ import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { organisasjonPaths, kontaktPaths, adressePaths } from './paths'
 import Panel from '~/components/ui/panel/Panel'
 import { erForste, panelError } from '~/components/ui/form/formUtils'
+import { FormikProps } from 'formik'
+
+type OrganisasjonForm = {
+	formikBag: FormikProps<{}>
+}
 
 const detaljerPaths = [organisasjonPaths, kontaktPaths, adressePaths].flat()
 
-export const OrganisasjonForm = ({ formikBag }) => {
+export const OrganisasjonForm = ({ formikBag }: OrganisasjonForm) => {
 	return (
 		<>
+			{/* @ts-ignore */}
 			<Vis attributt={detaljerPaths}>
 				<Panel
 					heading="Detaljer"
 					hasErrors={panelError(formikBag, detaljerPaths)}
 					iconType={'personinformasjon'}
+					// @ts-ignore
 					startOpen={() => erForste(formikBag.values, detaljerPaths)}
 				>
 					<Detaljer formikBag={formikBag} path="organisasjon" level={0} />

@@ -17,10 +17,14 @@ type Organisasjoner = {
 	history: History
 	isFetching: boolean
 	brukerId: string
+	getOrganisasjonBestilling: Function
+	getOrganisasjoner: Function
 }
 
 type OrganisasjonResponse = {
-	data: OrganisasjonInfo[]
+	value: {
+		data: OrganisasjonInfo[]
+	}
 }
 
 type OrganisasjonInfo = {
@@ -29,8 +33,13 @@ type OrganisasjonInfo = {
 	naeringskode: string
 	organisasjonsnavn: string
 	organisasjonsnummer: string
-	status: string
+	status: Array<Status>
 	underenheter: OrganisasjonInfo[]
+	id: number
+}
+
+type Status = {
+	organisasjonsnummer: string
 }
 
 enum BestillingType {
@@ -62,10 +71,13 @@ export default function Organisasjoner({
 		return 'Søk i organisasjoner'
 	}
 
-	function getBestillingIdFromOrgnummer(organisasjoner, organisasjonsnummer: string) {
+	function getBestillingIdFromOrgnummer(
+		organisasjoner: OrganisasjonInfo[],
+		organisasjonsnummer: string
+	) {
 		return organisasjoner
-			.filter(org => org.status[0].organisasjonsnummer === organisasjonsnummer)
-			.map(org => org.id)[0]
+			.filter((org: OrganisasjonInfo) => org.status[0].organisasjonsnummer === organisasjonsnummer)
+			.map((org: OrganisasjonInfo) => org.id)[0]
 	}
 
 	const organisasjonerInfo = useAsync(async () => {

@@ -2,15 +2,20 @@ import React, { useState } from 'react'
 import { Enhetstre } from '~/components/enhetstre'
 import { Detaljer } from './Detaljer'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
+import { EnhetData } from '../types'
 
-export const OrganisasjonVisning = ({ data }) => {
+type OrganisasjonVisning = {
+	data: EnhetData
+}
+
+export const OrganisasjonVisning = ({ data }: OrganisasjonVisning) => {
 	if (!data) return null
 
 	const [selectedId, setSelectedId] = useState(data.id)
 
-	let enheterListe = []
+	let enheterListe: Array<EnhetData> = []
 
-	const enheterFlat = enheter => {
+	const enheterFlat = (enheter: Array<EnhetData>) => {
 		enheter.forEach(enhet => {
 			enheterListe.push(enhet)
 			if (enhet.underenheter && enhet.underenheter.length > 0) {
