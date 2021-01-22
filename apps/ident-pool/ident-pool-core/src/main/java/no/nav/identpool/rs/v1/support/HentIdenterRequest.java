@@ -27,6 +27,7 @@ public class HentIdenterRequest {
     @NotNull
     private int antall;
     private String rekvirertAv;
+    private Boolean syntetisk;
 
     @JsonIgnore
     public Pageable getPageable() {
