@@ -3,11 +3,6 @@ package no.nav.registre.skd.consumer;
 import com.google.common.collect.Lists;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
-import no.nav.registre.skd.consumer.requests.SlettSkdmeldingerRequest;
-import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
-import no.nav.registre.skd.skdmelding.RsMeldingstype;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
@@ -24,6 +19,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
+import no.nav.registre.skd.consumer.requests.SlettSkdmeldingerRequest;
+import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
+import no.nav.registre.skd.skdmelding.RsMeldingstype;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
@@ -84,6 +85,7 @@ public class TpsfConsumer {
             SendToTpsRequest sendToTpsRequest
     ) {
         var postRequest = RequestEntity.post(uriTemplateSaveToTps.expand(gruppeId)).body(sendToTpsRequest);
+        log.info("Sender skd-meldinger med avspillergruppe {} til tps", gruppeId);
         return restTemplate.exchange(postRequest, RESPONSE_TYPE_TPS).getBody();
     }
 
