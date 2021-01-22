@@ -11,7 +11,11 @@ consumers:
 
 zuul:
   ignoredPatterns: /internal/isReady, /internal/isAlive
+  set-content-length: true
   routes:
     batch-adeo:
       path: /**
       url: https://batch.adeo.no
+
+  host:
+    socket-timeout-millis: 30000

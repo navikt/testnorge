@@ -102,7 +102,7 @@ public class StartBEREG007Command implements Callable<Long> {
                                     response.bodyToMono(String.class),
                                     response.headers().asHttpHeaders().getLocation(),
                                     body,
-                                    fileEntity,
+                                    new String(fileEntity.getBody()),
                                     e
                             );
                             return Mono.error(e);
