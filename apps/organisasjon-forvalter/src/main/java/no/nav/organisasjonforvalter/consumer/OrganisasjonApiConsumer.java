@@ -31,8 +31,8 @@ public class OrganisasjonApiConsumer {
     private final WebClient webClient;
 
     public OrganisasjonApiConsumer(
-            @Value("${organisasjon.bestilling.url}") String baseUrl,
-            @Value("${organisasjon.bestilling.client.id}") String clientId,
+            @Value("${organisasjon.api.url}") String baseUrl,
+            @Value("${organisasjon.api.client.id}") String clientId,
             AccessTokenService accessTokenService) {
 
         this.webClient = WebClient.builder().baseUrl(baseUrl).build();
