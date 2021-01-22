@@ -74,20 +74,21 @@ public class StartBEREG007Command implements Callable<Long> {
                 .with("stepSelection", "'2;3;4;5;6'")
                 .with("input_file", fileEntity);
 
-        log.info("Jenkins-Crumb: {}", crumb.getCrumb());
+        String crumb = this.crumb.getCrumb();
+        log.info("Jenkins-Crumb: {}", crumb);
 
         try {
             return webClient
                     .post()
                     .uri("/view/Registre/job/Start_BEREG007/buildWithParameters")
-                    .header("Jenkins-Crumb", crumb.getCrumb())
+                    .header("Jenkins-Crumb", crumb)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .body(body)
                     .exchange()
                     .flatMap(response -> {
                         try {
-                            var location = response.headers().header(HttpHeaders.LOCATION).get(0);
+                            var location = response.headers().asHttpHeaders().getLocation().toString();
                             var pattern = Pattern.compile("\\d+");
                             var matcher = pattern.matcher(location);
                             if (matcher.find()) {
@@ -97,9 +98,10 @@ public class StartBEREG007Command implements Callable<Long> {
                             }
                         } catch (Exception e) {
                             log.error(
-                                    "Klarer ikke å finne location, response body: {}, headers: {}.",
+                                    "Klarer ikke å finne location. \n Response body: {}\n location: {}\n Request body {},",
                                     response.bodyToMono(String.class),
                                     response.headers().asHttpHeaders().getLocation(),
+                                    Mono.just(body),
                                     e
                             );
                             return Mono.error(e);
