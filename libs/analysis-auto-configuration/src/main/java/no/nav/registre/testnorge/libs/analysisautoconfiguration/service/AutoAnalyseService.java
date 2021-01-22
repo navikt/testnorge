@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.analysisautoconfiguration.config.ApplicationProperties;
+import no.nav.registre.testnorge.libs.analysisautoconfiguration.config.credentials.ApplikasjonsanalyseServiceProperties;
 import no.nav.registre.testnorge.libs.analysisautoconfiguration.consumer.ApplikasjonsanalyseConsumer;
 import no.nav.registre.testnorge.libs.dto.applikasjonsanalyseservice.v1.ApplicationInfoDTO;
 import no.nav.registre.testnorge.libs.dto.applikasjonsanalyseservice.v1.DependencyDTO;
@@ -30,13 +31,13 @@ public class AutoAnalyseService {
                 .cluster(properties.getCluster())
                 .name(properties.getName())
                 .namespace(properties.getNamespace())
-                .dependencies(serverProperties.stream().map(value -> DependencyDTO
-                        .builder()
-                        .cluster(value.getCluster())
-                        .name(value.getName())
-                        .namespace(value.getNamespace())
-                        .build()
-                ).collect(Collectors.toSet()))
+                .dependencies(serverProperties.stream().filter(value -> !(value instanceof ApplikasjonsanalyseServiceProperties))
+                        .map(value -> DependencyDTO.builder()
+                                .cluster(value.getCluster())
+                                .name(value.getName())
+                                .namespace(value.getNamespace())
+                                .build()
+                        ).collect(Collectors.toSet()))
                 .build()
         );
         log.info("Applikasjon informasjon sent.");

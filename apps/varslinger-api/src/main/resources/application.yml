@@ -5,6 +5,8 @@ spring:
     name: testnorge-varslinger-api
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     description: Applikasjon for å registrere varslinger
+    cluster: dev-fss
+    namespace: dolly
 
 kafka:
   bootstrapservers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
