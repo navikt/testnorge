@@ -12,4 +12,6 @@ consumers:
     url: https://testnorge-organisasjon-api.dev.intern.nav.no
     client_id: f4167796-bf43-438b-a282-a480e8108d0c
     threads: 5
-
+  miljoer-service:
+    url: https://miljoer-service.dev.intern.nav.no/api
+    client_id: 30003084-1585-4629-a017-686b4387b12e
