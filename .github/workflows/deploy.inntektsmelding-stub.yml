@@ -2,7 +2,7 @@ name: Deploy inntektsmelding-stub
 
 on:
   push:
-#    branches: master
+    branches: master
     paths:
       - apps/inntektsmelding-stub/**
       - libs/testnorge-core/**
