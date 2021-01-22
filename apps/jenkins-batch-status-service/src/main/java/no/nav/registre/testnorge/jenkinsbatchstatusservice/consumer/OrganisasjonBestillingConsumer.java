@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import no.nav.registre.testnorge.jenkinsbatchstatusservice.config.OrganisasjonBestillingServiceProperties;
 import no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.command.SaveOrganisasjonBestillingCommand;
 import no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.command.UpdateOrganisasjonBestillingCommand;
 import no.nav.registre.testnorge.libs.dto.organiasjonbestilling.v1.OrderDTO;
@@ -19,14 +20,13 @@ public class OrganisasjonBestillingConsumer {
     private final String clientId;
 
     public OrganisasjonBestillingConsumer(
-            @Value("${consumers.organisasjon-bestilling-service.url}") String url,
-            @Value("${consumers.organisasjon-bestilling-service.client-id}") String clientId,
+            OrganisasjonBestillingServiceProperties properties,
             AccessTokenService accessTokenService
     ) {
-        this.clientId = clientId;
+        this.clientId = properties.getClientId();
         this.accessTokenService = accessTokenService;
         this.webClient = WebClient.builder()
-                .baseUrl(url)
+                .baseUrl(properties.getUrl())
                 .build();
     }
 

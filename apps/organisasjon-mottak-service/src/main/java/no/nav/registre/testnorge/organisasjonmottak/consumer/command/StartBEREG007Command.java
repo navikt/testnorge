@@ -31,6 +31,7 @@ import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
 @RequiredArgsConstructor
 public class StartBEREG007Command implements Callable<Long> {
     private final WebClient webClient;
+    private final String token;
     private final String server;
     private final String miljo;
     private final JenkinsCrumb crumb;
@@ -77,6 +78,7 @@ public class StartBEREG007Command implements Callable<Long> {
                 .uri("/view/Registre/job/Start_BEREG007/buildWithParameters")
                 .header("Jenkins-Crumb", crumb.getCrumb())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body(body)
                 .exchange()
                 .flatMap(response -> {

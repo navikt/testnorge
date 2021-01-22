@@ -2,6 +2,7 @@ name: Deploy ereg-batch-status-service
 
 on:
   push:
+    branches: master
     paths:
       - apps/ereg-batch-status-service/**
       - libs/testnorge-core/**

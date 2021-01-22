@@ -128,4 +128,7 @@ public final class PersonidentUtil {
         }
     }
 
+    public static boolean isSyntetisk(String ident) {
+        return ident.charAt(2) > '3';
+    }
 }

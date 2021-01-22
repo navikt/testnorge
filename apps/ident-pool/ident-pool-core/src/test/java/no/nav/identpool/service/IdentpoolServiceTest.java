@@ -1,6 +1,7 @@
 package no.nav.identpool.service;
 
 import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
+import static no.nav.identpool.util.PersonidentUtil.isSyntetisk;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,7 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import no.nav.identpool.domain.postgres.Ident;
+import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
 import no.nav.identpool.domain.Rekvireringsstatus;
@@ -50,6 +51,7 @@ class IdentpoolServiceTest {
                 .personidentifikator(fnr1)
                 .finnesHosSkatt(false)
                 .rekvireringsstatus(Rekvireringsstatus.I_BRUK)
+                .syntetisk(isSyntetisk(fnr1))
                 .build();
 
         TpsStatus tpsStatus = new TpsStatus();
@@ -80,6 +82,7 @@ class IdentpoolServiceTest {
         Ident ident1 = Ident.builder()
                 .personidentifikator(fnr1)
                 .rekvireringsstatus(LEDIG)
+                .syntetisk(isSyntetisk(fnr1))
                 .build();
         TpsStatus tpsStatus = new TpsStatus();
         tpsStatus.setIdent(fnr2);

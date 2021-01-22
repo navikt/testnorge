@@ -1,4 +1,4 @@
-package no.nav.identpool.domain.postgres;
+package no.nav.identpool.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
