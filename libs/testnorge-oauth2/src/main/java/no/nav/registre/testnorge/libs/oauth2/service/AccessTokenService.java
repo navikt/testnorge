@@ -93,7 +93,7 @@ public class AccessTokenService {
     }
 
 
-    public AccessToken generateClientCredentialAccessToken(NaisServerProperties serverProperties) {
+    public AccessToken generateClientCredentialAccessToken(Scopeable serverProperties) {
         return generateClientCredentialAccessToken(new AccessScopes(serverProperties.toScope()));
     }
 

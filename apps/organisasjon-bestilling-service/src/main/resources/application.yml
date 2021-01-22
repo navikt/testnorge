@@ -4,8 +4,13 @@ spring:
   application:
     name: organisasjon-bestilling-service
     description: Tjeneste for å registere og hente ut organiasjonsbestilling status
+    cluster: dev-fss
+    namespace: dolly
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
 consumers.ereg-batch-status-service:
   url: https://ereg-batch-status-service.dev-fss-pub.nais.io
   client-id: 67f507ff-399c-4853-9eb3-3dc6aabc8289
+  cluster: dev-fss
+  namespace: dolly
+  name: ereg-batch-status-service

@@ -19,14 +19,12 @@ spec:
         - application: testnorge-varslinger-api
           cluster: dev-fss
         - application: testnorge-profil-api
-          cluster: dev-gcp
         - application: testnorge-profil-api-dev
-          cluster: dev-gcp
         - application: avhengighetsanalyse-frontend
-          cluster: dev-gcp
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
         - application: testnorge-tilbakemelding-api
+        - application: organisasjon-bestilling-service
   gcp:
     sqlInstances:
       - type: POSTGRES_12
