@@ -14,3 +14,10 @@ spring:
             authorization-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/authorize
             token-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/token
             jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+
+zuul:
+  routes:
+    avhengighetsanalyse-service:
+      path: /api/**
+      url: https://applikasjonsanalyse-service.dev.intern.nav.no/api
+      sensitiveHeaders: Cookie,Set-Cookie

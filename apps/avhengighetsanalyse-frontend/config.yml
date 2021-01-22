@@ -1,19 +1,22 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnorge-avhengighetsanalyse-frontend
+  name: avhengighetsanalyse-frontend
   namespace: dolly
   labels:
     team: dolly
 spec:
   port: 8080
-  webproxy: true
   azure:
     application:
       enabled: true
       replyURLs:
-        - "https://testnorge-avhengighetsanalyse-frontend.dev.adeo.no/login/oauth2/code/aad"
+        - "https://avhengighetsanalyse-frontend.dev.intern.nav.no/login/oauth2/code/aad"
         - "http://localhost:8080/login/oauth2/code/aad"
+  accessPolicy:
+    outbound:
+      rules:
+        - application: applikasjonsanalyse-service
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
@@ -26,16 +29,13 @@ spec:
   replicas:
     min: 1
     max: 1
-  vault:
-    enabled: true
   resources:
     limits:
-      cpu: 1000m
+      cpu: 200m
       memory: 2048Mi
     requests:
       cpu: 500m
       memory: 1024Mi
   image: {{ image }}
   ingresses:
-    - "https://testnorge-avhengighetsanalyse-frontend.dev.adeo.no"
-    - "https://testnorge-avhengighetsanalyse-frontend.dev.intern.nav.no"
+    - "https://avhengighetsanalyse-frontend.dev.intern.nav.no"

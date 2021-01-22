@@ -15,7 +15,7 @@ spring:
 
 zuul:
   routes:
-    testnorge-avhengighetsanalyse-service:
+    avhengighetsanalyse-service:
       path: /api/**
-      url: https://applikasjonsanalyse-service.dev.intern.nav.no/api
+      url: http://applikasjonsanalyse-service.dolly.svc.cluster.local/api
       sensitiveHeaders: Cookie,Set-Cookie
