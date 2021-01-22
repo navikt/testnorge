@@ -1,6 +1,6 @@
 package no.nav.organisasjonforvalter.config;
 
-import java.util.List;
+import no.nav.registre.testnorge.libs.oauth2.config.OAuth2ResourceServerConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
-import no.nav.registre.testnorge.libs.oauth2.config.OAuth2ResourceServerConfiguration;
+import java.util.List;
 
 
 @Order(1)

@@ -2,7 +2,6 @@ package no.nav.organisasjonforvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ma.glasnost.orika.MapperFacade;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonApiConsumer;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonMottakConsumer;
 import no.nav.organisasjonforvalter.jpa.entity.Organisasjon;
@@ -11,12 +10,7 @@ import no.nav.organisasjonforvalter.provider.rs.requests.DeployRequest;
 import no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse;
 import no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse.EnvStatus;
 import no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse.Status;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Adresse;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Epost;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Formaal;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Internettadresse;
 import org.springframework.stereotype.Service;
-import zipkin2.Call;
 
 import java.util.List;
 import java.util.Map;

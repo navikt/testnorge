@@ -1,9 +1,24 @@
 package no.nav.organisasjonforvalter.jpa.entity;
 
-import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -63,8 +78,8 @@ public class Organisasjon implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "organisasjon", cascade = CascadeType.ALL)
     private List<Adresse> adresser;
 
-    @ManyToOne(cascade={CascadeType.ALL})
-    @JoinColumn(name="parent_org")
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "parent_org")
     private Organisasjon parent;
 
     @OneToMany(mappedBy = "parent")

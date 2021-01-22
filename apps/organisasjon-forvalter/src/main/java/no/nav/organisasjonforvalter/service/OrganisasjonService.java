@@ -2,7 +2,6 @@ package no.nav.organisasjonforvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.organisasjonforvalter.jpa.entity.Organisasjon;
 import no.nav.organisasjonforvalter.jpa.repository.OrganisasjonRepository;
 import no.nav.organisasjonforvalter.provider.rs.responses.RsOrganisasjon;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,7 @@ public class OrganisasjonService {
     private final MapperFacade mapperFacade;
     private final OrganisasjonRepository organisasjonRepository;
 
-    public List<RsOrganisasjon> getOrganisasjoner(List<String> orgnumre){
+    public List<RsOrganisasjon> getOrganisasjoner(List<String> orgnumre) {
 
         return mapperFacade.mapAsList(organisasjonRepository.findAllByOrganisasjonsnummerIn(orgnumre), RsOrganisasjon.class);
     }

@@ -23,14 +23,10 @@ import static java.util.Collections.emptyList;
 @Service
 public class OrganisasjonBestillingStatusConsumer {
 
-    public enum ItemStatus {NOT_STARTED, RUNNING, COMPLETED, ERROR, FAILED}
-
     private static final String STATUS_URL = "/api/v1/order/{uuid}/items";
-
     private final AccessTokenService accessTokenService;
     private final AccessScopes accessScopes;
     private final WebClient webClient;
-
     public OrganisasjonBestillingStatusConsumer(
             @Value("${organisasjon.bestilling.url}") String baseUrl,
             @Value("${organisasjon.bestilling.client.id}") String clientId,
@@ -58,6 +54,8 @@ public class OrganisasjonBestillingStatusConsumer {
         log.info("Organisasjon-bestilling-status tok {} ms", currentTimeMillis() - startTime);
         return response.hasBody() ? List.of(response.getBody()) : emptyList();
     }
+
+    public enum ItemStatus {NOT_STARTED, RUNNING, COMPLETED, ERROR, FAILED}
 
     @Data
     @NoArgsConstructor

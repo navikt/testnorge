@@ -30,7 +30,7 @@ public class AdresseMappingStrategy implements MappingStrategy {
                         adresse.setAdresse(String.join(",", request.getAdresselinjer()));
                     }
                 })
-                .byDefault()                .register();
+                .byDefault().register();
 
         factory.classMap(Adresse.class, RsAdresse.class)
                 .customize(new CustomMapper<>() {

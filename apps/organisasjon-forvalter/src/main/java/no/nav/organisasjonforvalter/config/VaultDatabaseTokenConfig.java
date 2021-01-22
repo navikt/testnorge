@@ -1,8 +1,8 @@
 package no.nav.organisasjonforvalter.config;
 
-import static java.lang.String.format;
-import static java.util.Objects.nonNull;
-
+import com.zaxxer.hikari.HikariDataSource;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.autoconfigure.flyway.FlywayConfigurationCustomizer;
 import org.springframework.cloud.vault.config.databases.VaultDatabaseProperties;
@@ -12,10 +12,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.vault.core.lease.SecretLeaseContainer;
 import org.springframework.vault.core.lease.domain.RequestedSecret;
 import org.springframework.vault.core.lease.event.SecretLeaseCreatedEvent;
-import com.zaxxer.hikari.HikariDataSource;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Profile({"prod", "dev"})

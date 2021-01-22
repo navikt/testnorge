@@ -1,9 +1,13 @@
 package no.nav.organisasjonforvalter.provider.rs.responses;
 
-import lombok.*;
-import org.springframework.boot.autoconfigure.info.ProjectInfoProperties;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.isNull;
 
@@ -13,13 +17,16 @@ import static java.util.Objects.isNull;
 @AllArgsConstructor
 public class DeployResponse {
 
-    public enum Status {OK, ERROR}
-
     private Map<String, List<EnvStatus>> orgStatus;
 
     public Map<String, List<EnvStatus>> getOrgStatus() {
-        return isNull(orgStatus) ? (orgStatus = new HashMap<>()) : orgStatus;
+        if (isNull(orgStatus)) {
+            orgStatus = new HashMap<>();
+        }
+        return orgStatus;
     }
+
+    public enum Status {OK, ERROR}
 
     @Data
     @Builder

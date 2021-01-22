@@ -12,7 +12,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
-import static no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingStatusConsumer.ItemStatus.*;
+import static no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingStatusConsumer.ItemStatus.COMPLETED;
+import static no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingStatusConsumer.ItemStatus.ERROR;
+import static no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingStatusConsumer.ItemStatus.FAILED;
 
 @Slf4j
 @Service
@@ -29,7 +31,7 @@ public class DeployStatusService {
         return !statusTotal.isEmpty() && (isOK(statusTotal) ||
                 statusTotal.stream().anyMatch(status ->
                         status.getStatus() == ERROR ||
-                        status.getStatus() == FAILED));
+                                status.getStatus() == FAILED));
     }
 
     private static boolean isOK(List<ItemDto> items) {
@@ -51,8 +53,8 @@ public class DeployStatusService {
             if (attemptsLeft-- % 5 == 0 || isDone(statusTotal)) {
                 log.info("Deploystatus for {}, {}, time elapsed {} ms",
                         uuid, statusTotal.stream()
-                        .map(ItemDto::toString)
-                        .collect(Collectors.joining(", ")),
+                                .map(ItemDto::toString)
+                                .collect(Collectors.joining(", ")),
                         (MAX_ITERATIONS - attemptsLeft) * SLEEP_TIME);
             }
         }

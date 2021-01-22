@@ -20,7 +20,10 @@ public class BestillingRequest {
     private List<OrganisasjonRequest> organisasjoner;
 
     public List<OrganisasjonRequest> getOrganisasjoner() {
-        return isNull(organisasjoner) ? (organisasjoner = new ArrayList<>()) : organisasjoner;
+        if (isNull(organisasjoner)) {
+            organisasjoner = new ArrayList<>();
+        }
+        return organisasjoner;
     }
 
     public enum MaalformType {B, N}
@@ -49,11 +52,17 @@ public class BestillingRequest {
         private List<OrganisasjonRequest> underenheter;
 
         public List<AdresseRequest> getAdresser() {
-            return isNull(adresser) ? (adresser = new ArrayList<>()) : adresser;
+            if (isNull(adresser)) {
+                adresser = new ArrayList<>();
+            }
+            return adresser;
         }
 
         public List<OrganisasjonRequest> getUnderenheter() {
-            return isNull(underenheter) ? (underenheter = new ArrayList<>()) : underenheter;
+            if (isNull(underenheter)) {
+                underenheter = new ArrayList<>();
+            }
+            return underenheter;
         }
     }
 
@@ -78,7 +87,10 @@ public class BestillingRequest {
         private String vegadresseId;
 
         public List<String> getAdresselinjer() {
-            return isNull(adresselinjer) ? (adresselinjer = new ArrayList<>()) : adresselinjer;
+            if (isNull(adresselinjer)) {
+                adresselinjer = new ArrayList<>();
+            }
+            return adresselinjer;
         }
     }
 }

@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import java.io.Serializable;
 import java.util.List;
 
 @Data
@@ -14,8 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RsAdresse {
-
-    public enum AdresseType {FADR, PADR}
 
     private Long id;
     private AdresseType adressetype;
@@ -25,4 +21,6 @@ public class RsAdresse {
     private String kommunenr;
     private String landkode;
     private String vegadresseId;
+
+    public enum AdresseType {FADR, PADR}
 }
