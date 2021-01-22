@@ -27,7 +27,6 @@ spec:
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
         - application: testnorge-tilbakemelding-api
-
   gcp:
     sqlInstances:
       - type: POSTGRES_12
