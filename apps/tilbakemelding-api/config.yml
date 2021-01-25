@@ -8,7 +8,6 @@ metadata:
 spec:
   image: {{ image }}
   port: 8080
-  webproxy: true
   tracing:
     enabled: true
   accessPolicy:
@@ -25,6 +24,7 @@ spec:
     outbound:
       rules:
         - application: testnorge-profil-api
+        - application: applikasjonsanalyse-service
       external:
         - host: slack.com
         - host: login.microsoftonline.com
@@ -44,8 +44,6 @@ spec:
   replicas:
     min: 1
     max: 1
-  vault:
-    enabled: true
   resources:
     requests:
       cpu: 200m
