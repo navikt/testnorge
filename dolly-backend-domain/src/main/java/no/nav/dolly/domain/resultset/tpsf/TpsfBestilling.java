@@ -33,6 +33,8 @@ public class TpsfBestilling {
 
     private IdentType identtype;
 
+    private Boolean navSyntetiskIdent;
+
     private Integer alder;
 
     private LocalDateTime foedtEtter;

@@ -40,4 +40,6 @@ public class RsTpsfUtvidetBestilling extends RsTpsfBasisMedSivilstandBestilling 
     private RsVergemaalRequest vergemaal;
 
     private RsFullmaktRequest fullmakt;
+
+    private Boolean navSyntetiskIdent;
 }
