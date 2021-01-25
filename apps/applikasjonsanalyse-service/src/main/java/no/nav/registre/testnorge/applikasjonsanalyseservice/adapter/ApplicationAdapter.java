@@ -24,6 +24,16 @@ public class ApplicationAdapter {
     private final ApplicationInfoRepository applicationInfoRepository;
     private final ApplicationInfoDependencyRepository applicationInfoDependencyRepository;
 
+    public void delete(String name, String namespace, String cluster) {
+        applicationInfoRepository.findByNameAndClusterAndNamespace(name, namespace, cluster)
+                .ifPresent(value -> {
+                    applicationInfoDependencyRepository.findByInfoModel(value).forEach(
+                            applicationInfoDependencyRepository::delete
+                    );
+                    applicationInfoRepository.delete(value);
+                });
+    }
+
     public List<ApplicationInfo> getAll() {
         return StreamSupport
                 .stream(applicationInfoRepository.findAll().spliterator(), false)
