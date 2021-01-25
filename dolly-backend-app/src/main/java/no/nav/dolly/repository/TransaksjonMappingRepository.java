@@ -1,11 +1,12 @@
 package no.nav.dolly.repository;
 
-import java.util.List;
-import java.util.Optional;
+import no.nav.dolly.domain.jpa.TransaksjonMapping;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 
-import no.nav.dolly.domain.jpa.TransaksjonMapping;
+import java.util.List;
+import java.util.Optional;
 
 public interface TransaksjonMappingRepository extends Repository<TransaksjonMapping, Long> {
 
@@ -20,4 +21,10 @@ public interface TransaksjonMappingRepository extends Repository<TransaksjonMapp
             "(t.bestillingId is not null and t.bestillingId=:bestillingId)) and " +
             "t.ident=:ident")
     Optional<List<TransaksjonMapping>> findAllByBestillingIdAndIdent(Long bestillingId, String ident);
+
+    @Modifying
+    int deleteAllByIdent(String ident);
+
+    @Modifying
+    int deleteAllByIdentIn(List<String> ident);
 }

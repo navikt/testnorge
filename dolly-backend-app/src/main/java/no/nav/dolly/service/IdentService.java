@@ -9,6 +9,7 @@ import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
+import no.nav.dolly.repository.TransaksjonMappingRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import static java.util.Objects.nonNull;
 public class IdentService {
 
     private final IdentRepository identRepository;
+    private final TransaksjonMappingRepository transaksjonMappingRepository;
     private final MapperFacade mapperFacade;
 
     @Transactional
@@ -51,6 +53,7 @@ public class IdentService {
 
     public int slettTestident(String ident) {
 
+        transaksjonMappingRepository.deleteAllByIdent(ident);
         return identRepository.deleteTestidentByIdent(ident);
     }
 

@@ -1,21 +1,5 @@
 package no.nav.dolly.service;
 
-import static java.lang.String.format;
-import static no.nav.dolly.util.CurrentAuthentication.getUserId;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.NonTransientDataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -26,6 +10,23 @@ import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
+import no.nav.dolly.repository.TransaksjonMappingRepository;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.NonTransientDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static java.lang.String.format;
+import static no.nav.dolly.util.CurrentAuthentication.getUserId;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +35,7 @@ public class TestgruppeService {
     private static final int PAGE_SIZE = 10;
 
     private final TestgruppeRepository testgruppeRepository;
+    private final TransaksjonMappingRepository transaksjonMappingRepository;
     private final BrukerService brukerService;
     private final IdentService identService;
     private final BestillingService bestillingService;
@@ -108,10 +110,12 @@ public class TestgruppeService {
         Testgruppe testgruppe = fetchTestgruppeById(gruppeId);
 
         bestillingService.slettBestillingerByGruppeId(gruppeId);
+        transaksjonMappingRepository.deleteAllByIdentIn(testgruppe.getTestidenter().stream()
+                .map(Testident::getIdent)
+                .collect(Collectors.toList()));
         identService.slettTestidenterByGruppeId(gruppeId);
         brukerService.sletteBrukerFavoritterByGroupId(gruppeId);
         testgruppeRepository.deleteTestgruppeById(gruppeId);
-
         personService.recyclePersoner(testgruppe.getTestidenter().stream().map(Testident::getIdent).collect(Collectors.toList()));
     }
 
