@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import no.nav.registre.testnorge.libs.analysisautoconfiguration.config.ApplicationProperties;
 import no.nav.registre.testnorge.libs.analysisautoconfiguration.config.credentials.ApplikasjonsanalyseServiceProperties;
 import no.nav.registre.testnorge.libs.analysisautoconfiguration.consumer.ApplikasjonsanalyseConsumer;
 import no.nav.registre.testnorge.libs.dto.applikasjonsanalyseservice.v1.ApplicationInfoDTO;
@@ -18,17 +19,18 @@ import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 @Service
 @RequiredArgsConstructor
 public class AutoAnalyseService {
+    private final ApplicationProperties properties;
     private final List<NaisServerProperties> serverProperties;
     private final ApplikasjonsanalyseConsumer applikasjonsanalyseConsumer;
 
     @Async
-    public void analyse(String name, String namespace, String cluster) {
+    public void analyse() {
         log.info("Sender applikasjon informasjon...");
         applikasjonsanalyseConsumer.save(ApplicationInfoDTO
                 .builder()
-                .cluster(cluster)
-                .name(name)
-                .namespace(namespace)
+                .cluster(properties.getCluster())
+                .name(properties.getName())
+                .namespace(properties.getNamespace())
                 .dependencies(serverProperties.stream().filter(value -> !(value instanceof ApplikasjonsanalyseServiceProperties))
                         .map(value -> DependencyDTO.builder()
                                 .cluster(value.getCluster())

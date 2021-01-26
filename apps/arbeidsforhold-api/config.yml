@@ -48,6 +48,3 @@ spec:
   ingresses:
     - "https://testnorge-arbeidsforhold-api.dev.adeo.no"
     - "https://testnorge-arbeidsforhold-api.dev.intern.nav.no"
-testnorge:
-  analyse:
-    enabled: true

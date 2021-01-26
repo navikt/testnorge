@@ -1,7 +1,6 @@
 package no.nav.registre.testnorge.applikasjonsanalyseservice.adapter;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,7 +16,6 @@ import no.nav.registre.testnorge.applikasjonsanalyseservice.repository.model.App
 import no.nav.registre.testnorge.applikasjonsanalyseservice.repository.model.ApplicationInfoDependencyModel;
 import no.nav.registre.testnorge.applikasjonsanalyseservice.repository.model.ApplicationInfoModel;
 
-@Slf4j
 @Component
 @AllArgsConstructor
 public class ApplicationAdapter {
@@ -30,10 +28,9 @@ public class ApplicationAdapter {
         applicationInfoRepository.findByNameAndClusterAndNamespace(name, namespace, cluster)
                 .ifPresent(value -> {
                     applicationInfoDependencyRepository.findByInfoModel(value).forEach(
-                            applicationInfoDependencyModel -> applicationInfoDependencyRepository.deleteById(applicationInfoDependencyModel.getId())
+                            applicationInfoDependencyRepository::delete
                     );
-                    log.info("Setter application info med id {} (name={}, namespace={}, clsuter={}).", value.getId(), name, namespace, cluster);
-                    applicationInfoRepository.deleteById(value.getId());
+                    applicationInfoRepository.delete(value);
                 });
     }
 

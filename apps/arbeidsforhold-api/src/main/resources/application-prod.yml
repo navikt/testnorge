@@ -27,7 +27,3 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   main:
     banner-mode: off
-
-testnorge:
-  analyse:
-    enabled: true

@@ -5,6 +5,8 @@ spring:
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     name: testnorge-tilbakemelding-api
     description: App for innsending av tilbakemeldinger. Tilbakemeldingene blir publisert i slack
+    cluster: dev-gcp
+    namespace: dolly
 
 consumers:
   slack:

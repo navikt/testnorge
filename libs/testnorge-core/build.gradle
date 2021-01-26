@@ -4,7 +4,6 @@ plugins {
 dependencies {
     implementation project(':testnorge-logging')
     implementation project(':testnorge-dependency-analysis')
-    implementation project(':analysis-auto-configuration')
 
     implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
     implementation 'org.springdoc:springdoc-openapi-ui:1.4.6'
