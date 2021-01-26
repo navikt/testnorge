@@ -12,3 +12,10 @@ zuul:
       path: /api/**
       url: https://testnorge-arbeidsforhold-api.dev.adeo.no/api
       sensitiveHeaders: Cookie,Set-Cookie
+
+consumers:
+  arbeidsforholdapi:
+    client-id: 1b2f24c8-a426-47b1-8ff1-7905d6dfddb5
+    cluster: dev-fss
+    namespace: dolly
+    name: testnorge-arbeidsforhold-api

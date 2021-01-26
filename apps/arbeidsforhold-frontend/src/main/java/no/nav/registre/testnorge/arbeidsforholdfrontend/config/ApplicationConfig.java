@@ -6,10 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
+import no.nav.registre.testnorge.arbeidsforholdfrontend.config.credentials.ArbeidsforholdApiServerProperties;
 import no.nav.registre.testnorge.arbeidsforholdfrontend.config.filter.AddAuthorizationToRouteFilter;
 import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
 import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2FrontendConfiguration;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 
 @Configuration
@@ -21,13 +21,13 @@ import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-
     private final AccessTokenService tokenService;
+    private final ArbeidsforholdApiServerProperties properties;
 
     @Bean
     public AddAuthorizationToRouteFilter dollyBackendAddAuthorizationToRouteFilter() {
         return new AddAuthorizationToRouteFilter(
-                () -> tokenService.generateToken("1b2f24c8-a426-47b1-8ff1-7905d6dfddb5").getTokenValue(),
+                () -> tokenService.generateToken(properties).getTokenValue(),
                 "testnorge-arbeidsforhold-api"
         );
     }

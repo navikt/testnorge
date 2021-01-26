@@ -283,3 +283,6 @@ project(":applikasjonsanalyse-service").projectDir = file('apps/applikasjonsanal
 
 include 'analysis-auto-configuration'
 project(":analysis-auto-configuration").projectDir = file('libs/analysis-auto-configuration')
+
+include 'analysis'
+project(":analysis").projectDir = file('libs/analysis')
