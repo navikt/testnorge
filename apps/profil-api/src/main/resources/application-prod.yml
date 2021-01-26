@@ -8,3 +8,7 @@ spring:
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
   main:
     banner-mode: off
+
+testnorge:
+  analyse:
+    enabled: true
