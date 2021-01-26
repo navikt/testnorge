@@ -38,6 +38,8 @@ spec:
           cluster: dev-fss
         - application: mn-synt-arbeidsforhold-service
           cluster: dev-fss
+        - application: jenkins-batch-status-service
+          cluster: dev-fss
   gcp:
     sqlInstances:
       - type: POSTGRES_12
