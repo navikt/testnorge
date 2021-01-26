@@ -9,20 +9,30 @@ import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.tcp.ProxyProvider;
 
+import java.net.URI;
+import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 
+import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
 public class OrganisasjonApiConsumer {
 
+    private static final Duration TIMEOUT = Duration.ofSeconds(10);
     private static final String STATUS_URL = "/api/v1/organisasjoner/{orgnummer}";
     private static final String MILJOE = "miljo";
 
@@ -33,9 +43,23 @@ public class OrganisasjonApiConsumer {
     public OrganisasjonApiConsumer(
             @Value("${organisasjon.api.url}") String baseUrl,
             @Value("${organisasjon.api.client.id}") String clientId,
+            @Value("${http.proxy:#{null}}") String proxyHost,
             AccessTokenService accessTokenService) {
 
-        this.webClient = WebClient.builder().baseUrl(baseUrl).build();
+        var builder = WebClient.builder().baseUrl(baseUrl);
+
+        if (nonNull(proxyHost)) {
+            log.info("Setter opp proxy host {}", proxyHost);
+            var uri = URI.create(proxyHost);
+            builder.clientConnector(new ReactorClientHttpConnector(
+                    HttpClient.create()
+                            .tcpConfiguration(tcpClient -> tcpClient
+                                    .proxy(proxy -> proxy
+                                            .type(ProxyProvider.Proxy.HTTP)
+                                            .host(uri.getHost())
+                                            .port(uri.getPort())))));
+        }
+        this.webClient = builder.build();
         this.accessTokenService = accessTokenService;
         this.accessScopes = new AccessScopes("api://" + clientId + "/.default");
     }
@@ -55,15 +79,16 @@ public class OrganisasjonApiConsumer {
                     .header(MILJOE, miljoe)
                     .retrieve()
                     .toEntity(Response.class)
-                    .block();
+                    .block(TIMEOUT);
 
             log.info("Organisasjon-API svarte med funnet etter {} ms", currentTimeMillis() - startTime);
             return response.hasBody() ? response.getBody() : new Response();
 
-        } catch (WebClientResponseException e) {
+        } catch (RuntimeException e) {
 
-            log.info("Organisasjon-API svarte med ikke funnet etter {} ms", currentTimeMillis() - startTime);
-            return new Response();
+            String error = format("Testnorge-organisasjon-api svarte ikke etter %d ms", currentTimeMillis() - startTime);
+            log.error(error, e);
+            throw new HttpClientErrorException(HttpStatus.GATEWAY_TIMEOUT, error);
         }
     }
 

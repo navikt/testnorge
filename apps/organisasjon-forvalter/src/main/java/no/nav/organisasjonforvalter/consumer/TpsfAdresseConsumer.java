@@ -1,5 +1,7 @@
 package no.nav.organisasjonforvalter.consumer;
 
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,9 +10,13 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.consumer.TpsfAdresseConsumer.GyldigeAdresserResponse.AdresseData;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.tcp.ProxyProvider;
 
+import java.net.URI;
 import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
@@ -24,15 +30,29 @@ import static java.util.Objects.nonNull;
 public class TpsfAdresseConsumer {
 
     private static final String OK_STATUS = "00";
-    private static final Long TIMEOUT = 10_000L;
+    private static final Duration TIMEOUT = Duration.ofSeconds(10);
     private static final String ADRESSE_URL = "/api/v1/gyldigadresse/tilfeldig?maxAntall=";
 
     private final WebClient webClient;
 
     public TpsfAdresseConsumer(
-            @Value("${tpsf.url}") String baseUrl) {
+            @Value("${tpsf.url}") String baseUrl,
+            @Value("${http.proxy:#{null}}") String proxyHost) {
 
-        this.webClient = WebClient.builder().baseUrl(baseUrl).build();
+        var builder  = WebClient.builder().baseUrl(baseUrl);
+
+        if (nonNull(proxyHost)) {
+            log.info("Setter opp proxy host {}", proxyHost);
+            var uri = URI.create(proxyHost);
+            builder.clientConnector(new ReactorClientHttpConnector(
+                    HttpClient.create()
+                            .tcpConfiguration(tcpClient -> tcpClient
+                                    .proxy(proxy -> proxy
+                                            .type(ProxyProvider.Proxy.HTTP)
+                                            .host(uri.getHost())
+                                            .port(uri.getPort())))));
+        }
+        this.webClient = builder.build();
     }
 
     private static AdresseData getDefaultADresse() {
@@ -59,7 +79,7 @@ public class TpsfAdresseConsumer {
                     .header("Nav-Call-Id", UUID.randomUUID().toString())
                     .retrieve()
                     .toEntity(GyldigeAdresserResponse.class)
-                    .block(Duration.ofMillis(TIMEOUT));
+                    .block(TIMEOUT);
 
             log.info("Adresseoppslag tok {} ms", currentTimeMillis() - startTime);
 
@@ -76,7 +96,7 @@ public class TpsfAdresseConsumer {
 
         } catch (RuntimeException e) {
 
-            log.error("Henting av adresse timeout etter {} ms", TIMEOUT, e);
+            log.error("Henting av adresse timeout etter {} sekunder", TIMEOUT, e);
             return getDefaultADresse();
         }
     }

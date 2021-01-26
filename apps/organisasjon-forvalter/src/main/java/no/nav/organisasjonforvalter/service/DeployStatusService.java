@@ -21,22 +21,24 @@ import static no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingStatus
 @RequiredArgsConstructor
 public class DeployStatusService {
 
-    private static final long SLEEP_TIME = 1000L;
-    private static final long MAX_ITERATIONS = 60 * 10;
+    private static final long SLEEP_TIME_MS = 1000L;
+    private static final long MAX_ITERATIONS = 60 * 15;
+    private static final Long MAX_WAIT_WITHOUT_UPDATE = SLEEP_TIME_MS * 60 * 3;
 
     private final OrganisasjonBestillingStatusConsumer bestillingStatusConsumer;
 
-    private static boolean isDone(List<ItemDto> statusTotal) {
+    private static boolean isDone(List<ItemDto> statusTotal, Long lastUpdate) {
 
-        return !statusTotal.isEmpty() && (isOK(statusTotal) ||
+        return !statusTotal.isEmpty() && (isOK(statusTotal, lastUpdate) ||
                 statusTotal.stream().anyMatch(status ->
                         status.getStatus() == ERROR ||
                                 status.getStatus() == FAILED));
     }
 
-    private static boolean isOK(List<ItemDto> items) {
+    private static boolean isOK(List<ItemDto> items, Long lastUpdate) {
 
-        return items.stream().allMatch(status -> status.getStatus() == COMPLETED);
+        return items.stream().allMatch(status -> status.getStatus() == COMPLETED) &&
+                System.currentTimeMillis() - lastUpdate < MAX_WAIT_WITHOUT_UPDATE;
     }
 
     @SneakyThrows
@@ -44,22 +46,28 @@ public class DeployStatusService {
 
         List<ItemDto> statusTotal = emptyList();
         var attemptsLeft = MAX_ITERATIONS;
+        var statusLength = 0;
+        var lastUpdate = System.currentTimeMillis();
 
-        while (attemptsLeft > 0 && !isDone(statusTotal)) {
+        while (attemptsLeft > 0 && !isDone(statusTotal, lastUpdate)) {
 
-            Thread.sleep(SLEEP_TIME);
+            Thread.sleep(SLEEP_TIME_MS);
             statusTotal = bestillingStatusConsumer.getBestillingStatus(uuid);
 
-            if (attemptsLeft-- % 5 == 0 || isDone(statusTotal)) {
+            if (statusLength != statusTotal.size()) {
+                statusLength = statusTotal.size();
+                lastUpdate = System.currentTimeMillis();
+            }
+            if (attemptsLeft-- % 5 == 0 || isDone(statusTotal, lastUpdate)) {
                 log.info("Deploystatus for {}, {}, time elapsed {} ms",
                         uuid, statusTotal.stream()
                                 .map(ItemDto::toString)
                                 .collect(Collectors.joining(", ")),
-                        (MAX_ITERATIONS - attemptsLeft) * SLEEP_TIME);
+                        (MAX_ITERATIONS - attemptsLeft) * SLEEP_TIME_MS);
             }
         }
 
-        return !statusTotal.isEmpty() && isOK(statusTotal) ?
+        return !statusTotal.isEmpty() && isOK(statusTotal, lastUpdate) ?
                 Status.OK : Status.ERROR;
     }
 }
