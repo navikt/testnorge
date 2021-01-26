@@ -59,6 +59,7 @@ public class AccessTokenService {
         this.clientCredentials = clientCredentials;
     }
 
+    @Deprecated
     public AccessToken generateToken(String clientId) {
         return generateToken(new AccessScopes("api://" + clientId + "/.default"));
     }
