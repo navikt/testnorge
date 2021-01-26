@@ -28,7 +28,6 @@ public class EregConsumer {
                 ));
     }
 
-
     public Long getStatusKode(String miljo, Long id) {
         if (!envWebClientMap.containsKey(miljo)) {
             throw new RuntimeException("Stotter ikke miljo: " + miljo + " i EREG.");

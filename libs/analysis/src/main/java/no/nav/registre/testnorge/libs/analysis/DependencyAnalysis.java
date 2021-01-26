@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.libs.analysis;
 
+import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
 
 import java.util.Arrays;
@@ -10,7 +11,7 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.analysis.domain.Dependency;
 
-
+@Slf4j
 public class DependencyAnalysis {
     private final Reflections reflections;
 
@@ -19,6 +20,7 @@ public class DependencyAnalysis {
     }
 
     public Set<Dependency> analyze() {
+        log.info("Finner annoterte avhenigheter...");
 
         Set<Class<?>> classesDependencyOn = reflections.getTypesAnnotatedWith(DependencyOn.class);
 
@@ -36,6 +38,8 @@ public class DependencyAnalysis {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet())
         );
+
+        log.info("Fant {} annoterte avhenigheter.", dependencies.size());
         return dependencies.stream().map(Dependency::new).collect(Collectors.toSet());
     }
 }
