@@ -1,5 +1,8 @@
 package no.nav.organisasjonforvalter.consumer;
 
+import io.netty.channel.ChannelOption;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
@@ -29,7 +32,7 @@ import static java.util.Objects.nonNull;
 @Service
 public class OrganisasjonNummerConsumer {
 
-    private static final Duration TIMEOUT = Duration.ofSeconds(10);
+    private static final int TIMEOUT_MS = 10_000;
     private static final String NUMBER_URL = "/api/v1/orgnummer";
 
     private final AccessTokenService accessTokenService;
@@ -52,7 +55,12 @@ public class OrganisasjonNummerConsumer {
                                     .proxy(proxy -> proxy
                                             .type(ProxyProvider.Proxy.HTTP)
                                             .host(uri.getHost())
-                                            .port(uri.getPort())))));
+                                            .port(uri.getPort()))
+                                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, TIMEOUT_MS)
+                                    .doOnConnected(connection ->
+                                            connection
+                                                    .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_MS))
+                                                    .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_MS))))));
         }
         this.webClient = builder.build();
         this.accessTokenService = accessTokenService;
@@ -73,7 +81,7 @@ public class OrganisasjonNummerConsumer {
                     .header("antall", antall.toString())
                     .retrieve()
                     .toEntity(List.class)
-                    .block(TIMEOUT);
+                    .block();
 
             log.info("Orgnummer-service svarte etter {} ms", currentTimeMillis() - startTime);
 

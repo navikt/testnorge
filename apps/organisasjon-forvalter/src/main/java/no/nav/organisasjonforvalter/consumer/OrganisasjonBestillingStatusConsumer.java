@@ -1,5 +1,8 @@
 package no.nav.organisasjonforvalter.consumer;
 
+import io.netty.channel.ChannelOption;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,7 +35,7 @@ import static java.util.Objects.nonNull;
 @Service
 public class OrganisasjonBestillingStatusConsumer {
 
-    private static final Duration TIMEOUT = Duration.ofSeconds(10);
+    private static final int TIMEOUT_MS = 10_000;
     private static final String STATUS_URL = "/api/v1/order/{uuid}/items";
 
     private final AccessTokenService accessTokenService;
@@ -56,7 +59,12 @@ public class OrganisasjonBestillingStatusConsumer {
                                     .proxy(proxy -> proxy
                                             .type(ProxyProvider.Proxy.HTTP)
                                             .host(uri.getHost())
-                                            .port(uri.getPort())))));
+                                            .port(uri.getPort()))
+                                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, TIMEOUT_MS)
+                                    .doOnConnected(connection ->
+                                            connection
+                                                    .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_MS))
+                                                    .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_MS))))));
         }
         this.webClient = builder.build();
         this.accessTokenService = accessTokenService;
@@ -76,7 +84,7 @@ public class OrganisasjonBestillingStatusConsumer {
                             accessToken.getTokenValue())
                     .retrieve()
                     .toEntity(ItemDto[].class)
-                    .block(TIMEOUT);
+                    .block();
 
             log.info("Organisasjon-bestilling-status tok {} ms", currentTimeMillis() - startTime);
             return response.hasBody() ? List.of(response.getBody()) : emptyList();

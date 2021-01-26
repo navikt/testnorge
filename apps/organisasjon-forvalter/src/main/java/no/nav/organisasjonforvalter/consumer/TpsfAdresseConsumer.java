@@ -1,5 +1,6 @@
 package no.nav.organisasjonforvalter.consumer;
 
+import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.AllArgsConstructor;
@@ -30,7 +31,7 @@ import static java.util.Objects.nonNull;
 public class TpsfAdresseConsumer {
 
     private static final String OK_STATUS = "00";
-    private static final Duration TIMEOUT = Duration.ofSeconds(10);
+    private static final int TIMEOUT_MS = 10_000;
     private static final String ADRESSE_URL = "/api/v1/gyldigadresse/tilfeldig?maxAntall=";
 
     private final WebClient webClient;
@@ -50,7 +51,12 @@ public class TpsfAdresseConsumer {
                                     .proxy(proxy -> proxy
                                             .type(ProxyProvider.Proxy.HTTP)
                                             .host(uri.getHost())
-                                            .port(uri.getPort())))));
+                                            .port(uri.getPort()))
+                                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, TIMEOUT_MS)
+                                    .doOnConnected(connection ->
+                                            connection
+                                                    .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_MS))
+                                                    .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_MS))))));
         }
         this.webClient = builder.build();
     }
@@ -79,7 +85,7 @@ public class TpsfAdresseConsumer {
                     .header("Nav-Call-Id", UUID.randomUUID().toString())
                     .retrieve()
                     .toEntity(GyldigeAdresserResponse.class)
-                    .block(TIMEOUT);
+                    .block();
 
             log.info("Adresseoppslag tok {} ms", currentTimeMillis() - startTime);
 
@@ -96,7 +102,7 @@ public class TpsfAdresseConsumer {
 
         } catch (RuntimeException e) {
 
-            log.error("Henting av adresse timeout etter {} sekunder", TIMEOUT, e);
+            log.error("Henting av adresse timeout etter {} ms", TIMEOUT_MS, e);
             return getDefaultADresse();
         }
     }

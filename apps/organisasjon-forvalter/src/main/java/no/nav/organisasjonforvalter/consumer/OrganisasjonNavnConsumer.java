@@ -1,5 +1,8 @@
 package no.nav.organisasjonforvalter.consumer;
 
+import io.netty.channel.ChannelOption;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,7 +36,7 @@ import static java.util.Objects.nonNull;
 @Service
 public class OrganisasjonNavnConsumer {
 
-    private static final Duration TIMEOUT = Duration.ofSeconds(10);
+    private static final int TIMEOUT_MS = 10_000;
     private static final String NAME_URL = "/api/v1/navn?antall=";
 
     private final AccessTokenService accessTokenService;
@@ -57,7 +60,12 @@ public class OrganisasjonNavnConsumer {
                                     .proxy(proxy -> proxy
                                             .type(ProxyProvider.Proxy.HTTP)
                                             .host(uri.getHost())
-                                            .port(uri.getPort())))));
+                                            .port(uri.getPort()))
+                                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, TIMEOUT_MS)
+                                    .doOnConnected(connection ->
+                                            connection
+                                                    .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_MS))
+                                                    .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_MS))))));
         }
         this.webClient = builder.build();
         this.accessTokenService = accessTokenService;
@@ -77,7 +85,7 @@ public class OrganisasjonNavnConsumer {
                             accessToken.getTokenValue())
                     .retrieve()
                     .toEntity(Navn[].class)
-                    .block(TIMEOUT);
+                    .block();
 
             List<Navn> orgNavn = response.hasBody() ? List.of(response.getBody()) : Collections.emptyList();
             log.info("Generer-navn-service svarte etter {} ms", currentTimeMillis() - startTime);
