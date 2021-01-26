@@ -3,6 +3,7 @@ plugins {
 }
 dependencies {
     implementation project(':testnorge-logging')
+    implementation project(':analysis')
     implementation project(':testnorge-dependency-analysis')
     implementation(project(':analysis-auto-configuration')) {
         transitive = false
