@@ -15,6 +15,7 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.ProxyProvider;
 
@@ -79,8 +80,11 @@ public class OrganisasjonNummerConsumer {
 
             return response.hasBody() ? response.getBody() : Collections.emptyList();
 
-        } catch (RuntimeException e) {
+        } catch (WebClientResponseException e) {
+            log.error(e.getMessage(), e);
+            throw new HttpClientErrorException(HttpStatus.BAD_GATEWAY, e.getMessage());
 
+        } catch (RuntimeException e) {
             String error = format("Organisasjon-orgnummer-service svarte ikke etter %d ms", currentTimeMillis() - startTime);
             log.error(error, e);
             throw new HttpClientErrorException(HttpStatus.GATEWAY_TIMEOUT, error);

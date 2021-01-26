@@ -10,10 +10,13 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.consumer.TpsfAdresseConsumer.GyldigeAdresserResponse.AdresseData;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.ProxyProvider;
 
@@ -90,6 +93,10 @@ public class TpsfAdresseConsumer {
 
                 return getDefaultADresse();
             }
+
+        } catch (WebClientResponseException e) {
+            log.error(e.getMessage(), e);
+            throw new HttpClientErrorException(HttpStatus.BAD_GATEWAY, e.getMessage());
 
         } catch (RuntimeException e) {
 

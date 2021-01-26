@@ -18,6 +18,7 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.ProxyProvider;
 
@@ -82,6 +83,10 @@ public class OrganisasjonNavnConsumer {
             log.info("Generer-navn-service svarte etter {} ms", currentTimeMillis() - startTime);
 
             return orgNavn.stream().map(Navn::toString).collect(Collectors.toList());
+
+        } catch (WebClientResponseException e) {
+            log.error(e.getMessage(), e);
+            throw new HttpClientErrorException(HttpStatus.BAD_GATEWAY, e.getMessage());
 
         } catch (RuntimeException e) {
 
