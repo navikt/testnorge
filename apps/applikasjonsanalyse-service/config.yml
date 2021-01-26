@@ -46,6 +46,8 @@ spec:
           cluster: dev-fss
         - application: endringsmelding-service
           cluster: dev-fss
+        - application: endringsmelding-service
+          cluster: dev-gcp
   gcp:
     sqlInstances:
       - type: POSTGRES_12
