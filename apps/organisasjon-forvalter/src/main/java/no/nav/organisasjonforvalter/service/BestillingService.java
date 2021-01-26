@@ -13,10 +13,14 @@ import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.Adres
 import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.AdresseType;
 import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.OrganisasjonRequest;
 import no.nav.organisasjonforvalter.provider.rs.responses.BestillingResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static java.lang.String.format;
 
 @Slf4j
 @Service
@@ -41,8 +45,10 @@ public class BestillingService {
             return BestillingResponse.builder().orgnummer(orgnumre).build();
 
         } catch (RuntimeException e) {
-            log.error("Opprettelse av organisasjon feilet {}", e.getMessage(), e);
-            throw e;
+
+            String error = format("Opprettelse av organisasjon feilet %s", e.getMessage());
+            log.error(error, e);
+            throw new HttpClientErrorException(HttpStatus.BAD_GATEWAY, error);
         }
     }
 

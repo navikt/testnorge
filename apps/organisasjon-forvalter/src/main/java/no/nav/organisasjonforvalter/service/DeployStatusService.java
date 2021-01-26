@@ -23,16 +23,22 @@ public class DeployStatusService {
 
     private static final long SLEEP_TIME_MS = 1000L;
     private static final long MAX_ITERATIONS = 60 * 15;
-    private static final Long MAX_WAIT_WITHOUT_UPDATE = SLEEP_TIME_MS * 60 * 3;
+    private static final long MAX_WAIT_WITHOUT_UPDATE = SLEEP_TIME_MS * 60 * 3;
 
     private final OrganisasjonBestillingStatusConsumer bestillingStatusConsumer;
 
     private static boolean isDone(List<ItemDto> statusTotal, Long lastUpdate) {
 
+        var elapsedTime = System.currentTimeMillis() - lastUpdate;
+        if (elapsedTime > MAX_WAIT_WITHOUT_UPDATE) {
+            log.warn("Status ikke oppdatert på {} ms. Deploy avbrytes.");
+        }
+
         return !statusTotal.isEmpty() && (isOK(statusTotal, lastUpdate) ||
                 statusTotal.stream().anyMatch(status ->
                         status.getStatus() == ERROR ||
-                                status.getStatus() == FAILED));
+                                status.getStatus() == FAILED)) ||
+                elapsedTime > MAX_WAIT_WITHOUT_UPDATE;
     }
 
     private static boolean isOK(List<ItemDto> items, Long lastUpdate) {

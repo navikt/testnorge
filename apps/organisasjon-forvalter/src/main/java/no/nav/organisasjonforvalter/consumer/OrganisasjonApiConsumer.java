@@ -18,6 +18,7 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.netty.http.client.HttpClient;
 
 import java.util.List;
@@ -78,8 +79,10 @@ public class OrganisasjonApiConsumer {
             log.info("Organisasjon-API svarte med funnet etter {} ms", currentTimeMillis() - startTime);
             return response.hasBody() ? response.getBody() : new Response();
 
-        } catch (RuntimeException e) {
+        } catch (WebClientResponseException e) {
+            return new Response();
 
+        } catch (RuntimeException e) {
             String error = format("Testnorge-organisasjon-api svarte ikke etter %d ms", currentTimeMillis() - startTime);
             log.error(error, e);
             throw new HttpClientErrorException(HttpStatus.GATEWAY_TIMEOUT, error);
