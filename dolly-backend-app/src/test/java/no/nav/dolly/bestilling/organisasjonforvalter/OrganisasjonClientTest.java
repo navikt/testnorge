@@ -129,7 +129,7 @@ public class OrganisasjonClientTest {
     }
 
     @Test
-    public void should_throw_httpclienterror_for_empty_orgnummer_response() {
+    public void should_throw_httpclienterror_for_invalid_orgnummer_response() {
 
         when(organisasjonConsumer.postOrganisasjon(any())).thenReturn(new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR));
 

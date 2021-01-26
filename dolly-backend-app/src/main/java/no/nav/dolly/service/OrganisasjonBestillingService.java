@@ -27,10 +27,10 @@ import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.singletonList;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @Slf4j
 @Service
@@ -62,10 +62,10 @@ public class OrganisasjonBestillingService {
                 .sistOppdatert(bestilling.getSistOppdatert())
                 .organisasjonNummer(bestillingProgress.isEmpty() ? null : bestillingProgress.get(0).getOrganisasjonsnummer())
                 .id(bestillingId)
-                .ferdig(!isNull(bestilling.getFerdig()) && bestilling.getFerdig())
+                .ferdig(isTrue(bestilling.getFerdig()))
                 .feil(bestilling.getFeil())
                 .environments(Arrays.asList(bestilling.getMiljoer().split(",")))
-                .antallLevert(isTrue(bestilling.getFerdig()) ? 1 : 0)
+                .antallLevert(isTrue(bestilling.getFerdig()) && isBlank(bestilling.getFeil()) ? 1 : 0)
                 .build();
     }
 
@@ -86,10 +86,10 @@ public class OrganisasjonBestillingService {
                             .sistOppdatert(orgBestilling.getSistOppdatert())
                             .organisasjonNummer(bestillingStatus.getOrganisasjonsnummer())
                             .id(bestillingStatus.getBestillingId())
-                            .ferdig(!isNull(orgBestilling.getFerdig()) && orgBestilling.getFerdig())
+                            .ferdig(isTrue(orgBestilling.getFerdig()))
                             .feil(orgBestilling.getFeil())
                             .environments(Arrays.asList(orgBestilling.getMiljoer().split(",")))
-                            .antallLevert(isTrue(orgBestilling.getFerdig()) ? 1 : 0)
+                            .antallLevert(isTrue(orgBestilling.getFerdig()) && isBlank(orgBestilling.getFeil()) ? 1 : 0)
                             .build());
 
                 }
