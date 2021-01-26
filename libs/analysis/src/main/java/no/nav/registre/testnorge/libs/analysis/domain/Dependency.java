@@ -1,13 +1,13 @@
 package no.nav.registre.testnorge.libs.analysis.domain;
 
-import no.nav.registre.testnorge.libs.analysis.NaisDependencyOn;
+import no.nav.registre.testnorge.libs.analysis.DependencyOn;
 
-public class NaisDependency {
+public class Dependency {
     private final String name;
     private final String cluster;
     private final String namespace;
 
-    public NaisDependency(NaisDependencyOn dependencyOf) {
+    public Dependency(DependencyOn dependencyOf) {
         name = dependencyOf.name();
         cluster = dependencyOf.cluster();
         namespace = dependencyOf.namespace();

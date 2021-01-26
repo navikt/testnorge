@@ -7,12 +7,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface NaisDependencyOn {
-    String name();
-    String cluster() default "unknown";
-    String namespace() default "unknown";
-
-    boolean external() default false;
-
-    DependencyType type() default DependencyType.REST;
+public @interface DependenciesOn {
+    DependencyOn[] value();
 }

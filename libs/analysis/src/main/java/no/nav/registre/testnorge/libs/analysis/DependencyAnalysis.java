@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.analysis.domain.NaisDependency;
+import no.nav.registre.testnorge.libs.analysis.domain.Dependency;
 
 
 public class DependencyAnalysis {
@@ -18,24 +18,24 @@ public class DependencyAnalysis {
         reflections = new Reflections(basePackage);
     }
 
-    public Set<NaisDependency> analyze() {
+    public Set<Dependency> analyze() {
 
-        Set<Class<?>> classesDependencyOn = reflections.getTypesAnnotatedWith(NaisDependencyOn.class);
+        Set<Class<?>> classesDependencyOn = reflections.getTypesAnnotatedWith(DependencyOn.class);
 
-        Set<NaisDependencyOn> dependencies = new HashSet<>(classesDependencyOn
+        Set<DependencyOn> dependencies = new HashSet<>(classesDependencyOn
                 .stream()
-                .map(value -> value.getAnnotation(NaisDependencyOn.class))
+                .map(value -> value.getAnnotation(DependencyOn.class))
                 .collect(Collectors.toSet()));
 
-        Set<Class<?>> classesDependenciesOn = reflections.getTypesAnnotatedWith(NaisDependenciesOn.class);
+        Set<Class<?>> classesDependenciesOn = reflections.getTypesAnnotatedWith(DependenciesOn.class);
 
         dependencies.addAll(classesDependenciesOn
                 .stream()
-                .map(value -> value.getAnnotation(NaisDependenciesOn.class))
+                .map(value -> value.getAnnotation(DependenciesOn.class))
                 .map(value -> Arrays.asList(value.value()))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet())
         );
-        return dependencies.stream().map(NaisDependency::new).collect(Collectors.toSet());
+        return dependencies.stream().map(Dependency::new).collect(Collectors.toSet());
     }
 }
