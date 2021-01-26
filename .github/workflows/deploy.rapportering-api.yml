@@ -2,7 +2,7 @@ name: Deploy rapportering-api
 
 on:
   push:
-#    branches: master
+    branches: master
     paths:
       - apps/rapportering-api/**
       - libs/testnorge-core/**
