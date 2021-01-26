@@ -37,28 +37,19 @@ public class TpsfAdresseConsumer {
     private final WebClient webClient;
 
     public TpsfAdresseConsumer(
-            @Value("${tpsf.url}") String baseUrl,
-            @Value("${http.proxy:#{null}}") String proxyHost) {
+            @Value("${tpsf.url}") String baseUrl) {
 
-        var builder  = WebClient.builder().baseUrl(baseUrl);
-
-        if (nonNull(proxyHost)) {
-            log.info("Setter opp proxy host {}", proxyHost);
-            var uri = URI.create(proxyHost);
-            builder.clientConnector(new ReactorClientHttpConnector(
-                    HttpClient.create()
-                            .tcpConfiguration(tcpClient -> tcpClient
-                                    .proxy(proxy -> proxy
-                                            .type(ProxyProvider.Proxy.HTTP)
-                                            .host(uri.getHost())
-                                            .port(uri.getPort()))
-                                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, TIMEOUT_MS)
-                                    .doOnConnected(connection ->
-                                            connection
-                                                    .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_MS))
-                                                    .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_MS))))));
-        }
-        this.webClient = builder.build();
+        this.webClient = WebClient.builder()
+                .baseUrl(baseUrl)
+                .clientConnector(new ReactorClientHttpConnector(
+                        HttpClient.create()
+                                .tcpConfiguration(tcpClient -> tcpClient
+                                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, TIMEOUT_MS)
+                                        .doOnConnected(connection ->
+                                                connection
+                                                        .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_MS))
+                                                        .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_MS))))))
+                .build();
     }
 
     private static AdresseData getDefaultADresse() {

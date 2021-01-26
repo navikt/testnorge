@@ -8,7 +8,7 @@ metadata:
 spec:
   image: {{ image }}
   port: 8080
-  webproxy: true
+  webproxy: false
   accessPolicy:
     inbound:
       rules:

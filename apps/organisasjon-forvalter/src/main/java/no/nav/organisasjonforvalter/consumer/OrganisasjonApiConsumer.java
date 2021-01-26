@@ -19,15 +19,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
-import reactor.netty.tcp.ProxyProvider;
 
-import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
-import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -44,28 +41,19 @@ public class OrganisasjonApiConsumer {
     public OrganisasjonApiConsumer(
             @Value("${organisasjon.api.url}") String baseUrl,
             @Value("${organisasjon.api.client.id}") String clientId,
-            @Value("${http.proxy:#{null}}") String proxyHost,
             AccessTokenService accessTokenService) {
 
-        var builder = WebClient.builder().baseUrl(baseUrl);
-
-        if (nonNull(proxyHost)) {
-            log.info("Setter opp proxy host {}", proxyHost);
-            var uri = URI.create(proxyHost);
-            builder.clientConnector(new ReactorClientHttpConnector(
-                    HttpClient.create()
-                            .tcpConfiguration(tcpClient -> tcpClient
-                                    .proxy(proxy -> proxy
-                                            .type(ProxyProvider.Proxy.HTTP)
-                                            .host(uri.getHost())
-                                            .port(uri.getPort()))
-                                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, TIMEOUT_MS)
-                                    .doOnConnected(connection ->
-                                            connection
-                                                    .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_MS))
-                                                    .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_MS))))));
-        }
-        this.webClient = builder.build();
+        this.webClient = WebClient.builder()
+                .baseUrl(baseUrl)
+                .clientConnector(new ReactorClientHttpConnector(
+                        HttpClient.create()
+                                .tcpConfiguration(tcpClient -> tcpClient
+                                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, TIMEOUT_MS)
+                                        .doOnConnected(connection ->
+                                                connection
+                                                        .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_MS))
+                                                        .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_MS))))))
+                .build();
         this.accessTokenService = accessTokenService;
         this.accessScopes = new AccessScopes("api://" + clientId + "/.default");
     }
