@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import './PageWithMenu.less'
 import Navigation from "@/components/Navigation";
@@ -10,20 +10,30 @@ type Props = {
     menuTitle: string
 }
 
-const PageWithMenu = ({title, children, navigations, menuTitle}: Props) => (
-    <div className="page-with-menu">
-        <div className="container--left">
-            <h3>{menuTitle}</h3>
+const PageWithMenu = ({title, children, navigations, menuTitle}: Props) => {
 
-            <ul>
-                {navigations.map(navigation =>  <li key={navigation.label} ><Navigation navigation={navigation}/></li>)}
-            </ul>
+    const [search, setSearch] = useState("")
+
+    return (
+        <div className="page-with-menu">
+            <div className="container--left">
+                <h4>Søk etter applikasjon</h4>
+                <input type="text" className="search" onChange={event => setSearch(event.target.value)}/>
+
+                <h3>{menuTitle}</h3>
+
+                <ul>
+                    {navigations
+                        .filter(name => name.label.includes(search))
+                        .map(navigation => <li key={navigation.label}><Navigation navigation={navigation}/></li>)}
+                </ul>
+            </div>
+            <div className="container--right">
+                <h1>{title}</h1>
+                {children}
+            </div>
         </div>
-        <div className="container--right">
-            <h1>{title}</h1>
-            {children}
-        </div>
-    </div>
-)
+    );
+}
 
 export default PageWithMenu;
