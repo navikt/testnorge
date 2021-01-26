@@ -26,28 +26,12 @@ public class OrganisasjonBestillingConsumer {
 
     public OrganisasjonBestillingConsumer(
             OrganisasjonBestillingServiceProperties properties,
-            AccessTokenService accessTokenService,
-            @Value("${http.proxy:#{null}}") String proxyHost
+            AccessTokenService accessTokenService
     ) {
         this.clientId = properties.getClientId();
         this.accessTokenService = accessTokenService;
 
-        WebClient.Builder builder = WebClient.builder().baseUrl(properties.getUrl());
-
-        if (proxyHost != null) {
-            log.info("Setter opp proxy host {}", proxyHost);
-            var uri = URI.create(proxyHost);
-
-            HttpClient httpClient = HttpClient
-                    .create()
-                    .tcpConfiguration(tcpClient -> tcpClient.proxy(proxy -> proxy
-                            .type(ProxyProvider.Proxy.HTTP)
-                            .host(uri.getHost())
-                            .port(uri.getPort())
-                    ));
-            builder.clientConnector(new ReactorClientHttpConnector(httpClient));
-        }
-        this.webClient = builder.build();
+        this.webClient = WebClient.builder().baseUrl(properties.getUrl()).build();
     }
 
     public Long save(String uuid) {

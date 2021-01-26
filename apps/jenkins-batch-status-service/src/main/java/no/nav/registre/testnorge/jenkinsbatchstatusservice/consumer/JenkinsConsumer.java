@@ -27,27 +27,11 @@ public class JenkinsConsumer {
 
     public JenkinsConsumer(
             JenkinsServiceProperties properties,
-            AccessTokenService accessTokenService,
-            @Value("${http.proxy:#{null}}") String proxyHost
+            AccessTokenService accessTokenService
     ) {
         this.accessTokenService = accessTokenService;
         this.clientId = properties.getClientId();
-        WebClient.Builder builder = WebClient.builder().baseUrl(properties.getUrl());
-
-        if (proxyHost != null) {
-            log.info("Setter opp proxy host {}", proxyHost);
-            var uri = URI.create(proxyHost);
-
-            HttpClient httpClient = HttpClient
-                    .create()
-                    .tcpConfiguration(tcpClient -> tcpClient.proxy(proxy -> proxy
-                            .type(ProxyProvider.Proxy.HTTP)
-                            .host(uri.getHost())
-                            .port(uri.getPort())
-                    ));
-            builder.clientConnector(new ReactorClientHttpConnector(httpClient));
-        }
-        this.webClient = builder.build();
+        this.webClient = WebClient.builder().baseUrl(properties.getUrl()).build();
     }
 
     private JenkinsCrumb getCrumb() {
