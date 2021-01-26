@@ -1,6 +1,7 @@
 package no.nav.organisasjonforvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonNavnConsumer;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonNummerConsumer;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BestillingService {
@@ -28,15 +30,20 @@ public class BestillingService {
     private final MapperFacade mapperFacade;
 
     public BestillingResponse execute(BestillingRequest request) {
+        try {
+            Set<String> orgnumre = request.getOrganisasjoner().stream()
+                    .map(org -> {
+                        Organisasjon parent = processOrganisasjon(org, null);
+                        return parent.getOrganisasjonsnummer();
+                    })
+                    .collect(Collectors.toSet());
 
-        Set<String> orgnumre = request.getOrganisasjoner().stream()
-                .map(org -> {
-                    Organisasjon parent = processOrganisasjon(org, null);
-                    return parent.getOrganisasjonsnummer();
-                })
-                .collect(Collectors.toSet());
+            return BestillingResponse.builder().orgnummer(orgnumre).build();
 
-        return BestillingResponse.builder().orgnummer(orgnumre).build();
+        } catch (RuntimeException e) {
+            log.error("Opprettelse av organisasjon feilet {}", e.getMessage(), e);
+            throw e;
+        }
     }
 
     private Organisasjon processOrganisasjon(OrganisasjonRequest orgRequest, Organisasjon parent) {

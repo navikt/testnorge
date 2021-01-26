@@ -6,7 +6,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public abstract class RemoteServiceProperties {
+public class RemoteServiceProperties implements Scopeable {
     private String url;
     private String clientId;
+
+    @Override
+    public String toScope() {
+        return "api://" + clientId + "/.default";
+    }
 }

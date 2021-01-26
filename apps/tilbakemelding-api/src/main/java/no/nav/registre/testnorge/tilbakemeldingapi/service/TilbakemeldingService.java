@@ -16,7 +16,7 @@ public class TilbakemeldingService {
     public TilbakemeldingService(
             SlackConsumer slackConsumer,
             ProfilApiConsumer profilApiConsumer,
-            @Value("${consumer.slack.channel}") String channel
+            @Value("${consumers.slack.channel}") String channel
     ) {
         this.slackConsumer = slackConsumer;
         this.profilApiConsumer = profilApiConsumer;

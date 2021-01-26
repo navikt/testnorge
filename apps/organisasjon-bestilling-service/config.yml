@@ -21,6 +21,8 @@ spec:
         - application: organisasjon-forvalter
           cluster: dev-fss
     outbound:
+      rules:
+        - application: applikasjonsanalyse-service
       external:
         - host: ereg-batch-status-service.dev-fss-pub.nais.io
   gcp:
