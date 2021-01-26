@@ -42,6 +42,10 @@ spec:
           cluster: dev-fss
         - application: arbeidsforhold-frontend
           cluster: dev-fss
+        - application: testnorge-arbeidsforhold-export-api
+          cluster: dev-fss
+        - application: endringsmelding-service
+          cluster: dev-fss
   gcp:
     sqlInstances:
       - type: POSTGRES_12
