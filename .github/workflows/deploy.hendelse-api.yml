@@ -2,7 +2,7 @@ name: Deploy hendelse-api
 
 on:
   push:
-    branches: master
+#    branches: master
     paths:
       - apps/hendelse-api/**
       - libs/testnorge-data-transfer-objects/**
