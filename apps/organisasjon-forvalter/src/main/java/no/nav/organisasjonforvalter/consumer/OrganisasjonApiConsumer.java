@@ -80,8 +80,12 @@ public class OrganisasjonApiConsumer {
             return response.hasBody() ? response.getBody() : new Response();
 
         } catch (WebClientResponseException e) {
-            log.error(e.getMessage(), e);
-            throw new HttpClientErrorException(HttpStatus.BAD_GATEWAY, e.getMessage());
+            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+                return new Response();
+            } else {
+                log.error(e.getMessage(), e);
+                throw new HttpClientErrorException(e.getStatusCode(), e.getResponseBodyAsString());
+            }
 
         } catch (RuntimeException e) {
             String error = format("Testnorge-organisasjon-api svarte ikke etter %d ms", currentTimeMillis() - startTime);
