@@ -24,6 +24,11 @@ export const Detaljer = ({ data }: Detaljer) => {
 					kodeverk={OrganisasjonKodeverk.Næringskoder}
 					value={data[0].naeringskode}
 				/>
+				<TitleValue
+					title="Sektorkode"
+					kodeverk={OrganisasjonKodeverk.Sektorkoder}
+					value={data[0].sektorkode}
+				/>
 				<TitleValue title="Formål" value={data[0].formaal} />
 				<TitleValue
 					title="Stiftelsesdato"

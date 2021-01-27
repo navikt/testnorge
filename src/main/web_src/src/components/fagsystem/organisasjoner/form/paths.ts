@@ -1,6 +1,7 @@
 export const organisasjonPaths = [
 	'organisasjon.enhetstype',
 	'organisasjon.naeringskode',
+	'organisasjon.sektorkode',
 	'organisasjon.formaal',
 	'organisasjon.stiftelsesdato',
 	'organisasjon.maalform'

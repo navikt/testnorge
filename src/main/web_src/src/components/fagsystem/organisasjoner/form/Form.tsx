@@ -63,6 +63,7 @@ OrganisasjonForm.validation = {
 		Yup.object({
 			enhetstype: requiredString,
 			naeringskode: ifPresent('$organisasjon.naeringskode', requiredString),
+			sektorkode: ifPresent('$organisasjon.sektorkode', requiredString),
 			formaal: ifPresent('$organisasjon.formaal', requiredString),
 			stiftelsesdato: ifPresent('$organisasjon.stiftelsesdato', requiredString),
 			maalform: ifPresent('$organisasjon.maalform', requiredString),

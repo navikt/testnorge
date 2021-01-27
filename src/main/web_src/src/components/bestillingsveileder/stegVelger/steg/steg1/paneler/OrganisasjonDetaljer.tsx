@@ -21,6 +21,7 @@ export const OrganisasjonDetaljerPanel = ({ stateModifier }: any) => {
 					title="Det er obligatorisk å velge enhetstype for organisasjonen"
 				/>
 				<Attributt attr={sm.attrs.naeringskode} />
+				<Attributt attr={sm.attrs.sektorkode} />
 				<Attributt attr={sm.attrs.formaal} />
 				<Attributt attr={sm.attrs.stiftelsesdato} />
 				<Attributt attr={sm.attrs.maalform} />
@@ -53,6 +54,12 @@ OrganisasjonDetaljerPanel.initialValues = ({ set, del, has }: any) => {
 			checked: has('organisasjon.naeringskode'),
 			add: () => set('organisasjon.naeringskode', ''),
 			remove: () => del('organisasjon.naeringskode')
+		},
+		sektorkode: {
+			label: 'Sektorkode',
+			checked: has('organisasjon.sektorkode'),
+			add: () => set('organisasjon.sektorkode', ''),
+			remove: () => del('organisasjon.sektorkode')
 		},
 		formaal: {
 			label: 'Formål',
