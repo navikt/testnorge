@@ -1125,6 +1125,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				obj('Enhetstype', organisasjonKriterier[0].enhetstype),
 				obj('Næringskode', organisasjonKriterier[0].naeringskode),
 				obj('Formål', organisasjonKriterier[0].formaal),
+				obj('Stiftelsesdato', Formatters.formatDate(organisasjonKriterier[0].stiftelsesdato)),
 				obj('Telefon', organisasjonKriterier[0].telefon),
 				obj('E-postadresse', organisasjonKriterier[0].epost),
 				obj('Internettadresse', organisasjonKriterier[0].nettside)

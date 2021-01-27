@@ -5,6 +5,7 @@ import { OrganisasjonKodeverk } from '~/config/kodeverk'
 import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
 import '~/pages/gruppe/PersonVisning/PersonVisning.less'
 import { EnhetData } from '../types'
+import Formatters from '~/utils/DataFormatter'
 
 type Detaljer = {
 	data: Array<EnhetData>
@@ -24,6 +25,10 @@ export const Detaljer = ({ data }: Detaljer) => {
 					value={data[0].naeringskode}
 				/>
 				<TitleValue title="Formål" value={data[0].formaal} />
+				<TitleValue
+					title="Stiftelsesdato"
+					value={Formatters.formatStringDates(data[0].stiftelsesdato)}
+				/>
 			</div>
 
 			{(data[0].telefon || data[0].epost || data[0].nettside) && (

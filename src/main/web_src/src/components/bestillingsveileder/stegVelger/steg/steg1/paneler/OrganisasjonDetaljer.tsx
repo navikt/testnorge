@@ -22,6 +22,7 @@ export const OrganisasjonDetaljerPanel = ({ stateModifier }: any) => {
 				/>
 				<Attributt attr={sm.attrs.naeringskode} />
 				<Attributt attr={sm.attrs.formaal} />
+				<Attributt attr={sm.attrs.stiftelsesdato} />
 			</AttributtKategori>
 			<AttributtKategori title="Kontaktdata">
 				<Attributt attr={sm.attrs.telefon} />
@@ -57,6 +58,12 @@ OrganisasjonDetaljerPanel.initialValues = ({ set, del, has }: any) => {
 			checked: has('organisasjon.formaal'),
 			add: () => set('organisasjon.formaal', ''),
 			remove: () => del('organisasjon.formaal')
+		},
+		stiftelsesdato: {
+			label: 'Stiftelsesdato',
+			checked: has('organisasjon.stiftelsesdato'),
+			add: () => set('organisasjon.stiftelsesdato', ''),
+			remove: () => del('organisasjon.stiftelsesdato')
 		},
 		telefon: {
 			label: 'Telefon',
