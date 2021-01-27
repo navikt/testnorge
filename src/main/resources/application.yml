@@ -19,7 +19,7 @@ zuul:
       sensitiveHeaders: Cookie,Set-Cookie
     organisasjon-forvalter:
       path: /api/organisasjon-forvalter/**
-      url: https://organisasjon-forvalter.dev.adeo.no/api/v1
+      url: https://organisasjon-forvalter.dev.intern.nav.no/api/v1
       sensitiveHeaders: Cookie,Set-Cookie
 
 applications:
@@ -28,7 +28,6 @@ applications:
   testnorge-varslinger-api: a1dca941-bdd5-4705-a1a4-04cf76473040
   testnorge-tilbakemelding-api: 0f8c4430-19e4-4628-8e89-1dd89a1d613d
   organisasjon-forvalter: 80f07134-375b-4df8-be48-2ba877774c6c
-
 
 application:
   basepackage: no.nav.dolly.web
@@ -50,7 +49,7 @@ spring:
             client-id: ${azure.app.client.id}
             client-secret: ${azure.app.client.secret}
             authorization-grant-type: authorization_code
-            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
             scope: openid, ${azure.app.client.id}/.default
         provider:
           aad:

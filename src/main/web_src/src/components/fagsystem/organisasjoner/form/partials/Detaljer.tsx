@@ -2,15 +2,17 @@ import React, { useState } from 'react'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
 import _omit from 'lodash/omit'
-import { organisasjonPaths, kontaktPaths } from './paths'
+import { organisasjonPaths } from '../paths'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { OrganisasjonKodeverk, AdresseKodeverk } from '~/config/kodeverk'
+import { OrganisasjonKodeverk } from '~/config/kodeverk'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { FormikProps } from 'formik'
-import { EnhetBestilling } from '../types'
+import { EnhetBestilling } from '../../types'
+import { Kontaktdata } from './Kontaktdata'
+import { Adresser } from './Adresser'
 
 type Detaljer = {
 	formikBag: FormikProps<{ organisasjon: EnhetBestilling }>
@@ -30,15 +32,6 @@ export const Detaljer = ({ formikBag, path, level, number }: Detaljer) => {
 
 	if (level === 0 && !_get(formikBag, `values.${path}.underenheter`)) {
 		formikBag.setFieldValue(`${path}.underenheter`, [initialValues])
-	}
-
-	const landForretningsadresse = _get(formikBag, `values.${path}.forretningsadresse.landkode`)
-	const landPostadresse = _get(formikBag, `values.${path}.postadresse.landkode`)
-
-	const handleLandChange = (adressePath: string) => {
-		formikBag.setFieldValue(`${adressePath}.postnr`, '')
-		formikBag.setFieldValue(`${adressePath}.kommunenr`, '')
-		formikBag.setFieldValue(`${adressePath}.poststed`, '')
 	}
 
 	const [typeUnderenhet, setTypeUnderenhet] = useState(
@@ -105,86 +98,9 @@ export const Detaljer = ({ formikBag, path, level, number }: Detaljer) => {
 				<FormikTextInput name={`${path}.formaal`} label="Formål" size="xlarge" />
 			</Kategori>
 
-			<Kategori title="Kontaktdata" vis={kontaktPaths}>
-				<FormikTextInput name={`${path}.telefon`} label="Telefon" size="large" type="number" />
-				<FormikTextInput name={`${path}.epost`} label="E-postadresse" size="large" />
-				<FormikTextInput name={`${path}.nettside`} label="Internettadresse" size="large" />
-			</Kategori>
+			<Kontaktdata path={path} />
 
-			<Kategori title="Forretningsadresse" vis="organisasjon.forretningsadresse">
-				<FormikSelect
-					name={`${path}.forretningsadresse.landkode`}
-					label="Land"
-					kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
-					afterChange={() => handleLandChange(`${path}.forretningsadresse`)}
-					isClearable={false}
-					size="large"
-				/>
-
-				{landForretningsadresse === 'NO' ? (
-					<>
-						<FormikSelect
-							name={`${path}.forretningsadresse.postnr`}
-							label={'Postnummer/sted'}
-							kodeverk={AdresseKodeverk.Postnummer}
-							size="large"
-						/>
-						<FormikSelect
-							name={`${path}.forretningsadresse.kommunenr`}
-							label="Kommunenummer"
-							kodeverk={AdresseKodeverk.Kommunenummer}
-							size="large"
-						/>
-					</>
-				) : (
-					<FormikTextInput name={`${path}.forretningsadresse.poststed`} label="Poststed" />
-				)}
-
-				<FormikTextInput
-					name={`${path}.forretningsadresse.adresselinjer[0]`}
-					label="Adresselinje 1"
-				/>
-				<FormikTextInput
-					name={`${path}.forretningsadresse.adresselinjer[1]`}
-					label="Adresselinje 2"
-				/>
-				<FormikTextInput
-					name={`${path}.forretningsadresse.adresselinjer[2]`}
-					label="Adresselinje 3"
-				/>
-			</Kategori>
-
-			<Kategori title="Postadresse" vis="organisasjon.postadresse">
-				<FormikSelect
-					name={`${path}.postadresse.landkode`}
-					label="Land"
-					kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
-					afterChange={() => handleLandChange(`${path}.postadresse`)}
-					isClearable={false}
-					size="large"
-				/>
-				{landPostadresse === 'NO' ? (
-					<>
-						<FormikSelect
-							name={`${path}.postadresse.postnr`}
-							label={'Postnummer/sted'}
-							kodeverk={AdresseKodeverk.Postnummer}
-							size="large"
-						/>
-						<FormikSelect
-							name={`${path}.postadresse.kommunenr`}
-							label="Kommunenummer"
-							kodeverk={AdresseKodeverk.Kommunenummer}
-							size="large"
-						/>
-					</>
-				) : (
-					<FormikTextInput name={`${path}.postadresse.poststed`} label="Poststed" />
-				)}
-				<FormikTextInput name={`${path}.postadresse.adresselinjer[0]`} label="Adresselinje 1" />
-				<FormikTextInput name={`${path}.postadresse.adresselinjer[1]`} label="Adresselinje 2" />
-				<FormikTextInput name={`${path}.postadresse.adresselinjer[2]`} label="Adresselinje 3" />
-			</Kategori>
+			<Adresser formikBag={formikBag} path={path} />
 
 			<FormikDollyFieldArray
 				name={`${path}.underenheter`}

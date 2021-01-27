@@ -1,7 +1,7 @@
 import React from 'react'
 import * as Yup from 'yup'
 import { requiredString, ifPresent } from '~/utils/YupValidations'
-import { Detaljer } from './Detaljer'
+import { Detaljer } from './partials/Detaljer'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { organisasjonPaths, kontaktPaths, adressePaths } from './paths'
 import Panel from '~/components/ui/panel/Panel'

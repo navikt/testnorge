@@ -42,30 +42,7 @@
 		}
 	}
 
-	& > &_header {
-		display: flex;
-		align-items: center;
-		border-bottom: 1px solid #ccc;
-		h2 {
-			font-size: 1rem;
-			margin: 10px 0;
-		}
-
-		button {
-			margin-left: auto;
-		}
-
-		&.clickable {
-			cursor: pointer;
-		}
-	}
-
-	&_content {
-		width: 100%;
-		display: flex;
-		flex-wrap: wrap;
-		padding-top: 10px;
-	}
+	.dfa-header-og-content();
 }
 
 .dfa-blokk-org-odd {
@@ -74,30 +51,7 @@
 	width: 100%;
 	background-color: @navLysGra;
 
-	& > &_header {
-		display: flex;
-		align-items: center;
-		border-bottom: 1px solid #ccc;
-		h2 {
-			font-size: 1rem;
-			margin: 10px 0;
-		}
-
-		button {
-			margin-left: auto;
-		}
-
-		&.clickable {
-			cursor: pointer;
-		}
-	}
-
-	&_content {
-		width: 100%;
-		display: flex;
-		flex-wrap: wrap;
-		padding-top: 10px;
-	}
+	.dfa-header-og-content();
 }
 
 .dfa-blokk-org-even {
@@ -106,6 +60,10 @@
 	width: 100%;
 	background-color: white;
 
+	.dfa-header-og-content();
+}
+
+.dfa-header-og-content {
 	& > &_header {
 		display: flex;
 		align-items: center;

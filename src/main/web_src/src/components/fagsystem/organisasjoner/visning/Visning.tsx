@@ -13,7 +13,7 @@ export const OrganisasjonVisning = ({ data }: OrganisasjonVisning) => {
 
 	const [selectedId, setSelectedId] = useState(data.id)
 
-	let enheterListe: Array<EnhetData> = []
+	const enheterListe: Array<EnhetData> = []
 
 	const enheterFlat = (enheter: Array<EnhetData>) => {
 		enheter.forEach(enhet => {

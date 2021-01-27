@@ -34,7 +34,7 @@ export const OrganisasjonKriterier = ({ data, render }: OrganisasjonKriterier) =
 	// Lager en kopi av data, hvor hver organisasjon får en unik id og navn, slik at den kan brukes i Enhetstre
 	addId(Array.of(dataCopy), 'Organisasjon', 0, null)
 
-	let enheterListe: Array<EnhetBestilling> = []
+	const enheterListe: Array<EnhetBestilling> = []
 
 	const enheterFlat = (enheter: Array<EnhetBestilling>) => {
 		enheter.forEach((enhet: EnhetBestilling) => {

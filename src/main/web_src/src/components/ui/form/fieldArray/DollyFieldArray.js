@@ -8,6 +8,13 @@ import ExpandableBlokk from './ExpandableBlokk'
 import './dollyFieldArray.less'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
+const numberColor = {
+	blaa: '#CCE3ED',
+	oransje: '#FFE5C2',
+	gronn: '#CDE7D8',
+	lilla: '#C1B5D0'
+}
+
 export const FieldArrayAddButton = ({
 	hoverText = null,
 	addEntryButtonText,
@@ -33,7 +40,7 @@ const DeleteButton = ({ onClick }) => {
 	return <Button kind="trashcan" onClick={onClick} title="Fjern" />
 }
 
-const Numbering = ({ idx, color = '#CCE3ED' }) => (
+const Numbering = ({ idx, color = numberColor.blaa }) => (
 	<span className="dfa-blokk-number" style={{ backgroundColor: color }}>
 		{idx}
 	</span>
@@ -87,21 +94,21 @@ export const DollyFaBlokkOrg = ({
 }) => {
 	const nivaa = (number.match(/\./g) || []).length + 1
 	const name = nivaa & 1 ? 'dfa-blokk-org-odd' : 'dfa-blokk-org-even'
-	const nivaaColor = () => {
+	const getNivaaColor = () => {
 		switch (nivaa) {
 			case 1:
-				return '#CCE3ED'
+				return numberColor.blaa
 			case 2:
-				return '#FFE5C2'
+				return numberColor.oransje
 			case 3:
-				return '#CDE7D8'
+				return numberColor.gronn
 			case 4:
-				return '#C1B5D0'
+				return numberColor.lilla
 			default:
-				return '#CCE3ED'
+				return numberColor.blaa
 		}
 	}
-	const color = nivaaColor()
+	const color = getNivaaColor()
 
 	return (
 		<div className={name}>

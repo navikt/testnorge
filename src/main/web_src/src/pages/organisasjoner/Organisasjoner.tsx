@@ -58,7 +58,7 @@ export default function Organisasjoner({
 	getOrganisasjoner
 }: Organisasjoner) {
 	const [visning, setVisning] = useState(VISNING_ORGANISASJONER)
-	const [brukerOrganisasjoner, setBrukerorganisasjoner] = useState(null)
+	const [organisasjonliste, setOrganisasjonliste] = useState(null)
 
 	const byttVisning = (event: React.ChangeEvent<any>) => setVisning(event.target.value)
 
@@ -82,7 +82,7 @@ export default function Organisasjoner({
 
 	const organisasjonerInfo = useAsync(async () => {
 		const response = await getOrganisasjonBestilling(brukerId)
-		setBrukerorganisasjoner(response.value.data)
+		setOrganisasjonliste(response.value.data)
 		let orgNumre: string[] = []
 		response.value.data.forEach((org: any) => {
 			if (org.ferdig && org.organisasjonNummer !== 'NA')
@@ -102,7 +102,7 @@ export default function Organisasjoner({
 	}, [])
 
 	const antallOrg = organisasjonerInfo.value ? organisasjonerInfo.value.length : 0
-	const antallBest = organisasjonerInfo.value ? organisasjonerInfo.value.length : 0
+	const antallBest = organisasjonliste ? organisasjonliste.length : 0
 
 	const startBestilling = (type: string) => {
 		history.push('/organisasjoner/bestilling', { opprettOrganisasjon: type })
@@ -112,6 +112,22 @@ export default function Organisasjoner({
 		<a href="https://nav-it.slack.com/archives/CA3P9NGA2" target="_blank">
 			#dolly
 		</a>
+	)
+
+	const tomOrgListe = () => (
+		<ContentContainer>
+			<p>
+				Du har for øyeblikket ingen testorganisasjoner. Trykk på knappen under for å opprette en
+				testorganisasjon med standard oppsett.
+			</p>
+			<NavButton
+				type="standard"
+				onClick={() => startBestilling(BestillingType.STANDARD)}
+				style={{ marginTop: '10px' }}
+			>
+				Opprett standard organisasjon
+			</NavButton>
+		</ContentContainer>
 	)
 
 	return (
@@ -170,39 +186,15 @@ export default function Organisasjoner({
 					) : antallOrg > 0 ? (
 						<OrganisasjonListe orgListe={organisasjonerInfo && organisasjonerInfo.value} />
 					) : (
-						<ContentContainer>
-							<p>
-								Du har for øyeblikket ingen testorganisasjoner. Trykk på knappen under for å
-								opprette en testorganisasjon med standard oppsett.
-							</p>
-							<NavButton
-								type="standard"
-								onClick={() => startBestilling(BestillingType.STANDARD)}
-								style={{ marginTop: '10px' }}
-							>
-								Opprett standard organisasjon
-							</NavButton>
-						</ContentContainer>
+						tomOrgListe()
 					))}
 				{visning === VISNING_BESTILLINGER &&
 					(isFetching ? (
 						<Loading label="laster bestillinger" panel />
 					) : antallOrg > 0 ? (
-						<OrganisasjonBestilling orgListe={brukerOrganisasjoner} />
+						<OrganisasjonBestilling orgListe={organisasjonliste} />
 					) : (
-						<ContentContainer>
-							<p>
-								Du har for øyeblikket ingen testorganisasjoner. Trykk på knappen under for å
-								opprette en testorganisasjon med standard oppsett.
-							</p>
-							<NavButton
-								type="standard"
-								onClick={() => startBestilling(BestillingType.STANDARD)}
-								style={{ marginTop: '10px' }}
-							>
-								Opprett standard organisasjon
-							</NavButton>
-						</ContentContainer>
+						tomOrgListe()
 					))}
 			</div>
 		</ErrorBoundary>
