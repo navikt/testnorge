@@ -76,16 +76,12 @@ public class DeploymentService {
 
     private void deployOrganisasjon(String uuid, Organisasjon organisasjon, String env) {
 
-        if (!organisasjon.getOrganisasjonsnummer().equals(
-                organisasjonApiConsumer.getStatus(organisasjon.getOrganisasjonsnummer(), env).getOrgnummer())) {
+        if (!organisasjon.getOrganisasjonsnummer()
+                .equals(organisasjonApiConsumer.getStatus(organisasjon.getOrganisasjonsnummer(), env).getOrgnummer())) {
 
             organisasjonMottakConsumer.opprettOrganisasjon(uuid, organisasjon, env);
         } else {
             organisasjonMottakConsumer.endreOrganisasjon(uuid, organisasjon, env);
-        }
-
-        if (!organisasjon.getUnderenheter().isEmpty()) {
-            organisasjon.getUnderenheter().forEach(org -> deployOrganisasjon(uuid, org, env));
         }
     }
 
