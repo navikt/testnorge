@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.arbeidsforhold.repository.model;
+package no.nav.registre.testnorge.arbeidsforhold.repository.db.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

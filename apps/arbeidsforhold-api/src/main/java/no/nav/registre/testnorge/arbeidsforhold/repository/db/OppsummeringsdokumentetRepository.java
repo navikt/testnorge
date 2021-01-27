@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.arbeidsforhold.repository;
+package no.nav.registre.testnorge.arbeidsforhold.repository.db;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,7 +8,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.List;
 import java.util.Optional;
 
-import no.nav.registre.testnorge.arbeidsforhold.repository.model.OppsummeringsdokumentetModel;
+import no.nav.registre.testnorge.arbeidsforhold.repository.db.model.OppsummeringsdokumentetModel;
 
 public interface OppsummeringsdokumentetRepository extends PagingAndSortingRepository<OppsummeringsdokumentetModel, Long> {
 

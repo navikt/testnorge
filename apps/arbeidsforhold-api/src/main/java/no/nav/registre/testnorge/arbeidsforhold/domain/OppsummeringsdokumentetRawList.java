@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.arbeidsforhold.repository.model.OppsummeringsdokumentetModel;
+import no.nav.registre.testnorge.arbeidsforhold.repository.db.model.OppsummeringsdokumentetModel;
 
 @Value
 public class OppsummeringsdokumentetRawList {

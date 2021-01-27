@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.arbeidsforhold.consumer.AaregSyntConsumer;
 import no.nav.registre.testnorge.arbeidsforhold.domain.Oppsummeringsdokumentet;
-import no.nav.registre.testnorge.arbeidsforhold.repository.OppsummeringsdokumentetRepository;
-import no.nav.registre.testnorge.arbeidsforhold.repository.model.OppsummeringsdokumentetModel;
+import no.nav.registre.testnorge.arbeidsforhold.repository.db.OppsummeringsdokumentetRepository;
+import no.nav.registre.testnorge.arbeidsforhold.repository.db.model.OppsummeringsdokumentetModel;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.EDAGM;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.ObjectFactory;
 

@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 import no.nav.registre.testnorge.arbeidsforhold.domain.OppsummeringsdokumentetRawList;
-import no.nav.registre.testnorge.arbeidsforhold.repository.OppsummeringsdokumentetRepository;
-import no.nav.registre.testnorge.arbeidsforhold.repository.model.OppsummeringsdokumentetModel;
+import no.nav.registre.testnorge.arbeidsforhold.repository.db.OppsummeringsdokumentetRepository;
+import no.nav.registre.testnorge.arbeidsforhold.repository.db.model.OppsummeringsdokumentetModel;
 
 @Slf4j
 @Component
