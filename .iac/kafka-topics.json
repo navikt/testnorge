@@ -111,8 +111,8 @@
           "role": "CONSUMER"
         }
       ],
-      "numPartitions": 5,
-      "topicName": "tn-opprett-organisasjon-v2-1"
+      "numPartitions": 3,
+      "topicName": "tn-opprett-organisasjon-v2-2"
     },
     {
       "configEntries": {
@@ -133,8 +133,8 @@
           "role": "CONSUMER"
         }
       ],
-      "numPartitions": 5,
-      "topicName": "tn-endre-organisasjon-v1-1"
+      "numPartitions": 3,
+      "topicName": "tn-endre-organisasjon-v1-2"
     }
   ]
 }

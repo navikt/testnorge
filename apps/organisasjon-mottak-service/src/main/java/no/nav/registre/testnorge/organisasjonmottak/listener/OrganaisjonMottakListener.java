@@ -9,6 +9,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -59,34 +60,31 @@ public class OrganaisjonMottakListener {
     }
 
     private void save(String uuid, String miljo, Organisasjon organisasjon, boolean update) {
+        eregConsumer.save(Flatfil.create(createRecords(organisasjon, update)), miljo, uuid);
+    }
+
+    private List<Record> createRecords(Organisasjon organisasjon, boolean update) {
+        List<Record> list = new ArrayList<>();
+        createRecords(list, organisasjon, null, update);
+        return list;
+    }
+
+    private void createRecords(List<Record> records, Organisasjon organisasjon, Organisasjon parent, boolean update) {
         var list = new ArrayList<ToLine>();
 
-        Optional.ofNullable(organisasjon.getNavn())
-                .ifPresent(value -> list.add(new DetaljertNavn(value)));
-        Optional.ofNullable(organisasjon.getAnsatte())
-                .ifPresent(value -> list.add(new Ansatte(value)));
-        Optional.ofNullable(organisasjon.getInternettadresse())
-                .ifPresent(value -> list.add(new Internettadresse(value)));
-        Optional.ofNullable(organisasjon.getEpost())
-                .ifPresent(value -> list.add(new Epost(value)));
-        Optional.ofNullable(organisasjon.getSektorkode())
-                .ifPresent(value -> list.add(new Sektorkode(value)));
-        Optional.ofNullable(organisasjon.getStiftelsesdato())
-                .ifPresent(value -> list.add(new Stiftelsesdato(value)));
-        Optional.ofNullable(organisasjon.getTelefon())
-                .ifPresent(value -> list.add(new Telefon(value)));
-        Optional.ofNullable(organisasjon.getNaeringskode())
-                .ifPresent(value -> list.add(new Naeringskode(value)));
-        Optional.ofNullable(organisasjon.getMaalform())
-                .ifPresent(value -> list.add(new Maalform(value)));
-        Optional.ofNullable(organisasjon.getKnytning())
-                .ifPresent(value -> list.add(new Knytning(value, organisasjon)));
-        Optional.ofNullable(organisasjon.getForretningsadresse())
-                .ifPresent(value -> list.add(new Forretningsadresse(value)));
-        Optional.ofNullable(organisasjon.getPostadresse())
-                .ifPresent(value -> list.add(new Postadresse(value)));
-        Optional.ofNullable(organisasjon.getFormaal())
-                .ifPresent(value -> list.add(new Formaal(value)));
+        Optional.ofNullable(organisasjon.getNavn()).ifPresent(value -> list.add(new DetaljertNavn(value)));
+        Optional.ofNullable(organisasjon.getAnsatte()).ifPresent(value -> list.add(new Ansatte(value)));
+        Optional.ofNullable(organisasjon.getInternettadresse()).ifPresent(value -> list.add(new Internettadresse(value)));
+        Optional.ofNullable(organisasjon.getEpost()).ifPresent(value -> list.add(new Epost(value)));
+        Optional.ofNullable(organisasjon.getSektorkode()).ifPresent(value -> list.add(new Sektorkode(value)));
+        Optional.ofNullable(organisasjon.getStiftelsesdato()).ifPresent(value -> list.add(new Stiftelsesdato(value)));
+        Optional.ofNullable(organisasjon.getTelefon()).ifPresent(value -> list.add(new Telefon(value)));
+        Optional.ofNullable(organisasjon.getNaeringskode()).ifPresent(value -> list.add(new Naeringskode(value)));
+        Optional.ofNullable(organisasjon.getMaalform()).ifPresent(value -> list.add(new Maalform(value)));
+        Optional.ofNullable(organisasjon.getForretningsadresse()).ifPresent(value -> list.add(new Forretningsadresse(value)));
+        Optional.ofNullable(organisasjon.getPostadresse()).ifPresent(value -> list.add(new Postadresse(value)));
+        Optional.ofNullable(organisasjon.getFormaal()).ifPresent(value -> list.add(new Formaal(value)));
+        Optional.ofNullable(parent).ifPresent(value -> list.add(new Knytning(value, organisasjon)));
 
         var record = Record.create(
                 list.stream().map(ToLine::toLine).collect(Collectors.toList()),
@@ -94,6 +92,8 @@ public class OrganaisjonMottakListener {
                 organisasjon.getEnhetstype(),
                 update
         );
-        eregConsumer.save(Flatfil.create(record), miljo, uuid);
+
+        records.add(record);
+        organisasjon.getUnderenheter().forEach(value -> createRecords(records, value, organisasjon, update));
     }
 }
