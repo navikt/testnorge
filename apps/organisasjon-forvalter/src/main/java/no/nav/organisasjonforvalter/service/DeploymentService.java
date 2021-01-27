@@ -13,7 +13,6 @@ import no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse.Status;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.List;
 import java.util.Map;
@@ -39,7 +38,7 @@ public class DeploymentService {
         List<Organisasjon> organisasjoner = organisasjonRepository.findAllByOrganisasjonsnummerIn(request.getOrgnumre());
         if (organisasjoner.isEmpty()) {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, format("Ingen organisasjoner %s funnet!",
-                    request.getOrgnumre().stream().collect(Collectors.joining(","))));
+                    String.join(",", request.getOrgnumre())));
         }
 
         Map<String, List<EnvStatus>> status = organisasjoner.stream()
@@ -87,13 +86,24 @@ public class DeploymentService {
     }
 
     private List<EnvStatus> syncStatus(List<EnvStatus> envStatuses) {
-        return envStatuses.parallelStream().map(envStatus ->
-                EnvStatus.builder()
-                        .uuid(envStatus.getUuid())
-                        .environment(envStatus.getEnvironment())
-                        .status(getStatus(envStatus.getUuid(), envStatus.getStatus()))
-                        .details(envStatus.getDetails())
-                        .build())
+        return envStatuses.parallelStream()
+                .map(envStatus -> {
+                    try {
+                        return EnvStatus.builder()
+                                .uuid(envStatus.getUuid())
+                                .environment(envStatus.getEnvironment())
+                                .status(getStatus(envStatus.getUuid(), envStatus.getStatus()))
+                                .details(envStatus.getDetails())
+                                .build();
+                    } catch (RuntimeException e) {
+                        return EnvStatus.builder()
+                                .uuid(envStatus.getUuid())
+                                .environment(envStatus.getEnvironment())
+                                .status(ERROR)
+                                .details(e.getMessage())
+                                .build();
+                    }
+                })
                 .collect(Collectors.toList());
     }
 
