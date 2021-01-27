@@ -13,14 +13,12 @@ import no.nav.dolly.service.OrganisasjonNummerService;
 import no.nav.dolly.service.OrganisasjonProgressService;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -129,12 +127,11 @@ public class OrganisasjonClientTest {
     }
 
     @Test
-    public void should_throw_httpclienterror_for_invalid_orgnummer_response() {
+    public void should_set_bestillingfeil_for_invalid_orgnummer_response() {
 
         when(organisasjonConsumer.postOrganisasjon(any())).thenReturn(new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR));
 
-        Assertions.assertThrows(HttpClientErrorException.class, () ->
-                organisasjonClient.opprett(bestilling, BESTILLING_ID));
+        organisasjonClient.opprett(bestilling, BESTILLING_ID);
 
         verify(organisasjonBestillingService, times(1)
                 .description("Skal sette feil på bestillingen nøyaktig en gang"))

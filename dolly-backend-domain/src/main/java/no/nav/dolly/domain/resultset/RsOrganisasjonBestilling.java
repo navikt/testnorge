@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +22,8 @@ import static java.util.Objects.isNull;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RsOrganisasjonBestilling {
+
+    public enum MaalformType {B, N}
 
     @Schema(description = "Liste av miljøer bestillingen skal deployes til")
     private List<String> environments;
@@ -42,13 +44,19 @@ public class RsOrganisasjonBestilling {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class SyntetiskOrganisasjon {
 
+        @Schema(required = true, example = "BEDR", description = "I hht kodeverk EnhetstyperJuridiskEnhet eller EnhetstyperVirksomhet")
         private String enhetstype;
+        @Schema(example = "28.930", description = "I hht kodeverk Næringskoder")
         private String naeringskode;
+        @Schema(example = "6100", description = "I hht kodeverk Sektorkoder")
+        private String sektorkode;
+        @Schema(example = "Oppnå utjevning mellom kulturelle forskjeller", description = "Fritekstfelt opptil 70 tegn")
         private String formaal;
         private String telefon;
         private String epost;
         private String nettside;
-        private LocalDateTime stiftelsesdato;
+        private MaalformType maalform;
+        private LocalDate stiftelsesdato;
 
         private Adresse forretningsadresse;
         private Adresse postadresse;

@@ -1,11 +1,11 @@
 package no.nav.dolly.bestilling.organisasjonforvalter;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.BestillingRequest;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.BestillingResponse;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployResponse;
+import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.properties.ProvidersProps;
 import no.nav.dolly.security.oauth2.domain.AccessScopes;
@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,7 +27,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class OrganisasjonConsumer {
 
     private static final String ORGANISASJON_FORVALTER_URL = "/api/v1/organisasjon";
@@ -36,30 +34,36 @@ public class OrganisasjonConsumer {
     private static final String ORGANISASJON_DEPLOYMENT_URL = ORGANISASJON_FORVALTER_URL + "/deployment";
     private static final String BEARER = "Bearer ";
 
-    private final ProvidersProps providersProps;
     private final TokenService tokenService;
-    private final WebClient webClient = WebClient.builder().build();
+    private final WebClient webClient;
+
+    public OrganisasjonConsumer(ProvidersProps providersProps, TokenService tokenService) {
+        this.tokenService = tokenService;
+        this.webClient = WebClient.builder()
+                .baseUrl(providersProps.getOrganisasjonForvalter().getUrl())
+                .build();
+    }
 
     @Value("${ORGANISASJON_FORVALTER_CLIENT_ID}")
     private String organisasjonerClientId;
 
     @Timed(name = "providers", tags = { "operation", "organisasjon-hent" })
-    public ResponseEntity<BestillingRequest> hentOrganisasjon(List<Long> orgnumre) {
+    public OrganisasjonDetaljer hentOrganisasjon(List<String> orgnumre) {
 
         AccessToken accessToken = getAccessToken("Organisasjon hent request sendt, callId: {}, consumerId: {}");
 
         return webClient
                 .get()
                 .uri(uriBuilder ->
-                        uriBuilder.path(providersProps.getOrganisasjonForvalter().getUrl() + ORGANISASJON_FORVALTER_URL)
+                        uriBuilder.path(ORGANISASJON_FORVALTER_URL)
                                 .queryParam("orgnumre", orgnumre)
                                 .build())
                 .header(AUTHORIZATION, BEARER + accessToken.getTokenValue())
                 .header(HEADER_NAV_CALL_ID, getNavCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve()
-                .toEntity(BestillingRequest.class)
-                .block();
+                .bodyToFlux(OrganisasjonDetaljer.class)
+                .blockFirst();
     }
 
 
@@ -70,7 +74,7 @@ public class OrganisasjonConsumer {
 
         return webClient
                 .post()
-                .uri(URI.create(providersProps.getOrganisasjonForvalter().getUrl() + ORGANISASJON_BESTILLING_URL))
+                .uri(uriBuilder -> uriBuilder.path(ORGANISASJON_BESTILLING_URL).build())
                 .header(AUTHORIZATION, BEARER + accessToken.getTokenValue())
                 .header(HEADER_NAV_CALL_ID, getNavCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
@@ -99,7 +103,7 @@ public class OrganisasjonConsumer {
     private ResponseEntity<DeployResponse> sendDeployOrganisasjonRequest(DeployRequest deployRequest, String callId, AccessToken accessToken) {
         return webClient
                 .post()
-                .uri(URI.create(providersProps.getOrganisasjonForvalter().getUrl() + ORGANISASJON_DEPLOYMENT_URL))
+                .uri(uriBuilder -> uriBuilder.path(ORGANISASJON_DEPLOYMENT_URL).build())
                 .header(AUTHORIZATION, BEARER + accessToken.getTokenValue())
                 .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)

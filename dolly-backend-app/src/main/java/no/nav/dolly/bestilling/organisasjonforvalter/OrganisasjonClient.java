@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.organisasjonforvalter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.OrganisasjonRegister;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.BestillingRequest;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.BestillingResponse;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
@@ -36,9 +35,9 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class OrganisasjonClient implements OrganisasjonRegister {
+public class OrganisasjonClient {
 
-    private static final String FEIL_UGYLDIGE_ORGNUMRE = "Feil= Ugyldig deployment, liste med miljø eller orgnumre eksisterer ikke";
+    private static final String FEIL_UGYLDIGE_ORGNUMRE = "FEIL= Ugyldig deployment, liste med miljø eller orgnumre eksisterer ikke";
     public static final String FEIL_STATUS_ORGFORVALTER_DEPLOY = "FEIL= Mottok ikke status fra Org-Forvalter deploy";
 
     private final OrganisasjonConsumer organisasjonConsumer;
@@ -49,7 +48,6 @@ public class OrganisasjonClient implements OrganisasjonRegister {
     private final MapperFacade mapperFacade;
 
     @Async
-    @Override
     public void opprett(RsOrganisasjonBestilling bestilling, Long bestillingId) {
 
         BestillingRequest bestillingRequest = BestillingRequest.builder()
@@ -71,10 +69,6 @@ public class OrganisasjonClient implements OrganisasjonRegister {
                 log.info("Bestiller orgnumre fra Organisasjon Forvalter");
                 ResponseEntity<BestillingResponse> response = organisasjonConsumer.postOrganisasjon(bestillingRequest);
 
-                if (!response.hasBody()) {
-                    throw new DollyFunctionalException("Response fra org forvalteren mangler body");
-                }
-
                 orgnumre.addAll(requireNonNull(response.getBody()).getOrgnummer());
                 if (!organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId).isEmpty()) {
                     List<OrganisasjonBestillingProgress> organisasjonBestillingProgresses = organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId);
@@ -90,14 +84,13 @@ public class OrganisasjonClient implements OrganisasjonRegister {
 
                 log.error("Feilet med å opprette organisasjon(er)", e);
                 organisasjonBestillingService.setBestillingFeil(bestillingId, errorStatusDecoder.decodeRuntimeException(e));
-                throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Feilet med å opprette organisasjon(er)");
+                organisasjonProgressService.setBestillingFeil(bestillingId, errorStatusDecoder.decodeRuntimeException(e));
             }
         });
         organisasjonBestillingService.setBestillingFerdig(bestillingId);
     }
 
     @Async
-    @Override
     public DeployResponse gjenopprett(DeployRequest request) {
 
         ResponseEntity<DeployResponse> deployResponseResponseEntity = organisasjonConsumer.gjenopprettOrganisasjon(request);
@@ -186,7 +179,6 @@ public class OrganisasjonClient implements OrganisasjonRegister {
         return status.toString();
     }
 
-    @Override
     public void release(List<String> orgnummer) {
 
         throw new UnsupportedOperationException("Release ikke implementert");

@@ -3,7 +3,7 @@ package no.nav.dolly.provider.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.bestilling.OrganisasjonRegister;
+import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonClient;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
@@ -33,7 +33,7 @@ import static no.nav.dolly.config.CachingConfig.CACHE_ORG_BESTILLING;
 @RequestMapping(value = "api/v1/organisasjon")
 public class OrganisasjonController {
 
-    private final OrganisasjonRegister organisasjonClient;
+    private final OrganisasjonClient organisasjonClient;
     private final OrganisasjonBestillingService bestillingService;
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -77,7 +77,7 @@ public class OrganisasjonController {
     }
 
     @GetMapping("/bestillingsstatus")
-    @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
+    @Cacheable(value = CACHE_ORG_BESTILLING)
     @Operation(description = "Hent status på bestilling basert på brukerId")
     public List<RsOrganisasjonBestillingStatus> hentBestillingStatus(
             @Parameter(description = "BrukerID som er unik til en Azure bruker (Dolly autensiering)", example = "1k9242uc-638g-1234-5678-7894k0j7lu6n") @RequestParam String brukerId) {
