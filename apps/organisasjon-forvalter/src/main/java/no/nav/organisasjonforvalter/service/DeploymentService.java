@@ -10,6 +10,7 @@ import no.nav.organisasjonforvalter.provider.rs.requests.DeployRequest;
 import no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse;
 import no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse.EnvStatus;
 import no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse.Status;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 import static java.lang.String.format;
 import static no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse.Status.ERROR;
 import static no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse.Status.OK;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
@@ -93,7 +95,8 @@ public class DeploymentService {
                                 .uuid(envStatus.getUuid())
                                 .environment(envStatus.getEnvironment())
                                 .status(getStatus(envStatus.getUuid(), envStatus.getStatus()))
-                                .details(envStatus.getDetails())
+                                .details(envStatus.getStatus() == ERROR && isBlank(envStatus.getDetails()) ?
+                                        "Timeout, ingen fremdrift de siste tre minutter" : envStatus.getDetails())
                                 .build();
                     } catch (RuntimeException e) {
                         return EnvStatus.builder()
