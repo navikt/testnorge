@@ -1,5 +1,5 @@
 export type Enhet = {
-	name: string
+	organisasjonsnavn: string
 	id: number
 	underenheter?: any[]
 }

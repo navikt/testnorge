@@ -38,7 +38,8 @@ export const SortKodeverkArray = data => {
 	if (
 		data.name === 'Postnummer' ||
 		data.name === 'Postnummer vegadresser' ||
-		data.name === 'Kommuner'
+		data.name === 'Kommuner' ||
+		data.name === 'Næringskoder'
 	) {
 		return kodeverk.map(kode => ({
 			label: `${kode.value} - ${kode.label}`,

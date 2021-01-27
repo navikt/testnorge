@@ -159,5 +159,18 @@ export default {
 
 	getDokarkivDokumentinfo(journalpostId, miljoe) {
 		return Request.get(Endpoints.dokarkivDokumentinfo(journalpostId, miljoe))
+	},
+
+	//* Organisasjoner
+	getOrganisasjonsnummerByUserId(userId) {
+		return Request.get(Endpoints.organisasonStatusByUser(userId))
+	},
+
+	createOrganisasjonBestilling(data) {
+		return Request.post(Endpoints.organisasjonBestilling(), data)
+	},
+
+	getOrganisasjonBestillingStatus(bestillingId) {
+		return Request.get(Endpoints.organisasonStatusByBestillingId(bestillingId))
 	}
 }

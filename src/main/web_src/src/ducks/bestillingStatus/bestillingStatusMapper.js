@@ -16,6 +16,9 @@ import Formatters from '~/utils/DataFormatter'
 const finnesDetAvvikForBestillinger = status => {
 	if (!status) return false
 	return status.some(source => {
+		if (source.organisasjonsforvalterStatus) {
+			return source.organisasjonsforvalterStatus !== 'OK'
+		}
 		return source.statuser.some(status => status.melding !== 'OK')
 	})
 }
@@ -65,7 +68,7 @@ const extractBestillingstatusKode = (bestilling, harAvvik, antallIdenterOpprette
 const extractValuesForBestillingListe = (data, statusKode) => {
 	const values = {
 		id: data.id.toString(),
-		antallIdenter: data.antallIdenter.toString(),
+		antallIdenter: data.antallIdenter ? data.antallIdenter.toString() : 0,
 		sistOppdatert: Formatters.formatDate(data.sistOppdatert),
 		environments: Formatters.arrayToString(data.environments),
 		statusKode

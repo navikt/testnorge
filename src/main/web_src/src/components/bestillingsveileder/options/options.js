@@ -25,30 +25,30 @@ export const BVOptions = ({
 	let initialValuesOrganisasjon = {
 		environments: [],
 		organisasjon: {
-			organisasjonsform: null
+			enhetstype: ''
 		}
 	}
 
 	let initialValuesStandardOrganisasjon = {
 		environments: [],
 		organisasjon: {
-			organisasjonsform: 'AS',
+			enhetstype: 'AS',
 			naeringskode: '01.451',
 			forretningsadresse: {
-				landkode: 'NOR',
-				adresseLinje1: 'Fyrstikkalleen 1',
-				adresseLinje2: '',
-				postnr: '0661'
+				adresselinjer: ['Fyrstikkalleen 1', '', ''],
+				postnr: '0661',
+				kommunenr: '0301',
+				landkode: 'NOR'
 			},
 			underenheter: [
 				{
-					organisasjonsform: 'BEDR',
+					enhetstype: 'BEDR',
 					naeringskode: '01.451',
 					forretningsadresse: {
-						landkode: 'NOR',
-						adresseLinje1: 'Fyrstikkalleen 1',
-						adresseLinje2: '',
-						postnr: '0661'
+						adresselinjer: ['Fyrstikkalleen 1', '', ''],
+						postnr: '0661',
+						kommunenr: '0301',
+						landkode: 'NOR'
 					}
 				}
 			]

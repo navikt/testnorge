@@ -11,27 +11,26 @@ export const OrganisasjonDetaljerPanel = ({ stateModifier }: any) => {
 			heading={OrganisasjonDetaljerPanel.heading}
 			startOpen
 			checkAttributeArray={sm.batchAdd}
-			uncheckAttributeArray={sm.batchRemove}
+			uncheckAttributeArray={() => sm.batchRemove('enhetstype')}
 			iconType="personinformasjon"
 		>
 			<AttributtKategori title="Organisasjon">
 				<Attributt
-					attr={sm.attrs.organisasjonsform}
+					attr={sm.attrs.enhetstype}
 					disabled={true}
-					title="Det er obligatorisk å velge organisasjonsform for organisasjonen"
+					title="Det er obligatorisk å velge enhetstype for organisasjonen"
 				/>
 				<Attributt attr={sm.attrs.naeringskode} />
 				<Attributt attr={sm.attrs.formaal} />
 			</AttributtKategori>
+			<AttributtKategori title="Kontaktdata">
+				<Attributt attr={sm.attrs.telefon} />
+				<Attributt attr={sm.attrs.epost} />
+				<Attributt attr={sm.attrs.nettside} />
+			</AttributtKategori>
 			<AttributtKategori title="Adresser">
 				<Attributt attr={sm.attrs.forretningsadresse} />
 				<Attributt attr={sm.attrs.postadresse} />
-			</AttributtKategori>
-			<AttributtKategori title="Kontaktdata">
-				<Attributt attr={sm.attrs.telefon} />
-				<Attributt attr={sm.attrs.mobiltelefon} />
-				<Attributt attr={sm.attrs.epost} />
-				<Attributt attr={sm.attrs.nettadresse} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -41,57 +40,52 @@ OrganisasjonDetaljerPanel.heading = 'Detaljer'
 
 OrganisasjonDetaljerPanel.initialValues = ({ set, del, has }: any) => {
 	return {
-		organisasjonsform: {
-			label: 'Organisasjonsform',
-			checked: has('organisasjon.organisasjonsform'),
-			add: () => set('organisasjon.organisasjonsform', null),
-			remove: () => del('organisasjon.organisasjonsform')
+		enhetstype: {
+			label: 'Enhetstype',
+			checked: has('organisasjon.enhetstype'),
+			add: () => set('organisasjon.enhetstype', ''),
+			remove: () => del('organisasjon.enhetstype')
 		},
 		naeringskode: {
 			label: 'Næringskode',
 			checked: has('organisasjon.naeringskode'),
-			add: () => set('organisasjon.naeringskode', null),
+			add: () => set('organisasjon.naeringskode', ''),
 			remove: () => del('organisasjon.naeringskode')
 		},
 		formaal: {
 			label: 'Formål',
 			checked: has('organisasjon.formaal'),
-			add: () => set('organisasjon.formaal', null),
+			add: () => set('organisasjon.formaal', ''),
 			remove: () => del('organisasjon.formaal')
 		},
 		telefon: {
 			label: 'Telefon',
 			checked: has('organisasjon.telefon'),
-			add: () => set('organisasjon.telefon', null),
+			add: () => set('organisasjon.telefon', ''),
 			remove: () => del('organisasjon.telefon')
-		},
-		mobiltelefon: {
-			label: 'Mobiltelefon',
-			checked: has('organisasjon.mobiltelefon'),
-			add: () => set('organisasjon.mobiltelefon', null),
-			remove: () => del('organisasjon.mobiltelefon')
 		},
 		epost: {
 			label: 'E-postadresse',
 			checked: has('organisasjon.epost'),
-			add: () => set('organisasjon.epost', null),
+			add: () => set('organisasjon.epost', ''),
 			remove: () => del('organisasjon.epost')
 		},
-		nettadresse: {
+		nettside: {
 			label: 'Internettadresse',
-			checked: has('organisasjon.nettadresse'),
-			add: () => set('organisasjon.nettadresse', null),
-			remove: () => del('organisasjon.nettadresse')
+			checked: has('organisasjon.nettside'),
+			add: () => set('organisasjon.nettside', ''),
+			remove: () => del('organisasjon.nettside')
 		},
 		forretningsadresse: {
 			label: 'Forretningsadresse',
 			checked: has('organisasjon.forretningsadresse'),
 			add: () =>
 				set('organisasjon.forretningsadresse', {
-					landkode: 'NOR',
-					adresseLinje1: '',
-					adresseLinje2: '',
-					postnr: ''
+					adresselinjer: ['', '', ''],
+					postnr: '',
+					kommunenr: '',
+					landkode: 'NO',
+					poststed: ''
 				}),
 			remove: () => del('organisasjon.forretningsadresse')
 		},
@@ -100,10 +94,11 @@ OrganisasjonDetaljerPanel.initialValues = ({ set, del, has }: any) => {
 			checked: has('organisasjon.postadresse'),
 			add: () =>
 				set('organisasjon.postadresse', {
-					landkode: 'NOR',
-					adresseLinje1: '',
-					adresseLinje2: '',
-					postnr: ''
+					adresselinjer: ['', '', ''],
+					postnr: '',
+					kommunenr: '',
+					landkode: 'NO',
+					poststed: ''
 				}),
 			remove: () => del('organisasjon.postadresse')
 		}

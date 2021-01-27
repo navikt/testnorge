@@ -7,6 +7,7 @@ import BestillingResultat from './BestillingResultat/BestillingResultat'
 export default function StatusListe(props) {
 	const {
 		isFetchingBestillinger,
+		isFetchingOrgBestillinger,
 		nyeBestillinger,
 		isCanceling,
 		brukerBilde,
@@ -21,7 +22,7 @@ export default function StatusListe(props) {
 		getBestillinger()
 	}
 
-	if (isFetchingBestillinger) return false
+	if (isFetchingBestillinger || isFetchingOrgBestillinger) return false
 
 	if (isCanceling) {
 		return (

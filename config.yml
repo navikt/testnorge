@@ -44,7 +44,7 @@ spec:
     limits:
       cpu: 1500m
       memory: 2048Mi
-  image: {{ image }}
+  image: { { image } }
   env:
     - name: TESTNORGE_PROFIL_API_CLIENT_ID
       value: e8e0772f-8204-4b88-88ad-233d62863f47
@@ -54,6 +54,8 @@ spec:
       value: https://dolly-backend.dev.adeo.no
     - name: TESTNORGE_PROFIL_API_HOST
       value: https://testnorge-profil-api.dev.intern.nav.no
+    - name: ORGANISASJON_FORVALTER_HOST
+      value: https://organisasjon-forvalter.dev.intern.nav.no
   vault:
     enabled: true
     paths:

@@ -13,19 +13,19 @@ export const Node = (props: NodeProps) => {
 	if (props.hasChildren) {
 		return (
 			<div
-				onClick={() => props.onNodeClick(props.enhet)}
+				onClick={() => props.onNodeClick(props.enhet.id)}
 				className={props.isSelected ? 'rectangle-corner-selected' : 'rectangle-corner'}
 			>
-				{props.enhet.name}
+				{props.enhet.organisasjonsnavn}
 			</div>
 		)
 	} else {
 		return (
 			<div
-				onClick={() => props.onNodeClick(props.enhet)}
+				onClick={() => props.onNodeClick(props.enhet.id)}
 				className={props.isSelected ? 'rectangle-selected' : 'rectangle'}
 			>
-				{props.enhet.name}
+				{props.enhet.organisasjonsnavn}
 			</div>
 		)
 	}
