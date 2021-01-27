@@ -91,11 +91,12 @@ public class DeploymentService {
         return envStatuses.parallelStream()
                 .map(envStatus -> {
                     try {
+                        Status deployStatus = getStatus(envStatus.getUuid(), envStatus.getStatus());
                         return EnvStatus.builder()
                                 .uuid(envStatus.getUuid())
                                 .environment(envStatus.getEnvironment())
-                                .status(getStatus(envStatus.getUuid(), envStatus.getStatus()))
-                                .details(envStatus.getStatus() == ERROR && isBlank(envStatus.getDetails()) ?
+                                .status(deployStatus)
+                                .details(deployStatus == ERROR && isBlank(envStatus.getDetails()) ?
                                         "Timeout, ingen fremdrift de siste tre minutter" : envStatus.getDetails())
                                 .build();
                     } catch (RuntimeException e) {

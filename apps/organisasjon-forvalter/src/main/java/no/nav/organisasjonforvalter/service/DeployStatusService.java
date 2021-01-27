@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingStatusConsumer.ItemStatus.COMPLETED;
 import static no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingStatusConsumer.ItemStatus.ERROR;
@@ -31,7 +32,7 @@ public class DeployStatusService {
 
         var elapsedTime = System.currentTimeMillis() - lastUpdate;
         if (elapsedTime > MAX_WAIT_WITHOUT_UPDATE) {
-            log.warn("Status ikke oppdatert på {} ms. Deploy avbrytes.");
+            log.warn(format("Status ikke oppdatert på %d ms. Deploy avbrytes.", MAX_WAIT_WITHOUT_UPDATE));
         }
 
         return !statusTotal.isEmpty() && (isOK(statusTotal, lastUpdate) ||
