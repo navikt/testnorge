@@ -65,6 +65,7 @@ OrganisasjonForm.validation = {
 			naeringskode: ifPresent('$organisasjon.naeringskode', requiredString),
 			formaal: ifPresent('$organisasjon.formaal', requiredString),
 			stiftelsesdato: ifPresent('$organisasjon.stiftelsesdato', requiredString),
+			maalform: ifPresent('$organisasjon.maalform', requiredString),
 			telefon: ifPresent('$organisasjon.telefon', requiredString),
 			epost: ifPresent('$organisasjon.epost', requiredString),
 			nettside: ifPresent('$organisasjon.nettside', requiredString),

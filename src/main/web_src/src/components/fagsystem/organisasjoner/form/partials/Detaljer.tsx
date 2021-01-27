@@ -8,6 +8,7 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { OrganisasjonKodeverk } from '~/config/kodeverk'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { FormikProps } from 'formik'
@@ -98,6 +99,13 @@ export const Detaljer = ({ formikBag, path, level, number }: Detaljer) => {
 				/>
 				<FormikTextInput name={`${path}.formaal`} label="Formål" size="xlarge" />
 				<FormikDatepicker name={`${path}.stiftelsesdato`} label="Stiftelsesdato" />
+				<FormikSelect
+					name={`${path}.maalform`}
+					label="Målform"
+					options={Options('maalform')}
+					isClearable={false}
+					visHvisAvhuket
+				/>
 			</Kategori>
 
 			<Kontaktdata path={path} />

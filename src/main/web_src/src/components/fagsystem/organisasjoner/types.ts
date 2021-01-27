@@ -3,6 +3,7 @@ export type EnhetBestilling = {
 	naeringskode?: string
 	formaal?: string
 	stiftelsesdato?: string
+	maalform?: string
 	telefon?: string
 	epost?: string
 	nettside?: string
@@ -20,6 +21,7 @@ export type EnhetData = {
 	naeringskode?: string
 	formaal?: string
 	stiftelsesdato?: string
+	maalform?: string
 	telefon?: string
 	epost?: string
 	nettside?: string
