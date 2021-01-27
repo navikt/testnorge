@@ -31,7 +31,7 @@ import static java.lang.System.currentTimeMillis;
 @Service
 public class OrganisasjonApiConsumer {
 
-    private static final int TIMEOUT_MS = 10_000;
+    private static final int TIMEOUT_S = 10;
     private static final String STATUS_URL = "/api/v1/organisasjoner/{orgnummer}";
     private static final String MILJOE = "miljo";
 
@@ -49,11 +49,11 @@ public class OrganisasjonApiConsumer {
                 .clientConnector(new ReactorClientHttpConnector(
                         HttpClient.create()
                                 .tcpConfiguration(tcpClient -> tcpClient
-                                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, TIMEOUT_MS)
+                                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, TIMEOUT_S * 1000)
                                         .doOnConnected(connection ->
                                                 connection
-                                                        .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_MS))
-                                                        .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_MS))))))
+                                                        .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_S))
+                                                        .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_S))))))
                 .build();
         this.accessTokenService = accessTokenService;
         this.accessScopes = new AccessScopes("api://" + clientId + "/.default");

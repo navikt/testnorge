@@ -18,10 +18,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.netty.http.client.HttpClient;
-import reactor.netty.tcp.ProxyProvider;
 
-import java.net.URI;
-import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,7 +31,7 @@ import static java.util.Objects.nonNull;
 public class TpsfAdresseConsumer {
 
     private static final String OK_STATUS = "00";
-    private static final int TIMEOUT_MS = 10_000;
+    private static final int TIMEOUT_S = 10;
     private static final String ADRESSE_URL = "/api/v1/gyldigadresse/tilfeldig?maxAntall=";
 
     private final WebClient webClient;
@@ -47,11 +44,11 @@ public class TpsfAdresseConsumer {
                 .clientConnector(new ReactorClientHttpConnector(
                         HttpClient.create()
                                 .tcpConfiguration(tcpClient -> tcpClient
-                                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, TIMEOUT_MS)
+                                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, TIMEOUT_S * 1000)
                                         .doOnConnected(connection ->
                                                 connection
-                                                        .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_MS))
-                                                        .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_MS))))))
+                                                        .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_S))
+                                                        .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_S))))))
                 .build();
     }
 
@@ -100,7 +97,7 @@ public class TpsfAdresseConsumer {
 
         } catch (RuntimeException e) {
 
-            log.error("Henting av adresse timeout etter {} ms", TIMEOUT_MS, e);
+            log.error("Henting av adresse timeout etter {} ms", TIMEOUT_S, e);
             return getDefaultADresse();
         }
     }

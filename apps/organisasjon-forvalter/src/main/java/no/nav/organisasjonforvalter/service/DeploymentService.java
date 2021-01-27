@@ -69,7 +69,8 @@ public class DeploymentService {
                 .orgStatus(status.keySet().parallelStream()
                         .collect(Collectors.toMap(
                                 orgnr -> orgnr,
-                                orgnr -> syncStatus(status.get(orgnr), request.getEnvironments().size()))))
+                                orgnr -> syncStatus(status.get(orgnr), MAX_TIMEOUT_PER_ENV *
+                                        request.getEnvironments().size()))))
                 .build();
     }
 
@@ -85,18 +86,18 @@ public class DeploymentService {
         }
     }
 
-    private List<EnvStatus> syncStatus(List<EnvStatus> envStatuses, int envCount) {
+    private List<EnvStatus> syncStatus(List<EnvStatus> envStatuses, long maxTimeoutWithoutUpdate) {
         return envStatuses.parallelStream()
                 .map(envStatus -> {
                     try {
-                        Status deployStatus = getStatus(envStatus.getUuid(), envStatus.getStatus(), envCount);
+                        Status deployStatus = getStatus(envStatus.getUuid(), envStatus.getStatus(), maxTimeoutWithoutUpdate);
                         return EnvStatus.builder()
                                 .uuid(envStatus.getUuid())
                                 .environment(envStatus.getEnvironment())
                                 .status(deployStatus)
                                 .details(deployStatus == ERROR && isBlank(envStatus.getDetails()) ?
-                                        format("Timeout, oppretting ikke fullført etter %d ms",
-                                                envCount * MAX_TIMEOUT_PER_ENV)
+                                        format("Timeout, oppretting ikke fullført etter %d sekunder",
+                                                maxTimeoutWithoutUpdate / 1000L )
                                         : envStatus.getDetails())
                                 .build();
                     } catch (RuntimeException e) {
@@ -111,7 +112,7 @@ public class DeploymentService {
                 .collect(Collectors.toList());
     }
 
-    private Status getStatus(String uuid, Status status, int envCount) {
-        return status == OK ? deployStatusService.checkStatus(uuid, envCount * MAX_TIMEOUT_PER_ENV) : status;
+    private Status getStatus(String uuid, Status status, long maxTimeoutWithoutUpdate) {
+        return status == OK ? deployStatusService.checkStatus(uuid, maxTimeoutWithoutUpdate) : status;
     }
 }

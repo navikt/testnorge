@@ -20,10 +20,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.netty.http.client.HttpClient;
-import reactor.netty.tcp.ProxyProvider;
 
-import java.net.URI;
-import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -31,13 +28,12 @@ import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
-import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
 public class OrganisasjonNavnConsumer {
 
-    private static final int TIMEOUT_MS = 10_000;
+    private static final int TIMEOUT_S = 10;
     private static final String NAME_URL = "/api/v1/navn?antall=";
 
     private final AccessTokenService accessTokenService;
@@ -54,11 +50,11 @@ public class OrganisasjonNavnConsumer {
                 .clientConnector(new ReactorClientHttpConnector(
                         HttpClient.create()
                                 .tcpConfiguration(tcpClient -> tcpClient
-                                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, TIMEOUT_MS)
+                                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, TIMEOUT_S * 1000)
                                         .doOnConnected(connection ->
                                                 connection
-                                                        .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_MS))
-                                                        .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_MS))))))
+                                                        .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_S))
+                                                        .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_S))))))
                 .build();
         this.accessTokenService = accessTokenService;
         this.accessScopes = new AccessScopes("api://" + clientId + "/.default");
