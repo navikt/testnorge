@@ -10,7 +10,6 @@ import no.nav.organisasjonforvalter.provider.rs.requests.DeployRequest;
 import no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse;
 import no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse.EnvStatus;
 import no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse.Status;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -30,6 +29,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @RequiredArgsConstructor
 public class DeploymentService {
 
+    private static final long MAX_TIMEOUT_PER_ENV = 1000L * 60 * 3;
     private final OrganisasjonRepository organisasjonRepository;
     private final OrganisasjonMottakConsumer organisasjonMottakConsumer;
     private final DeployStatusService deployStatusService;
@@ -67,7 +67,9 @@ public class DeploymentService {
 
         return DeployResponse.builder()
                 .orgStatus(status.keySet().parallelStream()
-                        .collect(Collectors.toMap(orgnr -> orgnr, orgnr -> syncStatus(status.get(orgnr)))))
+                        .collect(Collectors.toMap(
+                                orgnr -> orgnr,
+                                orgnr -> syncStatus(status.get(orgnr), request.getEnvironments().size()))))
                 .build();
     }
 
@@ -87,17 +89,19 @@ public class DeploymentService {
         }
     }
 
-    private List<EnvStatus> syncStatus(List<EnvStatus> envStatuses) {
+    private List<EnvStatus> syncStatus(List<EnvStatus> envStatuses, int envCount) {
         return envStatuses.parallelStream()
                 .map(envStatus -> {
                     try {
-                        Status deployStatus = getStatus(envStatus.getUuid(), envStatus.getStatus());
+                        Status deployStatus = getStatus(envStatus.getUuid(), envStatus.getStatus(), envCount);
                         return EnvStatus.builder()
                                 .uuid(envStatus.getUuid())
                                 .environment(envStatus.getEnvironment())
                                 .status(deployStatus)
                                 .details(deployStatus == ERROR && isBlank(envStatus.getDetails()) ?
-                                        "Timeout, ingen fremdrift de siste tre minutter" : envStatus.getDetails())
+                                        format("Timeout, oppretting ikke fullført etter %d ms",
+                                                envCount * MAX_TIMEOUT_PER_ENV)
+                                        : envStatus.getDetails())
                                 .build();
                     } catch (RuntimeException e) {
                         return EnvStatus.builder()
@@ -111,7 +115,7 @@ public class DeploymentService {
                 .collect(Collectors.toList());
     }
 
-    private Status getStatus(String uuid, Status status) {
-        return status == OK ? deployStatusService.checkStatus(uuid) : status;
+    private Status getStatus(String uuid, Status status, int envCount) {
+        return status == OK ? deployStatusService.checkStatus(uuid, envCount * MAX_TIMEOUT_PER_ENV) : status;
     }
 }

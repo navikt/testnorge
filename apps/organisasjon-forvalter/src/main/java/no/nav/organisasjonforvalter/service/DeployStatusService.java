@@ -24,39 +24,38 @@ public class DeployStatusService {
 
     private static final long SLEEP_TIME_MS = 1000L;
     private static final long MAX_ITERATIONS = 60 * 15;
-    private static final long MAX_WAIT_WITHOUT_UPDATE = SLEEP_TIME_MS * 60 * 3;
 
     private final OrganisasjonBestillingStatusConsumer bestillingStatusConsumer;
 
-    private static boolean isDone(List<ItemDto> statusTotal, Long lastUpdate) {
+    private static boolean isDone(List<ItemDto> statusTotal, Long lastUpdate, Long maxTimeWithoutUpdate) {
 
         var elapsedTime = System.currentTimeMillis() - lastUpdate;
-        if (elapsedTime > MAX_WAIT_WITHOUT_UPDATE) {
-            log.warn(format("Status ikke oppdatert på %d ms. Deploy avbrytes.", MAX_WAIT_WITHOUT_UPDATE));
+        if (elapsedTime > maxTimeWithoutUpdate) {
+            log.warn(format("Status ikke oppdatert på %d ms. Deploy avbrytes.", maxTimeWithoutUpdate));
         }
 
-        return !statusTotal.isEmpty() && (isOK(statusTotal, lastUpdate) ||
+        return !statusTotal.isEmpty() && (isOK(statusTotal, lastUpdate, maxTimeWithoutUpdate) ||
                 statusTotal.stream().anyMatch(status ->
                         status.getStatus() == ERROR ||
                                 status.getStatus() == FAILED)) ||
-                elapsedTime > MAX_WAIT_WITHOUT_UPDATE;
+                elapsedTime > maxTimeWithoutUpdate;
     }
 
-    private static boolean isOK(List<ItemDto> items, Long lastUpdate) {
+    private static boolean isOK(List<ItemDto> items, Long lastUpdate, long maxTimeWithoutUpdate) {
 
         return items.stream().allMatch(status -> status.getStatus() == COMPLETED) &&
-                System.currentTimeMillis() - lastUpdate < MAX_WAIT_WITHOUT_UPDATE;
+                System.currentTimeMillis() - lastUpdate < maxTimeWithoutUpdate;
     }
 
     @SneakyThrows
-    public Status checkStatus(String uuid) {
+    public Status checkStatus(String uuid, long maxTimeWithoutUpdate) {
 
         List<ItemDto> statusTotal = emptyList();
         var attemptsLeft = MAX_ITERATIONS;
         var statusLength = 0;
         var lastUpdate = System.currentTimeMillis();
 
-        while (attemptsLeft > 0 && !isDone(statusTotal, lastUpdate)) {
+        while (attemptsLeft > 0 && !isDone(statusTotal, lastUpdate, maxTimeWithoutUpdate)) {
 
             Thread.sleep(SLEEP_TIME_MS);
             statusTotal = bestillingStatusConsumer.getBestillingStatus(uuid);
@@ -65,7 +64,7 @@ public class DeployStatusService {
                 statusLength = statusTotal.size();
                 lastUpdate = System.currentTimeMillis();
             }
-            if (attemptsLeft-- % 5 == 0 || isDone(statusTotal, lastUpdate)) {
+            if (attemptsLeft-- % 5 == 0 || isDone(statusTotal, lastUpdate, maxTimeWithoutUpdate)) {
                 log.info("Deploystatus for {}, {}, time elapsed {} ms",
                         uuid, statusTotal.stream()
                                 .map(ItemDto::toString)
@@ -74,7 +73,7 @@ public class DeployStatusService {
             }
         }
 
-        return !statusTotal.isEmpty() && isOK(statusTotal, lastUpdate) ?
+        return !statusTotal.isEmpty() && isOK(statusTotal, lastUpdate, maxTimeWithoutUpdate) ?
                 Status.OK : Status.ERROR;
     }
 }
