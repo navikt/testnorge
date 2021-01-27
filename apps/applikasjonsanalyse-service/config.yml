@@ -30,6 +30,24 @@ spec:
           cluster: dev-gcp
         - application: organisasjon-bestilling-service
           cluster: dev-gcp
+        - application: testnorge-batch-adeo-proxy
+          cluster: dev-fss
+        - application: testnorge-tps-ident-service
+          cluster: dev-fss
+        - application: testnorge-arbeidsforhold-api
+          cluster: dev-fss
+        - application: mn-synt-arbeidsforhold-service
+          cluster: dev-fss
+        - application: jenkins-batch-status-service
+          cluster: dev-fss
+        - application: arbeidsforhold-frontend
+          cluster: dev-fss
+        - application: testnorge-arbeidsforhold-export-api
+          cluster: dev-fss
+        - application: endringsmelding-service
+          cluster: dev-fss
+        - application: endringsmelding-service
+          cluster: dev-gcp
   gcp:
     sqlInstances:
       - type: POSTGRES_12

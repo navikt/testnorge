@@ -6,9 +6,11 @@ spring:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
 
-
-
 consumers:
   profil-api:
     url: http://testnorge-profil-api.dolly.svc.cluster.local
-    client-id: e8e0772f-8204-4b88-88ad-233d62863f47
+    clientId: e8e0772f-8204-4b88-88ad-233d62863f47
+
+testnorge:
+  analyse:
+    enabled: true

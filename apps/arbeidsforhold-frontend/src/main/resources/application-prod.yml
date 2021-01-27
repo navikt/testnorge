@@ -14,3 +14,7 @@ spring:
             authorization-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/authorize
             token-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/token
             jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+
+testnorge:
+  analyse:
+    enabled: true

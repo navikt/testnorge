@@ -59,6 +59,7 @@ public class AccessTokenService {
         this.clientCredentials = clientCredentials;
     }
 
+    @Deprecated
     public AccessToken generateToken(String clientId) {
         return generateToken(new AccessScopes("api://" + clientId + "/.default"));
     }
@@ -88,6 +89,7 @@ public class AccessTokenService {
      * @param clientId appen som skal kontaktes
      * @return access token som tilsvarer appen som skal kontaktes.
      */
+    @Deprecated
     public AccessToken generateClientCredentialAccessToken(String clientId) {
         return generateClientCredentialAccessToken(new AccessScopes("api://" + clientId + "/.default"));
     }

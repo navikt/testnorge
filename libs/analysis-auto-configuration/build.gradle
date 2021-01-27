@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencies {
+    implementation project(':analysis')
     implementation project(':testnorge-oauth2')
     implementation project(':testnorge-data-transfer-objects')
 

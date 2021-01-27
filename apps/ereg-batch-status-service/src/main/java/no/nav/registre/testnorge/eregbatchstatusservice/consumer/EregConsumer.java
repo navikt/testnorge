@@ -9,9 +9,11 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.eregbatchstatusservice.config.EregProperties;
 import no.nav.registre.testnorge.eregbatchstatusservice.consumer.command.GetBatchStatusCommand;
+import no.nav.registre.testnorge.libs.analysis.DependencyOn;
 
 @Slf4j
 @Component
+@DependencyOn(name = "ereg")
 public class EregConsumer {
     private final Map<String, WebClient> envWebClientMap;
 
@@ -25,7 +27,6 @@ public class EregConsumer {
                         entry -> WebClient.builder().baseUrl(entry.getValue()).build()
                 ));
     }
-
 
     public Long getStatusKode(String miljo, Long id) {
         if (!envWebClientMap.containsKey(miljo)) {
