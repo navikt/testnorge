@@ -9,7 +9,6 @@ import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Adresse;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Dato;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.DetaljertNavn;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Internettadresse;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Knytning;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Naeringskode;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Stiftelsesdato;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Telefon;
@@ -71,10 +70,8 @@ public class OrganisasjonMappingStrategy implements MappingStrategy {
                                 target.setPostadresse(mapperFacade.map(adresse, Adresse.class));
                             }
                         });
-                        if (nonNull(source.getParent())) {
-                            target.setKnytning(Knytning.newBuilder()
-                                    .setJuridiskEnhet(source.getParent().getOrganisasjonsnummer()).build());
-                        }
+
+                        target.setUnderenheter(mapperFacade.mapAsList(source.getUnderenheter(), no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon.class));
                     }
                 })
                 .byDefault()

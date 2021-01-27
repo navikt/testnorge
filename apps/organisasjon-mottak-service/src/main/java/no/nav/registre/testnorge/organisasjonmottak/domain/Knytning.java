@@ -6,9 +6,9 @@ public class Knytning extends ToLine {
     private final String juridiskEnhet;
     private final String enhetstype;
 
-    public Knytning(no.nav.registre.testnorge.libs.avro.organisasjon.v1.Knytning knytning, Organisasjon organisasjon) {
+    public Knytning(Organisasjon parent, Organisasjon organisasjon) {
         enhetstype = organisasjon.getEnhetstype();
-        juridiskEnhet = knytning.getJuridiskEnhet();
+        juridiskEnhet = parent.getOrgnummer();
     }
 
     @Override
