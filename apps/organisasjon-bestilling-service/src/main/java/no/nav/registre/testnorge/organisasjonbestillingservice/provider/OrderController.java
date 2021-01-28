@@ -47,7 +47,6 @@ public class OrderController {
         return ResponseEntity.created(uri).body(id);
     }
 
-
     @PutMapping("/{uuid}/items/{id}")
     public ResponseEntity<HttpStatus> updateBestilling(@PathVariable("uuid") String uuid, @PathVariable("id") Long id, @RequestBody OrderDTO dto) {
         log.info("Oppdaterer bestilling med uuid: {} og id: {}", uuid, id);
@@ -62,6 +61,7 @@ public class OrderController {
 
     @GetMapping("/{uuid}/items")
     public ResponseEntity<List<ItemDTO>> getItems(@PathVariable("uuid") String uuid) {
+        log.info("Henter status for uuid: {}.", uuid);
         var items = service.getStatusBy(uuid);
         if (items == null) {
             return ResponseEntity.noContent().build();
