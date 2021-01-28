@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.organisasjonbestillingservice.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import no.nav.registre.testnorge.organisasjonbestillingservice.domain.Order;
 import no.nav.registre.testnorge.organisasjonbestillingservice.repository.OrderRepository;
 import no.nav.registre.testnorge.organisasjonbestillingservice.repository.model.OrderModel;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -51,6 +53,7 @@ public class OrderService {
     }
 
     public List<ItemDTO> getStatusBy(String uuid) {
+        log.info("Henter status for uuid: {}", uuid);
         var list = repository.findBy(uuid);
         return list.stream()
                 .map(value -> getStatusBy(value.getId()))
