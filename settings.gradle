@@ -286,3 +286,6 @@ project(":analysis-auto-configuration").projectDir = file('libs/analysis-auto-co
 
 include 'analysis'
 project(":analysis").projectDir = file('libs/analysis')
+
+include 'aareg-synt-services-proxy'
+project(":aareg-synt-services-proxy").projectDir = file('apps/aareg-synt-services-proxy')

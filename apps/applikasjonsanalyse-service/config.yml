@@ -48,6 +48,8 @@ spec:
           cluster: dev-fss
         - application: endringsmelding-service
           cluster: dev-gcp
+        - application: aareg-synt-services-proxy
+          cluster: dev-fss
   gcp:
     sqlInstances:
       - type: POSTGRES_12
