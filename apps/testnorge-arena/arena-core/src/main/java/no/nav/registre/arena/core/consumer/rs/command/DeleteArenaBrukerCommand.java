@@ -26,7 +26,6 @@ public class DeleteArenaBrukerCommand implements Callable<Boolean> {
 
     @Override
     public Boolean call() {
-        var response = true;
         try {
             log.info("Sletter ident {} fra Arena Forvalter i miljø {}.", personident, miljoe);
 
@@ -46,13 +45,13 @@ public class DeleteArenaBrukerCommand implements Callable<Boolean> {
             assert statusCode != null;
             if (!statusCode.is2xxSuccessful()) {
                 log.error("Kunne ikke slette ident {} fra Arena-forvalteren. Status: {}", personident, statusCode.toString());
-                response = false;
+                return false;
             }
 
         } catch (Exception | AssertionError e) {
             log.error("Klarte ikke slette ident {} fra Arena-forvalteren.", personident, e);
-            response = false;
+            return false;
         }
-        return response;
+        return true;
     }
 }

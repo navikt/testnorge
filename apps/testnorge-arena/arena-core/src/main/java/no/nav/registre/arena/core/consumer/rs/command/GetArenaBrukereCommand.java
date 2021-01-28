@@ -25,9 +25,8 @@ public class GetArenaBrukereCommand implements Callable<NyeBrukereResponse> {
 
     @Override
     public NyeBrukereResponse call() {
-        NyeBrukereResponse response = null;
         try {
-            response = webClient.get()
+            return webClient.get()
                     .uri(builder ->
                             builder.path("/v1/bruker")
                                     .queryParams(queryParams)
@@ -40,7 +39,7 @@ public class GetArenaBrukereCommand implements Callable<NyeBrukereResponse> {
                     .block();
         } catch (Exception e) {
             log.error("Klarte ikke å hente arbeidssoekere fra Arena-forvalteren.", e);
+            return null;
         }
-        return response;
     }
 }

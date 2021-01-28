@@ -37,10 +37,9 @@ public class PostArenaBrukerCommand implements Callable<NyeBrukereResponse> {
 
     @Override
     public NyeBrukereResponse call() {
-        NyeBrukereResponse response = NyeBrukereResponse.builder().arbeidsoekerList(Collections.emptyList()).build();
         try {
             log.info("Sender inn ny(e) bruker(e) til Arena-forvalteren.");
-            response = webClient.post()
+            return webClient.post()
                     .uri(builder ->
                             builder.path("/v1/bruker")
                                     .queryParam("eier", EIER)
@@ -55,7 +54,7 @@ public class PostArenaBrukerCommand implements Callable<NyeBrukereResponse> {
                     .block();
         } catch (Exception e) {
             log.error("Klarte ikke å sende inn ny(e) bruker(e) til Arena-forvalteren.", e);
+            return NyeBrukereResponse.builder().arbeidsoekerList(Collections.emptyList()).build();
         }
-        return response;
     }
 }
