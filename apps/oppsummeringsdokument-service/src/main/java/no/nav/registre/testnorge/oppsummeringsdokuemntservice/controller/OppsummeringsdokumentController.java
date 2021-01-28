@@ -30,10 +30,7 @@ public class OppsummeringsdokumentController {
     private final OppsummeringsdokumentAdapter adapter;
 
     @PutMapping
-    public ResponseEntity<HttpStatus> save(
-            @RequestBody OppsummeringsdokumentetDTO dto,
-            @RequestHeader("miljo") String miljo
-    ) {
+    public ResponseEntity<HttpStatus> save(@RequestBody OppsummeringsdokumentetDTO dto, @RequestHeader("miljo") String miljo) {
         var opplysningspliktig = new Oppsummeringsdokument(dto);
         var id = adapter.save(opplysningspliktig, miljo);
         URI uri = ServletUriComponentsBuilder

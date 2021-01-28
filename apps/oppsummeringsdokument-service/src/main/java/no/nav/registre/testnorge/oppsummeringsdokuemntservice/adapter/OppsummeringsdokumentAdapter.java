@@ -33,6 +33,7 @@ public class OppsummeringsdokumentAdapter {
     }
 
     public String save(Oppsummeringsdokument oppsummeringsdokument, String miljo) {
+        log.info("Oppretter oppsumeringsdokuemnt i {}", miljo);
         return repository.save(oppsummeringsdokument.toModel(miljo)).getId();
     }
 
