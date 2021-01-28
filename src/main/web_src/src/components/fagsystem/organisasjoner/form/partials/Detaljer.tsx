@@ -7,6 +7,8 @@ import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { OrganisasjonKodeverk } from '~/config/kodeverk'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { FormikProps } from 'formik'
@@ -27,8 +29,10 @@ enum TypeUnderenhet {
 }
 
 export const Detaljer = ({ formikBag, path, level, number }: Detaljer) => {
-	const initialValues = _omit(formikBag.values.organisasjon, 'underenheter')
+	const initialValues = _omit(formikBag.values.organisasjon, ['underenheter', 'sektorkode'])
 	initialValues.enhetstype = ''
+
+	const sektorkodeErValgt = formikBag.values.organisasjon.hasOwnProperty('sektorkode')
 
 	if (level === 0 && !_get(formikBag, `values.${path}.underenheter`)) {
 		formikBag.setFieldValue(`${path}.underenheter`, [initialValues])
@@ -47,8 +51,10 @@ export const Detaljer = ({ formikBag, path, level, number }: Detaljer) => {
 		formikBag.setFieldValue(`${path}.enhetstype`, '')
 		if (event.target.value === TypeUnderenhet.VIRKSOMHET) {
 			formikBag.setFieldValue(`${path}.underenheter`, [])
+			sektorkodeErValgt && formikBag.setFieldValue(`${path}.sektorkode`, undefined)
 		} else if (event.target.value === TypeUnderenhet.JURIDISKENHET && level < 4) {
 			formikBag.setFieldValue(`${path}.underenheter`, [initialValues])
+			sektorkodeErValgt && formikBag.setFieldValue(`${path}.sektorkode`, '')
 		}
 	}
 
@@ -95,7 +101,25 @@ export const Detaljer = ({ formikBag, path, level, number }: Detaljer) => {
 					isClearable={false}
 					visHvisAvhuket
 				/>
+				{typeUnderenhet === TypeUnderenhet.JURIDISKENHET && (
+					<FormikSelect
+						name={`${path}.sektorkode`}
+						label="Sektorkode"
+						kodeverk={OrganisasjonKodeverk.Sektorkoder}
+						size="xxlarge"
+						isClearable={false}
+						visHvisAvhuket
+					/>
+				)}
 				<FormikTextInput name={`${path}.formaal`} label="Formål" size="xlarge" />
+				<FormikDatepicker name={`${path}.stiftelsesdato`} label="Stiftelsesdato" />
+				<FormikSelect
+					name={`${path}.maalform`}
+					label="Målform"
+					options={Options('maalform')}
+					isClearable={false}
+					visHvisAvhuket
+				/>
 			</Kategori>
 
 			<Kontaktdata path={path} />

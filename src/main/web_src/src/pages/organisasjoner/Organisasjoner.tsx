@@ -31,6 +31,7 @@ type OrganisasjonInfo = {
 	adresser: string[]
 	enhetstype: string
 	naeringskode: string
+	sektorkode: string
 	organisasjonsnavn: string
 	organisasjonsnummer: string
 	status: Array<Status>

@@ -21,7 +21,10 @@ export const OrganisasjonDetaljerPanel = ({ stateModifier }: any) => {
 					title="Det er obligatorisk å velge enhetstype for organisasjonen"
 				/>
 				<Attributt attr={sm.attrs.naeringskode} />
+				<Attributt attr={sm.attrs.sektorkode} />
 				<Attributt attr={sm.attrs.formaal} />
+				<Attributt attr={sm.attrs.stiftelsesdato} />
+				<Attributt attr={sm.attrs.maalform} />
 			</AttributtKategori>
 			<AttributtKategori title="Kontaktdata">
 				<Attributt attr={sm.attrs.telefon} />
@@ -52,11 +55,29 @@ OrganisasjonDetaljerPanel.initialValues = ({ set, del, has }: any) => {
 			add: () => set('organisasjon.naeringskode', ''),
 			remove: () => del('organisasjon.naeringskode')
 		},
+		sektorkode: {
+			label: 'Sektorkode',
+			checked: has('organisasjon.sektorkode'),
+			add: () => set('organisasjon.sektorkode', ''),
+			remove: () => del('organisasjon.sektorkode')
+		},
 		formaal: {
 			label: 'Formål',
 			checked: has('organisasjon.formaal'),
 			add: () => set('organisasjon.formaal', ''),
 			remove: () => del('organisasjon.formaal')
+		},
+		stiftelsesdato: {
+			label: 'Stiftelsesdato',
+			checked: has('organisasjon.stiftelsesdato'),
+			add: () => set('organisasjon.stiftelsesdato', ''),
+			remove: () => del('organisasjon.stiftelsesdato')
+		},
+		maalform: {
+			label: 'Målform',
+			checked: has('organisasjon.maalform'),
+			add: () => set('organisasjon.maalform', ''),
+			remove: () => del('organisasjon.maalform')
 		},
 		telefon: {
 			label: 'Telefon',

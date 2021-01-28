@@ -265,6 +265,12 @@ const selectOptions: SelectOptions = {
 	aktivitet: [
 		{ value: 'INGEN', label: 'Ingen' },
 		{ value: 'AVVENTENDE', label: 'Avventende' }
+	],
+
+	// Organisasjon:
+	maalform: [
+		{ value: 'B', label: 'Bokmål' },
+		{ value: 'N', label: 'Nynorsk' }
 	]
 }
 

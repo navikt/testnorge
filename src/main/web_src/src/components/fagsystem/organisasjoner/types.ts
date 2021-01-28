@@ -1,7 +1,10 @@
 export type EnhetBestilling = {
 	enhetstype: string
 	naeringskode?: string
+	sektorkode?: string
 	formaal?: string
+	stiftelsesdato?: string
+	maalform?: string
 	telefon?: string
 	epost?: string
 	nettside?: string
@@ -17,7 +20,10 @@ export type EnhetData = {
 	organisasjonsnavn: string
 	enhetstype: string
 	naeringskode?: string
+	sektorkode?: string
 	formaal?: string
+	stiftelsesdato?: string
+	maalform?: string
 	telefon?: string
 	epost?: string
 	nettside?: string

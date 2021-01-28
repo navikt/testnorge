@@ -96,7 +96,7 @@ export default function OrganisasjonListe({ orgListe }: OrganisasjonListe) {
 			<DollyTable
 				data={sortedOrgliste}
 				columns={columns}
-				pagination={false}
+				pagination
 				visSide={null}
 				iconItem={<OrganisasjonItem />}
 				onExpand={(organisasjon: EnhetData) => <OrganisasjonVisning data={organisasjon} />}

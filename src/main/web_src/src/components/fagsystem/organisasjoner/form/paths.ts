@@ -1,7 +1,10 @@
 export const organisasjonPaths = [
 	'organisasjon.enhetstype',
 	'organisasjon.naeringskode',
-	'organisasjon.formaal'
+	'organisasjon.sektorkode',
+	'organisasjon.formaal',
+	'organisasjon.stiftelsesdato',
+	'organisasjon.maalform'
 ]
 
 export const kontaktPaths = ['organisasjon.telefon', 'organisasjon.epost', 'organisasjon.nettside']
