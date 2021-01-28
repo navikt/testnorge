@@ -30,6 +30,7 @@ export type EnhetData = {
 	adresser?: Array<Adresse>
 	underenheter?: Array<EnhetData>
 	id: number
+	bestillingId?: number
 }
 
 export type Adresse = {

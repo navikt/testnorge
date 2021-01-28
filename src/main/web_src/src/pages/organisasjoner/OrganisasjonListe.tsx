@@ -10,10 +10,11 @@ import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import { OrganisasjonItem } from '~/components/ui/icon/IconItem'
 import Icon from '~/components/ui/icon/Icon'
 import { OrganisasjonVisning } from '~/components/fagsystem/organisasjoner/visning/Visning'
-import { OrgStatus, EnhetData } from '~/components/fagsystem/organisasjoner/types'
+import { OrgStatus, EnhetData, EnhetBestilling } from '~/components/fagsystem/organisasjoner/types'
 
 type OrganisasjonListe = {
 	orgListe: OrgStatus
+	bestillinger: Array<EnhetBestilling>
 }
 
 const ikonTypeMap = {
@@ -23,7 +24,7 @@ const ikonTypeMap = {
 	Stoppet: 'report-problem-triangle'
 }
 
-export default function OrganisasjonListe({ orgListe }: OrganisasjonListe) {
+export default function OrganisasjonListe({ orgListe, bestillinger }: OrganisasjonListe) {
 	if (!orgListe) {
 		return null
 	}
@@ -99,7 +100,9 @@ export default function OrganisasjonListe({ orgListe }: OrganisasjonListe) {
 				pagination
 				visSide={null}
 				iconItem={<OrganisasjonItem />}
-				onExpand={(organisasjon: EnhetData) => <OrganisasjonVisning data={organisasjon} />}
+				onExpand={(organisasjon: EnhetData) => (
+					<OrganisasjonVisning data={organisasjon} bestillinger={bestillinger} />
+				)}
 			/>
 		</ErrorBoundary>
 	)

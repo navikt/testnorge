@@ -185,7 +185,10 @@ export default function Organisasjoner({
 					(organisasjonerInfo.loading ? (
 						<Loading label="laster organisasjoner" panel />
 					) : antallOrg > 0 ? (
-						<OrganisasjonListe orgListe={organisasjonerInfo && organisasjonerInfo.value} />
+						<OrganisasjonListe
+							orgListe={organisasjonerInfo && organisasjonerInfo.value}
+							bestillinger={organisasjonliste}
+						/>
 					) : (
 						tomOrgListe()
 					))}
