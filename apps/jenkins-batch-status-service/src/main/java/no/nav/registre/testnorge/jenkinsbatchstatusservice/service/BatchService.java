@@ -19,6 +19,8 @@ public class BatchService {
     private final RetryService retryService;
 
     public void registerEregBestilling(String uuid, String miljo, Long itemId) {
+        log.info("Registerer ereg bestilling uuid {} og jenkins id {}.", uuid, itemId);
+
         var id = organisasjonBestillingConsumer.save(uuid);
         var retryConfig = new RetryConfig.Builder()
                 .setRetryAttempts(60 * 5)
