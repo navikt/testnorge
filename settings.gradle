@@ -289,3 +289,6 @@ project(":analysis").projectDir = file('libs/analysis')
 
 include 'aareg-synt-services-proxy'
 project(":aareg-synt-services-proxy").projectDir = file('apps/aareg-synt-services-proxy')
+
+include 'oppsummeringsdokument-service'
+project(":oppsummeringsdokument-service").projectDir = file('apps/oppsummeringsdokument-service')
