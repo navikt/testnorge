@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.GensakKoder;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -115,7 +112,7 @@ public class DatoUtils {
         NyttVedtak senesteVedtak = null;
         for (var vedtaket : vedtak) {
             LocalDate vedtakFraDato;
-            if (vedtaket instanceof NyttVedtakTillegg) {
+            if (vedtaket.getRettighetType() == RettighetType.TILLEGG) {
                 vedtakFraDato = ((NyttVedtakTillegg) vedtaket).getVedtaksperiode().getFom();
             } else {
                 vedtakFraDato = vedtaket.getFraDato();
