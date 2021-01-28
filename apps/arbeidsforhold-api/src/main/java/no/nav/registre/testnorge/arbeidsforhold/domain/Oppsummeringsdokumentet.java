@@ -50,7 +50,6 @@ public class Oppsummeringsdokumentet {
         return dto.getOpplysningspliktigOrganisajonsnummer();
     }
 
-
     public LocalDate getRapporteringsmaaned() {
         return dto.getKalendermaaned();
     }
@@ -58,7 +57,6 @@ public class Oppsummeringsdokumentet {
     public Long getVersion() {
         return dto.getVersion();
     }
-
 
     public Oppsummeringsdokumentet(EDAGM edagm) {
         var leveranse = edagm.getLeveranse();
