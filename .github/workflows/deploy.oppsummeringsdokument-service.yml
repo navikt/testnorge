@@ -30,7 +30,7 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :organisasjon-bestilling-service:build
+        run: ./gradlew :oppsummeringsdokument-service:build
       - name: Build and publish Docker image
         working-directory: apps/oppsummeringsdokument-service/
         env:
