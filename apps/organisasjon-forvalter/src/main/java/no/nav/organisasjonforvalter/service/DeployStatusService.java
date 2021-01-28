@@ -53,6 +53,7 @@ public class DeployStatusService {
         List<ItemDto> statusTotal = emptyList();
         var attemptsLeft = MAX_ITERATIONS;
         var statusLength = 0;
+        var startTime = System.currentTimeMillis();
         var lastUpdate = System.currentTimeMillis();
 
         while (attemptsLeft > 0 && !isDone(statusTotal, lastUpdate, maxTimeWithoutUpdate)) {
@@ -69,7 +70,7 @@ public class DeployStatusService {
                         uuid, statusTotal.stream()
                                 .map(ItemDto::toString)
                                 .collect(Collectors.joining(", ")),
-                        (MAX_ITERATIONS - attemptsLeft) * SLEEP_TIME_MS);
+                        System.currentTimeMillis() - startTime);
             }
         }
 

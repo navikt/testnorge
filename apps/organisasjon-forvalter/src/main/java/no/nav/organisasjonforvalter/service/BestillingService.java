@@ -38,6 +38,7 @@ public class BestillingService {
             Set<String> orgnumre = request.getOrganisasjoner().stream()
                     .map(org -> {
                         Organisasjon parent = processOrganisasjon(org, null);
+                        organisasjonRepository.save(parent);
                         return parent.getOrganisasjonsnummer();
                     })
                     .collect(Collectors.toSet());
@@ -48,7 +49,7 @@ public class BestillingService {
 
             String error = format("Opprettelse av organisasjon feilet %s", e.getMessage());
             log.error(error, e);
-            throw new HttpClientErrorException(HttpStatus.BAD_GATEWAY, error);
+            throw new HttpClientErrorException(HttpStatus.GONE, error);
         }
     }
 
@@ -59,12 +60,11 @@ public class BestillingService {
         Organisasjon organisasjon = mapperFacade.map(orgRequest, Organisasjon.class);
         organisasjon.setOrganisasjonsnummer(organisasjonNummerConsumer.getOrgnummer());
         organisasjon.setOrganisasjonsnavn(organisasjonNavnConsumer.getOrgName());
+        organisasjon.setUnderenheter(mapperFacade.mapAsList(organisasjon.getUnderenheter(), Organisasjon.class));
         organisasjon.setParent(parent);
-        if (orgRequest.getUnderenheter().isEmpty()) {
-            organisasjonRepository.save(organisasjon);
-        } else {
-            orgRequest.getUnderenheter().forEach(underenhet -> processOrganisasjon(underenhet, organisasjon));
-        }
+
+        orgRequest.getUnderenheter().forEach(underenhet -> processOrganisasjon(underenhet, organisasjon));
+
         return organisasjon;
     }
 

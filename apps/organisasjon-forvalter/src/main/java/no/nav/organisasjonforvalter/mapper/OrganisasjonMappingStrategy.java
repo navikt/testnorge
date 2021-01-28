@@ -43,6 +43,7 @@ public class OrganisasjonMappingStrategy implements MappingStrategy {
                         organisasjon.getAdresser().forEach(adr -> adr.setOrganisasjon(organisasjon));
                     }
                 })
+                .exclude("underenheter")
                 .byDefault()
                 .register();
 
