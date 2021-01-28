@@ -1,14 +1,14 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -33,6 +33,8 @@ public class RsPerson {
     private String statsborgerskap;
 
     private LocalDateTime statsborgerskapRegdato;
+
+    private LocalDateTime statsborgerskapTildato;
 
     private String spesreg;
 
