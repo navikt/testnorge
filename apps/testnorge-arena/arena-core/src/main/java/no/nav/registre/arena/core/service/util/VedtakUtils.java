@@ -232,7 +232,7 @@ public class VedtakUtils {
     }
 
     private boolean harOverlappendeVedtak(NyttVedtakTiltak vedtak, List<? extends NyttVedtak> vedtaksliste) {
-        if (vedtaksliste == null || vedtaksliste.isEmpty()){
+        if (vedtaksliste == null || vedtaksliste.isEmpty()) {
             return false;
         }
         var fraDato = vedtak.getFraDato();
@@ -297,7 +297,6 @@ public class VedtakUtils {
 
         }
     }
-
 
     private List<List<NyttVedtakTiltak>> getVedtakSequences(List<NyttVedtakTiltak> vedtak) {
         List<List<NyttVedtakTiltak>> vedtakSequences = new ArrayList<>();

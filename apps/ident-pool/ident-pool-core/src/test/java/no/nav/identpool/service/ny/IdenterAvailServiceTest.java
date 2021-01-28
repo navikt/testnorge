@@ -21,10 +21,10 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
 import no.nav.identpool.domain.TpsStatus;
-import no.nav.identpool.domain.postgres.Ident;
 import no.nav.identpool.repository.IdentRepository;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;
 import no.nav.identpool.service.IdentGeneratorService;
@@ -64,6 +64,7 @@ public class IdenterAvailServiceTest {
                 .identtype(Identtype.FNR)
                 .kjoenn(Kjoenn.MANN)
                 .rekvirertAv("TPSF")
+                .syntetisk(false)
                 .build();
         when(mapperFacade.map(request, HentIdenterRequest.class)).thenReturn(request);
     }
@@ -74,7 +75,7 @@ public class IdenterAvailServiceTest {
                 .thenReturn(Set.of(IDENT_1, IDENT_2));
         when(identRepository.findByPersonidentifikatorIn(anySet()))
                 .thenReturn(Set.of(getIdent(IDENT_2)));
-        when(tpsfService.checkAvailStatus(argumentCaptor.capture()))
+        when(tpsfService.checkAvailStatus(argumentCaptor.capture(), eq(false)))
                 .thenReturn(Set.of(getTpsStatus(IDENT_1, false)));
 
         Set<TpsStatus> target = identerAvailService.generateAndCheckIdenter(request, 10);

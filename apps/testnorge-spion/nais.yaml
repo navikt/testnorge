@@ -2,7 +2,7 @@
 kind: "Application"
 metadata:
   name: testnorge-spion
-  namespace: default
+  namespace: dolly
   labels:
     team: dolly
 spec:

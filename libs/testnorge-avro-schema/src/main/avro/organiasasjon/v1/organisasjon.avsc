@@ -100,12 +100,14 @@
       ]
     },
     {
-      "name": "knytning",
-      "default": null,
-      "type": [
-        "null",
-        "Knytning"
-      ]
+      "name": "underenheter",
+      "type": {
+        "type": "array",
+        "items": {
+          "name": "underenhet",
+          "type": "Organisasjon"
+        }
+      }
     },
     {
       "name": "forretningsadresse",

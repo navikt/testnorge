@@ -1,6 +1,7 @@
 package no.nav.identpool.service.ny;
 
 import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -14,8 +15,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import ma.glasnost.orika.MapperFacade;
 import no.nav.identpool.domain.Rekvireringsstatus;
-import no.nav.identpool.domain.postgres.Ident;
+import no.nav.identpool.domain.Ident;
 import no.nav.identpool.repository.IdentRepository;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;
 
@@ -24,17 +26,12 @@ import no.nav.identpool.rs.v1.support.HentIdenterRequest;
 public class DatabaseService {
 
     private final IdentRepository identRepository;
+    private final MapperFacade mapperFacade;
 
     public Set<Ident> hentLedigeIdenterFraDatabase(HentIdenterRequest request) {
         Set<Ident> identEntities = new HashSet<>();
 
-        HentIdenterRequest availableIdentsRequest = HentIdenterRequest.builder()
-                .identtype(request.getIdenttype())
-                .foedtEtter(request.getFoedtEtter())
-                .foedtFoer(request.getFoedtFoer())
-                .kjoenn(request.getKjoenn())
-                .antall(request.getAntall())
-                .build();
+        HentIdenterRequest availableIdentsRequest = mapperFacade.map(request, HentIdenterRequest.class);
 
         Page<Ident> firstPage = findPage(availableIdentsRequest, LEDIG, 0);
         Map<Integer, Page<Ident>> pageCache = new HashMap<>();
@@ -66,6 +63,6 @@ public class DatabaseService {
     private Page<Ident> findPage(HentIdenterRequest request, Rekvireringsstatus rekvireringsstatus, int page) {
         return identRepository.findAll(
                 rekvireringsstatus, request.getIdenttype(), request.getKjoenn(), request.getFoedtFoer(),
-                request.getFoedtEtter(), PageRequest.of(page, request.getAntall()));
+                request.getFoedtEtter(), isTrue(request.getSyntetisk()), PageRequest.of(page, request.getAntall()));
     }
 }

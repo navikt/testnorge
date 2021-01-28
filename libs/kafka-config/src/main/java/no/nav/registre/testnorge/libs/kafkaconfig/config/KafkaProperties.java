@@ -17,8 +17,8 @@ public class KafkaProperties {
             @Value("${kafka.bootstrapservers}") String bootstrapAddress,
             @Value("${kafka.groupid}") String groupId,
             @Value("${kafka.schemaregistryservers}") String schemaregistryServers,
-            @Value("${SERVICEUSER_USERNAME:#{null}}") String username,
-            @Value("${SERVICEUSER_PASSWORD:#{null}}") String password
+            @Value("${SERVICEUSER_USERNAME:${serviceuser.username:#{null}}}") String username,
+            @Value("${SERVICEUSER_PASSWORD:${serviceuser.password:#{null}}}") String password
     ) {
         this.bootstrapAddress = bootstrapAddress;
         this.groupId = groupId;

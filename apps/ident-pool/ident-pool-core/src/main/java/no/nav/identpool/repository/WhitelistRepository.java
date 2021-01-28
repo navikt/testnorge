@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import no.nav.identpool.domain.postgres.Whitelist;
+import no.nav.identpool.domain.Whitelist;
 
 @Repository
 public interface WhitelistRepository extends CrudRepository<Whitelist, Long> {

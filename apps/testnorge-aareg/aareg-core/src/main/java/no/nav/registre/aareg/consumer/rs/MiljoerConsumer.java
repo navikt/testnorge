@@ -39,9 +39,7 @@ public class MiljoerConsumer {
         AccessToken accessToken = accessTokenService.generateToken(accessScopes);
         List<String> response = webClient
                 .get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/v1/miljoer")
-                        .build())
+                .uri("/v1/miljoer")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken.getTokenValue())
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<String>>() {
@@ -49,7 +47,7 @@ public class MiljoerConsumer {
                 .block();
 
         if (response == null) {
-            throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Fant ingen miljøer");
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Fant ingen miljøer");
         }
         return new MiljoerResponse(response);
     }

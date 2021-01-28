@@ -20,9 +20,10 @@ import java.util.stream.Collectors;
 import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumenterCommand;
 import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumentetCommand;
 import no.nav.registre.testnorge.libs.common.command.SaveOppsummeringsdokumenterCommand;
+import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
-import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.credentials.ArbeidsforholdApiClientProperties;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.credentials.ArbeidsforholdApiServerProperties;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Opplysningspliktig;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Organisajon;
 
@@ -30,16 +31,16 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Organisajon
 public class ArbeidsforholdConsumer {
     private static final int BYTE_COUNT = 16 * 1024 * 1024;
     private final WebClient webClient;
-    private final ArbeidsforholdApiClientProperties arbeidsforholdApiClientProperties;
+    private final NaisServerProperties properties;
     private final AccessTokenService accessTokenService;
     private final Executor executor;
 
     public ArbeidsforholdConsumer(
-            ArbeidsforholdApiClientProperties arbeidsforholdApiClientProperties,
+            ArbeidsforholdApiServerProperties properties,
             AccessTokenService accessTokenService,
             ObjectMapper objectMapper
     ) {
-        this.arbeidsforholdApiClientProperties = arbeidsforholdApiClientProperties;
+        this.properties = properties;
         this.accessTokenService = accessTokenService;
         this.executor = Executors.newFixedThreadPool(5);
         this.webClient = WebClient
@@ -53,13 +54,13 @@ public class ArbeidsforholdConsumer {
                             .defaultCodecs()
                             .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
                 })
-                .baseUrl(arbeidsforholdApiClientProperties.getBaseUrl())
+                .baseUrl(properties.getUrl())
                 .build();
     }
 
 
     private CompletableFuture<Void> saveOpplysningspliktig(Opplysningspliktig opplysningspliktig, String miljo) {
-        AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties.getClientId());
+        AccessToken accessToken = accessTokenService.generateToken(properties);
         return CompletableFuture.supplyAsync(
                 () -> new SaveOppsummeringsdokumenterCommand(
                         webClient,
@@ -72,7 +73,7 @@ public class ArbeidsforholdConsumer {
     }
 
     public Optional<Opplysningspliktig> getOpplysningspliktig(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {
-        AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties.getClientId());
+        AccessToken accessToken = accessTokenService.generateToken(properties);
         var dto = new GetOppsummeringsdokumentetCommand(webClient, accessToken.getTokenValue(), organisajon.getOrgnummer(), kalendermaaned, miljo).call();
         if (dto == null) {
             return Optional.empty();
@@ -82,7 +83,7 @@ public class ArbeidsforholdConsumer {
     }
 
     public List<Opplysningspliktig> getAlleOpplysningspliktig(String miljo) {
-        AccessToken accessToken = accessTokenService.generateToken(arbeidsforholdApiClientProperties.getClientId());
+        AccessToken accessToken = accessTokenService.generateToken(properties);
         var list = new GetOppsummeringsdokumenterCommand(webClient, accessToken.getTokenValue(), miljo).call();
         //TODO: Fix empty array of driver virksomheter
         return list.stream().map(value -> new Opplysningspliktig(value, new ArrayList<>())).collect(Collectors.toList());

@@ -2,7 +2,6 @@ name: Deploy organisasjon-mottak-service
 
 on:
   push:
-    branches: master
     paths:
       - apps/organisasjon-mottak-service/**
       - libs/testnorge-core/**

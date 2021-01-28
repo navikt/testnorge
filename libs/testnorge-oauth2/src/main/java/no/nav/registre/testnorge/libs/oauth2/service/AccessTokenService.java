@@ -16,6 +16,8 @@ import reactor.netty.tcp.ProxyProvider;
 import java.net.URI;
 import java.util.Map;
 
+import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
+import no.nav.registre.testnorge.libs.oauth2.config.Scopeable;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.domain.AzureClientCredentials;
@@ -57,9 +59,15 @@ public class AccessTokenService {
         this.clientCredentials = clientCredentials;
     }
 
+    @Deprecated
     public AccessToken generateToken(String clientId) {
         return generateToken(new AccessScopes("api://" + clientId + "/.default"));
     }
+
+    public AccessToken generateToken(Scopeable scopeable) {
+        return generateToken(new AccessScopes(scopeable.toScope()));
+    }
+
 
     public AccessToken generateToken(AccessScopes accessScopes) {
         tokenResolver.verifyAuthentication();
@@ -67,7 +75,6 @@ public class AccessTokenService {
         if (accessScopes.getScopes().isEmpty()) {
             throw new RuntimeException("Kan ikke opprette accessToken uten scopes (clienter).");
         }
-
 
         if (tokenResolver.isClientCredentials()) {
             return generateClientCredentialAccessToken(accessScopes);
@@ -82,9 +89,16 @@ public class AccessTokenService {
      * @param clientId appen som skal kontaktes
      * @return access token som tilsvarer appen som skal kontaktes.
      */
+    @Deprecated
     public AccessToken generateClientCredentialAccessToken(String clientId) {
         return generateClientCredentialAccessToken(new AccessScopes("api://" + clientId + "/.default"));
     }
+
+
+    public AccessToken generateClientCredentialAccessToken(Scopeable serverProperties) {
+        return generateClientCredentialAccessToken(new AccessScopes(serverProperties.toScope()));
+    }
+
 
     private AccessToken generateClientCredentialAccessToken(AccessScopes accessScopes) {
         log.trace("Henter OAuth2 access token fra client credential...");

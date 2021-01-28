@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
     implementation project(':kafka-config')
+    implementation project(':analysis')
     implementation project(':testnorge-avro-schema')
 
     implementation 'org.springframework.kafka:spring-kafka:2.5.6.RELEASE'

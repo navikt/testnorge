@@ -8,8 +8,8 @@ spring.cloud.vault:
   generic:
     enabled: true
     backend: kv
-    application-name: preprod/fss/testnorge-aaregstub/default
-    default-context: preprod/fss/testnorge-aaregstub/default
+    application-name: preprod/fss/testnorge-aaregstub/dolly
+    default-context: preprod/fss/testnorge-aaregstub/dolly
   database:
     enabled: true
     role: testnorge-aaregstub-user
