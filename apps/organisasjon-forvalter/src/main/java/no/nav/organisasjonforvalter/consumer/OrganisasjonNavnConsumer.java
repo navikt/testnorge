@@ -18,7 +18,6 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.netty.http.client.HttpClient;
 
 import java.util.Collections;
@@ -80,7 +79,7 @@ public class OrganisasjonNavnConsumer {
 
             return orgNavn.stream().map(Navn::toString).collect(Collectors.toList());
 
-        } catch (WebClientResponseException e) {
+        } catch (HttpClientErrorException e) {
             log.error(e.getMessage(), e);
             throw new HttpClientErrorException(e.getStatusCode(), e.getMessage());
 

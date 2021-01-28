@@ -18,7 +18,6 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.netty.http.client.HttpClient;
 
 import java.util.List;
@@ -77,7 +76,7 @@ public class OrganisasjonBestillingStatusConsumer {
 //            log.info("Organisasjon-bestilling-status tok {} ms", currentTimeMillis() - startTime);
             return response.hasBody() ? List.of(response.getBody()) : emptyList();
 
-        } catch (WebClientResponseException e) {
+        } catch (HttpClientErrorException e) {
             log.error(e.getMessage(), e);
             throw new HttpClientErrorException(e.getStatusCode(), e.getMessage());
 
