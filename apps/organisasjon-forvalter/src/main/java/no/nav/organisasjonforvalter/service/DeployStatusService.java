@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingStatusConsumer.ItemStatus.COMPLETED;
 import static no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingStatusConsumer.ItemStatus.ERROR;
@@ -21,45 +22,58 @@ import static no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingStatus
 @RequiredArgsConstructor
 public class DeployStatusService {
 
-    private static final long SLEEP_TIME = 1000L;
-    private static final long MAX_ITERATIONS = 60 * 10;
+    private static final long SLEEP_TIME_MS = 1000L;
+    private static final long MAX_ITERATIONS = 60 * 15;
 
     private final OrganisasjonBestillingStatusConsumer bestillingStatusConsumer;
 
-    private static boolean isDone(List<ItemDto> statusTotal) {
+    private static boolean isDone(List<ItemDto> statusTotal, Long lastUpdate, Long maxTimeWithoutUpdate) {
 
-        return !statusTotal.isEmpty() && (isOK(statusTotal) ||
+        var elapsedTime = System.currentTimeMillis() - lastUpdate;
+        if (elapsedTime > maxTimeWithoutUpdate) {
+            log.warn(format("Status ikke oppdatert på %d ms. Deploy avbrytes.", maxTimeWithoutUpdate));
+        }
+
+        return !statusTotal.isEmpty() && (isOK(statusTotal, lastUpdate, maxTimeWithoutUpdate) ||
                 statusTotal.stream().anyMatch(status ->
                         status.getStatus() == ERROR ||
-                                status.getStatus() == FAILED));
+                                status.getStatus() == FAILED)) ||
+                elapsedTime > maxTimeWithoutUpdate;
     }
 
-    private static boolean isOK(List<ItemDto> items) {
+    private static boolean isOK(List<ItemDto> items, Long lastUpdate, long maxTimeWithoutUpdate) {
 
-        return items.stream().allMatch(status -> status.getStatus() == COMPLETED);
+        return items.stream().allMatch(status -> status.getStatus() == COMPLETED) &&
+                System.currentTimeMillis() - lastUpdate < maxTimeWithoutUpdate;
     }
 
     @SneakyThrows
-    public Status checkStatus(String uuid) {
+    public Status checkStatus(String uuid, long maxTimeWithoutUpdate) {
 
         List<ItemDto> statusTotal = emptyList();
         var attemptsLeft = MAX_ITERATIONS;
+        var statusLength = 0;
+        var lastUpdate = System.currentTimeMillis();
 
-        while (attemptsLeft > 0 && !isDone(statusTotal)) {
+        while (attemptsLeft > 0 && !isDone(statusTotal, lastUpdate, maxTimeWithoutUpdate)) {
 
-            Thread.sleep(SLEEP_TIME);
+            Thread.sleep(SLEEP_TIME_MS);
             statusTotal = bestillingStatusConsumer.getBestillingStatus(uuid);
 
-            if (attemptsLeft-- % 5 == 0 || isDone(statusTotal)) {
+            if (statusLength != statusTotal.size()) {
+                statusLength = statusTotal.size();
+                lastUpdate = System.currentTimeMillis();
+            }
+            if (attemptsLeft-- % 5 == 0 || isDone(statusTotal, lastUpdate, maxTimeWithoutUpdate)) {
                 log.info("Deploystatus for {}, {}, time elapsed {} ms",
                         uuid, statusTotal.stream()
                                 .map(ItemDto::toString)
                                 .collect(Collectors.joining(", ")),
-                        (MAX_ITERATIONS - attemptsLeft) * SLEEP_TIME);
+                        (MAX_ITERATIONS - attemptsLeft) * SLEEP_TIME_MS);
             }
         }
 
-        return !statusTotal.isEmpty() && isOK(statusTotal) ?
+        return !statusTotal.isEmpty() && isOK(statusTotal, lastUpdate, maxTimeWithoutUpdate) ?
                 Status.OK : Status.ERROR;
     }
 }

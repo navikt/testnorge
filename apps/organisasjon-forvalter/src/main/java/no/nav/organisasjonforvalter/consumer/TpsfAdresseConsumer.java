@@ -1,5 +1,8 @@
 package no.nav.organisasjonforvalter.consumer;
 
+import io.netty.channel.ChannelOption;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,11 +10,15 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.consumer.TpsfAdresseConsumer.GyldigeAdresserResponse.AdresseData;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.netty.http.client.HttpClient;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,7 +31,7 @@ import static java.util.Objects.nonNull;
 public class TpsfAdresseConsumer {
 
     private static final String OK_STATUS = "00";
-    private static final Long TIMEOUT = 10_000L;
+    private static final int TIMEOUT_S = 10;
     private static final String ADRESSE_URL = "/api/v1/gyldigadresse/tilfeldig?maxAntall=";
 
     private final WebClient webClient;
@@ -32,7 +39,17 @@ public class TpsfAdresseConsumer {
     public TpsfAdresseConsumer(
             @Value("${tpsf.url}") String baseUrl) {
 
-        this.webClient = WebClient.builder().baseUrl(baseUrl).build();
+        this.webClient = WebClient.builder()
+                .baseUrl(baseUrl)
+                .clientConnector(new ReactorClientHttpConnector(
+                        HttpClient.create()
+                                .tcpConfiguration(tcpClient -> tcpClient
+                                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, TIMEOUT_S * 1000)
+                                        .doOnConnected(connection ->
+                                                connection
+                                                        .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_S))
+                                                        .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_S))))))
+                .build();
     }
 
     private static AdresseData getDefaultADresse() {
@@ -59,7 +76,7 @@ public class TpsfAdresseConsumer {
                     .header("Nav-Call-Id", UUID.randomUUID().toString())
                     .retrieve()
                     .toEntity(GyldigeAdresserResponse.class)
-                    .block(Duration.ofMillis(TIMEOUT));
+                    .block();
 
             log.info("Adresseoppslag tok {} ms", currentTimeMillis() - startTime);
 
@@ -74,9 +91,13 @@ public class TpsfAdresseConsumer {
                 return getDefaultADresse();
             }
 
+        } catch (WebClientResponseException e) {
+            log.error(e.getMessage(), e);
+            throw new HttpClientErrorException(HttpStatus.BAD_GATEWAY, e.getMessage());
+
         } catch (RuntimeException e) {
 
-            log.error("Henting av adresse timeout etter {} ms", TIMEOUT, e);
+            log.error("Henting av adresse timeout etter {} ms", TIMEOUT_S, e);
             return getDefaultADresse();
         }
     }

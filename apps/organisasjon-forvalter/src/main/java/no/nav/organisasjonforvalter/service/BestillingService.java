@@ -1,6 +1,7 @@
 package no.nav.organisasjonforvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonNavnConsumer;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonNummerConsumer;
@@ -12,11 +13,16 @@ import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.Adres
 import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.AdresseType;
 import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.OrganisasjonRequest;
 import no.nav.organisasjonforvalter.provider.rs.responses.BestillingResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.lang.String.format;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BestillingService {
@@ -28,15 +34,22 @@ public class BestillingService {
     private final MapperFacade mapperFacade;
 
     public BestillingResponse execute(BestillingRequest request) {
+        try {
+            Set<String> orgnumre = request.getOrganisasjoner().stream()
+                    .map(org -> {
+                        Organisasjon parent = processOrganisasjon(org, null);
+                        return parent.getOrganisasjonsnummer();
+                    })
+                    .collect(Collectors.toSet());
 
-        Set<String> orgnumre = request.getOrganisasjoner().stream()
-                .map(org -> {
-                    Organisasjon parent = processOrganisasjon(org, null);
-                    return parent.getOrganisasjonsnummer();
-                })
-                .collect(Collectors.toSet());
+            return BestillingResponse.builder().orgnummer(orgnumre).build();
 
-        return BestillingResponse.builder().orgnummer(orgnumre).build();
+        } catch (RuntimeException e) {
+
+            String error = format("Opprettelse av organisasjon feilet %s", e.getMessage());
+            log.error(error, e);
+            throw new HttpClientErrorException(HttpStatus.BAD_GATEWAY, error);
+        }
     }
 
     private Organisasjon processOrganisasjon(OrganisasjonRequest orgRequest, Organisasjon parent) {

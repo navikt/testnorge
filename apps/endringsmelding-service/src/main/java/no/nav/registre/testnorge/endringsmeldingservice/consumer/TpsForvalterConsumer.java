@@ -10,10 +10,16 @@ import no.nav.registre.testnorge.endringsmeldingservice.consumer.command.SendDoe
 import no.nav.registre.testnorge.endringsmeldingservice.consumer.command.SendFoedselsmeldingCommand;
 import no.nav.registre.testnorge.endringsmeldingservice.consumer.dto.TpsDoedsmeldingDTO;
 import no.nav.registre.testnorge.endringsmeldingservice.consumer.dto.TpsFoedselsmeldingDTO;
+import no.nav.registre.testnorge.libs.analysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.endringsmelding.v1.DoedsmeldingDTO;
 import no.nav.registre.testnorge.libs.dto.endringsmelding.v1.FoedselsmeldingDTO;
 
 @Component
+@DependencyOn(
+        name = "tps-forvalteren",
+        namespace = "default",
+        cluster = "dev-fss"
+)
 public class TpsForvalterConsumer {
     private final WebClient webClient;
 

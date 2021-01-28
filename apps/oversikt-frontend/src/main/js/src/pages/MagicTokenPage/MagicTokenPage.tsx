@@ -5,9 +5,9 @@ import Page from "@/components/Page";
 import FetchAccessToken from "@/components/FetchAccessToken";
 
 const MagicTokenPage = () => (
-  <Page title="Magic Token's">
-    <h2>Lokal utviklings token:</h2>
-    <p>Denne token skal fungere for alle apper som blir kjørt lokalt.</p>
+  <Page title="Magic Token">
+    <h2>Genererer lokalt utviklingstoken</h2>
+    <p>Dette token skal fungere for alle apper som kjøres lokalt.</p>
     <FetchAccessToken name="team-dolly-lokal-app" />
   </Page>
 );

@@ -12,13 +12,16 @@ import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecu
 
 import java.util.concurrent.Executor;
 
+import no.nav.registre.testnorge.libs.core.config.AnalysisFSSAutoConfiguration;
 import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
 import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerConfiguration;
 
 @Configuration
 @Import({
         ApplicationCoreConfig.class,
-        SecureOAuth2ServerToServerConfiguration.class
+        SecureOAuth2ServerToServerConfiguration.class,
+        AnalysisFSSAutoConfiguration.class
+
 })
 public class ApplicationConfig {
 

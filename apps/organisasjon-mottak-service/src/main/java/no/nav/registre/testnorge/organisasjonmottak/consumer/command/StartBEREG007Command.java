@@ -14,6 +14,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.io.File;
@@ -50,6 +51,7 @@ public class StartBEREG007Command implements Callable<Long> {
         log.info("Sender flatfil til server {} ({})", server, miljo);
 
         String content = flatfil.build();
+        log.info("Flatfil inneholder: \n{}", content);
 
         Resource resource = getFileResource(content);
 
@@ -72,25 +74,52 @@ public class StartBEREG007Command implements Callable<Long> {
                 .with("stepSelection", "'2;3;4;5;6'")
                 .with("input_file", fileEntity);
 
-        log.info("Jenkins-Crumb: {}", crumb.getCrumb());
-        return webClient
-                .post()
-                .uri("/view/Registre/job/Start_BEREG007/buildWithParameters")
-                .header("Jenkins-Crumb", crumb.getCrumb())
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .body(body)
-                .exchange()
-                .flatMap(response -> {
-                    log.trace("{}:{}", HttpHeaders.LOCATION, String.join(", ", response.headers().header(HttpHeaders.LOCATION)));
-                    var location = response.headers().header(HttpHeaders.LOCATION).get(0);
-                    var pattern = Pattern.compile("\\d+");
-                    var matcher = pattern.matcher(location);
-                    if (matcher.find()) {
-                        return Mono.just(Long.valueOf(matcher.group()));
-                    } else {
-                        return Mono.error(new RuntimeException("Klarer ikke å finne item id fra location: " + location));
-                    }
-                }).block();
+        String crumb = this.crumb.getCrumb();
+        log.info("Jenkins-Crumb: {}", crumb);
+
+        try {
+            return webClient
+                    .post()
+                    .uri("/view/Registre/job/Start_BEREG007/buildWithParameters")
+                    .header("Jenkins-Crumb", crumb)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .body(body)
+                    .exchange()
+                    .flatMap(response -> {
+                        try {
+                            var location = response.headers().asHttpHeaders().getLocation();
+                            if (location == null) {
+                                return Mono.error(new RuntimeException("Klarer ikke å finne location"));
+                            }
+
+                            var pattern = Pattern.compile("\\d+");
+                            var matcher = pattern.matcher(location.toString());
+                            if (matcher.find()) {
+                                return Mono.just(Long.valueOf(matcher.group()));
+                            } else {
+                                return Mono.error(new RuntimeException("Klarer ikke å finne item id fra location: " + location));
+                            }
+                        } catch (Exception e) {
+                            log.error(
+                                    "Klarer ikke å finne location.\nResponse body: {}.",
+                                    response.bodyToMono(String.class),
+                                    e
+                            );
+                            return Mono.error(e);
+                        }
+                    }).block();
+        } catch (WebClientResponseException e) {
+            log.error(
+                    "Feil ved innsending til jenkens batch BEREG007. Response: {}",
+                    e.getResponseBodyAsString(),
+                    e
+            );
+            throw e;
+        } catch (Exception e) {
+            log.error("Feil ved innsending til jenkens batch BEREG007.", e);
+            throw e;
+        }
+
     }
 }

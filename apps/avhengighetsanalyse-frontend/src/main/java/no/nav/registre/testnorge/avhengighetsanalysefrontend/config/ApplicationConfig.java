@@ -27,9 +27,9 @@ public class ApplicationConfig {
     public AddAuthorizationToRouteFilter dollyBackendAddAuthorizationToRouteFilter() {
         return new AddAuthorizationToRouteFilter(
                 () -> tokenService.generateToken(
-                        new AccessScopes("api://a90b186a-6896-4a79-9462-03b8cc9c36a9/.default")
+                        new AccessScopes("api://4c17d59e-ba09-4923-a917-47efebf82cc0/.default")
                 ).getTokenValue(),
-                "testnorge-avhengighetsanalyse-service"
+                "avhengighetsanalyse-service"
         );
     }
 }

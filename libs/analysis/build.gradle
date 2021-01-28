@@ -1,0 +1,11 @@
+plugins {
+    id 'no.nav.registre.testnorge.java-conventions'
+}
+
+dependencies {
+    implementation 'org.projectlombok:lombok:1.18.12'
+    implementation 'org.reflections:reflections:0.9.11'
+}
+
+group = 'no.nav.registre.testnorge.libs'
+description = 'analysis'

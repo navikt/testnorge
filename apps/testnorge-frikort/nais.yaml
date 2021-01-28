@@ -24,7 +24,7 @@ spec:
   vault:
     enabled: true
     paths:
-      - kvPath: /kv/preprod/fss/testnorge-frikort/default
+      - kvPath: /kv/preprod/fss/testnorge-frikort/dolly
         mountPath: /var/run/secrets/nais.io/vault
   resources:
     requests:

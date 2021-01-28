@@ -127,4 +127,16 @@ public class Arbeidsforhold {
         }
         return LocalDate.of(calendar.getYear(), calendar.getMonth(), calendar.getDay());
     }
+
+    public String getSkipsregister(){
+        return arbeidsforhold.getFartoey() != null ? arbeidsforhold.getFartoey().getSkipsregister() : null;
+    }
+
+    public String getSkipstype(){
+        return arbeidsforhold.getFartoey() != null ? arbeidsforhold.getFartoey().getSkipstype() : null;
+    }
+
+    public String getFartsomraade(){
+        return arbeidsforhold.getFartoey() != null ? arbeidsforhold.getFartoey().getFartsomraade() : null;
+    }
 }

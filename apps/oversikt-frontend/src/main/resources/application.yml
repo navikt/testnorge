@@ -16,6 +16,7 @@ applications:
   endringsmelding-service: 7f00fa49-869e-4a1a-b4a0-e0c1d556dc38
   generer-navn-service: 92e61fa8-6fca-48e2-87b9-29d8bb6cf850
   organisasjon-bestilling-service: 213b750d-7a71-40bb-ada6-81530e61dcd5
+  organisasjon-orgnummer-service: cc5eab78-8ec7-4f4f-8b2f-7e6f46870a48
   ereg-batch-status-service: 67f507ff-399c-4853-9eb3-3dc6aabc8289
   organisasjon-forvalter: 80f07134-375b-4df8-be48-2ba877774c6c
   testnorge-arbeidsforhold-api: 1b2f24c8-a426-47b1-8ff1-7905d6dfddb5
@@ -24,3 +25,4 @@ applications:
   miljoer-service: 30003084-1585-4629-a017-686b4387b12e
   testnorge-organisasjon-api: f4167796-bf43-438b-a282-a480e8108d0c
   team-dolly-lokal-app: 99862a5d-72f4-4286-8e58-458a9ff1f964
+  applikasjonsanalyse-service: 4c17d59e-ba09-4923-a917-47efebf82cc0

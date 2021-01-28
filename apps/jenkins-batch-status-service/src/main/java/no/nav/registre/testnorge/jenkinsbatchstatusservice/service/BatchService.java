@@ -21,8 +21,8 @@ public class BatchService {
     public void registerEregBestilling(String uuid, String miljo, Long itemId) {
         var id = organisasjonBestillingConsumer.save(uuid);
         var retryConfig = new RetryConfig.Builder()
-                .setRetryAttempts(40)
-                .setSleepSeconds(10)
+                .setRetryAttempts(60 * 5)
+                .setSleepSeconds(3)
                 .build();
         retryService.execute(retryConfig, () -> {
             var jobNumber = jenkinsConsumer.getJobNumber(itemId);

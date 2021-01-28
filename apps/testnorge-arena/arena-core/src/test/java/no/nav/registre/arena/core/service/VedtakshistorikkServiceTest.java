@@ -14,6 +14,7 @@ import static no.nav.registre.arena.core.service.RettighetAapService.ARENA_AAP_U
 import no.nav.registre.arena.core.consumer.rs.VedtakshistorikkSyntConsumer;
 import no.nav.registre.arena.core.service.util.IdenterUtils;
 import no.nav.registre.arena.core.service.util.ArbeidssoekerUtils;
+import no.nav.registre.arena.core.service.util.DatoUtils;
 import no.nav.registre.arena.core.service.util.VedtakUtils;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
@@ -33,7 +34,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.arena.core.consumer.rs.AapSyntConsumer;
 import no.nav.registre.arena.core.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 
@@ -51,6 +51,9 @@ public class VedtakshistorikkServiceTest {
 
     @Mock
     private VedtakUtils vedtakUtils;
+
+    @Mock
+    private DatoUtils datoUtils;
 
     @Mock
     private RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
@@ -105,6 +108,7 @@ public class VedtakshistorikkServiceTest {
                 .fritakMeldekort(fritakMeldekortRettigheter)
                 .build();
 
+
         vedtakshistorikkListe = new ArrayList<>((Collections.singletonList(vedtakshistorikk)));
 
         when(identerUtils.getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe))).thenReturn(identer);
@@ -120,6 +124,7 @@ public class VedtakshistorikkServiceTest {
                         .kontonummer(kontonummer)
                         .build())));
         when(vedtakshistorikkSyntConsumer.syntetiserVedtakshistorikk(antallIdenter)).thenReturn(vedtakshistorikkListe);
+        when(datoUtils.finnTidligsteDato(vedtakshistorikkListe.get(0))).thenReturn(ARENA_AAP_UNG_UFOER_DATE_LIMIT.minusDays(7));
 
         var nyRettighetAapResponse = NyttVedtakResponse.builder()
                 .nyeRettigheterAap(aapRettigheter)
@@ -150,7 +155,7 @@ public class VedtakshistorikkServiceTest {
 
         var response = vedtakshistorikkService.genererVedtakshistorikk(avspillergruppeId, miljoe, antallIdenter);
 
-        verify(identerUtils).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(1), anyInt(), anyInt(), eq(miljoe));
+        verify(identerUtils).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe));
         verify(vedtakshistorikkSyntConsumer).syntetiserVedtakshistorikk(antallIdenter);
         verify(rettighetAapService).opprettPersonOgInntektIPopp(anyString(), anyString(), any(NyttVedtakAap.class));
         verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
