@@ -16,6 +16,7 @@ import no.nav.organisasjonforvalter.provider.rs.responses.BestillingResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,6 +44,11 @@ public class BestillingService {
                     .collect(Collectors.toSet());
 
             return BestillingResponse.builder().orgnummer(orgnumre).build();
+
+        } catch (HttpClientErrorException e) {
+
+            log.error(e.getMessage(), e.getResponseBodyAsString(), e);
+            throw new HttpClientErrorException(e.getStatusCode(), e.getStatusText());
 
         } catch (RuntimeException e) {
 

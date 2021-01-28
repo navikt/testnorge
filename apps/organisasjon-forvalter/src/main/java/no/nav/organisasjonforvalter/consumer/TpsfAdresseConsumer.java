@@ -93,7 +93,7 @@ public class TpsfAdresseConsumer {
 
         } catch (WebClientResponseException e) {
             log.error(e.getMessage(), e);
-            throw new HttpClientErrorException(HttpStatus.BAD_GATEWAY, e.getMessage());
+            throw new HttpClientErrorException(e.getStatusCode(), e.getMessage());
 
         } catch (RuntimeException e) {
 

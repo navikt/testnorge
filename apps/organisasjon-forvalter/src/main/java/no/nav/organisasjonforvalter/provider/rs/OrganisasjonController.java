@@ -9,12 +9,14 @@ import no.nav.organisasjonforvalter.provider.rs.responses.RsOrganisasjon;
 import no.nav.organisasjonforvalter.service.BestillingService;
 import no.nav.organisasjonforvalter.service.DeploymentService;
 import no.nav.organisasjonforvalter.service.OrganisasjonService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
