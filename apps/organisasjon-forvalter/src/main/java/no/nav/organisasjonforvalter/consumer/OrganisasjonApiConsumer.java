@@ -18,8 +18,10 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.netty.http.client.HttpClient;
 
+import javax.ws.rs.ClientErrorException;
 import java.util.List;
 import java.util.UUID;
 
@@ -77,6 +79,14 @@ public class OrganisasjonApiConsumer {
 
             log.info("Organisasjon-API svarte med funnet etter {} ms", currentTimeMillis() - startTime);
             return response.hasBody() ? response.getBody() : new Response();
+
+        } catch (WebClientResponseException e) {
+            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+                return new Response();
+            } else {
+                log.error(e.getMessage(), e);
+                throw new HttpClientErrorException(e.getStatusCode(), e.getResponseBodyAsString());
+            }
 
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {

@@ -15,6 +15,7 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.netty.http.client.HttpClient;
 
 import java.util.Collections;
@@ -74,6 +75,10 @@ public class OrganisasjonNummerConsumer {
             log.info("Orgnummer-service svarte etter {} ms", currentTimeMillis() - startTime);
 
             return response.hasBody() ? response.getBody() : Collections.emptyList();
+
+        } catch (WebClientResponseException e) {
+            log.error(e.getMessage(), e);
+            throw new HttpClientErrorException(e.getStatusCode(), e.getMessage());
 
         } catch (HttpClientErrorException e) {
             log.error(e.getMessage(), e);
