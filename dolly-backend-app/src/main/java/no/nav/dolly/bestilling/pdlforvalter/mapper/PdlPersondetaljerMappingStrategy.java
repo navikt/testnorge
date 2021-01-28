@@ -88,6 +88,7 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
 
                         pdlStatsborgerskap.setLandkode(isNotBlank(statsborgerskap.getStatsborgerskap()) ? statsborgerskap.getStatsborgerskap() : "NOR");
                         pdlStatsborgerskap.setGyldigFom(getDato(statsborgerskap.getStatsborgerskapRegdato()));
+                        pdlStatsborgerskap.setGyldigTom(getDato(statsborgerskap.getStatsborgerskapTildato()));
                         pdlStatsborgerskap.setKilde(CONSUMER);
                     }
                 })

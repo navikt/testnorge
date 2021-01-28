@@ -1,9 +1,6 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,6 +10,9 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.AdresseNrInfo;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsMidlertidigAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -71,6 +71,10 @@ public class RsTpsfBasisBestilling {
     @Schema(type = "LocalDateTime",
             description = "Statsborgerskap registeringsdato. Hvis blankt settes dato lik fødselsdato")
     private LocalDateTime statsborgerskapRegdato;
+
+    @Schema(type = "LocalDateTime",
+            description = "Statsborgerskap avslutningsdato.")
+    private LocalDateTime statsborgerskapTildato;
 
     @Schema(description = "Målform og språk i hht kodevek 'Språk'. Hvis blankt settes Norsk bokmål til FNR-person og tilfeldig språk for DNR-person")
     private String sprakKode;

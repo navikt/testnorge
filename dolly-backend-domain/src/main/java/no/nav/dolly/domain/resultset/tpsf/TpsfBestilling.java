@@ -53,6 +53,8 @@ public class TpsfBestilling {
 
     private LocalDateTime statsborgerskapRegdato;
 
+    private LocalDateTime statsborgerskapTildato;
+
     private String spesreg;
 
     private LocalDateTime spesregDato;
