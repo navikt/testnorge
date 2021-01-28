@@ -75,10 +75,11 @@ public class StartBEREG007Command implements Callable<Long> {
                 .with("input_file", fileEntity);
 
         String crumb = this.crumb.getCrumb();
-        log.info("Jenkins-Crumb: {}", crumb);
+
 
         try {
-            return webClient
+            log.info("Sender inn bestilling til jenkins");
+            var id = webClient
                     .post()
                     .uri("/view/Registre/job/Start_BEREG007/buildWithParameters")
                     .header("Jenkins-Crumb", crumb)
@@ -109,6 +110,8 @@ public class StartBEREG007Command implements Callable<Long> {
                             return Mono.error(e);
                         }
                     }).block();
+            log.info("Bestilling opprettet i jenkins med id: {}", id);
+            return id;
         } catch (WebClientResponseException e) {
             log.error(
                     "Feil ved innsending til jenkens batch BEREG007. Response: {}",
