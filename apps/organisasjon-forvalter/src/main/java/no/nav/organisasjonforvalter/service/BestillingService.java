@@ -38,7 +38,6 @@ public class BestillingService {
             Set<String> orgnumre = request.getOrganisasjoner().stream()
                     .map(org -> {
                         Organisasjon parent = processOrganisasjon(org, null);
-                        organisasjonRepository.save(parent);
                         return parent.getOrganisasjonsnummer();
                     })
                     .collect(Collectors.toSet());
@@ -63,8 +62,11 @@ public class BestillingService {
         organisasjon.setUnderenheter(mapperFacade.mapAsList(organisasjon.getUnderenheter(), Organisasjon.class));
         organisasjon.setParent(parent);
 
-        orgRequest.getUnderenheter().forEach(underenhet -> processOrganisasjon(underenhet, organisasjon));
-
+        if (orgRequest.getUnderenheter().isEmpty()) {
+            organisasjonRepository.save(organisasjon);
+        } else {
+            orgRequest.getUnderenheter().forEach(underenhet -> processOrganisasjon(underenhet, organisasjon));
+        }
         return organisasjon;
     }
 
