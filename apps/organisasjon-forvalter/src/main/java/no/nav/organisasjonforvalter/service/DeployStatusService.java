@@ -22,8 +22,8 @@ import static no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingStatus
 @RequiredArgsConstructor
 public class DeployStatusService {
 
-    private static final long SLEEP_TIME_MS = 1000L;
-    private static final long MAX_ITERATIONS = 60 * 15;
+    private static final long SLEEP_TIME_MS = 5000L;
+    private static final long MAX_ITERATIONS = 60 * 3;
 
     private final OrganisasjonBestillingStatusConsumer bestillingStatusConsumer;
 
@@ -65,13 +65,14 @@ public class DeployStatusService {
                 statusLength = statusTotal.size();
                 lastUpdate = System.currentTimeMillis();
             }
-            if (attemptsLeft-- % 5 == 0 || isDone(statusTotal, lastUpdate, maxTimeWithoutUpdate)) {
-                log.info("Deploystatus for {}, {}, time elapsed {} ms",
-                        uuid, statusTotal.stream()
-                                .map(ItemDto::toString)
-                                .collect(Collectors.joining(", ")),
-                        System.currentTimeMillis() - startTime);
-            }
+
+            log.info("Deploystatus for {}, {}, time elapsed {} ms",
+                    uuid, statusTotal.stream()
+                            .map(ItemDto::toString)
+                            .collect(Collectors.joining(", ")),
+                    System.currentTimeMillis() - startTime);
+
+            attemptsLeft--;
         }
 
         return !statusTotal.isEmpty() && isOK(statusTotal, lastUpdate, maxTimeWithoutUpdate) ?
