@@ -35,14 +35,18 @@ public class DeployStatusService {
 
     private static boolean isDone(List<ItemDto> items) {
 
-        return isOk(items) || !items.isEmpty() && items.stream().anyMatch(status ->
-                status.getStatus() == ERROR ||
-                        status.getStatus() == FAILED);
+        return isOk(items) || isError(items);
     }
 
     private static boolean isOk(List<ItemDto> items) {
 
         return !items.isEmpty() && items.stream().allMatch(status -> status.getStatus() == COMPLETED);
+    }
+
+    private static boolean isError(List<ItemDto> items) {
+
+        return !items.isEmpty() && items.stream().anyMatch(status ->
+                status.getStatus() == ERROR || status.getStatus() == FAILED);
     }
 
     private static String getReadableTime(Long millis) {
@@ -92,6 +96,7 @@ public class DeployStatusService {
                         .environment(entry.getEnvironment())
                         .status(isOk(entry.getLastStatus()) ? Status.OK : Status.ERROR)
                         .details(isOk(entry.getLastStatus()) ? null :
+                                isError(entry.getLastStatus()) ? "Oppretting til miljø feilet" :
                                 "Tidsavbrudd, oppretting ikke fullført etter " +
                                         getReadableTime(System.currentTimeMillis() - startTime))
                         .build())
