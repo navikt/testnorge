@@ -18,7 +18,7 @@ const PageWithMenu = ({title, children, navigations, menuTitle}: Props) => {
         <div className="page-with-menu">
             <div className="container--left">
                 <h4>Søk etter applikasjon</h4>
-                <input type="text" className="search" onChange={event => setSearch(event.target.value)}/>
+                <input type="text" autoFocus className="search" onChange={event => setSearch(event.target.value)}/>
 
                 <h3>{menuTitle}</h3>
 
