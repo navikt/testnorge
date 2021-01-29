@@ -44,7 +44,36 @@ public class OppsummeringsdokumentAdapter {
         return repository.findById(id).map(Oppsummeringsdokument::new).orElse(null);
     }
 
-    public Oppsummeringsdokument getLastBy(LocalDate kalendermaaned, String orgnummer) {
+
+    public List<OppsummeringsdokumentModel> getAllBy(String miljo) {
+        var searchQuery = new NativeSearchQueryBuilder()
+                .withQuery(
+                        QueryBuilders.matchQuery("miljo", miljo)
+                )
+                .build();
+        return operations.search(
+                searchQuery,
+                OppsummeringsdokumentModel.class
+        ).get().map(SearchHit::getContent).collect(Collectors.toList());
+    }
+
+    public List<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo) {
+        return getAllBy(miljo)
+                .stream()
+                .collect(Collectors.groupingBy(s -> s.getKalendermaaned().withDayOfMonth(1) + s.getOpplysningspliktigOrganisajonsnummer()))
+                .values()
+                .stream()
+                .map(list -> list.stream().reduce(null, (total, value) -> {
+                    if (total == null || total.getVersion() < value.getVersion()) {
+                        total = value;
+                    }
+                    return total;
+                }))
+                .map(Oppsummeringsdokument::new)
+                .collect(Collectors.toList());
+    }
+
+    public Oppsummeringsdokument getCurrentDocumentBy(LocalDate kalendermaaned, String orgnummer) {
         var searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(
                         QueryBuilders.rangeQuery("kalendermaaned")

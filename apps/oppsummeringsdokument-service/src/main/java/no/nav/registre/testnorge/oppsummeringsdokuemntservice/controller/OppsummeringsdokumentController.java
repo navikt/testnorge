@@ -17,6 +17,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OppsummeringsdokumentetDTO;
 import no.nav.registre.testnorge.oppsummeringsdokuemntservice.adapter.OppsummeringsdokumentAdapter;
@@ -29,17 +31,10 @@ public class OppsummeringsdokumentController {
 
     private final OppsummeringsdokumentAdapter adapter;
 
-    @PutMapping
-    public ResponseEntity<HttpStatus> save(@RequestBody OppsummeringsdokumentetDTO dto, @RequestHeader("miljo") String miljo) {
-        var opplysningspliktig = new Oppsummeringsdokument(dto);
-        var id = adapter.save(opplysningspliktig, miljo);
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(id)
-                .toUri();
-
-        return ResponseEntity.created(uri).build();
+    @GetMapping
+    public ResponseEntity<List<OppsummeringsdokumentetDTO>> getAll(@RequestHeader("miljo") String miljo){
+        var documents = adapter.getAllCurrentDocumentsBy(miljo);
+        return ResponseEntity.ok(documents.stream().map(Oppsummeringsdokument::toDTO).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
@@ -57,11 +52,24 @@ public class OppsummeringsdokumentController {
             @PathVariable("kalendermaaned") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate kalendermaaned,
             @RequestParam("miljo") String miljo
     ) {
-        var oppsummeringsdokument = adapter.getLastBy(kalendermaaned, orgnummer);
+        var oppsummeringsdokument = adapter.getCurrentDocumentBy(kalendermaaned, orgnummer);
         if (oppsummeringsdokument == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(oppsummeringsdokument.toDTO());
+    }
+
+    @PutMapping
+    public ResponseEntity<HttpStatus> save(@RequestBody OppsummeringsdokumentetDTO dto, @RequestHeader("miljo") String miljo) {
+        var opplysningspliktig = new Oppsummeringsdokument(dto);
+        var id = adapter.save(opplysningspliktig, miljo);
+        URI uri = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(id)
+                .toUri();
+
+        return ResponseEntity.created(uri).build();
     }
 
     @DeleteMapping
