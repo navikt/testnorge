@@ -73,7 +73,8 @@ public class DeployStatusService {
                     List<ItemDto> bestStatus;
                     try {
                         bestStatus = bestillingStatusConsumer.getBestillingStatus(entry.getUuid());
-                        if (entry.getLastStatus().size() != bestStatus.size()) {
+                        if (!entry.getLastStatus().containsAll(bestStatus) &&
+                                bestStatus.containsAll(entry.getLastStatus())) {
                             lastUpdate.set(System.currentTimeMillis());
                         }
                         entry.setLastStatus(bestStatus);
@@ -96,9 +97,9 @@ public class DeployStatusService {
                         .environment(entry.getEnvironment())
                         .status(isOk(entry.getLastStatus()) ? Status.OK : Status.ERROR)
                         .details(isOk(entry.getLastStatus()) ? null :
-                                isError(entry.getLastStatus()) ? "Oppretting til miljø feilet" :
-                                "Tidsavbrudd, oppretting ikke fullført etter " +
-                                        getReadableTime(System.currentTimeMillis() - startTime))
+                                isError(entry.getLastStatus()) ? "Oppretting til miljø feilet, se teknisk logg!" :
+                                        "Tidsavbrudd, oppretting ikke fullført etter " +
+                                                getReadableTime(System.currentTimeMillis() - startTime))
                         .build())
                 .collect(Collectors.toList());
     }
