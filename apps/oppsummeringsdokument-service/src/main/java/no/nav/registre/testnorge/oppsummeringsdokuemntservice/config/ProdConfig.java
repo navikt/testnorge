@@ -26,8 +26,6 @@ public class ProdConfig {
                 .usingSsl()
                 .withBasicAuth(elasticSearchCredentials.getUsername(), elasticSearchCredentials.getPassword())
                 .build();
-
-        log.info("Use ssl: {}", clientConfiguration.useSsl());
         return RestClients.create(clientConfiguration).rest();
     }
 

@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import no.nav.registre.testnorge.oppsummeringsdokuemntservice.consumer.AaregSyntConsumer;
 import no.nav.registre.testnorge.oppsummeringsdokuemntservice.domain.Oppsummeringsdokument;
 import no.nav.registre.testnorge.oppsummeringsdokuemntservice.repository.OppsummeringsdokumentRepository;
 import no.nav.registre.testnorge.oppsummeringsdokuemntservice.repository.model.OppsummeringsdokumentModel;
@@ -27,6 +28,7 @@ public class OppsummeringsdokumentAdapter {
     public static final String MAX_VERSION = "max_version";
     private final OppsummeringsdokumentRepository repository;
     private final ElasticsearchOperations operations;
+    private final AaregSyntConsumer aaregSyntConsumer;
 
     public void deleteAll() {
         repository.deleteAll();
@@ -34,6 +36,7 @@ public class OppsummeringsdokumentAdapter {
 
     public String save(Oppsummeringsdokument oppsummeringsdokument, String miljo) {
         log.info("Oppretter oppsumeringsdokuemnt i {}", miljo);
+        aaregSyntConsumer.saveOpplysningspliktig(oppsummeringsdokument);
         return repository.save(oppsummeringsdokument.toModel(miljo)).getId();
     }
 
