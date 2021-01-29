@@ -5,12 +5,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import no.nav.registre.sdforvalter.adapter.AaregAdapter;
 import no.nav.registre.sdforvalter.adapter.EregAdapter;
 import no.nav.registre.sdforvalter.adapter.KrrAdapter;
 import no.nav.registre.sdforvalter.consumer.rs.AaregConsumer;
 import no.nav.registre.sdforvalter.consumer.rs.EregMapperConsumer;
 import no.nav.registre.sdforvalter.consumer.rs.KrrConsumer;
+import no.nav.registre.sdforvalter.domain.Ereg;
+import no.nav.registre.sdforvalter.domain.EregListe;
 import no.nav.registre.sdforvalter.domain.status.ereg.OrganisasjonStatusMap;
 
 @Slf4j
@@ -60,10 +66,65 @@ public class EnvironmentInitializationService {
         log.info("Init of Ereg er ferdig.");
     }
 
+    public void opprettOrgViaKafka(String environment, String gruppe) {
+        EregListe orgMedJuridiskEnhetListe = eregAdapter.fetchBy(gruppe);
+
+
+
+        //Alt under her legges i egen fil
+        List<OrganisasjonNaermereAvro> orgMedUnderenhetListe = new ArrayList<>();
+        orgMedJuridiskEnhetListe.stream()
+                .forEach(org -> {
+                    if (finnOrgIListe(orgMedUnderenhetListe, org.getOrgnr()) == null) {
+                        orgMedUnderenhetListe.add(lagOrganisasjon(org, null));
+                    }
+
+                    String juridiskEnhetOrgnr = org.getJuridiskEnhet();
+                    if (juridiskEnhetOrgnr != null) {
+                        OrganisasjonNaermereAvro organisasjon = finnOrgIListe(orgMedUnderenhetListe, org.getOrgnr());
+                        OrganisasjonNaermereAvro juridiskEnhet = finnOrgIListe(orgMedUnderenhetListe, juridiskEnhetOrgnr);
+                        if (juridiskEnhet == null) {
+                            OrganisasjonNaermereAvro e = lagOrganisasjon(finnEregIListe(orgMedJuridiskEnhetListe, juridiskEnhetOrgnr), organisasjon);
+                            orgMedUnderenhetListe.add(e);
+                        } else {
+                            juridiskEnhet.addUnderenhet(organisasjon);
+                        }
+                    }
+                });
+
+        //send videre til OrganisasjonMottakConsumer og gjør om til faktisk avroskjema
+    }
+
+    public OrganisasjonNaermereAvro lagOrganisasjon(Ereg org, OrganisasjonNaermereAvro underenhet) {
+        //Opprett organisasjon med underenhet
+        var nyOrganisasjon = new OrganisasjonNaermereAvro(org);
+        if (underenhet != null) {
+            nyOrganisasjon.addUnderenhet(underenhet);
+        }
+        return nyOrganisasjon;
+    }
+
+    public OrganisasjonNaermereAvro finnOrgIListe(List<OrganisasjonNaermereAvro> orgliste, String orgnr) {
+        List<OrganisasjonNaermereAvro> organisasjon = orgliste.stream().filter(org -> org.getOrgnummer().equals(orgnr)).collect(Collectors.toList());
+        if (!organisasjon.isEmpty()) {
+            return organisasjon.get(0);
+        }
+        return null;
+    }
+
+    public Ereg finnEregIListe(EregListe orgliste, String orgnummer) {
+        //Mangler utvei hvis den juridiske enheten som er oppgitt ikke er med i lista. Stoppe opprettelse eller lage standard?
+        var eregliste = orgliste.stream().filter(org -> org.getOrgnr().equals(orgnummer)).collect(Collectors.toList());
+        if (!eregliste.isEmpty()) {
+            return eregliste.get(0);
+        }
+        return null;
+    }
+
     public void updateEregByOrgnr(String environment, String orgnr) {
         log.info("Oppdater {} i {} Ereg...", orgnr, environment);
         OrganisasjonStatusMap status = eregStatusService.getStatusByOrgnr(environment, orgnr, false);
-        if(status.getMap().isEmpty()){
+        if (status.getMap().isEmpty()) {
             log.info("Fant ingen endringer i for {} for {} Ereg", orgnr, environment);
         } else {
             eregMapperConsumer.update(eregAdapter.fetchByOrgnr(orgnr), environment);

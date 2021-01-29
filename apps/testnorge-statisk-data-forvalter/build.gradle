@@ -11,18 +11,11 @@ dependencies {
     //TODO remove
     compile group: 'com.google.guava', name: 'guava', version: '30.0-jre'
 
-    implementation project(':testnorge-dependency-analysis-auto-configuration')
-
     implementation 'org.springframework.boot:spring-boot-starter-security:2.3.4.RELEASE'
-    implementation project(':testnorge-dependency-analysis')
     implementation 'org.springframework.boot:spring-boot-starter-webflux:2.3.2.RELEASE'
-    implementation project(':testnorge-core')
-    implementation project(':testnorge-database')
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:2.2.5.RELEASE'
-    implementation project(':testnorge-common-command')
     implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-actuator:2.3.4.RELEASE'
-    implementation project(':testnorge-csv-converter')
     implementation 'org.projectlombok:lombok:1.18.12'
     implementation 'org.aspectj:aspectjweaver:1.9.6'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
@@ -36,12 +29,27 @@ dependencies {
     implementation 'com.h2database:h2:1.4.200'
     implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
     implementation 'javax.validation:validation-api:2.0.1.Final'
-    implementation project(':testnorge-data-transfer-objects')
-    implementation project(':testnorge-oauth2')
     implementation 'org.apache.httpcomponents:httpclient:4.5.12'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'org.springdoc:springdoc-openapi-ui:1.4.6'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:2.2.5.RELEASE'
+    implementation 'org.springframework.kafka:spring-kafka:2.5.6.RELEASE'
+    implementation 'org.apache.kafka:kafka-clients:2.5.1'
+    implementation 'io.confluent:kafka-avro-serializer:5.5.0'
+    implementation 'ma.glasnost.orika:orika-core:1.5.4'
+
+    implementation project(':testnorge-dependency-analysis-auto-configuration')
+    implementation project(':testnorge-core')
+    implementation project(':testnorge-database')
+    implementation project(':testnorge-dependency-analysis')
+    implementation project(':testnorge-common-command')
+    implementation project(':testnorge-csv-converter')
+    implementation project(':testnorge-data-transfer-objects')
+    implementation project(':testnorge-oauth2')
+    implementation project(':testnorge-avro-schema')
+    implementation project(':kafka-config')
+    implementation project(':kafka-producers')
+
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.5.RELEASE'
     testImplementation project(':testnorge-testing')

@@ -62,6 +62,12 @@ public class OrkestreringsController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping(value="/ereg/{miljoe}/kafkaveien")
+    public ResponseEntity<?> leggTilIEreg (@PathVariable String miljoe, @RequestParam(name = "gruppe", required = false) String gruppe) {
+        environmentInitializationService.opprettOrgViaKafka(miljoe, gruppe);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping(value = "/ereg/{miljoe}/update/{regnr}")
     public ResponseEntity<HttpStatus> updateEreg(@PathVariable String miljoe, @PathVariable("regnr") String regnr) {
         environmentInitializationService.updateEregByOrgnr(miljoe, regnr);
