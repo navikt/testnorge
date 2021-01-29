@@ -10,8 +10,8 @@ spring.cloud.vault:
   generic:
     enabled: true
     backend: kv
-    application-name: preprod/fss/udi-stub/default
-    default-context: preprod/fss/udi-stub/default
+    application-name: preprod/fss/udi-stub/dolly
+    default-context: preprod/fss/udi-stub/dolly
   database:
     enabled: true
     role: udi-stub-user
