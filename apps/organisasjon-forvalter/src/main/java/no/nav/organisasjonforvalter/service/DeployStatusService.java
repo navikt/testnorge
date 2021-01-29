@@ -73,8 +73,8 @@ public class DeployStatusService {
                     List<ItemDto> bestStatus;
                     try {
                         bestStatus = bestillingStatusConsumer.getBestillingStatus(entry.getUuid());
-                        if (!entry.getLastStatus().containsAll(bestStatus) &&
-                                bestStatus.containsAll(entry.getLastStatus())) {
+                        if (!(entry.getLastStatus().containsAll(bestStatus) &&
+                                bestStatus.containsAll(entry.getLastStatus()))) {
                             lastUpdate.set(System.currentTimeMillis());
                         }
                         entry.setLastStatus(bestStatus);
