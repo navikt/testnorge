@@ -24,7 +24,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.ArbeidsforholdDTO;
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OppsummeringsdokumentetDTO;
+import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OppsummeringsdokumentDTO;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.PermisjonDTO;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.VirksomhetDTO;
@@ -46,9 +46,9 @@ import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Virksomhet;
 
 @Slf4j
 public class Oppsummeringsdokument {
-    private final OppsummeringsdokumentetDTO dto;
+    private final OppsummeringsdokumentDTO dto;
 
-    public Oppsummeringsdokument(OppsummeringsdokumentetDTO dto) {
+    public Oppsummeringsdokument(OppsummeringsdokumentDTO dto) {
         this.dto = dto;
     }
 
@@ -65,7 +65,7 @@ public class Oppsummeringsdokument {
     }
 
     public Oppsummeringsdokument(OppsummeringsdokumentModel model){
-        this.dto = OppsummeringsdokumentetDTO
+        this.dto = OppsummeringsdokumentDTO
                 .builder()
                 .kalendermaaned(model.getKalendermaaned())
                 .opplysningspliktigOrganisajonsnummer(model.getOpplysningspliktigOrganisajonsnummer())
@@ -121,7 +121,7 @@ public class Oppsummeringsdokument {
     public Oppsummeringsdokument(EDAGM edagm) {
         var leveranse = edagm.getLeveranse();
         var oppgave = edagm.getLeveranse().getOppgave();
-        dto = OppsummeringsdokumentetDTO
+        dto = OppsummeringsdokumentDTO
                 .builder()
                 .kalendermaaned(toLocalDate(leveranse.getKalendermaaned()))
                 .opplysningspliktigOrganisajonsnummer(leveranse.getOpplysningspliktig().getNorskIdentifikator())
@@ -167,7 +167,7 @@ public class Oppsummeringsdokument {
     }
 
     public Oppsummeringsdokument(String opplysningspliktig, Map<String, List<no.nav.registre.testnorge.oppsummeringsdokuemntservice.domain.Arbeidsforhold>> map) {
-        dto = OppsummeringsdokumentetDTO
+        dto = OppsummeringsdokumentDTO
                 .builder()
                 .kalendermaaned(LocalDate.now())
                 .opplysningspliktigOrganisajonsnummer(opplysningspliktig)
@@ -262,7 +262,7 @@ public class Oppsummeringsdokument {
     }
 
 
-    public OppsummeringsdokumentetDTO toDTO() {
+    public OppsummeringsdokumentDTO toDTO() {
         return dto;
     }
 

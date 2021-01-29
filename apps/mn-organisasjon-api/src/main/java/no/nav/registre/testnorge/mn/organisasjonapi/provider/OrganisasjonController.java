@@ -86,4 +86,12 @@ public class OrganisasjonController {
         orgnaisasjonAdapter.deleteBy(orgnummer, miljo);
         return ResponseEntity.accepted().build();
     }
+
+    @DeleteMapping
+    public ResponseEntity<MNOrganisasjonDTO> deleteOrganisasjoner(
+            @RequestHeader("miljo") String miljo
+    ) {
+        orgnaisasjonAdapter.deleteBy(miljo);
+        return ResponseEntity.accepted().build();
+    }
 }

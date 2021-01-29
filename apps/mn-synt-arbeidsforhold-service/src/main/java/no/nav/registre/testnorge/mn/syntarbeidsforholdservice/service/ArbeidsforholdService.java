@@ -16,8 +16,8 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.SyntetiseringProperties;
-import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.ArbeidsforholdConsumer;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.MNOrganisasjonConsumer;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.OppsummeringsdokumentConsumer;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.SyntrestConsumer;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Arbeidsforhold;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Opplysningspliktig;
@@ -29,7 +29,7 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.exception.MNOrgani
 @RequiredArgsConstructor
 public class ArbeidsforholdService {
     private final MNOrganisasjonConsumer mnorganisasjonConsumer;
-    private final ArbeidsforholdConsumer arbeidsforholdConsumer;
+    private final OppsummeringsdokumentConsumer oppsummeringsdokumentConsumer;
     private final SyntrestConsumer syntrestConsumer;
     private final SyntetiseringProperties syntetiseringProperties;
     private final Random random = new Random();
@@ -70,12 +70,12 @@ public class ArbeidsforholdService {
         Arbeidsforhold arbeidsforhold = createArbeidsforhold(fom, ident, virksomhetsnummer);
         opplysningspliktig.addArbeidsforhold(arbeidsforhold);
 
-        arbeidsforholdConsumer.sendOpplysningspliktig(opplysningspliktig, miljo);
+        oppsummeringsdokumentConsumer.sendOpplysningspliktig(opplysningspliktig, miljo);
         syntHistory(organisajon, arbeidsforhold, miljo, findAllDatesBetween(fom, tom).iterator());
     }
 
     private Opplysningspliktig getOpplysningspliktig(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {
-        Optional<Opplysningspliktig> opplysningspliktig = arbeidsforholdConsumer.getOpplysningspliktig(organisajon, kalendermaaned, miljo);
+        Optional<Opplysningspliktig> opplysningspliktig = oppsummeringsdokumentConsumer.getOpplysningspliktig(organisajon, kalendermaaned, miljo);
         if (opplysningspliktig.isPresent()) {
             Opplysningspliktig temp = opplysningspliktig.get();
             temp.setVersion(temp.getVersion() + 1);
@@ -86,7 +86,7 @@ public class ArbeidsforholdService {
     }
 
     private Optional<Opplysningspliktig> getOpplysningspliktigForMonth(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {
-        return arbeidsforholdConsumer.getOpplysningspliktig(
+        return oppsummeringsdokumentConsumer.getOpplysningspliktig(
                 organisajon,
                 kalendermaaned,
                 miljo
@@ -98,7 +98,7 @@ public class ArbeidsforholdService {
     }
 
     private Optional<Opplysningspliktig> getOpplysningspliktigForPreviousMonth(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {
-        return arbeidsforholdConsumer.getOpplysningspliktig(
+        return oppsummeringsdokumentConsumer.getOpplysningspliktig(
                 organisajon,
                 kalendermaaned.minusMonths(1),
                 miljo
@@ -128,7 +128,7 @@ public class ArbeidsforholdService {
                         })
                 )
         );
-        arbeidsforholdConsumer.sendOpplysningspliktig(opplysningspliktig, miljo);
+        oppsummeringsdokumentConsumer.sendOpplysningspliktig(opplysningspliktig, miljo);
     }
 
     private void syntHistoryForPreviousMonth(Opplysningspliktig opplysningspliktig, LocalDate kalendermaaned, String miljo) {
@@ -154,7 +154,7 @@ public class ArbeidsforholdService {
                                 })
                 )
         );
-        arbeidsforholdConsumer.sendOpplysningspliktig(opplysningspliktig, miljo);
+        oppsummeringsdokumentConsumer.sendOpplysningspliktig(opplysningspliktig, miljo);
     }
 
     private void syntHistory(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {
@@ -217,7 +217,7 @@ public class ArbeidsforholdService {
             next.setVirksomhetsnummer(virksomhetsnummer);
             Opplysningspliktig opplysningspliktig = getOpplysningspliktig(newOpplysningspliktigOrganisajon, kalendermaaned, miljo);
             opplysningspliktig.addArbeidsforhold(next);
-            arbeidsforholdConsumer.sendOpplysningspliktig(opplysningspliktig, miljo);
+            oppsummeringsdokumentConsumer.sendOpplysningspliktig(opplysningspliktig, miljo);
             syntHistory(newOpplysningspliktigOrganisajon, next, miljo, kalendermaaneder);
         }
 
@@ -228,7 +228,7 @@ public class ArbeidsforholdService {
         Arbeidsforhold next = historikk.next();
         Opplysningspliktig opplysningspliktig = getOpplysningspliktig(opplysningspliktigOrganisajon, kalendermaaned, miljo);
         opplysningspliktig.addArbeidsforhold(next);
-        arbeidsforholdConsumer.sendOpplysningspliktig(opplysningspliktig, miljo);
+        oppsummeringsdokumentConsumer.sendOpplysningspliktig(opplysningspliktig, miljo);
         syntHistory(opplysningspliktigOrganisajon, next, miljo, kalendermaaneder, historikk);
     }
 

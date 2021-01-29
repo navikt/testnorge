@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.arbeidsforhold.adapter.OppsummeringsdokumentetAdapter;
 import no.nav.registre.testnorge.arbeidsforhold.domain.Oppsummeringsdokumentet;
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OppsummeringsdokumentetDTO;
+import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OppsummeringsdokumentDTO;
 
 @Slf4j
 @RestController
@@ -31,7 +31,7 @@ public class OppsummeringsdokumentetController {
     private final OppsummeringsdokumentetAdapter oppsummeringsdokumentetAdapter;
 
     @GetMapping
-    public ResponseEntity<List<OppsummeringsdokumentetDTO>> getAllOpplysningspliktig(
+    public ResponseEntity<List<OppsummeringsdokumentDTO>> getAllOpplysningspliktig(
             @RequestHeader("miljo") String miljo
     ) {
         List<Oppsummeringsdokumentet> oppsummeringsdokumentets = oppsummeringsdokumentetAdapter.fetchAll(miljo);
@@ -40,7 +40,7 @@ public class OppsummeringsdokumentetController {
 
     @PutMapping
     public ResponseEntity<HttpStatus> createOpplysningspliktig(
-            @RequestBody OppsummeringsdokumentetDTO opplysningspliktigDTO,
+            @RequestBody OppsummeringsdokumentDTO opplysningspliktigDTO,
             @RequestHeader("miljo") String miljo
     ) {
         Oppsummeringsdokumentet opplysningspliktig = new Oppsummeringsdokumentet(opplysningspliktigDTO);
@@ -56,7 +56,7 @@ public class OppsummeringsdokumentetController {
     }
 
     @GetMapping("/{orgnummer}/{kalendermaaned}")
-    public ResponseEntity<OppsummeringsdokumentetDTO> getOpplysningspliktigFromKalendermaaned(
+    public ResponseEntity<OppsummeringsdokumentDTO> getOpplysningspliktigFromKalendermaaned(
             @PathVariable("orgnummer") String orgnummer,
             @PathVariable("kalendermaaned") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate kalendermaaned,
             @RequestHeader("miljo") String miljo

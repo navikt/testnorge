@@ -12,7 +12,7 @@ import java.util.Random;
 
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.ArbeidsforholdDTO;
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OppsummeringsdokumentetDTO;
+import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OppsummeringsdokumentDTO;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.VirksomhetDTO;
 
@@ -21,13 +21,13 @@ import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.VirksomhetDTO;
 @RequiredArgsConstructor
 public class Opplysningspliktig {
     private static final Random RANDOM = new Random();
-    private final OppsummeringsdokumentetDTO dto;
+    private final OppsummeringsdokumentDTO dto;
     private final List<String> driverVirksomheter;
     private boolean changed = false;
 
     public Opplysningspliktig(Organisajon organisajon, LocalDate kalendermaand) {
         driverVirksomheter = organisajon.getDriverVirksomheter();
-        dto = OppsummeringsdokumentetDTO
+        dto = OppsummeringsdokumentDTO
                 .builder()
                 .version(1L)
                 .kalendermaaned(kalendermaand)
@@ -110,7 +110,7 @@ public class Opplysningspliktig {
         return dto.getVersion() == null ? 0 : dto.getVersion();
     }
 
-    public OppsummeringsdokumentetDTO toDTO() {
+    public OppsummeringsdokumentDTO toDTO() {
         return dto;
     }
 

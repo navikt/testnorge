@@ -20,7 +20,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OppsummeringsdokumentetDTO;
+import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OppsummeringsdokumentDTO;
 import no.nav.registre.testnorge.oppsummeringsdokuemntservice.adapter.OppsummeringsdokumentAdapter;
 import no.nav.registre.testnorge.oppsummeringsdokuemntservice.domain.Oppsummeringsdokument;
 
@@ -32,13 +32,13 @@ public class OppsummeringsdokumentController {
     private final OppsummeringsdokumentAdapter adapter;
 
     @GetMapping
-    public ResponseEntity<List<OppsummeringsdokumentetDTO>> getAll(@RequestHeader("miljo") String miljo){
+    public ResponseEntity<List<OppsummeringsdokumentDTO>> getAll(@RequestHeader("miljo") String miljo){
         var documents = adapter.getAllCurrentDocumentsBy(miljo);
         return ResponseEntity.ok(documents.stream().map(Oppsummeringsdokument::toDTO).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OppsummeringsdokumentetDTO> get(@PathVariable("id") String id) {
+    public ResponseEntity<OppsummeringsdokumentDTO> get(@PathVariable("id") String id) {
         var oppsummeringsdokument = adapter.get(id);
         if (oppsummeringsdokument == null) {
             return ResponseEntity.notFound().build();
@@ -47,7 +47,7 @@ public class OppsummeringsdokumentController {
     }
 
     @GetMapping("/{orgnummer}/{kalendermaaned}")
-    public ResponseEntity<OppsummeringsdokumentetDTO> getOpplysningspliktigFromKalendermaaned(
+    public ResponseEntity<OppsummeringsdokumentDTO> getOpplysningspliktigFromKalendermaaned(
             @PathVariable("orgnummer") String orgnummer,
             @PathVariable("kalendermaaned") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate kalendermaaned,
             @RequestParam("miljo") String miljo
@@ -60,7 +60,7 @@ public class OppsummeringsdokumentController {
     }
 
     @PutMapping
-    public ResponseEntity<HttpStatus> save(@RequestBody OppsummeringsdokumentetDTO dto, @RequestHeader("miljo") String miljo) {
+    public ResponseEntity<HttpStatus> save(@RequestBody OppsummeringsdokumentDTO dto, @RequestHeader("miljo") String miljo) {
         var opplysningspliktig = new Oppsummeringsdokument(dto);
         var id = adapter.save(opplysningspliktig, miljo);
         URI uri = ServletUriComponentsBuilder

@@ -17,6 +17,12 @@ consumers:
     url: https://kodeverk.dev.adeo.no
   syntrest:
     url: https://syntrest.dev.adeo.no
+  oppsummeringsdokument-service:
+    clientId: 411963e3-5693-4ae8-8a2b-4d42dbeed5ee
+    cluster: dev-gcp
+    namespace: dolly
+    name: oppsummeringsdokument-service
+    url: https://oppsummeringsdokument-service.dev.intern.nav.no
 
 spring:
   main:

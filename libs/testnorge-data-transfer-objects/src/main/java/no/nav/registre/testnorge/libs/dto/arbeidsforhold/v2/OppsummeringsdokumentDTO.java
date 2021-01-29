@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class OppsummeringsdokumentetDTO {
+public class OppsummeringsdokumentDTO {
     @JsonProperty(required = true)
     private LocalDate kalendermaaned;
     @JsonProperty(required = true)

@@ -10,13 +10,11 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import java.time.LocalDate;
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OppsummeringsdokumentetDTO;
+import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OppsummeringsdokumentDTO;
 
 @Slf4j
-@DependencyOn("testnorge-arbeidsforhold-api")
 @RequiredArgsConstructor
-public class GetOppsummeringsdokumentetCommand implements Callable<OppsummeringsdokumentetDTO> {
+public class GetOppsummeringsdokumentCommand implements Callable<OppsummeringsdokumentDTO> {
     private final WebClient webClient;
     private final String accessToken;
     private final String orgnummer;
@@ -25,7 +23,7 @@ public class GetOppsummeringsdokumentetCommand implements Callable<Oppsummerings
 
     @SneakyThrows
     @Override
-    public OppsummeringsdokumentetDTO call() {
+    public OppsummeringsdokumentDTO call() {
         log.info("Henter oppsummeringsdokumentet med orgnummer {} den {}.", orgnummer, kalendermaaned);
         try {
             return webClient
@@ -37,7 +35,7 @@ public class GetOppsummeringsdokumentetCommand implements Callable<Oppsummerings
                     .header("miljo", this.miljo)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                     .retrieve()
-                    .bodyToMono(OppsummeringsdokumentetDTO.class)
+                    .bodyToMono(OppsummeringsdokumentDTO.class)
                     .block();
         } catch (WebClientResponseException.NotFound e) {
             return null;

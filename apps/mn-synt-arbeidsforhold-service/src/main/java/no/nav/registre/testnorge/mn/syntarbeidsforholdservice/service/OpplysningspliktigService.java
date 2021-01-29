@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.ArbeidsforholdConsumer;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.MNOrganisasjonConsumer;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.OppsummeringsdokumentConsumer;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Opplysningspliktig;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Organisajon;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.exception.MNOrganisasjonException;
@@ -19,7 +19,7 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.exception.MNOrgani
 @Service
 @RequiredArgsConstructor
 public class OpplysningspliktigService {
-    private final ArbeidsforholdConsumer arbeidsforholdConsumer;
+    private final OppsummeringsdokumentConsumer oppsummeringsdokumentConsumer;
     private final MNOrganisasjonConsumer organisasjonConsumer;
 
 
@@ -38,7 +38,7 @@ public class OpplysningspliktigService {
     }
 
     private Opplysningspliktig getOpplysningspliktig(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {
-        Optional<Opplysningspliktig> opplysningspliktig = arbeidsforholdConsumer.getOpplysningspliktig(organisajon, kalendermaaned, miljo);
+        Optional<Opplysningspliktig> opplysningspliktig = oppsummeringsdokumentConsumer.getOpplysningspliktig(organisajon, kalendermaaned, miljo);
         if (opplysningspliktig.isPresent()) {
             Opplysningspliktig temp = opplysningspliktig.get();
             temp.setVersion(temp.getVersion() + 1);
@@ -65,6 +65,6 @@ public class OpplysningspliktigService {
             }
             return value.isChanged();
         }).collect(Collectors.toList());
-        arbeidsforholdConsumer.sendOpplysningspliktig(opplysningspliktige, miljo);
+        oppsummeringsdokumentConsumer.sendOpplysningspliktig(opplysningspliktige, miljo);
     }
 }

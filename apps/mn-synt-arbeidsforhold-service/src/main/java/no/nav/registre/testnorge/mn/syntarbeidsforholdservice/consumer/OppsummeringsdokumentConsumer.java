@@ -18,33 +18,34 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumenterCommand;
-import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumentetCommand;
+import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumentCommand;
 import no.nav.registre.testnorge.libs.common.command.SaveOppsummeringsdokumenterCommand;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
-import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.credentials.ArbeidsforholdApiServerProperties;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.credentials.OppsummeringsdokuemntServerProperties;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Opplysningspliktig;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Organisajon;
 
 @Component
-public class ArbeidsforholdConsumer {
+public class OppsummeringsdokumentConsumer {
     private static final int BYTE_COUNT = 16 * 1024 * 1024;
     private final WebClient webClient;
-    private final NaisServerProperties properties;
     private final AccessTokenService accessTokenService;
+    private final NaisServerProperties properties;
     private final Executor executor;
 
-    public ArbeidsforholdConsumer(
-            ArbeidsforholdApiServerProperties properties,
+    public OppsummeringsdokumentConsumer(
             AccessTokenService accessTokenService,
+            OppsummeringsdokuemntServerProperties properties,
             ObjectMapper objectMapper
     ) {
-        this.properties = properties;
-        this.accessTokenService = accessTokenService;
         this.executor = Executors.newFixedThreadPool(5);
+        this.accessTokenService = accessTokenService;
+        this.properties = properties;
         this.webClient = WebClient
                 .builder()
+                .baseUrl(properties.getUrl())
                 .codecs(clientDefaultCodecsConfigurer -> {
                     clientDefaultCodecsConfigurer.defaultCodecs().maxInMemorySize(BYTE_COUNT);
                     clientDefaultCodecsConfigurer
@@ -54,10 +55,8 @@ public class ArbeidsforholdConsumer {
                             .defaultCodecs()
                             .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
                 })
-                .baseUrl(properties.getUrl())
                 .build();
     }
-
 
     private CompletableFuture<Void> saveOpplysningspliktig(Opplysningspliktig opplysningspliktig, String miljo) {
         AccessToken accessToken = accessTokenService.generateToken(properties);
@@ -74,7 +73,7 @@ public class ArbeidsforholdConsumer {
 
     public Optional<Opplysningspliktig> getOpplysningspliktig(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {
         AccessToken accessToken = accessTokenService.generateToken(properties);
-        var dto = new GetOppsummeringsdokumentetCommand(webClient, accessToken.getTokenValue(), organisajon.getOrgnummer(), kalendermaaned, miljo).call();
+        var dto = new GetOppsummeringsdokumentCommand(webClient, accessToken.getTokenValue(), organisajon.getOrgnummer(), kalendermaaned, miljo).call();
         if (dto == null) {
             return Optional.empty();
         }
@@ -102,4 +101,5 @@ public class ArbeidsforholdConsumer {
             future.get();
         }
     }
+
 }
