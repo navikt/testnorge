@@ -2,7 +2,7 @@ name: Deploy organisasjon-forvalter
 
 on:
   push:
-    branches: master
+    branches: feature/forbedre-deploy-status-haandtering
     paths:
       - apps/organisasjon-forvalter/**
       - libs/kafka-config/**

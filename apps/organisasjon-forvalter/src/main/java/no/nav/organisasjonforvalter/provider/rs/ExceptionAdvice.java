@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 
 @ControllerAdvice
 @RequiredArgsConstructor
-public class ExceptionAdvise {
+public class ExceptionAdvice {
 
         private final HttpServletRequest httpServletRequest;
         private final UrlPathHelper urlPathHelper;
