@@ -1,4 +1,4 @@
-import { Statsborger, Innhold } from '../../../hodejegeren/types'
+import { Innhold, Statsborger } from '../../../hodejegeren/types'
 
 export const getBoadresse = (data: Innhold) => {
 	const boadresseData = data.boadresse
@@ -23,7 +23,8 @@ const getStatsborgerskap = (data: Statsborger) => {
 	return [
 		{
 			statsborgerskap: data.land,
-			statsborgerskapRegdato: data.fraDato ? data.fraDato : ''
+			statsborgerskapRegdato: data.fraDato ? data.fraDato : '',
+			statsborgerskapTildato: data.tilDato ? data.tilDato : ''
 		}
 	]
 }

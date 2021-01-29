@@ -14,8 +14,12 @@ const Statsborgerskap = ({ statsborgerskap }) => (
 			value={statsborgerskap.land}
 		/>
 		<TitleValue
-			title="Statsborgerskap fra"
+			title="Statsborgerskap registrert"
 			value={Formatters.formatDate(statsborgerskap.gyldigFraOgMed)}
+		/>
+		<TitleValue
+			title="Statsborgerskap til"
+			value={Formatters.formatDate(statsborgerskap.gyldigTilOgMed)}
 		/>
 	</div>
 )

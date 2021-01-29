@@ -57,7 +57,7 @@ spec:
     - name: DOLLY_BACKEND_HOST
       value: https://dolly-backend.dev.adeo.no
     - name: TESTNORGE_MILJOER_SERVICE_HOST
-      value: https://testnorge-miljoer-service.dev.intern.nav.no
+      value: https://miljoer-service.dev.intern.nav.no
     - name: TESTNORGE_PROFIL_API_HOST
       value: https://testnorge-profil-api.dev.intern.nav.no
   vault:

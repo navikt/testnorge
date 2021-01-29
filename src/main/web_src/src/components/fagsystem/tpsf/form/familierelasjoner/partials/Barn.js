@@ -22,7 +22,8 @@ const initialValues = {
 	spesreg: '',
 	utenFastBopel: false,
 	statsborgerskap: '',
-	statsborgerskapRegdato: ''
+	statsborgerskapRegdato: '',
+	statsborgerskapTildato: ''
 }
 
 export const initialValuesDoedfoedt = {
@@ -135,6 +136,12 @@ export const Barn = ({ formikBag, personFoerLeggTil }) => {
 							<FormikDatepicker
 								name={`${path}.statsborgerskapRegdato`}
 								label="Statsborgerskap fra"
+							/>
+						)}
+						{!isDoedfoedt && (
+							<FormikDatepicker
+								name={`${path}.statsborgerskapTildato`}
+								label="Statsborgerskap til"
 							/>
 						)}
 						{!isDoedfoedt && <Diskresjonskoder basePath={path} formikBag={formikBag} />}

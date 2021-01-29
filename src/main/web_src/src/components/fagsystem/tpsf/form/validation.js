@@ -1,14 +1,14 @@
 import * as Yup from 'yup'
 import _get from 'lodash/get'
-import { isAfter, addDays, isBefore } from 'date-fns'
+import { addDays, isAfter, isBefore } from 'date-fns'
 import Dataformatter from '~/utils/DataFormatter'
 import {
-	requiredString,
-	requiredNumber,
-	requiredDate,
-	ifPresent,
 	ifKeyHasValue,
-	messages
+	ifPresent,
+	messages,
+	requiredDate,
+	requiredNumber,
+	requiredString
 } from '~/utils/YupValidations'
 
 const boadresse = Yup.object({
@@ -373,6 +373,7 @@ export const validation = {
 			kjonn: ifPresent('$tpsf.kjonn', requiredString),
 			statsborgerskap: ifPresent('$tpsf.statsborgerskap', requiredString),
 			statsborgerskapRegdato: Yup.date().nullable(),
+			statsborgerskapTildato: Yup.date().nullable(),
 			innvandretFraLand: ifPresent('$tpsf.innvandretFraLand', requiredString),
 			innvandretFraLandFlyttedato: ifPresent(
 				'$tpsf.innvandretFraLandFlyttedato',

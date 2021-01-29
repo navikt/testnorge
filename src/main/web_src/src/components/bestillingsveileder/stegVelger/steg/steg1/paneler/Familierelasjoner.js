@@ -63,7 +63,8 @@ const defaultPartner = opts => {
 			spesreg: '',
 			utenFastBopel: false,
 			statsborgerskap: '',
-			statsborgerskapRegdato: ''
+			statsborgerskapRegdato: '',
+			statsborgerskapTildato: ''
 		}
 	]
 
@@ -97,7 +98,8 @@ const defaultBarn = opts => {
 			spesreg: '',
 			utenFastBopel: false,
 			statsborgerskap: '',
-			statsborgerskapRegdato: ''
+			statsborgerskapRegdato: '',
+			statsborgerskapTildato: ''
 		}
 	]
 
