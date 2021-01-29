@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.oppsummeringsdokuemntservice.config;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.data.elasticsearch.client.RestClients;
 
 import no.nav.registre.testnorge.oppsummeringsdokuemntservice.config.credentials.ElasticSearchCredentials;
 
+@Slf4j
 @Configuration
 @Profile("prod")
 @RequiredArgsConstructor
@@ -24,6 +26,8 @@ public class ProdConfig {
                 .withBasicAuth(elasticSearchCredentials.getUsername(), elasticSearchCredentials.getPassword())
                 .build();
 
+        log.info("Use ssl: {}", clientConfiguration.useSsl());
         return RestClients.create(clientConfiguration).rest();
     }
+
 }
