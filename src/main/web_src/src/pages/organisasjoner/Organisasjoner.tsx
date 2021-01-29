@@ -33,7 +33,8 @@ type OrganisasjonInfo = {
 	naeringskode: string
 	sektorkode: string
 	organisasjonsnavn: string
-	organisasjonsnummer: string
+	organisasjonNummer?: string
+	organisasjonsnummer?: string
 	status: Array<Status>
 	underenheter: OrganisasjonInfo[]
 	id: number
@@ -77,7 +78,7 @@ export default function Organisasjoner({
 		organisasjonsnummer: string
 	) {
 		return organisasjoner
-			.filter((org: OrganisasjonInfo) => org.status[0].organisasjonsnummer === organisasjonsnummer)
+			.filter((org: OrganisasjonInfo) => org.organisasjonNummer === organisasjonsnummer)
 			.map((org: OrganisasjonInfo) => org.id)[0]
 	}
 
@@ -87,7 +88,7 @@ export default function Organisasjoner({
 		let orgNumre: string[] = []
 		response.value.data.forEach((org: any) => {
 			if (org.ferdig && org.organisasjonNummer !== 'NA')
-				return orgNumre.push(org.status[0].organisasjonsnummer)
+				return orgNumre.push(org.organisasjonNummer)
 		})
 
 		return getOrganisasjoner(orgNumre).then((orgInfo: OrganisasjonResponse) => {
@@ -196,7 +197,7 @@ export default function Organisasjoner({
 					(isFetching ? (
 						<Loading label="laster bestillinger" panel />
 					) : antallOrg > 0 ? (
-						<OrganisasjonBestilling orgListe={organisasjonliste} />
+						<OrganisasjonBestilling orgListe={organisasjonliste} brukerId={brukerId} />
 					) : (
 						tomOrgListe()
 					))}

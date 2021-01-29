@@ -172,5 +172,9 @@ export default {
 
 	getOrganisasjonBestillingStatus(bestillingId) {
 		return Request.get(Endpoints.organisasonStatusByBestillingId(bestillingId))
+	},
+
+	gjenopprettOrganisasjonBestilling(bestillingId, envs) {
+		return Request.put(Endpoints.gjenopprettOrganisasjonBestilling(bestillingId, envs))
 	}
 }

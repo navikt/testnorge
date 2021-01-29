@@ -6,9 +6,11 @@ import { OrganisasjonItem } from '~/components/ui/icon/IconItem'
 import Icon from '~/components/ui/icon/Icon'
 import BestillingDetaljer from '~/components/bestilling/detaljer/Detaljer'
 import { OrgStatus } from '~/components/fagsystem/organisasjoner/types'
+import Spinner from '~/components/ui/loading/Spinner'
 
 type OrganisasjonBestilling = {
 	orgListe: OrgStatus
+	brukerId: string
 }
 
 const ikonTypeMap = {
@@ -18,7 +20,7 @@ const ikonTypeMap = {
 	Stoppet: 'report-problem-triangle'
 }
 
-export default function OrganisasjonBestilling({ orgListe }: OrganisasjonBestilling) {
+export default function OrganisasjonBestilling({ orgListe, brukerId }: OrganisasjonBestilling) {
 	if (!orgListe) {
 		return null
 	}
@@ -62,10 +64,18 @@ export default function OrganisasjonBestilling({ orgListe }: OrganisasjonBestill
 		{
 			text: 'Status',
 			width: '10',
-			dataField: 'status[0].organisasjonsforvalterStatus',
+			// TODO: Kan være flere statuser - fiks dette
+			dataField: 'status[0].statuser[0].melding',
 			formatter: (cell: string) => {
-				const status = cell.toUpperCase().includes('FEIL') ? 'Avvik' : 'Ferdig'
-				return <Icon kind={ikonTypeMap[status]} title={status} />
+				const status =
+					cell.toUpperCase().includes('FEIL') || cell.toUpperCase().includes('ERROR')
+						? 'Avvik'
+						: 'Ferdig'
+				return cell === 'Pågående' || cell === 'DEPLOYER' ? (
+					<Spinner size={24} />
+				) : (
+					<Icon kind={ikonTypeMap[status]} title={status} />
+				)
 			}
 		}
 	]
@@ -79,7 +89,9 @@ export default function OrganisasjonBestilling({ orgListe }: OrganisasjonBestill
 				pagination
 				iconItem={<OrganisasjonItem />}
 				onExpand={(bestilling: OrgStatus) => {
-					return <BestillingDetaljer bestilling={bestilling} iLaastGruppe={null} />
+					return (
+						<BestillingDetaljer bestilling={bestilling} iLaastGruppe={null} brukerId={brukerId} />
+					)
 				}}
 			/>
 		</ErrorBoundary>

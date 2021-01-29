@@ -8,7 +8,7 @@ import SendOpenAmConnector from '~/components/bestilling/sendOpenAm/SendOpenAmCo
 import './Detaljer.less'
 import { MalModal } from '~/pages/minSide/maler/MalModal'
 
-export default function BestillingDetaljer({ bestilling, iLaastGruppe }) {
+export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId }) {
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
 	const [isOpenAmModalOpen, openOpenAmModal, closeOpenAmModal] = useBoolean(false)
 	const [isOpenMalModalOpen, openOpenMalModal, closeOpenMalModal] = useBoolean(false)
@@ -16,6 +16,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe }) {
 	const alleredeSendtTilOpenAm = Boolean(bestilling.openamSent)
 	const alleredeMal = Boolean(bestilling.malBestillingNavn)
 	const harIdenterOpprettet = bestilling.antallIdenterOpprettet > 0
+	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
 
 	return (
 		<div className="bestilling-detaljer">
@@ -42,12 +43,24 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe }) {
 				</div>
 			)}
 
+			{erOrganisasjon && (
+				<div className="flexbox--align-center--justify-end info-block">
+					<Button onClick={openGjenopprettModal} kind="synchronize">
+						GJENOPPRETT
+					</Button>
+				</div>
+			)}
+
 			{isOpenAmModalOpen && (
 				<SendOpenAmConnector bestilling={bestilling} closeModal={closeOpenAmModal} />
 			)}
 
 			{isGjenopprettModalOpen && (
-				<GjenopprettConnector bestilling={bestilling} closeModal={closeGjenoprettModal} />
+				<GjenopprettConnector
+					bestilling={bestilling}
+					brukerId={brukerId && brukerId}
+					closeModal={closeGjenoprettModal}
+				/>
 			)}
 
 			{isOpenMalModalOpen && <MalModal id={bestilling.id} closeModal={closeOpenMalModal} />}

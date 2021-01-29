@@ -35,24 +35,8 @@ export const OrganisasjonForm = ({ formikBag }: OrganisasjonForm) => {
 
 const adresse = Yup.object({
 	adresselinje: Yup.array().of(Yup.string()),
-	postnr: Yup.string()
-		.when('landkode', {
-			is: 'NO',
-			then: Yup.string().when('kommunenr', {
-				is: val => val === '' || val === null,
-				then: requiredString
-			})
-		})
-		.nullable(),
-	kommunenr: Yup.string()
-		.when('landkode', {
-			is: 'NO',
-			then: Yup.string().when('postnr', {
-				is: val => val === '' || val === null,
-				then: requiredString
-			})
-		})
-		.nullable(),
+	postnr: Yup.string().nullable(),
+	kommunenr: Yup.string().nullable(),
 	landkode: requiredString,
 	poststed: Yup.string()
 })

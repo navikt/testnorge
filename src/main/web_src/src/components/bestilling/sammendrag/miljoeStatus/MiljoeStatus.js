@@ -9,10 +9,11 @@ import './MiljoeStatus.less'
 
 const mapStatusrapport = (bestillingstatus, erOrganisasjon) => {
 	if (erOrganisasjon) {
-		const status = bestillingstatus[0]
+		// TODO: Må ta høyde for at vi kan få flere statuser
+		const status = bestillingstatus[0].statuser[0]
 		return {
-			organisasjonsnummer: status.organisasjonsnummer,
-			melding: status.organisasjonsforvalterStatus
+			organisasjonsnummer: status.orgnummer,
+			melding: status.melding
 		}
 	}
 	const successFirst = a => (a.melding ? 1 : -1)

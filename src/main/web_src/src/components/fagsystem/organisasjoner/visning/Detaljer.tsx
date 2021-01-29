@@ -34,7 +34,7 @@ export const Detaljer = ({ data }: Detaljer) => {
 					title="Stiftelsesdato"
 					value={Formatters.formatStringDates(data[0].stiftelsesdato)}
 				/>
-				<TitleValue title="Målform" value={data[0].maalform} />
+				<TitleValue title="Målform" value={Formatters.showLabel('maalform', data[0].maalform)} />
 			</div>
 
 			{(data[0].telefon || data[0].epost || data[0].nettside) && (

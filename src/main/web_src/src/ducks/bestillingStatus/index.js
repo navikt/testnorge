@@ -13,13 +13,15 @@ export const {
 	cancelBestilling,
 	gjenopprettBestilling,
 	getOrganisasjonBestilling,
+	gjenopprettOrganisasjonBestilling,
 	removeNyBestillingStatus
 } = createActions(
 	{
 		getBestillinger: DollyApi.getBestillinger,
 		cancelBestilling: DollyApi.cancelBestilling,
 		gjenopprettBestilling: DollyApi.gjenopprettBestilling,
-		getOrganisasjonBestilling: DollyApi.getOrganisasjonsnummerByUserId
+		getOrganisasjonBestilling: DollyApi.getOrganisasjonsnummerByUserId,
+		gjenopprettOrganisasjonBestilling: DollyApi.gjenopprettOrganisasjonBestilling
 	},
 	'removeNyBestillingStatus',
 	{ prefix: 'bestillingStatus' }

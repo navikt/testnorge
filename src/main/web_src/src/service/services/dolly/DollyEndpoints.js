@@ -61,6 +61,10 @@ export default class DollyEndpoints {
 		return `${organisasjonBase}/bestillingsstatus?brukerId=${userId}`
 	}
 
+	static gjenopprettOrganisasjonBestilling(bestillingId, envs) {
+		return `${organisasjonBase}/gjenopprett/${bestillingId}?miljoer=${envs}`
+	}
+
 	static bruker() {
 		return brukerBase
 	}
