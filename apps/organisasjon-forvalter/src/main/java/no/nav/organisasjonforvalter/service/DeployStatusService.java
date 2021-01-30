@@ -98,7 +98,7 @@ public class DeployStatusService {
                         .status(isOk(entry.getLastStatus()) ? Status.OK : Status.ERROR)
                         .details(isOk(entry.getLastStatus()) ? null :
                                 isError(entry.getLastStatus()) ? "Oppretting til miljø feilet, se teknisk logg!" :
-                                        "Tidsavbrudd, oppretting ikke fullført etter " +
+                                        "Tidsavbrudd, ingen fremdrift i oppretting etter " +
                                                 getReadableTime(System.currentTimeMillis() - startTime))
                         .build())
                 .collect(Collectors.toList());
