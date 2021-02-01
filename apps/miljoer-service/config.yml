@@ -23,7 +23,7 @@ spec:
         - application: dolly-backend-dev
         - application: testnorge-aareg
         - application: organisasjon-orgnummer-service
-        - applikasjon: organisasjon-forvalter
+        - applicasjon: organisasjon-forvalter
   azure:
     application:
       enabled: true
