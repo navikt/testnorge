@@ -8,7 +8,6 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.RettighetType;
 
 import org.springframework.stereotype.Service;
 
@@ -117,7 +116,7 @@ public class DatoUtils {
         NyttVedtak senesteVedtak = null;
         for (var vedtaket : vedtak) {
             LocalDate vedtakFraDato;
-            if (vedtaket.getRettighetType() == RettighetType.TILLEGG) {
+            if (vedtaket instanceof NyttVedtakTillegg) {
                 vedtakFraDato = ((NyttVedtakTillegg) vedtaket).getVedtaksperiode().getFom();
             } else {
                 vedtakFraDato = vedtaket.getFraDato();
