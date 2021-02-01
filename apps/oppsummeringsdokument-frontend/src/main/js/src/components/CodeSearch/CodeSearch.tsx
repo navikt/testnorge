@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { Input, Label, SkjemaGruppe } from "nav-frontend-skjema";
-import { Datepicker } from "nav-datovelger";
+import React, {useState} from "react";
+import {Input, Label, SkjemaGruppe} from "nav-frontend-skjema";
+import {Datepicker} from "nav-datovelger";
 
 import "./CodeSearch.less";
 import Api from "@/api";
-import { FetchCode } from "@/components";
-import { Hovedknapp, Knapp } from "nav-frontend-knapper";
+import {FetchCode} from "@/components";
+import {Hovedknapp, Knapp} from "nav-frontend-knapper";
 // @ts-ignore
-import { CopyToClipboard } from "react-copy-to-clipboard/lib/Component";
+import {CopyToClipboard} from "react-copy-to-clipboard/lib/Component";
 
 type FetchFromPosition = (position: number) => Promise<Response>;
 
@@ -22,6 +22,8 @@ export const CodeSearch = () => {
   const [env, setEnv] = useState<string>("t4");
   const [fom, setFom] = useState<string>("");
   const [tom, setTom] = useState<string>("");
+  const [ident, setIdent] = useState<string>("");
+  const [typeArbeidsforhold, setTypeArbeidsforhold] = useState<string>("");
   const [id, setId] = useState<string>(null);
 
   const search = (): FetchFromPosition => {
@@ -31,6 +33,13 @@ export const CodeSearch = () => {
     }
     if (tom && tom !== "") {
       param.push(["tom", tom]);
+    }
+        if (ident && ident !== "") {
+      param.push(["ident", ident]);
+    }
+
+    if (typeArbeidsforhold && typeArbeidsforhold !== "") {
+      param.push(["typeArbeidsforhold", typeArbeidsforhold]);
     }
 
     return (page) => {
@@ -63,6 +72,28 @@ export const CodeSearch = () => {
                 setEnv(null);
               } else {
                 setEnv(e.target.value);
+              }
+            }}
+          />
+          <Input
+            defaultValue=""
+            label="Ident"
+            onBlur={(e) => {
+              if (e.target.value === "") {
+                setIdent(null);
+              } else {
+                setIdent(e.target.value);
+              }
+            }}
+          />
+        <Input
+            defaultValue=""
+            label="Type Arbeidsforhold"
+            onBlur={(e) => {
+              if (e.target.value === "") {
+                setTypeArbeidsforhold(null);
+              } else {
+                setTypeArbeidsforhold(e.target.value);
               }
             }}
           />

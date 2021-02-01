@@ -8,7 +8,6 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 @SpringBootApplication
 public class OppsummeringsdokumentFrontendApplicationStarter {
 
-
     public static void main(String[] args) {
         SpringApplication.run(OppsummeringsdokumentFrontendApplicationStarter.class, args);
     }

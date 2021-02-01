@@ -1,4 +1,5 @@
-azure.app.client.id: d89f3a5a-b2a2-4038-938e-c4bfbb8f288a
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
 
 zuul:
   routes:
