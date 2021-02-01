@@ -17,7 +17,7 @@ import java.util.List;
 
 @Setter
 @Getter
-@Document(indexName = "oppsummeringsdokument-1")
+@Document(indexName = "oppsummeringsdokument-2")
 public class OppsummeringsdokumentModel implements Persistable<String> {
 
     @Id
@@ -29,6 +29,7 @@ public class OppsummeringsdokumentModel implements Persistable<String> {
     @Field(type = FieldType.Nested, includeInParent = true)
     private List<VirksomhetModel> virksomheter;
     private String miljo;
+    private String origin;
 
     @CreatedDate
     @Field(type = FieldType.Date, format = DateFormat.basic_date_time)

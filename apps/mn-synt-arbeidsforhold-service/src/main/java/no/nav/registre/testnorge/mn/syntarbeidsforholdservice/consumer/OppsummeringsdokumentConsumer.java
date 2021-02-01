@@ -17,9 +17,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumenterCommand;
 import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumentCommand;
+import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumenterCommand;
 import no.nav.registre.testnorge.libs.common.command.SaveOppsummeringsdokumenterCommand;
+import no.nav.registre.testnorge.libs.core.config.ApplicationProperties;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
@@ -34,12 +35,15 @@ public class OppsummeringsdokumentConsumer {
     private final AccessTokenService accessTokenService;
     private final NaisServerProperties properties;
     private final Executor executor;
+    private final ApplicationProperties applicationProperties;
 
     public OppsummeringsdokumentConsumer(
             AccessTokenService accessTokenService,
             OppsummeringsdokuemntServerProperties properties,
-            ObjectMapper objectMapper
+            ObjectMapper objectMapper,
+            ApplicationProperties applicationProperties
     ) {
+        this.applicationProperties = applicationProperties;
         this.executor = Executors.newFixedThreadPool(5);
         this.accessTokenService = accessTokenService;
         this.properties = properties;
@@ -65,7 +69,8 @@ public class OppsummeringsdokumentConsumer {
                         webClient,
                         accessToken.getTokenValue(),
                         opplysningspliktig.toDTO(),
-                        miljo
+                        miljo,
+                        applicationProperties.getName()
                 ).call(),
                 executor
         );

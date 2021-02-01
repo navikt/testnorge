@@ -19,6 +19,7 @@ public class SaveOppsummeringsdokumenterCommand implements Callable<Void> {
     private final String accessToken;
     private final OppsummeringsdokumentDTO opplysningspliktigDTO;
     private final String miljo;
+    private final String origin;
 
     @Override
     public Void call() {
@@ -32,6 +33,7 @@ public class SaveOppsummeringsdokumenterCommand implements Callable<Void> {
                 .uri(builder -> builder.path("/api/v1/oppsummeringsdokumenter").build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .header("miljo", miljo)
+                .header("origin", origin)
                 .body(BodyInserters.fromPublisher(Mono.just(opplysningspliktigDTO), OppsummeringsdokumentDTO.class))
                 .retrieve()
                 .bodyToMono(Void.class)

@@ -60,9 +60,13 @@ public class OppsummeringsdokumentController {
     }
 
     @PutMapping
-    public ResponseEntity<HttpStatus> save(@RequestBody OppsummeringsdokumentDTO dto, @RequestHeader("miljo") String miljo) {
+    public ResponseEntity<HttpStatus> save(
+            @RequestBody OppsummeringsdokumentDTO dto,
+            @RequestHeader("miljo") String miljo,
+            @RequestHeader("origin") String origin
+    ) {
         var opplysningspliktig = new Oppsummeringsdokument(dto);
-        var id = adapter.save(opplysningspliktig, miljo);
+        var id = adapter.save(opplysningspliktig, miljo, origin);
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")

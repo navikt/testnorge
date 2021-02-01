@@ -211,12 +211,13 @@ public class Oppsummeringsdokument {
         return arbeidsforholds.stream().filter(arbeidsforhold -> arbeidsforhold.getIdent().equals(ident)).collect(Collectors.toList());
     }
 
-    public OppsummeringsdokumentModel toModel(String miljo){
+    public OppsummeringsdokumentModel toModel(String miljo, String origin){
         var model = new OppsummeringsdokumentModel();
         model.setKalendermaaned(dto.getKalendermaaned());
         model.setMiljo(miljo);
         model.setOpplysningspliktigOrganisajonsnummer(dto.getOpplysningspliktigOrganisajonsnummer());
         model.setVersion(dto.getVersion());
+        model.setOrigin(origin);
         model.setVirksomheter(dto.getVirksomheter().stream().map(mapVirksomhetModel()).collect(Collectors.toList()));
         return model;
     }
@@ -336,11 +337,8 @@ public class Oppsummeringsdokument {
     private static Virksomhet create(VirksomhetDTO dto, Long version) {
         Virksomhet virksomhet = new Virksomhet();
         virksomhet.setNorskIdentifikator(dto.getOrganisajonsnummer());
-
-
         virksomhet.getInntektsmottaker().addAll(
                 dto.getPersoner().stream().map(personDTO -> {
-
                     Inntektsmottaker inntektsmottaker = new Inntektsmottaker();
                     Kilde value = new Kilde();
                     value.setKildenavn("Team Dolly");
