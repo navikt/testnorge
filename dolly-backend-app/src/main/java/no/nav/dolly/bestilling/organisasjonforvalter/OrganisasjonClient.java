@@ -16,11 +16,9 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.service.OrganisasjonBestillingService;
 import no.nav.dolly.service.OrganisasjonNummerService;
 import no.nav.dolly.service.OrganisasjonProgressService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -78,7 +76,8 @@ public class OrganisasjonClient {
                     organisasjonBestillingProgress.setOrganisasjonsforvalterStatus("Deployer");
 
                     organisasjonProgressService.save(organisasjonBestillingProgress);
-                    saveOrgnumreToDbAndDeploy(orgnumre, bestillingId, bestilling.getEnvironments());
+                    saveOrgnumreToDb(orgnumre, bestillingId, bestilling.getEnvironments());
+                    deployOrganisasjon(orgnumre, bestillingId, bestilling.getEnvironments());
                 }
             } catch (RuntimeException e) {
 
@@ -91,19 +90,12 @@ public class OrganisasjonClient {
     }
 
     @Async
-    public DeployResponse gjenopprett(DeployRequest request) {
+    public void gjenopprett(DeployRequest request, Long bestillingId) {
 
-        ResponseEntity<DeployResponse> deployResponseResponseEntity = organisasjonConsumer.gjenopprettOrganisasjon(request);
-
-        if (!deployResponseResponseEntity.hasBody()) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, FEIL_STATUS_ORGFORVALTER_DEPLOY);
-        }
-
-        return deployResponseResponseEntity.getBody();
-
+        deployOrganisasjon(request.getOrgnumre(), bestillingId, request.getEnvironments());
     }
 
-    private void saveOrgnumreToDbAndDeploy(Set<String> orgnumre, Long bestillingId, List<String> environments) {
+    private void saveOrgnumreToDb(Set<String> orgnumre, Long bestillingId, List<String> environments) {
 
         log.info("Deployer orgnumre fra Organisasjon Forvalter");
         if (isNull(orgnumre) || orgnumre.isEmpty() || isNull(environments) || environments.isEmpty()) {
@@ -114,22 +106,27 @@ public class OrganisasjonClient {
                 .bestillingId(bestillingId)
                 .organisasjonsnr(orgnummer)
                 .build()));
+    }
 
-
+    private void deployOrganisasjon(Set<String> orgnumre, Long bestillingId, List<String> environments) {
         ResponseEntity<DeployResponse> deployResponse = organisasjonConsumer.deployOrganisasjon(new DeployRequest(orgnumre, environments));
 
         if (deployResponse.hasBody()) {
             requireNonNull(deployResponse.getBody()).getOrgStatus().entrySet().forEach(orgStatus -> {
+
+                OrganisasjonBestillingProgress organisasjonBestillingProgress = new OrganisasjonBestillingProgress();
+
                 if (!organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId).isEmpty()) {
                     List<OrganisasjonBestillingProgress> organisasjonBestillingProgresses = organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId);
-                    OrganisasjonBestillingProgress organisasjonBestillingProgress = organisasjonBestillingProgresses.get(0);
-                    organisasjonBestillingProgress.setBestillingId(bestillingId);
-                    organisasjonBestillingProgress.setOrganisasjonsnummer(orgStatus.getKey());
-                    organisasjonBestillingProgress.setOrganisasjonsforvalterStatus(mapStatusFraDeploy(orgStatus));
-                    organisasjonBestillingProgress.setUuid(mapUuidFraDeploy(orgStatus));
-
-                    organisasjonProgressService.save(organisasjonBestillingProgress);
+                    organisasjonBestillingProgress = organisasjonBestillingProgresses.get(0);
                 }
+
+                organisasjonBestillingProgress.setBestillingId(bestillingId);
+                organisasjonBestillingProgress.setOrganisasjonsnummer(orgStatus.getKey());
+                organisasjonBestillingProgress.setOrganisasjonsforvalterStatus(mapStatusFraDeploy(orgStatus));
+                organisasjonBestillingProgress.setUuid(mapUuidFraDeploy(orgStatus));
+
+                organisasjonProgressService.save(organisasjonBestillingProgress);
             });
         } else {
             organisasjonBestillingService.setBestillingFeil(bestillingId, FEIL_STATUS_ORGFORVALTER_DEPLOY);

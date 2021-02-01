@@ -6,8 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling.SyntetiskOrganisasjon;
+import no.nav.dolly.domain.resultset.RsOrganisasjonStatusRapport;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,8 +29,9 @@ public class RsOrganisasjonBestillingStatus {
     private Boolean ferdig;
     private LocalDateTime sistOppdatert;
     private List<String> environments;
-    private List<OrganisasjonBestillingProgress> status;
     private String organisasjonNummer;
+
+    private List<RsOrganisasjonStatusRapport> status;
 
     private SyntetiskOrganisasjon bestilling;
 

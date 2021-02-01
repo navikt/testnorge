@@ -1,6 +1,7 @@
 package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.repository.OrganisasjonBestillingProgressRepository;
 import org.springframework.cache.annotation.CacheEvict;
@@ -9,12 +10,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_ORG_BESTILLING;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class OrganisasjonProgressService {
 
@@ -47,8 +50,8 @@ public class OrganisasjonProgressService {
         Optional<List<OrganisasjonBestillingProgress>> bestillingProgress =
                 organisasjonProgressRepository.findByBestillingId(bestillingsId);
         if (bestillingProgress.isEmpty()) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND,
-                    "Fant ikke noen bestillingStatus med bestillingId: " + bestillingsId);
+            log.info("Fant ikke noen bestillingStatus med bestillingId: " + bestillingsId);
+            return Collections.emptyList();
         }
         return bestillingProgress.get();
     }

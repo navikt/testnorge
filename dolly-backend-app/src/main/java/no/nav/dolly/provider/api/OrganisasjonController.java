@@ -57,12 +57,14 @@ public class OrganisasjonController {
                 Set.of(bestillingService.fetchBestillingStatusById(bestillingId).getOrganisasjonNummer()),
                 asList(miljoer.split(",")));
 
-        RsOrganisasjonBestillingStatus status = bestillingService.fetchBestillingStatusById(bestillingId);
-        status.setEnvironments(request.getEnvironments());
+        RsOrganisasjonBestillingStatus status = RsOrganisasjonBestillingStatus.builder()
+                .organisasjonNummer(request.getOrgnumre().iterator().next())
+                .environments(request.getEnvironments())
+                .build();
 
         OrganisasjonBestilling bestilling = bestillingService.saveBestilling(status);
 
-        organisasjonClient.gjenopprett(request);
+        organisasjonClient.gjenopprett(request, bestilling.getId());
 
         return bestillingService.fetchBestillingStatusById(bestilling.getId());
     }

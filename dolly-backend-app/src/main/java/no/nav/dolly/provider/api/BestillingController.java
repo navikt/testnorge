@@ -1,12 +1,15 @@
 package no.nav.dolly.provider.api;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static java.util.Objects.nonNull;
-import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
-import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
-
-import java.util.List;
+import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.service.GjenopprettBestillingService;
+import no.nav.dolly.domain.MalbestillingNavn;
+import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
+import no.nav.dolly.service.BestillingService;
+import no.nav.dolly.service.MalBestillingService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
@@ -21,17 +24,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.v3.oas.annotations.Operation;
-import lombok.RequiredArgsConstructor;
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.service.DollyBestillingService;
-import no.nav.dolly.bestilling.service.GjenopprettBestillingService;
-import no.nav.dolly.domain.MalbestillingNavn;
-import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
-import no.nav.dolly.service.BestillingService;
-import no.nav.dolly.service.MalBestillingService;
+import java.util.List;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Objects.nonNull;
+import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
+import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
 @Transactional
 @RestController
@@ -42,7 +41,6 @@ public class BestillingController {
     private final MapperFacade mapperFacade;
     private final BestillingService bestillingService;
     private final MalBestillingService malBestillingService;
-    private final DollyBestillingService dollyBestillingService;
     private final GjenopprettBestillingService gjenopprettBestillingService;
 
     @Cacheable(value = CACHE_BESTILLING)

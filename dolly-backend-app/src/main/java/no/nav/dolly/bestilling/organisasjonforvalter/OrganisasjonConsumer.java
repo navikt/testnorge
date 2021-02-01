@@ -84,14 +84,6 @@ public class OrganisasjonConsumer {
                 .block();
     }
 
-    @Timed(name = "providers", tags = { "operation", "organisasjon-gjenopprett" })
-    public ResponseEntity<DeployResponse> gjenopprettOrganisasjon(DeployRequest request) {
-
-        AccessToken accessToken = getAccessToken("Organisasjon gjenoppretting sendt, callId: {}, consumerId: {}");
-        return sendDeployOrganisasjonRequest(request, getNavCallId(), accessToken);
-    }
-
-
     @Timed(name = "providers", tags = { "operation", "organisasjon-deploy" })
     public ResponseEntity<DeployResponse> deployOrganisasjon(DeployRequest request) {
 
