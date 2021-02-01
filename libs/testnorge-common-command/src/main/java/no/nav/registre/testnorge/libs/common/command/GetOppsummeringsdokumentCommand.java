@@ -32,7 +32,7 @@ public class GetOppsummeringsdokumentCommand implements Callable<Oppsummeringsdo
                             .path("/api/v1/oppsummeringsdokumenter/{orgnummer}/{kalendermaaned}")
                             .build(orgnummer, kalendermaaned)
                     )
-                    .header("miljo", this.miljo)
+                    .header("miljo", miljo)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                     .retrieve()
                     .bodyToMono(OppsummeringsdokumentDTO.class)

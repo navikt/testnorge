@@ -73,7 +73,7 @@ public class OppsummeringsdokumentAdapter {
                 .collect(Collectors.toList());
     }
 
-    public Oppsummeringsdokument getCurrentDocumentBy(LocalDate kalendermaaned, String orgnummer) {
+    public Oppsummeringsdokument getCurrentDocumentBy(LocalDate kalendermaaned, String orgnummer, String miljo) {
         var searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(
                         QueryBuilders.rangeQuery("kalendermaaned")
@@ -82,6 +82,9 @@ public class OppsummeringsdokumentAdapter {
                 )
                 .withQuery(
                         QueryBuilders.matchQuery("opplysningspliktigOrganisajonsnummer", orgnummer)
+                )
+                .withQuery(
+                        QueryBuilders.matchQuery("miljo", miljo)
                 )
                 .addAggregation(AggregationBuilders.max(MAX_VERSION).field("version"))
                 .build();

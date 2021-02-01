@@ -50,9 +50,9 @@ public class OppsummeringsdokumentController {
     public ResponseEntity<OppsummeringsdokumentDTO> getOpplysningspliktigFromKalendermaaned(
             @PathVariable("orgnummer") String orgnummer,
             @PathVariable("kalendermaaned") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate kalendermaaned,
-            @RequestParam("miljo") String miljo
+            @RequestHeader("miljo") String miljo
     ) {
-        var oppsummeringsdokument = adapter.getCurrentDocumentBy(kalendermaaned, orgnummer);
+        var oppsummeringsdokument = adapter.getCurrentDocumentBy(kalendermaaned, orgnummer, miljo);
         if (oppsummeringsdokument == null) {
             return ResponseEntity.notFound().build();
         }
