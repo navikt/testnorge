@@ -99,7 +99,7 @@ public class DeployStatusService {
                         .details(isOk(entry.getLastStatus()) ? null :
                                 isError(entry.getLastStatus()) ? "Oppretting til miljø feilet, se teknisk logg!" :
                                         String.format("Tidsavbrudd, ingen fremdrift etter %s. " +
-                                                "Oppretting er forventet ferdigstilt senere." +
+                                                "Oppretting er forventet ferdigstilt senere.",
                                                 getReadableTime(System.currentTimeMillis() - startTime)))
                         .build())
                 .collect(Collectors.toList());
