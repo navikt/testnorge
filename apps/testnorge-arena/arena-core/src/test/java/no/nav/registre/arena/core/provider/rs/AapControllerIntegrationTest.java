@@ -10,10 +10,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import no.nav.registre.arena.core.consumer.rs.response.AktoerInnhold;
 import no.nav.registre.arena.core.consumer.rs.response.AktoerResponse;
-import no.nav.registre.arena.core.pensjon.response.HttpStatus;
-import no.nav.registre.arena.core.pensjon.response.PensjonTestdataResponse;
-import no.nav.registre.arena.core.pensjon.response.PensjonTestdataResponseDetails;
-import no.nav.registre.arena.core.pensjon.response.PensjonTestdataStatus;
+import no.nav.registre.arena.core.consumer.rs.response.HttpStatus;
+import no.nav.registre.arena.core.consumer.rs.response.PensjonTestdataResponse;
+import no.nav.registre.arena.core.consumer.rs.response.PensjonTestdataResponseDetails;
+import no.nav.registre.arena.core.consumer.rs.response.PensjonTestdataStatus;
 import no.nav.registre.arena.core.provider.rs.request.SyntetiserArenaRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;

@@ -1,4 +1,4 @@
-package no.nav.registre.arena.core.pensjon.request;
+package no.nav.registre.arena.core.consumer.rs.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -13,12 +14,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PensjonTestdataInntekt {
+public class PensjonTestdataPerson {
 
-    private Integer belop;
+    private String bostedsland;
+    private LocalDate dodsDato;
     private String fnr;
-    private Integer fomAar;
+    private LocalDate fodselsDato;
     private List<String> miljoer;
-    private Boolean redusertMedGrunnbelop;
-    private Integer tomAar;
+    private LocalDate utvandringsDato;
 }

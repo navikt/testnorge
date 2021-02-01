@@ -153,6 +153,10 @@ public class VedtakshistorikkService {
         var ikkeAvluttendeAap115 = getIkkeAvsluttendeVedtakAap115(vedtakshistorikk.getAap115());
         var avsluttendeAap115 = getAvsluttendeVedtakAap115(vedtakshistorikk.getAap115());
 
+        if (!opprettetNoedvendigInfoIPopp(vedtakshistorikk, personident, miljoe)) {
+            return Collections.emptyMap();
+        }
+
         opprettVedtakAap115(ikkeAvluttendeAap115, personident, miljoe, rettigheter);
         opprettVedtakAap(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakAap115(avsluttendeAap115, personident, miljoe, rettigheter);
@@ -267,6 +271,18 @@ public class VedtakshistorikkService {
         }
     }
 
+    private boolean opprettetNoedvendigInfoIPopp(
+            Vedtakshistorikk historikk,
+            String personident,
+            String miljoe
+    ) {
+        var aap = historikk.getAap();
+        if (aap != null && !aap.isEmpty()) {
+            return rettighetAapService.opprettetPersonOgInntektIPopp(personident, miljoe, aap.get(0));
+        }
+        return true;
+    }
+
     private void opprettVedtakAap(
             Vedtakshistorikk vedtak,
             String personident,
@@ -275,7 +291,6 @@ public class VedtakshistorikkService {
     ) {
         var aap = vedtak.getAap();
         if (aap != null && !aap.isEmpty()) {
-            rettighetAapService.opprettPersonOgInntektIPopp(personident, miljoe, aap.get(0));
             var rettighetRequest = new RettighetAapRequest(aap);
             rettighetRequest.setPersonident(personident);
             rettighetRequest.setMiljoe(miljoe);

@@ -28,9 +28,9 @@ import no.nav.registre.arena.core.consumer.rs.request.RettighetFritakMeldekortRe
 import no.nav.registre.arena.core.consumer.rs.request.RettighetRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.arena.core.consumer.rs.request.RettighetUngUfoerRequest;
-import no.nav.registre.arena.core.pensjon.consumer.rs.PensjonTestdataFacadeConsumer;
-import no.nav.registre.arena.core.pensjon.request.PensjonTestdataInntekt;
-import no.nav.registre.arena.core.pensjon.request.PensjonTestdataPerson;
+import no.nav.registre.arena.core.consumer.rs.PensjonTestdataFacadeConsumer;
+import no.nav.registre.arena.core.consumer.rs.request.PensjonTestdataInntekt;
+import no.nav.registre.arena.core.consumer.rs.request.PensjonTestdataPerson;
 import no.nav.registre.arena.core.service.util.ServiceUtils;
 import no.nav.registre.arena.core.service.util.ArbeidssoekerUtils;
 import no.nav.registre.arena.core.service.util.IdenterUtils;
@@ -73,14 +73,12 @@ public class RettighetAapService {
         for (var syntetisertRettighet : syntetiserteRettigheter) {
             var ident = utvalgteIdenter.remove(utvalgteIdenter.size() - 1);
 
-            opprettPersonOgInntektIPopp(ident, miljoe, syntetisertRettighet);
+            var poppStatus = opprettetPersonOgInntektIPopp(ident, miljoe, syntetisertRettighet);
+            if (!poppStatus) {
+                return Collections.emptyMap();
+            }
 
-            var syntRequest115 = consumerUtils.createSyntRequest(syntetisertRettighet.getFraDato().minusDays(1), syntetisertRettighet.getTilDato());
-            var aap115 = aapSyntConsumer.syntetiserRettighetAap115(syntRequest115).get(0);
-            aap115.setBegrunnelse(BEGRUNNELSE);
-            var aap115Rettighet = new RettighetAap115Request(Collections.singletonList(aap115));
-            aap115Rettighet.setPersonident(ident);
-            aap115Rettighet.setMiljoe(miljoe);
+            var aap115Rettighet = getAap115RettighetRequest(syntetisertRettighet.getFraDato().minusDays(1), syntetisertRettighet.getTilDato(), ident, miljoe);
             aap115Rettigheter.add(aap115Rettighet);
 
             syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
@@ -112,14 +110,12 @@ public class RettighetAapService {
         var syntRequestAap = consumerUtils.createSyntRequest(1);
         var syntetisertRettighet = aapSyntConsumer.syntetiserRettighetAap(syntRequestAap).get(0);
 
-        opprettPersonOgInntektIPopp(ident, miljoe, syntetisertRettighet);
+        var poppStatus = opprettetPersonOgInntektIPopp(ident, miljoe, syntetisertRettighet);
+        if (!poppStatus) {
+            return Collections.emptyMap();
+        }
 
-        var syntRequest115 = consumerUtils.createSyntRequest(syntetisertRettighet.getFraDato().minusDays(1), syntetisertRettighet.getTilDato());
-        var aap115 = aapSyntConsumer.syntetiserRettighetAap115(syntRequest115).get(0);
-        aap115.setBegrunnelse(BEGRUNNELSE);
-        var aap115Rettighet = new RettighetAap115Request(Collections.singletonList(aap115));
-        aap115Rettighet.setPersonident(ident);
-        aap115Rettighet.setMiljoe(miljoe);
+        var aap115Rettighet = getAap115RettighetRequest(syntetisertRettighet.getFraDato().minusDays(1), syntetisertRettighet.getTilDato(), ident, miljoe);
 
         syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
         var rettighetRequest = new RettighetAapRequest(Collections.singletonList(syntetisertRettighet));
@@ -132,6 +128,21 @@ public class RettighetAapService {
 
         rettighetArenaForvalterConsumer.opprettRettighet(arbeidsoekerUtils.opprettArbeidssoekerAap(new ArrayList<>(Collections.singletonList(aap115Rettighet)), miljoe));
         return rettighetArenaForvalterConsumer.opprettRettighet(arbeidsoekerUtils.opprettArbeidssoekerAap(new ArrayList<>(Collections.singletonList(rettighetRequest)), miljoe));
+    }
+
+    private RettighetRequest getAap115RettighetRequest(
+            LocalDate fraDato,
+            LocalDate tilDato,
+            String ident,
+            String miljoe
+    ) {
+        var syntRequest115 = consumerUtils.createSyntRequest(fraDato, tilDato);
+        var aap115 = aapSyntConsumer.syntetiserRettighetAap115(syntRequest115).get(0);
+        aap115.setBegrunnelse(BEGRUNNELSE);
+        var aap115Rettighet = new RettighetAap115Request(Collections.singletonList(aap115));
+        aap115Rettighet.setPersonident(ident);
+        aap115Rettighet.setMiljoe(miljoe);
+        return aap115Rettighet;
     }
 
     public Map<String, List<NyttVedtakResponse>> genererAap115(
@@ -244,7 +255,7 @@ public class RettighetAapService {
         return identerMedOpprettedeRettigheter;
     }
 
-    void opprettPersonOgInntektIPopp(
+    boolean opprettetPersonOgInntektIPopp(
             String ident,
             String miljoe,
             NyttVedtakAap syntetisertRettighet
@@ -264,6 +275,7 @@ public class RettighetAapService {
                         response.getMiljo().replaceAll(REGEX_RN, ""),
                         response.getResponse().getMessage().replaceAll(REGEX_RN, "")
                 );
+                return false;
             }
         }
 
@@ -284,7 +296,9 @@ public class RettighetAapService {
                         response.getMiljo().replaceAll(REGEX_RN, ""),
                         response.getResponse().getMessage().replaceAll(REGEX_RN, "")
                 );
+                return false;
             }
         }
+        return true;
     }
 }

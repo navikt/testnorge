@@ -1,4 +1,4 @@
-package no.nav.registre.arena.core.pensjon.response;
+package no.nav.registre.arena.core.consumer.rs.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,13 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PensjonTestdataStatus {
+public class PensjonTestdataResponse {
 
-    private String miljo;
-    private PensjonTestdataResponseDetails response;
+    private List<PensjonTestdataStatus> status;
 }
