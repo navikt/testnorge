@@ -315,7 +315,7 @@ public class Oppsummeringsdokument {
 
         leveranseinformasjon.setInnleveringstidspunkt(xmlGregorianCalendar);
         leveranseinformasjon.setMeldingsId(UUID.randomUUID().toString());
-        leveranseinformasjon.setKildesystem("testnorge-arbeidsforhold-api");
+        leveranseinformasjon.setKildesystem("oppsummeringsdokument-service");
         leveranseinformasjon.setMeldingsId(UUID.randomUUID().toString());
 
         leveranse.getLeveranseinformasjon().add(leveranseinformasjon);
