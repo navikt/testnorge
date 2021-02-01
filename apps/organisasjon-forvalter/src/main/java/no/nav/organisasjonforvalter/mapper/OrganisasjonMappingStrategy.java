@@ -31,10 +31,11 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 public class OrganisasjonMappingStrategy implements MappingStrategy {
 
     private static Dato getDate(LocalDate date) {
+        LocalDate fixDate = nonNull(date) ? date : LocalDate.now();
         return Dato.newBuilder()
-                .setAar(date.getYear())
-                .setMaaned(date.getMonthValue())
-                .setDag(date.getDayOfMonth())
+                .setAar(fixDate.getYear())
+                .setMaaned(fixDate.getMonthValue())
+                .setDag(fixDate.getDayOfMonth())
                 .build();
     }
 
@@ -62,11 +63,10 @@ public class OrganisasjonMappingStrategy implements MappingStrategy {
                         target.setNavn(DetaljertNavn.newBuilder().setNavn1(source.getOrganisasjonsnavn()).build());
                         target.setNaeringskode(isNotBlank(source.getNaeringskode()) ? Naeringskode.newBuilder().setKode(source.getNaeringskode())
                                 .setHjelpeenhet(false)
-                                .setGyldighetsdato(getDate(LocalDate.now()))
+                                .setGyldighetsdato(getDate(source.getStiftelsesdato()))
                                 .build() : null);
                         target.setStiftelsesdato(Stiftelsesdato.newBuilder()
-                                .setDato(getDate(nonNull(source.getStiftelsesdato()) ?
-                                        source.getStiftelsesdato() : LocalDate.now()))
+                                .setDato(getDate(source.getStiftelsesdato()))
                                 .build());
                         target.setInternettadresse(isNotBlank(source.getNettside()) ?
                                 Internettadresse.newBuilder().setInternettadresse(source.getNettside()).build() : null);

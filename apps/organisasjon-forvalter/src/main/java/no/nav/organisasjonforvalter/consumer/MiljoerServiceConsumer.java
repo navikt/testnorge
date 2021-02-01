@@ -16,11 +16,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -67,7 +69,7 @@ public class MiljoerServiceConsumer {
                     .toEntity(String[].class)
                     .block();
 
-            return response.hasBody() ?
+            return nonNull(response) && response.hasBody() ?
                     List.of(response.getBody()).stream()
                             .filter(env -> !env.equals("u5") && !env.equals("qx"))
                             .collect(Collectors.toList()) :

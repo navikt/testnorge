@@ -4,7 +4,6 @@ import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,12 +23,12 @@ import reactor.netty.http.client.HttpClient;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -81,7 +80,7 @@ public class OrganisasjonApiConsumer {
                     .block();
 
             log.info("Organisasjon-API svarte med funnet etter {} ms", currentTimeMillis() - startTime);
-            return response.hasBody() ? response.getBody() : new OrganisasjonDto();
+            return nonNull(response) && response.hasBody() ? response.getBody() : new OrganisasjonDto();
 
         } catch (WebClientResponseException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
