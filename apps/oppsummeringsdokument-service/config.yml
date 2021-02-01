@@ -17,10 +17,11 @@ spec:
           cluster: dev-fss
         - application: mn-synt-arbeidsforhold-service
           cluster: dev-fss
+        - application: oppsummeringsdokument-frontend
+          cluster: dev-gcp
     outbound:
       rules:
         - application: applikasjonsanalyse-service
-        - application: oppsummeringsdokument-frontend
       external:
         - host: aareg-synt-services-proxy.dev-fss-pub.nais.io
   elastic:
