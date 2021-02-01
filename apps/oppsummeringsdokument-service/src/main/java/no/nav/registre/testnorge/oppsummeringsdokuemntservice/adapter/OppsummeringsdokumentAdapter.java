@@ -52,7 +52,7 @@ public class OppsummeringsdokumentAdapter {
 
     private Page<Oppsummeringsdokument> getAllCurrentDocumentsBy(NativeSearchQueryBuilder builder, Pageable pageable) {
 
-        builder.withSort(SortBuilders.fieldSort("lastModified").order(SortOrder.DESC));
+        builder.withSort(SortBuilders.fieldSort("lastModified").order(SortOrder.ASC));
         var searchHist = operations.search(
                 builder.build(),
                 OppsummeringsdokumentModel.class
@@ -67,7 +67,7 @@ public class OppsummeringsdokumentAdapter {
     }
 
     private List<Oppsummeringsdokument> getAllCurrentDocumentsBy(NativeSearchQueryBuilder builder) {
-        builder.withSort(SortBuilders.fieldSort("lastModified").order(SortOrder.DESC));
+        builder.withSort(SortBuilders.fieldSort("lastModified").order(SortOrder.ASC));
         var list = operations.search(
                 builder.build(),
                 OppsummeringsdokumentModel.class
