@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -104,7 +103,7 @@ public class OppsummeringsdokumentAdapter {
         if (fom == null && tom == null) {
             return Optional.empty();
         }
-        var builder = QueryBuilders.rangeQuery("builder");
+        var builder = QueryBuilders.rangeQuery("kalendermaaned");
 
         if (fom != null) {
             builder.gte(fom.withDayOfMonth(1));
@@ -131,7 +130,7 @@ public class OppsummeringsdokumentAdapter {
                     }
                     return total;
                 }))
-                .sorted((first, second ) -> (int) (first.getLastModified().getEpochSecond() - second.getLastModified().getEpochSecond()))
+                .sorted((first, second) -> (int) (first.getLastModified().getEpochSecond() - second.getLastModified().getEpochSecond()))
                 .map(Oppsummeringsdokument::new)
                 .collect(Collectors.toList());
     }
