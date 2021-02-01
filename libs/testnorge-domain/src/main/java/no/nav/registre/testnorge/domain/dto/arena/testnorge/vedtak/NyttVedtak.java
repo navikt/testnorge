@@ -56,8 +56,4 @@ public class NyttVedtak {
 
     @JsonAlias({ "VEDTAKTYPE", "vedtaktype" })
     private String vedtaktype;
-
-    public RettighetType getRettighetType() {
-        return RettighetType.UKJENT;
-    }
 }

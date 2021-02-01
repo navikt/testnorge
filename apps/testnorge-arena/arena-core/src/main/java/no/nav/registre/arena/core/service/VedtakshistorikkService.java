@@ -49,7 +49,6 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.RettighetType;
 import no.nav.registre.testnorge.libs.core.util.IdentUtil;
 
 import org.springframework.stereotype.Service;
@@ -174,14 +173,14 @@ public class VedtakshistorikkService {
         if (senesteVedtak == null) {
             log.info("Kunne ikke opprette rettigheter for ident: " + personident);
             rettighetRequests = new ArrayList<>();
-        } else if (senesteVedtak.getRettighetType() == RettighetType.AAP) {
+        } else if (senesteVedtak instanceof NyttVedtakAap) {
             rettighetRequests = arbeidsoekerUtils.opprettArbeidssoekerAap(personident, rettigheter, miljoe, ((NyttVedtakAap) senesteVedtak).getAktivitetsfase());
-        } else if (senesteVedtak.getRettighetType() == RettighetType.TILTAK) {
+        } else if (senesteVedtak instanceof NyttVedtakTiltak) {
             rettighetRequests = arbeidsoekerUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe);
-        } else if (senesteVedtak.getRettighetType() == RettighetType.TILLEGG) {
+        } else if (senesteVedtak instanceof NyttVedtakTillegg) {
             rettighetRequests = arbeidsoekerUtils.opprettArbeidssoekerTillegg(rettigheter, miljoe);
         } else {
-            throw new VedtakshistorikkException("Mangler støtte for rettighettype: " + senesteVedtak.getRettighetType());
+            throw new VedtakshistorikkException("Ukjent vedtakstype: " + senesteVedtak.getClass());
         }
 
         return rettighetArenaForvalterConsumer.opprettRettighet(rettighetRequests);

@@ -60,9 +60,4 @@ public class NyttVedtakAap extends NyttVedtak {
 
     @JsonAlias({ "MEDISINSK_OPPLYSNING", "medisinskOpplysning" })
     private List<MedisinskOpplysning> medisinskOpplysning;
-
-    @Override
-    public RettighetType getRettighetType(){
-        return RettighetType.AAP;
-    }
 }
