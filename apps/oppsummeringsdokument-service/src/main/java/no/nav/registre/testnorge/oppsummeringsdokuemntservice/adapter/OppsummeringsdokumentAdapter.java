@@ -131,6 +131,7 @@ public class OppsummeringsdokumentAdapter {
                     }
                     return total;
                 }))
+                .sorted((first, second ) -> (int) (first.getLastModified().getEpochSecond() - second.getLastModified().getEpochSecond()))
                 .map(Oppsummeringsdokument::new)
                 .collect(Collectors.toList());
     }
