@@ -53,7 +53,7 @@ public class DeployStatusService {
 
         long tempSec = millis / 1000;
         long sec = tempSec % 60;
-        long min = (tempSec / 60) % 60;
+        long min = tempSec / 60;
 
         return String.format("%d minutter og %d sekunder", min, sec);
     }
@@ -98,8 +98,9 @@ public class DeployStatusService {
                         .status(isOk(entry.getLastStatus()) ? Status.OK : Status.ERROR)
                         .details(isOk(entry.getLastStatus()) ? null :
                                 isError(entry.getLastStatus()) ? "Oppretting til miljø feilet, se teknisk logg!" :
-                                        "Tidsavbrudd, ingen fremdrift i oppretting etter " +
-                                                getReadableTime(System.currentTimeMillis() - startTime))
+                                        String.format("Tidsavbrudd, ingen fremdrift etter %s. " +
+                                                "Oppretting er forventet ferdigstilt senere." +
+                                                getReadableTime(System.currentTimeMillis() - startTime)))
                         .build())
                 .collect(Collectors.toList());
     }

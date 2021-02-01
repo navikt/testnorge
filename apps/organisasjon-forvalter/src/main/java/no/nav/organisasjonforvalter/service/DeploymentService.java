@@ -83,7 +83,7 @@ public class DeploymentService {
     private DeployResponse awaitSyncStatusCompletion(Map<String, List<EnvStatus>> deployStatus) {
 
         return DeployResponse.builder()
-                .orgStatus(deployStatus.keySet().stream()
+                .orgStatus(deployStatus.keySet().parallelStream()
                         .collect(Collectors.toMap(
                                 orgnr -> orgnr,
                                 orgnr -> Stream.of(
