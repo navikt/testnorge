@@ -39,7 +39,7 @@ public class OppsummeringsdokumentAdapter {
     public String save(Oppsummeringsdokument oppsummeringsdokument, String miljo, String origin) {
         log.info("Oppretter oppsumeringsdokuemnt i {}", miljo);
         aaregSyntConsumer.saveOpplysningspliktig(oppsummeringsdokument);
-        return repository.save(oppsummeringsdokument.toModel(miljo)).getId();
+        return repository.save(oppsummeringsdokument.toModel(miljo, origin)).getId();
     }
 
     public Oppsummeringsdokument get(String id) {
