@@ -19,10 +19,10 @@ spec:
           cluster: dev-fss
     outbound:
       rules:
-        - application: aareg-synt-services-proxy
-          cluster: dev-fss
         - application: applikasjonsanalyse-service
           cluster: dev-gcp
+      external:
+        - host: aareg-synt-services-proxy.dev-fss-pub.nais.io
   elastic:
     instance: testdata-gjeter
   azure:
