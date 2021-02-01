@@ -8,6 +8,7 @@ import no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse;
 import no.nav.organisasjonforvalter.provider.rs.responses.RsOrganisasjon;
 import no.nav.organisasjonforvalter.service.BestillingService;
 import no.nav.organisasjonforvalter.service.DeploymentService;
+import no.nav.organisasjonforvalter.service.ImportService;
 import no.nav.organisasjonforvalter.service.OrganisasjonService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/organisasjon")
@@ -28,6 +30,7 @@ public class OrganisasjonController {
     private final BestillingService bestillingService;
     private final DeploymentService deploymentService;
     private final OrganisasjonService organisasjonService;
+    private final ImportService importService;
 
     @PostMapping("/bestilling")
     public BestillingResponse createOrganisasjon(@RequestBody BestillingRequest request) {
@@ -45,5 +48,12 @@ public class OrganisasjonController {
     public List<RsOrganisasjon> getOrganisasjon(@RequestParam List<String> orgnumre) {
 
         return organisasjonService.getOrganisasjoner(orgnumre);
+    }
+
+    @GetMapping("/import")
+    public Map<String, RsOrganisasjon> importOrganisasjon(@RequestParam String orgnummer,
+                                                          @RequestParam(required = false) List<String> miljoer){
+
+        return importService.getOrganisasjoner(orgnummer, miljoer);
     }
 }

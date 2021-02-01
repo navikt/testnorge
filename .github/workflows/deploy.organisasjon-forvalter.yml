@@ -2,7 +2,7 @@ name: Deploy organisasjon-forvalter
 
 on:
   push:
-    branches: master
+    branches: feature/hente_faktiske_data_fra_miljoer
     paths:
       - apps/organisasjon-forvalter/**
       - libs/kafka-config/**

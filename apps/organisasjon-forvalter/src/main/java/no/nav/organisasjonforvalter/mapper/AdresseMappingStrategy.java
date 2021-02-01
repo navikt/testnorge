@@ -3,13 +3,17 @@ package no.nav.organisasjonforvalter.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.organisasjonforvalter.consumer.OrganisasjonApiConsumer.AdresseDto;
 import no.nav.organisasjonforvalter.consumer.TpsfAdresseConsumer.GyldigeAdresserResponse.AdresseData;
 import no.nav.organisasjonforvalter.jpa.entity.Adresse;
 import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.AdresseRequest;
 import no.nav.organisasjonforvalter.provider.rs.responses.RsAdresse;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Component
 public class AdresseMappingStrategy implements MappingStrategy {
@@ -66,6 +70,27 @@ public class AdresseMappingStrategy implements MappingStrategy {
                         target.setPostadresse3(adresselinjer.length > 2 ? adresselinjer[2] : null);
                         target.setKommunenummer(source.getKommunenr());
                         target.setPostnummer(source.getPostnr());
+                    }
+                })
+                .byDefault()
+                .register();
+
+        factory.classMap(AdresseDto.class, RsAdresse.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(AdresseDto source, RsAdresse target, MappingContext context) {
+                        List<String> adresselinjer = new ArrayList<>();
+                        adresselinjer.add(source.getAdresselinje1());
+                        if (isNotBlank(source.getAdresselinje2())) {
+                            adresselinjer.add(source.getAdresselinje2());
+                        }
+                        if (isNotBlank(source.getAdresselinje3())) {
+                            adresselinjer.add(source.getAdresselinje3());
+                        }
+                        target.setAdresselinjer(adresselinjer);
+                        target.setKommunenr(source.getKommunenummer());
+                        target.setPostnr(source.getPostnummer());
+                        target.setPoststed(source.getPoststed());
                     }
                 })
                 .byDefault()
