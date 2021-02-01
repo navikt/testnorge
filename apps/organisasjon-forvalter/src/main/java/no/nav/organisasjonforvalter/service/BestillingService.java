@@ -13,6 +13,7 @@ import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.Adres
 import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.AdresseType;
 import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.OrganisasjonRequest;
 import no.nav.organisasjonforvalter.provider.rs.responses.BestillingResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -85,7 +86,7 @@ public class BestillingService {
         }
 
         orgRequest.getAdresser().forEach(adresse -> {
-            if (adresse.getAdresselinjer().isEmpty()) {
+            if (adresse.getAdresselinjer().stream().noneMatch(StringUtils::isNotBlank)) {
                 mapperFacade.map(tpsfAdresseConsumer.getAdresser(adresse.getPostnr(), adresse.getKommunenr()), adresse);
             }
         });

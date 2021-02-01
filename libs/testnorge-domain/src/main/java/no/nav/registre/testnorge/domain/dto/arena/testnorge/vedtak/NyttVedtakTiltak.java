@@ -48,7 +48,7 @@ public class NyttVedtakTiltak extends NyttVedtak {
     @JsonAlias({ "AKTIVITETSKODE", "AKTIVITETKODE", "aktivitetkode" })
     private String aktivitetkode;
 
-    @JsonAlias({"AKTIVITETSTATUSKODE", "aktivitetStatuskode", "aktivitetstatuskode"})
+    @JsonAlias({ "AKTIVITETSTATUSKODE", "aktivitetStatuskode", "aktivitetstatuskode" })
     private String aktivitetStatuskode;
 
     @JsonAlias({ "BESKRIVELSE", "beskrivelse" })
@@ -60,16 +60,16 @@ public class NyttVedtakTiltak extends NyttVedtak {
     @JsonAlias({ "ANT_DAGER_UTBETALING", "antDagerUtbetaling" })
     private Integer antDagerUtbetaling;
 
-    @JsonAlias({"AARSAK_KODE", "aarsakKode"})
+    @JsonAlias({ "AARSAK_KODE", "aarsakKode" })
     private String aarsakKode;
 
     @JsonAlias({ "DATO", "dato" })
     private LocalDate dato;
 
-    @JsonAlias({"DELTAKERSTATUSKODE", "deltakerstatusKode"})
+    @JsonAlias({ "DELTAKERSTATUSKODE", "deltakerstatusKode" })
     private String deltakerstatusKode;
 
-    @JsonAlias({"KOMMENTAR","kommentar"})
+    @JsonAlias({ "KOMMENTAR", "kommentar" })
     private String kommentar;
 
     @JsonAlias({ "TILTAKSKODE", "tiltakskode" })

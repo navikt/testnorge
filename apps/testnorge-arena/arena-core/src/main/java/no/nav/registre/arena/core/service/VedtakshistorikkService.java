@@ -170,7 +170,6 @@ public class VedtakshistorikkService {
         var senesteVedtak = datoUtils.finnSenesteVedtak(vedtakshistorikk.getAlleVedtak());
 
         List<RettighetRequest> rettighetRequests;
-
         if (senesteVedtak == null) {
             log.info("Kunne ikke opprette rettigheter for ident: " + personident);
             rettighetRequests = new ArrayList<>();
