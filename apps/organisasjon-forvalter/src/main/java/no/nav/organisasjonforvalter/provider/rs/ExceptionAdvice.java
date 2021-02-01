@@ -26,14 +26,10 @@ public class ExceptionAdvice {
         @ResponseBody
         @ExceptionHandler(HttpClientErrorException.class)
         @ResponseStatus(value = HttpStatus.GONE)
-        ExceptionInformation internalServerError(HttpClientErrorException exception) {
-            return informationForException(exception, exception.getStatusCode());
-        }
-
-        private ExceptionInformation informationForException(RuntimeException exception, HttpStatus status) {
+        ExceptionInformation clientErrorException(HttpClientErrorException exception) {
             return ExceptionInformation.builder()
-                    .error(status.getReasonPhrase())
-                    .status(status.value())
+                    .error(exception.getStatusCode().getReasonPhrase())
+                    .status(exception.getStatusCode().value())
                     .message(exception.getMessage())
                     .path(urlPathHelper.getPathWithinApplication(httpServletRequest))
                     .timestamp(LocalDateTime.now())

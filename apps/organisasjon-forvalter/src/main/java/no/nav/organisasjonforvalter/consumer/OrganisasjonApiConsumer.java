@@ -103,11 +103,6 @@ public class OrganisasjonApiConsumer {
         }
     }
 
-    public Boolean isExistsOrg(String orgnummer, String env) {
-
-        return orgnummer.equals(getStatus(orgnummer, env).getOrgnummer());
-    }
-
     @Data
     @NoArgsConstructor
     @AllArgsConstructor

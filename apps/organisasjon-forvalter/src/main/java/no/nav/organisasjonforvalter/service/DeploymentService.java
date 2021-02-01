@@ -73,7 +73,9 @@ public class DeploymentService {
 
     private void deployOrganisasjon(String uuid, Organisasjon organisasjon, String env) {
 
-        if (!organisasjonApiConsumer.isExistsOrg(organisasjon.getOrganisasjonsnummer(), env)) {
+        if (!organisasjon.getOrganisasjonsnummer().equals(
+                organisasjonApiConsumer.getStatus(organisasjon.getOrganisasjonsnummer(), env).getOrgnummer())) {
+
             organisasjonMottakConsumer.opprettOrganisasjon(uuid, organisasjon, env);
         } else {
             organisasjonMottakConsumer.endreOrganisasjon(uuid, organisasjon, env);

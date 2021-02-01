@@ -74,7 +74,6 @@ public class OrganisasjonBestillingStatusConsumer {
                     .toEntity(ItemDto[].class)
                     .block();
 
-//            log.info("Organisasjon-bestilling-status tok {} ms", currentTimeMillis() - startTime);
             return response.hasBody() ? List.of(response.getBody()) : emptyList();
 
         } catch (WebClientResponseException e) {

@@ -58,6 +58,30 @@ public class DeployStatusService {
         return String.format("%d minutter og %d sekunder", min, sec);
     }
 
+    private static boolean isStatusChanged(DeployEntry entry, List<ItemDto> bestStatus) {
+        return !(entry.getLastStatus().containsAll(bestStatus) &&
+                bestStatus.containsAll(entry.getLastStatus()));
+    }
+
+    private static List<EnvStatus> getEnvStatuses(List<DeployEntry> request, long startTime) {
+        return request.stream()
+                .map(entry -> EnvStatus.builder()
+                        .uuid(entry.getUuid())
+                        .environment(entry.getEnvironment())
+                        .status(isOk(entry.getLastStatus()) ? Status.OK : Status.ERROR)
+                        .details(isOk(entry.getLastStatus()) ? null :
+                                getErrorDetails(startTime, entry))
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    private static String getErrorDetails(long startTime, DeployEntry entry) {
+        return isError(entry.getLastStatus()) ? "Oppretting til miljø feilet, se teknisk logg!" :
+                String.format("Tidsavbrudd, ingen fremdrift etter %s. " +
+                                "Oppretting er forventet ferdigstilt senere.",
+                        getReadableTime(System.currentTimeMillis() - startTime));
+    }
+
     @SneakyThrows
     public List<EnvStatus> awaitDeployedDone(List<DeployEntry> request) {
 
@@ -73,8 +97,7 @@ public class DeployStatusService {
                     List<ItemDto> bestStatus;
                     try {
                         bestStatus = bestillingStatusConsumer.getBestillingStatus(entry.getUuid());
-                        if (!(entry.getLastStatus().containsAll(bestStatus) &&
-                                bestStatus.containsAll(entry.getLastStatus()))) {
+                        if (isStatusChanged(entry, bestStatus)) {
                             lastUpdate.set(System.currentTimeMillis());
                         }
                         entry.setLastStatus(bestStatus);
@@ -91,18 +114,7 @@ public class DeployStatusService {
             });
         }
 
-        return request.stream()
-                .map(entry -> EnvStatus.builder()
-                        .uuid(entry.getUuid())
-                        .environment(entry.getEnvironment())
-                        .status(isOk(entry.getLastStatus()) ? Status.OK : Status.ERROR)
-                        .details(isOk(entry.getLastStatus()) ? null :
-                                isError(entry.getLastStatus()) ? "Oppretting til miljø feilet, se teknisk logg!" :
-                                        String.format("Tidsavbrudd, ingen fremdrift etter %s. " +
-                                                "Oppretting er forventet ferdigstilt senere.",
-                                                getReadableTime(System.currentTimeMillis() - startTime)))
-                        .build())
-                .collect(Collectors.toList());
+        return getEnvStatuses(request, startTime);
     }
 
     @Data
