@@ -36,7 +36,7 @@ public class BestillingService {
     private final MapperFacade mapperFacade;
 
     public BestillingResponse execute(BestillingRequest request) {
-        try {
+
             Set<String> orgnumre = request.getOrganisasjoner().stream()
                     .map(org -> {
                         Organisasjon parent = processOrganisasjon(org, null);
@@ -45,18 +45,6 @@ public class BestillingService {
                     .collect(Collectors.toSet());
 
             return BestillingResponse.builder().orgnummer(orgnumre).build();
-
-        } catch (HttpClientErrorException e) {
-
-            log.error(e.getMessage(), e.getResponseBodyAsString(), e);
-            throw new HttpClientErrorException(e.getStatusCode(), e.getStatusText());
-
-        } catch (RuntimeException e) {
-
-            String error = format("Opprettelse av organisasjon feilet %s", e.getMessage());
-            log.error(error, e);
-            throw new HttpClientErrorException(HttpStatus.GONE, error);
-        }
     }
 
     private Organisasjon processOrganisasjon(OrganisasjonRequest orgRequest, Organisasjon parent) {

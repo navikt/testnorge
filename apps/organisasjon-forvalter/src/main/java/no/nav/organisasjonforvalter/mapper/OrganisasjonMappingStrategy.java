@@ -74,7 +74,7 @@ public class OrganisasjonMappingStrategy implements MappingStrategy {
                         source.getAdresser().forEach(adresse -> {
                             if (adresse.isForretningsadresse()) {
                                 target.setForretningsadresse(mapperFacade.map(adresse, Adresse.class));
-                            } else if (adresse.isPostadresse()) {
+                            } else {
                                 target.setPostadresse(mapperFacade.map(adresse, Adresse.class));
                             }
                         });
