@@ -47,6 +47,7 @@ import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Virksomhet;
 @Slf4j
 public class Oppsummeringsdokument {
     private final OppsummeringsdokumentDTO dto;
+    private String id;
 
     public Oppsummeringsdokument(OppsummeringsdokumentDTO dto) {
         this.dto = dto;
@@ -65,6 +66,7 @@ public class Oppsummeringsdokument {
     }
 
     public Oppsummeringsdokument(OppsummeringsdokumentModel model){
+        this.id = model.getId();
         this.dto = OppsummeringsdokumentDTO
                 .builder()
                 .kalendermaaned(model.getKalendermaaned())
@@ -72,6 +74,10 @@ public class Oppsummeringsdokument {
                 .version(model.getVersion())
                 .virksomheter(model.getVirksomheter().stream().map(mapVirksomhetDTO()).collect(Collectors.toList()))
                 .build();
+    }
+
+    public String getId(){
+        return id;
     }
 
 
@@ -371,7 +377,7 @@ public class Oppsummeringsdokument {
                 Permisjon permisjon = new Permisjon();
                 permisjon.setBeskrivelse(permisjonDTO.getBeskrivelse());
                 permisjon.setPermisjonId(UUID.randomUUID().toString());
-                permisjon.setPermisjonsprosent(BigDecimal.valueOf(permisjonDTO.getPermisjonsprosent()));
+                permisjon.setPermisjonsprosent(permisjonDTO.getPermisjonsprosent() != null ? BigDecimal.valueOf(permisjonDTO.getPermisjonsprosent()) : null);
                 permisjon.setSluttdato(toXMLGregorianCalendar(permisjonDTO.getSluttdato()));
                 permisjon.setStartdato(toXMLGregorianCalendar(permisjonDTO.getStartdato()));
                 return permisjon;
@@ -400,4 +406,6 @@ public class Oppsummeringsdokument {
         }
         return DatatypeFactory.newInstance().newXMLGregorianCalendar(localDate.toString());
     }
+
+
 }

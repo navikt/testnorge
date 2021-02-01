@@ -3,17 +3,21 @@ package no.nav.registre.testnorge.oppsummeringsdokuemntservice.adapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.Aggregations;
-import org.elasticsearch.search.aggregations.metrics.ParsedMax;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
-import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.oppsummeringsdokuemntservice.consumer.AaregSyntConsumer;
@@ -25,7 +29,6 @@ import no.nav.registre.testnorge.oppsummeringsdokuemntservice.repository.model.O
 @Component
 @RequiredArgsConstructor
 public class OppsummeringsdokumentAdapter {
-    public static final String MAX_VERSION = "max_version";
     private final OppsummeringsdokumentRepository repository;
     private final ElasticsearchOperations operations;
     private final AaregSyntConsumer aaregSyntConsumer;
@@ -44,26 +47,85 @@ public class OppsummeringsdokumentAdapter {
         return repository.findById(id).map(Oppsummeringsdokument::new).orElse(null);
     }
 
+    private Page<Oppsummeringsdokument> getAllCurrentDocumentsBy(Query query, Pageable pageable) {
 
-    public List<OppsummeringsdokumentModel> getAllBy(String miljo) {
-        var searchQuery = new NativeSearchQueryBuilder()
-                .withQuery(
-                        QueryBuilders.matchQuery("miljo", miljo)
-                )
-                .build();
-        return operations.search(
-                searchQuery,
+        var searchHist = operations.search(
+                query,
+                OppsummeringsdokumentModel.class
+        );
+
+        var list = searchHist.get().map(SearchHit::getContent).collect(Collectors.toList());
+        return new PageImpl<>(
+                getAllCurrentDocumentsBy(list),
+                pageable,
+                searchHist.getTotalHits()
+        );
+    }
+
+    private List<Oppsummeringsdokument> getAllCurrentDocumentsBy(Query query) {
+        var list = operations.search(
+                query,
                 OppsummeringsdokumentModel.class
         ).get().map(SearchHit::getContent).collect(Collectors.toList());
+        return getAllCurrentDocumentsBy(list);
     }
 
     public List<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo) {
-        return getAllBy(miljo)
+        return getAllCurrentDocumentsBy(new NativeSearchQueryBuilder()
+                .withQuery(
+                        QueryBuilders.matchQuery("miljo", miljo)
+                )
+                .build()
+        );
+    }
+
+    public Page<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo, LocalDate fom, LocalDate tom, Integer page) {
+        var pageable = PageRequest.of(page, 1);
+        var builder = new NativeSearchQueryBuilder()
+                .withQuery(
+                        QueryBuilders.matchQuery("miljo", miljo)
+                ).withPageable(pageable);
+        getKalendermaanedBetween(fom, tom).ifPresent(builder::withQuery);
+        return getAllCurrentDocumentsBy(builder.build(), pageable);
+    }
+
+
+    private List<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo, LocalDate fom, LocalDate tom) {
+        var builder = new NativeSearchQueryBuilder()
+                .withQuery(
+                        QueryBuilders.matchQuery("miljo", miljo)
+                );
+        getKalendermaanedBetween(fom, tom).ifPresent(builder::withQuery);
+        return getAllCurrentDocumentsBy(builder.build());
+    }
+
+
+    private Optional<RangeQueryBuilder> getKalendermaanedBetween(LocalDate fom, LocalDate tom) {
+        if (fom == null && tom == null) {
+            return Optional.empty();
+        }
+        var builder = QueryBuilders.rangeQuery("builder");
+
+        if (fom != null) {
+            builder.gte(fom.withDayOfMonth(1));
+        }
+
+        if (tom != null) {
+            builder.lte(tom.withDayOfMonth(tom.lengthOfMonth()));
+        }
+        return Optional.of(builder);
+    }
+
+    /**
+     * TODO Find a way to do this operation by elastic search
+     */
+    private List<Oppsummeringsdokument> getAllCurrentDocumentsBy(List<OppsummeringsdokumentModel> list) {
+        return list
                 .stream()
                 .collect(Collectors.groupingBy(s -> s.getKalendermaaned().withDayOfMonth(1) + s.getOpplysningspliktigOrganisajonsnummer()))
                 .values()
                 .stream()
-                .map(list -> list.stream().reduce(null, (total, value) -> {
+                .map(items -> items.stream().reduce(null, (total, value) -> {
                     if (total == null || total.getVersion() < value.getVersion()) {
                         total = value;
                     }
@@ -73,48 +135,21 @@ public class OppsummeringsdokumentAdapter {
                 .collect(Collectors.toList());
     }
 
+
     public Oppsummeringsdokument getCurrentDocumentBy(LocalDate kalendermaaned, String orgnummer, String miljo) {
-        var searchQuery = new NativeSearchQueryBuilder()
-                .withQuery(
-                        QueryBuilders.rangeQuery("kalendermaaned")
-                                .gte(kalendermaaned.withDayOfMonth(1))
-                                .lte(kalendermaaned.withDayOfMonth(kalendermaaned.lengthOfMonth()))
-                )
-                .withQuery(
-                        QueryBuilders.matchQuery("opplysningspliktigOrganisajonsnummer", orgnummer)
-                )
-                .withQuery(
-                        QueryBuilders.matchQuery("miljo", miljo)
-                )
-                .addAggregation(AggregationBuilders.max(MAX_VERSION).field("version"))
-                .build();
-        var hits = operations.search(
-                searchQuery,
-                OppsummeringsdokumentModel.class
+        var list = getAllCurrentDocumentsBy(
+                miljo,
+                kalendermaaned.withDayOfMonth(1),
+                kalendermaaned.withDayOfMonth(kalendermaaned.lengthOfMonth())
         );
-        var version = getMaxValueFrom(hits.getAggregations(), MAX_VERSION);
-        var models = findLastVersionByAggregation(hits, version);
-        if (models.size() > 1) {
+
+        if (list.size() > 1) {
             log.warn(
-                    "Fant flere en av samme versioner for kalendermaaned: {} og orgnummer: {} for version: {}. Velger den første i listen.",
+                    "Fant flere en av samme versioner for kalendermaaned: {} og orgnummer: {}. Velger den første i listen.",
                     kalendermaaned,
-                    orgnummer,
-                    version
+                    orgnummer
             );
         }
-        return models.stream().findFirst().map(Oppsummeringsdokument::new).orElse(null);
-    }
-
-    private List<OppsummeringsdokumentModel> findLastVersionByAggregation(SearchHits<OppsummeringsdokumentModel> hits, double version) {
-        return hits
-                .get()
-                .map(SearchHit::getContent)
-                .filter(model -> (long) version == model.getVersion())
-                .collect(Collectors.toList());
-    }
-
-    private double getMaxValueFrom(Aggregations aggregations, String name) {
-        var parsedMax = (ParsedMax) aggregations.get(name);
-        return parsedMax.getValue();
+        return list.stream().findFirst().orElse(null);
     }
 }
