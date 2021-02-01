@@ -31,10 +31,12 @@ public class OppsummeringsdokumentetRawController {
     public ResponseEntity<String> getAllOpplysningspliktig(
             @RequestHeader("miljo") String miljo,
             @RequestParam("page") Integer page,
+            @RequestParam(value = "ident",required = false) String ident,
+            @RequestParam(value = "typeArbeidsforhold", required = false) String typeArbeidsforhold,
             @RequestParam(value = "fom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fom,
             @RequestParam(value = "tom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate tom
     ) {
-        var pages = adapter.getAllCurrentDocumentsBy(miljo, fom, tom, page);
+        var pages = adapter.getAllCurrentDocumentsBy(miljo, fom, tom, ident, typeArbeidsforhold, page);
         var document = pages.stream().findFirst();
 
         if(document.isEmpty()){

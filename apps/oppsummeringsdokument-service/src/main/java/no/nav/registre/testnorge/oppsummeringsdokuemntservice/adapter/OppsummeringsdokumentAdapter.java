@@ -2,9 +2,10 @@ package no.nav.registre.testnorge.oppsummeringsdokuemntservice.adapter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
-import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.Page;
@@ -13,12 +14,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -42,7 +42,7 @@ public class OppsummeringsdokumentAdapter {
 
     public String save(Oppsummeringsdokument oppsummeringsdokument, String miljo, String origin) {
         log.info("Oppretter oppsumeringsdokuemnt i {}", miljo);
-        aaregSyntConsumer.saveOpplysningspliktig(oppsummeringsdokument);
+        //aaregSyntConsumer.saveOpplysningspliktig(oppsummeringsdokument);
         return repository.save(oppsummeringsdokument.toModel(miljo, origin)).getId();
     }
 
@@ -83,24 +83,41 @@ public class OppsummeringsdokumentAdapter {
         );
     }
 
-    public Page<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo, LocalDate fom, LocalDate tom, Integer page) {
+    public Page<Oppsummeringsdokument> getAllCurrentDocumentsBy(
+            String miljo,
+            LocalDate fom,
+            LocalDate tom,
+            String ident,
+            String typeArbeidsforhold,
+            Integer page
+    ) {
         var pageable = PageRequest.of(page, 1);
-        var builder = new NativeSearchQueryBuilder()
-                .withQuery(
-                        QueryBuilders.matchQuery("miljo", miljo)
-                ).withPageable(pageable);
-        getKalendermaanedBetween(fom, tom).ifPresent(builder::withQuery);
-        return getAllCurrentDocumentsBy(builder, pageable);
+        var queryBuilders = new ArrayList<QueryBuilder>();
+        queryBuilders.add(QueryBuilders.matchQuery("miljo", miljo));
+        getKalendermaanedBetween(fom, tom).ifPresent(queryBuilders::add);
+        Optional.ofNullable(ident).ifPresent(value -> queryBuilders.add(
+                QueryBuilders.matchQuery("virksomheter.personer.ident", value)
+        ));
+        Optional.ofNullable(typeArbeidsforhold).ifPresent(value -> queryBuilders.add(
+                QueryBuilders.matchQuery("virksomheter.personer.arbeidsforhold.typeArbeidsforhold", value)
+        ));
+        return getAllCurrentDocumentsBy(
+                new NativeSearchQueryBuilder()
+                        .withQuery(combinedOnANDOperator(queryBuilders))
+                        .withPageable(pageable),
+                pageable
+        );
     }
 
 
     private List<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo, LocalDate fom, LocalDate tom) {
-        var builder = new NativeSearchQueryBuilder()
-                .withQuery(
-                        QueryBuilders.matchQuery("miljo", miljo)
-                );
-        getKalendermaanedBetween(fom, tom).ifPresent(builder::withQuery);
-        return getAllCurrentDocumentsBy(builder);
+        var queryBuilders = new ArrayList<QueryBuilder>();
+        queryBuilders.add(QueryBuilders.matchQuery("miljo", miljo));
+        getKalendermaanedBetween(fom, tom).ifPresent(queryBuilders::add);
+
+        return getAllCurrentDocumentsBy(new NativeSearchQueryBuilder()
+                .withQuery(combinedOnANDOperator(queryBuilders))
+        );
     }
 
 
@@ -118,6 +135,14 @@ public class OppsummeringsdokumentAdapter {
             builder.lte(tom.withDayOfMonth(tom.lengthOfMonth()));
         }
         return Optional.of(builder);
+    }
+
+    private QueryBuilder combinedOnANDOperator(List<QueryBuilder> list){
+        var queryBuilder = QueryBuilders.boolQuery();
+        for (var item : list){
+            queryBuilder.must(item);
+        }
+        return queryBuilder;
     }
 
     /**
