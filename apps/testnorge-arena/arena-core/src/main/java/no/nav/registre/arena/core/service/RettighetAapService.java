@@ -260,12 +260,23 @@ public class RettighetAapService {
             String miljoe,
             NyttVedtakAap syntetisertRettighet
     ) {
+        return opprettPersonIPopp(ident, miljoe) && opprettInntektIPopp(ident, miljoe, syntetisertRettighet);
+    }
+
+    private boolean opprettPersonIPopp(
+            String ident,
+            String miljoe
+    ) {
         var opprettPersonStatus = pensjonTestdataFacadeConsumer.opprettPerson(PensjonTestdataPerson.builder()
                 .bostedsland("NOR")
                 .fodselsDato(IdentUtil.getFoedselsdatoFraIdent(ident))
                 .miljoer(Collections.singletonList(miljoe))
                 .fnr(ident)
                 .build());
+
+        if (opprettPersonStatus.getStatus().isEmpty()) {
+            return false;
+        }
 
         for (var response : opprettPersonStatus.getStatus()) {
             if (response.getResponse().getHttpStatus().getStatus() != 200) {
@@ -278,7 +289,14 @@ public class RettighetAapService {
                 return false;
             }
         }
+        return true;
+    }
 
+    private boolean opprettInntektIPopp(
+            String ident,
+            String miljoe,
+            NyttVedtakAap syntetisertRettighet
+    ) {
         var opprettInntektStatus = pensjonTestdataFacadeConsumer.opprettInntekt(PensjonTestdataInntekt.builder()
                 .belop(rand.nextInt(650_000) + 450_000)
                 .fnr(ident)
@@ -287,6 +305,10 @@ public class RettighetAapService {
                 .redusertMedGrunnbelop(true)
                 .tomAar(syntetisertRettighet.getFraDato().minusYears(1).getYear())
                 .build());
+
+        if (opprettInntektStatus.getStatus().isEmpty()) {
+            return false;
+        }
 
         for (var response : opprettInntektStatus.getStatus()) {
             if (response.getResponse().getHttpStatus().getStatus() != 200) {
