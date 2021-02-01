@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.arbeidsforholdfrontend.config.filter;
+package no.nav.registre.testnorge.oppsummeringsdokumentfrontend.config.filter;
 
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;

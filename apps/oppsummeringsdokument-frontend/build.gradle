@@ -33,4 +33,4 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
 }
 
-description = 'oversikt-frontend'
+description = 'oppsummeringsdokument-frontend'

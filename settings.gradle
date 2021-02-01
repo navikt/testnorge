@@ -264,8 +264,8 @@ project(":organisasjon-bestilling-service").projectDir = file('apps/organisasjon
 include 'ereg-batch-status-service'
 project(":ereg-batch-status-service").projectDir = file('apps/ereg-batch-status-service')
 
-include 'arbeidsforhold-frontend'
-project(":arbeidsforhold-frontend").projectDir = file('apps/arbeidsforhold-frontend')
+include 'oppsummeringsdokument-frontend'
+project(":oppsummeringsdokument-frontend").projectDir = file('apps/oppsummeringsdokument-frontend')
 
 include 'jenkins-batch-status-service'
 project(":jenkins-batch-status-service").projectDir = file('apps/jenkins-batch-status-service')

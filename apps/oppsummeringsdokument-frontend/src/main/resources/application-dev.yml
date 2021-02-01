@@ -1,5 +1,12 @@
 azure.app.client.id: d89f3a5a-b2a2-4038-938e-c4bfbb8f288a
 
+zuul:
+  routes:
+    oppsummeringsdokument-service:
+      path: /api/**
+      url: https://oppsummeringsdokument-service.dev.intern.nav.no/api
+      sensitiveHeaders: Cookie,Set-Cookie
+
 spring:
   security:
     oauth2:
