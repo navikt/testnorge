@@ -4,12 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.search.sort.SortBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Component;
@@ -46,10 +50,11 @@ public class OppsummeringsdokumentAdapter {
         return repository.findById(id).map(Oppsummeringsdokument::new).orElse(null);
     }
 
-    private Page<Oppsummeringsdokument> getAllCurrentDocumentsBy(Query query, Pageable pageable) {
+    private Page<Oppsummeringsdokument> getAllCurrentDocumentsBy(NativeSearchQueryBuilder builder, Pageable pageable) {
 
+        builder.withSort(SortBuilders.fieldSort("lastModified").order(SortOrder.DESC));
         var searchHist = operations.search(
-                query,
+                builder.build(),
                 OppsummeringsdokumentModel.class
         );
 
@@ -61,9 +66,10 @@ public class OppsummeringsdokumentAdapter {
         );
     }
 
-    private List<Oppsummeringsdokument> getAllCurrentDocumentsBy(Query query) {
+    private List<Oppsummeringsdokument> getAllCurrentDocumentsBy(NativeSearchQueryBuilder builder) {
+        builder.withSort(SortBuilders.fieldSort("lastModified").order(SortOrder.DESC));
         var list = operations.search(
-                query,
+                builder.build(),
                 OppsummeringsdokumentModel.class
         ).get().map(SearchHit::getContent).collect(Collectors.toList());
         return getAllCurrentDocumentsBy(list);
@@ -74,7 +80,6 @@ public class OppsummeringsdokumentAdapter {
                 .withQuery(
                         QueryBuilders.matchQuery("miljo", miljo)
                 )
-                .build()
         );
     }
 
@@ -85,7 +90,7 @@ public class OppsummeringsdokumentAdapter {
                         QueryBuilders.matchQuery("miljo", miljo)
                 ).withPageable(pageable);
         getKalendermaanedBetween(fom, tom).ifPresent(builder::withQuery);
-        return getAllCurrentDocumentsBy(builder.build(), pageable);
+        return getAllCurrentDocumentsBy(builder, pageable);
     }
 
 
@@ -95,7 +100,7 @@ public class OppsummeringsdokumentAdapter {
                         QueryBuilders.matchQuery("miljo", miljo)
                 );
         getKalendermaanedBetween(fom, tom).ifPresent(builder::withQuery);
-        return getAllCurrentDocumentsBy(builder.build());
+        return getAllCurrentDocumentsBy(builder);
     }
 
 
@@ -130,7 +135,6 @@ public class OppsummeringsdokumentAdapter {
                     }
                     return total;
                 }))
-                .sorted((first, second) -> (int) (first.getLastModified().getEpochSecond() - second.getLastModified().getEpochSecond()))
                 .map(Oppsummeringsdokument::new)
                 .collect(Collectors.toList());
     }
