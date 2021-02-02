@@ -39,6 +39,21 @@ public class OrganisasjonMappingStrategy implements MappingStrategy {
                 .build();
     }
 
+    private static Internettadresse getNettside(String nettSide) {
+        return isNotBlank(nettSide) ? Internettadresse.newBuilder().setInternettadresse(nettSide).build() : null;
+    }
+
+    private static Telefon getTelefonnr(String telefonnr) {
+        return isNotBlank(telefonnr) ? Telefon.newBuilder().setTlf(telefonnr).build() : null;
+    }
+
+    private static Naeringskode getNæringskode(Organisasjon source) {
+        return isNotBlank(source.getNaeringskode()) ? Naeringskode.newBuilder().setKode(source.getNaeringskode())
+                .setHjelpeenhet(false)
+                .setGyldighetsdato(getDate(source.getStiftelsesdato()))
+                .build() : null;
+    }
+
     @Override
     public void register(MapperFactory factory) {
         factory.classMap(OrganisasjonRequest.class, Organisasjon.class)
@@ -61,20 +76,17 @@ public class OrganisasjonMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Organisasjon source, no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon target, MappingContext context) {
                         target.setOrgnummer(source.getOrganisasjonsnummer());
                         target.setNavn(DetaljertNavn.newBuilder().setNavn1(source.getOrganisasjonsnavn()).build());
-                        target.setNaeringskode(isNotBlank(source.getNaeringskode()) ? Naeringskode.newBuilder().setKode(source.getNaeringskode())
-                                .setHjelpeenhet(false)
-                                .setGyldighetsdato(getDate(source.getStiftelsesdato()))
-                                .build() : null);
+                        target.setNaeringskode(getNæringskode(source));
                         target.setStiftelsesdato(Stiftelsesdato.newBuilder()
                                 .setDato(getDate(source.getStiftelsesdato()))
                                 .build());
-                        target.setInternettadresse(isNotBlank(source.getNettside()) ?
-                                Internettadresse.newBuilder().setInternettadresse(source.getNettside()).build() : null);
-                        target.setMobiltelefon(isNotBlank(source.getTelefon()) ? Telefon.newBuilder().setTlf(source.getTelefon()).build() : null);
+                        target.setInternettadresse(getNettside(source.getNettside()));
+                        target.setMobiltelefon(getTelefonnr(source.getTelefon()));
+                        target.setTelefon(getTelefonnr(source.getTelefon()));
                         source.getAdresser().forEach(adresse -> {
                             if (adresse.isForretningsadresse()) {
                                 target.setForretningsadresse(mapperFacade.map(adresse, Adresse.class));
-                            } else {
+                            } else if (adresse.isPostadresse()) {
                                 target.setPostadresse(mapperFacade.map(adresse, Adresse.class));
                             }
                         });
@@ -106,8 +118,7 @@ public class OrganisasjonMappingStrategy implements MappingStrategy {
                         return adresse;
                     }
                 })
+                .byDefault()
                 .register();
     }
-
-
 }
