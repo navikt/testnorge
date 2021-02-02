@@ -31,6 +31,7 @@ import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.O
 @Component
 @RequiredArgsConstructor
 public class OppsummeringsdokumentAdapter {
+
     private final OppsummeringsdokumentRepository repository;
     private final ElasticsearchOperations operations;
     private final AaregSyntConsumer aaregSyntConsumer;
