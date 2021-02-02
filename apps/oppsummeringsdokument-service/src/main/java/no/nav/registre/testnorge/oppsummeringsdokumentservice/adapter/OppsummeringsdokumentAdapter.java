@@ -1,8 +1,7 @@
-package no.nav.registre.testnorge.oppsummeringsdokuemntservice.adapter;
+package no.nav.registre.testnorge.oppsummeringsdokumentservice.adapter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
@@ -23,10 +22,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.oppsummeringsdokuemntservice.consumer.AaregSyntConsumer;
-import no.nav.registre.testnorge.oppsummeringsdokuemntservice.domain.Oppsummeringsdokument;
-import no.nav.registre.testnorge.oppsummeringsdokuemntservice.repository.OppsummeringsdokumentRepository;
-import no.nav.registre.testnorge.oppsummeringsdokuemntservice.repository.model.OppsummeringsdokumentModel;
+import no.nav.registre.testnorge.oppsummeringsdokumentservice.consumer.AaregSyntConsumer;
+import no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Oppsummeringsdokument;
+import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.OppsummeringsdokumentRepository;
+import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.OppsummeringsdokumentModel;
 
 @Slf4j
 @Component
@@ -41,7 +40,7 @@ public class OppsummeringsdokumentAdapter {
     }
 
     public String save(Oppsummeringsdokument oppsummeringsdokument, String miljo, String origin) {
-        log.info("Oppretter oppsumeringsdokuemnt i {}", miljo);
+        log.info("Oppretter oppsummeringsdokument i {}", miljo);
         aaregSyntConsumer.saveOpplysningspliktig(oppsummeringsdokument);
         return repository.save(oppsummeringsdokument.toModel(miljo, origin)).getId();
     }
@@ -174,7 +173,7 @@ public class OppsummeringsdokumentAdapter {
 
         if (list.size() > 1) {
             log.warn(
-                    "Fant flere en av samme versioner for kalendermaaned: {} og orgnummer: {}. Velger den første i listen.",
+                    "Fant flere med samme versjon for kalendermaaned: {} og orgnummer: {}. Velger den først i listen.",
                     kalendermaaned,
                     orgnummer
             );

@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.oppsummeringsdokuemntservice.config.credentials;
+package no.nav.registre.testnorge.oppsummeringsdokumentservice.config.credentials;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

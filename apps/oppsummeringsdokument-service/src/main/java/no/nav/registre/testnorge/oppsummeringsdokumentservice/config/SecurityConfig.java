@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.oppsummeringsdokuemntservice.config;
+package no.nav.registre.testnorge.oppsummeringsdokumentservice.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;

@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.oppsummeringsdokuemntservice;
+package no.nav.registre.testnorge.oppsummeringsdokumentservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

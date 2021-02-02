@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.oppsummeringsdokuemntservice.repository.model;
+package no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model;
 
 import lombok.Getter;
 import lombok.Setter;

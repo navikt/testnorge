@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.oppsummeringsdokuemntservice.domain;
+package no.nav.registre.testnorge.oppsummeringsdokumentservice.domain;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -28,11 +28,11 @@ import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.Oppsummeringsdokumen
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.PermisjonDTO;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.VirksomhetDTO;
-import no.nav.registre.testnorge.oppsummeringsdokuemntservice.repository.model.ArbeidsforholdModel;
-import no.nav.registre.testnorge.oppsummeringsdokuemntservice.repository.model.OppsummeringsdokumentModel;
-import no.nav.registre.testnorge.oppsummeringsdokuemntservice.repository.model.PermisjonModel;
-import no.nav.registre.testnorge.oppsummeringsdokuemntservice.repository.model.PersonModel;
-import no.nav.registre.testnorge.oppsummeringsdokuemntservice.repository.model.VirksomhetModel;
+import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.ArbeidsforholdModel;
+import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.OppsummeringsdokumentModel;
+import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.PermisjonModel;
+import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.PersonModel;
+import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.VirksomhetModel;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Arbeidsforhold;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.EDAGM;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Inntektsmottaker;
@@ -172,7 +172,7 @@ public class Oppsummeringsdokument {
                 .build();
     }
 
-    public Oppsummeringsdokument(String opplysningspliktig, Map<String, List<no.nav.registre.testnorge.oppsummeringsdokuemntservice.domain.Arbeidsforhold>> map) {
+    public Oppsummeringsdokument(String opplysningspliktig, Map<String, List<no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Arbeidsforhold>> map) {
         dto = OppsummeringsdokumentDTO
                 .builder()
                 .kalendermaaned(LocalDate.now())
@@ -203,11 +203,11 @@ public class Oppsummeringsdokument {
                 .build();
     }
 
-    private static Set<String> getIdenter(List<no.nav.registre.testnorge.oppsummeringsdokuemntservice.domain.Arbeidsforhold> arbeidsforholds) {
-        return arbeidsforholds.stream().map(no.nav.registre.testnorge.oppsummeringsdokuemntservice.domain.Arbeidsforhold::getIdent).collect(Collectors.toSet());
+    private static Set<String> getIdenter(List<no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Arbeidsforhold> arbeidsforholds) {
+        return arbeidsforholds.stream().map(no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Arbeidsforhold::getIdent).collect(Collectors.toSet());
     }
 
-    private static List<no.nav.registre.testnorge.oppsummeringsdokuemntservice.domain.Arbeidsforhold> getArbeidsforholdFraIdent(String ident, List<no.nav.registre.testnorge.oppsummeringsdokuemntservice.domain.Arbeidsforhold> arbeidsforholds) {
+    private static List<no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Arbeidsforhold> getArbeidsforholdFraIdent(String ident, List<no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Arbeidsforhold> arbeidsforholds) {
         return arbeidsforholds.stream().filter(arbeidsforhold -> arbeidsforhold.getIdent().equals(ident)).collect(Collectors.toList());
     }
 

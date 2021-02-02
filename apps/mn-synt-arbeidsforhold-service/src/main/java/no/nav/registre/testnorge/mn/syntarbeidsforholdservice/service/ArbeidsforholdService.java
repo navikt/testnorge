@@ -97,9 +97,9 @@ public class ArbeidsforholdService {
         });
     }
 
-    private Optional<Opplysningspliktig> getOpplysningspliktigForPreviousMonth(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {
+    private Optional<Opplysningspliktig> getOpplysningspliktigForPreviousMonth(Organisajon organisasjon, LocalDate kalendermaaned, String miljo) {
         return oppsummeringsdokumentConsumer.getOpplysningspliktig(
-                organisajon,
+                organisasjon,
                 kalendermaaned.minusMonths(1),
                 miljo
         ).map(value -> {

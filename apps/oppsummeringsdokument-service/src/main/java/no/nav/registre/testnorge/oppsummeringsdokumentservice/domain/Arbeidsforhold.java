@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.oppsummeringsdokuemntservice.domain;
+package no.nav.registre.testnorge.oppsummeringsdokumentservice.domain;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

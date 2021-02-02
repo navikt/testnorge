@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.oppsummeringsdokuemntservice.config;
+package no.nav.registre.testnorge.oppsummeringsdokumentservice.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerCo
         SecureOAuth2ServerToServerConfiguration.class,
         AnalysisGCPAutoConfiguration.class
 })
-@EnableElasticsearchRepositories(basePackages = "no.nav.registre.testnorge.oppsummeringsdokuemntservice.repository")
+@EnableElasticsearchRepositories(basePackages = "no.nav.registre.testnorge.oppsummeringsdokumentservice.repository")
 @EnableElasticsearchAuditing
 @RequiredArgsConstructor
 public class ApplicationConfig {

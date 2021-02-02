@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.oppsummeringsdokuemntservice.config;
+package no.nav.registre.testnorge.oppsummeringsdokumentservice.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +11,7 @@ import org.springframework.data.elasticsearch.client.RestClients;
 
 import java.io.IOException;
 
-import no.nav.registre.testnorge.oppsummeringsdokuemntservice.config.credentials.ElasticSearchCredentials;
+import no.nav.registre.testnorge.oppsummeringsdokumentservice.config.credentials.ElasticSearchCredentials;
 
 @Slf4j
 @Configuration

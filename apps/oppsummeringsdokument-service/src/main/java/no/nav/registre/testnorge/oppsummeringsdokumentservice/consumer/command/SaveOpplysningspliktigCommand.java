@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.oppsummeringsdokuemntservice.consumer.command;
+package no.nav.registre.testnorge.oppsummeringsdokumentservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
