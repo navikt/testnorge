@@ -111,9 +111,12 @@ public class OppsummeringsdokumentAdapter {
     }
 
 
-    private List<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo, LocalDate fom, LocalDate tom) {
+    private List<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo, String orgnummer, LocalDate fom, LocalDate tom) {
         var queryBuilders = new ArrayList<QueryBuilder>();
+
         queryBuilders.add(QueryBuilders.matchQuery("miljo", miljo));
+        queryBuilders.add(QueryBuilders.matchQuery("opplysningspliktigOrganisajonsnummer", orgnummer));
+
         getKalendermaanedBetween(fom, tom).ifPresent(queryBuilders::add);
 
         return getAllCurrentDocumentsBy(new NativeSearchQueryBuilder()
@@ -152,11 +155,7 @@ public class OppsummeringsdokumentAdapter {
     private List<Oppsummeringsdokument> filterOnVersion(List<OppsummeringsdokumentModel> list) {
         return list
                 .stream()
-                .collect(Collectors.groupingBy(s -> {
-                    var uniqKey = s.getKalendermaaned().withDayOfMonth(1) + s.getOpplysningspliktigOrganisajonsnummer();
-                    log.info("Grouping by {}", uniqKey);
-                    return uniqKey;
-                }))
+                .collect(Collectors.groupingBy(item -> item.getKalendermaaned().withDayOfMonth(1) + item.getOpplysningspliktigOrganisajonsnummer()))
                 .values()
                 .stream()
                 .map(items -> items.stream().reduce(null, (total, value) -> {
@@ -173,19 +172,16 @@ public class OppsummeringsdokumentAdapter {
     public Oppsummeringsdokument getCurrentDocumentBy(LocalDate kalendermaaned, String orgnummer, String miljo) {
         var list = getAllCurrentDocumentsBy(
                 miljo,
+                orgnummer,
                 kalendermaaned.withDayOfMonth(1),
                 kalendermaaned.withDayOfMonth(kalendermaaned.lengthOfMonth())
         );
 
         if (list.size() > 1) {
             log.warn(
-                    "Fant flere med samme versjon for kalendermaaned: {}, orgnummer: {} og versioner: {}. Velger den først i listen.",
+                    "Fant flere med samme versjon for kalendermaaned: {} og orgnummer: {}. Velger den først i listen.",
                     kalendermaaned,
-                    orgnummer,
-                    list.stream()
-                            .map(Oppsummeringsdokument::getVersion)
-                            .map(Object::toString)
-                            .collect(Collectors.joining(","))
+                    orgnummer
             );
         }
         return list.stream().findFirst().orElse(null);
