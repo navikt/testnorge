@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.RestClients;
 
+import java.io.IOException;
+
 import no.nav.registre.testnorge.oppsummeringsdokuemntservice.config.credentials.ElasticSearchCredentials;
 
 @Slf4j
@@ -19,14 +21,17 @@ public class ProdConfig {
     private final ElasticSearchCredentials elasticSearchCredentials;
 
     @Bean
-    public RestHighLevelClient client() {
+    public RestHighLevelClient client() throws IOException {
         ClientConfiguration clientConfiguration
                 = ClientConfiguration.builder()
                 .connectedTo(elasticSearchCredentials.getHost() + ":" + elasticSearchCredentials.getPort())
                 .usingSsl()
                 .withBasicAuth(elasticSearchCredentials.getUsername(), elasticSearchCredentials.getPassword())
                 .build();
-        return RestClients.create(clientConfiguration).rest();
+
+        try (var client = RestClients.create(clientConfiguration).rest()){
+            return client;
+        }
     }
 
 }
