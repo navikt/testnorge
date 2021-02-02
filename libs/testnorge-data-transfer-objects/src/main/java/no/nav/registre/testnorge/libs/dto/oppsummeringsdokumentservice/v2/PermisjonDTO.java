@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2;
+package no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,21 +1,20 @@
-package no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2;
+package no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import java.util.List;
 
-@Data
+@Value
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class PersonDTO {
+public class VirksomhetDTO {
     @JsonProperty(required = true)
-    private final String ident;
+    String organisajonsnummer;
     @JsonProperty(required = true)
-    private List<ArbeidsforholdDTO> arbeidsforhold;
+    List<PersonDTO> personer;
 }

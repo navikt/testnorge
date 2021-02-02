@@ -23,11 +23,11 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.ArbeidsforholdDTO;
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OppsummeringsdokumentDTO;
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.PermisjonDTO;
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.PersonDTO;
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.VirksomhetDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PersonDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.ArbeidsforholdModel;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.OppsummeringsdokumentModel;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.PermisjonModel;
@@ -51,18 +51,6 @@ public class Oppsummeringsdokument {
 
     public Oppsummeringsdokument(OppsummeringsdokumentDTO dto) {
         this.dto = dto;
-    }
-
-    public String getOrgnummer() {
-        return dto.getOpplysningspliktigOrganisajonsnummer();
-    }
-
-    public LocalDate getRapporteringsmaaned() {
-        return dto.getKalendermaaned();
-    }
-
-    public Long getVersion() {
-        return dto.getVersion();
     }
 
     public Oppsummeringsdokument(OppsummeringsdokumentModel model){
@@ -124,92 +112,6 @@ public class Oppsummeringsdokument {
                 .build();
     }
 
-    public Oppsummeringsdokument(EDAGM edagm) {
-        var leveranse = edagm.getLeveranse();
-        var oppgave = edagm.getLeveranse().getOppgave();
-        dto = OppsummeringsdokumentDTO
-                .builder()
-                .kalendermaaned(toLocalDate(leveranse.getKalendermaaned()))
-                .opplysningspliktigOrganisajonsnummer(leveranse.getOpplysningspliktig().getNorskIdentifikator())
-                .version(leveranse.getKilde().getKildeversjon().longValue())
-                .virksomheter(oppgave.getVirksomhet().stream().map(virksomhet -> VirksomhetDTO
-                        .builder()
-                        .organisajonsnummer(virksomhet.getNorskIdentifikator())
-                        .personer(virksomhet.getInntektsmottaker().stream().map(inntektsmottaker -> PersonDTO
-                                .builder()
-                                .ident(inntektsmottaker.getNorskIdentifikator())
-                                .arbeidsforhold(inntektsmottaker.getArbeidsforhold().stream().map(arbeidsforhold -> ArbeidsforholdDTO
-                                        .builder()
-                                        .arbeidsforholdId(arbeidsforhold.getArbeidsforholdId())
-                                        .arbeidstidsordning(arbeidsforhold.getArbeidstidsordning())
-                                        .antallTimerPerUke(arbeidsforhold.getAntallTimerPerUkeSomEnFullStillingTilsvarer() != null
-                                                ? arbeidsforhold.getAntallTimerPerUkeSomEnFullStillingTilsvarer().floatValue()
-                                                : null
-                                        )
-                                        .sisteLoennsendringsdato(toLocalDate(arbeidsforhold.getSisteLoennsendringsdato()))
-                                        .startdato(toLocalDate(arbeidsforhold.getStartdato()))
-                                        .sluttdato(toLocalDate(arbeidsforhold.getSluttdato()))
-                                        .yrke(arbeidsforhold.getYrke())
-                                        .stillingsprosent(arbeidsforhold.getStillingsprosent() != null
-                                                ? arbeidsforhold.getStillingsprosent().floatValue()
-                                                : null
-                                        )
-                                        .permisjoner(arbeidsforhold.getPermisjon().stream().map(permisjon -> PermisjonDTO
-                                                .builder()
-                                                .beskrivelse(permisjon.getBeskrivelse())
-                                                .permisjonsprosent(permisjon.getPermisjonsprosent().floatValue())
-                                                .sluttdato(toLocalDate(permisjon.getSluttdato()))
-                                                .startdato(toLocalDate(permisjon.getStartdato()))
-                                                .build()
-                                        ).collect(Collectors.toList()))
-                                        .typeArbeidsforhold(arbeidsforhold.getTypeArbeidsforhold())
-                                        .build()
-                                ).collect(Collectors.toList()))
-                                .build()
-                        ).collect(Collectors.toList()))
-                        .build()
-                ).collect(Collectors.toList()))
-                .build();
-    }
-
-    public Oppsummeringsdokument(String opplysningspliktig, Map<String, List<no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Arbeidsforhold>> map) {
-        dto = OppsummeringsdokumentDTO
-                .builder()
-                .kalendermaaned(LocalDate.now())
-                .opplysningspliktigOrganisajonsnummer(opplysningspliktig)
-                .virksomheter(map.keySet().stream().map(orgnummer -> VirksomhetDTO
-                        .builder()
-                        .organisajonsnummer(orgnummer)
-                        .personer(getIdenter(map.get(orgnummer)).stream().map(ident -> PersonDTO
-                                .builder()
-                                .ident(ident)
-                                .arbeidsforhold(getArbeidsforholdFraIdent(ident, map.get(orgnummer)).stream().map(arbeidsforhold -> ArbeidsforholdDTO
-                                        .builder()
-                                        .arbeidsforholdId(arbeidsforhold.getArbeidsforholdId())
-                                        .arbeidstidsordning(arbeidsforhold.getArbeidstidsordning())
-                                        .antallTimerPerUke(arbeidsforhold.getAntallTimerPrUke())
-                                        .sisteLoennsendringsdato(arbeidsforhold.getSistLoennsendring())
-                                        .sluttdato(arbeidsforhold.getTom())
-                                        .startdato(arbeidsforhold.getFom())
-                                        .yrke(arbeidsforhold.getYrke())
-                                        .stillingsprosent(arbeidsforhold.getStillingsprosent())
-                                        .typeArbeidsforhold(arbeidsforhold.getType())
-                                        .build()
-                                ).collect(Collectors.toList()))
-                                .build()
-                        ).collect(Collectors.toList()))
-                        .build()
-                ).collect(Collectors.toList()))
-                .build();
-    }
-
-    private static Set<String> getIdenter(List<no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Arbeidsforhold> arbeidsforholds) {
-        return arbeidsforholds.stream().map(no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Arbeidsforhold::getIdent).collect(Collectors.toSet());
-    }
-
-    private static List<no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Arbeidsforhold> getArbeidsforholdFraIdent(String ident, List<no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Arbeidsforhold> arbeidsforholds) {
-        return arbeidsforholds.stream().filter(arbeidsforhold -> arbeidsforhold.getIdent().equals(ident)).collect(Collectors.toList());
-    }
 
     public OppsummeringsdokumentModel toModel(String miljo, String origin){
         var model = new OppsummeringsdokumentModel();
@@ -382,19 +284,6 @@ public class Oppsummeringsdokument {
             }).collect(Collectors.toList()));
         }
         return arbeidsforhold;
-    }
-
-
-    private static LocalDate toLocalDate(XMLGregorianCalendar calendar) {
-        if (calendar == null) {
-            return null;
-        }
-
-        return LocalDate.of(
-                calendar.getYear(),
-                calendar.getMonth(),
-                1
-        );
     }
 
     @SneakyThrows

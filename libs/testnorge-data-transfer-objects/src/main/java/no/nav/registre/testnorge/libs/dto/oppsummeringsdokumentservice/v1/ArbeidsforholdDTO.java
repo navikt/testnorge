@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1;
+package no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v1;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

@@ -19,7 +19,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OppsummeringsdokumentDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.adapter.OppsummeringsdokumentAdapter;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Oppsummeringsdokument;
 
