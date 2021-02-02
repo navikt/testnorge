@@ -47,7 +47,7 @@ public class OrganisasjonMappingStrategy implements MappingStrategy {
         return isNotBlank(telefonnr) ? Telefon.newBuilder().setTlf(telefonnr).build() : null;
     }
 
-    private static Naeringskode getNæringskode(Organisasjon source) {
+    private static Naeringskode getNaeringskode(Organisasjon source) {
         return isNotBlank(source.getNaeringskode()) ? Naeringskode.newBuilder().setKode(source.getNaeringskode())
                 .setHjelpeenhet(false)
                 .setGyldighetsdato(getDate(source.getStiftelsesdato()))
@@ -76,7 +76,7 @@ public class OrganisasjonMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Organisasjon source, no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon target, MappingContext context) {
                         target.setOrgnummer(source.getOrganisasjonsnummer());
                         target.setNavn(DetaljertNavn.newBuilder().setNavn1(source.getOrganisasjonsnavn()).build());
-                        target.setNaeringskode(getNæringskode(source));
+                        target.setNaeringskode(getNaeringskode(source));
                         target.setStiftelsesdato(Stiftelsesdato.newBuilder()
                                 .setDato(getDate(source.getStiftelsesdato()))
                                 .build());
