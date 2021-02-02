@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.FartoeyDTO;
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdRequest;
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.PermisjonDTO;
@@ -47,6 +48,12 @@ public class Arbeidsforhold {
                 .startdato(response.getStartdato())
                 .sluttdato(response.getSluttdato().equals("") ? null : LocalDate.parse(response.getSluttdato()))
                 .arbeidsforholdId(arbeidsforholdId)
+                .fartoey(response.getFartoey() != null ? FartoeyDTO.builder()
+                        .fartsomraade(response.getFartoey().getFartsomraade())
+                        .skipsregister(response.getFartoey().getSkipsregister())
+                        .skipstype(response.getFartoey().getSkipstype())
+                        .build() : null
+                )
                 .build();
     }
 
@@ -140,6 +147,14 @@ public class Arbeidsforhold {
                 .velferdspermisjon(velferdspermisjon)
                 .historikk(historikk)
                 .numEndringer(count)
+                .fartoey(dto.getFartoey() != null ? no.nav.registre.testnorge.libs.dto.syntrest.v1.FartoeyDTO
+                        .builder()
+                        .fartsomraade(dto.getFartoey().getFartsomraade())
+                        .skipsregister(dto.getFartoey().getSkipsregister())
+                        .skipstype(dto.getFartoey().getSkipstype())
+                        .build()
+                        : null
+                )
                 .permisjoner(dto.getPermisjoner().stream().map(value -> new PermisjonDTO(
                         value.getBeskrivelse(),
                         value.getPermisjonsprosent() != null ? value.getPermisjonsprosent().toString() : null,

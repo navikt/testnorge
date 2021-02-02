@@ -29,9 +29,7 @@ public class ProdConfig {
                 .withBasicAuth(elasticSearchCredentials.getUsername(), elasticSearchCredentials.getPassword())
                 .build();
 
-        try (var client = RestClients.create(clientConfiguration).rest()){
-            return client;
-        }
+        return RestClients.create(clientConfiguration).rest();
     }
 
 }

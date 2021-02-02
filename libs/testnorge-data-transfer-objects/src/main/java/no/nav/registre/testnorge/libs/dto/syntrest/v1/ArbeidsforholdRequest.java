@@ -32,6 +32,7 @@ public class ArbeidsforholdRequest {
     private final String historikk;
     private final Integer numEndringer;
     private final List<PermisjonDTO> permisjoner;
+    private final FartoeyDTO fartoey;
 
     public ArbeidsforholdRequest(ArbeidsforholdRequest request) {
         this.rapporteringsmaaned = request.rapporteringsmaaned;
@@ -53,5 +54,6 @@ public class ArbeidsforholdRequest {
         this.historikk = request.historikk;
         this.numEndringer = request.numEndringer;
         this.permisjoner = request.permisjoner;
+        this.fartoey = request.fartoey;
     }
 }
