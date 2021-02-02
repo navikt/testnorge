@@ -18,6 +18,7 @@ spec:
         - application: team-dolly-lokal-app
           cluster: dev-fss
         - application: dolly-backend-dev
+        - application: testnorge-oversikt-frontend
         - application: dolly-backend
         - application: testnorge-synt-sykemelding-api
   liveness:
