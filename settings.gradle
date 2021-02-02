@@ -291,5 +291,4 @@ project(":oppsummeringsdokument-frontend").projectDir = file('apps/oppsummerings
 
 include 'tps-forvalteren-proxy'
 project(":tps-forvalteren-proxy").projectDir = file('proxies/tps-forvalteren-proxy')
-include 'proxies'
 
