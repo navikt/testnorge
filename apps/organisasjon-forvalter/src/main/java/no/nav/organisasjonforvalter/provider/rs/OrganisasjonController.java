@@ -21,6 +21,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("api/v1/organisasjon")
@@ -52,7 +53,7 @@ public class OrganisasjonController {
 
     @GetMapping("/import")
     public Map<String, RsOrganisasjon> importOrganisasjon(@RequestParam String orgnummer,
-                                                          @RequestParam(required = false) List<String> miljoer){
+                                                          @RequestParam(required = false) Set<String> miljoer){
 
         return importService.getOrganisasjoner(orgnummer, miljoer);
     }

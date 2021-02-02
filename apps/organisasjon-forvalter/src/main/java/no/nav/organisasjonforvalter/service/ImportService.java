@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
@@ -27,9 +28,9 @@ public class ImportService {
     private final OrganisasjonApiConsumer organisasjonApiConsumer;
     private final MapperFacade mapperFacade;
 
-    public Map<String, RsOrganisasjon> getOrganisasjoner(String orgnummer, List<String> miljoer) {
+    public Map<String, RsOrganisasjon> getOrganisasjoner(String orgnummer, Set<String> miljoer) {
 
-        List<String> miljoerAaSjekke = nonNull(miljoer) ? miljoer : miljoerServiceConsumer.getOrgMiljoer();
+        Set<String> miljoerAaSjekke = nonNull(miljoer) ? miljoer : miljoerServiceConsumer.getOrgMiljoer();
 
         return miljoerAaSjekke.parallelStream()
                 .map(env -> OrganisasjonMiljoe.builder()

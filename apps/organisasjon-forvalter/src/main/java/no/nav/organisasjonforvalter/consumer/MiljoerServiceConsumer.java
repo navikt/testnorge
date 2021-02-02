@@ -16,10 +16,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -53,7 +55,7 @@ public class MiljoerServiceConsumer {
         this.accessScopes = new AccessScopes("api://" + clientId + "/.default");
     }
 
-    public List<String> getOrgMiljoer() {
+    public Set<String> getOrgMiljoer() {
 
         try {
             AccessToken accessToken = accessTokenService.generateToken(accessScopes);
@@ -70,12 +72,12 @@ public class MiljoerServiceConsumer {
             return nonNull(response) && response.hasBody() ?
                     List.of(response.getBody()).stream()
                             .filter(env -> !env.equals("u5") && !env.equals("qx"))
-                            .collect(Collectors.toList()) :
-                    emptyList();
+                            .collect(Collectors.toSet()) :
+                    emptySet();
 
         } catch (RuntimeException e) {
-            log.error("Feilet å hemte miljøer fra miljoer-service", e);
-            return emptyList();
+            log.error("Feilet å hente miljøer fra miljoer-service", e);
+            return emptySet();
         }
     }
 }
