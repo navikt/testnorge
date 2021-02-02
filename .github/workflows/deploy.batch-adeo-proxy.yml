@@ -3,7 +3,7 @@ name: Deploy batch-adeo-proxy
 on:
   push:
     paths:
-      - apps/batch-adeo-proxy/**
+      - proxies/batch-adeo-proxy/**
       - libs/testnorge-core/**
 
 env:
@@ -32,7 +32,7 @@ jobs:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
         run: ./gradlew :batch-adeo-proxy:build
       - name: Build and publish Docker image
-        working-directory: apps/batch-adeo-proxy/
+        working-directory: proxies/batch-adeo-proxy/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -45,4 +45,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/batch-adeo-proxy/config.yml
+          RESOURCE: proxies/batch-adeo-proxy/config.yml
