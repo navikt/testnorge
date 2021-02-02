@@ -14,15 +14,10 @@ import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.Adres
 import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.OrganisasjonRequest;
 import no.nav.organisasjonforvalter.provider.rs.responses.BestillingResponse;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static java.lang.String.format;
 
 @Slf4j
 @Service
@@ -36,27 +31,15 @@ public class BestillingService {
     private final MapperFacade mapperFacade;
 
     public BestillingResponse execute(BestillingRequest request) {
-        try {
-            Set<String> orgnumre = request.getOrganisasjoner().stream()
-                    .map(org -> {
-                        Organisasjon parent = processOrganisasjon(org, null);
-                        return parent.getOrganisasjonsnummer();
-                    })
-                    .collect(Collectors.toSet());
 
-            return BestillingResponse.builder().orgnummer(orgnumre).build();
+        Set<String> orgnumre = request.getOrganisasjoner().stream()
+                .map(org -> {
+                    Organisasjon parent = processOrganisasjon(org, null);
+                    return parent.getOrganisasjonsnummer();
+                })
+                .collect(Collectors.toSet());
 
-        } catch (HttpClientErrorException e) {
-
-            log.error(e.getMessage(), e.getResponseBodyAsString(), e);
-            throw new HttpClientErrorException(e.getStatusCode(), e.getStatusText());
-
-        } catch (RuntimeException e) {
-
-            String error = format("Opprettelse av organisasjon feilet %s", e.getMessage());
-            log.error(error, e);
-            throw new HttpClientErrorException(HttpStatus.GONE, error);
-        }
+        return BestillingResponse.builder().orgnummer(orgnumre).build();
     }
 
     private Organisasjon processOrganisasjon(OrganisasjonRequest orgRequest, Organisasjon parent) {

@@ -5,6 +5,9 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.organisasjonforvalter.jpa.entity.Organisasjon;
 import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.OrganisasjonRequest;
+import no.nav.organisasjonforvalter.provider.rs.responses.RsAdresse;
+import no.nav.organisasjonforvalter.provider.rs.responses.RsAdresse.AdresseType;
+import no.nav.organisasjonforvalter.provider.rs.responses.RsOrganisasjon;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Adresse;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Dato;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.DetaljertNavn;
@@ -12,23 +15,43 @@ import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Internettadresse;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Naeringskode;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Stiftelsesdato;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Telefon;
+import no.nav.registre.testnorge.libs.dto.organisasjon.v1.AdresseDTO;
+import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.organisasjonforvalter.provider.rs.responses.RsAdresse.AdresseType.FADR;
+import static no.nav.organisasjonforvalter.provider.rs.responses.RsAdresse.AdresseType.PADR;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Component
 public class OrganisasjonMappingStrategy implements MappingStrategy {
 
     private static Dato getDate(LocalDate date) {
+        LocalDate fixDate = nonNull(date) ? date : LocalDate.now();
         return Dato.newBuilder()
-                .setAar(date.getYear())
-                .setMaaned(date.getMonthValue())
-                .setDag(date.getDayOfMonth())
+                .setAar(fixDate.getYear())
+                .setMaaned(fixDate.getMonthValue())
+                .setDag(fixDate.getDayOfMonth())
                 .build();
+    }
+
+    private static Internettadresse getNettside(String nettSide) {
+        return isNotBlank(nettSide) ? Internettadresse.newBuilder().setInternettadresse(nettSide).build() : null;
+    }
+
+    private static Telefon getTelefonnr(String telefonnr) {
+        return isNotBlank(telefonnr) ? Telefon.newBuilder().setTlf(telefonnr).build() : null;
+    }
+
+    private static Naeringskode getNaeringskode(Organisasjon source) {
+        return isNotBlank(source.getNaeringskode()) ? Naeringskode.newBuilder().setKode(source.getNaeringskode())
+                .setHjelpeenhet(false)
+                .setGyldighetsdato(getDate(source.getStiftelsesdato()))
+                .build() : null;
     }
 
     @Override
@@ -53,17 +76,13 @@ public class OrganisasjonMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Organisasjon source, no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon target, MappingContext context) {
                         target.setOrgnummer(source.getOrganisasjonsnummer());
                         target.setNavn(DetaljertNavn.newBuilder().setNavn1(source.getOrganisasjonsnavn()).build());
-                        target.setNaeringskode(isNotBlank(source.getNaeringskode()) ? Naeringskode.newBuilder().setKode(source.getNaeringskode())
-                                .setHjelpeenhet(false)
-                                .setGyldighetsdato(getDate(LocalDate.now()))
-                                .build() : null);
+                        target.setNaeringskode(getNaeringskode(source));
                         target.setStiftelsesdato(Stiftelsesdato.newBuilder()
-                                .setDato(getDate(nonNull(source.getStiftelsesdato()) ?
-                                        source.getStiftelsesdato() : LocalDate.now()))
+                                .setDato(getDate(source.getStiftelsesdato()))
                                 .build());
-                        target.setInternettadresse(isNotBlank(source.getNettside()) ?
-                                Internettadresse.newBuilder().setInternettadresse(source.getNettside()).build() : null);
-                        target.setMobiltelefon(isNotBlank(source.getTelefon()) ? Telefon.newBuilder().setTlf(source.getTelefon()).build() : null);
+                        target.setInternettadresse(getNettside(source.getNettside()));
+                        target.setMobiltelefon(getTelefonnr(source.getTelefon()));
+                        target.setTelefon(getTelefonnr(source.getTelefon()));
                         source.getAdresser().forEach(adresse -> {
                             if (adresse.isForretningsadresse()) {
                                 target.setForretningsadresse(mapperFacade.map(adresse, Adresse.class));
@@ -73,6 +92,30 @@ public class OrganisasjonMappingStrategy implements MappingStrategy {
                         });
 
                         target.setUnderenheter(mapperFacade.mapAsList(source.getUnderenheter(), no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon.class));
+                    }
+                })
+                .byDefault()
+                .register();
+
+        factory.classMap(OrganisasjonDTO.class, RsOrganisasjon.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(OrganisasjonDTO source, RsOrganisasjon target, MappingContext context) {
+                        target.setOrganisasjonsnummer(source.getOrgnummer());
+                        target.setEnhetstype(source.getEnhetType());
+                        target.setOrganisasjonsnavn(source.getNavn());
+                        if (nonNull(source.getPostadresse())) {
+                            target.getAdresser().add(mapAdresse(source.getPostadresse(), PADR));
+                        }
+                        if (nonNull(source.getForretningsadresser())) {
+                            target.getAdresser().add(mapAdresse(source.getForretningsadresser(), FADR));
+                        }
+                    }
+
+                    private RsAdresse mapAdresse(AdresseDTO adresseDto, AdresseType type) {
+                        RsAdresse adresse = mapperFacade.map(adresseDto, RsAdresse.class);
+                        adresse.setAdressetype(type);
+                        return adresse;
                     }
                 })
                 .byDefault()

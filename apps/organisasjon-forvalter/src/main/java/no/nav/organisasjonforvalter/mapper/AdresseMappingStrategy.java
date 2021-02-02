@@ -7,9 +7,13 @@ import no.nav.organisasjonforvalter.consumer.TpsfAdresseConsumer.GyldigeAdresser
 import no.nav.organisasjonforvalter.jpa.entity.Adresse;
 import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.AdresseRequest;
 import no.nav.organisasjonforvalter.provider.rs.responses.RsAdresse;
+import no.nav.registre.testnorge.libs.dto.organisasjon.v1.AdresseDTO;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Component
 public class AdresseMappingStrategy implements MappingStrategy {
@@ -66,6 +70,27 @@ public class AdresseMappingStrategy implements MappingStrategy {
                         target.setPostadresse3(adresselinjer.length > 2 ? adresselinjer[2] : null);
                         target.setKommunenummer(source.getKommunenr());
                         target.setPostnummer(source.getPostnr());
+                    }
+                })
+                .byDefault()
+                .register();
+
+        factory.classMap(AdresseDTO.class, RsAdresse.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(AdresseDTO source, RsAdresse target, MappingContext context) {
+                        List<String> adresselinjer = new ArrayList<>();
+                        adresselinjer.add(source.getAdresselinje1());
+                        if (isNotBlank(source.getAdresselinje2())) {
+                            adresselinjer.add(source.getAdresselinje2());
+                        }
+                        if (isNotBlank(source.getAdresselinje3())) {
+                            adresselinjer.add(source.getAdresselinje3());
+                        }
+                        target.setAdresselinjer(adresselinjer);
+                        target.setKommunenr(source.getKommunenummer());
+                        target.setPostnr(source.getPostnummer());
+                        target.setPoststed(source.getPoststed());
                     }
                 })
                 .byDefault()
