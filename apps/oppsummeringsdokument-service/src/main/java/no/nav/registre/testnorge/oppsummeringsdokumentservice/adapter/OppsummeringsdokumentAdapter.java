@@ -174,10 +174,10 @@ public class OppsummeringsdokumentAdapter {
 
         if (list.size() > 1) {
             log.warn(
-                    "Fant flere med samme versjon for kalendermaaned: {}, orgnummer: {} og version: {}. Velger den først i listen.",
+                    "Fant flere med samme versjon for kalendermaaned: {}, orgnummer: {} og versioner: {}. Velger den først i listen.",
                     kalendermaaned,
                     orgnummer,
-                    list.get(0).getVersion()
+                    list.stream().map(Oppsummeringsdokument::getVersion).map(Object::toString).collect(Collectors.joining(","))
             );
         }
         return list.stream().findFirst().orElse(null);
