@@ -68,6 +68,10 @@ public class Oppsummeringsdokument {
         return id;
     }
 
+    public Long getVersion(){
+        return dto.getVersion();
+    }
+
 
     private Function<VirksomhetModel, VirksomhetDTO> mapVirksomhetDTO() {
         return value -> VirksomhetDTO

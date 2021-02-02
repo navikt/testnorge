@@ -92,6 +92,7 @@ public class OppsummeringsdokumentAdapter {
     ) {
         var pageable = PageRequest.of(page, 1);
         var queryBuilders = new ArrayList<QueryBuilder>();
+
         queryBuilders.add(QueryBuilders.matchQuery("miljo", miljo));
         getKalendermaanedBetween(fom, tom).ifPresent(queryBuilders::add);
         Optional.ofNullable(ident).ifPresent(value -> queryBuilders.add(
@@ -173,9 +174,10 @@ public class OppsummeringsdokumentAdapter {
 
         if (list.size() > 1) {
             log.warn(
-                    "Fant flere med samme versjon for kalendermaaned: {} og orgnummer: {}. Velger den først i listen.",
+                    "Fant flere med samme versjon for kalendermaaned: {}, orgnummer: {} og version: {}. Velger den først i listen.",
                     kalendermaaned,
-                    orgnummer
+                    orgnummer,
+                    list.get(0).getVersion()
             );
         }
         return list.stream().findFirst().orElse(null);
