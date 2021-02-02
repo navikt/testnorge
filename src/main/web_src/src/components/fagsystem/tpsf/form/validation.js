@@ -225,10 +225,8 @@ const innvandringUtvandringDatoTest = schema => {
 }
 
 const foedtFoerOgEtterTest = (validation, validerFoedtFoer) => {
-	const errorMsgFoedtFoer =
-		'Født Før dato kan ikke være før Født Etter dato og det må være minst en dag mellom datoene.'
-	const errorMsgFoedtEtter =
-		'Født Etter dato kan ikke være etter Født Før dato og det må være minst en dag mellom datoene.'
+	const errorMsgFoedtFoer = 'Født Før dato kan ikke være før Født Etter dato.'
+	const errorMsgFoedtEtter = 'Født Etter dato kan ikke være etter Født Før dato.'
 	return validation.test(
 		'range',
 		validerFoedtFoer ? errorMsgFoedtFoer : errorMsgFoedtEtter,
@@ -250,14 +248,14 @@ const foedtFoerOgEtterTest = (validation, validerFoedtFoer) => {
 			if (validerFoedtFoer) {
 				if (foedtEtterValue !== '' && foedtEtterValue !== undefined) {
 					const foedtEtterDato = new Date(foedtEtterValue)
-					foedtEtterDato.setDate(foedtEtterDato.getDate() + 1)
-					if (selectedDato <= new Date(foedtEtterDato.toDateString())) return false
+					foedtEtterDato.setDate(foedtEtterDato.getDate())
+					if (selectedDato < new Date(foedtEtterDato.toDateString())) return false
 				}
 			} else {
 				if (foedtFoerValue !== '' && foedtFoerValue !== undefined) {
 					const foedtFoerDato = new Date(foedtFoerValue)
-					foedtFoerDato.setDate(foedtFoerDato.getDate() - 1)
-					if (selectedDato >= new Date(foedtFoerDato.toDateString())) return false
+					foedtFoerDato.setDate(foedtFoerDato.getDate())
+					if (selectedDato > new Date(foedtFoerDato.toDateString())) return false
 				}
 			}
 			return true
