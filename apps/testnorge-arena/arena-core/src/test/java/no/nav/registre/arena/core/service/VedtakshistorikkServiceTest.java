@@ -152,12 +152,13 @@ public class VedtakshistorikkServiceTest {
         responseAsMap.put(fnr1, expectedResponsesFromArenaForvalter);
 
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(responseAsMap);
+        when(rettighetAapService.opprettetPersonOgInntektIPopp(anyString(), anyString(),any(NyttVedtakAap.class))).thenReturn(true);
 
         var response = vedtakshistorikkService.genererVedtakshistorikk(avspillergruppeId, miljoe, antallIdenter);
 
         verify(identerUtils).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe));
         verify(vedtakshistorikkSyntConsumer).syntetiserVedtakshistorikk(antallIdenter);
-        verify(rettighetAapService).opprettPersonOgInntektIPopp(anyString(), anyString(), any(NyttVedtakAap.class));
+        verify(rettighetAapService).opprettetPersonOgInntektIPopp(anyString(), anyString(), any(NyttVedtakAap.class));
         verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
 
         assertThat(response.get(fnr1)).hasSize(4);

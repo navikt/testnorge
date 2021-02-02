@@ -1,4 +1,4 @@
-package no.nav.registre.arena.core.pensjon.response;
+package no.nav.registre.arena.core.consumer.rs.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
