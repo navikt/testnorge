@@ -1,5 +1,6 @@
 package no.nav.registre.arena.core.consumer.rs.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,9 +18,17 @@ import java.util.List;
 public class PensjonTestdataPerson {
 
     private String bostedsland;
+
+    @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate dodsDato;
+
     private String fnr;
+
+    @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate fodselsDato;
+
     private List<String> miljoer;
+
+    @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate utvandringsDato;
 }
