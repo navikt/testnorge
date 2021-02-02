@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
 
 @Slf4j
 @RequiredArgsConstructor

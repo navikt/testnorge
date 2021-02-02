@@ -9,18 +9,18 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.ArbeidsforholdDTO;
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OppsummeringsdokumentetDTO;
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.PersonDTO;
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.VirksomhetDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PersonDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.provider.matcher.CustomMatcher;
 
-public class OpplysningspliktigDTOAssert extends AbstractAssert<OpplysningspliktigDTOAssert, OppsummeringsdokumentetDTO> {
-    public OpplysningspliktigDTOAssert(OppsummeringsdokumentetDTO opplysningspliktigDTO) {
+public class OpplysningspliktigDTOAssert extends AbstractAssert<OpplysningspliktigDTOAssert, OppsummeringsdokumentDTO> {
+    public OpplysningspliktigDTOAssert(OppsummeringsdokumentDTO opplysningspliktigDTO) {
         super(opplysningspliktigDTO, OpplysningspliktigDTOAssert.class);
     }
 
-    public static OpplysningspliktigDTOAssert assertThat(OppsummeringsdokumentetDTO actual) {
+    public static OpplysningspliktigDTOAssert assertThat(OppsummeringsdokumentDTO actual) {
         return new OpplysningspliktigDTOAssert(actual);
     }
 

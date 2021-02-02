@@ -1,0 +1,21 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    name: oppsummeringsdokument-frontend
+  main:
+    banner-mode: off
+
+zuul:
+  routes:
+    oppsummeringsdokument-service:
+      path: /api/**
+      url: http://oppsummeringsdokument-service.dolly.svc.cluster.local/api
+      sensitiveHeaders: Cookie,Set-Cookie
+
+consumers:
+  oppsummeringsdokument-service:
+    client-id: 411963e3-5693-4ae8-8a2b-4d42dbeed5ee
+    cluster: dev-gcp
+    namespace: dolly
+    name: oppsummeringsdokument-service

@@ -14,6 +14,9 @@ public interface OrganisasjonRepository extends CrudRepository<OrganisasjonModel
     @Transactional
     void deleteByOrgnummerAndEnvironment(String orgnummer, String environment);
 
+    @Transactional
+    void deleteByEnvironment(String environment);
+
     List<OrganisasjonModel> findAllByActiveAndEnvironment(Boolean active, String environment);
 
     List<OrganisasjonModel> findAllByEnvironment(String environment);

@@ -46,8 +46,12 @@ spec:
           cluster: dev-fss
         - application: endringsmelding-service
           cluster: dev-fss
-        - application: endringsmelding-service
+        - application: oppsummeringsdokument-service
           cluster: dev-gcp
+        - application: oppsummeringsdokument-frontend
+          cluster: dev-gcp
+        - application: aareg-synt-services-proxy
+          cluster: dev-fss
   gcp:
     sqlInstances:
       - type: POSTGRES_12

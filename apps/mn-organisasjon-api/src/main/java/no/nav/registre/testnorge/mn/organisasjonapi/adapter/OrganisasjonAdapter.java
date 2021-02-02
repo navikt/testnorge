@@ -54,6 +54,10 @@ public class OrganisasjonAdapter {
         repository.deleteByOrgnummerAndEnvironment(orgnummer, miljo);
     }
 
+    public void deleteBy(String miljo) {
+        repository.deleteByEnvironment(miljo);
+    }
+
     private Map<String, OrganisasjonModel> findAll(String miljo) {
         return repository.findAllByEnvironment(miljo).stream()
                 .collect(Collectors.toMap(

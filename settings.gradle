@@ -58,7 +58,6 @@ include(':testnorge-token-provider')
 include(':udi-local')
 include(':nav-endringsmeldinger-core')
 include(':synt-sykemelding-api')
-include(':synt-arbeidsforhold-api')
 include(':testnorge-dependency-analysis')
 include(':testnorge-csv-converter')
 include(':testnorge-tp')
@@ -104,7 +103,6 @@ include(':testnorge-common-command')
 include(':hendelse-api')
 include(':testnorge-inntekt')
 include(':inst-local')
-include(':arbeidsforhold-api')
 include(':tp-core')
 include(':testnorge-aareg')
 include(':ereg-mapper-local')
@@ -164,7 +162,6 @@ project(":testnorge-token-provider").projectDir = file('apps/testnorge-token-pro
 project(":udi-local").projectDir = file('apps/udi-stub/udi-local')
 project(":nav-endringsmeldinger-core").projectDir = file('apps/testnorge-nav-endringsmeldinger/nav-endringsmeldinger-core')
 project(":synt-sykemelding-api").projectDir = file('apps/synt-sykemelding-api')
-project(":synt-arbeidsforhold-api").projectDir = file('apps/synt-arbeidsforhold-api')
 project(":testnorge-dependency-analysis").projectDir = file('libs/testnorge-dependency-analysis')
 project(":testnorge-csv-converter").projectDir = file('libs/testnorge-csv-converter')
 project(":testnorge-tp").projectDir = file('apps/testnorge-tp')
@@ -208,7 +205,6 @@ project(":testnorge-common-command").projectDir = file('libs/testnorge-common-co
 project(":hendelse-api").projectDir = file('apps/hendelse-api')
 project(":testnorge-inntekt").projectDir = file('apps/testnorge-inntekt')
 project(":inst-local").projectDir = file('apps/testnorge-inst/inst-local')
-project(":arbeidsforhold-api").projectDir = file('apps/arbeidsforhold-api')
 project(":tp-core").projectDir = file('apps/testnorge-tp/tp-core')
 project(":testnorge-aareg").projectDir = file('apps/testnorge-aareg')
 project(":ereg-mapper-local").projectDir = file('apps/testnorge-ereg-mapper/ereg-mapper-local')
@@ -266,9 +262,6 @@ project(":organisasjon-bestilling-service").projectDir = file('apps/organisasjon
 include 'ereg-batch-status-service'
 project(":ereg-batch-status-service").projectDir = file('apps/ereg-batch-status-service')
 
-include 'arbeidsforhold-frontend'
-project(":arbeidsforhold-frontend").projectDir = file('apps/arbeidsforhold-frontend')
-
 include 'jenkins-batch-status-service'
 project(":jenkins-batch-status-service").projectDir = file('apps/jenkins-batch-status-service')
 
@@ -286,3 +279,12 @@ project(":analysis-auto-configuration").projectDir = file('libs/analysis-auto-co
 
 include 'analysis'
 project(":analysis").projectDir = file('libs/analysis')
+
+include 'aareg-synt-services-proxy'
+project(":aareg-synt-services-proxy").projectDir = file('apps/aareg-synt-services-proxy')
+
+include 'oppsummeringsdokument-service'
+project(":oppsummeringsdokument-service").projectDir = file('apps/oppsummeringsdokument-service')
+
+include 'oppsummeringsdokument-frontend'
+project(":oppsummeringsdokument-frontend").projectDir = file('apps/oppsummeringsdokument-frontend')

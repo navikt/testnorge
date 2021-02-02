@@ -7,29 +7,26 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OppsummeringsdokumentetDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 
 @Slf4j
-@DependencyOn("testnorge-arbeidsforhold-api")
 @RequiredArgsConstructor
-public class GetOppsummeringsdokumenterCommand implements Callable<List<OppsummeringsdokumentetDTO>> {
+public class GetOppsummeringsdokumenterCommand implements Callable<List<OppsummeringsdokumentDTO>> {
     private final WebClient webClient;
     private final String accessToken;
     private final String miljo;
 
     @SneakyThrows
     @Override
-    public List<OppsummeringsdokumentetDTO> call() {
+    public List<OppsummeringsdokumentDTO> call() {
         log.info("Henter alle oppsummeringsdokumenter i {}...", miljo);
         try {
-            OppsummeringsdokumentetDTO[] array = webClient
+            OppsummeringsdokumentDTO[] array = webClient
                     .get()
                     .uri(builder -> builder
                             .path("/api/v1/oppsummeringsdokumenter")
@@ -38,7 +35,7 @@ public class GetOppsummeringsdokumenterCommand implements Callable<List<Oppsumme
                     .header("miljo", this.miljo)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                     .retrieve()
-                    .bodyToMono(OppsummeringsdokumentetDTO[].class)
+                    .bodyToMono(OppsummeringsdokumentDTO[].class)
                     .block();
             var list = Arrays.stream(array).collect(Collectors.toList());
             log.info("Fant {} dokumenter i {}.", list.size(), miljo);

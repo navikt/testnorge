@@ -9,17 +9,16 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v2.OppsummeringsdokumentetDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 
 @Slf4j
-@DependencyOn("testnorge-arbeidsforhold-api")
 @RequiredArgsConstructor
 public class SaveOppsummeringsdokumenterCommand implements Callable<Void> {
     private final WebClient webClient;
     private final String accessToken;
-    private final OppsummeringsdokumentetDTO opplysningspliktigDTO;
+    private final OppsummeringsdokumentDTO opplysningspliktigDTO;
     private final String miljo;
+    private final String origin;
 
     @Override
     public Void call() {
@@ -33,7 +32,8 @@ public class SaveOppsummeringsdokumenterCommand implements Callable<Void> {
                 .uri(builder -> builder.path("/api/v1/oppsummeringsdokumenter").build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .header("miljo", miljo)
-                .body(BodyInserters.fromPublisher(Mono.just(opplysningspliktigDTO), OppsummeringsdokumentetDTO.class))
+                .header("origin", origin)
+                .body(BodyInserters.fromPublisher(Mono.just(opplysningspliktigDTO), OppsummeringsdokumentDTO.class))
                 .retrieve()
                 .bodyToMono(Void.class)
                 .block();

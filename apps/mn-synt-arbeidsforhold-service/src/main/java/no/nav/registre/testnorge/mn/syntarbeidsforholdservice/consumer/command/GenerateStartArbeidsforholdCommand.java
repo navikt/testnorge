@@ -6,6 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -24,19 +25,29 @@ public class GenerateStartArbeidsforholdCommand implements Callable<Arbeidsforho
     @Override
     public ArbeidsforholdResponse call() {
         log.info("Generer nytt arbeidsforhold.");
-        ArbeidsforholdResponse[] array = webClient
-                .post()
-                .uri("/api/v1/generate/amelding/arbeidsforhold/start")
-                .body(BodyInserters.fromPublisher(Mono.just(new LocalDate[]{startdate}), LocalDate[].class))
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .retrieve()
-                .bodyToMono(ArbeidsforholdResponse[].class)
-                .block();
 
-        if(array == null || array.length < 1){
-            throw new RuntimeException("Fikk ikke generert start arbeidsforhold for dato " + startdate.toString());
+        try {
+            ArbeidsforholdResponse[] array = webClient
+                    .post()
+                    .uri("/api/v1/generate/amelding/arbeidsforhold/start")
+                    .body(BodyInserters.fromPublisher(Mono.just(new LocalDate[]{startdate}), LocalDate[].class))
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .retrieve()
+                    .bodyToMono(ArbeidsforholdResponse[].class)
+                    .block();
+
+            if (array == null || array.length < 1) {
+                throw new RuntimeException("Fikk ikke generert start arbeidsforhold for dato " + startdate.toString());
+            }
+
+            return array[0];
+        } catch (WebClientResponseException e) {
+            log.error(
+                    "Feil ved henting av start arbeidsforhold på dato {}. Feilmelding: {}",
+                    startdate,
+                    e.getResponseBodyAsString()
+            );
+            throw e;
         }
-
-        return array[0];
     }
 }

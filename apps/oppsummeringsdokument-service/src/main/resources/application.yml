@@ -1,0 +1,21 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+elasticsearch:
+  client:
+    username: ${ELASTIC_USERNAME}
+    password: ${ELASTIC_PASSWORD}
+    host: ${ELASTIC_HOST}
+    port: ${ELASTIC_PORT}
+
+spring:
+  application:
+    name: oppsummeringsdokument-service
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
+    description: Tjeneste for å sende inn oppsummeringsdokument til aareg og søke i innstende oppsummeringsdokumenter.
+
+consumers.aareg-synt-services:
+  url: https://aareg-synt-services-proxy.dev-fss-pub.nais.io
+  client-id: 7cc4b9d8-708e-47bb-8ea4-dc9687c76bc3
+  cluster: dev-fss
+  namespace: dolly
+  name: aareg-synt-services-proxy
