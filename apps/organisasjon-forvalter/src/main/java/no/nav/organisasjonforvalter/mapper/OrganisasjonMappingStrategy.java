@@ -3,8 +3,6 @@ package no.nav.organisasjonforvalter.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.organisasjonforvalter.consumer.OrganisasjonApiConsumer.AdresseDto;
-import no.nav.organisasjonforvalter.consumer.OrganisasjonApiConsumer.OrganisasjonDto;
 import no.nav.organisasjonforvalter.jpa.entity.Organisasjon;
 import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.OrganisasjonRequest;
 import no.nav.organisasjonforvalter.provider.rs.responses.RsAdresse;
@@ -17,6 +15,8 @@ import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Internettadresse;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Naeringskode;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Stiftelsesdato;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Telefon;
+import no.nav.registre.testnorge.libs.dto.organisasjon.v1.AdresseDTO;
+import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -97,10 +97,10 @@ public class OrganisasjonMappingStrategy implements MappingStrategy {
                 .byDefault()
                 .register();
 
-        factory.classMap(OrganisasjonDto.class, RsOrganisasjon.class)
+        factory.classMap(OrganisasjonDTO.class, RsOrganisasjon.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(OrganisasjonDto source, RsOrganisasjon target, MappingContext context) {
+                    public void mapAtoB(OrganisasjonDTO source, RsOrganisasjon target, MappingContext context) {
                         target.setOrganisasjonsnummer(source.getOrgnummer());
                         target.setEnhetstype(source.getEnhetType());
                         target.setOrganisasjonsnavn(source.getNavn());
@@ -112,7 +112,7 @@ public class OrganisasjonMappingStrategy implements MappingStrategy {
                         }
                     }
 
-                    private RsAdresse mapAdresse(AdresseDto adresseDto, AdresseType type) {
+                    private RsAdresse mapAdresse(AdresseDTO adresseDto, AdresseType type) {
                         RsAdresse adresse = mapperFacade.map(adresseDto, RsAdresse.class);
                         adresse.setAdressetype(type);
                         return adresse;

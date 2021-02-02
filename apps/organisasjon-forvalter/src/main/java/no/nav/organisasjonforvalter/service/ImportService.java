@@ -8,11 +8,10 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.organisasjonforvalter.consumer.MiljoerServiceConsumer;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonApiConsumer;
-import no.nav.organisasjonforvalter.consumer.OrganisasjonApiConsumer.OrganisasjonDto;
 import no.nav.organisasjonforvalter.provider.rs.responses.RsOrganisasjon;
+import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,7 +42,7 @@ public class ImportService {
 
     private RsOrganisasjon acquireOrganisasjon(String orgnummer, String environment) {
 
-        OrganisasjonDto organisasjonDto = organisasjonApiConsumer.getStatus(orgnummer, environment);
+        OrganisasjonDTO organisasjonDto = organisasjonApiConsumer.getStatus(orgnummer, environment);
         if (isBlank(organisasjonDto.getOrgnummer())) {
             return null;
         }

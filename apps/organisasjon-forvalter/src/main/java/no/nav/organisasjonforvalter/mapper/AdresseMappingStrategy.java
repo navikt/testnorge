@@ -3,11 +3,11 @@ package no.nav.organisasjonforvalter.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.organisasjonforvalter.consumer.OrganisasjonApiConsumer.AdresseDto;
 import no.nav.organisasjonforvalter.consumer.TpsfAdresseConsumer.GyldigeAdresserResponse.AdresseData;
 import no.nav.organisasjonforvalter.jpa.entity.Adresse;
 import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.AdresseRequest;
 import no.nav.organisasjonforvalter.provider.rs.responses.RsAdresse;
+import no.nav.registre.testnorge.libs.dto.organisasjon.v1.AdresseDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -75,10 +75,10 @@ public class AdresseMappingStrategy implements MappingStrategy {
                 .byDefault()
                 .register();
 
-        factory.classMap(AdresseDto.class, RsAdresse.class)
+        factory.classMap(AdresseDTO.class, RsAdresse.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(AdresseDto source, RsAdresse target, MappingContext context) {
+                    public void mapAtoB(AdresseDTO source, RsAdresse target, MappingContext context) {
                         List<String> adresselinjer = new ArrayList<>();
                         adresselinjer.add(source.getAdresselinje1());
                         if (isNotBlank(source.getAdresselinje2())) {
