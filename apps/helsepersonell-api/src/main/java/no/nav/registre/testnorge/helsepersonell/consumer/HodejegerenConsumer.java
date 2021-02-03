@@ -1,6 +1,10 @@
 package no.nav.registre.testnorge.helsepersonell.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.helsepersonell.consumer.command.GetAlleIdenterCommand;
+import no.nav.registre.testnorge.helsepersonell.consumer.command.GetPersondataCommand;
+import no.nav.registre.testnorge.helsepersonell.domain.Persondata;
+import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -10,16 +14,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.helsepersonell.consumer.command.GetAlleIdenterCommand;
-import no.nav.registre.testnorge.helsepersonell.consumer.command.GetPersondataCommand;
-import no.nav.registre.testnorge.helsepersonell.domain.Persondata;
-
 @Slf4j
 @Component
 @DependencyOn("testnorge-hodejegeren")
 public class HodejegerenConsumer {
-    private static final String MILJOE = "q1";
+    private static final String MILJOE = "q2";
     private final Executor executor;
     private final Long helsepersonellAvspillingsgruppeId;
     private final WebClient webClient;
