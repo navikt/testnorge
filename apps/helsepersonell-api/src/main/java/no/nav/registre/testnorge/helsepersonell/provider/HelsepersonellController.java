@@ -1,5 +1,7 @@
 package no.nav.registre.testnorge.helsepersonell.provider;
 
+import no.nav.registre.testnorge.helsepersonell.adapter.HelsepersonellAdapter;
+import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
@@ -8,9 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.concurrent.TimeUnit;
-
-import no.nav.registre.testnorge.helsepersonell.adapter.HelsepersonellAdapter;
-import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
 
 
 @RestController
