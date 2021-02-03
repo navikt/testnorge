@@ -269,7 +269,7 @@ include 'local-development'
 project(":local-development").projectDir = file('libs/local-development')
 
 include 'batch-adeo-proxy'
-project(":batch-adeo-proxy").projectDir = file('apps/batch-adeo-proxy')
+project(":batch-adeo-proxy").projectDir = file('proxies/batch-adeo-proxy')
 
 include 'applikasjonsanalyse-service'
 project(":applikasjonsanalyse-service").projectDir = file('apps/applikasjonsanalyse-service')
@@ -281,10 +281,14 @@ include 'analysis'
 project(":analysis").projectDir = file('libs/analysis')
 
 include 'aareg-synt-services-proxy'
-project(":aareg-synt-services-proxy").projectDir = file('apps/aareg-synt-services-proxy')
+project(":aareg-synt-services-proxy").projectDir = file('proxies/aareg-synt-services-proxy')
 
 include 'oppsummeringsdokument-service'
 project(":oppsummeringsdokument-service").projectDir = file('apps/oppsummeringsdokument-service')
 
 include 'oppsummeringsdokument-frontend'
 project(":oppsummeringsdokument-frontend").projectDir = file('apps/oppsummeringsdokument-frontend')
+
+include 'tps-forvalteren-proxy'
+project(":tps-forvalteren-proxy").projectDir = file('proxies/tps-forvalteren-proxy')
+

@@ -21,7 +21,7 @@ public class ProdConfig {
     private final ElasticSearchCredentials elasticSearchCredentials;
 
     @Bean
-    public RestHighLevelClient client() throws IOException {
+    public RestHighLevelClient client() {
         ClientConfiguration clientConfiguration
                 = ClientConfiguration.builder()
                 .connectedTo(elasticSearchCredentials.getHost() + ":" + elasticSearchCredentials.getPort())
@@ -29,9 +29,7 @@ public class ProdConfig {
                 .withBasicAuth(elasticSearchCredentials.getUsername(), elasticSearchCredentials.getPassword())
                 .build();
 
-        try (var client = RestClients.create(clientConfiguration).rest()){
-            return client;
-        }
+        return RestClients.create(clientConfiguration).rest();
     }
 
 }

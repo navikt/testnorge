@@ -8,8 +8,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.RestClients;
 
-import java.io.IOException;
-
 import no.nav.registre.testnorge.libs.localdevelopment.LocalDevelopmentConfig;
 
 @Configuration
@@ -18,14 +16,12 @@ import no.nav.registre.testnorge.libs.localdevelopment.LocalDevelopmentConfig;
 public class DevConfig {
 
     @Bean
-    public RestHighLevelClient client() throws IOException {
+    public RestHighLevelClient client() {
         ClientConfiguration clientConfiguration
                 = ClientConfiguration.builder()
                 .connectedTo("localhost:9200")
                 .build();
 
-        try (var client = RestClients.create(clientConfiguration).rest()){
-            return client;
-        }
+        return RestClients.create(clientConfiguration).rest();
     }
 }

@@ -1,0 +1,17 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    name: tps-forvateren-proxy
+    desciption: Proxy for tps-forvateren-proxy som legger på sikkerhet.
+
+zuul:
+  ignoredPatterns: /internal/isReady, /internal/isAlive
+  set-content-length: true
+  routes:
+    batch-adeo:
+      path: /**
+      url: https://tps-forvalteren.dev.adeo.no/
+
+  host:
+    socket-timeout-millis: 30000

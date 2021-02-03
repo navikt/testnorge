@@ -35,7 +35,8 @@ public class ArbeidsforholdDTO {
     LocalDate sisteLoennsendringsdato;
     @JsonProperty
     List<PermisjonDTO> permisjoner;
-
+    @JsonProperty
+    FartoeyDTO fartoey;
 
     public List<PermisjonDTO> getPermisjoner() {
         if (permisjoner == null) {

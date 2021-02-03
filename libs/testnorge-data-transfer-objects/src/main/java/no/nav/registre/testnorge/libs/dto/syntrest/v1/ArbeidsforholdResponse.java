@@ -40,4 +40,5 @@ public class ArbeidsforholdResponse {
     @JsonAlias("PERMISJONER")
     List<PermisjonDTO> permisjoner;
     String historikk;
+    FartoeyDTO fartoey;
 }
