@@ -37,7 +37,7 @@ public class HelsepersonellController {
         var helsepersonell = adapter.getHelsepersonell();
         return ResponseEntity
                 .ok()
-//                .cacheControl(cacheControl)
+                .cacheControl(cacheControl)
                 .body(helsepersonell.toDTO());
     }
 }
