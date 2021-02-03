@@ -92,6 +92,18 @@ public class OrganisasjonClient {
     @Async
     public void gjenopprett(DeployRequest request, Long bestillingId) {
 
+        organisasjonProgressService.save(OrganisasjonBestillingProgress.builder()
+                .bestillingId(bestillingId)
+                .organisasjonsnummer(request.getOrgnumre().iterator().next())
+                .uuid("NA")
+                .organisasjonsforvalterStatus("Deployer")
+                .build());
+
+        organisasjonNummerService.save(OrganisasjonNummer.builder()
+                .bestillingId(bestillingId)
+                .organisasjonsnr(request.getOrgnumre().iterator().next())
+                .build());
+
         deployOrganisasjon(request.getOrgnumre(), bestillingId, request.getEnvironments());
     }
 
@@ -121,6 +133,12 @@ public class OrganisasjonClient {
                     organisasjonBestillingProgress = organisasjonBestillingProgresses.get(0);
                 }
 
+                if (deployResponse.getBody().getOrgStatus().get(organisasjonBestillingProgress.getOrganisasjonsnummer()).get(0).getStatus().name().contains("ERROR")) {
+                    organisasjonBestillingService.setBestillingFeil(
+                            bestillingId,
+                            deployResponse.getBody().getOrgStatus().get(organisasjonBestillingProgress.getOrganisasjonsnummer()).get(0).getDetails());
+                }
+
                 organisasjonBestillingProgress.setBestillingId(bestillingId);
                 organisasjonBestillingProgress.setOrganisasjonsnummer(orgStatus.getKey());
                 organisasjonBestillingProgress.setOrganisasjonsforvalterStatus(mapStatusFraDeploy(orgStatus));
@@ -132,6 +150,7 @@ public class OrganisasjonClient {
             organisasjonBestillingService.setBestillingFeil(bestillingId, FEIL_STATUS_ORGFORVALTER_DEPLOY);
             log.error(FEIL_STATUS_ORGFORVALTER_DEPLOY);
         }
+        organisasjonBestillingService.setBestillingFerdig(bestillingId);
     }
 
 

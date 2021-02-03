@@ -72,4 +72,10 @@ public class OrganisasjonProgressService {
     public void deleteByBestillingId(Long bestillingId) {
         organisasjonProgressRepository.deleteByBestillingId(bestillingId);
     }
+
+    @Transactional
+    @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
+    public void deleteByOrgnummer(Long orgnummer) {
+        organisasjonProgressRepository.deleteByOrganisasjonsnummer(orgnummer);
+    }
 }

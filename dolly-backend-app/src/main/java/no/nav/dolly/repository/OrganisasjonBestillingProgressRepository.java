@@ -23,4 +23,8 @@ public interface OrganisasjonBestillingProgressRepository extends Repository<Org
     @Transactional
     @Modifying
     int deleteByBestillingId(Long bestillingId);
+
+    @Transactional
+    @Modifying
+    int deleteByOrganisasjonsnummer(Long bestillingId);
 }
