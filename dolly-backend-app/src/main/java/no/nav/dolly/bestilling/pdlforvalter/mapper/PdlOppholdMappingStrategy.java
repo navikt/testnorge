@@ -1,13 +1,5 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import org.springframework.stereotype.Component;
-
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
@@ -20,6 +12,14 @@ import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdstillatelse
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdstillatelseType;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiVarighetOpphold;
 import no.nav.dolly.mapper.MappingStrategy;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 
 @Component
 public class PdlOppholdMappingStrategy implements MappingStrategy {
@@ -31,6 +31,7 @@ public class PdlOppholdMappingStrategy implements MappingStrategy {
                     public void mapAtoB(RsUdiPerson person, PdlOpphold opphold, MappingContext context) {
 
                         if (nonNull(person.getOppholdStatus())) {
+                            opphold.setType(OppholdType.OPPLYSNING_MANGLER);
 
                             if (nonNull(person.getOppholdStatus().getEosEllerEFTABeslutningOmOppholdsrett())) {
                                 copyBeslutningOmOppholdsrett(person.getOppholdStatus(), opphold);
