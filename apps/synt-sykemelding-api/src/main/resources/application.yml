@@ -12,7 +12,7 @@ consumers:
     client_id: af686685-d25a-462a-a0ea-e2a348c457d3
     url: https://testnorge-helsepersonell-api-tmp.dev.adeo.no
   synt-sykemelding:
-    url: http://synthdata-elsam.nais.preprod.local
+    url: https://nais-synthdata-elsam.dev.adeo.no
   sykemelding:
     url: https://testnorge-sykemelding-api.dev.adeo.no
   organisasjonapi:
