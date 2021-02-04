@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -25,7 +26,7 @@ import java.util.List;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class NyttVedtak {
+public class NyttVedtak implements Serializable {
 
     @JsonAlias({ "AVBRUDDSKODE", "AVBRUDD_KODE", "avbruddKode" })
     private String avbruddKode;
