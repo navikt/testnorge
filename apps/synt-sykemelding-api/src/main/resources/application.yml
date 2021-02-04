@@ -10,7 +10,7 @@ consumers:
     url: https://testnorge-hodejegeren.dev.adeo.no
   helsepersonell:
     client_id: af686685-d25a-462a-a0ea-e2a348c457d3
-    url: https://testnorge-helsepersonell-api-tmp.dev.adeo.no
+    url: https://testnorge-helsepersonell-api.dev.adeo.no
   synt-sykemelding:
     url: https://nais-synthdata-elsam.dev.adeo.no
   sykemelding:
