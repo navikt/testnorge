@@ -1,0 +1,33 @@
+sts:
+  token:
+    provider:
+      url: ${STS_TOKEN_PROVIDER_URL}
+      username: ${STS_TOKEN_PROVIDER_USERNAME}
+      password: ${STS_TOKEN_PROVIDER_PASSWORD}
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+  datasource:
+    url: jdbc:postgresql://b27dbvl022.preprod.local:5432/testnorge-arbeidsforhold?useUnicode=yes&characterEncoding=UTF-8
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 0
+  flyway:
+    locations: classpath:db/migration
+    enabled: true
+  jpa:
+    database: POSTGRESQL
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  main:
+    banner-mode: off
+
+testnorge:
+  analyse:
+    enabled: true
