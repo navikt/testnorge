@@ -132,12 +132,13 @@ public class IdenterUtils {
 
             for (var ident : identerMedAktoerId.keySet()) {
                 var relasjonsResponse = getRelasjonerTilIdent(ident, miljoe);
-
-                for (var relasjon : relasjonsResponse.getRelasjoner()) {
-                    if (erRelasjonEtBarnUnder18VedTidspunkt(relasjon, tidligsteDato)) {
-                        utvalgteIdenter.add(ident);
-                        if (utvalgteIdenter.size() >= antallNyeIdenter) {
-                            return utvalgteIdenter;
+                if (relasjonsResponse != null) {
+                    for (var relasjon : relasjonsResponse.getRelasjoner()) {
+                        if (erRelasjonEtBarnUnder18VedTidspunkt(relasjon, tidligsteDato)) {
+                            utvalgteIdenter.add(ident);
+                            if (utvalgteIdenter.size() >= antallNyeIdenter) {
+                                return utvalgteIdenter;
+                            }
                         }
                     }
                 }
