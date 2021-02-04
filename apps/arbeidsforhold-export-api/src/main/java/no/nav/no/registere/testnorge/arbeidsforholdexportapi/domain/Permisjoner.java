@@ -11,9 +11,9 @@ public class Permisjoner {
         this.list = list != null ? list : Collections.emptyList();
     }
 
-    static Permisjoner from(List<no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.Permisjon> list, String kalendermaaned, String ident) {
+    static Permisjoner from(List<no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.Permisjon> list, String kalendermaaned, String ident, String kildereferanse) {
         return new Permisjoner(list != null
-                ? list.stream().map(value -> new Permisjon(value, kalendermaaned, ident)).collect(Collectors.toList())
+                ? list.stream().map(value -> new Permisjon(value, kalendermaaned, ident, kildereferanse)).collect(Collectors.toList())
                 : null
         );
     }

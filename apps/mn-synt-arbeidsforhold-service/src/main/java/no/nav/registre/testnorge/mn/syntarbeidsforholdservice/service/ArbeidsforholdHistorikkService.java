@@ -116,7 +116,7 @@ public class ArbeidsforholdHistorikkService {
         return list;
     }
 
-    public void reportAll(LocalDate fom, LocalDate tom, int maxIdenter, String miljo) {
+    public List<String> reportAll(LocalDate fom, LocalDate tom, int maxIdenter, String miljo) {
 
         var startTimeStamp = LocalDateTime.now();
 
@@ -125,7 +125,7 @@ public class ArbeidsforholdHistorikkService {
         var identer = identService.getIdenterUtenArbeidsforhold(miljo, maxIdenter);
         if (identer.isEmpty()) {
             log.warn("Fant ingen identer. Avslutter syntetisering...");
-            return;
+            return Collections.emptyList();
         }
 
         log.info("Syntentiser for {} person(er) mellom {} - {}...", identer.size(), fom, tom);
@@ -133,7 +133,7 @@ public class ArbeidsforholdHistorikkService {
 
         if (arbeidsforholdMapList.isEmpty()) {
             log.warn("Fikk ikke opprettet syntetisk arbeidsforhold. Avslutter syntetisering...");
-            return;
+            return Collections.emptyList();
         }
 
         for (var kalenermnd : dates) {
@@ -145,6 +145,7 @@ public class ArbeidsforholdHistorikkService {
                 startTimeStamp,
                 LocalDateTime.now()
         );
+        return arbeidsforholdMapList.stream().map(ArbeidsforholdMap::getIdent).collect(Collectors.toList());
     }
 
     private void report(List<ArbeidsforholdMap> arbeidsforholdMapList, LocalDate kalenermnd, String miljo) {

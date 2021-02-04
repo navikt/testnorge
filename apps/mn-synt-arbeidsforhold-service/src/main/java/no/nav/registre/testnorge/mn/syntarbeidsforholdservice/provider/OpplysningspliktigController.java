@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.service.ArbeidsforholdHistorikkService;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.service.ArbeidsforholdService;
@@ -33,13 +34,18 @@ public class OpplysningspliktigController {
     }
 
     @PostMapping("/historikk")
-    public ResponseEntity<?> generateHistorikk(
+    public ResponseEntity<List<String>> generateHistorikk(
             @RequestHeader("miljo") String miljo,
             @RequestParam("maxIdenter") Integer maxIdenter,
             @RequestParam("fom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fom,
             @RequestParam("tom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate tom
     ) {
-        arbeidsforholdHistorikkService.reportAll(fom, tom, maxIdenter, miljo);
-        return ResponseEntity.noContent().build();
+        var identer = arbeidsforholdHistorikkService.reportAll(fom, tom, maxIdenter, miljo);
+
+        if(identer.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(identer);
     }
 }

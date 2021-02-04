@@ -29,6 +29,7 @@ public class Arbeidsforhold {
     private final String skipstype;
     private final String fartsomraade;
     private final Permisjoner permisjoner;
+    private final String kildereferanse;
 
     public Arbeidsforhold(
             Leveranse leveranse,
@@ -40,7 +41,7 @@ public class Arbeidsforhold {
         this.kalendermaaned = leveranse.getKalendermaaned().toString();
         this.opplysningspliktigOrgnummer = leveranse.getOpplysningspliktig().getNorskIdentifikator();
         this.ident = inntektsmottaker.getNorskIdentifikator();
-        this.permisjoner = Permisjoner.from(arbeidsforhold.getPermisjon(), getKalendermaaned(), getIdent());
+        this.permisjoner = Permisjoner.from(arbeidsforhold.getPermisjon(), getKalendermaaned(), getIdent(), getKildereferanse());
         this.arbeidsforholdId = arbeidsforhold.getArbeidsforholdId();
         this.arbeidsforholdType = arbeidsforhold.getTypeArbeidsforhold();
         this.yrke = arbeidsforhold.getYrke();
@@ -57,6 +58,7 @@ public class Arbeidsforhold {
         this.skipsregister = arbeidsforhold.getFartoey() != null ? arbeidsforhold.getFartoey().getSkipsregister() : null;
         this.skipstype = arbeidsforhold.getFartoey() != null ? arbeidsforhold.getFartoey().getSkipstype() : null;
         this.fartsomraade = arbeidsforhold.getFartoey() != null ? arbeidsforhold.getFartoey().getFartsomraade() : null;
+        this.kildereferanse = inntektsmottaker.getKilde().getKildereferanse();
     }
 
     public String getArbeidsforholdId() {
@@ -129,6 +131,9 @@ public class Arbeidsforhold {
 
     public String getIdent() {
         return ident;
+    }
+    public String getKildereferanse() {
+        return kildereferanse;
     }
 
     public int getAntallVelferdspermisjon() {
