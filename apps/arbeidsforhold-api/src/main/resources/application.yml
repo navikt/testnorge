@@ -9,12 +9,6 @@ spring:
 aareg:
   url: https://modapp-{miljo}.adeo.no/aareg-services/api
 
-kafka:
-  bootstrapservers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
-  schemaregistryservers: http://kafka-schema-registry.tpa.svc.nais.local:8081
-  groupid: testnorge-arbeidsforhold-api-v1
-  topic: testnorge-opprett-hendelse-v1
-
 consumers:
   organisasjonapi:
     url: https://testnorge-organisasjon-api.dev.adeo.no

@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.arbeidsforhold.domain.Arbeidsforhold;
 import no.nav.registre.testnorge.arbeidsforhold.service.ArbeidsforholdService;
-import no.nav.registre.testnorge.libs.dto.arbeidsforhold.v1.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
 
 @RestController
 @RequestMapping("/api/v1/arbeidsforhold")
