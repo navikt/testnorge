@@ -18,7 +18,7 @@ import java.util.concurrent.Executors;
 @Component
 @DependencyOn("testnorge-hodejegeren")
 public class HodejegerenConsumer {
-    private static final String MILJOE = "q2";
+    private static final String MILJOE = "q1";
     private final Executor executor;
     private final Long helsepersonellAvspillingsgruppeId;
     private final WebClient webClient;
