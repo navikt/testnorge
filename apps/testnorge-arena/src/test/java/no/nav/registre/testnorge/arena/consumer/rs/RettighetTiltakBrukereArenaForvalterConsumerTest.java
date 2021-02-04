@@ -1,15 +1,15 @@
 package no.nav.registre.testnorge.arena.consumer.rs;
 
+import static no.nav.registre.testnorge.arena.testutils.ResourceUtils.getResourceFileContent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetRequest;
-import no.nav.registre.testnorge.arena.testutils.ResourceUtils;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,14 +68,14 @@ public class RettighetTiltakBrukereArenaForvalterConsumerTest {
             @Override
             public MockResponse dispatch(RecordedRequest request) {
                 switch (request.getPath()) {
-                    case "/v1/tiltaksdeltakelse":
-                        return new MockResponse().setResponseCode(200)
-                                .addHeader("Content-Type", "application/json; charset=utf-8")
-                                .setBody(ResourceUtils.getResourceFileContent("files/tiltak/tiltaksdeltakelse_forvalter_response.json"));
-                    case "/v1/tiltakspenger":
-                        return new MockResponse().setResponseCode(200)
-                                .addHeader("Content-Type", "application/json; charset=utf-8")
-                                .setBody(ResourceUtils.getResourceFileContent("files/tiltak/tiltakspenger_forvalter_response.json"));
+                case "/v1/tiltaksdeltakelse":
+                    return new MockResponse().setResponseCode(200)
+                            .addHeader("Content-Type", "application/json; charset=utf-8")
+                            .setBody(getResourceFileContent("files/tiltak/tiltaksdeltakelse_forvalter_response.json"));
+                case "/v1/tiltakspenger":
+                    return new MockResponse().setResponseCode(200)
+                            .addHeader("Content-Type", "application/json; charset=utf-8")
+                            .setBody(getResourceFileContent("files/tiltak/tiltakspenger_forvalter_response.json"));
                 }
                 return new MockResponse().setResponseCode(404);
             }

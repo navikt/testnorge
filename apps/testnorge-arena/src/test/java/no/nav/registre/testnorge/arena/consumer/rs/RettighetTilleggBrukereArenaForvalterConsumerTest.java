@@ -1,13 +1,14 @@
 package no.nav.registre.testnorge.arena.consumer.rs;
 
+import static no.nav.registre.testnorge.arena.testutils.ResourceUtils.getResourceFileContent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTilleggRequest;
-import no.nav.registre.testnorge.arena.testutils.ResourceUtils;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +56,7 @@ public class RettighetTilleggBrukereArenaForvalterConsumerTest {
     private void stubArenaForvalterOpprettRettighetTilleggLaeremidler() {
         MockResponse mockResponse = new MockResponse()
                 .addHeader("Content-Type", "application/json; charset=utf-8")
-                .setBody(ResourceUtils.getResourceFileContent("files/tillegg/tillegg_forvalter_response.json"))
+                .setBody(getResourceFileContent("files/tillegg/tillegg_forvalter_response.json"))
                 .setResponseCode(200);
 
         mockWebServer.enqueue(mockResponse);

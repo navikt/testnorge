@@ -8,11 +8,16 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.registre.testnorge.arena.consumer.rs.util.Headers;
 import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 import java.util.concurrent.Callable;
+
+import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.AUTHORIZATION;
+import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.CALL_ID;
+import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.CONSUMER_ID;
+import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.NAV_CALL_ID;
+import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.NAV_CONSUMER_ID;
 
 @Slf4j
 public class PostPensjonTestdataInntektCommand implements Callable<PensjonTestdataResponse> {
@@ -34,10 +39,10 @@ public class PostPensjonTestdataInntektCommand implements Callable<PensjonTestda
                     .uri(builder ->
                             builder.path("/v1/inntekt").build()
                     )
-                    .header(Headers.CALL_ID, Headers.NAV_CALL_ID)
-                    .header(Headers.CONSUMER_ID, Headers.NAV_CONSUMER_ID)
+                    .header(CALL_ID, NAV_CALL_ID)
+                    .header(CONSUMER_ID, NAV_CONSUMER_ID)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .header(Headers.AUTHORIZATION, idToken)
+                    .header(AUTHORIZATION, idToken)
                     .body(BodyInserters.fromPublisher(Mono.just(inntekt), PensjonTestdataInntekt.class))
                     .retrieve()
                     .bodyToMono(PensjonTestdataResponse.class)

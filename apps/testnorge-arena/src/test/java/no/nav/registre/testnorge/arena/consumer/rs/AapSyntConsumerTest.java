@@ -5,12 +5,12 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetSyntRequest;
-import no.nav.registre.testnorge.arena.testutils.ResourceUtils;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.GensakKoder;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.GensakOvKoder;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +26,7 @@ import java.util.List;
 
 import static no.nav.registre.testnorge.arena.consumer.rs.util.ConsumerUtils.UTFALL_JA;
 import static no.nav.registre.testnorge.arena.consumer.rs.util.ConsumerUtils.VEDTAK_TYPE_KODE_O;
+import static no.nav.registre.testnorge.arena.testutils.ResourceUtils.getResourceFileContent;
 
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("test")
@@ -181,42 +182,38 @@ public class AapSyntConsumerTest {
     private void stubSyntetiserAapRettighet() {
         MockResponse mockResponse = new MockResponse()
                 .addHeader("Content-Type", "application/json; charset=utf-8")
-                .setBody(ResourceUtils.getResourceFileContent("files/aap/aap_synt_response.json"))
+                .setBody(getResourceFileContent("files/aap/aap_synt_response.json"))
                 .setResponseCode(200);
 
         mockWebServer.enqueue(mockResponse);
     }
-
 
     private void stubSyntetiserUngUfoerRettighet() {
         MockResponse mockResponse = new MockResponse()
                 .addHeader("Content-Type", "application/json; charset=utf-8")
-                .setBody(ResourceUtils.getResourceFileContent("files/aap/ung_ufoer_synt_response.json"))
+                .setBody(getResourceFileContent("files/aap/ung_ufoer_synt_response.json"))
                 .setResponseCode(200);
 
         mockWebServer.enqueue(mockResponse);
     }
-
 
     private void stubSyntetiserTvungenForvaltningRettighet() {
         MockResponse mockResponse = new MockResponse()
                 .addHeader("Content-Type", "application/json; charset=utf-8")
-                .setBody(ResourceUtils.getResourceFileContent("files/aap/tvungen_forvaltning_synt_response.json"))
+                .setBody(getResourceFileContent("files/aap/tvungen_forvaltning_synt_response.json"))
                 .setResponseCode(200);
 
         mockWebServer.enqueue(mockResponse);
     }
-
 
     private void stubSyntetiserFritakMeldekortRettighet() {
         MockResponse mockResponse = new MockResponse()
                 .addHeader("Content-Type", "application/json; charset=utf-8")
-                .setBody(ResourceUtils.getResourceFileContent("files/aap/fritak_meldekort_synt_response.json"))
+                .setBody(getResourceFileContent("files/aap/fritak_meldekort_synt_response.json"))
                 .setResponseCode(200);
 
         mockWebServer.enqueue(mockResponse);
     }
-
 
     @After
     public void tearDown() throws IOException {

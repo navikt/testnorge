@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.BrukereArenaForvalterConsumer;
 import no.nav.registre.testnorge.arena.consumer.rs.AktoerRegisteretConsumer;
-import no.nav.registre.testnorge.arena.consumer.rs.util.ConsumerUtils;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +26,8 @@ import no.nav.registre.testnorge.consumers.hodejegeren.response.Relasjon;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.RelasjonsResponse;
 import no.nav.registre.testnorge.libs.core.util.IdentUtil;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
+
+import static no.nav.registre.testnorge.arena.consumer.rs.util.ConsumerUtils.EIER;
 
 
 @Slf4j
@@ -168,7 +169,7 @@ public class IdenterUtils {
             Set<String> identerAsSet,
             String miljoe
     ) {
-        var eksisterendeBrukere = new HashSet<>(hentEksisterendeArbeidsoekerIdenter(ConsumerUtils.EIER, miljoe));
+        var eksisterendeBrukere = new HashSet<>(hentEksisterendeArbeidsoekerIdenter(EIER, miljoe));
         identerAsSet.removeAll(eksisterendeBrukere);
         var identer = new ArrayList<>(identerAsSet);
         Collections.shuffle(identer);

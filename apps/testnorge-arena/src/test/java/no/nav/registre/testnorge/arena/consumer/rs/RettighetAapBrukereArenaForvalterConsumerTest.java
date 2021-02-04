@@ -1,14 +1,15 @@
 package no.nav.registre.testnorge.arena.consumer.rs;
 
+import static no.nav.registre.testnorge.arena.testutils.ResourceUtils.getResourceFileContent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetRequest;
-import no.nav.registre.testnorge.arena.testutils.ResourceUtils;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +27,6 @@ import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetFritakMeldek
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetUngUfoerRequest;
 
-
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("test")
 public class RettighetAapBrukereArenaForvalterConsumerTest {
@@ -37,7 +37,6 @@ public class RettighetAapBrukereArenaForvalterConsumerTest {
 
     private List<RettighetRequest> rettigheter;
     private String fnr = "270699494213";
-
 
     @Before
     public void setUp() throws IOException {
@@ -84,33 +83,32 @@ public class RettighetAapBrukereArenaForvalterConsumerTest {
             @Override
             public MockResponse dispatch(RecordedRequest request) {
                 switch (request.getPath()) {
-                    case "/v1/aap":
-                        return new MockResponse().setResponseCode(200)
-                                .addHeader("Content-Type", "application/json; charset=utf-8")
-                                .setBody(ResourceUtils.getResourceFileContent("files/aap/aap_forvalter_response.json"));
-                    case "/v1/aap115":
-                        return new MockResponse().setResponseCode(200)
-                                .addHeader("Content-Type", "application/json; charset=utf-8")
-                                .setBody(ResourceUtils.getResourceFileContent("files/aap/aap115_forvalter_response.json"));
-                    case "/v1/aapungufor":
-                        return new MockResponse().setResponseCode(200)
-                                .addHeader("Content-Type", "application/json; charset=utf-8")
-                                .setBody(ResourceUtils.getResourceFileContent("files/aap/ung_ufoer_forvalter_response.json"));
-                    case "/v1/aaptvungenforvaltning":
-                        return new MockResponse().setResponseCode(200)
-                                .addHeader("Content-Type", "application/json; charset=utf-8")
-                                .setBody(ResourceUtils.getResourceFileContent("files/aap/tvungen_forvaltning_forvalter_response.json"));
-                    case "/v1/aapfritakmeldekort":
-                        return new MockResponse().setResponseCode(200)
-                                .addHeader("Content-Type", "application/json; charset=utf-8")
-                                .setBody(ResourceUtils.getResourceFileContent("files/aap/fritak_meldekort_forvalter_response.json"));
+                case "/v1/aap":
+                    return new MockResponse().setResponseCode(200)
+                            .addHeader("Content-Type", "application/json; charset=utf-8")
+                            .setBody(getResourceFileContent("files/aap/aap_forvalter_response.json"));
+                case "/v1/aap115":
+                    return new MockResponse().setResponseCode(200)
+                            .addHeader("Content-Type", "application/json; charset=utf-8")
+                            .setBody(getResourceFileContent("files/aap/aap115_forvalter_response.json"));
+                case "/v1/aapungufor":
+                    return new MockResponse().setResponseCode(200)
+                            .addHeader("Content-Type", "application/json; charset=utf-8")
+                            .setBody(getResourceFileContent("files/aap/ung_ufoer_forvalter_response.json"));
+                case "/v1/aaptvungenforvaltning":
+                    return new MockResponse().setResponseCode(200)
+                            .addHeader("Content-Type", "application/json; charset=utf-8")
+                            .setBody(getResourceFileContent("files/aap/tvungen_forvaltning_forvalter_response.json"));
+                case "/v1/aapfritakmeldekort":
+                    return new MockResponse().setResponseCode(200)
+                            .addHeader("Content-Type", "application/json; charset=utf-8")
+                            .setBody(getResourceFileContent("files/aap/fritak_meldekort_forvalter_response.json"));
                 }
                 return new MockResponse().setResponseCode(404);
             }
         };
         mockWebServer.setDispatcher(dispatcher);
     }
-
 
     @After
     public void tearDown() throws IOException {
