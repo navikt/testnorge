@@ -45,9 +45,9 @@ public class ArbeidssoekerUtils {
         aktivitestsfaserMedInnsatsARBS = new HashMap<>();
         aktivitestsfaserMedInnsatsIARBS = new HashMap<>();
         aktivitestsfaserMedFormidlingsgruppe = new HashMap<>();
-        URL resourceInnsatserARBS = Resources.getResource("ARBS_aktfase_til_innsats.json");
-        URL resourceInnsatserIARBS = Resources.getResource("IARBS_aktfase_til_innsats.json");
-        URL resourceFormidling = Resources.getResource("aktfase_til_formidling.json");
+        URL resourceInnsatserARBS = Resources.getResource("files/ARBS_aktfase_til_innsats.json");
+        URL resourceInnsatserIARBS = Resources.getResource("files/IARBS_aktfase_til_innsats.json");
+        URL resourceFormidling = Resources.getResource("files/aktfase_til_formidling.json");
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             Map<String, List<KodeMedSannsynlighet>> mapFormidling = objectMapper.readValue(resourceFormidling, new TypeReference<>() {

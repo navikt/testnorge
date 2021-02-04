@@ -58,7 +58,7 @@ public class RettighetTiltakService {
 
     static {
         vedtakMedAktitivetskode = new HashMap<>();
-        URL resourceAktivitetkoder = Resources.getResource("vedtak_til_aktivitetkode.json");
+        URL resourceAktivitetkoder = Resources.getResource("files/vedtak_til_aktivitetkode.json");
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             Map<String, List<KodeMedSannsynlighet>> map = objectMapper.readValue(resourceAktivitetkoder, new TypeReference<>() {
@@ -69,7 +69,7 @@ public class RettighetTiltakService {
         }
 
         vedtakMedStatuskoder = new HashMap<>();
-        URL resourceStatuskoder = Resources.getResource("vedtak_til_statuskode.json");
+        URL resourceStatuskoder = Resources.getResource("files/vedtak_til_statuskode.json");
         try {
             Map<String, List<KodeMedSannsynlighet>> map = objectMapper.readValue(resourceStatuskoder, new TypeReference<>() {
             });

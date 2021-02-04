@@ -49,7 +49,7 @@ public class VedtakUtils {
 
         adminkodeTilDeltakerstatus = new HashMap<>();
 
-        URL resourceDeltakerstatus = Resources.getResource("adminkode_til_deltakerstatus_endring.json");
+        URL resourceDeltakerstatus = Resources.getResource("files/adminkode_til_deltakerstatus_endring.json");
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             Map<String, List<KodeMedSannsynlighet>> map = objectMapper.readValue(resourceDeltakerstatus, new TypeReference<>() {
