@@ -19,6 +19,7 @@ public class ApplicationContextTest {
      * Used to test app runtime dependency and properties
      */
     @Test
+    @SuppressWarnings("java:S2699")
     public void load_app_context() {
     }
 }
