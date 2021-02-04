@@ -35,6 +35,7 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstat
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 
+import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.BEGRUNNELSE;
 
 @Slf4j
 @Service
@@ -115,7 +116,7 @@ public class RettighetTiltakService {
 
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
-            syntetisertRettighet.setBegrunnelse(ServiceUtils.BEGRUNNELSE);
+            syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
 
             if (!identerMedKontonummer.isEmpty()) {
                 syntetisertRettighet.setAlternativMottaker(ServiceUtils.buildForvalter(identerMedKontonummer.remove(identerMedKontonummer.size() - 1)));
@@ -148,7 +149,7 @@ public class RettighetTiltakService {
 
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
-            syntetisertRettighet.setBegrunnelse(ServiceUtils.BEGRUNNELSE);
+            syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
             var rettighetRequest = new RettighetTilleggsytelseRequest(Collections.singletonList(syntetisertRettighet));
 
             rettighetRequest.setPersonident(utvalgteIdenter.remove(utvalgteIdenter.size() - 1));
@@ -199,7 +200,7 @@ public class RettighetTiltakService {
         nyttVedtakTiltak.setAktivitetkode(serviceUtils.velgKodeBasertPaaSannsynlighet(
                 vedtakMedAktitivetskode.get(rettighet.getVedtakTillegg().get(0).getRettighetKode())).getKode());
 
-        nyttVedtakTiltak.setBeskrivelse(ServiceUtils.BEGRUNNELSE);
+        nyttVedtakTiltak.setBeskrivelse(BEGRUNNELSE);
 
         var antallVedtakTillegg = rettighet.getVedtakTillegg().size();
         nyttVedtakTiltak.setFraDato(rettighet.getVedtakTillegg().get(0).getVedtaksperiode().getFom());

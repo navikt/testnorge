@@ -150,7 +150,7 @@ public class RettighetAapService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        var utvalgteIdenter = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, ServiceUtils.MIN_ALDER_AAP, ServiceUtils.MAX_ALDER_AAP - 1, miljoe);
+        var utvalgteIdenter = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_AAP, MAX_ALDER_AAP - 1, miljoe);
         var syntRequest = consumerUtils.createSyntRequest(utvalgteIdenter.size());
         var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetAap115(syntRequest);
 
@@ -203,7 +203,7 @@ public class RettighetAapService {
             int antallNyeIdenter
     ) {
         var identerMedKontonummer = identerUtils.getIdenterMedKontoinformasjon(avspillergruppeId, miljoe, antallNyeIdenter);
-        var utvalgteIdenter = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, ServiceUtils.MIN_ALDER_AAP, ServiceUtils.MAX_ALDER_AAP - 1, miljoe);
+        var utvalgteIdenter = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_AAP, MAX_ALDER_AAP - 1, miljoe);
         var syntRequest = consumerUtils.createSyntRequest(utvalgteIdenter.size());
         var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetTvungenForvaltning(syntRequest);
 

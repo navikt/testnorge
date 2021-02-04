@@ -21,6 +21,8 @@ import no.nav.registre.testnorge.arena.service.util.ServiceUtils;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 
+import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.BEGRUNNELSE;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -210,7 +212,7 @@ public class RettighetTilleggService {
 
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
-            syntetisertRettighet.setBegrunnelse(ServiceUtils.BEGRUNNELSE);
+            syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
 
             var rettighetRequest = new RettighetTilleggRequest(Collections.singletonList(syntetisertRettighet));
 
