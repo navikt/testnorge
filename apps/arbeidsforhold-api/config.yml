@@ -20,6 +20,7 @@ spec:
         - application: mn-synt-arbeidsforhold-service
         - application: arbeidsforhold-frontend
         - application: testnorge-oversikt-frontend
+        - application: testnorge-synt-sykemelding-api
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -48,6 +49,3 @@ spec:
   ingresses:
     - "https://testnorge-arbeidsforhold-api.dev.adeo.no"
     - "https://testnorge-arbeidsforhold-api.dev.intern.nav.no"
-testnorge:
-  analyse:
-    enabled: true
