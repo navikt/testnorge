@@ -1,6 +1,10 @@
 plugins {
     id 'no.nav.registre.testnorge.java-conventions'
-    id 'org.unbroken-dome.xjc' version '2.0.0'
+    id "uk.co.boothen.gradle.wsimport" version "0.16"
+}
+
+wsimport {
+    wsdl("MT_1067_NAV_v1.wsdl")
 }
 
 dependencies {
