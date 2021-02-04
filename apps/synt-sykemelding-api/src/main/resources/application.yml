@@ -19,4 +19,4 @@ consumers:
     client_id: f4167796-bf43-438b-a282-a480e8108d0c
     url: https://testnorge-organisasjon-api.dev.adeo.no
   arbeidsforhold:
-    url: http://testnorge-arbeidsforhold-api.dev.adeo.no
+    url: https://testnorge-arbeidsforhold-api.dev.adeo.no
