@@ -21,6 +21,7 @@ import org.springframework.test.context.TestPropertySource;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,6 +42,8 @@ public class AapSyntConsumerTest {
 
     private List<RettighetSyntRequest> syntRequest;
 
+    private List<GensakKoder> expectedGensakKoder;
+
     @Before
     public void setUp() throws IOException {
         this.mockWebServer = new MockWebServer();
@@ -56,6 +59,34 @@ public class AapSyntConsumerTest {
                         .vedtakDato(LocalDate.now().toString())
                         .build()
         ));
+
+        this.expectedGensakKoder = Arrays.asList(
+                GensakKoder.KDATO,
+                GensakKoder.BTID,
+                GensakKoder.TUUIN,
+                GensakKoder.UUFOR,
+                GensakKoder.STUBE,
+                GensakKoder.OTILF,
+                GensakKoder.OTSEK,
+                GensakKoder.OOPPL,
+                GensakKoder.BDSAT,
+                GensakKoder.UFTID,
+                GensakKoder.BDSRP,
+                GensakKoder.GRDRP,
+                GensakKoder.GRDTU,
+                GensakKoder.BDSTU,
+                GensakKoder.GGRAD,
+                GensakKoder.ORIGG,
+                GensakKoder.YDATO,
+                GensakKoder.YINNT,
+                GensakKoder.YGRAD,
+                GensakKoder.TLONN,
+                GensakKoder.SPROS,
+                GensakKoder.NORIN,
+                GensakKoder.FAKIN,
+                GensakKoder.EOS,
+                GensakKoder.LAND
+        );
     }
 
     @Test
@@ -67,33 +98,18 @@ public class AapSyntConsumerTest {
 
         NyttVedtakAap rettighet = response.get(0);
         assertThat(rettighet.getAktivitetsfase(), equalTo("UA"));
-        assertThat(rettighet.getGenSaksopplysninger().get(0).getKode(), is(GensakKoder.KDATO));
-        assertThat(rettighet.getGenSaksopplysninger().get(1).getKode(), is(GensakKoder.BTID));
-        assertThat(rettighet.getGenSaksopplysninger().get(2).getKode(), is(GensakKoder.TUUIN));
-        assertThat(rettighet.getGenSaksopplysninger().get(3).getKode(), is(GensakKoder.UUFOR));
-        assertThat(rettighet.getGenSaksopplysninger().get(4).getKode(), is(GensakKoder.STUBE));
-        assertThat(rettighet.getGenSaksopplysninger().get(5).getKode(), is(GensakKoder.OTILF));
-        assertThat(rettighet.getGenSaksopplysninger().get(6).getKode(), is(GensakKoder.OTSEK));
-        assertThat(rettighet.getGenSaksopplysninger().get(7).getKode(), is(GensakKoder.OOPPL));
+        assertThat(genSaksopplysningKoderMatches(rettighet, expectedGensakKoder), is(true));
         assertThat(rettighet.getGenSaksopplysninger().get(8).getOverordnet(), is(GensakOvKoder.OOPPL));
-        assertThat(rettighet.getGenSaksopplysninger().get(8).getKode(), is(GensakKoder.BDSAT));
-        assertThat(rettighet.getGenSaksopplysninger().get(9).getKode(), is(GensakKoder.UFTID));
-        assertThat(rettighet.getGenSaksopplysninger().get(10).getKode(), is(GensakKoder.BDSRP));
-        assertThat(rettighet.getGenSaksopplysninger().get(11).getKode(), is(GensakKoder.GRDRP));
-        assertThat(rettighet.getGenSaksopplysninger().get(12).getKode(), is(GensakKoder.GRDTU));
-        assertThat(rettighet.getGenSaksopplysninger().get(13).getKode(), is(GensakKoder.BDSTU));
-        assertThat(rettighet.getGenSaksopplysninger().get(14).getKode(), is(GensakKoder.GGRAD));
-        assertThat(rettighet.getGenSaksopplysninger().get(15).getKode(), is(GensakKoder.ORIGG));
-        assertThat(rettighet.getGenSaksopplysninger().get(16).getKode(), is(GensakKoder.YDATO));
-        assertThat(rettighet.getGenSaksopplysninger().get(17).getKode(), is(GensakKoder.YINNT));
-        assertThat(rettighet.getGenSaksopplysninger().get(18).getKode(), is(GensakKoder.YGRAD));
-        assertThat(rettighet.getGenSaksopplysninger().get(19).getKode(), is(GensakKoder.TLONN));
         assertThat(rettighet.getGenSaksopplysninger().get(20).getOverordnet(), is(GensakOvKoder.TLONN));
-        assertThat(rettighet.getGenSaksopplysninger().get(20).getKode(), is(GensakKoder.SPROS));
-        assertThat(rettighet.getGenSaksopplysninger().get(21).getKode(), is(GensakKoder.NORIN));
-        assertThat(rettighet.getGenSaksopplysninger().get(22).getKode(), is(GensakKoder.FAKIN));
-        assertThat(rettighet.getGenSaksopplysninger().get(23).getKode(), is(GensakKoder.EOS));
-        assertThat(rettighet.getGenSaksopplysninger().get(24).getKode(), is(GensakKoder.LAND));
+    }
+
+    public boolean genSaksopplysningKoderMatches(NyttVedtakAap rettighet, List<GensakKoder> koder){
+        for (int i = 0; i < koder.size(); i++){
+            if (!rettighet.getGenSaksopplysninger().get(i).getKode().equals(koder.get(i))){
+                return false;
+            }
+        }
+        return true;
     }
 
     @Test

@@ -37,8 +37,8 @@ public class IdentServiceTest {
 
     @Test
     public void slettBrukereTest() {
-        doReturn(true).when(brukereArenaForvalterConsumer).slettBruker(eq(fnr2), eq(miljoe));
-        doReturn(true).when(brukereArenaForvalterConsumer).slettBruker(eq(fnr3), eq(miljoe));
+        doReturn(true).when(brukereArenaForvalterConsumer).slettBruker(fnr2, miljoe);
+        doReturn(true).when(brukereArenaForvalterConsumer).slettBruker(fnr3, miljoe);
 
         List<String> slettedeIdenter = identService.slettBrukereIArenaForvalter(Arrays.asList(fnr1, fnr2, fnr3), miljoe);
 

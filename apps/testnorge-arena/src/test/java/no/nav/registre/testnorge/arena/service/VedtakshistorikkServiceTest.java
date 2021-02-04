@@ -165,20 +165,20 @@ public class VedtakshistorikkServiceTest {
 
         assertThat(response.get(fnr1).get(0).getNyeRettigheterAap()).hasSize(1);
         assertThat(response.get(fnr1).get(0).getNyeRettigheterAap().get(0).getBegrunnelse()).isEqualTo("Syntetisert rettighet");
-        assertThat(response.get(fnr1).get(0).getFeiledeRettigheter()).hasSize(0);
+        assertThat(response.get(fnr1).get(0).getFeiledeRettigheter()).isEmpty();
 
         assertThat(response.get(fnr1).get(1).getNyeRettigheterAap()).hasSize(1);
         assertThat(response.get(fnr1).get(1).getNyeRettigheterAap().get(0).getBegrunnelse()).isEqualTo("Syntetisert rettighet");
-        assertThat(response.get(fnr1).get(1).getFeiledeRettigheter()).hasSize(0);
+        assertThat(response.get(fnr1).get(1).getFeiledeRettigheter()).isEmpty();
 
         assertThat(response.get(fnr1).get(2).getNyeRettigheterAap().size()).isEqualTo(1);
         assertThat(response.get(fnr1).get(2).getNyeRettigheterAap().get(0).getBegrunnelse()).isEqualTo("Syntetisert rettighet");
         assertThat(response.get(fnr1).get(2).getNyeRettigheterAap().get(0).getForvalter().getGjeldendeKontonr().getKontonr()).isEqualTo(kontonummer);
         assertThat(response.get(fnr1).get(2).getNyeRettigheterAap().get(0).getForvalter().getUtbetalingsadresse().getFodselsnr()).isEqualTo(forvalterFnr);
-        assertThat(response.get(fnr1).get(2).getFeiledeRettigheter()).hasSize(0);
+        assertThat(response.get(fnr1).get(2).getFeiledeRettigheter()).isEmpty();
 
         assertThat(response.get(fnr1).get(3).getNyeRettigheterAap()).hasSize(1);
         assertThat(response.get(fnr1).get(3).getNyeRettigheterAap().get(0).getBegrunnelse()).isEqualTo("Syntetisert rettighet");
-        assertThat(response.get(fnr1).get(3).getFeiledeRettigheter()).hasSize(0);
+        assertThat(response.get(fnr1).get(3).getFeiledeRettigheter()).isEmpty();
     }
 }

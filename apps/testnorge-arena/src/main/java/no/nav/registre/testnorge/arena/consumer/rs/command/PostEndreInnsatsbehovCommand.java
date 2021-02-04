@@ -23,8 +23,6 @@ public class PostEndreInnsatsbehovCommand implements Callable<EndreInnsatsbehovR
     private final WebClient webClient;
     private final EndreInnsatsbehovRequest request;
 
-    private static final String endrePath = "/v1/endreInnsatsbehov";
-
     public PostEndreInnsatsbehovCommand(EndreInnsatsbehovRequest request, WebClient webClient) {
         this.webClient = webClient;
         this.request = request;
@@ -36,7 +34,7 @@ public class PostEndreInnsatsbehovCommand implements Callable<EndreInnsatsbehovR
         try {
             response = webClient.post()
                     .uri(builder ->
-                            builder.path(endrePath)
+                            builder.path("/v1/endreInnsatsbehov")
                                     .build()
                     )
                     .header(CALL_ID, NAV_CALL_ID)
