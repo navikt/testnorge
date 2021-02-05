@@ -1,0 +1,18 @@
+sts:
+  token:
+    provider:
+      url: ${STS_TOKEN_PROVIDER_URL}
+      username: ${STS_TOKEN_PROVIDER_USERNAME}
+      password: ${STS_TOKEN_PROVIDER_PASSWORD}
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+
+testnorge:
+  analyse:
+    enabled: true
