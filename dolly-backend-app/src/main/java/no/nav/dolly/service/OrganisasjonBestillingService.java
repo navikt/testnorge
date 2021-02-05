@@ -213,12 +213,12 @@ public class OrganisasjonBestillingService {
     @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
     public void slettBestillingByOrgnummer(String orgnummer) {
 
-        List<Long> bestillinger = organisasjonNummerService.fetchBestillingsIdFromOrganisasjonNummer(Long.valueOf(orgnummer)).stream()
+        List<Long> bestillinger = organisasjonNummerService.fetchBestillingsIdFromOrganisasjonNummer(orgnummer).stream()
                 .map(OrganisasjonNummer::getBestillingId)
                 .collect(Collectors.toList());
 
-        organisasjonNummerService.deleteByOrgnummer(Long.valueOf(orgnummer));
-        progressService.deleteByOrgnummer(Long.valueOf(orgnummer));
+        organisasjonNummerService.deleteByOrgnummer(orgnummer);
+        progressService.deleteByOrgnummer(orgnummer);
 
         bestillinger.forEach(bestillingRepository::deleteBestillingWithNoChildren);
     }

@@ -75,7 +75,7 @@ public class OrganisasjonProgressService {
 
     @Transactional
     @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
-    public void deleteByOrgnummer(Long orgnummer) {
+    public void deleteByOrgnummer(String orgnummer) {
         organisasjonProgressRepository.deleteByOrganisasjonsnummer(orgnummer);
     }
 }

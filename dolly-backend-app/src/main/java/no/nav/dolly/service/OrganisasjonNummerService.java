@@ -29,8 +29,8 @@ public class OrganisasjonNummerService {
                 () -> new NotFoundException("Kunne ikke finne noen organisasjoner knyttet til bestillingId=" + bestillingsId + ", i tabell ORGANISASJON_BESTILLINGS_PROGRESS"));
     }
 
-    public List<OrganisasjonNummer> fetchBestillingsIdFromOrganisasjonNummer(Long orgnummer) {
-        return organisasjonNummerRepository.findByOrganisasjonNummer(orgnummer.toString()).orElseThrow(
+    public List<OrganisasjonNummer> fetchBestillingsIdFromOrganisasjonNummer(String orgnummer) {
+        return organisasjonNummerRepository.findByOrganisasjonNummer(orgnummer).orElseThrow(
                 () -> new NotFoundException("Kunne ikke finne noen bestillinger knyttet til organisasjonNummer=" + orgnummer + ", i tabell ORGANISASJON_BESTILLINGS_PROGRESS"));
     }
 
@@ -42,7 +42,7 @@ public class OrganisasjonNummerService {
 
     @Transactional
     @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
-    public void deleteByOrgnummer(Long orgnummer) {
+    public void deleteByOrgnummer(String orgnummer) {
         organisasjonNummerRepository.deleteByOrganisasjonsnr(orgnummer);
     }
 }
