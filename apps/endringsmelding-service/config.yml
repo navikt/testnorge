@@ -18,6 +18,11 @@ spec:
         - application: team-dolly-lokal-app
           cluster: dev-fss
         - application: testnorge-oversikt-frontend
+    outbound:
+      rules:
+        - application: applikasjonsanalyse-service
+      external:
+        - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
   liveness:
     path: /internal/isAlive
     initialDelay: 4

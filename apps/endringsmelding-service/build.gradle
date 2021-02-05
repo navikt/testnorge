@@ -15,7 +15,6 @@ dependencyManagement {
 
 dependencies {
     implementation project(':local-development')
-    implementation project(':analysis')
     implementation project(':testnorge-core')
     implementation project(':testnorge-oauth2')
     implementation project(':testnorge-common-command')

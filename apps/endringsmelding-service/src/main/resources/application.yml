@@ -9,3 +9,10 @@ spring:
 consumers:
   tpsforvalter:
     url: https://tps-forvalteren.dev.adeo.no
+
+consumers.tps-forvalteren-proxy:
+  url: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
+  client-id: 89090660-c6ba-4bb9-89a8-c0b74ae08b90
+  cluster: dev-fss
+  namespace: dolly
+  name: tps-forvalteren-proxy
