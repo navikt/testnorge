@@ -6,6 +6,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.Set;
 
 import no.nav.registre.testnorge.endringsmeldingservice.config.credentias.TpsForvalterenProxyServiceProperties;
+import no.nav.registre.testnorge.endringsmeldingservice.consumer.command.GetIdentEnvironmentsCommand;
 import no.nav.registre.testnorge.endringsmeldingservice.consumer.command.SendDoedsmeldingCommand;
 import no.nav.registre.testnorge.endringsmeldingservice.consumer.command.SendFoedselsmeldingCommand;
 import no.nav.registre.testnorge.endringsmeldingservice.consumer.dto.TpsDoedsmeldingDTO;
@@ -28,6 +29,11 @@ public class TpsForvalterConsumer {
                 .builder()
                 .baseUrl(serverProperties.getUrl())
                 .build();
+    }
+
+    public Set<String> hentMiljoer(String ident) {
+        var accessToken = accessTokenService.generateToken(serverProperties);
+        return new GetIdentEnvironmentsCommand(webClient, ident, accessToken.getTokenValue()).call();
     }
 
     public void sendFoedselsmelding(FoedselsmeldingDTO dto, Set<String> miljoer) {
