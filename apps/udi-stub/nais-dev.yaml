@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: udi-stub
+  name: udi-stub-dev
   namespace: dolly
   labels:
     team: dolly
@@ -31,7 +31,7 @@ spec:
       memory: 1024Mi
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: prod
+      value: dev
   ingresses:
-    - "https://udi-stub.dev.adeo.no"
-    - "https://udi-stub.dev.intern.nav.no"
+    - "https://udi-stub-dev.dev.adeo.no"
+    - "https://udi-stub-dev.dev.intern.nav.no"
