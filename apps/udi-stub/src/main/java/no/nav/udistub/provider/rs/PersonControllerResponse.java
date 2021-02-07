@@ -13,6 +13,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PersonControllerResponse {
+
     private UdiPerson person;
     private Map<String, Object> reason;
 }
