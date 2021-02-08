@@ -3,30 +3,12 @@ package no.nav.udistub.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.udistub.database.model.Alias;
-import no.nav.udistub.database.model.Arbeidsadgang;
-import no.nav.udistub.database.model.Avgjorelse;
 import no.nav.udistub.database.model.Person;
-import no.nav.udistub.database.model.opphold.OppholdStatus;
-import no.nav.udistub.database.repository.AliasRepository;
-import no.nav.udistub.database.repository.ArbeidsAdgangRepository;
-import no.nav.udistub.database.repository.ArbeidsAdgangUtvidetRepository;
-import no.nav.udistub.database.repository.AvgjorelseRepository;
-import no.nav.udistub.database.repository.KodeverkRepository;
-import no.nav.udistub.database.repository.OppholdStatusRepository;
 import no.nav.udistub.database.repository.PersonRepository;
 import no.nav.udistub.exception.NotFoundException;
-import no.nav.udistub.service.dto.UdiAlias;
-import no.nav.udistub.service.dto.UdiAvgjorelse;
 import no.nav.udistub.service.dto.UdiPerson;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -57,6 +39,7 @@ public class PersonService {
         return mapperFacade.map(endrePerson, UdiPerson.class);
     }
 
+    @Transactional
     public UdiPerson finnPerson(String ident) {
 
         return personRepository.findByIdent(ident)

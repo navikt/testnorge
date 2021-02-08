@@ -6,9 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.udistub.exception.CouldNotCreatePersonException;
-import no.nav.udistub.exception.CouldNotUpdatePersonException;
-import no.nav.udistub.exception.NotFoundException;
 import no.nav.udistub.service.PersonService;
 import no.nav.udistub.service.dto.UdiPerson;
 import org.springframework.http.HttpStatus;
@@ -69,4 +66,13 @@ public class PersonController {
     }
 
 
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PersonControllerResponse {
+
+        private UdiPerson person;
+        private Map<String, Object> reason;
+    }
 }

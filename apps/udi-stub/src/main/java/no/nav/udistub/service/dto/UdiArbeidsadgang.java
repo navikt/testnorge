@@ -22,4 +22,6 @@ public class UdiArbeidsadgang {
     private ArbeidsadgangType typeArbeidsadgang;
     private ArbeidOmfangKategori arbeidsOmfang;
     private UdiPeriode periode;
+    private String forklaring;
+    private String hjemmel;
 }

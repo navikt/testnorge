@@ -37,6 +37,10 @@ public class Arbeidsadgang {
     @Embedded
     private Periode periode;
 
+    private String forklaring;
+
+    private String hjemmel;
+
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "person_id", nullable = false)
     private Person person;

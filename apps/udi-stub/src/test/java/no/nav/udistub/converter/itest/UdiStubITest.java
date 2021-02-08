@@ -3,7 +3,6 @@ package no.nav.udistub.converter.itest;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.udistub.database.repository.PersonRepository;
 import no.nav.udistub.provider.rs.PersonController;
-import no.nav.udistub.provider.rs.PersonControllerResponse;
 import no.nav.udistub.service.dto.UdiPerson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -65,7 +64,7 @@ public class UdiStubITest extends ITestBase {
     @Transactional
     public void shouldOpprettPersonAndStoreInDb() throws Exception {
         String requestBody = getJsonContentsAsString("opprettPersonRequest-happy.json");
-        ResponseEntity<PersonControllerResponse> response = callOpprettPerson(requestBody);
+        ResponseEntity<PersonController.PersonControllerResponse> response = callOpprettPerson(requestBody);
 
         assertNotNull(response);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -101,7 +100,7 @@ public class UdiStubITest extends ITestBase {
     public void shouldFindPersonByFnr() throws Exception {
         clearDatabase();
         storeTestPerson();
-        ResponseEntity<PersonControllerResponse> response = callFinnPerson();
+        ResponseEntity<PersonController.PersonControllerResponse> response = callFinnPerson();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response);
@@ -127,7 +126,7 @@ public class UdiStubITest extends ITestBase {
     public void shouldDeletePerson() throws Exception {
         clearDatabase();
         storeTestPerson();
-        ResponseEntity<PersonControllerResponse> response = callDeletePerson();
+        ResponseEntity<PersonController.PersonControllerResponse> response = callDeletePerson();
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -136,16 +135,16 @@ public class UdiStubITest extends ITestBase {
         assertTrue(storedPersonOptional.isEmpty());
     }
 
-    private ResponseEntity<PersonControllerResponse> callFinnPerson() {
-        return restTemplate.exchange(PERSON_URI, HttpMethod.GET, createHttpEntity(), PersonControllerResponse.class);
+    private ResponseEntity<PersonController.PersonControllerResponse> callFinnPerson() {
+        return restTemplate.exchange(PERSON_URI, HttpMethod.GET, createHttpEntity(), PersonController.PersonControllerResponse.class);
     }
 
-    private ResponseEntity<PersonControllerResponse> callOpprettPerson(String body) {
-        return this.restTemplate.exchange(PERSON_URI, HttpMethod.POST, createHttpEntityWithBody(body), PersonControllerResponse.class);
+    private ResponseEntity<PersonController.PersonControllerResponse> callOpprettPerson(String body) {
+        return this.restTemplate.exchange(PERSON_URI, HttpMethod.POST, createHttpEntityWithBody(body), PersonController.PersonControllerResponse.class);
     }
 
-    private ResponseEntity<PersonControllerResponse> callDeletePerson() {
-        return this.restTemplate.exchange(PERSON_URI, HttpMethod.DELETE, createHttpEntity(), PersonControllerResponse.class);
+    private ResponseEntity<PersonController.PersonControllerResponse> callDeletePerson() {
+        return this.restTemplate.exchange(PERSON_URI, HttpMethod.DELETE, createHttpEntity(), PersonController.PersonControllerResponse.class);
     }
 
     private HttpEntity createHttpEntity() {

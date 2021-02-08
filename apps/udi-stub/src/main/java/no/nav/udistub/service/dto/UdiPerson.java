@@ -30,7 +30,6 @@ public class UdiPerson {
     private List<UdiAlias> aliaser;
 
     private UdiArbeidsadgang arbeidsadgang;
-    private UdiArbeidsadgangUtvidet arbeidsadgangUtvidet;
     private UdiOppholdStatus oppholdStatus;
 
     private Boolean avgjoerelseUavklart;

@@ -20,11 +20,14 @@ bootJar {
 }
 
 dependencies {
+    implementation project(':testnorge-logging')
     implementation project(':testnorge-core')
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
+//    implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-web-services:2.3.4.RELEASE'
+//    implementation  'org.apache.cxf:cxf-spring-boot-starter-jaxws:3.1.12'
+
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:2.2.5.RELEASE'
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases:2.2.5.RELEASE'
     implementation 'org.springframework.vault:spring-vault-core'

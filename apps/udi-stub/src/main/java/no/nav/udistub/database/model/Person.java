@@ -56,9 +56,6 @@ public class Person {
     private Arbeidsadgang arbeidsadgang;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
-    private ArbeidsadgangUtvidet arbeidsadgangUtvidet;
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
     private OppholdStatus oppholdStatus;
 
     private Boolean avgjoerelseUavklart;
