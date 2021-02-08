@@ -30,8 +30,10 @@ spec:
       cpu: 200m
       memory: 1024Mi
   env:
-    - name: SPRING_PROFILES_ACTIVE
-      value: prod
+    - name: DATASOURCE_URL
+      value: jdbc:postgresql://b27dbvl007.preprod.local:5432/udi-stub
+    - name: DATABASE_NAME_ROLE
+      value: udi-stub-admin
   ingresses:
     - "https://udi-stub.dev.adeo.no"
     - "https://udi-stub.dev.intern.nav.no"

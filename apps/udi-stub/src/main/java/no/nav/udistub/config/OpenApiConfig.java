@@ -18,7 +18,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.Arrays;
 
 @Configuration
-@Profile({"prod", "dev"})
 @Import(ApplicationProperties.class)
 public class OpenApiConfig implements WebMvcConfigurer {
 

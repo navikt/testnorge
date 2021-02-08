@@ -17,7 +17,7 @@ import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 
 @Slf4j
-@Profile({"prod", "dev"})
+@Profile({"prod"})
 @Configuration
 @RequiredArgsConstructor
 public class VaultDatabaseTokenConfig implements InitializingBean {

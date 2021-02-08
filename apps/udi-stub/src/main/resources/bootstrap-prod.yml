@@ -4,7 +4,7 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
   datasource:
-    url: jdbc:postgresql://b27dbvl007.preprod.local:5432/udi-stub
+    url: ${datasource.url}
     hikari:
       maximum-pool-size: 3
       minimum-idle: 1
@@ -25,7 +25,7 @@ spring:
       database:
         backend: postgresql/preprod-fss
         enabled: true
-        role: udi-stub-admin
+        role: ${database.name.role}
   security:
     oauth2:
       resourceserver:

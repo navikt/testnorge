@@ -12,7 +12,7 @@
         </root>
     </springProfile>
 
-    <springProfile name="dev">
+    <springProfile name="local">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
                 <pattern>
