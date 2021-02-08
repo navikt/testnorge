@@ -7,6 +7,7 @@ import no.udi.common.v2.PingRequestType;
 import no.udi.common.v2.PingResponseType;
 import no.udi.mt_1067_nav_data.v1.HentPersonstatusResultat;
 import no.udi.mt_1067_nav_data.v1.HentUtvidetPersonstatusResultat;
+import org.apache.commons.lang3.BooleanUtils;
 import org.opensaml.xacml.ctx.ResponseType;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
@@ -27,6 +28,12 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.namespace.QName;
 
+import java.time.LocalDate;
+
+import static java.util.Objects.nonNull;
+import static net.logstash.logback.encoder.org.apache.commons.lang3.BooleanUtils.isNotTrue;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
+
 @Endpoint
 @RequiredArgsConstructor
 public class PersonStatusWebservice /* implements MT1067NAVV1Interface */ {
@@ -39,7 +46,7 @@ public class PersonStatusWebservice /* implements MT1067NAVV1Interface */ {
 //    @Override
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "PingRequest")
     @ResponsePayload
-    public JAXBElement<PingResponseType> ping(PingRequestType parameters) throws PingFault {
+    public JAXBElement<PingResponseType> ping(@RequestPayload PingRequestType parameters) throws PingFault {
         var ping =
                 new JAXBElement<>(new QName(NAMESPACE_URI, "PingResponse"), PingResponseType.class, null);
         ping.setNil(true);
@@ -49,7 +56,7 @@ public class PersonStatusWebservice /* implements MT1067NAVV1Interface */ {
 //    @Override
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "DeepPingRequest")
     @ResponsePayload
-    public JAXBElement<PingResponseType> deepPing(PingRequestType parameters) throws DeepPingFault {
+    public JAXBElement<PingResponseType> deepPing(@RequestPayload PingRequestType parameters) throws DeepPingFault {
         var deepPing =
                 new JAXBElement<>(new QName(NAMESPACE_URI, "DeepPingResponse"), PingResponseType.class, null);
         deepPing.setNil(true);
@@ -63,6 +70,24 @@ public class PersonStatusWebservice /* implements MT1067NAVV1Interface */ {
 
         UdiPerson foundPerson = personService.finnPerson(request.getParameter().getFodselsnummer());
         var resultat = conversionService.convert(foundPerson, HentPersonstatusResultat.class);
+
+        if (isNotTrue(request.getParameter().isInkluderArbeidsadgang())) {
+            resultat.setArbeidsadgang(null);
+        }
+        if (isNotTrue(request.getParameter().isInkluderAvgjorelsehistorikk())) {
+            resultat.setAvgjorelsehistorikk(null);
+        }
+        if (isNotTrue(request.getParameter().isInkluderFlyktningstatus())) {
+            resultat.setHarFlyktningstatus(null);
+            resultat.setUavklartFlyktningstatus(null);
+            resultat.setHistorikkHarFlyktningstatus(null);
+        }
+        if (isNotTrue(request.getParameter().isInkluderSoknadOmBeskyttelseUnderBehandling())) {
+            resultat.setSoknadOmBeskyttelseUnderBehandling(null);
+        }
+//        if (isNotTrue(request.getParameter().isManuellOppgVedUavklartArbeidsadgang())) {
+//            resultat.setUavklartFlyktningstatus(null);
+//        }
         var response = new HentPersonstatusResponseType();
         response.setResultat(resultat);
         var hentPersonstatusResponse =
@@ -74,9 +99,31 @@ public class PersonStatusWebservice /* implements MT1067NAVV1Interface */ {
 //    @Override
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "HentUtvidetPersonstatusRequest")
     @ResponsePayload
-    public JAXBElement<HentUtvidetPersonstatusResponseType> HentUtvidetPersonstatus(HentUtvidetPersonstatusRequestType request) throws HentUtvidetPersonstatusFault {
+    public JAXBElement<HentUtvidetPersonstatusResponseType> HentUtvidetPersonstatus(@RequestPayload HentUtvidetPersonstatusRequestType request) throws HentUtvidetPersonstatusFault {
+
         UdiPerson foundPerson = personService.finnPerson(request.getParameter().getFodselsnummer());
         var resultat = conversionService.convert(foundPerson, HentUtvidetPersonstatusResultat.class);
+
+        if (isNotTrue(request.getParameter().isInkluderArbeidsadgang())) {
+            resultat.setArbeidsadgang(null);
+        }
+        if (isNotTrue(request.getParameter().isInkluderAvgjorelsehistorikk())) {
+            resultat.setAvgjorelsehistorikk(null);
+        }
+        if (isNotTrue(request.getParameter().isInkluderFlyktningstatus())) {
+            resultat.setHarFlyktningstatus(null);
+            resultat.setUavklartFlyktningstatus(null);
+            resultat.setHistorikkHarFlyktningstatus(null);
+        }
+        if (isNotTrue(request.getParameter().isInkluderHjemmel()) && nonNull(resultat.getArbeidsadgang())) {
+            resultat.getArbeidsadgang().setHjemmel(null);
+        }
+        if (isNotTrue(request.getParameter().isInkluderSoknadOmBeskyttelseUnderBehandling())) {
+            resultat.setSoknadOmBeskyttelseUnderBehandling(null);
+        }
+//        if (isNotTrue(request.getParameter().isManuellOppgVedUavklartArbeidsadgang())) {
+//            resultat.setUavklartFlyktningstatus(null);
+//        }
         var response = new HentUtvidetPersonstatusResponseType();
         response.setResultat(resultat);
         var hentUtvidetPersonstatusResponse =
