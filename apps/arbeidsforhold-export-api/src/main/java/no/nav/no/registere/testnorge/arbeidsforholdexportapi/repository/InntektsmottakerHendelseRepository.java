@@ -6,8 +6,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.OpplysningspliktigList;
+import no.nav.no.registere.testnorge.arbeidsforholdexportapi.repository.mapper.InntektsmottakerXmlRowMapper;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.EDAGM;
 
 @Slf4j
 @Repository
@@ -15,18 +20,12 @@ import java.util.stream.Collectors;
 public class InntektsmottakerHendelseRepository {
     private final JdbcTemplate jdbcTemplate;
 
-    public List<String> getXmlFrom(Set<String> identer) {
-        String template = identer.stream().map(value -> "?").collect(Collectors.joining(","));
-        return jdbcTemplate.queryForList(
-                "SELECT INNTEKTSMOTTAKER_XML FROM T_INNTEKTSMOTTAKER_HENDELSE WHERE EFF_INNTEKTSMOTTAKER_ID IN (" + template + ")",
-                identer.toArray(),
-                String.class
-        );
-    }
-
-    public List<String> getAll(){
-        log.info("Hent INNTEKTSMOTTAKER_XML from DB...");
-        return jdbcTemplate.queryForList("SELECT INNTEKTSMOTTAKER_XML FROM AAREG_UTTREKK.temp_uttrekk_inhe", String.class);
+    public OpplysningspliktigList getAll(){
+        var count = jdbcTemplate.queryForObject("SELECT count(INNTEKTSMOTTAKER_XML) FROM AAREG_UTTREKK.temp_uttrekk_inhe", Integer.class);
+        log.info("Henter {} INNTEKTSMOTTAKER_XML fra DB...", count);
+        List<EDAGM> list = jdbcTemplate.query("SELECT INNTEKTSMOTTAKER_XML FROM AAREG_UTTREKK.temp_uttrekk_inhe", new InntektsmottakerXmlRowMapper());
+        log.info("Hentet {} INNTEKTSMOTTAKER_XML fra DB.");
+        return new OpplysningspliktigList(list);
     }
 
 }

@@ -48,27 +48,4 @@ public class ArbeidsforholdExportController {
         PermisjonSyntetiseringCsvConverter.inst().write(response.getWriter(), service.getPermisjoner());
         return ResponseEntity.ok().build();
     }
-
-//    @GetMapping()
-//    public ResponseEntity<HttpStatus> convertArbeidsforholdFromFolder(@RequestHeader("folderPath") String folderPath, HttpServletResponse response) throws IOException {
-//        OpplysningspliktigList list = OpplysningspliktigList.from(folderPath);
-//
-//        response.setContentType("text/csv");
-//        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-//        response.setHeader("Content-Disposition", "attachment; filename=syntetisering-arbeidesforhold-" + LocalDateTime.now() + ".csv");
-//        ArbeidsforholdSyntetiseringCsvConverter.inst().write(response.getWriter(), list.toArbeidsforhold());
-//        return ResponseEntity.ok().build();
-//    }
-//
-//    @GetMapping("/permisjoner")
-//    public ResponseEntity<HttpStatus> convertPermisjonerFromFolder(@RequestHeader("folderPath") String folderPath, HttpServletResponse response) throws IOException {
-//        OpplysningspliktigList list = OpplysningspliktigList.from(folderPath);
-//
-//        response.setContentType("text/csv");
-//        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-//        response.setHeader("Content-Disposition", "attachment; filename=syntetisering-permisjoner-" + LocalDateTime.now() + ".csv");
-//        PermisjonSyntetiseringCsvConverter.inst().write(response.getWriter(), list.toPermisjoner());
-//        return ResponseEntity.ok().build();
-//    }
-
 }

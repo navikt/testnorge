@@ -22,8 +22,7 @@ public class ArbeidsforholdExportService {
     }
 
     private OpplysningspliktigList getOpplysningspliktigList() {
-        List<String> xmls = inntektsmottakerHendelseRepository.getAll();
-        return OpplysningspliktigList.from(xmls);
+        return inntektsmottakerHendelseRepository.getAll();
     }
 
     public List<Permisjon> getPermisjoner() {

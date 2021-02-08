@@ -33,7 +33,7 @@ public class OpplysningspliktigList {
         return ((JAXBElement<EDAGM>) unmarshaller.unmarshal(reader)).getValue();
     }
 
-    public static OpplysningspliktigList from(final String folderPath) {
+    public static OpplysningspliktigList fromFolder(final String folderPath) {
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(EDAGM.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
@@ -60,7 +60,6 @@ public class OpplysningspliktigList {
             throw new RuntimeException("Klarer ikke a konvertere alle filene til EDAGM", e);
         }
     }
-
 
     public static OpplysningspliktigList from(MultipartFile... files) {
         try {
@@ -100,6 +99,17 @@ public class OpplysningspliktigList {
             throw new RuntimeException("Klarer ikke a konvertere xmlene til EDAGM", e);
         }
     }
+
+    public static EDAGM from(String xml) {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(EDAGM.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            return from(xml, unmarshaller);
+        } catch (Exception e) {
+            throw new RuntimeException("Klarer ikke a konvertere xmlene til EDAGM", e);
+        }
+    }
+
 
     public int getAntallPersonerArbeidsforhold() {
         return toArbeidsforhold().stream().collect(Collectors.groupingBy(Arbeidsforhold::getIdent)).keySet().size();
