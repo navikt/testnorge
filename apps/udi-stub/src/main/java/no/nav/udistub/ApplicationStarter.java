@@ -1,13 +1,22 @@
 package no.nav.udistub;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
-@SpringBootApplication
+import java.util.Map;
+
+
 public class ApplicationStarter extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
-        SpringApplication.run(ApplicationStarter.class, args);
+
+        Map<String, Object> properties = PropertyReader.builder()
+                .readSecret("spring.cloud.vault.token", "/var/run/secrets/nais.io/vault/vault_token")
+                .build();
+
+        new SpringApplicationBuilder()
+                .sources(AppConfig.class)
+                .properties(properties)
+                .run(args);
     }
 }
