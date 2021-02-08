@@ -7,8 +7,6 @@ import no.udi.common.v2.PingRequestType;
 import no.udi.common.v2.PingResponseType;
 import no.udi.mt_1067_nav_data.v1.HentPersonstatusResultat;
 import no.udi.mt_1067_nav_data.v1.HentUtvidetPersonstatusResultat;
-import org.apache.commons.lang3.BooleanUtils;
-import org.opensaml.xacml.ctx.ResponseType;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
@@ -21,20 +19,17 @@ import v1.mt_1067_nav.no.udi.HentPersonstatusResponseType;
 import v1.mt_1067_nav.no.udi.HentUtvidetPersonstatusFault;
 import v1.mt_1067_nav.no.udi.HentUtvidetPersonstatusRequestType;
 import v1.mt_1067_nav.no.udi.HentUtvidetPersonstatusResponseType;
-import v1.mt_1067_nav.no.udi.MT1067NAVV1Interface;
 import v1.mt_1067_nav.no.udi.PingFault;
 
+import javax.jws.soap.SOAPBinding;
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.namespace.QName;
-
-import java.time.LocalDate;
 
 import static java.util.Objects.nonNull;
 import static net.logstash.logback.encoder.org.apache.commons.lang3.BooleanUtils.isNotTrue;
-import static org.apache.commons.lang3.BooleanUtils.isFalse;
 
 @Endpoint
+@SOAPBinding(parameterStyle = SOAPBinding.ParameterStyle.WRAPPED)
 @RequiredArgsConstructor
 public class PersonStatusWebservice /* implements MT1067NAVV1Interface */ {
 
@@ -43,7 +38,6 @@ public class PersonStatusWebservice /* implements MT1067NAVV1Interface */ {
     private final PersonService personService;
     private final ConversionService conversionService;
 
-//    @Override
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "PingRequest")
     @ResponsePayload
     public JAXBElement<PingResponseType> ping(@RequestPayload PingRequestType parameters) throws PingFault {
@@ -53,7 +47,6 @@ public class PersonStatusWebservice /* implements MT1067NAVV1Interface */ {
         return ping;
     }
 
-//    @Override
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "DeepPingRequest")
     @ResponsePayload
     public JAXBElement<PingResponseType> deepPing(@RequestPayload PingRequestType parameters) throws DeepPingFault {
@@ -63,7 +56,6 @@ public class PersonStatusWebservice /* implements MT1067NAVV1Interface */ {
         return deepPing;
     }
 
-//    @Override
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "HentPersonstatusRequest")
     @ResponsePayload
     public JAXBElement<HentPersonstatusResponseType> hentPersonstatus(@RequestPayload HentPersonstatusRequestType request) throws HentPersonstatusFault {
@@ -96,7 +88,6 @@ public class PersonStatusWebservice /* implements MT1067NAVV1Interface */ {
         return hentPersonstatusResponse;
     }
 
-//    @Override
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "HentUtvidetPersonstatusRequest")
     @ResponsePayload
     public JAXBElement<HentUtvidetPersonstatusResponseType> HentUtvidetPersonstatus(@RequestPayload HentUtvidetPersonstatusRequestType request) throws HentUtvidetPersonstatusFault {

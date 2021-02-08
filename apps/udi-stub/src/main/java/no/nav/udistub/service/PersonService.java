@@ -45,7 +45,6 @@ public class PersonService {
         return personRepository.findByIdent(ident)
                 .map(person -> mapperFacade.map(person, UdiPerson.class))
                 .orElseThrow(() -> new NotFoundException(String.format("Person med ident %s ikke funnet i database", ident)));
-
     }
 
     @Transactional
