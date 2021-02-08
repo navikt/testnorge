@@ -1,3 +1,3 @@
-import EndringsmeldingPage from './EndringsmeldingPage';
+import EndringsmeldingPage from './endringsmelding-page';
 
 export { EndringsmeldingPage };

@@ -1,9 +1,9 @@
 import React from 'react';
 
 import styled from 'styled-components';
-import { Header } from '@/components/Header';
-import { Profil } from '@/components/Profil';
-import { Page } from '@/components/Page';
+import { Header } from '@/components/header';
+import { Profil } from '@/components/profil';
+import { Page } from '@/components/page';
 import { EndringsmeldingPage } from '@/pages';
 
 type Button = {
