@@ -38,7 +38,7 @@ spec:
       cpu: 200m
       memory: 4000Mi
     limits:
-      cpu: 500m
+      cpu: 4000m
       memory: 5000Mi
   ingresses:
     - "https://testnorge-arbeidsforhold-export-api.dev.intern.nav.no"
