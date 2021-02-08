@@ -14,13 +14,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(MockitoExtension.class)
-public class ArbeidsgangPersonConverterTest extends ConverterTestBase {
+class ArbeidsadgangPersonConverterTest extends ConverterTestBase {
 
     @InjectMocks
     protected ArbeidsadgangWsConverter arbeidsadgangConverter;
 
     @Test
-    public void convertFromPersonToArbeidsadgangIfPresent() {
+    void convertFromPersonToArbeidsadgangIfPresent() {
         no.udi.mt_1067_nav_data.v1.Arbeidsadgang result = arbeidsadgangConverter.convert(defaultTestPerson.getArbeidsadgang());
         assertNotNull(result);
         Assertions.assertEquals(TEST_ARBEIDSADGANG, result.getHarArbeidsadgang());
@@ -29,7 +29,7 @@ public class ArbeidsgangPersonConverterTest extends ConverterTestBase {
     }
 
     @Test
-    public void convertFromPersonToArbeidsadgangIfAbsent() {
+    void convertFromPersonToArbeidsadgangIfAbsent() {
         no.udi.mt_1067_nav_data.v1.Arbeidsadgang result = arbeidsadgangConverter.convert(null);
         assertNull(result);
     }

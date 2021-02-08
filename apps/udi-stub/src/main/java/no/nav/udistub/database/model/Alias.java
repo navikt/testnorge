@@ -1,6 +1,5 @@
 package no.nav.udistub.database.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +25,7 @@ import javax.persistence.Table;
 @Entity
 @Builder
 @Table(name = "aliaser")
-@JsonIgnoreProperties(value = { "person" })
+@JsonIgnoreProperties(value = {"person"})
 public class Alias {
 
     @GeneratedValue

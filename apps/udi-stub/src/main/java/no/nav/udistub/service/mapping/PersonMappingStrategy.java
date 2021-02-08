@@ -8,8 +8,6 @@ import no.nav.udistub.database.model.Person;
 import no.nav.udistub.service.dto.UdiPerson;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
-
 import static java.util.Objects.nonNull;
 
 @Component

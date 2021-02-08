@@ -1,10 +1,7 @@
 package no.nav.udistub.provider.rs;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -16,7 +13,6 @@ import javax.validation.ConstraintViolationException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 @RestControllerAdvice
@@ -26,7 +22,7 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
-    public Map constraintHandler(ConstraintViolationException exception, HttpServletRequest request) {
+    public Map<String, Object> constraintHandler(ConstraintViolationException exception, HttpServletRequest request) {
         var message = exception.getConstraintViolations().stream().findAny()
                 .map(ConstraintViolation::getMessage)
                 .orElse("Could not find constraint violation");
@@ -35,9 +31,9 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
     }
 
     private Map<String, Object> getValues(Exception exception,
-            HttpServletRequest request,
-            String message,
-            HttpStatus status) {
+                                          HttpServletRequest request,
+                                          String message,
+                                          HttpStatus status) {
         return Map.of(
                 "timestamp", ZonedDateTime.now().format(dateTimeFormatter),
                 "error", exception.getClass().getSimpleName(),

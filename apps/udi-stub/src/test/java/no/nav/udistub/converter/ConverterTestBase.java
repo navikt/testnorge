@@ -4,8 +4,10 @@ import no.nav.udistub.converter.ws.PeriodeWsConverter;
 import no.nav.udistub.converter.ws.XmlDateWsConverter;
 import no.nav.udistub.service.dto.UdiPerson;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.core.convert.ConversionService;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -15,10 +17,8 @@ import java.sql.Date;
 
 public class ConverterTestBase {
 
-	@InjectMocks
 	protected PeriodeWsConverter periodeConverter;
 
-	@InjectMocks
 	protected XmlDateWsConverter xmlDateConverter;
 
 	@Mock

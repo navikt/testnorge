@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import no.nav.udistub.database.model.Person;
 
-public class UdiStubITest extends ITestBase {
+class UdiStubITest extends ITestBase {
 
     private Person testPerson;
     private static final String PERSON_URI = "/api/v1/person";
@@ -51,7 +51,7 @@ public class UdiStubITest extends ITestBase {
     private MapperFacade mapperFacade;
 
     @BeforeEach
-    public void mapToTestPerson() {
+    void mapToTestPerson() {
         Person personEntity = mapperFacade.map(TESTPERSON_UDI, Person.class);
         personEntity.getAvgjoerelser().forEach(avgjorelseTo -> avgjorelseTo.setPerson(personEntity));
         personEntity.getAliaser().forEach(aliasTo -> aliasTo.setPerson(personEntity));
@@ -62,7 +62,7 @@ public class UdiStubITest extends ITestBase {
 
     @Test
     @Transactional
-    public void shouldOpprettPersonAndStoreInDb() throws Exception {
+    void shouldOpprettPersonAndStoreInDb() throws Exception {
         String requestBody = getJsonContentsAsString("opprettPersonRequest-happy.json");
         ResponseEntity<PersonController.PersonControllerResponse> response = callOpprettPerson(requestBody);
 
@@ -97,7 +97,7 @@ public class UdiStubITest extends ITestBase {
 
     @Test
     @Disabled
-    public void shouldFindPersonByFnr() throws Exception {
+    void shouldFindPersonByFnr() throws Exception {
         clearDatabase();
         storeTestPerson();
         ResponseEntity<PersonController.PersonControllerResponse> response = callFinnPerson();
@@ -123,7 +123,7 @@ public class UdiStubITest extends ITestBase {
 
     @Test
     @Disabled
-    public void shouldDeletePerson() throws Exception {
+    void shouldDeletePerson() throws Exception {
         clearDatabase();
         storeTestPerson();
         ResponseEntity<PersonController.PersonControllerResponse> response = callDeletePerson();

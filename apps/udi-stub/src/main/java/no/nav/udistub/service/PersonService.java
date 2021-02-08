@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PersonService {
 
+    private static final String IKKE_FUNNET = "Person med ident %s ikke funnet i database";
     private final MapperFacade mapperFacade;
     private final PersonRepository personRepository;
 
@@ -33,7 +34,7 @@ public class PersonService {
     public UdiPerson oppdaterPerson(UdiPerson udiPerson) {
 
         var endrePerson = personRepository.findByIdent(udiPerson.getIdent())
-                .orElseThrow(() -> new NotFoundException(String.format("Person med ident %s ikke funnet i database", udiPerson.getIdent())));
+                .orElseThrow(() -> new NotFoundException(String.format(IKKE_FUNNET, udiPerson.getIdent())));
 
         mapperFacade.map(udiPerson, endrePerson);
         return mapperFacade.map(endrePerson, UdiPerson.class);
@@ -44,14 +45,14 @@ public class PersonService {
 
         return personRepository.findByIdent(ident)
                 .map(person -> mapperFacade.map(person, UdiPerson.class))
-                .orElseThrow(() -> new NotFoundException(String.format("Person med ident %s ikke funnet i database", ident)));
+                .orElseThrow(() -> new NotFoundException(String.format(IKKE_FUNNET, ident)));
     }
 
     @Transactional
     public void deletePerson(String ident) {
 
         var slettePerson = personRepository.findByIdent(ident)
-                .orElseThrow(() -> new NotFoundException(String.format("Person med ident %s ikke funnet i database", ident)));
+                .orElseThrow(() -> new NotFoundException(String.format(IKKE_FUNNET, ident)));
         personRepository.deleteById(slettePerson.getId());
     }
 }

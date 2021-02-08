@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(MockitoExtension.class)
-public class GjeldeneOppholdStatusConverterTest extends ConverterTestBase {
+class GjeldeneOppholdStatusConverterTest extends ConverterTestBase {
 
 	private static final EOSellerEFTAVedtakOmVarigOppholdsrett TEST_eosEllerEFTAVedtakOmVarigOppholdsrett = createEOSellerEFTAVedtakOmVarigOppholdsrett();
 	private static final EOSellerEFTABeslutningOmOppholdsrett TEST_eosEllerEFTABeslutningOmOppholdsrett = createEOSellerEFTABeslutningOmOppholdsrett();
@@ -27,7 +27,7 @@ public class GjeldeneOppholdStatusConverterTest extends ConverterTestBase {
 	protected GjeldendeOppholdStatusWsConverter gjeldeneOppholdStatusConverter;
 
 	@Test
-	public void convertFromPersonToArbeidsadgangIfPresent() {
+	void convertFromPersonToArbeidsadgangIfPresent() {
 		GjeldendeOppholdsstatus result = gjeldeneOppholdStatusConverter.convert(defaultTestPerson.getOppholdStatus());
 		assertNotNull(result);
 		assertNotNull(result.getEOSellerEFTAOpphold());
@@ -59,7 +59,7 @@ public class GjeldeneOppholdStatusConverterTest extends ConverterTestBase {
 	}
 
 	@Test
-	public void convertFromPersonToArbeidsadgangIfAbsent() {
+	void convertFromPersonToArbeidsadgangIfAbsent() {
 		GjeldendeOppholdsstatus result = gjeldeneOppholdStatusConverter.convert(null);
 		assertNull(result);
 	}

@@ -17,13 +17,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(MockitoExtension.class)
-public class IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumConverterTest extends ConverterTestBase {
+class IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumConverterTest extends ConverterTestBase {
 
 	@InjectMocks
 	protected IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter ikkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumConverter;
 
 	@Test
-	public void convertFromPersonToIkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumIfPresent() {
+	void convertFromPersonToIkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumIfPresent() {
 		IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum result = ikkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumConverter.convert(
 				defaultTestPerson.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum());
 
@@ -40,7 +40,7 @@ public class IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumConverterTe
 	}
 
 	@Test
-	public void convertFromPersonToIkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumIfAbsent() {
+	void convertFromPersonToIkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumIfAbsent() {
 		IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum result = ikkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumConverter.convert(null);
 		assertNull(result);
 	}

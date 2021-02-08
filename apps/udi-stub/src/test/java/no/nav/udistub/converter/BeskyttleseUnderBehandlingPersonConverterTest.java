@@ -13,20 +13,20 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class BeskyttleseUnderBehandlingPersonConverterTest extends ConverterTestBase {
+class BeskyttleseUnderBehandlingPersonConverterTest extends ConverterTestBase {
 
 	@InjectMocks
 	protected BeskyttleseUnderBehandlingWsConverter beskyttleseUnderBehandlingConverter;
 
 	@Test
-	public void convertFromPersonToSoknadOmBeskyttelseUnderBehandlingIfPresent() {
+	void convertFromPersonToSoknadOmBeskyttelseUnderBehandlingIfPresent() {
 		SoknadOmBeskyttelseUnderBehandling result = beskyttleseUnderBehandlingConverter.convert(defaultTestPerson);
 		assertNotNull(result);
 		assertEquals(JaNeiUavklart.JA, result.getErUnderBehandling());
 	}
 
 	@Test
-	public void convertFromPersonToSoknadOmBeskyttelseUnderBehandlingIfAbsent() {
+	void convertFromPersonToSoknadOmBeskyttelseUnderBehandlingIfAbsent() {
 		SoknadOmBeskyttelseUnderBehandling result = beskyttleseUnderBehandlingConverter.convert(null);
 		assertNull(result);
 	}

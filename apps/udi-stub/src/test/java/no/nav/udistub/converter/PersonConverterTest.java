@@ -14,20 +14,20 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class PersonConverterTest extends ConverterTestBase {
+class PersonConverterTest extends ConverterTestBase {
 
 	@InjectMocks
 	protected PersonWsConverter personUDIConverter;
 
 	@Test
-	public void convertFromPersonToArbeidsadgangIfPresent() {
+	void convertFromPersonToArbeidsadgangIfPresent() {
 		HentPersonstatusResultat result = personUDIConverter.convert(defaultTestPerson);
 		assertNotNull(result);
 		assertEquals(TEST_PERSON_FNR, result.getForesporselsfodselsnummer());
 	}
 
 	@Test
-	public void convertFromPersonToArbeidsadgangIfAbsent() {
+	void convertFromPersonToArbeidsadgangIfAbsent() {
 		HentPersonstatusResultat result = personUDIConverter.convert(null);
 		assertNull(result);
 	}

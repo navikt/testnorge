@@ -63,23 +63,19 @@ public class PersonStatusWebservice /* implements MT1067NAVV1Interface */ {
         UdiPerson foundPerson = personService.finnPerson(request.getParameter().getFodselsnummer());
         var resultat = conversionService.convert(foundPerson, HentPersonstatusResultat.class);
 
-        if (isNotTrue(request.getParameter().isInkluderArbeidsadgang())) {
-            resultat.setArbeidsadgang(null);
+        if (nonNull(resultat)) {
+            if (isNotTrue(request.getParameter().isInkluderArbeidsadgang())) {
+                resultat.setArbeidsadgang(null);
+            }
+            if (isNotTrue(request.getParameter().isInkluderFlyktningstatus())) {
+                resultat.setHarFlyktningstatus(null);
+                resultat.setUavklartFlyktningstatus(null);
+                resultat.setHistorikkHarFlyktningstatus(null);
+            }
+            if (isNotTrue(request.getParameter().isInkluderSoknadOmBeskyttelseUnderBehandling())) {
+                resultat.setSoknadOmBeskyttelseUnderBehandling(null);
+            }
         }
-        if (isNotTrue(request.getParameter().isInkluderAvgjorelsehistorikk())) {
-            resultat.setAvgjorelsehistorikk(null);
-        }
-        if (isNotTrue(request.getParameter().isInkluderFlyktningstatus())) {
-            resultat.setHarFlyktningstatus(null);
-            resultat.setUavklartFlyktningstatus(null);
-            resultat.setHistorikkHarFlyktningstatus(null);
-        }
-        if (isNotTrue(request.getParameter().isInkluderSoknadOmBeskyttelseUnderBehandling())) {
-            resultat.setSoknadOmBeskyttelseUnderBehandling(null);
-        }
-//        if (isNotTrue(request.getParameter().isManuellOppgVedUavklartArbeidsadgang())) {
-//            resultat.setUavklartFlyktningstatus(null);
-//        }
         var response = new HentPersonstatusResponseType();
         response.setResultat(resultat);
         var hentPersonstatusResponse =
@@ -90,31 +86,27 @@ public class PersonStatusWebservice /* implements MT1067NAVV1Interface */ {
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "HentUtvidetPersonstatusRequest")
     @ResponsePayload
-    public JAXBElement<HentUtvidetPersonstatusResponseType> HentUtvidetPersonstatus(@RequestPayload HentUtvidetPersonstatusRequestType request) throws HentUtvidetPersonstatusFault {
+    public JAXBElement<HentUtvidetPersonstatusResponseType> hentUtvidetPersonstatus(@RequestPayload HentUtvidetPersonstatusRequestType request) throws HentUtvidetPersonstatusFault {
 
         UdiPerson foundPerson = personService.finnPerson(request.getParameter().getFodselsnummer());
         var resultat = conversionService.convert(foundPerson, HentUtvidetPersonstatusResultat.class);
 
-        if (isNotTrue(request.getParameter().isInkluderArbeidsadgang())) {
-            resultat.setArbeidsadgang(null);
+        if (nonNull(resultat)) {
+            if (isNotTrue(request.getParameter().isInkluderArbeidsadgang())) {
+                resultat.setArbeidsadgang(null);
+            }
+            if (isNotTrue(request.getParameter().isInkluderFlyktningstatus())) {
+                resultat.setHarFlyktningstatus(null);
+                resultat.setUavklartFlyktningstatus(null);
+                resultat.setHistorikkHarFlyktningstatus(null);
+            }
+            if (isNotTrue(request.getParameter().isInkluderHjemmel()) && nonNull(resultat.getArbeidsadgang())) {
+                resultat.getArbeidsadgang().setHjemmel(null);
+            }
+            if (isNotTrue(request.getParameter().isInkluderSoknadOmBeskyttelseUnderBehandling())) {
+                resultat.setSoknadOmBeskyttelseUnderBehandling(null);
+            }
         }
-        if (isNotTrue(request.getParameter().isInkluderAvgjorelsehistorikk())) {
-            resultat.setAvgjorelsehistorikk(null);
-        }
-        if (isNotTrue(request.getParameter().isInkluderFlyktningstatus())) {
-            resultat.setHarFlyktningstatus(null);
-            resultat.setUavklartFlyktningstatus(null);
-            resultat.setHistorikkHarFlyktningstatus(null);
-        }
-        if (isNotTrue(request.getParameter().isInkluderHjemmel()) && nonNull(resultat.getArbeidsadgang())) {
-            resultat.getArbeidsadgang().setHjemmel(null);
-        }
-        if (isNotTrue(request.getParameter().isInkluderSoknadOmBeskyttelseUnderBehandling())) {
-            resultat.setSoknadOmBeskyttelseUnderBehandling(null);
-        }
-//        if (isNotTrue(request.getParameter().isManuellOppgVedUavklartArbeidsadgang())) {
-//            resultat.setUavklartFlyktningstatus(null);
-//        }
         var response = new HentUtvidetPersonstatusResponseType();
         response.setResultat(resultat);
         var hentUtvidetPersonstatusResponse =

@@ -1,5 +1,7 @@
 package no.nav.udistub.converter.ws;
 
+import no.nav.udistub.service.dto.opphold.UdiOppholdSammeVilkaar;
+import no.nav.udistub.service.dto.opphold.UdiOppholdStatus;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTABeslutningOmOppholdsrett;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTAOpphold;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTAOppholdstillatelse;
@@ -10,9 +12,6 @@ import no.udi.mt_1067_nav_data.v1.OppholdstillatelseEllerOppholdsPaSammeVilkar;
 import no.udi.mt_1067_nav_data.v1.Uavklart;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-
-import no.nav.udistub.service.dto.opphold.UdiOppholdSammeVilkaar;
-import no.nav.udistub.service.dto.opphold.UdiOppholdStatus;
 
 @Component
 public class GjeldendeOppholdStatusWsConverter implements Converter<UdiOppholdStatus, GjeldendeOppholdsstatus> {
