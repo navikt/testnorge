@@ -21,9 +21,15 @@ public class InntektsmottakerHendelseRepository {
     private final JdbcTemplate jdbcTemplate;
 
     public OpplysningspliktigList getAll(){
-        var count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM AAREG_UTTREKK.temp_uttrekk_inhe", Integer.class);
+        var count = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM AAREG_UTTREKK.temp_uttrekk_inhe",
+                Integer.class
+        );
         log.info("Henter {} INNTEKTSMOTTAKER_XML fra DB...", count);
-        List<EDAGM> list = jdbcTemplate.query("SELECT INNTEKTSMOTTAKER_XML FROM AAREG_UTTREKK.temp_uttrekk_inhe", new InntektsmottakerXmlRowMapper());
+        List<EDAGM> list = jdbcTemplate.query(
+                "SELECT INNTEKTSMOTTAKER_XML FROM AAREG_UTTREKK.temp_uttrekk_inhe",
+                new InntektsmottakerXmlRowMapper(count)
+        );
         log.info("Hentet {} INNTEKTSMOTTAKER_XML fra DB.", list.size());
         return new OpplysningspliktigList(list);
     }
