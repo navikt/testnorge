@@ -1,3 +1,4 @@
+AZURE_APP_CLIENT_ID:
 spring:
   flyway:
     enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
@@ -27,9 +28,9 @@ spring:
         backend: postgresql/preprod-fss
         enabled: true
         role: udi-stub-dev-admin
-#  security:
-#    oauth2:
-#      resourceserver:
-#        jwt:
-#          issuer-uri: ${AAD_ISSUER_URI}/v2.0 
-#          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0 
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
