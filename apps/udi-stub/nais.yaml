@@ -11,6 +11,15 @@ spec:
   azure:
     application:
       enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: dolly-backend
+          cluster: dev-fss
+        - application: dolly-frontend
+          cluster: dev-fss
+        - application: testnorge-oversikt-frontend
+          cluster: dev-fss
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
