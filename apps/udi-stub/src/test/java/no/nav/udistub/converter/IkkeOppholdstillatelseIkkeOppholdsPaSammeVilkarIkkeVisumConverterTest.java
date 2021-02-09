@@ -19,29 +19,29 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @ExtendWith(MockitoExtension.class)
 class IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumConverterTest extends ConverterTestBase {
 
-	@InjectMocks
-	protected IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter ikkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumConverter;
+    @InjectMocks
+    protected IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter ikkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumConverter;
 
-	@Test
-	void convertFromPersonToIkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumIfPresent() {
-		IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum result = ikkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumConverter.convert(
-				defaultTestPerson.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum());
+    @Test
+    void convertFromPersonToIkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumIfPresent() {
+        IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum result = ikkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumConverter.convert(
+                defaultTestPerson.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum());
 
-		assertNotNull(result);
-		Assertions.assertEquals(DefaultTestData.TEST_ovrigIkkeOppholdsKategori, result.getOvrigIkkeOpphold().getArsak());
+        assertNotNull(result);
+        Assertions.assertEquals(DefaultTestData.TEST_ovrigIkkeOppholdsKategori, result.getOvrigIkkeOpphold().getArsak());
 
-		Assertions.assertEquals(DefaultTestData.TEST_INNREISEFORBUD, result.getUtvistMedInnreiseForbud().getInnreiseForbud());
-		Assertions.assertEquals(DefaultTestData.TEST_VARIGHET_UDI, result.getUtvistMedInnreiseForbud().getVarighet());
+        Assertions.assertEquals(DefaultTestData.TEST_INNREISEFORBUD, result.getUtvistMedInnreiseForbud().getInnreiseForbud());
+        Assertions.assertEquals(DefaultTestData.TEST_VARIGHET_UDI, result.getUtvistMedInnreiseForbud().getVarighet());
 
-		AvslagEllerBortfallAvPOBOSellerTilbakekallEllerFormeltVedtak avslagEllerBortfall = result.getAvslagEllerBortfallAvPOBOSellerTilbakekallEllerFormeltVedtak();
-		assertEquals(EOSellerEFTAGrunnlagskategoriOppholdsrett.FAMILIE, avslagEllerBortfall.getAvslagPaSoknadOmOppholdsrettRealitetsBehandlet().getAvslagsGrunnlagEOS());
-		assertEquals(EOSellerEFTAGrunnlagskategoriOppholdstillatelse.ARBEID, avslagEllerBortfall.getAvslagPaSoknadOmOppholdstillatelseRealitetsBehandlet().getAvslagsGrunnlagEOS());
-		assertEquals(OppholdsgrunnlagKategori.ARBEID, avslagEllerBortfall.getAvslagPaSoknadOmOppholdstillatelseRealitetsBehandlet().getAvslagsGrunnlagOvrig());
-	}
+        AvslagEllerBortfallAvPOBOSellerTilbakekallEllerFormeltVedtak avslagEllerBortfall = result.getAvslagEllerBortfallAvPOBOSellerTilbakekallEllerFormeltVedtak();
+        assertEquals(EOSellerEFTAGrunnlagskategoriOppholdsrett.FAMILIE, avslagEllerBortfall.getAvslagPaSoknadOmOppholdsrettRealitetsBehandlet().getAvslagsGrunnlagEOS());
+        assertEquals(EOSellerEFTAGrunnlagskategoriOppholdstillatelse.ARBEID, avslagEllerBortfall.getAvslagPaSoknadOmOppholdstillatelseRealitetsBehandlet().getAvslagsGrunnlagEOS());
+        assertEquals(OppholdsgrunnlagKategori.ARBEID, avslagEllerBortfall.getAvslagPaSoknadOmOppholdstillatelseRealitetsBehandlet().getAvslagsGrunnlagOvrig());
+    }
 
-	@Test
-	void convertFromPersonToIkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumIfAbsent() {
-		IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum result = ikkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumConverter.convert(null);
-		assertNull(result);
-	}
+    @Test
+    void convertFromPersonToIkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumIfAbsent() {
+        IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum result = ikkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumConverter.convert(null);
+        assertNull(result);
+    }
 }

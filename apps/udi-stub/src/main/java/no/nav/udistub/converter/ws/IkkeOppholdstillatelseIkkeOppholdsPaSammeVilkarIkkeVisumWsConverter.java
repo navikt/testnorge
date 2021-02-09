@@ -13,15 +13,13 @@ import no.udi.mt_1067_nav_data.v1.UtvistMedInnreiseForbud;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
-
 import static java.util.Objects.nonNull;
 
 @Component
 public class IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter
         implements Converter<UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum, IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum> {
 
-    private XmlDateWsConverter xmlDateWsConverter = new XmlDateWsConverter();
+    private final XmlDateWsConverter xmlDateWsConverter = new XmlDateWsConverter();
 
     @Override
     public IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum convert(UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum ikkeOpphold) {
