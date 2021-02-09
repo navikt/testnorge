@@ -22,7 +22,6 @@ public class InntektsmottakerXmlPermisjonerRowMapper implements RowMapper<List<P
             log.info("Antall rader behandlet {}/{}.", rowNum + 1, total);
         }
         Opplysningspliktig opplysningspliktig = Opplysningspliktig.from(rs.getString("INNTEKTSMOTTAKER_XML"));
-        rs.close();
         return opplysningspliktig.toPermisjoner();
     }
 }
