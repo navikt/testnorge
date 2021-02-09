@@ -13,18 +13,19 @@ import no.udi.mt_1067_nav_data.v1.Uavklart;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
 @Component
 public class GjeldendeOppholdStatusWsConverter implements Converter<UdiOppholdStatus, GjeldendeOppholdsstatus> {
 
     private XmlDateWsConverter xmlDateWsConverter = new XmlDateWsConverter();
     private PeriodeWsConverter periodeWsConverter = new PeriodeWsConverter();
 
-    public GjeldendeOppholdStatusWsConverter() {
-    }
-
     @Override
     public GjeldendeOppholdsstatus convert(UdiOppholdStatus oppholdStatus) {
-        if (oppholdStatus != null) {
+
+        if (nonNull(oppholdStatus)) {
             IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter ikkeWsConverter;
             ikkeWsConverter = new IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter();
             var resultatOppholdsstatus = new GjeldendeOppholdsstatus();
@@ -80,7 +81,7 @@ public class GjeldendeOppholdStatusWsConverter implements Converter<UdiOppholdSt
 
     private OppholdstillatelseEllerOppholdsPaSammeVilkar getOppholdstillatelseEllerOppholdsPaSammeVilkar(UdiOppholdSammeVilkaar oppholdSammeVilkaar) {
         var oppholdstillatelseEllerOppholdsPaSammeVilkar = new OppholdstillatelseEllerOppholdsPaSammeVilkar();
-        if (oppholdSammeVilkaar == null) {
+        if (isNull(oppholdSammeVilkaar)) {
             return null;
         }
         oppholdstillatelseEllerOppholdsPaSammeVilkar.setEffektueringsdato(

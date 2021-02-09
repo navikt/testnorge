@@ -1,6 +1,5 @@
 package no.nav.udistub.database.model.opphold;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

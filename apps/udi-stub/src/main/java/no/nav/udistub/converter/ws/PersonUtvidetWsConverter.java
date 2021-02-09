@@ -6,12 +6,17 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.Objects;
+
+import static java.util.Objects.nonNull;
 
 @Component
 public class PersonUtvidetWsConverter implements Converter<UdiPerson, HentUtvidetPersonstatusResultat> {
+
     @Override
     public HentUtvidetPersonstatusResultat convert(UdiPerson person) {
-        if (person != null) {
+
+        if (nonNull(person)) {
             var xmlDateWsConverter = new XmlDateWsConverter();
             var gjeldendePersonWsConverter = new GjeldendePersonWsConverter();
             var arbeidsadgangUtvidetWsConverter = new ArbeidsadgangUtvidetWsConverter();

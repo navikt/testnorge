@@ -13,18 +13,20 @@ import no.udi.mt_1067_nav_data.v1.UtvistMedInnreiseForbud;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
+import static java.util.Objects.nonNull;
+
 @Component
 public class IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter
         implements Converter<UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum, IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum> {
 
     private XmlDateWsConverter xmlDateWsConverter = new XmlDateWsConverter();
 
-    public IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter() {
-    }
-
     @Override
     public IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum convert(UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum ikkeOpphold) {
-        if (ikkeOpphold != null) {
+
+        if (nonNull(ikkeOpphold)) {
             var ikkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum = new IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum();
 
             ikkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum
@@ -40,6 +42,7 @@ public class IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter
     }
 
     private UtvistMedInnreiseForbud getUtvistMedInnreiseForbud(UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum ikkeOpphold) {
+
         var udiUtvistMedInnreiseForbud = new UtvistMedInnreiseForbud();
         var ikkeOppholdUvistMedInnreiseForbud = ikkeOpphold.getUtvistMedInnreiseForbud();
         udiUtvistMedInnreiseForbud.setVarighet(ikkeOppholdUvistMedInnreiseForbud.getVarighet());
@@ -89,6 +92,7 @@ public class IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter
     }
 
     private OvrigIkkeOpphold getOvrigIkkeOpphold(UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum ikkeOpphold) {
+
         OvrigIkkeOpphold ovrigIkkeOpphold = new OvrigIkkeOpphold();
         ovrigIkkeOpphold.setArsak(ikkeOpphold.getOvrigIkkeOppholdsKategoriArsak());
         return ovrigIkkeOpphold;

@@ -76,7 +76,7 @@ class UdiStubITest extends ITestBase {
         assertEquals(TEST_PERSON_FNR, storedPerson.getIdent());
         assertEquals(TEST_NAVN.getFornavn(), storedPerson.getNavn().getFornavn());
         assertEquals(TEST_NAVN.getMellomnavn(), storedPerson.getNavn().getMellomnavn());
-        //assertEquals(TEST_NAVN.getEtternavn(), storedPerson.getNavn().getEtternavn());
+        assertEquals(TEST_NAVN.getEtternavn(), storedPerson.getNavn().getEtternavn());
         assertEquals(TEST_FLYKTNINGSTATUS, storedPerson.getFlyktning());
         assertEquals(TEST_OPPHOLDSTILLATELSE, storedPerson.getHarOppholdsTillatelse());
 
@@ -88,44 +88,6 @@ class UdiStubITest extends ITestBase {
         assertEquals(TEST_OPPHOLDS_GRUNNLAG_KATEGORI, storedPerson.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum().getAvslagEllerBortfall().getAvslagGrunnlagOverig());
         assertEquals(TEST_ovrigIkkeOppholdsKategori, storedPerson.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum().getOvrigIkkeOppholdsKategoriArsak());
         assertEquals(TEST_INNREISEFORBUD, storedPerson.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum().getUtvistMedInnreiseForbud().getInnreiseForbud());
-    }
-
-    @Test
-    @Disabled
-    void shouldFindPersonByFnr() throws Exception {
-        clearDatabase();
-        storeTestPerson();
-        ResponseEntity<PersonController.PersonControllerResponse> response = callFinnPerson();
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response);
-        assertNotNull(response.getBody());
-        assertNotNull(response.getBody().getPerson());
-
-        UdiPerson storedPerson = response.getBody().getPerson();
-        assertEquals(TEST_FLYKTNINGSTATUS, storedPerson.getFlyktning());
-        assertEquals(TEST_OPPHOLDSTILLATELSE, storedPerson.getHarOppholdsTillatelse());
-
-        assertNotNull(storedPerson.getAliaser());
-        assertNotNull(storedPerson.getOppholdStatus());
-
-        assertEquals(TEST_OPPHOLDS_GRUNNLAG_KATEGORI, storedPerson.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum().getAvslagEllerBortfall().getAvslagGrunnlagOverig());
-        assertEquals(TEST_ovrigIkkeOppholdsKategori, storedPerson.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum().getOvrigIkkeOppholdsKategoriArsak());
-        assertEquals(TEST_INNREISEFORBUD, storedPerson.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum().getUtvistMedInnreiseForbud().getInnreiseForbud());
-    }
-
-    @Test
-    @Disabled
-    void shouldDeletePerson() throws Exception {
-        clearDatabase();
-        storeTestPerson();
-        ResponseEntity<PersonController.PersonControllerResponse> response = callDeletePerson();
-
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-
-        Optional<Person> storedPersonOptional = personRepository.findByIdent(TEST_PERSON_FNR);
-        assertTrue(storedPersonOptional.isEmpty());
     }
 
     private ResponseEntity<PersonController.PersonControllerResponse> callFinnPerson() {

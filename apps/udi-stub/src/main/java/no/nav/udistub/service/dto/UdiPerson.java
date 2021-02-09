@@ -6,14 +6,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.udistub.service.dto.opphold.UdiOppholdStatus;
 import no.udi.mt_1067_nav_data.v1.JaNeiUavklart;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
-import no.nav.udistub.service.dto.opphold.UdiOppholdStatus;
 
 import static java.util.Objects.isNull;
 

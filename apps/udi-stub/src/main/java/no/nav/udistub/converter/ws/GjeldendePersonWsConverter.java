@@ -11,14 +11,17 @@ import no.udi.mt_1067_nav_data.v1.PersonNavn;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import static java.util.Objects.nonNull;
+
 @Component
 public class GjeldendePersonWsConverter implements Converter<UdiPerson, GjeldendePerson> {
+
     @Override
     public GjeldendePerson convert(UdiPerson person) {
         GjeldendePerson gjeldendePerson = new GjeldendePerson();
         gjeldendePerson.setFodselsnummer(person.getIdent());
 
-        if (person.getFoedselsDato() != null) {
+        if (nonNull(person.getFoedselsDato())) {
             MangelfullDato mangelfullDato = new MangelfullDato();
             mangelfullDato.setDag(person.getFoedselsDato().getDayOfMonth());
             mangelfullDato.setManed(person.getFoedselsDato().getMonthValue());
@@ -41,7 +44,7 @@ public class GjeldendePersonWsConverter implements Converter<UdiPerson, Gjeldend
         }
 
 
-        if (person.getNavn() != null) {
+        if (nonNull(person.getNavn())) {
             PersonNavn navn = new PersonNavn();
             navn.setFornavn(person.getNavn().getFornavn());
             navn.setMellomnavn(person.getNavn().getMellomnavn());

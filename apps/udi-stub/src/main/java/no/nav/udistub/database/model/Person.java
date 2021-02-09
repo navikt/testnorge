@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.udistub.database.model.opphold.OppholdStatus;
-import no.udi.mt_1067_nav_data.v1.Avgjorelse;
 import no.udi.mt_1067_nav_data.v1.JaNeiUavklart;
 
 import javax.persistence.CascadeType;

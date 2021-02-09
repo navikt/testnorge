@@ -9,15 +9,17 @@ import org.springframework.stereotype.Component;
 import java.sql.Date;
 import java.time.LocalDate;
 
+import static java.util.Objects.nonNull;
+
 @Component
 public class ArbeidsadgangWsConverter implements Converter<UdiArbeidsadgang, Arbeidsadgang> {
 
     @Override
     public Arbeidsadgang convert(UdiArbeidsadgang arbeidsadgang) {
-        if (arbeidsadgang != null) {
+
+        if (nonNull(arbeidsadgang)) {
 
             PeriodeWsConverter periodeWsConverter = new PeriodeWsConverter();
-
             Arbeidsadgang resultArbeidsadgang = new Arbeidsadgang();
 
             resultArbeidsadgang.setArbeidsadgangsPeriode(periodeWsConverter.convert(arbeidsadgang.getPeriode()));

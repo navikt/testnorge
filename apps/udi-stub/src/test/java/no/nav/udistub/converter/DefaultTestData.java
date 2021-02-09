@@ -29,15 +29,9 @@ public class DefaultTestData {
     public static final String TEST_PERSON_FNR = "19026229432";
     public static final String TEST_PERSON_ALIAS_FNR = "19026212345";
     public static final LocalDate TEST_DATE = LocalDate.of(1962, 2, 19);
-    public static final String TEST_OMGJORT_AVGJORELSE_ID = "123";
-    public static final Boolean TEST_ER_POSITIV = true;
     public static final UdiPeriode TEST_PERIODE = new UdiPeriode(LocalDate.of(2000, 1, 2), LocalDate.of(2001, 2, 3));
-    public static final Integer TEST_VARIGHET = 1;
     public static final Varighet TEST_VARIGHET_UDI = Varighet.ETT_AR;
-    public static final String TEST_SAKSNUMMER = "testus maximus";
-    public static final String TEST_ETAT = "ETATUS MAXIMUS";
     public static final Boolean TEST_FLYKTNINGSTATUS = true;
-    public static final Boolean TEST_UAVKLART_FLYKTNINGSTATUS = false;
 
     public static final PersonNavn TEST_NAVN = new PersonNavn("NATURLIG", "ABSURD", "BÆREPOSE");
     public static final ArbeidOmfangKategori TEST_ARBEIDOMGANGKATEGORI = ArbeidOmfangKategori.DELTID_SAMT_FERIER_HELTID;
@@ -54,8 +48,6 @@ public class DefaultTestData {
     public static final OppholdsgrunnlagKategori TEST_OPPHOLDS_GRUNNLAG_KATEGORI = OppholdsgrunnlagKategori.ARBEID;
     public static final OvrigIkkeOppholdsKategori TEST_ovrigIkkeOppholdsKategori = OvrigIkkeOppholdsKategori.ANNULERING_AV_VISUM;
     public static final OppholdstillatelseKategori TEST_OPPHOLDSTILLATELSE_TYPE = OppholdstillatelseKategori.PERMANENT;
-
-    private static final UdiPerson testPerson = createPersonTo();
 
     public static final Kodeverk TEST_KODEVERK_CODE = new Kodeverk();
 

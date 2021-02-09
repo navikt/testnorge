@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Objects;
+
+import static java.util.Objects.nonNull;
 
 @Component
 public class ArbeidsadgangUtvidetWsConverter implements Converter<UdiArbeidsadgang, ArbeidsadgangUtvidet> {
@@ -15,7 +18,7 @@ public class ArbeidsadgangUtvidetWsConverter implements Converter<UdiArbeidsadga
     @Override
     public ArbeidsadgangUtvidet convert(UdiArbeidsadgang arbeidsadgangUtvidet) {
 
-        if (arbeidsadgangUtvidet != null) {
+        if (nonNull(arbeidsadgangUtvidet)) {
 
             PeriodeWsConverter periodeWsConverter = new PeriodeWsConverter();
 
