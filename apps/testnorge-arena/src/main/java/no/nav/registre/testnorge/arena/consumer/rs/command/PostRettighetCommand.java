@@ -29,9 +29,8 @@ public class PostRettighetCommand implements Callable<NyttVedtakResponse> {
 
     @Override
     public NyttVedtakResponse call() {
-        NyttVedtakResponse response = null;
         try {
-            response = webClient.post()
+            return webClient.post()
                     .uri(builder ->
                             builder.path(rettighet.getArenaForvalterUrlPath())
                                     .build()
@@ -45,7 +44,7 @@ public class PostRettighetCommand implements Callable<NyttVedtakResponse> {
                     .block();
         } catch (Exception e) {
             log.error("Kunne ikke opprette rettighet i arena-forvalteren.", e);
+            return null;
         }
-        return response;
     }
 }

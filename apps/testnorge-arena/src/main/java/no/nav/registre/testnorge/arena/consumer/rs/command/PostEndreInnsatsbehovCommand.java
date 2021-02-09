@@ -30,9 +30,8 @@ public class PostEndreInnsatsbehovCommand implements Callable<EndreInnsatsbehovR
 
     @Override
     public EndreInnsatsbehovResponse call() {
-        EndreInnsatsbehovResponse response = null;
         try {
-            response = webClient.post()
+            return webClient.post()
                     .uri(builder ->
                             builder.path("/v1/endreInnsatsbehov")
                                     .build()
@@ -46,7 +45,7 @@ public class PostEndreInnsatsbehovCommand implements Callable<EndreInnsatsbehovR
                     .block();
         } catch (Exception e) {
             log.error("Kunne ikke endre innsatsbehov i arena forvalteren.", e);
+            return null;
         }
-        return response;
     }
 }
