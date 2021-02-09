@@ -21,15 +21,12 @@ public class PersonMappingStrategy implements MappingStrategy {
                     public void mapAtoB(UdiPerson udiPerson, Person person, MappingContext context) {
 
                         person.getAliaser().forEach(alias -> alias.setPerson(person));
-                        person.getAvgjoerelser().forEach(avgjoerlse -> avgjoerlse.setPerson(person));
                         if (nonNull(person.getArbeidsadgang())) {
                             person.getArbeidsadgang().setPerson(person);
                         }
                         if (nonNull(person.getOppholdStatus())) {
                             person.getOppholdStatus().setPerson(person);
                         }
-
-                        person.setAvgjoerelser(null); //TODO Teknisk gjeld avgjørelser
                     }
                 })
                 .byDefault()

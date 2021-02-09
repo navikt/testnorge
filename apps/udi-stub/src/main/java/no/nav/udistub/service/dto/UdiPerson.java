@@ -9,9 +9,13 @@ import lombok.Setter;
 import no.udi.mt_1067_nav_data.v1.JaNeiUavklart;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import no.nav.udistub.service.dto.opphold.UdiOppholdStatus;
+
+import static java.util.Objects.isNull;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,8 +29,6 @@ public class UdiPerson {
     private UdiPersonNavn navn;
     private LocalDate foedselsDato;
 
-    private List<UdiAvgjorelse> avgjoerelser;
-
     private List<UdiAlias> aliaser;
 
     private UdiArbeidsadgang arbeidsadgang;
@@ -38,4 +40,11 @@ public class UdiPerson {
     private JaNeiUavklart soeknadOmBeskyttelseUnderBehandling;
 
     private LocalDate soknadDato;
+
+    public List<UdiAlias> getAliaser() {
+        if (isNull(aliaser)) {
+            aliaser = new ArrayList<>();
+        }
+        return aliaser;
+    }
 }

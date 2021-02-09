@@ -2,7 +2,6 @@ package no.nav.udistub.converter;
 
 import no.nav.udistub.service.dto.UdiAlias;
 import no.nav.udistub.service.dto.UdiArbeidsadgang;
-import no.nav.udistub.service.dto.UdiAvgjorelse;
 import no.nav.udistub.service.dto.UdiPeriode;
 import no.nav.udistub.service.dto.UdiPerson;
 import no.nav.udistub.service.dto.opphold.UdiAvslagEllerBortfall;
@@ -69,11 +68,6 @@ public class DefaultTestData {
     public static UdiPerson createPersonTo() {
         UdiPerson person = new UdiPerson();
         person.setIdent(TEST_PERSON_FNR);
-        person.setAvgjoerelser(
-                Arrays.asList(
-                        createPersonAvgjorelseBuilder().build(),
-                        createPersonAvgjorelseBuilder().build())
-        );
         person.setAliaser(
                 Arrays.asList(
                         createAlias().build(),
@@ -87,28 +81,6 @@ public class DefaultTestData {
         person.setSoeknadOmBeskyttelseUnderBehandling(TEST_SOEKNAD_OM_BESKYTTELSE);
         person.setSoknadDato(TEST_DATE);
         return person;
-    }
-
-    public static UdiAvgjorelse.UdiAvgjorelseBuilder createPersonAvgjorelseBuilder() {
-        return UdiAvgjorelse.builder()
-                .avgjoerelsesDato(TEST_DATE)
-                .grunntypeKode(TEST_KODEVERK_CODE)
-                .erPositiv(TEST_ER_POSITIV)
-                .tillatelseVarighetKode(TEST_KODEVERK_CODE)
-                .tillatelseVarighet(TEST_VARIGHET)
-                .tillatelseKode(TEST_KODEVERK_CODE)
-                .tillatelseVarighet(TEST_VARIGHET)
-                .utfallstypeKode(TEST_KODEVERK_CODE)
-                .utfallVarighetKode(TEST_KODEVERK_CODE)
-                .utfallVarighet(TEST_VARIGHET)
-                .utfallPeriode(TEST_PERIODE)
-                .effektueringsDato(TEST_DATE)
-                .iverksettelseDato(TEST_DATE)
-                .utreisefristDato(TEST_DATE)
-                .saksnummer(TEST_SAKSNUMMER)
-                .etat(TEST_ETAT)
-                .harFlyktningstatus(TEST_FLYKTNINGSTATUS)
-                .uavklartFlyktningstatus(TEST_UAVKLART_FLYKTNINGSTATUS);
     }
 
     public static UdiAlias.UdiAliasBuilder createAlias() {
