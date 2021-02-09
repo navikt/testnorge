@@ -5,7 +5,7 @@ import Tabs from 'nav-frontend-tabs';
 import Panel from 'nav-frontend-paneler';
 import { Page } from '@/components/page';
 import Search from '@/components/search/Search';
-import FodselsmeldingPanel from './FodselsmeldingPanel';
+import { FodselsmeldingPanel } from './fodselsmelding-panel';
 
 // @ts-ignore
 export default () => (
