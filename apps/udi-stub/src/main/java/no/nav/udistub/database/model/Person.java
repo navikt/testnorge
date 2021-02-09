@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.udistub.database.model.opphold.OppholdStatus;
+import no.udi.mt_1067_nav_data.v1.Avgjorelse;
 import no.udi.mt_1067_nav_data.v1.JaNeiUavklart;
 
 import javax.persistence.CascadeType;
@@ -46,9 +47,6 @@ public class Person {
     private String ident;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
-    private List<Avgjorelse> avgjoerelser;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
     private List<Alias> aliaser;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
@@ -63,13 +61,6 @@ public class Person {
 
     private JaNeiUavklart soeknadOmBeskyttelseUnderBehandling;
     private LocalDate soknadDato;
-
-    public List<Avgjorelse> getAvgjoerelser() {
-        if (isNull(avgjoerelser)) {
-            avgjoerelser = new ArrayList<>();
-        }
-        return avgjoerelser;
-    }
 
     public List<Alias> getAliaser() {
         if (isNull(aliaser)) {

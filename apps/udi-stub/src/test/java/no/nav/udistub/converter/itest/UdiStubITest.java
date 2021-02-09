@@ -1,6 +1,7 @@
 package no.nav.udistub.converter.itest;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.udistub.database.model.Person;
 import no.nav.udistub.database.repository.PersonRepository;
 import no.nav.udistub.provider.rs.PersonController;
 import no.nav.udistub.service.dto.UdiPerson;
@@ -32,18 +33,15 @@ import static no.nav.udistub.converter.DefaultTestData.TEST_ovrigIkkeOppholdsKat
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import no.nav.udistub.database.model.Person;
 
 class UdiStubITest extends ITestBase {
 
-    private Person testPerson;
     private static final String PERSON_URI = "/api/v1/person";
     private static final String NAV_PERSON_IDENT = "Nav-Personident";
     private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
-
     @Inject
     protected TestRestTemplate restTemplate;
-
+    private Person testPerson;
     @Autowired
     private PersonRepository personRepository;
 
@@ -53,7 +51,6 @@ class UdiStubITest extends ITestBase {
     @BeforeEach
     void mapToTestPerson() {
         Person personEntity = mapperFacade.map(TESTPERSON_UDI, Person.class);
-        personEntity.getAvgjoerelser().forEach(avgjorelseTo -> avgjorelseTo.setPerson(personEntity));
         personEntity.getAliaser().forEach(aliasTo -> aliasTo.setPerson(personEntity));
         personEntity.getOppholdStatus().setPerson(personEntity);
         personEntity.getArbeidsadgang().setPerson(personEntity);
@@ -91,8 +88,6 @@ class UdiStubITest extends ITestBase {
         assertEquals(TEST_OPPHOLDS_GRUNNLAG_KATEGORI, storedPerson.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum().getAvslagEllerBortfall().getAvslagGrunnlagOverig());
         assertEquals(TEST_ovrigIkkeOppholdsKategori, storedPerson.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum().getOvrigIkkeOppholdsKategoriArsak());
         assertEquals(TEST_INNREISEFORBUD, storedPerson.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum().getUtvistMedInnreiseForbud().getInnreiseForbud());
-
-        assertNotNull(storedPerson.getAvgjoerelser());
     }
 
     @Test
