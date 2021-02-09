@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
 import _omit from 'lodash/omit'
@@ -34,9 +34,11 @@ export const Detaljer = ({ formikBag, path, level, number }: Detaljer) => {
 
 	const sektorkodeErValgt = formikBag.values.organisasjon.hasOwnProperty('sektorkode')
 
-	if (level === 0 && !_get(formikBag, `values.${path}.underenheter`)) {
-		formikBag.setFieldValue(`${path}.underenheter`, [initialValues])
-	}
+	useEffect(() => {
+		if (level === 0 && !_get(formikBag, `values.${path}.underenheter`)) {
+			formikBag.setFieldValue(`${path}.underenheter`, [initialValues])
+		}
+	})
 
 	const [typeUnderenhet, setTypeUnderenhet] = useState(
 		level === 0 ||
@@ -89,13 +91,14 @@ export const Detaljer = ({ formikBag, path, level, number }: Detaljer) => {
 								: OrganisasjonKodeverk.EnhetstyperVirksomhet
 						}
 						size="xxlarge"
+						fastfield={false}
 						isClearable={false}
 					/>
 				</div>
 				<FormikSelect
 					name={`${path}.naeringskode`}
 					label="Næringskode"
-					kodeverk={OrganisasjonKodeverk.Næringskoder}
+					kodeverk={OrganisasjonKodeverk.Naeringskoder}
 					size="xlarge"
 					optionHeight={50}
 					isClearable={false}

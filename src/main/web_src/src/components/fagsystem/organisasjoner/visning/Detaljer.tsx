@@ -21,7 +21,7 @@ export const Detaljer = ({ data }: Detaljer) => {
 				<TitleValue title="Enhetstype" value={data[0].enhetstype} />
 				<TitleValue
 					title="Næringskode"
-					kodeverk={OrganisasjonKodeverk.Næringskoder}
+					kodeverk={OrganisasjonKodeverk.Naeringskoder}
 					value={data[0].naeringskode}
 				/>
 				<TitleValue

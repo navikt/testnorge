@@ -16,7 +16,8 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 @DependenciesOn({
         @DependencyOn("dolly-backend"),
         @DependencyOn("testnorge-profil-api"),
-        @DependencyOn("testnorge-varslinger-api")
+        @DependencyOn("testnorge-varslinger-api"),
+        @DependencyOn("organisasjon-forvalter")
 })
 public class ApplicationConfig {
     private final RemoteApplicationsProperties properties;

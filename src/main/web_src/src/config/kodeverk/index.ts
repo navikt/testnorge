@@ -61,6 +61,6 @@ export enum OppholdstillatelseKodeverk {
 export enum OrganisasjonKodeverk {
 	EnhetstyperJuridiskEnhet = 'EnhetstyperJuridiskEnhet',
 	EnhetstyperVirksomhet = 'EnhetstyperVirksomhet',
-	Næringskoder = 'Næringskoder',
+	Naeringskoder = 'Næringskoder',
 	Sektorkoder = 'Sektorkoder'
 }
