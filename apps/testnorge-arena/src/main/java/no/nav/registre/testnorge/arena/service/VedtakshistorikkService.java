@@ -113,7 +113,7 @@ public class VedtakshistorikkService {
             LocalDate tidligsteDatoBarnetillegg = datoUtils.finnTidligeDatoBarnetillegg(vedtakshistorikken.getBarnetillegg());
 
             if (tidligsteDato == null) {
-                return;
+                continue;
             }
 
             var minimumAlder = Math.toIntExact(ChronoUnit.YEARS.between(tidligsteDato.minusYears(MIN_ALDER_AAP), LocalDate.now()));
