@@ -1,12 +1,6 @@
 package no.nav.dolly.bestilling.udistub.domain;
 
-import static java.util.Objects.isNull;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,8 +9,10 @@ import lombok.Setter;
 import no.nav.dolly.domain.resultset.udistub.model.UdiHarType;
 import no.nav.dolly.domain.resultset.udistub.model.UdiPersonNavn;
 import no.nav.dolly.domain.resultset.udistub.model.arbeidsadgang.UdiArbeidsadgang;
-import no.nav.dolly.domain.resultset.udistub.model.avgjoerelse.UdiAvgjorelse;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdStatus;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,7 +25,6 @@ public class UdiPerson {
     private List<UdiAlias> aliaser;
     private UdiArbeidsadgang arbeidsadgang;
     private Boolean avgjoerelseUavklart;
-    private List<UdiAvgjorelse> avgjoerelser;
     private Boolean flyktning;
     private LocalDate foedselsDato;
     private Boolean harOppholdsTillatelse;
@@ -38,13 +33,6 @@ public class UdiPerson {
     private UdiOppholdStatus oppholdStatus;
     private UdiHarType soeknadOmBeskyttelseUnderBehandling;
     private LocalDate soknadDato;
-
-    public List<UdiAvgjorelse> getAvgjoerelser() {
-        if (isNull(avgjoerelser)) {
-            avgjoerelser = new ArrayList<>();
-        }
-        return avgjoerelser;
-    }
 
     @AllArgsConstructor
     @NoArgsConstructor

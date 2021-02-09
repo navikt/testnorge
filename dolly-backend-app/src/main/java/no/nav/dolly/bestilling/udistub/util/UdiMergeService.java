@@ -1,14 +1,5 @@
 package no.nav.dolly.bestilling.udistub.util;
 
-import static java.util.Collections.emptyList;
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -25,6 +16,14 @@ import no.nav.dolly.domain.resultset.udistub.model.RsUdiAlias;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.dolly.domain.resultset.udistub.model.UdiPersonNavn;
 import no.nav.dolly.service.TpsfPersonCache;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+import static java.util.Collections.emptyList;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -43,11 +42,6 @@ public class UdiMergeService {
         if (isNull(eksisterendeUdiPerson)) {
             return appendAttributes(udiPerson, nyUdiPerson.getAliaser(), Status.NEW, tpsPerson);
         }
-
-        udiPerson.setAvgjoerelser(udiPerson.getAvgjoerelser().stream()
-                .filter(nyAvgjoerelse -> eksisterendeUdiPerson.getPerson().getAvgjoerelser().stream()
-                        .noneMatch(eksisterendeAvgjoerelse -> eksisterendeAvgjoerelse.equals(nyAvgjoerelse)))
-                .collect(Collectors.toList()));
 
         return appendAttributes(udiPerson, isLeggTil ? nyUdiPerson.getAliaser() : emptyList(), Status.UPDATE, tpsPerson);
     }

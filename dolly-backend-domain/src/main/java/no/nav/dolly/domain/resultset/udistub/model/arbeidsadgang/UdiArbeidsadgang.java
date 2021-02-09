@@ -1,7 +1,6 @@
 package no.nav.dolly.domain.resultset.udistub.model.arbeidsadgang;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,4 +21,6 @@ public class UdiArbeidsadgang {
     private UdiHarType harArbeidsAdgang;
     private UdiPeriode periode;
     private UdiArbeidsadgangType typeArbeidsadgang;
+    private String forklaring;
+    private String hjemmel;
 }
