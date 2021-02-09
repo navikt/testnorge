@@ -1,6 +1,7 @@
 package no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,17 +27,29 @@ import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.EDAGM;
 @RequiredArgsConstructor
 public class OpplysningspliktigList {
     private final List<EDAGM> list;
+    private static Unmarshaller unmarshaller;
+
+    static {
+        try {
+            var jaxbContext = JAXBContext.newInstance(EDAGM.class);
+            unmarshaller = jaxbContext.createUnmarshaller();
+        } catch (JAXBException e) {
+            log.error("Feil ved opprettelse av unmarshaller for EDAGM", e);
+        }
+    }
+
 
     @SuppressWarnings("unchecked")
     private static EDAGM from(String xml, Unmarshaller unmarshaller) throws JAXBException {
-        var reader = new StringReader(xml);
-        return ((JAXBElement<EDAGM>) unmarshaller.unmarshal(reader)).getValue();
+        try(var reader = new StringReader(xml)){
+            EDAGM edagm = ((JAXBElement<EDAGM>) unmarshaller.unmarshal(reader)).getValue();
+            reader.close();
+            return edagm;
+        }
     }
 
     public static OpplysningspliktigList fromFolder(final String folderPath) {
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(EDAGM.class);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             List<EDAGM> list = new ArrayList<>();
 
             AtomicInteger count = new AtomicInteger(0);
@@ -63,8 +76,6 @@ public class OpplysningspliktigList {
 
     public static OpplysningspliktigList from(MultipartFile... files) {
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(EDAGM.class);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             List<EDAGM> list = new ArrayList<>();
             for (var file : files) {
                 log.info("Converterer fil {}...", file.getOriginalFilename());
@@ -83,8 +94,6 @@ public class OpplysningspliktigList {
 
     public static OpplysningspliktigList from(List<String> xmls) {
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(EDAGM.class);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             List<EDAGM> list = new ArrayList<>();
             for (var xml : xmls) {
                 try {
@@ -102,8 +111,6 @@ public class OpplysningspliktigList {
 
     public static EDAGM from(String xml) {
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(EDAGM.class);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             return from(xml, unmarshaller);
         } catch (Exception e) {
             throw new RuntimeException("Klarer ikke a konvertere xmlene til EDAGM", e);
