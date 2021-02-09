@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import static java.util.Objects.nonNull;
 
 @Component
-public class IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter
+public class IkkeOppholdstillatelseIkkeOppholdPaSammeVilkarIkkeVisumWsConverter
         implements Converter<UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum, IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum> {
 
     private final XmlDateWsConverter xmlDateWsConverter = new XmlDateWsConverter();

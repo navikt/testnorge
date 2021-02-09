@@ -19,15 +19,15 @@ import static java.util.Objects.nonNull;
 @Component
 public class GjeldendeOppholdStatusWsConverter implements Converter<UdiOppholdStatus, GjeldendeOppholdsstatus> {
 
-    private XmlDateWsConverter xmlDateWsConverter = new XmlDateWsConverter();
-    private PeriodeWsConverter periodeWsConverter = new PeriodeWsConverter();
+    private final XmlDateWsConverter xmlDateWsConverter = new XmlDateWsConverter();
+    private final PeriodeWsConverter periodeWsConverter = new PeriodeWsConverter();
 
     @Override
     public GjeldendeOppholdsstatus convert(UdiOppholdStatus oppholdStatus) {
 
         if (nonNull(oppholdStatus)) {
-            IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter ikkeWsConverter;
-            ikkeWsConverter = new IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter();
+            IkkeOppholdstillatelseIkkeOppholdPaSammeVilkarIkkeVisumWsConverter ikkeWsConverter;
+            ikkeWsConverter = new IkkeOppholdstillatelseIkkeOppholdPaSammeVilkarIkkeVisumWsConverter();
             var resultatOppholdsstatus = new GjeldendeOppholdsstatus();
 
             resultatOppholdsstatus.setUavklart(Boolean.TRUE.equals(oppholdStatus.getUavklart()) ? new Uavklart() : null);

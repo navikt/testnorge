@@ -1,6 +1,6 @@
 package no.nav.udistub.converter;
 
-import no.nav.udistub.converter.ws.IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter;
+import no.nav.udistub.converter.ws.IkkeOppholdstillatelseIkkeOppholdPaSammeVilkarIkkeVisumWsConverter;
 import no.udi.mt_1067_nav_data.v1.AvslagEllerBortfallAvPOBOSellerTilbakekallEllerFormeltVedtak;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTAGrunnlagskategoriOppholdsrett;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTAGrunnlagskategoriOppholdstillatelse;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumConverterTest extends ConverterTestBase {
 
     @InjectMocks
-    protected IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumWsConverter ikkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumConverter;
+    protected IkkeOppholdstillatelseIkkeOppholdPaSammeVilkarIkkeVisumWsConverter ikkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumConverter;
 
     @Test
     void convertFromPersonToIkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumIfPresent() {
