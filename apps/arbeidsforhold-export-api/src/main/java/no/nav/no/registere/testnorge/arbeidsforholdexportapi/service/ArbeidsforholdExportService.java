@@ -18,14 +18,10 @@ public class ArbeidsforholdExportService {
     private final InntektsmottakerHendelseRepository inntektsmottakerHendelseRepository;
 
     public List<Arbeidsforhold> getArbeidsforhold() {
-        return getOpplysningspliktigList().toArbeidsforhold();
-    }
-
-    private OpplysningspliktigList getOpplysningspliktigList() {
-        return inntektsmottakerHendelseRepository.getAll();
+        return inntektsmottakerHendelseRepository.getAllArbeidsforhold();
     }
 
     public List<Permisjon> getPermisjoner() {
-        return getOpplysningspliktigList().toPermisjoner();
+        return inntektsmottakerHendelseRepository.getAllPermisjoner();
     }
 }
