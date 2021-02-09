@@ -19,7 +19,7 @@ public class InntektsmottakerXmlPermisjonerRowMapper implements RowMapper<List<P
 
     @Override
     public List<Permisjon> mapRow(ResultSet rs, int rowNum) throws SQLException {
-        if(rowNum % 1000 == 0){
+        if(rowNum % 10000 == 0){
             log.info("Antall rader behandlet {}/{}.", rowNum, total);
         }
         Opplysningspliktig opplysningspliktig = Opplysningspliktig.from(rs.getString("INNTEKTSMOTTAKER_XML"));

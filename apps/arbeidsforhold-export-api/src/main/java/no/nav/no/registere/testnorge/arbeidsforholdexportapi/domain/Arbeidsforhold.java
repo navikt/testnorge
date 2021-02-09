@@ -10,10 +10,24 @@ import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.Virksomhet;
 
 
 public class Arbeidsforhold {
-    private final Leveranse leveranse;
-    private final Virksomhet virksomhet;
-    private final Inntektsmottaker inntektsmottaker;
-    private final no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.Arbeidsforhold arbeidsforhold;
+    private final String kalendermaaned;
+    private final String opplysningspliktigOrgnummer;
+    private final String virksomhetOrgnummer;
+    private final String ident;
+    private final String arbeidsforholdId;
+    private final String arbeidsforholdType;
+    private final String yrke;
+    private final Float antallTimerPerUkeSomEnFullStillingTilsvarer;
+    private final LocalDate sisteLoennsendringsdato;
+    private final LocalDate sisteDatoForStillingsprosentendring;
+    private final String avloenningstype;
+    private final String arbeidstidsordning;
+    private final Float stillingsprosent;
+    private final LocalDate startdato;
+    private final LocalDate sluttdato;
+    private final String skipsregister;
+    private final String skipstype;
+    private final String fartsomraade;
     private final Permisjoner permisjoner;
 
     public Arbeidsforhold(
@@ -22,75 +36,100 @@ public class Arbeidsforhold {
             Inntektsmottaker inntektsmottaker,
             no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.Arbeidsforhold arbeidsforhold
     ) {
-        this.leveranse = leveranse;
-        this.virksomhet = virksomhet;
-        this.inntektsmottaker = inntektsmottaker;
-        this.arbeidsforhold = arbeidsforhold;
+        this.virksomhetOrgnummer = virksomhet.getNorskIdentifikator();
+        this.kalendermaaned = leveranse.getKalendermaaned().toString();
+        this.opplysningspliktigOrgnummer = leveranse.getOpplysningspliktig().getNorskIdentifikator();
+        this.ident = inntektsmottaker.getNorskIdentifikator();
         this.permisjoner = Permisjoner.from(arbeidsforhold.getPermisjon(), getKalendermaaned(), getIdent());
-    }
-
-    public String getKalendermaaned() {
-        return leveranse.getKalendermaaned().toString();
-    }
-
-    public String getOpplysningspliktigOrgnummer() {
-        return leveranse.getOpplysningspliktig().getNorskIdentifikator();
-    }
-
-    public String getVirksomhetOrgnummer() {
-        return virksomhet.getNorskIdentifikator();
-    }
-
-    public String getIdent() {
-        return inntektsmottaker.getNorskIdentifikator();
+        this.arbeidsforholdId = arbeidsforhold.getArbeidsforholdId();
+        this.arbeidsforholdType = arbeidsforhold.getTypeArbeidsforhold();
+        this.yrke = arbeidsforhold.getYrke();
+        this.antallTimerPerUkeSomEnFullStillingTilsvarer = arbeidsforhold.getAntallTimerPerUkeSomEnFullStillingTilsvarer() != null
+                ? arbeidsforhold.getAntallTimerPerUkeSomEnFullStillingTilsvarer().floatValue() : null;
+        this.sisteLoennsendringsdato = toLocalDate(arbeidsforhold.getSisteLoennsendringsdato());
+        this.sisteDatoForStillingsprosentendring = toLocalDate(arbeidsforhold.getSisteDatoForStillingsprosentendring());
+        this.avloenningstype = arbeidsforhold.getAvloenningstype();
+        this.arbeidstidsordning = arbeidsforhold.getArbeidstidsordning();
+        this.stillingsprosent = arbeidsforhold.getStillingsprosent() != null
+                ? arbeidsforhold.getStillingsprosent().floatValue() : null;
+        this.startdato = toLocalDate(arbeidsforhold.getStartdato());
+        this.sluttdato = toLocalDate(arbeidsforhold.getSluttdato());
+        this.skipsregister = arbeidsforhold.getFartoey() != null ? arbeidsforhold.getFartoey().getSkipsregister() : null;
+        this.skipstype = arbeidsforhold.getFartoey() != null ? arbeidsforhold.getFartoey().getSkipstype() : null;
+        this.fartsomraade = arbeidsforhold.getFartoey() != null ? arbeidsforhold.getFartoey().getFartsomraade() : null;
     }
 
     public String getArbeidsforholdId() {
-        return arbeidsforhold.getArbeidsforholdId();
+        return arbeidsforholdId;
     }
 
     public String getArbeidsforholdType() {
-        return arbeidsforhold.getTypeArbeidsforhold();
+        return arbeidsforholdType;
     }
 
     public String getYrke() {
-        return arbeidsforhold.getYrke();
+        return yrke;
     }
 
     public Float getAntallTimerPerUkeSomEnFullStillingTilsvarer() {
-        return arbeidsforhold.getAntallTimerPerUkeSomEnFullStillingTilsvarer() != null
-                ? arbeidsforhold.getAntallTimerPerUkeSomEnFullStillingTilsvarer().floatValue() : null;
+        return antallTimerPerUkeSomEnFullStillingTilsvarer;
     }
 
     public LocalDate getSisteLoennsendringsdato() {
-        return toLocalDate(arbeidsforhold.getSisteLoennsendringsdato());
+        return sisteLoennsendringsdato;
     }
 
     public LocalDate getSisteDatoForStillingsprosentendring() {
-        return toLocalDate(arbeidsforhold.getSisteDatoForStillingsprosentendring());
+        return sisteDatoForStillingsprosentendring;
     }
 
     public String getAvloenningstype() {
-        return arbeidsforhold.getAvloenningstype();
+        return avloenningstype;
     }
 
     public String getArbeidstidsordning() {
-        return arbeidsforhold.getArbeidstidsordning();
+        return arbeidstidsordning;
     }
 
     public Float getStillingsprosent() {
-        return arbeidsforhold.getStillingsprosent() != null
-                ? arbeidsforhold.getStillingsprosent().floatValue() : null;
+        return stillingsprosent;
     }
 
     public LocalDate getStartdato() {
-        return toLocalDate(arbeidsforhold.getStartdato());
+        return startdato;
     }
 
     public LocalDate getSluttdato() {
-        return toLocalDate(arbeidsforhold.getSluttdato());
+        return sluttdato;
     }
 
+    public String getSkipsregister() {
+        return skipsregister;
+    }
+
+    public String getSkipstype() {
+        return skipstype;
+    }
+
+    public String getFartsomraade() {
+        return fartsomraade;
+    }
+
+    public String getKalendermaaned() {
+        return kalendermaaned;
+    }
+
+    public String getOpplysningspliktigOrgnummer() {
+        return opplysningspliktigOrgnummer;
+    }
+
+    public String getVirksomhetOrgnummer() {
+        return virksomhetOrgnummer;
+    }
+
+    public String getIdent() {
+        return ident;
+    }
 
     public int getAntallVelferdspermisjon() {
         return permisjoner.getAntallVelferdspermisjon();
@@ -116,7 +155,7 @@ public class Arbeidsforhold {
         return permisjoner.getAntallUtdanningspermisjon();
     }
 
-    public List<Permisjon> getPermisjoner(){
+    public List<Permisjon> getPermisjoner() {
         return permisjoner.getList();
     }
 
@@ -126,17 +165,5 @@ public class Arbeidsforhold {
             return null;
         }
         return LocalDate.of(calendar.getYear(), calendar.getMonth(), calendar.getDay());
-    }
-
-    public String getSkipsregister(){
-        return arbeidsforhold.getFartoey() != null ? arbeidsforhold.getFartoey().getSkipsregister() : null;
-    }
-
-    public String getSkipstype(){
-        return arbeidsforhold.getFartoey() != null ? arbeidsforhold.getFartoey().getSkipstype() : null;
-    }
-
-    public String getFartsomraade(){
-        return arbeidsforhold.getFartoey() != null ? arbeidsforhold.getFartoey().getFartsomraade() : null;
     }
 }

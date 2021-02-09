@@ -22,11 +22,16 @@ import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.EDAGM;
 public class InntektsmottakerHendelseRepository {
     private final JdbcTemplate jdbcTemplate;
 
-    public List<Arbeidsforhold> getAllArbeidsforhold(){
-        var count = jdbcTemplate.queryForObject(
+
+    private Integer count(){
+        return jdbcTemplate.queryForObject(
                 "SELECT COUNT(*) FROM AAREG_UTTREKK.temp_uttrekk_inhe",
                 Integer.class
         );
+    }
+
+    public List<Arbeidsforhold> getAllArbeidsforhold(){
+        var count = count();
         log.info("Henter {} INNTEKTSMOTTAKER_XML fra DB...", count);
         List<Arbeidsforhold> list = jdbcTemplate.query(
                 "SELECT INNTEKTSMOTTAKER_XML FROM AAREG_UTTREKK.temp_uttrekk_inhe",
@@ -36,12 +41,8 @@ public class InntektsmottakerHendelseRepository {
         return list;
     }
 
-
     public List<Permisjon> getAllPermisjoner(){
-        var count = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM AAREG_UTTREKK.temp_uttrekk_inhe",
-                Integer.class
-        );
+        var count = count();
         log.info("Henter {} INNTEKTSMOTTAKER_XML fra DB...", count);
         List<Permisjon> list = jdbcTemplate.query(
                 "SELECT INNTEKTSMOTTAKER_XML FROM AAREG_UTTREKK.temp_uttrekk_inhe",
