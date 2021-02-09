@@ -62,6 +62,7 @@ public class PersonController {
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
     public void deletePerson(@RequestHeader(name = "Nav-Personident") String ident) {
+
         personService.deletePerson(ident);
     }
 

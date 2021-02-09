@@ -1,7 +1,6 @@
 package no.nav.udistub.config;
 
 import lombok.RequiredArgsConstructor;
-import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import no.nav.udistub.converter.MappingStrategy;
