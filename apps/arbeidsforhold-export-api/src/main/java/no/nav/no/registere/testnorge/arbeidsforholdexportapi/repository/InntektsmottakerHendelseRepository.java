@@ -23,14 +23,38 @@ public class InntektsmottakerHendelseRepository {
     private final JdbcTemplate jdbcTemplate;
 
 
-    private Integer count(){
+    public Integer count(){
         return jdbcTemplate.queryForObject(
                 "SELECT COUNT(*) FROM AAREG_UTTREKK.temp_uttrekk_inhe",
                 Integer.class
         );
     }
 
+    public List<Arbeidsforhold> getArbeidsforhold(int page, int size){
+        var count = count();
+        log.info("Henter side {} med storrelse {} INNTEKTSMOTTAKER_XML fra DB...", page, size);
+        List<Arbeidsforhold> list = jdbcTemplate.query(
+                "SELECT INNTEKTSMOTTAKER_XML FROM AAREG_UTTREKK.temp_uttrekk_inhe ORDER BY EFF_OPPLYSNINGSPLIKTIG_ID OFFSET " + page + " ROWS FETCH NEXT " + size + " ROWS ONLY",
+                new InntektsmottakerXmlArbeidsforholdRowMapper(count)
+        ).stream().flatMap(Collection::stream).collect(Collectors.toList());
+        log.info("Hentet {} arbeidsforhold fra DB.", list.size());
+        return list;
+    }
+
+    public List<Permisjon> getPermisjoner(int page, int size){
+        var count = count();
+        log.info("Henter side {} med storrelse {} INNTEKTSMOTTAKER_XML fra DB...", page, size);
+        List<Permisjon> list = jdbcTemplate.query(
+                "SELECT INNTEKTSMOTTAKER_XML FROM AAREG_UTTREKK.temp_uttrekk_inhe ORDER BY EFF_OPPLYSNINGSPLIKTIG_ID OFFSET " + page + " ROWS FETCH NEXT " + size + " ROWS ONLY",
+                new InntektsmottakerXmlPermisjonerRowMapper(count)
+        ).stream().flatMap(Collection::stream).collect(Collectors.toList());
+        log.info("Hentet {} arbeidsforhold fra DB.", list.size());
+        return list;
+    }
+
+
     public List<Arbeidsforhold> getAllArbeidsforhold(){
+
         var count = count();
         log.info("Henter {} INNTEKTSMOTTAKER_XML fra DB...", count);
         List<Arbeidsforhold> list = jdbcTemplate.query(
