@@ -12,7 +12,7 @@ spec:
         - application: dolly-frontend-dev
         - application: testnorge-oversikt-frontend
         - application: team-dolly-lokal-app
-            cluster: dev-gcp
+          cluster: dev-gcp
   webproxy: true
   azure:
     application:
