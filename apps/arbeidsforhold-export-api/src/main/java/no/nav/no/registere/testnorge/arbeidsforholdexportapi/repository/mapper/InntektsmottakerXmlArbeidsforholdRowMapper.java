@@ -20,10 +20,11 @@ public class InntektsmottakerXmlArbeidsforholdRowMapper implements RowMapper<Lis
 
     @Override
     public List<Arbeidsforhold> mapRow(ResultSet rs, int rowNum) throws SQLException {
-        if(rowNum % 10000 == 0){
-            log.info("Antall rader behandlet {}/{}.", rowNum, total);
+        if ((rowNum + 1) % 10000 == 0 || (rowNum + 1) == total) {
+            log.info("Antall rader behandlet {}/{}.", rowNum + 1, total);
         }
         Opplysningspliktig opplysningspliktig = Opplysningspliktig.from(rs.getString("INNTEKTSMOTTAKER_XML"));
+        rs.close();
         return opplysningspliktig.toArbeidsforhold();
     }
 }

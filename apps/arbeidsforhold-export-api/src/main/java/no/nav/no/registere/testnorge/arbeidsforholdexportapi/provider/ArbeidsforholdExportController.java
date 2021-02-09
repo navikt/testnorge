@@ -31,7 +31,6 @@ public class ArbeidsforholdExportController {
 
     @GetMapping
     public ResponseEntity<HttpStatus> getArbeidsforhold(HttpServletResponse response) throws IOException {
-
         response.setContentType("text/csv");
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setHeader("Content-Disposition", "attachment; filename=syntetisering-arbeidesforhold-" + LocalDateTime.now() + ".csv");
@@ -41,7 +40,6 @@ public class ArbeidsforholdExportController {
 
     @GetMapping("/permisjoner")
     public ResponseEntity<HttpStatus> gerPermisjoner(HttpServletResponse response) throws IOException {
-
         response.setContentType("text/csv");
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setHeader("Content-Disposition", "attachment; filename=syntetisering-permisjoner-" + LocalDateTime.now() + ".csv");
