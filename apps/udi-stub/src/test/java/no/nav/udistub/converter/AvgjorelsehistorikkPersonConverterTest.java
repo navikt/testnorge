@@ -13,13 +13,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(MockitoExtension.class)
-public class AvgjorelsehistorikkPersonConverterTest extends ConverterTestBase {
+class AvgjorelsehistorikkPersonConverterTest extends ConverterTestBase {
 
     @InjectMocks
     protected AvgjorelsehistorikkWsConverter avgjorelsehistorikkConverter;
 
     @Test
-    public void convertFromPersonToArbeidsadgangIfPresent() {
+    void convertFromPersonToArbeidsadgangIfPresent() {
         Avgjorelser result = avgjorelsehistorikkConverter.convert(defaultTestPerson);
         assertNotNull(result);
         result.getAvgjorelseListe()
@@ -27,7 +27,7 @@ public class AvgjorelsehistorikkPersonConverterTest extends ConverterTestBase {
                 .forEach(this::assertAvgjorelse);
     }
 
-    private void assertAvgjorelse(Avgjorelse avgjorelse) {
+    void assertAvgjorelse(Avgjorelse avgjorelse) {
         assertNotNull(avgjorelse);
 
         assertNotNull(avgjorelse.getAvgjorelsestype());
@@ -54,7 +54,7 @@ public class AvgjorelsehistorikkPersonConverterTest extends ConverterTestBase {
     }
 
     @Test
-    public void convertFromPersonToArbeidsadgangIfAbsent() {
+    void convertFromPersonToArbeidsadgangIfAbsent() {
         Avgjorelser result = avgjorelsehistorikkConverter.convert(null);
         assertNull(result);
     }

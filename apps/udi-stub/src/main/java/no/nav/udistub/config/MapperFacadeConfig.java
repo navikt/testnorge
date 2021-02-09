@@ -17,7 +17,6 @@ import static java.util.Objects.nonNull;
 public class MapperFacadeConfig {
 
     private final List<MappingStrategy> mappingStrategies;
-    private final List<CustomConverter> customConverters;
 
     @Bean
     MapperFacade mapperFacade() {
@@ -25,11 +24,6 @@ public class MapperFacadeConfig {
 
         if (nonNull(mappingStrategies)) {
             mappingStrategies.forEach(mapper -> mapper.register(mapperFactory));
-        }
-
-        if (nonNull(customConverters)) {
-            customConverters.forEach(converter ->
-                    mapperFactory.getConverterFactory().registerConverter(converter));
         }
 
         return mapperFactory.getMapperFacade();
