@@ -79,7 +79,6 @@ export default () => {
                 onBlur={(e) =>
                   dispatch({ type: Action.SET_FARS_IDENT_ACTION, value: e.target.value })
                 }
-                feil="test"
               />
               <SelectFormItem
                 label="Barnets identtype"
@@ -109,6 +108,7 @@ export default () => {
                 id="foedselsdato-field"
                 label="Barnets fødselesdato"
                 onBlur={(value) => dispatch({ type: Action.SET_FOEDSELSDATO_ACTION, value: value })}
+                error={'test'}
               />
             </Line>
             <Line>
