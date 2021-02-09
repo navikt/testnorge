@@ -53,7 +53,7 @@ public class HentVedtakshistorikkCommand implements Callable<List<Vedtakshistori
                     .retrieve()
                     .bodyToMono(RESPONSE_TYPE)
                     .block();
-        } catch (Exception | Error e) {
+        } catch (Exception e) {
             log.error("Klarte ikke hente vedtakshistorikk.", e);
             return Collections.emptyList();
         }

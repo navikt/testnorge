@@ -80,9 +80,8 @@ public class VedtakshistorikkService {
     ) {
         Map<String, List<NyttVedtakResponse>> responses = new HashMap<>();
         var intStream = IntStream.range(0, antallNyeIdenter).boxed().collect(Collectors.toList());
-        ForkJoinPool forkJoinPool = null;
+        ForkJoinPool forkJoinPool = new ForkJoinPool(10);
         try {
-            forkJoinPool = new ForkJoinPool(10);
             forkJoinPool.submit(() ->
                     intStream.parallelStream().forEach(i ->
                             opprettHistorikkForIdent(avspillergruppeId, miljoe, responses)
@@ -94,9 +93,7 @@ public class VedtakshistorikkService {
         } catch (ExecutionException e) {
             log.error("Kunne ikke opprette vedtakshistorikk.", e);
         } finally {
-            if (forkJoinPool != null) {
-                forkJoinPool.shutdown();
-            }
+            forkJoinPool.shutdown();
         }
         return responses;
     }
