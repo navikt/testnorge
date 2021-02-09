@@ -39,10 +39,9 @@ public class HentVedtakshistorikkCommand implements Callable<List<Vedtakshistori
 
     @Override
     public List<Vedtakshistorikk> call() {
-        List<Vedtakshistorikk> response = Collections.emptyList();
         try {
             log.info("Henter vedtakshistorikk.");
-            response = webClient.post()
+            return webClient.post()
                     .uri(builder ->
                             builder.path("/v1/arena/vedtakshistorikk")
                                     .build()
@@ -56,8 +55,8 @@ public class HentVedtakshistorikkCommand implements Callable<List<Vedtakshistori
                     .block();
         } catch (Exception | Error e) {
             log.error("Klarte ikke hente vedtakshistorikk.", e);
+            return Collections.emptyList();
         }
-        return response;
     }
 
 }
