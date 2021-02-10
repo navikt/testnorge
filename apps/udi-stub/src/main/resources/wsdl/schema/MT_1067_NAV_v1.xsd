@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- edited with XMLSpy v2011 rel. 3 (x64) (http://www.altova.com) by Mats Rødseth (Utlendingsdirektoratet) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://udi.no.MT_1067_NAV.v1" xmlns:common="http://udi.no/Common/v2" xmlns:data="http://udi.no/MT_1067_NAV_Data/v1" targetNamespace="http://udi.no.MT_1067_NAV.v1" elementFormDefault="qualified">
+    <xs:import namespace="http://udi.no/Common/v2" schemaLocation="Common_v2.xsd"/>
+    <xs:import namespace="http://udi.no/MT_1067_NAV_Data/v1" schemaLocation="MT_1067_NAV_Data_v1.xsd"/>
+    <xs:element name="PingRequest" type="common:PingRequestType"/>
+    <xs:element name="PingResponse" type="common:PingResponseType"/>
+    <xs:element name="DeepPingRequest" type="common:PingRequestType"/>
+    <xs:element name="DeepPingResponse" type="common:PingResponseType"/>
+    <xs:element name="HentPersonstatusRequest" type="HentPersonstatusRequestType"/>
+    <xs:element name="HentPersonstatusResponse" type="HentPersonstatusResponseType"/>
+    <xs:complexType name="HentPersonstatusRequestType">
+        <xs:sequence>
+            <xs:element name="Parameter" type="data:HentPersonstatusParameter"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="HentPersonstatusResponseType">
+        <xs:sequence>
+            <xs:element name="Resultat" type="data:HentPersonstatusResultat"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="HentUtvidetPersonstatusRequest" type="HentUtvidetPersonstatusRequestType"/>
+    <xs:element name="HentUtvidetPersonstatusResponse" type="HentUtvidetPersonstatusResponseType"/>
+    <xs:complexType name="HentUtvidetPersonstatusRequestType">
+        <xs:sequence>
+            <xs:element name="Parameter" type="data:HentUtvidetPersonstatusParameter"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="HentUtvidetPersonstatusResponseType">
+        <xs:sequence>
+            <xs:element name="Resultat" type="data:HentUtvidetPersonstatusResultat"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

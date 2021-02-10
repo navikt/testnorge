@@ -1,8 +1,8 @@
-name: Deploy udi-stub
+name: Deploy udi-stub-dev
 
 on:
   push:
-    branches: master
+    branches: feature/UDI_stub_ny_SOAP_tjeneste
     paths:
       - apps/udi-stub/**
       - libs/testnorge-core/**
@@ -46,4 +46,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/udi-stub/nais.yaml
+          RESOURCE: apps/udi-stub/nais-dev.yaml

@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: udi-stub
+  name: udi-stub-dev
   namespace: dolly
   labels:
     team: dolly
@@ -15,11 +15,13 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: dolly-backend
+        - application: dolly-backend-dev
           cluster: dev-fss
-        - application: dolly-frontend
+        - application: dolly-frontend-dev
           cluster: dev-fss
         - application: testnorge-oversikt-frontend
+          cluster: dev-fss
+        - application: team-dolly-lokal-app
           cluster: dev-fss
   liveness:
     path: /internal/isAlive
@@ -44,9 +46,9 @@ spec:
       memory: 1024Mi
   env:
     - name: DATASOURCE_URL
-      value: jdbc:postgresql://b27dbvl007.preprod.local:5432/udi-stub
+      value: jdbc:postgresql://b27dbvl023.preprod.local:5432/udi-stub-dev
     - name: DATABASE_NAME_ROLE
-      value: udi-stub-admin
+      value: udi-stub-dev-admin
   ingresses:
-    - "https://udi-stub.dev.adeo.no"
-    - "https://udi-stub.dev.intern.nav.no"
+    - "https://udi-stub-dev.dev.adeo.no"
+    - "https://udi-stub-dev.dev.intern.nav.no"
