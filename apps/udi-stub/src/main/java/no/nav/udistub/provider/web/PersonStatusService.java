@@ -50,16 +50,19 @@ public class PersonStatusService implements MT1067NAVV1Interface {
     private static HentUtvidetPersonstatusResultat filtererResultat(HentUtvidetPersonstatusRequestType request, HentUtvidetPersonstatusResultat resultat) {
 
         if (nonNull(resultat)) {
+
             if (isNotTrue(request.getParameter().isInkluderArbeidsadgang())) {
                 resultat.setArbeidsadgang(null);
+
+                if (isNotTrue(request.getParameter().isInkluderHjemmel())) {
+                    resultat.getArbeidsadgang().setHjemmel(null);
+                    resultat.getArbeidsadgang().setForklaring(null);
+                }
             }
             if (isNotTrue(request.getParameter().isInkluderFlyktningstatus())) {
                 resultat.setHarFlyktningstatus(null);
                 resultat.setUavklartFlyktningstatus(null);
                 resultat.setHistorikkHarFlyktningstatus(null);
-            }
-            if (isNotTrue(request.getParameter().isInkluderHjemmel()) && nonNull(resultat.getArbeidsadgang())) {
-                resultat.getArbeidsadgang().setHjemmel(null);
             }
             if (isNotTrue(request.getParameter().isInkluderSoknadOmBeskyttelseUnderBehandling())) {
                 resultat.setSoknadOmBeskyttelseUnderBehandling(null);
