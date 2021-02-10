@@ -31,7 +31,7 @@ public class InntektsmottakerHendelseRepository {
     public List<Arbeidsforhold> getArbeidsforhold(int page, int size) {
         log.info("Henter {} INNTEKTSMOTTAKER_XML fra DB...", size);
         List<Arbeidsforhold> list = jdbcTemplate.query(
-                "SELECT INNTEKTSMOTTAKER_XML FROM AAREG_UTTREKK.temp_uttrekk_inhe ORDER BY EFF_OPPLYSNINGSPLIKTIG_ID OFFSET " + page + " ROWS FETCH NEXT " + count + " ROWS ONLY",
+                "SELECT INNTEKTSMOTTAKER_XML FROM AAREG_UTTREKK.temp_uttrekk_inhe ORDER BY EFF_OPPLYSNINGSPLIKTIG_ID OFFSET " + page + " ROWS FETCH NEXT " + size + " ROWS ONLY",
                 new InntektsmottakerXmlArbeidsforholdRowMapper(size)
         ).stream().flatMap(Collection::stream).collect(Collectors.toList());
         log.info("Hentet {} INNTEKTSMOTTAKER_XML med {} arbeidsforhold fra DB.", size, list.size());
