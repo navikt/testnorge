@@ -16,7 +16,7 @@ import no.nav.no.registere.testnorge.arbeidsforholdexportapi.repository.Inntekts
 @Service
 @RequiredArgsConstructor
 public class ArbeidsforholdExportService {
-    public static final int PAGE_SIZE = 500_000;
+    public static final int PAGE_SIZE = 100_000;
     private final InntektsmottakerHendelseRepository inntektsmottakerHendelseRepository;
 
     @SneakyThrows
