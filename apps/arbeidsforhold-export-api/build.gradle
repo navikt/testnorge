@@ -11,6 +11,8 @@ dependencies {
     implementation project(':local-development')
     implementation project(':testnorge-dependency-analysis-auto-configuration')
 
+    implementation 'org.apache.commons:commons-csv:1.8'
+
     implementation 'javax.annotation:javax.annotation-api:1.3.2'
     implementation project(':arbeidsforhold-xsd')
     implementation project(':testnorge-core')

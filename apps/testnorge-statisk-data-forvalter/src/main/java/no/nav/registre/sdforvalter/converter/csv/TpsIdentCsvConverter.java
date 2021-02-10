@@ -1,16 +1,15 @@
 package no.nav.registre.sdforvalter.converter.csv;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import no.nav.registre.sdforvalter.domain.TpsIdent;
-import no.nav.registre.testnorge.libs.csvconverter.CsvConverter;
-import no.nav.registre.testnorge.libs.csvconverter.CsvHeader;
-import no.nav.registre.testnorge.libs.csvconverter.ObjectConverter;
-import no.nav.registre.testnorge.libs.csvconverter.RowConverter;
+import no.nav.registre.testnorge.libs.csvconverter.v1.CsvConverter;
+import no.nav.registre.testnorge.libs.csvconverter.v1.CsvHeader;
+import no.nav.registre.testnorge.libs.csvconverter.v1.ObjectConverter;
+import no.nav.registre.testnorge.libs.csvconverter.v1.RowConverter;
 
 public class TpsIdentCsvConverter extends CsvConverter<TpsIdent> {
 

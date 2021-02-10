@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.libs.csvconverter;
+package no.nav.registre.testnorge.libs.csvconverter.v1;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -24,16 +24,12 @@ public abstract class CsvConverter<T> {
     protected abstract CsvHeader[] getHeaders();
 
     public final void write(PrintWriter writer, List<T> rows) throws IOException {
-        write(writer, rows, true);
-    }
-
-    public final void write(PrintWriter writer, List<T> rows, boolean includeHeader) throws IOException {
         String[] headers = getHeadersAsString();
-        CSVFormat csvFormat = CSVFormat.DEFAULT.withDelimiter(DELIMITER);
-        if(includeHeader){
-            csvFormat.withHeader(headers);
-        }
-        CSVPrinter printer = csvFormat.print(writer);
+        CSVPrinter printer = CSVFormat.DEFAULT
+                .withDelimiter(DELIMITER)
+                .withHeader(headers)
+                .print(writer);
+
         List<Map<String, Object>> collectionOfMap = rows
                 .parallelStream()
                 .map(getObjectConverter()::convert)

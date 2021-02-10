@@ -1,26 +1,20 @@
 package no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv;
 
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Permisjon;
-import no.nav.registre.testnorge.libs.csvconverter.CsvConverter;
-import no.nav.registre.testnorge.libs.csvconverter.CsvHeader;
-import no.nav.registre.testnorge.libs.csvconverter.ObjectConverter;
-import no.nav.registre.testnorge.libs.csvconverter.RowConverter;
+import no.nav.registre.testnorge.libs.csvconverter.v1.CsvConverter;
+import no.nav.registre.testnorge.libs.csvconverter.v1.CsvHeader;
+import no.nav.registre.testnorge.libs.csvconverter.v1.CsvPrinterConverter;
+import no.nav.registre.testnorge.libs.csvconverter.v1.ObjectConverter;
+import no.nav.registre.testnorge.libs.csvconverter.v1.RowConverter;
 
-public class PermisjonSyntetiseringCsvConverter extends CsvConverter<Permisjon> {
+public class PermisjonSyntetiseringCsvPrinterConverter extends CsvPrinterConverter<Permisjon> {
 
-    private static PermisjonSyntetiseringCsvConverter inst;
-
-    private PermisjonSyntetiseringCsvConverter() {
-    }
-
-    public static PermisjonSyntetiseringCsvConverter inst() {
-        if (inst == null) {
-            inst = new PermisjonSyntetiseringCsvConverter();
-        }
-        return inst;
+    public PermisjonSyntetiseringCsvPrinterConverter(PrintWriter writer) {
+        super(writer);
     }
 
     private enum Headers implements CsvHeader {
@@ -41,11 +35,6 @@ public class PermisjonSyntetiseringCsvConverter extends CsvConverter<Permisjon> 
         public String getValue() {
             return header;
         }
-    }
-
-    @Override
-    protected RowConverter<Permisjon> getRowConverter() {
-        throw new UnsupportedOperationException("Import av arbeidsforhold ikke stottet");
     }
 
     @Override

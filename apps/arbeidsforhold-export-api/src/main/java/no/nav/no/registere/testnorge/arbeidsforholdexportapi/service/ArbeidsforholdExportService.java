@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.PrintWriter;
 
-import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.ArbeidsforholdSyntetiseringCsvConverter;
-import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.PermisjonSyntetiseringCsvConverter;
+import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.ArbeidsforholdSyntetiseringCsvPrinterConverter;
+import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.PermisjonSyntetiseringCsvPrinterConverter;
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.repository.InntektsmottakerHendelseRepository;
 
 @Slf4j
@@ -30,13 +30,10 @@ public class ArbeidsforholdExportService {
         log.info("Lagerer arbeidsforhold til fil: {}", file.getPath());
         file.deleteOnExit();
         try (PrintWriter writer = new PrintWriter(file)) {
+            var printer = new ArbeidsforholdSyntetiseringCsvPrinterConverter(writer);
             for (int page = 0; page < numberOfPages; page++) {
                 log.info("Henter for side {}/{} med {} per side.", page + 1, numberOfPages, PAGE_SIZE);
-                ArbeidsforholdSyntetiseringCsvConverter.inst().write(
-                        writer,
-                        inntektsmottakerHendelseRepository.getArbeidsforhold(page, PAGE_SIZE),
-                        page == 0
-                );
+                printer.write(inntektsmottakerHendelseRepository.getArbeidsforhold(page, PAGE_SIZE));
             }
         }
         return file;
@@ -52,13 +49,10 @@ public class ArbeidsforholdExportService {
         log.info("Lagerer permisjoner til fil: {}", file.getPath());
         file.deleteOnExit();
         try (PrintWriter writer = new PrintWriter(file)) {
+            var printer = new PermisjonSyntetiseringCsvPrinterConverter(writer);
             for (int page = 0; page < numberOfPages; page++) {
                 log.info("Henter for side {}/{} med {} per side.", page + 1, numberOfPages, PAGE_SIZE);
-                PermisjonSyntetiseringCsvConverter.inst().write(
-                        writer,
-                        inntektsmottakerHendelseRepository.getPermisjoner(page, PAGE_SIZE),
-                        page == 0
-                );
+                printer.write(inntektsmottakerHendelseRepository.getPermisjoner(page, PAGE_SIZE));
             }
         }
         return file;

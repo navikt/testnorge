@@ -51,12 +51,16 @@ public class ArbeidsforholdExportController {
     }
 
     private void writeFromFile(PrintWriter writer, File file) throws IOException {
+        log.info("Skriver til response...");
+        int index = 0;
         try(BufferedReader bufferedReader = new BufferedReader(new FileReader(file))){
             String line;
             while ((line = bufferedReader.readLine()) != null) {
+                index++;
                 writer.println(line);
             }
         }
+        log.info("Skrev {} linjer til response.", index);
     }
 
 }

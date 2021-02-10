@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.libs.csvconverter;
+package no.nav.registre.testnorge.libs.csvconverter.v1;
 
 @FunctionalInterface
 public interface CsvHeader {
