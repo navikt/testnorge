@@ -10,7 +10,6 @@ import no.nav.registre.testnorge.libs.csvconverter.v1.ObjectConverter;
 import no.nav.registre.testnorge.libs.csvconverter.v1.CsvPrinterConverter;
 
 public class ArbeidsforholdSyntetiseringCsvPrinterConverter extends CsvPrinterConverter<Arbeidsforhold> {
-
     public ArbeidsforholdSyntetiseringCsvPrinterConverter(PrintWriter writer) {
         super(writer);
     }

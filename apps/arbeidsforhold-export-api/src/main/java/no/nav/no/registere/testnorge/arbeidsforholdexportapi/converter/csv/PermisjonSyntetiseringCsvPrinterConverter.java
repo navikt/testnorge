@@ -12,7 +12,6 @@ import no.nav.registre.testnorge.libs.csvconverter.v1.ObjectConverter;
 import no.nav.registre.testnorge.libs.csvconverter.v1.RowConverter;
 
 public class PermisjonSyntetiseringCsvPrinterConverter extends CsvPrinterConverter<Permisjon> {
-
     public PermisjonSyntetiseringCsvPrinterConverter(PrintWriter writer) {
         super(writer);
     }

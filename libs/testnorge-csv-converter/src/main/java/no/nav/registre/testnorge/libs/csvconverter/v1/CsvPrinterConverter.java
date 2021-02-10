@@ -46,14 +46,6 @@ public abstract class CsvPrinterConverter<T> {
         printer.close();
     }
 
-    private Map<String, Object> recordToMap(CSVRecord record) {
-        Map<String, Object> map = new HashMap<>();
-        for (String header : getHeadersAsString()) {
-            map.put(header, record.get(header));
-        }
-        return map;
-    }
-
     private void printRow(CSVPrinter printer, Map<String, Object> row, String[] headers) throws IOException {
         for (String header : headers) {
             printer.print(row.get(header));
