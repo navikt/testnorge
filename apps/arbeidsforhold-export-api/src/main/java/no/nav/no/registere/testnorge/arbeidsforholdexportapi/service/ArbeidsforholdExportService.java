@@ -7,22 +7,16 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.ArbeidsforholdSyntetiseringCsvConverter;
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.PermisjonSyntetiseringCsvConverter;
-import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Arbeidsforhold;
-import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Permisjon;
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.repository.InntektsmottakerHendelseRepository;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ArbeidsforholdExportService {
-    public static final int PAGE_SIZE = 400_000;
+    public static final int PAGE_SIZE = 500_000;
     private final InntektsmottakerHendelseRepository inntektsmottakerHendelseRepository;
 
     @SneakyThrows
@@ -32,13 +26,13 @@ public class ArbeidsforholdExportService {
         int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
 
         File file = File.createTempFile("temp", ".csv");
-        PrintWriter writer = new PrintWriter(file);
-
-        for (int page = 0; page < numberOfPages; page++) {
-            log.info("Henter for side {}/{} med {} per side.", page, numberOfPages, PAGE_SIZE);
-            ArbeidsforholdSyntetiseringCsvConverter.inst().write(writer, inntektsmottakerHendelseRepository.getArbeidsforhold(page, PAGE_SIZE));
+        log.info("Lagerer arbeidsforhold til fil: {}", file.getPath());
+        try (PrintWriter writer = new PrintWriter(file)) {
+            for (int page = 0; page < numberOfPages; page++) {
+                log.info("Henter for side {}/{} med {} per side.", page + 1, numberOfPages, PAGE_SIZE);
+                ArbeidsforholdSyntetiseringCsvConverter.inst().write(writer, inntektsmottakerHendelseRepository.getArbeidsforhold(page, PAGE_SIZE));
+            }
         }
-        writer.close();
         file.deleteOnExit();
         return file;
     }
@@ -51,13 +45,13 @@ public class ArbeidsforholdExportService {
         int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
 
         File file = File.createTempFile("temp", ".csv");
-        PrintWriter writer = new PrintWriter(file);
-
-        for (int page = 0; page < numberOfPages; page++) {
-            log.info("Henter for side {}/{} med {} per side.", page, numberOfPages, PAGE_SIZE);
-            PermisjonSyntetiseringCsvConverter.inst().write(writer, inntektsmottakerHendelseRepository.getPermisjoner(page, PAGE_SIZE));
+        log.info("Lagerer permisjoner til fil: {}", file.getPath());
+        try (PrintWriter writer = new PrintWriter(file)) {
+            for (int page = 0; page < numberOfPages; page++) {
+                log.info("Henter for side {}/{} med {} per side.", page + 1, numberOfPages, PAGE_SIZE);
+                PermisjonSyntetiseringCsvConverter.inst().write(writer, inntektsmottakerHendelseRepository.getPermisjoner(page, PAGE_SIZE));
+            }
         }
-        writer.close();
         file.deleteOnExit();
         return file;
     }

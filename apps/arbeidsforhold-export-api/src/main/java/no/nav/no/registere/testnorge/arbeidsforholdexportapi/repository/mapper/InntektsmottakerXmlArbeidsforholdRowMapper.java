@@ -10,8 +10,6 @@ import java.util.List;
 
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Arbeidsforhold;
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Opplysningspliktig;
-import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.OpplysningspliktigList;
-import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.EDAGM;
 
 @Slf4j
 @RequiredArgsConstructor

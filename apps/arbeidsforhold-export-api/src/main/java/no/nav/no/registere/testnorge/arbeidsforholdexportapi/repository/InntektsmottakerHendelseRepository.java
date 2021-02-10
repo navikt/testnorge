@@ -20,7 +20,6 @@ import no.nav.no.registere.testnorge.arbeidsforholdexportapi.repository.mapper.I
 public class InntektsmottakerHendelseRepository {
     private final JdbcTemplate jdbcTemplate;
 
-
     public Integer count() {
         return jdbcTemplate.queryForObject(
                 "SELECT COUNT(*) FROM AAREG_UTTREKK.temp_uttrekk_inhe",
@@ -32,7 +31,7 @@ public class InntektsmottakerHendelseRepository {
         log.info("Henter {} INNTEKTSMOTTAKER_XML fra DB...", size);
         List<Arbeidsforhold> list = jdbcTemplate.query(
                 "SELECT INNTEKTSMOTTAKER_XML FROM AAREG_UTTREKK.temp_uttrekk_inhe ORDER BY EFF_OPPLYSNINGSPLIKTIG_ID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
-                new Object[]{ page, size},
+                new Object[]{ page * size, size},
                 new InntektsmottakerXmlArbeidsforholdRowMapper(size)
         ).stream().flatMap(Collection::stream).collect(Collectors.toList());
         log.info("Hentet {} INNTEKTSMOTTAKER_XML med {} arbeidsforhold fra DB.", size, list.size());
@@ -43,7 +42,7 @@ public class InntektsmottakerHendelseRepository {
         log.info("Henter {} INNTEKTSMOTTAKER_XML fra DB...", size);
         List<Permisjon> list = jdbcTemplate.query(
                 "SELECT INNTEKTSMOTTAKER_XML FROM AAREG_UTTREKK.temp_uttrekk_inhe ORDER BY EFF_OPPLYSNINGSPLIKTIG_ID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
-                new Object[]{ page, size},
+                new Object[]{ page * size, size},
                 new InntektsmottakerXmlPermisjonerRowMapper(size)
         ).stream().flatMap(Collection::stream).collect(Collectors.toList());
         log.info("Hentet {} INNTEKTSMOTTAKER_XML med {} persmisjoner fra DB.", size, list.size());
