@@ -48,6 +48,10 @@ public abstract class CsvPrinterConverter<T> {
         }
     }
 
+    public void close() throws IOException {
+        printer.close();
+    }
+
     private Map<String, Object> recordToMap(CSVRecord record) {
         Map<String, Object> map = new HashMap<>();
         for (String header : getHeadersAsString()) {

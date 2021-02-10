@@ -35,6 +35,7 @@ public class ArbeidsforholdExportService {
                 log.info("Henter for side {}/{} med {} per side.", page + 1, numberOfPages, PAGE_SIZE);
                 printer.write(inntektsmottakerHendelseRepository.getArbeidsforhold(page, PAGE_SIZE));
             }
+            printer.close();
         }
         return file;
     }
@@ -54,6 +55,7 @@ public class ArbeidsforholdExportService {
                 log.info("Henter for side {}/{} med {} per side.", page + 1, numberOfPages, PAGE_SIZE);
                 printer.write(inntektsmottakerHendelseRepository.getPermisjoner(page, PAGE_SIZE));
             }
+            printer.close();
         }
         return file;
     }
