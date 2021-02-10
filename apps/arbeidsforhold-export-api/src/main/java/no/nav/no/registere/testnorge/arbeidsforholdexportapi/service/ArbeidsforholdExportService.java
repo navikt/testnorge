@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.ArbeidsforholdSyntetiseringCsvConverter;
+import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.PermisjonSyntetiseringCsvConverter;
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Arbeidsforhold;
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Permisjon;
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.repository.InntektsmottakerHendelseRepository;
@@ -21,24 +22,43 @@ import no.nav.no.registere.testnorge.arbeidsforholdexportapi.repository.Inntekts
 @Service
 @RequiredArgsConstructor
 public class ArbeidsforholdExportService {
+    public static final int PAGE_SIZE = 400_000;
     private final InntektsmottakerHendelseRepository inntektsmottakerHendelseRepository;
 
     @SneakyThrows
-    public void getArbeidsforhold(PrintWriter writer) {
+    public File getArbeidsforholdToFile() {
         var count = inntektsmottakerHendelseRepository.count();
 
-        int numberOfPages = (int) Math.ceil(count / 400_000f);
+        int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
 
-        int size = (int) Math.ceil((double) count / numberOfPages);
+        File file = File.createTempFile("temp", ".csv");
+        PrintWriter writer = new PrintWriter(file);
 
         for (int page = 0; page < numberOfPages; page++) {
-            log.info("Henter for side {}/{} med {} per side.", page, numberOfPages, page);
-            ArbeidsforholdSyntetiseringCsvConverter.inst().write(writer, inntektsmottakerHendelseRepository.getArbeidsforhold(page, size));
+            log.info("Henter for side {}/{} med {} per side.", page, numberOfPages, PAGE_SIZE);
+            ArbeidsforholdSyntetiseringCsvConverter.inst().write(writer, inntektsmottakerHendelseRepository.getArbeidsforhold(page, PAGE_SIZE));
         }
+        writer.close();
+        file.deleteOnExit();
+        return file;
     }
 
 
-    public List<Permisjon> getPermisjoner() {
-        return inntektsmottakerHendelseRepository.getAllPermisjoner();
+    @SneakyThrows
+    public File getPermisjonerToFile() {
+        var count = inntektsmottakerHendelseRepository.count();
+
+        int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
+
+        File file = File.createTempFile("temp", ".csv");
+        PrintWriter writer = new PrintWriter(file);
+
+        for (int page = 0; page < numberOfPages; page++) {
+            log.info("Henter for side {}/{} med {} per side.", page, numberOfPages, PAGE_SIZE);
+            PermisjonSyntetiseringCsvConverter.inst().write(writer, inntektsmottakerHendelseRepository.getPermisjoner(page, PAGE_SIZE));
+        }
+        writer.close();
+        file.deleteOnExit();
+        return file;
     }
 }

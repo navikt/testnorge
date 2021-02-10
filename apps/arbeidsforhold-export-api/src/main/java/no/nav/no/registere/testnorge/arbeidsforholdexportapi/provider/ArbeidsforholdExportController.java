@@ -5,14 +5,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
+import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.ArbeidsforholdSyntetiseringCsvConverter;
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.PermisjonSyntetiseringCsvConverter;
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.service.ArbeidsforholdExportService;
 
@@ -29,7 +34,15 @@ public class ArbeidsforholdExportController {
         response.setContentType("text/csv");
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setHeader("Content-Disposition", "attachment; filename=syntetisering-arbeidesforhold-" + LocalDateTime.now() + ".csv");
-        service.getArbeidsforhold(response.getWriter());
+
+        File file = service.getArbeidsforholdToFile();
+
+        try(BufferedReader bufferedReader = new BufferedReader(new FileReader(file))){
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                response.getWriter().write(line);
+            }
+        }
         return ResponseEntity.ok().build();
     }
 
@@ -38,7 +51,14 @@ public class ArbeidsforholdExportController {
         response.setContentType("text/csv");
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setHeader("Content-Disposition", "attachment; filename=syntetisering-permisjoner-" + LocalDateTime.now() + ".csv");
-        PermisjonSyntetiseringCsvConverter.inst().write(response.getWriter(), service.getPermisjoner());
+        File file = service.getPermisjonerToFile();
+
+        try(BufferedReader bufferedReader = new BufferedReader(new FileReader(file))){
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                response.getWriter().write(line);
+            }
+        }
         return ResponseEntity.ok().build();
     }
 }

@@ -49,27 +49,4 @@ public class InntektsmottakerHendelseRepository {
         log.info("Hentet {} INNTEKTSMOTTAKER_XML med {} persmisjoner fra DB.", size, list.size());
         return list;
     }
-
-
-    public List<Arbeidsforhold> getAllArbeidsforhold() {
-        var count = count();
-        log.info("Henter {} INNTEKTSMOTTAKER_XML fra DB...", count);
-        List<Arbeidsforhold> list = jdbcTemplate.query(
-                "SELECT INNTEKTSMOTTAKER_XML FROM AAREG_UTTREKK.temp_uttrekk_inhe",
-                new InntektsmottakerXmlArbeidsforholdRowMapper(count)
-        ).stream().flatMap(Collection::stream).collect(Collectors.toList());
-        log.info("Hentet {} INNTEKTSMOTTAKER_XML med {} arbeidsforhold fra DB.", count, list.size());
-        return list;
-    }
-
-    public List<Permisjon> getAllPermisjoner() {
-        var count = count();
-        log.info("Henter {} INNTEKTSMOTTAKER_XML fra DB...", count);
-        List<Permisjon> list = jdbcTemplate.query(
-                "SELECT INNTEKTSMOTTAKER_XML FROM AAREG_UTTREKK.temp_uttrekk_inhe",
-                new InntektsmottakerXmlPermisjonerRowMapper(count)
-        ).stream().flatMap(Collection::stream).collect(Collectors.toList());
-        log.info("Hentet {} INNTEKTSMOTTAKER_XML med {} arbeidsforhold fra DB.", count, list.size());
-        return list;
-    }
 }
