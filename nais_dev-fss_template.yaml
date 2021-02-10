@@ -18,7 +18,7 @@ spec:
   image: {{ image }}
   env:
     - name: UDI_CLIENT_ID
-      value: 4426ef7d-f148-4d19-8a03-b0d07a451938 # ENDRE TIL RIKTIG NÅR UDI-STUB PROD ER DEPLOYET!
+      value: f4620953-c7af-4e60-8cbb-03de57554b86
   replicas:
     min: 1
     max: 2
