@@ -49,6 +49,8 @@ public class ArbeidsforholdExportController {
         log.info("Leser fil {}.",file.getPath());
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
 
+
+
         String line;
         while ((line = bufferedReader.readLine()) != null) {
             response.getWriter().write(line);

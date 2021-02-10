@@ -58,6 +58,7 @@ public class ArbeidsforholdExportService {
             ArbeidsforholdSyntetiseringCsvConverter.inst().write(writer, inntektsmottakerHendelseRepository.getArbeidsforhold(page, size));
         }
         writer.close();
+        file.deleteOnExit();
         return file;
     }
 
