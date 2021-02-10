@@ -23,43 +23,18 @@ import no.nav.no.registere.testnorge.arbeidsforholdexportapi.repository.Inntekts
 public class ArbeidsforholdExportService {
     private final InntektsmottakerHendelseRepository inntektsmottakerHendelseRepository;
 
-    public List<Arbeidsforhold> getArbeidsforhold() {
-        var count = inntektsmottakerHendelseRepository.count();
-
-        int numberOfPages = (int) Math.ceil(count / 800_000f);
-
-        int size = (int) Math.ceil((double) count / numberOfPages);
-
-        List<List<Arbeidsforhold>> lists = new ArrayList<>();
-
-
-        for (int page = 0; page < numberOfPages; page++) {
-            lists.add(inntektsmottakerHendelseRepository.getArbeidsforhold(page, size));
-        }
-        return lists.stream().flatMap(Collection::stream).collect(Collectors.toList());
-    }
-
     @SneakyThrows
-    public File getArbeidsforholdFile() {
+    public void getArbeidsforhold(PrintWriter writer) {
         var count = inntektsmottakerHendelseRepository.count();
 
-        int numberOfPages = (int) Math.ceil(count / 100_000f);
+        int numberOfPages = (int) Math.ceil(count / 400_000f);
 
         int size = (int) Math.ceil((double) count / numberOfPages);
 
-        List<List<Arbeidsforhold>> lists = new ArrayList<>();
-
-
-        File file = File.createTempFile("temp", ".csv");
-
-        PrintWriter writer = new PrintWriter(file);
-
         for (int page = 0; page < numberOfPages; page++) {
+            log.info("Henter for side {}/{} med {} per side.", page, numberOfPages, page);
             ArbeidsforholdSyntetiseringCsvConverter.inst().write(writer, inntektsmottakerHendelseRepository.getArbeidsforhold(page, size));
         }
-        writer.close();
-        file.deleteOnExit();
-        return file;
     }
 
 
