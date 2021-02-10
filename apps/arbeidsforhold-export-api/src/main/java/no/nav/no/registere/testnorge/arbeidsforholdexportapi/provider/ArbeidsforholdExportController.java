@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,11 +13,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
-import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.ArbeidsforholdSyntetiseringCsvConverter;
-import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.PermisjonSyntetiseringCsvConverter;
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.service.ArbeidsforholdExportService;
 
 @Slf4j
@@ -37,12 +35,7 @@ public class ArbeidsforholdExportController {
 
         File file = service.getArbeidsforholdToFile();
 
-        try(BufferedReader bufferedReader = new BufferedReader(new FileReader(file))){
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                response.getWriter().write(line);
-            }
-        }
+        writeFromFile(response.getWriter(), file);
         return ResponseEntity.ok().build();
     }
 
@@ -53,12 +46,17 @@ public class ArbeidsforholdExportController {
         response.setHeader("Content-Disposition", "attachment; filename=syntetisering-permisjoner-" + LocalDateTime.now() + ".csv");
         File file = service.getPermisjonerToFile();
 
+        writeFromFile(response.getWriter(), file);
+        return ResponseEntity.ok().build();
+    }
+
+    private void writeFromFile(PrintWriter writer, File file) throws IOException {
         try(BufferedReader bufferedReader = new BufferedReader(new FileReader(file))){
             String line;
             while ((line = bufferedReader.readLine()) != null) {
-                response.getWriter().write(line);
+                writer.write(line);
             }
         }
-        return ResponseEntity.ok().build();
     }
+
 }

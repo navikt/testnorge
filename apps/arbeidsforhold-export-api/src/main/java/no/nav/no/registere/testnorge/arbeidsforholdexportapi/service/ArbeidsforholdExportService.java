@@ -22,14 +22,13 @@ public class ArbeidsforholdExportService {
     @SneakyThrows
     public File getArbeidsforholdToFile() {
         var count = inntektsmottakerHendelseRepository.count();
-
         int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
 
-        File file = File.createTempFile("temp", ".csv");
+        File file = File.createTempFile("temp", null);
         log.info("Lagerer arbeidsforhold til fil: {}", file.getPath());
         try (PrintWriter writer = new PrintWriter(file)) {
             for (int page = 0; page < numberOfPages; page++) {
-                log.info("Henter for side {}/{} med {} per side.", page + 1, numberOfPages, PAGE_SIZE);
+                log.info("Henter for side {}/{} med {} per side.", page + 1, 2, PAGE_SIZE);
                 ArbeidsforholdSyntetiseringCsvConverter.inst().write(writer, inntektsmottakerHendelseRepository.getArbeidsforhold(page, PAGE_SIZE));
             }
         }
@@ -41,10 +40,9 @@ public class ArbeidsforholdExportService {
     @SneakyThrows
     public File getPermisjonerToFile() {
         var count = inntektsmottakerHendelseRepository.count();
-
         int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
 
-        File file = File.createTempFile("temp", ".csv");
+        File file = File.createTempFile("temp", null);
         log.info("Lagerer permisjoner til fil: {}", file.getPath());
         try (PrintWriter writer = new PrintWriter(file)) {
             for (int page = 0; page < numberOfPages; page++) {
