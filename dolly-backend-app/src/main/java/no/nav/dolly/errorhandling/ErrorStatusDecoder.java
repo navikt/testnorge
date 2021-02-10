@@ -1,19 +1,18 @@
 package no.nav.dolly.errorhandling;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -83,8 +82,11 @@ public class ErrorStatusDecoder {
                     builder.append(encodeStatus(ioe.getMessage()));
                 }
 
-            } else {
+            } else if (!((HttpClientErrorException) e).getResponseBodyAsString().isEmpty()) {
                 builder.append(encodeStatus(((HttpClientErrorException) e).getResponseBodyAsString()));
+
+            } else {
+                builder.append(e.getMessage());
             }
 
         } else {
