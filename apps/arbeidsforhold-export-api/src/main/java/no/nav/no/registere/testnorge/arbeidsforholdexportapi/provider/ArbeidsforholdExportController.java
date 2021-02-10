@@ -32,10 +32,7 @@ public class ArbeidsforholdExportController {
         response.setContentType("text/csv");
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setHeader("Content-Disposition", "attachment; filename=syntetisering-arbeidesforhold-" + LocalDateTime.now() + ".csv");
-
-        File file = service.getArbeidsforholdToFile();
-
-        writeFromFile(response.getWriter(), file);
+        service.getArbeidsforhold(response.getWriter());
         return ResponseEntity.ok().build();
     }
 
@@ -44,23 +41,7 @@ public class ArbeidsforholdExportController {
         response.setContentType("text/csv");
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setHeader("Content-Disposition", "attachment; filename=syntetisering-permisjoner-" + LocalDateTime.now() + ".csv");
-        File file = service.getPermisjonerToFile();
-
-        writeFromFile(response.getWriter(), file);
+        service.getPermisjoner(response.getWriter());
         return ResponseEntity.ok().build();
     }
-
-    private void writeFromFile(PrintWriter writer, File file) throws IOException {
-        log.info("Skriver til response...");
-        int index = 0;
-        try(BufferedReader bufferedReader = new BufferedReader(new FileReader(file))){
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                index++;
-                writer.println(line);
-            }
-        }
-        log.info("Skrev {} linjer til response.", index);
-    }
-
 }
