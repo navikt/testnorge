@@ -34,7 +34,7 @@ public class InntektsmottakerHendelseRepository {
                 "SELECT INNTEKTSMOTTAKER_XML FROM AAREG_UTTREKK.temp_uttrekk_inhe ORDER BY EFF_OPPLYSNINGSPLIKTIG_ID OFFSET " + page + " ROWS FETCH NEXT " + count + " ROWS ONLY",
                 new InntektsmottakerXmlArbeidsforholdRowMapper(size)
         ).stream().flatMap(Collection::stream).collect(Collectors.toList());
-        log.info("Hentet {} INNTEKTSMOTTAKER_XML med {} arbeidsforhold fra DB.", count, list.size());
+        log.info("Hentet {} INNTEKTSMOTTAKER_XML med {} arbeidsforhold fra DB.", size, list.size());
         return list;
     }
 
@@ -44,7 +44,7 @@ public class InntektsmottakerHendelseRepository {
                 "SELECT INNTEKTSMOTTAKER_XML FROM AAREG_UTTREKK.temp_uttrekk_inhe ORDER BY EFF_OPPLYSNINGSPLIKTIG_ID OFFSET " + page + " ROWS FETCH NEXT " + size + " ROWS ONLY",
                 new InntektsmottakerXmlPermisjonerRowMapper(size)
         ).stream().flatMap(Collection::stream).collect(Collectors.toList());
-        log.info("Hentet {} arbeidsforhold fra DB.", list.size());
+        log.info("Hentet {} INNTEKTSMOTTAKER_XML med {} persmisjoner fra DB.", size, list.size());
         return list;
     }
 
