@@ -2,23 +2,17 @@ package no.nav.registre.testnorge.libs.csvconverter.v1;
 
 import lombok.SneakyThrows;
 import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Reader;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.csvconverter.v2.CsvHeader;
-import no.nav.registre.testnorge.libs.csvconverter.v2.ObjectConverter;
-import no.nav.registre.testnorge.libs.csvconverter.v2.RowConverter;
 
 public abstract class CsvPrinterConverter<T> {
     private static final char DELIMITER = ';';
