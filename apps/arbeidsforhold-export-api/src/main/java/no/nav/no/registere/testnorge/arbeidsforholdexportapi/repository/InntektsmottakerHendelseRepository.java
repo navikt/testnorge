@@ -31,13 +31,16 @@ public class InntektsmottakerHendelseRepository {
     }
 
     public List<Arbeidsforhold> getArbeidsforhold(int page, int size){
-        var count = count();
-        log.info("Henter side {} med storrelse {} INNTEKTSMOTTAKER_XML fra DB...", page, size);
+        var count = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM AAREG_UTTREKK.temp_uttrekk_inhe ORDER BY EFF_OPPLYSNINGSPLIKTIG_ID OFFSET " + page + " ROWS FETCH NEXT " + size + " ROWS ONLY",
+                Integer.class
+        );
+        log.info("Henter {} INNTEKTSMOTTAKER_XML fra DB...", count);
         List<Arbeidsforhold> list = jdbcTemplate.query(
-                "SELECT INNTEKTSMOTTAKER_XML FROM AAREG_UTTREKK.temp_uttrekk_inhe ORDER BY EFF_OPPLYSNINGSPLIKTIG_ID OFFSET " + page + " ROWS FETCH NEXT " + size + " ROWS ONLY",
+                "SELECT INNTEKTSMOTTAKER_XML FROM AAREG_UTTREKK.temp_uttrekk_inhe ORDER BY EFF_OPPLYSNINGSPLIKTIG_ID OFFSET " + page + " ROWS FETCH NEXT " + count + " ROWS ONLY",
                 new InntektsmottakerXmlArbeidsforholdRowMapper(count)
         ).stream().flatMap(Collection::stream).collect(Collectors.toList());
-        log.info("Hentet {} arbeidsforhold fra DB.", list.size());
+        log.info("Hentet {} INNTEKTSMOTTAKER_XML med {} arbeidsforhold fra DB.", count, list.size());
         return list;
     }
 
