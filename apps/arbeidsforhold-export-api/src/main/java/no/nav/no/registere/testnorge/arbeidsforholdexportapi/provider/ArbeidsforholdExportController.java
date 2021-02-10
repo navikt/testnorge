@@ -54,7 +54,7 @@ public class ArbeidsforholdExportController {
         try(BufferedReader bufferedReader = new BufferedReader(new FileReader(file))){
             String line;
             while ((line = bufferedReader.readLine()) != null) {
-                writer.write(line);
+                writer.println(line);
             }
         }
     }

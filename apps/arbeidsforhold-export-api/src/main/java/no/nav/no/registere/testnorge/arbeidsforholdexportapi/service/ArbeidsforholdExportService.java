@@ -16,7 +16,7 @@ import no.nav.no.registere.testnorge.arbeidsforholdexportapi.repository.Inntekts
 @Service
 @RequiredArgsConstructor
 public class ArbeidsforholdExportService {
-    public static final int PAGE_SIZE = 100_000;
+    public static final int PAGE_SIZE = 500_000;
     private final InntektsmottakerHendelseRepository inntektsmottakerHendelseRepository;
 
     @SneakyThrows
@@ -24,17 +24,19 @@ public class ArbeidsforholdExportService {
         var count = inntektsmottakerHendelseRepository.count();
         int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
 
-        numberOfPages = 2;
-
         File file = File.createTempFile("temp", null);
         log.info("Lagerer arbeidsforhold til fil: {}", file.getPath());
+        file.deleteOnExit();
         try (PrintWriter writer = new PrintWriter(file)) {
             for (int page = 0; page < numberOfPages; page++) {
                 log.info("Henter for side {}/{} med {} per side.", page + 1, numberOfPages, PAGE_SIZE);
-                ArbeidsforholdSyntetiseringCsvConverter.inst().write(writer, inntektsmottakerHendelseRepository.getArbeidsforhold(page, PAGE_SIZE));
+                ArbeidsforholdSyntetiseringCsvConverter.inst().write(
+                        writer,
+                        inntektsmottakerHendelseRepository.getArbeidsforhold(page, PAGE_SIZE),
+                        page == 0
+                );
             }
         }
-        file.deleteOnExit();
         return file;
     }
 
@@ -46,13 +48,17 @@ public class ArbeidsforholdExportService {
 
         File file = File.createTempFile("temp", null);
         log.info("Lagerer permisjoner til fil: {}", file.getPath());
+        file.deleteOnExit();
         try (PrintWriter writer = new PrintWriter(file)) {
             for (int page = 0; page < numberOfPages; page++) {
                 log.info("Henter for side {}/{} med {} per side.", page + 1, numberOfPages, PAGE_SIZE);
-                PermisjonSyntetiseringCsvConverter.inst().write(writer, inntektsmottakerHendelseRepository.getPermisjoner(page, PAGE_SIZE));
+                PermisjonSyntetiseringCsvConverter.inst().write(
+                        writer,
+                        inntektsmottakerHendelseRepository.getPermisjoner(page, PAGE_SIZE),
+                        page == 0
+                );
             }
         }
-        file.deleteOnExit();
         return file;
     }
 }
