@@ -16,13 +16,15 @@ import no.nav.no.registere.testnorge.arbeidsforholdexportapi.repository.Inntekts
 @Service
 @RequiredArgsConstructor
 public class ArbeidsforholdExportService {
-    public static final int PAGE_SIZE = 500_000;
+    public static final int PAGE_SIZE = 10_000;
     private final InntektsmottakerHendelseRepository inntektsmottakerHendelseRepository;
 
     @SneakyThrows
     public File getArbeidsforholdToFile() {
         var count = inntektsmottakerHendelseRepository.count();
         int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
+
+        numberOfPages = 2;
 
         File file = File.createTempFile("temp", null);
         log.info("Lagerer arbeidsforhold til fil: {}", file.getPath());
