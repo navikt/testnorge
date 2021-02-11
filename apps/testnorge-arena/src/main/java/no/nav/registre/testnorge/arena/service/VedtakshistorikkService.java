@@ -17,7 +17,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -75,8 +78,32 @@ public class VedtakshistorikkService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        var vedtakshistorikk = vedtakshistorikkSyntConsumer.syntetiserVedtakshistorikk(antallNyeIdenter);
         Map<String, List<NyttVedtakResponse>> responses = new HashMap<>();
+        var intStream = IntStream.range(0, antallNyeIdenter).boxed().collect(Collectors.toList());
+        ForkJoinPool forkJoinPool = new ForkJoinPool(10);
+        try {
+            forkJoinPool.submit(() ->
+                    intStream.parallelStream().forEach(i ->
+                            opprettHistorikkForIdent(avspillergruppeId, miljoe, responses)
+                    )
+            ).get();
+        } catch (InterruptedException e) {
+            log.error("Kunne ikke opprette vedtakshistorikk.", e);
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException e) {
+            log.error("Kunne ikke opprette vedtakshistorikk.", e);
+        } finally {
+            forkJoinPool.shutdown();
+        }
+        return responses;
+    }
+
+    private void opprettHistorikkForIdent(
+            Long avspillergruppeId,
+            String miljoe,
+            Map<String, List<NyttVedtakResponse>> responses
+    ) {
+        var vedtakshistorikk = vedtakshistorikkSyntConsumer.syntetiserVedtakshistorikk(1);
         for (var vedtakshistorikken : vedtakshistorikk) {
             vedtakshistorikken.setTilsynFamiliemedlemmer(fjernTilsynFamiliemedlemmerVedtakMedUgyldigeDatoer(vedtakshistorikken.getTilsynFamiliemedlemmer()));
             vedtakshistorikken.setUngUfoer(fjernAapUngUfoerMedUgyldigeDatoer(vedtakshistorikken.getUngUfoer()));
@@ -98,7 +125,6 @@ public class VedtakshistorikkService {
                 opprettVedtaksHistorikkResponse(avspillergruppeId, miljoe, responses, vedtakshistorikken, tidligsteDatoBarnetillegg, minimumAlder, maksimumAlder);
             }
         }
-        return responses;
     }
 
     private int getMaksimumAlder(

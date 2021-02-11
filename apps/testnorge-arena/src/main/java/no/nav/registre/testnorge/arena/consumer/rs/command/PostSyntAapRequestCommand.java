@@ -32,18 +32,17 @@ public class PostSyntAapRequestCommand implements Callable<List<NyttVedtakAap>> 
     private static final ParameterizedTypeReference<List<NyttVedtakAap>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
-    public PostSyntAapRequestCommand(WebClient webClient, List<RettighetSyntRequest> requests, String urlPath ){
+    public PostSyntAapRequestCommand(WebClient webClient, List<RettighetSyntRequest> requests, String urlPath) {
         this.webClient = webClient;
         this.requests = requests;
         this.urlPath = urlPath;
     }
 
     @Override
-    public List<NyttVedtakAap> call(){
-        List<NyttVedtakAap> response = Collections.emptyList();
+    public List<NyttVedtakAap> call() {
         try {
             log.info("Henter syntetiske AAP vedtak.");
-            response = webClient.post()
+            return webClient.post()
                     .uri(builder ->
                             builder.path(urlPath)
                                     .build()
@@ -57,7 +56,7 @@ public class PostSyntAapRequestCommand implements Callable<List<NyttVedtakAap>> 
                     .block();
         } catch (Exception e) {
             log.error("Klarte ikke hente syntetiske AAP vedtak.", e);
+            return Collections.emptyList();
         }
-        return response;
     }
 }

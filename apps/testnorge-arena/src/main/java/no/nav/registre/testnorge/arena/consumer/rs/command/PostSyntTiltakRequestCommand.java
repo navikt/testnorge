@@ -40,10 +40,9 @@ public class PostSyntTiltakRequestCommand implements Callable<List<NyttVedtakTil
 
     @Override
     public List<NyttVedtakTiltak> call() {
-        List<NyttVedtakTiltak> response = Collections.emptyList();
         try {
             log.info("Henter syntetiske tiltak vedtak.");
-            response = webClient.post()
+            return webClient.post()
                     .uri(builder ->
                             builder.path(urlPath)
                                     .build()
@@ -57,7 +56,7 @@ public class PostSyntTiltakRequestCommand implements Callable<List<NyttVedtakTil
                     .block();
         } catch (Exception e) {
             log.error("Klarte ikke hente syntetiske tiltak vedtak.", e);
+            return Collections.emptyList();
         }
-        return response;
     }
 }

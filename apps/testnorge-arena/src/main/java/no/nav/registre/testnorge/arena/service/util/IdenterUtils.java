@@ -132,7 +132,7 @@ public class IdenterUtils {
 
             for (var ident : identerMedAktoerId.keySet()) {
                 var relasjonsResponse = getRelasjonerTilIdent(ident, miljoe);
-                if (relasjonsResponse != null && inneholderBarnUnder18VedTidspunkt(relasjonsResponse, tidligsteDato)) {
+                if (inneholderBarnUnder18VedTidspunkt(relasjonsResponse, tidligsteDato)) {
                     utvalgteIdenter.add(ident);
                     if (utvalgteIdenter.size() >= antallNyeIdenter) {
                         return utvalgteIdenter;
@@ -144,9 +144,11 @@ public class IdenterUtils {
     }
 
     private boolean inneholderBarnUnder18VedTidspunkt(RelasjonsResponse relasjonsResponse, LocalDate tidligsteDato) {
-        for (var relasjon : relasjonsResponse.getRelasjoner()) {
-            if (erRelasjonEtBarnUnder18VedTidspunkt(relasjon, tidligsteDato)) {
-                return true;
+        if (relasjonsResponse != null && relasjonsResponse.getRelasjoner() != null) {
+            for (var relasjon : relasjonsResponse.getRelasjoner()) {
+                if (erRelasjonEtBarnUnder18VedTidspunkt(relasjon, tidligsteDato)) {
+                    return true;
+                }
             }
         }
         return false;

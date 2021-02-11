@@ -35,10 +35,9 @@ public class PostFinnTiltakCommand implements Callable<NyttVedtakResponse> {
 
     @Override
     public NyttVedtakResponse call() {
-        NyttVedtakResponse response = null;
         try {
             log.info("Henter tiltak for ident {} i miljø {}", ident, miljoe);
-            response = webClient.post()
+            return webClient.post()
                     .uri(builder ->
                             builder.path("/v1/finntiltak")
                                     .build()
@@ -52,8 +51,8 @@ public class PostFinnTiltakCommand implements Callable<NyttVedtakResponse> {
                     .block();
         } catch (Exception e) {
             log.error("Klarte ikke hente tiltak for ident {} i miljø {}", ident, miljoe, e);
+            return null;
         }
-        return response;
     }
 }
 
