@@ -40,7 +40,7 @@ public class FileController {
     @GetMapping("/{filename}")
     public ResponseEntity<?> getFile(@PathVariable("filename") String filename) throws MalformedURLException {
         log.info("Laster ned fil: {}...", filename);
-        var resource = new UrlResource("/tmp/" + filename);
+        var resource = new UrlResource("file://tmp/" + filename);
         log.info("Fil lasted ned.");
         return ResponseEntity
                 .ok()
