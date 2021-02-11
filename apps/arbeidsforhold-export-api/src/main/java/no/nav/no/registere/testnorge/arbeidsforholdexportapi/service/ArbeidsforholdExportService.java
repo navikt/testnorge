@@ -33,7 +33,7 @@ public class ArbeidsforholdExportService {
         printer.close();
     }
 
-    public File writeArbeidsforhold(Integer page) throws IOException {
+    public Path writeArbeidsforhold(Integer page) throws IOException {
         var count = inntektsmottakerHendelseRepository.count();
         int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
 
@@ -46,7 +46,7 @@ public class ArbeidsforholdExportService {
         log.info("Henter for side {}/{} med {} per side.", page + 1, numberOfPages, PAGE_SIZE);
         printer.write(inntektsmottakerHendelseRepository.getArbeidsforhold(page, PAGE_SIZE));
         printer.close();
-        return file;
+        return path;
     }
 
 

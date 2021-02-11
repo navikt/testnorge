@@ -2,6 +2,7 @@ package no.nav.no.registere.testnorge.arbeidsforholdexportapi.provider;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,13 +40,15 @@ public class ArbeidsforholdExportController {
 
     @GetMapping("/{page}")
     public ResponseEntity<?> getArbeidsforhold(@PathVariable("page") Integer page) throws IOException {
-        var file = service.writeArbeidsforhold(page);
+        var path = service.writeArbeidsforhold(page);
+        var resource = new UrlResource(path.toUri());
+
         log.info("Arbeidsforhold lasted ned.");
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.parseMediaType("text/csv"))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=syntetisering-arbeidesforhold-" + page + "-" + LocalDateTime.now() + ".csv")
-                .body(file);
+                .body(resource);
     }
 
     @GetMapping("/permisjoner")
