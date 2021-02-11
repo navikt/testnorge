@@ -36,10 +36,10 @@ spec:
   resources:
     requests:
       cpu: 200m
-      memory: 2048Mi
+      memory: 1024Mi
     limits:
-      cpu: 6000m
-      memory: 5000Mi
+      cpu: 2000m
+      memory: 2048Mi
   ingresses:
     - "https://testnorge-arbeidsforhold-export-api.dev.intern.nav.no"
 

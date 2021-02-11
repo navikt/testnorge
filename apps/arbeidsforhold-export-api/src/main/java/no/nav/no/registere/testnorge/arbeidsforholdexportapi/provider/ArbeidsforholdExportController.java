@@ -9,11 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
@@ -32,7 +28,7 @@ public class ArbeidsforholdExportController {
         response.setContentType("text/csv");
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setHeader("Content-Disposition", "attachment; filename=syntetisering-arbeidesforhold-" + LocalDateTime.now() + ".csv");
-        service.getArbeidsforhold(response.getWriter());
+        service.writeArbeidsforhold(response.getWriter());
         return ResponseEntity.ok().build();
     }
 
@@ -41,7 +37,7 @@ public class ArbeidsforholdExportController {
         response.setContentType("text/csv");
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setHeader("Content-Disposition", "attachment; filename=syntetisering-permisjoner-" + LocalDateTime.now() + ".csv");
-        service.getPermisjoner(response.getWriter());
+        service.writePermisjoner(response.getWriter());
         return ResponseEntity.ok().build();
     }
 }

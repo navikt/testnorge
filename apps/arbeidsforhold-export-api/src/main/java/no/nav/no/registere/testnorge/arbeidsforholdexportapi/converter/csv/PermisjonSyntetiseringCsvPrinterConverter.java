@@ -5,13 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Permisjon;
-import no.nav.registre.testnorge.libs.csvconverter.v1.CsvConverter;
-import no.nav.registre.testnorge.libs.csvconverter.v1.CsvHeader;
-import no.nav.registre.testnorge.libs.csvconverter.v1.CsvPrinterConverter;
-import no.nav.registre.testnorge.libs.csvconverter.v1.ObjectConverter;
-import no.nav.registre.testnorge.libs.csvconverter.v1.RowConverter;
+import no.nav.registre.testnorge.libs.csvconverter.CsvHeader;
+import no.nav.registre.testnorge.libs.csvconverter.CsvPrinterConverter;
+import no.nav.registre.testnorge.libs.csvconverter.ObjectConverter;
 
 public class PermisjonSyntetiseringCsvPrinterConverter extends CsvPrinterConverter<Permisjon> {
+
     public PermisjonSyntetiseringCsvPrinterConverter(PrintWriter writer) {
         super(writer);
     }

@@ -7,10 +7,10 @@ import java.util.Set;
 
 import no.nav.registre.sdforvalter.domain.Adresse;
 import no.nav.registre.sdforvalter.domain.Ereg;
-import no.nav.registre.testnorge.libs.csvconverter.v1.CsvConverter;
-import no.nav.registre.testnorge.libs.csvconverter.v1.CsvHeader;
-import no.nav.registre.testnorge.libs.csvconverter.v1.ObjectConverter;
-import no.nav.registre.testnorge.libs.csvconverter.v1.RowConverter;
+import no.nav.registre.testnorge.libs.csvconverter.CsvConverter;
+import no.nav.registre.testnorge.libs.csvconverter.CsvHeader;
+import no.nav.registre.testnorge.libs.csvconverter.ObjectConverter;
+import no.nav.registre.testnorge.libs.csvconverter.RowConverter;
 
 public class EregCsvConverter extends CsvConverter<Ereg> {
     private static final String LIST_SPLITT_CHARACTER = ",";

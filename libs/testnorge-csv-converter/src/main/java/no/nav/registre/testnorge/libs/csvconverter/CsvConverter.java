@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.libs.csvconverter.v1;
+package no.nav.registre.testnorge.libs.csvconverter;
 
 import java.io.IOException;
 import java.io.PrintWriter;

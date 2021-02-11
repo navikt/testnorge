@@ -5,11 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Arbeidsforhold;
-import no.nav.registre.testnorge.libs.csvconverter.v1.CsvHeader;
-import no.nav.registre.testnorge.libs.csvconverter.v1.ObjectConverter;
-import no.nav.registre.testnorge.libs.csvconverter.v1.CsvPrinterConverter;
+import no.nav.registre.testnorge.libs.csvconverter.CsvHeader;
+import no.nav.registre.testnorge.libs.csvconverter.ObjectConverter;
+import no.nav.registre.testnorge.libs.csvconverter.CsvPrinterConverter;
 
 public class ArbeidsforholdSyntetiseringCsvPrinterConverter extends CsvPrinterConverter<Arbeidsforhold> {
+    
     public ArbeidsforholdSyntetiseringCsvPrinterConverter(PrintWriter writer) {
         super(writer);
     }

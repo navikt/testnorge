@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.libs.csvconverter.v1.CsvConverter;
-import no.nav.registre.testnorge.libs.csvconverter.v1.CsvHeader;
-import no.nav.registre.testnorge.libs.csvconverter.v1.ObjectConverter;
-import no.nav.registre.testnorge.libs.csvconverter.v1.RowConverter;
+import no.nav.registre.testnorge.libs.csvconverter.CsvConverter;
+import no.nav.registre.testnorge.libs.csvconverter.CsvHeader;
+import no.nav.registre.testnorge.libs.csvconverter.ObjectConverter;
+import no.nav.registre.testnorge.libs.csvconverter.RowConverter;
 import no.nav.registre.testnorge.personexportapi.consumer.dto.PersonStatusMapper;
 import no.nav.registre.testnorge.personexportapi.consumer.kodeverk.KodeverkConsumer;
 import no.nav.registre.testnorge.personexportapi.domain.Person;
