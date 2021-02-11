@@ -42,7 +42,6 @@ public class ArbeidsforholdExportController {
     public ResponseEntity<?> getArbeidsforhold(@PathVariable("page") Integer page) throws IOException {
         var path = service.writeArbeidsforhold(page);
         var resource = new UrlResource(path.toUri());
-
         log.info("Arbeidsforhold lasted ned.");
         return ResponseEntity
                 .ok()

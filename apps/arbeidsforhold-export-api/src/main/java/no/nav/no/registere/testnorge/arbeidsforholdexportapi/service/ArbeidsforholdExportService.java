@@ -38,6 +38,8 @@ public class ArbeidsforholdExportService {
         int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
 
         var path = Files.createTempFile("arbeidsforhold", ".csv");
+
+        log.info("Fil opprettet: {}.", path.toAbsolutePath());
         var file = path.toFile();
         file.deleteOnExit();
         var printWriter = new PrintWriter(file);
@@ -45,6 +47,7 @@ public class ArbeidsforholdExportService {
         var printer = new ArbeidsforholdSyntetiseringCsvPrinterConverter(printWriter);
         log.info("Henter for side {}/{} med {} per side.", page + 1, numberOfPages, PAGE_SIZE);
         printer.write(inntektsmottakerHendelseRepository.getArbeidsforhold(page, PAGE_SIZE));
+        log.info("Lukker printenr til fil {}.", path.toAbsolutePath());
         printer.close();
         return path;
     }
