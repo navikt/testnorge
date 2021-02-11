@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.io.IOException;
 import java.util.List;
@@ -58,32 +59,16 @@ public class ErrorStatusDecoder {
         StringBuilder builder = new StringBuilder()
                 .append("Feil= ");
 
-        if (e instanceof HttpClientErrorException) {
+        if (e instanceof HttpClientErrorException || e instanceof WebClientResponseException) {
 
-            if (((HttpClientErrorException) e).getResponseBodyAsString().contains("{")) {
-                try {
-                    Map<String, Object> status = objectMapper.readValue(((HttpClientErrorException) e).getResponseBodyAsString(), Map.class);
-                    if (status.containsKey(ERROR) && isNotBlank((String) status.get(ERROR))) {
-                        builder.append("error=").append(status.get(ERROR)).append(';');
-                    }
-                    if (status.containsKey(MESSAGE) && isNotBlank((String) status.get(MESSAGE))) {
-                        builder.append("message=").append(encodeStatus((String) status.get(MESSAGE))).append(';');
-                    }
-                    if (status.containsKey(DETAILS) && status.get(DETAILS) instanceof List) {
-                        StringBuilder meldinger = new StringBuilder("=");
-                        List<Map<String, String>> details = (List) status.get(DETAILS);
-                        details.forEach(entry ->
-                                entry.forEach((key, value) ->
-                                        meldinger.append(' ').append(key).append("= ").append(value)));
-                        builder.append("details=").append(encodeStatus(meldinger.toString()));
-                    }
+            if (e instanceof HttpClientErrorException && !((HttpClientErrorException) e).getResponseBodyAsString().isEmpty()) {
 
-                } catch (IOException ioe) {
-                    builder.append(encodeStatus(ioe.getMessage()));
-                }
+                appendStatusMessage(((HttpClientErrorException) e).getResponseBodyAsString(), builder);
 
-            } else if (!((HttpClientErrorException) e).getResponseBodyAsString().isEmpty()) {
-                builder.append(encodeStatus(((HttpClientErrorException) e).getResponseBodyAsString()));
+            } else if (e instanceof WebClientResponseException && !((WebClientResponseException) e).getResponseBodyAsString().isEmpty()) {
+
+                appendStatusMessage(((WebClientResponseException) e).getResponseBodyAsString(), builder);
+                log.error(((WebClientResponseException) e).getResponseBodyAsString(), e);
 
             } else {
                 builder.append(e.getMessage());
@@ -98,12 +83,40 @@ public class ErrorStatusDecoder {
         return builder.toString();
     }
 
+    private void appendStatusMessage(String responseBody, StringBuilder builder) {
+        if (responseBody.contains("{")) {
+            try {
+                Map<String, Object> status = objectMapper.readValue(responseBody, Map.class);
+                if (status.containsKey(ERROR) && isNotBlank((String) status.get(ERROR))) {
+                    builder.append("error=").append(status.get(ERROR)).append(';');
+                }
+                if (status.containsKey(MESSAGE) && isNotBlank((String) status.get(MESSAGE))) {
+                    builder.append("message=").append(encodeStatus((String) status.get(MESSAGE))).append(';');
+                }
+                if (status.containsKey(DETAILS) && status.get(DETAILS) instanceof List) {
+                    StringBuilder meldinger = new StringBuilder("=");
+                    List<Map<String, String>> details = (List) status.get(DETAILS);
+                    details.forEach(entry ->
+                            entry.forEach((key, value) ->
+                                    meldinger.append(' ').append(key).append("= ").append(value)));
+                    builder.append("details=").append(encodeStatus(meldinger.toString()));
+                }
+
+            } catch (IOException ioe) {
+                builder.append(encodeStatus(ioe.getMessage()));
+            }
+
+        } else {
+            builder.append(encodeStatus(responseBody));
+        }
+    }
+
     public static String encodeStatus(String toBeEncoded) {
         return Objects.nonNull(toBeEncoded) ?
                 toBeEncoded.replaceAll("\\[\\s", "")
-                .replace("[", "")
-                .replace("]", "")
-                .replace(',', ';')
-                .replace(':', '=') : "";
+                        .replace("[", "")
+                        .replace("]", "")
+                        .replace(',', ';')
+                        .replace(':', '=') : "";
     }
 }
