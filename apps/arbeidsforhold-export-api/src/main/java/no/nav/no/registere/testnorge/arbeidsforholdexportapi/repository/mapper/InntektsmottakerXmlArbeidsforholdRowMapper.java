@@ -14,12 +14,13 @@ import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Opplysningsp
 @Slf4j
 @RequiredArgsConstructor
 public class InntektsmottakerXmlArbeidsforholdRowMapper implements RowMapper<List<Arbeidsforhold>> {
+    private final Integer page;
     private final Integer total;
 
     @Override
     public List<Arbeidsforhold> mapRow(ResultSet rs, int rowNum) throws SQLException {
-        if ((rowNum + 1) % 10000 == 0 || (rowNum + 1) == total) {
-            log.info("Antall rader behandlet {}/{}.", rowNum + 1, total);
+        if ((rowNum + 1 + page) % 10000 == 0 || (rowNum + 1 + page) == total) {
+            log.info("Antall rader behandlet {}/{}.", rowNum + 1 + page, total);
         }
         Opplysningspliktig opplysningspliktig = Opplysningspliktig.from(rs.getString("INNTEKTSMOTTAKER_XML"));
         return opplysningspliktig.toArbeidsforhold();

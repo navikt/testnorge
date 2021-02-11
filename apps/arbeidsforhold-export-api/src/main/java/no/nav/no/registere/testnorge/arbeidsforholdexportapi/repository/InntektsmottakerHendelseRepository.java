@@ -32,7 +32,7 @@ public class InntektsmottakerHendelseRepository {
         List<Arbeidsforhold> list = jdbcTemplate.query(
                 "SELECT INNTEKTSMOTTAKER_XML FROM AAREG_UTTREKK.temp_uttrekk_inhe ORDER BY EFF_OPPLYSNINGSPLIKTIG_ID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
                 new Object[]{ page * size, size},
-                new InntektsmottakerXmlArbeidsforholdRowMapper(size)
+                new InntektsmottakerXmlArbeidsforholdRowMapper(page * size, page * size + size)
         ).stream().flatMap(Collection::stream).collect(Collectors.toList());
         log.info("Hentet {} INNTEKTSMOTTAKER_XML med {} arbeidsforhold fra DB.", size, list.size());
         return list;
@@ -43,7 +43,7 @@ public class InntektsmottakerHendelseRepository {
         List<Permisjon> list = jdbcTemplate.query(
                 "SELECT INNTEKTSMOTTAKER_XML FROM AAREG_UTTREKK.temp_uttrekk_inhe ORDER BY EFF_OPPLYSNINGSPLIKTIG_ID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
                 new Object[]{ page * size, size},
-                new InntektsmottakerXmlPermisjonerRowMapper(size)
+                new InntektsmottakerXmlPermisjonerRowMapper(page * size, page * size + size)
         ).stream().flatMap(Collection::stream).collect(Collectors.toList());
         log.info("Hentet {} INNTEKTSMOTTAKER_XML med {} persmisjoner fra DB.", size, list.size());
         return list;

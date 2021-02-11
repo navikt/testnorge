@@ -14,12 +14,13 @@ import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Permisjon;
 @Slf4j
 @RequiredArgsConstructor
 public class InntektsmottakerXmlPermisjonerRowMapper implements RowMapper<List<Permisjon>> {
+    private final Integer page;
     private final Integer total;
 
     @Override
     public List<Permisjon> mapRow(ResultSet rs, int rowNum) throws SQLException {
-        if ((rowNum + 1) % 10000 == 0 || (rowNum + 1) == total) {
-            log.info("Antall rader behandlet {}/{}.", rowNum + 1, total);
+        if ((rowNum + 1 + page) % 10000 == 0 || (rowNum + 1 + page) == total) {
+            log.info("Antall rader behandlet {}/{}.", rowNum + 1 + page, total);
         }
         Opplysningspliktig opplysningspliktig = Opplysningspliktig.from(rs.getString("INNTEKTSMOTTAKER_XML"));
         return opplysningspliktig.toPermisjoner();

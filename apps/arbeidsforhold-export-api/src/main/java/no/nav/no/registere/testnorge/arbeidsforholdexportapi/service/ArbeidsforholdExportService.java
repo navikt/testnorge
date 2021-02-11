@@ -18,17 +18,19 @@ import no.nav.no.registere.testnorge.arbeidsforholdexportapi.repository.Inntekts
 @Service
 @RequiredArgsConstructor
 public class ArbeidsforholdExportService {
-    public static final int PAGE_SIZE = 500_000;
+    public static final int PAGE_SIZE = 10_000;
     private final InntektsmottakerHendelseRepository inntektsmottakerHendelseRepository;
 
     public Path writeArbeidsforhold() throws IOException {
         var count = inntektsmottakerHendelseRepository.count();
         int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
 
-        var path = Files.createTempFile("arbeidsforhold", ".csv");
+        numberOfPages = 1;
+
+        var path = Files.createTempFile("arb-" + System.currentTimeMillis() + "-", ".csv");
 
         var file = path.toFile();
-        log.info("Fil opprettet: {}.", path.toAbsolutePath());
+        log.info("Fil opprettet: {}.", path);
         file.deleteOnExit();
         var printWriter = new PrintWriter(file);
 
@@ -36,54 +38,33 @@ public class ArbeidsforholdExportService {
         for (int page = 0; page < numberOfPages; page++) {
             log.info("Henter for side {}/{} med {} per side.", page + 1, numberOfPages, PAGE_SIZE);
             printer.write(inntektsmottakerHendelseRepository.getArbeidsforhold(page, PAGE_SIZE));
+            printWriter.flush();
         }
         log.info("Lukker printenr til fil {}.", path.toAbsolutePath());
         printer.close();
         return path;
     }
 
-    public Path writeArbeidsforhold(Integer page) throws IOException {
+
+    public Path writePermisjoner() throws IOException {
         var count = inntektsmottakerHendelseRepository.count();
         int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
 
-        var path = Files.createTempFile("arbeidsforhold", ".csv");
+        var path = Files.createTempFile("prm-" + System.currentTimeMillis() + "-", ".csv");
 
-        log.info("Fil opprettet: {}.", path.toAbsolutePath());
         var file = path.toFile();
+        log.info("Fil opprettet: {}.", path);
         file.deleteOnExit();
         var printWriter = new PrintWriter(file);
 
-        var printer = new ArbeidsforholdSyntetiseringCsvPrinterConverter(printWriter);
-        log.info("Henter for side {}/{} med {} per side.", page + 1, numberOfPages, PAGE_SIZE);
-        printer.write(inntektsmottakerHendelseRepository.getArbeidsforhold(page, PAGE_SIZE));
-        log.info("Lukker printenr til fil {}.", path.toAbsolutePath());
-        printer.close();
-        return path;
-    }
-
-
-    public void writePermisjoner(PrintWriter writer) throws IOException {
-        var count = inntektsmottakerHendelseRepository.count();
-        int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
-
-        var printer = new PermisjonSyntetiseringCsvPrinterConverter(writer);
+        var printer = new PermisjonSyntetiseringCsvPrinterConverter(printWriter);
         for (int page = 0; page < numberOfPages; page++) {
             log.info("Henter for side {}/{} med {} per side.", page + 1, numberOfPages, PAGE_SIZE);
             printer.write(inntektsmottakerHendelseRepository.getPermisjoner(page, PAGE_SIZE));
+            printWriter.flush();
         }
+        log.info("Lukker printenr til fil {}.", path);
         printer.close();
+        return path;
     }
-
-    public Integer writePermisjoner(PrintWriter writer, Integer page) throws IOException {
-        var count = inntektsmottakerHendelseRepository.count();
-        int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
-
-        var printer = new PermisjonSyntetiseringCsvPrinterConverter(writer);
-        log.info("Henter for side {}/{} med {} per side.", page + 1, numberOfPages, PAGE_SIZE);
-        printer.write(inntektsmottakerHendelseRepository.getPermisjoner(page, PAGE_SIZE));
-
-        printer.close();
-        return numberOfPages;
-    }
-
 }
