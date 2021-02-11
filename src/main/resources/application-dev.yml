@@ -6,8 +6,10 @@ server.port: 8020
 
 TESTNORGE_PROFIL_API_CLIENT_ID: f73bfcd0-a1f5-4d3f-bfb4-4d0361191438
 DOLLY_BACKEND_API_CLIENT_ID: f0174d28-cb33-44f9-a7b5-09e52582e601
+UDI_STUB_CLIENT_ID: 4426ef7d-f148-4d19-8a03-b0d07a451938
 
 DOLLY_BACKEND_HOST: https://dolly-backend-dev.dev.adeo.no
+UDI_STUB_HOST: https://udi-stub-dev.dev.adeo.no
 TESTNORGE_PROFIL_API_HOST: https://testnorge-profil-api-dev.dev.intern.nav.no
 
 zuul:

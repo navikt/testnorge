@@ -1,11 +1,10 @@
-import config from '~/config'
 import Request from '~/service/services/Request'
 
-const getUdiUrl = () => `${config.services.proxyBackend}/udi`
+const udiUrl = '/api/udi-stub'
 
 export default {
 	getPerson(ident) {
-		const endpoint = `${getUdiUrl()}/person/${ident}`
+		const endpoint = `${udiUrl}/person/${ident}`
 		return Request.get(endpoint)
 	}
 }

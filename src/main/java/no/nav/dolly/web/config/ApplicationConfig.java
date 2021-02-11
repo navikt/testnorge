@@ -17,7 +17,8 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
         @DependencyOn("dolly-backend"),
         @DependencyOn("testnorge-profil-api"),
         @DependencyOn("testnorge-varslinger-api"),
-        @DependencyOn("testnorge-miljoer-service")
+        @DependencyOn("testnorge-miljoer-service"),
+        @DependencyOn("udi-stub-dev")
 })
 public class ApplicationConfig {
     private final RemoteApplicationsProperties properties;
@@ -46,6 +47,11 @@ public class ApplicationConfig {
     @Bean
     public AddAuthorizationToRouteFilter miljoerServiceAddAuthorizationToRouteFilter() {
         return createFilterFrom("testnorge-miljoer-service");
+    }
+
+    @Bean
+    public AddAuthorizationToRouteFilter udiStubAddAuthorizationToRouteFilter() {
+        return createFilterFrom("udi-stub");
     }
 
     private AddAuthorizationToRouteFilter createFilterFrom(String route) {

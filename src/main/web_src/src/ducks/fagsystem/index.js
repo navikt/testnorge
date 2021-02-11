@@ -177,7 +177,7 @@ export default handleActions(
 			state.pensjonforvalter[action.meta.ident] = action.payload.data
 		},
 		[onSuccess(actions.getUdi)](state, action) {
-			state.udistub[action.meta.ident] = action.payload.data.person
+			state.udistub[action.meta.ident] = action.payload?.data?.person
 		},
 		[onSuccess(actions.getBrreg)](state, action) {
 			state.brregstub[action.meta.ident] = action.payload.data
