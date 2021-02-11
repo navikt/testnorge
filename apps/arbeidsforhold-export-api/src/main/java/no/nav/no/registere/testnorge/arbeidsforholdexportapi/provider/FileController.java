@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,23 +28,30 @@ public class FileController {
     @GetMapping
     public ResponseEntity<List<String>> getFiles() throws IOException {
         try (Stream<Path> paths = Files.walk(Paths.get("/tmp"))) {
-            return ResponseEntity.ok( paths
+            return ResponseEntity.ok(paths
                     .filter(Files::isRegularFile)
                     .map(value -> value.getFileName().toString())
+                    .filter(value -> value.endsWith(".csv"))
                     .collect(Collectors.toList())
             );
         }
     }
 
     @GetMapping("/{filename}")
-    public ResponseEntity<?> getFile(@PathVariable("filename") String filename) throws MalformedURLException {
-        log.info("Laster ned fil: {}...", filename);
-        var resource = new UrlResource("file://tmp/" + filename);
-        log.info("Fil lasted ned.");
-        return ResponseEntity
-                .ok()
-                .contentType(MediaType.parseMediaType("text/csv"))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=export-" + LocalDateTime.now() + ".csv")
-                .body(resource);
+    public ResponseEntity<?> getFile(@PathVariable("filename") String filename) throws IOException {
+        try (Stream<Path> paths = Files.walk(Paths.get("/tmp"))) {
+            var path = paths.filter(Files::isRegularFile).filter(value -> value.getFileName().toString().equals(filename)).findFirst();
+
+            if (path.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            var resource = new UrlResource(path.get().toUri());
+
+            return ResponseEntity
+                    .ok()
+                    .contentType(MediaType.parseMediaType("text/csv"))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=export-" + LocalDateTime.now() + ".csv")
+                    .body(resource);
+        }
     }
 }
