@@ -29,13 +29,15 @@ public class ArbeidsforholdExportController {
     private final ArbeidsforholdExportService service;
 
     @GetMapping
-    public ResponseEntity<HttpStatus> getArbeidsforhold(HttpServletResponse response) throws IOException {
-        response.setContentType("text/csv");
-        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-        response.setHeader("Content-Disposition", "attachment; filename=syntetisering-arbeidesforhold-" + LocalDateTime.now() + ".csv");
-        service.writeArbeidsforhold(response.getWriter());
+    public ResponseEntity<?> getArbeidsforhold() throws IOException {
+        var path = service.writeArbeidsforhold();
+        var resource = new UrlResource(path.toUri());
         log.info("Arbeidsforhold lasted ned.");
-        return ResponseEntity.ok().build();
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=syntetisering-arbeidesforhold-" + LocalDateTime.now() + ".csv")
+                .body(resource);
     }
 
     @GetMapping("/{page}")

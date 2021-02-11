@@ -21,16 +21,25 @@ public class ArbeidsforholdExportService {
     public static final int PAGE_SIZE = 500_000;
     private final InntektsmottakerHendelseRepository inntektsmottakerHendelseRepository;
 
-    public void writeArbeidsforhold(PrintWriter writer) throws IOException {
+    public Path writeArbeidsforhold() throws IOException {
         var count = inntektsmottakerHendelseRepository.count();
         int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
 
-        var printer = new ArbeidsforholdSyntetiseringCsvPrinterConverter(writer);
+        var path = Files.createTempFile("arbeidsforhold", ".csv");
+
+        var file = path.toFile();
+        log.info("Fil opprettet: {}.", path.toAbsolutePath());
+        file.deleteOnExit();
+        var printWriter = new PrintWriter(file);
+
+        var printer = new ArbeidsforholdSyntetiseringCsvPrinterConverter(printWriter);
         for (int page = 0; page < numberOfPages; page++) {
             log.info("Henter for side {}/{} med {} per side.", page + 1, numberOfPages, PAGE_SIZE);
             printer.write(inntektsmottakerHendelseRepository.getArbeidsforhold(page, PAGE_SIZE));
         }
+        log.info("Lukker printenr til fil {}.", path.toAbsolutePath());
         printer.close();
+        return path;
     }
 
     public Path writeArbeidsforhold(Integer page) throws IOException {
