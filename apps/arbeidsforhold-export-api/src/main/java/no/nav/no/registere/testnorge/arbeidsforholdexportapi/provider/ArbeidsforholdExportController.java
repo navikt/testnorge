@@ -2,7 +2,9 @@ package no.nav.no.registere.testnorge.arbeidsforholdexportapi.provider;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +24,7 @@ import no.nav.no.registere.testnorge.arbeidsforholdexportapi.service.Arbeidsforh
 @RequiredArgsConstructor
 public class ArbeidsforholdExportController {
 
+    private static final String NUMBER_OF_PAGES_HEADER = "NUMBER_OF_PAGES";
     private final ArbeidsforholdExportService service;
 
     @GetMapping
@@ -35,13 +38,14 @@ public class ArbeidsforholdExportController {
     }
 
     @GetMapping("/{page}")
-    public ResponseEntity<HttpStatus> getArbeidsforhold(@PathVariable("page") Integer page, HttpServletResponse response) throws IOException {
-        response.setContentType("text/csv");
-        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-        response.setHeader("Content-Disposition", "attachment; filename=syntetisering-arbeidesforhold-" + page + "-" + LocalDateTime.now() + ".csv");
-        var numberOfPages = service.writeArbeidsforhold(response.getWriter(), page);
+    public ResponseEntity<?> getArbeidsforhold(@PathVariable("page") Integer page) throws IOException {
+        var file = service.writeArbeidsforhold(page);
         log.info("Arbeidsforhold lasted ned.");
-        return ResponseEntity.ok().header("NUMBER_OF_PAGES", numberOfPages.toString()).build();
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=syntetisering-arbeidesforhold-" + page + "-" + LocalDateTime.now() + ".csv")
+                .body(file);
     }
 
     @GetMapping("/permisjoner")
@@ -61,6 +65,6 @@ public class ArbeidsforholdExportController {
         response.setHeader("Content-Disposition", "attachment; filename=syntetisering-permisjoner-" + page + "-" + LocalDateTime.now() + ".csv");
         var numberOfPages = service.writePermisjoner(response.getWriter(), page);
         log.info("Permisjoner lasted ned.");
-        return ResponseEntity.ok().header("NUMBER_OF_PAGES", numberOfPages.toString()).build();
+        return ResponseEntity.ok().header(NUMBER_OF_PAGES_HEADER, numberOfPages.toString()).build();
     }
 }

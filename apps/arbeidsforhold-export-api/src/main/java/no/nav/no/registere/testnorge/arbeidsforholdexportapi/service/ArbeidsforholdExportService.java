@@ -4,8 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.ArbeidsforholdSyntetiseringCsvPrinterConverter;
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.PermisjonSyntetiseringCsvPrinterConverter;
@@ -30,15 +33,20 @@ public class ArbeidsforholdExportService {
         printer.close();
     }
 
-    public Integer writeArbeidsforhold(PrintWriter writer, Integer page) throws IOException {
+    public File writeArbeidsforhold(Integer page) throws IOException {
         var count = inntektsmottakerHendelseRepository.count();
         int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
 
-        var printer = new ArbeidsforholdSyntetiseringCsvPrinterConverter(writer);
+        var path = Files.createTempFile("arbeidsforhold", ".csv");
+        var file = path.toFile();
+        file.deleteOnExit();
+        var printWriter = new PrintWriter(file);
+
+        var printer = new ArbeidsforholdSyntetiseringCsvPrinterConverter(printWriter);
         log.info("Henter for side {}/{} med {} per side.", page + 1, numberOfPages, PAGE_SIZE);
         printer.write(inntektsmottakerHendelseRepository.getArbeidsforhold(page, PAGE_SIZE));
         printer.close();
-        return numberOfPages;
+        return file;
     }
 
 
