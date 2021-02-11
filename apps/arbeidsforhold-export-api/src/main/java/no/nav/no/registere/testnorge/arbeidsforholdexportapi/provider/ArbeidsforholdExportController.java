@@ -29,6 +29,7 @@ public class ArbeidsforholdExportController {
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setHeader("Content-Disposition", "attachment; filename=syntetisering-arbeidesforhold-" + LocalDateTime.now() + ".csv");
         service.writeArbeidsforhold(response.getWriter());
+        log.info("Arbeidsforhold lasted ned.");
         return ResponseEntity.ok().build();
     }
 
@@ -38,6 +39,7 @@ public class ArbeidsforholdExportController {
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setHeader("Content-Disposition", "attachment; filename=syntetisering-permisjoner-" + LocalDateTime.now() + ".csv");
         service.writePermisjoner(response.getWriter());
+        log.info("Permisjoner lasted ned.");
         return ResponseEntity.ok().build();
     }
 }

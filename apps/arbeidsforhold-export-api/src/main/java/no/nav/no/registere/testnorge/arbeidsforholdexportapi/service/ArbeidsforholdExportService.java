@@ -15,14 +15,12 @@ import no.nav.no.registere.testnorge.arbeidsforholdexportapi.repository.Inntekts
 @Service
 @RequiredArgsConstructor
 public class ArbeidsforholdExportService {
-    public static final int PAGE_SIZE = 10_000;
+    public static final int PAGE_SIZE = 500_000;
     private final InntektsmottakerHendelseRepository inntektsmottakerHendelseRepository;
 
     public void writeArbeidsforhold(PrintWriter writer) throws IOException {
         var count = inntektsmottakerHendelseRepository.count();
         int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
-
-        numberOfPages = 2;
 
         var printer = new ArbeidsforholdSyntetiseringCsvPrinterConverter(writer);
         for (int page = 0; page < numberOfPages; page++) {
