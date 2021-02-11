@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -25,8 +24,9 @@ public class ArbeidsforholdExportService {
         var count = inntektsmottakerHendelseRepository.count();
         int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
 
-        numberOfPages = 1;
-
+        if (numberOfPages > 1) {
+            log.warn("Deler opp opperasjonen i {} deler for å unngå minne problemmer.", numberOfPages);
+        }
         var path = Files.createTempFile("arb-" + System.currentTimeMillis() + "-", ".csv");
 
         var file = path.toFile();
@@ -50,6 +50,10 @@ public class ArbeidsforholdExportService {
         var count = inntektsmottakerHendelseRepository.count();
         int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
 
+
+        if (numberOfPages > 1) {
+            log.warn("Deler opp opperasjonen i {} deler for å unngå minne problemmer.", numberOfPages);
+        }
         var path = Files.createTempFile("prm-" + System.currentTimeMillis() + "-", ".csv");
 
         var file = path.toFile();
