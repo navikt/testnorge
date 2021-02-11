@@ -17,7 +17,8 @@ spec:
         - application: dolly-backend-dev
         - application: dolly-frontend
         - application: dolly-frontend-dev
-        - application: testnorge-oversikt-frontend
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
   azure:
     application:
       enabled: true
