@@ -30,6 +30,18 @@ public class ArbeidsforholdExportService {
         printer.close();
     }
 
+    public Integer writeArbeidsforhold(PrintWriter writer, Integer page) throws IOException {
+        var count = inntektsmottakerHendelseRepository.count();
+        int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
+
+        var printer = new ArbeidsforholdSyntetiseringCsvPrinterConverter(writer);
+        log.info("Henter for side {}/{} med {} per side.", page + 1, numberOfPages, PAGE_SIZE);
+        printer.write(inntektsmottakerHendelseRepository.getArbeidsforhold(page, PAGE_SIZE));
+        printer.close();
+        return numberOfPages;
+    }
+
+
     public void writePermisjoner(PrintWriter writer) throws IOException {
         var count = inntektsmottakerHendelseRepository.count();
         int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
@@ -41,4 +53,17 @@ public class ArbeidsforholdExportService {
         }
         printer.close();
     }
+
+    public Integer writePermisjoner(PrintWriter writer, Integer page) throws IOException {
+        var count = inntektsmottakerHendelseRepository.count();
+        int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
+
+        var printer = new PermisjonSyntetiseringCsvPrinterConverter(writer);
+        log.info("Henter for side {}/{} med {} per side.", page + 1, numberOfPages, PAGE_SIZE);
+        printer.write(inntektsmottakerHendelseRepository.getPermisjoner(page, PAGE_SIZE));
+
+        printer.close();
+        return numberOfPages;
+    }
+
 }
