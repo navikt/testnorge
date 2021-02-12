@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Tooltip from 'rc-tooltip'
 import { useMount } from 'react-use'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
@@ -13,6 +13,8 @@ import { ImportFraEtikett } from '~/components/ui/etikett'
 
 import Icon from '~/components/ui/icon/Icon'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import useBoolean from '~/utils/hooks/useBoolean'
+import { KommentarModal } from '~/pages/gruppe/PersonListe/modal/KommentarModal'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -31,6 +33,9 @@ export default function PersonListe({
 }) {
 	useMount(fetchTpsfPersoner)
 
+	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
+	const [selectedIdent, setSelectedIdent] = useState(null)
+
 	if (isFetching) return <Loading label="laster personer" panel />
 
 	if (!personListe || personListe.length === 0)
@@ -45,15 +50,15 @@ export default function PersonListe({
 	}
 
 	const getKommentarTekst = tekst => {
-		const kommentar = tekst.length > 170 ? tekst.substring(0, 170) + '...' : tekst
+		const beskrivelse = tekst.length > 170 ? tekst.substring(0, 170) + '...' : tekst
 		return (
 			<div style={{ maxWidth: 200 }}>
-				<p>{kommentar}</p>
+				<p>{beskrivelse}</p>
 			</div>
 		)
 	}
 
-	const personIndex = personListe.findIndex(person => person.identNr == visPerson)
+	const personIndex = personListe.findIndex(person => person.identNr === visPerson)
 	const personerPrSide = 10
 	const visSide = personIndex >= 0 ? Math.floor(personIndex / personerPrSide) : 0
 
@@ -74,7 +79,7 @@ export default function PersonListe({
 							destroyTooltipOnHide={true}
 							mouseEnterDelay={0}
 							mouseLeaveDelay={0.1}
-							arrowContent={<div className="rc-tooltip-arrow-inner"> </div>}
+							arrowContent={<div className="rc-tooltip-arrow-inner"></div>}
 							align={{
 								offset: ['0', '-10']
 							}}
@@ -147,7 +152,12 @@ export default function PersonListe({
 							destroyTooltipOnHide={true}
 							mouseEnterDelay={0}
 							mouseLeaveDelay={0.1}
-							arrowContent={<div className="rc-tooltip-arrow-inner"> </div>}
+							onClick={event => {
+								setSelectedIdent(row.ident)
+								openKommentarModal()
+								event.stopPropagation()
+							}}
+							arrowContent={<div className="rc-tooltip-arrow-inner"></div>}
 							align={{
 								offset: ['0', '-10']
 							}}
@@ -181,6 +191,13 @@ export default function PersonListe({
 					/>
 				)}
 			/>
+			{isKommentarModalOpen && selectedIdent && (
+				<KommentarModal
+					closeModal={closeKommentarModal}
+					ident={selectedIdent}
+					iLaastGruppe={iLaastGruppe}
+				/>
+			)}
 		</ErrorBoundary>
 	)
 }
