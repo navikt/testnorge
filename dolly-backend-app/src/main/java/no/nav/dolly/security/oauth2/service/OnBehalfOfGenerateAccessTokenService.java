@@ -18,19 +18,19 @@ import reactor.netty.tcp.ProxyProvider;
 import java.net.URI;
 import java.security.AccessControlException;
 
+import static no.nav.dolly.util.CurrentAuthentication.getJwtToken;
+
 
 @Slf4j
 @Service
 class OnBehalfOfGenerateAccessTokenService {
     private final WebClient webClient;
-    private final AuthenticationTokenResolver tokenResolver;
     private final ClientCredential clientCredential;
 
     public OnBehalfOfGenerateAccessTokenService(
             @Value("${http.proxy:#{null}}") String proxyHost,
             @Value("${AAD_ISSUER_URI}") String issuerUrl,
-            DollyBackendClientCredential clientCredential,
-            AuthenticationTokenResolver tokenResolver
+            DollyBackendClientCredential clientCredential
     ) {
         this.clientCredential = clientCredential;
 
@@ -53,7 +53,6 @@ class OnBehalfOfGenerateAccessTokenService {
             builder.clientConnector(new ReactorClientHttpConnector(httpClient));
         }
 
-        this.tokenResolver = tokenResolver;
         this.webClient = builder.build();
     }
 
@@ -61,13 +60,13 @@ class OnBehalfOfGenerateAccessTokenService {
         if (accessScopes.getScopes().isEmpty()) {
             throw new AccessControlException("Kan ikke opprette accessToken uten clients");
         }
-        String accessToken = tokenResolver.getToken();
+        String jwtToken = getJwtToken();
 
         var body = BodyInserters
                 .fromFormData("scope", String.join(" ", accessScopes.getScopes()))
                 .with("client_id", clientCredential.getClientId())
                 .with("client_secret", clientCredential.getClientSecret())
-                .with("assertion", accessToken)
+                .with("assertion", jwtToken)
                 .with("requested_token_use", "on_behalf_of")
                 .with("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
 

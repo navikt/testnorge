@@ -1,13 +1,16 @@
 package no.nav.dolly.util;
 
-import java.util.Optional;
+import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.domain.jpa.Bruker;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
-import lombok.experimental.UtilityClass;
-import no.nav.dolly.domain.jpa.Bruker;
+import java.util.Map;
+import java.util.Optional;
 
 @UtilityClass
+@Slf4j
 public final class CurrentAuthentication {
 
     private static JwtAuthenticationToken getToken() {
@@ -24,6 +27,13 @@ public final class CurrentAuthentication {
                 .brukernavn(Optional.ofNullable((String) token.getToken().getClaims().get("name")).orElse("Systembruker"))
                 .epost((String) token.getToken().getClaims().get("preferred_username"))
                 .build();
+    }
+
+    public static String getJwtToken() {
+        JwtAuthenticationToken jwtAuthenticationToken = getToken();
+        Map<String, Object> tokenAttributes = jwtAuthenticationToken.getTokenAttributes();
+        log.info("Hentet innlogget token for OID {}", tokenAttributes.get("oid"));
+        return jwtAuthenticationToken.getToken().getTokenValue();
     }
 
     public static String getUserId() {
