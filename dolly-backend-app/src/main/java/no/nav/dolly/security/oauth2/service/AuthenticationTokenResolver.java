@@ -1,14 +1,17 @@
 package no.nav.dolly.security.oauth2.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 class AuthenticationTokenResolver {
 
 
@@ -20,6 +23,9 @@ class AuthenticationTokenResolver {
     }
 
     public String getToken() {
-        return jwtAuthenticationToken().getToken().getTokenValue();
+        JwtAuthenticationToken jwtAuthenticationToken = jwtAuthenticationToken();
+        Map<String, Object> tokenAttributes = jwtAuthenticationToken.getTokenAttributes();
+        log.info("Hentet innlogget token for OID {}", tokenAttributes.get("oid"));
+        return jwtAuthenticationToken.getToken().getTokenValue();
     }
 }
