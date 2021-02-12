@@ -36,7 +36,7 @@ public class ArbeidsforholdExportService {
 
         var printer = new ArbeidsforholdSyntetiseringCsvPrinterConverter(printWriter);
         for (int page = 0; page < numberOfPages; page++) {
-            log.info("Henter for side {}/{} med {} per side.", page + 1, numberOfPages, PAGE_SIZE);
+            log.info("Henter for side {}/{} med opp til {} per side.", page + 1, numberOfPages, PAGE_SIZE);
             printer.write(inntektsmottakerHendelseRepository.getArbeidsforhold(page, PAGE_SIZE));
             printWriter.flush();
         }
@@ -50,7 +50,6 @@ public class ArbeidsforholdExportService {
         var count = inntektsmottakerHendelseRepository.count();
         int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
 
-
         if (numberOfPages > 1) {
             log.warn("Deler opp opperasjonen i {} deler for å unngå minne problemmer.", numberOfPages);
         }
@@ -63,7 +62,7 @@ public class ArbeidsforholdExportService {
 
         var printer = new PermisjonSyntetiseringCsvPrinterConverter(printWriter);
         for (int page = 0; page < numberOfPages; page++) {
-            log.info("Henter for side {}/{} med {} per side.", page + 1, numberOfPages, PAGE_SIZE);
+            log.info("Henter for side {}/{} med opp til {} per side.", page + 1, numberOfPages, PAGE_SIZE);
             printer.write(inntektsmottakerHendelseRepository.getPermisjoner(page, PAGE_SIZE));
             printWriter.flush();
         }

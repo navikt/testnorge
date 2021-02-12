@@ -29,3 +29,10 @@ applications:
   applikasjonsanalyse-service: 4c17d59e-ba09-4923-a917-47efebf82cc0
   oppsummeringsdokument-service: 411963e3-5693-4ae8-8a2b-4d42dbeed5ee
   mn-organiasasjon-api: a9109f54-8cae-4af2-98e3-8c56a1f5c9ad
+
+zuul:
+  routes:
+    testnorge-arbeidsforhold-export-api:
+      path: /api/v1/files/**
+      url: https://testnorge-arbeidsforhold-export-api.dev.intern.nav.no/api/v1/files
+      sensitiveHeaders: Cookie,Set-Cookie

@@ -47,6 +47,8 @@ public class FileController {
             }
             var resource = new UrlResource(path.get().toUri());
 
+            log.info("Laster ned fil: {}", filename);
+
             return ResponseEntity
                     .ok()
                     .contentType(MediaType.parseMediaType("text/csv"))
