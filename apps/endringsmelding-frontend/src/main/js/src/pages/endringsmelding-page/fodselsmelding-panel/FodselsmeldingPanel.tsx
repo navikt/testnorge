@@ -6,6 +6,7 @@ import styled from 'styled-components';
 
 import { DatePickerFormItem, Form, InputFormItem, Line, SelectFormItem } from '@/components/form';
 import reducer, { Action, State } from './FodselsmedlingReducer';
+import EndringsmeldingService from '@/service/EndringsmeldingService';
 
 const Knapp = styled(Hovedknapp)``;
 
@@ -31,9 +32,7 @@ export default () => {
   console.log(state);
 
   const onSearch = (value: string) =>
-    new Promise<string[]>((resolve, reject) =>
-      setTimeout(() => resolve(['T4', 't5', 'T6', 'T7']), 500)
-    )
+    EndringsmeldingService.fetchMiljoer(value)
       .then((response) => {
         dispatch({ type: Action.SET_MILJOER_OPTIONS_ACTION, value: response });
         dispatch({ type: Action.SET_SUCCESS_ACTION, value: true });
@@ -53,7 +52,6 @@ export default () => {
     dispatch({ type: Action.SET_VALIDATE_ACTION, value: true });
     if (validate()) {
       // TODO do submit
-    } else {
     }
   };
 
@@ -106,9 +104,9 @@ export default () => {
               />
               <DatePickerFormItem
                 id="foedselsdato-field"
-                label="Barnets fødselesdato"
+                label="Barnets fødselesdato*"
                 onBlur={(value) => dispatch({ type: Action.SET_FOEDSELSDATO_ACTION, value: value })}
-                error={'test'}
+                error={state.validate && !notEmptyString(state.foedselsdato) ? 'På kreved' : null}
               />
             </Line>
             <Line>
@@ -141,6 +139,7 @@ export default () => {
                 htmlId="miljo-select"
                 multi={true}
                 label="Send til miljo"
+                error={state.validate && !notEmptyList(state.miljoer) ? 'På kreved' : null}
                 options={state.miljoOptions.map((value: string) => ({
                   value: value,
                   label: value.toUpperCase(),
@@ -172,7 +171,7 @@ export default () => {
               />
             </Line>
             <Line reverse={true}>
-              <Knapp onClick={(event) => event.preventDefault()} htmlType="submit">
+              <Knapp onClick={onSubmit} htmlType="submit">
                 Opprett fødselsmelding
               </Knapp>
             </Line>

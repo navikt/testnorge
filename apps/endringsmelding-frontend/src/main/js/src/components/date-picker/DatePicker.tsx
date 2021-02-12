@@ -9,14 +9,17 @@ type Props = {
   error?: string;
 };
 
-export default ({ id, label, onBlur, error }: Props) => {
+export default ({ id, label, onBlur, error, ...props }: Props) => {
   const [date, setDate] = useState('');
 
   return (
-    <div onBlur={() => onBlur(date)}>
+    <div onBlur={() => onBlur(date)} {...props}>
       <Label htmlFor={id}>{label}</Label>
       {/*  TODO fiks i designbiblioteket*/}
-      <div className={error ? 'skjemaelement__input--harFeil' : ''} style={{ borderRadius: 4 }}>
+      <div
+        className={error ? 'skjemaelement__input--harFeil' : ''}
+        style={{ borderRadius: 4, display: 'inline-block' }}
+      >
         <Datepicker inputId={id} onChange={setDate} value={date} />
       </div>
       {error && (

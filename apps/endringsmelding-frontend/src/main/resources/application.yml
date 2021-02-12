@@ -13,7 +13,7 @@ spring:
 
 zuul:
   routes:
-    avhengighetsanalyse-service:
+    endringsmelding-service:
       path: /api/**
       url: http://endringsmelding-service.dolly.svc.cluster.local/api
       sensitiveHeaders: Cookie,Set-Cookie

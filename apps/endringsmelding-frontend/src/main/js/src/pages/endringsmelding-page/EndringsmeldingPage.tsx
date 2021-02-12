@@ -1,19 +1,19 @@
-import React from 'react';
-
-import styled from 'styled-components';
+import React, { useState } from 'react';
 import Tabs from 'nav-frontend-tabs';
-import Panel from 'nav-frontend-paneler';
 import { Page } from '@/components/page';
-import Search from '@/components/search/Search';
 import { FodselsmeldingPanel } from './fodselsmelding-panel';
+import { DodsmeldingPanel } from '@/pages/endringsmelding-page/dodsmelding-panel';
 
 // @ts-ignore
-export default () => (
-  <Page>
-    <Tabs
-      tabs={[{ label: 'Fødselsmelding' }, { label: 'Dødsmelding' }]}
-      onChange={(_, i) => console.log(i)}
-    />
-    <FodselsmeldingPanel />
-  </Page>
-);
+export default () => {
+  const [tapIndex, setTabIndex] = useState(0);
+  return (
+    <Page>
+      <Tabs
+        tabs={[{ label: 'Fødselsmelding' }, { label: 'Dødsmelding' }]}
+        onChange={(_, index) => setTabIndex(index)}
+      />
+      {tapIndex === 0 ? <FodselsmeldingPanel /> : <DodsmeldingPanel />}
+    </Page>
+  );
+};

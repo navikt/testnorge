@@ -17,6 +17,8 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-fss
+        - application: endringsmelding-service
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4

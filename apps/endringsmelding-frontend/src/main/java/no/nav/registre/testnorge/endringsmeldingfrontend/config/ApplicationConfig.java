@@ -24,7 +24,7 @@ public class ApplicationConfig {
     private final AccessTokenService tokenService;
 
     @Bean
-    public AddAuthorizationToRouteFilter dollyBackendAddAuthorizationToRouteFilter() {
+    public AddAuthorizationToRouteFilter addAuthorizationToRouteFilter() {
         return new AddAuthorizationToRouteFilter(
                 () -> tokenService.generateToken(
                         new AccessScopes("api://94aadcd8-0354-4a70-bc36-d2c6ebfba4e7/.default")

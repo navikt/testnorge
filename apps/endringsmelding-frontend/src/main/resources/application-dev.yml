@@ -20,7 +20,7 @@ spring:
 
 zuul:
   routes:
-    avhengighetsanalyse-service:
+    endringsmelding-service:
       path: /api/**
       url: https://endringsmelding-service.dev.intern.nav.no/api
       sensitiveHeaders: Cookie,Set-Cookie
