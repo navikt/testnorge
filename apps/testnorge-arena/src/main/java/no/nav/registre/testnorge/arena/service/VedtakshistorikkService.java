@@ -175,6 +175,7 @@ public class VedtakshistorikkService {
         }
 
         List<RettighetRequest> rettigheter = new ArrayList<>();
+        List<NyttVedtakTiltak> tiltak = new ArrayList<>();
 
         var ikkeAvluttendeAap115 = getIkkeAvsluttendeVedtakAap115(vedtakshistorikk.getAap115());
         var avsluttendeAap115 = getAvsluttendeVedtakAap115(vedtakshistorikk.getAap115());
@@ -189,12 +190,12 @@ public class VedtakshistorikkService {
         opprettVedtakUngUfoer(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakTvungenForvaltning(vedtakshistorikk, personident, miljoe, rettigheter, identerMedKontonummer);
         opprettVedtakFritakMeldekort(vedtakshistorikk, personident, miljoe, rettigheter);
-        oppdaterTiltaksdeltakelse(vedtakshistorikk, personident, miljoe);
+        oppdaterTiltaksdeltakelse(vedtakshistorikk, personident, miljoe, tiltak);
         opprettVedtakTiltaksdeltakelse(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettFoersteVedtakEndreDeltakerstatus(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakTiltakspenger(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakBarnetillegg(vedtakshistorikk, personident, miljoe, rettigheter);
-        opprettAvsluttendeVedtakEndreDeltakerstatus(vedtakshistorikk, personident, miljoe, rettigheter);
+        opprettAvsluttendeVedtakEndreDeltakerstatus(vedtakshistorikk, personident, miljoe, rettigheter, tiltak);
         opprettVedtakTillegg(vedtakshistorikk, personident, miljoe, rettigheter);
 
         var senesteVedtak = datoUtils.finnSenesteVedtak(vedtakshistorikk.getAlleVedtak());
@@ -393,7 +394,8 @@ public class VedtakshistorikkService {
     private void oppdaterTiltaksdeltakelse(
             Vedtakshistorikk historikk,
             String personident,
-            String miljoe
+            String miljoe,
+            List<NyttVedtakTiltak> tiltaksliste
     ) {
         var tiltaksdeltakelser = historikk.getTiltaksdeltakelse();
         if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
@@ -411,6 +413,7 @@ public class VedtakshistorikkService {
                     deltakelse.setTiltakProsentDeltid(tiltak.getTiltakProsentDeltid());
                     deltakelse.setFraDato(tiltak.getFraDato());
                     deltakelse.setTilDato(tiltak.getTilDato());
+                    tiltaksliste.add(tiltak);
                 }
             });
 
@@ -484,12 +487,13 @@ public class VedtakshistorikkService {
             Vedtakshistorikk vedtak,
             String personident,
             String miljoe,
-            List<RettighetRequest> rettigheter
+            List<RettighetRequest> rettigheter,
+            List<NyttVedtakTiltak> tiltak
     ) {
         var tiltaksdeltakelser = vedtak.getTiltaksdeltakelse();
         if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
             for (var deltakelse : tiltaksdeltakelser) {
-                if (vedtakUtils.canSetDeltakelseTilFinished(deltakelse)) {
+                if (vedtakUtils.canSetDeltakelseTilFinished(deltakelse, tiltak)) {
                     var deltakerstatuskode = vedtakUtils.getAvsluttendeDeltakerstatus(deltakelse
                             .getTiltakAdminKode()).toString();
 

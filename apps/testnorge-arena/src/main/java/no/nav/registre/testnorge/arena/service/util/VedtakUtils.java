@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,6 +41,8 @@ public class VedtakUtils {
 
     private static final Map<String, List<String>> deltakerstatuskoderMedAarsakkoder;
     private static final Map<String, List<KodeMedSannsynlighet>> adminkodeTilDeltakerstatus;
+
+    private static final List<String> AVSLUTTENDE_TILTAK_STATUSER = new ArrayList<>(Arrays.asList("AVSLUTT", "AVLYST", "AVBRUTT"));
 
     static {
         deltakerstatuskoderMedAarsakkoder = new HashMap<>();
@@ -320,7 +323,11 @@ public class VedtakUtils {
         return (fraDato != null && fraDato.isBefore(LocalDate.now().plusDays(1)));
     }
 
-    public boolean canSetDeltakelseTilFinished(NyttVedtakTiltak tiltaksdeltakelse) {
+    public boolean canSetDeltakelseTilFinished(NyttVedtakTiltak tiltaksdeltakelse, List<NyttVedtakTiltak> tiltak) {
+        var tilknyttetTiltak = tiltak.stream().filter(t -> t.getTiltakId().equals(tiltaksdeltakelse.getTiltakId())).collect(Collectors.toList());
+        if (!tilknyttetTiltak.isEmpty() && AVSLUTTENDE_TILTAK_STATUSER.contains(tilknyttetTiltak.get(0).getTiltakStatusKode())) {
+            return true;
+        }
         var fraDato = tiltaksdeltakelse.getFraDato();
         var tilDato = tiltaksdeltakelse.getTilDato();
 

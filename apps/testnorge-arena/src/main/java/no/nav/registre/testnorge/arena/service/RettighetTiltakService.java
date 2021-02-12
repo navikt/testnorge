@@ -89,11 +89,12 @@ public class RettighetTiltakService {
         var utvalgteIdenter = identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
 
         List<NyttVedtakTiltak> tiltaksdeltakelser = new ArrayList<>();
-        var rettigheter = hentRettigheterForTiltaksdeltakelse(utvalgteIdenter, miljoe, tiltaksdeltakelser);
+        List<NyttVedtakTiltak> tiltak = new ArrayList<>();
+        var rettigheter = hentRettigheterForTiltaksdeltakelse(utvalgteIdenter, miljoe, tiltaksdeltakelser, tiltak);
         var innsendteTiltaksdeltakelser = aktiverTiltaksdeltakelse(rettigheter, miljoe);
         addResponses(responses, innsendteTiltaksdeltakelser);
 
-        var endretDeltakerstatus = hentRettigheterForEndreDeltakerstatus(miljoe, tiltaksdeltakelser);
+        var endretDeltakerstatus = hentRettigheterForEndreDeltakerstatus(miljoe, tiltaksdeltakelser, tiltak);
         var innsendteEndringerDeltakerstatus = endreDeltakerstatus(endretDeltakerstatus);
         addResponses(responses, innsendteEndringerDeltakerstatus);
 
@@ -291,7 +292,8 @@ public class RettighetTiltakService {
     private List<RettighetRequest> hentRettigheterForTiltaksdeltakelse(
             List<String> identer,
             String miljoe,
-            List<NyttVedtakTiltak> tiltaksdeltakelser
+            List<NyttVedtakTiltak> tiltaksdeltakelser,
+            List<NyttVedtakTiltak> tiltaksliste
     ) {
         List<RettighetRequest> rettigheter = new ArrayList<>();
         for (var ident : identer) {
@@ -310,6 +312,7 @@ public class RettighetTiltakService {
                     deltakelse.setFraDato(tiltak.getFraDato());
                     deltakelse.setTilDato(tiltak.getTilDato());
                     tiltaksdeltakelser.add(deltakelse);
+                    tiltaksliste.add(tiltak);
 
                     var nyTiltakdeltakelse = vedtakUtils.getVedtakForTiltaksdeltakelseRequest(deltakelse);
 
@@ -327,11 +330,12 @@ public class RettighetTiltakService {
 
     private List<RettighetRequest> hentRettigheterForEndreDeltakerstatus(
             String miljoe,
-            List<NyttVedtakTiltak> tiltaksdeltakelser
+            List<NyttVedtakTiltak> tiltaksdeltakelser,
+            List<NyttVedtakTiltak> tiltak
     ) {
         List<RettighetRequest> rettigheter = new ArrayList<>();
         for (var vedtak : tiltaksdeltakelser) {
-            List<String> endringer = getEndringerMedGyldigRekkefoelge(vedtak);
+            List<String> endringer = getEndringerMedGyldigRekkefoelge(vedtak, tiltak);
 
             for (var endring : endringer) {
                 var rettighetRequest = vedtakUtils.opprettRettighetEndreDeltakerstatusRequest(vedtak.getFodselsnr(),
@@ -344,7 +348,8 @@ public class RettighetTiltakService {
     }
 
     private List<String> getEndringerMedGyldigRekkefoelge(
-            NyttVedtakTiltak tiltaksdeltakelse
+            NyttVedtakTiltak tiltaksdeltakelse,
+            List<NyttVedtakTiltak> tiltak
     ) {
         var adminKode = tiltaksdeltakelse.getTiltakAdminKode();
         List<String> endringer = new ArrayList<>();
@@ -352,7 +357,7 @@ public class RettighetTiltakService {
             endringer = vedtakUtils.getFoersteEndringerDeltakerstatus(adminKode);
         }
 
-        if (!endringer.isEmpty() && endringer.contains(Deltakerstatuser.GJENN.toString()) && vedtakUtils.canSetDeltakelseTilFinished(tiltaksdeltakelse)) {
+        if (!endringer.isEmpty() && endringer.contains(Deltakerstatuser.GJENN.toString()) && vedtakUtils.canSetDeltakelseTilFinished(tiltaksdeltakelse, tiltak)) {
             endringer.add(vedtakUtils.getAvsluttendeDeltakerstatus(adminKode).toString());
         }
 
