@@ -1,10 +1,5 @@
 package no.nav.dolly.bestilling.udistub;
 
-import static java.util.Objects.nonNull;
-
-import java.util.List;
-import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -16,6 +11,11 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service

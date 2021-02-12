@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -37,14 +37,14 @@ public class GjenopprettBestillingService extends DollyBestillingService {
     private ErrorStatusDecoder errorStatusDecoder;
     private TpsfService tpsfService;
     private BestillingProgressService bestillingProgressService;
-    private ForkJoinPool dollyForkJoinPool;
+    private ExecutorService dollyForkJoinPool;
     private TpsfPersonCache tpsfPersonCache;
 
     public GjenopprettBestillingService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService, TpsfPersonCache tpsfPersonCache,
                                         IdentService identService, BestillingProgressService bestillingProgressService,
                                         BestillingService bestillingService, MapperFacade mapperFacade, CacheManager cacheManager,
                                         ObjectMapper objectMapper, List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
-                                        ErrorStatusDecoder errorStatusDecoder, ForkJoinPool dollyForkJoinPool) {
+                                        ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool) {
         super(tpsfResponseHandler, tpsfService, tpsfPersonCache, identService, bestillingProgressService, bestillingService,
                 mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry);
 

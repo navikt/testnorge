@@ -1,17 +1,6 @@
 package no.nav.dolly.bestilling.service;
 
-import static java.util.Objects.nonNull;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ForkJoinPool;
-import java.util.stream.Collectors;
-import org.springframework.cache.CacheManager;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -28,6 +17,17 @@ import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.TpsfPersonCache;
+import org.springframework.cache.CacheManager;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.stream.Collectors;
+
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -37,13 +37,13 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
     private ErrorStatusDecoder errorStatusDecoder;
     private MapperFacade mapperFacade;
     private TpsfService tpsfService;
-    private ForkJoinPool dollyForkJoinPool;
+    private ExecutorService dollyForkJoinPool;
 
     public OpprettPersonerByKriterierService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService,
-            TpsfPersonCache tpsfPersonCache, IdentService identService, BestillingProgressService bestillingProgressService,
-            BestillingService bestillingService, MapperFacade mapperFacade, CacheManager cacheManager,
-            ObjectMapper objectMapper, List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
-            ErrorStatusDecoder errorStatusDecoder, ForkJoinPool dollyForkJoinPool) {
+                                             TpsfPersonCache tpsfPersonCache, IdentService identService, BestillingProgressService bestillingProgressService,
+                                             BestillingService bestillingService, MapperFacade mapperFacade, CacheManager cacheManager,
+                                             ObjectMapper objectMapper, List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
+                                             ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool) {
         super(tpsfResponseHandler, tpsfService, tpsfPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry);
 

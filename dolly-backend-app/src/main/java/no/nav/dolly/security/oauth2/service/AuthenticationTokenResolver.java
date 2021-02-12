@@ -25,7 +25,6 @@ class AuthenticationTokenResolver {
     public String getToken() {
         JwtAuthenticationToken jwtAuthenticationToken = jwtAuthenticationToken();
         Map<String, Object> tokenAttributes = jwtAuthenticationToken.getTokenAttributes();
-        log.info("Hentet innlogget token for OID {}", tokenAttributes.get("oid"));
         return jwtAuthenticationToken.getToken().getTokenValue();
     }
 }

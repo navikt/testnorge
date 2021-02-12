@@ -32,8 +32,6 @@ public final class CurrentAuthentication {
     public static String getJwtToken() {
         JwtAuthenticationToken jwtAuthenticationToken = getToken();
         Map<String, Object> tokenAttributes = jwtAuthenticationToken.getTokenAttributes();
-        log.info("Hentet innlogget token for OID {}", tokenAttributes.get("oid"));
-        log.info("Hentet Claim OID {}", jwtAuthenticationToken.getToken().getClaims().get("oid"));
         return jwtAuthenticationToken.getToken().getTokenValue();
     }
 

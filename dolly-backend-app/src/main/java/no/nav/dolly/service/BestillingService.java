@@ -1,26 +1,8 @@
 package no.nav.dolly.service;
 
-import static java.lang.String.format;
-import static java.lang.String.join;
-import static java.time.LocalDateTime.now;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptySet;
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-import static java.util.stream.Collectors.toSet;
-import static no.nav.dolly.util.CurrentAuthentication.getUserId;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -46,6 +28,24 @@ import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import static java.lang.String.format;
+import static java.lang.String.join;
+import static java.time.LocalDateTime.now;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.toSet;
+import static no.nav.dolly.util.CurrentAuthentication.getUserId;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
