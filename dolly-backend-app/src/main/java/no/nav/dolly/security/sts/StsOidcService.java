@@ -32,10 +32,10 @@ public class StsOidcService {
     private final RestTemplate restTemplate;
     private final CredentialsProps credentialsProps;
 
-    @Value("${STS_TOKEN_PROVIDER_TEST}")
+    @Value("${sts.token.provider.test}")
     private String stsTokenProviderTestUrl;
 
-    @Value("${STS_TOKEN_PROVIDER_PREPROD}")
+    @Value("${sts.token.provider.preprod}")
     private String stsTokenProviderPreprodUrl;
 
     private Map<Environment, String> idToken = new EnumMap<>(Environment.class);
