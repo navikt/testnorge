@@ -24,8 +24,8 @@ public class InnsatsArenaForvalterConsumer {
     public void endreInnsatsbehov(EndreInnsatsbehovRequest endreRequest) {
         var response = new PostEndreInnsatsbehovCommand(endreRequest, webClient).call();
 
-        if (response.getNyeEndreInnsatsbehovFeilList() != null &&
-                !response.getNyeEndreInnsatsbehovFeilList().isEmpty()) {
+        if (response == null || (response.getNyeEndreInnsatsbehovFeilList() != null &&
+                !response.getNyeEndreInnsatsbehovFeilList().isEmpty())) {
             log.info(String.format("Endring av innsatsbehov for ident %s feilet", endreRequest.getPersonident()));
         }
     }

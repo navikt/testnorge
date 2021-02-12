@@ -40,10 +40,9 @@ public class PostSyntTilleggRequestCommand implements Callable<List<NyttVedtakTi
 
     @Override
     public List<NyttVedtakTillegg> call() {
-        List<NyttVedtakTillegg> response = Collections.emptyList();
         try {
             log.info("Henter syntetiske tilleggsstonad vedtak.");
-            response = webClient.post()
+            return webClient.post()
                     .uri(builder ->
                             builder.path(urlPath)
                                     .build()
@@ -57,7 +56,7 @@ public class PostSyntTilleggRequestCommand implements Callable<List<NyttVedtakTi
                     .block();
         } catch (Exception e) {
             log.error("Klarte ikke hente syntetiske tilleggsstonad vedtak.", e);
+            return Collections.emptyList();
         }
-        return response;
     }
 }

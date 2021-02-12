@@ -1,0 +1,34 @@
+spring:
+  flyway:
+    enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+  datasource:
+    url: ${datasource.url}
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 1
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    properties:
+      hibernate:
+        default-schema: public
+  cloud:
+    vault:
+      host: vault.adeo.no
+      port: 443
+      fail-fast: true
+      connection-timeout: 15000
+      read-timeout: 30000
+      generic:
+        enabled: false
+      database:
+        backend: postgresql/preprod-fss
+        enabled: true
+        role: ${database.name.role}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0 
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}

@@ -8,6 +8,19 @@ metadata:
 spec:
   image: {{ image }}
   port: 8080
+  webproxy: true
+  azure:
+    application:
+      enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: dolly-backend
+          cluster: dev-fss
+        - application: dolly-frontend
+          cluster: dev-fss
+        - application: testnorge-oversikt-frontend
+          cluster: dev-fss
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
@@ -29,7 +42,11 @@ spec:
     requests:
       cpu: 200m
       memory: 1024Mi
+  env:
+    - name: DATASOURCE_URL
+      value: jdbc:postgresql://b27dbvl007.preprod.local:5432/udi-stub
+    - name: DATABASE_NAME_ROLE
+      value: udi-stub-admin
   ingresses:
-    - "https://udi-stub.nais.preprod.local"
     - "https://udi-stub.dev.adeo.no"
     - "https://udi-stub.dev.intern.nav.no"

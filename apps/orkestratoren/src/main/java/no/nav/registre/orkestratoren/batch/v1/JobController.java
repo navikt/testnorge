@@ -195,25 +195,25 @@ public class JobController {
     }
 
     /**
-    * Denne metoden oppretter vedtakshistorikk i Arena og registerer brukere med oppfølging (uten vedtak) i Arena.
-     * Metoden kjøres hver time fra 0-5 og fra 18-23.
-    * */
-    @Scheduled(cron = "0 0 0-5,18-23 * * *")
+     * Denne metoden oppretter vedtakshistorikk i Arena og registerer brukere med oppfølging (uten vedtak) i Arena.
+     * Metoden kjøres hver time.
+     */
+    @Scheduled(cron = "0 0 0-23 * * *")
     public void arenaSyntBatch() {
         for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            for (int i = 0; i < arenaAntallNyeIdenter; i++) {
+            for (int i = 0; i < 4; i++) {
                 testnorgeArenaService.opprettArenaVedtakshistorikk(SyntetiserArenaVedtakshistorikkRequest.builder()
                         .avspillergruppeId(entry.getKey())
                         .miljoe(entry.getValue())
-                        .antallVedtakshistorikker(1)
+                        .antallVedtakshistorikker(arenaAntallNyeIdenter)
                         .build());
-            }
 
-            testnorgeArenaService.opprettArbeidssokereIArena(SyntetiserArenaRequest.builder()
-                    .avspillergruppeId(entry.getKey())
-                    .miljoe(entry.getValue())
-                    .antallNyeIdenter(1)
-                    .build(), true);
+                testnorgeArenaService.opprettArbeidssokereIArena(SyntetiserArenaRequest.builder()
+                        .avspillergruppeId(entry.getKey())
+                        .miljoe(entry.getValue())
+                        .antallNyeIdenter(1)
+                        .build(), true);
+            }
         }
     }
 
