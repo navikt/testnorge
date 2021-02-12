@@ -15,7 +15,7 @@ import no.nav.registre.testnorge.arena.consumer.rs.util.ConsumerUtils;
 import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
 import no.nav.registre.testnorge.arena.service.util.ArbeidssoekerUtils;
 import no.nav.registre.testnorge.arena.service.util.ServiceUtils;
-import no.nav.registre.testnorge.arena.service.util.VedtakUtils;
+import no.nav.registre.testnorge.arena.service.util.TiltakUtils;
 import no.nav.registre.testnorge.arena.service.util.KodeMedSannsynlighet;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
@@ -57,7 +57,7 @@ public class RettighetTiltakServiceTest {
     private IdenterUtils identerUtils;
 
     @Mock
-    private VedtakUtils vedtakUtils;
+    private TiltakUtils tiltakUtils;
 
     @Mock
     private ArbeidssoekerUtils arbeidssoekerUtils;
@@ -118,10 +118,10 @@ public class RettighetTiltakServiceTest {
         when(tiltakSyntConsumer.opprettTiltaksdeltakelse(syntRequest)).thenReturn(vedtak);
         when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
-        when(vedtakUtils.finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoFremITid)).thenReturn(tiltakMedTilDatoFremITid);
-        when(vedtakUtils.canSetDeltakelseTilGjennomfoeres(tiltakMedTilDatoFremITid)).thenReturn(true);
-        when(vedtakUtils.getVedtakForTiltaksdeltakelseRequest(tiltakMedTilDatoFremITid)).thenReturn(tiltakMedTilDatoFremITid);
-        when(vedtakUtils.getFoersteEndringerDeltakerstatus(anyString())).thenReturn(Collections.singletonList(Deltakerstatuser.GJENN.toString()));
+        when(tiltakUtils.finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoFremITid)).thenReturn(tiltakMedTilDatoFremITid);
+        when(tiltakUtils.canSetDeltakelseTilGjennomfoeres(tiltakMedTilDatoFremITid)).thenReturn(true);
+        when(tiltakUtils.getVedtakForTiltaksdeltakelseRequest(tiltakMedTilDatoFremITid)).thenReturn(tiltakMedTilDatoFremITid);
+        when(tiltakUtils.getFoersteEndringerDeltakerstatus(anyString())).thenReturn(Collections.singletonList(Deltakerstatuser.GJENN.toString()));
         when(arbeidssoekerUtils.opprettArbeidssoekerTiltak(anyList(), anyString())).thenReturn(Collections.emptyList());
 
         rettighetTiltakService.opprettTiltaksdeltakelse(avspillergruppeId, miljoe, antallNyeIdenter);
@@ -129,9 +129,9 @@ public class RettighetTiltakServiceTest {
         verify(tiltakSyntConsumer).opprettTiltaksdeltakelse(syntRequest);
         verify(identerUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(rettighetArenaForvalterConsumer, times(2)).opprettRettighet(anyList());
-        verify(vedtakUtils).finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoFremITid);
-        verify(vedtakUtils).getVedtakForTiltaksdeltakelseRequest(tiltakMedTilDatoFremITid);
-        verify(vedtakUtils).getFoersteEndringerDeltakerstatus(anyString());
+        verify(tiltakUtils).finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoFremITid);
+        verify(tiltakUtils).getVedtakForTiltaksdeltakelseRequest(tiltakMedTilDatoFremITid);
+        verify(tiltakUtils).getFoersteEndringerDeltakerstatus(anyString());
     }
 
     @Test
@@ -141,12 +141,12 @@ public class RettighetTiltakServiceTest {
         when(tiltakSyntConsumer.opprettTiltaksdeltakelse(syntRequest)).thenReturn(vedtak);
         when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
-        when(vedtakUtils.finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoLikDagens)).thenReturn(tiltakMedTilDatoLikDagens);
-        when(vedtakUtils.canSetDeltakelseTilGjennomfoeres(tiltakMedTilDatoLikDagens)).thenReturn(true);
-        when(vedtakUtils.canSetDeltakelseTilFinished(tiltakMedTilDatoLikDagens)).thenReturn(true);
-        when(vedtakUtils.getVedtakForTiltaksdeltakelseRequest(tiltakMedTilDatoLikDagens)).thenReturn(tiltakMedTilDatoLikDagens);
-        when(vedtakUtils.getFoersteEndringerDeltakerstatus(anyString())).thenReturn(new ArrayList<>(Collections.singletonList(Deltakerstatuser.GJENN.toString())));
-        when(vedtakUtils.getAvsluttendeDeltakerstatus(anyString())).thenReturn(Deltakerstatuser.FULLF);
+        when(tiltakUtils.finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoLikDagens)).thenReturn(tiltakMedTilDatoLikDagens);
+        when(tiltakUtils.canSetDeltakelseTilGjennomfoeres(tiltakMedTilDatoLikDagens)).thenReturn(true);
+        when(tiltakUtils.canSetDeltakelseTilFinished(tiltakMedTilDatoLikDagens, Collections.singletonList(tiltakMedTilDatoLikDagens))).thenReturn(true);
+        when(tiltakUtils.getVedtakForTiltaksdeltakelseRequest(tiltakMedTilDatoLikDagens)).thenReturn(tiltakMedTilDatoLikDagens);
+        when(tiltakUtils.getFoersteEndringerDeltakerstatus(anyString())).thenReturn(new ArrayList<>(Collections.singletonList(Deltakerstatuser.GJENN.toString())));
+        when(tiltakUtils.getAvsluttendeDeltakerstatus(anyString())).thenReturn(Deltakerstatuser.FULLF);
         when(arbeidssoekerUtils.opprettArbeidssoekerTiltak(anyList(), anyString())).thenReturn(Collections.emptyList());
 
         rettighetTiltakService.opprettTiltaksdeltakelse(avspillergruppeId, miljoe, antallNyeIdenter);
@@ -154,7 +154,7 @@ public class RettighetTiltakServiceTest {
         verify(tiltakSyntConsumer).opprettTiltaksdeltakelse(syntRequest);
         verify(identerUtils).getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
         verify(rettighetArenaForvalterConsumer, times(2)).opprettRettighet(anyList());
-        verify(vedtakUtils).finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoLikDagens);
+        verify(tiltakUtils).finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoLikDagens);
     }
 
     @Test

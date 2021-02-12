@@ -9,7 +9,7 @@ import no.nav.registre.testnorge.arena.consumer.rs.util.ConsumerUtils;
 import no.nav.registre.testnorge.arena.service.util.ServiceUtils;
 import no.nav.registre.testnorge.arena.service.util.ArbeidssoekerUtils;
 import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
-import no.nav.registre.testnorge.arena.service.util.VedtakUtils;
+import no.nav.registre.testnorge.arena.service.util.TiltakUtils;
 import no.nav.registre.testnorge.arena.service.util.KodeMedSannsynlighet;
 import org.springframework.stereotype.Service;
 
@@ -51,7 +51,7 @@ public class RettighetTiltakService {
     private final ServiceUtils serviceUtils;
     private final IdenterUtils identerUtils;
     private final ArbeidssoekerUtils arbeidsoekerUtils;
-    private final VedtakUtils vedtakUtils;
+    private final TiltakUtils tiltakUtils;
     private final Random rand;
 
     private static final Map<String, List<KodeMedSannsynlighet>> vedtakMedAktitivetskode;
@@ -304,7 +304,7 @@ public class RettighetTiltakService {
                 var deltakelse = syntetisertDeltakelser.get(0);
 
                 arbeidsoekerUtils.opprettArbeidssoekerTiltakdeltakelse(ident, miljoe);
-                var tiltak = vedtakUtils.finnTiltak(ident, miljoe, deltakelse);
+                var tiltak = tiltakUtils.finnTiltak(ident, miljoe, deltakelse);
 
                 if (tiltak != null) {
                     deltakelse.setTiltakId(tiltak.getTiltakId());
@@ -314,7 +314,7 @@ public class RettighetTiltakService {
                     tiltaksdeltakelser.add(deltakelse);
                     tiltaksliste.add(tiltak);
 
-                    var nyTiltakdeltakelse = vedtakUtils.getVedtakForTiltaksdeltakelseRequest(deltakelse);
+                    var nyTiltakdeltakelse = tiltakUtils.getVedtakForTiltaksdeltakelseRequest(deltakelse);
 
                     var rettighetRequest = new RettighetTiltaksdeltakelseRequest(Collections.singletonList(nyTiltakdeltakelse));
 
@@ -338,7 +338,7 @@ public class RettighetTiltakService {
             List<String> endringer = getEndringerMedGyldigRekkefoelge(vedtak, tiltak);
 
             for (var endring : endringer) {
-                var rettighetRequest = vedtakUtils.opprettRettighetEndreDeltakerstatusRequest(vedtak.getFodselsnr(),
+                var rettighetRequest = tiltakUtils.opprettRettighetEndreDeltakerstatusRequest(vedtak.getFodselsnr(),
                         miljoe, vedtak, endring);
 
                 rettigheter.add(rettighetRequest);
@@ -353,12 +353,12 @@ public class RettighetTiltakService {
     ) {
         var adminKode = tiltaksdeltakelse.getTiltakAdminKode();
         List<String> endringer = new ArrayList<>();
-        if (vedtakUtils.canSetDeltakelseTilGjennomfoeres(tiltaksdeltakelse)) {
-            endringer = vedtakUtils.getFoersteEndringerDeltakerstatus(adminKode);
+        if (tiltakUtils.canSetDeltakelseTilGjennomfoeres(tiltaksdeltakelse)) {
+            endringer = tiltakUtils.getFoersteEndringerDeltakerstatus(adminKode);
         }
 
-        if (!endringer.isEmpty() && endringer.contains(Deltakerstatuser.GJENN.toString()) && vedtakUtils.canSetDeltakelseTilFinished(tiltaksdeltakelse, tiltak)) {
-            endringer.add(vedtakUtils.getAvsluttendeDeltakerstatus(adminKode).toString());
+        if (!endringer.isEmpty() && endringer.contains(Deltakerstatuser.GJENN.toString()) && tiltakUtils.canSetDeltakelseTilFinished(tiltaksdeltakelse, tiltak)) {
+            endringer.add(tiltakUtils.getAvsluttendeDeltakerstatus(adminKode).toString());
         }
 
         return endringer;

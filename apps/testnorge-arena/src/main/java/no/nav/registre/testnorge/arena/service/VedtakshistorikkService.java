@@ -42,7 +42,7 @@ import no.nav.registre.testnorge.arena.service.util.ArbeidssoekerUtils;
 import no.nav.registre.testnorge.arena.service.util.DatoUtils;
 import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
 import no.nav.registre.testnorge.arena.service.util.ServiceUtils;
-import no.nav.registre.testnorge.arena.service.util.VedtakUtils;
+import no.nav.registre.testnorge.arena.service.util.TiltakUtils;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
@@ -65,7 +65,7 @@ public class VedtakshistorikkService {
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final IdenterUtils identerUtils;
     private final ArbeidssoekerUtils arbeidsoekerUtils;
-    private final VedtakUtils vedtakUtils;
+    private final TiltakUtils tiltakUtils;
     private final RettighetAapService rettighetAapService;
     private final RettighetTiltakService rettighetTiltakService;
     private final DatoUtils datoUtils;
@@ -229,7 +229,7 @@ public class VedtakshistorikkService {
                         vedtak.setTilDato(vedtak.getTilDato().minusDays(antallDagerEndret));
 
                         var originalTilDato = vedtak.getTilDato();
-                        vedtakUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(vedtak, SYKEPENGEERSTATNING_MAKS_PERIODE);
+                        datoUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(vedtak, SYKEPENGEERSTATNING_MAKS_PERIODE);
                         var nyTilDato = vedtak.getTilDato();
 
                         antallDagerEndret += ChronoUnit.DAYS.between(nyTilDato, originalTilDato);
@@ -406,7 +406,7 @@ public class VedtakshistorikkService {
                 deltakelse.setTiltakYtelse("J");
             });
             tiltaksdeltakelser.forEach(deltakelse -> {
-                var tiltak = vedtakUtils.finnTiltak(personident, miljoe, deltakelse);
+                var tiltak = tiltakUtils.finnTiltak(personident, miljoe, deltakelse);
 
                 if (tiltak != null) {
                     deltakelse.setTiltakId(tiltak.getTiltakId());
@@ -420,7 +420,7 @@ public class VedtakshistorikkService {
             var nyeTiltaksdeltakelser = tiltaksdeltakelser.stream()
                     .filter(deltakelse -> deltakelse.getTiltakId() != null).collect(Collectors.toList());
 
-            nyeTiltaksdeltakelser = vedtakUtils.removeOverlappingTiltakVedtak(nyeTiltaksdeltakelser, historikk.getAap());
+            nyeTiltaksdeltakelser = tiltakUtils.removeOverlappingTiltakVedtak(nyeTiltaksdeltakelser, historikk.getAap());
 
             historikk.setTiltaksdeltakelse(nyeTiltaksdeltakelser);
         }
@@ -437,7 +437,7 @@ public class VedtakshistorikkService {
             List<NyttVedtakTiltak> nyeVedtakRequests = new ArrayList<>();
 
             for (var deltakelse : tiltaksdeltakelser) {
-                nyeVedtakRequests.add(vedtakUtils.getVedtakForTiltaksdeltakelseRequest(deltakelse));
+                nyeVedtakRequests.add(tiltakUtils.getVedtakForTiltaksdeltakelseRequest(deltakelse));
             }
 
             var rettighetRequest = new RettighetTiltaksdeltakelseRequest(nyeVedtakRequests);
@@ -463,11 +463,11 @@ public class VedtakshistorikkService {
             return;
         }
         for (var deltakelse : tiltaksdeltakelser) {
-            if (vedtakUtils.canSetDeltakelseTilGjennomfoeres(deltakelse)) {
-                List<String> endringer = vedtakUtils.getFoersteEndringerDeltakerstatus(deltakelse.getTiltakAdminKode());
+            if (tiltakUtils.canSetDeltakelseTilGjennomfoeres(deltakelse)) {
+                List<String> endringer = tiltakUtils.getFoersteEndringerDeltakerstatus(deltakelse.getTiltakAdminKode());
 
                 for (var endring : endringer) {
-                    var rettighetRequest = vedtakUtils.opprettRettighetEndreDeltakerstatusRequest(personident, miljoe,
+                    var rettighetRequest = tiltakUtils.opprettRettighetEndreDeltakerstatusRequest(personident, miljoe,
                             deltakelse, endring);
 
                     rettigheter.add(rettighetRequest);
@@ -493,11 +493,11 @@ public class VedtakshistorikkService {
         var tiltaksdeltakelser = vedtak.getTiltaksdeltakelse();
         if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
             for (var deltakelse : tiltaksdeltakelser) {
-                if (vedtakUtils.canSetDeltakelseTilFinished(deltakelse, tiltak)) {
-                    var deltakerstatuskode = vedtakUtils.getAvsluttendeDeltakerstatus(deltakelse
+                if (tiltakUtils.canSetDeltakelseTilFinished(deltakelse, tiltak)) {
+                    var deltakerstatuskode = tiltakUtils.getAvsluttendeDeltakerstatus(deltakelse
                             .getTiltakAdminKode()).toString();
 
-                    var rettighetRequest = vedtakUtils.opprettRettighetEndreDeltakerstatusRequest(personident, miljoe,
+                    var rettighetRequest = tiltakUtils.opprettRettighetEndreDeltakerstatusRequest(personident, miljoe,
                             deltakelse, deltakerstatuskode);
 
                     rettigheter.add(rettighetRequest);
@@ -515,10 +515,10 @@ public class VedtakshistorikkService {
         var tiltakspenger = historikk.getTiltakspenger() != null ? historikk.getTiltakspenger() : new ArrayList<NyttVedtakTiltak>();
         var tiltaksdeltakelser = historikk.getTiltaksdeltakelse();
 
-        List<NyttVedtakTiltak> nyeTiltakspenger = vedtakUtils.oppdaterVedtakslisteBasertPaaTiltaksdeltakelse(
+        List<NyttVedtakTiltak> nyeTiltakspenger = tiltakUtils.oppdaterVedtakslisteBasertPaaTiltaksdeltakelse(
                 tiltakspenger, tiltaksdeltakelser);
 
-        nyeTiltakspenger = vedtakUtils.removeOverlappingTiltakSequences(nyeTiltakspenger);
+        nyeTiltakspenger = tiltakUtils.removeOverlappingTiltakSequences(nyeTiltakspenger);
 
         if (nyeTiltakspenger != null && !nyeTiltakspenger.isEmpty()) {
             var rettighetRequest = new RettighetTiltakspengerRequest(nyeTiltakspenger);
@@ -542,10 +542,10 @@ public class VedtakshistorikkService {
 
         List<NyttVedtakTiltak> nyeBarnetillegg = new ArrayList<>();
         if (!tiltakspenger.isEmpty()) {
-            nyeBarnetillegg = vedtakUtils.oppdaterVedtakslisteBasertPaaTiltaksdeltakelse(
+            nyeBarnetillegg = tiltakUtils.oppdaterVedtakslisteBasertPaaTiltaksdeltakelse(
                     barnetillegg, tiltaksdeltakelser);
 
-            nyeBarnetillegg = vedtakUtils.removeOverlappingTiltakSequences(nyeBarnetillegg);
+            nyeBarnetillegg = tiltakUtils.removeOverlappingTiltakSequences(nyeBarnetillegg);
 
             if (nyeBarnetillegg != null && !nyeBarnetillegg.isEmpty()) {
                 var rettighetRequest = new RettighetTilleggsytelseRequest(nyeBarnetillegg);

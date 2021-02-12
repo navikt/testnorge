@@ -33,7 +33,7 @@ import com.google.common.io.Resources;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class VedtakUtils {
+public class TiltakUtils {
 
     private final TiltakArenaForvalterConsumer tiltakArenaForvalterConsumer;
     private final ServiceUtils serviceUtils;
@@ -64,19 +64,6 @@ public class VedtakUtils {
         }
     }
 
-    public void setDatoPeriodeVedtakInnenforMaxAntallMaaneder(
-            NyttVedtak vedtak,
-            int antallMaaneder
-    ) {
-        var tilDato = vedtak.getTilDato();
-        if (tilDato != null) {
-            var tilDatoLimit = vedtak.getFraDato().plusMonths(antallMaaneder);
-
-            if (tilDato.isAfter(tilDatoLimit)) {
-                vedtak.setTilDato(tilDatoLimit);
-            }
-        }
-    }
 
     public List<NyttVedtakTiltak> oppdaterVedtakslisteBasertPaaTiltaksdeltakelse(
             List<NyttVedtakTiltak> vedtaksliste,

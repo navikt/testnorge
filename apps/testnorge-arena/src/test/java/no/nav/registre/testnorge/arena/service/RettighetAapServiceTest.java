@@ -42,9 +42,10 @@ import no.nav.registre.testnorge.arena.consumer.rs.response.PensjonTestdataRespo
 import no.nav.registre.testnorge.arena.consumer.rs.response.PensjonTestdataResponseDetails;
 import no.nav.registre.testnorge.arena.consumer.rs.response.PensjonTestdataStatus;
 import no.nav.registre.testnorge.arena.service.util.ServiceUtils;
+import no.nav.registre.testnorge.arena.service.util.DatoUtils;
 import no.nav.registre.testnorge.arena.service.util.ArbeidssoekerUtils;
 import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
-import no.nav.registre.testnorge.arena.service.util.VedtakUtils;
+import no.nav.registre.testnorge.arena.service.util.TiltakUtils;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -66,7 +67,10 @@ public class RettighetAapServiceTest {
     private ArbeidssoekerUtils arbeidssoekerUtils;
 
     @Mock
-    private VedtakUtils vedtakUtils;
+    private TiltakUtils tiltakUtils;
+
+    @Mock
+    private DatoUtils datoUtils;
 
     @Mock
     private RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;

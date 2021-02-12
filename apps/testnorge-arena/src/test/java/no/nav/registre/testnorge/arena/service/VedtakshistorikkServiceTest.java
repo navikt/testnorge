@@ -15,7 +15,7 @@ import no.nav.registre.testnorge.arena.consumer.rs.VedtakshistorikkSyntConsumer;
 import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
 import no.nav.registre.testnorge.arena.service.util.ArbeidssoekerUtils;
 import no.nav.registre.testnorge.arena.service.util.DatoUtils;
-import no.nav.registre.testnorge.arena.service.util.VedtakUtils;
+import no.nav.registre.testnorge.arena.service.util.TiltakUtils;
 import no.nav.registre.testnorge.arena.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
@@ -50,7 +50,7 @@ public class VedtakshistorikkServiceTest {
     private ArbeidssoekerUtils arbeidssoekerUtils;
 
     @Mock
-    private VedtakUtils vedtakUtils;
+    private TiltakUtils tiltakUtils;
 
     @Mock
     private DatoUtils datoUtils;
