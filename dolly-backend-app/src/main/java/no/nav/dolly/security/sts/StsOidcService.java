@@ -1,5 +1,22 @@
 package no.nav.dolly.security.sts;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import lombok.RequiredArgsConstructor;
+import no.nav.dolly.exceptions.DollyFunctionalException;
+import no.nav.dolly.properties.CredentialsProps;
+import no.nav.dolly.properties.Environment;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.net.URI;
+import java.time.LocalDateTime;
+import java.util.Base64;
+import java.util.EnumMap;
+import java.util.Map;
+
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.isNull;
 import static no.nav.dolly.properties.Environment.PREPROD;
@@ -8,23 +25,6 @@ import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import java.net.URI;
-import java.time.LocalDateTime;
-import java.util.Base64;
-import java.util.EnumMap;
-import java.util.Map;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.databind.JsonNode;
-
-import lombok.RequiredArgsConstructor;
-import no.nav.dolly.exceptions.DollyFunctionalException;
-import no.nav.dolly.properties.CredentialsProps;
-import no.nav.dolly.properties.Environment;
-
 @Service
 @RequiredArgsConstructor
 public class StsOidcService {
@@ -32,10 +32,10 @@ public class StsOidcService {
     private final RestTemplate restTemplate;
     private final CredentialsProps credentialsProps;
 
-    @Value("${sts.token.provider.test}")
+    @Value("${STS_TOKEN_PROVIDER_TEST}")
     private String stsTokenProviderTestUrl;
 
-    @Value("${sts.token.provider.preprod}")
+    @Value("${STS_TOKEN_PROVIDER_PREPROD}")
     private String stsTokenProviderPreprodUrl;
 
     private Map<Environment, String> idToken = new EnumMap<>(Environment.class);
