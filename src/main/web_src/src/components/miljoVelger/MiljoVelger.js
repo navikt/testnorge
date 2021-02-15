@@ -12,7 +12,7 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 
 	if (!environments) return null
 
-	const order = ['U', 'T', 'Q']
+	const order = ['T', 'Q']
 
 	return (
 		<div className="miljo-velger">
