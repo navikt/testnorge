@@ -1,7 +1,5 @@
 package no.nav.dolly.bestilling.pdlforvalter.domain;
 
-import java.time.LocalDate;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

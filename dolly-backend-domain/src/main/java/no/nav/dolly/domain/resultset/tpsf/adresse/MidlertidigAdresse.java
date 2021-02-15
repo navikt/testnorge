@@ -1,14 +1,14 @@
 package no.nav.dolly.domain.resultset.tpsf.adresse;
 
-import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "adressetype")
 @JsonSubTypes({
@@ -37,16 +37,16 @@ public abstract class MidlertidigAdresse {
     private String tilleggsadresse;
     private String postnr;
 
+    public boolean isGateAdr() {
+        return MidlertidigAdressetype.GATE == getAdressetype();
+    }
+
+    public boolean isPostBox() {
+        return MidlertidigAdressetype.PBOX == getAdressetype();
+    }
+
     public boolean isUtenlandsk() {
         return MidlertidigAdressetype.UTAD == getAdressetype();
-    }
-
-    public boolean isNorsk() {
-        return !isUtenlandsk();
-    }
-
-    public boolean isStedadresse() {
-        return MidlertidigAdressetype.STED == getAdressetype();
     }
 
     public abstract MidlertidigAdressetype getAdressetype();

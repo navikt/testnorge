@@ -1,23 +1,24 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
-import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.resultset.tpsf.InnvandretUtvandret.InnUtvandret.INNVANDRET;
-import static no.nav.dolly.domain.resultset.tpsf.InnvandretUtvandret.InnUtvandret.UTVANDRET;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import org.springframework.stereotype.Component;
-
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.pdlforvalter.domain.Folkeregistermetadata;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlInnflytting;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlInnflyttingHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlUtflytting;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlUtflyttingHistorikk;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.mapper.MappingStrategy;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.resultset.tpsf.InnvandretUtvandret.InnUtvandret.INNVANDRET;
+import static no.nav.dolly.domain.resultset.tpsf.InnvandretUtvandret.InnUtvandret.UTVANDRET;
 
 @Component
 public class PdlFlyttingMappingStrategy implements MappingStrategy {
@@ -35,7 +36,7 @@ public class PdlFlyttingMappingStrategy implements MappingStrategy {
                                 historikk.getInnflyttinger().add(
                                         PdlInnflytting.builder()
                                                 .fraflyttingsland(innvandretUtvandret.getLandkode())
-                                                .folkeregistermetadata(PdlInnflytting.Folkeregistermetadata.builder()
+                                                .folkeregistermetadata(Folkeregistermetadata.builder()
                                                         .gyldighetstidspunkt(getDato(innvandretUtvandret.getFlyttedato()))
                                                         .build())
                                                 .kilde(CONSUMER)
@@ -58,7 +59,7 @@ public class PdlFlyttingMappingStrategy implements MappingStrategy {
                                 historikk.getUtflyttinger().add(
                                         PdlUtflytting.builder()
                                                 .tilflyttingsland(innvandretUtvandret.getLandkode())
-                                                .folkeregistermetadata(PdlUtflytting.Folkeregistermetadata.builder()
+                                                .folkeregistermetadata(Folkeregistermetadata.builder()
                                                         .gyldighetstidspunkt(getDato(innvandretUtvandret.getFlyttedato()))
                                                         .build())
                                                 .kilde(CONSUMER)

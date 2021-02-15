@@ -1,14 +1,14 @@
 package no.nav.dolly.domain.resultset.tpsf.adresse;
 
-import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "adressetype")
 @JsonSubTypes({
@@ -34,9 +34,15 @@ public abstract class BoAdresse {
 
     private String bolignr;
 
+    private Boolean deltAdresse;
+
     public abstract String getAdressetype();
 
     public boolean isGateadresse() {
         return "GATE".equals(getAdressetype());
+    }
+
+    public boolean isMatrikkeladresse() {
+        return "MATR".equals(getAdressetype());
     }
 }

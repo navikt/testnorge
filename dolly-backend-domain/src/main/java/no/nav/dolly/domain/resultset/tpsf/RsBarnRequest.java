@@ -17,7 +17,7 @@ public class RsBarnRequest extends RsRelasjon {
 
     public enum BarnType {MITT, FELLES, DITT}
 
-    public enum BorHos {MEG, OSS, DEG}
+    public enum BorHos {MEG, OSS, DEG, BEGGE}
 
     @Schema(description = "Bestemmer type av relasjon med forelder, enten FOEDSEL eller BARN")
     private BarnType barnType;
@@ -25,7 +25,7 @@ public class RsBarnRequest extends RsRelasjon {
     @Schema(description = "Identifiserer partner for felles barn. Kan være tom hvis felles eller mine, ellers er gyldige verdier er 1, 2 ... N")
     private Integer partnerNr;
 
-    @Schema(description = "Barns boadresse bestemmes ut fra attributtverdi, og blank, MEG og OSS gir boadresse identisk med hovedperson")
+    @Schema(description = "Barns boadresse bestemmes ut fra attributtverdi, og blank, MEG og OSS gir boadresse identisk med hovedperson, BEGGE gir delt bosted")
     private BorHos borHos;
 
     @Schema(description = "Når barn er adoptert vil kun relasjon BARN benyttes for aktuelle foreldere")

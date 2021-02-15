@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.pdlforvalter;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedsadresseHistorikk;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDeltBosted.PdlDelteBosteder;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFullmaktHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlInnflyttingHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresseHistorikk;
@@ -85,6 +86,7 @@ public class PdlForvalterClientTest {
         when(mapperFacade.map(any(Person.class), eq(PdlFullmaktHistorikk.class))).thenReturn((new PdlFullmaktHistorikk()));
         when(mapperFacade.map(any(Person.class), eq(PdlInnflyttingHistorikk.class))).thenReturn(new PdlInnflyttingHistorikk());
         when(mapperFacade.map(any(Person.class), eq(PdlUtflyttingHistorikk.class))).thenReturn(new PdlUtflyttingHistorikk());
+        when(mapperFacade.map(any(Person.class), eq(PdlDelteBosteder.class))).thenReturn(new PdlDelteBosteder());
     }
 
     @Test

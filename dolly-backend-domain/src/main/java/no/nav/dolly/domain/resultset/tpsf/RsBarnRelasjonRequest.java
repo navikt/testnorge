@@ -15,7 +15,7 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsBarnRelasjonRequest {
 
-    public enum BorHos {MEG, OSS, DEG}
+    public enum BorHos {MEG, OSS, DEG, BEGGE}
 
     @Schema(required = true,
             description = "Ident for barnet")
@@ -24,6 +24,6 @@ public class RsBarnRelasjonRequest {
     @Schema(description = "Ident som identifiserer partner for felles eller dine barn. Kan være tom for mine barn eller når det finnes kun en partner")
     private String partnerIdent;
 
-    @Schema(description = "Barns boadresse bestemmes ut fra attributtverdi, og blank, MEG og OSS gir boadresse identisk med hovedperson")
+    @Schema(description = "Barns boadresse bestemmes ut fra attributtverdi, og blank, MEG og OSS gir boadresse identisk med hovedperson, BEGGE gir delt bostedsadresse")
     private BorHos borHos;
 }

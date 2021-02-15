@@ -6,6 +6,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedsadresseHistorikk;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDeltBosted.PdlDelteBosteder;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
@@ -164,6 +165,7 @@ public class PdlForvalterClient implements ClientRegister {
                 sendOppholdsadresse(person);
                 sendKontaktadresse(person);
                 sendBostedadresse(person);
+                sendDeltBosted(person);
                 sendInnflytting(person);
                 sendUtflytting(person);
                 sendFolkeregisterpersonstatus(person);
@@ -319,6 +321,12 @@ public class PdlForvalterClient implements ClientRegister {
 
         mapperFacade.map(person, PdlKontaktadresseHistorikk.class).getPdlAdresser()
                 .forEach(adresse -> pdlForvalterConsumer.postKontaktadresse(adresse, person.getIdent()));
+    }
+
+    private void sendDeltBosted(Person person) {
+
+        mapperFacade.map(person, PdlDelteBosteder.class).getDelteBosteder()
+                .forEach(adresse -> pdlForvalterConsumer.postDeltBosted(adresse, person.getIdent()));
     }
 
     private void sendInnflytting(Person person) {

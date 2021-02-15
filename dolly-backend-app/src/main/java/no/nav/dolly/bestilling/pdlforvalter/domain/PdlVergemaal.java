@@ -1,7 +1,5 @@
 package no.nav.dolly.bestilling.pdlforvalter.domain;
 
-import java.time.LocalDate;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -58,16 +56,5 @@ public class PdlVergemaal {
         private String etternavn;
         private String fornavn;
         private String mellomnavn;
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Folkeregistermetadata {
-
-        private LocalDate ajourholdstidspunkt;
-        private LocalDate gyldighetstidspunkt;
-        private LocalDate opphoerstidspunkt;
     }
 }

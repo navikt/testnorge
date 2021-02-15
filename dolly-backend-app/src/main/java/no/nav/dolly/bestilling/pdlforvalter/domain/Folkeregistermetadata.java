@@ -5,14 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlUtflytting {
+public class Folkeregistermetadata {
 
-    private Folkeregistermetadata folkeregistermetadata;
-    private String kilde;
-    private String tilflyttingsland;
-    private String tilflyttingsstedIUtlandet;
+    private LocalDate ajourholdstidspunkt;
+    private LocalDate gyldighetstidspunkt;
+    private LocalDate opphoerstidspunkt;
 }

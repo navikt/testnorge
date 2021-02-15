@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedadresse;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDeltBosted;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
@@ -65,6 +66,7 @@ public class PdlForvalterConsumer {
     private static final String PDL_BESTILLING_OPPHOLDSADRESSE_URL = PDL_BESTILLING_URL + "/oppholdsadresse";
     private static final String PDL_BESTILLING_KONTAKTADRESSE_URL = PDL_BESTILLING_URL + "/kontaktadresse";
     private static final String PDL_BESTILLING_BOSTEDADRESSE_URL = PDL_BESTILLING_URL + "/bostedsadresse";
+    private static final String PDL_BESTILLING_DELTBOSTED_URL = PDL_BESTILLING_URL + "/deltbosted";
     private static final String PDL_BESTILLING_INNFLYTTING_URL = PDL_BESTILLING_URL + "/innflytting";
     private static final String PDL_BESTILLING_UTFLYTTING_URL = PDL_BESTILLING_URL + "/utflytting";
     private static final String PDL_BESTILLING_FORELDREANSVAR_URL = PDL_BESTILLING_URL + "/foreldreansvar";
@@ -221,6 +223,14 @@ public class PdlForvalterConsumer {
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_BOSTEDADRESSE_URL,
                 bostedadresse, ident, "bostedadresse");
+    }
+
+    @Timed(name = "providers", tags = { "operation", "pdl_delt_bosted" })
+    public ResponseEntity<JsonNode> postDeltBosted(PdlDeltBosted deltBosted, String ident) {
+
+        return postRequest(
+                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_DELTBOSTED_URL,
+                deltBosted, ident, "deltBosted");
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_folkeregisterpersonstatus" })

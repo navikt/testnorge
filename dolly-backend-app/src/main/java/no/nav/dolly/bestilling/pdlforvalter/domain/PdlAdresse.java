@@ -31,23 +31,5 @@ public abstract class PdlAdresse {
     private String kilde;
     private Master master;
     private String naerAdresseIdentifikatorFraMatrikkelen;
-    private Vegadresse vegadresse;
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class Vegadresse {
-
-        private String adressekode;
-        private String adressenavn;
-        private String adressetillegsnavn;
-        private String bruksenhetsnummer;
-        private Bruksenhetstype bruksenhetstype;
-        private String husbokstav;
-        private String husnummer;
-        private String kommunenummer;
-        private String postnummer;
-    }
+    private PdlVegadresse vegadresse;
 }

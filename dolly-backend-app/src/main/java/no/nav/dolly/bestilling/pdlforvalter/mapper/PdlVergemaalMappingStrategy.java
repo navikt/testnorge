@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.pdlforvalter.domain.Folkeregistermetadata;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaal;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaal.Omfang;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaal.Personnavn;
@@ -68,12 +69,8 @@ public class PdlVergemaalMappingStrategy implements MappingStrategy {
                         person.getVergemaal().forEach(vergemaal -> {
 
                             PdlVergemaal pdlVergemaal = new PdlVergemaal();
-                            try {
-                                pdlVergemaal.setEmbete(kodeverkConsumer.getKodeverkByName(EMBETE_KODEVERK).get(vergemaal.getEmbete()));
-                            } catch (RuntimeException e) {
-                                log.error("Mapping av {} feilet", vergemaal.getEmbete(), e);
-                            }
-                            pdlVergemaal.setFolkeregistermetadata(PdlVergemaal.Folkeregistermetadata.builder()
+                            pdlVergemaal.setEmbete(kodeverkConsumer.getKodeverkByName(EMBETE_KODEVERK).get(vergemaal.getEmbete()));
+                            pdlVergemaal.setFolkeregistermetadata(Folkeregistermetadata.builder()
                                     .gyldighetstidspunkt(mapperFacade.map(vergemaal.getVedtakDato(), LocalDate.class))
                                     .build());
                             pdlVergemaal.setKilde(CONSUMER);
