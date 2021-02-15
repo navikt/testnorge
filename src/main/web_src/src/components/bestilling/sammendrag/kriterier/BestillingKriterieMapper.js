@@ -1030,7 +1030,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			}
 
 		const udiStubUtvistMedInnreiseforbud = oppholdKriterier
-			.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum?.utvistMedInnreiseForbud.innreiseForbud && {
+			?.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum?.utvistMedInnreiseForbud.innreiseForbud && {
 			header: 'UDI - Utvist med innreiseforbud',
 			items: [
 				obj(
