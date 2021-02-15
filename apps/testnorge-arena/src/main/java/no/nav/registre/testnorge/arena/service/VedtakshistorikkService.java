@@ -289,11 +289,13 @@ public class VedtakshistorikkService {
             List<RettighetRequest> rettigheter
     ) {
         if (aap115 != null && !aap115.isEmpty()) {
-            var rettighetRequest = new RettighetAap115Request(aap115);
-            rettighetRequest.setPersonident(personident);
-            rettighetRequest.setMiljoe(miljoe);
-            rettighetRequest.getNyeAap115().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
-            rettigheter.add(rettighetRequest);
+            for (var vedtak : aap115) {
+                var rettighetRequest = new RettighetAap115Request(Collections.singletonList(vedtak));
+                rettighetRequest.setPersonident(personident);
+                rettighetRequest.setMiljoe(miljoe);
+                rettighetRequest.getNyeAap115().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
+                rettigheter.add(rettighetRequest);
+            }
         }
     }
 
@@ -310,83 +312,93 @@ public class VedtakshistorikkService {
     }
 
     private void opprettVedtakAap(
-            Vedtakshistorikk vedtak,
+            Vedtakshistorikk historikk,
             String personident,
             String miljoe,
             List<RettighetRequest> rettigheter
     ) {
-        var aap = vedtak.getAap();
+        var aap = historikk.getAap();
         if (aap != null && !aap.isEmpty()) {
-            var rettighetRequest = new RettighetAapRequest(aap);
-            rettighetRequest.setPersonident(personident);
-            rettighetRequest.setMiljoe(miljoe);
-            rettighetRequest.getNyeAap().forEach(rettighet ->
-                    rettighet.setBegrunnelse(BEGRUNNELSE)
-            );
-            rettigheter.add(rettighetRequest);
+            for (var vedtak : aap) {
+                var rettighetRequest = new RettighetAapRequest(Collections.singletonList(vedtak));
+                rettighetRequest.setPersonident(personident);
+                rettighetRequest.setMiljoe(miljoe);
+                rettighetRequest.getNyeAap().forEach(rettighet ->
+                        rettighet.setBegrunnelse(BEGRUNNELSE)
+                );
+                rettigheter.add(rettighetRequest);
+            }
+
         }
     }
 
     private void opprettVedtakUngUfoer(
-            Vedtakshistorikk vedtak,
+            Vedtakshistorikk historikk,
             String personident,
             String miljoe,
             List<RettighetRequest> rettigheter
     ) {
         var foedselsdato = IdentUtil.getFoedselsdatoFraIdent(personident);
-        var ungUfoer = vedtak.getUngUfoer();
+        var ungUfoer = historikk.getUngUfoer();
         if (ungUfoer != null && !ungUfoer.isEmpty()) {
-            var rettighetRequest = new RettighetUngUfoerRequest(ungUfoer);
-            rettighetRequest.setPersonident(personident);
-            rettighetRequest.setMiljoe(miljoe);
+            for (var vedtak : ungUfoer) {
+                var rettighetRequest = new RettighetUngUfoerRequest(Collections.singletonList(vedtak));
+                rettighetRequest.setPersonident(personident);
+                rettighetRequest.setMiljoe(miljoe);
 
-            var iterator = rettighetRequest.getNyeAaungufor().iterator();
-            while (iterator.hasNext()) {
-                var rettighet = iterator.next();
-                rettighet.setBegrunnelse(BEGRUNNELSE);
-                var alderPaaVedtaksdato = Math.toIntExact(ChronoUnit.YEARS.between(foedselsdato, rettighet.getFraDato()));
-                if (alderPaaVedtaksdato < MIN_ALDER_UNG_UFOER || alderPaaVedtaksdato > MAX_ALDER_UNG_UFOER) {
-                    log.error("Kan ikke opprette vedtak ung-ufør på ident som er {} år gammel.", alderPaaVedtaksdato);
-                    iterator.remove();
+                var iterator = rettighetRequest.getNyeAaungufor().iterator();
+                while (iterator.hasNext()) {
+                    var rettighet = iterator.next();
+                    rettighet.setBegrunnelse(BEGRUNNELSE);
+                    var alderPaaVedtaksdato = Math.toIntExact(ChronoUnit.YEARS.between(foedselsdato, rettighet.getFraDato()));
+                    if (alderPaaVedtaksdato < MIN_ALDER_UNG_UFOER || alderPaaVedtaksdato > MAX_ALDER_UNG_UFOER) {
+                        log.error("Kan ikke opprette vedtak ung-ufør på ident som er {} år gammel.", alderPaaVedtaksdato);
+                        iterator.remove();
+                    }
                 }
+                rettigheter.add(rettighetRequest);
             }
-            rettigheter.add(rettighetRequest);
+
         }
     }
 
     private void opprettVedtakTvungenForvaltning(
-            Vedtakshistorikk vedtak,
+            Vedtakshistorikk historikk,
             String personident,
             String miljoe,
             List<RettighetRequest> rettigheter,
             List<KontoinfoResponse> identerMedKontonummer
     ) {
-        var tvungenForvaltning = vedtak.getTvungenForvaltning();
+        var tvungenForvaltning = historikk.getTvungenForvaltning();
         if (tvungenForvaltning != null && !tvungenForvaltning.isEmpty()) {
-            var rettighetRequest = new RettighetTvungenForvaltningRequest(tvungenForvaltning);
-            rettighetRequest.setPersonident(personident);
-            rettighetRequest.setMiljoe(miljoe);
-            for (var rettighet : rettighetRequest.getNyeAatfor()) {
-                rettighet.setForvalter(ServiceUtils.buildForvalter(identerMedKontonummer.remove(identerMedKontonummer.size() - 1)));
-                rettighet.setBegrunnelse(BEGRUNNELSE);
+            for (var vedtak : tvungenForvaltning) {
+                var rettighetRequest = new RettighetTvungenForvaltningRequest(Collections.singletonList(vedtak));
+                rettighetRequest.setPersonident(personident);
+                rettighetRequest.setMiljoe(miljoe);
+                for (var rettighet : rettighetRequest.getNyeAatfor()) {
+                    rettighet.setForvalter(ServiceUtils.buildForvalter(identerMedKontonummer.remove(identerMedKontonummer.size() - 1)));
+                    rettighet.setBegrunnelse(BEGRUNNELSE);
+                }
+                rettigheter.add(rettighetRequest);
             }
-            rettigheter.add(rettighetRequest);
         }
     }
 
     private void opprettVedtakFritakMeldekort(
-            Vedtakshistorikk vedtak,
+            Vedtakshistorikk historikk,
             String personident,
             String miljoe,
             List<RettighetRequest> rettigheter
     ) {
-        var fritakMeldekort = vedtak.getFritakMeldekort();
+        var fritakMeldekort = historikk.getFritakMeldekort();
         if (fritakMeldekort != null && !fritakMeldekort.isEmpty()) {
-            var rettighetRequest = new RettighetFritakMeldekortRequest(fritakMeldekort);
-            rettighetRequest.setPersonident(personident);
-            rettighetRequest.setMiljoe(miljoe);
-            rettighetRequest.getNyeFritak().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
-            rettigheter.add(rettighetRequest);
+            for (var vedtak : fritakMeldekort) {
+                var rettighetRequest = new RettighetFritakMeldekortRequest(Collections.singletonList(vedtak));
+                rettighetRequest.setPersonident(personident);
+                rettighetRequest.setMiljoe(miljoe);
+                rettighetRequest.getNyeFritak().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
+                rettigheter.add(rettighetRequest);
+            }
         }
     }
 
@@ -431,18 +443,14 @@ public class VedtakshistorikkService {
     ) {
         var tiltaksdeltakelser = historikk.getTiltaksdeltakelse();
         if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
-            List<NyttVedtakTiltak> nyeVedtakRequests = new ArrayList<>();
-
             for (var deltakelse : tiltaksdeltakelser) {
-                nyeVedtakRequests.add(vedtakUtils.getVedtakForTiltaksdeltakelseRequest(deltakelse));
+                var nyDeltakelse = vedtakUtils.getVedtakForTiltaksdeltakelseRequest(deltakelse);
+                var rettighetRequest = new RettighetTiltaksdeltakelseRequest(Collections.singletonList(nyDeltakelse));
+
+                rettighetRequest.setPersonident(personident);
+                rettighetRequest.setMiljoe(miljoe);
+                rettigheter.add(rettighetRequest);
             }
-
-            var rettighetRequest = new RettighetTiltaksdeltakelseRequest(nyeVedtakRequests);
-
-            rettighetRequest.setPersonident(personident);
-            rettighetRequest.setMiljoe(miljoe);
-            rettigheter.add(rettighetRequest);
-
         }
     }
 
@@ -517,11 +525,13 @@ public class VedtakshistorikkService {
         nyeTiltakspenger = vedtakUtils.removeOverlappingTiltakSequences(nyeTiltakspenger);
 
         if (nyeTiltakspenger != null && !nyeTiltakspenger.isEmpty()) {
-            var rettighetRequest = new RettighetTiltakspengerRequest(nyeTiltakspenger);
-            rettighetRequest.setPersonident(personident);
-            rettighetRequest.setMiljoe(miljoe);
-            rettighetRequest.getNyeTiltakspenger().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
-            rettigheter.add(rettighetRequest);
+            for (var vedtak : nyeTiltakspenger) {
+                var rettighetRequest = new RettighetTiltakspengerRequest(Collections.singletonList(vedtak));
+                rettighetRequest.setPersonident(personident);
+                rettighetRequest.setMiljoe(miljoe);
+                rettighetRequest.getNyeTiltakspenger().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
+                rettigheter.add(rettighetRequest);
+            }
         }
         historikk.setTiltakspenger(nyeTiltakspenger);
     }
@@ -544,11 +554,13 @@ public class VedtakshistorikkService {
             nyeBarnetillegg = vedtakUtils.removeOverlappingTiltakSequences(nyeBarnetillegg);
 
             if (nyeBarnetillegg != null && !nyeBarnetillegg.isEmpty()) {
-                var rettighetRequest = new RettighetTilleggsytelseRequest(nyeBarnetillegg);
-                rettighetRequest.setPersonident(personident);
-                rettighetRequest.setMiljoe(miljoe);
-                rettighetRequest.getNyeTilleggsytelser().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
-                rettigheter.add(rettighetRequest);
+                for (var vedtak : nyeBarnetillegg) {
+                    var rettighetRequest = new RettighetTilleggsytelseRequest(Collections.singletonList(vedtak));
+                    rettighetRequest.setPersonident(personident);
+                    rettighetRequest.setMiljoe(miljoe);
+                    rettighetRequest.getNyeTilleggsytelser().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
+                    rettigheter.add(rettighetRequest);
+                }
             }
         }
 
@@ -561,17 +573,19 @@ public class VedtakshistorikkService {
             String miljoe,
             List<RettighetRequest> rettigheter
     ) {
-        var vedtak = oppdaterVedtakTillegg(historikk);
+        var tillegg = oppdaterVedtakTillegg(historikk);
 
-        if (vedtak != null && !vedtak.isEmpty() && !rettigheter.isEmpty()) {
-            var rettighetRequest = new RettighetTilleggRequest(vedtak);
-            rettighetRequest.setPersonident(personident);
-            rettighetRequest.setMiljoe(miljoe);
-            rettighetRequest.getNyeTilleggsstonad().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
+        if (tillegg != null && !tillegg.isEmpty() && !rettigheter.isEmpty()) {
+            for (var vedtak : tillegg) {
+                var rettighetRequest = new RettighetTilleggRequest(Collections.singletonList(vedtak));
+                rettighetRequest.setPersonident(personident);
+                rettighetRequest.setMiljoe(miljoe);
+                rettighetRequest.getNyeTilleggsstonad().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
 
-            opprettTiltaksaktivitet(rettigheter, rettighetRequest);
+                opprettTiltaksaktivitet(rettigheter, rettighetRequest);
 
-            rettigheter.add(rettighetRequest);
+                rettigheter.add(rettighetRequest);
+            }
         }
     }
 
