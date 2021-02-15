@@ -90,7 +90,7 @@ public class ArbeidssoekerUtils {
                     Thread.sleep(500);
                 } catch (InterruptedException ex) {
                     Thread.currentThread().interrupt();
-                    log.warn("Thread interupted");
+                    log.warn("Thread interrupted");
                 }
                 innsatsService.endreTilFormidlingsgruppeIarbs(personident, miljoe, kvalifiseringsgruppe);
             }
