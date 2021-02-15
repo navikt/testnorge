@@ -84,7 +84,14 @@ public class ArbeidssoekerUtils {
             var formidlingsgruppe = velgFormidlingsgruppeBasertPaaAktivitetsfase(aktivitetsfase);
             var kvalifiseringsgruppe = velgKvalifiseringsgruppeBasertPaaFormidlingsgruppe(aktivitetsfase, formidlingsgruppe);
             var response = opprettArbeidssoeker(rettigheter, miljoe, kvalifiseringsgruppe);
+
             if (formidlingsgruppe.equals("IARBS") && !response.isEmpty()) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                    log.warn("Thread interupted");
+                }
                 innsatsService.endreTilFormidlingsgruppeIarbs(personident, miljoe, kvalifiseringsgruppe);
             }
             return response;
