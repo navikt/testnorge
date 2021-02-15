@@ -72,8 +72,8 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 
 				{udistub && udistub.oppholdStatus && (
 					<li>
-						Oppholdsstatus i PDL: Q2 (Dersom du kun ønsker å sende oppholdsstatus til UDI-stub er
-						det ingen krav til valg av miljø.)
+						Oppholdsstatus i PDL: Q1, Q2 (Dersom du kun ønsker å sende oppholdsstatus til UDI-stub
+						er det ingen krav til valg av miljø.)
 					</li>
 				)}
 			</ul>

@@ -42,7 +42,11 @@ export const initialValues = {
 			til: null
 		},
 		// @ts-ignore
-		typeArbeidsadgang: null
+		typeArbeidsadgang: null,
+		// @ts-ignore
+		forklaring: null,
+		// @ts-ignore
+		hjemmel: ''
 	},
 	udistub: [
 		{

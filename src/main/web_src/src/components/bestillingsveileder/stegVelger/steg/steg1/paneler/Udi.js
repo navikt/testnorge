@@ -22,6 +22,7 @@ export const UdiPanel = ({ stateModifier }) => {
 
 			<AttributtKategori title="Arbeidsadgang">
 				<Attributt attr={sm.attrs.arbeidsadgang} />
+				<Attributt attr={sm.attrs.hjemmel} />
 			</AttributtKategori>
 
 			<AttributtKategori title="Alias">
@@ -34,6 +35,17 @@ export const UdiPanel = ({ stateModifier }) => {
 			</AttributtKategori>
 		</Panel>
 	)
+}
+
+const arbeidsadgangFelter = {
+	arbeidsOmfang: null,
+	harArbeidsAdgang: '',
+	periode: {
+		fra: null,
+		til: null
+	},
+	typeArbeidsadgang: null,
+	forklaring: null
 }
 
 UdiPanel.heading = 'UDI'
@@ -49,19 +61,21 @@ UdiPanel.initialValues = ({ set, del, has }) => ({
 		label: 'Arbeidsadgang',
 		checked: has('udistub.arbeidsadgang'),
 		add() {
-			set('udistub.arbeidsadgang', {
-				arbeidsOmfang: null,
-				harArbeidsAdgang: '',
-				periode: {
-					fra: null,
-					til: null
-				},
-				typeArbeidsadgang: null
-			})
+			set('udistub.arbeidsadgang', arbeidsadgangFelter)
 		},
 		remove() {
 			del('udistub.arbeidsadgang')
 		}
+	},
+	hjemmel: {
+		label: 'Innhent vedtakshjemmel',
+		checked: has('udistub.arbeidsadgang.hjemmel'),
+		add: () =>
+			set('udistub.arbeidsadgang', {
+				...arbeidsadgangFelter,
+				hjemmel: ''
+			}),
+		remove: () => del('udistub.arbeidsadgang.hjemmel')
 	},
 	aliaser: {
 		label: 'Har aliaser',

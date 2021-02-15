@@ -3,7 +3,9 @@ import _get from 'lodash/get'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+import { Textarea } from 'nav-frontend-skjema'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 
 export const Arbeidsadgang = ({ formikBag }) => {
 	const harArbeidsAdgang = _get(formikBag.values, 'udistub.arbeidsadgang.harArbeidsAdgang')
@@ -19,6 +21,14 @@ export const Arbeidsadgang = ({ formikBag }) => {
 			formikBag.setFieldValue('udistub.arbeidsadgang.typeArbeidsadgang', null)
 		}
 	}
+
+	const forklaring = _get(formikBag.values, 'udistub.arbeidsadgang.forklaring')
+
+	const endreForklaring = text => {
+		formikBag.setFieldValue('udistub.arbeidsadgang.forklaring', text === '' ? null : text)
+	}
+
+	const MAX_LENGTH = 4000
 
 	return (
 		<Kategori title="Arbeidsadgang" vis="udistub.arbeidsadgang">
@@ -54,6 +64,22 @@ export const Arbeidsadgang = ({ formikBag }) => {
 					/>
 				</React.Fragment>
 			)}
+			<div className="flexbox--full-width">
+				<Textarea
+					value={forklaring ? forklaring : ''}
+					name="udistub.arbeidsadgang.forklaring"
+					label="Forklaring"
+					placeholder="Skriv inn forklaring"
+					maxLength={MAX_LENGTH}
+					onChange={event => endreForklaring(event.target.value)}
+					feil={
+						forklaring && forklaring.length > MAX_LENGTH
+							? { feilmelding: 'Forklaring kan ikke være lenger enn 4000 tegn' }
+							: null
+					}
+				/>
+			</div>
+			<FormikTextInput name="udistub.arbeidsadgang.hjemmel" label="Hjemmel" size="xxlarge" />
 		</Kategori>
 	)
 }
