@@ -2,8 +2,7 @@ import React from 'react';
 
 import styled from 'styled-components';
 import { Header } from '@/components/header';
-import { Profil } from '@/components/profil';
-import { Page } from '@/components/page';
+import { ProfilLoader } from '@/components/profil';
 import { EndringsmeldingPage } from '@/pages';
 
 type Button = {
@@ -26,7 +25,7 @@ function App() {
   return (
     <div>
       <Header>
-        <Profil />
+        <ProfilLoader />
       </Header>
       <EndringsmeldingPage />
     </div>

@@ -24,12 +24,32 @@ public class ApplicationConfig {
     private final AccessTokenService tokenService;
 
     @Bean
-    public AddAuthorizationToRouteFilter addAuthorizationToRouteFilter() {
+    public AddAuthorizationToRouteFilter addEndringsmeldingAuthorizationToRouteFilter() {
         return new AddAuthorizationToRouteFilter(
                 () -> tokenService.generateToken(
                         new AccessScopes("api://94aadcd8-0354-4a70-bc36-d2c6ebfba4e7/.default")
                 ).getTokenValue(),
-                "endringsmelding-service"
+                "endringsmelding"
+        );
+    }
+
+    @Bean
+    public AddAuthorizationToRouteFilter addIdenterAuthorizationToRouteFilter() {
+        return new AddAuthorizationToRouteFilter(
+                () -> tokenService.generateToken(
+                        new AccessScopes("api://94aadcd8-0354-4a70-bc36-d2c6ebfba4e7/.default")
+                ).getTokenValue(),
+                "identer"
+        );
+    }
+
+    @Bean
+    public AddAuthorizationToRouteFilter addProfilApiAuthorizationToRouteFilter() {
+        return new AddAuthorizationToRouteFilter(
+                () -> tokenService.generateToken(
+                        new AccessScopes("api://e8e0772f-8204-4b88-88ad-233d62863f47/.default")
+                ).getTokenValue(),
+                "profil"
         );
     }
 }

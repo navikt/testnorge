@@ -13,7 +13,15 @@ spring:
 
 zuul:
   routes:
-    endringsmelding-service:
-      path: /api/**
-      url: http://endringsmelding-service.dolly.svc.cluster.local/api
+    endringsmelding:
+      path: /api/v1/endringsmelding/**
+      url: http://endringsmelding-service.dolly.svc.cluster.local/api/v1/endringsmelding
+      sensitiveHeaders: Cookie,Set-Cookie
+    identer:
+      path: /api/v1/identer/**
+      url: http://endringsmelding-service.dolly.svc.cluster.local/api/v1/idetner
+      sensitiveHeaders: Cookie,Set-Cookie
+    profil:
+      path: /api/v1/profil/**
+      url: http://testnorge-profil-api.dolly.svc.cluster.local/api/v1/profil
       sensitiveHeaders: Cookie,Set-Cookie

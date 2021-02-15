@@ -3,7 +3,8 @@ import React, { FocusEventHandler, useState } from 'react';
 import styled from 'styled-components';
 import { Input as NavInput } from 'nav-frontend-skjema';
 import { Knapp as NavKnapp } from 'nav-frontend-knapper';
-import { SuccessAlert, WarningAlert } from '@/components/alert';
+import { ErrorAlert, SuccessAlert, WarningAlert } from '@/components/alert';
+import Api from '@/api';
 
 const Search = styled.div`
   display: flex;
@@ -21,6 +22,7 @@ type Props<T> = {
     button: string;
     onFound: string;
     onNotFound: string;
+    onError: string;
   };
   onBlur?: (value: string) => void;
 };
@@ -44,17 +46,22 @@ export default <T extends unknown>({ labels, onSearch, onBlur }: Props<T>) => {
   const [loading, setLoading] = useState(false);
   const [value, setValue] = useState('');
   const [success, setSuccess] = useState(undefined);
+  const [error, setError] = useState(false);
 
   const _onSearch = (value: string) => {
     setLoading(true);
     setSuccess(undefined);
+    setError(false);
     return onSearch(value)
       .then((response) => {
         setSuccess(true);
         return response;
       })
-      .catch(() => {
+      .catch((e) => {
         setSuccess(false);
+        if (!(e instanceof Api.NotFoundError)) {
+          setError(true);
+        }
       })
       .finally(() => setLoading(false));
   };
@@ -76,7 +83,11 @@ export default <T extends unknown>({ labels, onSearch, onBlur }: Props<T>) => {
       </Knapp>
       <Alert>
         {success == undefined ? null : !success ? (
-          <WarningAlert label={labels.onNotFound} />
+          error ? (
+            <ErrorAlert label={labels.onError} />
+          ) : (
+            <WarningAlert label={labels.onNotFound} />
+          )
         ) : (
           <SuccessAlert label={labels.onFound} />
         )}

@@ -18,6 +18,8 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-fss
+        - application: endringsmelding-frontend
+          cluster: dev-gcp
         - application: dolly-frontend-dev
           cluster: dev-fss
         - application: testnorge-tilbakemelding-api

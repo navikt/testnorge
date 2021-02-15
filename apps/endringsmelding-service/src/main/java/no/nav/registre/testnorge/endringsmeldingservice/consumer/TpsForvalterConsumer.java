@@ -10,7 +10,8 @@ import no.nav.registre.testnorge.endringsmeldingservice.consumer.command.GetIden
 import no.nav.registre.testnorge.endringsmeldingservice.consumer.command.SendDoedsmeldingCommand;
 import no.nav.registre.testnorge.endringsmeldingservice.consumer.command.SendFoedselsmeldingCommand;
 import no.nav.registre.testnorge.endringsmeldingservice.consumer.dto.TpsDoedsmeldingDTO;
-import no.nav.registre.testnorge.endringsmeldingservice.consumer.dto.TpsFoedselsmeldingDTO;
+import no.nav.registre.testnorge.endringsmeldingservice.consumer.request.TpsFoedselsmeldingRequest;
+import no.nav.registre.testnorge.endringsmeldingservice.consumer.response.TpsFoedselsmeldingResponse;
 import no.nav.registre.testnorge.libs.dto.endringsmelding.v1.DoedsmeldingDTO;
 import no.nav.registre.testnorge.libs.dto.endringsmelding.v1.FoedselsmeldingDTO;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
@@ -36,13 +37,14 @@ public class TpsForvalterConsumer {
         return new GetIdentEnvironmentsCommand(webClient, ident, accessToken.getTokenValue()).call();
     }
 
-    public void sendFoedselsmelding(FoedselsmeldingDTO dto, Set<String> miljoer) {
+    public String sendFoedselsmelding(FoedselsmeldingDTO dto, Set<String> miljoer) {
         var accessToken = accessTokenService.generateToken(serverProperties);
-        new SendFoedselsmeldingCommand(
+        var response = new SendFoedselsmeldingCommand(
                 webClient,
-                new TpsFoedselsmeldingDTO(dto, miljoer),
+                new TpsFoedselsmeldingRequest(dto, miljoer),
                 accessToken.getTokenValue()
-        ).run();
+        ).call();
+        return response.getPersonId();
     }
 
     public void sendDoedsmelding(DoedsmeldingDTO dto, Set<String> miljoer) {

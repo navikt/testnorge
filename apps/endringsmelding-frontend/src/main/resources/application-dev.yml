@@ -20,7 +20,15 @@ spring:
 
 zuul:
   routes:
-    endringsmelding-service:
-      path: /api/**
-      url: https://endringsmelding-service.dev.intern.nav.no/api
+    endringsmelding:
+      path: /api/v1/endringsmelding/**
+      url: https://endringsmelding-service.dev.intern.nav.no/api/v1/endringsmelding
+      sensitiveHeaders: Cookie,Set-Cookie
+    identer:
+      path: /api/v1/idetner/**
+      url: https://endringsmelding-service.dev.intern.nav.no/api/v1/idetner
+      sensitiveHeaders: Cookie,Set-Cookie
+    profil:
+      path: /api/v1/profil/**
+      url: https://testnorge-profil-api.dev.intern.nav.no/api/v1/profil
       sensitiveHeaders: Cookie,Set-Cookie

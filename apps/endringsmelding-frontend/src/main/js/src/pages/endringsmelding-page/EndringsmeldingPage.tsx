@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import Tabs from 'nav-frontend-tabs';
 import { Page } from '@/components/page';
-import { FodselsmeldingPanel } from './fodselsmelding-panel';
-import { DodsmeldingPanel } from '@/pages/endringsmelding-page/dodsmelding-panel';
+import { FodselsmeldingForm, DodsmeldingForm } from './from';
+import Panel from 'nav-frontend-paneler';
 
-// @ts-ignore
 export default () => {
   const [tapIndex, setTabIndex] = useState(0);
   return (
@@ -13,7 +12,9 @@ export default () => {
         tabs={[{ label: 'Fødselsmelding' }, { label: 'Dødsmelding' }]}
         onChange={(_, index) => setTabIndex(index)}
       />
-      {tapIndex === 0 ? <FodselsmeldingPanel /> : <DodsmeldingPanel />}
+      <Panel border style={{ borderTop: 0, borderTopLeftRadius: 0, borderTopRightRadius: 0 }}>
+        {tapIndex === 0 ? <FodselsmeldingForm /> : <DodsmeldingForm />}
+      </Panel>
     </Page>
   );
 };

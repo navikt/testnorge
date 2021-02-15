@@ -1,3 +1,4 @@
 import Profil from './Profil';
+import ProfilLoader from './ProfilLoader';
 
-export { Profil };
+export { Profil, ProfilLoader };
