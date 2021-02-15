@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Tabs from 'nav-frontend-tabs';
 import { Page } from '@/components/page';
-import { FodselsmeldingForm, DodsmeldingForm } from './from';
+import { FodselsmeldingForm, DodsmeldingForm } from './form';
 import Panel from 'nav-frontend-paneler';
 
 export default () => {

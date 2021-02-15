@@ -32,7 +32,7 @@ export default () => {
     EndringsmeldingService.sendFodselsmelding(
       {
         adresseFra: state.address,
-        identFar: state.farsIdent,
+        identFar: state.farsIdent !== '' ? state.farsIdent : null,
         identMor: state.morsIdent,
         identtype: state.identType,
         foedselsdato: state.foedselsdato,

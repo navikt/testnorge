@@ -19,7 +19,7 @@ zuul:
       sensitiveHeaders: Cookie,Set-Cookie
     identer:
       path: /api/v1/identer/**
-      url: http://endringsmelding-service.dolly.svc.cluster.local/api/v1/idetner
+      url: http://endringsmelding-service.dolly.svc.cluster.local/api/v1/identer
       sensitiveHeaders: Cookie,Set-Cookie
     profil:
       path: /api/v1/profil/**
