@@ -50,11 +50,11 @@ public class PersonConsumer {
                 .build();
     }
 
-    public void createPerson(PersonDTO person) {
+    public void createPerson(PersonDTO person, String kilde) {
         AccessToken accessToken = accessTokenService.generateToken(
                 clientCredential,
                 new AccessScopes("api://" + clientCredential.getClientId() + "/.default")
         );
-        new CreatePersonCommand(webClient, person, accessToken.getTokenValue(), null).run();
+        new CreatePersonCommand(webClient, person, accessToken.getTokenValue(), kilde).run();
     }
 }
