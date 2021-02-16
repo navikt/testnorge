@@ -19,6 +19,7 @@ spec:
           cluster: dev-fss
         - application: testnorge-oversikt-frontend
         - application: endringsmelding-frontend
+          cluster: dev-gcp
     outbound:
       rules:
         - application: applikasjonsanalyse-service
