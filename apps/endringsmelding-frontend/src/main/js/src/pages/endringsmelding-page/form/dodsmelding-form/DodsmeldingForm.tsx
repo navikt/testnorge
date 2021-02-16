@@ -44,7 +44,9 @@ export default () => {
       onSend={onSend}
       valid={onValidate}
       setIdent={(ident) => dispatch({ type: Action.SET_IDENT_ACTION, value: ident })}
-      getSuccessMessage={() => `Melding sendt for ${state.ident}.`}
+      getSuccessMessage={() =>
+        `Dødsmelding for ident ${state.ident} ble sendt i miljø ${state.miljoer.join(', ')}.`
+      }
       setMiljoer={(miljoer) =>
         dispatch({ type: Action.SET_MILJOER_OPTIONS_ACTION, value: miljoer })
       }
