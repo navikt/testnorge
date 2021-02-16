@@ -125,7 +125,7 @@ public class SyntetiseringService {
                 fjernBrukteIdenterFraListerMedIdenter(listerMedIdenter);
                 idsLagretITpsfMenIkkeTps.removeAll(ids);
 
-                leggNyeIdenterIPdl(miljoe, nyeIdenterDenneEndringskoden, endringskode);
+                leggNyeIdenterIPdl(miljoe, nyeIdenterDenneEndringskoden, endringskode, genereringsOrdreRequest);
 
             } catch (ManglendeInfoITpsException e) {
                 httpStatus = loggExceptionOgLeggTilFeiletEndringskode(e,
@@ -159,14 +159,14 @@ public class SyntetiseringService {
         return ResponseEntity.status(httpStatus).body(skdMeldingerTilTpsResponsTotal);
     }
 
-    private void leggNyeIdenterIPdl(String miljoe, List<String> nyeIdenterDenneEndringskoden, Endringskoder endringskode) {
+    private void leggNyeIdenterIPdl(String miljoe, List<String> nyeIdenterDenneEndringskoden, Endringskoder endringskode, GenereringsOrdreRequest request) {
         if (!nyeIdenterDenneEndringskoden.isEmpty()) {
             var feiledeTpIdenter = tpService.leggTilIdenterITp(nyeIdenterDenneEndringskoden, miljoe);
             if (!feiledeTpIdenter.isEmpty()) {
                 log.error("Følgende identer kunne ikke lagres i TP: {}", feiledeTpIdenter.toString());
             }
             if(Arrays.asList(FOEDSELSMELDING, INNVANDRING).contains(endringskode)){
-                personService.leggTilIdenterIPdl(nyeIdenterDenneEndringskoden);
+                personService.leggTilIdenterIPdl(nyeIdenterDenneEndringskoden, request.getAvspillergruppeId(), request.getMiljoe());
             }
         }
     }
