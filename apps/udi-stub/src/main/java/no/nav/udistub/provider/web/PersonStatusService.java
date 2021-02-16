@@ -54,7 +54,7 @@ public class PersonStatusService implements MT1067NAVV1Interface {
             if (isNotTrue(request.getParameter().isInkluderArbeidsadgang())) {
                 resultat.setArbeidsadgang(null);
 
-                if (isNotTrue(request.getParameter().isInkluderHjemmel())) {
+                if (nonNull(resultat.getArbeidsadgang()) && isNotTrue(request.getParameter().isInkluderHjemmel())) {
                     resultat.getArbeidsadgang().setHjemmel(null);
                     resultat.getArbeidsadgang().setForklaring(null);
                 }
