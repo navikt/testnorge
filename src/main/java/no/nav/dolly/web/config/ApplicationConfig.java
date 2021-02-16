@@ -1,6 +1,7 @@
 package no.nav.dolly.web.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -59,5 +60,16 @@ public class ApplicationConfig {
                 () -> tokenService.getAccessToken(new AccessScopes(properties.get(route))).getTokenValue(),
                 route
         );
+    }
+
+    @Bean
+    public FilterRegistrationBean<SessionTimeoutCookieFilter> loggingFilter(){
+        FilterRegistrationBean<SessionTimeoutCookieFilter> registrationBean
+                = new FilterRegistrationBean<>();
+
+        registrationBean.setFilter(new SessionTimeoutCookieFilter());
+        registrationBean.addUrlPatterns("/*");
+
+        return registrationBean;
     }
 }

@@ -10,6 +10,7 @@ import { VarslingerModal } from '~/components/varslinger/VarslingerModal'
 import './App.less'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { Forbedring } from '~/components/feedback/Forbedring'
+import Utlogging from '~/components/utlogging'
 
 export default class App extends Component {
 	state = {
@@ -59,6 +60,7 @@ export default class App extends Component {
 		if (!brukerData || !configReady) return <Loading label="laster dolly applikasjon" fullpage />
 		return (
 			<React.Fragment>
+				<Utlogging />
 				<VarslingerModal
 					varslinger={varslinger}
 					varslingerBruker={varslingerBruker}
