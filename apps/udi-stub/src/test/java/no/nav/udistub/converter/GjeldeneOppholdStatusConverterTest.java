@@ -1,6 +1,9 @@
 package no.nav.udistub.converter;
 
 import no.nav.udistub.converter.ws.GjeldendeOppholdStatusWsConverter;
+import no.nav.udistub.converter.ws.IkkeOppholdstillatelseIkkeOppholdPaSammeVilkarIkkeVisumWsConverter;
+import no.nav.udistub.converter.ws.PeriodeWsConverter;
+import no.nav.udistub.converter.ws.XmlDateWsConverter;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTABeslutningOmOppholdsrett;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTAGrunnlagskategoriOppholdsrett;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTAGrunnlagskategoriOppholdstillatelse;
@@ -10,6 +13,7 @@ import no.udi.mt_1067_nav_data.v1.GjeldendeOppholdsstatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,6 +26,15 @@ class GjeldeneOppholdStatusConverterTest extends ConverterTestBase {
 	private static final EOSellerEFTAVedtakOmVarigOppholdsrett TEST_eosEllerEFTAVedtakOmVarigOppholdsrett = createEOSellerEFTAVedtakOmVarigOppholdsrett();
 	private static final EOSellerEFTABeslutningOmOppholdsrett TEST_eosEllerEFTABeslutningOmOppholdsrett = createEOSellerEFTABeslutningOmOppholdsrett();
 	private static final EOSellerEFTAOppholdstillatelse TEST_eosEllerEFTAOppholdstillatelse = createEOSellerEFTAOppholdstillatelse();
+
+	@Mock
+    private XmlDateWsConverter xmlDateWsConverter;
+
+	@Mock
+    private PeriodeWsConverter periodeWsConverter;
+
+	@Mock
+    private IkkeOppholdstillatelseIkkeOppholdPaSammeVilkarIkkeVisumWsConverter ikkeWsConverter;
 
 	@InjectMocks
 	protected GjeldendeOppholdStatusWsConverter gjeldeneOppholdStatusConverter;
