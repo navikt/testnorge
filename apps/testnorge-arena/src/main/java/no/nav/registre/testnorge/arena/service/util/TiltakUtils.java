@@ -320,10 +320,6 @@ public class TiltakUtils {
     }
 
     public boolean canSetDeltakelseTilFinished(NyttVedtakTiltak tiltaksdeltakelse, List<NyttVedtakTiltak> tiltak) {
-        if (!canSetDeltakelseTilGjennomfoeres(tiltaksdeltakelse, tiltak)){
-            return false;
-        }
-
         var tilknyttetTiltak = tiltak.stream().filter(t -> t.getTiltakId().equals(tiltaksdeltakelse.getTiltakId())).collect(Collectors.toList());
         if (!tilknyttetTiltak.isEmpty() && tilknyttetTiltak.get(0) != null) {
             var status = tilknyttetTiltak.get(0).getTiltakStatusKode();
