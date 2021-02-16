@@ -10,7 +10,7 @@ function App() {
   return (
     <Router>
       <Switch>
-        <Route path="/page/login">
+        <Route path="/open/login">
           <Header />
           <LoginPage />
         </Route>
