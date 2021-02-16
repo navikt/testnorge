@@ -18,12 +18,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/internal/isAlive", "/internal/isReady", "/bundle.*.js", "/main.*.css", "/my.policy", "/login").permitAll()
+                .antMatchers("/internal/isAlive", "/internal/isReady", "/bundle.*.js", "/main.*.css", "/login", "/oauth2/authorization/aad").permitAll()
                 .anyRequest().fullyAuthenticated()
                 .and()
                 .oauth2Client()
                 .and()
                 .oauth2Login(o -> o
+                        .loginPage("/oauth2/authorization/aad")
                         .defaultSuccessUrl("/")
                         .failureUrl("/login?error=true")
                 )
