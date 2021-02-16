@@ -26,7 +26,7 @@ const sendDodsmelding = (dodsmelding: Dodsmelding, miljoer: string[]) =>
   );
 
 const sendFodselsmelding = (fodselsmelding: Fodselsmelding, miljoer: string[]) =>
-  Api.fetch(
+  Api.fetchText(
     '/api/v1/endringsmelding/foedeselsmelding',
     { method: 'POST', headers: { miljoer: miljoer.join(','), 'Content-Type': 'application/json' } },
     fodselsmelding

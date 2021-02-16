@@ -1,4 +1,4 @@
-import { NotFoundError } from '@/api/NotFoundError';
+import { NotFoundError } from '@/error';
 
 type Method = 'POST' | 'GET' | 'PUT' | 'DELETE';
 
@@ -40,8 +40,18 @@ const fetchJson = <T>(url: string, config: Config, body?: object): Promise<T> =>
     body
   ).then((response: Response) => response.json() as Promise<T>);
 
+const fetchText = (url: string, config: Config, body?: object): Promise<string> =>
+  _fetch(
+    url,
+    {
+      method: config.method,
+      headers: { ...config.headers, 'Content-Type': 'application/json' },
+    },
+    body
+  ).then((response: Response) => response.text() as Promise<string>);
+
 export default {
   fetch: _fetch,
   fetchJson,
-  NotFoundError,
+  fetchText,
 };

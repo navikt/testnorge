@@ -1,10 +1,10 @@
-import React, { FocusEventHandler, useState } from 'react';
+import React, { useState } from 'react';
 
 import styled from 'styled-components';
 import { Input as NavInput } from 'nav-frontend-skjema';
 import { Knapp as NavKnapp } from 'nav-frontend-knapper';
 import { ErrorAlert, SuccessAlert, WarningAlert } from '@/components/alert';
-import Api from '@/api';
+import { NotFoundError } from '@/error';
 
 const Search = styled.div`
   display: flex;
@@ -59,7 +59,7 @@ export default <T extends unknown>({ labels, onSearch, onBlur }: Props<T>) => {
       })
       .catch((e) => {
         setSuccess(false);
-        if (!(e instanceof Api.NotFoundError)) {
+        if (!(e instanceof NotFoundError)) {
           setError(true);
         }
       })

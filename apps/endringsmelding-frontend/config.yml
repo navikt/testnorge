@@ -30,12 +30,13 @@ spec:
       rules:
         - application: endringsmelding-service
         - application: applikasjonsanalyse-service
+        - application: testnorge-profil-api
   resources:
     limits:
       cpu: 1000m
       memory: 2048Mi
     requests:
-      cpu: 500m
+      cpu: 300m
       memory: 1024Mi
   image: {{ image }}
   ingresses:

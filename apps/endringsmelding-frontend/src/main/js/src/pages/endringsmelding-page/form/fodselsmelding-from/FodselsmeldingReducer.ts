@@ -7,6 +7,7 @@ type SetAdresseAction = 'SET_ADRESSE';
 type SetMorsIdentAction = 'SET_MORS_IDENT';
 type SetFoedselsdatoAction = 'SET_FOEDSELSDATO';
 type SetValidateAction = 'SET_VALIDATE';
+type SetBarnsIdentAction = 'SET_BARNS_IDENT';
 
 type Actions =
   | {
@@ -38,6 +39,10 @@ type Actions =
       value: string;
     }
   | {
+      type: SetBarnsIdentAction;
+      value: string;
+    }
+  | {
       type: SetMiljoerOptionsAction;
       value: string[];
     }
@@ -56,6 +61,7 @@ export type State = {
   address: 'LAG_NY_ADRESSE' | 'ARV_FRA_MORS' | 'ARV_FRA_FARS';
   miljoer: string[];
   validate: boolean;
+  barnsIdent?: string;
 };
 
 export class Action {
@@ -68,6 +74,7 @@ export class Action {
   public static SET_ADRESSE_ACTION: SetAdresseAction = 'SET_ADRESSE';
   public static SET_MILJOER_ACTION: SetMiljoerAction = 'SET_MILJOER';
   public static SET_VALIDATE_ACTION: SetValidateAction = 'SET_VALIDATE';
+  public static SET_BARNS_IDENT: SetBarnsIdentAction = 'SET_BARNS_IDENT';
 }
 
 export default (state: State, action: Actions) => {
@@ -90,6 +97,8 @@ export default (state: State, action: Actions) => {
       return { ...state, validate: action.value };
     case Action.SET_MILJOER_OPTIONS_ACTION:
       return { ...state, miljoOptions: action.value };
+    case Action.SET_BARNS_IDENT:
+      return { ...state, barnsIdent: action.value };
     default:
       return state;
   }

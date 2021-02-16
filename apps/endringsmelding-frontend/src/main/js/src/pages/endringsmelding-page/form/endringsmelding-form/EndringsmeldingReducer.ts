@@ -30,7 +30,7 @@ type Actions =
 
 export type State = {
   ident: string;
-  success: boolean;
+  show: boolean;
   loading: boolean;
   errorMessage?: string;
   successMessage?: string;
@@ -56,14 +56,14 @@ export const reducer = (state: State, action: Actions) => {
     case Action.SET_HENT_MILJOER_SUCCESS_ACTION:
       return {
         ...state,
-        success: true,
+        show: true,
         errorMessage: null,
         successMessage: null,
       };
     case Action.SET_HENT_MILJOER_ERROR_ACTION:
       return {
         ...state,
-        success: false,
+        show: false,
         errorMessage: null,
         successMessage: null,
       };
@@ -73,12 +73,14 @@ export const reducer = (state: State, action: Actions) => {
       return {
         ...state,
         loading: false,
+        show: false,
         errorMessage: action.errorMessage,
       };
     case Action.SET_SUBMIT_SUCCESS:
       return {
         ...state,
         loading: false,
+        show: false,
         successMessage: action.successMessage,
       };
     default:

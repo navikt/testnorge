@@ -7,15 +7,15 @@ import EndringsmeldingService from '@/service/EndringsmeldingService';
 import { State, reducer, Action } from './EndringsmeldingReducer';
 import { ErrorAlertstripe, SuccessAlertstripe } from '@/components/alertstripe';
 
-type Props = {
+type Props<T> = {
   children: React.ReactNode;
   labels: {
     search: string;
     submit: string;
   };
-  getSuccessMessage: () => string;
+  getSuccessMessage: (value?: T) => string;
   getErrorMessage?: () => string;
-  onSend: () => Promise<unknown>;
+  onSend: () => Promise<T>;
   valid: () => boolean;
   setIdent: (value: string) => void;
   setMiljoer: (value: string[]) => void;
@@ -24,10 +24,10 @@ type Props = {
 export const initState: State = {
   ident: '',
   loading: false,
-  success: false,
+  show: false,
 };
 
-export default ({
+function EndringsmeldingForm<T>({
   children,
   onSend,
   valid,
@@ -36,7 +36,7 @@ export default ({
   setIdent,
   getSuccessMessage,
   getErrorMessage = () => 'Noe gikk galt.',
-}: Props) => {
+}: Props<T>) {
   const [state, dispatch] = useReducer(reducer, initState);
 
   const onSearch = (value: string) =>
@@ -55,8 +55,8 @@ export default ({
     if (valid()) {
       dispatch({ type: Action.SET_SUBMIT_START });
       onSend()
-        .then(() =>
-          dispatch({ type: Action.SET_SUBMIT_SUCCESS, successMessage: getSuccessMessage() })
+        .then((response) =>
+          dispatch({ type: Action.SET_SUBMIT_SUCCESS, successMessage: getSuccessMessage(response) })
         )
         .catch(() => dispatch({ type: Action.SET_SUBMIT_ERROR, errorMessage: getErrorMessage() }));
     }
@@ -78,7 +78,7 @@ export default ({
           onError: 'Noe gikk galt',
         }}
       />
-      {state.success && (
+      {state.show && (
         <>
           {children}
           <Line reverse={true}>
@@ -92,4 +92,6 @@ export default ({
       {!!state.errorMessage && <ErrorAlertstripe label={state.errorMessage} />}
     </Form>
   );
-};
+}
+
+export default EndringsmeldingForm;

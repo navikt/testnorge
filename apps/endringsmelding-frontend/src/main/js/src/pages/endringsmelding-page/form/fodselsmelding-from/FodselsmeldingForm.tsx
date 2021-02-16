@@ -39,7 +39,13 @@ export default () => {
         kjoenn: state.kjoenType,
       },
       state.miljoer
-    );
+    ).then((ident) => {
+      dispatch({ type: Action.SET_BARNS_IDENT, value: ident });
+      return Promise.resolve(ident);
+    });
+
+  const getSuccessMessage = (value: string | null) =>
+    `Gratulerer, person med ident ${value} ble født i miljø ${state.miljoer.join(', ')}.`;
 
   return (
     <EndringsmeldingForm
@@ -50,7 +56,7 @@ export default () => {
       onSend={onSend}
       valid={onValidate}
       setIdent={(ident) => dispatch({ type: Action.SET_MORS_IDENT_ACTION, value: ident })}
-      getSuccessMessage={() => `Fødselsmelding sent!`}
+      getSuccessMessage={getSuccessMessage}
       setMiljoer={(miljoer) =>
         dispatch({ type: Action.SET_MILJOER_OPTIONS_ACTION, value: miljoer })
       }
