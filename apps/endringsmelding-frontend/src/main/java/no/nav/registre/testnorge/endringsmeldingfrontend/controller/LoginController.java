@@ -9,12 +9,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Slf4j
 @Controller
-@RequestMapping("/page/login")
+@RequestMapping("/open/")
 public class LoginController {
 
-    @GetMapping
+    @GetMapping("/login")
     public String login(@RequestParam(value = "error", defaultValue = "false") boolean loginError) {
         log.info("Error={}",loginError);
+        return "forward:/";
+    }
+
+    @GetMapping
+    public String root() {
         return "forward:/";
     }
 

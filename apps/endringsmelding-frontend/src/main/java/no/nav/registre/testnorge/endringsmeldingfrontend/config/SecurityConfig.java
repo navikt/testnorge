@@ -17,12 +17,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/internal/isAlive", "/internal/isReady", "/page/login").permitAll()
+                .antMatchers("/internal/isAlive", "/internal/isReady", "/open/**").permitAll()
                 .anyRequest().fullyAuthenticated()
                 .and()
                 .oauth2Client()
                 .and()
-                .oauth2Login(o -> o.loginPage("/login/oauth2/code/aad").failureUrl("/page/login?error=true"))
+                .oauth2Login(o -> o.loginPage("/").failureUrl("/open/login?error=true"))
                 .csrf()
                 .disable();
     }
