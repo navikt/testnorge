@@ -1,26 +1,18 @@
 package no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv;
 
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Arbeidsforhold;
-import no.nav.registre.testnorge.libs.csvconverter.CsvConverter;
 import no.nav.registre.testnorge.libs.csvconverter.CsvHeader;
 import no.nav.registre.testnorge.libs.csvconverter.ObjectConverter;
-import no.nav.registre.testnorge.libs.csvconverter.RowConverter;
+import no.nav.registre.testnorge.libs.csvconverter.CsvPrinterConverter;
 
-public class ArbeidsforholdSyntetiseringCsvConverter extends CsvConverter<Arbeidsforhold> {
-
-    private static ArbeidsforholdSyntetiseringCsvConverter inst;
-
-    private ArbeidsforholdSyntetiseringCsvConverter() {
-    }
-
-    public static ArbeidsforholdSyntetiseringCsvConverter inst() {
-        if (inst == null) {
-            inst = new ArbeidsforholdSyntetiseringCsvConverter();
-        }
-        return inst;
+public class ArbeidsforholdSyntetiseringCsvPrinterConverter extends CsvPrinterConverter<Arbeidsforhold> {
+    
+    public ArbeidsforholdSyntetiseringCsvPrinterConverter(PrintWriter writer) {
+        super(writer);
     }
 
     private enum Headers implements CsvHeader {
@@ -59,11 +51,6 @@ public class ArbeidsforholdSyntetiseringCsvConverter extends CsvConverter<Arbeid
         public String getValue() {
             return header;
         }
-    }
-
-    @Override
-    protected RowConverter<Arbeidsforhold> getRowConverter() {
-        throw new UnsupportedOperationException("Import av arbeidsforhold ikke stottet");
     }
 
     @Override

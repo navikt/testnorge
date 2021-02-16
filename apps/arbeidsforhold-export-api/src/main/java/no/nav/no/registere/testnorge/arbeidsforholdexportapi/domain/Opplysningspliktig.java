@@ -1,0 +1,79 @@
+package no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.EDAGM;
+
+@Slf4j
+@RequiredArgsConstructor
+public class Opplysningspliktig {
+    private final EDAGM edagm;
+    private static Unmarshaller unmarshaller;
+
+    static {
+        try {
+            var jaxbContext = JAXBContext.newInstance(EDAGM.class);
+            unmarshaller = jaxbContext.createUnmarshaller();
+        } catch (JAXBException e) {
+            log.error("Feil ved opprettelse av unmarshaller for EDAGM", e);
+        }
+    }
+
+
+    @SuppressWarnings("unchecked")
+    private static EDAGM from(String xml, Unmarshaller unmarshaller) throws JAXBException {
+        try(var reader = new StringReader(xml)){
+            EDAGM edagm = ((JAXBElement<EDAGM>) unmarshaller.unmarshal(reader)).getValue();
+            reader.close();
+            return edagm;
+        }
+    }
+
+    public static Opplysningspliktig from(String xml) {
+        try {
+            return new Opplysningspliktig(from(xml, unmarshaller));
+        } catch (Exception e) {
+            throw new RuntimeException("Klarer ikke a konvertere xmlene til EDAGM", e);
+        }
+    }
+
+    public List<Permisjon> toPermisjoner() {
+        return toArbeidsforhold()
+                .stream()
+                .map(Arbeidsforhold::getPermisjoner)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+    }
+
+    public List<Arbeidsforhold> toArbeidsforhold() {
+        List<Arbeidsforhold> arbeidsforholds = new ArrayList<>();
+        var leveranse = this.edagm.getLeveranse();
+        leveranse.getOppgave().getVirksomhet().forEach(virksomhet ->
+                        virksomhet.getInntektsmottaker().forEach(inntektsmottaker ->
+                                inntektsmottaker.getArbeidsforhold().forEach(arbeidsforhold ->
+                                        arbeidsforholds.add(
+                                                new Arbeidsforhold(
+                                                        leveranse,
+                                                        virksomhet,
+                                                        inntektsmottaker,
+                                                        arbeidsforhold
+                                                )
+                                        )
+                                )
+                        )
+                );
+        return arbeidsforholds;
+    }
+
+}

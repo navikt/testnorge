@@ -19,7 +19,8 @@ public class Permisjoner {
     }
 
     private int antall(String beskrivelse) {
-        return list.stream()
+        return list
+                .stream()
                 .filter(value -> value.getBeskrivelse().equals(beskrivelse))
                 .toArray()
                 .length;

@@ -31,3 +31,10 @@ applications:
   mn-organiasasjon-api: a9109f54-8cae-4af2-98e3-8c56a1f5c9ad
   udi-stub-dev: 4426ef7d-f148-4d19-8a03-b0d07a451938
   udi-stub: f4620953-c7af-4e60-8cbb-03de57554b86
+
+zuul:
+  routes:
+    testnorge-arbeidsforhold-export-api:
+      path: /api/v1/files/**
+      url: https://testnorge-arbeidsforhold-export-api.dev.intern.nav.no/api/v1/files
+      sensitiveHeaders: Cookie,Set-Cookie
