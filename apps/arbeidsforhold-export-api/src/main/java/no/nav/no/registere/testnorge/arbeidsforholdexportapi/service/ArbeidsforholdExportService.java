@@ -25,7 +25,7 @@ public class ArbeidsforholdExportService {
         int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
 
         if (numberOfPages > 1) {
-            log.warn("Deler opp opperasjonen i {} deler for å unngå minne problemmer.", numberOfPages);
+            log.warn("Deler opp operasjonen i {} deler for å unngå minne problemer.", numberOfPages);
         }
         var path = Files.createTempFile("arb-" + System.currentTimeMillis() + "-", ".csv");
 
@@ -40,7 +40,7 @@ public class ArbeidsforholdExportService {
             printer.write(inntektsmottakerHendelseRepository.getArbeidsforhold(page, PAGE_SIZE));
             printWriter.flush();
         }
-        log.info("Lukker printenr til fil {}.", path.toAbsolutePath());
+        log.info("Lukker printeren til fil {}.", path.toAbsolutePath());
         printer.close();
         return path;
     }
@@ -51,7 +51,7 @@ public class ArbeidsforholdExportService {
         int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
 
         if (numberOfPages > 1) {
-            log.warn("Deler opp opperasjonen i {} deler for å unngå minne problemmer.", numberOfPages);
+            log.warn("Deler opp operasjonen i {} deler for å unngå minne problemer.", numberOfPages);
         }
         var path = Files.createTempFile("prm-" + System.currentTimeMillis() + "-", ".csv");
 
@@ -66,7 +66,7 @@ public class ArbeidsforholdExportService {
             printer.write(inntektsmottakerHendelseRepository.getPermisjoner(page, PAGE_SIZE));
             printWriter.flush();
         }
-        log.info("Lukker printenr til fil {}.", path);
+        log.info("Lukker printeren til fil {}.", path);
         printer.close();
         return path;
     }

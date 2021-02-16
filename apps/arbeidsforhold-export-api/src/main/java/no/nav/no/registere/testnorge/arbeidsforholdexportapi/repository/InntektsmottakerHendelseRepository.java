@@ -45,7 +45,7 @@ public class InntektsmottakerHendelseRepository {
                 new Object[]{ page * size, size},
                 new InntektsmottakerXmlPermisjonerRowMapper(page * size, count())
         ).stream().flatMap(Collection::stream).collect(Collectors.toList());
-        log.info("Hentet {} INNTEKTSMOTTAKER_XML med {} persmisjoner fra DB.", size, list.size());
+        log.info("Hentet {} INNTEKTSMOTTAKER_XML med {} permisjoner fra DB.", size, list.size());
         return list;
     }
 }
