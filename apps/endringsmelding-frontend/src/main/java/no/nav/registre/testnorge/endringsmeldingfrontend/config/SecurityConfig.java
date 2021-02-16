@@ -17,7 +17,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/internal/isAlive", "/internal/isReady", "/bundle.*.js", "/main.*.css", "/login").permitAll()
+                .antMatchers("/internal/isAlive", "/internal/isReady", "/bundle.*.js", "/main.*.css", "/my.policy", "/login").permitAll()
                 .anyRequest().fullyAuthenticated()
                 .and()
                 .oauth2Client()
