@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class ForwardAndRedirectController {
 
-    @RequestMapping({"/login"})
+    @RequestMapping({"/page/*"})
     public String forwardToRoot() {
         return "forward:/";
     }
