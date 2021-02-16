@@ -1,4 +1,4 @@
-name: Deploy endringsmelding-service
+name: Deploy endringsmelding-frontend
 
 on:
   push:
