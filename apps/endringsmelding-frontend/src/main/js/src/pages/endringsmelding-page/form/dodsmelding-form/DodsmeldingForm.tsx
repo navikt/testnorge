@@ -79,16 +79,16 @@ export default () => {
         />
         <DatePickerFormItem
           id="doedsdato-field"
-          label="Dødsdato"
+          label="Dødsdato*"
           onBlur={(value) => dispatch({ type: Action.SET_DOEDSDATO_ACTION, value: value })}
-          error={state.validate && !notEmptyString(state.doedsdato) ? 'På kreved' : null}
+          error={state.validate && !notEmptyString(state.doedsdato) ? 'Påkrevd' : null}
         />
         <SelectFormItem
           onChange={(value) => dispatch({ type: Action.SET_MILJOER_ACTION, value: value })}
           htmlId="miljo-dodsdato-select"
           multi={true}
-          label="Send til miljo"
-          error={state.validate && !notEmptyList(state.miljoer) ? 'På kreved' : null}
+          label="Send til miljo*"
+          error={state.validate && !notEmptyList(state.miljoer) ? 'Påkrevd' : null}
           options={state.miljoOptions.map((value: string) => ({
             value: value,
             label: value.toUpperCase(),

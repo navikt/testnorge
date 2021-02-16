@@ -46,9 +46,6 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js'],
   },
   plugins: [
-    new CopyPlugin({
-      patterns: [{ from: 'public', to: '.' }],
-    }),
     new HtmlWebPackPlugin({
       template: './public/index.html',
       filename: './index.html',

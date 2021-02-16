@@ -95,7 +95,7 @@ export default () => {
           id="foedselsdato-field"
           label="Barnets fødselesdato*"
           onBlur={(value) => dispatch({ type: Action.SET_FOEDSELSDATO_ACTION, value: value })}
-          error={state.validate && !notEmptyString(state.foedselsdato) ? 'På kreved' : null}
+          error={state.validate && !notEmptyString(state.foedselsdato) ? 'Påkrevd' : null}
         />
       </Line>
       <Line>
@@ -128,8 +128,8 @@ export default () => {
           onChange={(value) => dispatch({ type: Action.SET_MILJOER_ACTION, value: value })}
           htmlId="miljo-select"
           multi={true}
-          label="Send til miljo"
-          error={state.validate && !notEmptyList(state.miljoer) ? 'På kreved' : null}
+          label="Send til miljo*"
+          error={state.validate && !notEmptyList(state.miljoer) ? 'Påkrevd' : null}
           options={state.miljoOptions.map((value: string) => ({
             value: value,
             label: value.toUpperCase(),
