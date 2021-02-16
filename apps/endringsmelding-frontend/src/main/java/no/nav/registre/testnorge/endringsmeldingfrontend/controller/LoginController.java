@@ -9,18 +9,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Slf4j
 @Controller
-@RequestMapping("/open/")
+@RequestMapping("/login")
 public class LoginController {
 
-    @GetMapping("/login")
-    public String login(@RequestParam(value = "error", defaultValue = "false") boolean loginError) {
-        log.info("Error={}",loginError);
-        return "forward:/";
-    }
-
     @GetMapping
-    public String toRoot() {
-        return "/";
+    public String login(@RequestParam(value = "error", defaultValue = "false") boolean loginError) {
+        if (loginError) {
+            log.warn("Bruker har ikke tilgang til appen.");
+        }
+        return "forward:/";
     }
 }
 
