@@ -19,9 +19,8 @@ public class LoginController {
     }
 
     @GetMapping
-    public String root() {
-        return "forward:/";
+    public String toRoot() {
+        return "/";
     }
-
 }
 
