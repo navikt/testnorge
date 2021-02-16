@@ -16,13 +16,6 @@ CLIENT_SECRET: ${azure.app.client.secret}
 #### APP DB ####
 ? app.datasource.onsHosts
 
-
-sts:
-  token:
-    provider:
-      test: ${STS_TOKEN_PROVIDER_TEST}
-      preprod: ${STS_TOKEN_PROVIDER_PREPROD}
-
 springfox:
   documentation:
     swagger:
