@@ -22,7 +22,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .oauth2Client()
                 .and()
-                .oauth2Login(o -> o.loginPage("/").failureUrl("/page/login?error=true"))
+                .oauth2Login(o -> o.loginPage("/login/oauth2/code/aad").failureUrl("/page/login?error=true"))
                 .csrf()
                 .disable();
     }
