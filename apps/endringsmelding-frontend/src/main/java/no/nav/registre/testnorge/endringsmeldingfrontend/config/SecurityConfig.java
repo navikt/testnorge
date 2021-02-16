@@ -24,9 +24,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .oauth2Login()
                 .and()
-                .formLogin()
-                .loginPage("/page/login")
-                .permitAll(true)
+                .exceptionHandling()
+                .accessDeniedPage("/page/login")
                 .and()
                 .csrf()
                 .disable();
