@@ -42,7 +42,8 @@ public class TiltakUtils {
     private static final Map<String, List<String>> deltakerstatuskoderMedAarsakkoder;
     private static final Map<String, List<KodeMedSannsynlighet>> adminkodeTilDeltakerstatus;
 
-    private static final List<String> AVSLUTTENDE_TILTAK_STATUSER = new ArrayList<>(Arrays.asList("AVSLUTT", "AVLYST", "AVBRUTT"));
+    private static final List<String> AVBRUTT_TILTAK_STATUSER = new ArrayList<>(Arrays.asList("AVLYST", "AVBRUTT"));
+    private static final String PLANLAGT_TILTAK_STATUS = "PLANLAGT";
 
     static {
         deltakerstatuskoderMedAarsakkoder = new HashMap<>();
@@ -305,15 +306,29 @@ public class TiltakUtils {
         return vedtakSequences;
     }
 
-    public boolean canSetDeltakelseTilGjennomfoeres(NyttVedtakTiltak tiltaksdeltakelse) {
+    public boolean canSetDeltakelseTilGjennomfoeres(NyttVedtakTiltak tiltaksdeltakelse, List<NyttVedtakTiltak> tiltak) {
+        var tilknyttetTiltak = tiltak.stream().filter(t -> t.getTiltakId().equals(tiltaksdeltakelse.getTiltakId())).collect(Collectors.toList());
+        if (!tilknyttetTiltak.isEmpty() && tilknyttetTiltak.get(0) != null) {
+            var status = tilknyttetTiltak.get(0).getTiltakStatusKode();
+            if (PLANLAGT_TILTAK_STATUS.equals(status)) {
+                return false;
+            }
+        }
+
         var fraDato = tiltaksdeltakelse.getFraDato();
         return (fraDato != null && fraDato.isBefore(LocalDate.now().plusDays(1)));
     }
 
     public boolean canSetDeltakelseTilFinished(NyttVedtakTiltak tiltaksdeltakelse, List<NyttVedtakTiltak> tiltak) {
         var tilknyttetTiltak = tiltak.stream().filter(t -> t.getTiltakId().equals(tiltaksdeltakelse.getTiltakId())).collect(Collectors.toList());
-        if (!tilknyttetTiltak.isEmpty() && AVSLUTTENDE_TILTAK_STATUSER.contains(tilknyttetTiltak.get(0).getTiltakStatusKode())) {
-            return true;
+        if (!tilknyttetTiltak.isEmpty() && tilknyttetTiltak.get(0) != null) {
+            var status = tilknyttetTiltak.get(0).getTiltakStatusKode();
+            if (status != null && AVBRUTT_TILTAK_STATUSER.contains(status)) {
+                return true;
+            }
+            if (PLANLAGT_TILTAK_STATUS.equals(status)) {
+                return false;
+            }
         }
         var fraDato = tiltaksdeltakelse.getFraDato();
         var tilDato = tiltaksdeltakelse.getTilDato();
@@ -341,8 +356,12 @@ public class TiltakUtils {
         }
     }
 
-    public Deltakerstatuser getAvsluttendeDeltakerstatus(String adminkode) {
-        if (adminkode.equals("INST")) {
+    public Deltakerstatuser getAvsluttendeDeltakerstatus(NyttVedtakTiltak tiltaksdeltakelse, List<NyttVedtakTiltak> tiltak) {
+        var tilknyttetTiltak = tiltak.stream().filter(t -> t.getTiltakId().equals(tiltaksdeltakelse.getTiltakId())).collect(Collectors.toList());
+        if (!tilknyttetTiltak.isEmpty() && AVBRUTT_TILTAK_STATUSER.contains(tilknyttetTiltak.get(0).getTiltakStatusKode())) {
+            return Deltakerstatuser.DELAVB;
+        }
+        if (tiltaksdeltakelse.getTiltakAdminKode().equals("INST")) {
             return rand.nextDouble() > 0.28 ? Deltakerstatuser.FULLF : Deltakerstatuser.DELAVB;
         } else {
             return Deltakerstatuser.FULLF;

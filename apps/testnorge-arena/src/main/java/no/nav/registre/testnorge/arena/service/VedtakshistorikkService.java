@@ -192,7 +192,7 @@ public class VedtakshistorikkService {
         opprettVedtakFritakMeldekort(vedtakshistorikk, personident, miljoe, rettigheter);
         oppdaterTiltaksdeltakelse(vedtakshistorikk, personident, miljoe, tiltak);
         opprettVedtakTiltaksdeltakelse(vedtakshistorikk, personident, miljoe, rettigheter);
-        opprettFoersteVedtakEndreDeltakerstatus(vedtakshistorikk, personident, miljoe, rettigheter);
+        opprettFoersteVedtakEndreDeltakerstatus(vedtakshistorikk, personident, miljoe, rettigheter, tiltak);
         opprettVedtakTiltakspenger(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakBarnetillegg(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettAvsluttendeVedtakEndreDeltakerstatus(vedtakshistorikk, personident, miljoe, rettigheter, tiltak);
@@ -461,7 +461,8 @@ public class VedtakshistorikkService {
             Vedtakshistorikk historikk,
             String personident,
             String miljoe,
-            List<RettighetRequest> rettigheter
+            List<RettighetRequest> rettigheter,
+            List<NyttVedtakTiltak> tiltak
     ) {
         var tiltaksdeltakelser = historikk.getTiltaksdeltakelse();
 
@@ -471,7 +472,7 @@ public class VedtakshistorikkService {
             return;
         }
         for (var deltakelse : tiltaksdeltakelser) {
-            if (tiltakUtils.canSetDeltakelseTilGjennomfoeres(deltakelse)) {
+            if (tiltakUtils.canSetDeltakelseTilGjennomfoeres(deltakelse, tiltak)) {
                 List<String> endringer = tiltakUtils.getFoersteEndringerDeltakerstatus(deltakelse.getTiltakAdminKode());
 
                 for (var endring : endringer) {
@@ -502,8 +503,7 @@ public class VedtakshistorikkService {
         if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
             for (var deltakelse : tiltaksdeltakelser) {
                 if (tiltakUtils.canSetDeltakelseTilFinished(deltakelse, tiltak)) {
-                    var deltakerstatuskode = tiltakUtils.getAvsluttendeDeltakerstatus(deltakelse
-                            .getTiltakAdminKode()).toString();
+                    var deltakerstatuskode = tiltakUtils.getAvsluttendeDeltakerstatus(deltakelse, tiltak).toString();
 
                     var rettighetRequest = tiltakUtils.opprettRettighetEndreDeltakerstatusRequest(personident, miljoe,
                             deltakelse, deltakerstatuskode);

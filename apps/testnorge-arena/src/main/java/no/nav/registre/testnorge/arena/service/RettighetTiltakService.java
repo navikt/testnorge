@@ -351,14 +351,13 @@ public class RettighetTiltakService {
             NyttVedtakTiltak tiltaksdeltakelse,
             List<NyttVedtakTiltak> tiltak
     ) {
-        var adminKode = tiltaksdeltakelse.getTiltakAdminKode();
         List<String> endringer = new ArrayList<>();
-        if (tiltakUtils.canSetDeltakelseTilGjennomfoeres(tiltaksdeltakelse)) {
-            endringer = tiltakUtils.getFoersteEndringerDeltakerstatus(adminKode);
+        if (tiltakUtils.canSetDeltakelseTilGjennomfoeres(tiltaksdeltakelse, tiltak)) {
+            endringer = tiltakUtils.getFoersteEndringerDeltakerstatus(tiltaksdeltakelse.getTiltakAdminKode());
         }
 
         if (!endringer.isEmpty() && endringer.contains(Deltakerstatuser.GJENN.toString()) && tiltakUtils.canSetDeltakelseTilFinished(tiltaksdeltakelse, tiltak)) {
-            endringer.add(tiltakUtils.getAvsluttendeDeltakerstatus(adminKode).toString());
+            endringer.add(tiltakUtils.getAvsluttendeDeltakerstatus(tiltaksdeltakelse, tiltak).toString());
         }
 
         return endringer;

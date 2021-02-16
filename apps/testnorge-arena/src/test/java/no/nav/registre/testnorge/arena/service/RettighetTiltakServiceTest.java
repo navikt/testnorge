@@ -119,7 +119,7 @@ public class RettighetTiltakServiceTest {
         when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
         when(tiltakUtils.finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoFremITid)).thenReturn(tiltakMedTilDatoFremITid);
-        when(tiltakUtils.canSetDeltakelseTilGjennomfoeres(tiltakMedTilDatoFremITid)).thenReturn(true);
+        when(tiltakUtils.canSetDeltakelseTilGjennomfoeres(tiltakMedTilDatoFremITid, Collections.singletonList(tiltakMedTilDatoFremITid))).thenReturn(true);
         when(tiltakUtils.getVedtakForTiltaksdeltakelseRequest(tiltakMedTilDatoFremITid)).thenReturn(tiltakMedTilDatoFremITid);
         when(tiltakUtils.getFoersteEndringerDeltakerstatus(anyString())).thenReturn(Collections.singletonList(Deltakerstatuser.GJENN.toString()));
         when(arbeidssoekerUtils.opprettArbeidssoekerTiltak(anyList(), anyString())).thenReturn(Collections.emptyList());
@@ -142,11 +142,11 @@ public class RettighetTiltakServiceTest {
         when(identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe)).thenReturn(identer);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(new HashMap<>());
         when(tiltakUtils.finnTiltak(identer.get(0), miljoe, tiltakMedTilDatoLikDagens)).thenReturn(tiltakMedTilDatoLikDagens);
-        when(tiltakUtils.canSetDeltakelseTilGjennomfoeres(tiltakMedTilDatoLikDagens)).thenReturn(true);
+        when(tiltakUtils.canSetDeltakelseTilGjennomfoeres(tiltakMedTilDatoLikDagens, Collections.singletonList(tiltakMedTilDatoLikDagens))).thenReturn(true);
         when(tiltakUtils.canSetDeltakelseTilFinished(tiltakMedTilDatoLikDagens, Collections.singletonList(tiltakMedTilDatoLikDagens))).thenReturn(true);
         when(tiltakUtils.getVedtakForTiltaksdeltakelseRequest(tiltakMedTilDatoLikDagens)).thenReturn(tiltakMedTilDatoLikDagens);
         when(tiltakUtils.getFoersteEndringerDeltakerstatus(anyString())).thenReturn(new ArrayList<>(Collections.singletonList(Deltakerstatuser.GJENN.toString())));
-        when(tiltakUtils.getAvsluttendeDeltakerstatus(anyString())).thenReturn(Deltakerstatuser.FULLF);
+        when(tiltakUtils.getAvsluttendeDeltakerstatus(tiltakMedTilDatoLikDagens, Collections.singletonList(tiltakMedTilDatoLikDagens))).thenReturn(Deltakerstatuser.FULLF);
         when(arbeidssoekerUtils.opprettArbeidssoekerTiltak(anyList(), anyString())).thenReturn(Collections.emptyList());
 
         rettighetTiltakService.opprettTiltaksdeltakelse(avspillergruppeId, miljoe, antallNyeIdenter);
