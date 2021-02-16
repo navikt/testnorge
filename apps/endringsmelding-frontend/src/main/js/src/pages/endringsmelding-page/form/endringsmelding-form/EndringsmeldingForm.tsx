@@ -1,5 +1,5 @@
 import React, { useReducer } from 'react';
-import Search from '@/components/search/Search';
+import { Search } from '@/components/search';
 import { Hovedknapp } from 'nav-frontend-knapper';
 
 import { Form, Line } from '@/components/form';
@@ -27,7 +27,7 @@ export const initState: State = {
   show: false,
 };
 
-function EndringsmeldingForm<T>({
+export default <T extends {}>({
   children,
   onSend,
   valid,
@@ -36,7 +36,7 @@ function EndringsmeldingForm<T>({
   setIdent,
   getSuccessMessage,
   getErrorMessage = () => 'Noe gikk galt.',
-}: Props<T>) {
+}: Props<T>) => {
   const [state, dispatch] = useReducer(reducer, initState);
 
   const onSearch = (value: string) =>
@@ -92,6 +92,4 @@ function EndringsmeldingForm<T>({
       {!!state.errorMessage && <ErrorAlertstripe label={state.errorMessage} />}
     </Form>
   );
-}
-
-export default EndringsmeldingForm;
+};

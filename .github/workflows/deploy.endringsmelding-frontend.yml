@@ -26,13 +26,28 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '11.x'
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+      - name: Install js libs
+        run: |
+          npm ci
+        working-directory: ./apps/endringsmelding-frontend/src/main/js
+      - name: Build js
+        run: |
+          npm run build
+        working-directory: ./apps/endringsmelding-frontend/src/main/js
+      - name: Move js build
+        run: |
+          mv build ../resources/static
+        working-directory: ./apps/endringsmelding-frontend/src/main/js
       - name: Compile
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
         run: ./gradlew :endringsmelding-frontend:build
       - name: Build and publish Docker image
-        working-directory: apps/endringsmelding-frontend/
+        working-directory: ./apps/endringsmelding-frontend/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
