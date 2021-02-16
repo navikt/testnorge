@@ -19,6 +19,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .anyRequest()
                 .fullyAuthenticated()
+                .antMatchers("/internal/isAlive", "/internal/isReady").permitAll()
                 .and()
                 .oauth2Client()
                 .and()
