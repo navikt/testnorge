@@ -7,7 +7,6 @@ import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.List;
 
