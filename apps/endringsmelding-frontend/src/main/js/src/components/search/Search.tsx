@@ -24,7 +24,7 @@ type Props<T> = {
     onNotFound: string;
     onError: string;
   };
-  onBlur?: (value: string) => void;
+  onChange?: (value: string) => void;
 };
 
 const Alert = styled.div`
@@ -42,7 +42,7 @@ const Knapp = styled(NavKnapp)`
   margin-left: 20px;
 `;
 
-export default <T extends unknown>({ labels, onSearch, onBlur }: Props<T>) => {
+export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => {
   const [loading, setLoading] = useState(false);
   const [value, setValue] = useState('');
   const [success, setSuccess] = useState(undefined);
@@ -71,9 +71,9 @@ export default <T extends unknown>({ labels, onSearch, onBlur }: Props<T>) => {
       <Input
         label={labels.label}
         defaultValue=""
-        onBlur={(e) => {
-          if (onBlur) {
-            onBlur(e.target.value);
+        onChange={(e) => {
+          if (onChange) {
+            onChange(e.target.value);
           }
           setValue(e.target.value);
         }}

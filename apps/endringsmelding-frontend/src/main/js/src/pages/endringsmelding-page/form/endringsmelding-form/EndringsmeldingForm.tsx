@@ -66,7 +66,7 @@ export default <T extends {}>({
     <Form>
       <Search
         onSearch={onSearch}
-        onBlur={(value) => {
+        onChange={(value) => {
           setIdent(value);
           dispatch({ type: Action.SET_IDENT_ACTION, value: value });
         }}
