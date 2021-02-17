@@ -9,10 +9,9 @@ import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.domain.jpa.OrganisasjonNummer;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
-import no.nav.dolly.domain.resultset.RsOrganisasjonStatusRapport;
-import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonBestillingStatus;
 import no.nav.dolly.exceptions.ConstraintViolationException;
+import no.nav.dolly.mapper.BestillingOrganisasjonStatusMapper;
 import no.nav.dolly.mapper.strategy.JsonBestillingMapper;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
 import org.springframework.cache.annotation.CacheEvict;
@@ -32,7 +31,6 @@ import java.util.stream.Collectors;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
-import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_ORG_BESTILLING;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
@@ -67,18 +65,7 @@ public class OrganisasjonBestillingService {
         }
 
         return RsOrganisasjonBestillingStatus.builder()
-                .status(singletonList(RsOrganisasjonStatusRapport.builder()
-                        .navn("Organisasjon Forvalter")
-                        .id(SystemTyper.ORGANISASJON_FORVALTER)
-                        .statuser(singletonList(RsOrganisasjonStatusRapport.Status.builder()
-                                .orgnummer(!bestillingProgressList.isEmpty() ? bestillingProgressList.get(0).getOrganisasjonsnummer() : null)
-                                .melding(!bestillingProgressList.isEmpty() ? bestillingProgressList.get(0).getOrganisasjonsforvalterStatus() : null)
-                                .detaljert(singletonList(RsOrganisasjonStatusRapport.Detaljert.builder()
-                                        .miljo(bestilling.getMiljoer())
-                                        .orgnummer(!bestillingProgressList.isEmpty() ? bestillingProgressList.get(0).getOrganisasjonsnummer() : null)
-                                        .build()))
-                                .build()))
-                        .build()))
+                .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(bestillingProgressList.get(0)))
                 .bestilling(jsonBestillingMapper.mapOrganisasjonBestillingRequest(bestilling.getBestKriterier()))
                 .sistOppdatert(bestilling.getSistOppdatert())
                 .organisasjonNummer(!bestillingProgressList.isEmpty() ? bestillingProgressList.get(0).getOrganisasjonsnummer() : null)
@@ -102,18 +89,7 @@ public class OrganisasjonBestillingService {
                                     "Fant ikke noen bestillinger med bestillingId: " + bestillingStatus.getBestillingId())
                     );
                     statusListe.add(RsOrganisasjonBestillingStatus.builder()
-                            .status(singletonList(RsOrganisasjonStatusRapport.builder()
-                                    .navn("Organisasjon Forvalter")
-                                    .id(SystemTyper.ORGANISASJON_FORVALTER)
-                                    .statuser(singletonList(RsOrganisasjonStatusRapport.Status.builder()
-                                            .melding(bestillingStatus.getOrganisasjonsforvalterStatus())
-                                            .orgnummer(bestillingStatus.getOrganisasjonsnummer())
-                                            .detaljert(singletonList(RsOrganisasjonStatusRapport.Detaljert.builder()
-                                                    .miljo(orgBestilling.getMiljoer())
-                                                    .orgnummer(bestillingStatus.getOrganisasjonsnummer())
-                                                    .build()))
-                                            .build()))
-                                    .build()))
+                            .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(bestillingStatus))
                             .bestilling(jsonBestillingMapper.mapOrganisasjonBestillingRequest(orgBestilling.getBestKriterier()))
                             .sistOppdatert(orgBestilling.getSistOppdatert())
                             .organisasjonNummer(bestillingStatus.getOrganisasjonsnummer())

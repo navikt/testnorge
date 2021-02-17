@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -58,7 +59,7 @@ public class OrganisasjonClient {
                 .bestillingId(bestillingId)
                 .organisasjonsnummer("NA")
                 .uuid("NA")
-                .organisasjonsforvalterStatus("Pågående")
+                .organisasjonsforvalterStatus(bestilling.getEnvironments().stream().map(env -> env + ":Pågående").collect(Collectors.joining(",")))
                 .build());
 
         bestillingRequest.getOrganisasjoner().forEach(organisasjon -> {
@@ -73,7 +74,7 @@ public class OrganisasjonClient {
                     OrganisasjonBestillingProgress organisasjonBestillingProgress = organisasjonBestillingProgresses.get(0);
                     organisasjonBestillingProgress.setBestillingId(bestillingId);
                     organisasjonBestillingProgress.setOrganisasjonsnummer(requireNonNull(response.getBody().getOrgnummer().iterator().next()));
-                    organisasjonBestillingProgress.setOrganisasjonsforvalterStatus("Deployer");
+                    organisasjonBestillingProgress.setOrganisasjonsforvalterStatus(bestilling.getEnvironments().stream().map(env -> env + ":Deployer").collect(Collectors.joining(",")));
 
                     organisasjonProgressService.save(organisasjonBestillingProgress);
                     saveOrgnumreToDb(orgnumre, bestillingId, bestilling.getEnvironments());
@@ -96,7 +97,7 @@ public class OrganisasjonClient {
                 .bestillingId(bestillingId)
                 .organisasjonsnummer(request.getOrgnumre().iterator().next())
                 .uuid("NA")
-                .organisasjonsforvalterStatus("Deployer")
+                .organisasjonsforvalterStatus(request.getEnvironments().stream().map(env -> env + ":Deployer").collect(Collectors.joining(",")))
                 .build());
 
         organisasjonNummerService.save(OrganisasjonNummer.builder()
