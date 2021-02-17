@@ -21,7 +21,7 @@ public class BestillingOrganisasjonStatusMapper {
 
     public static List<RsOrganisasjonStatusRapport> buildOrganisasjonStatusMap(OrganisasjonBestillingProgress progress) {
 
-        if (isNull(progress.getOrganisasjonsforvalterStatus())) {
+        if (isNull(progress) || isNull(progress.getOrganisasjonsforvalterStatus())) {
             return emptyList();
         }
 

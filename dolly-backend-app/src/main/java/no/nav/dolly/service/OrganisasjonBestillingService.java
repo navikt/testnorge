@@ -65,7 +65,7 @@ public class OrganisasjonBestillingService {
         }
 
         return RsOrganisasjonBestillingStatus.builder()
-                .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(bestillingProgressList.get(0)))
+                .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(!bestillingProgressList.isEmpty() ? bestillingProgressList.get(0) : null))
                 .bestilling(jsonBestillingMapper.mapOrganisasjonBestillingRequest(bestilling.getBestKriterier()))
                 .sistOppdatert(bestilling.getSistOppdatert())
                 .organisasjonNummer(!bestillingProgressList.isEmpty() ? bestillingProgressList.get(0).getOrganisasjonsnummer() : null)
