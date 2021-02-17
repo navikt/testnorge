@@ -10,7 +10,7 @@ import Loading from '~/components/ui/loading/Loading'
 import { History } from 'history'
 import { useAsync } from 'react-use'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import OrganisasjonBestilling from '~/pages/organisasjoner/OrganisasjonBestilling'
+import OrganisasjonBestillingConnector from '~/pages/organisasjoner/OrganisasjonBestillingConnector'
 import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 
 type Organisasjoner = {
@@ -79,7 +79,10 @@ export default function Organisasjoner({
 	) {
 		return organisasjoner
 			.filter((org: OrganisasjonInfo) => org.organisasjonNummer === organisasjonsnummer)
-			.map((org: OrganisasjonInfo) => org.id)[0]
+			.map((org: OrganisasjonInfo) => org.id)
+			.sort(function(a, b) {
+				return b - a
+			})
 	}
 
 	const organisasjonerInfo = useAsync(async () => {
@@ -94,7 +97,7 @@ export default function Organisasjoner({
 		return getOrganisasjoner(orgNumre).then((orgInfo: OrganisasjonResponse) => {
 			return orgInfo.value.data.map(orgElement => ({
 				...orgElement,
-				status: 'Ferdig',
+				status: 'Ferdig', // TODO: er vel ikke alltid ferdig?
 				bestillingId: getBestillingIdFromOrgnummer(
 					response.value.data,
 					orgElement.organisasjonsnummer
@@ -197,7 +200,7 @@ export default function Organisasjoner({
 					(isFetching ? (
 						<Loading label="laster bestillinger" panel />
 					) : antallOrg > 0 ? (
-						<OrganisasjonBestilling orgListe={organisasjonliste} brukerId={brukerId} />
+						<OrganisasjonBestillingConnector brukerId={brukerId} />
 					) : (
 						tomOrgListe()
 					))}

@@ -45,6 +45,8 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 
 					return order.map(type => {
 						const category = environments[type]
+						if (!category) return null
+
 						const allDisabled = category.some(f => f.disabled)
 
 						return (

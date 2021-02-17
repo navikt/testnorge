@@ -79,7 +79,12 @@ export default function OrganisasjonListe({ orgListe, bestillinger }: Organisasj
 		{
 			text: 'Bestilling-ID',
 			width: '20',
-			dataField: 'bestillingId'
+			dataField: 'bestillingId',
+			formatter: (cell, row) => {
+				const str = row.bestillingId
+				if (str.length > 1) return `${str[0]} ...`
+				return str[0]
+			}
 		},
 		{
 			text: 'Status',

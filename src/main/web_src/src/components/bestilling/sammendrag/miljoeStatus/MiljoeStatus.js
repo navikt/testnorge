@@ -7,15 +7,7 @@ import antallIdenterOpprettet from '~/components/bestilling/utils/antallIdenterO
 
 import './MiljoeStatus.less'
 
-const mapStatusrapport = (bestillingstatus, erOrganisasjon) => {
-	if (erOrganisasjon) {
-		// TODO: Må ta høyde for at vi kan få flere statuser
-		const status = bestillingstatus[0].statuser[0]
-		return {
-			organisasjonsnummer: status.orgnummer,
-			melding: status.melding
-		}
-	}
+const mapStatusrapport = bestillingstatus => {
 	const successFirst = a => (a.melding ? 1 : -1)
 	return bestillingstatus
 		.reduce((acc, curr) => {
@@ -29,6 +21,11 @@ const mapStatusrapport = (bestillingstatus, erOrganisasjon) => {
 					if (status.identer) {
 						feil.miljo = null
 						feil.identer = status.identer
+					}
+
+					if (status.orgnummer) {
+						feil.miljo = null
+						feil.orgnummer = status.orgnummer
 					}
 
 					if (status.detaljert) {
@@ -47,7 +44,7 @@ const mapStatusrapport = (bestillingstatus, erOrganisasjon) => {
 
 export default function MiljoeStatus({ bestilling }) {
 	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
-	const statusrapport = mapStatusrapport(bestilling.status, erOrganisasjon)
+	const statusrapport = mapStatusrapport(bestilling.status)
 	const { tekst } = antallIdenterOpprettet(bestilling)
 
 	return (

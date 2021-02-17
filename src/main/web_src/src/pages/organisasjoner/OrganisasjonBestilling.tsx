@@ -9,8 +9,8 @@ import { OrgStatus } from '~/components/fagsystem/organisasjoner/types'
 import Spinner from '~/components/ui/loading/Spinner'
 
 type OrganisasjonBestilling = {
-	orgListe: OrgStatus
 	brukerId: string
+	bestillinger: OrgStatus
 }
 
 const ikonTypeMap = {
@@ -20,12 +20,12 @@ const ikonTypeMap = {
 	Stoppet: 'report-problem-triangle'
 }
 
-export default function OrganisasjonBestilling({ orgListe, brukerId }: OrganisasjonBestilling) {
-	if (!orgListe) {
+export default function OrganisasjonBestilling({ brukerId, bestillinger }: OrganisasjonBestilling) {
+	if (!bestillinger) {
 		return null
 	}
 
-	const sortedOrgliste = _orderBy(orgListe, ['id'], ['desc'])
+	const sortedOrgliste = _orderBy(bestillinger, ['id'], ['desc'])
 
 	const columns = [
 		{
@@ -58,23 +58,18 @@ export default function OrganisasjonBestilling({ orgListe, brukerId }: Organisas
 		{
 			text: 'Orgnr.',
 			width: '15',
-			dataField: 'status[0].organisasjonsnummer',
+			dataField: 'organisasjonNummer',
 			unique: true
 		},
 		{
 			text: 'Status',
 			width: '10',
-			// TODO: Kan være flere statuser - fiks dette
-			dataField: 'status[0].statuser[0].melding',
+			dataField: 'listedata[4]',
 			formatter: (cell: string) => {
-				const status =
-					cell.toUpperCase().includes('FEIL') || cell.toUpperCase().includes('ERROR')
-						? 'Avvik'
-						: 'Ferdig'
 				return cell === 'Pågående' || cell === 'DEPLOYER' ? (
 					<Spinner size={24} />
 				) : (
-					<Icon kind={ikonTypeMap[status]} title={status} />
+					<Icon kind={ikonTypeMap[cell]} title={cell} />
 				)
 			}
 		}

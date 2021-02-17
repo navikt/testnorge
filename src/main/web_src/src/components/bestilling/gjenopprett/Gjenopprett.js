@@ -22,6 +22,7 @@ export default function GjenopprettBestilling(props) {
 			? await props.gjenopprettOrganisasjonBestilling(envsQuery)
 			: await props.gjenopprettBestilling(envsQuery)
 		await props.getBestillinger()
+		closeModal()
 	}
 
 	const schemaValidation = yup.object().shape({

@@ -11,17 +11,16 @@ export default function FagsystemStatus({ statusrapport }) {
 	// Feilmeldinger som skal ha gul problem-circle legges inn her
 	const problemCircleFeil = ['InnvandringOpprettingsmelding: STATUS: TIDSAVBRUDD']
 
-	const getIconType = melding =>
-		melding && !melding.includes('OK')
-			? problemCircleFeil.includes(melding)
+	const getIconType = status => {
+		const melding = status.melding
+		return melding && !melding.includes('OK')
+			? problemCircleFeil.includes(melding) || (status.orgnummer && status.orgnummer !== 'NA')
 				? 'report-problem-circle'
 				: 'report-problem-triangle'
 			: 'feedback-check-circle'
+	}
 
-	if (statusrapport.organisasjonsnummer) {
-		const melding = statusrapport.melding
-			? statusrapport.melding
-			: 'NA:Status inneholdt ingen melding'
+	if (statusrapport.some(status => status.navn === 'Forvalter av syntetiske organisasjoner')) {
 		return (
 			<ErrorBoundary>
 				<table className="fagsystemstatus">
@@ -29,26 +28,25 @@ export default function FagsystemStatus({ statusrapport }) {
 						<tr>
 							<td>Status</td>
 							<td>Miljø</td>
+							<td>Orgnr.</td>
 						</tr>
 					</thead>
 					<tbody>
-						{melding.split(',').map((fullStatus, idx) => {
-							const [miljo, statuskode] = fullStatus.split(':')
-							return (
-								<tr key={idx}>
-									<td>
-										<div className="flexbox">
-											<Icon size={16} kind={getIconType(statuskode)} />
-											<div>
-												<h5>Organisasjon Forvalter</h5>
-												<ApiFeilmelding feilmelding={statuskode} />
-											</div>
+						{statusrapport.map((status, idx) => (
+							<tr key={idx}>
+								<td>
+									<div className="flexbox">
+										<Icon size={16} kind={getIconType(status)} />
+										<div>
+											<h5>{status.navn}</h5>
+											<ApiFeilmelding feilmelding={status.melding} />
 										</div>
-									</td>
-									<td>{miljo.toUpperCase() || <i>Ikke relevant</i>}</td>
-								</tr>
-							)
-						})}
+									</div>
+								</td>
+								<td>{status.miljo || <i>Ikke relevant</i>}</td>
+								<td>{status.orgnummer}</td>
+							</tr>
+						))}
 					</tbody>
 				</table>
 			</ErrorBoundary>
@@ -70,7 +68,7 @@ export default function FagsystemStatus({ statusrapport }) {
 						<tr key={idx}>
 							<td>
 								<div className="flexbox">
-									<Icon size={16} kind={getIconType(status.melding)} />
+									<Icon size={16} kind={getIconType(status)} />
 									<div>
 										<h5>{status.navn}</h5>
 										<ApiFeilmelding feilmelding={status.melding} />
