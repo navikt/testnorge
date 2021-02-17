@@ -36,7 +36,12 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 				>
 					Testdatagrupper
 				</NavLink>
-				<NavLink to="/tpsendring">Endringsmelding</NavLink>
+				<a
+					href="https://endringsmelding.dev.intern.nav.no"
+					onClick={() => Logger.log({ event: 'Trykket på dokumentasjon header' })}
+				>
+					Endringsmelding
+				</a>
 				<NavLink to="/soek">Søk i Mini-Norge</NavLink>
 				<a
 					href="https://navikt.github.io/dolly-frontend/"
