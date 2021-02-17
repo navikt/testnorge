@@ -40,12 +40,11 @@ public class RettighetArenaForvalterConsumer {
                 } else {
                     responses.put(rettighet.getPersonident(), new ArrayList<>(Collections.singletonList(response)));
                 }
-
-                if (response.getFeiledeRettigheter() != null && !response.getFeiledeRettigheter().isEmpty()){
-                    log.info("Innsendt rettighet feilet. Stopper videre innsending av historikk for ident: "
-                            + rettighet.getPersonident());
-                    break;
-                }
+            }
+            if (response == null || (response.getFeiledeRettigheter() != null && !response.getFeiledeRettigheter().isEmpty())) {
+                log.info("Innsendt rettighet feilet. Stopper videre innsending av historikk for ident: "
+                        + rettighet.getPersonident());
+                break;
             }
         }
         return responses;
