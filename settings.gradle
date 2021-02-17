@@ -288,3 +288,6 @@ project(":tps-forvalteren-proxy").projectDir = file('proxies/tps-forvalteren-pro
 
 include 'endringsmelding-frontend'
 project(":endringsmelding-frontend").projectDir = file('apps/endringsmelding-frontend')
+
+include 'person-search-service'
+project(":person-search-service").projectDir = file('apps/person-search-service')
