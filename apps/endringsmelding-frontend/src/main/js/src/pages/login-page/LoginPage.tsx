@@ -21,7 +21,6 @@ export default () => (
     <h1>Du har ikke tilgang til denne siden</h1>
     <p>
       Av sikkerhetshensyn må du bestille tilgang for å kunne sende fødselsmeldinger og dødsmeldinger
-      Av sikkerhetshensyn må du bestille tilgang for å kunne sende fødselsmeldinger og dødsmeldinger
       fra denne siden.
     </p>
     <p>
