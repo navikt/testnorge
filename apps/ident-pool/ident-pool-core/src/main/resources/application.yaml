@@ -3,7 +3,6 @@ application:
   version: dummy
 
 ### TPS ###
-TPS_FORESPORSEL_XML_O_QUEUENAME: QA.%s_411.TPS_FORESPORSEL_XML_O
 generer:
   identer:
     enable: true
@@ -13,21 +12,6 @@ tps-forvalteren:
   rest:
     api:
       url: https://tps-forvalteren.dev.adeo.no
-
-### MQ ####
-mq:
-  consumer:
-    username: srvappserver
-    password:
-  channel:
-    postfix: _TPSWS
-  context:
-    exclude: tx,ty,ta,q231,o1,test,q11,t8,qa,qb
-
-### FASIT ###
-fasit:
-  url: https://fasit.adeo.no
-  anonymous: true
 
 ### NAVNEPOOL ###
 navnepool:
