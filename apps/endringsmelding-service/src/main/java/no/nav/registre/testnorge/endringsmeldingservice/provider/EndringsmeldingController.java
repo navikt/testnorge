@@ -23,12 +23,12 @@ public class EndringsmeldingController {
     private final TpsForvalterConsumer consumer;
 
     @PostMapping("/foedeselsmelding")
-    public ResponseEntity<HttpStatus> sendFoedselsmelding(
+    public ResponseEntity<String> sendFoedselsmelding(
             @RequestHeader Set<String> miljoer,
             @RequestBody FoedselsmeldingDTO dto
     ) {
-        consumer.sendFoedselsmelding(dto, miljoer);
-        return ResponseEntity.ok().build();
+        var ident = consumer.sendFoedselsmelding(dto, miljoer);
+        return ResponseEntity.ok(ident);
     }
 
     @PostMapping("/doedsmelding")

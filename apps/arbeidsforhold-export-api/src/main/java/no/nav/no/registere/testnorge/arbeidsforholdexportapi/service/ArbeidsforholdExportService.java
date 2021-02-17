@@ -4,38 +4,70 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.util.List;
-import java.util.Set;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Arbeidsforhold;
-import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.OpplysningspliktigList;
-import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Permisjon;
-import no.nav.no.registere.testnorge.arbeidsforholdexportapi.repository.IdentRepository;
+import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.ArbeidsforholdSyntetiseringCsvPrinterConverter;
+import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.PermisjonSyntetiseringCsvPrinterConverter;
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.repository.InntektsmottakerHendelseRepository;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ArbeidsforholdExportService {
-    private final IdentRepository identRepository;
+    public static final int PAGE_SIZE = 500_000;
     private final InntektsmottakerHendelseRepository inntektsmottakerHendelseRepository;
 
-    public List<Arbeidsforhold> getArbeidsforhold(Integer antallPersoner) {
-        OpplysningspliktigList opplysningspliktigList = getOpplysningspliktigList(antallPersoner);
-        log.info("Fant arbeidsforhold på {}/{}", opplysningspliktigList.getAntallPersonerArbeidsforhold(), antallPersoner);
-        return opplysningspliktigList.toArbeidsforhold();
+    public Path writeArbeidsforhold() throws IOException {
+        var count = inntektsmottakerHendelseRepository.count();
+        int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
+
+        if (numberOfPages > 1) {
+            log.warn("Deler opp operasjonen i {} deler for å unngå minne problemer.", numberOfPages);
+        }
+        var path = Files.createTempFile("arb-" + System.currentTimeMillis() + "-", ".csv");
+
+        var file = path.toFile();
+        log.info("Fil opprettet: {}.", path);
+        file.deleteOnExit();
+        var printWriter = new PrintWriter(file);
+
+        var printer = new ArbeidsforholdSyntetiseringCsvPrinterConverter(printWriter);
+        for (int page = 0; page < numberOfPages; page++) {
+            log.info("Henter for side {}/{} med opp til {} per side.", page + 1, numberOfPages, PAGE_SIZE);
+            printer.write(inntektsmottakerHendelseRepository.getArbeidsforhold(page, PAGE_SIZE));
+            printWriter.flush();
+        }
+        log.info("Lukker printeren til fil {}.", path.toAbsolutePath());
+        printer.close();
+        return path;
     }
 
-    private OpplysningspliktigList getOpplysningspliktigList(Integer antallPersoner) {
-        Set<String> idetner = identRepository.getRandomIdenter(antallPersoner);
-        List<String> xmls = inntektsmottakerHendelseRepository.getXmlFrom(idetner);
-        return OpplysningspliktigList.from(xmls);
-    }
 
-    public List<Permisjon> getPermisjoner(Integer antallPersoner) {
-        OpplysningspliktigList opplysningspliktigList = getOpplysningspliktigList(antallPersoner);
-        log.info("Fant permiteringer på {}/{}", opplysningspliktigList.getAntallPersonerMedPermisjoner(), antallPersoner);
-        return opplysningspliktigList.toPermisjoner();
+    public Path writePermisjoner() throws IOException {
+        var count = inntektsmottakerHendelseRepository.count();
+        int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
+
+        if (numberOfPages > 1) {
+            log.warn("Deler opp operasjonen i {} deler for å unngå minne problemer.", numberOfPages);
+        }
+        var path = Files.createTempFile("prm-" + System.currentTimeMillis() + "-", ".csv");
+
+        var file = path.toFile();
+        log.info("Fil opprettet: {}.", path);
+        file.deleteOnExit();
+        var printWriter = new PrintWriter(file);
+
+        var printer = new PermisjonSyntetiseringCsvPrinterConverter(printWriter);
+        for (int page = 0; page < numberOfPages; page++) {
+            log.info("Henter for side {}/{} med opp til {} per side.", page + 1, numberOfPages, PAGE_SIZE);
+            printer.write(inntektsmottakerHendelseRepository.getPermisjoner(page, PAGE_SIZE));
+            printWriter.flush();
+        }
+        log.info("Lukker printeren til fil {}.", path);
+        printer.close();
+        return path;
     }
 }

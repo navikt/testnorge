@@ -1,5 +1,6 @@
 package no.nav.udistub.converter.ws;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.udistub.service.dto.opphold.UdiOppholdSammeVilkaar;
 import no.nav.udistub.service.dto.opphold.UdiOppholdStatus;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTABeslutningOmOppholdsrett;
@@ -15,32 +16,44 @@ import org.springframework.stereotype.Component;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Component
+@RequiredArgsConstructor
 public class GjeldendeOppholdStatusWsConverter implements Converter<UdiOppholdStatus, GjeldendeOppholdsstatus> {
 
-    private final XmlDateWsConverter xmlDateWsConverter = new XmlDateWsConverter();
-    private final PeriodeWsConverter periodeWsConverter = new PeriodeWsConverter();
+    private final XmlDateWsConverter xmlDateWsConverter;
+    private final PeriodeWsConverter periodeWsConverter;
+    private final IkkeOppholdstillatelseIkkeOppholdPaSammeVilkarIkkeVisumWsConverter ikkeWsConverter;
 
     @Override
     public GjeldendeOppholdsstatus convert(UdiOppholdStatus oppholdStatus) {
 
         if (nonNull(oppholdStatus)) {
-            IkkeOppholdstillatelseIkkeOppholdPaSammeVilkarIkkeVisumWsConverter ikkeWsConverter;
-            ikkeWsConverter = new IkkeOppholdstillatelseIkkeOppholdPaSammeVilkarIkkeVisumWsConverter();
+
             var resultatOppholdsstatus = new GjeldendeOppholdsstatus();
 
-            resultatOppholdsstatus.setUavklart(Boolean.TRUE.equals(oppholdStatus.getUavklart()) ? new Uavklart() : null);
+            resultatOppholdsstatus.setUavklart(isTrue(oppholdStatus.getUavklart()) ? new Uavklart() : null);
 
             var eoSellerEFTAOpphold = new EOSellerEFTAOpphold();
             eoSellerEFTAOpphold.setEOSellerEFTABeslutningOmOppholdsrett(getEOSellerEFTABeslutningOmOpphold(oppholdStatus));
             eoSellerEFTAOpphold.setEOSellerEFTAVedtakOmVarigOppholdsrett(getEOSellerEFTAVedtakOmVarigOppholdrett(oppholdStatus));
             eoSellerEFTAOpphold.setEOSellerEFTAOppholdstillatelse(getEoSellerEFTAOppholdstillatelse(oppholdStatus));
 
-            resultatOppholdsstatus.setEOSellerEFTAOpphold(eoSellerEFTAOpphold);
-            resultatOppholdsstatus.setOppholdstillatelseEllerOppholdsPaSammeVilkar(getOppholdstillatelseEllerOppholdsPaSammeVilkar(oppholdStatus.getOppholdSammeVilkaar()));
-            resultatOppholdsstatus.setIkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum(
-                    ikkeWsConverter.convert(oppholdStatus.getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum()));
+            if (nonNull(eoSellerEFTAOpphold.getEOSellerEFTAOppholdstillatelse()) ||
+                    nonNull(eoSellerEFTAOpphold.getEOSellerEFTABeslutningOmOppholdsrett()) ||
+                    nonNull(eoSellerEFTAOpphold.getEOSellerEFTAVedtakOmVarigOppholdsrett())) {
+                resultatOppholdsstatus.setEOSellerEFTAOpphold(eoSellerEFTAOpphold);
+            }
+
+            if (nonNull(oppholdStatus.getOppholdSammeVilkaar())) {
+                resultatOppholdsstatus.setOppholdstillatelseEllerOppholdsPaSammeVilkar(getOppholdstillatelseEllerOppholdsPaSammeVilkar(oppholdStatus.getOppholdSammeVilkaar()));
+            }
+
+            if (nonNull(oppholdStatus.getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum())) {
+                resultatOppholdsstatus.setIkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum(
+                        ikkeWsConverter.convert(oppholdStatus.getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum()));
+            }
 
             return resultatOppholdsstatus;
         }
@@ -48,6 +61,13 @@ public class GjeldendeOppholdStatusWsConverter implements Converter<UdiOppholdSt
     }
 
     private EOSellerEFTABeslutningOmOppholdsrett getEOSellerEFTABeslutningOmOpphold(UdiOppholdStatus oppholdsStatus) {
+
+        if (isNull(oppholdsStatus.getEosEllerEFTABeslutningOmOppholdsrettEffektuering()) &&
+                isNull(oppholdsStatus.getEosEllerEFTABeslutningOmOppholdsrett()) &&
+                isNull(oppholdsStatus.getEosEllerEFTABeslutningOmOppholdsrettPeriode())) {
+            return null;
+        }
+
         var eoSellerEFTABeslutningOmOppholdsrett = new EOSellerEFTABeslutningOmOppholdsrett();
         eoSellerEFTABeslutningOmOppholdsrett.setEffektueringsdato(
                 xmlDateWsConverter.convert(oppholdsStatus.getEosEllerEFTABeslutningOmOppholdsrettEffektuering()));
@@ -58,6 +78,13 @@ public class GjeldendeOppholdStatusWsConverter implements Converter<UdiOppholdSt
     }
 
     private EOSellerEFTAVedtakOmVarigOppholdsrett getEOSellerEFTAVedtakOmVarigOppholdrett(UdiOppholdStatus oppholdsStatus) {
+
+        if (isNull(oppholdsStatus.getEosEllerEFTAVedtakOmVarigOppholdsrettEffektuering()) &&
+                isNull(oppholdsStatus.getEosEllerEFTAVedtakOmVarigOppholdsrett()) &&
+                isNull(oppholdsStatus.getEosEllerEFTAVedtakOmVarigOppholdsrettPeriode())) {
+            return null;
+        }
+
         var eoSellerEFTAVedtakOmVarigOppholdsrett = new EOSellerEFTAVedtakOmVarigOppholdsrett();
         eoSellerEFTAVedtakOmVarigOppholdsrett.setEffektueringsdato(
                 xmlDateWsConverter.convert(oppholdsStatus.getEosEllerEFTAVedtakOmVarigOppholdsrettEffektuering()));
@@ -69,6 +96,13 @@ public class GjeldendeOppholdStatusWsConverter implements Converter<UdiOppholdSt
     }
 
     private EOSellerEFTAOppholdstillatelse getEoSellerEFTAOppholdstillatelse(UdiOppholdStatus oppholdStatus) {
+
+        if (isNull(oppholdStatus.getEosEllerEFTAOppholdstillatelseEffektuering()) &&
+                isNull(oppholdStatus.getEosEllerEFTAOppholdstillatelse()) &&
+                isNull(oppholdStatus.getEosEllerEFTAVedtakOmVarigOppholdsrettPeriode())) {
+            return null;
+
+        }
         var eoSellerEFTAOppholdstillatelse = new EOSellerEFTAOppholdstillatelse();
         eoSellerEFTAOppholdstillatelse.setEffektueringsdato(
                 xmlDateWsConverter.convert(oppholdStatus.getEosEllerEFTAOppholdstillatelseEffektuering()));
@@ -80,10 +114,12 @@ public class GjeldendeOppholdStatusWsConverter implements Converter<UdiOppholdSt
     }
 
     private OppholdstillatelseEllerOppholdsPaSammeVilkar getOppholdstillatelseEllerOppholdsPaSammeVilkar(UdiOppholdSammeVilkaar oppholdSammeVilkaar) {
-        var oppholdstillatelseEllerOppholdsPaSammeVilkar = new OppholdstillatelseEllerOppholdsPaSammeVilkar();
+
         if (isNull(oppholdSammeVilkaar)) {
             return null;
         }
+
+        var oppholdstillatelseEllerOppholdsPaSammeVilkar = new OppholdstillatelseEllerOppholdsPaSammeVilkar();
         oppholdstillatelseEllerOppholdsPaSammeVilkar.setEffektueringsdato(
                 xmlDateWsConverter.convert(oppholdSammeVilkaar.getOppholdSammeVilkaarEffektuering()));
         oppholdstillatelseEllerOppholdsPaSammeVilkar.setOppholdstillatelsePeriode(

@@ -1,6 +1,5 @@
 package no.nav.registre.sdforvalter.converter.csv;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;

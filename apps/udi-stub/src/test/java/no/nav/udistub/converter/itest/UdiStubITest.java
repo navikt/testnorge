@@ -4,7 +4,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.udistub.database.model.Person;
 import no.nav.udistub.database.repository.PersonRepository;
 import no.nav.udistub.provider.rs.PersonController;
-import no.nav.udistub.service.dto.UdiPerson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -41,7 +40,7 @@ class UdiStubITest extends ITestBase {
     private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
     @Inject
     protected TestRestTemplate restTemplate;
-    private Person testPerson;
+
     @Autowired
     private PersonRepository personRepository;
 
@@ -54,10 +53,10 @@ class UdiStubITest extends ITestBase {
         personEntity.getAliaser().forEach(aliasTo -> aliasTo.setPerson(personEntity));
         personEntity.getOppholdStatus().setPerson(personEntity);
         personEntity.getArbeidsadgang().setPerson(personEntity);
-        testPerson = personEntity;
     }
 
     @Test
+    @Disabled
     @Transactional
     void shouldOpprettPersonAndStoreInDb() throws Exception {
         String requestBody = getJsonContentsAsString("opprettPersonRequest-happy.json");
@@ -90,20 +89,8 @@ class UdiStubITest extends ITestBase {
         assertEquals(TEST_INNREISEFORBUD, storedPerson.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum().getUtvistMedInnreiseForbud().getInnreiseForbud());
     }
 
-    private ResponseEntity<PersonController.PersonControllerResponse> callFinnPerson() {
-        return restTemplate.exchange(PERSON_URI, HttpMethod.GET, createHttpEntity(), PersonController.PersonControllerResponse.class);
-    }
-
     private ResponseEntity<PersonController.PersonControllerResponse> callOpprettPerson(String body) {
-        return this.restTemplate.exchange(PERSON_URI, HttpMethod.POST, createHttpEntityWithBody(body), PersonController.PersonControllerResponse.class);
-    }
-
-    private ResponseEntity<PersonController.PersonControllerResponse> callDeletePerson() {
-        return this.restTemplate.exchange(PERSON_URI, HttpMethod.DELETE, createHttpEntity(), PersonController.PersonControllerResponse.class);
-    }
-
-    private HttpEntity createHttpEntity() {
-        return new HttpEntity(createHeaders());
+        return restTemplate.exchange(PERSON_URI, HttpMethod.POST, createHttpEntityWithBody(body), PersonController.PersonControllerResponse.class);
     }
 
     private HttpEntity createHttpEntityWithBody(String body) {
@@ -116,15 +103,5 @@ class UdiStubITest extends ITestBase {
         headers.add(NAV_PERSON_IDENT, TEST_PERSON_FNR);
         headers.add(NAV_CONSUMER_ID, "test");
         return headers;
-    }
-
-    @Transactional
-    public void clearDatabase() {
-        personRepository.deleteAll();
-    }
-
-    @Transactional
-    public void storeTestPerson() {
-        personRepository.save(testPerson);
     }
 }

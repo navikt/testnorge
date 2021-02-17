@@ -1,77 +1,39 @@
 package no.nav.no.registere.testnorge.arbeidsforholdexportapi.provider;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
-import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.ArbeidsforholdSyntetiseringCsvConverter;
-import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.PermisjonSyntetiseringCsvConverter;
-import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.OpplysningspliktigList;
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.service.ArbeidsforholdExportService;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/arbeidsforhold")
 @RequiredArgsConstructor
 public class ArbeidsforholdExportController {
-
     private final ArbeidsforholdExportService service;
 
     @GetMapping
-    public ResponseEntity<HttpStatus> convertArbeidsforholdFromFolder(@RequestHeader("folderPath") String folderPath, HttpServletResponse response) throws IOException {
-        OpplysningspliktigList list = OpplysningspliktigList.from(folderPath);
-
-        response.setContentType("text/csv");
-        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-        response.setHeader("Content-Disposition", "attachment; filename=syntetisering-arbeidesforhold-" + LocalDateTime.now() + ".csv");
-        ArbeidsforholdSyntetiseringCsvConverter.inst().write(response.getWriter(), list.toArbeidsforhold());
-        return ResponseEntity.ok().build();
-    }
-
-
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<HttpStatus> convertArbeidsforhold(@RequestParam("files") MultipartFile[] files, HttpServletResponse response) throws IOException {
-        OpplysningspliktigList list = OpplysningspliktigList.from(files);
-
-        response.setContentType("text/csv");
-        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-        response.setHeader("Content-Disposition", "attachment; filename=syntetisering-arbeidesforhold-" + LocalDateTime.now() + ".csv");
-        ArbeidsforholdSyntetiseringCsvConverter.inst().write(response.getWriter(), list.toArbeidsforhold());
-        return ResponseEntity.ok().build();
+    public ResponseEntity<HttpStatus> getArbeidsforhold() throws IOException {
+        var path = service.writeArbeidsforhold();
+        return ResponseEntity.created(URI.create("/api/v1/files/tmp/" + path.getFileName().toString())).build();
     }
 
     @GetMapping("/permisjoner")
-    public ResponseEntity<HttpStatus> convertPermisjonerFromFolder(@RequestHeader("folderPath") String folderPath, HttpServletResponse response) throws IOException {
-        OpplysningspliktigList list = OpplysningspliktigList.from(folderPath);
-
-        response.setContentType("text/csv");
-        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-        response.setHeader("Content-Disposition", "attachment; filename=syntetisering-permisjoner-" + LocalDateTime.now() + ".csv");
-        PermisjonSyntetiseringCsvConverter.inst().write(response.getWriter(), list.toPermisjoner());
-        return ResponseEntity.ok().build();
-    }
-
-
-    @PostMapping(value = "/permisjoner", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<HttpStatus> convertPermisjoner(@RequestParam("files") MultipartFile[] files, HttpServletResponse response) throws IOException {
-        OpplysningspliktigList list = OpplysningspliktigList.from(files);
-
-        response.setContentType("text/csv");
-        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
-        response.setHeader("Content-Disposition", "attachment; filename=syntetisering-permisjoner-" + LocalDateTime.now() + ".csv");
-        PermisjonSyntetiseringCsvConverter.inst().write(response.getWriter(), list.toPermisjoner());
-        return ResponseEntity.ok().build();
+    public ResponseEntity<HttpStatus> getPermisjoner() throws IOException {
+        var path = service.writePermisjoner();
+        return ResponseEntity.created(URI.create("/api/v1/files/tmp/" + path.getFileName().toString())).build();
     }
 }

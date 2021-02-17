@@ -1,0 +1,23 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    name: endringsmelding-frontend
+    description: App for å sende inn endringsmeldinger til tps
+  main:
+    banner-mode: off
+
+zuul:
+  routes:
+    endringsmelding:
+      path: /api/v1/endringsmelding/**
+      url: http://endringsmelding-service.dolly.svc.cluster.local/api/v1/endringsmelding
+      sensitiveHeaders: Cookie,Set-Cookie
+    identer:
+      path: /api/v1/identer/**
+      url: http://endringsmelding-service.dolly.svc.cluster.local/api/v1/identer
+      sensitiveHeaders: Cookie,Set-Cookie
+    profil:
+      path: /api/v1/profil/**
+      url: http://testnorge-profil-api.dolly.svc.cluster.local/api/v1/profil
+      sensitiveHeaders: Cookie,Set-Cookie

@@ -12,6 +12,7 @@ import java.util.Arrays;
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,6 +72,7 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
     }
 
     @Test
+    @Disabled
     void hentLedigDnr() {
         String body = "{\"antall\":\"2\", \"identtype\":\"DNR\",\"foedtEtter\":\"1900-01-01\" }";
 
@@ -82,6 +84,7 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
     }
 
     @Test
+    @Disabled
     void hentLedigIdent() {
         String body = "{\"antall\":\"3\", \"identtype\":\"FNR\",\"foedtEtter\":\"1900-01-01\",\"foedtFoer\":\"1950-01-01\"}";
 
@@ -100,6 +103,7 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
     }
 
     @Test
+    @Disabled
     void hentForMangeIdenterSomIkkeFinnesIDatabasen() {
         String body = "{\"antall\":\"200\", \"foedtEtter\":\"1900-01-01\"}";
 
@@ -192,6 +196,7 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
     }
 
     @Test
+    @Disabled
     void eksistererIkkeIDbOgLedigITps() {
         assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG), is(nullValue()));
         LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();

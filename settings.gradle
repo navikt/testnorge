@@ -24,6 +24,8 @@ gradleEnterprise {
     }
 }
 
+include(':proxies')
+
 include(':testnorge-dependency-analysis-auto-configuration')
 
 include(':inntektsmelding-stub')
@@ -284,3 +286,5 @@ project(":oppsummeringsdokument-frontend").projectDir = file('apps/oppsummerings
 include 'tps-forvalteren-proxy'
 project(":tps-forvalteren-proxy").projectDir = file('proxies/tps-forvalteren-proxy')
 
+include 'endringsmelding-frontend'
+project(":endringsmelding-frontend").projectDir = file('apps/endringsmelding-frontend')

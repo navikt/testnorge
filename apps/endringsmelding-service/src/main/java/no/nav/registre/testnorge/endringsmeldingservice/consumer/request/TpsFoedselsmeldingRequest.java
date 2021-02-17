@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.endringsmeldingservice.consumer.dto;
+package no.nav.registre.testnorge.endringsmeldingservice.consumer.request;
 
 import lombok.Value;
 
@@ -10,7 +10,7 @@ import no.nav.registre.testnorge.libs.dto.endringsmelding.v1.FoedselsmeldingDTO;
 import no.nav.registre.testnorge.libs.dto.endringsmelding.v1.Kjoenn;
 
 @Value
-public class TpsFoedselsmeldingDTO {
+public class TpsFoedselsmeldingRequest {
 
     String identMor;
     String identFar;
@@ -20,7 +20,7 @@ public class TpsFoedselsmeldingDTO {
     String adresseFra;
     Set<String> miljoer;
 
-    public TpsFoedselsmeldingDTO(FoedselsmeldingDTO dto, Set<String> miljoer) {
+    public TpsFoedselsmeldingRequest(FoedselsmeldingDTO dto, Set<String> miljoer) {
         identMor = dto.getIdentMor();
         identFar = dto.getIdentFar();
         identtype = dto.getIdenttype();
