@@ -163,8 +163,10 @@ query($ident: ID!, $historikk: Boolean!) {
             coAdressenavn,
             vegadresse {
                 matrikkelId,
+                adressenavn,
+                husnummer,
+                husbokstav,
                 bruksenhetsnummer,
-                bydelsnummer,
                 tilleggsnavn,
                 postnummer,
                 kommunenummer,
@@ -199,6 +201,17 @@ query($ident: ID!, $historikk: Boolean!) {
             }
         },
         familierelasjoner {
+            relatertPersonsIdent,
+            relatertPersonsRolle,
+            minRolleForPerson,
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            }
+            metadata {
+                ...metadataDetails
+            }
+        },
+        forelderBarnRelasjon {
             relatertPersonsIdent,
             relatertPersonsRolle,
             minRolleForPerson,

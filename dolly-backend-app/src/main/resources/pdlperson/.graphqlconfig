@@ -4,7 +4,7 @@
   "extensions": {
     "endpoints": {
       "PDL GraphQL Endpoint": {
-        "url": "https://pdl-api.nais.preprod.local/graphql",
+        "url": "https://pdl-api.dev.adeo.no/graphql",
         "headers": {
           "user-agent": ""
         },
