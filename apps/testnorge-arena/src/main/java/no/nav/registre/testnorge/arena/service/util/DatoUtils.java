@@ -154,4 +154,19 @@ public class DatoUtils {
             }
         }
     }
+
+
+    public void setDatoPeriodeVedtakInnenforMaxAntallMaaneder(
+            NyttVedtak vedtak,
+            int antallMaaneder
+    ) {
+        var tilDato = vedtak.getTilDato();
+        if (tilDato != null) {
+            var tilDatoLimit = vedtak.getFraDato().plusMonths(antallMaaneder);
+
+            if (tilDato.isAfter(tilDatoLimit)) {
+                vedtak.setTilDato(tilDatoLimit);
+            }
+        }
+    }
 }

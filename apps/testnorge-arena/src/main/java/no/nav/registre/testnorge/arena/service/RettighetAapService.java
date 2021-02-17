@@ -32,9 +32,10 @@ import no.nav.registre.testnorge.arena.consumer.rs.PensjonTestdataFacadeConsumer
 import no.nav.registre.testnorge.arena.consumer.rs.request.PensjonTestdataInntekt;
 import no.nav.registre.testnorge.arena.consumer.rs.request.PensjonTestdataPerson;
 import no.nav.registre.testnorge.arena.service.util.ServiceUtils;
+import no.nav.registre.testnorge.arena.service.util.DatoUtils;
 import no.nav.registre.testnorge.arena.service.util.ArbeidssoekerUtils;
 import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
-import no.nav.registre.testnorge.arena.service.util.VedtakUtils;
+import no.nav.registre.testnorge.arena.service.util.TiltakUtils;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.libs.core.util.IdentUtil;
@@ -52,7 +53,8 @@ public class RettighetAapService {
     private final ServiceUtils serviceUtils;
     private final IdenterUtils identerUtils;
     private final ArbeidssoekerUtils arbeidsoekerUtils;
-    private final VedtakUtils vedtakUtils;
+    private final TiltakUtils tiltakUtils;
+    private final DatoUtils datoUtils;
     private final PensjonTestdataFacadeConsumer pensjonTestdataFacadeConsumer;
     private final Random rand;
 
@@ -88,7 +90,7 @@ public class RettighetAapService {
 
             rettighetRequest.getNyeAap().forEach(rettighet -> {
                 if (AKTIVITETSFASE_SYKEPENGEERSTATNING.equals(rettighet.getAktivitetsfase())) {
-                    vedtakUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(rettighet, SYKEPENGEERSTATNING_MAKS_PERIODE);
+                    datoUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(rettighet, SYKEPENGEERSTATNING_MAKS_PERIODE);
                 }
             });
 
@@ -123,7 +125,7 @@ public class RettighetAapService {
         rettighetRequest.setMiljoe(miljoe);
 
         if (AKTIVITETSFASE_SYKEPENGEERSTATNING.equals(rettighetRequest.getNyeAap().get(0).getAktivitetsfase())) {
-            vedtakUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(rettighetRequest.getNyeAap().get(0), SYKEPENGEERSTATNING_MAKS_PERIODE);
+            datoUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(rettighetRequest.getNyeAap().get(0), SYKEPENGEERSTATNING_MAKS_PERIODE);
         }
 
         rettighetArenaForvalterConsumer.opprettRettighet(arbeidsoekerUtils.opprettArbeidssoekerAap(new ArrayList<>(Collections.singletonList(aap115Rettighet)), miljoe));
