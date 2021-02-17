@@ -32,7 +32,7 @@ jobs:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
         run: ./gradlew :person-search-service:build
       - name: Build and publish Docker image
-        working-directory: proxies/person-search-service/
+        working-directory: apps/person-search-service/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
