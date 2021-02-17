@@ -21,9 +21,8 @@ import com.google.common.base.Strings;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.identpool.ajourhold.BatchService;
-import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Ident;
+import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.exception.IdentAlleredeIBrukException;
 import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
 import no.nav.identpool.rs.v1.support.HentIdenterRequest;
@@ -40,7 +39,6 @@ import no.nav.identpool.service.ny.PoolService;
 public class IdentpoolController {
 
     private final IdentpoolService identpoolService;
-    private final BatchService batchService;
     private final PoolService poolService;
 
     @GetMapping
@@ -179,11 +177,5 @@ public class IdentpoolController {
     public List<String> hentWhitelist() {
 
         return identpoolService.hentWhitelist();
-    }
-
-    @PostMapping("/startBatch")
-    public void startBatch() {
-
-        batchService.startGeneratingIdentsBatch();
     }
 }

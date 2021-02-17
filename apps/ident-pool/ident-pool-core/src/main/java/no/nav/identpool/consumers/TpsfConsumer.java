@@ -34,7 +34,7 @@ public class TpsfConsumer {
     ) {
         this.restTemplate = restTemplateBuilder.build();
         this.serverUrl = serverUrl;
-        this.url = new UriTemplate(serverUrl + "/v1/serviceroutine/FS03-FDLISTER-DISKNAVN-M?aksjonsKode=A2&antallFnr={numberOfIdents}&environment={environment}&nFnr={idents}");
+        this.url = new UriTemplate(serverUrl + "/api/v1/serviceroutine/FS03-FDLISTER-DISKNAVN-M?aksjonsKode=A2&antallFnr={numberOfIdents}&environment={environment}&nFnr={idents}");
     }
 
     public JsonNode getProdStatusFromTps(List<String> idents) throws IOException {
