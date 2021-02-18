@@ -48,6 +48,9 @@ public class OrganisasjonMottakServiceConsumer {
                 .build();
     }
 
+    public void create(Ereg ereg, String env) {
+        save(new EregListe(ereg), env, false);
+    }
 
     public void create(EregListe eregListe, String env) {
         save(eregListe, env, false);

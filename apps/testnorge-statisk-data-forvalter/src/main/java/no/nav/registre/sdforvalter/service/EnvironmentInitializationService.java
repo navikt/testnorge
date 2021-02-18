@@ -11,6 +11,7 @@ import no.nav.registre.sdforvalter.adapter.KrrAdapter;
 import no.nav.registre.sdforvalter.consumer.rs.AaregConsumer;
 import no.nav.registre.sdforvalter.consumer.rs.OrganisasjonMottakServiceConsumer;
 import no.nav.registre.sdforvalter.consumer.rs.KrrConsumer;
+import no.nav.registre.sdforvalter.domain.Ereg;
 import no.nav.registre.sdforvalter.domain.status.ereg.OrganisasjonStatusMap;
 
 @Slf4j
@@ -82,6 +83,12 @@ public class EnvironmentInitializationService {
             log.info("Oppdatering er ferdig.");
         }
 
+    }
+
+    public void opprett(String environment, String orgnummer) {
+        log.info("Oppretter org {} i miljo {}.", orgnummer, environment);
+        Ereg ereg = eregAdapter.fetchByOrgnr(orgnummer);
+        organisasjonMottakServiceConsumer.create(ereg, environment);
     }
 
     public void initializeKrr(String gruppe) {

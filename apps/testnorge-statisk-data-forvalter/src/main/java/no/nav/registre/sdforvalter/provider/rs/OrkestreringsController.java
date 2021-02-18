@@ -73,4 +73,11 @@ public class OrkestreringsController {
         environmentInitializationService.updateEregByGruppe(miljoe, gruppe);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping(value = "/organiasjoner/{orgnummer}")
+    public ResponseEntity<HttpStatus> saveBy(@PathVariable String orgnummer, @RequestParam String miljoe) {
+        environmentInitializationService.opprett(miljoe, orgnummer);
+        return ResponseEntity.ok().build();
+    }
+
 }
