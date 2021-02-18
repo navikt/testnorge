@@ -57,15 +57,17 @@ public class DatoUtils {
         for (var vedtaket : vedtak) {
             tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, vedtaket.getFraDato());
             var genSaksopplysninger = vedtaket.getGenSaksopplysninger();
-            for (var saksopplysning : genSaksopplysninger) {
-                if (isNullOrEmpty(saksopplysning.getVerdi())) {
-                    continue;
-                }
-                if (GensakKoder.KDATO.equals(saksopplysning.getKode())
-                        || GensakKoder.BTID.equals(saksopplysning.getKode())
-                        || GensakKoder.UFTID.equals(saksopplysning.getKode())
-                        || GensakKoder.YDATO.equals(saksopplysning.getKode())) {
-                    tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, LocalDate.parse(saksopplysning.getVerdi(), DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+            if (genSaksopplysninger != null) {
+                for (var saksopplysning : genSaksopplysninger) {
+                    if (isNullOrEmpty(saksopplysning.getVerdi())) {
+                        continue;
+                    }
+                    if (GensakKoder.KDATO.equals(saksopplysning.getKode())
+                            || GensakKoder.BTID.equals(saksopplysning.getKode())
+                            || GensakKoder.UFTID.equals(saksopplysning.getKode())
+                            || GensakKoder.YDATO.equals(saksopplysning.getKode())) {
+                        tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, LocalDate.parse(saksopplysning.getVerdi(), DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+                    }
                 }
             }
         }
