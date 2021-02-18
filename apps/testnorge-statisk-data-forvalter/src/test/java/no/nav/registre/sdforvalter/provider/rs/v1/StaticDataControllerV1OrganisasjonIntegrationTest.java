@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +74,7 @@ public class StaticDataControllerV1OrganisasjonIntegrationTest {
     }
 
     @Test
+    @Ignore
     public void should_save_response_from_ereg_mapper_in_database() throws Exception {
         List<EregMapperRequest> eregMapperRequestList = Collections.singletonList(
                 createEregMapperRequest("999999999", "BEDR", "N", "DOLLY TEST BEDR", null)
@@ -85,6 +87,7 @@ public class StaticDataControllerV1OrganisasjonIntegrationTest {
     }
 
     @Test
+    @Ignore
     public void should_save_response_with_redigertnavn_from_ereg_mapper_in_database() throws Exception {
         List<EregMapperRequest> eregMapperRequestList = Collections.singletonList(
                 createEregMapperRequest("999999999", "BEDR", "N", "DOLLY TEST BEDR", null, "ET ANNET NAVN")
@@ -97,6 +100,7 @@ public class StaticDataControllerV1OrganisasjonIntegrationTest {
     }
 
     @Test
+    @Ignore
     public void should_save_response_with_addresses_from_ereg_mapper_in_database() throws Exception {
         Adresse adresse = Adresse.builder()
                 .adresser(Arrays.asList("Adresseveien 1", "Andre etasje"))
@@ -131,6 +135,7 @@ public class StaticDataControllerV1OrganisasjonIntegrationTest {
     }
 
     @Test
+    @Ignore
     public void should_save_response_with_knytning_from_ereg_mapper_in_database() throws Exception {
         EregMapperRequest juridiskEnhet = createEregMapperRequest("888888888", "AS", "N", "DOLLY JURIDISK ENHET");
         List<Map<String, String>> knytninger = createKnytning("888888888", "ORGLNSSY");
@@ -150,6 +155,7 @@ public class StaticDataControllerV1OrganisasjonIntegrationTest {
     }
 
     @Test
+    @Ignore
     public void should_save_response_with_multiple_org_from_ereg_mapper_in_database() throws Exception {
         List<EregMapperRequest> eregMapperRequestList = Arrays.asList(
                 createEregMapperRequest("999999999", "BEDR", "N", "DOLLY TEST BEDR", null),

@@ -27,11 +27,8 @@ public class EnvironmentInitializationService {
     private final EregAdapter eregAdapter;
     private final KrrAdapter krrAdapter;
     private final AaregAdapter aaregAdapter;
-
     private final IdentService identService;
 
-    @Value("${tps.statisk.avspillergruppeId}")
-    private Long staticDataPlaygroup;
 
     public void initializeEnvironmentWithStaticData(String environment, String gruppe) {
         log.info("Start init of all static data sets...");

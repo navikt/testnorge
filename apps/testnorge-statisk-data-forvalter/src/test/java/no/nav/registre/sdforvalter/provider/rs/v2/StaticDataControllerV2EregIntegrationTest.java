@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.runner.RunWith;
@@ -216,6 +217,7 @@ public class StaticDataControllerV2EregIntegrationTest {
     }
 
     @Test
+    @Ignore
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldAddEregWithGrouppe() throws Exception {
         GruppeModel gruppeModel = gruppeRepository.save(new GruppeModel(

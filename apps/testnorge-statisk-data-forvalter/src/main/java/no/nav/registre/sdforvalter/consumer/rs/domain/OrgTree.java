@@ -29,8 +29,8 @@ public class OrgTree {
     private static List<OrgTree> findAllWithJuridiskenhet(Ereg juridsikenhet, List<Ereg> liste){
         return liste
                 .stream()
-                .filter(ereg -> ereg.getOrgnr().equals(juridsikenhet.getOrgnr()))
-                .map(value -> OrgTree.from(value, liste))
+                .filter(ereg -> ereg.getJuridiskEnhet() != null && ereg.getJuridiskEnhet().equals(juridsikenhet.getOrgnr()))
+                .map(ereg -> OrgTree.from(ereg, liste))
                 .collect(Collectors.toList());
     }
 
