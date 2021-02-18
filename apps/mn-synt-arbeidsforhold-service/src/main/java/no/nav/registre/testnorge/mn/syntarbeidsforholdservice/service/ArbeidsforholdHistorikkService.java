@@ -50,15 +50,10 @@ public class ArbeidsforholdHistorikkService {
             return map;
         }
 
-        if (first.getArbeidsforholdType().equals("forenkletOppgjoersordning")) {
+        if (first.isForenklet()) {
             map.putAll(createArbeidsforholdHistorikk(ident, dates));
             return map;
         }
-
-        if (first.getArbeidsforholdType().equals("maritimtArbeidsforhold")) {
-            log.info("Generer historikk for fartoey...");
-        }
-
 
 
         var previous = first;
@@ -164,7 +159,8 @@ public class ArbeidsforholdHistorikkService {
         for (var arbeidsforholdMap : arbeidsforholdMapList) {
             var arbeidsforhold = arbeidsforholdMap.getArbeidsforhold(kalenermnd);
             log.info("Legger til arbeidsforhold for {} den {}.", arbeidsforhold.getIdent(), kalenermnd);
-            if (arbeidsforholdMap.isNewArbeidsforhold(kalenermnd)) {
+            if (arbeidsforholdMap.isNewArbeidsforhold(kalenermnd)
+                    || arbeidsforhold.isForenklet() && !arbeidsforholdMap.contains(kalenermnd.minusMonths(1))) {
                 var opplysningspliktig = opplysningspliktige.get(random.nextInt(opplysningspliktige.size()));
                 arbeidsforhold.setVirksomhetsnummer(opplysningspliktig.getRandomVirksomhetsnummer());
                 log.info("{} starter nytt arbeidsforhold den {}.", arbeidsforhold.getIdent(), kalenermnd);

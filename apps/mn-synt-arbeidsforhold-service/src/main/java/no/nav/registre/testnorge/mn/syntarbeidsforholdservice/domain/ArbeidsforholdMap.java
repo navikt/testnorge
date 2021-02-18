@@ -25,6 +25,11 @@ public class ArbeidsforholdMap {
                 .orElseThrow(() -> new RuntimeException("Finner ikke arbeidsforhold for dato=" + date));
     }
 
+    public boolean contains(LocalDate date) {
+        return Optional.ofNullable(map.get(date)).isPresent();
+    }
+
+
     public String getIdent() {
         return ident;
     }

@@ -17,8 +17,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -304,7 +302,7 @@ public class Oppsummeringsdokument {
                 return permisjon;
             }).collect(Collectors.toList()));
         }
-        if(dto.getFartoey() != null){
+        if(dto.getFartoey() != null) {
             Fartoey fartoey = new Fartoey();
             fartoey.setFartsomraade(dto.getFartoey().getFartsomraade());
             fartoey.setSkipsregister(dto.getFartoey().getSkipsregister());
