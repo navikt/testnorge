@@ -19,10 +19,15 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static no.nav.dolly.bestilling.pdlforvalter.mapper.PdlAdresseMappingStrategy.getDato;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
@@ -39,6 +44,16 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                 midlertidigAdresse.getTilleggsadresse() : null;
     }
 
+    private PdlKontaktadresse buildKontaktadresse(MidlertidigAdresse midlertidigAdresse) {
+
+        PdlKontaktadresse kontaktadresse = new PdlKontaktadresse();
+        kontaktadresse.setCoAdressenavn(getCoAdresse(midlertidigAdresse));
+        kontaktadresse.setKilde(CONSUMER);
+        kontaktadresse.setGyldigFraOgMed(LocalDate.now());
+        kontaktadresse.setGyldigTilOgMed(getDato(midlertidigAdresse.getGyldigTom()));
+        return kontaktadresse;
+    }
+
     @Override
     public void register(MapperFactory factory) {
 
@@ -47,46 +62,46 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Person person, PdlKontaktadresseHistorikk historikk, MappingContext context) {
 
+                        List<MidlertidigAdresse> midlertidigAdresser = new ArrayList<>(person.getMidlertidigAdresse());
+                        Collections.reverse(midlertidigAdresser);
+
+                        List<RsPostadresse> postadresser = new ArrayList<>(person.getPostadresse());
+                        Collections.reverse(postadresser);
+
                         historikk.getPdlAdresser().addAll(
                                 Stream.of(
 
-                                        person.getMidlertidigAdresse().stream()
+                                        midlertidigAdresser.stream()
                                                 .filter(MidlertidigAdresse::isGateAdr)
                                                 .map(midlertidigAdresse -> {
-                                                    PdlKontaktadresse kontaktadresse = new PdlKontaktadresse();
+                                                    PdlKontaktadresse kontaktadresse = buildKontaktadresse(midlertidigAdresse);
                                                     kontaktadresse.setVegadresseForPost(
                                                             mapperFacade.map(midlertidigAdresse, VegadresseForPost.class));
-                                                    kontaktadresse.setCoAdressenavn(getCoAdresse(midlertidigAdresse));
-                                                    kontaktadresse.setKilde(CONSUMER);
                                                     return kontaktadresse;
                                                 })
                                                 .collect(Collectors.toList()),
 
-                                        person.getMidlertidigAdresse().stream()
+                                        midlertidigAdresser.stream()
                                                 .filter(MidlertidigAdresse::isPostBox)
                                                 .map(midlertidigAdresse -> {
-                                                    PdlKontaktadresse kontaktadresse = new PdlKontaktadresse();
+                                                    PdlKontaktadresse kontaktadresse = buildKontaktadresse(midlertidigAdresse);
                                                     kontaktadresse.setPostboksadresse(
                                                             mapperFacade.map(midlertidigAdresse, Postboksadresse.class));
-                                                    kontaktadresse.setCoAdressenavn(getCoAdresse(midlertidigAdresse));
-                                                    kontaktadresse.setKilde(CONSUMER);
                                                     return kontaktadresse;
                                                 })
                                                 .collect(Collectors.toList()),
 
-                                        person.getMidlertidigAdresse().stream()
+                                        midlertidigAdresser.stream()
                                                 .filter(MidlertidigAdresse::isUtenlandsk)
                                                 .map(midlertidigAdresse -> {
-                                                    PdlKontaktadresse kontaktadresse = new PdlKontaktadresse();
+                                                    PdlKontaktadresse kontaktadresse = buildKontaktadresse(midlertidigAdresse);
                                                     kontaktadresse.setUtenlandskAdresseIFrittFormat(
                                                             mapperFacade.map(midlertidigAdresse, UtenlandskAdresseIFrittFormat.class));
-                                                    kontaktadresse.setCoAdressenavn(getCoAdresse(midlertidigAdresse));
-                                                    kontaktadresse.setKilde(CONSUMER);
                                                     return kontaktadresse;
                                                 })
                                                 .collect(Collectors.toList()),
 
-                                        person.getPostadresse().stream()
+                                        postadresser.stream()
                                                 .filter(RsPostadresse::isNorsk)
                                                 .map(postadresse -> {
                                                     PdlKontaktadresse kontaktadresse = new PdlKontaktadresse();
@@ -97,7 +112,7 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                                                 })
                                                 .collect(Collectors.toList()),
 
-                                        person.getPostadresse().stream()
+                                        postadresser.stream()
                                                 .filter(RsPostadresse::isUtenlandsk)
                                                 .map(postadresse -> {
                                                     PdlKontaktadresse kontaktadresse = new PdlKontaktadresse();

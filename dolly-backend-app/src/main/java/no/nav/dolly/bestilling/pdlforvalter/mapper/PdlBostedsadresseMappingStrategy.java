@@ -12,7 +12,10 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.BoAdresse;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -41,9 +44,12 @@ public class PdlBostedsadresseMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Person person, PdlBostedsadresseHistorikk historikk, MappingContext context) {
 
+                        List<BoAdresse> bostedsadresse = new ArrayList<>(person.getBoadresse());
+                        Collections.reverse(bostedsadresse);
+
                         historikk.getPdlAdresser().addAll(
                                 Stream.of(
-                                        person.getBoadresse().stream()
+                                        bostedsadresse.stream()
                                                 .filter(boAdresse -> isNotTrue(boAdresse.getDeltAdresse()) &&
                                                         person.isUtenFastBopel())
                                                 .map(boAdresse -> {
@@ -54,7 +60,7 @@ public class PdlBostedsadresseMappingStrategy implements MappingStrategy {
                                                     return bostedadresse;
                                                 })
                                                 .collect(Collectors.toList()),
-                                        person.getBoadresse().stream()
+                                        bostedsadresse.stream()
                                                 .filter(boAdresse -> isNotTrue(boAdresse.getDeltAdresse()) &&
                                                         boAdresse.isGateadresse())
                                                 .map(boAdresse -> {
@@ -64,7 +70,7 @@ public class PdlBostedsadresseMappingStrategy implements MappingStrategy {
                                                     return bostedadresse;
                                                 })
                                                 .collect(Collectors.toList()),
-                                        person.getBoadresse().stream()
+                                        bostedsadresse.stream()
                                                 .filter(boAdresse -> isNotTrue(boAdresse.getDeltAdresse()) &&
                                                         boAdresse.isMatrikkeladresse())
                                                 .map(boAdresse -> {

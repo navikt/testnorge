@@ -11,6 +11,9 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse.UtenlandskAdresse;
@@ -29,8 +32,11 @@ public class PdlOppholdsadresseMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Person person, PdlOppholdsadresseHistorikk historikk, MappingContext context) {
 
+                        List<RsPostadresse> postadresser = new ArrayList<>(person.getPostadresse());
+                        Collections.reverse(postadresser);
+
                         historikk.getPdlAdresser().addAll(
-                                person.getPostadresse().stream()
+                                postadresser.stream()
                                 .filter(RsPostadresse::isUtenlandsk)
                                 .map(postadresse -> {
                                     PdlOppholdsadresse oppholdsadresse = new PdlOppholdsadresse();

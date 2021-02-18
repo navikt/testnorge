@@ -8,11 +8,15 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDeltBosted.PdlDelteBostede
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlMatrikkeladresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVegadresse;
 import no.nav.dolly.domain.resultset.tpsf.Person;
+import no.nav.dolly.domain.resultset.tpsf.adresse.BoAdresse;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -31,10 +35,13 @@ public class PdlDeltBostedMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Person person, PdlDelteBosteder deltBosted, MappingContext context) {
 
+                        List<BoAdresse> boadresser = new ArrayList<>(person.getBoadresse());
+                        Collections.reverse(boadresser);
+
                         deltBosted.getDelteBosteder()
                                 .addAll(
                                         Stream.of(
-                                                person.getBoadresse().stream()
+                                                boadresser.stream()
                                                         .filter(boAdresse -> isTrue(boAdresse.getDeltAdresse()) &&
                                                                 boAdresse.isGateadresse())
                                                         .map(boAdresse -> PdlDeltBosted.builder()
@@ -44,7 +51,7 @@ public class PdlDeltBostedMappingStrategy implements MappingStrategy {
                                                                 .build())
                                                         .collect(Collectors.toList()),
 
-                                                person.getBoadresse().stream()
+                                                boadresser.stream()
                                                         .filter(boAdresse -> isTrue(boAdresse.getDeltAdresse()) &&
                                                                 boAdresse.isMatrikkeladresse())
                                                         .map(boAdresse -> PdlDeltBosted.builder()
