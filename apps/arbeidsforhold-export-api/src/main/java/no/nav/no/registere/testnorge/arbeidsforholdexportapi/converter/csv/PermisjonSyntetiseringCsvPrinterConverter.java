@@ -21,7 +21,8 @@ public class PermisjonSyntetiseringCsvPrinterConverter extends CsvPrinterConvert
         STARTDATO("STARTDATO"),
         SLUTTDATO("SLUTTDATO"),
         PERMISJONSPROSENT("PERMISJONSPROSENT"),
-        BESKRIVELSE("BESKRIVELSE");
+        BESKRIVELSE("BESKRIVELSE"),
+        KILDEREFERANSE("KILDEREFERANSE");
 
         private final String header;
 
@@ -45,6 +46,7 @@ public class PermisjonSyntetiseringCsvPrinterConverter extends CsvPrinterConvert
             map.put(Headers.SLUTTDATO.getValue(), permisjon.getSluttdato());
             map.put(Headers.PERMISJONSPROSENT.getValue(), permisjon.getPermisjonsprosent());
             map.put(Headers.BESKRIVELSE.getValue(), permisjon.getBeskrivelse());
+            map.put(Headers.KILDEREFERANSE.getValue(), permisjon.getKildereferanse());
             return map;
         };
     }

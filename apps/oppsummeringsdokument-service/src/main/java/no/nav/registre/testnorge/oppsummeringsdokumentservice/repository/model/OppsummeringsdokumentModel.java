@@ -17,7 +17,7 @@ import java.util.List;
 
 @Setter
 @Getter
-@Document(indexName = "oppsummeringsdokument-2")
+@Document(indexName = "oppsummeringsdokument-3")
 public class OppsummeringsdokumentModel implements Persistable<String> {
 
     @Id

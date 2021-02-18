@@ -17,24 +17,25 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.FartoeyDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.ArbeidsforholdModel;
+import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.FartoeyModel;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.OppsummeringsdokumentModel;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.PermisjonModel;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.PersonModel;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.VirksomhetModel;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Arbeidsforhold;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.EDAGM;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Fartoey;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Inntektsmottaker;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.JuridiskEntitet;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Kilde;
@@ -68,6 +69,10 @@ public class Oppsummeringsdokument {
         return id;
     }
 
+    public Long getVersion(){
+        return dto.getVersion();
+    }
+
 
     private Function<VirksomhetModel, VirksomhetDTO> mapVirksomhetDTO() {
         return value -> VirksomhetDTO
@@ -98,6 +103,13 @@ public class Oppsummeringsdokument {
                 .stillingsprosent(value.getStillingsprosent())
                 .yrke(value.getYrke())
                 .permisjoner(value.getPermisjoner().stream().map(mapPermisjonDTO()).collect(Collectors.toList()))
+                .fartoey(value.getFartoey() != null ? FartoeyDTO
+                        .builder()
+                        .skipstype(value.getFartoey().getSkipstype())
+                        .fartsomraade(value.getFartoey().getFartsomraade())
+                        .skipsregister(value.getFartoey().getSkipsregister())
+                        .build() : null
+                )
                 .build();
     }
 
@@ -154,6 +166,13 @@ public class Oppsummeringsdokument {
             model.setSisteLoennsendringsdato(value.getSisteLoennsendringsdato());
             model.setStillingsprosent(value.getStillingsprosent());
             model.setYrke(value.getYrke());
+            if(value.getFartoey() != null){
+                FartoeyModel fartoey = new FartoeyModel();
+                fartoey.setFartsomraade(value.getFartoey().getFartsomraade());
+                fartoey.setSkipsregister(value.getFartoey().getSkipsregister());
+                fartoey.setSkipstype(value.getFartoey().getSkipstype());
+                model.setFartoey(fartoey);
+            }
             model.setPermisjoner(value.getPermisjoner().stream().map(mapPermisjonModel()).collect(Collectors.toList()));
             return model;
         };
@@ -282,6 +301,13 @@ public class Oppsummeringsdokument {
                 permisjon.setStartdato(toXMLGregorianCalendar(permisjonDTO.getStartdato()));
                 return permisjon;
             }).collect(Collectors.toList()));
+        }
+        if(dto.getFartoey() != null) {
+            Fartoey fartoey = new Fartoey();
+            fartoey.setFartsomraade(dto.getFartoey().getFartsomraade());
+            fartoey.setSkipsregister(dto.getFartoey().getSkipsregister());
+            fartoey.setSkipstype(dto.getFartoey().getSkipstype());
+            arbeidsforhold.setFartoey(fartoey);
         }
         return arbeidsforhold;
     }

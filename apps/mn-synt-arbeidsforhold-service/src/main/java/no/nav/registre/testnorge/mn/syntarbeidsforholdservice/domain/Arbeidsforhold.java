@@ -57,6 +57,10 @@ public class Arbeidsforhold {
                 .build();
     }
 
+    public boolean isForenklet(){
+        return dto.getTypeArbeidsforhold().equals("forenkletOppgjoersordning");
+    }
+
     public Arbeidsforhold(
             ArbeidsforholdResponse response,
             String ident,

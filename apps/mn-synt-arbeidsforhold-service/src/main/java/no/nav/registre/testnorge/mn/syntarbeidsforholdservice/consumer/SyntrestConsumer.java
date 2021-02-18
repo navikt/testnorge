@@ -118,6 +118,7 @@ public class SyntrestConsumer {
         try {
             log.info("Oppretter nytt arbeidsforhold den {}.", startdato);
             ArbeidsforholdResponse response = new GenerateStartArbeidsforholdCommand(webClient, startdato).call();
+            log.info("Nytt arbeidsforhold av type: {}.", response.getArbeidsforholdType());
             return new Arbeidsforhold(response, ident, virksomhetsnummer);
         } catch (WebClientResponseException.InternalServerError e) {
             throw new SyntetiseringException("Feil med start av arbeidsforhold for dato: " + startdato, e);

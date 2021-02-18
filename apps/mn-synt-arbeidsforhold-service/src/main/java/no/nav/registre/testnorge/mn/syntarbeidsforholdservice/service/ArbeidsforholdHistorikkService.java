@@ -50,6 +50,12 @@ public class ArbeidsforholdHistorikkService {
             return map;
         }
 
+        if (first.isForenklet()) {
+            map.putAll(createArbeidsforholdHistorikk(ident, dates));
+            return map;
+        }
+
+
         var previous = first;
         var historikk = syntrestConsumer.getArbeidsforholdHistorikk(previous, startdato).iterator();
 
@@ -116,7 +122,7 @@ public class ArbeidsforholdHistorikkService {
         return list;
     }
 
-    public void reportAll(LocalDate fom, LocalDate tom, int maxIdenter, String miljo) {
+    public List<String> reportAll(LocalDate fom, LocalDate tom, int maxIdenter, String miljo) {
 
         var startTimeStamp = LocalDateTime.now();
 
@@ -125,7 +131,7 @@ public class ArbeidsforholdHistorikkService {
         var identer = identService.getIdenterUtenArbeidsforhold(miljo, maxIdenter);
         if (identer.isEmpty()) {
             log.warn("Fant ingen identer. Avslutter syntetisering...");
-            return;
+            return Collections.emptyList();
         }
 
         log.info("Syntentiser for {} person(er) mellom {} - {}...", identer.size(), fom, tom);
@@ -133,7 +139,7 @@ public class ArbeidsforholdHistorikkService {
 
         if (arbeidsforholdMapList.isEmpty()) {
             log.warn("Fikk ikke opprettet syntetisk arbeidsforhold. Avslutter syntetisering...");
-            return;
+            return Collections.emptyList();
         }
 
         for (var kalenermnd : dates) {
@@ -145,6 +151,7 @@ public class ArbeidsforholdHistorikkService {
                 startTimeStamp,
                 LocalDateTime.now()
         );
+        return arbeidsforholdMapList.stream().map(ArbeidsforholdMap::getIdent).collect(Collectors.toList());
     }
 
     private void report(List<ArbeidsforholdMap> arbeidsforholdMapList, LocalDate kalenermnd, String miljo) {
@@ -152,7 +159,8 @@ public class ArbeidsforholdHistorikkService {
         for (var arbeidsforholdMap : arbeidsforholdMapList) {
             var arbeidsforhold = arbeidsforholdMap.getArbeidsforhold(kalenermnd);
             log.info("Legger til arbeidsforhold for {} den {}.", arbeidsforhold.getIdent(), kalenermnd);
-            if (arbeidsforholdMap.isNewArbeidsforhold(kalenermnd)) {
+            if (arbeidsforholdMap.isNewArbeidsforhold(kalenermnd)
+                    || arbeidsforhold.isForenklet() && !arbeidsforholdMap.contains(kalenermnd.minusMonths(1))) {
                 var opplysningspliktig = opplysningspliktige.get(random.nextInt(opplysningspliktige.size()));
                 arbeidsforhold.setVirksomhetsnummer(opplysningspliktig.getRandomVirksomhetsnummer());
                 log.info("{} starter nytt arbeidsforhold den {}.", arbeidsforhold.getIdent(), kalenermnd);

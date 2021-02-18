@@ -31,6 +31,7 @@ import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.O
 @Component
 @RequiredArgsConstructor
 public class OppsummeringsdokumentAdapter {
+
     private final OppsummeringsdokumentRepository repository;
     private final ElasticsearchOperations operations;
     private final AaregSyntConsumer aaregSyntConsumer;
@@ -59,7 +60,7 @@ public class OppsummeringsdokumentAdapter {
 
         var list = searchHist.get().map(SearchHit::getContent).collect(Collectors.toList());
         return new PageImpl<>(
-                getAllCurrentDocumentsBy(list),
+                filterOnVersion(list),
                 pageable,
                 searchHist.getTotalHits()
         );
@@ -71,7 +72,7 @@ public class OppsummeringsdokumentAdapter {
                 builder.build(),
                 OppsummeringsdokumentModel.class
         ).get().map(SearchHit::getContent).collect(Collectors.toList());
-        return getAllCurrentDocumentsBy(list);
+        return filterOnVersion(list);
     }
 
     public List<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo) {
@@ -92,6 +93,7 @@ public class OppsummeringsdokumentAdapter {
     ) {
         var pageable = PageRequest.of(page, 1);
         var queryBuilders = new ArrayList<QueryBuilder>();
+
         queryBuilders.add(QueryBuilders.matchQuery("miljo", miljo));
         getKalendermaanedBetween(fom, tom).ifPresent(queryBuilders::add);
         Optional.ofNullable(ident).ifPresent(value -> queryBuilders.add(
@@ -109,9 +111,12 @@ public class OppsummeringsdokumentAdapter {
     }
 
 
-    private List<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo, LocalDate fom, LocalDate tom) {
+    private List<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo, String orgnummer, LocalDate fom, LocalDate tom) {
         var queryBuilders = new ArrayList<QueryBuilder>();
+
         queryBuilders.add(QueryBuilders.matchQuery("miljo", miljo));
+        queryBuilders.add(QueryBuilders.matchQuery("opplysningspliktigOrganisajonsnummer", orgnummer));
+
         getKalendermaanedBetween(fom, tom).ifPresent(queryBuilders::add);
 
         return getAllCurrentDocumentsBy(new NativeSearchQueryBuilder()
@@ -136,9 +141,9 @@ public class OppsummeringsdokumentAdapter {
         return Optional.of(builder);
     }
 
-    private QueryBuilder combinedOnANDOperator(List<QueryBuilder> list){
+    private QueryBuilder combinedOnANDOperator(List<QueryBuilder> list) {
         var queryBuilder = QueryBuilders.boolQuery();
-        for (var item : list){
+        for (var item : list) {
             queryBuilder.must(item);
         }
         return queryBuilder;
@@ -147,10 +152,10 @@ public class OppsummeringsdokumentAdapter {
     /**
      * TODO Find a way to do this operation by elastic search
      */
-    private List<Oppsummeringsdokument> getAllCurrentDocumentsBy(List<OppsummeringsdokumentModel> list) {
+    private List<Oppsummeringsdokument> filterOnVersion(List<OppsummeringsdokumentModel> list) {
         return list
                 .stream()
-                .collect(Collectors.groupingBy(s -> s.getKalendermaaned().withDayOfMonth(1) + s.getOpplysningspliktigOrganisajonsnummer()))
+                .collect(Collectors.groupingBy(item -> item.getKalendermaaned().withDayOfMonth(1) + item.getOpplysningspliktigOrganisajonsnummer()))
                 .values()
                 .stream()
                 .map(items -> items.stream().reduce(null, (total, value) -> {
@@ -167,6 +172,7 @@ public class OppsummeringsdokumentAdapter {
     public Oppsummeringsdokument getCurrentDocumentBy(LocalDate kalendermaaned, String orgnummer, String miljo) {
         var list = getAllCurrentDocumentsBy(
                 miljo,
+                orgnummer,
                 kalendermaaned.withDayOfMonth(1),
                 kalendermaaned.withDayOfMonth(kalendermaaned.lengthOfMonth())
         );
