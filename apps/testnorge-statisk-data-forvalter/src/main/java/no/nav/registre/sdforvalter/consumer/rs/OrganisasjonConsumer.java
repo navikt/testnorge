@@ -12,14 +12,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import no.nav.registre.sdforvalter.config.credentials.OrganisasjonApiServerProperties;
-import no.nav.registre.sdforvalter.consumer.rs.credentials.OrganisasjonApiClientCredential;
 import no.nav.registre.sdforvalter.domain.status.ereg.Organisasjon;
 import no.nav.registre.testnorge.libs.common.command.GetOrganisasjonCommand;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
-import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
 
 @Slf4j
 @Component
