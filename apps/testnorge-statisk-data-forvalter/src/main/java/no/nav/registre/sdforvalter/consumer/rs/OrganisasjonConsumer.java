@@ -11,31 +11,32 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import no.nav.registre.sdforvalter.config.credentials.OrganisasjonApiServerProperties;
 import no.nav.registre.sdforvalter.consumer.rs.credentials.OrganisasjonApiClientCredential;
 import no.nav.registre.sdforvalter.domain.status.ereg.Organisasjon;
 import no.nav.registre.testnorge.libs.common.command.GetOrganisasjonCommand;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
 
 @Slf4j
 @Component
 public class OrganisasjonConsumer {
     private final WebClient webClient;
-    private final ClientCredential clientCredential;
-    private final ClientCredentialGenerateAccessTokenService accessTokenService;
+    private final OrganisasjonApiServerProperties serverProperties;
+    private final AccessTokenService accessTokenService;
     private final Executor executor;
 
     public OrganisasjonConsumer(
             @Value("${organsisasjon.api.url}") String url,
-            OrganisasjonApiClientCredential clientCredential,
-            ClientCredentialGenerateAccessTokenService accessTokenService,
-            @Value("${organsisasjon.api.threads}") Integer threads
+            OrganisasjonApiServerProperties serverProperties,
+            AccessTokenService accessTokenService
     ) {
-        this.clientCredential = clientCredential;
+        this.serverProperties = serverProperties;
         this.accessTokenService = accessTokenService;
-        this.executor = Executors.newFixedThreadPool(threads);
+        this.executor = Executors.newFixedThreadPool(serverProperties.getThreads());
         this.webClient = WebClient
                 .builder()
                 .baseUrl(url)
@@ -43,10 +44,7 @@ public class OrganisasjonConsumer {
     }
 
     private CompletableFuture<Organisasjon> getOrganisasjon(String orgnummer, String miljo, Executor executor) {
-        AccessToken accessToken = accessTokenService.generateToken(
-                clientCredential,
-                new AccessScopes("api://" + clientCredential.getClientId() + "/.default")
-        );
+        AccessToken accessToken = accessTokenService.generateToken(serverProperties);
         return CompletableFuture.supplyAsync(
                 () -> {
                     try {
