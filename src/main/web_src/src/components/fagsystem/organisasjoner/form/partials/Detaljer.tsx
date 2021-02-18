@@ -21,6 +21,7 @@ type Detaljer = {
 	path: string
 	level: number
 	number?: string
+	maaHaUnderenhet?: boolean
 }
 
 enum TypeUnderenhet {
@@ -28,7 +29,7 @@ enum TypeUnderenhet {
 	VIRKSOMHET = 'VIRKSOMHET'
 }
 
-export const Detaljer = ({ formikBag, path, level, number }: Detaljer) => {
+export const Detaljer = ({ formikBag, path, level, number, maaHaUnderenhet = true }: Detaljer) => {
 	const initialValues = _omit(formikBag.values.organisasjon, ['underenheter', 'sektorkode'])
 	initialValues.enhetstype = ''
 
@@ -141,6 +142,7 @@ export const Detaljer = ({ formikBag, path, level, number }: Detaljer) => {
 						? 'Du kan ikke legge til underenheter på enhet av type virksomhet'
 						: null
 				}
+				canBeEmpty={!maaHaUnderenhet || _get(formikBag, `values.${path}.enhetstype`) === 'ENK'}
 				tag={number}
 				isOrganisasjon={true}
 			>
@@ -152,6 +154,10 @@ export const Detaljer = ({ formikBag, path, level, number }: Detaljer) => {
 								path={path}
 								level={level + 1}
 								number={number ? number : (level + 1).toString()}
+								maaHaUnderenhet={
+									typeUnderenhet === 'JURIDISKENHET' &&
+									_get(formikBag, `values.${path}.enhetstype`) !== 'ENK'
+								}
 							/>
 						</React.Fragment>
 					)
