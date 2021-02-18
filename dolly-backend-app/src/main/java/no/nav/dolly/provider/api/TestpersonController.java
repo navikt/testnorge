@@ -1,23 +1,5 @@
 package no.nav.dolly.provider.api;
 
-import static java.lang.String.format;
-import static java.util.Collections.singletonList;
-import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
-import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
-
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.http.HttpStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +17,23 @@ import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.NavigasjonService;
 import no.nav.dolly.service.PersonService;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import static java.lang.String.format;
+import static java.util.Collections.singletonList;
+import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
+import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
 @RestController
 @RequiredArgsConstructor
@@ -50,6 +49,7 @@ public class TestpersonController {
 
     @Operation(description = "Legge til egenskaper på person/endre person i TPS og øvrige systemer")
     @PutMapping("/{ident}/leggtilpaaperson")
+    @CacheEvict(value = {CACHE_GRUPPE, CACHE_BESTILLING}, allEntries = true)
     @ResponseStatus(HttpStatus.OK)
     public RsBestillingStatus endrePerson(@PathVariable String ident, @RequestBody RsDollyUpdateRequest request) {
 
@@ -80,9 +80,10 @@ public class TestpersonController {
     @Operation(description = "Koble eksisterende personer i Dolly ")
     @PutMapping("/{ident}/relasjon")
     @ResponseStatus(HttpStatus.OK)
+    @CacheEvict(value = {CACHE_GRUPPE, CACHE_BESTILLING}, allEntries = true)
     public RsBestillingStatus koblePerson(@Parameter(description = "Ident for hovedperson", required = true)
-    @PathVariable("ident") String ident,
-            @RequestBody RsDollyRelasjonRequest request) {
+                                          @PathVariable("ident") String ident,
+                                          @RequestBody RsDollyRelasjonRequest request) {
 
         Bestilling bestilling = bestillingService.saveBestilling(ident, request);
         dollyBestillingService.relasjonPersonAsync(ident, request, bestilling);
@@ -91,7 +92,7 @@ public class TestpersonController {
     }
 
     @Operation(description = "Slett test ident")
-    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @Transactional
     @DeleteMapping("/{ident}")
     public void deleteTestident(@PathVariable String ident) {
