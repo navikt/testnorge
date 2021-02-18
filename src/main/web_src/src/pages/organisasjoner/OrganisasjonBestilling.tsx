@@ -66,7 +66,7 @@ export default function OrganisasjonBestilling({ brukerId, bestillinger }: Organ
 			width: '10',
 			dataField: 'listedata[4]',
 			formatter: (cell: string) => {
-				return cell === 'Pågående' || cell === 'DEPLOYER' ? (
+				return cell === 'Pågår' || cell === 'DEPLOYER' ? (
 					<Spinner size={24} />
 				) : (
 					<Icon kind={ikonTypeMap[cell]} title={cell} />

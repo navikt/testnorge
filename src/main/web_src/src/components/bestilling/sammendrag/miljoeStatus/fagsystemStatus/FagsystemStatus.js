@@ -36,7 +36,9 @@ export default function FagsystemStatus({ statusrapport }) {
 							<tr key={idx}>
 								<td>
 									<div className="flexbox">
-										<Icon size={16} kind={getIconType(status)} />
+										{status.melding !== 'Pågående' && status.melding !== 'Deployer' && (
+											<Icon size={16} kind={getIconType(status)} />
+										)}
 										<div>
 											<h5>{status.navn}</h5>
 											<ApiFeilmelding feilmelding={status.melding} />
