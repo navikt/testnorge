@@ -25,8 +25,6 @@ dependencies {
     implementation project(':testnorge-data-transfer-objects')
     implementation project(':testnorge-oauth2')
 
-
-
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'

@@ -5,14 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Value;
+
 import no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO;
 
-@Data
+@Value
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Navn {
-
-    private String adjektiv;
-    private String substantiv;
+    String adjektiv;
+    String substantiv;
 }

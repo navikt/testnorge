@@ -11,18 +11,23 @@ dependencies {
     //TODO remove
     compile group: 'com.google.guava', name: 'guava', version: '30.0-jre'
 
+    implementation project(':kafka-config')
+    implementation project(':kafka-producers')
+    implementation project(':testnorge-avro-schema')
     implementation project(':testnorge-dependency-analysis-auto-configuration')
-
-    implementation 'org.springframework.boot:spring-boot-starter-security:2.3.4.RELEASE'
-    implementation project(':testnorge-dependency-analysis')
-    implementation 'org.springframework.boot:spring-boot-starter-webflux:2.3.2.RELEASE'
+    implementation project(':testnorge-data-transfer-objects')
     implementation project(':testnorge-core')
     implementation project(':testnorge-database')
-    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:2.2.5.RELEASE'
+    implementation project(':testnorge-dependency-analysis')
     implementation project(':testnorge-common-command')
+    implementation project(':testnorge-csv-converter')
+
+    implementation 'io.confluent:kafka-avro-serializer:5.5.0'
+    implementation 'org.springframework.boot:spring-boot-starter-security:2.3.4.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux:2.3.2.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:2.2.5.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-actuator:2.3.4.RELEASE'
-    implementation project(':testnorge-csv-converter')
     implementation 'org.projectlombok:lombok:1.18.12'
     implementation 'org.aspectj:aspectjweaver:1.9.6'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'

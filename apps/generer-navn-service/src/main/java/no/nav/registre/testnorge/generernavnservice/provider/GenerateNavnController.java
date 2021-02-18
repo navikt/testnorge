@@ -12,6 +12,7 @@ import no.nav.registre.testnorge.generernavnservice.service.GenerateNavnService;
 import no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/navn")
@@ -21,8 +22,14 @@ public class GenerateNavnController {
     private final GenerateNavnService service;
 
     @GetMapping
-    public List<Navn> generateName(@RequestParam Integer antall) {
+    public List<NavnDTO> generateName(@RequestParam Integer antall) {
 
-        return service.getRandomNavn(antall);
+        List<Navn> navnList = service.getRandomNavn(antall);
+        return navnList.stream().map(value -> NavnDTO
+                .builder()
+                .substantiv(value.getSubstantiv())
+                .adjektiv(value.getAdjektiv())
+                .build()
+        ).collect(Collectors.toList());
     }
 }

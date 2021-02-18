@@ -37,20 +37,6 @@ public class EregMapperConsumer {
         this.eregUrl = eregUrl + "/v1";
     }
 
-    public void create(EregListe eregListe, String env) {
-        log.info("Oppretter EREG med {} nye organisasjoner...", eregListe.getListe().size());
-        uploadToEreg(eregListe, env, false);
-    }
-
-    public void update(Ereg ereg, String env) {
-        update(new EregListe(ereg), env);
-    }
-
-    public void update(EregListe eregListe, String env) {
-        log.info("Oppdaterer EREG med {} organisasjoner...", eregListe.getListe().size());
-        uploadToEreg(eregListe, env, true);
-    }
-
     public String generateFlatfil(EregListe eregListe, boolean update) {
         UriTemplate uriTemplate = new UriTemplate(eregUrl + "/orkestrering/generer");
         try {
@@ -64,39 +50,6 @@ public class EregMapperConsumer {
             return response.getBody();
         } catch (Exception e) {
             log.error("Klarte ikke å generere flatfil.", e);
-            throw e;
-        }
-    }
-
-    private void uploadToEreg(EregListe eregListe, String env, boolean update) {
-        UriTemplate uriTemplate = new UriTemplate(eregUrl + "/orkestrering/opprett?lastOpp=true&miljoe={miljoe}");
-        RequestEntity<List<EregMapperRequest>> requestEntity = new RequestEntity<>(
-                eregListe.getListe()
-                        .stream()
-                        .map(item -> new EregMapperRequest(item, update))
-                        .collect(Collectors.toList()),
-                HttpMethod.POST, uriTemplate.expand(env));
-        ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
-        if (response.getBody() != null && response.getStatusCode() != HttpStatus.OK) {
-            log.error("Klarte ikke å opprette alle eregs. Response http status: {})", response.getStatusCode());
-        }
-    }
-
-    public EregListe flatfilToJSON(String flatfil) {
-        UriTemplate uriTemplate = new UriTemplate(eregUrl + "/organisasjoner");
-        try {
-            RequestEntity<String> requestEntity = new RequestEntity<>(
-                    flatfil,
-                    HttpMethod.POST,
-                    uriTemplate.expand());
-            ResponseEntity<List<EregMapperRequest>> responseEntity = restTemplate.exchange(requestEntity, RESPONSE_TYPE);
-
-            return new EregListe(responseEntity.getBody()
-                    .stream()
-                    .map(Ereg::new)
-                    .collect(Collectors.toList()));
-        } catch (Exception e) {
-            log.error("Klarte ikke å hente organisasjoner fra flatfil", e);
             throw e;
         }
     }

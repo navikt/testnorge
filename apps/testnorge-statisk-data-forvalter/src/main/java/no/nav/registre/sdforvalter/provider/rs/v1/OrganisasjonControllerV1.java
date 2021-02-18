@@ -102,12 +102,6 @@ public class OrganisasjonControllerV1 {
         return ResponseEntity.ok(dto);
     }
 
-    @PostMapping("/flatfil")
-    public ResponseEntity<OrganisasjonListeDTO> createEregStaticDataFromFlatfil(@RequestBody String flatfil) {
-        EregListe eregListe = eregMapperConsumer.flatfilToJSON(flatfil);
-        eregAdapter.save(eregListe);
-        return ResponseEntity.ok(eregListe.toDTO());
-    }
 
     private void writeExport(HttpServletResponse response, EregListe liste, String identifier, Boolean update) throws IOException {
         response.setContentType("text/" + StandardCharsets.ISO_8859_1);
