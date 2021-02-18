@@ -57,6 +57,11 @@ public class Arbeidsforhold {
                 .build();
     }
 
+
+    public String getArbeidsforholdType(){
+        return dto.getTypeArbeidsforhold();
+    }
+
     public Arbeidsforhold(
             ArbeidsforholdResponse response,
             String ident,

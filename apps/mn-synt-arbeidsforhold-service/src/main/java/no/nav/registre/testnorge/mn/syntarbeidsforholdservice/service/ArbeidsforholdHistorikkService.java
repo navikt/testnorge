@@ -50,6 +50,17 @@ public class ArbeidsforholdHistorikkService {
             return map;
         }
 
+        if (first.getArbeidsforholdType().equals("forenkletOppgjoersordning")) {
+            map.putAll(createArbeidsforholdHistorikk(ident, dates));
+            return map;
+        }
+
+        if (first.getArbeidsforholdType().equals("maritimtArbeidsforhold")) {
+            log.info("Generer historikk for fartoey...");
+        }
+
+
+
         var previous = first;
         var historikk = syntrestConsumer.getArbeidsforholdHistorikk(previous, startdato).iterator();
 

@@ -24,11 +24,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.FartoeyDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.ArbeidsforholdModel;
+import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.FartoeyModel;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.OppsummeringsdokumentModel;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.PermisjonModel;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.PersonModel;
@@ -103,6 +105,13 @@ public class Oppsummeringsdokument {
                 .stillingsprosent(value.getStillingsprosent())
                 .yrke(value.getYrke())
                 .permisjoner(value.getPermisjoner().stream().map(mapPermisjonDTO()).collect(Collectors.toList()))
+                .fartoey(value.getFartoey() != null ? FartoeyDTO
+                        .builder()
+                        .skipstype(value.getFartoey().getSkipstype())
+                        .fartsomraade(value.getFartoey().getFartsomraade())
+                        .skipsregister(value.getFartoey().getSkipsregister())
+                        .build() : null
+                )
                 .build();
     }
 
@@ -159,6 +168,14 @@ public class Oppsummeringsdokument {
             model.setSisteLoennsendringsdato(value.getSisteLoennsendringsdato());
             model.setStillingsprosent(value.getStillingsprosent());
             model.setYrke(value.getYrke());
+            if(value.getFartoey() != null){
+                FartoeyModel fartoey = new FartoeyModel();
+                fartoey.setFartsomraade(value.getFartoey().getFartsomraade());
+                fartoey.setSkipsregister(value.getFartoey().getSkipsregister());
+                fartoey.setSkipstype(value.getFartoey().getSkipstype());
+                model.setFartoey(fartoey);
+            }
+            model.setFartoey();
             model.setPermisjoner(value.getPermisjoner().stream().map(mapPermisjonModel()).collect(Collectors.toList()));
             return model;
         };
