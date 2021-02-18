@@ -35,6 +35,7 @@ import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.P
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.VirksomhetModel;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Arbeidsforhold;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.EDAGM;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Fartoey;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Inntektsmottaker;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.JuridiskEntitet;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Kilde;
@@ -286,6 +287,13 @@ public class Oppsummeringsdokument {
                 permisjon.setStartdato(toXMLGregorianCalendar(permisjonDTO.getStartdato()));
                 return permisjon;
             }).collect(Collectors.toList()));
+        }
+        if(dto.getFartoey() != null){
+            Fartoey fartoey = new Fartoey();
+            fartoey.setFartsomraade(dto.getFartoey().getFartsomraade());
+            fartoey.setSkipsregister(dto.getFartoey().getSkipsregister());
+            fartoey.setSkipstype(dto.getFartoey().getSkipstype());
+            arbeidsforhold.setFartoey(fartoey);
         }
         return arbeidsforhold;
     }
