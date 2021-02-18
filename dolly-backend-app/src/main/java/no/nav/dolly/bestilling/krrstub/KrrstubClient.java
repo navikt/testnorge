@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
 import static org.apache.logging.log4j.util.Strings.isBlank;
@@ -30,10 +31,16 @@ public class KrrstubClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
 
+    private static boolean isKrrMaalform(String spraak) {
+
+        return isNotBlank(spraak) && Stream.of("NB", "NN", "EN", "SE").anyMatch(spraak::equalsIgnoreCase);
+    }
+
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (nonNull(bestilling.getKrrstub()) || (nonNull(bestilling.getTpsf()) && isNotBlank(bestilling.getTpsf().getSprakKode()))) {
+        if (nonNull(bestilling.getKrrstub()) ||
+                (nonNull(bestilling.getTpsf()) && isKrrMaalform(bestilling.getTpsf().getSprakKode()))) {
 
             try {
                 DigitalKontaktdata digitalKontaktdata = mapperFacade.map(
@@ -59,13 +66,10 @@ public class KrrstubClient implements ClientRegister {
     }
 
     private void kobleMaalformTilSpraak(RsDollyUtvidetBestilling bestilling, DigitalKontaktdata digitalKontaktdata) {
-        if (nonNull(bestilling.getTpsf()) && isNotBlank(bestilling.getTpsf().getSprakKode()) && isBlank(digitalKontaktdata.getSpraak())) {
-            List.of("NB", "NN", "EN", "SE").forEach(spraakKode -> {
-                if (spraakKode.equalsIgnoreCase(bestilling.getTpsf().getSprakKode())) {
-                    digitalKontaktdata.setSpraak(bestilling.getTpsf().getSprakKode());
-                    digitalKontaktdata.setSpraakOppdatert(ZonedDateTime.now());
-                }
-            });
+
+        if (nonNull(bestilling.getTpsf()) && isKrrMaalform(bestilling.getTpsf().getSprakKode()) && isBlank(digitalKontaktdata.getSpraak())) {
+            digitalKontaktdata.setSpraak(bestilling.getTpsf().getSprakKode());
+            digitalKontaktdata.setSpraakOppdatert(ZonedDateTime.now());
         }
     }
 
