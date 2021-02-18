@@ -74,7 +74,7 @@ public class OrkestreringsController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping(value = "/organiasjoner/{orgnummer}")
+    @PostMapping(value = "/organisasjoner/{orgnummer}")
     public ResponseEntity<HttpStatus> saveBy(@PathVariable String orgnummer, @RequestParam String miljoe) {
         environmentInitializationService.opprett(miljoe, orgnummer);
         return ResponseEntity.ok().build();
