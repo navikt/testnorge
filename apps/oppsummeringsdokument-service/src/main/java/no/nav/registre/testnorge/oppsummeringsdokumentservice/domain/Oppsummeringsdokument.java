@@ -175,7 +175,6 @@ public class Oppsummeringsdokument {
                 fartoey.setSkipstype(value.getFartoey().getSkipstype());
                 model.setFartoey(fartoey);
             }
-            model.setFartoey();
             model.setPermisjoner(value.getPermisjoner().stream().map(mapPermisjonModel()).collect(Collectors.toList()));
             return model;
         };
