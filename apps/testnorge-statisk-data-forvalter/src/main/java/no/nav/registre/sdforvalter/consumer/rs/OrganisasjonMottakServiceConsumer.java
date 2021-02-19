@@ -106,7 +106,7 @@ public class OrganisasjonMottakServiceConsumer {
         return builder
                 .setEnhetstype(ereg.getEnhetstype())
                 .setOrgnummer(ereg.getOrgnr())
-                .setEpost(Epost.newBuilder().setEpost(ereg.getEpost()).build())
+                .setEpost(ereg.getEpost() != null ? Epost.newBuilder().setEpost(ereg.getEpost()).build() : null)
                 .setNavn(DetaljertNavn
                         .newBuilder()
                         .setNavn1(navn)
@@ -114,7 +114,7 @@ public class OrganisasjonMottakServiceConsumer {
                         .build()
                 )
                 .setUnderenheter(orgTree.getUnderorganisasjon().stream().map(this::createOrganisasjon).collect(Collectors.toList()))
-                .setInternettadresse(Internettadresse.newBuilder().setInternettadresse(ereg.getInternetAdresse()).build())
+                .setInternettadresse(ereg.getInternetAdresse() != null ? Internettadresse.newBuilder().setInternettadresse(ereg.getInternetAdresse()).build() : null)
                 .setForretningsadresse(forretningsAdresse)
                 .setPostadresse(postadresse)
                 .build();
