@@ -11,27 +11,22 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+import no.nav.registre.testnorge.personsearchservice.adapter.PersonSearchAdapter;
+import no.nav.registre.testnorge.personsearchservice.domain.Person;
 import no.nav.registre.testnorge.personsearchservice.domain.Search;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class PersonSearchService {
-    private final RestHighLevelClient client;
+    private final PersonSearchAdapter personSearchAdapter;
 
 
     @SneakyThrows
-    public void search(Search search){
-        var query = QueryBuilders.boolQuery().must(QueryBuilders.matchQuery("tags", "DOLLY"));
-
-        var searchRequest = new SearchRequest();
-        searchRequest.indices("pdl-sok");
-
-        var searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.query(query);
-        searchRequest.source(searchSourceBuilder);
-        SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
-        log.info("Number of hits: {}", searchResponse.getHits().getTotalHits().value);
+    public List<Person> search(Search search){
+        return personSearchAdapter.search(search);
     }
 
 }

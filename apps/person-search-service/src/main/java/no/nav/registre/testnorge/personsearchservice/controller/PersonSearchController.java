@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import no.nav.registre.testnorge.personsearchservice.domain.Person;
 import no.nav.registre.testnorge.personsearchservice.domain.Search;
 import no.nav.registre.testnorge.personsearchservice.service.PersonSearchService;
 
@@ -26,12 +29,10 @@ public class PersonSearchController {
     private final PersonSearchService service;
 
     @GetMapping
-    public ResponseEntity<Search> search(@RequestParam("search") String search) throws UnsupportedEncodingException, JsonProcessingException {
+    public ResponseEntity<List<PersonDTO>> search(@RequestParam("search") String search) throws UnsupportedEncodingException, JsonProcessingException {
         var decode = URLDecoder.decode(search, StandardCharsets.UTF_8.name());
-
         var value = objectMapper.readValue(decode, Search.class);
-        service.search(value);
-        return ResponseEntity.ok(value);
+        return ResponseEntity.ok(service.search(value).stream().map(Person::toDTO).collect(Collectors.toList()));
     }
 
     @PostMapping

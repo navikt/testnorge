@@ -1,6 +1,5 @@
-package no.nav.registre.testnorge.personsearchservice.domain;
+package no.nav.registre.testnorge.personsearchservice.adapter.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
@@ -10,7 +9,8 @@ import java.util.List;
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class Search {
-    @JsonProperty
-    String tag;
+public class Response {
+    HentPerson hentPerson;
+    HentIdenter hentIdenter;
+    List<String> tags;
 }
