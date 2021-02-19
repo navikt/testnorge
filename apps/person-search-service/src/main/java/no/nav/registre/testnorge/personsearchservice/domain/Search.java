@@ -11,6 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class Search {
+
+    //TODO: change to list of tags
     @JsonProperty
     String tag;
 }

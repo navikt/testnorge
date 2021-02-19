@@ -15,5 +15,6 @@ public class PersonDTO {
     String ettternavn;
     String ident;
     String aktorId;
+    String tag;
 }
 

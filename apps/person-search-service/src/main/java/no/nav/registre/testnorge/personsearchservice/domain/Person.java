@@ -79,6 +79,7 @@ public class Person {
                 .ettternavn(getEtternavn())
                 .aktorId(getAktorId())
                 .ident(getIdent())
+                .tag(getTags().stream().findFirst().orElse(null))
                 .build();
     }
 }
