@@ -26,7 +26,6 @@ public class OrganisasjonConsumer {
     private final Executor executor;
 
     public OrganisasjonConsumer(
-            @Value("${organsisasjon.api.url}") String url,
             OrganisasjonApiServerProperties serverProperties,
             AccessTokenService accessTokenService
     ) {
@@ -35,7 +34,7 @@ public class OrganisasjonConsumer {
         this.executor = Executors.newFixedThreadPool(serverProperties.getThreads());
         this.webClient = WebClient
                 .builder()
-                .baseUrl(url)
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
@@ -46,7 +45,7 @@ public class OrganisasjonConsumer {
                     try {
                         return new Organisasjon(new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, miljo).call());
                     } catch (Exception e) {
-                        log.warn("Klarer ikke å hente organsisasjon  {}.", orgnummer, e);
+                        log.warn("Klarer ikke å hente organisasjon {}.", orgnummer, e);
                         return null;
                     }
                 },

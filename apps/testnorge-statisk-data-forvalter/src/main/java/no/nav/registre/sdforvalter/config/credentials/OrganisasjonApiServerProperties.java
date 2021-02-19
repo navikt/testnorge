@@ -8,10 +8,10 @@ import org.springframework.context.annotation.Configuration;
 
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 
-@Configuration
-@ConfigurationProperties(prefix = "organsisasjon.api")
 @Getter
 @Setter
+@Configuration
+@ConfigurationProperties(prefix = "organisasjon.api")
 public class OrganisasjonApiServerProperties extends NaisServerProperties {
     private Integer threads;
 }

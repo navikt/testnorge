@@ -7,6 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 
 @Configuration
-@ConfigurationProperties(prefix = "consumers.generer-navn-serivce")
+@ConfigurationProperties(prefix = "consumers.generer-navn-service")
 public class GenererNavnServiceProperties extends NaisServerProperties {
 }
