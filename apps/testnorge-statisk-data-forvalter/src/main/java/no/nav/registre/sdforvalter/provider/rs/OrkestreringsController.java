@@ -15,6 +15,7 @@ import java.util.List;
 import no.nav.registre.sdforvalter.adapter.TpsIdenterAdapter;
 import no.nav.registre.sdforvalter.consumer.rs.PersonConsumer;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
+import no.nav.registre.sdforvalter.provider.rs.dto.Orgnummer;
 import no.nav.registre.sdforvalter.service.EnvironmentInitializationService;
 
 @Slf4j
@@ -76,14 +77,8 @@ public class OrkestreringsController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping(value = "/organisasjoner/{orgnummer}")
-    public ResponseEntity<HttpStatus> saveBy(@PathVariable String orgnummer, @RequestParam String miljoe) {
-        environmentInitializationService.opprett(miljoe, orgnummer);
-        return ResponseEntity.ok().build();
-    }
-
     @PostMapping(value = "/organisasjoner")
-    public ResponseEntity<HttpStatus> saveBy(@RequestParam String miljoe, List<String> liste) {
+    public ResponseEntity<HttpStatus> saveBy(@RequestParam String miljoe, Orgnummer orgnummer) {
         environmentInitializationService.opprett(miljoe, liste);
         return ResponseEntity.ok().build();
     }

@@ -92,13 +92,6 @@ public class EnvironmentInitializationService {
         organisasjonMottakServiceConsumer.create(eregListe, environment);
     }
 
-
-    public void opprett(String environment, String orgnummer) {
-        log.info("Oppretter org {} i miljo {}.", orgnummer, environment);
-        Ereg ereg = eregAdapter.fetchByOrgnr(orgnummer);
-        organisasjonMottakServiceConsumer.create(ereg, environment);
-    }
-
     public void initializeKrr(String gruppe) {
         log.info("Start init av KRR ...");
         krrConsumer.send(krrAdapter.fetchBy(gruppe));
