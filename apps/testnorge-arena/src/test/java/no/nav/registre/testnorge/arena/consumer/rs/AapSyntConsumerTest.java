@@ -4,7 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetSyntRequest;
+import no.nav.registre.testnorge.arena.consumer.rs.request.synt.SyntRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.GensakKoder;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.GensakOvKoder;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
@@ -40,7 +40,7 @@ public class AapSyntConsumerTest {
     @Value("${synt-arena.rest-api.url}")
     private String serverUrl;
 
-    private List<RettighetSyntRequest> syntRequest;
+    private List<SyntRequest> syntRequest;
 
     private List<GensakKoder> expectedGensakKoder;
 
@@ -51,7 +51,7 @@ public class AapSyntConsumerTest {
         this.syntConsumer = new AapSyntConsumer(mockWebServer.url("/").toString());
 
         syntRequest = new ArrayList<>(Collections.singletonList(
-                RettighetSyntRequest.builder()
+                SyntRequest.builder()
                         .fraDato(LocalDate.now().toString())
                         .tilDato(LocalDate.now().toString())
                         .utfall(UTFALL_JA)

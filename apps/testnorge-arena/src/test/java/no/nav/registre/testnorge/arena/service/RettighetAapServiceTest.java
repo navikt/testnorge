@@ -12,7 +12,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetSyntRequest;
+import no.nav.registre.testnorge.arena.consumer.rs.request.synt.SyntRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.util.ConsumerUtils;
 import no.nav.registre.testnorge.arena.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
@@ -35,12 +35,12 @@ import java.util.Random;
 
 import no.nav.registre.testnorge.arena.consumer.rs.AapSyntConsumer;
 import no.nav.registre.testnorge.arena.consumer.rs.PensjonTestdataFacadeConsumer;
-import no.nav.registre.testnorge.arena.consumer.rs.request.PensjonTestdataInntekt;
-import no.nav.registre.testnorge.arena.consumer.rs.request.PensjonTestdataPerson;
-import no.nav.registre.testnorge.arena.consumer.rs.response.HttpStatus;
-import no.nav.registre.testnorge.arena.consumer.rs.response.PensjonTestdataResponse;
-import no.nav.registre.testnorge.arena.consumer.rs.response.PensjonTestdataResponseDetails;
-import no.nav.registre.testnorge.arena.consumer.rs.response.PensjonTestdataStatus;
+import no.nav.registre.testnorge.arena.consumer.rs.request.pensjon.PensjonTestdataInntekt;
+import no.nav.registre.testnorge.arena.consumer.rs.request.pensjon.PensjonTestdataPerson;
+import no.nav.registre.testnorge.arena.consumer.rs.response.pensjon.HttpStatus;
+import no.nav.registre.testnorge.arena.consumer.rs.response.pensjon.PensjonTestdataResponse;
+import no.nav.registre.testnorge.arena.consumer.rs.response.pensjon.PensjonTestdataResponseDetails;
+import no.nav.registre.testnorge.arena.consumer.rs.response.pensjon.PensjonTestdataStatus;
 import no.nav.registre.testnorge.arena.service.util.ServiceUtils;
 import no.nav.registre.testnorge.arena.service.util.DatoUtils;
 import no.nav.registre.testnorge.arena.service.util.ArbeidssoekerUtils;
@@ -94,12 +94,12 @@ public class RettighetAapServiceTest {
     private List<NyttVedtakAap> ungUfoerRettigheter;
     private List<NyttVedtakAap> tvungenForvaltningRettigheter;
     private List<NyttVedtakAap> fritakMeldekortRettigheter;
-    private List<RettighetSyntRequest> syntRequest;
+    private List<SyntRequest> syntRequest;
 
     @Before
     public void setUp() {
         syntRequest = new ArrayList<>(Collections.singletonList(
-                RettighetSyntRequest.builder()
+                SyntRequest.builder()
                         .fraDato(LocalDate.now().toString())
                         .tilDato(LocalDate.now().toString())
                         .utfall(UTFALL_JA)

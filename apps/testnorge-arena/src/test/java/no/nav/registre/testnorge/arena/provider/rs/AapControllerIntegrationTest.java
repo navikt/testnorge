@@ -8,12 +8,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import no.nav.registre.testnorge.arena.consumer.rs.response.AktoerInnhold;
-import no.nav.registre.testnorge.arena.consumer.rs.response.AktoerResponse;
-import no.nav.registre.testnorge.arena.consumer.rs.response.HttpStatus;
-import no.nav.registre.testnorge.arena.consumer.rs.response.PensjonTestdataResponse;
-import no.nav.registre.testnorge.arena.consumer.rs.response.PensjonTestdataResponseDetails;
-import no.nav.registre.testnorge.arena.consumer.rs.response.PensjonTestdataStatus;
+import no.nav.registre.testnorge.arena.consumer.rs.response.aktoer.AktoerInnhold;
+import no.nav.registre.testnorge.arena.consumer.rs.response.aktoer.AktoerResponse;
+import no.nav.registre.testnorge.arena.consumer.rs.response.pensjon.HttpStatus;
+import no.nav.registre.testnorge.arena.consumer.rs.response.pensjon.PensjonTestdataResponse;
+import no.nav.registre.testnorge.arena.consumer.rs.response.pensjon.PensjonTestdataResponseDetails;
+import no.nav.registre.testnorge.arena.consumer.rs.response.pensjon.PensjonTestdataStatus;
 import no.nav.registre.testnorge.arena.provider.rs.request.SyntetiserArenaRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;

@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.arena.consumer.rs;
 
-import no.nav.registre.testnorge.arena.consumer.rs.command.PostSyntTilleggRequestCommand;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetSyntRequest;
+import no.nav.registre.testnorge.arena.consumer.rs.command.synt.PostSyntTilleggRequestCommand;
+import no.nav.registre.testnorge.arena.consumer.rs.request.synt.SyntRequest;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,71 +41,71 @@ public class TilleggSyntConsumer {
         this.webClient = WebClient.builder().baseUrl(arenaTilleggServerUrl).build();
     }
 
-    public List<NyttVedtakTillegg> opprettBoutgifter(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakTillegg> opprettBoutgifter(List<SyntRequest> syntRequest) {
         return new PostSyntTilleggRequestCommand(webClient, syntRequest, BOUTGIFT_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettDagligReise(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakTillegg> opprettDagligReise(List<SyntRequest> syntRequest) {
         return new PostSyntTilleggRequestCommand(webClient, syntRequest, DAGLIG_REISE_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettFlytting(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakTillegg> opprettFlytting(List<SyntRequest> syntRequest) {
         return new PostSyntTilleggRequestCommand(webClient, syntRequest, FLYTTING_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettLaeremidler(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakTillegg> opprettLaeremidler(List<SyntRequest> syntRequest) {
         return new PostSyntTilleggRequestCommand(webClient, syntRequest, LAEREMIDLER_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettHjemreise(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakTillegg> opprettHjemreise(List<SyntRequest> syntRequest) {
         return new PostSyntTilleggRequestCommand(webClient, syntRequest, HJEMREISE_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettReiseObligatoriskSamling(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakTillegg> opprettReiseObligatoriskSamling(List<SyntRequest> syntRequest) {
         return new PostSyntTilleggRequestCommand(webClient, syntRequest, OBLIGATORISK_SAMLING_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettTilsynBarn(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakTillegg> opprettTilsynBarn(List<SyntRequest> syntRequest) {
         return new PostSyntTilleggRequestCommand(webClient, syntRequest, TILSYN_BARN_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettTilsynFamiliemedlemmer(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakTillegg> opprettTilsynFamiliemedlemmer(List<SyntRequest> syntRequest) {
         return new PostSyntTilleggRequestCommand(webClient, syntRequest, TILSYN_FAMILIEMEDLEMMER_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettTilsynBarnArbeidssoekere(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakTillegg> opprettTilsynBarnArbeidssoekere(List<SyntRequest> syntRequest) {
         return new PostSyntTilleggRequestCommand(webClient, syntRequest, TILSYN_BARN_ARBEIDSSOEKER_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettTilsynFamiliemedlemmerArbeidssoekere(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakTillegg> opprettTilsynFamiliemedlemmerArbeidssoekere(List<SyntRequest> syntRequest) {
         return new PostSyntTilleggRequestCommand(webClient, syntRequest, TILSYN_FAMILIEMEDLEMMER_ARBEIDSSOEKERE_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettBoutgifterArbeidssoekere(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakTillegg> opprettBoutgifterArbeidssoekere(List<SyntRequest> syntRequest) {
         return new PostSyntTilleggRequestCommand(webClient, syntRequest, BOUTGIFTER_ARBEIDSSOEKERE_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettDagligReiseArbeidssoekere(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakTillegg> opprettDagligReiseArbeidssoekere(List<SyntRequest> syntRequest) {
         return new PostSyntTilleggRequestCommand(webClient, syntRequest, DAGLIG_REISE_ARBEIDSSOEKER_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettFlyttingArbeidssoekere(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakTillegg> opprettFlyttingArbeidssoekere(List<SyntRequest> syntRequest) {
         return new PostSyntTilleggRequestCommand(webClient, syntRequest, FLYTTING_ARBEIDSSOEKERE_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettLaeremidlerArbeidssoekere(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakTillegg> opprettLaeremidlerArbeidssoekere(List<SyntRequest> syntRequest) {
         return new PostSyntTilleggRequestCommand(webClient, syntRequest, LAEREMIDLER_ARBEIDSSOEKERE_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettHjemreiseArbeidssoekere(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakTillegg> opprettHjemreiseArbeidssoekere(List<SyntRequest> syntRequest) {
         return new PostSyntTilleggRequestCommand(webClient, syntRequest, HJEMREISE_ARBEIDSSOEKERE_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettReiseObligatoriskSamlingArbeidssoekere(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakTillegg> opprettReiseObligatoriskSamlingArbeidssoekere(List<SyntRequest> syntRequest) {
         return new PostSyntTilleggRequestCommand(webClient, syntRequest, OBLIGATORISK_SAMLING_ARBEIDSSOEKERE_URL).call();
     }
 
-    public List<NyttVedtakTillegg> opprettReisestoenadArbeidssoekere(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakTillegg> opprettReisestoenadArbeidssoekere(List<SyntRequest> syntRequest) {
         return new PostSyntTilleggRequestCommand(webClient, syntRequest, REISESTONAD_URL).call();
     }
 }

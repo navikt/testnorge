@@ -1,7 +1,7 @@
-package no.nav.registre.testnorge.arena.consumer.rs.command;
+package no.nav.registre.testnorge.arena.consumer.rs.command.aktoer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.arena.consumer.rs.response.AktoerResponse;
+import no.nav.registre.testnorge.arena.consumer.rs.response.aktoer.AktoerResponse;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;

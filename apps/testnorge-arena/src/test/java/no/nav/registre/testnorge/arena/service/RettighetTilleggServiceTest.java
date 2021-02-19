@@ -8,7 +8,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetSyntRequest;
+import no.nav.registre.testnorge.arena.consumer.rs.request.synt.SyntRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.util.ConsumerUtils;
 import no.nav.registre.testnorge.arena.service.util.ArbeidssoekerUtils;
 import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
@@ -61,13 +61,13 @@ public class RettighetTilleggServiceTest {
     private String miljoe = "t1";
     private int antallNyeIdenter = 1;
     private List<String> identer;
-    private List<RettighetSyntRequest> syntRequest;
+    private List<SyntRequest> syntRequest;
 
     @Before
     public void setUp() {
         identer = new ArrayList<>(Collections.singletonList("01010101010"));
         syntRequest = new ArrayList<>(Collections.singletonList(
-                RettighetSyntRequest.builder()
+                SyntRequest.builder()
                         .fraDato(LocalDate.now().toString())
                         .tilDato(LocalDate.now().toString())
                         .utfall(UTFALL_JA)
