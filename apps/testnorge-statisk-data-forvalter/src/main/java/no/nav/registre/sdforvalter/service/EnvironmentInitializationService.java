@@ -5,6 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import no.nav.registre.sdforvalter.adapter.AaregAdapter;
 import no.nav.registre.sdforvalter.adapter.EregAdapter;
 import no.nav.registre.sdforvalter.adapter.KrrAdapter;
@@ -12,6 +15,7 @@ import no.nav.registre.sdforvalter.consumer.rs.AaregConsumer;
 import no.nav.registre.sdforvalter.consumer.rs.OrganisasjonMottakServiceConsumer;
 import no.nav.registre.sdforvalter.consumer.rs.KrrConsumer;
 import no.nav.registre.sdforvalter.domain.Ereg;
+import no.nav.registre.sdforvalter.domain.EregListe;
 import no.nav.registre.sdforvalter.domain.status.ereg.OrganisasjonStatusMap;
 
 @Slf4j
@@ -81,6 +85,13 @@ public class EnvironmentInitializationService {
         }
 
     }
+
+    public void opprett(String environment, List<String> liste) {
+        log.info("Oppretter organisasjoner {} i miljo {}.", String.join(", ", liste), environment);
+        var eregListe = new EregListe(liste.stream().map(eregAdapter::fetchByOrgnr).collect(Collectors.toList()));
+        organisasjonMottakServiceConsumer.create(eregListe, environment);
+    }
+
 
     public void opprett(String environment, String orgnummer) {
         log.info("Oppretter org {} i miljo {}.", orgnummer, environment);

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 import no.nav.registre.sdforvalter.adapter.TpsIdenterAdapter;
 import no.nav.registre.sdforvalter.consumer.rs.PersonConsumer;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
@@ -77,6 +79,12 @@ public class OrkestreringsController {
     @PostMapping(value = "/organisasjoner/{orgnummer}")
     public ResponseEntity<HttpStatus> saveBy(@PathVariable String orgnummer, @RequestParam String miljoe) {
         environmentInitializationService.opprett(miljoe, orgnummer);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(value = "/organisasjoner")
+    public ResponseEntity<HttpStatus> saveBy(@RequestParam String miljoe, List<String> liste) {
+        environmentInitializationService.opprett(miljoe, liste);
         return ResponseEntity.ok().build();
     }
 

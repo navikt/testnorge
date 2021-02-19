@@ -91,8 +91,6 @@ public class OrganisasjonMottakServiceConsumer {
                     .build()
             );
         }
-
-
     }
 
     public Organisasjon createOrganisasjon(OrgTree orgTree) {
