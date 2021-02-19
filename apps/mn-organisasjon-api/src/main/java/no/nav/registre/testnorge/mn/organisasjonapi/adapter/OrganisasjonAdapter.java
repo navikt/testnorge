@@ -21,8 +21,6 @@ public class OrganisasjonAdapter {
     private final OrganisasjonConsumer consumer;
 
     public void save(Organisasjon organisasjon, String miljo) {
-        consumer.saveOrganisasjon(organisasjon.toDTO(), miljo);
-
         Optional<OrganisasjonModel> model = findModelBy(organisasjon.getOrgnummer(), miljo);
 
         repository.save(organisasjon.toModel(model.map(OrganisasjonModel::getId).orElse(null), miljo));

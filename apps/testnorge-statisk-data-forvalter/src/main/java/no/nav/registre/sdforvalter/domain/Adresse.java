@@ -35,13 +35,6 @@ public class Adresse {
         this.poststed = model.getPoststed();
     }
 
-    public Adresse(no.nav.registre.sdforvalter.consumer.rs.request.ereg.Adresse adresse) {
-        this.adresse = String.join(" ", adresse.getAdresser());
-        this.kommunenr = adresse.getKommunenr();
-        this.landkode = adresse.getLandkode();
-        this.postnr = adresse.getPostnr();
-        this.poststed = adresse.getPoststed();
-    }
 
     public AdresseDTO toDTO() {
         return AdresseDTO

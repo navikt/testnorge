@@ -38,19 +38,4 @@ public class OrganisasjonController {
         }
         return ResponseEntity.ok(organisasjon.toDTO());
     }
-
-    @PutMapping
-    public ResponseEntity<HttpStatus> putOrganisasjon(
-            @RequestHeader("miljo") String miljo,
-            @RequestBody OrganisasjonDTO organisasjonDTO
-    ) {
-        log.info("Oppretter organisasjon {} i {}.", organisasjonDTO.getOrgnummer(), miljo);
-        organisasjonService.putOrganisasjon(new Organisasjon(organisasjonDTO), miljo);
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{orgnummer}")
-                .buildAndExpand(organisasjonDTO.getOrgnummer())
-                .toUri();
-        return ResponseEntity.created(uri).build();
-    }
 }
