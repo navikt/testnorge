@@ -71,6 +71,28 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                         historikk.getPdlAdresser().addAll(
                                 Stream.of(
 
+                                        postadresser.stream()
+                                                .filter(RsPostadresse::isNorsk)
+                                                .map(postadresse -> {
+                                                    PdlKontaktadresse kontaktadresse = new PdlKontaktadresse();
+                                                    kontaktadresse.setPostadresseIFrittFormat(mapperFacade.map(
+                                                            postadresse, PostadresseIFrittFormat.class));
+                                                    kontaktadresse.setKilde(CONSUMER);
+                                                    return kontaktadresse;
+                                                })
+                                                .collect(Collectors.toList()),
+
+                                        postadresser.stream()
+                                                .filter(RsPostadresse::isUtenlandsk)
+                                                .map(postadresse -> {
+                                                    PdlKontaktadresse kontaktadresse = new PdlKontaktadresse();
+                                                    kontaktadresse.setUtenlandskAdresseIFrittFormat(mapperFacade.map(
+                                                            postadresse, UtenlandskAdresseIFrittFormat.class));
+                                                    kontaktadresse.setKilde(CONSUMER);
+                                                    return kontaktadresse;
+                                                })
+                                                .collect(Collectors.toList()),
+
                                         midlertidigAdresser.stream()
                                                 .filter(MidlertidigAdresse::isGateAdr)
                                                 .map(midlertidigAdresse -> {
@@ -97,28 +119,6 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                                                     PdlKontaktadresse kontaktadresse = buildKontaktadresse(midlertidigAdresse);
                                                     kontaktadresse.setUtenlandskAdresseIFrittFormat(
                                                             mapperFacade.map(midlertidigAdresse, UtenlandskAdresseIFrittFormat.class));
-                                                    return kontaktadresse;
-                                                })
-                                                .collect(Collectors.toList()),
-
-                                        postadresser.stream()
-                                                .filter(RsPostadresse::isNorsk)
-                                                .map(postadresse -> {
-                                                    PdlKontaktadresse kontaktadresse = new PdlKontaktadresse();
-                                                    kontaktadresse.setPostadresseIFrittFormat(mapperFacade.map(
-                                                            postadresse, PostadresseIFrittFormat.class));
-                                                    kontaktadresse.setKilde(CONSUMER);
-                                                    return kontaktadresse;
-                                                })
-                                                .collect(Collectors.toList()),
-
-                                        postadresser.stream()
-                                                .filter(RsPostadresse::isUtenlandsk)
-                                                .map(postadresse -> {
-                                                    PdlKontaktadresse kontaktadresse = new PdlKontaktadresse();
-                                                    kontaktadresse.setUtenlandskAdresseIFrittFormat(mapperFacade.map(
-                                                            postadresse, UtenlandskAdresseIFrittFormat.class));
-                                                    kontaktadresse.setKilde(CONSUMER);
                                                     return kontaktadresse;
                                                 })
                                                 .collect(Collectors.toList())
