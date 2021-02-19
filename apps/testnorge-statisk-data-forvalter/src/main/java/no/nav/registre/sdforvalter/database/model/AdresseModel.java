@@ -31,9 +31,6 @@ public class AdresseModel {
         setAdresse(adresse);
     }
 
-    public AdresseModel(no.nav.registre.sdforvalter.consumer.rs.request.ereg.Adresse adresse) {
-        setAdresse(new Adresse(adresse));
-    }
 
     private void setAdresse(Adresse adresse) {
         this.adresse = adresse.getAdresse();

@@ -6,13 +6,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 import no.nav.registre.sdforvalter.adapter.TpsIdenterAdapter;
 import no.nav.registre.sdforvalter.consumer.rs.PersonConsumer;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
+import no.nav.registre.sdforvalter.provider.rs.dto.Orgnummer;
 import no.nav.registre.sdforvalter.service.EnvironmentInitializationService;
 
 @Slf4j
@@ -73,4 +77,11 @@ public class OrkestreringsController {
         environmentInitializationService.updateEregByGruppe(miljoe, gruppe);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping(value = "/organisasjoner")
+    public ResponseEntity<HttpStatus> saveBy(@RequestParam String miljoe, @RequestBody Orgnummer orgnummer) {
+        environmentInitializationService.opprett(miljoe, orgnummer.getListe());
+        return ResponseEntity.ok().build();
+    }
+
 }

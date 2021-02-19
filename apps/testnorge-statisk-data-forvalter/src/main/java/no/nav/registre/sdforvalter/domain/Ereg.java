@@ -9,14 +9,11 @@ import lombok.ToString;
 import lombok.Value;
 import org.apache.logging.log4j.util.Strings;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.registre.sdforvalter.consumer.rs.request.ereg.EregMapperRequest;
 import no.nav.registre.sdforvalter.database.model.EregModel;
 import no.nav.registre.sdforvalter.database.model.TagModel;
 import no.nav.registre.testnorge.libs.dto.statiskedataforvalter.v1.OrganisasjonDTO;
@@ -99,44 +96,6 @@ public class Ereg extends FasteData {
         juridiskEnhet = dto.getJuridiskEnhet();
         forretningsAdresse = new Adresse(dto.getForretningsAdresse());
         postadresse = new Adresse(dto.getPostadresse());
-        tags = new HashSet<>();
-    }
-
-    public Ereg(EregMapperRequest eregMapperRequest) {
-        super("WIP", "Brreg");
-
-        orgnr = eregMapperRequest.getOrgnr();
-        enhetstype = eregMapperRequest.getEnhetstype();
-        if (eregMapperRequest.getNavn() != null) {
-            navn = eregMapperRequest.getNavn().getNavneListe() != null
-                    ? String.join(" ", eregMapperRequest.getNavn().getNavneListe())
-                    : null;
-            redigertNavn = eregMapperRequest.getNavn().getRedNavn();
-        } else {
-            navn = null;
-            redigertNavn = null;
-        }
-
-        epost = eregMapperRequest.getEpost();
-        internetAdresse = eregMapperRequest.getInternetAdresse();
-
-        forretningsAdresse = eregMapperRequest.getForretningsAdresse() != null
-                ? new Adresse(eregMapperRequest.getForretningsAdresse())
-                : null;
-        postadresse = eregMapperRequest.getAdresse() != null ? new Adresse(eregMapperRequest.getAdresse()) : null;
-
-        naeringskode = null;
-
-        List<Map<String, String>> eregMapperRequestKnytninger = eregMapperRequest.getKnytninger();
-        if (eregMapperRequestKnytninger != null) {
-            juridiskEnhet = eregMapperRequestKnytninger
-                    .stream()
-                    .map(stringStringMap -> stringStringMap.get("orgnr"))
-                    .findFirst()
-                    .orElse(null);
-        } else {
-            juridiskEnhet = null;
-        }
         tags = new HashSet<>();
     }
 

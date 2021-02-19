@@ -7,13 +7,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import no.nav.registre.testnorge.libs.common.command.generernavnservice.v1.GenererNavnCommand;
+import no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -21,9 +22,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.netty.http.client.HttpClient;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -34,7 +34,6 @@ import static java.lang.System.currentTimeMillis;
 public class OrganisasjonNavnConsumer {
 
     private static final int TIMEOUT_S = 10;
-    private static final String NAME_URL = "/api/v1/navn?antall=";
 
     private final AccessTokenService accessTokenService;
     private final AccessScopes accessScopes;
@@ -65,20 +64,12 @@ public class OrganisasjonNavnConsumer {
         long startTime = currentTimeMillis();
         try {
             AccessToken accessToken = accessTokenService.generateToken(accessScopes);
-            ResponseEntity<Navn[]> response = webClient.get()
-                    .uri(NAME_URL + antall.toString())
-                    .header("Nav-Consumer-Id", "Testnorge")
-                    .header("Nav-Call-Id", UUID.randomUUID().toString())
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " +
-                            accessToken.getTokenValue())
-                    .retrieve()
-                    .toEntity(Navn[].class)
-                    .block();
+            NavnDTO[] navn = new GenererNavnCommand(webClient, accessToken.getTokenValue(), antall).call();
 
-            List<Navn> orgNavn = response.hasBody() ? List.of(response.getBody()) : Collections.emptyList();
             log.info("Generer-navn-service svarte etter {} ms", currentTimeMillis() - startTime);
-
-            return orgNavn.stream().map(Navn::toString).collect(Collectors.toList());
+            return Arrays.stream(navn)
+                    .map(value ->  format("%s %s", value.getAdjektiv(), value.getSubstantiv()))
+                    .collect(Collectors.toList());
 
         } catch (WebClientResponseException e) {
             log.error(e.getMessage(), e);
@@ -89,7 +80,6 @@ public class OrganisasjonNavnConsumer {
             throw new HttpClientErrorException(e.getStatusCode(), e.getMessage());
 
         } catch (RuntimeException e) {
-
             String error = format("Generer-navn-service svarte ikke etter %d ms", currentTimeMillis() - startTime);
             log.error(error, e);
             throw new HttpClientErrorException(HttpStatus.GATEWAY_TIMEOUT, error);
@@ -102,17 +92,5 @@ public class OrganisasjonNavnConsumer {
         return orgName.isEmpty() ? null : orgName.get(0);
     }
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Navn {
 
-        private String adjektiv;
-        private String substantiv;
-
-        @Override
-        public String toString() {
-            return format("%s %s", adjektiv, substantiv);
-        }
-    }
 }

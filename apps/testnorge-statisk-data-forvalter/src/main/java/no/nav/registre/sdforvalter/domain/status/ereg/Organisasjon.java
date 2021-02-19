@@ -31,7 +31,7 @@ public class Organisasjon {
         orgnummer = ereg.getOrgnr();
         enhetType = ereg.getEnhetstype();
         navn = ereg.getNavn() != null ? ereg.getNavn().toUpperCase() : null;
-        redigertnavn = ereg.getNavn() != null ? ereg.getNavn().toUpperCase() : null;
+        redigertnavn = ereg.getRedigertNavn() != null ? ereg.getRedigertNavn().toUpperCase() : null;
         juridiskEnhet = ereg.getJuridiskEnhet();
         postadresse = ereg.getPostadresse() != null ? new Adresse(ereg.getPostadresse()) : null;
         forretningsadresser = ereg.getForretningsAdresse() != null ? new Adresse(ereg.getForretningsAdresse()) : null;

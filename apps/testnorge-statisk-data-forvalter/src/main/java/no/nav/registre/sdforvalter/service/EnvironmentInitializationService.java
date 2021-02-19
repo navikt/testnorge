@@ -5,12 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import no.nav.registre.sdforvalter.adapter.AaregAdapter;
 import no.nav.registre.sdforvalter.adapter.EregAdapter;
 import no.nav.registre.sdforvalter.adapter.KrrAdapter;
 import no.nav.registre.sdforvalter.consumer.rs.AaregConsumer;
-import no.nav.registre.sdforvalter.consumer.rs.EregMapperConsumer;
+import no.nav.registre.sdforvalter.consumer.rs.OrganisasjonMottakServiceConsumer;
 import no.nav.registre.sdforvalter.consumer.rs.KrrConsumer;
+import no.nav.registre.sdforvalter.domain.Ereg;
+import no.nav.registre.sdforvalter.domain.EregListe;
 import no.nav.registre.sdforvalter.domain.status.ereg.OrganisasjonStatusMap;
 
 @Slf4j
@@ -20,17 +25,14 @@ public class EnvironmentInitializationService {
 
     private final AaregConsumer aaregConsumer;
     private final KrrConsumer krrConsumer;
-    private final EregMapperConsumer eregMapperConsumer;
+    private final OrganisasjonMottakServiceConsumer organisasjonMottakServiceConsumer;
     private final EregStatusService eregStatusService;
 
     private final EregAdapter eregAdapter;
     private final KrrAdapter krrAdapter;
     private final AaregAdapter aaregAdapter;
-
     private final IdentService identService;
 
-    @Value("${tps.statisk.avspillergruppeId}")
-    private Long staticDataPlaygroup;
 
     public void initializeEnvironmentWithStaticData(String environment, String gruppe) {
         log.info("Start init of all static data sets...");
@@ -56,7 +58,7 @@ public class EnvironmentInitializationService {
 
     public void initializeEreg(String environment, String gruppe) {
         log.info("Start init av Ereg ...");
-        eregMapperConsumer.create(eregAdapter.fetchBy(gruppe), environment);
+        organisasjonMottakServiceConsumer.create(eregAdapter.fetchBy(gruppe), environment);
         log.info("Init of Ereg er ferdig.");
     }
 
@@ -66,7 +68,7 @@ public class EnvironmentInitializationService {
         if(status.getMap().isEmpty()){
             log.info("Fant ingen endringer i for {} for {} Ereg", orgnr, environment);
         } else {
-            eregMapperConsumer.update(eregAdapter.fetchByOrgnr(orgnr), environment);
+            organisasjonMottakServiceConsumer.update(eregAdapter.fetchByOrgnr(orgnr), environment);
             log.info("Oppdatering er ferdig.");
         }
     }
@@ -78,10 +80,16 @@ public class EnvironmentInitializationService {
             log.info("Fant ingen endringer i gruppen {} for {} Ereg", gruppe, environment);
         } else {
             log.info("Oppdaterer {} organisasjoner.", status.getMap().size());
-            eregMapperConsumer.update(eregAdapter.fetchByIds(status.getMap().keySet()), environment);
+            organisasjonMottakServiceConsumer.update(eregAdapter.fetchByIds(status.getMap().keySet()), environment);
             log.info("Oppdatering er ferdig.");
         }
 
+    }
+
+    public void opprett(String environment, List<String> liste) {
+        log.info("Oppretter organisasjoner {} i miljo {}.", String.join(", ", liste), environment);
+        var eregListe = new EregListe(liste.stream().map(eregAdapter::fetchByOrgnr).collect(Collectors.toList()));
+        organisasjonMottakServiceConsumer.create(eregListe, environment);
     }
 
     public void initializeKrr(String gruppe) {

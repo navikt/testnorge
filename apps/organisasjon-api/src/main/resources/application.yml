@@ -11,5 +11,3 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 consumers:
   ereg:
     url: https://modapp-{miljo}.adeo.no/ereg/api/v1/
-  ereg-mapper:
-    url: https://testnorge-ereg-mapper.dev.adeo.no

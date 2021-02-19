@@ -68,9 +68,4 @@ public class OrganisasjonConsumer {
         }
         return list;
     }
-
-    public void saveOrganisasjon(OrganisasjonDTO dto, String miljo) {
-        AccessToken accessToken = accessTokenService.generateToken(clientId);
-        new SaveOrganisasjonCommand(webClient, dto, accessToken.getTokenValue(), miljo).run();
-    }
 }

@@ -52,6 +52,8 @@ spec:
           cluster: dev-gcp
         - application: aareg-synt-services-proxy
           cluster: dev-fss
+        - application: testnorge-statisk-data-forvalter
+          cluster: dev-fss
   gcp:
     sqlInstances:
       - type: POSTGRES_12
