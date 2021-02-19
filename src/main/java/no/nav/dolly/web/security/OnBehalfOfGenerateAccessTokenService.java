@@ -65,6 +65,9 @@ class OnBehalfOfGenerateAccessTokenService {
         }
         OAuth2AccessToken accessToken = tokenResolver.getToken();
 
+        log.info("Første 5 tegn i tokenResolver id er: {}", accessToken.getTokenValue().substring(0, 5));
+        log.info("Første 5 tegn i client_secret er: {}", clientCredential.getClientSecret().substring(0, 5));
+
         var body = BodyInserters
                 .fromFormData("scope", String.join(" ", accessScopes.getScopes()))
                 .with("client_id", clientCredential.getClientId())
