@@ -11,6 +11,7 @@ dependencies {
     //TODO remove
     compile group: 'com.google.guava', name: 'guava', version: '30.0-jre'
 
+    implementation project(':local-development')
     implementation project(':kafka-config')
     implementation project(':kafka-producers')
     implementation project(':testnorge-avro-schema')
