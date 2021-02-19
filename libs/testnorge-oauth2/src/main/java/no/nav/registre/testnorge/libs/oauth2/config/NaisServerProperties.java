@@ -10,10 +10,9 @@ public class NaisServerProperties implements Scopeable {
     private String cluster;
     private String name;
     private String namespace;
-    private String clientId;
 
     @Override
     public String toScope() {
-        return "api://" + clientId + "/.default";
+        return "api://" + cluster + "." +  namespace + "." + name + "/.default";
     }
 }

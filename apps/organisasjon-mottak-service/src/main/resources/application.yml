@@ -11,13 +11,11 @@ consumers:
     namespace: dolly
     name: jenkins-batch-status-service
     cluster: dev-fss
-    clientId: 34c2e87a-0711-4ef1-b644-55d86a375e7a
   jenkins:
     url: http://testnorge-batch-adeo-proxy.dolly.svc.nais.local
     namespace: dolly
     name: testnorge-batch-adeo-proxy
     cluster: dev-fss
-    clientId: cbdc5022-17ed-48fd-9916-857e5df1e88b
 
 kafka:
   bootstrapservers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
