@@ -41,7 +41,7 @@ export default class DollyEndpoints {
 	}
 
 	static laasGruppe(gruppeId) {
-		return `${groupBase}/${gruppeId}/laas?erLaast=true`
+		return `${groupBase}/${gruppeId}/laas`
 	}
 
 	static gruppeBestillingStatus(gruppeId) {

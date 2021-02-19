@@ -23,7 +23,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
 		getGruppe: () => dispatch(actions.getById(gruppeId)),
 		deleteGruppe: () => dispatch(actions.remove(gruppeId)),
-		laasGruppe: () => dispatch(actions.laas(gruppeId)),
+		laasGruppe: () =>
+			dispatch(actions.laas(gruppeId, { erLaast: true, laastBeskrivelse: 'Låst gruppe' })),
 		getBestillinger: () => dispatch(getBestillinger(gruppeId))
 	}
 }
