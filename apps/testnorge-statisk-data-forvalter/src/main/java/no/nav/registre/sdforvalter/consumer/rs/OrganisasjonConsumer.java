@@ -46,7 +46,7 @@ public class OrganisasjonConsumer {
                     try {
                         return new Organisasjon(new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, miljo).call());
                     } catch (Exception e) {
-                        log.warn("Klarer ikke å hente organsisasjon  {}", orgnummer);
+                        log.warn("Klarer ikke å hente organsisasjon  {}.", orgnummer, e);
                         return null;
                     }
                 },

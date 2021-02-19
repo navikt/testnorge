@@ -25,5 +25,4 @@ public class OrgTreeList {
         return list.stream().anyMatch(value -> value.contains(ereg));
     }
 
-
 }

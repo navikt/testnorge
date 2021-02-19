@@ -1,28 +1,19 @@
 package no.nav.registre.sdforvalter.provider.rs.v1;
 
-import com.google.common.base.Strings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Pattern;
 import javax.websocket.server.PathParam;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.util.Set;
 
 import no.nav.registre.sdforvalter.adapter.EregAdapter;
-import no.nav.registre.sdforvalter.consumer.rs.EregMapperConsumer;
 import no.nav.registre.sdforvalter.domain.Ereg;
 import no.nav.registre.sdforvalter.domain.EregListe;
 import no.nav.registre.sdforvalter.domain.status.ereg.OrganisasjonStatusMap;
@@ -37,27 +28,8 @@ public class OrganisasjonControllerV1 {
 
     private static final String ORGNR_REGEX = "^(8|9)\\d{8}$";
 
-    private final EregMapperConsumer eregMapperConsumer;
     private final EregAdapter eregAdapter;
     private final EregStatusService eregStatusService;
-
-    @GetMapping(value = "/flatfile", produces = "text/ISO-8859-1")
-    public void exportByGruppe(
-            @RequestParam(name = "gruppe") String gruppe,
-            @RequestParam(name = "update") Boolean update,
-            HttpServletResponse response
-    ) throws IOException {
-        writeExport(response, eregAdapter.fetchBy(gruppe), gruppe, update);
-    }
-
-    @GetMapping(value = "/flatfile/{orgnr}", produces = "text/ISO-8859-1")
-    public void exportByOrgnr(
-            @PathParam("orgnr") String orgnr,
-            @RequestParam(name = "update") Boolean update,
-            HttpServletResponse response
-    ) throws IOException {
-        writeExport(response, eregAdapter.fetchByIds(Set.of(orgnr)), orgnr, update);
-    }
 
     @GetMapping("/status")
     public ResponseEntity<OrganisasjonStatusMap> statusByGruppe(
@@ -100,14 +72,5 @@ public class OrganisasjonControllerV1 {
     public ResponseEntity<OrganisasjonListeDTO> createOrganisasjons(@RequestBody OrganisasjonListeDTO listeDTO) {
         OrganisasjonListeDTO dto = eregAdapter.save(new EregListe(listeDTO)).toDTO();
         return ResponseEntity.ok(dto);
-    }
-
-
-    private void writeExport(HttpServletResponse response, EregListe liste, String identifier, Boolean update) throws IOException {
-        response.setContentType("text/" + StandardCharsets.ISO_8859_1);
-        String filename = "filename=ereg-" + Strings.nullToEmpty(identifier) + "-" + LocalDateTime.now().toString() + ".txt";
-        response.setHeader("Content-Disposition", "attachment; " + filename);
-        String flatfil = eregMapperConsumer.generateFlatfil(liste, update);
-        response.getOutputStream().write(flatfil.getBytes(StandardCharsets.ISO_8859_1));
     }
 }

@@ -28,7 +28,6 @@ public class EregConsumer {
     }
 
     public Organisasjon getOrganisasjon(String orgnummer, String miljo) {
-        log.info("Henter org {} fra {}", orgnummer, miljo);
         OrganisasjonDTO response = new GetOrganisasjon(eregUrl, miljo, orgnummer, restTemplate).call();
         return response != null ? new Organisasjon(response) : null;
     }
