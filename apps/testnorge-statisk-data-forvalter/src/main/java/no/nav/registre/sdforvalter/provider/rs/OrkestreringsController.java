@@ -79,7 +79,7 @@ public class OrkestreringsController {
 
     @PostMapping(value = "/organisasjoner")
     public ResponseEntity<HttpStatus> saveBy(@RequestParam String miljoe, Orgnummer orgnummer) {
-        environmentInitializationService.opprett(miljoe, liste);
+        environmentInitializationService.opprett(miljoe, orgnummer.getListe());
         return ResponseEntity.ok().build();
     }
 
