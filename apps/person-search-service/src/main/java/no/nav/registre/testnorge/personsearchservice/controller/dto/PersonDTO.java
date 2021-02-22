@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.personsearchservice.controller;
+package no.nav.registre.testnorge.personsearchservice.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

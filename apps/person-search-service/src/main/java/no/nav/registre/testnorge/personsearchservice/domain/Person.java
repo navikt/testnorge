@@ -8,7 +8,7 @@ import java.util.Optional;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Kjoenn;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Navn;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Response;
-import no.nav.registre.testnorge.personsearchservice.controller.PersonDTO;
+import no.nav.registre.testnorge.personsearchservice.controller.dto.PersonDTO;
 
 @RequiredArgsConstructor
 public class Person {

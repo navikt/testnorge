@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Response;
+import no.nav.registre.testnorge.personsearchservice.controller.dto.PageDTO;
 import no.nav.registre.testnorge.personsearchservice.domain.Person;
 import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
 import no.nav.registre.testnorge.personsearchservice.domain.Search;
@@ -51,6 +52,9 @@ public class PersonSearchAdapter {
         searchRequest.indices("pdl-sok");
 
         var searchSourceBuilder = new SearchSourceBuilder();
+        PageDTO page = search.getPage();
+
+        searchSourceBuilder.from((page.getPage() - 1) * page.getPageSize());
         searchSourceBuilder.query(query);
         searchRequest.source(searchSourceBuilder);
         SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
@@ -59,7 +63,7 @@ public class PersonSearchAdapter {
 
         List<Response> responses = convert(searchResponse.getHits().getHits(), Response.class);
 
-        int numberOfPages = (int) Math.ceil(searchResponse.getHits().getTotalHits().value / (long) search.getPage().getPageSize());
+        int numberOfPages = (int) Math.ceil(searchResponse.getHits().getTotalHits().value / (long) page.getPageSize());
 
         return new PersonList(
                 numberOfPages,

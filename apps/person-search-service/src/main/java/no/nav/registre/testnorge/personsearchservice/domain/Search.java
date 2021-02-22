@@ -5,14 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import java.util.List;
+import no.nav.registre.testnorge.personsearchservice.controller.dto.PageDTO;
 
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class Search {
     @JsonProperty
-    Page page;
+    PageDTO page;
     @JsonProperty
     String tag;
 }

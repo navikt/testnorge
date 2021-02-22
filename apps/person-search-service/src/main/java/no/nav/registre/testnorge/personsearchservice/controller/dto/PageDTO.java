@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.personsearchservice.domain;
+package no.nav.registre.testnorge.personsearchservice.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class Page {
+public class PageDTO {
     Integer page;
     Integer pageSize;
 }
