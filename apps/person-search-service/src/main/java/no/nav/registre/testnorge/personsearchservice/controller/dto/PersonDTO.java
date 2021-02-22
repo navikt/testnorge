@@ -13,6 +13,7 @@ public class PersonDTO {
     String fornavn;
     String mellomnavn;
     String ettternavn;
+    String kjoenn;
     String ident;
     String aktorId;
     String tag;

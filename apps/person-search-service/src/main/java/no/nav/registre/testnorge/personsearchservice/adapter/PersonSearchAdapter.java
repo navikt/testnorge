@@ -51,7 +51,11 @@ public class PersonSearchAdapter {
                 .must(QueryBuilders.matchQuery("tags", search.getTag()));
 
         Optional.ofNullable(search.getKjoenn())
-                .ifPresent(value -> queryBuilder.must(QueryBuilders.nestedQuery("hentPerson.kjoenn", QueryBuilders.matchQuery("hentPerson.kjoenn.kjoenn", value), ScoreMode.Avg)));
+                .ifPresent(value -> queryBuilder.must(QueryBuilders.nestedQuery(
+                        "hentPerson.kjoenn",
+                        QueryBuilders.matchQuery("hentPerson.kjoenn.kjoenn", value),
+                        ScoreMode.Avg
+                )));
 
         var searchRequest = new SearchRequest();
         searchRequest.indices("pdl-sok");
@@ -68,7 +72,7 @@ public class PersonSearchAdapter {
 
         List<Response> responses = convert(searchResponse.getHits().getHits(), Response.class);
 
-        int numberOfPages = (int) Math.ceil(searchResponse.getHits().getTotalHits().value / (long) page.getPageSize());
+        int numberOfPages = (int) Math.ceil(searchResponse.getHits().getTotalHits().value / (double) page.getPageSize());
 
         return new PersonList(
                 numberOfPages,

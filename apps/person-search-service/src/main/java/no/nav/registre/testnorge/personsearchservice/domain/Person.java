@@ -8,19 +8,22 @@ import java.util.Optional;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Kjoenn;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Navn;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Response;
+import no.nav.registre.testnorge.personsearchservice.adapter.model.WithMetadata;
 import no.nav.registre.testnorge.personsearchservice.controller.dto.PersonDTO;
 
 @RequiredArgsConstructor
 public class Person {
     private final Response response;
 
-    private Optional<Navn> getNavn() {
-        return response
-                .getHentPerson()
-                .getNavn()
+    private <T extends WithMetadata> Optional<T> getCurrent(List<T> list){
+        return list
                 .stream()
                 .filter(value -> !value.getMetadata().getHistorisk())
                 .findFirst();
+    }
+
+    private Optional<Navn> getNavn() {
+        return getCurrent(response.getHentPerson().getNavn());
     }
 
     public String getFornavn() {
@@ -36,12 +39,7 @@ public class Person {
     }
 
     public String getKjoenn() {
-        return response
-                .getHentPerson()
-                .getKjoenn()
-                .stream()
-                .filter(value -> !value.getMetadata().getHistorisk())
-                .findFirst()
+        return getCurrent(response.getHentPerson().getKjoenn())
                 .map(Kjoenn::getKjoenn)
                 .orElse(null);
     }
@@ -81,6 +79,7 @@ public class Person {
                 .ettternavn(getEtternavn())
                 .aktorId(getAktorId())
                 .ident(getIdent())
+                .kjoenn(getKjoenn())
                 .tag(getTags().stream().findFirst().orElse(null))
                 .build();
     }
