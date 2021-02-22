@@ -20,13 +20,17 @@ import no.nav.registre.testnorge.personsearchservice.service.PersonSearchService
 @RequestMapping("/api/v1/person")
 @RequiredArgsConstructor
 public class PersonSearchController {
-
+    private static final String NUMBER_OF_PAGES_HEADER = "NUMBER_OF_PAGES";
     private final PersonSearchService service;
 
     @PostMapping
     public ResponseEntity<List<PersonDTO>> search(@RequestBody Search search) {
         PersonList personList = service.search(search);
-        return ResponseEntity.ok(personList.getList().stream().map(Person::toDTO).collect(Collectors.toList()));
+        List<PersonDTO> dto = personList.getList().stream().map(Person::toDTO).collect(Collectors.toList());
+        return ResponseEntity
+                .ok()
+                .header(NUMBER_OF_PAGES_HEADER, String.valueOf(personList.getNumberOfPages()))
+                .body(dto);
     }
 
 }
