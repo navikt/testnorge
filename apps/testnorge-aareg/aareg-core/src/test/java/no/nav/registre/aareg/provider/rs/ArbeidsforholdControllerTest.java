@@ -36,14 +36,14 @@ public class ArbeidsforholdControllerTest {
     @Test
     public void shouldOppretteArbeidsforhold() {
         var opprettRequest = RsAaregOpprettRequest.builder().build();
-        arbeidsforholdController.opprettArbeidsforhold(navCallId, opprettRequest);
+        arbeidsforholdController.opprettArbeidsforhold(opprettRequest);
         verify(aaregService).opprettArbeidsforhold(opprettRequest);
     }
 
     @Test
     public void shouldOppdatereArbeidsforhold() {
         var oppdaterRequest = new RsAaregOppdaterRequest();
-        arbeidsforholdController.oppdaterArbeidsforhold(navCallId, oppdaterRequest);
+        arbeidsforholdController.oppdaterArbeidsforhold(oppdaterRequest);
         verify(aaregService).oppdaterArbeidsforhold(oppdaterRequest);
     }
 
@@ -56,7 +56,7 @@ public class ArbeidsforholdControllerTest {
     @Test
     public void shouldSletteArbeidsforholdFraEttMiljoe() {
         var miljoer = Collections.singletonList(miljoe);
-        arbeidsforholdController.slettArbeidsforhold(navCallId, ident, miljoer);
+        arbeidsforholdController.slettArbeidsforhold(ident, miljoer);
         verify(aaregService).slettArbeidsforhold(ident, miljoer, navCallId);
     }
 
@@ -67,7 +67,7 @@ public class ArbeidsforholdControllerTest {
         miljoerResponse.setEnvironments(miljoer);
         when(miljoerConsumer.hentMiljoer()).thenReturn(miljoerResponse);
 
-        arbeidsforholdController.slettArbeidsforhold(navCallId, ident, null);
+        arbeidsforholdController.slettArbeidsforhold(ident, null);
 
         verify(miljoerConsumer).hentMiljoer();
         verify(aaregService).slettArbeidsforhold(ident, miljoer, navCallId);
