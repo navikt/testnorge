@@ -2,8 +2,6 @@ package no.nav.registre.testnorge.arena.consumer.rs.response.tpsf;
 
 import java.time.LocalDate;
 
-import org.apache.tomcat.jni.Local;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

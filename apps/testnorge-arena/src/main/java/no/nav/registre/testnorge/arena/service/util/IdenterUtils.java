@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.BrukereArenaForvalterConsumer;
 import no.nav.registre.testnorge.arena.consumer.rs.AktoerRegisteretConsumer;
-import no.nav.registre.testnorge.arena.consumer.rs.TpsForvalterConsumer;
 import no.nav.registre.testnorge.arena.service.TpsForvalterService;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 
