@@ -34,6 +34,13 @@ public class ArbeidsforholdController {
     private final AaregService aaregService;
     private final MiljoerConsumer miljoerConsumer;
 
+    @GetMapping("/aktiveMiljoer")
+    @ApiOperation(value = "Hent aktivt brukte miljøer fra miljoer-service")
+    public List<String> hentAktiveMiljoer(
+    ) {
+        return miljoerConsumer.hentMiljoer().getEnvironments();
+    }
+
     @PostMapping
     @ApiOperation(value = "Legg arbeidsforhold inn i aareg.")
     @ResponseStatus(HttpStatus.CREATED)
