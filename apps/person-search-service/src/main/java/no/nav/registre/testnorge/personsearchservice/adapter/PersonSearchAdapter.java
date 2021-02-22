@@ -50,14 +50,14 @@ public class PersonSearchAdapter {
                 .boolQuery()
                 .must(QueryBuilders.matchQuery("tags", search.getTag()));
 
-        Optional.ofNullable(search.getKjoenn()).ifPresent(value -> queryBuilder.must(QueryBuilders.matchQuery("kjoenn", value)));
+        Optional.ofNullable(search.getKjoenn())
+                .ifPresent(value -> queryBuilder.must(QueryBuilders.matchQuery("hentPerson.kjoenn.kjoenn", value)));
 
         var searchRequest = new SearchRequest();
         searchRequest.indices("pdl-sok");
 
         var searchSourceBuilder = new SearchSourceBuilder();
         Pageing page = search.getPageing();
-
         searchSourceBuilder.from((page.getPage() - 1) * page.getPageSize());
         searchSourceBuilder.size(page.getPageSize());
         searchSourceBuilder.query(queryBuilder);
@@ -74,13 +74,5 @@ public class PersonSearchAdapter {
                 numberOfPages,
                 responses.stream().map(Person::new).collect(Collectors.toList())
         );
-    }
-
-    private QueryBuilder combinedOnANDOperator(List<QueryBuilder> list){
-        var queryBuilder = QueryBuilders.boolQuery();
-        for (var item : list){
-            queryBuilder.must(item);
-        }
-        return queryBuilder;
     }
 }
