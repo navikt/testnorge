@@ -11,6 +11,7 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyBruker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -135,7 +136,6 @@ public class BrukereService {
         return hodejegerenConsumer.getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
     }
 
-
     private int getAntallBrukereForAaFylleArenaForvalteren(
             int antallLevendeIdenter,
             int antallEksisterendeIdenter
@@ -148,7 +148,7 @@ public class BrukereService {
             Long avspillergruppeId,
             String miljoe
     ) {
-        var identer = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallIdenter, MINIMUM_ALDER, MAKSIMUM_ALDER, miljoe);
+        var identer = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallIdenter, MINIMUM_ALDER, MAKSIMUM_ALDER, miljoe, false);
 
         Map<String, NyeBrukereResponse> responses = new HashMap<>();
         for (var ident : identer) {

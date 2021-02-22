@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.arena.consumer.rs.request;
+package no.nav.registre.testnorge.arena.consumer.rs.request.pensjon;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

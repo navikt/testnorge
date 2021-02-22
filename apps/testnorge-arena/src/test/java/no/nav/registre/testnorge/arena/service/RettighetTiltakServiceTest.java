@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 import no.nav.registre.testnorge.arena.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.testnorge.arena.consumer.rs.TiltakSyntConsumer;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetSyntRequest;
+import no.nav.registre.testnorge.arena.consumer.rs.request.synt.SyntRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTilleggRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.util.ConsumerUtils;
 import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
@@ -71,12 +71,12 @@ public class RettighetTiltakServiceTest {
     private List<String> identer;
     private NyttVedtakTiltak tiltakMedTilDatoFremITid;
     private NyttVedtakTiltak tiltakMedTilDatoLikDagens;
-    private List<RettighetSyntRequest> syntRequest;
+    private List<SyntRequest> syntRequest;
 
     @Before
     public void setUp() {
         syntRequest = new ArrayList<>(Collections.singletonList(
-                RettighetSyntRequest.builder()
+                SyntRequest.builder()
                         .fraDato(LocalDate.now().toString())
                         .tilDato(LocalDate.now().toString())
                         .utfall(UTFALL_JA)

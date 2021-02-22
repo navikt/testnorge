@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.arena.consumer.rs.response;
+package no.nav.registre.testnorge.arena.consumer.rs.response.aktoer;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

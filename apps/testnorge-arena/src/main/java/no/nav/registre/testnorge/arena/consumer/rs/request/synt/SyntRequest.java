@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.arena.consumer.rs.request;
+package no.nav.registre.testnorge.arena.consumer.rs.request.synt;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RettighetSyntRequest {
+public class SyntRequest {
 
     private String fraDato;
 

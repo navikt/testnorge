@@ -1,8 +1,8 @@
-package no.nav.registre.testnorge.arena.consumer.rs.command;
+package no.nav.registre.testnorge.arena.consumer.rs.command.synt;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetSyntRequest;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
+import no.nav.registre.testnorge.arena.consumer.rs.request.synt.SyntRequest;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -20,28 +20,28 @@ import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.NAV_CALL_
 import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.NAV_CONSUMER_ID;
 
 @Slf4j
-public class PostSyntTilleggRequestCommand implements Callable<List<NyttVedtakTillegg>> {
+public class PostSyntAapRequestCommand implements Callable<List<NyttVedtakAap>> {
 
     private final WebClient webClient;
-    private final List<RettighetSyntRequest> requests;
+    private final List<SyntRequest> requests;
     private final String urlPath;
 
 
-    private static final ParameterizedTypeReference<List<RettighetSyntRequest>> REQUEST_TYPE = new ParameterizedTypeReference<>() {
+    private static final ParameterizedTypeReference<List<SyntRequest>> REQUEST_TYPE = new ParameterizedTypeReference<>() {
     };
-    private static final ParameterizedTypeReference<List<NyttVedtakTillegg>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
+    private static final ParameterizedTypeReference<List<NyttVedtakAap>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
-    public PostSyntTilleggRequestCommand(WebClient webClient, List<RettighetSyntRequest> requests, String urlPath) {
+    public PostSyntAapRequestCommand(WebClient webClient, List<SyntRequest> requests, String urlPath) {
         this.webClient = webClient;
         this.requests = requests;
         this.urlPath = urlPath;
     }
 
     @Override
-    public List<NyttVedtakTillegg> call() {
+    public List<NyttVedtakAap> call() {
         try {
-            log.info("Henter syntetiske tilleggsstonad vedtak.");
+            log.info("Henter syntetiske AAP vedtak.");
             return webClient.post()
                     .uri(builder ->
                             builder.path(urlPath)
@@ -55,7 +55,7 @@ public class PostSyntTilleggRequestCommand implements Callable<List<NyttVedtakTi
                     .bodyToMono(RESPONSE_TYPE)
                     .block();
         } catch (Exception e) {
-            log.error("Klarte ikke hente syntetiske tilleggsstonad vedtak.", e);
+            log.error("Klarte ikke hente syntetiske AAP vedtak.", e);
             return Collections.emptyList();
         }
     }

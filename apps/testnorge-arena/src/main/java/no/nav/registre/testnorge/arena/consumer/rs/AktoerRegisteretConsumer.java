@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.arena.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.arena.consumer.rs.command.GetAktoerIdTilIdenterCommand;
+import no.nav.registre.testnorge.arena.consumer.rs.command.aktoer.GetAktoerIdTilIdenterCommand;
 import no.nav.registre.testnorge.arena.security.TokenService;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import org.springframework.beans.factory.annotation.Value;

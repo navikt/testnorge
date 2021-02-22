@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.arena.consumer.rs.response;
+package no.nav.registre.testnorge.arena.consumer.rs.response.pensjon;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,8 +11,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PensjonTestdataStatus {
+public class HttpStatus {
 
-    private String miljo;
-    private PensjonTestdataResponseDetails response;
+    private String reasonPhrase;
+    private Integer status;
 }

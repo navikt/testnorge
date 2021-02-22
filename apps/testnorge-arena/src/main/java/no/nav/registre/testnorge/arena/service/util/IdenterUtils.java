@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.BrukereArenaForvalterConsumer;
 import no.nav.registre.testnorge.arena.consumer.rs.AktoerRegisteretConsumer;
+import no.nav.registre.testnorge.arena.service.TpsForvalterService;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -29,7 +31,6 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 import static no.nav.registre.testnorge.arena.consumer.rs.util.ConsumerUtils.EIER;
 
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -42,7 +43,7 @@ public class IdenterUtils {
     private final HodejegerenConsumer hodejegerenConsumer;
     private final BrukereArenaForvalterConsumer brukereArenaForvalterConsumer;
     private final AktoerRegisteretConsumer aktoerRegisteretConsumer;
-
+    private final TpsForvalterService tpsForvalterService;
 
     public List<String> getLevende(
             Long avspillergruppeId,
@@ -58,7 +59,7 @@ public class IdenterUtils {
             String miljoe
     ) {
         var levendeIdenter = new HashSet<>(hodejegerenConsumer.getLevende(avspillergruppeId));
-        return filtrerIdenterUtenAktoerId(levendeIdenter, miljoe, antallNyeIdenter);
+        return filtrerIdenterUtenAktoerId(levendeIdenter, miljoe, antallNyeIdenter, false);
     }
 
     public List<String> getUtvalgteIdenterIAldersgruppe(
@@ -66,10 +67,11 @@ public class IdenterUtils {
             int antallNyeIdenter,
             int minimumAlder,
             int maksimumAlder,
-            String miljoe
+            String miljoe,
+            boolean maaVaereBosatt
     ) {
         var levendeIdenterIAldersgruppe = new HashSet<>(hodejegerenConsumer.getLevende(avspillergruppeId, minimumAlder, maksimumAlder));
-        return filtrerIdenterUtenAktoerId(levendeIdenterIAldersgruppe, miljoe, antallNyeIdenter);
+        return filtrerIdenterUtenAktoerId(levendeIdenterIAldersgruppe, miljoe, antallNyeIdenter, maaVaereBosatt);
     }
 
     public List<String> getUtvalgteIdenterIAldersgruppeMedBarnUnder18(
@@ -78,10 +80,11 @@ public class IdenterUtils {
             int minimumAlder,
             int maksimumAlder,
             String miljoe,
-            LocalDate tidligsteDato
+            LocalDate tidligsteDato,
+            boolean maaVaereBosatt
     ) {
         var levendeIdenterIAldersgruppe = new HashSet<>(hodejegerenConsumer.getLevende(avspillergruppeId, minimumAlder, maksimumAlder));
-        return filtrerIdenterUtenAktoerIdOgBarnUnder18(levendeIdenterIAldersgruppe, miljoe, antallNyeIdenter, tidligsteDato);
+        return filtrerIdenterUtenAktoerIdOgBarnUnder18(levendeIdenterIAldersgruppe, miljoe, antallNyeIdenter, tidligsteDato, maaVaereBosatt);
     }
 
     public List<KontoinfoResponse> getIdenterMedKontoinformasjon(
@@ -97,17 +100,23 @@ public class IdenterUtils {
         return identerMedKontonummer;
     }
 
-
     private List<String> filtrerIdenterUtenAktoerId(
             Set<String> identer,
             String miljoe,
-            int antallNyeIdenter
+            int antallNyeIdenter,
+            boolean maaVaereBosatt
     ) {
         var identerUtenArenabruker = filtrerEksisterendeBrukereIArena(identer, miljoe);
         var identerPartisjonert = partisjonerListe(identerUtenArenabruker, PAGE_SIZE);
         Map<String, String> identerMedAktoerId = new HashMap<>();
         for (var partisjon : identerPartisjonert) {
-            identerMedAktoerId.putAll(aktoerRegisteretConsumer.hentAktoerIderTilIdenter(partisjon, miljoe));
+            var aktoerIdenter = aktoerRegisteretConsumer.hentAktoerIderTilIdenter(partisjon, miljoe);
+            if (maaVaereBosatt) {
+                aktoerIdenter = aktoerIdenter.entrySet().stream()
+                        .filter(x -> tpsForvalterService.identHarPersonstatusBosatt(x.getKey(), miljoe))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            }
+            identerMedAktoerId.putAll(aktoerIdenter);
             if (identerMedAktoerId.size() >= antallNyeIdenter) {
                 break;
             }
@@ -119,7 +128,8 @@ public class IdenterUtils {
             Set<String> identer,
             String miljoe,
             int antallNyeIdenter,
-            LocalDate tidligsteDato
+            LocalDate tidligsteDato,
+            boolean maaVaereBosatt
     ) {
         var identerUtenArenabruker = filtrerEksisterendeBrukereIArena(identer, miljoe);
 
@@ -132,7 +142,7 @@ public class IdenterUtils {
 
             for (var ident : identerMedAktoerId.keySet()) {
                 var relasjonsResponse = getRelasjonerTilIdent(ident, miljoe);
-                if (inneholderBarnUnder18VedTidspunkt(relasjonsResponse, tidligsteDato)) {
+                if (inneholderBarnUnder18VedTidspunkt(relasjonsResponse, tidligsteDato) && (!maaVaereBosatt || tpsForvalterService.identHarPersonstatusBosatt(ident, miljoe))) {
                     utvalgteIdenter.add(ident);
                     if (utvalgteIdenter.size() >= antallNyeIdenter) {
                         return utvalgteIdenter;

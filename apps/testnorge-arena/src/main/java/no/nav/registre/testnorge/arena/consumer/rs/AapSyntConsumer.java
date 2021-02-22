@@ -1,13 +1,13 @@
 package no.nav.registre.testnorge.arena.consumer.rs;
 
-import no.nav.registre.testnorge.arena.consumer.rs.command.PostSyntAapRequestCommand;
+import no.nav.registre.testnorge.arena.consumer.rs.command.synt.PostSyntAapRequestCommand;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetSyntRequest;
+import no.nav.registre.testnorge.arena.consumer.rs.request.synt.SyntRequest;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
@@ -31,23 +31,23 @@ public class AapSyntConsumer {
         this.webClient = WebClient.builder().baseUrl(arenaAapServerUrl).build();
     }
 
-    public List<NyttVedtakAap> syntetiserRettighetAap(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakAap> syntetiserRettighetAap(List<SyntRequest> syntRequest) {
         return new PostSyntAapRequestCommand(webClient, syntRequest, ARENA_AAP_URL).call();
     }
 
-    public List<NyttVedtakAap> syntetiserRettighetAap115(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakAap> syntetiserRettighetAap115(List<SyntRequest> syntRequest) {
         return new PostSyntAapRequestCommand(webClient, syntRequest, ARENA_AAP_115_URL).call();
     }
 
-    public List<NyttVedtakAap> syntetiserRettighetUngUfoer(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakAap> syntetiserRettighetUngUfoer(List<SyntRequest> syntRequest) {
         return new PostSyntAapRequestCommand(webClient, syntRequest, ARENA_AAP_UNG_UFOER_URL).call();
     }
 
-    public List<NyttVedtakAap> syntetiserRettighetTvungenForvaltning(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakAap> syntetiserRettighetTvungenForvaltning(List<SyntRequest> syntRequest) {
         return new PostSyntAapRequestCommand(webClient, syntRequest, ARENA_AAP_AATFOR_URL).call();
     }
 
-    public List<NyttVedtakAap> syntetiserRettighetFritakMeldekort(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakAap> syntetiserRettighetFritakMeldekort(List<SyntRequest> syntRequest) {
         return new PostSyntAapRequestCommand(webClient, syntRequest, ARENA_AAP_FRI_MK).call();
     }
 

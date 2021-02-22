@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.arena.consumer.rs;
 
-import no.nav.registre.testnorge.arena.consumer.rs.command.PostSyntTiltakRequestCommand;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetSyntRequest;
+import no.nav.registre.testnorge.arena.consumer.rs.command.synt.PostSyntTiltakRequestCommand;
+import no.nav.registre.testnorge.arena.consumer.rs.request.synt.SyntRequest;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,23 +28,23 @@ public class TiltakSyntConsumer {
         this.webClient = WebClient.builder().baseUrl(arenaTiltakServerUrl).build();
     }
 
-    public List<NyttVedtakTiltak> opprettTiltaksdeltakelse(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakTiltak> opprettTiltaksdeltakelse(List<SyntRequest> syntRequest) {
         return new PostSyntTiltakRequestCommand(webClient, syntRequest, ARENA_TILTAKSDELTAKELSE_URL).call();
     }
 
-    public List<NyttVedtakTiltak> opprettTiltakspenger(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakTiltak> opprettTiltakspenger(List<SyntRequest> syntRequest) {
         return new PostSyntTiltakRequestCommand(webClient, syntRequest, ARENA_TILTAKSPENGER_URL).call();
     }
 
-    public List<NyttVedtakTiltak> opprettBarnetillegg(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakTiltak> opprettBarnetillegg(List<SyntRequest> syntRequest) {
         return new PostSyntTiltakRequestCommand(webClient, syntRequest, ARENA_BARNETILLEGG_URL).call();
     }
 
-    public List<NyttVedtakTiltak> opprettDeltakerstatus(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakTiltak> opprettDeltakerstatus(List<SyntRequest> syntRequest) {
         return new PostSyntTiltakRequestCommand(webClient, syntRequest, ARENA_DELTAKERSTATUS_URL).call();
     }
 
-    public List<NyttVedtakTiltak> opprettTiltaksaktivitet(List<RettighetSyntRequest> syntRequest) {
+    public List<NyttVedtakTiltak> opprettTiltaksaktivitet(List<SyntRequest> syntRequest) {
         return new PostSyntTiltakRequestCommand(webClient, syntRequest, ARENA_TILTAKSAKTIVITET_URL).call();
     }
 }
