@@ -29,7 +29,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ArbeidsforholdController {
 
-    private String NAV_CALL_ID = "DOLLY";
+    private final String NAV_CALL_ID = "DOLLY";
 
     private final AaregService aaregService;
     private final MiljoerConsumer miljoerConsumer;
