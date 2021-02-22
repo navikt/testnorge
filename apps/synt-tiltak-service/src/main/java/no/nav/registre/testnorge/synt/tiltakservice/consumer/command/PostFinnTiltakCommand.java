@@ -7,8 +7,8 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetFinnTiltakRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
-import no.nav.registre.testnorge.synt.tiltakservice.consumer.request.FinnTiltakRequest;
 import reactor.core.publisher.Mono;
 
 import static no.nav.registre.testnorge.domain.dto.arena.testnorge.request.util.Headers.CALL_ID;
@@ -22,9 +22,9 @@ public class PostFinnTiltakCommand implements Callable<NyttVedtakResponse> {
     private final String miljoe;
     private final String ident;
     private final WebClient webClient;
-    private final FinnTiltakRequest rettighet;
+    private final RettighetFinnTiltakRequest rettighet;
 
-    public PostFinnTiltakCommand(FinnTiltakRequest rettighet, WebClient webClient) {
+    public PostFinnTiltakCommand(RettighetFinnTiltakRequest rettighet, WebClient webClient) {
         this.webClient = webClient;
         this.miljoe = rettighet.getMiljoe();
         this.ident = rettighet.getPersonident();
@@ -43,7 +43,7 @@ public class PostFinnTiltakCommand implements Callable<NyttVedtakResponse> {
                     .header(CALL_ID, NAV_CALL_ID)
                     .header(CONSUMER_ID, NAV_CONSUMER_ID)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .body(BodyInserters.fromPublisher(Mono.just(rettighet), FinnTiltakRequest.class))
+                    .body(BodyInserters.fromPublisher(Mono.just(rettighet), RettighetFinnTiltakRequest.class))
                     .retrieve()
                     .bodyToMono(NyttVedtakResponse.class)
                     .block();
