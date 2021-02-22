@@ -1,0 +1,55 @@
+package no.nav.registre.testnorge.synt.tiltakservice.consumer.command;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Callable;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.SyntRequest;
+import reactor.core.publisher.Mono;
+
+@Slf4j
+public class PostSyntTiltakRequestCommand implements Callable<List<NyttVedtakTiltak>> {
+
+    private final WebClient webClient;
+    private final List<SyntRequest> requests;
+    private final String urlPath;
+
+    private static final ParameterizedTypeReference<List<SyntRequest>> REQUEST_TYPE = new ParameterizedTypeReference<>() {
+    };
+    private static final ParameterizedTypeReference<List<NyttVedtakTiltak>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
+    };
+
+    public PostSyntTiltakRequestCommand(WebClient webClient, List<SyntRequest> requests, String urlPath) {
+        this.webClient = webClient;
+        this.requests = requests;
+        this.urlPath = urlPath;
+    }
+
+    @Override
+    public List<NyttVedtakTiltak> call() {
+        try {
+            log.info("Henter syntetiske tiltak vedtak.");
+            return webClient.post()
+                    .uri(builder ->
+                            builder.path(urlPath)
+                                    .build()
+                    )
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .body(BodyInserters.fromPublisher(Mono.just(requests), REQUEST_TYPE))
+                    .retrieve()
+                    .bodyToMono(RESPONSE_TYPE)
+                    .block();
+        } catch (Exception e) {
+            log.error("Klarte ikke hente syntetiske tiltak vedtak.", e);
+            return Collections.emptyList();
+        }
+    }
+}
+

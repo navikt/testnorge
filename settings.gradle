@@ -124,6 +124,7 @@ include(':mn-person-service')
 include(':mn-synt-arbeidsforhold-service')
 include(':organisasjon-orgnummer-service')
 include(':organisasjon-forvalter')
+include(':synt-tiltak-service')
 
 project(":inntektsmelding-stub").projectDir = file('apps/inntektsmelding-stub')
 project(":testnorge-tss").projectDir = file('apps/testnorge-tss')
@@ -218,6 +219,7 @@ project(":mn-synt-arbeidsforhold-service").projectDir = file('apps/mn-synt-arbei
 project(":ident-check-in-prod-service").projectDir = file('apps/ident-check-in-prod-service')
 project(":organisasjon-orgnummer-service").projectDir = file('apps/organisasjon-orgnummer-service')
 project(":organisasjon-forvalter").projectDir = file('apps/organisasjon-forvalter')
+project(":synt-tiltak-service").projectDir = file('apps/synt-tiltak-service')
 project(":testnorge-dependency-analysis-auto-configuration").projectDir = file('libs/testnorge-dependency-analysis-auto-configuration')
 
 

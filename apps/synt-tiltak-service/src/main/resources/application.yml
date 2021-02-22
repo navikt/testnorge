@@ -1,0 +1,8 @@
+synt-arena-tiltak:
+  rest-api:
+    url: https://nais-synthdata-arena-tiltak.dev.adeo.no/api
+
+arena-forvalteren:
+  rest-api:
+    url: https://arena-forvalteren.nais.preprod.local/api
+
