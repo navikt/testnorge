@@ -14,6 +14,8 @@ import no.nav.registre.testnorge.arena.consumer.rs.response.pensjon.HttpStatus;
 import no.nav.registre.testnorge.arena.consumer.rs.response.pensjon.PensjonTestdataResponse;
 import no.nav.registre.testnorge.arena.consumer.rs.response.pensjon.PensjonTestdataResponseDetails;
 import no.nav.registre.testnorge.arena.consumer.rs.response.pensjon.PensjonTestdataStatus;
+import no.nav.registre.testnorge.arena.consumer.rs.response.tpsf.Personstatus;
+import no.nav.registre.testnorge.arena.consumer.rs.response.tpsf.PersonstatusOgAdresse;
 import no.nav.registre.testnorge.arena.provider.rs.request.SyntetiserArenaRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
@@ -68,6 +70,7 @@ public class AapControllerIntegrationTest {
     private static final String opprettRettigheterAap115Url = "(.*)/arena-forvalteren/api/v1/aap115";
     private static final String opprettRettigheterAapUrl = "(.*)/arena-forvalteren/api/v1/aap";
     private static final String saveHistorikkUrl = "(.*)/hodejegeren/api/v1/historikk";
+    private static final String tpsForvalterUrl = "(.*)/tpsf/tps/personstatus-og-adresse-person";
 
     private NyttVedtakAap vedtak;
     private NyttVedtakResponse nyttVedtakResponse;
@@ -178,6 +181,16 @@ public class AapControllerIntegrationTest {
                 .builder(objectMapper)
                 .withUrlPathMatching(saveHistorikkUrl)
                 .stubPost();
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching(tpsForvalterUrl)
+                .withResponseBody(PersonstatusOgAdresse.builder()
+                        .personstatus(Personstatus.builder()
+                                .kodePersonstatus("BOSA")
+                                .build())
+                        .build())
+                .stubGet();
 
         var mvcResultat = mvc.perform(post("/api/v1/syntetisering/generer/rettighet/aap")
                 .content(objectMapper.writeValueAsString(new SyntetiserArenaRequest(avspillergruppeId, miljoe, 1)))
