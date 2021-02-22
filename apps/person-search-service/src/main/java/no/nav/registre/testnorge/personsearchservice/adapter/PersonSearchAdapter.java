@@ -10,6 +10,7 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -17,10 +18,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Response;
-import no.nav.registre.testnorge.personsearchservice.controller.dto.PageDTO;
+import no.nav.registre.testnorge.personsearchservice.controller.dto.Pageing;
 import no.nav.registre.testnorge.personsearchservice.domain.Person;
 import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
 import no.nav.registre.testnorge.personsearchservice.domain.Search;
@@ -44,18 +46,21 @@ public class PersonSearchAdapter {
 
     @SneakyThrows
     public PersonList search(Search search) {
-        var query = QueryBuilders
+        var queryBuilder = QueryBuilders
                 .boolQuery()
                 .must(QueryBuilders.matchQuery("tags", search.getTag()));
+
+        Optional.ofNullable(search.getKjoenn()).ifPresent(value -> queryBuilder.must(QueryBuilders.matchQuery("kjoenn", value)));
 
         var searchRequest = new SearchRequest();
         searchRequest.indices("pdl-sok");
 
         var searchSourceBuilder = new SearchSourceBuilder();
-        PageDTO page = search.getPage();
+        Pageing page = search.getPageing();
 
         searchSourceBuilder.from((page.getPage() - 1) * page.getPageSize());
-        searchSourceBuilder.query(query);
+        searchSourceBuilder.size(page.getPageSize());
+        searchSourceBuilder.query(queryBuilder);
         searchRequest.source(searchSourceBuilder);
         SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
         TotalHits totalHits = searchResponse.getHits().getTotalHits();
@@ -69,5 +74,13 @@ public class PersonSearchAdapter {
                 numberOfPages,
                 responses.stream().map(Person::new).collect(Collectors.toList())
         );
+    }
+
+    private QueryBuilder combinedOnANDOperator(List<QueryBuilder> list){
+        var queryBuilder = QueryBuilders.boolQuery();
+        for (var item : list){
+            queryBuilder.must(item);
+        }
+        return queryBuilder;
     }
 }

@@ -4,12 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import no.nav.registre.testnorge.personsearchservice.controller.dto.PageDTO;
+import no.nav.registre.testnorge.personsearchservice.controller.dto.Pageing;
 
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class Search {
-    PageDTO page;
+    Pageing pageing;
     String tag;
+    String kjoenn;
 }

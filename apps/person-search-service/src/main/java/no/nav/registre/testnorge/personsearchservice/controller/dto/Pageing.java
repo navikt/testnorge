@@ -9,7 +9,7 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class PageDTO {
+public class Pageing {
     Integer page;
     Integer pageSize;
 }
