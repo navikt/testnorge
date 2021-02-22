@@ -4,7 +4,9 @@ import static no.nav.registre.testnorge.arena.testutils.ResourceUtils.getResourc
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetRequest;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetRequest;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetTiltaksdeltakelseRequest;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetTiltakspengerRequest;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -20,9 +22,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTiltaksdeltakelseRequest;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTiltakspengerRequest;
 
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("test")

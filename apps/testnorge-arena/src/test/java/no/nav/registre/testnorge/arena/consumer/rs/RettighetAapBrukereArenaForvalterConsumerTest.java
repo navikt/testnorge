@@ -4,7 +4,12 @@ import static no.nav.registre.testnorge.arena.testutils.ResourceUtils.getResourc
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetRequest;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetAap115Request;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetAapRequest;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetFritakMeldekortRequest;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetRequest;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetTvungenForvaltningRequest;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetUngUfoerRequest;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -20,12 +25,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetAap115Request;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetAapRequest;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetFritakMeldekortRequest;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTvungenForvaltningRequest;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetUngUfoerRequest;
 
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("test")

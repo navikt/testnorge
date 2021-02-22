@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.arena.consumer.rs.command.synt;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.arena.consumer.rs.request.synt.SyntRequest;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.SyntRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;

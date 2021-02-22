@@ -6,10 +6,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.concurrent.Callable;
 
-import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.CALL_ID;
-import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.CONSUMER_ID;
-import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.NAV_CALL_ID;
-import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.NAV_CONSUMER_ID;
+import static no.nav.registre.testnorge.domain.dto.arena.testnorge.request.util.Headers.CALL_ID;
+import static no.nav.registre.testnorge.domain.dto.arena.testnorge.request.util.Headers.CONSUMER_ID;
+import static no.nav.registre.testnorge.domain.dto.arena.testnorge.request.util.Headers.NAV_CALL_ID;
+import static no.nav.registre.testnorge.domain.dto.arena.testnorge.request.util.Headers.NAV_CONSUMER_ID;
 
 @Slf4j
 public class DeleteArenaBrukerCommand implements Callable<Boolean> {

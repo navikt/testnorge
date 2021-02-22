@@ -1,6 +1,8 @@
 package no.nav.registre.testnorge.arena.consumer.rs.util;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.SyntRequest;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -8,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-
-import no.nav.registre.testnorge.arena.consumer.rs.request.synt.SyntRequest;
 
 @Service
 @RequiredArgsConstructor

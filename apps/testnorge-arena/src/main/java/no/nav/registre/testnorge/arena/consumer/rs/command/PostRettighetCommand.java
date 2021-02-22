@@ -1,20 +1,22 @@
 package no.nav.registre.testnorge.arena.consumer.rs.command;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetRequest;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.CALL_ID;
-import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.CONSUMER_ID;
-import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.NAV_CALL_ID;
-import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.NAV_CONSUMER_ID;
+import static no.nav.registre.testnorge.domain.dto.arena.testnorge.request.util.Headers.CALL_ID;
+import static no.nav.registre.testnorge.domain.dto.arena.testnorge.request.util.Headers.CONSUMER_ID;
+import static no.nav.registre.testnorge.domain.dto.arena.testnorge.request.util.Headers.NAV_CALL_ID;
+import static no.nav.registre.testnorge.domain.dto.arena.testnorge.request.util.Headers.NAV_CONSUMER_ID;
 
 @Slf4j
 public class PostRettighetCommand implements Callable<NyttVedtakResponse> {

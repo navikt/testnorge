@@ -5,11 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetRequest;
 import no.nav.registre.testnorge.arena.service.BrukereService;
 import no.nav.registre.testnorge.arena.service.InnsatsService;
 import no.nav.registre.testnorge.arena.service.exception.ArbeidssoekerException;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetRequest;
+
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;

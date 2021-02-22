@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.arena.service;
 
 import no.nav.registre.testnorge.arena.consumer.rs.BrukereArenaForvalterConsumer;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +14,6 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 
 @RunWith(MockitoJUnitRunner.class)

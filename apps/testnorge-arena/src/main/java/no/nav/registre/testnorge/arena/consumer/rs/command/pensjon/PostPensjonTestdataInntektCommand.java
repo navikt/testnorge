@@ -3,6 +3,7 @@ package no.nav.registre.testnorge.arena.consumer.rs.command.pensjon;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.request.pensjon.PensjonTestdataInntekt;
 import no.nav.registre.testnorge.arena.consumer.rs.response.pensjon.PensjonTestdataResponse;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -13,11 +14,11 @@ import reactor.core.publisher.Mono;
 import java.util.Collections;
 import java.util.concurrent.Callable;
 
-import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.AUTHORIZATION;
-import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.CALL_ID;
-import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.CONSUMER_ID;
-import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.NAV_CALL_ID;
-import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.NAV_CONSUMER_ID;
+import static no.nav.registre.testnorge.domain.dto.arena.testnorge.request.util.Headers.AUTHORIZATION;
+import static no.nav.registre.testnorge.domain.dto.arena.testnorge.request.util.Headers.CALL_ID;
+import static no.nav.registre.testnorge.domain.dto.arena.testnorge.request.util.Headers.CONSUMER_ID;
+import static no.nav.registre.testnorge.domain.dto.arena.testnorge.request.util.Headers.NAV_CALL_ID;
+import static no.nav.registre.testnorge.domain.dto.arena.testnorge.request.util.Headers.NAV_CONSUMER_ID;
 
 @Slf4j
 public class PostPensjonTestdataInntektCommand implements Callable<PensjonTestdataResponse> {

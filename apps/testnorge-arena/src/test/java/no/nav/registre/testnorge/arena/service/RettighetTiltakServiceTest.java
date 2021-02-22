@@ -9,8 +9,6 @@ import java.util.HashMap;
 
 import no.nav.registre.testnorge.arena.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.testnorge.arena.consumer.rs.TiltakSyntConsumer;
-import no.nav.registre.testnorge.arena.consumer.rs.request.synt.SyntRequest;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTilleggRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.util.ConsumerUtils;
 import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
 import no.nav.registre.testnorge.arena.service.util.ArbeidssoekerUtils;
@@ -18,6 +16,8 @@ import no.nav.registre.testnorge.arena.service.util.ServiceUtils;
 import no.nav.registre.testnorge.arena.service.util.TiltakUtils;
 import no.nav.registre.testnorge.arena.service.util.KodeMedSannsynlighet;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetTilleggRequest;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.SyntRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;

@@ -6,9 +6,9 @@ import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.BEGRUNNE
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.TiltakArenaForvalterConsumer;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetEndreDeltakerstatusRequest;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetFinnTiltakRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetEndreDeltakerstatusRequest;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetFinnTiltakRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 

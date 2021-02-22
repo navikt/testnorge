@@ -24,14 +24,14 @@ import java.util.Random;
 
 import no.nav.registre.testnorge.arena.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.testnorge.arena.consumer.rs.TiltakSyntConsumer;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetRequest;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTilleggRequest;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTilleggsytelseRequest;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTiltaksaktivitetRequest;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTiltaksdeltakelseRequest;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTiltakspengerRequest;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetRequest;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetTilleggRequest;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetTilleggsytelseRequest;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetTiltaksaktivitetRequest;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetTiltaksdeltakelseRequest;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetTiltakspengerRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 

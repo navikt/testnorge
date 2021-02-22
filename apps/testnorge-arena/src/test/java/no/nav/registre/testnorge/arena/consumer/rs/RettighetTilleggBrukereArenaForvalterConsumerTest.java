@@ -4,8 +4,8 @@ import static no.nav.registre.testnorge.arena.testutils.ResourceUtils.getResourc
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetRequest;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTilleggRequest;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetRequest;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetTilleggRequest;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 

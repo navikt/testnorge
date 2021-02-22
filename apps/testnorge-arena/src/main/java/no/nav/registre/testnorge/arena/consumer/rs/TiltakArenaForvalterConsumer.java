@@ -2,7 +2,7 @@ package no.nav.registre.testnorge.arena.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.command.PostFinnTiltakCommand;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetFinnTiltakRequest;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetFinnTiltakRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import org.springframework.beans.factory.annotation.Value;

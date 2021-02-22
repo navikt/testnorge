@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.AUTHORIZATION;
-import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.CALL_ID;
-import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.CONSUMER_ID;
-import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.NAV_CALL_ID;
-import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.NAV_CONSUMER_ID;
+import static no.nav.registre.testnorge.domain.dto.arena.testnorge.request.util.Headers.AUTHORIZATION;
+import static no.nav.registre.testnorge.domain.dto.arena.testnorge.request.util.Headers.CALL_ID;
+import static no.nav.registre.testnorge.domain.dto.arena.testnorge.request.util.Headers.CONSUMER_ID;
+import static no.nav.registre.testnorge.domain.dto.arena.testnorge.request.util.Headers.NAV_CALL_ID;
+import static no.nav.registre.testnorge.domain.dto.arena.testnorge.request.util.Headers.NAV_CONSUMER_ID;
 
 @Slf4j
 public class GetAktoerIdTilIdenterCommand implements Callable<Map<String, AktoerResponse>> {
