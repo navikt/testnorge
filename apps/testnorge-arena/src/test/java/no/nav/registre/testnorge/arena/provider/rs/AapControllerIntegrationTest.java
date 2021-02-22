@@ -186,7 +186,7 @@ public class AapControllerIntegrationTest {
                 .builder(objectMapper)
                 .withUrlPathMatching(tpsForvalterUrl)
                 .withResponseBody(PersonstatusOgAdresse.builder()
-                        .personstatus(Personstatus.builder()
+                        .personStatus(Personstatus.builder()
                                 .kodePersonstatus("BOSA")
                                 .build())
                         .build())
