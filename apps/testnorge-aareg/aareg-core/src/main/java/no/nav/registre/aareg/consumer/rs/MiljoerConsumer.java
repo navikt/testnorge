@@ -1,5 +1,6 @@
 package no.nav.registre.aareg.consumer.rs;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.aareg.config.credentials.MiljoeServiceProperties;
 import no.nav.registre.aareg.consumer.rs.response.MiljoerResponse;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
@@ -15,6 +16,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.List;
 
 @Component
+@Slf4j
 @DependencyOn(value = "testnorge-miljoer-service")
 public class MiljoerConsumer {
 
@@ -35,10 +37,11 @@ public class MiljoerConsumer {
 
     public MiljoerResponse hentMiljoer() {
 
+        log.info("Genererer AccessToken for {}", serverProperties.getName());
         AccessToken accessToken = accessTokenService.generateToken(serverProperties);
         List<String> response = webClient
                 .get()
-                .uri("/v1/miljoer")
+                .uri(uriBuilder -> uriBuilder.path("/v1/miljoer").build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken.getTokenValue())
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<String>>() {
