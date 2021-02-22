@@ -57,13 +57,13 @@ public class OpenApiConfig implements WebMvcConfigurer {
         return (operation, handlerMethod) -> operation
                 .addParametersItem(new Parameter()
                         .in(HEADER)
-                        .required(true)
+                        .required(false)
                         .description("En ID for systemet som gjør kallet, som regel servicebrukeren til applikasjonen.")
                         .name(HEADER_NAV_CONSUMER_ID)
                         .example("MinApp"))
                 .addParametersItem(new Parameter()
                         .in(HEADER)
-                        .required(true)
+                        .required(false)
                         .description("En ID som identifiserer kallkjeden som dette kallet er en del av.")
                         .name(HEADER_NAV_CALL_ID)
                         .example("123e4567-e89b-12d3-a456-426614174000"));
