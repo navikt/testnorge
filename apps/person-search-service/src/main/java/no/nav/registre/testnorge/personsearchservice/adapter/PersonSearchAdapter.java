@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Response;
 import no.nav.registre.testnorge.personsearchservice.domain.Person;
+import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
 import no.nav.registre.testnorge.personsearchservice.domain.Search;
 
 @Slf4j
@@ -30,7 +31,7 @@ public class PersonSearchAdapter {
     private final ObjectMapper objectMapper;
     private final RestHighLevelClient client;
 
-    private <T> List<T> convert(SearchHit[] hits, Class<T> clazz){
+    private <T> List<T> convert(SearchHit[] hits, Class<T> clazz) {
         return Arrays.stream(hits).map(SearchHit::getSourceAsString).map(json -> {
             try {
                 return objectMapper.readValue(json, clazz);
@@ -41,7 +42,7 @@ public class PersonSearchAdapter {
     }
 
     @SneakyThrows
-    public List<Person> search(Search search) {
+    public PersonList search(Search search) {
         var query = QueryBuilders
                 .boolQuery()
                 .must(QueryBuilders.matchQuery("tags", search.getTag()));
@@ -57,6 +58,12 @@ public class PersonSearchAdapter {
         log.info("Fant {} personer i pdl.", totalHits.value);
 
         List<Response> responses = convert(searchResponse.getHits().getHits(), Response.class);
-        return responses.stream().map(Person::new).collect(Collectors.toList());
+
+        int numberOfPages = (int) Math.ceil(searchResponse.getHits().getTotalHits().value / (long) search.getPage().getPageSize());
+
+        return new PersonList(
+                numberOfPages,
+                responses.stream().map(Person::new).collect(Collectors.toList())
+        );
     }
 }

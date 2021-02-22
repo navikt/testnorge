@@ -11,4 +11,5 @@ import java.util.List;
 @NoArgsConstructor(force = true)
 public class HentPerson {
     List<Navn> navn;
+    List<Kjoenn> kjoenn;
 }

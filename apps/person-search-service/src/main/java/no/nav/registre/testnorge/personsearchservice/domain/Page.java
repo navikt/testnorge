@@ -1,18 +1,15 @@
 package no.nav.registre.testnorge.personsearchservice.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import java.util.List;
-
 @Value
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class Search {
-    @JsonProperty
-    Page page;
-    @JsonProperty
-    String tag;
+public class Page {
+    Integer page;
+    Integer pageSize;
 }

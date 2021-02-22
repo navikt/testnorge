@@ -7,9 +7,7 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class Navn {
-    String fornavn;
-    String mellomnavn;
-    String etternavn;
+public class Kjoenn {
+    String kjoenn;
     Metadata metadata;
 }

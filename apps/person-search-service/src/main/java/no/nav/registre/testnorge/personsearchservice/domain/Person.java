@@ -2,10 +2,10 @@ package no.nav.registre.testnorge.personsearchservice.domain;
 
 import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import no.nav.registre.testnorge.personsearchservice.adapter.model.Kjoenn;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Navn;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Response;
 import no.nav.registre.testnorge.personsearchservice.controller.PersonDTO;
@@ -15,20 +15,12 @@ public class Person {
     private final Response response;
 
     private Optional<Navn> getNavn() {
-        LocalDate now = LocalDate.now();
-        Navn navn = response
+        return response
                 .getHentPerson()
                 .getNavn()
                 .stream()
-                .reduce(null, (total, value) -> {
-                    if (total == null && (now == value.getGyldigFraOgMed() || now.isAfter(value.getGyldigFraOgMed()))) {
-                        total = value;
-                    } else if (total != null && (now == value.getGyldigFraOgMed() || now.isAfter(value.getGyldigFraOgMed())) && total.getGyldigFraOgMed().isBefore(value.getGyldigFraOgMed())) {
-                        total = value;
-                    }
-                    return total;
-                });
-        return Optional.ofNullable(navn);
+                .filter(value -> !value.getMetadata().getHistorisk())
+                .findFirst();
     }
 
     public String getFornavn() {
@@ -43,6 +35,16 @@ public class Person {
         return getNavn().map(Navn::getEtternavn).orElse(null);
     }
 
+    public String getKjoenn() {
+        return response
+                .getHentPerson()
+                .getKjoenn()
+                .stream()
+                .filter(value -> !value.getMetadata().getHistorisk())
+                .findFirst()
+                .map(Kjoenn::getKjoenn)
+                .orElse(null);
+    }
 
     public String getIdent() {
         return response
@@ -71,7 +73,7 @@ public class Person {
     }
 
 
-    public PersonDTO toDTO(){
+    public PersonDTO toDTO() {
         return PersonDTO
                 .builder()
                 .fornavn(getFornavn())

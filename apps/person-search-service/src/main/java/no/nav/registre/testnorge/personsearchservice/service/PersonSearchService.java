@@ -15,6 +15,7 @@ import java.util.List;
 
 import no.nav.registre.testnorge.personsearchservice.adapter.PersonSearchAdapter;
 import no.nav.registre.testnorge.personsearchservice.domain.Person;
+import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
 import no.nav.registre.testnorge.personsearchservice.domain.Search;
 
 @Slf4j
@@ -25,7 +26,7 @@ public class PersonSearchService {
 
 
     @SneakyThrows
-    public List<Person> search(Search search){
+    public PersonList search(Search search){
         return personSearchAdapter.search(search);
     }
 

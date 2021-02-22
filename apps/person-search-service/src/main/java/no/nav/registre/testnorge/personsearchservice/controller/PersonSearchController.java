@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.personsearchservice.domain.Person;
+import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
 import no.nav.registre.testnorge.personsearchservice.domain.Search;
 import no.nav.registre.testnorge.personsearchservice.service.PersonSearchService;
 
@@ -32,7 +33,8 @@ public class PersonSearchController {
     public ResponseEntity<List<PersonDTO>> search(@RequestParam("search") String search) throws UnsupportedEncodingException, JsonProcessingException {
         var decode = URLDecoder.decode(search, StandardCharsets.UTF_8.name());
         var value = objectMapper.readValue(decode, Search.class);
-        return ResponseEntity.ok(service.search(value).stream().map(Person::toDTO).collect(Collectors.toList()));
+        PersonList personList = service.search(value);
+        return ResponseEntity.ok(personList.getList().stream().map(Person::toDTO).collect(Collectors.toList()));
     }
 
     @PostMapping
