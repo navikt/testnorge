@@ -61,8 +61,6 @@ public class SyntAmeldingConsumer extends SyntConsumer {
         } catch (RestClientException e) {
             log.error(REST_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
             throw e;
-        } finally {
-            scheduleShutdown(SHUTDOWN_TIME_DELAY_SECONDS);
         }
     }
 
