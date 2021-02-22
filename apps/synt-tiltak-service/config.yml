@@ -16,11 +16,17 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: team-dolly-lokal-app
-          cluster: dev-fss
         - application: dolly-frontend-dev
+          namespace: dolly
           cluster: dev-fss
         - application: dolly-frontend
+          namespace: dolly
+          cluster: dev-fss
+        - application: dolly-backend
+          namespace: dolly
+          cluster: dev-fss
+        - application: dolly-backend-dev
+          namespace: dolly
           cluster: dev-fss
     outbound:
       rules:
