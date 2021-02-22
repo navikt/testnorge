@@ -6,11 +6,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.search.TotalHits;
+import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -51,7 +51,7 @@ public class PersonSearchAdapter {
                 .must(QueryBuilders.matchQuery("tags", search.getTag()));
 
         Optional.ofNullable(search.getKjoenn())
-                .ifPresent(value -> queryBuilder.must(QueryBuilders.matchQuery("hentPerson.kjoenn.kjoenn", value)));
+                .ifPresent(value -> queryBuilder.must(QueryBuilders.nestedQuery("hentPerson.kjoenn", QueryBuilders.matchQuery("hentPerson.kjoenn.kjoenn", value), ScoreMode.Avg)));
 
         var searchRequest = new SearchRequest();
         searchRequest.indices("pdl-sok");
