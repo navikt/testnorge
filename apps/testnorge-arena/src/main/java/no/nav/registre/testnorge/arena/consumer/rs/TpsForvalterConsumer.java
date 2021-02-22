@@ -22,8 +22,8 @@ public class TpsForvalterConsumer {
 
     public Personstatus getPersonstatus(String ident, String miljoe) {
         var personstatusOgAdresse = new GetPersonstatusOgAdresseCommand(ident, miljoe, webClient).call();
-        if (personstatusOgAdresse != null && personstatusOgAdresse.getPersonstatus() != null) {
-            return personstatusOgAdresse.getPersonstatus();
+        if (personstatusOgAdresse != null && personstatusOgAdresse.getPersonStatus() != null) {
+            return personstatusOgAdresse.getPersonStatus();
         } else {
             return new Personstatus();
         }
