@@ -31,7 +31,7 @@ public class ArbeidsforholdControllerTest {
 
     private final String ident = "01010101010";
     private final String miljoe = "t0";
-    private String navCallId = "test";
+    private final String navCallId = "DOLLY";
 
     @Test
     public void shouldOppretteArbeidsforhold() {
