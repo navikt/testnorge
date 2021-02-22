@@ -6,6 +6,7 @@ import static no.nav.registre.testnorge.arena.service.RettighetAapService.ARENA_
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
@@ -132,7 +133,7 @@ public class RettighetAapServiceTest {
         fritakMeldekortRettigheter = new ArrayList<>(Collections.singletonList(nyRettighetFritakMeldekort));
 
         when(identerUtils.getLevende(avspillergruppeId, miljoe)).thenReturn(identer);
-        when(identerUtils.getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe))).thenReturn(identer);
+        when(identerUtils.getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), anyBoolean())).thenReturn(identer);
         when(identerUtils.hentEksisterendeArbeidsoekerIdenter()).thenReturn(new ArrayList<>(Collections.singletonList(fnr1)));
     }
 
@@ -191,7 +192,7 @@ public class RettighetAapServiceTest {
         Map<String, List<NyttVedtakResponse>> expectedResponsesFromArenaForvalter = new HashMap<>();
         expectedResponsesFromArenaForvalter.put(fnr1, new ArrayList<>(Collections.singletonList(nyRettighetungUfoerResponse)));
 
-        when(identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallIdenter, 18, 35, miljoe)).thenReturn(identer);
+        when(identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallIdenter, 18, 35, miljoe, false)).thenReturn(identer);
         when(consumerUtils.createSyntRequest(antallIdenter, ARENA_AAP_UNG_UFOER_DATE_LIMIT)).thenReturn(syntRequest);
         when(aapSyntConsumer.syntetiserRettighetUngUfoer(syntRequest)).thenReturn(ungUfoerRettigheter);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(expectedResponsesFromArenaForvalter);
