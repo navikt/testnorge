@@ -49,7 +49,7 @@ public class ArbeidsforholdControllerTest {
 
     @Test
     public void shouldHenteArbeidsforhold() {
-        arbeidsforholdController.hentArbeidsforhold(ident, miljoe);
+        arbeidsforholdController.hentArbeidForhold(ident, miljoe);
         verify(aaregService).hentArbeidsforhold(ident, miljoe);
     }
 
