@@ -1,3 +1,10 @@
+spring.application:
+  version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
+  name: testnorge-synt-tiltak-service
+  desciption: Service for å opprette tiltak vedtak i Arena-forvalteren.
+  cluster: dev-gcp
+  namespace: dolly
+
 synt-arena-tiltak:
   rest-api:
     url: https://nais-synthdata-arena-tiltak.dev.adeo.no/api
@@ -5,4 +12,3 @@ synt-arena-tiltak:
 arena-forvalteren:
   rest-api:
     url: https://arena-forvalteren.nais.preprod.local/api
-

@@ -1,0 +1,10 @@
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}

@@ -16,6 +16,8 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: testnorge-oversikt-frontend
+          cluster: dev-fss
         - application: dolly-frontend-dev
           namespace: dolly
           cluster: dev-fss
@@ -59,4 +61,3 @@ spec:
       memory: 5000Mi
   ingresses:
     - "https://testnorge-synt-tiltak-service.dev.intern.nav.no"
-    - "https://testnorge-synt-tiltak-service.dev.adeo.nav.no"
