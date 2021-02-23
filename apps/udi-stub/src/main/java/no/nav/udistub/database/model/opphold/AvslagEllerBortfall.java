@@ -27,10 +27,6 @@ public class AvslagEllerBortfall {
     private LocalDate tilbakeKallUtreiseFrist;
 
     private LocalDate avslagOppholdstillatelseUtreiseFrist;
-    @AttributeOverride(name = "value", column = @Column(name = "avslag_grunnlag_overig"))
-    private OppholdsgrunnlagKategori avslagGrunnlagOverig;
-    @AttributeOverride(name = "value", column = @Column(name = "avslag_grunnlag_oppholdstillatelse"))
-    private EOSellerEFTAGrunnlagskategoriOppholdstillatelse avslagGrunnlagTillatelseGrunnlagEOS;
 
     private LocalDate avslagOppholdstillatelseBehandletUtreiseFrist;
     @AttributeOverride(name = "value", column = @Column(name = "avslag_oppholdstillatelse_behandlet_grunnlag_overig"))

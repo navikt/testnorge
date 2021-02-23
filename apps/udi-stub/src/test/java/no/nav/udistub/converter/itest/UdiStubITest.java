@@ -84,7 +84,7 @@ class UdiStubITest extends ITestBase {
         assertEquals(TEST_PERSON_ALIAS_FNR, storedPerson.getAliaser().get(0).getFnr());
 
         assertNotNull(storedPerson.getOppholdStatus());
-        assertEquals(TEST_OPPHOLDS_GRUNNLAG_KATEGORI, storedPerson.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum().getAvslagEllerBortfall().getAvslagGrunnlagOverig());
+        assertEquals(TEST_OPPHOLDS_GRUNNLAG_KATEGORI, storedPerson.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum().getAvslagEllerBortfall().getAvslagOppholdstillatelseBehandletGrunnlagOvrig());
         assertEquals(TEST_ovrigIkkeOppholdsKategori, storedPerson.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum().getOvrigIkkeOppholdsKategoriArsak());
         assertEquals(TEST_INNREISEFORBUD, storedPerson.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum().getUtvistMedInnreiseForbud().getInnreiseForbud());
     }
