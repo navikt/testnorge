@@ -42,14 +42,14 @@ public final class PersonidentUtil {
     }
 
     private static String getSynthAdjustedIdent(String ident) {
-        String thisIdent = new StringBuilder()
+
+        return new StringBuilder()
                 .append(ident, 0, 2)
                 .append(parseInt(ident.substring(2, 3)) > 3 ?
                         parseInt(ident.substring(2, 3)) - 4 :
                         ident.substring(2, 3))
                 .append(ident.substring(3))
                 .toString();
-        return thisIdent;
     }
 
     public static Identtype getIdentType(String ident) {

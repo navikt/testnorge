@@ -42,7 +42,8 @@ class IdentGeneratorServiceTest {
         HentIdenterRequest.HentIdenterRequestBuilder request = createRequest(Identtype.FNR, Kjoenn.MANN);
         request.foedtFoer(LOCAL_DATE.minusDays(2));
 
-        assertThrows(IllegalArgumentException.class, () -> identGeneratorService.genererIdenter(request.build(), new HashSet<>()));
+        assertThrows(IllegalArgumentException.class,
+                () -> identGeneratorService.genererIdenter(request.build(), new HashSet<>()));
     }
 
     @Test
@@ -51,7 +52,8 @@ class IdentGeneratorServiceTest {
         HentIdenterRequest.HentIdenterRequestBuilder request = createRequest(Identtype.FNR, Kjoenn.MANN);
         request.antall(500);
 
-        assertThrows(IllegalArgumentException.class, () -> identGeneratorService.genererIdenter(request.build(), new HashSet<>()));
+        assertThrows(IllegalArgumentException.class,
+                () -> identGeneratorService.genererIdenter(request.build(), new HashSet<>()));
     }
 
     @Test
