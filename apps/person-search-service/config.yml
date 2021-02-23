@@ -17,6 +17,8 @@ spec:
       rules:
         - application: team-dolly-lokal-app
         - application: testnorge-oversikt-frontend
+        - application: dolly-frontend-dev
+        - application: dolly-frontend
   liveness:
     path: /internal/isAlive
     initialDelay: 4
