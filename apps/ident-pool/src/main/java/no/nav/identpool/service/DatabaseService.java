@@ -1,11 +1,11 @@
-package no.nav.identpool.service.ny;
+package no.nav.identpool.service;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Rekvireringsstatus;
+import no.nav.identpool.providers.v1.support.HentIdenterRequest;
 import no.nav.identpool.repository.IdentRepository;
-import no.nav.identpool.rs.v1.support.HentIdenterRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;

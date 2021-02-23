@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -22,26 +23,26 @@ import static no.nav.identpool.util.PersonidentUtil.generateFnr;
 import static no.nav.identpool.util.PersonidentUtil.getKjonn;
 import static no.nav.identpool.util.PersonidentUtil.isSyntetisk;
 import static no.nav.identpool.util.PersonidentUtil.toBirthdate;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 public final class IdentGeneratorUtil {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
-    private static final SecureRandom random = new SecureRandom();
-
-    public static final Map<Identtype, Function<LocalDate, List<String>>> generatorMap =
+    public static final Map<Identtype, BiFunction<LocalDate, Boolean, List<String>>> generatorMap =
             ImmutableMap.of(
                     Identtype.FNR, IdentGeneratorUtil::generateFNumbers,
                     Identtype.DNR, IdentGeneratorUtil::generateDNumbers,
                     Identtype.BOST, IdentGeneratorUtil::generateBNumbers,
                     Identtype.FDAT, IdentGeneratorUtil::generateFdatNumbers);
-
     public static final Map<Identtype, Function<LocalDate, String>> numberFormatter =
             ImmutableMap.of(
                     Identtype.FNR, IdentGeneratorUtil::getFnrFormat,
                     Identtype.DNR, IdentGeneratorUtil::getDnrFormat,
                     Identtype.BOST, IdentGeneratorUtil::getBnrFormat,
                     Identtype.FDAT, IdentGeneratorUtil::getFdatFormat);
+    private static final SecureRandom random = new SecureRandom();
 
-    private IdentGeneratorUtil() {}
+    private IdentGeneratorUtil() {
+    }
 
     public static String randomFormat(LocalDate birthdate) {
         String format = getFnrFormat(birthdate);
@@ -88,23 +89,33 @@ public final class IdentGeneratorUtil {
                 .build();
     }
 
-    private static List<String> generateFNumbers(LocalDate birthdate) {
-        return generateNumbers(birthdate, getFnrFormat(birthdate));
+    private static List<String> generateFNumbers(LocalDate birthdate, boolean syntetisk) {
+        return generateNumbers(birthdate, amendSyntetisk(getFnrFormat(birthdate), syntetisk));
     }
 
-    private static List<String> generateDNumbers(LocalDate birthdate) {
-        return generateNumbers(birthdate, getDnrFormat(birthdate));
+    private static List<String> generateDNumbers(LocalDate birthdate, boolean syntetisk) {
+        return generateNumbers(birthdate, amendSyntetisk(getDnrFormat(birthdate), syntetisk));
     }
 
-    private static List<String> generateBNumbers(LocalDate birthdate) { return generateNumbers(birthdate, getBnrFormat(birthdate)); }
+    private static List<String> generateBNumbers(LocalDate birthdate, boolean syntetisk) {
+        return generateNumbers(birthdate, amendSyntetisk(getBnrFormat(birthdate), syntetisk));
+    }
 
-    private static List<String> generateFdatNumbers(LocalDate birthdate) { return generateNumbers(birthdate, getFdatFormat(birthdate)); }
+    private static List<String> generateFdatNumbers(LocalDate birthdate, boolean syntetisk) {
+        return generateNumbers(birthdate, amendSyntetisk(getFdatFormat(birthdate), syntetisk));
+    }
 
     private static List<String> generateNumbers(LocalDate date, String numberFormat) {
         return getCategoryNumberStreamReverse(date)
                 .mapToObj(number -> generateFnr(String.format(numberFormat, number)))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
+    }
+
+    private static String amendSyntetisk(String format, Boolean syntetiskIdent) {
+        return isTrue(syntetiskIdent) ?
+                format.substring(0, 2) + getNumericValue(format.charAt(2) + 4) + format.substring(3) :
+                format;
     }
 
     private static String getFnrFormat(LocalDate birthdate) {
@@ -137,5 +148,4 @@ public final class IdentGeneratorUtil {
             throw new IllegalStateException(String.format("Fødelsår må være mellom 2 og 2039, fikk %d", year));
         }
     }
-
 }

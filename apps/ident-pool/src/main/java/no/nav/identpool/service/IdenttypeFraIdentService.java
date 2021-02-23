@@ -1,4 +1,4 @@
-package no.nav.identpool.service.ny;
+package no.nav.identpool.service;
 
 import no.nav.identpool.domain.Identtype;
 import org.springframework.stereotype.Component;

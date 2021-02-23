@@ -1,4 +1,4 @@
-package no.nav.identpool.service.ny;
+package no.nav.identpool.service;
 
 import no.nav.identpool.domain.Kjoenn;
 import org.springframework.stereotype.Service;

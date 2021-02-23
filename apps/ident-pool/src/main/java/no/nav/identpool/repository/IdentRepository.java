@@ -19,7 +19,11 @@ public interface IdentRepository extends PagingAndSortingRepository<Ident, Long>
 
     boolean existsByPersonidentifikator(String identifikator);
 
-    long countByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatus(LocalDate from, LocalDate to, Identtype type, Rekvireringsstatus rekvireringsstatus);
+    long countByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(LocalDate from,
+                                                                                 LocalDate to,
+                                                                                 Identtype type,
+                                                                                 Rekvireringsstatus rekvireringsstatus,
+                                                                                 Boolean syntetisk);
 
     Ident findTopByPersonidentifikator(String personidentifkator);
 
@@ -28,7 +32,11 @@ public interface IdentRepository extends PagingAndSortingRepository<Ident, Long>
     @Modifying
     Ident save(Ident ident);
 
-    List<Ident> findByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatus(LocalDate from, LocalDate to, Identtype type, Rekvireringsstatus rekvireringsstatus);
+    List<Ident> findByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(LocalDate from,
+                                                                                        LocalDate to,
+                                                                                        Identtype type,
+                                                                                        Rekvireringsstatus rekvireringsstatus,
+                                                                                        Boolean syntetisk);
 
     long countByRekvireringsstatusAndIdenttype(Rekvireringsstatus rekvireringsstatus, Identtype identtype);
 

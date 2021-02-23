@@ -1,4 +1,4 @@
-package no.nav.identpool.rs.v1;
+package no.nav.identpool.providers.v1;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

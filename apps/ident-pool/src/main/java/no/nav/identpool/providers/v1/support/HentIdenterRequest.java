@@ -1,4 +1,4 @@
-package no.nav.identpool.rs.v1.support;
+package no.nav.identpool.providers.v1.support;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;

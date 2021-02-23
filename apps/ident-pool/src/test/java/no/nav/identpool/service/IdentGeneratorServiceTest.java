@@ -3,7 +3,7 @@ package no.nav.identpool.service;
 import com.google.common.collect.Ordering;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
-import no.nav.identpool.rs.v1.support.HentIdenterRequest;
+import no.nav.identpool.providers.v1.support.HentIdenterRequest;
 import no.nav.identpool.test.mockito.MockitoExtension;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,13 +55,14 @@ class IdentGeneratorServiceTest {
     }
 
     @Test
-    @DisplayName("Skal generere identer i sortert rekkefølge")
+    @DisplayName("Skal ikke generere identer i sortert rekkefølge")
     void fnrGenererDescendingTest() {
         // This test will stop working 1. Jan 2040 :(
         LocalDate localDate = LocalDate.now();
-        Map<LocalDate, List<String>> pinMap = identGeneratorService.genererIdenterMap(localDate, localDate.plusDays(1), Identtype.FNR);
+        Map<LocalDate, List<String>> pinMap =
+                identGeneratorService.genererIdenterMap(localDate, localDate.plusDays(1), Identtype.FNR, false);
         assertThat(pinMap.size(), is(equalTo(1)));
-        assertThat(Ordering.natural().reverse().isOrdered(pinMap.get(localDate)), is(true));
+        assertThat(Ordering.natural().reverse().isOrdered(pinMap.get(localDate)), is(false));
     }
 
     @Test

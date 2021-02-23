@@ -1,10 +1,10 @@
-package no.nav.identpool.rs.v1;
+package no.nav.identpool.providers.v1;
 
 import no.nav.identpool.ComponentTestbase;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
-import no.nav.identpool.rs.v1.support.ApiResponse;
-import no.nav.identpool.rs.v1.support.IdentRequest;
+import no.nav.identpool.providers.v1.support.ApiResponse;
+import no.nav.identpool.providers.v1.support.IdentRequest;
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,5 +1,6 @@
-package no.nav.identpool.service.ny;
+package no.nav.identpool.service;
 
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import no.nav.identpool.consumers.TpsfConsumer;
 import no.nav.identpool.consumers.TpsfStatusResponse;
@@ -35,6 +36,18 @@ public class TpsfService {
                         .ident(status.getIdent())
                         .inUse(!status.getEnv().isEmpty())
                         .build())
+                .collect(Collectors.toSet());
+
+    }
+
+    @Timed(value = "ident_pool.resource.latency", extraTags = {"operation", "TPS"})
+    public Set<TpsStatus> checkIdentsInTps(Set<String> idents) {
+
+        TpsfStatusResponse response = tpsfConsumer.getStatusFromTpsf(idents, true);
+        return response.getStatusPaaIdenter().stream().map(status -> TpsStatus.builder()
+                .ident(status.getIdent())
+                .inUse(!status.getEnv().isEmpty())
+                .build())
                 .collect(Collectors.toSet());
     }
 }

@@ -1,12 +1,12 @@
-package no.nav.identpool.rs.v1;
+package no.nav.identpool.providers.v1;
 
 import no.nav.identpool.ComponentTestbase;
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.exception.ForFaaLedigeIdenterException;
-import no.nav.identpool.rs.v1.support.ApiError;
-import no.nav.identpool.rs.v1.support.ApiResponse;
+import no.nav.identpool.providers.v1.support.ApiError;
+import no.nav.identpool.providers.v1.support.ApiResponse;
 import no.nav.identpool.util.PersonidentUtil;
 import org.apache.http.client.utils.URIBuilder;
 import org.junit.jupiter.api.AfterEach;
@@ -36,14 +36,12 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
 
     private URI ROOT_URI;
     private URI BRUK_URI;
-    private URI BRUK_BATCH_URI;
     private URI LEDIG_URI;
 
     @BeforeEach
     void populerDatabaseMedTestidenter() throws URISyntaxException {
         ROOT_URI = new URIBuilder(IDENT_V1_BASEURL).build();
         BRUK_URI = new URIBuilder(IDENT_V1_BASEURL + "/bruk").build();
-        BRUK_BATCH_URI = new URIBuilder(IDENT_V1_BASEURL + "/bruk/batch").build();
         LEDIG_URI = new URIBuilder(IDENT_V1_BASEURL + "/ledig").build();
 
         identRepository.deleteAll();
@@ -93,11 +91,12 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
         assertThat(identListe.getBody(), is(notNullValue()));
         assertThat(identListe.getBody().length, is(3));
 
-        long countDb = identRepository.countByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatus(
+        long countDb = identRepository.countByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(
                 LocalDate.of(1900, 1, 1),
                 LocalDate.of(1950, 1, 1),
                 Identtype.FNR,
-                Rekvireringsstatus.I_BRUK);
+                Rekvireringsstatus.I_BRUK,
+                false);
 
         assertThat(countDb, is(3L));
     }
@@ -156,19 +155,6 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
         assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
         assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG).getIdenttype(), is(Identtype.FNR));
 
-    }
-
-    @Test
-    void markerNyLedigIdentIBrukBatch() {
-        assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG), is(nullValue()));
-
-        String body = "{\"personidentifikatorer\":[\"" + NYTT_FNR_LEDIG + "\"], \"bruker\":\"TesterMcTestFace\" }";
-
-        ResponseEntity<ApiResponse> apiResponseEntity = doPostRequest(BRUK_BATCH_URI, createBodyEntity(body), ApiResponse.class);
-
-        assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
-        assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG).getIdenttype(), is(Identtype.FNR));
     }
 
     @Test

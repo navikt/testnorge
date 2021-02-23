@@ -11,10 +11,10 @@ import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.domain.TpsStatus;
+import no.nav.identpool.providers.v1.support.HentIdenterRequest;
 import no.nav.identpool.repository.IdentRepository;
-import no.nav.identpool.rs.v1.support.HentIdenterRequest;
 import no.nav.identpool.service.IdentGeneratorService;
-import no.nav.identpool.service.IdentTpsService;
+import no.nav.identpool.service.TpsfService;
 import no.nav.identpool.util.IdentGeneratorUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,8 +24,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -46,12 +46,12 @@ public class AjourholdService {
 
     private final IdentRepository identRepository;
     private final IdentGeneratorService identGeneratorService;
-    private final IdentTpsService identTpsService;
+    private final TpsfService tpsfService;
     private final TpsfConsumer tpsfConsumer;
 
     private final Counter counter;
 
-    LocalDate current;
+    private LocalDate current;
     private int newIdentCount;
 
     public boolean checkCriticalAndGenerate() {
@@ -62,9 +62,12 @@ public class AjourholdService {
         int minYearMinus = 110;
         LocalDate minDate = current.minusYears(minYearMinus).with(firstDayOfYear());
         while (minDate.isBefore(current.plusYears(1))) {
-            checkAndGenerateForDate(minDate, Identtype.FNR);
-            checkAndGenerateForDate(minDate, Identtype.DNR);
-            checkAndGenerateForDate(minDate, Identtype.BOST);
+            checkAndGenerateForDate(minDate, Identtype.FNR, false);
+            checkAndGenerateForDate(minDate, Identtype.FNR, true);
+            checkAndGenerateForDate(minDate, Identtype.DNR, false);
+            checkAndGenerateForDate(minDate, Identtype.DNR, true);
+            checkAndGenerateForDate(minDate, Identtype.BOST, false);
+            checkAndGenerateForDate(minDate, Identtype.BOST, true);
             minDate = minDate.plusYears(1);
         }
         counter.increment(newIdentCount);
@@ -73,14 +76,15 @@ public class AjourholdService {
 
     void checkAndGenerateForDate(
             LocalDate date,
-            Identtype type) {
+            Identtype type,
+            boolean syntetiskIdent) {
 
         int maxRuns = 3;
         int runs = 0;
         while (runs < maxRuns) {
-            int numberOfMissingIdents = getNumberOfMissingIdents(date.getYear(), type);
+            int numberOfMissingIdents = getNumberOfMissingIdents(date.getYear(), type, syntetiskIdent);
             if (numberOfMissingIdents > 0) {
-                generateForYear(date.getYear(), type, numberOfMissingIdents);
+                generateForYear(date.getYear(), type, numberOfMissingIdents, syntetiskIdent);
             } else {
                 break;
             }
@@ -90,23 +94,26 @@ public class AjourholdService {
 
     private int getNumberOfMissingIdents(
             int year,
-            Identtype type) {
+            Identtype type,
+            Boolean syntetiskIdent) {
 
         int antallPerDag = IdentDistribusjonUtil.antallPersonerPerDagPerAar(year);
         antallPerDag = adjustForYear(year, antallPerDag);
         int days = (year == current.getYear() ? 365 - (365 - current.getDayOfYear()) : 365);
-        long count = identRepository.countByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatus(
+        long count = identRepository.countByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(
                 LocalDate.of(year, 1, 1),
                 LocalDate.of(year + 1, 1, 1),
                 type,
-                LEDIG);
+                LEDIG,
+                syntetiskIdent);
         return Math.toIntExact((antallPerDag * days) - count);
     }
 
     void generateForYear(
             int year,
             Identtype type,
-            int numberOfIdents) {
+            int numberOfIdents,
+            boolean syntetiskIdent) {
 
         int antallPerDag = IdentDistribusjonUtil.antallPersonerPerDagPerAar(year + 1) * 2;
         antallPerDag = adjustForYear(year, antallPerDag);
@@ -120,7 +127,7 @@ public class AjourholdService {
             lastDate = lastDate.plusDays(1);
         }
 
-        Map<LocalDate, List<String>> pinMap = identGeneratorService.genererIdenterMap(firstDate, lastDate, type);
+        Map<LocalDate, List<String>> pinMap = identGeneratorService.genererIdenterMap(firstDate, lastDate, type, syntetiskIdent);
 
         filterIdents(antallPerDag, pinMap, numberOfIdents);
     }
@@ -147,7 +154,7 @@ public class AjourholdService {
             int numberOfIdents) {
 
         Set<String> identsNotInDatabase = filterAgainstDatabase(identsPerDay, pinMap);
-        Set<TpsStatus> tpsStatuses = identTpsService.checkIdentsInTps(identsNotInDatabase);
+        Set<TpsStatus> tpsStatuses = tpsfService.checkIdentsInTps(identsNotInDatabase);
 
         List<String> rekvirert = tpsStatuses.stream()
                 .filter(TpsStatus::isInUse)
@@ -175,15 +182,15 @@ public class AjourholdService {
             int antallPerDag,
             Map<LocalDate, List<String>> pinMap) {
 
-        final Set<String> dbCleaned = new HashSet<>();
-        pinMap.forEach((d, value) -> dbCleaned.addAll(
-                value.stream()
-                        .map(v -> identRepository.existsByPersonidentifikator(v) ? null : v)
+        return pinMap.entrySet().stream()
+                .map(entry -> entry.getValue().stream()
+                        .map(value -> identRepository.existsByPersonidentifikator(value) ? null : value)
                         .filter(Objects::nonNull)
                         .limit(antallPerDag)
                         .collect(Collectors.toSet())
-        ));
-        return dbCleaned;
+                )
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
     }
 
     private List<Ident> saveIdents(

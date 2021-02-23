@@ -1,4 +1,4 @@
-package no.nav.identpool.rs.v1;
+package no.nav.identpool.providers.v1;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;

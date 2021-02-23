@@ -1,4 +1,4 @@
-package no.nav.identpool.rs.v1;
+package no.nav.identpool.providers.v1;
 
 import no.nav.identpool.ComponentTestbase;
 import no.nav.identpool.domain.Navn;

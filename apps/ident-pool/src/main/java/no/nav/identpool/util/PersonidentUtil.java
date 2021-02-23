@@ -18,8 +18,8 @@ import static org.springframework.util.Assert.notNull;
 @UtilityClass
 public final class PersonidentUtil {
 
-    private static final int[] CONTROL_DIGIT_C1 = { 3, 7, 6, 1, 8, 9, 4, 5, 2 };
-    private static final int[] CONTROL_DIGIT_C2 = { 5, 4, 3, 2, 7, 6, 5, 4, 3, 2 };
+    private static final int[] CONTROL_DIGIT_C1 = {3, 7, 6, 1, 8, 9, 4, 5, 2};
+    private static final int[] CONTROL_DIGIT_C2 = {5, 4, 3, 2, 7, 6, 5, 4, 3, 2};
     private static final int INVALID_CONTROL_DIGIT = 10;
     private static final int DEFAULT_MODULUS = 11;
     private static final int GENDER_POS = 8;
@@ -41,26 +41,43 @@ public final class PersonidentUtil {
         identer.forEach(PersonidentUtil::validate);
     }
 
+    private static String getSynthAdjustedIdent(String ident) {
+        String thisIdent = new StringBuilder()
+                .append(ident, 0, 2)
+                .append(parseInt(ident.substring(2, 3)) > 3 ?
+                        parseInt(ident.substring(2, 3)) - 4 :
+                        ident.substring(2, 3))
+                .append(ident.substring(3))
+                .toString();
+        return thisIdent;
+    }
+
     public static Identtype getIdentType(String ident) {
-        if (parseInt(ident.substring(0, 1)) > 3) {
+
+        String adjust = getSynthAdjustedIdent(ident);
+
+        if (parseInt(adjust.substring(0, 1)) > 3) {
             return DNR;
-        } else if (parseInt(ident.substring(2, 3)) > 1) {
+        } else if (parseInt(adjust.substring(2, 3)) > 1) {
             return BOST;
-        } else if ("0000".equals(ident.substring(6, 10))) {
+        } else if ("0000".equals(adjust.substring(6, 10))) {
             return FDAT;
         }
         return Identtype.FNR;
     }
 
     public static LocalDate toBirthdate(String ident) {
-        int year = getFullYear(ident);
-        int month = parseInt(ident.substring(2, 4));
-        int day = parseInt(ident.substring(0, 2));
 
-        if (DNR.equals(getIdentType(ident))) {
+        String adjust = getSynthAdjustedIdent(ident);
+
+        int year = getFullYear(adjust);
+        int month = parseInt(adjust.substring(2, 4));
+        int day = parseInt(adjust.substring(0, 2));
+
+        if (DNR.equals(getIdentType(adjust))) {
             day = day - 40;
         }
-        if (BOST.equals(getIdentType(ident))) {
+        if (BOST.equals(getIdentType(adjust))) {
             month = month - 20;
         }
 

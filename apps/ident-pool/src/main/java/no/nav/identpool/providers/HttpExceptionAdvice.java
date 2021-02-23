@@ -1,4 +1,4 @@
-package no.nav.identpool.rs;
+package no.nav.identpool.providers;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

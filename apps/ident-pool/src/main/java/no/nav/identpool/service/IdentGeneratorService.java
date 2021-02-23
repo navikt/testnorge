@@ -2,7 +2,7 @@ package no.nav.identpool.service;
 
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
-import no.nav.identpool.rs.v1.support.HentIdenterRequest;
+import no.nav.identpool.providers.v1.support.HentIdenterRequest;
 import no.nav.identpool.util.IdentGeneratorUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -10,9 +10,11 @@ import org.springframework.util.Assert;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -32,19 +34,29 @@ public class IdentGeneratorService {
     private static final int SYNTETISK = 4;
     private static final SecureRandom random = new SecureRandom();
 
+    private static String addSyntetiskIdentifier(String format) {
+        return String.format("%s%1d%s", format.substring(0, 2), Integer.parseInt(format.substring(2, 3)) + SYNTETISK, format.substring(3));
+    }
+
     public Map<LocalDate, List<String>> genererIdenterMap(
             LocalDate foedtEtter,
             LocalDate foedtFoer,
-            Identtype type
+            Identtype type,
+            boolean syntetiskIdent
     ) {
         validateDates(foedtEtter, foedtFoer);
         int days = toIntExact(ChronoUnit.DAYS.between(foedtEtter, foedtFoer));
-        Function<LocalDate, List<String>> numberGenerator = generatorMap.get(type);
+        BiFunction<LocalDate, Boolean, List<String>> numberGenerator = generatorMap.get(type);
         return IntStream.range(0, days)
                 .mapToObj(foedtEtter::plusDays)
                 .collect(Collectors.toMap(
-                        i -> i,
-                        numberGenerator));
+                        date -> date,
+                        date -> {
+                            List<String> identer = numberGenerator.apply(date, syntetiskIdent);
+                            Collections.shuffle(identer);
+                            return identer;
+                        }
+                ));
     }
 
     public Set<String> genererIdenterFdat(
@@ -69,7 +81,7 @@ public class IdentGeneratorService {
             LocalDate birthdate = request.getFoedtEtter().plusDays(random.nextInt(numberOfDates));
             String format = numberFormat.apply(birthdate);
             if (isTrue(request.getSyntetisk())) {
-                format = addSyntetiskToken(format);
+                format = addSyntetiskIdentifier(format);
             }
 
             int originalSize = identer.size();
@@ -111,7 +123,7 @@ public class IdentGeneratorService {
             LocalDate birthdate = request.getFoedtEtter().plusDays(random.nextInt(numberOfDates));
             String format = numberFormat.apply(birthdate);
             if (isTrue(request.getSyntetisk())) {
-                format = addSyntetiskToken(format);
+                format = addSyntetiskIdentifier(format);
             }
 
             List<Integer> yearRange = getYearRange(birthdate);
@@ -147,9 +159,5 @@ public class IdentGeneratorService {
         if (foedtEtter.isAfter(foedtFoer)) {
             throw new IllegalArgumentException(String.format("Til dato (%s) kan ikke være etter før dato (%s)", foedtEtter, foedtFoer));
         }
-    }
-
-    private static String addSyntetiskToken(String format){
-        return String.format("%s%1d%s", format.substring(0, 2), Integer.parseInt(format.substring(2,3)) + SYNTETISK, format.substring(3));
     }
 }

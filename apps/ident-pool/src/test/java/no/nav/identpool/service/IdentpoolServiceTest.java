@@ -26,7 +26,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -38,7 +37,7 @@ class IdentpoolServiceTest {
     private IdentRepository repository;
 
     @Mock
-    private IdentTpsService identTpsService;
+    private TpsfService tpsfService;
 
     @InjectMocks
     private IdentpoolService identpoolService;
@@ -62,12 +61,12 @@ class IdentpoolServiceTest {
         statusSet.add(tpsStatus);
 
         when(repository.findTopByPersonidentifikator(fnr1)).thenReturn(ident);
-        when(identTpsService.checkIdentsInTps(anySet())).thenReturn(statusSet);
+        when(tpsfService.checkIdentsInTps(anySet())).thenReturn(statusSet);
 
         List<String> frigjorteIdenter = identpoolService.frigjoerLedigeIdenter(identer);
 
         verify(repository).findTopByPersonidentifikator(fnr1);
-        verify(identTpsService).checkIdentsInTps(anySet());
+        verify(tpsfService).checkIdentsInTps(anySet());
         verify(repository).save(ident);
 
         assertEquals(fnr1, frigjorteIdenter.get(0));
@@ -90,13 +89,13 @@ class IdentpoolServiceTest {
 
         when(repository.findTopByPersonidentifikator(fnr1)).thenReturn(ident1);
         when(repository.findTopByPersonidentifikator(fnr2)).thenReturn(null);
-        when(identTpsService.checkIdentsInTps(anySet(), anyList())).thenReturn(new HashSet<>(Collections.singletonList(tpsStatus)));
+        when(tpsfService.checkIdentsInTps(anySet())).thenReturn(new HashSet<>(Collections.singletonList(tpsStatus)));
 
         List<String> identerMarkertSomIBruk = identpoolService.markerBruktFlere(rekvirertAv, identer);
 
         assertThat(identerMarkertSomIBruk, containsInAnyOrder(fnr1, fnr2));
 
-        verify(identTpsService).checkIdentsInTps(anySet(), anyList());
+        verify(tpsfService).checkIdentsInTps(anySet());
 
     }
 
@@ -110,7 +109,10 @@ class IdentpoolServiceTest {
         id.setKjoenn(Kjoenn.MANN);
         id.setPersonidentifikator("123");
         identer.add(id);
-        when(repository.findByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatus(LocalDate.of(1991, 1, 1), LocalDate.of(2000, 1, 1), Identtype.FNR, LEDIG)).
+        when(repository.findByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(LocalDate.of(1991, 1, 1),
+                LocalDate.of(2000, 1, 1),
+                Identtype.FNR, LEDIG,
+                false)).
                 thenReturn(identer);
         List<String> ids = identpoolService.hentLedigeFNRFoedtMellom(LocalDate.of(1991, 1, 1), LocalDate.of(2000, 1, 1));
         assertFalse(ids.isEmpty());

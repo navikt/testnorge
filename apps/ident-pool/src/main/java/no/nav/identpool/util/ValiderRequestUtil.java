@@ -2,7 +2,7 @@ package no.nav.identpool.util;
 
 import lombok.experimental.UtilityClass;
 import no.nav.identpool.exception.UgyldigDatoException;
-import no.nav.identpool.rs.v1.support.HentIdenterRequest;
+import no.nav.identpool.providers.v1.support.HentIdenterRequest;
 
 import java.time.LocalDate;
 

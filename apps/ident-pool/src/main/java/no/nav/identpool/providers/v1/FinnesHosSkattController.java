@@ -1,8 +1,8 @@
-package no.nav.identpool.rs.v1;
+package no.nav.identpool.providers.v1;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import no.nav.identpool.rs.v1.support.IdentRequest;
+import no.nav.identpool.providers.v1.support.IdentRequest;
 import no.nav.identpool.service.IdentpoolService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
