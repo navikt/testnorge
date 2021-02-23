@@ -12,6 +12,7 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetReq
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
+import no.nav.registre.testnorge.synt.tiltakservice.consumer.command.GetArenaBrukerCommand;
 import no.nav.registre.testnorge.synt.tiltakservice.consumer.command.PostArenaBrukerCommand;
 import no.nav.registre.testnorge.synt.tiltakservice.consumer.command.PostFinnTiltakCommand;
 import no.nav.registre.testnorge.synt.tiltakservice.consumer.command.PostRettighetCommand;
@@ -22,6 +23,8 @@ import no.nav.registre.testnorge.synt.tiltakservice.consumer.command.PostRettigh
 public class ArenaForvalterConsumer {
 
     private final WebClient webClient;
+
+    private static final String EIER = "Dolly";
 
     public ArenaForvalterConsumer(
             @Value("${arena-forvalteren.rest-api.url}") String arenaForvalterServerUrl
@@ -42,9 +45,13 @@ public class ArenaForvalterConsumer {
         return response;
     }
 
+    public NyeBrukereResponse hentDollyArbeidssoekerIArena(String ident, String miljoe) {
+        return new GetArenaBrukerCommand(ident, miljoe, EIER, webClient).call();
+    }
+
     public NyeBrukereResponse sendTilArenaForvalter(
             List<NyBruker> nyeBrukere
     ) {
-        return new PostArenaBrukerCommand(nyeBrukere, webClient).call();
+        return new PostArenaBrukerCommand(nyeBrukere, EIER, webClient).call();
     }
 }

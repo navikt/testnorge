@@ -27,15 +27,15 @@ public class PostArenaBrukerCommand implements Callable<NyeBrukereResponse> {
 
     private final WebClient webClient;
     private final Map<String, List<NyBruker>> nyeBrukere;
-
-    private static final String EIER = "ORKESTRATOREN";
+    private final String eier;
 
     private static final ParameterizedTypeReference<Map<String, List<NyBruker>>> REQUEST_TYPE = new ParameterizedTypeReference<>() {
     };
 
-    public PostArenaBrukerCommand(List<NyBruker> nyeBrukere, WebClient webClient) {
+    public PostArenaBrukerCommand(List<NyBruker> nyeBrukere, String eier, WebClient webClient) {
         this.webClient = webClient;
         this.nyeBrukere = Collections.singletonMap("nyeBrukere", nyeBrukere);
+        this.eier = eier;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class PostArenaBrukerCommand implements Callable<NyeBrukereResponse> {
             return webClient.post()
                     .uri(builder ->
                             builder.path("/v1/bruker")
-                                    .queryParam("eier", EIER)
+                                    .queryParam("eier", eier)
                                     .build()
                     )
                     .header(CALL_ID, NAV_CALL_ID)
@@ -57,7 +57,7 @@ public class PostArenaBrukerCommand implements Callable<NyeBrukereResponse> {
                     .block();
         } catch (Exception e) {
             log.error("Klarte ikke å sende inn ny(e) bruker(e) til Arena-forvalteren.", e);
-            return NyeBrukereResponse.builder().arbeidsoekerList(Collections.emptyList()).build();
+            return null;
         }
     }
 }

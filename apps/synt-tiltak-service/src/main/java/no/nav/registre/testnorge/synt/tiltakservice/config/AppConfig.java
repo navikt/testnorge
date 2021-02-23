@@ -1,5 +1,7 @@
 package no.nav.registre.testnorge.synt.tiltakservice.config;
 
+import java.util.Random;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -14,4 +16,9 @@ import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerCo
         AnalysisGCPAutoConfiguration.class
 })
 public class AppConfig {
+
+    @Bean
+    public Random random() {
+        return new Random();
+    }
 }
