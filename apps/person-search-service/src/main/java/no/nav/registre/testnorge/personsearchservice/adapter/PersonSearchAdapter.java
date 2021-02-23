@@ -72,10 +72,9 @@ public class PersonSearchAdapter {
 
         List<Response> responses = convert(searchResponse.getHits().getHits(), Response.class);
 
-        int numberOfPages = (int) Math.ceil(searchResponse.getHits().getTotalHits().value / (double) page.getPageSize());
 
         return new PersonList(
-                numberOfPages,
+                searchResponse.getHits().getTotalHits().value,
                 responses.stream().map(Person::new).collect(Collectors.toList())
         );
     }

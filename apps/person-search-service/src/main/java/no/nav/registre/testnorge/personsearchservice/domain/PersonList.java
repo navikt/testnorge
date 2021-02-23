@@ -6,6 +6,6 @@ import java.util.List;
 
 @Value
 public class PersonList {
-    Integer numberOfPages;
+    Long numberOfItems;
     List<Person> list;
 }
