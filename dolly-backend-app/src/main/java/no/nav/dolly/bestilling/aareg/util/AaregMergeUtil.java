@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.nonNull;
+
 @UtilityClass
 @Slf4j
 public class AaregMergeUtil {
@@ -73,14 +75,6 @@ public class AaregMergeUtil {
                 .map(ArbeidsforholdResponse::getArbeidsforholdId)
                 .forEach(arbeidsforholdId -> log.info("Appender arbeidsforholdId {} til ident {}", arbeidsforholdId, ident));
 
-        AtomicInteger arbeidsforholdId = new AtomicInteger(
-                eksisterendeArbeidsforhold.stream()
-                        .map(ArbeidsforholdResponse::getArbeidsforholdId)
-                        .map(id -> id.replace("-", ""))
-                        .mapToInt(Integer::valueOf)
-                        .max().orElse(0)
-        );
-
         AtomicInteger permisjonId = new AtomicInteger(
                 eksisterendeArbeidsforhold.stream()
                         .map(ArbeidsforholdResponse::getPermisjonPermitteringer)
@@ -91,14 +85,35 @@ public class AaregMergeUtil {
                         .max(Comparator.comparing(id -> id)).orElse(0)
         );
 
-        nyeArbeidsforhold.forEach(arbeidforhold -> {
-            arbeidforhold.setArbeidsforholdID(Integer.toString(arbeidsforholdId.addAndGet(1)));
-            arbeidforhold.getPermisjon().forEach(permisjon ->
+        AtomicInteger arbeidsforholdId = null;
+        try {
+            arbeidsforholdId = new AtomicInteger(
+                    eksisterendeArbeidsforhold.stream()
+                            .map(ArbeidsforholdResponse::getArbeidsforholdId)
+                            .map(id -> id.replaceAll("[^\\d]", ""))
+                            .mapToInt(Integer::valueOf)
+                            .max().orElse(0)
+            );
+        } catch (NumberFormatException e) {
+            log.warn("Klarte ikke å omgjøre arbeidsforholdId til integer, bruker string verdi fra eksisterende arbeidsforhold.", e);
+        }
+
+        for (int i = 0; i < nyeArbeidsforhold.size(); i++) {
+            Arbeidsforhold nyttArbeidsforhold = nyeArbeidsforhold.get(i);
+            if (nonNull(arbeidsforholdId)) {
+                nyttArbeidsforhold.setArbeidsforholdID(Integer.toString(arbeidsforholdId.addAndGet(1)));
+            } else {
+                nyttArbeidsforhold.setArbeidsforholdID(
+                        nyeArbeidsforhold.size() > eksisterendeArbeidsforhold.size() && i >= eksisterendeArbeidsforhold.size() ?
+                                eksisterendeArbeidsforhold.get(0).getArbeidsforholdId() + i :
+                                eksisterendeArbeidsforhold.get(i).getArbeidsforholdId() + i);
+            }
+            nyttArbeidsforhold.getPermisjon().forEach(permisjon ->
                     permisjon.setPermisjonsId(Integer.toString(permisjonId.addAndGet(1))));
-            arbeidforhold.setArbeidstaker(RsPersonAareg.builder()
+            nyttArbeidsforhold.setArbeidstaker(RsPersonAareg.builder()
                     .ident(ident)
                     .build());
-        });
+        }
 
         return nyeArbeidsforhold;
     }
