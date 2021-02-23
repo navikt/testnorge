@@ -13,8 +13,8 @@ import { OrganisasjonVisning } from '~/components/fagsystem/organisasjoner/visni
 import { OrgStatus, EnhetData, EnhetBestilling } from '~/components/fagsystem/organisasjoner/types'
 
 type OrganisasjonListe = {
-	orgListe: OrgStatus
 	bestillinger: Array<EnhetBestilling>
+	organisasjoner: OrgStatus
 }
 
 const ikonTypeMap = {
@@ -24,12 +24,12 @@ const ikonTypeMap = {
 	Stoppet: 'report-problem-triangle'
 }
 
-export default function OrganisasjonListe({ orgListe, bestillinger }: OrganisasjonListe) {
-	if (!orgListe) {
+export default function OrganisasjonListe({ bestillinger, organisasjoner }: OrganisasjonListe) {
+	if (!organisasjoner) {
 		return null
 	}
 
-	const sortedOrgliste = _orderBy(orgListe, ['id'], ['desc'])
+	const sortedOrgliste = _orderBy(organisasjoner, ['id'], ['desc'])
 
 	const columns = [
 		{
@@ -80,7 +80,7 @@ export default function OrganisasjonListe({ orgListe, bestillinger }: Organisasj
 			text: 'Bestilling-ID',
 			width: '20',
 			dataField: 'bestillingId',
-			formatter: (cell, row) => {
+			formatter: (cell: number, row: EnhetData) => {
 				const str = row.bestillingId
 				if (str.length > 1) return `${str[0]} ...`
 				return str[0]

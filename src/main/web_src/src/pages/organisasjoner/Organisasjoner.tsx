@@ -4,43 +4,31 @@ import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import Icon from '~/components/ui/icon/Icon'
 import { SearchField } from '~/components/searchField/SearchField'
-import OrganisasjonListe from './OrganisasjonListe'
+import OrganisasjonListeConnector from './OrganisasjonListeConnector'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import Loading from '~/components/ui/loading/Loading'
 import { History } from 'history'
-import { useAsync } from 'react-use'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import OrganisasjonBestillingConnector from '~/pages/organisasjoner/OrganisasjonBestillingConnector'
 import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 
 type Organisasjoner = {
 	history: History
-	isFetching: boolean
+	isFetchingBestillinger: boolean
+	isFetchingOrg: boolean
+	bestillinger: Array<Bestilling>
+	organisasjoner: Array<Organisasjon>
 	brukerId: string
+	getOrganisasjonBestillingStatus: Function
 	getOrganisasjonBestilling: Function
-	getOrganisasjoner: Function
+	fetchOrganisasjoner: Function
 }
 
-type OrganisasjonResponse = {
-	value: {
-		data: OrganisasjonInfo[]
-	}
-}
-
-type OrganisasjonInfo = {
-	adresser: string[]
-	enhetstype: string
-	naeringskode: string
-	sektorkode: string
-	organisasjonsnavn: string
-	organisasjonNummer?: string
-	organisasjonsnummer?: string
-	status: Array<Status>
-	underenheter: OrganisasjonInfo[]
+type Bestilling = {
 	id: number
 }
 
-type Status = {
+type Organisasjon = {
 	organisasjonsnummer: string
 }
 
@@ -54,18 +42,22 @@ const VISNING_BESTILLINGER = 'bestillinger'
 
 export default function Organisasjoner({
 	history,
-	isFetching,
+	isFetchingBestillinger,
+	isFetchingOrg,
+	bestillinger,
+	organisasjoner,
 	brukerId,
+	getOrganisasjonBestillingStatus,
 	getOrganisasjonBestilling,
-	getOrganisasjoner
+	fetchOrganisasjoner
 }: Organisasjoner) {
 	const [visning, setVisning] = useState(VISNING_ORGANISASJONER)
-	const [organisasjonliste, setOrganisasjonliste] = useState(null)
-
 	const byttVisning = (event: React.ChangeEvent<any>) => setVisning(event.target.value)
 
 	useEffect(() => {
+		getOrganisasjonBestillingStatus(brukerId)
 		getOrganisasjonBestilling(brukerId)
+		fetchOrganisasjoner(brukerId)
 	}, [])
 
 	const searchfieldPlaceholderSelector = () => {
@@ -73,41 +65,8 @@ export default function Organisasjoner({
 		return 'Søk i organisasjoner'
 	}
 
-	function getBestillingIdFromOrgnummer(
-		organisasjoner: OrganisasjonInfo[],
-		organisasjonsnummer: string
-	) {
-		return organisasjoner
-			.filter((org: OrganisasjonInfo) => org.organisasjonNummer === organisasjonsnummer)
-			.map((org: OrganisasjonInfo) => org.id)
-			.sort(function(a, b) {
-				return b - a
-			})
-	}
-
-	const organisasjonerInfo = useAsync(async () => {
-		const response = await getOrganisasjonBestilling(brukerId)
-		setOrganisasjonliste(response.value.data)
-		let orgNumre: string[] = []
-		response.value.data.forEach((org: any) => {
-			if (org.ferdig && org.organisasjonNummer !== 'NA')
-				return orgNumre.push(org.organisasjonNummer)
-		})
-
-		return getOrganisasjoner(orgNumre).then((orgInfo: OrganisasjonResponse) => {
-			return orgInfo.value.data.map(orgElement => ({
-				...orgElement,
-				status: 'Ferdig', // TODO: er vel ikke alltid ferdig?
-				bestillingId: getBestillingIdFromOrgnummer(
-					response.value.data,
-					orgElement.organisasjonsnummer
-				)
-			}))
-		})
-	}, [])
-
-	const antallOrg = organisasjonerInfo.value ? organisasjonerInfo.value.length : 0
-	const antallBest = organisasjonliste ? organisasjonliste.length : 0
+	const antallOrg = organisasjoner ? organisasjoner.length : 0
+	const antallBest = bestillinger ? bestillinger.length : 0
 
 	const startBestilling = (type: string) => {
 		history.push('/organisasjoner/bestilling', { opprettOrganisasjon: type })
@@ -186,21 +145,18 @@ export default function Organisasjoner({
 				</div>
 
 				{visning === VISNING_ORGANISASJONER &&
-					(organisasjonerInfo.loading ? (
+					(isFetchingOrg !== false ? (
 						<Loading label="laster organisasjoner" panel />
 					) : antallOrg > 0 ? (
-						<OrganisasjonListe
-							orgListe={organisasjonerInfo && organisasjonerInfo.value}
-							bestillinger={organisasjonliste}
-						/>
+						<OrganisasjonListeConnector />
 					) : (
 						tomOrgListe()
 					))}
 				{visning === VISNING_BESTILLINGER &&
-					(isFetching ? (
+					(isFetchingBestillinger !== false ? (
 						<Loading label="laster bestillinger" panel />
-					) : antallOrg > 0 ? (
-						<OrganisasjonBestillingConnector brukerId={brukerId} />
+					) : antallBest > 0 ? (
+						<OrganisasjonBestillingConnector />
 					) : (
 						tomOrgListe()
 					))}

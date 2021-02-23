@@ -7,6 +7,7 @@ import Icon from '~/components/ui/icon/Icon'
 import BestillingDetaljer from '~/components/bestilling/detaljer/Detaljer'
 import { OrgStatus } from '~/components/fagsystem/organisasjoner/types'
 import Spinner from '~/components/ui/loading/Spinner'
+import Formatters from '~/utils/DataFormatter'
 
 type OrganisasjonBestilling = {
 	brukerId: string
@@ -44,7 +45,7 @@ export default function OrganisasjonBestilling({ brukerId, bestillinger }: Organ
 			width: '20',
 			dataField: 'sistOppdatert',
 			formatter(cell: string): string {
-				return new Date(cell).toLocaleDateString()
+				return Formatters.formatDate(cell)
 			}
 		},
 		{
@@ -69,6 +70,7 @@ export default function OrganisasjonBestilling({ brukerId, bestillinger }: Organ
 				return cell === 'Pågår' || cell === 'DEPLOYER' ? (
 					<Spinner size={24} />
 				) : (
+					//@ts-ignore
 					<Icon kind={ikonTypeMap[cell]} title={cell} />
 				)
 			}

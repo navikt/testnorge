@@ -16,6 +16,7 @@ export type EnhetBestilling = {
 }
 
 export type EnhetData = {
+	orgInfo: EnhetData
 	organisasjonsnummer: string
 	organisasjonsnavn: string
 	enhetstype: string

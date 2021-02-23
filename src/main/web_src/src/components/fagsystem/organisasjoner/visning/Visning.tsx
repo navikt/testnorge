@@ -35,12 +35,16 @@ export const OrganisasjonVisning = ({ data, bestillinger }: OrganisasjonVisning)
 		})
 	}
 
-	enheterFlat(Array.of(data))
+	enheterFlat(Array.of(data.orgInfo))
 
 	return (
 		<div>
 			<SubOverskrift label="Organisasjonsoversikt" iconKind="organisasjon" />
-			<Enhetstre enheter={Array.of(data)} selectedEnhet={selectedId} onNodeClick={setSelectedId} />
+			<Enhetstre
+				enheter={Array.of(data.orgInfo)}
+				selectedEnhet={selectedId}
+				onNodeClick={setSelectedId}
+			/>
 			<Detaljer data={enheterListe.filter(enhet => enhet.id === selectedId)} />
 			{/* @ts-ignore */}
 			<TidligereBestillinger ids={data.bestillingId} />
