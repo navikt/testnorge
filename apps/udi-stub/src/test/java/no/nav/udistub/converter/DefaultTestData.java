@@ -1,11 +1,16 @@
 package no.nav.udistub.converter;
 
+import no.nav.udistub.database.model.Kodeverk;
+import no.nav.udistub.database.model.PersonNavn;
 import no.nav.udistub.service.dto.UdiAlias;
 import no.nav.udistub.service.dto.UdiArbeidsadgang;
 import no.nav.udistub.service.dto.UdiPeriode;
 import no.nav.udistub.service.dto.UdiPerson;
 import no.nav.udistub.service.dto.opphold.UdiAvslagEllerBortfall;
 import no.nav.udistub.service.dto.opphold.UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum;
+import no.nav.udistub.service.dto.opphold.UdiOppholdSammeVilkaar;
+import no.nav.udistub.service.dto.opphold.UdiOppholdStatus;
+import no.nav.udistub.service.dto.opphold.UdiUtvistMedInnreiseForbud;
 import no.udi.mt_1067_nav_data.v1.ArbeidOmfangKategori;
 import no.udi.mt_1067_nav_data.v1.ArbeidsadgangType;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTAGrunnlagskategoriOppholdsrett;
@@ -18,12 +23,6 @@ import no.udi.mt_1067_nav_data.v1.Varighet;
 
 import java.time.LocalDate;
 import java.util.Arrays;
-
-import no.nav.udistub.database.model.Kodeverk;
-import no.nav.udistub.database.model.PersonNavn;
-import no.nav.udistub.service.dto.opphold.UdiOppholdSammeVilkaar;
-import no.nav.udistub.service.dto.opphold.UdiOppholdStatus;
-import no.nav.udistub.service.dto.opphold.UdiUtvistMedInnreiseForbud;
 
 public class DefaultTestData {
     public static final String TEST_PERSON_FNR = "19026229432";
@@ -127,8 +126,6 @@ public class DefaultTestData {
     public static UdiAvslagEllerBortfall createAvslagEllerBortfall() {
         UdiAvslagEllerBortfall avslagEllerBortfall = new UdiAvslagEllerBortfall();
         avslagEllerBortfall.setAvgjorelsesDato(TEST_DATE);
-        avslagEllerBortfall.setAvslagGrunnlagOverig(TEST_OPPHOLDS_GRUNNLAG_KATEGORI);
-        avslagEllerBortfall.setAvslagGrunnlagTillatelseGrunnlagEOS(TEST_eosEllerEFTAGrunnlagskategoriOppholdstillatelse);
         avslagEllerBortfall.setAvslagOppholdstillatelseBehandletGrunnlagOvrig(TEST_OPPHOLDS_GRUNNLAG_KATEGORI);
         avslagEllerBortfall.setAvslagOppholdstillatelseBehandletGrunnlagEOS(TEST_eosEllerEFTAGrunnlagskategoriOppholdstillatelse);
         avslagEllerBortfall.setAvslagOppholdsrettBehandlet(TEST_eosEllerEFTAGrunnlagskategoriOppholdsrett);

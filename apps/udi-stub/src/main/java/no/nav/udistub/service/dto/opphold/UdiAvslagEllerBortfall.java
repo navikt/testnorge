@@ -25,8 +25,6 @@ public class UdiAvslagEllerBortfall {
     private LocalDate tilbakeKallVirkningsDato;
     private LocalDate tilbakeKallUtreiseFrist;
     private LocalDate avslagOppholdstillatelseUtreiseFrist;
-    private OppholdsgrunnlagKategori avslagGrunnlagOverig;
-    private EOSellerEFTAGrunnlagskategoriOppholdstillatelse avslagGrunnlagTillatelseGrunnlagEOS;
     private LocalDate avslagOppholdstillatelseBehandletUtreiseFrist;
     private OppholdsgrunnlagKategori avslagOppholdstillatelseBehandletGrunnlagOvrig;
     private EOSellerEFTAGrunnlagskategoriOppholdstillatelse avslagOppholdstillatelseBehandletGrunnlagEOS;
