@@ -31,6 +31,7 @@ applications:
   mn-organiasasjon-api: a9109f54-8cae-4af2-98e3-8c56a1f5c9ad
   udi-stub-dev: 4426ef7d-f148-4d19-8a03-b0d07a451938
   udi-stub: f4620953-c7af-4e60-8cbb-03de57554b86
+  person-search-service: dev-fss.dolly.person-search-service
 
 zuul:
   routes:
