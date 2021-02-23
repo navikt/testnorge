@@ -2,7 +2,7 @@ name: Deploy ident-pool
 
 on:
   push:
-    branches: master
+    branches: oppdatering_udi_stub
     paths:
       - apps/ident-pool/**
 env:
