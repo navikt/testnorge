@@ -76,7 +76,7 @@ public class Person {
                 .builder()
                 .fornavn(getFornavn())
                 .mellomnavn(getMellomnavn())
-                .ettternavn(getEtternavn())
+                .etternavn(getEtternavn())
                 .aktorId(getAktorId())
                 .ident(getIdent())
                 .kjoenn(getKjoenn())

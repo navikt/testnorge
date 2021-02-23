@@ -12,7 +12,7 @@ import lombok.Value;
 public class PersonDTO {
     String fornavn;
     String mellomnavn;
-    String ettternavn;
+    String etternavn;
     String kjoenn;
     String ident;
     String aktorId;
