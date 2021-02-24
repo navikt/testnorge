@@ -12,10 +12,12 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -57,6 +59,14 @@ public class PersonSearchAdapter {
                         ScoreMode.Avg
                 )));
 
+        Optional.ofNullable(search.getFoedsel()).flatMap(value -> getBetween(value.getFom(), value.getTom(), "hentPerson.foedsel.foedselsdato"))
+                .ifPresent(rangeQueryBuilder -> queryBuilder.must(QueryBuilders.nestedQuery(
+                        "hentPerson.foedsel",
+                        rangeQueryBuilder,
+                        ScoreMode.Avg
+                        )
+                ));
+
         var searchRequest = new SearchRequest();
         searchRequest.indices("pdl-sok");
 
@@ -78,4 +88,22 @@ public class PersonSearchAdapter {
                 responses.stream().map(Person::new).collect(Collectors.toList())
         );
     }
+
+
+    private Optional<RangeQueryBuilder> getBetween(LocalDate fom, LocalDate tom, String field) {
+        if (fom == null && tom == null) {
+            return Optional.empty();
+        }
+        var builder = QueryBuilders.rangeQuery(field);
+
+        if (fom != null) {
+            builder.gte(fom.withDayOfMonth(1));
+        }
+
+        if (tom != null) {
+            builder.lte(tom.withDayOfMonth(tom.lengthOfMonth()));
+        }
+        return Optional.of(builder);
+    }
+
 }

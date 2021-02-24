@@ -2,13 +2,16 @@ package no.nav.registre.testnorge.personsearchservice.domain;
 
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import no.nav.registre.testnorge.personsearchservice.adapter.model.Foedsel;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Kjoenn;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Navn;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Response;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.WithMetadata;
+import no.nav.registre.testnorge.personsearchservice.controller.dto.FoedselDTO;
 import no.nav.registre.testnorge.personsearchservice.controller.dto.PersonDTO;
 
 @RequiredArgsConstructor
@@ -38,10 +41,12 @@ public class Person {
         return getNavn().map(Navn::getEtternavn).orElse(null);
     }
 
+    public LocalDate getFoedselsdato() {
+        return getCurrent(response.getHentPerson().getFoedsel()).map(Foedsel::getFoedselsdato).orElse(null);
+    }
+
     public String getKjoenn() {
-        return getCurrent(response.getHentPerson().getKjoenn())
-                .map(Kjoenn::getKjoenn)
-                .orElse(null);
+        return getCurrent(response.getHentPerson().getKjoenn()).map(Kjoenn::getKjoenn).orElse(null);
     }
 
     public String getIdent() {
@@ -81,6 +86,7 @@ public class Person {
                 .ident(getIdent())
                 .kjoenn(getKjoenn())
                 .tag(getTags().stream().findFirst().orElse(null))
+                .foedsel(FoedselDTO.builder().foedselsdato(getFoedselsdato()).build())
                 .build();
     }
 }

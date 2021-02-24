@@ -5,18 +5,12 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
+import java.time.LocalDate;
+
 @Value
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class PersonDTO {
-    String fornavn;
-    String mellomnavn;
-    String etternavn;
-    String kjoenn;
-    String ident;
-    String aktorId;
-    String tag;
-    FoedselDTO foedsel;
+public class FoedselDTO {
+    LocalDate foedselsdato;
 }
-

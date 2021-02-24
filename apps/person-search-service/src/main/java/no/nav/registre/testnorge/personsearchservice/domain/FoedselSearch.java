@@ -4,14 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import no.nav.registre.testnorge.personsearchservice.controller.dto.Pageing;
+import java.time.LocalDate;
 
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class Search {
-    Pageing pageing;
-    String tag;
-    String kjoenn;
-    FoedselSearch foedsel;
+public class FoedselSearch {
+    LocalDate fom;
+    LocalDate tom;
 }
