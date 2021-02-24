@@ -238,12 +238,11 @@ public class AjourholdService {
         if (!usedIdents.isEmpty()) {
             log.info("Fjerner identer som er i bruk i prod, men som er markert som LEDIG i ident-pool.");
 
-            for (String usedIdent : usedIdents) {
+            usedIdents.forEach(usedIdent -> {
                 Ident ident = identRepository.findTopByPersonidentifikator(usedIdent);
                 ident.setRekvireringsstatus(Rekvireringsstatus.I_BRUK);
                 ident.setRekvirertAv("TPS");
                 identRepository.save(ident);
-            }
-        }
+            });        }
     }
 }
