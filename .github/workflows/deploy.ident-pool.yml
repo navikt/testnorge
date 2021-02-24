@@ -2,7 +2,7 @@ name: Deploy ident-pool
 
 on:
   push:
-    branches: feature/ident_pool_refaktorere
+    branches: master
     paths:
       - apps/ident-pool/**
 env:
