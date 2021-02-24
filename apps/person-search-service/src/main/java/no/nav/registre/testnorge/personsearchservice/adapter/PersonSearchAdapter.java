@@ -79,6 +79,12 @@ public class PersonSearchAdapter {
         searchSourceBuilder.from((page.getPage() - 1) * page.getPageSize());
         searchSourceBuilder.size(page.getPageSize());
         searchSourceBuilder.query(queryBuilder);
+        searchSourceBuilder.sort(
+                SortBuilders
+                        .fieldSort("hentPerson.navn.fornavn.keyword")
+                        .order(SortOrder.ASC)
+                        .setNestedSort(new NestedSortBuilder("hentIdenter.navn"))
+        );
         searchSourceBuilder.sort(new ScoreSortBuilder().order(SortOrder.DESC));
         searchRequest.source(searchSourceBuilder);
 
