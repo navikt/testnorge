@@ -19,4 +19,5 @@ public class PersonDTO {
     String tag;
     FoedselDTO foedsel;
     SivilstandDTO sivilstand;
+    StatsborgerskapDTO statsborgerskap;
 }

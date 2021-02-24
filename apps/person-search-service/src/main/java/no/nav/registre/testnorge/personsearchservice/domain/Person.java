@@ -1,7 +1,5 @@
 package no.nav.registre.testnorge.personsearchservice.domain;
 
-import lombok.RequiredArgsConstructor;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -15,12 +13,18 @@ import no.nav.registre.testnorge.personsearchservice.adapter.model.WithMetadata;
 import no.nav.registre.testnorge.personsearchservice.controller.dto.FoedselDTO;
 import no.nav.registre.testnorge.personsearchservice.controller.dto.PersonDTO;
 import no.nav.registre.testnorge.personsearchservice.controller.dto.SivilstandDTO;
+import no.nav.registre.testnorge.personsearchservice.controller.dto.StatsborgerskapDTO;
 
-@RequiredArgsConstructor
 public class Person {
     private final Response response;
+    private final Statsborgerskap statsborgerskap;
 
-    private <T extends WithMetadata> Optional<T> getCurrent(List<T> list){
+    public Person(Response response) {
+        this.response = response;
+        this.statsborgerskap = new Statsborgerskap(getCurrent(response.getHentPerson().getStatsborgerskap()).orElse(null));
+    }
+
+    private static <T extends WithMetadata> Optional<T> getCurrent(List<T> list) {
         return list
                 .stream()
                 .filter(value -> !value.getMetadata().getHistorisk())
@@ -51,7 +55,7 @@ public class Person {
         return getCurrent(response.getHentPerson().getKjoenn()).map(Kjoenn::getKjoenn).orElse(null);
     }
 
-    public String getSivilstand(){
+    public String getSivilstand() {
         return getCurrent(response.getHentPerson().getSivilstand()).map(Sivilstand::getType).orElse(null);
     }
 
@@ -95,6 +99,7 @@ public class Person {
                 .tag(getTags().stream().findFirst().orElse(null))
                 .foedsel(FoedselDTO.builder().foedselsdato(getFoedselsdato()).build())
                 .sivilstand(SivilstandDTO.builder().type(getSivilstand()).build())
+                .statsborgerskap(statsborgerskap.toDTO())
                 .build();
     }
 }
