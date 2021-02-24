@@ -43,9 +43,8 @@ public class DatabaseService {
             SecureRandom rand = new SecureRandom();
             for (int i = 0; i < request.getAntall(); i++) {
                 int randomPageNumber = rand.nextInt(totalPages);
-                if (!pageCache.containsKey(randomPageNumber)) {
-                    pageCache.put(randomPageNumber, findPage(availableIdentsRequest, LEDIG, randomPageNumber));
-                }
+                pageCache.computeIfAbsent(randomPageNumber, k ->
+                    findPage(availableIdentsRequest, LEDIG, randomPageNumber));
 
                 List<Ident> content = pageCache.get(randomPageNumber).getContent();
                 for (Ident ident : content) {

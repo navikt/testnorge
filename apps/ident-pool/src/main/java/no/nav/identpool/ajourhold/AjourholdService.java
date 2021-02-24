@@ -223,13 +223,13 @@ public class AjourholdService {
                 List<String> idents = page.getContent().stream().map(Ident::getPersonidentifikator).collect(Collectors.toList());
                 try {
                     JsonNode statusFromTps = tpsfConsumer.getProdStatusFromTps(idents).findValue("EFnr");
-                    List<Map<String, Object>> identStatus = objectMapper.convertValue(statusFromTps, new TypeReference<List<Map<String, Object>>>() {
+                    List<Map<String, Object>> identStatus = objectMapper.convertValue(statusFromTps, new TypeReference<>() {
                     });
-                    for (Map<String, Object> map : identStatus) {
-                        if (!map.containsKey("svarStatus")) {
-                            usedIdents.add(String.valueOf(map.get("fnr")));
-                        }
-                    }
+                    usedIdents.addAll(identStatus.stream()
+                            .filter(status -> !status.containsKey("svarStatus"))
+                            .map(status -> String.valueOf(status.get("fnr")))
+                            .collect(Collectors.toList())
+                    );
                 } catch (IOException e) {
                     log.error("Kunne ikke hente status fra TPS", e);
                 }

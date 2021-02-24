@@ -40,6 +40,27 @@ public class PoolService {
         return inUse ? I_BRUK : LEDIG;
     }
 
+    private static void throwException(HentIdenterRequest request) {
+        throw new ForFaaLedigeIdenterException(format("Identpool finner ikke ledige identer i hht forespørsel: " +
+                        "identType %s, kjønn %s, fødtEtter %s, fødtFør %s, syntetisk %b -- "
+                        + "forsøk å bestille med andre kriterier.",
+                nonNull(request.getIdenttype()) ? request.getIdenttype().name() : null,
+                nonNull(request.getKjoenn()) ? request.getKjoenn().name() : null,
+                nonNull(request.getFoedtEtter()) ? request.getFoedtEtter().format(ISO_DATE) : null,
+                nonNull(request.getFoedtFoer()) ? request.getFoedtFoer().format(ISO_DATE) : null,
+                request.getSyntetisk()));
+    }
+
+    private static void logRequest(HentIdenterRequest request) {
+        log.info("Leverte identer: antall {}, rekvirertAv {}, identType {}, kjønn {}, fødtEtter {}, fødtFør {}, syntetisk {}",
+                request.getAntall(), request.getRekvirertAv(),
+                nonNull(request.getIdenttype()) ? request.getIdenttype().name() : null,
+                nonNull(request.getKjoenn()) ? request.getKjoenn().name() : null,
+                nonNull(request.getFoedtEtter()) ? request.getFoedtEtter().format(ISO_DATE) : null,
+                nonNull(request.getFoedtFoer()) ? request.getFoedtFoer().format(ISO_DATE) : null,
+                isTrue(request.getSyntetisk()));
+    }
+
     public synchronized List<String> allocateIdenter(HentIdenterRequest request) {
 
         Set<Ident> identEntities = databaseService.hentLedigeIdenterFraDatabase(request);
@@ -64,23 +85,10 @@ public class PoolService {
                 i++;
             }
 
-            log.info("Leverte identer: antall {}, rekvirertAv {}, identType {}, kjønn {}, fødtEtter {}, fødtFør {}, syntetisk {}",
-                    request.getAntall(), request.getRekvirertAv(),
-                    nonNull(request.getIdenttype()) ? request.getIdenttype().name() : null,
-                    nonNull(request.getKjoenn()) ? request.getKjoenn().name() : null,
-                    nonNull(request.getFoedtEtter()) ? request.getFoedtEtter().format(ISO_DATE) : null,
-                    nonNull(request.getFoedtFoer()) ? request.getFoedtFoer().format(ISO_DATE) : null,
-                    isTrue(request.getSyntetisk()));
+            logRequest(request);
 
             if (identEntities.size() < request.getAntall()) {
-                throw new ForFaaLedigeIdenterException(format("Identpool finner ikke ledige identer i hht forespørsel: " +
-                                "identType %s, kjønn %s, fødtEtter %s, fødtFør %s, syntetisk %b -- "
-                                + "forsøk å bestille med andre kriterier.",
-                        nonNull(request.getIdenttype()) ? request.getIdenttype().name() : null,
-                        nonNull(request.getKjoenn()) ? request.getKjoenn().name() : null,
-                        nonNull(request.getFoedtEtter()) ? request.getFoedtEtter().format(ISO_DATE) : null,
-                        nonNull(request.getFoedtFoer()) ? request.getFoedtFoer().format(ISO_DATE) : null,
-                        request.getSyntetisk()));
+                throwException(request);
             }
         }
 

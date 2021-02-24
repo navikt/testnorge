@@ -87,7 +87,7 @@ public class IdentpoolService {
         } else if (ident.getRekvireringsstatus().equals(I_BRUK)) {
             throw new IdentAlleredeIBrukException("Den etterspurte identen er allerede markert som i bruk.");
         }
-        throw new IllegalStateException("Den etterspurte identen er ugyldig siden den hverken markert som i bruk eller ledig.");
+        throw new IllegalStateException("Den etterspurte identen er ugyldig siden den hverken er markert som i bruk eller ledig.");
     }
 
     public List<String> markerBruktFlere(
