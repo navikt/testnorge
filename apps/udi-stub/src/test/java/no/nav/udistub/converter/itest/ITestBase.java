@@ -2,7 +2,6 @@ package no.nav.udistub.converter.itest;
 
 import no.nav.udistub.service.dto.UdiPerson;
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.core.io.ClassPathResource;
@@ -24,7 +23,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @ActiveProfiles("itest")
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
-@AutoConfigureMockMvc(addFilters = false)
 public class ITestBase {
 
     protected static final UdiPerson TESTPERSON_UDI = createPersonTo();

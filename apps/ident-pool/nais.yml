@@ -37,8 +37,3 @@ spec:
       memory: 4096Mi
   vault:
     enabled: true
-    paths:
-      - kvPath: /oracle/data/dev/config/identpool_q2
-        mountPath: /var/run/secrets/nais.io/dbPath
-      - kvPath: /oracle/data/dev/creds/identpool_q2-user
-        mountPath: /var/run/secrets/nais.io/db
