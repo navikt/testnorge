@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.personsearchservice.domain;
+package no.nav.registre.testnorge.personsearchservice.controller.search;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.personsearchservice.domain;
+package no.nav.registre.testnorge.personsearchservice.controller.search;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -13,6 +13,7 @@ public class PersonSearch {
     Pageing pageing;
     String tag;
     String kjoenn;
-    FoedselSearch foedselSearch;
-    SivilstandSearch sivilstandSearch;
+    FoedselSearch foedsel;
+    SivilstandSearch sivilstand;
+    StatsborgerskapSearch statsborgerskap;
 }

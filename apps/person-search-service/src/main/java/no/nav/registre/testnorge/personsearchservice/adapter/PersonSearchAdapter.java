@@ -31,7 +31,7 @@ import no.nav.registre.testnorge.personsearchservice.adapter.model.Response;
 import no.nav.registre.testnorge.personsearchservice.controller.dto.Pageing;
 import no.nav.registre.testnorge.personsearchservice.domain.Person;
 import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
-import no.nav.registre.testnorge.personsearchservice.domain.PersonSearch;
+import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSearch;
 
 @Slf4j
 @Component
@@ -63,13 +63,29 @@ public class PersonSearchAdapter {
                         ScoreMode.Avg
                 )));
 
-        Optional.ofNullable(search.getFoedselSearch()).flatMap(value -> getBetween(value.getFom(), value.getTom(), "hentPerson.foedsel.foedselsdato"))
+        Optional.ofNullable(search.getFoedsel()).flatMap(value -> getBetween(value.getFom(), value.getTom(), "hentPerson.foedsel.foedselsdato"))
                 .ifPresent(rangeQueryBuilder -> queryBuilder.must(QueryBuilders.nestedQuery(
                         "hentPerson.foedsel",
                         rangeQueryBuilder,
                         ScoreMode.Avg
                         )
                 ));
+
+        Optional.ofNullable(search.getSivilstand())
+                .flatMap(value -> Optional.ofNullable(value.getType()))
+                .ifPresent(value -> queryBuilder.must(QueryBuilders.nestedQuery(
+                        "hentPerson.sivilstand",
+                        QueryBuilders.matchQuery("hentPerson.sivilstand.type", value),
+                        ScoreMode.Avg
+                )));
+
+        Optional.ofNullable(search.getStatsborgerskap())
+                .flatMap(value -> Optional.ofNullable(value.getLand()))
+                .ifPresent(value -> queryBuilder.must(QueryBuilders.nestedQuery(
+                        "hentPerson.statsborgerskap",
+                        QueryBuilders.matchQuery("hentPerson.statsborgerskap.land", value),
+                        ScoreMode.Avg
+                )));
 
         var searchRequest = new SearchRequest();
         searchRequest.indices("pdl-sok");

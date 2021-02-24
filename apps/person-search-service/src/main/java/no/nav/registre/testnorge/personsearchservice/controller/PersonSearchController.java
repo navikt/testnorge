@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import no.nav.registre.testnorge.personsearchservice.controller.dto.PersonDTO;
 import no.nav.registre.testnorge.personsearchservice.domain.Person;
 import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
-import no.nav.registre.testnorge.personsearchservice.domain.PersonSearch;
+import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSearch;
 import no.nav.registre.testnorge.personsearchservice.service.PersonSearchService;
 
 @RestController
