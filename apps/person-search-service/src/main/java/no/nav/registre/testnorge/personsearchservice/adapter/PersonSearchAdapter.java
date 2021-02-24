@@ -31,7 +31,7 @@ import no.nav.registre.testnorge.personsearchservice.adapter.model.Response;
 import no.nav.registre.testnorge.personsearchservice.controller.dto.Pageing;
 import no.nav.registre.testnorge.personsearchservice.domain.Person;
 import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
-import no.nav.registre.testnorge.personsearchservice.domain.Search;
+import no.nav.registre.testnorge.personsearchservice.domain.PersonSearch;
 
 @Slf4j
 @Component
@@ -51,7 +51,7 @@ public class PersonSearchAdapter {
     }
 
     @SneakyThrows
-    public PersonList search(Search search) {
+    public PersonList search(PersonSearch search) {
         var queryBuilder = QueryBuilders
                 .boolQuery()
                 .must(QueryBuilders.matchQuery("tags", search.getTag()));
@@ -63,7 +63,7 @@ public class PersonSearchAdapter {
                         ScoreMode.Avg
                 )));
 
-        Optional.ofNullable(search.getFoedsel()).flatMap(value -> getBetween(value.getFom(), value.getTom(), "hentPerson.foedsel.foedselsdato"))
+        Optional.ofNullable(search.getFoedselSearch()).flatMap(value -> getBetween(value.getFom(), value.getTom(), "hentPerson.foedsel.foedselsdato"))
                 .ifPresent(rangeQueryBuilder -> queryBuilder.must(QueryBuilders.nestedQuery(
                         "hentPerson.foedsel",
                         rangeQueryBuilder,

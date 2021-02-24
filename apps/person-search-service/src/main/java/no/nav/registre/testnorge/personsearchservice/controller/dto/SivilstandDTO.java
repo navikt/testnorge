@@ -9,14 +9,6 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class PersonDTO {
-    String fornavn;
-    String mellomnavn;
-    String etternavn;
-    String kjoenn;
-    String ident;
-    String aktorId;
-    String tag;
-    FoedselDTO foedsel;
-    SivilstandDTO sivilstand;
+public class SivilstandDTO {
+    String type;
 }

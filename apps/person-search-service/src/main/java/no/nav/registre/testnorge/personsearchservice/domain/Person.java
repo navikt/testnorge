@@ -10,9 +10,11 @@ import no.nav.registre.testnorge.personsearchservice.adapter.model.Foedsel;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Kjoenn;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Navn;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Response;
+import no.nav.registre.testnorge.personsearchservice.adapter.model.Sivilstand;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.WithMetadata;
 import no.nav.registre.testnorge.personsearchservice.controller.dto.FoedselDTO;
 import no.nav.registre.testnorge.personsearchservice.controller.dto.PersonDTO;
+import no.nav.registre.testnorge.personsearchservice.controller.dto.SivilstandDTO;
 
 @RequiredArgsConstructor
 public class Person {
@@ -48,6 +50,11 @@ public class Person {
     public String getKjoenn() {
         return getCurrent(response.getHentPerson().getKjoenn()).map(Kjoenn::getKjoenn).orElse(null);
     }
+
+    public String getSivilstand(){
+        return getCurrent(response.getHentPerson().getSivilstand()).map(Sivilstand::getType).orElse(null);
+    }
+
 
     public String getIdent() {
         return response
@@ -87,6 +94,7 @@ public class Person {
                 .kjoenn(getKjoenn())
                 .tag(getTags().stream().findFirst().orElse(null))
                 .foedsel(FoedselDTO.builder().foedselsdato(getFoedselsdato()).build())
+                .sivilstand(SivilstandDTO.builder().type(getSivilstand()).build())
                 .build();
     }
 }
