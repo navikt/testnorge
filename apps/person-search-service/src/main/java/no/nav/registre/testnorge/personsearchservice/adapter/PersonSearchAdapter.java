@@ -81,9 +81,9 @@ public class PersonSearchAdapter {
         searchSourceBuilder.query(queryBuilder);
         searchSourceBuilder.sort(
                 SortBuilders
-                        .fieldSort("hentPerson.navn.fornavn.keyword")
+                        .fieldSort("hentPerson.folkeregisteridentifikator.identifikasjonsnummer.keyword")
                         .order(SortOrder.ASC)
-                        .setNestedSort(new NestedSortBuilder("hentIdenter.navn"))
+                        .setNestedSort(new NestedSortBuilder("hentPerson.folkeregisteridentifikator"))
         );
         searchSourceBuilder.sort(new ScoreSortBuilder().order(SortOrder.DESC));
         searchRequest.source(searchSourceBuilder);
