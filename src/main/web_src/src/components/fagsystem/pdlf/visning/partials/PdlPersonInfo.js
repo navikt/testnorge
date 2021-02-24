@@ -11,46 +11,37 @@ export const PdlPersonInfo = ({ data, visTittel = true }) => {
 		return null
 	}
 
-	const adressebeskyttelse = data.adressebeskyttelse ? data.adressebeskyttelse[0] : null
-	const personNavn = data.navn ? data.navn[0] : null
-	const personKjoenn = data.kjoenn ? data.kjoenn[0] : null
-	const personSivilstand = data.sivilstand ? data.sivilstand[0] : null
-	const personFoedsel = data.foedsel ? data.foedsel[0] : null
+	const adressebeskyttelse = data.adressebeskyttelse?.length > 0 ? data.adressebeskyttelse[0] : null
+	const personNavn = data.navn?.length > 0 ? data.navn[0] : null
+	const personKjoenn = data.kjoenn?.length > 0 ? data.kjoenn[0] : null
+	const personSivilstand = data.sivilstand?.length > 0 ? data.sivilstand[0] : null
+	const personFoedsel = data.foedsel?.length > 0 ? data.foedsel[0] : null
 
 	return (
 		<ErrorBoundary>
 			<div>
 				{visTittel && <SubOverskrift label="Persondetaljer" iconKind="personinformasjon" />}
 				<div className="person-visning_content">
-					<TitleValue title="Fornavn" value={personNavn && personNavn.fornavn} />
-					<TitleValue title="Mellomnavn" value={personNavn && personNavn.mellomnavn} />
-					<TitleValue title="Etternavn" value={personNavn && personNavn.etternavn} />
-					<TitleValue title="Kjønn" value={personKjoenn && personKjoenn.kjoenn} />
-					<TitleValue title="Sivilstand" value={personSivilstand && personSivilstand.type} />
-					<TitleValue title="Fødselsdato" value={personFoedsel && personFoedsel.foedselsdato} />
-					<h4 style={{ marginTop: '0px' }}>Adressebeskyttelse</h4>
-					<div className="person-visning_content">
-						<TitleValue
-							title="Gradering (Diskresjonskode)"
-							value={adressebeskyttelse && adressebeskyttelse.gradering}
-						/>
-						<TitleValue
-							title="Kilde"
-							value={
-								adressebeskyttelse &&
-								adressebeskyttelse.folkeregistermetadata &&
-								adressebeskyttelse.folkeregistermetadata.kilde
-							}
-						/>
-						<TitleValue
-							title="Gyldighetstidspunkt"
-							value={
-								adressebeskyttelse &&
-								adressebeskyttelse.folkeregistermetadata &&
-								adressebeskyttelse.folkeregistermetadata.gyldighetstidspunkt
-							}
-						/>
-					</div>
+					<TitleValue title="Fornavn" value={personNavn?.fornavn} />
+					<TitleValue title="Mellomnavn" value={personNavn?.mellomnavn} />
+					<TitleValue title="Etternavn" value={personNavn?.etternavn} />
+					<TitleValue title="Kjønn" value={personKjoenn?.kjoenn} />
+					<TitleValue title="Sivilstand" value={personSivilstand?.type} />
+					<TitleValue title="Fødselsdato" value={personFoedsel?.foedselsdato} />
+					{adressebeskyttelse && (
+						<div className="person-visning_content">
+							<h4 style={{ marginTop: '0px' }}>Adressebeskyttelse</h4>
+							<TitleValue
+								title="Gradering (Diskresjonskode)"
+								value={adressebeskyttelse?.gradering}
+							/>
+							<TitleValue title="Kilde" value={adressebeskyttelse?.folkeregistermetadata?.kilde} />
+							<TitleValue
+								title="Gyldighetstidspunkt"
+								value={adressebeskyttelse?.folkeregistermetadata?.gyldighetstidspunkt}
+							/>
+						</div>
+					)}
 				</div>
 				<UtenlandsId data={data.utenlandskIdentifikasjonsnummer} loading={false} />
 				<FalskIdentitet data={data.falskIdentitet} loading={false} />

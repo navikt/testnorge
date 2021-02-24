@@ -6,32 +6,34 @@ import Formatters from '~/utils/DataFormatter'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
-const Statsborgerskap = ({ statsborgerskap }) => (
-	<div className="person-visning_content">
-		<TitleValue
-			title="Statsborgerskap"
-			kodeverk={AdresseKodeverk.StatsborgerskapLand}
-			value={statsborgerskap.land}
-		/>
-		<TitleValue
-			title="Statsborgerskap registrert"
-			value={Formatters.formatDate(statsborgerskap.gyldigFraOgMed)}
-		/>
-		<TitleValue
-			title="Statsborgerskap til"
-			value={Formatters.formatDate(statsborgerskap.gyldigTilOgMed)}
-		/>
-	</div>
-)
+const Statsborgerskap = ({ statsborgerskap }) =>
+	statsborgerskap ? (
+		<div className="person-visning_content">
+			<TitleValue
+				title="Statsborgerskap"
+				kodeverk={AdresseKodeverk.StatsborgerskapLand}
+				value={statsborgerskap.land}
+			/>
+			<TitleValue
+				title="Statsborgerskap registrert"
+				value={Formatters.formatDate(statsborgerskap.gyldigFraOgMed)}
+			/>
+			<TitleValue
+				title="Statsborgerskap til"
+				value={Formatters.formatDate(statsborgerskap.gyldigTilOgMed)}
+			/>
+		</div>
+	) : null
 
 export const PdlNasjonalitet = ({ data, visTittel = true }) => {
 	const { statsborgerskap, innflyttingTilNorge } = data
+	if (statsborgerskap?.length < 1 && innflyttingTilNorge?.length < 1) return null
 
 	return (
 		<div>
 			{visTittel && <SubOverskrift label="Nasjonalitet" iconKind="nasjonalitet" />}
 			<div className="person-visning_content">
-				{statsborgerskap && statsborgerskap.length > 1 ? (
+				{statsborgerskap?.length > 1 ? (
 					<ErrorBoundary>
 						<DollyFieldArray data={statsborgerskap} header="Statsborgerskap" nested>
 							{(borgerskap, idx) => <Statsborgerskap key={idx} statsborgerskap={borgerskap} />}
@@ -42,7 +44,7 @@ export const PdlNasjonalitet = ({ data, visTittel = true }) => {
 				)}
 			</div>
 
-			{innflyttingTilNorge && innflyttingTilNorge.length > 0 && (
+			{innflyttingTilNorge?.length > 0 && (
 				<ErrorBoundary>
 					<DollyFieldArray data={innflyttingTilNorge} header={'Innvandret/utvandret'} nested>
 						{(id, idx) => (
