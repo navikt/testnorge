@@ -15,6 +15,9 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.NestedSortBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -75,7 +78,14 @@ public class PersonSearchAdapter {
         searchSourceBuilder.from((page.getPage() - 1) * page.getPageSize());
         searchSourceBuilder.size(page.getPageSize());
         searchSourceBuilder.query(queryBuilder);
+        searchSourceBuilder.sort(
+                SortBuilders
+                        .fieldSort("hentIdenter.identer.ident")
+                        .order(SortOrder.ASC)
+                        .setNestedSort(new NestedSortBuilder("hentIdenter.identer")));
         searchRequest.source(searchSourceBuilder);
+
+
         SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
         TotalHits totalHits = searchResponse.getHits().getTotalHits();
         log.info("Fant {} personer i pdl.", totalHits.value);
