@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import { actions } from '~/ducks/gruppe'
+import { fetchOrganisasjoner } from '~/ducks/organisasjon'
 import { createLoadingSelector } from '~/ducks/loading'
 import {
 	getBestillinger,
@@ -20,13 +21,15 @@ const mapStateToProps = state => {
 		isFetchingOrgBestillinger: loadingOrgBestillingSelector(state),
 		nyeBestillinger: nyeBestillingerSelector(state),
 		isCanceling: loadingCancelSelector(state),
-		brukerBilde: state.bruker.brukerBilde
+		brukerBilde: state.bruker.brukerBilde,
+		brukerId: state.bruker.brukerData.brukerId
 	}
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
 		getGruppe: () => ownProps.gruppeId && dispatch(actions.getById(ownProps.gruppeId)),
+		getOrganisasjoner: fetchOrganisasjoner(dispatch),
 		getBestillinger: () =>
 			ownProps.brukerId
 				? dispatch(getOrganisasjonBestilling(ownProps.brukerId))

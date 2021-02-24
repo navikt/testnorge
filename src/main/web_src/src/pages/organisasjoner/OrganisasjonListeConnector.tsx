@@ -1,6 +1,7 @@
 //@ts-ignore
 import { connect } from 'react-redux'
-import { sokSelector, selectOrgListe } from '~/ducks/organisasjon'
+import { actions, sokSelector, selectOrgListe, fetchOrganisasjoner } from '~/ducks/organisasjon'
+import { getOrganisasjonBestilling } from '~/ducks/bestillingStatus'
 import OrganisasjonListe from './OrganisasjonListe'
 
 const mapStateToProps = (state: any) => ({
@@ -8,4 +9,12 @@ const mapStateToProps = (state: any) => ({
 	bestillinger: state.organisasjon.bestillinger
 })
 
-export default connect(mapStateToProps)(OrganisasjonListe)
+const mapDispatchToProps = (dispatch: React.Dispatch<React.SetStateAction<string>>) => ({
+	getOrganisasjonBestillingStatus: (brukerId: string) =>
+		dispatch(getOrganisasjonBestilling(brukerId)),
+	getOrganisasjonBestilling: (brukerId: string) =>
+		dispatch(actions.getOrganisasjonBestilling(brukerId)),
+	fetchOrganisasjoner: fetchOrganisasjoner(dispatch)
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(OrganisasjonListe)

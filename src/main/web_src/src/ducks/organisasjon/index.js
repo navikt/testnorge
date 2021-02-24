@@ -44,7 +44,7 @@ export const fetchOrganisasjoner = dispatch => async brukerId => {
 	dispatch(actions.getOrganisasjoner(orgNumre))
 }
 
-export const sokSelector = (items, searchStr) => {
+export const sokSelectorOrg = (items, searchStr) => {
 	if (!items) return []
 	if (!searchStr) return items
 
@@ -71,10 +71,11 @@ function getBestillingIdFromOrgnummer(bestillinger, organisasjonsnummer) {
 export const selectOrgListe = state => {
 	const { organisasjon } = state
 
-	if (_isEmpty(organisasjon.organisasjoner)) return null
+	return mergeList(organisasjon.organisasjoner, organisasjon.bestillinger)
+}
 
-	const organisasjoner = organisasjon.organisasjoner
-	const bestillinger = organisasjon.bestillinger
+export const mergeList = (organisasjoner, bestillinger) => {
+	if (_isEmpty(organisasjoner)) return null
 
 	return organisasjoner.map(orgInfo => {
 		return {

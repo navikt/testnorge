@@ -11,7 +11,9 @@ export default function StatusListe(props) {
 		nyeBestillinger,
 		isCanceling,
 		brukerBilde,
+		brukerId,
 		getGruppe,
+		getOrganisasjoner,
 		getBestillinger,
 		removeNyBestillingStatus,
 		cancelBestilling
@@ -45,8 +47,10 @@ export default function StatusListe(props) {
 					<BestillingProgresjon
 						bestilling={bestilling}
 						getGruppe={getGruppe}
+						getOrganisasjoner={getOrganisasjoner}
 						getBestillinger={getBestillinger}
 						cancelBestilling={cancelBestilling}
+						brukerId={brukerId}
 					/>
 				)}
 			</div>

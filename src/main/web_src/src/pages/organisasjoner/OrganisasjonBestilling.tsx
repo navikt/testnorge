@@ -11,7 +11,7 @@ import Formatters from '~/utils/DataFormatter'
 
 type OrganisasjonBestilling = {
 	brukerId: string
-	bestillinger: OrgStatus
+	bestillinger: Array<OrgStatus>
 }
 
 const ikonTypeMap = {

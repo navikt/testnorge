@@ -17,6 +17,7 @@ export default class BestillingProgresjon extends PureComponent {
 		super(props)
 
 		this.PULL_INTERVAL = 1000
+		this.PULL_INTERVAL_ORG = 5000
 		this.TIMEOUT_BEFORE_HIDE = 2000
 		this.TIME_BEFORE_WARNING_MESSAGE = 120
 
@@ -34,7 +35,10 @@ export default class BestillingProgresjon extends PureComponent {
 			this.interval = setInterval(() => this.getBestillingStatus(), this.PULL_INTERVAL)
 		}
 		if (!this.state.ferdig && this.props.bestilling.organisasjonNummer) {
-			this.interval = setInterval(() => this.getOrganisasjonBestillingStatus(), this.PULL_INTERVAL)
+			this.interval = setInterval(
+				() => this.getOrganisasjonBestillingStatus(),
+				this.PULL_INTERVAL_ORG
+			)
 		}
 	}
 
@@ -87,6 +91,7 @@ export default class BestillingProgresjon extends PureComponent {
 		if (data.ferdig) {
 			setTimeout(async () => {
 				await this.props.getBestillinger() // state.ferdig = true
+				await this.props.getOrganisasjoner(this.props.brukerId)
 			}, this.TIMEOUT_BEFORE_HIDE)
 		}
 	}
@@ -146,7 +151,7 @@ export default class BestillingProgresjon extends PureComponent {
 		const aktivBestilling = sykemelding
 			? 'AKTIV BESTILLING (Syntetisert sykemelding behandler mye data og kan derfor ta litt tid)'
 			: organisasjon
-			? 'AKTIV BESTILLING (Organisasjoner tar opp til 15 minutter å bestille)'
+			? 'AKTIV BESTILLING (Bestillingen tar ca. ett minutt per organisasjon som opprettes)'
 			: 'AKTIV BESTILLING'
 		const title = percent === 100 ? 'FERDIG' : aktivBestilling
 
