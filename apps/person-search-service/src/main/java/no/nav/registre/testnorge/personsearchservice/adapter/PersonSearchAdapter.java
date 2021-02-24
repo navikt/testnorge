@@ -16,6 +16,7 @@ import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.NestedSortBuilder;
+import org.elasticsearch.search.sort.ScoreSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.stereotype.Component;
@@ -78,11 +79,7 @@ public class PersonSearchAdapter {
         searchSourceBuilder.from((page.getPage() - 1) * page.getPageSize());
         searchSourceBuilder.size(page.getPageSize());
         searchSourceBuilder.query(queryBuilder);
-        searchSourceBuilder.sort(
-                SortBuilders
-                        .fieldSort("hentIdenter.identer.ident")
-                        .order(SortOrder.ASC)
-                        .setNestedSort(new NestedSortBuilder("hentIdenter.identer")));
+        searchSourceBuilder.sort(new ScoreSortBuilder().order(SortOrder.DESC));
         searchRequest.source(searchSourceBuilder);
 
 
@@ -107,11 +104,11 @@ public class PersonSearchAdapter {
         var builder = QueryBuilders.rangeQuery(field);
 
         if (fom != null) {
-            builder.gte(fom.withDayOfMonth(1));
+            builder.gte(fom);
         }
 
         if (tom != null) {
-            builder.lte(tom.withDayOfMonth(tom.lengthOfMonth()));
+            builder.lte(tom);
         }
         return Optional.of(builder);
     }
