@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.personsearchservice.domain;
+package no.nav.registre.testnorge.personsearchservice.controller.search;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -9,8 +9,11 @@ import no.nav.registre.testnorge.personsearchservice.controller.dto.Pageing;
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class Search {
+public class PersonSearch {
     Pageing pageing;
     String tag;
     String kjoenn;
+    FoedselSearch foedsel;
+    SivilstandSearch sivilstand;
+    StatsborgerskapSearch statsborgerskap;
 }

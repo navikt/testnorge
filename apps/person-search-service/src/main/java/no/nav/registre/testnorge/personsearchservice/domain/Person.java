@@ -1,21 +1,30 @@
 package no.nav.registre.testnorge.personsearchservice.domain;
 
-import lombok.RequiredArgsConstructor;
-
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import no.nav.registre.testnorge.personsearchservice.adapter.model.Foedsel;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Kjoenn;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Navn;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Response;
+import no.nav.registre.testnorge.personsearchservice.adapter.model.Sivilstand;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.WithMetadata;
+import no.nav.registre.testnorge.personsearchservice.controller.dto.FoedselDTO;
 import no.nav.registre.testnorge.personsearchservice.controller.dto.PersonDTO;
+import no.nav.registre.testnorge.personsearchservice.controller.dto.SivilstandDTO;
+import no.nav.registre.testnorge.personsearchservice.controller.dto.StatsborgerskapDTO;
 
-@RequiredArgsConstructor
 public class Person {
     private final Response response;
+    private final Statsborgerskap statsborgerskap;
 
-    private <T extends WithMetadata> Optional<T> getCurrent(List<T> list){
+    public Person(Response response) {
+        this.response = response;
+        this.statsborgerskap = new Statsborgerskap(getCurrent(response.getHentPerson().getStatsborgerskap()).orElse(null));
+    }
+
+    private static <T extends WithMetadata> Optional<T> getCurrent(List<T> list) {
         return list
                 .stream()
                 .filter(value -> !value.getMetadata().getHistorisk())
@@ -38,11 +47,18 @@ public class Person {
         return getNavn().map(Navn::getEtternavn).orElse(null);
     }
 
-    public String getKjoenn() {
-        return getCurrent(response.getHentPerson().getKjoenn())
-                .map(Kjoenn::getKjoenn)
-                .orElse(null);
+    public LocalDate getFoedselsdato() {
+        return getCurrent(response.getHentPerson().getFoedsel()).map(Foedsel::getFoedselsdato).orElse(null);
     }
+
+    public String getKjoenn() {
+        return getCurrent(response.getHentPerson().getKjoenn()).map(Kjoenn::getKjoenn).orElse(null);
+    }
+
+    public String getSivilstand() {
+        return getCurrent(response.getHentPerson().getSivilstand()).map(Sivilstand::getType).orElse(null);
+    }
+
 
     public String getIdent() {
         return response
@@ -81,6 +97,9 @@ public class Person {
                 .ident(getIdent())
                 .kjoenn(getKjoenn())
                 .tag(getTags().stream().findFirst().orElse(null))
+                .foedsel(FoedselDTO.builder().foedselsdato(getFoedselsdato()).build())
+                .sivilstand(SivilstandDTO.builder().type(getSivilstand()).build())
+                .statsborgerskap(statsborgerskap.toDTO())
                 .build();
     }
 }

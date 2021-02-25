@@ -4,15 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class HentPerson {
-    List<Navn> navn;
-    List<Kjoenn> kjoenn;
-    List<Foedsel> foedsel;
-    List<Sivilstand> sivilstand;
-    List<Statsborgerskap> statsborgerskap;
+public class Foedsel implements WithMetadata {
+    LocalDate foedselsdato;
+    Metadata metadata;
 }

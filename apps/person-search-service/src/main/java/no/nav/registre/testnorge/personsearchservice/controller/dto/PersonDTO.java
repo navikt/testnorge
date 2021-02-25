@@ -17,5 +17,7 @@ public class PersonDTO {
     String ident;
     String aktorId;
     String tag;
+    FoedselDTO foedsel;
+    SivilstandDTO sivilstand;
+    StatsborgerskapDTO statsborgerskap;
 }
-

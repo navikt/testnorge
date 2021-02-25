@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import no.nav.registre.testnorge.personsearchservice.controller.dto.PersonDTO;
 import no.nav.registre.testnorge.personsearchservice.domain.Person;
 import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
-import no.nav.registre.testnorge.personsearchservice.domain.Search;
+import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSearch;
 import no.nav.registre.testnorge.personsearchservice.service.PersonSearchService;
 
 @RestController
@@ -24,7 +24,7 @@ public class PersonSearchController {
     private final PersonSearchService service;
 
     @PostMapping
-    public ResponseEntity<List<PersonDTO>> search(@RequestBody Search search) {
+    public ResponseEntity<List<PersonDTO>> search(@RequestBody PersonSearch search) {
         PersonList personList = service.search(search);
         List<PersonDTO> dto = personList.getList().stream().map(Person::toDTO).collect(Collectors.toList());
         return ResponseEntity

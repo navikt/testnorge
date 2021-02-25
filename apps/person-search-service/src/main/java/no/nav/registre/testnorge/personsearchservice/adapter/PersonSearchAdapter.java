@@ -12,10 +12,16 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.NestedSortBuilder;
+import org.elasticsearch.search.sort.ScoreSortBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +31,7 @@ import no.nav.registre.testnorge.personsearchservice.adapter.model.Response;
 import no.nav.registre.testnorge.personsearchservice.controller.dto.Pageing;
 import no.nav.registre.testnorge.personsearchservice.domain.Person;
 import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
-import no.nav.registre.testnorge.personsearchservice.domain.Search;
+import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSearch;
 
 @Slf4j
 @Component
@@ -45,7 +51,7 @@ public class PersonSearchAdapter {
     }
 
     @SneakyThrows
-    public PersonList search(Search search) {
+    public PersonList search(PersonSearch search) {
         var queryBuilder = QueryBuilders
                 .boolQuery()
                 .must(QueryBuilders.matchQuery("tags", search.getTag()));
@@ -57,6 +63,30 @@ public class PersonSearchAdapter {
                         ScoreMode.Avg
                 )));
 
+        Optional.ofNullable(search.getFoedsel()).flatMap(value -> getBetween(value.getFom(), value.getTom(), "hentPerson.foedsel.foedselsdato"))
+                .ifPresent(rangeQueryBuilder -> queryBuilder.must(QueryBuilders.nestedQuery(
+                        "hentPerson.foedsel",
+                        rangeQueryBuilder,
+                        ScoreMode.Avg
+                        )
+                ));
+
+        Optional.ofNullable(search.getSivilstand())
+                .flatMap(value -> Optional.ofNullable(value.getType()))
+                .ifPresent(value -> queryBuilder.must(QueryBuilders.nestedQuery(
+                        "hentPerson.sivilstand",
+                        QueryBuilders.matchQuery("hentPerson.sivilstand.type", value),
+                        ScoreMode.Avg
+                )));
+
+        Optional.ofNullable(search.getStatsborgerskap())
+                .flatMap(value -> Optional.ofNullable(value.getLand()))
+                .ifPresent(value -> queryBuilder.must(QueryBuilders.nestedQuery(
+                        "hentPerson.statsborgerskap",
+                        QueryBuilders.matchQuery("hentPerson.statsborgerskap.land", value),
+                        ScoreMode.Avg
+                )));
+
         var searchRequest = new SearchRequest();
         searchRequest.indices("pdl-sok");
 
@@ -65,7 +95,16 @@ public class PersonSearchAdapter {
         searchSourceBuilder.from((page.getPage() - 1) * page.getPageSize());
         searchSourceBuilder.size(page.getPageSize());
         searchSourceBuilder.query(queryBuilder);
+        searchSourceBuilder.sort(
+                SortBuilders
+                        .fieldSort("hentPerson.folkeregisteridentifikator.identifikasjonsnummer.keyword")
+                        .order(SortOrder.ASC)
+                        .setNestedSort(new NestedSortBuilder("hentPerson.folkeregisteridentifikator"))
+        );
+        searchSourceBuilder.sort(new ScoreSortBuilder().order(SortOrder.DESC));
         searchRequest.source(searchSourceBuilder);
+
+
         SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
         TotalHits totalHits = searchResponse.getHits().getTotalHits();
         log.info("Fant {} personer i pdl.", totalHits.value);
@@ -78,4 +117,22 @@ public class PersonSearchAdapter {
                 responses.stream().map(Person::new).collect(Collectors.toList())
         );
     }
+
+
+    private Optional<RangeQueryBuilder> getBetween(LocalDate fom, LocalDate tom, String field) {
+        if (fom == null && tom == null) {
+            return Optional.empty();
+        }
+        var builder = QueryBuilders.rangeQuery(field);
+
+        if (fom != null) {
+            builder.gte(fom);
+        }
+
+        if (tom != null) {
+            builder.lte(tom);
+        }
+        return Optional.of(builder);
+    }
+
 }
