@@ -14,6 +14,10 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: mn-original-populasjon
+          cluster: dev-fss
+        - application: testnorge-opprett-person-pdl
+          cluster: dev-fss
         - application: team-dolly-lokal-app
           cluster: dev-fss
         - application: testnorge-varslinger-api
