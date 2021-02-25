@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Enhetstre } from '~/components/enhetstre'
+import { Enhetstre, OrgTree } from '~/components/enhetstre'
 import { Detaljer } from './Detaljer'
 import { TidligereBestillinger } from '~/pages/gruppe/PersonVisning/TidligereBestillinger/TidligereBestillinger'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
@@ -16,9 +16,9 @@ type OrganisasjonVisning = {
 export const OrganisasjonVisning = ({ data, bestillinger }: OrganisasjonVisning) => {
 	if (!data) return null
 
-	const [selectedId, setSelectedId] = useState(data.id)
+	const [selectedId, setSelectedId] = useState('0')
 
-	const enheterListe: Array<EnhetData> = []
+	const orgTree = new OrgTree(data.orgInfo, '0')
 
 	const slettOrganisasjon = () => {
 		DollyApi.deleteOrganisasjonOrgnummer(data.organisasjonsnummer).then(() => {
@@ -26,26 +26,11 @@ export const OrganisasjonVisning = ({ data, bestillinger }: OrganisasjonVisning)
 		})
 	}
 
-	const enheterFlat = (enheter: Array<EnhetData>) => {
-		enheter.forEach(enhet => {
-			enheterListe.push(enhet)
-			if (enhet.underenheter && enhet.underenheter.length > 0) {
-				enheterFlat(enhet.underenheter)
-			}
-		})
-	}
-
-	enheterFlat(Array.of(data.orgInfo))
-
 	return (
 		<div>
 			<SubOverskrift label="Organisasjonsoversikt" iconKind="organisasjon" />
-			<Enhetstre
-				enheter={Array.of(data.orgInfo)}
-				selectedEnhet={selectedId}
-				onNodeClick={setSelectedId}
-			/>
-			<Detaljer data={enheterListe.filter(enhet => enhet.id === selectedId)} />
+			<Enhetstre enheter={[orgTree]} selectedEnhet={selectedId} onNodeClick={setSelectedId} />
+			<Detaljer data={[orgTree.find(selectedId)]} />
 			{/* @ts-ignore */}
 			<TidligereBestillinger ids={data.bestillingId} />
 			<div className="flexbox--align-center--justify-end info-block">

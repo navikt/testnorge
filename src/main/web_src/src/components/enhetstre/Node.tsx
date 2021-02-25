@@ -1,31 +1,31 @@
 import * as React from 'react'
 import './Enhetstre.less'
-import { Enhet } from '~/components/enhetstre/types'
+import { OrgTree } from '~/components/enhetstre/OrgTree'
 
-type NodeProps = {
-	enhet: Enhet
+type NodeProps<T> = {
+	enhet: OrgTree<T>
 	hasChildren: boolean
 	isSelected: boolean
 	onNodeClick: Function
 }
 
-export const Node = (props: NodeProps) => {
+export function Node<T>(props: NodeProps<T>) {
 	if (props.hasChildren) {
 		return (
 			<div
-				onClick={() => props.onNodeClick(props.enhet.id)}
+				onClick={() => props.onNodeClick(props.enhet.getId())}
 				className={props.isSelected ? 'rectangle-corner-selected' : 'rectangle-corner'}
 			>
-				{props.enhet.organisasjonsnavn}
+				{props.enhet.getName()}
 			</div>
 		)
 	} else {
 		return (
 			<div
-				onClick={() => props.onNodeClick(props.enhet.id)}
+				onClick={() => props.onNodeClick(props.enhet.getId())}
 				className={props.isSelected ? 'rectangle-selected' : 'rectangle'}
 			>
-				{props.enhet.organisasjonsnavn}
+				{props.enhet.getName()}
 			</div>
 		)
 	}

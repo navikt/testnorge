@@ -1,21 +1,21 @@
 import * as React from 'react'
 import { Node } from './Node'
-import { Enhet } from './types'
 import './Enhetstre.less'
+import { Org, OrgTree } from '~/components/enhetstre/OrgTree'
 
-type EnhetstreProps = {
-	enheter: Enhet[]
-	selectedEnhet: number
+type EnhetstreProps<T extends Org<T>> = {
+	enheter: OrgTree<T>[]
+	selectedEnhet: string
 	onNodeClick: Function
 	level?: number
 }
 
-export const Enhetstre = (props: EnhetstreProps) => {
-	const hasChildren = (enhet: Enhet) => {
-		return enhet.underenheter && enhet.underenheter.length > 0
+export function Enhetstre<T>(props: EnhetstreProps<T>) {
+	const hasChildren = (enhet: OrgTree<T>) => {
+		return enhet.getUnderenheter().length > 0
 	}
 
-	const isSelected = (currentEnhet: number, selected: number) => {
+	const isSelected = (currentEnhet: string, selected: string) => {
 		return currentEnhet === selected
 	}
 
@@ -29,12 +29,12 @@ export const Enhetstre = (props: EnhetstreProps) => {
 						<Node
 							enhet={enhet}
 							hasChildren={hasChildren(enhet)}
-							isSelected={isSelected(enhet.id, props.selectedEnhet)}
+							isSelected={isSelected(enhet.getId(), props.selectedEnhet)}
 							onNodeClick={props.onNodeClick}
 						/>
 						{hasChildren(enhet) && (
 							<Enhetstre
-								enheter={enhet.underenheter}
+								enheter={enhet.getUnderenheter()}
 								selectedEnhet={props.selectedEnhet}
 								onNodeClick={props.onNodeClick}
 								level={props.enheter.length}
