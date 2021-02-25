@@ -17,7 +17,7 @@ import no.nav.registre.testnorge.originalpopulasjon.domain.Person;
 @RequiredArgsConstructor
 public class PopulasjonService {
 
-    private static final Set<String> TAGS = Set.of("MINI_NORGE");
+    private static final Set<String> TAGS = Set.of("MININORGE");
 
     private final IdentService identService;
     private final SyntPersonConsumer syntPersonConsumer;
