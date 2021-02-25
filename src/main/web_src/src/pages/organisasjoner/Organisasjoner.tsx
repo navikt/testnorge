@@ -1,45 +1,34 @@
 import React, { useState, useEffect } from 'react'
+import { sokSelectorOrg, mergeList } from '~/ducks/organisasjon'
+import { sokSelector } from '~/ducks/bestillingStatus'
 import Hjelpetekst from '~/components/hjelpetekst'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import Icon from '~/components/ui/icon/Icon'
 import { SearchField } from '~/components/searchField/SearchField'
-import OrganisasjonListe from './OrganisasjonListe'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import Loading from '~/components/ui/loading/Loading'
 import { History } from 'history'
-import { useAsync } from 'react-use'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import OrganisasjonBestilling from '~/pages/organisasjoner/OrganisasjonBestilling'
+import OrganisasjonBestilling from './OrganisasjonBestilling'
 import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
+import OrganisasjonListe from './OrganisasjonListe'
+import { EnhetBestilling } from '~/components/fagsystem/organisasjoner/types'
 
 type Organisasjoner = {
 	history: History
+	state: any
 	isFetching: boolean
+	bestillinger: Array<EnhetBestilling>
+	organisasjoner: Array<Organisasjon>
 	brukerId: string
+	getOrganisasjonBestillingStatus: Function
 	getOrganisasjonBestilling: Function
-	getOrganisasjoner: Function
+	fetchOrganisasjoner: Function
+	search?: string
 }
 
-type OrganisasjonResponse = {
-	value: {
-		data: OrganisasjonInfo[]
-	}
-}
-
-type OrganisasjonInfo = {
-	adresser: string[]
-	enhetstype: string
-	naeringskode: string
-	sektorkode: string
-	organisasjonsnavn: string
-	organisasjonsnummer: string
-	status: Array<Status>
-	underenheter: OrganisasjonInfo[]
-	id: number
-}
-
-type Status = {
+type Organisasjon = {
 	organisasjonsnummer: string
 }
 
@@ -53,18 +42,26 @@ const VISNING_BESTILLINGER = 'bestillinger'
 
 export default function Organisasjoner({
 	history,
+	state,
+	search,
 	isFetching,
+	bestillinger,
+	organisasjoner,
 	brukerId,
+	getOrganisasjonBestillingStatus,
 	getOrganisasjonBestilling,
-	getOrganisasjoner
+	fetchOrganisasjoner
 }: Organisasjoner) {
 	const [visning, setVisning] = useState(VISNING_ORGANISASJONER)
-	const [organisasjonliste, setOrganisasjonliste] = useState(null)
-
 	const byttVisning = (event: React.ChangeEvent<any>) => setVisning(event.target.value)
 
 	useEffect(() => {
+		getOrganisasjonBestillingStatus(brukerId)
 		getOrganisasjonBestilling(brukerId)
+	}, [organisasjoner.length])
+
+	useEffect(() => {
+		fetchOrganisasjoner(brukerId)
 	}, [])
 
 	const searchfieldPlaceholderSelector = () => {
@@ -72,38 +69,8 @@ export default function Organisasjoner({
 		return 'Søk i organisasjoner'
 	}
 
-	function getBestillingIdFromOrgnummer(
-		organisasjoner: OrganisasjonInfo[],
-		organisasjonsnummer: string
-	) {
-		return organisasjoner
-			.filter((org: OrganisasjonInfo) => org.status[0].organisasjonsnummer === organisasjonsnummer)
-			.map((org: OrganisasjonInfo) => org.id)[0]
-	}
-
-	const organisasjonerInfo = useAsync(async () => {
-		const response = await getOrganisasjonBestilling(brukerId)
-		setOrganisasjonliste(response.value.data)
-		let orgNumre: string[] = []
-		response.value.data.forEach((org: any) => {
-			if (org.ferdig && org.organisasjonNummer !== 'NA')
-				return orgNumre.push(org.status[0].organisasjonsnummer)
-		})
-
-		return getOrganisasjoner(orgNumre).then((orgInfo: OrganisasjonResponse) => {
-			return orgInfo.value.data.map(orgElement => ({
-				...orgElement,
-				status: 'Ferdig',
-				bestillingId: getBestillingIdFromOrgnummer(
-					response.value.data,
-					orgElement.organisasjonsnummer
-				)
-			}))
-		})
-	}, [])
-
-	const antallOrg = organisasjonerInfo.value ? organisasjonerInfo.value.length : 0
-	const antallBest = organisasjonliste ? organisasjonliste.length : 0
+	const antallOrg = organisasjoner ? organisasjoner.length : null
+	const antallBest = bestillinger ? bestillinger.length : null
 
 	const startBestilling = (type: string) => {
 		history.push('/organisasjoner/bestilling', { opprettOrganisasjon: type })
@@ -114,6 +81,9 @@ export default function Organisasjoner({
 			#dolly
 		</a>
 	)
+
+	const filterOrg = () => sokSelectorOrg(mergeList(organisasjoner, bestillinger), search)
+	const filterBest = () => sokSelector(state, search)
 
 	const tomOrgListe = () => (
 		<ContentContainer>
@@ -182,18 +152,18 @@ export default function Organisasjoner({
 				</div>
 
 				{visning === VISNING_ORGANISASJONER &&
-					(organisasjonerInfo.loading ? (
-						<Loading label="laster organisasjoner" panel />
+					(isFetching ? (
+						<Loading label="Laster organisasjoner" panel />
 					) : antallOrg > 0 ? (
-						<OrganisasjonListe orgListe={organisasjonerInfo && organisasjonerInfo.value} />
+						<OrganisasjonListe bestillinger={bestillinger} organisasjoner={filterOrg()} />
 					) : (
 						tomOrgListe()
 					))}
 				{visning === VISNING_BESTILLINGER &&
 					(isFetching ? (
-						<Loading label="laster bestillinger" panel />
-					) : antallOrg > 0 ? (
-						<OrganisasjonBestilling orgListe={organisasjonliste} />
+						<Loading label="Laster bestillinger" panel />
+					) : antallBest > 0 ? (
+						<OrganisasjonBestilling brukerId={brukerId} bestillinger={filterBest()} />
 					) : (
 						tomOrgListe()
 					))}

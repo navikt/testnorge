@@ -12,13 +12,17 @@ import { filterMiljoe } from '~/components/miljoVelger/MiljoeInfo/TilgjengeligeM
 export default function GjenopprettBestilling(props) {
 	const { bestilling, closeModal } = props
 	const tilgjengeligeEnvironments = useSelector(state => state.environments.data)
+	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
 
 	const submitFormik = async values => {
 		const envsQuery = Formatters.arrayToString(values.environments)
 			.replace(/ /g, '')
 			.toLowerCase()
-		await props.gjenopprettBestilling(envsQuery)
+		erOrganisasjon
+			? await props.gjenopprettOrganisasjonBestilling(envsQuery)
+			: await props.gjenopprettBestilling(envsQuery)
 		await props.getBestillinger()
+		closeModal()
 	}
 
 	const schemaValidation = yup.object().shape({

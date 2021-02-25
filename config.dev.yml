@@ -51,6 +51,8 @@ spec:
       value: https://dolly-backend-dev.dev.adeo.no
     - name: TESTNORGE_PROFIL_API_HOST
       value: https://testnorge-profil-api-dev.dev.intern.nav.no
+    - name: ORGANISASJON_FORVALTER_HOST
+      value: https://organisasjon-forvalter.dev.intern.nav.no
   vault:
     enabled: true
     paths:

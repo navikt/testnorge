@@ -114,5 +114,12 @@ export const SortKodeverkArray = data => {
 		return kodeverk.filter(kode => kode.value !== '<Blank>' && kode.value !== 'ADP')
 	}
 
+	if (data.name === 'EnhetstyperJuridiskEnhet' || data.name === 'EnhetstyperVirksomhet') {
+		return kodeverk.map(kode => ({
+			label: `${kode.label} (${kode.value})`,
+			value: kode.value
+		}))
+	}
+
 	return kodeverk
 }

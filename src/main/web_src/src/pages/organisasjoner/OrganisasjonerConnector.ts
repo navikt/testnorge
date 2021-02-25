@@ -1,25 +1,32 @@
 // @ts-ignore
 import { connect } from 'react-redux'
-import { actions } from '~/ducks/organisasjon'
+import { actions, fetchOrganisasjoner } from '~/ducks/organisasjon'
 import { getOrganisasjonBestilling } from '~/ducks/bestillingStatus'
 import { createLoadingSelector } from '~/ducks/loading'
 import Organisasjoner from './Organisasjoner'
 
-const loadingSelector = createLoadingSelector(actions.getOrganisasjoner)
+const loadingSelector = createLoadingSelector([
+	actions.getOrganisasjoner,
+	actions.getOrganisasjonBestilling
+])
 
-const mapStateToProps = (state: any) => {
-	return {
-		isFetching: loadingSelector(state),
-		organisasjoner: state.organisasjon.organisasjoner,
-		brukerId: state.bruker.brukerData.brukerId,
-		brukernavn: state.bruker.brukerData.brukernavn
-	}
-}
+const mapStateToProps = (state: any) => ({
+	state: state,
+	search: state.search,
+	isFetching: loadingSelector(state),
+	bestillinger: state.organisasjon.bestillinger,
+	organisasjoner: state.organisasjon.organisasjoner,
+	brukerId: state.bruker.brukerData.brukerId
+})
 
 const mapDispatchToProps = (dispatch: React.Dispatch<React.SetStateAction<string>>) => {
 	return {
-		getOrganisasjonBestilling: (brukerId: string) => dispatch(getOrganisasjonBestilling(brukerId)),
-		getOrganisasjoner: (orgListe: Array<string>) => dispatch(actions.getOrganisasjoner(orgListe))
+		getOrganisasjonBestillingStatus: (brukerId: string) =>
+			dispatch(getOrganisasjonBestilling(brukerId)),
+		getOrganisasjonBestilling: (brukerId: string) =>
+			dispatch(actions.getOrganisasjonBestilling(brukerId)),
+		getOrganisasjoner: (orgListe: Array<string>) => dispatch(actions.getOrganisasjoner(orgListe)),
+		fetchOrganisasjoner: fetchOrganisasjoner(dispatch)
 	}
 }
 

@@ -35,43 +35,32 @@ export const OrganisasjonForm = ({ formikBag }: OrganisasjonForm) => {
 
 const adresse = Yup.object({
 	adresselinje: Yup.array().of(Yup.string()),
-	postnr: Yup.string()
-		.when('landkode', {
-			is: 'NO',
-			then: Yup.string().when('kommunenr', {
-				is: val => val === '' || val === null,
-				then: requiredString
-			})
-		})
-		.nullable(),
-	kommunenr: Yup.string()
-		.when('landkode', {
-			is: 'NO',
-			then: Yup.string().when('postnr', {
-				is: val => val === '' || val === null,
-				then: requiredString
-			})
-		})
-		.nullable(),
+	postnr: Yup.string().nullable(),
+	kommunenr: Yup.string().nullable(),
 	landkode: requiredString,
 	poststed: Yup.string()
 })
 
-OrganisasjonForm.validation = {
-	organisasjon: ifPresent(
-		'$organisasjon',
-		Yup.object({
-			enhetstype: requiredString,
-			naeringskode: ifPresent('$organisasjon.naeringskode', requiredString),
-			sektorkode: ifPresent('$organisasjon.sektorkode', requiredString),
-			formaal: ifPresent('$organisasjon.formaal', requiredString),
-			stiftelsesdato: ifPresent('$organisasjon.stiftelsesdato', requiredString),
-			maalform: ifPresent('$organisasjon.maalform', requiredString),
-			telefon: ifPresent('$organisasjon.telefon', requiredString),
-			epost: ifPresent('$organisasjon.epost', requiredString),
-			nettside: ifPresent('$organisasjon.nettside', requiredString),
-			forretningsadresse: ifPresent('$organisasjon.forretningsadresse', adresse),
-			postadresse: ifPresent('$organisasjon.postadresse', adresse)
-		})
+const organisasjon: any = Yup.object().shape({
+	enhetstype: requiredString,
+	naeringskode: ifPresent('$organisasjon.naeringskode', requiredString),
+	sektorkode: ifPresent('$organisasjon.sektorkode', requiredString),
+	formaal: ifPresent('$organisasjon.formaal', requiredString),
+	stiftelsesdato: ifPresent('$organisasjon.stiftelsesdato', requiredString),
+	maalform: ifPresent('$organisasjon.maalform', requiredString),
+	telefon: ifPresent('$organisasjon.telefon', requiredString),
+	epost: ifPresent('$organisasjon.epost', requiredString),
+	nettside: ifPresent('$organisasjon.nettside', requiredString),
+	forretningsadresse: ifPresent('$organisasjon.forretningsadresse', adresse),
+	postadresse: ifPresent('$organisasjon.postadresse', adresse),
+	underenheter: ifPresent(
+		'$organisasjon.underenheter',
+		Yup.array()
+			.transform(value => Object.values(value))
+			.of(Yup.lazy(() => organisasjon.default(undefined)))
 	)
+})
+
+OrganisasjonForm.validation = {
+	organisasjon: ifPresent('$organisasjon', organisasjon)
 }

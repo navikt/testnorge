@@ -1,19 +1,30 @@
 import React, { useState } from 'react'
 import { Enhetstre } from '~/components/enhetstre'
 import { Detaljer } from './Detaljer'
+import { TidligereBestillinger } from '~/pages/gruppe/PersonVisning/TidligereBestillinger/TidligereBestillinger'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { EnhetData } from '../types'
+import { EnhetBestilling, EnhetData } from '../types'
+import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/SammendragModal'
+import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
+import { DollyApi } from '~/service/Api'
 
 type OrganisasjonVisning = {
 	data: EnhetData
+	bestillinger: Array<EnhetBestilling>
 }
 
-export const OrganisasjonVisning = ({ data }: OrganisasjonVisning) => {
+export const OrganisasjonVisning = ({ data, bestillinger }: OrganisasjonVisning) => {
 	if (!data) return null
 
 	const [selectedId, setSelectedId] = useState(data.id)
 
 	const enheterListe: Array<EnhetData> = []
+
+	const slettOrganisasjon = () => {
+		DollyApi.deleteOrganisasjonOrgnummer(data.organisasjonsnummer).then(() => {
+			window.location.reload()
+		})
+	}
 
 	const enheterFlat = (enheter: Array<EnhetData>) => {
 		enheter.forEach(enhet => {
@@ -24,13 +35,29 @@ export const OrganisasjonVisning = ({ data }: OrganisasjonVisning) => {
 		})
 	}
 
-	enheterFlat(Array.of(data))
+	enheterFlat(Array.of(data.orgInfo))
 
 	return (
 		<div>
 			<SubOverskrift label="Organisasjonsoversikt" iconKind="organisasjon" />
-			<Enhetstre enheter={Array.of(data)} selectedEnhet={selectedId} onNodeClick={setSelectedId} />
+			<Enhetstre
+				enheter={Array.of(data.orgInfo)}
+				selectedEnhet={selectedId}
+				onNodeClick={setSelectedId}
+			/>
 			<Detaljer data={enheterListe.filter(enhet => enhet.id === selectedId)} />
+			{/* @ts-ignore */}
+			<TidligereBestillinger ids={data.bestillingId} />
+			<div className="flexbox--align-center--justify-end info-block">
+				<BestillingSammendragModal
+					bestilling={bestillinger.filter(bestilling => bestilling.id === data.bestillingId[0])[0]}
+				/>
+				{/*TODO: Slett fungerer greit, men de finnes fortsatt deployet i miljøene etter slett. Venter*/}
+				{/*til sletting av disse er implementert før sletting i Dolly tas i bruk*/}
+				{/*<SlettButton action={slettOrganisasjon} loading={undefined}>*/}
+				{/*	Er du sikker på at du vil slette denne organisasjonen?*/}
+				{/*</SlettButton>*/}
+			</div>
 		</div>
 	)
 }

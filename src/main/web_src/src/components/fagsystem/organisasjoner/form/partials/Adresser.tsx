@@ -12,6 +12,9 @@ type Adresser = {
 	path: string
 }
 
+const hjelpetekstAdresser =
+	'For å få generert en gyldig norsk adresse kan du velge å fylle ut postnummer, kommunenummer, eller ingen ting. Det vil opprettes en gyldig adresse på grunnlag av det du har fylt ut, og har du ikke fylt ut noe blir adressen en tilfeldig gyldig adresse.'
+
 export const Adresser = ({ formikBag, path }: Adresser) => {
 	const landForretningsadresse = _get(formikBag, `values.${path}.forretningsadresse.landkode`)
 	const landPostadresse = _get(formikBag, `values.${path}.postadresse.landkode`)
@@ -24,7 +27,11 @@ export const Adresser = ({ formikBag, path }: Adresser) => {
 
 	return (
 		<>
-			<Kategori title="Forretningsadresse" vis="organisasjon.forretningsadresse">
+			<Kategori
+				title="Forretningsadresse"
+				vis="organisasjon.forretningsadresse"
+				hjelpetekst={hjelpetekstAdresser}
+			>
 				<FormikSelect
 					name={`${path}.forretningsadresse.landkode`}
 					label="Land"
@@ -67,7 +74,11 @@ export const Adresser = ({ formikBag, path }: Adresser) => {
 				/>
 			</Kategori>
 
-			<Kategori title="Postadresse" vis="organisasjon.postadresse">
+			<Kategori
+				title="Postadresse"
+				vis="organisasjon.postadresse"
+				hjelpetekst={hjelpetekstAdresser}
+			>
 				<FormikSelect
 					name={`${path}.postadresse.landkode`}
 					label="Land"

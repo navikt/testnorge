@@ -16,6 +16,7 @@ export type EnhetBestilling = {
 }
 
 export type EnhetData = {
+	orgInfo: EnhetData
 	organisasjonsnummer: string
 	organisasjonsnavn: string
 	enhetstype: string
@@ -30,6 +31,7 @@ export type EnhetData = {
 	adresser?: Array<Adresse>
 	underenheter?: Array<EnhetData>
 	id: number
+	bestillingId?: Array<number>
 }
 
 export type Adresse = {
