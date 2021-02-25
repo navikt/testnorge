@@ -11,6 +11,7 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
@@ -50,6 +51,17 @@ public class PersonSearchAdapter {
         }).collect(Collectors.toList());
     }
 
+    private void queryFoedselsdato(LocalDate fom, LocalDate tom, BoolQueryBuilder queryBuilder){
+        getBetween(fom, tom, "hentPerson.foedsel.foedselsdato")
+                .ifPresent(rangeQueryBuilder -> queryBuilder.must(QueryBuilders.nestedQuery(
+                        "hentPerson.foedsel",
+                        rangeQueryBuilder,
+                        ScoreMode.Avg
+                        )
+                ));
+    }
+
+
     @SneakyThrows
     public PersonList search(PersonSearch search) {
         var queryBuilder = QueryBuilders
@@ -63,13 +75,16 @@ public class PersonSearchAdapter {
                         ScoreMode.Avg
                 )));
 
-        Optional.ofNullable(search.getFoedsel()).flatMap(value -> getBetween(value.getFom(), value.getTom(), "hentPerson.foedsel.foedselsdato"))
-                .ifPresent(rangeQueryBuilder -> queryBuilder.must(QueryBuilders.nestedQuery(
-                        "hentPerson.foedsel",
-                        rangeQueryBuilder,
-                        ScoreMode.Avg
-                        )
-                ));
+        Optional.ofNullable(search.getFoedsel())
+                .ifPresent(value -> queryFoedselsdato(value.getFom(), value.getTom(), queryBuilder));
+
+
+        Optional.ofNullable(search.getAlder())
+                .ifPresent(value -> {
+                    LocalDate fom = LocalDate.now().minusYears(value);
+                    LocalDate tom = fom.plusMonths(12).minusDays(1);
+                    queryFoedselsdato(fom, tom, queryBuilder);
+                });
 
         Optional.ofNullable(search.getSivilstand())
                 .flatMap(value -> Optional.ofNullable(value.getType()))
@@ -86,6 +101,8 @@ public class PersonSearchAdapter {
                         QueryBuilders.matchQuery("hentPerson.statsborgerskap.land", value),
                         ScoreMode.Avg
                 )));
+
+
 
         var searchRequest = new SearchRequest();
         searchRequest.indices("pdl-sok");

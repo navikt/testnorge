@@ -16,4 +16,5 @@ public class PersonSearch {
     FoedselSearch foedsel;
     SivilstandSearch sivilstand;
     StatsborgerskapSearch statsborgerskap;
+    Short alder;
 }

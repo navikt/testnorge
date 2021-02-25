@@ -3,6 +3,7 @@ package no.nav.registre.testnorge.originalpopulasjon.domain;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
+import org.apache.logging.log4j.util.Strings;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -27,7 +28,7 @@ public class Person {
                 .ident(ident)
                 .foedselsdato(foedselsdato)
                 .fornavn(fornavn)
-                .mellomnavn(mellomnavn)
+                .mellomnavn(Strings.isBlank(mellomnavn) ? null : mellomnavn)
                 .etternavn(etternavn)
                 .adresse(adresse != null ? adresse.toDto() : null)
                 .tags(tags)
