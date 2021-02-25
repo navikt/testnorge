@@ -16,6 +16,7 @@ import no.nav.organisasjonforvalter.provider.rs.responses.BestillingResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -70,6 +71,7 @@ public class BestillingService {
 
         orgRequest.getAdresser().forEach(adresse -> {
             if (adresse.getAdresselinjer().stream().noneMatch(StringUtils::isNotBlank)) {
+                adresse.setAdresselinjer(new ArrayList<>());
                 mapperFacade.map(tpsfAdresseConsumer.getAdresser(adresse.getPostnr(), adresse.getKommunenr()), adresse);
             }
         });
