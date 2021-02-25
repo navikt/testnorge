@@ -81,8 +81,8 @@ public class PersonSearchAdapter {
 
         Optional.ofNullable(search.getAlder())
                 .ifPresent(value -> {
-                    LocalDate fom = LocalDate.now().minusYears(value);
-                    LocalDate tom = fom.plusMonths(12).minusDays(1);
+                    LocalDate tom = LocalDate.now().minusYears(value);
+                    LocalDate fom = tom.minusMonths(12).plusDays(1);
                     queryFoedselsdato(fom, tom, queryBuilder);
                 });
 
