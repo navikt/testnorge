@@ -1,7 +1,6 @@
 package no.nav.registre.testnorge.originalpopulasjon.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -13,9 +12,8 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.syntperson.v1.SyntPersonDTO;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
-import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
-import no.nav.registre.testnorge.originalpopulasjon.credentials.SyntPersonApiClientCredential;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.registre.testnorge.originalpopulasjon.config.credentials.SyntPersonServiceProperties;
 import no.nav.registre.testnorge.originalpopulasjon.exceptions.SyntetiseringAvPersonInfoException;
 
 @Slf4j
@@ -24,28 +22,24 @@ import no.nav.registre.testnorge.originalpopulasjon.exceptions.SyntetiseringAvPe
 public class SyntPersonConsumer {
 
     private final WebClient webClient;
-    private final ClientCredential clientCredential;
-    private final ClientCredentialGenerateAccessTokenService accessTokenService;
+    private final SyntPersonServiceProperties serviceProperties;
+    private final AccessTokenService accessTokenService;
 
     public SyntPersonConsumer(
-            @Value("${consumer.synt-person-api.url}") String url,
-            SyntPersonApiClientCredential clientCredential,
-            ClientCredentialGenerateAccessTokenService accessTokenService
+            SyntPersonServiceProperties serviceProperties,
+            AccessTokenService accessTokenService
     ) {
-        this.clientCredential = clientCredential;
+        this.serviceProperties = serviceProperties;
         this.accessTokenService = accessTokenService;
         this.webClient = WebClient
                 .builder()
-                .baseUrl(url)
+                .baseUrl(serviceProperties.getUrl())
                 .build();
     }
 
 
     public List<SyntPersonDTO> getPersonInfo(Integer antall) {
-        AccessToken accessToken = accessTokenService.generateToken(
-                clientCredential,
-                new AccessScopes("api://" + clientCredential.getClientId() + "/.default")
-        );
+        AccessToken accessToken = accessTokenService.generateToken(serviceProperties);
 
         log.info("Henter personopplysninger for {} personer", antall);
         var response = webClient

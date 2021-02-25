@@ -7,6 +7,13 @@ metadata:
     team: dolly
 spec:
   image: {{ image }}
+  accessPolicy:
+    inbound:
+      rules:
+        - application: mn-original-populasjon
+        - application: testnorge-oversikt-frontend
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
   azure:
     application:
       enabled: true

@@ -2,6 +2,7 @@ package no.nav.registre.testnorge.originalpopulasjon.provider;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +23,7 @@ public class OriginalPopulasjonController {
     private final PopulasjonService populasjonService;
     private final HendelseConsumer hendelseConsumer;
 
-    @GetMapping
+    @PostMapping
     public List<PersonDTO> createPopulasjon(@RequestParam Integer antall) {
         var populasjon = populasjonService.createPopulasjon(antall);
         List<PersonDTO> personliste = populasjon.stream().map(Person::toDTO).collect(Collectors.toList());
