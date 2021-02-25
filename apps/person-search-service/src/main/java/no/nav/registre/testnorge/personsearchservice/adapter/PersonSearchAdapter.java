@@ -30,9 +30,9 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Response;
 import no.nav.registre.testnorge.personsearchservice.controller.dto.Pageing;
+import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSearch;
 import no.nav.registre.testnorge.personsearchservice.domain.Person;
 import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
-import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSearch;
 
 @Slf4j
 @Component
@@ -51,16 +51,24 @@ public class PersonSearchAdapter {
         }).collect(Collectors.toList());
     }
 
-    private void queryFoedselsdato(LocalDate fom, LocalDate tom, BoolQueryBuilder queryBuilder){
+    private void queryFoedselsdato(LocalDate fom, LocalDate tom, BoolQueryBuilder queryBuilder) {
         getBetween(fom, tom, "hentPerson.foedsel.foedselsdato")
                 .ifPresent(rangeQueryBuilder -> queryBuilder.must(QueryBuilders.nestedQuery(
                         "hentPerson.foedsel",
                         rangeQueryBuilder,
                         ScoreMode.Avg
-                        )
-                ));
+                        ))
+                );
     }
 
+    private void queryAlder(Short fra, Short til, BoolQueryBuilder queryBuilder) {
+        LocalDate now = LocalDate.now();
+
+        LocalDate tom = now.minusYears(fra == null ? 0 : fra).plusMonths(12).minusDays(1);
+        LocalDate fom = til != null ? now.minusYears(til).minusMonths(12) : null;
+
+        queryFoedselsdato(fom, tom, queryBuilder);
+    }
 
     @SneakyThrows
     public PersonList search(PersonSearch search) {
@@ -80,11 +88,7 @@ public class PersonSearchAdapter {
 
 
         Optional.ofNullable(search.getAlder())
-                .ifPresent(value -> {
-                    LocalDate tom = LocalDate.now().minusYears(value);
-                    LocalDate fom = tom.minusMonths(12);
-                    queryFoedselsdato(fom, tom, queryBuilder);
-                });
+                .ifPresent(value -> queryAlder(value.getFra(), value.getTil(), queryBuilder));
 
         Optional.ofNullable(search.getSivilstand())
                 .flatMap(value -> Optional.ofNullable(value.getType()))
@@ -101,7 +105,6 @@ public class PersonSearchAdapter {
                         QueryBuilders.matchQuery("hentPerson.statsborgerskap.land", value),
                         ScoreMode.Avg
                 )));
-
 
 
         var searchRequest = new SearchRequest();
