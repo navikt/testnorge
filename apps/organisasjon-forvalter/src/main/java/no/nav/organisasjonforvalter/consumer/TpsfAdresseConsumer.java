@@ -13,11 +13,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.netty.http.client.HttpClient;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 
@@ -75,6 +75,7 @@ public class TpsfAdresseConsumer {
                     .header("Nav-Call-Id", UUID.randomUUID().toString())
                     .retrieve()
                     .toEntity(GyldigeAdresserResponse.class)
+                    .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(10)))
                     .block();
 
             log.info("Adresseoppslag tok {} ms", currentTimeMillis() - startTime);

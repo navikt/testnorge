@@ -14,13 +14,14 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 import static java.util.Objects.nonNull;
 
@@ -67,6 +68,7 @@ public class MiljoerServiceConsumer {
                             accessToken.getTokenValue())
                     .retrieve()
                     .toEntity(String[].class)
+                    .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(10)))
                     .block();
 
             return nonNull(response) && response.hasBody() ?
