@@ -37,12 +37,7 @@ public class ArenaForvalterConsumer {
     }
 
     public NyttVedtakResponse opprettRettighet(RettighetRequest rettighet) {
-        var response = new PostRettighetCommand(rettighet, webClient).call();
-
-        if (response == null || (response.getFeiledeRettigheter() != null && !response.getFeiledeRettigheter().isEmpty())) {
-            log.info("Innsendt rettighet feilet for ident: " + rettighet.getPersonident());
-        }
-        return response;
+        return new PostRettighetCommand(rettighet, webClient).call();
     }
 
     public NyeBrukereResponse hentDollyArbeidssoekerIArena(String ident, String miljoe) {

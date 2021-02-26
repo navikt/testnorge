@@ -5,17 +5,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TiltakspengerMedDeltakelse {
+public class TiltakspengerResponse {
 
-    private NyttVedtakTiltak tiltakspenger;
-    private NyttVedtakTiltak tiltaksdeltakelse;
-    private String deltakerstatus;
+    private String ident;
+    private String miljoe;
+    private NyttVedtakResponse response;
 
 }

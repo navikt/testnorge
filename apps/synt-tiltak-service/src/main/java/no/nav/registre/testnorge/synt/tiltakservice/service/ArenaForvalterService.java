@@ -1,6 +1,8 @@
 package no.nav.registre.testnorge.synt.tiltakservice.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.stereotype.Service;
@@ -10,10 +12,14 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyBruker;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.request.RettighetRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import no.nav.registre.testnorge.synt.tiltakservice.consumer.ArenaForvalterConsumer;
 import no.nav.registre.testnorge.synt.tiltakservice.controller.request.FinnTiltakRequest;
+
+import static no.nav.registre.testnorge.domain.dto.arena.testnorge.tiltak.Constants.getPlanlagtTiltakStatus;
 
 @Service
 @Slf4j
@@ -65,13 +71,30 @@ public class ArenaForvalterService {
         return arenaForvalterConsumer.sendTilArenaForvalter(nyBruker);
     }
 
-    NyttVedtakTiltak finnTiltakForIdent(FinnTiltakRequest tiltak) {
+    NyttVedtakTiltak finnTiltakForTiltaksdeltakelse(FinnTiltakRequest tiltak) {
         var response = arenaForvalterConsumer.finnTiltak(tiltak.getRettighetRequest());
         if (response != null && !response.getNyeRettigheterTiltak().isEmpty()) {
-            return response.getNyeRettigheterTiltak().get(0);
-        } else {
-            log.info("Fant ikke tiltak for ident.");
-            return null;
+            var tiltakStatus = response.getNyeRettigheterTiltak().get(0).getTiltakStatusKode();
+            if (tiltakStatus != null && !tiltakStatus.equals(getPlanlagtTiltakStatus())) {
+                return response.getNyeRettigheterTiltak().get(0);
+            }
         }
+
+        log.info("Fant ikke tiltak for ident.");
+        return null;
+    }
+
+    List<NyttVedtakResponse> opprettRettigheter(List<RettighetRequest> rettigheter) {
+        List<NyttVedtakResponse> responses = new ArrayList<>();
+        for (var rettighet : rettigheter) {
+            var response = arenaForvalterConsumer.opprettRettighet(rettighet);
+            responses.add(response);
+            if (response == null || (response.getFeiledeRettigheter() != null && !response.getFeiledeRettigheter().isEmpty())) {
+                log.info("Innsendt rettighet feilet. Stopper videre innsending av rettigheter for ident: "
+                        + rettighet.getPersonident());
+                break;
+            }
+        }
+        return responses;
     }
 }

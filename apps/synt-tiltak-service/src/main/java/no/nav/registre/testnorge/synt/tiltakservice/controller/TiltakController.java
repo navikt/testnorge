@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import no.nav.registre.testnorge.synt.tiltakservice.controller.request.FinnTiltakRequest;
+import no.nav.registre.testnorge.synt.tiltakservice.controller.request.TiltakspengerRequest;
+import no.nav.registre.testnorge.synt.tiltakservice.controller.response.TiltakspengerResponse;
 import no.nav.registre.testnorge.synt.tiltakservice.service.TiltakService;
 
 @RestController
@@ -24,5 +26,13 @@ public class TiltakController {
             @RequestBody FinnTiltakRequest finnTiltakRequest
     ) {
         return tiltakService.finnTiltakForTiltakdeltakelse(finnTiltakRequest);
+    }
+
+    @PostMapping("/tiltakspenger")
+    @Operation(summary = "Opprett syntetisk tiltakspenger vedtak med tilknyttet tiltaksdeltakelse.")
+    public TiltakspengerResponse opprettTiltakspenger(
+            @RequestBody TiltakspengerRequest request
+    ) {
+        return tiltakService.opprettTiltakspengerMedDeltakelse(request.getIdent(), request.getMiljoe(), request.getTiltak());
     }
 }
