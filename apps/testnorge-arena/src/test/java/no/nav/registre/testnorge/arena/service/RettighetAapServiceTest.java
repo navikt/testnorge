@@ -68,9 +68,6 @@ public class RettighetAapServiceTest {
     private ArbeidssoekerUtils arbeidssoekerUtils;
 
     @Mock
-    private TiltakUtils tiltakUtils;
-
-    @Mock
     private DatoUtils datoUtils;
 
     @Mock
