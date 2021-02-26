@@ -36,7 +36,6 @@ import no.nav.registre.testnorge.arena.service.util.ServiceUtils;
 import no.nav.registre.testnorge.arena.service.util.DatoUtils;
 import no.nav.registre.testnorge.arena.service.util.ArbeidssoekerUtils;
 import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
-import no.nav.registre.testnorge.arena.service.util.TiltakUtils;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.libs.core.util.IdentUtil;
@@ -54,7 +53,6 @@ public class RettighetAapService {
     private final ServiceUtils serviceUtils;
     private final IdenterUtils identerUtils;
     private final ArbeidssoekerUtils arbeidsoekerUtils;
-    private final TiltakUtils tiltakUtils;
     private final DatoUtils datoUtils;
     private final PensjonTestdataFacadeConsumer pensjonTestdataFacadeConsumer;
     private final Random rand;
