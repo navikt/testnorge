@@ -86,7 +86,6 @@ public class PersonSearchAdapter {
         Optional.ofNullable(search.getFoedsel())
                 .ifPresent(value -> queryFoedselsdato(value.getFom(), value.getTom(), queryBuilder));
 
-
         Optional.ofNullable(search.getAlder())
                 .ifPresent(value -> queryAlder(value.getFra(), value.getTil(), queryBuilder));
 
