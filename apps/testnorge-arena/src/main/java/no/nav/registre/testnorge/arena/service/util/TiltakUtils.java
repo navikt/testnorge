@@ -30,6 +30,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
 
+import static no.nav.registre.testnorge.domain.dto.arena.testnorge.tiltak.Constants.getDeltakerstatuskoderMedAarsakkoder;
+import static no.nav.registre.testnorge.domain.dto.arena.testnorge.tiltak.Constants.getAvbruttTiltakStatuser;
+import static no.nav.registre.testnorge.domain.dto.arena.testnorge.tiltak.Constants.getPlanlagtTiltakStatus;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -39,18 +43,9 @@ public class TiltakUtils {
     private final ServiceUtils serviceUtils;
     private final Random rand;
 
-    private static final Map<String, List<String>> deltakerstatuskoderMedAarsakkoder;
     private static final Map<String, List<KodeMedSannsynlighet>> adminkodeTilDeltakerstatus;
 
-    private static final List<String> AVBRUTT_TILTAK_STATUSER = new ArrayList<>(Arrays.asList("AVLYST", "AVBRUTT"));
-    private static final String PLANLAGT_TILTAK_STATUS = "PLANLAGT";
-
     static {
-        deltakerstatuskoderMedAarsakkoder = new HashMap<>();
-        deltakerstatuskoderMedAarsakkoder.put(Deltakerstatuser.NEITAKK.toString(), Arrays.asList("ANN", "BEGA", "FRISM", "FTOAT", "HENLU", "SYK", "UTV"));
-        deltakerstatuskoderMedAarsakkoder.put(Deltakerstatuser.IKKEM.toString(), Arrays.asList("ANN", "BEGA", "SYK"));
-        deltakerstatuskoderMedAarsakkoder.put(Deltakerstatuser.DELAVB.toString(), Arrays.asList("ANN", "BEGA", "FTOAT", "SYK"));
-
         adminkodeTilDeltakerstatus = new HashMap<>();
 
         URL resourceDeltakerstatus = Resources.getResource("files/adminkode_til_deltakerstatus_endring.json");
@@ -64,7 +59,6 @@ public class TiltakUtils {
             log.error("Kunne ikke laste inn deltakerstatus fordeling.", e);
         }
     }
-
 
     public List<NyttVedtakTiltak> oppdaterVedtakslisteBasertPaaTiltaksdeltakelse(
             List<NyttVedtakTiltak> vedtaksliste,
@@ -244,7 +238,6 @@ public class TiltakUtils {
         return false;
     }
 
-
     private boolean harOverlappendeTiltakOver100Prosent(
             NyttVedtakTiltak vedtak,
             List<NyttVedtakTiltak> vedtaksliste
@@ -310,7 +303,7 @@ public class TiltakUtils {
         var tilknyttetTiltak = tiltak.stream().filter(t -> t.getTiltakId().equals(tiltaksdeltakelse.getTiltakId())).collect(Collectors.toList());
         if (!tilknyttetTiltak.isEmpty() && tilknyttetTiltak.get(0) != null) {
             var status = tilknyttetTiltak.get(0).getTiltakStatusKode();
-            if (PLANLAGT_TILTAK_STATUS.equals(status)) {
+            if (getPlanlagtTiltakStatus().equals(status)) {
                 return false;
             }
         }
@@ -323,7 +316,7 @@ public class TiltakUtils {
         var tilknyttetTiltak = tiltak.stream().filter(t -> t.getTiltakId().equals(tiltaksdeltakelse.getTiltakId())).collect(Collectors.toList());
         if (!tilknyttetTiltak.isEmpty() && tilknyttetTiltak.get(0) != null) {
             var status = tilknyttetTiltak.get(0).getTiltakStatusKode();
-            if (status != null && AVBRUTT_TILTAK_STATUSER.contains(status)) {
+            if (status != null && getAvbruttTiltakStatuser().contains(status)) {
                 return true;
             }
         }
@@ -356,7 +349,7 @@ public class TiltakUtils {
 
     public Deltakerstatuser getAvsluttendeDeltakerstatus(NyttVedtakTiltak tiltaksdeltakelse, List<NyttVedtakTiltak> tiltak) {
         var tilknyttetTiltak = tiltak.stream().filter(t -> t.getTiltakId().equals(tiltaksdeltakelse.getTiltakId())).collect(Collectors.toList());
-        if (!tilknyttetTiltak.isEmpty() && AVBRUTT_TILTAK_STATUSER.contains(tilknyttetTiltak.get(0).getTiltakStatusKode())) {
+        if (!tilknyttetTiltak.isEmpty() && getAvbruttTiltakStatuser().contains(tilknyttetTiltak.get(0).getTiltakStatusKode())) {
             return Deltakerstatuser.DELAVB;
         }
         if (tiltaksdeltakelse.getTiltakAdminKode().equals("INST")) {
@@ -377,8 +370,8 @@ public class TiltakUtils {
         vedtak.setDeltakerstatusKode(deltakerstatuskode);
         vedtak.setTiltakId(tiltaksdeltakelse.getTiltakId());
 
-        if (deltakerstatuskoderMedAarsakkoder.containsKey(deltakerstatuskode)) {
-            List<String> aarsakkoder = deltakerstatuskoderMedAarsakkoder.get(deltakerstatuskode);
+        if (getDeltakerstatuskoderMedAarsakkoder().containsKey(deltakerstatuskode)) {
+            List<String> aarsakkoder = getDeltakerstatuskoderMedAarsakkoder().get(deltakerstatuskode);
             String aarsakkode = aarsakkoder.get(rand.nextInt(aarsakkoder.size()));
             vedtak.setAarsakKode(aarsakkode);
         }
