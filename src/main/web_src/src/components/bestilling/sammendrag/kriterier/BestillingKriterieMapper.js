@@ -32,6 +32,7 @@ const _getTpsfBestillingData = data => {
 		obj('Dødsdato', data.doedsdato === null ? 'Ingen' : Formatters.formatDate(data.doedsdato)),
 		obj('Statsborgerskap', data.statsborgerskap, AdresseKodeverk.StatsborgerskapLand),
 		obj('Statsborgerskap fra', Formatters.formatDate(data.statsborgerskapRegdato)),
+		obj('Statsborgerskap til', Formatters.formatDate(data.statsborgerskapTildato)),
 		obj('Kjønn', Formatters.kjonn(data.kjonn, data.alder)),
 		obj('Har mellomnavn', Formatters.oversettBoolean(data.harMellomnavn)),
 		obj('Sivilstand', data.sivilstand, PersoninformasjonKodeverk.Sivilstander),
@@ -74,9 +75,11 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				),
 				obj('Sist Oppdatert', Formatters.formatDate(bestillingsinformasjon.sistOppdatert)),
 				obj(
-					'Gjenopprett fra',
-					bestillingsinformasjon.opprettetFraId &&
-						`Bestilling # ${bestillingsinformasjon.opprettetFraId}`
+					'Gjenopprettet fra',
+					bestillingsinformasjon.opprettetFraId
+						? `Bestilling # ${bestillingsinformasjon.opprettetFraId}`
+						: bestillingsinformasjon.opprettetFraGruppeId &&
+								`Gruppe # ${bestillingsinformasjon.opprettetFraGruppeId}`
 				)
 			]
 		}
@@ -370,7 +373,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				header: 'Fullmakt',
 				items: [
 					obj('Kilde', fullmakt.kilde),
-					obj('Områder', Formatters.arrayToString(fullmakt.omraader)),
+					obj('Områder', Formatters.omraaderArrayToString(fullmakt.omraader)),
 					obj('Gyldig fra og med', Formatters.formatDate(fullmakt.gyldigFom)),
 					obj('Gyldig til og med', Formatters.formatDate(fullmakt.gyldigTom)),
 					obj('Fullmektiges identtype', fullmakt.identType),
@@ -513,7 +516,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			inntektStubKriterier.inntektsinformasjon.forEach((inntektsinfo, i) => {
 				inntektStub.itemRows.push([
 					{ numberHeader: `Inntektsinformasjon ${i + 1}` },
-					obj('Måned/år', inntektsinfo.sisteAarMaaned),
+					obj('År/måned', inntektsinfo.sisteAarMaaned),
 					obj('Generer antall måneder', inntektsinfo.antallMaaneder),
 					obj('Virksomhet (orgnr/id)', inntektsinfo.virksomhet),
 					obj('Opplysningspliktig (orgnr/id)', inntektsinfo.opplysningspliktig),
@@ -586,7 +589,11 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj(
 							'Helsepersonell navn',
 							sykemeldingKriterier.detaljertSykemelding.helsepersonell &&
-								`${sykemeldingKriterier.detaljertSykemelding.helsepersonell.fornavn} ${sykemeldingKriterier.detaljertSykemelding.helsepersonell.mellomnavn} ${sykemeldingKriterier.detaljertSykemelding.helsepersonell.etternavn}`
+								`${sykemeldingKriterier.detaljertSykemelding.helsepersonell.fornavn} ${
+									sykemeldingKriterier.detaljertSykemelding.helsepersonell.mellomnavn
+										? sykemeldingKriterier.detaljertSykemelding.helsepersonell.mellomnavn
+										: ''
+								} ${sykemeldingKriterier.detaljertSykemelding.helsepersonell.etternavn}`
 						),
 						obj(
 							'Helsepersonell ident',
@@ -595,6 +602,10 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj(
 							'HPR-nummer',
 							_get(sykemeldingKriterier.detaljertSykemelding, 'helsepersonell.hprId')
+						),
+						obj(
+							'SamhandlerType',
+							_get(sykemeldingKriterier.detaljertSykemelding, 'helsepersonell.samhandlerType')
 						),
 						obj(
 							'Arbeidsgiver',
@@ -879,7 +890,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				: oppholdKriterier && oppholdKriterier.uavklart
 				? 'Uavklart'
 				: udiStubKriterier.harOppholdsTillatelse === false
-				? 'Ikke oppholdstillatalse eller ikke opphold på samme vilkår'
+				? 'Ikke oppholdstillatelse eller ikke opphold på samme vilkår'
 				: null
 
 		const oppholdsrett = Boolean(currentOppholdsrettType)
@@ -894,6 +905,165 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					aliaserListe.push(`#${i + 1} ID-nummer - ${alias.identtype}\n`)
 				}
 			})
+
+		const udistubAvslagEllerBortfall = oppholdKriterier?.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum
+			?.avslagEllerBortfall &&
+			Object.values(
+				oppholdKriterier.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.avslagEllerBortfall
+			).some(item => item !== null) && {
+				header: 'UDI - Avslag eller bortfall',
+				items: [
+					obj(
+						'Avgjørelsesdato',
+						Formatters.formatDate(
+							_get(
+								oppholdKriterier,
+								'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.avslagEllerBortfall.avgjorelsesDato'
+							)
+						)
+					),
+					obj(
+						'Avslag grunnlag øvrig',
+						Formatters.showLabel(
+							'avslagGrunnlagOverig',
+							_get(
+								oppholdKriterier,
+								'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.avslagEllerBortfall.avslagGrunnlagOverig'
+							)
+						)
+					),
+					obj(
+						'Avslag tillatelsesgrunnlag',
+						Formatters.showLabel(
+							'avslagGrunnlagTillatelseGrunnlagEOS',
+							_get(
+								oppholdKriterier,
+								'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.avslagEllerBortfall.avslagGrunnlagTillatelseGrunnlagEOS'
+							)
+						)
+					),
+					obj(
+						'Oppholdsrett behandlet',
+						Formatters.showLabel(
+							'avslagOppholdsrettBehandlet',
+							_get(
+								oppholdKriterier,
+								'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.avslagEllerBortfall.avslagOppholdsrettBehandlet'
+							)
+						)
+					),
+					obj(
+						'Oppholdstillatelse behandlet',
+						Formatters.showLabel(
+							'avslagGrunnlagTillatelseGrunnlagEOS',
+							_get(
+								oppholdKriterier,
+								'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.avslagEllerBortfall.avslagOppholdstillatelseBehandletGrunnlagEOS'
+							)
+						)
+					),
+					obj(
+						'Oppholdstillatelse behandlet øvrig',
+						Formatters.showLabel(
+							'avslagGrunnlagOverig',
+							_get(
+								oppholdKriterier,
+								'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.avslagEllerBortfall.avslagOppholdstillatelseBehandletGrunnlagOvrig'
+							)
+						)
+					),
+					obj(
+						'Behandlet utreisefrist',
+						Formatters.formatDate(
+							_get(
+								oppholdKriterier,
+								'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.avslagEllerBortfall.avslagOppholdstillatelseBehandletUtreiseFrist'
+							)
+						)
+					),
+					obj(
+						'Utreisefrist',
+						Formatters.formatDate(
+							_get(
+								oppholdKriterier,
+								'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.avslagEllerBortfall.avslagOppholdstillatelseUtreiseFrist'
+							)
+						)
+					),
+					obj(
+						'Bortfallsdato',
+						Formatters.formatDate(
+							_get(
+								oppholdKriterier,
+								'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.avslagEllerBortfall.bortfallAvPOellerBOSDato'
+							)
+						)
+					),
+					obj(
+						'Tilbakekall utreisefrist',
+						Formatters.formatDate(
+							_get(
+								oppholdKriterier,
+								'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.avslagEllerBortfall.tilbakeKallUtreiseFrist'
+							)
+						)
+					),
+					obj(
+						'Vedtak utreisefrist',
+						Formatters.formatDate(
+							_get(
+								oppholdKriterier,
+								'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.avslagEllerBortfall.formeltVedtakUtreiseFrist'
+							)
+						)
+					),
+					obj(
+						'Tilbakekall virkningsdato',
+						Formatters.formatDate(
+							_get(
+								oppholdKriterier,
+								'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.avslagEllerBortfall.tilbakeKallVirkningsDato'
+							)
+						)
+					)
+				]
+			}
+
+		const udiStubUtvistMedInnreiseforbud = oppholdKriterier
+			?.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum?.utvistMedInnreiseForbud.innreiseForbud && {
+			header: 'UDI - Utvist med innreiseforbud',
+			items: [
+				obj(
+					'Innreiseforbud',
+					Formatters.showLabel(
+						'jaNeiUavklart',
+						_get(
+							oppholdKriterier,
+							'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.utvistMedInnreiseForbud.innreiseForbud'
+						)
+					)
+				),
+				obj(
+					'Innreiseforbud vedtatt',
+					Formatters.formatDate(
+						_get(
+							oppholdKriterier,
+							'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.utvistMedInnreiseForbud.innreiseForbudVedtaksDato'
+						)
+					)
+				),
+				obj(
+					'Varighet',
+					Formatters.showLabel(
+						'varighet',
+						_get(
+							oppholdKriterier,
+							'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.utvistMedInnreiseForbud.varighet'
+						)
+					)
+				)
+			]
+		}
 
 		const udistub = {
 			header: 'UDI',
@@ -974,6 +1144,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					'Arbeidsadgang til dato',
 					Formatters.formatDate(_get(arbeidsadgangKriterier, 'periode.til'))
 				),
+				obj('Hjemmel', _get(arbeidsadgangKriterier, 'hjemmel')),
+				obj('Forklaring', _get(arbeidsadgangKriterier, 'forklaring')),
 				obj('Alias', aliaserListe.length > 0 && aliaserListe),
 				obj('Flyktningstatus', Formatters.oversettBoolean(udiStubKriterier.flyktning)),
 				obj(
@@ -982,10 +1154,22 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						'jaNeiUavklart',
 						udiStubKriterier.soeknadOmBeskyttelseUnderBehandling
 					)
+				),
+				obj(
+					'Øvrig årsak',
+					Formatters.showLabel(
+						'ovrigIkkeOppholdsKategoriArsak',
+						_get(
+							oppholdKriterier,
+							'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.ovrigIkkeOppholdsKategoriArsak'
+						)
+					)
 				)
 			]
 		}
 		data.push(udistub)
+		udistubAvslagEllerBortfall && data.push(udistubAvslagEllerBortfall)
+		udiStubUtvistMedInnreiseforbud && data.push(udiStubUtvistMedInnreiseforbud)
 	}
 
 	const pensjonKriterier = bestillingData.pensjonforvalter

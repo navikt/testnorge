@@ -11,6 +11,7 @@ spec:
     application:
       enabled: true
       replyURLs:
+        - https://dolly.dev.intern.nav.no/login/oauth2/code/aad
         - https://dolly-frontend.dev.adeo.no/login/oauth2/code/aad
         - https://dolly.nais.preprod.local/login/oauth2/code/aad
         - https://dolly.nais-dev-fss.adeo.no/login/oauth2/code/aad
@@ -20,6 +21,7 @@ spec:
     max: 2
   port: 8080
   ingresses:
+    - https://dolly.dev.intern.nav.no
     - https://dolly-frontend.dev.adeo.no
     - https://dolly.nais.preprod.local
     - https://dolly.nais-dev-fss.adeo.no
@@ -46,12 +48,20 @@ spec:
       memory: 2048Mi
   image: {{ image }}
   env:
+    - name: TESTNORGE_MILJOER_SERVICE_CLIENT_ID
+      value: 30003084-1585-4629-a017-686b4387b12e
     - name: TESTNORGE_PROFIL_API_CLIENT_ID
       value: e8e0772f-8204-4b88-88ad-233d62863f47
     - name: DOLLY_BACKEND_API_CLIENT_ID
       value: 787eb670-2731-49b4-8be1-2385990370a9
     - name: DOLLY_BACKEND_HOST
       value: https://dolly-backend.dev.adeo.no
+    - name: UDI_STUB_CLIENT_ID
+      value: f4620953-c7af-4e60-8cbb-03de57554b86
+    - name: UDI_STUB_HOST
+      value: https://udi-stub.dev.adeo.no
+    - name: TESTNORGE_MILJOER_SERVICE_HOST
+      value: https://miljoer-service.dev.intern.nav.no
     - name: TESTNORGE_PROFIL_API_HOST
       value: https://testnorge-profil-api.dev.intern.nav.no
     - name: ORGANISASJON_FORVALTER_HOST

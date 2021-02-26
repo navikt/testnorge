@@ -2,23 +2,42 @@ import React from 'react'
 import _get from 'lodash/get'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
+import { AvslagEllerBortfall, AvslagEllerBortfallVisning } from './AvslagEllerBortfallVisning'
+import {
+	UtvistMedInnreiseForbud,
+	UtvistMedInnreiseForbudVisning
+} from './UtvistMedInnreiseForbudVisning'
 
-export const Oppholdsstatus = ({ oppholdsstatus, oppholdstillatelse }) => {
-	if (!oppholdsstatus) return null
+type Opphold = {
+	oppholdsstatus: {
+		oppholdSammeVilkaar: {}
+		ikkeOppholdstilatelseIkkeVilkaarIkkeVisum: {
+			avslagEllerBortfall: AvslagEllerBortfall
+			utvistMedInnreiseForbud: UtvistMedInnreiseForbud
+			ovrigIkkeOppholdsKategoriArsak: string
+		}
+		uavklart: boolean
+	}
+	oppholdstillatelse: boolean
+}
+
+export const Oppholdsstatus = (opphold: Opphold) => {
+	if (!opphold || !opphold.oppholdsstatus) return null
+
+	const oppholdsstatus = opphold.oppholdsstatus
 
 	const oppholdsrettTyper = [
 		'eosEllerEFTABeslutningOmOppholdsrett',
 		'eosEllerEFTAVedtakOmVarigOppholdsrett',
 		'eosEllerEFTAOppholdstillatelse'
 	]
+	// @ts-ignore
 	const currentOppholdsrettType = oppholdsrettTyper.find(type => oppholdsstatus[type])
 	const currentTredjelandsborgereStatus = oppholdsstatus.oppholdSammeVilkaar
 		? 'Oppholdstillatelse eller opphold på samme vilkår'
 		: oppholdsstatus.uavklart
 		? 'Uavklart'
-		: oppholdstillatelse === false
-		? 'Ikke oppholdstillatalse eller ikke opphold på samme vilkår'
-		: null
+		: 'Ikke oppholdstillatelse eller ikke opphold på samme vilkår'
 	const oppholdsrett = Boolean(currentOppholdsrettType)
 	const tredjelandsborger = Boolean(currentTredjelandsborgereStatus)
 
@@ -38,20 +57,18 @@ export const Oppholdsstatus = ({ oppholdsstatus, oppholdstillatelse }) => {
 				/>
 				<TitleValue
 					title="Type opphold"
-					value={
-						oppholdsrett && Formatters.showLabel('eosEllerEFTAtypeOpphold', currentOppholdsrettType)
-					}
+					value={Formatters.showLabel('eosEllerEFTAtypeOpphold', currentOppholdsrettType)}
 				/>
 				<TitleValue title="Status" value={currentTredjelandsborgereStatus} />
 				<TitleValue
-					title="Oppholdstillatelse fra dato"
+					title="Oppholdstillatelse fra"
 					value={Formatters.formatStringDates(
 						_get(oppholdsstatus, `${currentOppholdsrettType}Periode.fra`) ||
-							_get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra')
+							_get(opphold, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra')
 					)}
 				/>
 				<TitleValue
-					title="Oppholdstillatelse til dato"
+					title="Oppholdstillatelse til"
 					value={Formatters.formatStringDates(
 						_get(oppholdsstatus, `${currentOppholdsrettType}Periode.til`) ||
 							_get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.til')
@@ -81,10 +98,30 @@ export const Oppholdsstatus = ({ oppholdsstatus, oppholdstillatelse }) => {
 					title="Grunnlag for opphold"
 					value={
 						oppholdsrett &&
+						// @ts-ignore
 						Formatters.showLabel([currentOppholdsrettType], oppholdsstatus[currentOppholdsrettType])
 					}
 				/>
+				<TitleValue
+					title="Øvrig årsak"
+					value={Formatters.showLabel(
+						'ovrigIkkeOppholdsKategoriArsak',
+						oppholdsstatus.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum?.ovrigIkkeOppholdsKategoriArsak
+					)}
+				/>
 			</div>
+			<AvslagEllerBortfallVisning
+				// @ts-ignore
+				avslagEllerBortfall={
+					oppholdsstatus?.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum?.avslagEllerBortfall
+				}
+			/>
+			<UtvistMedInnreiseForbudVisning
+				// @ts-ignore
+				utvistMedInnreiseForbud={
+					oppholdsstatus?.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum?.utvistMedInnreiseForbud
+				}
+			/>
 		</div>
 	)
 }

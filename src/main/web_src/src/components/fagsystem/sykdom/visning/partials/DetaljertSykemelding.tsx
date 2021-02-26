@@ -41,6 +41,7 @@ export const DetaljertSykemelding = ({ sykemelding, idx }: SykemeldingDetaljert)
 					/>
 					<TitleValue title="Ident" value={sykemelding.helsepersonell.ident} />
 					<TitleValue title="HPR-nummer" value={sykemelding.helsepersonell.hprId} />
+					<TitleValue title="SamhandlerType" value={sykemelding.helsepersonell.samhandlerType} />
 				</div>
 			</>
 			<>

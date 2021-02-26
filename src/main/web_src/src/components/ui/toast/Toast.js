@@ -8,7 +8,8 @@ export default class Toaster extends PureComponent {
 		if (error) {
 			toast.error(error, {
 				position: toast.POSITION.BOTTOM_RIGHT,
-				onClose: clearErrors
+				onClose: clearErrors,
+				autoClose: 10000
 			})
 		}
 	}

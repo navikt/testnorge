@@ -19,7 +19,8 @@ export default function BestillingSammendrag({ bestilling }) {
 				bestillingsinformasjon={{
 					antallIdenter: bestilling.antallIdenter,
 					sistOppdatert: bestilling.sistOppdatert,
-					opprettetFraId: bestilling.opprettetFraId
+					opprettetFraId: bestilling.opprettetFraId,
+					opprettetFraGruppeId: bestilling.opprettetFraGruppeId
 				}}
 				header="Bestillingskriterier"
 			/>

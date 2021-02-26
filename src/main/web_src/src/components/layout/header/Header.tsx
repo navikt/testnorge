@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom'
 import Icon from '~/components/ui/icon/Icon'
 // @ts-ignore
 import logo from '~/assets/img/nav-logo-hvit.png'
+// @ts-ignore
 import dolly from '~/assets/favicon.ico'
 import './Header.less'
 import Logger from '~/logger'
@@ -37,7 +38,12 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 					Testpersoner
 				</NavLink>
 				<NavLink to="/organisasjoner">Testorganisasjoner</NavLink>
-				<NavLink to="/tpsendring">Endringsmelding</NavLink>
+				<a
+					href="https://endringsmelding.dev.intern.nav.no"
+					onClick={() => Logger.log({ event: 'Trykket på dokumentasjon header' })}
+				>
+					Endringsmelding
+				</a>
 				<NavLink to="/soek">Søk i Mini-Norge</NavLink>
 				<a
 					href="https://navikt.github.io/dolly-frontend/"

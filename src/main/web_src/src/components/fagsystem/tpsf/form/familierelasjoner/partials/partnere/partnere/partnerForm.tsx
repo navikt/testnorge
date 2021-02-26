@@ -1,5 +1,4 @@
 import React from 'react'
-import _isEmpty from 'lodash/isEmpty'
 import _get from 'lodash/get'
 import { FormikProps } from 'formik'
 import { AdresseKodeverk, PersoninformasjonKodeverk } from '~/config/kodeverk'
@@ -85,6 +84,7 @@ export default ({ path, formikBag, partner, ...rest }: PartnerForm) => {
 						kodeverk={AdresseKodeverk.StatsborgerskapLand}
 					/>
 					<FormikDatepicker name={`${path}.statsborgerskapRegdato`} label="Statsborgerskap fra" />
+					<FormikDatepicker name={`${path}.statsborgerskapTildato`} label="Statsborgerskap til" />
 					<Diskresjonskoder basePath={path} formikBag={formikBag} />
 					<Alder
 						basePath={path}

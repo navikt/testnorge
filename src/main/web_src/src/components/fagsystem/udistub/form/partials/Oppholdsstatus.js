@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+import { OppholdSammeVilkaar } from '~/components/fagsystem/udistub/form/partials/OppholdSammeVilkaar'
+import { IkkeOppholdSammeVilkaar } from '~/components/fagsystem/udistub/form/partials/IkkeOppholdSammeVilkaar'
 
 const findInitialStatus = formikBag => {
 	const oppholdsstatusObj = formikBag.values.udistub.oppholdStatus
@@ -19,9 +20,12 @@ const findInitialStatus = formikBag => {
 	}
 	if (oppholdsstatusObj.oppholdSammeVilkaar)
 		return ['tredjelandsBorgere', '', 'oppholdSammeVilkaar']
-	if (oppholdsstatusObj.uavklart) return ['tredjelandsBorgere', '', 'UAVKLART']
-	if (formikBag.values.udistub.harOppholdsTillatelse === false)
+	if (
+		oppholdsstatusObj.ikkeOppholdSammeVilkaar ||
+		formikBag.values.udistub.harOppholdsTillatelse === false
+	)
 		return ['tredjelandsBorgere', '', 'ikkeOppholdSammeVilkaar']
+	if (oppholdsstatusObj.uavklart) return ['tredjelandsBorgere', '', 'UAVKLART']
 	return ['', '', '']
 }
 
@@ -31,16 +35,18 @@ export const Oppholdsstatus = ({ formikBag }) => {
 	const [eosEllerEFTAtypeOpphold, setEosEllerEFTAtypeOpphold] = useState(initialStatus[1])
 	const [tredjelandsBorgereValg, setTredjelandsBorgereValg] = useState(initialStatus[2])
 
+	const basePath = 'udistub.oppholdStatus'
+
 	const endreOppholdsstatus = value => {
 		setOppholdsstatus(value)
 		setEosEllerEFTAtypeOpphold('')
 		setTredjelandsBorgereValg('')
-		formikBag.setFieldValue('udistub.oppholdStatus', {})
+		formikBag.setFieldValue(basePath, {})
 	}
 
 	const endreEosEllerEFTAtypeOpphold = value => {
 		setEosEllerEFTAtypeOpphold(value)
-		formikBag.setFieldValue('udistub.oppholdStatus', {})
+		formikBag.setFieldValue(basePath, {})
 		formikBag.setFieldValue(`udistub.oppholdStatus.${value}Periode`, {
 			fra: null,
 			til: null
@@ -51,9 +57,9 @@ export const Oppholdsstatus = ({ formikBag }) => {
 
 	const endreTredjelandsBorgereValg = value => {
 		setTredjelandsBorgereValg(value)
-		formikBag.setFieldValue('udistub.oppholdStatus', {})
+		formikBag.setFieldValue(basePath, {})
 		if (value === 'oppholdSammeVilkaar') {
-			formikBag.setFieldValue('udistub.harOppholdsTillatelse', null)
+			formikBag.setFieldValue('udistub.harOppholdsTillatelse', true)
 			formikBag.setFieldValue('udistub.oppholdStatus.oppholdSammeVilkaar', {
 				oppholdSammeVilkaarPeriode: { fra: null, til: null },
 				oppholdSammeVilkaarEffektuering: null,
@@ -61,11 +67,33 @@ export const Oppholdsstatus = ({ formikBag }) => {
 				oppholdstillatelseType: ''
 			})
 		} else if (value === 'ikkeOppholdSammeVilkaar') {
-			formikBag.setFieldValue('udistub.oppholdStatus', {})
+			formikBag.setFieldValue(basePath, {})
 			formikBag.setFieldValue('udistub.harOppholdsTillatelse', false)
+			formikBag.setFieldValue('udistub.oppholdStatus.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum', {
+				avslagEllerBortfall: {
+					avgjorelsesDato: null,
+					avslagGrunnlagOverig: null,
+					avslagGrunnlagTillatelseGrunnlagEOS: null,
+					avslagOppholdsrettBehandlet: null,
+					avslagOppholdstillatelseBehandletGrunnlagEOS: null,
+					avslagOppholdstillatelseBehandletGrunnlagOvrig: null,
+					avslagOppholdstillatelseBehandletUtreiseFrist: null,
+					avslagOppholdstillatelseUtreiseFrist: null,
+					bortfallAvPOellerBOSDato: null,
+					tilbakeKallUtreiseFrist: null,
+					formeltVedtakUtreiseFrist: null,
+					tilbakeKallVirkningsDato: null
+				},
+				ovrigIkkeOppholdsKategoriArsak: null,
+				utvistMedInnreiseForbud: {
+					innreiseForbud: null,
+					innreiseForbudVedtaksDato: null,
+					varighet: null
+				}
+			})
 		} else if (value === 'UAVKLART') {
-			formikBag.setFieldValue('udistub.oppholdStatus', { uavklart: true })
-			formikBag.setFieldValue('udistub.harOppholdsTillatelse', '')
+			formikBag.setFieldValue(basePath, { uavklart: true })
+			formikBag.setFieldValue('udistub.harOppholdsTillatelse', undefined)
 		}
 	}
 
@@ -133,30 +161,9 @@ export const Oppholdsstatus = ({ formikBag }) => {
 						feil={feilmelding(tredjelandsBorgereValg)}
 						isClearable={false}
 					/>
-					{tredjelandsBorgereValg === 'oppholdSammeVilkaar' && (
-						<React.Fragment>
-							<FormikDatepicker
-								name="udistub.oppholdStatus.oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra"
-								label="Oppholdstillatelse fra dato"
-							/>
-							<FormikDatepicker
-								name="udistub.oppholdStatus.oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.til"
-								label="Oppholdstillatelse til dato"
-							/>
-							<FormikDatepicker
-								name="udistub.oppholdStatus.oppholdSammeVilkaar.oppholdSammeVilkaarEffektuering"
-								label="Effektueringsdato"
-							/>
-							<FormikSelect
-								name="udistub.oppholdStatus.oppholdSammeVilkaar.oppholdstillatelseType"
-								label="Type oppholdstillatelse"
-								options={Options('oppholdstillatelseType')}
-							/>
-							<FormikDatepicker
-								name="udistub.oppholdStatus.oppholdSammeVilkaar.oppholdstillatelseVedtaksDato"
-								label="Vedtaksdato"
-							/>
-						</React.Fragment>
+					{tredjelandsBorgereValg === 'oppholdSammeVilkaar' && <OppholdSammeVilkaar />}
+					{tredjelandsBorgereValg === 'ikkeOppholdSammeVilkaar' && (
+						<IkkeOppholdSammeVilkaar formikBag={formikBag} />
 					)}
 				</React.Fragment>
 			)}

@@ -12,12 +12,14 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 
 	if (!environments) return null
 
-	const order = ['U', 'T', 'Q']
+	const order = ['T', 'Q']
 
 	return (
 		<div className="miljo-velger">
 			<h2>{heading}</h2>
-			<MiljoeInfo bestillingsdata={bestillingsdata} dollyEnvironments={environments} />
+			{bestillingsdata && (
+				<MiljoeInfo bestillingsdata={bestillingsdata} dollyEnvironments={environments} />
+			)}
 
 			<FieldArray name="environments">
 				{({ push, remove, form }) => {

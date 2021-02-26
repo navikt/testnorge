@@ -22,7 +22,8 @@ const initialValues = {
 	spesreg: '',
 	utenFastBopel: false,
 	statsborgerskap: '',
-	statsborgerskapRegdato: ''
+	statsborgerskapRegdato: '',
+	statsborgerskapTildato: ''
 }
 
 export const initialValuesDoedfoedt = {
@@ -37,6 +38,22 @@ export const initialValuesDoedfoedt = {
 }
 
 export const Barn = ({ formikBag, personFoerLeggTil }) => {
+	const filterBorHos = (options, index) => {
+		const partnere = formikBag?.values?.tpsf?.relasjoner?.partnere
+		const barn = formikBag?.values?.tpsf?.relasjoner?.barn
+		if (!partnere || !barn || index > barn.length) {
+			return options
+		}
+		if (barn[index].partnerNr && barn[index].partnerNr !== '') {
+			return options.filter(opt =>
+				partnere[barn[index].partnerNr - 1].harFellesAdresse
+					? opt.value !== 'BEGGE'
+					: opt.value !== 'OSS'
+			)
+		}
+		return options
+	}
+
 	const handleIdenttypeChange = (path, ident, isDoedfoedt) => {
 		if (ident.value === 'FDAT') {
 			formikBag.setFieldValue(`${path}`, initialValuesDoedfoedt)
@@ -117,7 +134,8 @@ export const Barn = ({ formikBag, personFoerLeggTil }) => {
 							<FormikSelect
 								name={`${path}.borHos`}
 								label="Bor hos"
-								options={Options('barnBorHos')}
+								options={filterBorHos(Options('barnBorHos'), idx)}
+								fastfield={false}
 								isClearable={false}
 							/>
 						)}
@@ -135,6 +153,12 @@ export const Barn = ({ formikBag, personFoerLeggTil }) => {
 							<FormikDatepicker
 								name={`${path}.statsborgerskapRegdato`}
 								label="Statsborgerskap fra"
+							/>
+						)}
+						{!isDoedfoedt && (
+							<FormikDatepicker
+								name={`${path}.statsborgerskapTildato`}
+								label="Statsborgerskap til"
 							/>
 						)}
 						{!isDoedfoedt && <Diskresjonskoder basePath={path} formikBag={formikBag} />}

@@ -1,5 +1,5 @@
 import React from 'react'
-import './TpsDataVisning.less'
+import './DataVisning.less'
 // @ts-ignore
 import Tooltip from 'rc-tooltip'
 import 'rc-tooltip/assets/bootstrap_white.css'

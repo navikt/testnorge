@@ -22,6 +22,7 @@ export default function TilgjengeligeMiljoer({ endepunkt, dollyEnvironments }) {
 }
 
 export const filterMiljoe = (dollyMiljoe, utvalgteMiljoer) => {
+	if (utvalgteMiljoer === null) return []
 	const dollyMiljoeArray = flatDollyMiljoe(dollyMiljoe)
 
 	//Filtrerer bort de miljøene som er tilgjengelige for fagsystemene eller en mal,

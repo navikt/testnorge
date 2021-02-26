@@ -1,24 +1,30 @@
 import React from 'react'
-import { PersoninformasjonKodeverk, AdresseKodeverk } from '~/config/kodeverk'
+import { AdresseKodeverk, PersoninformasjonKodeverk } from '~/config/kodeverk'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
-const Statsborgerskap = ({ statsborgerskap }) => (
-	<div className="person-visning_content">
-		<TitleValue
-			title="Statsborgerskap"
-			kodeverk={AdresseKodeverk.StatsborgerskapLand}
-			value={statsborgerskap.statsborgerskap}
-		/>
-		<TitleValue
-			title="Statsborgerskap fra"
-			value={Formatters.formatDate(statsborgerskap.statsborgerskapRegdato)}
-		/>
-	</div>
-)
+const Statsborgerskap = ({ statsborgerskap }) => {
+	return (
+		<div className="person-visning_content">
+			<TitleValue
+				title="Statsborgerskap"
+				kodeverk={AdresseKodeverk.StatsborgerskapLand}
+				value={statsborgerskap.statsborgerskap}
+			/>
+			<TitleValue
+				title="Statsborgerskap registrert"
+				value={Formatters.formatDate(statsborgerskap.statsborgerskapRegdato)}
+			/>
+			<TitleValue
+				title="Statsborgerskap til"
+				value={Formatters.formatDate(statsborgerskap.statsborgerskapTildato)}
+			/>
+		</div>
+	)
+}
 
 export const Nasjonalitet = ({ data, visTittel = true }) => {
 	const { statsborgerskap, sprakKode, innvandretUtvandret } = data

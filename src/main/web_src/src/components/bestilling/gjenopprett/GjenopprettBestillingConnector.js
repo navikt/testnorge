@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import GjenopprettBestillingComp from './Gjenopprett'
+import GjenopprettBestillingComp from './GjenopprettBestilling'
 import {
 	getBestillinger,
 	gjenopprettBestilling,

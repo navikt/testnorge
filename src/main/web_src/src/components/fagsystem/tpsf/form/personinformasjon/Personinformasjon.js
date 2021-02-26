@@ -64,7 +64,8 @@ export const Personinformasjon = ({ formikBag }) => (
 						size="large"
 						isClearable={false}
 					/>
-					<FormikDatepicker name="tpsf.statsborgerskapRegdato" label="Statsborgerskap fra dato" />
+					<FormikDatepicker name="tpsf.statsborgerskapRegdato" label="Statsborgerskap fra" />
+					<FormikDatepicker name="tpsf.statsborgerskapTildato" label="Statsborgerskap til" />
 				</Vis>
 
 				<Vis attributt="tpsf.innvandretFraLand">

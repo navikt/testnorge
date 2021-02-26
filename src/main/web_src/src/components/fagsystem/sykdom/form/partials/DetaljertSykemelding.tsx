@@ -51,7 +51,8 @@ export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 			fornavn: v.fornavn,
 			hprId: v.hprId,
 			ident: v.fnr,
-			mellomnavn: v.mellomnavn
+			mellomnavn: v.mellomnavn,
+			samhandlerType: v.samhandlerType
 		})
 	}
 

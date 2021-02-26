@@ -30,7 +30,8 @@ const selectOptions: SelectOptions = {
 	barnBorHos: [
 		{ value: 'MEG', label: 'Hovedperson' },
 		{ value: 'DEG', label: 'Partner' },
-		{ value: 'OSS', label: 'Begge' }
+		{ value: 'OSS', label: 'Begge (sammen)' },
+		{ value: 'BEGGE', label: 'Begge (delt bosted)' }
 	],
 
 	boolean: [
@@ -198,6 +199,58 @@ const selectOptions: SelectOptions = {
 	oppholdstillatelseType: [
 		{ value: 'PERMANENT', label: 'Permanent' },
 		{ value: 'MIDLERTIDIG', label: 'Midlertidig' }
+	],
+
+	ovrigIkkeOppholdsKategoriArsak: [
+		{ value: 'OPPHEVET_INNREISEFORBUD', label: 'Opphevet innreiseforbud' },
+		{ value: 'ANNULERING_AV_VISUM', label: 'Annulering av visum' },
+		{ value: 'UTLOPT_OPPHOLDSTILLATELSE', label: 'Utløpt oppholdstillatelse' },
+		{
+			value: 'UTLOPT_EO_SELLER_EFTA_OPPHOLDSRETT_ELLER_EO_SELLER_EFTA_OPPHOLDSTILLATELSE',
+			label: 'Utløpt oppholdsrett/oppholdstillatelse'
+		}
+	],
+
+	avslagGrunnlagOverig: [
+		{ value: 'PERMANENT', label: 'Permanent' },
+		{ value: 'BESKYTTELSE', label: 'Beskyttelse' },
+		{
+			value: 'STERKE_MENNESKELIGE_HENSYN_ELLER_SAERLIG_TILKNYTNING_TIL_NORGE',
+			label: 'Sterke menneskelige hensyn'
+		},
+		{ value: 'ARBEID', label: 'Arbeid' },
+		{ value: 'UTDANNING', label: 'Utdanning' },
+		{ value: 'FAMILIE', label: 'Familie' },
+		{ value: 'SELVSTENDIG_NAERINGSVIRKSOMHET', label: 'Selvstendig næringsvirksomhet' },
+		{ value: 'ANNET', label: 'Annet' },
+		{ value: 'UAVKLART', label: 'Uavklart' }
+	],
+
+	avslagGrunnlagTillatelseGrunnlagEOS: [
+		{
+			value: 'EGNE_MIDLER_ELLER_FASTE_PERIODISKE_YTELSER',
+			label: 'Egne midler/faste ytelser'
+		},
+		{ value: 'ARBEID', label: 'Arbeid' },
+		{ value: 'UTDANNING', label: 'Utdanning' },
+		{ value: 'FAMILIE', label: 'Familie' },
+		{ value: 'TJENESTEYTING_ELLER_ETABLERING', label: 'Tjenesteyting/etablering' },
+		{ value: 'UAVKLART', label: 'Uavklart' }
+	],
+
+	avslagOppholdsrettBehandlet: [
+		{ value: 'VARIG', label: 'Varig' },
+		{ value: 'INGEN_INFORMASJON', label: 'Ingen informasjon' },
+		{ value: 'FAMILIE', label: 'Familie' },
+		{ value: 'TJENESTEYTING_ELLER_ETABLERING', label: 'Tjenesteyting/etablering' },
+		{ value: 'UAVKLART', label: 'Uavklart' }
+	],
+
+	varighet: [
+		{ value: 'ETT_AR', label: 'Ett år' },
+		{ value: 'TO_AR', label: 'To år' },
+		{ value: 'FEM_AR', label: 'Fem år' },
+		{ value: 'VARIG', label: 'Varig' }
 	],
 
 	jaNeiUavklart: [

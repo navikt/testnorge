@@ -1,14 +1,14 @@
 import * as Yup from 'yup'
 import _get from 'lodash/get'
-import { isAfter, addDays, isBefore } from 'date-fns'
+import { addDays, isAfter, isBefore } from 'date-fns'
 import Dataformatter from '~/utils/DataFormatter'
 import {
-	requiredString,
-	requiredNumber,
-	requiredDate,
-	ifPresent,
 	ifKeyHasValue,
-	messages
+	ifPresent,
+	messages,
+	requiredDate,
+	requiredNumber,
+	requiredString
 } from '~/utils/YupValidations'
 
 const boadresse = Yup.object({
@@ -226,9 +226,10 @@ const innvandringUtvandringDatoTest = schema => {
 
 const foedtFoerOgEtterTest = (validation, validerFoedtFoer) => {
 	const errorMsgFoedtFoer =
-		'Født Før dato kan ikke være før Født Etter dato og det må være minst en dag mellom datoene.'
+		'Født Før dato kan ikke være før Født Etter dato eller etter dagens dato'
 	const errorMsgFoedtEtter =
-		'Født Etter dato kan ikke være etter Født Før dato og det må være minst en dag mellom datoene.'
+		'Født Etter dato kan ikke være etter Født Før dato eller etter dagens dato.'
+
 	return validation.test(
 		'range',
 		validerFoedtFoer ? errorMsgFoedtFoer : errorMsgFoedtEtter,
@@ -242,24 +243,32 @@ const foedtFoerOgEtterTest = (validation, validerFoedtFoer) => {
 			const foedtEtterValue = _get(values, `${path}.foedtEtter`)
 			const foedtFoerValue = _get(values, `${path}.foedtFoer`)
 
+			const foedtEtterDato = new Date(foedtEtterValue)
+			const foedtFoerDato = new Date(foedtFoerValue)
+
 			const identtype = _get(values, `${path}.identtype`)
 			if (identtype === 'FDAT') {
 				return true
 			}
 
-			if (validerFoedtFoer) {
-				if (foedtEtterValue !== '' && foedtEtterValue !== undefined) {
-					const foedtEtterDato = new Date(foedtEtterValue)
-					foedtEtterDato.setDate(foedtEtterDato.getDate() + 1)
-					if (selectedDato <= new Date(foedtEtterDato.toDateString())) return false
+			if (
+				(!validerFoedtFoer && foedtEtterDato > Date.now()) ||
+				(validerFoedtFoer && foedtFoerDato > Date.now())
+			)
+				return false
+
+			if (foedtEtterDato)
+				if (validerFoedtFoer) {
+					if (foedtEtterValue !== '' && foedtEtterValue !== undefined) {
+						foedtEtterDato.setDate(foedtEtterDato.getDate())
+						if (selectedDato < new Date(foedtEtterDato.toDateString())) return false
+					}
+				} else {
+					if (foedtFoerValue !== '' && foedtFoerValue !== undefined) {
+						foedtFoerDato.setDate(foedtFoerDato.getDate())
+						if (selectedDato > new Date(foedtFoerDato.toDateString())) return false
+					}
 				}
-			} else {
-				if (foedtFoerValue !== '' && foedtFoerValue !== undefined) {
-					const foedtFoerDato = new Date(foedtFoerValue)
-					foedtFoerDato.setDate(foedtFoerDato.getDate() - 1)
-					if (selectedDato >= new Date(foedtFoerDato.toDateString())) return false
-				}
-			}
 			return true
 		}
 	)
@@ -373,6 +382,7 @@ export const validation = {
 			kjonn: ifPresent('$tpsf.kjonn', requiredString),
 			statsborgerskap: ifPresent('$tpsf.statsborgerskap', requiredString),
 			statsborgerskapRegdato: Yup.date().nullable(),
+			statsborgerskapTildato: Yup.date().nullable(),
 			innvandretFraLand: ifPresent('$tpsf.innvandretFraLand', requiredString),
 			innvandretFraLandFlyttedato: ifPresent(
 				'$tpsf.innvandretFraLandFlyttedato',

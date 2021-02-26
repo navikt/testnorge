@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import _isEmpty from 'lodash/isEmpty'
-import { ifPresent, requiredString, requiredBoolean } from '~/utils/YupValidations'
+import { ifPresent, requiredBoolean, requiredString } from '~/utils/YupValidations'
 
 const checkUndefined = value => {
 	if (value !== undefined) {
@@ -28,7 +28,14 @@ const arbeidsadgang = Yup.object({
 		fra: Yup.date().nullable(),
 		til: Yup.date().nullable()
 	}),
-	typeArbeidsadgang: Yup.string().nullable()
+	typeArbeidsadgang: Yup.string().nullable(),
+	hjemmel: ifPresent(
+		'$udistub.arbeidsadgang.hjemmel',
+		requiredString.max(255, 'Hjemmel kan ikke være lenger enn 255 tegn').nullable()
+	),
+	forklaring: Yup.string()
+		.max(4000)
+		.nullable()
 })
 
 const oppholdSammeVilkaar = Yup.object({
@@ -38,7 +45,30 @@ const oppholdSammeVilkaar = Yup.object({
 	}),
 	oppholdSammeVilkaarEffektuering: Yup.date().nullable(),
 	oppholdstillatelseVedtaksDato: Yup.date().nullable(),
-	oppholdstillatelseType: requiredString
+	oppholdstillatelseType: Yup.string().nullable()
+})
+
+const ikkeOppholdSammeVilkaar = Yup.object({
+	avslagEllerBortfall: Yup.object({
+		avgjorelsesDato: Yup.date().nullable(),
+		avslagGrunnlagOverig: Yup.string().nullable(),
+		avslagGrunnlagTillatelseGrunnlagEOS: Yup.string().nullable(),
+		avslagOppholdsrettBehandlet: Yup.string().nullable(),
+		avslagOppholdstillatelseBehandletGrunnlagEOS: Yup.string().nullable(),
+		avslagOppholdstillatelseBehandletGrunnlagOvrig: Yup.string().nullable(),
+		avslagOppholdstillatelseBehandletUtreiseFrist: Yup.date().nullable(),
+		avslagOppholdstillatelseUtreiseFrist: Yup.date().nullable(),
+		bortfallAvPOellerBOSDato: Yup.date().nullable(),
+		tilbakeKallUtreiseFrist: Yup.date().nullable(),
+		formeltVedtakUtreiseFrist: Yup.date().nullable(),
+		tilbakeKallVirkningsDato: Yup.date().nullable()
+	}),
+	ovrigIkkeOppholdsKategoriArsak: Yup.string().nullable(),
+	utvistMedInnreiseForbud: Yup.object({
+		innreiseForbud: Yup.string().nullable(),
+		innreiseForbudVedtaksDato: Yup.date().nullable(),
+		varighet: Yup.string().nullable()
+	})
 })
 
 const oppholdStatus = Yup.object()
@@ -46,6 +76,12 @@ const oppholdStatus = Yup.object()
 		eosEllerEFTABeslutningOmOppholdsrett: Yup.lazy(checkUndefined),
 		eosEllerEFTAVedtakOmVarigOppholdsrett: Yup.lazy(checkUndefined),
 		eosEllerEFTAOppholdstillatelse: Yup.lazy(checkUndefined),
+		ikkeOppholdSammeVilkaar: Yup.lazy(value => {
+			if (value !== undefined) {
+				return ikkeOppholdSammeVilkaar
+			}
+			return Yup.mixed().notRequired()
+		}),
 		oppholdSammeVilkaar: Yup.lazy(value => {
 			if (value !== undefined) {
 				return oppholdSammeVilkaar
@@ -53,6 +89,7 @@ const oppholdStatus = Yup.object()
 			return Yup.mixed().notRequired()
 		})
 	})
+	.nullable()
 	// Sjekker om oppholdStatus er et tomt objekt. Objektet blir satt ved å fylle i feltene
 	// 'Oppholdsstatus' og 'Type opphold', men disse er ikke en del av selve formet.
 	.test('is-not-empty', function() {

@@ -37,7 +37,7 @@ export const Visning = ({ data }: Data) => {
 		<>
 			<div className="person-visning_content">
 				<ErrorBoundary>
-					<TitleValue title="Områder" value={Formatters.arrayToString(data.omraader)} />
+					<TitleValue title="Områder" value={Formatters.omraaderArrayToString(data.omraader)} />
 					<TitleValue title="Kilde" value={data.kilde} />
 					<TitleValue title="Gyldig fra og med" value={Formatters.formatDate(data.gyldigFom)} />
 					<TitleValue title="Gyldig til og med" value={Formatters.formatDate(data.gyldigTom)} />

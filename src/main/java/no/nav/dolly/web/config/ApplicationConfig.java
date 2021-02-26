@@ -1,6 +1,7 @@
 package no.nav.dolly.web.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -17,7 +18,9 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
         @DependencyOn("dolly-backend"),
         @DependencyOn("testnorge-profil-api"),
         @DependencyOn("testnorge-varslinger-api"),
-        @DependencyOn("organisasjon-forvalter")
+        @DependencyOn("organisasjon-forvalter"),
+        @DependencyOn("testnorge-miljoer-service"),
+        @DependencyOn("udi-stub-dev")
 })
 public class ApplicationConfig {
     private final RemoteApplicationsProperties properties;
@@ -48,10 +51,31 @@ public class ApplicationConfig {
         return createFilterFrom("organisasjon-forvalter");
     }
 
+    @Bean
+    public AddAuthorizationToRouteFilter miljoerServiceAddAuthorizationToRouteFilter() {
+        return createFilterFrom("testnorge-miljoer-service");
+    }
+
+    @Bean
+    public AddAuthorizationToRouteFilter udiStubAddAuthorizationToRouteFilter() {
+        return createFilterFrom("udi-stub");
+    }
+
     private AddAuthorizationToRouteFilter createFilterFrom(String route) {
         return new AddAuthorizationToRouteFilter(
                 () -> tokenService.getAccessToken(new AccessScopes(properties.get(route))).getTokenValue(),
                 route
         );
+    }
+
+    @Bean
+    public FilterRegistrationBean<SessionTimeoutCookieFilter> loggingFilter(){
+        FilterRegistrationBean<SessionTimeoutCookieFilter> registrationBean
+                = new FilterRegistrationBean<>();
+
+        registrationBean.setFilter(new SessionTimeoutCookieFilter());
+        registrationBean.addUrlPatterns("/*");
+
+        return registrationBean;
     }
 }

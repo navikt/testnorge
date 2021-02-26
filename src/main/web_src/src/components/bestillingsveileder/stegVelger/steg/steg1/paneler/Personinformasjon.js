@@ -90,10 +90,17 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => {
 			label: 'Statsborgerskap',
 			checked: has('tpsf.statsborgerskap'),
 			add() {
-				setMulti(['tpsf.statsborgerskap', ''], ['tpsf.statsborgerskapRegdato', null])
+				setMulti(
+					['tpsf.statsborgerskap', ''],
+					['tpsf.statsborgerskapRegdato', null],
+					['tpsf.statsborgerskapTildato', null]
+				)
 			},
 			remove() {
-				del(['tpsf.statsborgerskap', 'tpsf.statsborgerskapRegdato'])
+				del(
+					['tpsf.statsborgerskap', 'tpsf.statsborgerskapRegdato'],
+					['tpsf.statsborgerskap', 'tpsf.statsborgerskapTildato']
+				)
 			}
 		},
 		innvandretFraLand: {

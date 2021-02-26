@@ -9,7 +9,7 @@ const uri = `${config.services.dollyBackend}`
 export const SelectOptionsOppslag = {
 	hentOrgnr: () => Api.fetchJson(`${uri}/orgnummer`, { method: 'GET' }),
 
-	hentHelsepersonell: () => Api.fetchJson(`${uri}/helsepersonell`, 'GET'),
+	hentHelsepersonell: () => Api.fetchJson(`${uri}/helsepersonell`, { method: 'GET' }),
 
 	hentKrrLeverandoerer: () => {
 		const sdpLeverandoerer = useAsync(async () => {
@@ -44,6 +44,14 @@ export const SelectOptionsOppslag = {
 			return response
 		}, [DollyApi.getKodeverkByNavn])
 		return arbeidsforholdstyper
+	},
+
+	hentFullmaktOmraader: () => {
+		const omraader = useAsync(async () => {
+			const response = await DollyApi.getKodeverkByNavn('Tema')
+			return response
+		}, [DollyApi.getKodeverkByNavn])
+		return omraader
 	},
 
 	hentRollerFraBrregstub: () => {
@@ -123,6 +131,15 @@ SelectOptionsOppslag.formatOptions = (type, data) => {
 		leverandoerer.forEach(leverandoer => {
 			data = leverandoer[1]
 			options.push({ value: parseInt(data.id), label: data.navn })
+		})
+		return options
+	} else if (type === 'fullmaktOmraader') {
+		const omraader = data.value ? Object.entries(data.value.data.koder) : []
+		const options = []
+		options.push({ value: '*', label: '* (Alle)' })
+		omraader.forEach(omraade => {
+			data = omraade[1]
+			options.push({ value: data.value, label: data.label })
 		})
 		return options
 	}

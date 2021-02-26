@@ -12,9 +12,9 @@ export const BestillingInfoboks = ({ bestillingsdata }: BestillingInfoboks) => {
 	const harRelasjonMedAdressebeskyttelse = () => {
 		let harAdressebeskyttelse = false
 		if (tpsfInfo.relasjoner) {
-			Object.entries(tpsfInfo.relasjoner).map(relasjon => {
-				relasjon[1].map(person => {
-					if (person.spesreg === 'SPFO' || person.spesreg === 'SPSF') {
+			Object.entries(tpsfInfo.relasjoner).forEach(relasjon => {
+				relasjon[1].forEach(person => {
+					if (person.spesreg === 'SPFO' || person.spesreg === 'SPSF' || person.spesreg === 'SFU') {
 						harAdressebeskyttelse = true
 					}
 				})
@@ -27,6 +27,7 @@ export const BestillingInfoboks = ({ bestillingsdata }: BestillingInfoboks) => {
 		tpsfInfo &&
 		(tpsfInfo.spesreg === 'SPFO' ||
 			tpsfInfo.spesreg === 'SPSF' ||
+			tpsfInfo.spesreg === 'SFU' ||
 			harRelasjonMedAdressebeskyttelse() === true)
 	) {
 		return (
@@ -34,7 +35,7 @@ export const BestillingInfoboks = ({ bestillingsdata }: BestillingInfoboks) => {
 			<AlertStripeInfo style={{ marginTop: 20 }}>
 				Tilgangsstyring basert på diskresjonskode har nattlig oppdatering, slik at riktig tilgang
 				mot miljø kan verifiseres først dagen etter. Ta kontakt med team Dolly i morgen hvis ønsket
-				tilgang mot miljø ikke samsvarer med bestillingen.
+				tilgang mot miljø ikke samsvarer med bestillingen. <br />
 			</AlertStripeInfo>
 		)
 	}

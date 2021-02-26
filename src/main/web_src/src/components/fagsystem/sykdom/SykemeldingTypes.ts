@@ -47,6 +47,7 @@ export type Helsepersonell = {
 	ident?: string
 	fnr?: string
 	hprId: string
+	samhandlerType: string
 }
 
 export type Arbeidsgiver = {

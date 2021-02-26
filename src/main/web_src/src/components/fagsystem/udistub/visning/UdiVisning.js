@@ -17,10 +17,7 @@ export const UdiVisning = ({ data, loading }) => {
 			<ErrorBoundary>
 				<SubOverskrift label="UDI" iconKind="udi" />
 				<div className="person-visning">
-					<Oppholdsstatus
-						oppholdsstatus={data.oppholdStatus}
-						oppholdstillatelse={data.harOppholdsTillatelse}
-					/>
+					<Oppholdsstatus oppholdsstatus={data.oppholdStatus} />
 					<Arbeidsadgang arbeidsadgang={data.arbeidsadgang} />
 					<Aliaser aliaser={data.aliaser} />
 					<Annet data={data} />

@@ -35,8 +35,12 @@ export default {
 		return Request.post(Endpoints.gruppeBestillingFraEksisterendeIdenter(gruppeId), data)
 	},
 
-	updateGruppeLaas(gruppeId) {
-		return Request.put(Endpoints.laasGruppe(gruppeId))
+	updateGruppeLaas(gruppeId, data) {
+		return Request.put(Endpoints.laasGruppe(gruppeId), data)
+	},
+
+	gjenopprettGruppe(gruppeId, envs) {
+		return Request.put(Endpoints.gjenopprettGruppe(gruppeId, envs))
 	},
 
 	//* Ident
@@ -132,7 +136,7 @@ export default {
 		return Request.get(Endpoints.enhetByTknr(tknr))
 	},
 
-	getPersonFraPdlperson(ident) {
+	getPersonFraPdl(ident) {
 		return Request.get(Endpoints.personoppslag(ident))
 	},
 

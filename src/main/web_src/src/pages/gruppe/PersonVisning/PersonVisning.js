@@ -25,6 +25,7 @@ import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/Sa
 import { LeggTilRelasjonModal } from '~/components/leggTilRelasjon/LeggTilRelasjonModal'
 
 import './PersonVisning.less'
+import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
 
 export const PersonVisning = ({
 	fetchDataFraFagsystemer,
@@ -82,6 +83,7 @@ export const PersonVisning = ({
 			/>
 			<DokarkivVisning ident={ident.ident} />
 			<PersonMiljoeinfo ident={ident.ident} miljoe={bestilling.environments} />
+			<PdlPersonMiljoeInfo ident={ident.ident} />
 			<TidligereBestillinger ids={ident.bestillingId} />
 			<BeskrivelseConnector ident={ident} iLaastGruppe={iLaastGruppe} />
 		</div>

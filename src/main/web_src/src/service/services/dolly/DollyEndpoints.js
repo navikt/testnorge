@@ -42,7 +42,7 @@ export default class DollyEndpoints {
 	}
 
 	static laasGruppe(gruppeId) {
-		return `${groupBase}/${gruppeId}/laas?erLaast=true`
+		return `${groupBase}/${gruppeId}/laas`
 	}
 
 	static gruppeBestillingStatus(gruppeId) {
@@ -67,6 +67,10 @@ export default class DollyEndpoints {
 
 	static deleteOrganisasjonOrgnummer(orgnummer) {
 		return `${organisasjonBase}/bestilling/${orgnummer}`
+	}
+
+	static gjenopprettGruppe(gruppeId, envs) {
+		return `${groupBase}/${gruppeId}/gjenopprett?miljoer=${envs}`
 	}
 
 	static bruker() {

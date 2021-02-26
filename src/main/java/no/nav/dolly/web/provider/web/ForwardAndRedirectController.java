@@ -14,7 +14,7 @@ public class ForwardAndRedirectController {
     @Value("${DOLLY_BACKEND_HOST}")
     private String dollyUrl;
 
-    @RequestMapping(value = {"/minside/**", "/team/**", "/gruppe/**", "/maler/**", "/tpsendring/**", "/soek/**"})
+    @RequestMapping(value = {"/minside/**", "/team/**", "/gruppe/**", "/maler/**", "/soek/**"})
     public String forwardToRoot() {
         return "forward:/";
     }

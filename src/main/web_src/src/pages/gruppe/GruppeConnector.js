@@ -14,7 +14,8 @@ const mapStateToProps = (state, ownProps) => ({
 	isLockingGruppe: loadingSelectorLaasGruppe(state),
 	gruppe: selectGruppeById(state, ownProps.match.params.gruppeId),
 	identer: state.gruppe.ident,
-	brukernavn: state.bruker.brukerData.brukernavn
+	brukernavn: state.bruker.brukerData.brukernavn,
+	bestillingStatuser: state.bestillingStatuser.byId
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -22,7 +23,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
 		getGruppe: () => dispatch(actions.getById(gruppeId)),
 		deleteGruppe: () => dispatch(actions.remove(gruppeId)),
-		laasGruppe: () => dispatch(actions.laas(gruppeId)),
+		laasGruppe: () =>
+			dispatch(actions.laas(gruppeId, { erLaast: true, laastBeskrivelse: 'Låst gruppe' })),
 		getBestillinger: () => dispatch(getBestillinger(gruppeId))
 	}
 }

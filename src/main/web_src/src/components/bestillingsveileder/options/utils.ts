@@ -1,8 +1,8 @@
 import { initialValues as initialValuesInntektstub } from '~/components/fagsystem/inntektstub/form/Form'
-import { initialValues as initialValuesAareg } from '~/components/fagsystem/aareg/form/initialValues'
 import {
 	initialPermisjon,
-	initialUtenlandsopphold
+	initialUtenlandsopphold,
+	initialValues as initialValuesAareg
 } from '~/components/fagsystem/aareg/form/initialValues'
 import { initialValues as initialValuesInntektsmelding } from '~/components/fagsystem/inntektsmelding/form/Form'
 import { initialValues as initialValuesInst } from '~/components/fagsystem/inst/form/Form'
@@ -42,7 +42,11 @@ export const initialValues = {
 			til: null
 		},
 		// @ts-ignore
-		typeArbeidsadgang: null
+		typeArbeidsadgang: null,
+		// @ts-ignore
+		forklaring: null,
+		// @ts-ignore
+		hjemmel: ''
 	},
 	udistub: [
 		{
@@ -108,7 +112,8 @@ export const initialValues = {
 		spesreg: '',
 		utenFastBopel: false,
 		statsborgerskap: '',
-		statsborgerskapRegdato: ''
+		statsborgerskapRegdato: '',
+		statsborgerskapTildato: ''
 	},
 	barn: {
 		identtype: 'FNR',
@@ -121,12 +126,15 @@ export const initialValues = {
 		spesreg: '',
 		utenFastBopel: false,
 		statsborgerskap: '',
-		statsborgerskapRegdato: ''
+		statsborgerskapRegdato: '',
+		statsborgerskapTildato: ''
 	},
 	statborgerskap: {
 		statborgerskap: '',
 		// @ts-ignore
-		statsborgerskapRegdato: null
+		statsborgerskapRegdato: null,
+		// @ts-ignore
+		statsborgerskapTildato: null
 	},
 	utvandretTil: {
 		utvandretTilLand: '',

@@ -27,10 +27,11 @@ export default function Gruppe({
 	isDeletingGruppe,
 	isLockingGruppe,
 	match,
-	history
+	history,
+	bestillingStatuser
 }) {
 	const [visning, setVisning] = useState(VISNING_PERSONER)
-	const [startBestillingAktiv, visStartBestilling, skjulStarBestilling] = useBoolean(false)
+	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
 	useMount(() => {
 		getGruppe()
 		getBestillinger()
@@ -53,9 +54,6 @@ export default function Gruppe({
 		if (visning === VISNING_BESTILLING) return 'Søk i bestillinger'
 		return 'Søk etter personer'
 	}
-	const countUnique = iterable => {
-		return new Set(iterable).size
-	}
 
 	const erLaast = gruppe.erLaast
 
@@ -68,6 +66,7 @@ export default function Gruppe({
 				isDeletingGruppe={isDeletingGruppe}
 				laasGruppe={laasGruppe}
 				isLockingGruppe={isLockingGruppe}
+				bestillingStatuser={bestillingStatuser}
 			/>
 
 			<StatusListeConnector gruppeId={gruppe.id} />
@@ -92,7 +91,7 @@ export default function Gruppe({
 							size={13}
 							kind={visning === VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
 						/>
-						{`Bestillinger (${countUnique(Object.values(identer))})`}
+						{`Bestillinger (${Object.keys(bestillingStatuser).length})`}
 					</ToggleKnapp>
 				</ToggleGruppe>
 
@@ -102,7 +101,7 @@ export default function Gruppe({
 			{startBestillingAktiv && (
 				<BestillingsveilederModal
 					onSubmit={startBestilling}
-					onAvbryt={skjulStarBestilling}
+					onAvbryt={skjulStartBestilling}
 					brukernavn={brukernavn}
 				/>
 			)}

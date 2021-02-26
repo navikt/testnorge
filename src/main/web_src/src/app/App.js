@@ -8,24 +8,24 @@ import routes from '~/Routes'
 import { VarslingerModal } from '~/components/varslinger/VarslingerModal'
 
 import './App.less'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { Forbedring } from '~/components/feedback/Forbedring'
+import Utlogging from '~/components/utlogging'
+import { CriticalError } from '~/components/ui/appError/CriticalError'
 
 export default class App extends Component {
 	state = {
-		error: null
+		criticalError: null,
+		apiError: null
 	}
 
 	async componentDidMount() {
-		await this.props.fetchConfig().catch(err => {
-			this.setState({ error: err })
-		})
-		await this.props.getCurrentBruker()
-		await this.props.getCurrentBrukerProfil()
-		await this.props.getCurrentBrukerBilde()
-		await this.props.getEnvironments()
-		await this.props.getVarslinger()
-		await this.props.getVarslingerBruker()
+		await this.props.fetchConfig().catch(err => this.setState({ criticalError: err }))
+		await this.props.getEnvironments().catch(err => this.setState({ criticalError: err }))
+		await this.props.getCurrentBruker().catch(err => this.setState({ criticalError: err }))
+		await this.props.getCurrentBrukerProfil().catch(err => this.setState({ apiError: err }))
+		await this.props.getCurrentBrukerBilde().catch(err => this.setState({ apiError: err }))
+		await this.props.getVarslinger().catch(err => this.setState({ apiError: err }))
+		await this.props.getVarslingerBruker().catch(err => this.setState({ apiError: err }))
 	}
 
 	componentDidUpdate() {
@@ -47,18 +47,12 @@ export default class App extends Component {
 			updateVarslingerBruker
 		} = this.props
 
-		if (this.state.error)
-			return (
-				<ErrorBoundary
-					error={'Problemer med å hente dolly config. Prøv å refresh siden (ctrl + R).'}
-					stackTrace={this.state.error.stack}
-					style={{ margin: '25px auto' }}
-				/>
-			)
+		if (this.state.criticalError) return <CriticalError error={this.state.criticalError.stack} />
 
 		if (!brukerData || !configReady) return <Loading label="laster dolly applikasjon" fullpage />
 		return (
 			<React.Fragment>
+				<Utlogging />
 				<VarslingerModal
 					varslinger={varslinger}
 					varslingerBruker={varslingerBruker}
@@ -85,6 +79,7 @@ export default class App extends Component {
 				</main>
 				<Forbedring brukerBilde={brukerBilde} />
 				{applicationError && <Toast error={applicationError} clearErrors={clearAllErrors} />}
+				{this.state.apiError && <Toast error={this.state.apiError} clearErrors={clearAllErrors} />}
 			</React.Fragment>
 		)
 	}

@@ -27,6 +27,14 @@ module.exports = env =>
 				'/login': {
 					target: env.backend,
 					secure: false
+				},
+				'/logout': {
+					target: env.backend,
+					secure: false
+				},
+				'/session/ping': {
+					target: env.backend,
+					secure: false
 				}
 			}
 		},
