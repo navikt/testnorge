@@ -13,6 +13,16 @@ export type EnhetBestilling = {
 	underenheter?: Array<EnhetBestilling>
 	id?: number | string
 	organisasjonsnavn?: string
+	organisasjonNummer?: string
+	status?: Array<Statuser>
+}
+
+type Statuser = {
+	statuser: Array<StatusMeldinger>
+}
+
+type StatusMeldinger = {
+	melding: string
 }
 
 export type EnhetData = {
@@ -45,5 +55,5 @@ export type Adresse = {
 }
 
 export type OrgStatus = {
-	id: number
+	id?: number
 }

@@ -9,10 +9,10 @@ import './dollyFieldArray.less'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 const numberColor = {
-	blaa: '#CCE3ED',
-	oransje: '#FFE5C2',
-	gronn: '#CDE7D8',
-	lilla: '#C1B5D0'
+	ARRAY_LEVEL_ONE: '#CCE3ED',
+	ARRAY_LEVEL_TWO: '#FFE5C2',
+	ARRAY_LEVEL_THREE: '#CDE7D8',
+	ARRAY_LEVEL_FOUR: '#C1B5D0'
 }
 
 export const FieldArrayAddButton = ({
@@ -40,7 +40,7 @@ const DeleteButton = ({ onClick }) => {
 	return <Button kind="trashcan" onClick={onClick} title="Fjern" />
 }
 
-const Numbering = ({ idx, color = numberColor.blaa }) => (
+const Numbering = ({ idx, color = numberColor.ARRAY_LEVEL_ONE }) => (
 	<span className="dfa-blokk-number" style={{ backgroundColor: color }}>
 		{idx}
 	</span>
@@ -97,15 +97,15 @@ export const DollyFaBlokkOrg = ({
 	const getNivaaColor = () => {
 		switch (nivaa) {
 			case 1:
-				return numberColor.blaa
+				return numberColor.ARRAY_LEVEL_ONE
 			case 2:
-				return numberColor.oransje
+				return numberColor.ARRAY_LEVEL_TWO
 			case 3:
-				return numberColor.gronn
+				return numberColor.ARRAY_LEVEL_THREE
 			case 4:
-				return numberColor.lilla
+				return numberColor.ARRAY_LEVEL_FOUR
 			default:
-				return numberColor.blaa
+				return numberColor.ARRAY_LEVEL_ONE
 		}
 	}
 	const color = getNivaaColor()

@@ -3,11 +3,10 @@ import SendFoedselsmelding from './SendFoedselsmelding'
 import SendDoedsmelding from './SendDoedsmelding'
 import './TpsEndring.less'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
+import { dollySlack } from '~/components/dollySlack/dollySlack'
 
 export default class TPSEndring extends PureComponent {
 	render() {
-		const dollySlack = <a href="https://nav-it.slack.com/archives/CA3P9NGA2">#dolly</a>
-
 		return (
 			<Fragment>
 				<h1>Send endringsmelding</h1>

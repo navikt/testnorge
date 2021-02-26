@@ -1,4 +1,5 @@
 import React from 'react'
+import { dollySlack } from '~/components/dollySlack/dollySlack'
 
 type VarslingId = {
 	varslingId: string
@@ -7,11 +8,6 @@ type VarslingId = {
 export const VarslingerTekster = ({ varslingId }: VarslingId) => {
 	if (!varslingId) return null
 
-	const dollySlack = (
-		<a href="https://nav-it.slack.com/archives/CA3P9NGA2" target="_blank">
-			#dolly
-		</a>
-	)
 	const brukerveiledning = (
 		<a href="https://navikt.github.io/dolly-frontend/" target="_blank">
 			her

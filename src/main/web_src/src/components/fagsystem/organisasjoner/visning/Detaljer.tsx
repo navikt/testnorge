@@ -2,10 +2,11 @@ import React from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { OrganisasjonKodeverk } from '~/config/kodeverk'
-import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
 import '~/pages/gruppe/PersonVisning/PersonVisning.less'
 import { EnhetData } from '../types'
 import Formatters from '~/utils/DataFormatter'
+import AdresseDetaljer from './AdresseDetaljer'
+import KontaktdataDetaljer from './KontaktdataDetaljer'
 
 type Detaljer = {
 	data: Array<EnhetData>
@@ -13,7 +14,7 @@ type Detaljer = {
 
 export const Detaljer = ({ data }: Detaljer) => {
 	return (
-		<div className="person-visning">
+		<section className="person-visning">
 			<SubOverskrift label="Detaljer" iconKind="personinformasjon" />
 			<div className="person-visning_content">
 				<TitleValue title="Orgnr." value={data[0].organisasjonsnummer} />
@@ -38,14 +39,7 @@ export const Detaljer = ({ data }: Detaljer) => {
 			</div>
 
 			{(data[0].telefon || data[0].epost || data[0].nettside) && (
-				<>
-					<h4>Kontaktdata</h4>
-					<div className="person-visning_content">
-						<TitleValue title="Telefon" value={data[0].telefon} />
-						<TitleValue title="E-postadresse" value={data[0].epost} />
-						<TitleValue title="Internettadresse" value={data[0].nettside} />
-					</div>
-				</>
+				<KontaktdataDetaljer data={data[0]} />
 			)}
 
 			{data[0].adresser && (
@@ -53,34 +47,11 @@ export const Detaljer = ({ data }: Detaljer) => {
 					<h4>Adresser</h4>
 					<div className="person-visning_content">
 						{data[0].adresser.map((adresse, idx) => (
-							<React.Fragment key={idx}>
-								<TitleValue
-									title={adresse.adressetype === 'FADR' ? 'Forretningsadresse' : 'Postadresse'}
-									size="medium"
-								>
-									<div>{adresse.adresselinjer[0]}</div>
-									<div>{adresse.adresselinjer[1]}</div>
-									<div>{adresse.adresselinjer[2]}</div>
-									<div>
-										<KodeverkConnector navn="Postnummer" value={adresse.postnr}>
-											{(v: any, verdi: any) => (
-												<span>{verdi ? verdi.label : adresse.postnummer}</span>
-											)}
-										</KodeverkConnector>
-									</div>
-									<div>
-										<KodeverkConnector navn="LandkoderISO2" value={adresse.landkode}>
-											{(v: any, verdi: any) => (
-												<span>{verdi ? verdi.label : adresse.landkode}</span>
-											)}
-										</KodeverkConnector>
-									</div>
-								</TitleValue>
-							</React.Fragment>
+							<AdresseDetaljer adresse={adresse} key={idx} />
 						))}
 					</div>
 				</>
 			)}
-		</div>
+		</section>
 	)
 }

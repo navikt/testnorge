@@ -6,27 +6,21 @@ type NodeProps<T> = {
 	enhet: OrgTree<T>
 	hasChildren: boolean
 	isSelected: boolean
-	onNodeClick: Function
+	onNodeClick: (id: string) => void
 }
 
 export function Node<T>(props: NodeProps<T>) {
-	if (props.hasChildren) {
-		return (
-			<div
-				onClick={() => props.onNodeClick(props.enhet.getId())}
-				className={props.isSelected ? 'rectangle-corner-selected' : 'rectangle-corner'}
-			>
-				{props.enhet.getName()}
-			</div>
-		)
-	} else {
-		return (
-			<div
-				onClick={() => props.onNodeClick(props.enhet.getId())}
-				className={props.isSelected ? 'rectangle-selected' : 'rectangle'}
-			>
-				{props.enhet.getName()}
-			</div>
-		)
-	}
+	const className = props.hasChildren
+		? props.isSelected
+			? 'rectangle-corner-selected'
+			: 'rectangle-corner'
+		: props.isSelected
+		? 'rectangle-selected'
+		: 'rectangle'
+
+	return (
+		<div onClick={() => props.onNodeClick(props.enhet.getId())} className={className}>
+			{props.enhet.getName()}
+		</div>
+	)
 }
