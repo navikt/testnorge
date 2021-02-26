@@ -25,6 +25,7 @@ type Arbeidsforhold = {
 	arbeidsgiver?: Arbeidsgiver
 	permisjonPermitteringer?: Array<unknown>
 	utenlandsopphold?: Array<unknown>
+	arbeidsforholdId?: string
 }
 
 type Arbeidsgiver = {
@@ -54,7 +55,9 @@ export const AaregVisning = ({ liste, loading }: AaregVisning) => {
 	if (loading) return <Loading label="Laster Aareg-data" />
 	if (!liste) return null
 
-	const sortedData = liste.slice().reverse()
+	const sortedData = liste
+		.slice()
+		.sort((a, b) => parseInt(a.arbeidsforholdId) - parseInt(b.arbeidsforholdId))
 
 	return (
 		<div>
