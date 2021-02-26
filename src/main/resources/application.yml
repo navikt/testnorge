@@ -25,6 +25,10 @@ zuul:
       path: /api/udi-stub/**
       url: ${UDI_STUB_HOST}/api/v1
       sensitiveHeaders: Cookie,Set-Cookie
+    person-search-service:
+      path: /api/person/search/**
+      url: https://person-search-service.dev.intern.nav.no/api/v1/person
+      sensitiveHeaders: Cookie,Set-Cookie
 
 applications:
   testnorge-profil-api: ${TESTNORGE_PROFIL_API_CLIENT_ID}

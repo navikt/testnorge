@@ -43,7 +43,7 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 				>
 					Endringsmelding
 				</a>
-				<NavLink to="/soek">Søk i Mini-Norge</NavLink>
+				<NavLink to="/soek">Søk</NavLink>
 				<a
 					href="https://navikt.github.io/dolly-frontend/"
 					target="_blank"

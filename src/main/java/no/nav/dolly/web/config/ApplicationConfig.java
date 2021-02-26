@@ -55,6 +55,17 @@ public class ApplicationConfig {
         return createFilterFrom("udi-stub");
     }
 
+    @Bean
+    public AddAuthorizationToRouteFilter personSearchAddAuthorizationToRouteFilter() {
+        return new AddAuthorizationToRouteFilter(
+                () -> tokenService.getAccessToken(new AccessScopes("dev-fss.dolly.person-search-service")).getTokenValue(),
+                "person-search-service"
+        );
+    }
+
+
+
+
     private AddAuthorizationToRouteFilter createFilterFrom(String route) {
         return new AddAuthorizationToRouteFilter(
                 () -> tokenService.getAccessToken(new AccessScopes(properties.get(route))).getTokenValue(),

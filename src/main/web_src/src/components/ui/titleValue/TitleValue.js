@@ -6,11 +6,11 @@ import Loading from '~/components/ui/loading/Loading'
 
 import './TitleValue.less'
 
-const P_TitleValue = ({ title, value, titleType = 'h4', size = 'small', children }) => {
+const P_TitleValue = ({ title, value, titleType = 'h4', size = 'small', children, className }) => {
 	const css = cn('title-value', `title-value_${size}`)
 
 	return (
-		<div className={css}>
+		<div className={className + ' ' + css}>
 			{React.createElement(titleType, null, [title])}
 			<div>{value ? value : children}</div>
 		</div>

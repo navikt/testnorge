@@ -2,7 +2,12 @@ import React from 'react'
 import Icon from '~/components/ui/icon/Icon'
 import './SubOverskrift.less'
 
-export default function SubOverskrift({ iconKind, label }) {
+type Props = {
+	iconKind?: string
+	label?: string
+}
+
+export default function SubOverskrift({ iconKind, label }: Props) {
 	if (!label) return null
 	return (
 		<div className="sub-overskrift">
