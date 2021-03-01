@@ -33,6 +33,19 @@ export const OrganisasjonForm = ({ formikBag }: OrganisasjonForm) => {
 	)
 }
 
+const testSektorkode = (schema: any) => {
+	return schema.test(
+		'sektorkode',
+		'Juridisk enhet må ha sektorkode hvis valgt',
+		function harSektorkode(value: string) {
+			if (value === undefined || value !== '') return true
+			return this.createError({
+				message: 'Feltet er påkrevd'
+			})
+		}
+	)
+}
+
 const adresse = Yup.object({
 	adresselinje: Yup.array().of(Yup.string()),
 	postnr: Yup.string().nullable(),
@@ -44,7 +57,7 @@ const adresse = Yup.object({
 const organisasjon: any = Yup.object().shape({
 	enhetstype: requiredString,
 	naeringskode: ifPresent('$organisasjon.naeringskode', requiredString),
-	sektorkode: ifPresent('$organisasjon.sektorkode', requiredString),
+	sektorkode: ifPresent('$organisasjon.sektorkode', testSektorkode(Yup.string())),
 	formaal: ifPresent('$organisasjon.formaal', requiredString),
 	stiftelsesdato: ifPresent('$organisasjon.stiftelsesdato', requiredString),
 	maalform: ifPresent('$organisasjon.maalform', requiredString),
