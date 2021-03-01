@@ -1,23 +1,12 @@
-## testnorge-statistikk-api
+# testnav-statistikk-service
 API for statistikk.
 
-### Swagger
-Swagger finnes under [/api](https://testnorge-statistikk-api.nais.preprod.local) -endepunktet til applikasjonen.
+## Swagger
+Swagger finnes under [/api](https://testnav-statistikk-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
 
-### Lokal kjøring
-Kjør StatistikkApiApplicationStarter med følgende argumenter:
- - -Djavax.net.ssl.trustStore=[path til lokal truststore]
- - -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
- - -Dspring.profiles.active=dev
- 
-### Utenfor utviklerimage
+## Lokal kjøring
+Set vault token: 
 
-#### Windows
-Ha BIG-IP Edge Client kjørende og kjør StatistikkApiApplicationStarter med samme argumenter som for utviklerimage.
-    
-#### Mac
-Ha Nav-Tunnel kjørende og kjør StatistikkApiApplicationStarter med samme argumenter som for utviklerimage og legg til følgende argumenter:
-- -DsocksProxyHost=127.0.0.1
-- -DsocksProxyPort=14122
-- -DsocksNonProxyHosts=127.0.0.1|dl.bintray.com|repo.maven.apache.org|maven.adeo.no|packages.confluent.io|confluent.io|maven.xwiki.org|maven.repository.redhat.com
-    
+```
+-Dspring.cloud.vault.token=DUMMY_VAULT_TOKEN
+```
