@@ -33,6 +33,7 @@ applications:
   udi-stub: f4620953-c7af-4e60-8cbb-03de57554b86
   person-search-service: dev-fss.dolly.person-search-service
   mn-original-populasjon: dev-fss.dolly.mn-original-populasjon
+  testnav-statistikk-service: dev-gcp.dolly.testnav-statistikk-service
 
 zuul:
   routes:
