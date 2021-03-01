@@ -9,6 +9,7 @@ import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.server.WebServerException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.server.ServerErrorException;
 import reactor.netty.http.client.HttpClient;
-import reactor.util.retry.Retry;
+import reactor.retry.Retry;
 
 import java.time.Duration;
 import java.util.UUID;
@@ -74,7 +76,9 @@ public class OrganisasjonApiConsumer {
                     .header(MILJOE, miljoe)
                     .retrieve()
                     .toEntity(OrganisasjonDTO.class)
-                    .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(10)))
+                    .retryWhen(Retry.anyOf(WebServerException.class, ServerErrorException.class)
+                            .timeout(Duration.ofSeconds(10))
+                            .retryMax(2))
                     .block();
 
             log.info("Organisasjon-API svarte med funnet etter {} ms", currentTimeMillis() - startTime);
