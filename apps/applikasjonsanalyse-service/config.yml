@@ -60,6 +60,8 @@ spec:
           cluster: dev-fss
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
+        - application: testnav-statistikk-service
+          cluster: dev-gcp
   gcp:
     sqlInstances:
       - type: POSTGRES_12
