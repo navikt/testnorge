@@ -2,7 +2,6 @@ package no.nav.registre.testnorge.opprettpersonpdl.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -13,26 +12,24 @@ import org.springframework.web.reactive.function.client.WebClient;
 import no.nav.registre.testnorge.libs.common.command.CreatePersonCommand;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
-import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
-import no.nav.registre.testnorge.opprettpersonpdl.consumer.credentials.PersonApiClientCredential;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.registre.testnorge.opprettpersonpdl.config.credentials.PersonServiceProperties;
 import no.nav.registre.testnorge.opprettpersonpdl.domain.Person;
 
 @Slf4j
 @Component
-@DependencyOn("person-api")
 public class PersonApiConsumer {
     private final WebClient webClient;
-    private final ClientCredential clientCredential;
-    private final ClientCredentialGenerateAccessTokenService clientCredentialGenerateAccessTokenService;
+    private final PersonServiceProperties serviceProperties;
+    private final AccessTokenService accessTokenService;
 
     public PersonApiConsumer(
-            @Value("${consumers.personapi.url}") String url,
-            ObjectMapper objectMapper,
-            PersonApiClientCredential clientCredential,
-            ClientCredentialGenerateAccessTokenService clientCredentialGenerateAccessTokenService) {
-        this.clientCredential = clientCredential;
-        this.clientCredentialGenerateAccessTokenService = clientCredentialGenerateAccessTokenService;
+            PersonServiceProperties serviceProperties,
+            AccessTokenService accessTokenService,
+            ObjectMapper objectMapper
+    ) {
+        this.accessTokenService = accessTokenService;
+        this.serviceProperties = serviceProperties;
 
         ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
                 .codecs(config -> {
@@ -45,13 +42,13 @@ public class PersonApiConsumer {
         this.webClient = WebClient
                 .builder()
                 .exchangeStrategies(jacksonStrategy)
-                .baseUrl(url)
+                .baseUrl(serviceProperties.getUrl())
                 .build();
     }
 
 
     public void createPerson(Person person) {
-        AccessToken accessToken = clientCredentialGenerateAccessTokenService.generateToken(clientCredential);
+        AccessToken accessToken = accessTokenService.generateToken(serviceProperties);
         new CreatePersonCommand(webClient, person.toDTO(), accessToken.getTokenValue(), person.toKommaseparerteTags()).run();
     }
 }

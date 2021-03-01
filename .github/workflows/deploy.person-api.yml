@@ -2,7 +2,6 @@ name: Deploy person-api
 
 on:
   push:
-    branches: master
     paths:
       - apps/person-api/**
       - libs/testnorge-core/**

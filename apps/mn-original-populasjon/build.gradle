@@ -8,6 +8,11 @@ bootJar {
 }
 
 dependencies {
+    compile('com.google.guava:guava') {
+        version {
+            strictly '20.0'
+        }
+    }
     implementation project(':local-development')
     implementation 'org.springframework.boot:spring-boot-starter-webflux:2.3.2.RELEASE'
     implementation project(':testnorge-dependency-analysis')

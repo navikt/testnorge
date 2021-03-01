@@ -14,9 +14,10 @@ consumer:
   identpool:
     url: https://ident-pool.dev.adeo.no
   synt-person-api:
-    url: https://testnorge-synt-person-api.dev.adeo.no
-    client_secret: ${SYNT_PERSON_API_CLIENT_SECRET}
-    client_id: 9e22aba7-8c92-4f5e-8c0e-073e00c82bcf
+    url: https://testnorge-synt-person-api.dev.intern.nav.no
+    cluster: dev-fss
+    namespace: dolly
+    name: testnorge-synt-person-api
   statisk-data-forvalter:
     url: https://testnorge-statisk-data-forvalter.dev.adeo.no
     threads: 5

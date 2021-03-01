@@ -3,30 +3,33 @@ package no.nav.registre.testnorge.person.consumer.command;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.person.consumer.dto.pdl.OpprettPersonDTO;
+import no.nav.registre.testnorge.person.consumer.dto.pdl.FoedselDTO;
+import no.nav.registre.testnorge.person.consumer.dto.pdl.HendelseDTO;
 import no.nav.registre.testnorge.person.consumer.header.PdlHeaders;
 
 @RequiredArgsConstructor
-public class PostOpprettPersonCommand implements Callable<OpprettPersonDTO> {
+public class OpprettFoedselCommand implements Callable<HendelseDTO> {
     private final WebClient webClient;
-    private final String ident;
-    private final String kilde;
+    private final FoedselDTO dto;
     private final String token;
+    private final String ident;
 
     @Override
-    public OpprettPersonDTO call() {
+    public HendelseDTO call() {
         return webClient.post()
-                .uri("/api/v1/bestilling/opprettperson")
+                .uri("/api/v1/bestilling/foedsel")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(PdlHeaders.NAV_PERSONIDENT, ident)
-                .header(PdlHeaders.KILDE, kilde)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .body(BodyInserters.fromPublisher(Mono.just(dto), FoedselDTO.class))
                 .retrieve()
-                .bodyToMono(OpprettPersonDTO.class)
+                .bodyToMono(HendelseDTO.class)
                 .block();
     }
 }

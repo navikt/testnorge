@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.concurrent.Callable;
 
@@ -32,7 +33,7 @@ public class GetFasteDataIdenterCommand implements Callable<PersonDTO> {
                     .retrieve()
                     .bodyToMono(PersonDTO.class)
                     .block();
-        } catch (HttpClientErrorException.NotFound e) {
+        } catch (WebClientResponseException.NotFound e) {
             return null;
         }
     }

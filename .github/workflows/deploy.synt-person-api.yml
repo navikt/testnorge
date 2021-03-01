@@ -2,7 +2,6 @@ name: Deploy synt-person-api prod
 
 on:
   push:
-    branches: master
     paths:
       - apps/synt-person-api/**
       - libs/testnorge-core/**
