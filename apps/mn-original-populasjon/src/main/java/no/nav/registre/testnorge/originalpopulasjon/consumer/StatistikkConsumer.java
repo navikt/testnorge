@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.libs.dto.statistikk.v1.StatistikkDTO;
-import no.nav.registre.testnorge.libs.dto.statistikk.v1.StatistikkType;
+import no.nav.registre.testnorge.libs.dto.statistikkservice.v1.StatistikkDTO;
+import no.nav.registre.testnorge.libs.dto.statistikkservice.v1.StatistikkType;
 import no.nav.registre.testnorge.originalpopulasjon.exceptions.StatistikkException;
 
 @Slf4j

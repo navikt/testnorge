@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.nav.registre.testnorge.libs.dto.statistikk.v1.StatistikkType;
+import no.nav.registre.testnorge.libs.dto.statistikkservice.v1.StatistikkType;
 import no.nav.registre.testnorge.originalpopulasjon.consumer.StatistikkConsumer;
 import no.nav.registre.testnorge.originalpopulasjon.domain.Alderskategori;
 import no.nav.registre.testnorge.originalpopulasjon.domain.Aldersspenn;

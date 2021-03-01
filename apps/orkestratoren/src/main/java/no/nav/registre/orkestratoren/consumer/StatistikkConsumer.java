@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 
 import no.nav.registre.orkestratoren.consumer.command.GetStatistikkCommand;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.libs.dto.statistikk.v1.StatistikkType;
+import no.nav.registre.testnorge.libs.dto.statistikkservice.v1.StatistikkType;
 
 @Slf4j
 @Component
