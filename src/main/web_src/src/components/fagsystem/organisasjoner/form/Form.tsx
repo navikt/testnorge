@@ -7,9 +7,10 @@ import { organisasjonPaths, kontaktPaths, adressePaths } from './paths'
 import Panel from '~/components/ui/panel/Panel'
 import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { FormikProps } from 'formik'
+import { EnhetBestilling } from '~/components/fagsystem/organisasjoner/types'
 
 type OrganisasjonForm = {
-	formikBag: FormikProps<{}>
+	formikBag: FormikProps<{ organisasjon: EnhetBestilling }>
 }
 
 const detaljerPaths = [organisasjonPaths, kontaktPaths, adressePaths].flat()
