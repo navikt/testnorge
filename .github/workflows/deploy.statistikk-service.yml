@@ -1,4 +1,4 @@
-name: Deploy statistikk-service
+name: Deploy testnav-statistikk-service
 
 on:
   push:
