@@ -42,7 +42,7 @@ public class TiltakUtils {
 
     private static final Map<String, List<String>> deltakerstatuskoderMedAarsakkoder;
     private static final Map<String, List<KodeMedSannsynlighet>> adminkodeTilDeltakerstatus;
-    private static final Map<String, Map<String, List<String>>> innsatsOversikt;
+    private static final Map<String, Map<String, List<String>>> innsatsTilTiltakKoder;
 
     private static final List<String> AVBRUTT_TILTAK_STATUSER = new ArrayList<>(Arrays.asList("AVLYST", "AVBRUTT"));
     private static final String PLANLAGT_TILTAK_STATUS = "PLANLAGT";
@@ -66,16 +66,16 @@ public class TiltakUtils {
             log.error("Kunne ikke laste inn deltakerstatus fordeling.", e);
         }
 
-        innsatsOversikt = new HashMap<>();
+        innsatsTilTiltakKoder = new HashMap<>();
 
-        URL resourceOversikt = Resources.getResource("files/innsatsoversikt.json");
+        URL resourceOversikt = Resources.getResource("files/innsats_til_tiltakkode.json");
         try {
             Map<String, Map<String, List<String>>> oversiktMap = objectMapper.readValue(resourceOversikt, new TypeReference<>() {
             });
 
-            innsatsOversikt.putAll(oversiktMap);
+            innsatsTilTiltakKoder.putAll(oversiktMap);
         } catch (IOException e) {
-            log.error("Kunne ikke laste inn innsatsoversikt.", e);
+            log.error("Kunne ikke laste inn fordeling for tiltakkoder.", e);
         }
     }
 
@@ -405,12 +405,12 @@ public class TiltakUtils {
     public boolean harGyldigTiltakKode(NyttVedtakTiltak tiltak, Kvalifiseringsgrupper kvalifiseringsgruppe) {
         var adminKode = tiltak.getTiltakAdminKode();
         var tiltakKode = tiltak.getTiltakKode();
-        return innsatsOversikt.get(kvalifiseringsgruppe.toString()).get(adminKode).contains(tiltakKode);
+        return innsatsTilTiltakKoder.get(kvalifiseringsgruppe.toString()).get(adminKode).contains(tiltakKode);
     }
 
     public String getGyldigTiltakKode(NyttVedtakTiltak tiltak, Kvalifiseringsgrupper kvalifiseringsgruppe) {
         var adminKode = tiltak.getTiltakAdminKode();
-        var gyldigeTiltakKoder = innsatsOversikt.get(kvalifiseringsgruppe.toString()).get(adminKode);
+        var gyldigeTiltakKoder = innsatsTilTiltakKoder.get(kvalifiseringsgruppe.toString()).get(adminKode);
         return gyldigeTiltakKoder.get(rand.nextInt(gyldigeTiltakKoder.size()));
     }
 
