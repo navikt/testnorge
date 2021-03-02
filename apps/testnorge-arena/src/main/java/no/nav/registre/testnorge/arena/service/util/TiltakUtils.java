@@ -9,6 +9,7 @@ import no.nav.registre.testnorge.arena.consumer.rs.TiltakArenaForvalterConsumer;
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetEndreDeltakerstatusRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetFinnTiltakRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 
@@ -41,6 +42,7 @@ public class TiltakUtils {
 
     private static final Map<String, List<String>> deltakerstatuskoderMedAarsakkoder;
     private static final Map<String, List<KodeMedSannsynlighet>> adminkodeTilDeltakerstatus;
+    private static final Map<String, Map<String, List<String>>> innsatsOversikt;
 
     private static final List<String> AVBRUTT_TILTAK_STATUSER = new ArrayList<>(Arrays.asList("AVLYST", "AVBRUTT"));
     private static final String PLANLAGT_TILTAK_STATUS = "PLANLAGT";
@@ -63,8 +65,19 @@ public class TiltakUtils {
         } catch (IOException e) {
             log.error("Kunne ikke laste inn deltakerstatus fordeling.", e);
         }
-    }
 
+        innsatsOversikt = new HashMap<>();
+
+        URL resourceOversikt = Resources.getResource("files/innsatsoversikt.json");
+        try {
+            Map<String, Map<String, List<String>>> oversiktMap = objectMapper.readValue(resourceOversikt, new TypeReference<>() {
+            });
+
+            innsatsOversikt.putAll(oversiktMap);
+        } catch (IOException e) {
+            log.error("Kunne ikke laste inn innsatsoversikt.", e);
+        }
+    }
 
     public List<NyttVedtakTiltak> oppdaterVedtakslisteBasertPaaTiltaksdeltakelse(
             List<NyttVedtakTiltak> vedtaksliste,
@@ -244,7 +257,6 @@ public class TiltakUtils {
         return false;
     }
 
-
     private boolean harOverlappendeTiltakOver100Prosent(
             NyttVedtakTiltak vedtak,
             List<NyttVedtakTiltak> vedtaksliste
@@ -389,4 +401,17 @@ public class TiltakUtils {
         rettighetRequest.setMiljoe(miljoe);
         return rettighetRequest;
     }
+
+    public boolean harGyldigTiltakKode(NyttVedtakTiltak tiltak, Kvalifiseringsgrupper kvalifiseringsgruppe) {
+        var adminKode = tiltak.getTiltakAdminKode();
+        var tiltakKode = tiltak.getTiltakKode();
+        return innsatsOversikt.get(kvalifiseringsgruppe.toString()).get(adminKode).contains(tiltakKode);
+    }
+
+    public String getGyldigTiltakKode(NyttVedtakTiltak tiltak, Kvalifiseringsgrupper kvalifiseringsgruppe) {
+        var adminKode = tiltak.getTiltakAdminKode();
+        var gyldigeTiltakKoder = innsatsOversikt.get(kvalifiseringsgruppe.toString()).get(adminKode);
+        return gyldigeTiltakKoder.get(rand.nextInt(gyldigeTiltakKoder.size()));
+    }
+
 }

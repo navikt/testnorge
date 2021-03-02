@@ -3,6 +3,7 @@ package no.nav.registre.testnorge.arena.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.util.ConsumerUtils;
@@ -11,6 +12,7 @@ import no.nav.registre.testnorge.arena.service.util.ArbeidssoekerUtils;
 import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
 import no.nav.registre.testnorge.arena.service.util.TiltakUtils;
 import no.nav.registre.testnorge.arena.service.util.KodeMedSannsynlighet;
+
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -32,6 +34,7 @@ import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTiltaksdelta
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTiltakspengerRequest;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 
@@ -138,7 +141,6 @@ public class RettighetTiltakService {
         return identerMedOpprettedeTiltak;
     }
 
-
     public Map<String, List<NyttVedtakResponse>> opprettBarnetillegg(
             Long avspillergruppeId,
             String miljoe,
@@ -164,7 +166,6 @@ public class RettighetTiltakService {
 
         return identerMedOpprettedeTiltak;
     }
-
 
     Map<String, List<NyttVedtakResponse>> opprettTiltaksaktiviteter(
             List<RettighetRequest> rettigheter
@@ -303,7 +304,9 @@ public class RettighetTiltakService {
             if (syntetisertDeltakelser != null && !syntetisertDeltakelser.isEmpty()) {
                 var deltakelse = syntetisertDeltakelser.get(0);
 
-                arbeidsoekerUtils.opprettArbeidssoekerTiltakdeltakelse(ident, miljoe);
+                var kvalifiseringsgruppe = rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM;
+                arbeidsoekerUtils.opprettArbeidssoekerTiltakdeltakelse(ident, miljoe, kvalifiseringsgruppe);
+
                 var tiltak = tiltakUtils.finnTiltak(ident, miljoe, deltakelse);
 
                 if (tiltak != null) {

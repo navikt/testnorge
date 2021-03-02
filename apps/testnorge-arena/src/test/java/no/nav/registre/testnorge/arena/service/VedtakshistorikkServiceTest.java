@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 
@@ -65,6 +66,9 @@ public class VedtakshistorikkServiceTest {
     @Mock
     private RettighetTiltakService rettighetTiltakService;
 
+    @Mock
+    private Random rand;
+
     @InjectMocks
     private VedtakshistorikkService vedtakshistorikkService;
 
@@ -72,7 +76,6 @@ public class VedtakshistorikkServiceTest {
     private String miljoe = "t1";
     private int antallIdenter = 1;
     private String fnr1 = "270699494213";
-    private List<String> identer;
     private List<Vedtakshistorikk> vedtakshistorikkListe;
     private List<NyttVedtakAap> aapRettigheter;
     private List<NyttVedtakAap> ungUfoerRettigheter;
@@ -81,7 +84,7 @@ public class VedtakshistorikkServiceTest {
 
     @Before
     public void setUp() {
-        identer = new ArrayList<>(Collections.singletonList(fnr1));
+        List<String> identer = new ArrayList<>(Collections.singletonList(fnr1));
 
         Saksopplysning saksopplysning = new Saksopplysning();
         var nyRettighetAap = NyttVedtakAap.builder()
