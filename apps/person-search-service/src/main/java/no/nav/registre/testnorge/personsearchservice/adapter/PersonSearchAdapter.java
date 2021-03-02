@@ -112,9 +112,9 @@ public class PersonSearchAdapter {
                     if(value.getUtfyttet() != null && value.getUtfyttet()) {
                         queryBuilder.must(QueryBuilders.nestedQuery(
                                 "hentPerson.utflyttingFraNorge",
-                                QueryBuilders.existsQuery("hentPerson.utflyttingFraNorge"),
+                                QueryBuilders.existsQuery("hentPerson.utflyttingFraNorge.metadata"),
                                 ScoreMode.Avg
-                        ));
+                        )).must();
                     }
                 });
 
