@@ -311,8 +311,7 @@ public class RettighetTiltakService {
 
                 if (tiltak != null) {
                     if (!tiltakUtils.harGyldigTiltakKode(tiltak, kvalifiseringsgruppe)) {
-                        var nyKode = tiltakUtils.getGyldigTiltakKode(tiltak, kvalifiseringsgruppe);
-                        tiltak.setTiltakKode(nyKode);
+                        tiltak.setTiltakKode(tiltakUtils.getGyldigTiltakKode(tiltak, kvalifiseringsgruppe));
                     }
                     deltakelse.setTiltakId(tiltak.getTiltakId());
                     deltakelse.setFodselsnr(ident);

@@ -420,8 +420,7 @@ public class VedtakshistorikkService {
 
             tiltaksdeltakelser.forEach(deltakelse -> {
                 if (!tiltakUtils.harGyldigTiltakKode(deltakelse, kvalifiseringsgruppe)) {
-                    var nyTiltakKode = tiltakUtils.getGyldigTiltakKode(deltakelse, kvalifiseringsgruppe);
-                    deltakelse.setTiltakKode(nyTiltakKode);
+                    deltakelse.setTiltakKode(tiltakUtils.getGyldigTiltakKode(deltakelse, kvalifiseringsgruppe));
                 }
                 deltakelse.setFodselsnr(personident);
                 deltakelse.setTiltakYtelse("J");
