@@ -310,6 +310,10 @@ public class RettighetTiltakService {
                 var tiltak = tiltakUtils.finnTiltak(ident, miljoe, deltakelse);
 
                 if (tiltak != null) {
+                    if (!tiltakUtils.harGyldigTiltakKode(tiltak, kvalifiseringsgruppe)) {
+                        var nyKode = tiltakUtils.getGyldigTiltakKode(tiltak, kvalifiseringsgruppe);
+                        tiltak.setTiltakKode(nyKode);
+                    }
                     deltakelse.setTiltakId(tiltak.getTiltakId());
                     deltakelse.setFodselsnr(ident);
                     deltakelse.setFraDato(tiltak.getFraDato());

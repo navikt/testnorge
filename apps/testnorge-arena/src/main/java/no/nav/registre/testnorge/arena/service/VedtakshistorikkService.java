@@ -422,7 +422,6 @@ public class VedtakshistorikkService {
                 if (!tiltakUtils.harGyldigTiltakKode(deltakelse, kvalifiseringsgruppe)) {
                     var nyTiltakKode = tiltakUtils.getGyldigTiltakKode(deltakelse, kvalifiseringsgruppe);
                     deltakelse.setTiltakKode(nyTiltakKode);
-                    deltakelse.setTiltakskode(nyTiltakKode);
                 }
                 deltakelse.setFodselsnr(personident);
                 deltakelse.setTiltakYtelse("J");
