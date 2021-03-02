@@ -9,8 +9,6 @@ spring:
     desciption: API for opprettelse av populasjon til Mini-Norge
 
 consumer:
-  statistikk:
-    url: https://testnorge-statistikk-api.dev.adeo.no
   identpool:
     url: https://ident-pool.dev.adeo.no
   synt-person-api:
@@ -21,7 +19,11 @@ consumer:
   statisk-data-forvalter:
     url: https://testnorge-statisk-data-forvalter.dev.adeo.no
     threads: 5
-
+  testnav-statistikk-service:
+    url: https://testnav-statistikk-service.dev.intern.nav.no
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-statistikk-service
 kafka:
   bootstrapservers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
   schemaregistryservers: http://kafka-schema-registry.tpa.svc.nais.local:8081
