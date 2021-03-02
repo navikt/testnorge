@@ -28,6 +28,9 @@ public class Person {
     }
 
     private static <T extends WithMetadata> Optional<T> getCurrent(List<T> list) {
+        if(list == null) {
+            return Optional.empty();
+        }
         return list
                 .stream()
                 .filter(value -> !value.getMetadata().getHistorisk())
