@@ -31,7 +31,13 @@ public class ImportService {
     public Map<String, RsOrganisasjon> getOrganisasjoner(String orgnummer, Set<String> miljoer) {
 
         Set<String> miljoerAaSjekke = nonNull(miljoer) &&
-                miljoer.stream().filter(StringUtils::isNotBlank).findAny().isPresent() ? miljoer :
+                miljoer.stream().anyMatch(miljoe ->
+                                miljoerServiceConsumer.getOrgMiljoer().stream().anyMatch(miljoe2 -> miljoe2.equals(miljoe))) ?
+
+                miljoer.stream().filter(miljoe ->
+                        miljoerServiceConsumer.getOrgMiljoer().stream().anyMatch(miljoe2 -> miljoe2.equals(miljoe)))
+                        .collect(Collectors.toSet()) :
+
                 miljoerServiceConsumer.getOrgMiljoer();
 
         return miljoerAaSjekke.parallelStream()
