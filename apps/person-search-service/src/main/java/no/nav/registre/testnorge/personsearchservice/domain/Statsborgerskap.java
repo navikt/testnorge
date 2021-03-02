@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.personsearchservice.controller.dto.StatsborgerskapDTO;
 
 @RequiredArgsConstructor
-public class Statsborgerskap {
+public class Statsborgerskap implements WithDTO<StatsborgerskapDTO> {
     private final no.nav.registre.testnorge.personsearchservice.adapter.model.Statsborgerskap statsborgerskap;
 
     public StatsborgerskapDTO toDTO() {

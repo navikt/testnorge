@@ -65,7 +65,6 @@ public class Person {
         return getCurrent(response.getHentPerson().getSivilstand()).map(Sivilstand::getType).orElse(null);
     }
 
-
     public String getIdent() {
         return response
                 .getHentIdenter()
@@ -92,6 +91,9 @@ public class Person {
         return response.getTags();
     }
 
+    public <T> T toDTO(WithDTO<T> withDTO){
+        return Optional.ofNullable(withDTO).map(WithDTO::toDTO).orElse(null);
+    }
 
     public PersonDTO toDTO() {
         return PersonDTO
@@ -105,8 +107,8 @@ public class Person {
                 .tag(getTags().stream().findFirst().orElse(null))
                 .foedsel(FoedselDTO.builder().foedselsdato(getFoedselsdato()).build())
                 .sivilstand(SivilstandDTO.builder().type(getSivilstand()).build())
-                .statsborgerskap(statsborgerskap.toDTO())
-                .utfyttingFraNorge(utfyttingFraNorge.toDTO())
+                .statsborgerskap(toDTO(statsborgerskap))
+                .utfyttingFraNorge(toDTO(utfyttingFraNorge))
                 .build();
     }
 }
