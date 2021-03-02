@@ -45,7 +45,14 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId 
 
 			{erOrganisasjon && (
 				<div className="flexbox--align-center--justify-end info-block">
-					<Button onClick={openGjenopprettModal} kind="synchronize">
+					<Button
+						onClick={openGjenopprettModal}
+						kind="synchronize"
+						disabled={!bestilling.ferdig}
+						title={
+							!bestilling.ferdig ? 'Bestillingen kan ikke gjenopprettes før den er ferdig' : null
+						}
+					>
 						GJENOPPRETT
 					</Button>
 				</div>

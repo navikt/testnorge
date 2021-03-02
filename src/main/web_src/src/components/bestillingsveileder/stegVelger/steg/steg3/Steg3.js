@@ -17,7 +17,7 @@ export const Steg3 = ({ formikBag }) => {
 			)}
 			<MiljoVelger
 				bestillingsdata={formikBag.values}
-				heading="Hvilke testmiljø vil du opprette personene i?"
+				heading="Hvilke testmiljø vil du opprette i?"
 			/>
 			{!formikBag.values.hasOwnProperty('organisasjon') && <MalForm formikBag={formikBag} />}
 		</div>
