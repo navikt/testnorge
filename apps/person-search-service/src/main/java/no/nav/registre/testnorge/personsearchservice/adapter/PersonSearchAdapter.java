@@ -107,6 +107,16 @@ public class PersonSearchAdapter {
                         ScoreMode.Avg
                 )));
 
+        Optional.ofNullable(search.getUtflyttingFraNorge())
+                .ifPresent(value -> {
+                    if(value.getUtfyttet() != null && value.getUtfyttet()) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentPerson.utflyttingFraNorge",
+                                QueryBuilders.existsQuery("hentPerson.utflyttingFraNorge"),
+                                ScoreMode.Avg
+                        ));
+                    }
+                });
 
         var searchRequest = new SearchRequest();
         searchRequest.indices("pdl-sok");
