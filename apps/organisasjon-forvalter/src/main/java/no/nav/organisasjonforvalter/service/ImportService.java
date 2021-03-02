@@ -10,6 +10,7 @@ import no.nav.organisasjonforvalter.consumer.MiljoerServiceConsumer;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonApiConsumer;
 import no.nav.organisasjonforvalter.provider.rs.responses.RsOrganisasjon;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -29,9 +30,12 @@ public class ImportService {
 
     public Map<String, RsOrganisasjon> getOrganisasjoner(String orgnummer, Set<String> miljoer) {
 
-        Set<String> miljoerAaSjekke = nonNull(miljoer) ? miljoer : miljoerServiceConsumer.getOrgMiljoer();
+        Set<String> miljoerAaSjekke = nonNull(miljoer) &&
+                miljoer.stream().filter(StringUtils::isNotBlank).findAny().isPresent() ? miljoer :
+                miljoerServiceConsumer.getOrgMiljoer();
 
         return miljoerAaSjekke.parallelStream()
+                .filter(StringUtils::isNotBlank)
                 .map(env -> OrganisasjonMiljoe.builder()
                         .organisasjon(acquireOrganisasjon(orgnummer, env))
                         .miljoe(env)
