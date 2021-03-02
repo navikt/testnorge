@@ -151,7 +151,7 @@ export default class BestillingProgresjon extends PureComponent {
 		const aktivBestilling = sykemelding
 			? 'AKTIV BESTILLING (Syntetisert sykemelding behandler mye data og kan derfor ta litt tid)'
 			: organisasjon
-			? 'AKTIV BESTILLING (Bestillingen tar opptil flere minutter per valgt miljø)'
+			? 'AKTIV BESTILLING (Bestillingen tar opptil flere minutter per valgte miljø)'
 			: 'AKTIV BESTILLING'
 		const title = percent === 100 ? 'FERDIG' : aktivBestilling
 
