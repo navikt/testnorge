@@ -13,15 +13,18 @@ import no.nav.registre.testnorge.personsearchservice.adapter.model.WithMetadata;
 import no.nav.registre.testnorge.personsearchservice.controller.dto.FoedselDTO;
 import no.nav.registre.testnorge.personsearchservice.controller.dto.PersonDTO;
 import no.nav.registre.testnorge.personsearchservice.controller.dto.SivilstandDTO;
-import no.nav.registre.testnorge.personsearchservice.controller.dto.StatsborgerskapDTO;
 
 public class Person {
     private final Response response;
     private final Statsborgerskap statsborgerskap;
+    private final UtfyttingFraNorge utfyttingFraNorge;
 
     public Person(Response response) {
         this.response = response;
-        this.statsborgerskap = new Statsborgerskap(getCurrent(response.getHentPerson().getStatsborgerskap()).orElse(null));
+        var statsborgerskap = getCurrent(response.getHentPerson().getStatsborgerskap()).orElse(null);
+        this.statsborgerskap = statsborgerskap != null ? new Statsborgerskap(statsborgerskap) : null;
+        var utfyttingFraNorge = getCurrent(response.getHentPerson().getUtflyttingFraNorges()).orElse(null);
+        this.utfyttingFraNorge = utfyttingFraNorge != null ? new UtfyttingFraNorge(utfyttingFraNorge) : null;
     }
 
     private static <T extends WithMetadata> Optional<T> getCurrent(List<T> list) {
@@ -100,6 +103,7 @@ public class Person {
                 .foedsel(FoedselDTO.builder().foedselsdato(getFoedselsdato()).build())
                 .sivilstand(SivilstandDTO.builder().type(getSivilstand()).build())
                 .statsborgerskap(statsborgerskap.toDTO())
+                .utfyttingFraNorge(utfyttingFraNorge.toDTO())
                 .build();
     }
 }
