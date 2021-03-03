@@ -4,6 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -37,6 +40,22 @@ public class Arbeidsforhold {
         this.virksomhetsnummer = virksomhetsnummer;
         this.ident = ident;
         this.historikk = response.getHistorikk();
+
+        var permisjoner = Optional.ofNullable(response.getPermisjoner()).orElse(Collections.emptyList())
+                .stream()
+                .map(dto -> no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO
+                        .builder()
+                        .beskrivelse(dto.getBeskrivelse())
+                        .permisjonsprosent(Float.parseFloat(dto.getPermisjonsprosent()))
+                        .sluttdato(dto.getSluttdato())
+                        .startdato(dto.getStartdato())
+                        .build()
+                ).collect(Collectors.toList());
+
+        if(!permisjoner.isEmpty()){
+            log.info("Permisjoner registert på arbeidsforhold id {}.",arbeidsforholdId);
+        }
+
         this.dto = ArbeidsforholdDTO
                 .builder()
                 .typeArbeidsforhold(emptyToNull(response.getArbeidsforholdType()))
@@ -48,6 +67,7 @@ public class Arbeidsforhold {
                 .startdato(response.getStartdato())
                 .sluttdato(response.getSluttdato().equals("") ? null : LocalDate.parse(response.getSluttdato()))
                 .arbeidsforholdId(arbeidsforholdId)
+                .permisjoner(permisjoner)
                 .fartoey(response.getFartoey() != null ? FartoeyDTO.builder()
                         .fartsomraade(response.getFartoey().getFartsomraade())
                         .skipsregister(response.getFartoey().getSkipsregister())
