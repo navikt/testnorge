@@ -12,6 +12,8 @@ public class UtfyttingFraNorge implements WithDTO<UtfyttingFraNorgeDTO> {
         return UtfyttingFraNorgeDTO
                 .builder()
                 .tilflyttingsland(utflyttingFraNorge.getTilflyttingsland())
+                .utflyttingsdato(utflyttingFraNorge.getUtflyttingsdato())
+                .tilflyttingsstedIUtlandet(utflyttingFraNorge.getTilflyttingsstedIUtlandet())
                 .build();
     }
 }
