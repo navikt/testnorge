@@ -31,6 +31,10 @@ export default () => {
 			sivilstand: {
 				type: values?.personinformasjon?.sivilstand?.type
 			},
+			alder: {
+				fra: values?.personinformasjon?.alder?.fra,
+				til: values?.personinformasjon?.alder?.til
+			},
 			tag: 'TESTNORGE'
 		}).then(response => {
 			setPage(page)

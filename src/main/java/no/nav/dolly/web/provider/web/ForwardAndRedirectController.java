@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class ForwardAndRedirectController {
 
-
     @Value("${DOLLY_BACKEND_HOST}")
     private String dollyUrl;
 

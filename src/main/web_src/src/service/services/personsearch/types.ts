@@ -17,6 +17,10 @@ export type Search = {
 	sivilstand?: {
 		type?: string
 	}
+	alder?: {
+		fra?: number
+		til?: number
+	}
 }
 
 export type Person = {
@@ -27,7 +31,7 @@ export type Person = {
 	kjoenn?: string
 	aktorId: string
 	tag: string
-	foeddsel?: {
+	foedsel?: {
 		foedselsdato?: string
 	}
 	sivilstand?: {

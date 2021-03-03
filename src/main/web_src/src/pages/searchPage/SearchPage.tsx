@@ -3,7 +3,7 @@ import { RadioPanelGruppe } from 'nav-frontend-skjema'
 import SoekMiniNorge from '~/pages/soekMiniNorge/SoekMiniNorge'
 import TestnorgePage from '~/pages/testnorgePage'
 
-type Selected = 'MINI_NORGE' | 'TESTNORGE'
+type Selected = 'MININORGE' | 'TESTNORGE'
 
 export default () => {
 	const [selected, setSelected] = useState<Selected>('TESTNORGE')
@@ -14,7 +14,7 @@ export default () => {
 				legend="Hvilket datasett ønsker du å søke i?"
 				radios={[
 					{ label: 'Testnorge', value: 'TESTNORGE' },
-					{ label: 'Mini-Norge', value: 'MINI_NORGE' }
+					{ label: 'Mini-Norge', value: 'MININORGE' }
 				]}
 				checked={selected}
 				// @ts-ignore
@@ -22,7 +22,7 @@ export default () => {
 				name="velg_datasett"
 			/>
 			{selected === 'TESTNORGE' && <TestnorgePage />}
-			{selected === 'MINI_NORGE' && <SoekMiniNorge />}
+			{selected === 'MININORGE' && <SoekMiniNorge />}
 		</div>
 	)
 }
