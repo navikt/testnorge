@@ -13,6 +13,7 @@ import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.Adres
 import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.AdresseType;
 import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.OrganisasjonRequest;
 import no.nav.organisasjonforvalter.provider.rs.responses.BestillingResponse;
+import no.nav.organisasjonforvalter.util.CurrentAuthentication;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +53,7 @@ public class BestillingService {
         organisasjon.setOrganisasjonsnavn(organisasjonNavnConsumer.getOrgName());
         organisasjon.setUnderenheter(mapperFacade.mapAsList(organisasjon.getUnderenheter(), Organisasjon.class));
         organisasjon.setParent(parent);
+        organisasjon.setBrukerId(CurrentAuthentication.getUserId());
 
         if (orgRequest.getUnderenheter().isEmpty()) {
             organisasjonRepository.save(organisasjon);

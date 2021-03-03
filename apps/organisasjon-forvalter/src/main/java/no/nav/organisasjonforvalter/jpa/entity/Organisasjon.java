@@ -74,6 +74,9 @@ public class Organisasjon implements Serializable {
     @Column(name = "stiftelsesdato")
     private LocalDate stiftelsesdato;
 
+    @Column(name = "bruker_id")
+    private String brukerId;
+
     @OrderBy("id desc")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "organisasjon", cascade = CascadeType.ALL)
     private List<Adresse> adresser;
