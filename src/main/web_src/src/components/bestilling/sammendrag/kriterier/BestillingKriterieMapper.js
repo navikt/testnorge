@@ -923,27 +923,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						)
 					),
 					obj(
-						'Avslag grunnlag øvrig',
-						Formatters.showLabel(
-							'avslagGrunnlagOverig',
-							_get(
-								oppholdKriterier,
-								'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.avslagEllerBortfall.avslagGrunnlagOverig'
-							)
-						)
-					),
-					obj(
-						'Avslag tillatelsesgrunnlag',
-						Formatters.showLabel(
-							'avslagGrunnlagTillatelseGrunnlagEOS',
-							_get(
-								oppholdKriterier,
-								'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.avslagEllerBortfall.avslagGrunnlagTillatelseGrunnlagEOS'
-							)
-						)
-					),
-					obj(
-						'Oppholdsrett behandlet',
+						'Avslag oppholdsrett',
 						Formatters.showLabel(
 							'avslagOppholdsrettBehandlet',
 							_get(
@@ -953,7 +933,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						)
 					),
 					obj(
-						'Oppholdstillatelse behandlet',
+						'Avslag grunnlag EØS',
 						Formatters.showLabel(
 							'avslagGrunnlagTillatelseGrunnlagEOS',
 							_get(
@@ -963,66 +943,12 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						)
 					),
 					obj(
-						'Oppholdstillatelse behandlet øvrig',
+						'Avslag grunnlag øvrig',
 						Formatters.showLabel(
 							'avslagGrunnlagOverig',
 							_get(
 								oppholdKriterier,
 								'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.avslagEllerBortfall.avslagOppholdstillatelseBehandletGrunnlagOvrig'
-							)
-						)
-					),
-					obj(
-						'Behandlet utreisefrist',
-						Formatters.formatDate(
-							_get(
-								oppholdKriterier,
-								'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.avslagEllerBortfall.avslagOppholdstillatelseBehandletUtreiseFrist'
-							)
-						)
-					),
-					obj(
-						'Utreisefrist',
-						Formatters.formatDate(
-							_get(
-								oppholdKriterier,
-								'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.avslagEllerBortfall.avslagOppholdstillatelseUtreiseFrist'
-							)
-						)
-					),
-					obj(
-						'Bortfallsdato',
-						Formatters.formatDate(
-							_get(
-								oppholdKriterier,
-								'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.avslagEllerBortfall.bortfallAvPOellerBOSDato'
-							)
-						)
-					),
-					obj(
-						'Tilbakekall utreisefrist',
-						Formatters.formatDate(
-							_get(
-								oppholdKriterier,
-								'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.avslagEllerBortfall.tilbakeKallUtreiseFrist'
-							)
-						)
-					),
-					obj(
-						'Vedtak utreisefrist',
-						Formatters.formatDate(
-							_get(
-								oppholdKriterier,
-								'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.avslagEllerBortfall.formeltVedtakUtreiseFrist'
-							)
-						)
-					),
-					obj(
-						'Tilbakekall virkningsdato',
-						Formatters.formatDate(
-							_get(
-								oppholdKriterier,
-								'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.avslagEllerBortfall.tilbakeKallVirkningsDato'
 							)
 						)
 					)
@@ -1156,7 +1082,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					)
 				),
 				obj(
-					'Øvrig årsak',
+					'Øvrig ikkeoppholds årsak',
 					Formatters.showLabel(
 						'ovrigIkkeOppholdsKategoriArsak',
 						_get(

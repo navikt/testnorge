@@ -103,7 +103,7 @@ export const Oppholdsstatus = (opphold: Opphold) => {
 					}
 				/>
 				<TitleValue
-					title="Øvrig årsak"
+					title="Øvrig ikkeoppholds årsak"
 					value={Formatters.showLabel(
 						'ovrigIkkeOppholdsKategoriArsak',
 						oppholdsstatus.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum?.ovrigIkkeOppholdsKategoriArsak

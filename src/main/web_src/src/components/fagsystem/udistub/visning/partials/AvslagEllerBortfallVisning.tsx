@@ -4,18 +4,10 @@ import Formatters from '~/utils/DataFormatter'
 
 export type AvslagEllerBortfall = {
 	avslagEllerBortfall: {
-		avgjorelsesDato: string
-		avslagGrunnlagOverig: string
-		avslagGrunnlagTillatelseGrunnlagEOS: string
+		avgjorelsesDato: Date
 		avslagOppholdsrettBehandlet: string
 		avslagOppholdstillatelseBehandletGrunnlagEOS: string
 		avslagOppholdstillatelseBehandletGrunnlagOvrig: string
-		avslagOppholdstillatelseBehandletUtreiseFrist: string
-		avslagOppholdstillatelseUtreiseFrist: string
-		bortfallAvPOellerBOSDato: string
-		tilbakeKallUtreiseFrist: string
-		formeltVedtakUtreiseFrist: string
-		tilbakeKallVirkningsDato: string
 	}
 }
 
@@ -26,61 +18,28 @@ export const AvslagEllerBortfallVisning = ({ avslagEllerBortfall }: AvslagEllerB
 			<div className="person-visning_content">
 				<TitleValue
 					title="Avgjørelsesdato"
-					value={Formatters.formatDate(avslagEllerBortfall.avgjorelsesDato)}
+					value={Formatters.formatStringDates(avslagEllerBortfall.avgjorelsesDato)}
 				/>
 				<TitleValue
-					title="Avslag grunnlag øvrig"
-					value={Formatters.showLabel(
-						'avslagGrunnlagOverig',
-						avslagEllerBortfall.avslagGrunnlagOverig
-					)}
-				/>
-				<TitleValue
-					title="Tillatelsesgrunnlag"
-					value={Formatters.showLabel(
-						'avslagGrunnlagTillatelseGrunnlagEOS',
-						avslagEllerBortfall.avslagGrunnlagTillatelseGrunnlagEOS
-					)}
-				/>
-				<TitleValue
-					title="Oppholdsrett behandlet"
+					title="Avslag Oppholdsrett"
 					value={Formatters.showLabel(
 						'avslagOppholdsrettBehandlet',
 						avslagEllerBortfall.avslagOppholdsrettBehandlet
 					)}
 				/>
 				<TitleValue
-					title="Oppholdsrett grunnlag"
+					title="Avslag grunnlag EØS"
 					value={Formatters.showLabel(
 						'avslagGrunnlagTillatelseGrunnlagEOS',
 						avslagEllerBortfall.avslagOppholdstillatelseBehandletGrunnlagEOS
 					)}
 				/>
 				<TitleValue
-					title="Behandlet utreisefrist"
-					value={Formatters.formatDate(
-						avslagEllerBortfall.avslagOppholdstillatelseBehandletUtreiseFrist
+					title="Avslag grunnlag øvrig"
+					value={Formatters.showLabel(
+						'avslagGrunnlagOverig',
+						avslagEllerBortfall.avslagOppholdstillatelseBehandletGrunnlagOvrig
 					)}
-				/>
-				<TitleValue
-					title="Utreisefrist"
-					value={Formatters.formatDate(avslagEllerBortfall.avslagOppholdstillatelseUtreiseFrist)}
-				/>
-				<TitleValue
-					title="Bortfallsdato"
-					value={Formatters.formatDate(avslagEllerBortfall.bortfallAvPOellerBOSDato)}
-				/>
-				<TitleValue
-					title="Tilbakekall utreisefrist"
-					value={Formatters.formatDate(avslagEllerBortfall.tilbakeKallUtreiseFrist)}
-				/>
-				<TitleValue
-					title="Vedtak utreisefrist"
-					value={Formatters.formatDate(avslagEllerBortfall.formeltVedtakUtreiseFrist)}
-				/>
-				<TitleValue
-					title="Tilbakekall virkningsdato"
-					value={Formatters.formatDate(avslagEllerBortfall.tilbakeKallVirkningsDato)}
 				/>
 			</div>
 		</>

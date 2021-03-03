@@ -83,17 +83,13 @@ export const AaregVisning = ({ liste, loading }: AaregVisning) => {
 								{arbeidsforhold.ansettelsesperiode && arbeidsforhold.ansettelsesperiode.periode && (
 									<TitleValue
 										title="Startdato"
-										value={Formatters.formatStringDates(
-											arbeidsforhold.ansettelsesperiode.periode.fom
-										)}
+										value={Formatters.formatDate(arbeidsforhold.ansettelsesperiode.periode.fom)}
 									/>
 								)}
 								{arbeidsforhold.ansettelsesperiode && arbeidsforhold.ansettelsesperiode.periode && (
 									<TitleValue
 										title="Sluttdato"
-										value={Formatters.formatStringDates(
-											arbeidsforhold.ansettelsesperiode.periode.tom
-										)}
+										value={Formatters.formatDate(arbeidsforhold.ansettelsesperiode.periode.tom)}
 									/>
 								)}
 							</div>
