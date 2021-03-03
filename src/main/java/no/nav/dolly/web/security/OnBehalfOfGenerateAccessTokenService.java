@@ -1,6 +1,10 @@
 package no.nav.dolly.web.security;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.web.security.domain.AccessScopes;
+import no.nav.dolly.web.security.domain.AccessToken;
+import no.nav.dolly.web.security.domain.ClientCredential;
+import no.nav.dolly.web.security.domain.DollyFrontendClientCredential;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -9,16 +13,10 @@ import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.ProxyProvider;
 
 import java.net.URI;
-
-import no.nav.dolly.web.security.domain.AccessScopes;
-import no.nav.dolly.web.security.domain.AccessToken;
-import no.nav.dolly.web.security.domain.ClientCredential;
-import no.nav.dolly.web.security.domain.DollyFrontendClientCredential;
 
 
 @Slf4j
@@ -82,13 +80,13 @@ class OnBehalfOfGenerateAccessTokenService {
 
             log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow");
             return token;
-        } catch (WebClientResponseException e) {
+        } catch (Exception e) {
             log.error(
-                    "Feil ved henting av access token for {}. Feilmelding: {}.",
-                    String.join(" ", accessScopes.getScopes()),
-                    e.getResponseBodyAsString(),
-                    e
-            );
+                    String.format(
+                            "Feil ved henting av access token for %s. %nFeilmelding: %s.",
+                            String.join(" ", accessScopes.getScopes()),
+                            e.getMessage()),
+                    e);
             throw e;
         }
     }

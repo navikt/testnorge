@@ -2,9 +2,12 @@ package no.nav.dolly.web.config.filters;
 
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
+import com.netflix.zuul.exception.ZuulException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 
+@Slf4j
 @RequiredArgsConstructor
 public class AddAuthorizationToRouteFilter extends ZuulFilter {
     private final GenerateToken generateToken;
@@ -28,8 +31,13 @@ public class AddAuthorizationToRouteFilter extends ZuulFilter {
 
     @Override
     public Object run() {
-        RequestContext ctx = RequestContext.getCurrentContext();
-        ctx.addZuulRequestHeader(HttpHeaders.AUTHORIZATION, "Bearer " + generateToken.getToken());
+        try {
+            RequestContext ctx = RequestContext.getCurrentContext();
+            ctx.addZuulRequestHeader(HttpHeaders.AUTHORIZATION, "Bearer " + generateToken.getToken());
+        } catch (Exception ex) {
+            log.error("Zuul feilet i AddAuthToRoute filter: ", ex);
+            throw ex;
+        }
         return null;
     }
 }

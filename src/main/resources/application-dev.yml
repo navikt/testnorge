@@ -13,6 +13,7 @@ UDI_STUB_HOST: https://udi-stub-dev.dev.adeo.no
 TESTNORGE_PROFIL_API_HOST: https://testnorge-profil-api-dev.dev.intern.nav.no
 ORGANISASJON_FORVALTER_HOST: https://organisasjon-forvalter.dev.intern.nav.no
 
+
 zuul:
   debug:
     request: true
