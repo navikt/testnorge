@@ -30,11 +30,9 @@ public class BatchService {
         retryService.execute(retryConfig, () -> {
             var jobNumber = jenkinsConsumer.getJobNumber(itemId);
             log.info("Fant jobb nummer {} for besilling {}", jobNumber, uuid);
-            retryService.execute(retryConfig, () -> {
-                var log = jenkinsConsumer.getJobLog(jobNumber);
-                var jobId = findIDFromLog(log);
-                organisasjonBestillingConsumer.update(uuid, miljo, jobId, id);
-            });
+            var log = jenkinsConsumer.getJobLog(jobNumber);
+            var jobId = findIDFromLog(log);
+            organisasjonBestillingConsumer.update(uuid, miljo, jobId, id);
         });
     }
 
