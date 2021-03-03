@@ -34,9 +34,9 @@ public class RetryCommand implements Runnable {
                 log.info("Venter i {} millisekunder...", sleepMilliseconds);
                 Thread.sleep(sleepMilliseconds);
             } catch (InterruptedException e) {
-                throw new RetryUnsuccessfulException(e);
+                log.error("Feil ved tread sleep", e);
             }
         }
-        throw new RetryUnsuccessfulException();
+        log.error("Operasjonen ikke utført.");
     }
 }

@@ -26,11 +26,15 @@ public class BatchService {
                 .setRetryAttempts(60 * 5)
                 .setSleepSeconds(3)
                 .build();
+
         retryService.execute(retryConfig, () -> {
             var jobNumber = jenkinsConsumer.getJobNumber(itemId);
-            var log = jenkinsConsumer.getJobLog(jobNumber);
-            var jobId = findIDFromLog(log);
-            organisasjonBestillingConsumer.update(uuid, miljo, jobId, id);
+            log.info("Fant jobb nummer {} for besilling {}", jobNumber, uuid);
+            retryService.execute(retryConfig, () -> {
+                var log = jenkinsConsumer.getJobLog(jobNumber);
+                var jobId = findIDFromLog(log);
+                organisasjonBestillingConsumer.update(uuid, miljo, jobId, id);
+            });
         });
     }
 
