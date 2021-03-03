@@ -138,9 +138,9 @@ public class ArbeidssoekerUtils {
 
     public void opprettArbeidssoekerTiltakdeltakelse(
             String ident,
-            String miljoe
+            String miljoe,
+            Kvalifiseringsgrupper kvalifiseringsgruppe
     ) {
-        var kvalifiseringsgruppe = rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM;
         var identerIArena = identerUtils.hentEksisterendeArbeidsoekerIdenter();
         var uregistrertBruker = !identerIArena.contains(ident);
 

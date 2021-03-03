@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
@@ -46,6 +47,7 @@ import no.nav.registre.testnorge.arena.service.util.TiltakUtils;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
@@ -69,6 +71,7 @@ public class VedtakshistorikkService {
     private final RettighetAapService rettighetAapService;
     private final RettighetTiltakService rettighetTiltakService;
     private final DatoUtils datoUtils;
+    private final Random rand;
 
     private static final String MAALGRUPPEKODE_TILKNYTTET_AAP = "NEDSARBEVN";
     private static final String MAALGRUPPEKODE_TILKNYTTET_TILTAKSPENGER = "MOTTILTPEN";
@@ -412,9 +415,13 @@ public class VedtakshistorikkService {
     ) {
         var tiltaksdeltakelser = historikk.getTiltaksdeltakelse();
         if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
-            arbeidsoekerUtils.opprettArbeidssoekerTiltakdeltakelse(personident, miljoe);
+            var kvalifiseringsgruppe = rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM;
+            arbeidsoekerUtils.opprettArbeidssoekerTiltakdeltakelse(personident, miljoe, kvalifiseringsgruppe);
 
             tiltaksdeltakelser.forEach(deltakelse -> {
+                if (!tiltakUtils.harGyldigTiltakKode(deltakelse, kvalifiseringsgruppe)) {
+                    deltakelse.setTiltakKode(tiltakUtils.getGyldigTiltakKode(deltakelse, kvalifiseringsgruppe));
+                }
                 deltakelse.setFodselsnr(personident);
                 deltakelse.setTiltakYtelse("J");
             });
