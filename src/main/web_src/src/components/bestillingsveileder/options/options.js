@@ -35,20 +35,20 @@ export const BVOptions = ({
 			enhetstype: 'AS',
 			naeringskode: '01.451',
 			forretningsadresse: {
-				adresselinjer: ['Fyrstikkalleen 1', '', ''],
-				postnr: '0661',
-				kommunenr: '0301',
-				landkode: 'NOR'
+				adresselinjer: ['', '', ''],
+				postnr: '',
+				kommunenr: '',
+				landkode: 'NO'
 			},
 			underenheter: [
 				{
 					enhetstype: 'BEDR',
 					naeringskode: '01.451',
 					forretningsadresse: {
-						adresselinjer: ['Fyrstikkalleen 1', '', ''],
-						postnr: '0661',
-						kommunenr: '0301',
-						landkode: 'NOR'
+						adresselinjer: ['', '', ''],
+						postnr: '',
+						kommunenr: '',
+						landkode: 'NO'
 					}
 				}
 			]
