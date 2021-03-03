@@ -23,7 +23,7 @@ public class Person {
         this.response = response;
         var statsborgerskap = getCurrent(response.getHentPerson().getStatsborgerskap()).orElse(null);
         this.statsborgerskap = statsborgerskap != null ? new Statsborgerskap(statsborgerskap) : null;
-        var utfyttingFraNorge = getCurrent(response.getHentPerson().getUtflyttingFraNorges()).orElse(null);
+        var utfyttingFraNorge = getCurrent(response.getHentPerson().getUtflyttingFraNorge()).orElse(null);
         this.utfyttingFraNorge = utfyttingFraNorge != null ? new UtfyttingFraNorge(utfyttingFraNorge) : null;
     }
 
