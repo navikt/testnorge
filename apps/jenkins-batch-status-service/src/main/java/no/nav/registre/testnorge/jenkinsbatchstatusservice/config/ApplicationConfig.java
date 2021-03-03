@@ -28,7 +28,9 @@ public class ApplicationConfig {
     @Bean
     public TaskExecutor executor() {
         final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setMaxPoolSize(10);
+        executor.setMaxPoolSize(12);
+        executor.setCorePoolSize(6);
+        executor.setQueueCapacity(4);
         executor.setThreadNamePrefix("thread-pool-with-security-context-");
         executor.initialize();
         return new DelegatingSecurityContextAsyncTaskExecutor(executor);
