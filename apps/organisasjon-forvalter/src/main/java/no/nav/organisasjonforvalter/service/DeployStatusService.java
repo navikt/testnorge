@@ -52,10 +52,9 @@ public class DeployStatusService {
     private static String getReadableTime(Long millis) {
 
         long tempSec = millis / 1000;
-        long sec = tempSec % 60;
         long min = tempSec / 60;
 
-        return String.format("%d minutter og %d sekunder", min, sec);
+        return String.format("%d minutter", min);
     }
 
     private static boolean isStatusChanged(DeployEntry entry, List<ItemDto> bestStatus) {
