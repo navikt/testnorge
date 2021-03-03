@@ -39,7 +39,7 @@ public class IdentController {
             @RequestParam(required = false) String miljoe,
             @RequestParam(required = false) String personident
     ) {
-        return ResponseEntity.ok(identService.hentArbeidsoekere(eier, miljoe, personident));
+        return ResponseEntity.ok(identService.hentArbeidsoekere(eier, miljoe, personident, false));
     }
 
     private ResponseEntity<List<String>> slettBrukere(

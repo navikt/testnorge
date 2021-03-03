@@ -131,7 +131,7 @@ public class RettighetAapServiceTest {
 
         when(identerUtils.getLevende(avspillergruppeId, miljoe)).thenReturn(identer);
         when(identerUtils.getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), anyBoolean())).thenReturn(identer);
-        when(identerUtils.hentEksisterendeArbeidsoekerIdenter()).thenReturn(new ArrayList<>(Collections.singletonList(fnr1)));
+        when(identerUtils.hentEksisterendeArbeidsoekerIdenter(anyBoolean())).thenReturn(new ArrayList<>(Collections.singletonList(fnr1)));
     }
 
     @Test
@@ -240,7 +240,7 @@ public class RettighetAapServiceTest {
         Map<String, List<NyttVedtakResponse>> expectedResponsesFromArenaForvalter = new HashMap<>();
         expectedResponsesFromArenaForvalter.put(fnr1, new ArrayList<>(Collections.singletonList(nyRettighetFritakMeldekortResponse)));
 
-        when(identerUtils.hentEksisterendeArbeidsoekerIdenter()).thenReturn(identer);
+        when(identerUtils.hentEksisterendeArbeidsoekerIdenter(anyBoolean())).thenReturn(identer);
         when(identerUtils.getLevende(avspillergruppeId, miljoe)).thenReturn(identer);
         when(consumerUtils.createSyntRequest(antallIdenter)).thenReturn(syntRequest);
         when(aapSyntConsumer.syntetiserRettighetFritakMeldekort(syntRequest)).thenReturn(fritakMeldekortRettigheter);

@@ -117,7 +117,7 @@ public class ArbeidssoekerUtils {
             String miljoe,
             Kvalifiseringsgrupper kvalifiseringsgruppe
     ) {
-        var identerIArena = identerUtils.hentEksisterendeArbeidsoekerIdenter();
+        var identerIArena = identerUtils.hentEksisterendeArbeidsoekerIdenter(true);
         var uregistrerteBrukere = rettigheter.stream().filter(rettighet -> !identerIArena.contains(rettighet.getPersonident())).map(RettighetRequest::getPersonident)
                 .collect(Collectors.toSet());
 
@@ -141,7 +141,9 @@ public class ArbeidssoekerUtils {
             String miljoe,
             Kvalifiseringsgrupper kvalifiseringsgruppe
     ) {
-        var identerIArena = identerUtils.hentEksisterendeArbeidsoekerIdenter();
+
+        var identerIArena = identerUtils.hentEksisterendeArbeidsoekerIdenter(true);
+
         var uregistrertBruker = !identerIArena.contains(ident);
 
         if (uregistrertBruker) {

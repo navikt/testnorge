@@ -57,14 +57,17 @@ public class BrukereArenaForvalterConsumer {
     public List<Arbeidsoeker> hentArbeidsoekere(
             String personident,
             String eier,
-            String miljoe
+            String miljoe,
+            boolean useCache
     ) {
 
         var refinedUrl = getFullstendigHentArbeidsoekereUrl(personident, eier, miljoe);
 
-        var cachedeArbeidssoekere = arbeidssoekerCacheUtil.hentArbeidssoekere(refinedUrl);
-        if (cachedeArbeidssoekere != null && !cachedeArbeidssoekere.isEmpty()) {
-            return cachedeArbeidssoekere;
+        if (useCache) {
+            var cachedeArbeidssoekere = arbeidssoekerCacheUtil.hentArbeidssoekere(refinedUrl);
+            if (cachedeArbeidssoekere != null && !cachedeArbeidssoekere.isEmpty()) {
+                return cachedeArbeidssoekere;
+            }
         }
 
         var response = new GetArenaBrukereCommand(getQueryParams(personident, eier, miljoe, null), webClient).call();

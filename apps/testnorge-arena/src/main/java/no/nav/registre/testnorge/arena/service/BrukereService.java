@@ -47,7 +47,7 @@ public class BrukereService {
             String miljoe
     ) {
         var levendeIdenter = hentLevendeIdenter(avspillergruppeId);
-        var arbeidsoekerIdenter = identerUtils.hentEksisterendeArbeidsoekerIdenter();
+        var arbeidsoekerIdenter = identerUtils.hentEksisterendeArbeidsoekerIdenter(true);
 
         if (antallNyeIdenter == null) {
             var antallArbeidsoekereAaOpprette = getAntallBrukereForAaFylleArenaForvalteren(levendeIdenter.size(), arbeidsoekerIdenter.size());
@@ -68,15 +68,16 @@ public class BrukereService {
     public NyeBrukereResponse opprettArbeidssoeker(
             String ident,
             Long avspillergruppeId,
-            String miljoe
+            String miljoe,
+            boolean useCache
     ) {
         var levendeIdenter = hentLevendeIdenter(avspillergruppeId);
-        var arbeidsoekerIdenter = identerUtils.hentEksisterendeArbeidsoekerIdenter();
+        var arbeidsoekerIdenter = identerUtils.hentEksisterendeArbeidsoekerIdenter(useCache);
 
         if (arbeidsoekerIdenter.contains(ident)) {
             log.info("Ident {} er allerede registrert som arbeidsøker.", ident.replaceAll("[\r\n]", ""));
             var response = new NyeBrukereResponse();
-            response.setArbeidsoekerList(brukereArenaForvalterConsumer.hentArbeidsoekere(ident, null, null));
+            response.setArbeidsoekerList(brukereArenaForvalterConsumer.hentArbeidsoekere(ident, null, null, useCache));
             return response;
         } else if (!levendeIdenter.contains(ident)) {
             log.info("Ident {} kunne ikke bli funnet av Hodejegeren, og kan derfor ikke opprettes i Arena.", ident.replaceAll("[\r\n]", ""));

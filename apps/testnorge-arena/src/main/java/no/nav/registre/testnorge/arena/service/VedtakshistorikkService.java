@@ -147,7 +147,7 @@ public class VedtakshistorikkService {
     }
 
     private void opprettVedtaksHistorikkResponse(Long avspillergruppeId, String miljoe, Map<String, List<NyttVedtakResponse>> responses, Vedtakshistorikk vedtakshistorikk, LocalDate tidligsteDatoBarnetillegg,
-            int minimumAlder, int maksimumAlder) {
+                                                 int minimumAlder, int maksimumAlder) {
         List<String> identerIAldersgruppe = Collections.emptyList();
         try {
             var maaVaereBosatt = vedtakshistorikk.getAap() != null && !vedtakshistorikk.getAap().isEmpty();
@@ -202,20 +202,24 @@ public class VedtakshistorikkService {
         opprettAvsluttendeVedtakEndreDeltakerstatus(vedtakshistorikk, personident, miljoe, rettigheter, tiltak);
         opprettVedtakTillegg(vedtakshistorikk, personident, miljoe, rettigheter);
 
-        var senesteVedtak = datoUtils.finnSenesteVedtak(vedtakshistorikk.getAlleVedtak());
+        List<RettighetRequest> rettighetRequests = rettigheter;
+        var identerIArena = identerUtils.hentEksisterendeArbeidsoekerIdenter(false);
 
-        List<RettighetRequest> rettighetRequests;
-        if (senesteVedtak == null) {
-            log.info("Kunne ikke opprette rettigheter for ident: " + personident);
-            rettighetRequests = new ArrayList<>();
-        } else if (senesteVedtak instanceof NyttVedtakAap) {
-            rettighetRequests = arbeidsoekerUtils.opprettArbeidssoekerAap(personident, rettigheter, miljoe, ((NyttVedtakAap) senesteVedtak).getAktivitetsfase());
-        } else if (senesteVedtak instanceof NyttVedtakTiltak) {
-            rettighetRequests = arbeidsoekerUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe);
-        } else if (senesteVedtak instanceof NyttVedtakTillegg) {
-            rettighetRequests = arbeidsoekerUtils.opprettArbeidssoekerTillegg(rettigheter, miljoe);
-        } else {
-            throw new VedtakshistorikkException("Ukjent vedtakstype: " + senesteVedtak.getClass());
+        if (!identerIArena.contains(personident)) {
+            var senesteVedtak = datoUtils.finnSenesteVedtak(vedtakshistorikk.getAlleVedtak());
+
+            if (senesteVedtak == null) {
+                log.info("Kunne ikke opprette rettigheter for ident: " + personident);
+                rettighetRequests = new ArrayList<>();
+            } else if (senesteVedtak instanceof NyttVedtakAap) {
+                rettighetRequests = arbeidsoekerUtils.opprettArbeidssoekerAap(personident, rettigheter, miljoe, ((NyttVedtakAap) senesteVedtak).getAktivitetsfase());
+            } else if (senesteVedtak instanceof NyttVedtakTiltak) {
+                rettighetRequests = arbeidsoekerUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe);
+            } else if (senesteVedtak instanceof NyttVedtakTillegg) {
+                rettighetRequests = arbeidsoekerUtils.opprettArbeidssoekerTillegg(rettigheter, miljoe);
+            } else {
+                throw new VedtakshistorikkException("Ukjent vedtakstype: " + senesteVedtak.getClass());
+            }
         }
 
         return rettighetArenaForvalterConsumer.opprettRettighet(rettighetRequests);
