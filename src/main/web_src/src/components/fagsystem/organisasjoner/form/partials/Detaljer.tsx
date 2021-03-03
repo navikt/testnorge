@@ -36,6 +36,12 @@ export const Detaljer = ({ formikBag, path, level, number, maaHaUnderenhet = tru
 
 	const sektorkodeErValgt = formikBag.values.organisasjon.hasOwnProperty('sektorkode')
 
+	useEffect(() => {
+		if (level === 0 && !_get(formikBag, `values.${path}.underenheter`)) {
+			formikBag.setFieldValue(`${path}.underenheter`, [initialValues])
+		}
+	})
+
 	const [typeUnderenhet, setTypeUnderenhet] = useState(
 		level === 0 ||
 			(_has(formikBag.values, `${path}.underenheter`) &&
@@ -44,30 +50,16 @@ export const Detaljer = ({ formikBag, path, level, number, maaHaUnderenhet = tru
 			: TypeUnderenhet.VIRKSOMHET
 	)
 
-	useEffect(() => {
-		if (level === 0) {
-			formikBag.setFieldValue(`${path}.underenheter`, [initialValues])
-		}
-	}, [])
-
-	useEffect(() => {
-		let values = _set(formikBag.values, `${path}.enhetstype`, '')
-		if (typeUnderenhet === TypeUnderenhet.VIRKSOMHET) {
-			values = _set(values, `${path}.underenheter`, [])
-			if (sektorkodeErValgt) {
-				values = _set(values, `${path}.sektorkode`, undefined)
-			}
-		} else if (typeUnderenhet === TypeUnderenhet.JURIDISKENHET && level < 4) {
-			values = _set(values, `${path}.underenheter`, [initialValues])
-			if (sektorkodeErValgt) {
-				values = _set(values, `${path}.sektorkode`, '')
-			}
-		}
-		formikBag.setValues(values, true)
-	}, [typeUnderenhet])
-
 	const handleToggleChange = (event: React.ChangeEvent<any>) => {
 		setTypeUnderenhet(event.target.value)
+		formikBag.setFieldValue(`${path}.enhetstype`, '')
+		if (event.target.value === TypeUnderenhet.VIRKSOMHET) {
+			formikBag.setFieldValue(`${path}.underenheter`, undefined)
+			sektorkodeErValgt && formikBag.setFieldValue(`${path}.sektorkode`, undefined)
+		} else if (event.target.value === TypeUnderenhet.JURIDISKENHET && level < 4) {
+			formikBag.setFieldValue(`${path}.underenheter`, [initialValues])
+			sektorkodeErValgt && formikBag.setFieldValue(`${path}.sektorkode`, '')
+		}
 	}
 
 	return (
