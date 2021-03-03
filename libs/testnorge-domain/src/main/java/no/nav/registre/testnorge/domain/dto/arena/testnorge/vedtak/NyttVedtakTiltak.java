@@ -72,9 +72,6 @@ public class NyttVedtakTiltak extends NyttVedtak {
     @JsonAlias({ "KOMMENTAR", "kommentar" })
     private String kommentar;
 
-    @JsonAlias({ "TILTAKSKODE", "tiltakskode" })
-    private String tiltakskode;
-
     @JsonAlias({ "TILTAK_KODE", "tiltakKode" })
     private String tiltakKode;
 
