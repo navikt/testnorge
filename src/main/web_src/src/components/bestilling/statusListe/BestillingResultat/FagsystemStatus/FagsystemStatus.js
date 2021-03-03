@@ -17,8 +17,9 @@ export default function FagsystemStatus({ bestilling }) {
 		else if (
 			statuser.some(
 				status =>
-					status.melding === 'InnvandringOpprettingsmelding: STATUS: TIDSAVBRUDD' ||
-					status.melding === 'ERROR-Tidsavbrudd'
+					status.melding.includes('TIDSAVBRUDD') ||
+					status.melding.includes('Tidsavbrudd') ||
+					status.melding.includes('tidsavbrudd')
 			)
 		)
 			return iconTypes.avvik
