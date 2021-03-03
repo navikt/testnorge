@@ -35,8 +35,9 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 					isActive={() => location.pathname === '/' || location.pathname.includes('/gruppe')}
 					to="/"
 				>
-					Testdatagrupper
+					Testpersoner
 				</NavLink>
+				<NavLink to="/organisasjoner">Testorganisasjoner</NavLink>
 				<a
 					href="https://endringsmelding.dev.intern.nav.no"
 					onClick={() => Logger.log({ event: 'Trykket på dokumentasjon header' })}

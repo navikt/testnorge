@@ -23,6 +23,11 @@ const mapStatusrapport = bestillingstatus => {
 						feil.identer = status.identer
 					}
 
+					if (status.orgnummer) {
+						feil.miljo = null
+						feil.orgnummer = status.orgnummer
+					}
+
 					if (status.detaljert) {
 						const miljoArray = status.detaljert.map(m => m.miljo).sort()
 						const identArray = status.detaljert[0].identer
@@ -38,6 +43,7 @@ const mapStatusrapport = bestillingstatus => {
 }
 
 export default function MiljoeStatus({ bestilling }) {
+	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
 	const statusrapport = mapStatusrapport(bestilling.status)
 	const { tekst } = antallIdenterOpprettet(bestilling)
 
@@ -46,8 +52,8 @@ export default function MiljoeStatus({ bestilling }) {
 			<SubOverskrift label="Bestillingsstatus" />
 			{bestilling.feil && (
 				<div className="feilmelding_generell">
-					<p>{tekst}</p>
-					<ApiFeilmelding feilmelding={bestilling.feil} container />
+					{!erOrganisasjon && <p>{tekst}</p>}
+					{statusrapport.length < 1 && <ApiFeilmelding feilmelding={bestilling.feil} container />}
 				</div>
 			)}
 			<FagsystemStatus statusrapport={statusrapport} />

@@ -17,6 +17,7 @@ export default class BestillingProgresjon extends PureComponent {
 		super(props)
 
 		this.PULL_INTERVAL = 1000
+		this.PULL_INTERVAL_ORG = 5000
 		this.TIMEOUT_BEFORE_HIDE = 2000
 		this.TIME_BEFORE_WARNING_MESSAGE = 120
 
@@ -30,8 +31,14 @@ export default class BestillingProgresjon extends PureComponent {
 	}
 
 	componentDidMount() {
-		if (!this.state.ferdig) {
+		if (!this.state.ferdig && !this.props.bestilling.organisasjonNummer) {
 			this.interval = setInterval(() => this.getBestillingStatus(), this.PULL_INTERVAL)
+		}
+		if (!this.state.ferdig && this.props.bestilling.organisasjonNummer) {
+			this.interval = setInterval(
+				() => this.getOrganisasjonBestillingStatus(),
+				this.PULL_INTERVAL_ORG
+			)
 		}
 	}
 
@@ -40,6 +47,21 @@ export default class BestillingProgresjon extends PureComponent {
 	}
 
 	stopPolling = () => clearInterval(this.interval)
+
+	getOrganisasjonBestillingStatus = async () => {
+		const bestillingId = this.props.bestilling.id
+
+		try {
+			const { data } = await DollyApi.getOrganisasjonBestillingStatus(bestillingId)
+
+			if (data.ferdig) {
+				this.stopPolling()
+			}
+			this.updateOrgStatus(data)
+		} catch (error) {
+			console.error(error)
+		}
+	}
 
 	getBestillingStatus = async () => {
 		const bestillingId = this.props.bestilling.id
@@ -53,6 +75,24 @@ export default class BestillingProgresjon extends PureComponent {
 			this.updateStatus(data)
 		} catch (error) {
 			console.error(error)
+		}
+	}
+
+	updateOrgStatus = data => {
+		// Setter alltid status til IKKE FERDIG, sånn at vi kan vise
+		// en kort melding som sier at prosessen er ferdig
+		const newState = {
+			ferdig: false,
+			antallLevert: data.antallLevert,
+			sistOppdatert: data.sistOppdatert
+		}
+		this.setState(newState)
+
+		if (data.ferdig) {
+			setTimeout(async () => {
+				await this.props.getBestillinger() // state.ferdig = true
+				await this.props.getOrganisasjoner(this.props.brukerId)
+			}, this.TIMEOUT_BEFORE_HIDE)
 		}
 	}
 
@@ -92,10 +132,11 @@ export default class BestillingProgresjon extends PureComponent {
 	}
 
 	calculateStatus = () => {
-		const total = this.props.bestilling.antallIdenter
+		const total = this.props.bestilling.organisasjonNummer ? 1 : this.props.bestilling.antallIdenter
 		const sykemelding =
 			this.props.bestilling.bestilling.sykemelding != null &&
 			this.props.bestilling.bestilling.sykemelding.syntSykemelding != null
+		const organisasjon = this.props.bestilling.hasOwnProperty('organisasjonNummer')
 		const { antallLevert } = this.state
 
 		// Percent
@@ -109,6 +150,8 @@ export default class BestillingProgresjon extends PureComponent {
 
 		const aktivBestilling = sykemelding
 			? 'AKTIV BESTILLING (Syntetisert sykemelding behandler mye data og kan derfor ta litt tid)'
+			: organisasjon
+			? 'AKTIV BESTILLING (Bestillingen tar opptil flere minutter per valgte miljø)'
 			: 'AKTIV BESTILLING'
 		const title = percent === 100 ? 'FERDIG' : aktivBestilling
 

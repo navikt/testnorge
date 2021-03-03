@@ -1,49 +1,60 @@
 import React from 'react'
 import cn from 'classnames'
-import { FormikField } from '~/components/ui/form/FormikField'
 import { Label } from '~/components/ui/form/inputs/label/Label'
 import { InputWrapper } from '~/components/ui/form/inputWrapper/InputWrapper'
-import { fieldError } from '~/components/ui/form/formUtils'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Icon from '~/components/ui/icon/Icon'
+import UncontrolledFormikTextInput from '~/components/ui/form/inputs/textInput/UncontrolledFormikTextInput'
 
 export const TextInput = React.forwardRef(
-	({ placeholder = 'Ikke spesifisert', className, icon, ...props }, ref) => {
+	(
+		{
+			placeholder = 'Ikke spesifisert',
+			className,
+			icon,
+			...props
+		}: { name: string; className?: string; icon?: string; placeholder?: string; feil?: any },
+		ref
+	) => {
 		const css = cn('skjemaelement__input', className, {
 			'skjemaelement__input--harFeil': props.feil
 		})
+
 		return (
-			<React.Fragment>
+			<>
+				{/*@ts-ignore*/}
 				<input ref={ref} id={props.name} className={css} placeholder={placeholder} {...props} />
 				{icon && <Icon size={20} kind={icon} />}
-			</React.Fragment>
+			</>
 		)
 	}
 )
 
-export const DollyTextInput = props => (
+export const DollyTextInput = (props: {
+	name: string
+	label?: string
+	feil?: any
+	onBlur?: Function
+}) => (
 	<InputWrapper {...props}>
+		{/*@ts-ignore*/}
 		<Label name={props.name} label={props.label} feil={props.feil}>
 			<TextInput {...props} />
 		</Label>
 	</InputWrapper>
 )
 
-const P_FormikTextInput = ({ fastfield, ...props }) => (
-	<FormikField name={props.name} fastfield={fastfield}>
-		{({ field, form, meta }) => (
-			<DollyTextInput
-				value={field.value}
-				onChange={field.onChange}
-				onBlur={field.onBlur}
-				feil={fieldError(meta)}
-				{...props}
-			/>
-		)}
-	</FormikField>
-)
-
-export const FormikTextInput = ({ visHvisAvhuket = true, ...props }) => {
-	const component = <P_FormikTextInput {...props} />
+export const FormikTextInput = ({
+	visHvisAvhuket = true,
+	...props
+}: {
+	visHvisAvhuket?: boolean
+	name: string
+	label?: string
+	size?: string
+	type?: string
+}) => {
+	const component = <UncontrolledFormikTextInput {...props} />
+	// @ts-ignore
 	return visHvisAvhuket ? <Vis attributt={props.name}>{component}</Vis> : component
 }

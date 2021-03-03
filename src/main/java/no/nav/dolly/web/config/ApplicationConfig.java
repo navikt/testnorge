@@ -18,6 +18,7 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
         @DependencyOn("dolly-backend"),
         @DependencyOn("testnorge-profil-api"),
         @DependencyOn("testnorge-varslinger-api"),
+        @DependencyOn("organisasjon-forvalter"),
         @DependencyOn("testnorge-miljoer-service"),
         @DependencyOn("udi-stub-dev")
 })
@@ -43,6 +44,11 @@ public class ApplicationConfig {
     @Bean
     public AddAuthorizationToRouteFilter varslingerApiAddAuthorizationToRouteFilter() {
         return createFilterFrom("testnorge-varslinger-api");
+    }
+
+    @Bean
+    public AddAuthorizationToRouteFilter organisasjonForvalterAddAuthorizationToRouteFilter() {
+        return createFilterFrom("organisasjon-forvalter");
     }
 
     @Bean

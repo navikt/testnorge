@@ -12,12 +12,16 @@ export const {
 	getBestillinger,
 	cancelBestilling,
 	gjenopprettBestilling,
+	getOrganisasjonBestilling,
+	gjenopprettOrganisasjonBestilling,
 	removeNyBestillingStatus
 } = createActions(
 	{
 		getBestillinger: DollyApi.getBestillinger,
 		cancelBestilling: DollyApi.cancelBestilling,
-		gjenopprettBestilling: DollyApi.gjenopprettBestilling
+		gjenopprettBestilling: DollyApi.gjenopprettBestilling,
+		getOrganisasjonBestilling: DollyApi.getOrganisasjonsnummerByUserId,
+		gjenopprettOrganisasjonBestilling: DollyApi.gjenopprettOrganisasjonBestilling
 	},
 	'removeNyBestillingStatus',
 	{ prefix: 'bestillingStatus' }
@@ -41,6 +45,18 @@ export default handleActions(
 				state.ny = state.ny.concat(nyeBestillinger)
 			}
 
+			bestillingStatusMapper(data).map(best => {
+				state.byId[best.id] = best
+			})
+		},
+		[onSuccess(getOrganisasjonBestilling)](state, action) {
+			const { data } = action.payload
+			const nyeBestillinger = data
+				.filter(bestilling => !bestilling.ferdig && !state.ny.includes(bestilling.id))
+				.map(bestilling => bestilling.id)
+			if (nyeBestillinger.length > 0) {
+				state.ny = state.ny.concat(nyeBestillinger)
+			}
 			bestillingStatusMapper(data).map(best => {
 				state.byId[best.id] = best
 			})

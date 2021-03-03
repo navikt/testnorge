@@ -57,7 +57,18 @@ export const erForste = (values, attributt) => {
 		'udistub',
 		'pensjonforvalter',
 		'inntektsmelding',
-		'dokarkiv'
+		'dokarkiv',
+		'organisasjon.enhetstype',
+		'organisasjon.naeringskode',
+		'organisasjon.sektorkode',
+		'organisasjon.formaal',
+		'organisasjon.stiftelsesdato',
+		'organisasjon.maalform',
+		'organisasjon.telefon',
+		'organisasjon.epost',
+		'organisasjon.nettside',
+		'organisasjon.forretningsadresse',
+		'organisasjon.postadresse'
 	]
 
 	const valgteAttributter = []

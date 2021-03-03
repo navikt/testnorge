@@ -57,3 +57,10 @@ export enum GtKodeverk {
 export enum OppholdstillatelseKodeverk {
 	Oppholdstillatelser = 'Oppholdstillatelser'
 }
+
+export enum OrganisasjonKodeverk {
+	EnhetstyperJuridiskEnhet = 'EnhetstyperJuridiskEnhet',
+	EnhetstyperVirksomhet = 'EnhetstyperVirksomhet',
+	Naeringskoder = 'Næringskoder',
+	Sektorkoder = 'Sektorkoder'
+}

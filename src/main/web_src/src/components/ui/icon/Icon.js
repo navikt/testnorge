@@ -45,6 +45,8 @@ import Institusjon from '~/assets/icons/nav-ikoner/line/SVG/26-places/building-2
 import House from '~/assets/icons/nav-ikoner/line/SVG/26-places/home-1.svg'
 import Globe from '~/assets/icons/nav-ikoner/line/SVG/26-places/globe-1.svg'
 import Globe2 from '~/assets/icons/nav-ikoner/line/SVG/26-places/globe-2.svg'
+import Hierarchy3 from '~/assets/icons/nav-ikoner/line/SVG/33-hierarchy/hierarchy-3.svg'
+import Hierarchy3Light from '~/assets/icons/nav-ikoner/line/SVG/33-hierarchy/hierarchy-3Light.svg'
 import Eraser from '~/assets/icons/nav-ikoner/filled/SVG/36-text/eraser.svg'
 import ArrowLeft from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-left-10.svg'
 import ArrowRight from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-right-10.svg'
@@ -140,8 +142,10 @@ export const icons = {
 	copy: Copy,
 	sykdom: Plaster,
 	vergemaal: Group2,
-	fullmakt: Group2,
-	visTpsData: AccountFind
+	visTpsData: AccountFind,
+	organisasjon: Hierarchy3,
+	organisasjonLight: Hierarchy3Light,
+	fullmakt: Group2
 }
 
 const px = v => `${v}px`

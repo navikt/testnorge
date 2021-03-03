@@ -14,6 +14,7 @@ const fasteOrgnummerBase = `${uri}/orgnummer`
 const fasteDatasettBase = `${uri}/fastedatasett`
 const dokarkivBase = `${uri}/dokarkiv`
 const inntektsmeldingBase = `${uri}/inntektsmelding`
+const organisasjonBase = `${uri}/organisasjon`
 
 export default class DollyEndpoints {
 	static gruppe() {
@@ -46,6 +47,26 @@ export default class DollyEndpoints {
 
 	static gruppeBestillingStatus(gruppeId) {
 		return `${groupBase}/${gruppeId}/bestillingStatus`
+	}
+
+	static organisasjonBestilling() {
+		return `${organisasjonBase}/bestilling`
+	}
+
+	static organisasonStatusByBestillingId(bestillingId) {
+		return `${organisasjonBase}/bestilling?bestillingId=${bestillingId}`
+	}
+
+	static organisasonStatusByUser(userId) {
+		return `${organisasjonBase}/bestillingsstatus?brukerId=${userId}`
+	}
+
+	static gjenopprettOrganisasjonBestilling(bestillingId, envs) {
+		return `${organisasjonBase}/gjenopprett/${bestillingId}?miljoer=${envs}`
+	}
+
+	static deleteOrganisasjonOrgnummer(orgnummer) {
+		return `${organisasjonBase}/bestilling/${orgnummer}`
 	}
 
 	static gjenopprettGruppe(gruppeId, envs) {

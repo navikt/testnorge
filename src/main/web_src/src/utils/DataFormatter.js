@@ -25,7 +25,6 @@ Formatters.formatAlderBarn = (alder, doedsdato, doedfoedt) => {
 // Date ---> String
 Formatters.formatDate = date => {
 	if (!date) return date
-	if (date.length == 10) return date
 	// Parse date if not date
 	if (!isDate(date)) date = new Date(date)
 	return format(date, defaultDateFormat)

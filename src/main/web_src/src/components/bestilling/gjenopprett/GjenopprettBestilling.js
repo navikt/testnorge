@@ -6,13 +6,17 @@ import { GjenopprettModal } from './GjenopprettModal'
 export default function GjenopprettBestilling(props) {
 	const { bestilling, closeModal } = props
 	const { environments } = bestilling
+	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
 
 	const submitFormik = async values => {
 		const envsQuery = Formatters.arrayToString(values.environments)
 			.replace(/ /g, '')
 			.toLowerCase()
-		await props.gjenopprettBestilling(envsQuery)
+		erOrganisasjon
+			? await props.gjenopprettOrganisasjonBestilling(envsQuery)
+			: await props.gjenopprettBestilling(envsQuery)
 		await props.getBestillinger()
+		closeModal()
 	}
 
 	const gjenopprettHeader = (

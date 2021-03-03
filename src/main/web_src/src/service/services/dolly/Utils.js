@@ -43,7 +43,9 @@ export const SortKodeverkArray = data => {
 	if (
 		data.name === 'Postnummer' ||
 		data.name === 'Postnummer vegadresser' ||
-		data.name === 'Kommuner'
+		data.name === 'Kommuner' ||
+		data.name === 'Næringskoder' ||
+		data.name === 'Sektorkoder'
 	) {
 		return kodeverk.map(kode => ({
 			label: `${kode.value} - ${kode.label}`,
@@ -115,6 +117,13 @@ export const SortKodeverkArray = data => {
 
 	if (data.name === 'Vergemål_Mandattype') {
 		return kodeverk.filter(kode => kode.value !== '<Blank>' && kode.value !== 'ADP')
+	}
+
+	if (data.name === 'EnhetstyperJuridiskEnhet' || data.name === 'EnhetstyperVirksomhet') {
+		return kodeverk.map(kode => ({
+			label: `${kode.label} (${kode.value})`,
+			value: kode.value
+		}))
 	}
 
 	return kodeverk

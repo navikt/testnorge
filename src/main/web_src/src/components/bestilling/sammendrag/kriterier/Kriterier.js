@@ -3,6 +3,7 @@ import cn from 'classnames'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { mapBestillingData } from './BestillingKriterieMapper'
+import { OrganisasjonKriterier } from './OrganisasjonKriterier'
 
 const _renderBestillingsDetaljer = data => {
 	return data.map((kategori, j) => {
@@ -50,6 +51,18 @@ const _renderStaticValue = (attributt, key) => {
 }
 
 export default function Bestillingskriterier({ bestilling, bestillingsinformasjon, header }) {
+	if (bestilling.organisasjon || bestilling.enhetstype) {
+		return (
+			<div className="bestilling-detaljer">
+				{header && <SubOverskrift label={header} />}
+				<OrganisasjonKriterier
+					data={bestilling.organisasjon || bestilling}
+					render={_renderBestillingsDetaljer}
+				/>
+			</div>
+		)
+	}
+
 	const data = mapBestillingData(bestilling, bestillingsinformasjon)
 
 	if (!data) return <p>Kunne ikke hente bestillingsdata</p>

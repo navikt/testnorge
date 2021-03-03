@@ -14,6 +14,8 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 
 	const order = ['T', 'Q']
 
+	const erOrganisasjon = bestillingsdata.hasOwnProperty('organisasjon')
+
 	return (
 		<div className="miljo-velger">
 			<h2>{heading}</h2>
@@ -47,24 +49,29 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 
 					return order.map(type => {
 						const category = environments[type]
+						if (!category) return null
+
 						const allDisabled = category.some(f => f.disabled)
 
 						return (
 							<fieldset key={type} name={`Liste over ${type}-mijøer`}>
-								<h3>{type}-miljø</h3>
+								<h3>{type}-miljøer</h3>
 								<div className="miljo-velger_checkboxes">
-									{category.map((env, idx) => (
-										<DollyCheckbox
-											key={env.id}
-											id={env.id}
-											disabled={env.disabled}
-											label={env.id}
-											checked={values.includes(env.id)}
-											onClick={onClick}
-											onChange={() => {}}
-											size={'xxsmall'}
-										/>
-									))}
+									{category.map(
+										(env, idx) =>
+											(!erOrganisasjon || env.id !== 'qx') && (
+												<DollyCheckbox
+													key={env.id}
+													id={env.id}
+													disabled={env.disabled}
+													label={env.id}
+													checked={values.includes(env.id)}
+													onClick={onClick}
+													onChange={() => {}}
+													size={'xxsmall'}
+												/>
+											)
+									)}
 								</div>
 								{!allDisabled && (
 									<div className="miljo-velger_buttons">

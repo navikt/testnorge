@@ -39,7 +39,7 @@ export const PersonrollerForm = ({ formikBag, path }) => {
 			name={`${path}.personroller`}
 			header="Personrolle"
 			newEntry={initialValues}
-			isFull={personroller.length >= antallEgenskaper}
+			disabled={personroller.length >= antallEgenskaper}
 			title={
 				personroller.length >= antallEgenskaper ? 'Alle mulige personroller er lagt til' : null
 			}

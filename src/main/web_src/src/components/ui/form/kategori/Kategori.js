@@ -17,9 +17,11 @@ export const Kategori = ({
 	})
 	const render = (
 		<div className="form-kategori">
-			<h4>
-				{title} {hjelpetekst && <Hjelpetekst hjelpetekstFor={title}>{hjelpetekst}</Hjelpetekst>}
-			</h4>
+			{title && (
+				<h4>
+					{title} {hjelpetekst && <Hjelpetekst hjelpetekstFor={title}>{hjelpetekst}</Hjelpetekst>}
+				</h4>
+			)}
 			<div className={css}>{children}</div>
 		</div>
 	)
