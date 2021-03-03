@@ -54,7 +54,8 @@ public class BrukereController {
         var response = brukereService.opprettArbeidssoeker(
                 personident,
                 arenaRequest.getAvspillergruppeId(),
-                arenaRequest.getMiljoe()
+                arenaRequest.getMiljoe(),
+                false
         );
 
         return ResponseEntity.ok().body(response);

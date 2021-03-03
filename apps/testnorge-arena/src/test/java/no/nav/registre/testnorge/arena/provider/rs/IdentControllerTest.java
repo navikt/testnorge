@@ -31,9 +31,6 @@ public class IdentControllerTest {
     private String miljoe = "q2";
     private String eier = "ORKESTRATOREN";
     private String fnr1 = "10101010101";
-    private String fnr2 = "20202020202";
-    private String fnr3 = "30303030303";
-    private String fnr4 = "40404040404";
     private Arbeidsoeker arbeidsoeker;
 
     @Before
@@ -47,6 +44,9 @@ public class IdentControllerTest {
 
     @Test
     public void slettIdenterIArenaForvalter() {
+        String fnr2 = "20202020202";
+        String fnr3 = "30303030303";
+        String fnr4 = "40404040404";
         when(identService
                 .slettBrukereIArenaForvalter(Arrays.asList(fnr1, fnr2, fnr3, fnr4), miljoe))
                 .thenReturn(Arrays.asList(fnr1, fnr3, fnr4));
@@ -58,7 +58,7 @@ public class IdentControllerTest {
     @Test
     public void hentBrukereFraArenaForvalter() {
         when(identService
-                .hentArbeidsoekere(eier, miljoe, fnr1))
+                .hentArbeidsoekere(eier, miljoe, fnr1, false))
                 .thenReturn(Collections.singletonList(arbeidsoeker));
 
         ResponseEntity<List<Arbeidsoeker>> response = identController.hentBrukereFraArenaForvalter(eier, miljoe, fnr1);

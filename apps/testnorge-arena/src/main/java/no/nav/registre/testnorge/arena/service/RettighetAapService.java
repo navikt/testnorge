@@ -231,7 +231,7 @@ public class RettighetAapService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        var utvalgteIdenter = identerUtils.hentEksisterendeArbeidsoekerIdenter();
+        var utvalgteIdenter = identerUtils.hentEksisterendeArbeidsoekerIdenter(true);
         var identerIAvspillergruppe = new HashSet<>(identerUtils.getLevende(avspillergruppeId, miljoe));
         utvalgteIdenter.retainAll(identerIAvspillergruppe);
         Collections.shuffle(utvalgteIdenter);

@@ -187,7 +187,7 @@ public class IdenterUtils {
             Set<String> identerAsSet,
             String miljoe
     ) {
-        var eksisterendeBrukere = new HashSet<>(hentEksisterendeArbeidsoekerIdenter(EIER, miljoe));
+        var eksisterendeBrukere = new HashSet<>(hentEksisterendeArbeidsoekerIdenter(EIER, miljoe, true));
         identerAsSet.removeAll(eksisterendeBrukere);
         var identer = new ArrayList<>(identerAsSet);
         Collections.shuffle(identer);
@@ -219,13 +219,13 @@ public class IdenterUtils {
                 .values();
     }
 
-    public List<String> hentEksisterendeArbeidsoekerIdenter() {
-        var arbeidsoekere = brukereArenaForvalterConsumer.hentArbeidsoekere(null, null, null);
+    public List<String> hentEksisterendeArbeidsoekerIdenter(boolean useCache) {
+        var arbeidsoekere = brukereArenaForvalterConsumer.hentArbeidsoekere(null, null, null, useCache);
         return hentIdentListe(arbeidsoekere);
     }
 
-    public List<String> hentEksisterendeArbeidsoekerIdenter(String eier, String miljoe) {
-        var arbeidsoekere = brukereArenaForvalterConsumer.hentArbeidsoekere(null, eier, miljoe);
+    public List<String> hentEksisterendeArbeidsoekerIdenter(String eier, String miljoe, boolean useCache) {
+        var arbeidsoekere = brukereArenaForvalterConsumer.hentArbeidsoekere(null, eier, miljoe, useCache);
         return hentIdentListe(arbeidsoekere);
     }
 

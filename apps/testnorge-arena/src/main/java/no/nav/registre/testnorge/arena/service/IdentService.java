@@ -19,9 +19,10 @@ public class IdentService {
     public List<Arbeidsoeker> hentArbeidsoekere(
             String eier,
             String miljoe,
-            String personident
+            String personident,
+            boolean useCache
     ) {
-        return brukereArenaForvalterConsumer.hentArbeidsoekere(personident, eier, miljoe);
+        return brukereArenaForvalterConsumer.hentArbeidsoekere(personident, eier, miljoe, useCache);
     }
 
     public List<String> slettBrukereIArenaForvalter(
