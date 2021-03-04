@@ -1,6 +1,5 @@
 package no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.command;
 
-import io.netty.channel.unix.Errors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -25,10 +24,7 @@ public class SaveOrganisasjonBestillingCommand implements Callable<Long> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(Long.class)
-                .retryWhen(Retry.max(3).filter(ex -> {
-                    log.error("Feil ved lagring ved bestilling.");
-                    return ex instanceof Errors.NativeIoException;
-                }))
+                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(10)))
                 .block();
     }
 }
