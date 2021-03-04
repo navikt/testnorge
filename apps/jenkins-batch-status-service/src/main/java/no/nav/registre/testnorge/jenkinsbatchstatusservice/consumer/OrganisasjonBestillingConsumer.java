@@ -31,7 +31,9 @@ public class OrganisasjonBestillingConsumer {
     public Long save(String uuid) {
         AccessToken accessToken = accessTokenService.generateToken(properties);
         log.info("Registrerer jobb med uuid: {}.", uuid);
-        return new SaveOrganisasjonBestillingCommand(webClient, accessToken.getTokenValue(), uuid).call();
+        var id = new SaveOrganisasjonBestillingCommand(webClient, accessToken.getTokenValue(), uuid).call();
+        log.info("Jobb registert med id {} og uuid: {}.", uuid, id);
+        return id;
     }
 
     public void update(String uuid, String miljo, Long jobId, Long id) {
