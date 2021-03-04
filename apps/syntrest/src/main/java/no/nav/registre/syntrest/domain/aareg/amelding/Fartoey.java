@@ -1,9 +1,8 @@
-package no.nav.registre.syntrest.domain.amelding;
+package no.nav.registre.syntrest.domain.aareg.amelding;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,18 +16,14 @@ import lombok.Setter;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Permisjon {
+public class Fartoey {
 
-    @JsonAlias({"STARTDATO", "startdato"})
-    private String startdato;
+    @JsonAlias({"SKIPSREGISTER", "skipsregister"})
+    private String skipsregister;
 
-    @JsonAlias({"SLUTTDATO", "sluttdato"})
-    private String sluttdato;
+    @JsonAlias({"SKIPSTYPE", "skipstype"})
+    private String skipstype;
 
-    @JsonAlias({"PERMISJONSPROSENT", "permisjonsprosent"})
-    private float permisjonsprosent;
-
-    @JsonAlias({"BESKRIVELSE", "beskrivelse"})
-    private String beskrivelse;
-
+    @JsonAlias({"FARTSOMRAADE", "fartsomraade"})
+    private String fartsomraade;
 }

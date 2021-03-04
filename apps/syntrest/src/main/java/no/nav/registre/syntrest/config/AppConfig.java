@@ -24,6 +24,7 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -95,6 +96,11 @@ public class AppConfig {
     }
 
     @Bean
+    WebClient.Builder webClientBuilder() {
+        return WebClient.builder();
+    }
+
+    @Bean
     @DependsOn("apiClient")
     CustomObjectsApi customObjectsApi() {
         CustomObjectsApi api = new CustomObjectsApi();
@@ -108,7 +114,7 @@ public class AppConfig {
     @Bean
     @DependsOn({"restTemplateBuilder", "customObjectsApi"})
     public KubernetesController kubernetesController() {
-        return new KubernetesController(restTemplateBuilder(), customObjectsApi(), github_username, github_password,
+        return new KubernetesController(customObjectsApi(), github_username, github_password,
                 proxyUrl, proxyPort, isAliveUrl, dockerImagePath, maxRetries, retryDelay);
     }
 

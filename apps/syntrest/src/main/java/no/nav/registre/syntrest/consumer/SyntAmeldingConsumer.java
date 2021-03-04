@@ -4,7 +4,7 @@ import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdHistorikkCommand;
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdStartCommand;
-import no.nav.registre.syntrest.domain.amelding.ArbeidsforholdAmelding;
+import no.nav.registre.syntrest.domain.aareg.amelding.ArbeidsforholdAmelding;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 
 import org.springframework.web.client.RestClientException;

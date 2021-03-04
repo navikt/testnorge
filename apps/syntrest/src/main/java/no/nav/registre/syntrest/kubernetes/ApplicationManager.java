@@ -61,7 +61,7 @@ public class ApplicationManager {
         try {
             kubernetesController.takedownImage(appId);
             activeApplications.remove(appId);
-        } catch (ApiException ignored) {
+        } catch (ApiException ignored
         }
     }
 
