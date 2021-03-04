@@ -63,6 +63,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
 
             TpsfBestilling tpsfBestilling = nonNull(bestKriterier.getTpsf()) ?
                     mapperFacade.map(bestKriterier.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
+            tpsfBestilling.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());
 
             dollyForkJoinPool.submit(() -> {
                 bestilling.getGruppe().getTestidenter().parallelStream()

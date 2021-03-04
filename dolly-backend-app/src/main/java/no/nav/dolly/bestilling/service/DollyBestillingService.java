@@ -170,6 +170,7 @@ public class DollyBestillingService {
             BestillingProgress progress = new BestillingProgress(bestilling.getId(), bestilling.getIdent());
             TpsfBestilling tpsfBestilling = nonNull(request.getTpsf()) ? mapperFacade.map(request.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
             tpsfBestilling.setAntall(1);
+            tpsfBestilling.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());
 
             RsOppdaterPersonResponse oppdaterPersonResponse = tpsfService.endreLeggTilPaaPerson(bestilling.getIdent(), tpsfBestilling);
             sendIdenterTilTPS(request.getEnvironments(),

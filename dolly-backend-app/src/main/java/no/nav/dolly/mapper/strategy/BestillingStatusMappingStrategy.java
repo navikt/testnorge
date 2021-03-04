@@ -1,5 +1,22 @@
 package no.nav.dolly.mapper.strategy;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.CustomMapper;
+import ma.glasnost.orika.MapperFactory;
+import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
+import no.nav.dolly.mapper.MappingStrategy;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import static no.nav.dolly.mapper.BestillingAaregStatusMapper.buildAaregStatusMap;
 import static no.nav.dolly.mapper.BestillingArenaforvalterStatusMapper.buildArenaStatusMap;
 import static no.nav.dolly.mapper.BestillingBrregStubStatusMapper.buildBrregStubStatusMap;
@@ -17,23 +34,6 @@ import static no.nav.dolly.mapper.BestillingSykemeldingStatusMapper.buildSykemel
 import static no.nav.dolly.mapper.BestillingTpsfStatusMapper.buildTpsfStatusMap;
 import static no.nav.dolly.mapper.BestillingUdiStubStatusMapper.buildUdiStubStatusMap;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import org.springframework.stereotype.Component;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import ma.glasnost.orika.CustomMapper;
-import ma.glasnost.orika.MapperFactory;
-import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
-import no.nav.dolly.mapper.MappingStrategy;
 
 @Slf4j
 @Component
@@ -86,6 +86,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .tpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()))
                                 .importFraTps(mapTpsImport(bestilling.getTpsImport()))
                                 .kildeMiljoe(bestilling.getKildeMiljoe())
+                                .navSyntetiskIdent(bestilling.getNavSyntetiskIdent())
                                 .build());
                         bestillingStatus.setBruker(mapperFacade.map(bestilling.getBruker(), RsBrukerUtenFavoritter.class));
                     }

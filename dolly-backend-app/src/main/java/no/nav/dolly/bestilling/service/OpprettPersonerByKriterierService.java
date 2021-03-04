@@ -64,6 +64,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
             TpsfBestilling tpsfBestilling = nonNull(bestKriterier.getTpsf()) ?
                     mapperFacade.map(bestKriterier.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
             tpsfBestilling.setAntall(1);
+            tpsfBestilling.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());
 
             dollyForkJoinPool.submit(() -> {
                 Collections.nCopies(bestilling.getAntallIdenter(), true).parallelStream()

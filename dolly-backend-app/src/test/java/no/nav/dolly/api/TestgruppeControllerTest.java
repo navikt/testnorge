@@ -1,21 +1,5 @@
 package no.nav.dolly.api;
 
-import static java.util.Collections.singletonList;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.bestilling.service.OpprettPersonerByKriterierService;
@@ -31,6 +15,22 @@ import no.nav.dolly.provider.api.TestgruppeController;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.PersonService;
 import no.nav.dolly.service.TestgruppeService;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.List;
+
+import static java.util.Collections.singletonList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TestgruppeControllerTest {
@@ -115,7 +115,7 @@ public class TestgruppeControllerTest {
 
         Bestilling bestilling = Bestilling.builder().id(BESTILLING_ID).build();
 
-        when(bestillingService.saveBestilling(eq(GRUPPE_ID), any(RsDollyBestilling.class), any(RsTpsfUtvidetBestilling.class), eq(ant), eq(null))).thenReturn(bestilling);
+        when(bestillingService.saveBestilling(eq(GRUPPE_ID), any(RsDollyBestilling.class), any(RsTpsfUtvidetBestilling.class), eq(ant), eq(null), eq(null))).thenReturn(bestilling);
 
         testgruppeController.opprettIdentBestilling(GRUPPE_ID, dollyBestillingRequest);
         verify(opprettPersonerByKriterierService).executeAsync(bestilling);

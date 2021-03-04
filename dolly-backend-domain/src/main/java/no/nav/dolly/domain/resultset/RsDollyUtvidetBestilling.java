@@ -13,4 +13,6 @@ import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 public class RsDollyUtvidetBestilling extends RsDollyBestilling {
 
     private RsTpsfUtvidetBestilling tpsf;
+
+    private Boolean navSyntetiskIdent;
 }

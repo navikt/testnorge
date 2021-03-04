@@ -13,4 +13,6 @@ import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisMedSivilstandBestilling;
 public class RsDollyBestillingLeggTilPaaGruppe extends RsDollyBestilling {
 
     private RsTpsfBasisMedSivilstandBestilling tpsf;
+
+    private Boolean navSyntetiskIdent;
 }

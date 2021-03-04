@@ -100,6 +100,9 @@ public class Bestilling {
     @Column(name = "KILDE_MILJOE")
     private String kildeMiljoe;
 
+    @Column(name = "NAV_SYNTETISK_IDENT")
+    private Boolean navSyntetiskIdent;
+
     @OneToMany(mappedBy = "bestillingId", fetch = FetchType.LAZY)
     private List<BestillingProgress> progresser;
 

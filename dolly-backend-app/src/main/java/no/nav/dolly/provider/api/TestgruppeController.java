@@ -132,8 +132,8 @@ public class TestgruppeController {
     @PostMapping("/{gruppeId}/bestilling")
     @Operation(description = "Opprett berikede testpersoner basert på fødselsdato, kjønn og identtype")
     public RsBestillingStatus opprettIdentBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingRequest request) {
-        Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request, request.getTpsf(), request.getAntall(), null);
-
+        Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request, request.getTpsf(),
+                request.getAntall(), null, request.getNavSyntetiskIdent());
         opprettPersonerByKriterierService.executeAsync(bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
@@ -144,7 +144,7 @@ public class TestgruppeController {
     @PostMapping("/{gruppeId}/bestilling/fraidenter")
     public RsBestillingStatus opprettIdentBestillingFraIdenter(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingFraIdenterRequest request) {
         Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request, request.getTpsf(),
-                request.getOpprettFraIdenter().size(), request.getOpprettFraIdenter());
+                request.getOpprettFraIdenter().size(), request.getOpprettFraIdenter(), null);
 
         opprettPersonerFraIdenterMedKriterierService.executeAsync(bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);

@@ -143,6 +143,7 @@ public class BestillingService {
                         .gruppe(testident.getTestgruppe())
                         .ident(ident)
                         .antallIdenter(1)
+                        .navSyntetiskIdent(request.getNavSyntetiskIdent())
                         .sistOppdatert(now())
                         .miljoer(join(",", request.getEnvironments()))
                         .tpsfKriterier(toJson(request.getTpsf()))
@@ -154,7 +155,7 @@ public class BestillingService {
 
     @Transactional
     public Bestilling saveBestilling(Long gruppeId, RsDollyBestilling request, RsTpsfBasisBestilling tpsf, Integer antall,
-            List<String> opprettFraIdenter) {
+            List<String> opprettFraIdenter, Boolean navSyntetiskIdent) {
         Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
         fixAaregAbstractClassProblem(request.getAareg());
         fixPdlAbstractClassProblem(request.getPdlforvalter());
@@ -162,6 +163,7 @@ public class BestillingService {
                 Bestilling.builder()
                         .gruppe(gruppe)
                         .antallIdenter(antall)
+                        .navSyntetiskIdent(navSyntetiskIdent)
                         .sistOppdatert(now())
                         .miljoer(join(",", request.getEnvironments()))
                         .tpsfKriterier(toJson(tpsf))
@@ -251,6 +253,7 @@ public class BestillingService {
                         .sistOppdatert(now())
                         .bruker(brukerService.fetchOrCreateBruker(getUserId()))
                         .antallIdenter(gruppe.getTestidenter().size())
+                        .navSyntetiskIdent(request.getNavSyntetiskIdent())
                         .bestKriterier(getBestKriterier(request))
                         .build());
     }

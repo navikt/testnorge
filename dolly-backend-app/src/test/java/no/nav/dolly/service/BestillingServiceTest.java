@@ -1,17 +1,18 @@
 package no.nav.dolly.service;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.jpa.BestillingKontroll;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
+import no.nav.dolly.exceptions.ConstraintViolationException;
+import no.nav.dolly.exceptions.DollyFunctionalException;
+import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.BestillingKontrollRepository;
+import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.repository.TestgruppeRepository;
 import org.apache.http.entity.ContentType;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,19 +27,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
-import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.jpa.BestillingKontroll;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
-import no.nav.dolly.exceptions.ConstraintViolationException;
-import no.nav.dolly.exceptions.DollyFunctionalException;
-import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.BestillingKontrollRepository;
-import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.repository.TestgruppeRepository;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BestillingServiceTest {
@@ -121,7 +121,7 @@ public class BestillingServiceTest {
         when(brukerService.fetchOrCreateBruker(BRUKERID)).thenReturn(Bruker.builder().build());
 
         bestillingService.saveBestilling(gruppeId, RsDollyBestilling.builder().environments(miljoer).build(),
-                RsTpsfUtvidetBestilling.builder().build(), antallIdenter, null);
+                RsTpsfUtvidetBestilling.builder().build(), antallIdenter, null, null);
 
         ArgumentCaptor<Bestilling> argCap = ArgumentCaptor.forClass(Bestilling.class);
         verify(bestillingRepository).save(argCap.capture());
