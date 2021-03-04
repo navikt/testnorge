@@ -19,7 +19,8 @@ export const BVOptions = ({
 } = {}) => {
 	let initialValues = {
 		antall,
-		environments: []
+		environments: [],
+		navSyntetiskIdent: false
 	}
 
 	let initialValuesOrganisasjon = {

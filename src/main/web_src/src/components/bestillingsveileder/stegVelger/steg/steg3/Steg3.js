@@ -5,6 +5,7 @@ import Bestillingskriterier from '~/components/bestilling/sammendrag/kriterier/K
 import { MiljoVelger } from '~/components/miljoVelger/MiljoVelger'
 import { MalForm } from './MalForm'
 import { BestillingInfoboks } from './BestillingInfoboks'
+import { IdentVelger } from './IdentVelger'
 
 export const Steg3 = ({ formikBag }) => {
 	return (
@@ -15,6 +16,7 @@ export const Steg3 = ({ formikBag }) => {
 					<BestillingInfoboks bestillingsdata={formikBag.values} />
 				</div>
 			)}
+			<IdentVelger bestillingsdata={formikBag.values} formikBag={formikBag} />
 			<MiljoVelger bestillingsdata={formikBag.values} heading="Hvilke miljøer vil du opprette i?" />
 			{!formikBag.values.hasOwnProperty('organisasjon') && <MalForm formikBag={formikBag} />}
 		</div>
