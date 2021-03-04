@@ -34,6 +34,7 @@ applications:
   person-search-service: dev-fss.dolly.person-search-service
   mn-original-populasjon: dev-fss.dolly.mn-original-populasjon
   testnav-statistikk-service: dev-gcp.dolly.testnav-statistikk-service
+  testnorge-batch-adeo-proxy: dev-fss.dolly.testnorge-batch-adeo-proxy
 
 zuul:
   routes:
