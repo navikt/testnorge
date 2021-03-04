@@ -21,3 +21,5 @@ zuul:
       path: /api/v1/profil/**
       url: http://testnorge-profil-api.dolly.svc.cluster.local/api/v1/profil
       sensitiveHeaders: Cookie,Set-Cookie
+  host:
+    socket-timeout-millis: 30000
