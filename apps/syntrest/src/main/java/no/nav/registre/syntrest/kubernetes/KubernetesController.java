@@ -42,7 +42,7 @@ public class KubernetesController {
     private static final int TIMEOUT = 240_000;
     private final String GROUP = "nais.io";
     private final String VERSION = "v1alpha1";
-    private final String NAMESPACE = "q2";
+    private final String NAMESPACE = "dolly";
     private final String PLURAL = "applications";
     private final String manifestPath;
     private final UriTemplate isAliveUri;
