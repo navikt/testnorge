@@ -53,7 +53,7 @@ public class KubernetesControllerTest {
 
     private String GROUP = "nais.io",
             VERSION = "v1alpha1",
-            NAMESPACE = "q2",
+            NAMESPACE = "dolly",
             PLURAL = "applications";
 
     @Before
