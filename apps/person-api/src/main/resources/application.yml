@@ -14,7 +14,7 @@ system:
     tpsForvalterenUrl: https://tps-forvalteren.nais.preprod.local/api
 
 logging:
-  config: "classpath:logback.xml"
+  config: "classpath:logback-spring.xml"
 
 sts:
   token:
