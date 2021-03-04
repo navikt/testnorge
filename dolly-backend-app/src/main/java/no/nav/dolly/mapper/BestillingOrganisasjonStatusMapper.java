@@ -27,7 +27,11 @@ public class BestillingOrganisasjonStatusMapper {
 
         Map<String, List<String>> statusMap = new HashMap<>();
 
-        List.of(progress.getOrganisasjonsforvalterStatus().split(",[qQtTuU]")).forEach(status -> {
+        List.of(progress.getOrganisasjonsforvalterStatus()
+                .replace(",q", "$q")
+                .replace(",t", "$t")
+                .replace(",u", "$u")
+                .split("\\$")).forEach(status -> {
             String[] environMsg = status.split(":", 2);
             if (environMsg.length < 2) {
                 return;
