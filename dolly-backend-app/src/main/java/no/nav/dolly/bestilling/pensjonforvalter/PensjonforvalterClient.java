@@ -1,15 +1,5 @@
 package no.nav.dolly.bestilling.pensjonforvalter;
 
-import static java.util.Objects.nonNull;
-import static java.util.stream.Collectors.joining;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -23,6 +13,16 @@ import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.TpsfPersonCache;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.joining;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 
 @Slf4j
 @Service
@@ -40,29 +40,29 @@ public class PensjonforvalterClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        StringBuilder status = new StringBuilder();
+        if (nonNull(bestilling.getPensjonforvalter())) {
 
-        Set<String> bestilteMiljoer = new HashSet<>(bestilling.getEnvironments());
-        Set<String> tilgjengeligeMiljoer = pensjonforvalterConsumer.getMiljoer();
-        bestilteMiljoer.retainAll(tilgjengeligeMiljoer);
-        if (!bestilteMiljoer.isEmpty()) {
+            Set<String> bestilteMiljoer = new HashSet<>(bestilling.getEnvironments());
+            Set<String> tilgjengeligeMiljoer = pensjonforvalterConsumer.getMiljoer();
+            bestilteMiljoer.retainAll(tilgjengeligeMiljoer);
 
-            opprettPerson(tpsPerson, bestilteMiljoer, status);
+            StringBuilder status = new StringBuilder();
 
-            if (nonNull(bestilling.getPensjonforvalter())) {
+            if (!bestilteMiljoer.isEmpty()) {
+
+                opprettPerson(tpsPerson, bestilteMiljoer, status);
                 lagreInntekt(bestilling.getPensjonforvalter(), tpsPerson, bestilteMiljoer, status);
+
+                status.append('$')
+                        .append(PENSJON_FORVALTER)
+                        .append("#Feil= Bestilling ble ikke sendt til Pensjonsforvalter (PEN) da tilgjengelig(e) miljø(er) [")
+                        .append(tilgjengeligeMiljoer.stream().collect(joining(",")))
+                        .append("] ikke er valgt");
             }
 
-        } else if (nonNull(bestilling.getPensjonforvalter())) {
-            status.append('$')
-                    .append(PENSJON_FORVALTER)
-                    .append("#Feil= Bestilling ble ikke sendt til Pensjonsforvalter (PEN) da tilgjengelig(e) miljø(er) [")
-                    .append(tilgjengeligeMiljoer.stream().collect(joining(",")))
-                    .append("] ikke er valgt");
-        }
-
-        if (status.length() > 1) {
-            progress.setPensjonforvalterStatus(status.substring(1));
+            if (status.length() > 1) {
+                progress.setPensjonforvalterStatus(status.substring(1));
+            }
         }
     }
 
