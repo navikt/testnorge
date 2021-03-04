@@ -21,9 +21,6 @@ public class GetQueueItemCommand implements Callable<ItemDTO> {
     @Override
     public ItemDTO call() {
         log.info("Henter jobb fra Jenkins med id: {}.", itemId);
-
-        log.info("{}:{}", crumb.getCrumbRequestField(), crumb.getCrumb());
-
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder.path("/queue/item/{itemId}/api/json").build(itemId))
