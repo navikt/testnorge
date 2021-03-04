@@ -82,6 +82,7 @@ public class StartBEREG007Command implements Callable<Long> {
             var id = webClient
                     .post()
                     .uri("/view/Registre/job/Start_BEREG007/buildWithParameters")
+                    .header("Jenkins-Crumb", crumb)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .body(body)
