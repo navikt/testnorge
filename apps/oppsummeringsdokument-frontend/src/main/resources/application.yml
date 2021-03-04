@@ -15,7 +15,6 @@ zuul:
 
 consumers:
   oppsummeringsdokument-service:
-    client-id: 411963e3-5693-4ae8-8a2b-4d42dbeed5ee
     cluster: dev-gcp
     namespace: dolly
     name: oppsummeringsdokument-service

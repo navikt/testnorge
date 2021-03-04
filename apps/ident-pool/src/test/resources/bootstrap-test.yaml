@@ -1,0 +1,6 @@
+spring:
+  cloud:
+    vault:
+      enabled: false
+  flyway:
+    enabled: false

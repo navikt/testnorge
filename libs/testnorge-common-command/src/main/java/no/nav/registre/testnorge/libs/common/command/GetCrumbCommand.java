@@ -18,16 +18,12 @@ public class GetCrumbCommand implements Callable<JenkinsCrumb> {
 
     @Override
     public JenkinsCrumb call() {
-        log.info("Henter crumb issuer fra jenkins");
-        JenkinsCrumb crumb = webClient
+        return webClient
                 .get()
                 .uri("/crumbIssuer/api/json")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(JenkinsCrumb.class)
                 .block();
-
-        log.info("Hentet crumb {}.", crumb);
-        return crumb;
     }
 }

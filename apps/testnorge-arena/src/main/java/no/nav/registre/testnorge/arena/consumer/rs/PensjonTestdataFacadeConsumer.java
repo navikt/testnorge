@@ -1,14 +1,14 @@
 package no.nav.registre.testnorge.arena.consumer.rs;
 
-import no.nav.registre.testnorge.arena.consumer.rs.command.PostPensjonTestdataInntektCommand;
-import no.nav.registre.testnorge.arena.consumer.rs.command.PostPensjonTestdataPersonCommand;
+import no.nav.registre.testnorge.arena.consumer.rs.command.pensjon.PostPensjonTestdataInntektCommand;
+import no.nav.registre.testnorge.arena.consumer.rs.command.pensjon.PostPensjonTestdataPersonCommand;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.registre.testnorge.arena.consumer.rs.request.PensjonTestdataInntekt;
-import no.nav.registre.testnorge.arena.consumer.rs.request.PensjonTestdataPerson;
-import no.nav.registre.testnorge.arena.consumer.rs.response.PensjonTestdataResponse;
+import no.nav.registre.testnorge.arena.consumer.rs.request.pensjon.PensjonTestdataInntekt;
+import no.nav.registre.testnorge.arena.consumer.rs.request.pensjon.PensjonTestdataPerson;
+import no.nav.registre.testnorge.arena.consumer.rs.response.pensjon.PensjonTestdataResponse;
 import no.nav.registre.testnorge.arena.security.TokenService;
 
 @Component

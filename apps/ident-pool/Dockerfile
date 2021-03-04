@@ -1,6 +1,8 @@
 FROM navikt/java:11
 LABEL maintainer="Team Dolly"
 
-ADD ident-pool-app/build/libs/ident-pool-app.jar /app/app.jar
+ENV JAVA_OPTS="-Dspring.profiles.active=prod"
+
+ADD build/libs/app.jar /app/app.jar
 
 EXPOSE 8080

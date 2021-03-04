@@ -1,0 +1,7 @@
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
+
+elasticsearch:
+  client:
+    host: localhost
+    port: 9200

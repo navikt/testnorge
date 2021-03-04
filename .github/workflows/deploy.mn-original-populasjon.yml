@@ -2,7 +2,6 @@ name: Deploy mn-original-populasjon
 
 on:
   push:
-    branches: master
     paths:
       - apps/mn-original-populasjon/**
       - libs/testnorge-core/**

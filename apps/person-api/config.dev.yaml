@@ -15,6 +15,7 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: testnorge-opprett-person-pdl
         - application: team-dolly-lokal-app
           cluster: dev-fss
         - application: orkestratoren

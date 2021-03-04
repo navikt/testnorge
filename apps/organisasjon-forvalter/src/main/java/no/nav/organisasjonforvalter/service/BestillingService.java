@@ -13,9 +13,11 @@ import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.Adres
 import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.AdresseType;
 import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.OrganisasjonRequest;
 import no.nav.organisasjonforvalter.provider.rs.responses.BestillingResponse;
+import no.nav.organisasjonforvalter.util.CurrentAuthentication;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -51,6 +53,7 @@ public class BestillingService {
         organisasjon.setOrganisasjonsnavn(organisasjonNavnConsumer.getOrgName());
         organisasjon.setUnderenheter(mapperFacade.mapAsList(organisasjon.getUnderenheter(), Organisasjon.class));
         organisasjon.setParent(parent);
+        organisasjon.setBrukerId(CurrentAuthentication.getUserId());
 
         if (orgRequest.getUnderenheter().isEmpty()) {
             organisasjonRepository.save(organisasjon);
@@ -70,6 +73,7 @@ public class BestillingService {
 
         orgRequest.getAdresser().forEach(adresse -> {
             if (adresse.getAdresselinjer().stream().noneMatch(StringUtils::isNotBlank)) {
+                adresse.setAdresselinjer(new ArrayList<>());
                 mapperFacade.map(tpsfAdresseConsumer.getAdresser(adresse.getPostnr(), adresse.getKommunenr()), adresse);
             }
         });

@@ -1,0 +1,3 @@
+alter table opphold_status
+drop column avslag_grunnlag_overig,
+drop column avslag_grunnlag_tillatelse_grunnlageos;

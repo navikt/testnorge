@@ -3,6 +3,7 @@ package no.nav.registre.testnorge.opprettpersonpdl.domain;
 import lombok.Value;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,9 +33,6 @@ public class Person {
     List<String> tags;
     Adresse adresse;
 
-    /**
-     * TODO: Sett tags i PDL
-     */
     public PersonDTO toDTO() {
         return PersonDTO
                 .builder()
@@ -44,6 +42,7 @@ public class Person {
                 .mellomnavn(mellomnavn)
                 .etternavn(etternavn)
                 .adresse(adresse != null ? adresse.toDTO() : null)
+                .tags(new HashSet<>(tags))
                 .build();
     }
 

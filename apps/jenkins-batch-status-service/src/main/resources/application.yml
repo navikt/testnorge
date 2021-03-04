@@ -14,10 +14,8 @@ consumers:
     name: testnorge-batch-adeo-proxy
     cluster: dev-fss
     namespace: dolly
-    clientId: cbdc5022-17ed-48fd-9916-857e5df1e88b
   organisasjon-bestilling-service:
     url: https://organisasjon-bestilling-service.dev.intern.nav.no
     name: organisasjon-bestilling-service
     cluster: dev-gcp
     namespace: dolly
-    clientId: 213b750d-7a71-40bb-ada6-81530e61dcd5

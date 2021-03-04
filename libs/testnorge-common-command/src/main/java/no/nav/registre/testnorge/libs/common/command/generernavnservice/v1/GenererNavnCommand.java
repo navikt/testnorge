@@ -1,15 +1,13 @@
 package no.nav.registre.testnorge.libs.common.command.generernavnservice.v1;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-
-import java.util.concurrent.Callable;
-
 import no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO;
-import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
+
+import java.time.Duration;
+import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
 public class GenererNavnCommand implements Callable<NavnDTO[]> {
@@ -25,6 +23,7 @@ public class GenererNavnCommand implements Callable<NavnDTO[]> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .retrieve()
                 .bodyToMono(NavnDTO[].class)
+                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(10)))
                 .block();
     }
 

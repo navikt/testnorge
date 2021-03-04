@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
+import no.nav.registre.testnorge.person.consumer.dto.pdl.FoedselDTO;
 import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.Foedsel;
 import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.Folkeregisteridentifikator;
 import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.HentPerson;
@@ -83,5 +84,21 @@ public class Person {
                 .adresse(adresse != null ? adresse.toDto() : null)
                 .tags(tags)
                 .build();
+    }
+
+    public Optional<FoedselDTO> toFoedselDTO(String kilde) {
+        if (foedselsdato == null) {
+            return Optional.empty();
+        }
+
+        return Optional.of(
+                FoedselDTO
+                        .builder()
+                        .foedselsaar(foedselsdato.getYear())
+                        .foedselsdato(foedselsdato)
+                        .kilde(kilde)
+                        .master("FREG")
+                        .build()
+        );
     }
 }

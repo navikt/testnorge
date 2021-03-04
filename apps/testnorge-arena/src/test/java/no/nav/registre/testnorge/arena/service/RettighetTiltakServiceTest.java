@@ -6,10 +6,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Random;
 
 import no.nav.registre.testnorge.arena.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.testnorge.arena.consumer.rs.TiltakSyntConsumer;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetSyntRequest;
+import no.nav.registre.testnorge.arena.consumer.rs.request.synt.SyntRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTilleggRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.util.ConsumerUtils;
 import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
@@ -62,6 +63,9 @@ public class RettighetTiltakServiceTest {
     @Mock
     private ArbeidssoekerUtils arbeidssoekerUtils;
 
+    @Mock
+    private Random rand;
+
     @InjectMocks
     private RettighetTiltakService rettighetTiltakService;
 
@@ -71,12 +75,12 @@ public class RettighetTiltakServiceTest {
     private List<String> identer;
     private NyttVedtakTiltak tiltakMedTilDatoFremITid;
     private NyttVedtakTiltak tiltakMedTilDatoLikDagens;
-    private List<RettighetSyntRequest> syntRequest;
+    private List<SyntRequest> syntRequest;
 
     @Before
     public void setUp() {
         syntRequest = new ArrayList<>(Collections.singletonList(
-                RettighetSyntRequest.builder()
+                SyntRequest.builder()
                         .fraDato(LocalDate.now().toString())
                         .tilDato(LocalDate.now().toString())
                         .utfall(UTFALL_JA)
@@ -122,7 +126,6 @@ public class RettighetTiltakServiceTest {
         when(tiltakUtils.canSetDeltakelseTilGjennomfoeres(tiltakMedTilDatoFremITid, Collections.singletonList(tiltakMedTilDatoFremITid))).thenReturn(true);
         when(tiltakUtils.getVedtakForTiltaksdeltakelseRequest(tiltakMedTilDatoFremITid)).thenReturn(tiltakMedTilDatoFremITid);
         when(tiltakUtils.getFoersteEndringerDeltakerstatus(anyString())).thenReturn(Collections.singletonList(Deltakerstatuser.GJENN.toString()));
-        when(arbeidssoekerUtils.opprettArbeidssoekerTiltak(anyList(), anyString())).thenReturn(Collections.emptyList());
 
         rettighetTiltakService.opprettTiltaksdeltakelse(avspillergruppeId, miljoe, antallNyeIdenter);
 
@@ -147,7 +150,6 @@ public class RettighetTiltakServiceTest {
         when(tiltakUtils.getVedtakForTiltaksdeltakelseRequest(tiltakMedTilDatoLikDagens)).thenReturn(tiltakMedTilDatoLikDagens);
         when(tiltakUtils.getFoersteEndringerDeltakerstatus(anyString())).thenReturn(new ArrayList<>(Collections.singletonList(Deltakerstatuser.GJENN.toString())));
         when(tiltakUtils.getAvsluttendeDeltakerstatus(tiltakMedTilDatoLikDagens, Collections.singletonList(tiltakMedTilDatoLikDagens))).thenReturn(Deltakerstatuser.FULLF);
-        when(arbeidssoekerUtils.opprettArbeidssoekerTiltak(anyList(), anyString())).thenReturn(Collections.emptyList());
 
         rettighetTiltakService.opprettTiltaksdeltakelse(avspillergruppeId, miljoe, antallNyeIdenter);
 

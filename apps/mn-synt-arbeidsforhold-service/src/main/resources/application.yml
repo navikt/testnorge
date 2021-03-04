@@ -8,7 +8,6 @@ consumers:
     name: testnorge-arbeidsforhold-api
     url: https://testnorge-arbeidsforhold-api.dev.adeo.no
   mnorganisasjonapi:
-    clientId: a9109f54-8cae-4af2-98e3-8c56a1f5c9ad
     cluster: dev-fss
     namespace: dolly
     name: mn-organisasjon-api
@@ -18,7 +17,6 @@ consumers:
   syntrest:
     url: https://syntrest.dev.adeo.no
   oppsummeringsdokument-service:
-    clientId: 411963e3-5693-4ae8-8a2b-4d42dbeed5ee
     cluster: dev-gcp
     namespace: dolly
     name: oppsummeringsdokument-service

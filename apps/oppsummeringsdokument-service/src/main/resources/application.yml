@@ -15,7 +15,6 @@ spring:
 
 consumers.aareg-synt-services:
   url: https://aareg-synt-services-proxy.dev-fss-pub.nais.io
-  client-id: 7cc4b9d8-708e-47bb-8ea4-dc9687c76bc3
   cluster: dev-fss
   namespace: dolly
   name: aareg-synt-services-proxy

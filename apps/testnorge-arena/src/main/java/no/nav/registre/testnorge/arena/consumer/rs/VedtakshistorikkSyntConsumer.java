@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.arena.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.arena.consumer.rs.command.HentVedtakshistorikkCommand;
+import no.nav.registre.testnorge.arena.consumer.rs.command.synt.HentVedtakshistorikkCommand;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +21,7 @@ public class VedtakshistorikkSyntConsumer {
 
     // Krav fra Arena et at tidligste dato(minimumsdato) for innsending av vedtakshistorikk er 01.10.2010.
     // Har satt datoen nå til 01.06.2017 siden Arena mangler støtte for tiltakspenger bak i tid.
-    private static final LocalDate MINIMUM_DATE = LocalDate.of(2017, 6, 1);
+    private static final LocalDate MINIMUM_DATE = LocalDate.of(2017, 1, 1);
 
     private final WebClient webClient;
     private Random rand;

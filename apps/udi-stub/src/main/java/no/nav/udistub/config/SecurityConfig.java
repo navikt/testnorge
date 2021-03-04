@@ -14,7 +14,7 @@ import java.util.List;
 
 @EnableWebSecurity
 @Configuration
-@Profile("!itest")
+@Profile({"prod","local"})
 @Order(1)
 public class SecurityConfig extends OAuth2ResourceServerConfiguration {
 

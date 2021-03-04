@@ -79,7 +79,7 @@ public class BrukereControllerTest {
     @Test
     public void registrerIdentIArenaForvalter() {
         doReturn(singleResponse).when(brukereService)
-                .opprettArbeidssoeker(fnr1, avspillegruppeId, miljoe);
+                .opprettArbeidssoeker(fnr1, avspillegruppeId, miljoe, false);
 
         ResponseEntity<NyeBrukereResponse> response = brukereController.registrerBrukereIArenaForvalter(fnr1, syntetiserArenaRequest);
         assertThat(response.getBody().getArbeidsoekerList()).hasSize(1);
@@ -92,7 +92,7 @@ public class BrukereControllerTest {
                 .opprettArbeidssoekereUtenVedtak(1, avspillegruppeId, miljoe))
                 .thenReturn(oppfoelgingResponse);
 
-        ResponseEntity<Map<String,NyeBrukereResponse>> result = brukereController.registrerBrukereIArenaForvalterMedOppfoelging(syntetiserArenaRequestSingle);
+        ResponseEntity<Map<String, NyeBrukereResponse>> result = brukereController.registrerBrukereIArenaForvalterMedOppfoelging(syntetiserArenaRequestSingle);
         assertThat(result.getBody().keySet()).hasSize(1);
         assertThat(result.getBody().keySet().contains(fnr1)).isTrue();
         assertThat(result.getBody().get(fnr1).getArbeidsoekerList().get(0).getPersonident()).isEqualTo(fnr1);

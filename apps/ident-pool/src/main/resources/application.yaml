@@ -1,0 +1,31 @@
+application:
+  name: ident-pool
+  version: dummy
+
+### TPS ###
+generer:
+  identer:
+    enable: true
+
+### PPRODSJEKK FOR EKSISTENS ###
+tps-forvalteren:
+  rest:
+    api:
+      url: https://tps-forvalteren.dev.adeo.no
+
+### NAVNEPOOL ###
+navnepool:
+  fornavn:
+    file: navnepool/adjektiv_fornavn.csv
+  etternavn:
+    file: navnepool/substantiv_etternavn.csv
+
+### METRICS ###
+management:
+  endpoints:
+    web:
+      base-path: /internal
+    exposure:
+      include: prometheus
+
+

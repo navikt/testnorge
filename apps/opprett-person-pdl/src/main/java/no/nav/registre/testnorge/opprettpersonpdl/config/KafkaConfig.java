@@ -52,28 +52,6 @@ public class KafkaConfig {
     public String password;
 
     @Bean
-    public ProducerFactory<String, Application> applicationProducerFactory() {
-        Map<String, Object> props = new HashMap<>();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
-        props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaregistryServers);
-        props.put(ProducerConfig.ACKS_CONFIG, "1");
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
-
-        props.put(SaslConfigs.SASL_MECHANISM, "PLAIN");
-        props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_PLAINTEXT");
-        props.put(SaslConfigs.SASL_JAAS_CONFIG, "org.apache.kafka.common.security.plain.PlainLoginModule required username=" + username + " password=" + password + ";");
-
-        String navTruststorePath = System.getenv("NAV_TRUSTSTORE_PATH");
-        if (navTruststorePath != null) {
-            props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_SSL");
-            props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, new File(navTruststorePath).getAbsolutePath());
-            props.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, System.getenv("NAV_TRUSTSTORE_PASSWORD"));
-        }
-        return new DefaultKafkaProducerFactory<>(props);
-    }
-
-    @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         InetSocketAddress inetSocketAddress = new InetSocketAddress(0);
         Map<String, Object> props = new HashMap<>();

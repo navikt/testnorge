@@ -9,7 +9,6 @@ spring:
 consumers:
   profil-api:
     url: http://testnorge-profil-api.dolly.svc.cluster.local
-    clientId: e8e0772f-8204-4b88-88ad-233d62863f47
 
 testnorge:
   analyse:

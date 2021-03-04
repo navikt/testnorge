@@ -3,11 +3,7 @@ package no.nav.organisasjonforvalter.consumer;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import no.nav.registre.testnorge.libs.common.command.generernavnservice.v1.GenererNavnCommand;
 import no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
@@ -91,6 +87,4 @@ public class OrganisasjonNavnConsumer {
         List<String> orgName = getOrgName(1);
         return orgName.isEmpty() ? null : orgName.get(0);
     }
-
-
 }

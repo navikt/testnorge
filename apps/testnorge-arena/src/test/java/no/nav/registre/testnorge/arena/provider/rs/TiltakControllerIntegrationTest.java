@@ -3,8 +3,8 @@ package no.nav.registre.testnorge.arena.provider.rs;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import no.nav.registre.testnorge.arena.consumer.rs.response.AktoerInnhold;
-import no.nav.registre.testnorge.arena.consumer.rs.response.AktoerResponse;
+import no.nav.registre.testnorge.arena.consumer.rs.response.aktoer.AktoerInnhold;
+import no.nav.registre.testnorge.arena.consumer.rs.response.aktoer.AktoerResponse;
 import no.nav.registre.testnorge.arena.provider.rs.request.SyntetiserArenaRequest;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;

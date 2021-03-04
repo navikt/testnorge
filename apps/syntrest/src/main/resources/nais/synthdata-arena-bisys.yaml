@@ -2,9 +2,9 @@
 kind: "Application"
 metadata:
   name: synthdata-arena-bisys
-  namespace: q2
+  namespace: dolly
   labels:
-    team: synt
+    team: dolly
 spec:
   image: "docker.pkg.github.com/navikt/testnorge-syntetiseringspakker/synt_bisys:latest"
   port: 8080
