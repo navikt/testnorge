@@ -2,7 +2,7 @@
 kind: "Application"
 metadata:
   name: synthdata-arena-bisys
-  namespace: q2
+  namespace: dolly
   labels:
     team: synt
 spec:
