@@ -2,7 +2,7 @@
 kind: Application
 metadata:
   name: syntrest
-  namespace: q2
+  namespace: dolly
   labels:
     team: dolly
 spec:
