@@ -2,7 +2,7 @@ name: Deploy dev
 
 on:
   push:
-    branches: utlogging-test
+    branches: master
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/dolly-frontend:${{ github.sha }}
