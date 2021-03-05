@@ -53,7 +53,7 @@ const Utlogging = () => {
 	const continueSession = () => Api.fetch('/session/ping', { method: 'GET' })
 
 	if (milliseconds <= 0) {
-		logout()
+		location.reload()
 	}
 
 	return (
