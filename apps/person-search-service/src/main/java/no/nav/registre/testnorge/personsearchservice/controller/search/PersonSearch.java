@@ -18,4 +18,5 @@ public class PersonSearch {
     StatsborgerskapSearch statsborgerskap;
     AlderSearch alder;
     UtflyttingFraNorgeSearch utflyttingFraNorge;
+    InnflyttingTilNorgeSearch innflyttingTilNorge;
 }
