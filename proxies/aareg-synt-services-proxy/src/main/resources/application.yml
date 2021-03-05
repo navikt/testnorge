@@ -12,6 +12,5 @@ zuul:
     batch-adeo:
       path: /**
       url: https://aareg-synt-services.dev.adeo.no
-
   host:
     socket-timeout-millis: 30000
