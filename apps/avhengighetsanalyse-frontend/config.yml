@@ -38,4 +38,4 @@ spec:
       memory: 1024Mi
   image: {{ image }}
   ingresses:
-    - "https://avhengighetsanalyse-frontend.dev.intern.nav.no"
+    - "https://testnav-avhengighetsanalyse.dev.intern.nav.no"

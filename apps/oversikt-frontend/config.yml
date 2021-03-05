@@ -39,3 +39,4 @@ spec:
       memory: 5000Mi
   ingresses:
     - "https://testnorge-oversikt-frontend.dev.intern.nav.no"
+    - "https://testnav-oversikt.dev.intern.nav.no"
