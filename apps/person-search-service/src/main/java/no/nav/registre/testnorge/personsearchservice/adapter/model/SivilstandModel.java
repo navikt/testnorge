@@ -7,7 +7,7 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class Kjoenn implements WithMetadata {
-    String kjoenn;
+public class SivilstandModel implements WithMetadata{
+    String type;
     Metadata metadata;
 }

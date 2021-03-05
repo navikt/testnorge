@@ -107,6 +107,27 @@ public class PersonSearchAdapter {
                         ScoreMode.Avg
                 )));
 
+        Optional.ofNullable(search.getUtflyttingFraNorge())
+                .ifPresent(value -> {
+                    if(value.getUtfyttet() != null && value.getUtfyttet()) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentPerson.utflyttingFraNorge",
+                                QueryBuilders.existsQuery("hentPerson.utflyttingFraNorge.metadata"),
+                                ScoreMode.Avg
+                        )).must();
+                    }
+                });
+
+        Optional.ofNullable(search.getInnflyttingTilNorge())
+                .ifPresent(value -> {
+                    if(value.getInnflytting() != null && value.getInnflytting()) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentPerson.innflyttingTilNorge",
+                                QueryBuilders.existsQuery("hentPerson.innflyttingTilNorge.metadata"),
+                                ScoreMode.Avg
+                        )).must();
+                    }
+                });
 
         var searchRequest = new SearchRequest();
         searchRequest.indices("pdl-sok");

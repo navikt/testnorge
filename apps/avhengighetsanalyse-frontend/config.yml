@@ -11,7 +11,7 @@ spec:
     application:
       enabled: true
       replyURLs:
-        - "https://avhengighetsanalyse-frontend.dev.intern.nav.no/login/oauth2/code/aad"
+        - "https://testnav-avhengighetsanalyse.dev.intern.nav.no/login/oauth2/code/aad"
         - "http://localhost:8080/login/oauth2/code/aad"
   accessPolicy:
     outbound:
@@ -38,4 +38,4 @@ spec:
       memory: 1024Mi
   image: {{ image }}
   ingresses:
-    - "https://avhengighetsanalyse-frontend.dev.intern.nav.no"
+    - "https://testnav-avhengighetsanalyse.dev.intern.nav.no"

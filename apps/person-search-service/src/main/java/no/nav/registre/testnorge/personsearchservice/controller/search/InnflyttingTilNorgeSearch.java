@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.personsearchservice.adapter.model;
+package no.nav.registre.testnorge.personsearchservice.controller.search;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -7,7 +7,6 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class Identer {
-    String ident;
-    String gruppe;
+public class InnflyttingTilNorgeSearch {
+    Boolean innflytting;
 }

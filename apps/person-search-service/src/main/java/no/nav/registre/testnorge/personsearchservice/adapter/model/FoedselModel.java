@@ -4,12 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
+import java.time.LocalDate;
+
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class Navn implements WithMetadata {
-    String fornavn;
-    String mellomnavn;
-    String etternavn;
+public class FoedselModel implements WithMetadata {
+    LocalDate foedselsdato;
     Metadata metadata;
 }

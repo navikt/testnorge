@@ -1,14 +1,12 @@
-package no.nav.registre.testnorge.personsearchservice.adapter.model;
+package no.nav.registre.testnorge.personsearchservice.controller.search;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import java.util.List;
-
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class HentIdenter {
-    List<Identer> identer;
+public class UtflyttingFraNorgeSearch {
+    Boolean utfyttet;
 }
