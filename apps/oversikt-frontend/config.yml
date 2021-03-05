@@ -14,6 +14,7 @@ spec:
       enabled: true
       replyURLs:
        - "https://testnorge-oversikt-frontend.dev.intern.nav.no/login/oauth2/code/aad"
+       - "https://testnav-oversikt.dev.intern.nav.no/login/oauth2/code/aad"
        - "http://localhost:8080/login/oauth2/code/aad"
   liveness:
     path: /internal/isAlive
