@@ -7,7 +7,8 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class Sivilstand implements WithMetadata{
-    String type;
+public class InnflyttingTilNorgeModel implements WithMetadata {
     Metadata metadata;
+    String fraflyttingsland;
+    String fraflyttingsstedIUtlandet;
 }

@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class Response {
-    HentPerson hentPerson;
-    HentIdenter hentIdenter;
+    HentPersonModel hentPerson;
+    HentIdenterModel hentIdenter;
     List<String> tags;
 }

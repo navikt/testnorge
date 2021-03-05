@@ -2,11 +2,12 @@ package no.nav.registre.testnorge.personsearchservice.domain;
 
 import lombok.RequiredArgsConstructor;
 
+import no.nav.registre.testnorge.personsearchservice.adapter.model.UtflyttingFraNorgeModel;
 import no.nav.registre.testnorge.personsearchservice.controller.dto.UtfyttingFraNorgeDTO;
 
 @RequiredArgsConstructor
 public class UtfyttingFraNorge implements WithDTO<UtfyttingFraNorgeDTO> {
-    private final no.nav.registre.testnorge.personsearchservice.adapter.model.UtflyttingFraNorge utflyttingFraNorge;
+    private final UtflyttingFraNorgeModel utflyttingFraNorge;
 
     public UtfyttingFraNorgeDTO toDTO() {
         return UtfyttingFraNorgeDTO

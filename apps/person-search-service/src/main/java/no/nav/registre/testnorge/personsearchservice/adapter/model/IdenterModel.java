@@ -7,9 +7,7 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class Navn implements WithMetadata {
-    String fornavn;
-    String mellomnavn;
-    String etternavn;
-    Metadata metadata;
+public class IdenterModel {
+    String ident;
+    String gruppe;
 }

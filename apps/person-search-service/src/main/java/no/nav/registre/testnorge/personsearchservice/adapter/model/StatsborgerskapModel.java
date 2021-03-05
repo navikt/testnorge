@@ -7,7 +7,7 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class Identer {
-    String ident;
-    String gruppe;
+public class StatsborgerskapModel implements WithMetadata {
+    String land;
+    Metadata metadata;
 }

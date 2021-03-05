@@ -4,11 +4,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import no.nav.registre.testnorge.personsearchservice.adapter.model.Foedsel;
-import no.nav.registre.testnorge.personsearchservice.adapter.model.Kjoenn;
-import no.nav.registre.testnorge.personsearchservice.adapter.model.Navn;
+import no.nav.registre.testnorge.personsearchservice.adapter.model.FoedselModel;
+import no.nav.registre.testnorge.personsearchservice.adapter.model.KjoennModel;
+import no.nav.registre.testnorge.personsearchservice.adapter.model.NavnModel;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Response;
-import no.nav.registre.testnorge.personsearchservice.adapter.model.Sivilstand;
+import no.nav.registre.testnorge.personsearchservice.adapter.model.SivilstandModel;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.WithMetadata;
 import no.nav.registre.testnorge.personsearchservice.controller.dto.FoedselDTO;
 import no.nav.registre.testnorge.personsearchservice.controller.dto.PersonDTO;
@@ -40,32 +40,32 @@ public class Person {
                 .findFirst();
     }
 
-    private Optional<Navn> getNavn() {
+    private Optional<NavnModel> getNavn() {
         return getCurrent(response.getHentPerson().getNavn());
     }
 
     private String getFornavn() {
-        return getNavn().map(Navn::getFornavn).orElse(null);
+        return getNavn().map(NavnModel::getFornavn).orElse(null);
     }
 
     private String getMellomnavn() {
-        return getNavn().map(Navn::getMellomnavn).orElse(null);
+        return getNavn().map(NavnModel::getMellomnavn).orElse(null);
     }
 
     private String getEtternavn() {
-        return getNavn().map(Navn::getEtternavn).orElse(null);
+        return getNavn().map(NavnModel::getEtternavn).orElse(null);
     }
 
     private LocalDate getFoedselsdato() {
-        return getCurrent(response.getHentPerson().getFoedsel()).map(Foedsel::getFoedselsdato).orElse(null);
+        return getCurrent(response.getHentPerson().getFoedsel()).map(FoedselModel::getFoedselsdato).orElse(null);
     }
 
     private String getKjoenn() {
-        return getCurrent(response.getHentPerson().getKjoenn()).map(Kjoenn::getKjoenn).orElse(null);
+        return getCurrent(response.getHentPerson().getKjoenn()).map(KjoennModel::getKjoenn).orElse(null);
     }
 
     private String getSivilstand() {
-        return getCurrent(response.getHentPerson().getSivilstand()).map(Sivilstand::getType).orElse(null);
+        return getCurrent(response.getHentPerson().getSivilstand()).map(SivilstandModel::getType).orElse(null);
     }
 
     private String getIdent() {

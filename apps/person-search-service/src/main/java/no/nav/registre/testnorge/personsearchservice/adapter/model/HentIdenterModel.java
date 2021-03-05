@@ -4,14 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import java.time.LocalDate;
+import java.util.List;
 
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class UtflyttingFraNorge implements WithMetadata {
-    Metadata metadata;
-    String tilflyttingsland;
-    String tilflyttingsstedIUtlandet;
-    LocalDate utflyttingsdato;
+public class HentIdenterModel {
+    List<IdenterModel> identer;
 }
