@@ -1,13 +1,6 @@
 package no.nav.dolly.domain.resultset.entity.bestilling;
 
-import static java.util.Objects.isNull;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,6 +21,13 @@ import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
+import static java.util.Objects.isNull;
 
 @Getter
 @Setter
@@ -68,6 +68,7 @@ public class RsMalBestillingWrapper {
     public static class RsBestilling {
 
         private Integer antallIdenter;
+        private Boolean navSyntetiskIdent;
         private String opprettFraIdenter;
         private List<String> environments;
         private RsTpsfUtvidetBestilling tpsf;
