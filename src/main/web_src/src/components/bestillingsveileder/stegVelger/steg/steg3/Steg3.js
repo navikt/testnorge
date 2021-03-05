@@ -16,7 +16,7 @@ export const Steg3 = ({ formikBag }) => {
 					<BestillingInfoboks bestillingsdata={formikBag.values} />
 				</div>
 			)}
-			<IdentVelger bestillingsdata={formikBag.values} formikBag={formikBag} />
+			<IdentVelger formikBag={formikBag} />
 			<MiljoVelger bestillingsdata={formikBag.values} heading="Hvilke miljøer vil du opprette i?" />
 			{!formikBag.values.hasOwnProperty('organisasjon') && <MalForm formikBag={formikBag} />}
 		</div>

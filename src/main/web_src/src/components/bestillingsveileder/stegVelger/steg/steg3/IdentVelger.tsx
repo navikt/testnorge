@@ -3,6 +3,11 @@ import _get from 'lodash/get'
 import styled from 'styled-components'
 import { RadioPanelGruppe } from 'nav-frontend-skjema'
 import Hjelpetekst from '~/components/hjelpetekst'
+import { FormikProps } from 'formik'
+
+type Form = {
+	formikBag: FormikProps<{}>
+}
 
 enum IdentType {
 	STANDARD = 'STANDARD',
@@ -40,7 +45,7 @@ const TestpersonValg = styled(RadioPanelGruppe)`
 const informasjonstekst =
 	'Om ikke lenge kommer Dolly til å gå fra å opprette testpersoner som har ekte identifikasjonsnummer til å kun opprette testpersoner med syntetisk identifikasjonsnummer. Frem til det vil det være mulig å velge selv om man ønsker å opprette testpersonene med standard eller syntetisk identifikasjonsnummer. Siden syntetisk identifikasjonsnummer en dag kommer til å bli den nye standarden oppfordrer vi alle til å ta dette i bruk allerede nå.'
 
-export const IdentVelger = ({ formikBag }) => {
+export const IdentVelger = ({ formikBag }: Form) => {
 	const [type, setType] = useState(
 		_get(formikBag.values, `navSyntetiskIdent`) === true ? IdentType.SYNTETISK : IdentType.STANDARD
 	)
@@ -49,8 +54,6 @@ export const IdentVelger = ({ formikBag }) => {
 		setType(value)
 		formikBag.setFieldValue('navSyntetiskIdent', value === IdentType.SYNTETISK ? true : false)
 	}
-
-	console.log('type :>> ', type)
 
 	return (
 		<IdentVelgerField>
