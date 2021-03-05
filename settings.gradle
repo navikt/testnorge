@@ -275,3 +275,5 @@ project(":endringsmelding-frontend").projectDir = file('apps/endringsmelding-fro
 
 include 'person-search-service'
 project(":person-search-service").projectDir = file('apps/person-search-service')
+include 'frontend'
+project(":frontend").projectDir = file('libs/frontend')

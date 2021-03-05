@@ -101,7 +101,7 @@ public class AccessTokenService {
 
 
     private AccessToken generateClientCredentialAccessToken(AccessScopes accessScopes) {
-        log.info("Henter OAuth2 access token fra client credential...");
+        log.trace("Henter OAuth2 access token fra client credential...");
 
         var body = BodyInserters
                 .fromFormData("scope", String.join(" ", accessScopes.getScopes()))

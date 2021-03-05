@@ -1,9 +1,11 @@
-package no.nav.registre.testnorge.endringsmeldingfrontend.filter;
+package no.nav.registre.testnorge.libs.frontend.filter;
 
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+
+import no.nav.registre.testnorge.libs.frontend.GenerateToken;
 
 @RequiredArgsConstructor
 public class AddAuthorizationToRouteFilter extends ZuulFilter {

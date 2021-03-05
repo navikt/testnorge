@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.command;
 
-import io.netty.channel.unix.Errors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
@@ -9,6 +9,7 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
+@Slf4j
 @RequiredArgsConstructor
 public class SaveOrganisasjonBestillingCommand implements Callable<Long> {
     private final WebClient webClient;
@@ -23,7 +24,7 @@ public class SaveOrganisasjonBestillingCommand implements Callable<Long> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(Long.class)
-                .retryWhen(Retry.max(3).filter(ex -> ex instanceof Errors.NativeIoException))
+                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(10)))
                 .block();
     }
 }

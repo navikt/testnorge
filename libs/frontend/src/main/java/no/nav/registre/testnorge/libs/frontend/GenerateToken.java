@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.oppsummeringsdokumentfrontend.config.filter;
+package no.nav.registre.testnorge.libs.frontend;
 
 @FunctionalInterface
 public interface GenerateToken {
