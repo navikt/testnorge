@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.oversiktfrontend.config;
+package no.nav.registre.testnorge.libs.frontend.filter;
 
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;

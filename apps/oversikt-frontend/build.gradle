@@ -15,6 +15,7 @@ dependencyManagement {
 
 
 dependencies {
+    implementation project(':frontend')
     implementation project(':local-development')
     implementation project(':testnorge-dependency-analysis')
     implementation project(':testnorge-core')

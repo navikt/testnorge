@@ -17,6 +17,7 @@ dependencies {
     implementation project(':local-development')
     implementation project(':testnorge-core')
     implementation project(':testnorge-oauth2')
+    implementation project(':frontend')
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'

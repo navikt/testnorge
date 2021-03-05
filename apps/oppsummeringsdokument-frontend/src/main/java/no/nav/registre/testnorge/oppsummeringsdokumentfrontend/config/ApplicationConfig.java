@@ -8,9 +8,8 @@ import org.springframework.context.annotation.Profile;
 
 import no.nav.registre.testnorge.libs.core.config.AnalysisGCPAutoConfiguration;
 import no.nav.registre.testnorge.oppsummeringsdokumentfrontend.config.credentials.ArbeidsforholdApiServerProperties;
-import no.nav.registre.testnorge.oppsummeringsdokumentfrontend.config.filter.AddAuthorizationToRouteFilter;
-import no.nav.registre.testnorge.libs.core.config.AnalysisFSSAutoConfiguration;
 import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
+import no.nav.registre.testnorge.libs.frontend.filter.AddAuthorizationToRouteFilter;
 import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2FrontendConfiguration;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 
