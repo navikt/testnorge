@@ -15,8 +15,8 @@ export const actions = createActions(
 )
 
 const initialState = {
-	bestillinger: [],
-	organisasjoner: []
+	bestillinger: null,
+	organisasjoner: null
 }
 
 export default handleActions(
