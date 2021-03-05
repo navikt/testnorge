@@ -16,5 +16,5 @@ public class HentPerson {
     List<Sivilstand> sivilstand;
     List<Statsborgerskap> statsborgerskap;
     List<UtflyttingFraNorge> utflyttingFraNorge;
-    List<InnflyttningTilNorge> innflyttningTilNorge;
+    List<InnflyttingTilNorge> innflyttingTilNorge;
 }

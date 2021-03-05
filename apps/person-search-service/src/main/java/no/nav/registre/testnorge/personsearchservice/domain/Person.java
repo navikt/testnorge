@@ -18,6 +18,7 @@ public class Person {
     private final Response response;
     private final Statsborgerskap statsborgerskap;
     private final UtfyttingFraNorge utfyttingFraNorge;
+    private final InnflyttingTilNorge innflyttingTilNorge;
 
     public Person(Response response) {
         this.response = response;
@@ -25,6 +26,8 @@ public class Person {
         this.statsborgerskap = statsborgerskap != null ? new Statsborgerskap(statsborgerskap) : null;
         var utfyttingFraNorge = getCurrent(response.getHentPerson().getUtflyttingFraNorge()).orElse(null);
         this.utfyttingFraNorge = utfyttingFraNorge != null ? new UtfyttingFraNorge(utfyttingFraNorge) : null;
+        var innflyttingTilNorge = getCurrent(response.getHentPerson().getInnflyttingTilNorge()).orElse(null);
+        this.innflyttingTilNorge = innflyttingTilNorge != null ? new InnflyttingTilNorge(innflyttingTilNorge) : null;
     }
 
     private static <T extends WithMetadata> Optional<T> getCurrent(List<T> list) {
@@ -41,31 +44,31 @@ public class Person {
         return getCurrent(response.getHentPerson().getNavn());
     }
 
-    public String getFornavn() {
+    private String getFornavn() {
         return getNavn().map(Navn::getFornavn).orElse(null);
     }
 
-    public String getMellomnavn() {
+    private String getMellomnavn() {
         return getNavn().map(Navn::getMellomnavn).orElse(null);
     }
 
-    public String getEtternavn() {
+    private String getEtternavn() {
         return getNavn().map(Navn::getEtternavn).orElse(null);
     }
 
-    public LocalDate getFoedselsdato() {
+    private LocalDate getFoedselsdato() {
         return getCurrent(response.getHentPerson().getFoedsel()).map(Foedsel::getFoedselsdato).orElse(null);
     }
 
-    public String getKjoenn() {
+    private String getKjoenn() {
         return getCurrent(response.getHentPerson().getKjoenn()).map(Kjoenn::getKjoenn).orElse(null);
     }
 
-    public String getSivilstand() {
+    private String getSivilstand() {
         return getCurrent(response.getHentPerson().getSivilstand()).map(Sivilstand::getType).orElse(null);
     }
 
-    public String getIdent() {
+    private String getIdent() {
         return response
                 .getHentIdenter()
                 .getIdenter()
@@ -76,7 +79,7 @@ public class Person {
                 .getIdent();
     }
 
-    public String getAktorId() {
+    private String getAktorId() {
         return response
                 .getHentIdenter()
                 .getIdenter()
@@ -87,11 +90,11 @@ public class Person {
                 .getIdent();
     }
 
-    public List<String> getTags() {
+    private List<String> getTags() {
         return response.getTags();
     }
 
-    public <T> T toDTO(WithDTO<T> withDTO){
+    private <T> T toDTO(WithDTO<T> withDTO){
         return Optional.ofNullable(withDTO).map(WithDTO::toDTO).orElse(null);
     }
 
@@ -109,6 +112,7 @@ public class Person {
                 .sivilstand(SivilstandDTO.builder().type(getSivilstand()).build())
                 .statsborgerskap(toDTO(statsborgerskap))
                 .utfyttingFraNorge(toDTO(utfyttingFraNorge))
+                .innfyttingTilNorge(toDTO(innflyttingTilNorge))
                 .build();
     }
 }
