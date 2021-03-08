@@ -18,7 +18,6 @@ import java.util.List;
 public class SyntAmeldingConsumer extends SyntConsumer {
     private final WebClient webClient;
 
-    private static final long SHUTDOWN_TIME_DELAY_SECONDS = 600;
     private static final String REST_CLIENT_EXCEPTION_MESSAGE = "Unexpected Rest Client Exception: {}";
 
     public SyntAmeldingConsumer(ApplicationManager applicationManager, String appName, String synthAmeldingUrl) {
@@ -41,8 +40,6 @@ public class SyntAmeldingConsumer extends SyntConsumer {
         } catch (RestClientException e) {
             log.error(REST_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
             throw e;
-        } finally {
-            scheduleShutdown(SHUTDOWN_TIME_DELAY_SECONDS);
         }
     }
 
