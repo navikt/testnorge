@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { FieldArray, ErrorMessage } from 'formik'
+import { ErrorMessage, FieldArray } from 'formik'
 import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { MiljoeInfo } from './MiljoeInfo/MiljoeInfo'
@@ -8,19 +8,25 @@ import { MiljoeInfo } from './MiljoeInfo/MiljoeInfo'
 import './MiljoVelger.less'
 
 export const MiljoVelger = ({ bestillingsdata, heading }) => {
-	const environments = useSelector(state => state.environments.data)
+	const filterEnvironments = (miljoer, erOrg) => {
+		if (!erOrg) return miljoer
+		const filtrerteMiljoer = { ...miljoer }
+		filtrerteMiljoer.Q = filtrerteMiljoer.Q.filter(env => !env.id.includes('qx'))
+		return filtrerteMiljoer
+	}
 
+	const environments = useSelector(state => state.environments.data)
 	if (!environments) return null
+	const erOrganisasjon = bestillingsdata.hasOwnProperty('organisasjon')
+	const filteredEnvironments = filterEnvironments(environments, erOrganisasjon)
 
 	const order = ['T', 'Q']
-
-	const erOrganisasjon = bestillingsdata.hasOwnProperty('organisasjon')
 
 	return (
 		<div className="miljo-velger">
 			<h2>{heading}</h2>
 			{bestillingsdata && (
-				<MiljoeInfo bestillingsdata={bestillingsdata} dollyEnvironments={environments} />
+				<MiljoeInfo bestillingsdata={bestillingsdata} dollyEnvironments={filteredEnvironments} />
 			)}
 
 			<FieldArray name="environments">
@@ -35,7 +41,7 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 					}
 
 					const velgAlle = type => {
-						const c = environments[type].filter(f => !isChecked(f.id)).map(a => a.id)
+						const c = filteredEnvironments[type].filter(f => !isChecked(f.id)).map(a => a.id)
 						const n = values.concat(c)
 						form.setFieldValue('environments', n)
 					}
@@ -43,40 +49,37 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 					const fjernAlle = type => {
 						form.setFieldValue(
 							'environments',
-							values.filter(id => !environments[type].map(a => a.id).includes(id))
+							values.filter(id => !filteredEnvironments[type].map(a => a.id).includes(id))
 						)
 					}
 
 					return order.map(type => {
-						const category = environments[type]
+						const category = filteredEnvironments[type]
 						if (!category) return null
 
 						const allDisabled = category.some(f => f.disabled)
 
 						return (
-							<fieldset key={type} name={`Liste over ${type}-mijøer`}>
+							<fieldset key={type} name={`Liste over ${type}-miljøer`}>
 								<h3>{type}-miljøer</h3>
 								<div className="miljo-velger_checkboxes">
-									{category.map(
-										(env, idx) =>
-											(!erOrganisasjon || env.id !== 'qx') && (
-												<DollyCheckbox
-													key={env.id}
-													id={env.id}
-													disabled={env.disabled}
-													label={env.id}
-													checked={values.includes(env.id)}
-													onClick={onClick}
-													onChange={() => {}}
-													size={'xxsmall'}
-												/>
-											)
-									)}
+									{category.map(env => (
+										<DollyCheckbox
+											key={env.id}
+											id={env.id}
+											disabled={env.disabled}
+											label={env.id}
+											checked={values.includes(env.id)}
+											onClick={onClick}
+											onChange={() => {}}
+											size={'xxsmall'}
+										/>
+									))}
 								</div>
 								{!allDisabled && (
 									<div className="miljo-velger_buttons">
-										<LinkButton text="Velg alle" onClick={e => velgAlle(type)} />
-										<LinkButton text="Fjern alle" onClick={e => fjernAlle(type)} />
+										<LinkButton text="Velg alle" onClick={() => velgAlle(type)} />
+										<LinkButton text="Fjern alle" onClick={() => fjernAlle(type)} />
 									</div>
 								)}
 							</fieldset>
