@@ -34,10 +34,10 @@ public class SaveOpplysningspliktigCommand implements Runnable {
         } catch (
                 WebClientResponseException e) {
             log.error(
-                    "Feil ved ladring av oppsummeringsdokument: {}. xml: {}",
-                    e.getResponseBodyAsString(),
-                    xml
+                    "Feil ved ladring av oppsummeringsdokument: {}.",
+                    e.getResponseBodyAsString()
             );
+            log.error(xml);
             throw e;
         }
     }
