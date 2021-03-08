@@ -117,6 +117,7 @@ public class Oppsummeringsdokument {
     private Function<PermisjonModel, PermisjonDTO> mapPermisjonDTO() {
         return value -> PermisjonDTO
                 .builder()
+                .permisjonId(value.getPermisjonId())
                 .beskrivelse(value.getBeskrivelse())
                 .permisjonsprosent(value.getPermisjonsprosent())
                 .sluttdato(value.getSluttdato())
@@ -181,6 +182,7 @@ public class Oppsummeringsdokument {
     private Function<PermisjonDTO, PermisjonModel> mapPermisjonModel() {
         return value -> {
             var model = new PermisjonModel();
+            model.setPermisjonId(value.getPermisjonId());
             model.setPermisjonsprosent(model.getPermisjonsprosent());
             model.setBeskrivelse(model.getBeskrivelse());
             model.setStartdato(model.getStartdato());
@@ -295,7 +297,7 @@ public class Oppsummeringsdokument {
             arbeidsforhold.getPermisjon().addAll(dto.getPermisjoner().stream().map(permisjonDTO -> {
                 Permisjon permisjon = new Permisjon();
                 permisjon.setBeskrivelse(permisjonDTO.getBeskrivelse());
-                permisjon.setPermisjonId(UUID.randomUUID().toString());
+                permisjon.setPermisjonId(permisjonDTO.getPermisjonId() == null ? UUID.randomUUID().toString(): permisjonDTO.getPermisjonId());
                 permisjon.setPermisjonsprosent(permisjonDTO.getPermisjonsprosent() != null ? BigDecimal.valueOf(permisjonDTO.getPermisjonsprosent()) : null);
                 permisjon.setSluttdato(toXMLGregorianCalendar(permisjonDTO.getSluttdato()));
                 permisjon.setStartdato(toXMLGregorianCalendar(permisjonDTO.getStartdato()));

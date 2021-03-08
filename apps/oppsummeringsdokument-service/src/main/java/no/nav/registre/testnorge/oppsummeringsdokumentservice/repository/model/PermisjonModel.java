@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class PermisjonModel {
+    private String permisjonId;
     private String beskrivelse;
     @Field(type = FieldType.Date, format = DateFormat.year_month_day)
     private LocalDate startdato;

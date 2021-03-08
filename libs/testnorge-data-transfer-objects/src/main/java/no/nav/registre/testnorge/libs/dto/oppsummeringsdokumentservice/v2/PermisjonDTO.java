@@ -15,6 +15,8 @@ import java.time.LocalDate;
 @NoArgsConstructor(force = true)
 public class PermisjonDTO {
     @JsonProperty(required = true)
+    String permisjonId;
+    @JsonProperty(required = true)
     String beskrivelse;
     @JsonProperty(required = true)
     LocalDate startdato;

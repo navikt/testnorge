@@ -33,10 +33,7 @@ public class SaveOpplysningspliktigCommand implements Runnable {
                     .block();
         } catch (
                 WebClientResponseException e) {
-            log.error(
-                    "Feil ved lagring av oppsummeringsdokument: {}.",
-                    e.getResponseBodyAsString()
-            );
+            log.error("Feil ved lagring av oppsummeringsdokument: {}.", e.getResponseBodyAsString());
             log.error(xml);
             throw e;
         }
