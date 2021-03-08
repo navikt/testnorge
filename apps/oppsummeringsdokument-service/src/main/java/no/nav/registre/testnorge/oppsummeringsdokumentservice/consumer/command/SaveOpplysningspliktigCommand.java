@@ -20,7 +20,7 @@ public class SaveOpplysningspliktigCommand implements Runnable {
     @SneakyThrows
     @Override
     public void run() {
-        log.trace(xml);
+
         try {
             webClient
                     .post()
@@ -34,8 +34,9 @@ public class SaveOpplysningspliktigCommand implements Runnable {
         } catch (
                 WebClientResponseException e) {
             log.error(
-                    "Feil ved ladring av oppsummeringsdokument: {}.",
-                    e.getResponseBodyAsString()
+                    "Feil ved ladring av oppsummeringsdokument: {}. xml: {}",
+                    e.getResponseBodyAsString(),
+                    xml
             );
             throw e;
         }
