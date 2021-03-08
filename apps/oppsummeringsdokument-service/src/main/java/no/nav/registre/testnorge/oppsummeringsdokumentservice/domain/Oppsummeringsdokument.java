@@ -298,11 +298,10 @@ public class Oppsummeringsdokument {
             var permisjoner = dto.getPermisjoner().stream().map(permisjonDTO -> {
                 Permisjon permisjon = new Permisjon();
                 permisjon.setBeskrivelse(permisjonDTO.getBeskrivelse());
-                permisjon.setPermisjonId(permisjonDTO.getPermisjonId() == null ? UUID.randomUUID().toString() : permisjonDTO.getPermisjonId());
+                permisjon.setPermisjonId(permisjonDTO.getPermisjonId());
                 permisjon.setPermisjonsprosent(permisjonDTO.getPermisjonsprosent() != null ? BigDecimal.valueOf(permisjonDTO.getPermisjonsprosent()) : null);
                 permisjon.setSluttdato(toXMLGregorianCalendar(permisjonDTO.getSluttdato()));
                 permisjon.setStartdato(toXMLGregorianCalendar(permisjonDTO.getStartdato()));
-                log.info("{} til {}.", permisjonDTO, permisjon);
                 return permisjon;
             }).collect(Collectors.toList());
             arbeidsforhold.getPermisjon().addAll(permisjoner);
