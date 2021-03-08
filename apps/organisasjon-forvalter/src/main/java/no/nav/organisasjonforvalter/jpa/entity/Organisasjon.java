@@ -101,4 +101,8 @@ public class Organisasjon implements Serializable {
         }
         return underenheter;
     }
+
+    public boolean hasAnsatte() {
+        return "BEDR".equals(getEnhetstype()) || "ENK".equals(getEnhetstype());
+    }
 }
