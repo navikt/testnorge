@@ -1,5 +1,7 @@
 package no.nav.organisasjonforvalter.provider.rs;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest;
 import no.nav.organisasjonforvalter.provider.rs.requests.DeployRequest;
@@ -41,6 +43,7 @@ public class OrganisasjonController {
 
     @CacheEvict(value = CACHE_BEDRIFT, allEntries = true)
     @PostMapping("/bestilling")
+    @Operation(description = "Opprett organisasjon med angitte egenskaper")
     public BestillingResponse createOrganisasjon(@RequestBody BestillingRequest request) {
 
         return bestillingService.execute(request);
@@ -48,12 +51,14 @@ public class OrganisasjonController {
 
     @CacheEvict(value = CACHE_EREG_IMPORT, allEntries = true)
     @PostMapping("/deployment")
+    @Operation(description = "Send organisasjoner til EREG i angitte miljøer")
     public DeployResponse deployOrganisasjon(@RequestBody DeployRequest request) {
 
         return deploymentService.deploy(request);
     }
 
     @GetMapping
+    @Operation(description = "Hent organisasjon fra database (org-forvalter)")
     public List<RsOrganisasjon> getOrganisasjon(@RequestParam List<String> orgnumre) {
 
         return organisasjonService.getOrganisasjoner(orgnumre);
@@ -61,6 +66,7 @@ public class OrganisasjonController {
 
     @Cacheable(CACHE_EREG_IMPORT)
     @GetMapping("/import")
+    @Operation(description = "Hent organisasjon fra EREG")
     public Map<String, RsOrganisasjon> importOrganisasjon(@RequestParam String orgnummer,
                                                           @RequestParam(required = false) Set<String> miljoer){
 
@@ -69,7 +75,8 @@ public class OrganisasjonController {
 
     @Cacheable(CACHE_BEDRIFT)
     @GetMapping("/underenheter")
-    public List<UnderenhetResponse> getUnderenheter(@RequestParam String brukerid){
+    @Operation(description = "Hent underenheter av type BEDR og AAFY fra database. Kun disse typer kan ha ansatte")
+    public List<UnderenhetResponse> getUnderenheter(@Parameter(description = "BrukerId fra Azure") @RequestParam String brukerid){
 
         return underenhetService.getUnderenheter(brukerid);
     }
