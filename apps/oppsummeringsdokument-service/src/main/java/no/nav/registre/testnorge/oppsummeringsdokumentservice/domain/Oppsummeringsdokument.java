@@ -183,10 +183,10 @@ public class Oppsummeringsdokument {
         return value -> {
             var model = new PermisjonModel();
             model.setPermisjonId(value.getPermisjonId());
-            model.setPermisjonsprosent(model.getPermisjonsprosent());
-            model.setBeskrivelse(model.getBeskrivelse());
-            model.setStartdato(model.getStartdato());
-            model.setSluttdato(model.getSluttdato());
+            model.setPermisjonsprosent(value.getPermisjonsprosent());
+            model.setBeskrivelse(value.getBeskrivelse());
+            model.setStartdato(value.getStartdato());
+            model.setSluttdato(value.getSluttdato());
             return model;
         };
     }

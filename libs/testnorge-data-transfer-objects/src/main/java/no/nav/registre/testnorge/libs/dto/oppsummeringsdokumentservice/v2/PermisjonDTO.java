@@ -13,18 +13,18 @@ import java.time.LocalDate;
 
 @Value
 @Builder
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-@ToString
 public class PermisjonDTO {
-    @JsonProperty(required = true)
+    @JsonProperty
     String permisjonId;
-    @JsonProperty(required = true)
+    @JsonProperty
     String beskrivelse;
-    @JsonProperty(required = true)
+    @JsonProperty
     LocalDate startdato;
-    @JsonProperty(required = true)
+    @JsonProperty
     LocalDate sluttdato;
-    @JsonProperty(required = true)
+    @JsonProperty
     Float permisjonsprosent;
 }
