@@ -26,6 +26,7 @@ public class UnderenhetService {
                 .flatMap(Collection::stream)
                 .map(org -> UnderenhetResponse.builder()
                         .orgnummer(org.getOrganisasjonsnummer())
+                        .orgnavn(org.getOrganisasjonsnavn())
                         .enhetstype(org.getEnhetstype())
                         .build())
                 .collect(Collectors.toList());

@@ -8,5 +8,6 @@ import lombok.Data;
 public class UnderenhetResponse {
 
     private String orgnummer;
+    private String orgnavn;
     private String enhetstype;
 }
