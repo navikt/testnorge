@@ -1,32 +1,32 @@
 package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer;
 
-        import com.fasterxml.jackson.databind.ObjectMapper;
-        import lombok.SneakyThrows;
-        import org.springframework.http.MediaType;
-        import org.springframework.http.codec.json.Jackson2JsonDecoder;
-        import org.springframework.http.codec.json.Jackson2JsonEncoder;
-        import org.springframework.stereotype.Component;
-        import org.springframework.web.reactive.function.client.WebClient;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
+import org.springframework.http.MediaType;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
+import org.springframework.http.codec.json.Jackson2JsonEncoder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
 
-        import java.time.LocalDate;
-        import java.util.ArrayList;
-        import java.util.List;
-        import java.util.Optional;
-        import java.util.concurrent.CompletableFuture;
-        import java.util.concurrent.Executor;
-        import java.util.concurrent.Executors;
-        import java.util.stream.Collectors;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
-        import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumentCommand;
-        import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumenterCommand;
-        import no.nav.registre.testnorge.libs.common.command.SaveOppsummeringsdokumenterCommand;
-        import no.nav.registre.testnorge.libs.core.config.ApplicationProperties;
-        import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
-        import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-        import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
-        import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.credentials.OppsummeringsdokuemntServerProperties;
-        import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Opplysningspliktig;
-        import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Organisajon;
+import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumentCommand;
+import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumenterCommand;
+import no.nav.registre.testnorge.libs.common.command.SaveOppsummeringsdokumenterCommand;
+import no.nav.registre.testnorge.libs.core.config.ApplicationProperties;
+import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.credentials.OppsummeringsdokuemntServerProperties;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Opplysningspliktig;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Organisajon;
 
 @Component
 public class OppsummeringsdokumentConsumer {
@@ -97,7 +97,6 @@ public class OppsummeringsdokumentConsumer {
     public void sendOpplysningspliktig(Opplysningspliktig opplysningspliktig, String miljo) {
         saveOpplysningspliktig(opplysningspliktig, miljo).get();
     }
-
 
     @SneakyThrows
     public void sendOpplysningspliktig(List<Opplysningspliktig> opplysningspliktig, String miljo) {
