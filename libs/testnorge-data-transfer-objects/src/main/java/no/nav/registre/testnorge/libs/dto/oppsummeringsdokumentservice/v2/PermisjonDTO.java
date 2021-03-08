@@ -6,13 +6,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.Value;
 
 import java.time.LocalDate;
 
-@Data
+@Value
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
+@ToString
 public class PermisjonDTO {
     @JsonProperty(required = true)
     String permisjonId;
