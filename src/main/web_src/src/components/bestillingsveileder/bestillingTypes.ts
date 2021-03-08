@@ -1,6 +1,7 @@
 export type Bestillingsdata = {
 	antall: number
 	environments: Array<string>
+	navSyntetiskIdent?: boolean
 	tpsf?: {
 		egenAnsattDatoFom?: string
 		egenAnsattDatoTom?: string
