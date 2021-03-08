@@ -5,8 +5,8 @@ import { TidligereBestillinger } from '~/pages/gruppe/PersonVisning/TidligereBes
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { EnhetBestilling, EnhetData } from '../types'
 import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/SammendragModal'
-import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { DollyApi } from '~/service/Api'
+import { OrganisasjonMiljoeinfo } from '~/components/fagsystem/organisasjoner/visning/miljoevisning/OrganisasjonMiljoeinfo'
 
 type OrganisasjonVisning = {
 	data: EnhetData
@@ -33,6 +33,7 @@ export const OrganisasjonVisning = ({ data, bestillinger }: OrganisasjonVisning)
 			<Detaljer data={[orgTree.find(selectedId)]} />
 			{/* @ts-ignore */}
 			<TidligereBestillinger ids={data.bestillingId} />
+			<OrganisasjonMiljoeinfo orgnummer={data.organisasjonsnummer} />
 			<div className="flexbox--align-center--justify-end info-block">
 				<BestillingSammendragModal
 					bestilling={bestillinger.filter(bestilling => bestilling.id === data.bestillingId[0])[0]}

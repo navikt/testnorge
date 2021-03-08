@@ -143,6 +143,7 @@ export const icons = {
 	sykdom: Plaster,
 	vergemaal: Group2,
 	visTpsData: AccountFind,
+	visOrgData: Search,
 	organisasjon: Hierarchy3,
 	organisasjonLight: Hierarchy3Light,
 	fullmakt: Group2
