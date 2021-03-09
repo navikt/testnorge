@@ -20,8 +20,6 @@ spec:
         - application: oppsummeringsdokument-frontend
           cluster: dev-gcp
     outbound:
-      rules:
-        - application: applikasjonsanalyse-service
       external:
         - host: aareg-synt-services-proxy.dev-fss-pub.nais.io
   elastic:

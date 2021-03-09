@@ -26,9 +26,6 @@ spec:
           cluster: dev-fss
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
-    outbound:
-      rules:
-        - application: applikasjonsanalyse-service
   liveness:
     path: /internal/isAlive
     initialDelay: 4

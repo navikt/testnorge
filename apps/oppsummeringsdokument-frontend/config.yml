@@ -29,7 +29,6 @@ spec:
     outbound:
       rules:
         - application: oppsummeringsdokument-service
-        - application: applikasjonsanalyse-service
   resources:
     limits:
       cpu: 1000m

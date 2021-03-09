@@ -32,7 +32,6 @@ spec:
     outbound:
       rules:
         - application: endringsmelding-service
-        - application: applikasjonsanalyse-service
         - application: testnorge-profil-api
   resources:
     limits:
