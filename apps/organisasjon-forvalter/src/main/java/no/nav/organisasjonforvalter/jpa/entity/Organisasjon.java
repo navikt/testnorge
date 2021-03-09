@@ -1,5 +1,6 @@
 package no.nav.organisasjonforvalter.jpa.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -100,5 +101,10 @@ public class Organisasjon implements Serializable {
             underenheter = new ArrayList<>();
         }
         return underenheter;
+    }
+
+    @JsonIgnore
+    public boolean hasAnsatte() {
+        return "BEDR".equals(getEnhetstype()) || "AAFY".equals(getEnhetstype());
     }
 }
