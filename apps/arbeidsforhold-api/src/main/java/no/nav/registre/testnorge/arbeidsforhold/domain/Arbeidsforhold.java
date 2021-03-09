@@ -49,20 +49,6 @@ public class Arbeidsforhold {
         type = dto.getType();
     }
 
-    public Arbeidsforhold(no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO dto) {
-        arbeidsforholdId = dto.getArbeidsforholdId();
-        orgnummer = dto.getOrgnummer();
-        stillingsprosent = dto.getStillingsprosent();
-        arbeidstidsordning = dto.getArbeidstidsordning();
-        yrke = dto.getYrke();
-        fom = dto.getFom();
-        tom = dto.getTom();
-        antallTimerPrUke = dto.getAntallTimerPrUke();
-        sistLoennsendring = dto.getSistLoennsendring();
-        ident = dto.getIdent();
-        type = dto.getType();
-    }
-
     public no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO toDTO() {
         return no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO
                 .builder()

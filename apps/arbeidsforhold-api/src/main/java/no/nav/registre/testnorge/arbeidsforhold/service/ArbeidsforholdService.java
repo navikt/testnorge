@@ -16,17 +16,4 @@ public class ArbeidsforholdService {
     public Arbeidsforhold getArbeidsforhold(String ident, String orgnummer, String arbeidsforholdId) {
         return aaregConsumer.getArbeidsforhold(ident, orgnummer, arbeidsforholdId);
     }
-
-    public List<Arbeidsforhold> getArbeidsforholds(String ident, String orgnummer) {
-        return aaregConsumer.getArbeidsforholds(ident, orgnummer);
-    }
-
-    public List<Arbeidsforhold> getArbeidsforholds(String ident) {
-        return aaregConsumer.getArbeidsforholds(ident);
-    }
-
-    public Arbeidsforhold createArbeidsforhold(Arbeidsforhold arbeidsforhold){
-        return aaregConsumer.createArbeidsforhold(arbeidsforhold);
-    }
-
 }

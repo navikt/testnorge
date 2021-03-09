@@ -60,6 +60,8 @@ spec:
           cluster: dev-fss
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
+        - application: testnorge-synt-sykemelding-api
+          cluster: dev-fss
         - application: testnav-statistikk-service
           cluster: dev-gcp
   gcp:

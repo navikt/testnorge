@@ -6,19 +6,10 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.arbeidsforhold.consumer.commnad.CreateArbeidsforholdCommand;
-import no.nav.registre.testnorge.arbeidsforhold.consumer.commnad.GetArbeidsforholdCommand;
-import no.nav.registre.testnorge.arbeidsforhold.consumer.commnad.GetArbeidsforholdoversiktCommand;
 import no.nav.registre.testnorge.arbeidsforhold.consumer.commnad.GetArbeidstakerArbeidsforholdCommand;
-import no.nav.registre.testnorge.arbeidsforhold.consumer.dto.ArbeidsforholdoversikterDTO;
 import no.nav.registre.testnorge.arbeidsforhold.domain.Arbeidsforhold;
 import no.nav.registre.testnorge.arbeidsforhold.service.StsOidcTokenService;
 
@@ -36,16 +27,11 @@ public class AaregConsumer {
         this.url = url;
     }
 
-
-    public Arbeidsforhold createArbeidsforhold(Arbeidsforhold arbeidsforhold) {
-        return new CreateArbeidsforholdCommand(restTemplate, url, tokenService.getToken(), arbeidsforhold).call();
-    }
-
-    public List<Arbeidsforhold> getArbeidsforholds(String ident) {
+    private List<Arbeidsforhold> getArbeidsforholds(String ident) {
         return new GetArbeidstakerArbeidsforholdCommand(restTemplate, url, tokenService.getToken(), ident).call();
     }
 
-    public List<Arbeidsforhold> getArbeidsforholds(String ident, String orgnummer) {
+    private List<Arbeidsforhold> getArbeidsforholds(String ident, String orgnummer) {
         return getArbeidsforholds(ident)
                 .stream()
                 .filter(value -> value.getOrgnummer().equals(orgnummer))

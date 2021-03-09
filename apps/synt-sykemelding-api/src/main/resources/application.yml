@@ -18,6 +18,8 @@ consumers:
   organisasjonapi:
     client_id: f4167796-bf43-438b-a282-a480e8108d0c
     url: https://testnorge-organisasjon-api.dev.adeo.no
-  arbeidsforhold:
-    client_id: 90e047cc-cc80-4da3-abb2-87ea2e98beed
+  testnorge-arbeidsforhold-api:
     url: https://testnorge-arbeidsforhold-api.dev.intern.nav.no
+    cluster: dev-fss
+    namespace: dolly
+    name: testnorge-arbeidsforhold-api
