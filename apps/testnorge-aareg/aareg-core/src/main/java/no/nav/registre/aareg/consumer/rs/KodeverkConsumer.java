@@ -8,10 +8,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import no.nav.registre.aareg.consumer.rs.response.KodeverkResponse;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
-@DependencyOn(value = "kodeverk", external = true)
 public class KodeverkConsumer {
 
     private static final String CALL_ID = "Orkestratoren";

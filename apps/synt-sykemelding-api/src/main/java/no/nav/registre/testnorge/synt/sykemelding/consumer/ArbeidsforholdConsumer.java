@@ -2,13 +2,10 @@ package no.nav.registre.testnorge.synt.sykemelding.consumer;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import no.nav.registre.testnorge.synt.sykemelding.config.credentials.ArbeidsforholdApiServiceProperties;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.command.GetArbeidsforholdCommand;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 

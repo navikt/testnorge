@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.registre.testnorge.libs.common.command.GetCrumbCommand;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.jenkins.v1.JenkinsCrumb;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
@@ -16,7 +15,6 @@ import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
 
 @Slf4j
 @Component
-@DependencyOn(value = "jenkins", external = true)
 public class JenkinsConsumer {
     private final JenkinsBatchStatusConsumer jenkinsBatchStatusConsumer;
     private final Environment env;

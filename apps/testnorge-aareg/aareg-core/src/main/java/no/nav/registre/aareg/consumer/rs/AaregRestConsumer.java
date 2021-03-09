@@ -12,7 +12,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +29,6 @@ import no.nav.registre.aareg.security.sts.StsOidcService;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@DependencyOn(value = "aareg", external = true)
 public class AaregRestConsumer {
 
     private final AaregArbeidsforholdFasitConsumer aaregArbeidsforholdFasitConsumer;

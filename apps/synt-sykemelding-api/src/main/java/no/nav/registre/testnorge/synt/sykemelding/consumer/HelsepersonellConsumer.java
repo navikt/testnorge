@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.registre.testnorge.libs.common.command.GetHelsepersonellCommand;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
@@ -15,7 +14,6 @@ import no.nav.registre.testnorge.synt.sykemelding.domain.HelsepersonellListe;
 
 @Slf4j
 @Component
-@DependencyOn("testnorge-helsepersonell-api")
 public class HelsepersonellConsumer {
     private final AccessTokenService accessTokenService;
     private final WebClient webClient;

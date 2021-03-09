@@ -1,6 +1,5 @@
 package no.nav.registre.testnorge.identservice;
 
-import no.nav.registre.testnorge.libs.autoconfigdependencyanalysis.config.DependencyAnalysisAutoConfiguration;
 import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
 import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerConfiguration;
 import org.springframework.boot.SpringApplication;
@@ -10,8 +9,7 @@ import org.springframework.context.annotation.Import;
 @SpringBootApplication
 @Import({
         ApplicationCoreConfig.class,
-        SecureOAuth2ServerToServerConfiguration.class,
-        DependencyAnalysisAutoConfiguration.class
+        SecureOAuth2ServerToServerConfiguration.class
 })
 public class IdentServiceApplicationStarter {
     public static void main(String[] args) {

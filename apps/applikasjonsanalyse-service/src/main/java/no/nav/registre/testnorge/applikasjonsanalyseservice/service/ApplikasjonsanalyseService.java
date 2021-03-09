@@ -13,7 +13,6 @@ public class ApplikasjonsanalyseService {
     private final ApplikasjonsanalyseAdapter adapter;
 
     public ApplikasjonsanalyseList getApplikasjonsanalyseList(Properties properties) {
-        var list = adapter.search(properties);
-        return new ApplikasjonsanalyseList(list);
+        return new ApplikasjonsanalyseList(adapter.search(properties));
     }
 }

@@ -2,7 +2,6 @@ package no.nav.registre.orkestratoren.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
@@ -15,7 +14,6 @@ import org.springframework.web.util.UriTemplate;
 
 @Component
 @Slf4j
-@DependencyOn("testnorge-tp")
 public class TestnorgeTpConsumer {
 
     private RestTemplate restTemplate;

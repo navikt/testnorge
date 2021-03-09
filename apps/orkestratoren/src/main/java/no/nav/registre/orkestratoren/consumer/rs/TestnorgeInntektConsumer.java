@@ -15,11 +15,9 @@ import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component
-@DependencyOn("testnorge-inntekt")
 public class TestnorgeInntektConsumer {
 
     private static final ParameterizedTypeReference<Map<String, List<Object>>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

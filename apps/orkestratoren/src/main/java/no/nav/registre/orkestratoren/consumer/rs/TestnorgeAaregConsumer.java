@@ -18,11 +18,9 @@ import java.util.List;
 
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteArbeidsforholdResponse;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component
-@DependencyOn("testnorge-aareg")
 public class TestnorgeAaregConsumer {
 
     private static final ParameterizedTypeReference<List<Object>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

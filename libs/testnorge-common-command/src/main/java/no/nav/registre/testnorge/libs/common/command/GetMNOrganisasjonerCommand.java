@@ -11,11 +11,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 
 @Slf4j
-@DependencyOn("mn-organisasjon-api")
 @RequiredArgsConstructor
 public class GetMNOrganisasjonerCommand implements Callable<List<OrganisasjonDTO>> {
     private final WebClient webClient;

@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
 import no.nav.registre.testnorge.arena.consumer.rs.BrukereArenaForvalterConsumer;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyBruker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
@@ -27,7 +26,6 @@ import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@DependencyOn("testnorge-hodejegeren")
 public class BrukereService {
 
     private static final double PROSENTANDEL_SOM_SKAL_HA_MELDEKORT = 0.2;

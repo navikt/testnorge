@@ -16,13 +16,11 @@ import org.springframework.web.client.RestTemplate;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntSykemeldingHistorikkDTO;
 import no.nav.registre.testnorge.synt.sykemelding.exception.GenererSykemeldingerException;
 
 @Slf4j
 @Component
-@DependencyOn(value = "nais-synthdata-elsam", external = true)
 public class SyntSykemeldingHistorikkConsumer {
     private final RestTemplate restTemplate;
     private final String url;

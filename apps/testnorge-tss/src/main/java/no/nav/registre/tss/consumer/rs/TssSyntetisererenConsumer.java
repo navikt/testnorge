@@ -1,6 +1,5 @@
 package no.nav.registre.tss.consumer.rs;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.tss.consumer.rs.response.TssMessage;
 import no.nav.registre.tss.domain.Samhandler;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-@DependencyOn(value = "nais-synthdata-tss", external = true)
 public class TssSyntetisererenConsumer {
 
     private static final ParameterizedTypeReference<Map<String, List<TssMessage>>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

@@ -12,7 +12,6 @@ dependencies {
     implementation project(':testnorge-database')
     implementation project(':testnorge-data-transfer-objects')
     implementation project(':testnorge-avro-schema')
-    implementation project(':testnorge-dependency-analysis-auto-configuration')
 
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:2.2.5.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.3.4.RELEASE'

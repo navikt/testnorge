@@ -27,14 +27,12 @@ import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoRespons
 import no.nav.registre.testnorge.consumers.hodejegeren.response.Relasjon;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.RelasjonsResponse;
 import no.nav.registre.testnorge.libs.core.util.IdentUtil;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 import static no.nav.registre.testnorge.arena.consumer.rs.util.ConsumerUtils.EIER;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@DependencyOn("testnorge-hodejegeren")
 public class IdenterUtils {
 
     private static final int PAGE_SIZE = 10;

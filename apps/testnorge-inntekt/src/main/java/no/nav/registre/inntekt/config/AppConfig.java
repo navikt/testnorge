@@ -12,16 +12,14 @@ import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
 import no.nav.registre.testnorge.libs.database.config.FlywayConfiguration;
 import no.nav.registre.testnorge.libs.database.config.VaultHikariConfiguration;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @EnableJpaAuditing
 @Configuration
-@Import(value = {
+@Import({
         ApplicationCoreConfig.class,
         VaultHikariConfiguration.class,
         FlywayConfiguration.class
 })
-@DependencyOn("testnorge-hodejegeren")
 public class AppConfig {
 
     @Value("${testnorge-hodejegeren.rest-api.url}")

@@ -8,12 +8,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import no.nav.registre.testnorge.libs.avro.hendelse.Hendelse;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyType;
 import no.nav.registre.testnorge.libs.dto.hendelse.v1.HendelseType;
 
 @Component
-@DependencyOn(value = "testnorge-hendelse-api", type = DependencyType.QUEUE)
 public class HendelseConsumer {
 
     public HendelseConsumer(@Value("${kafka.topic}") String topic, KafkaTemplate<String, Hendelse> kafkaTemplate) {

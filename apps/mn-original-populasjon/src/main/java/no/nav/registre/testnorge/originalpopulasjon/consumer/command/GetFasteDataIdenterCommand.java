@@ -3,17 +3,14 @@ package no.nav.registre.testnorge.originalpopulasjon.consumer.command;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
 
 @Slf4j
-@DependencyOn("testnorge-statisk-data-forvalter")
 @RequiredArgsConstructor
 public class GetFasteDataIdenterCommand implements Callable<PersonDTO> {
     private final WebClient webClient;

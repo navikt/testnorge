@@ -7,11 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.applikasjonsanalyseservice.adapter.ApplicationAdapter;
-import no.nav.registre.testnorge.applikasjonsanalyseservice.domain.ApplicationInfo;
-import no.nav.registre.testnorge.applikasjonsanalyseservice.domain.ApplikasjonsanalyseList;
 import no.nav.registre.testnorge.applikasjonsanalyseservice.domain.Properties;
 import no.nav.registre.testnorge.applikasjonsanalyseservice.service.ApplikasjonsanalyseService;
 import no.nav.registre.testnorge.libs.dto.dependencyanalysis.v1.ApplicationDependenciesDTO;

@@ -19,11 +19,9 @@ import no.nav.registre.orkestratoren.consumer.rs.response.GenererArenaResponse;
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteArenaResponse;
 import no.nav.registre.orkestratoren.exception.ArenaSyntetiseringException;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component
-@DependencyOn("testnorge-aareg")
 public class TestnorgeArenaConsumer {
 
     private static final ParameterizedTypeReference<GenererArenaResponse> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

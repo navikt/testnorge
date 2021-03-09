@@ -3,7 +3,6 @@ package no.nav.registre.testnorge.arena.consumer.rs;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.command.synt.HentVedtakshistorikkCommand;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -16,7 +15,6 @@ import java.util.Random;
 
 @Slf4j
 @Component
-@DependencyOn(value = "nais-synthdata-arena-vedtakshistorikk", external = true)
 public class VedtakshistorikkSyntConsumer {
 
     // Krav fra Arena et at tidligste dato(minimumsdato) for innsending av vedtakshistorikk er 01.10.2010.

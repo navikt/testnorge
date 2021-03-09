@@ -9,12 +9,9 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.avro.report.Entry;
 import no.nav.registre.testnorge.libs.avro.report.Report;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyType;
 import no.nav.registre.testnorge.libs.reporting.ReportConsumer;
 
 @Component
-@DependencyOn(value = "testnorge-rapportering-api", type = DependencyType.QUEUE)
 public class RapporteringConsumer implements ReportConsumer {
 
     private final String topic;

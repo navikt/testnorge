@@ -14,56 +14,10 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: person-search-service
-          cluster: dev-fss
-        - application: mn-original-populasjon
-          cluster: dev-fss
-        - application: testnorge-opprett-person-pdl
-          cluster: dev-fss
         - application: team-dolly-lokal-app
           cluster: dev-fss
-        - application: testnorge-varslinger-api
-          cluster: dev-fss
-        - application: testnorge-profil-api
-          cluster: dev-gcp
-        - application: testnorge-profil-api-dev
-          cluster: dev-gcp
-        - application: avhengighetsanalyse-frontend
-          cluster: dev-gcp
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
-        - application: testnorge-tilbakemelding-api
-          cluster: dev-gcp
-        - application: organisasjon-bestilling-service
-          cluster: dev-gcp
-        - application: testnorge-batch-adeo-proxy
-          cluster: dev-fss
-        - application: testnorge-tps-ident-service
-          cluster: dev-fss
-        - application: testnorge-arbeidsforhold-api
-          cluster: dev-fss
-        - application: mn-synt-arbeidsforhold-service
-          cluster: dev-fss
-        - application: jenkins-batch-status-service
-          cluster: dev-fss
-        - application: arbeidsforhold-frontend
-          cluster: dev-fss
-        - application: testnorge-arbeidsforhold-export-api
-          cluster: dev-fss
-        - application: endringsmelding-service
-          cluster: dev-fss
-        - application: oppsummeringsdokument-service
-          cluster: dev-gcp
-        - application: oppsummeringsdokument-frontend
-          cluster: dev-gcp
-        - application: aareg-synt-services-proxy
-          cluster: dev-fss
-        - application: testnorge-statisk-data-forvalter
-          cluster: dev-fss
-        - application: testnorge-synt-sykemelding-api
-          cluster: dev-fss
-        - application: testnav-statistikk-service
-          cluster: dev-gcp
     outbound:
       external:
         - host: api.github.com

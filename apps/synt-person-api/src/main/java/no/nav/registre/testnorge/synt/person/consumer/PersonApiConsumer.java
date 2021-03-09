@@ -10,7 +10,6 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.registre.testnorge.libs.common.command.CreatePersonCommand;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
@@ -20,7 +19,6 @@ import no.nav.registre.testnorge.synt.person.domain.Person;
 
 
 @Component
-@DependencyOn("testnorge-person-api")
 public class PersonApiConsumer {
     private final WebClient webClient;
     private final ClientCredential clientCredential;

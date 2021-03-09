@@ -1,7 +1,6 @@
 package no.nav.registre.orgnrservice.consumer;
 
 import no.nav.registre.orgnrservice.consumer.response.MiljoerResponse;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
@@ -16,7 +15,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.List;
 
 @Component
-@DependencyOn(value = "testnorge-miljoer-service")
 public class MiljoerConsumer {
 
     private final WebClient webClient;

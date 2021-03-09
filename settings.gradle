@@ -25,9 +25,6 @@ gradleEnterprise {
 }
 
 include(':proxies')
-
-include(':testnorge-dependency-analysis-auto-configuration')
-
 include(':inntektsmelding-stub')
 include(':testnorge-tss')
 include(':profil-api')
@@ -56,7 +53,6 @@ include(':testnorge-arena')
 include(':testnorge-token-provider')
 include(':nav-endringsmeldinger-core')
 include(':synt-sykemelding-api')
-include(':testnorge-dependency-analysis')
 include(':testnorge-csv-converter')
 include(':testnorge-tp')
 include(':udi-stub')
@@ -147,7 +143,6 @@ project(":testnorge-reporting").projectDir = file('libs/testnorge-reporting')
 project(":testnorge-token-provider").projectDir = file('apps/testnorge-token-provider')
 project(":nav-endringsmeldinger-core").projectDir = file('apps/testnorge-nav-endringsmeldinger/nav-endringsmeldinger-core')
 project(":synt-sykemelding-api").projectDir = file('apps/synt-sykemelding-api')
-project(":testnorge-dependency-analysis").projectDir = file('libs/testnorge-dependency-analysis')
 project(":testnorge-csv-converter").projectDir = file('libs/testnorge-csv-converter')
 project(":testnorge-tp").projectDir = file('apps/testnorge-tp')
 project(":udi-stub").projectDir = file('apps/udi-stub')
@@ -210,8 +205,6 @@ project(":mn-synt-arbeidsforhold-service").projectDir = file('apps/mn-synt-arbei
 project(":ident-check-in-prod-service").projectDir = file('apps/ident-check-in-prod-service')
 project(":organisasjon-orgnummer-service").projectDir = file('apps/organisasjon-orgnummer-service')
 project(":organisasjon-forvalter").projectDir = file('apps/organisasjon-forvalter')
-project(":testnorge-dependency-analysis-auto-configuration").projectDir = file('libs/testnorge-dependency-analysis-auto-configuration')
-
 
 include 'organisasjon-mottak-service'
 project(":organisasjon-mottak-service").projectDir = file('apps/organisasjon-mottak-service')
@@ -251,12 +244,6 @@ project(":batch-adeo-proxy").projectDir = file('proxies/batch-adeo-proxy')
 
 include 'applikasjonsanalyse-service'
 project(":applikasjonsanalyse-service").projectDir = file('apps/applikasjonsanalyse-service')
-
-include 'analysis-auto-configuration'
-project(":analysis-auto-configuration").projectDir = file('libs/analysis-auto-configuration')
-
-include 'analysis'
-project(":analysis").projectDir = file('libs/analysis')
 
 include 'aareg-synt-services-proxy'
 project(":aareg-synt-services-proxy").projectDir = file('proxies/aareg-synt-services-proxy')

@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.helsepersonell.consumer.command.GetAlleIdenterCommand;
 import no.nav.registre.testnorge.helsepersonell.consumer.command.GetPersondataCommand;
 import no.nav.registre.testnorge.helsepersonell.domain.Persondata;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -16,7 +15,6 @@ import java.util.concurrent.Executors;
 
 @Slf4j
 @Component
-@DependencyOn("testnorge-hodejegeren")
 public class HodejegerenConsumer {
     private static final String MILJOE = "q1";
     private final Executor executor;

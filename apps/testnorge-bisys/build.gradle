@@ -9,8 +9,8 @@ bootJar {
 
 dependencies {
     implementation project(':testnorge-data-transfer-objects')
-    implementation project(':testnorge-dependency-analysis')
     implementation project(':testnorge-core')
+
     implementation 'org.springframework.boot:spring-boot-starter-webflux:2.3.2.RELEASE'
     implementation 'no.nav.bidrag.ui:bisys-ui-connect:2020.09.23-11.42-60270558f930'
     implementation 'org.aspectj:aspectjweaver:1.9.6'

@@ -8,7 +8,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.person.consumer.command.GetPdlPersonCommand;
 import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.Feilmelding;
 import no.nav.registre.testnorge.person.consumer.dto.pdl.graphql.PdlPerson;
@@ -18,7 +17,6 @@ import no.nav.registre.testnorge.person.service.StsOidcTokenService;
 
 @Slf4j
 @Component
-@DependencyOn(value = "pdl-api", external = true)
 public class PdlApiConsumer {
 
     private final StsOidcTokenService tokenService;
