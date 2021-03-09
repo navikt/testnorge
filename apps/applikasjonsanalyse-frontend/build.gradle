@@ -27,7 +27,6 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-zuul'
-
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server:2.3.4.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-actuator:2.3.4.RELEASE'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.3'

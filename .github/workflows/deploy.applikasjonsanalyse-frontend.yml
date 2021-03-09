@@ -47,7 +47,7 @@ jobs:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
         run: ./gradlew :applikasjonsanalyse-frontend:build
       - name: Build and publish Docker image
-        working-directory: ./apps/avhengighetsanalyse-frontend/
+        working-directory: ./apps/applikasjonsanalyse-frontend/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
