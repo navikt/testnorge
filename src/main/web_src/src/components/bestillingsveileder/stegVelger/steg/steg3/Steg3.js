@@ -8,6 +8,8 @@ import { BestillingInfoboks } from './BestillingInfoboks'
 import { IdentVelger } from './IdentVelger'
 
 export const Steg3 = ({ formikBag }) => {
+	const erOrganisasjon = formikBag.values.hasOwnProperty('organisasjon')
+
 	return (
 		<div>
 			{harAvhukedeAttributter(formikBag.values) && (
@@ -16,9 +18,9 @@ export const Steg3 = ({ formikBag }) => {
 					<BestillingInfoboks bestillingsdata={formikBag.values} />
 				</div>
 			)}
-			<IdentVelger formikBag={formikBag} />
+			{!erOrganisasjon && <IdentVelger formikBag={formikBag} />}
 			<MiljoVelger bestillingsdata={formikBag.values} heading="Hvilke miljøer vil du opprette i?" />
-			{!formikBag.values.hasOwnProperty('organisasjon') && <MalForm formikBag={formikBag} />}
+			{!erOrganisasjon && <MalForm formikBag={formikBag} />}
 		</div>
 	)
 }
