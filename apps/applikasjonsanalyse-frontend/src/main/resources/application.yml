@@ -2,7 +2,7 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 
 spring:
   application:
-    name: applikasjonsanalyse-frontend
+    name: testnav-applikasjonsanalyse-frontend
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     description: App for visning av avhengigheter i testnorge
   cloud:
@@ -22,4 +22,4 @@ consumers:
   applikasjonsanalyse-service:
     cluster: dev-gcp
     namespace: dolly
-    name: applikasjonsanalyse-service
+    name: testnav-applikasjonsanalyse-frontend
