@@ -117,6 +117,7 @@ public class Oppsummeringsdokument {
     private Function<PermisjonModel, PermisjonDTO> mapPermisjonDTO() {
         return value -> PermisjonDTO
                 .builder()
+                .permisjonId(value.getPermisjonId())
                 .beskrivelse(value.getBeskrivelse())
                 .permisjonsprosent(value.getPermisjonsprosent())
                 .sluttdato(value.getSluttdato())
@@ -181,10 +182,11 @@ public class Oppsummeringsdokument {
     private Function<PermisjonDTO, PermisjonModel> mapPermisjonModel() {
         return value -> {
             var model = new PermisjonModel();
-            model.setPermisjonsprosent(model.getPermisjonsprosent());
-            model.setBeskrivelse(model.getBeskrivelse());
-            model.setStartdato(model.getStartdato());
-            model.setSluttdato(model.getSluttdato());
+            model.setPermisjonId(value.getPermisjonId());
+            model.setPermisjonsprosent(value.getPermisjonsprosent());
+            model.setBeskrivelse(value.getBeskrivelse());
+            model.setStartdato(value.getStartdato());
+            model.setSluttdato(value.getSluttdato());
             return model;
         };
     }
@@ -291,16 +293,18 @@ public class Oppsummeringsdokument {
         arbeidsforhold.setArbeidstidsordning(dto.getArbeidstidsordning());
         arbeidsforhold.setStillingsprosent(dto.getStillingsprosent() != null ? BigDecimal.valueOf(dto.getStillingsprosent()) : null);
         arbeidsforhold.setSisteLoennsendringsdato(toXMLGregorianCalendar(dto.getSisteLoennsendringsdato()));
+
         if (dto.getPermisjoner() != null) {
-            arbeidsforhold.getPermisjon().addAll(dto.getPermisjoner().stream().map(permisjonDTO -> {
+            var permisjoner = dto.getPermisjoner().stream().map(permisjonDTO -> {
                 Permisjon permisjon = new Permisjon();
                 permisjon.setBeskrivelse(permisjonDTO.getBeskrivelse());
-                permisjon.setPermisjonId(UUID.randomUUID().toString());
+                permisjon.setPermisjonId(permisjonDTO.getPermisjonId());
                 permisjon.setPermisjonsprosent(permisjonDTO.getPermisjonsprosent() != null ? BigDecimal.valueOf(permisjonDTO.getPermisjonsprosent()) : null);
                 permisjon.setSluttdato(toXMLGregorianCalendar(permisjonDTO.getSluttdato()));
                 permisjon.setStartdato(toXMLGregorianCalendar(permisjonDTO.getStartdato()));
                 return permisjon;
-            }).collect(Collectors.toList()));
+            }).collect(Collectors.toList());
+            arbeidsforhold.getPermisjon().addAll(permisjoner);
         }
         if(dto.getFartoey() != null) {
             Fartoey fartoey = new Fartoey();

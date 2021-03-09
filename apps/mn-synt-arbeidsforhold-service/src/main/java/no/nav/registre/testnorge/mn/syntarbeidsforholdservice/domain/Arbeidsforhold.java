@@ -45,6 +45,7 @@ public class Arbeidsforhold {
                 .stream()
                 .map(dto -> no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO
                         .builder()
+                        .permisjonId(UUID.randomUUID().toString())
                         .beskrivelse(dto.getBeskrivelse())
                         .permisjonsprosent(Float.parseFloat(dto.getPermisjonsprosent()))
                         .sluttdato(dto.getSluttdato())

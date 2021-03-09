@@ -23,7 +23,7 @@ public class SaveOppsummeringsdokumenterCommand implements Callable<Void> {
     @Override
     public Void call() {
         log.info(
-                "Send inn raport for opplysningspliktig {} den {}.",
+                "Send inn rapport for opplysningspliktig {} den {}.",
                 opplysningspliktigDTO.getOpplysningspliktigOrganisajonsnummer(),
                 opplysningspliktigDTO.getKalendermaaned()
         );

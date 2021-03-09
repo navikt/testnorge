@@ -98,7 +98,6 @@ public class OppsummeringsdokumentConsumer {
         saveOpplysningspliktig(opplysningspliktig, miljo).get();
     }
 
-
     @SneakyThrows
     public void sendOpplysningspliktig(List<Opplysningspliktig> opplysningspliktig, String miljo) {
         var futures = opplysningspliktig.stream().map(value -> saveOpplysningspliktig(value, miljo)).collect(Collectors.toList());

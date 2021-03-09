@@ -103,9 +103,8 @@ public class SyntrestConsumer {
                 res,
                 arbeidsforhold.getIdent(),
                 arbeidsforhold.getArbeidsforholdId(),
-                arbeidsforhold.getVirksomhetsnummer()))
-                .collect(Collectors.toList());
-
+                arbeidsforhold.getVirksomhetsnummer())
+        ).collect(Collectors.toList());
 
         list.stream()
                 .filter(value -> value.getSluttdato() != null)
