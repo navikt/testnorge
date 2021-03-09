@@ -34,6 +34,8 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.postgresql:postgresql'
 
+    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
+
     implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 

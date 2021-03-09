@@ -64,6 +64,9 @@ spec:
           cluster: dev-fss
         - application: testnav-statistikk-service
           cluster: dev-gcp
+    outbound:
+      external:
+        - host: api.github.com
   gcp:
     sqlInstances:
       - type: POSTGRES_12
