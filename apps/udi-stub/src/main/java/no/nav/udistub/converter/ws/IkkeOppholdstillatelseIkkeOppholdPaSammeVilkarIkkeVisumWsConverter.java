@@ -41,12 +41,16 @@ public class IkkeOppholdstillatelseIkkeOppholdPaSammeVilkarIkkeVisumWsConverter
 
     private UtvistMedInnreiseForbud getUtvistMedInnreiseForbud(UdiIkkeOppholdstilatelseIkkeVilkaarIkkeVisum ikkeOpphold) {
 
-        var udiUtvistMedInnreiseForbud = new UtvistMedInnreiseForbud();
+        UtvistMedInnreiseForbud udiUtvistMedInnreiseForbud = null;
         var ikkeOppholdUvistMedInnreiseForbud = ikkeOpphold.getUtvistMedInnreiseForbud();
-        udiUtvistMedInnreiseForbud.setVarighet(ikkeOppholdUvistMedInnreiseForbud.getVarighet());
-        udiUtvistMedInnreiseForbud.setInnreiseForbud(ikkeOppholdUvistMedInnreiseForbud.getInnreiseForbud());
-        udiUtvistMedInnreiseForbud.setVedtaksDato(
-                xmlDateWsConverter.convert(ikkeOppholdUvistMedInnreiseForbud.getInnreiseForbudVedtaksDato()));
+
+        if (nonNull(ikkeOppholdUvistMedInnreiseForbud)) {
+            udiUtvistMedInnreiseForbud = new UtvistMedInnreiseForbud();
+            udiUtvistMedInnreiseForbud.setVarighet(ikkeOppholdUvistMedInnreiseForbud.getVarighet());
+            udiUtvistMedInnreiseForbud.setInnreiseForbud(ikkeOppholdUvistMedInnreiseForbud.getInnreiseForbud());
+            udiUtvistMedInnreiseForbud.setVedtaksDato(
+                    xmlDateWsConverter.convert(ikkeOppholdUvistMedInnreiseForbud.getInnreiseForbudVedtaksDato()));
+        }
         return udiUtvistMedInnreiseForbud;
     }
 
