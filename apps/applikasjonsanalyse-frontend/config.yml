@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: avhengighetsanalyse-frontend
+  name: testnav-applikasjonsanalyse-frontend
   namespace: dolly
   labels:
     team: dolly
@@ -11,7 +11,7 @@ spec:
     application:
       enabled: true
       replyURLs:
-        - "https://testnav-avhengighetsanalyse.dev.intern.nav.no/login/oauth2/code/aad"
+        - "https://testnav-applikasjonsanalyse.dev.intern.nav.no/login/oauth2/code/aad"
         - "http://localhost:8080/login/oauth2/code/aad"
   accessPolicy:
     outbound:
@@ -38,4 +38,4 @@ spec:
       memory: 1024Mi
   image: {{ image }}
   ingresses:
-    - "https://testnav-avhengighetsanalyse.dev.intern.nav.no"
+    - "https://testnav-applikasjonsanalyse.dev.intern.nav.no"

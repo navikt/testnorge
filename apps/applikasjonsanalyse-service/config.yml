@@ -18,6 +18,8 @@ spec:
           cluster: dev-fss
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
+        - application: testnav-applikasjonsanalyse-frontend
+          cluster: dev-gcp
     outbound:
       external:
         - host: api.github.com
@@ -49,4 +51,4 @@ spec:
   envFrom:
     - secret: google-sql-applikasjonsanalyse-service
   ingresses:
-    - "https://applikasjonsanalyse-service.dev.intern.nav.no"
+    - "https://testnav-applikasjonsanalyse-service.dev.intern.nav.no"

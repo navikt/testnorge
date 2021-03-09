@@ -1,13 +1,13 @@
-name: Deploy avhengighetsanalyse-frontend
+name: Deploy applikasjonsanalyse-frontend
 
 on:
   push:
     paths:
-      - apps/avhengighetsanalyse-frontend/**
+      - apps/applikasjonsanalyse-frontend/**
       - libs/testnorge-core/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/avhengighetsanalyse-frontend:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/applikasjonsanalyse-frontend:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -32,20 +32,20 @@ jobs:
       - name: Install js libs
         run: |
           npm ci
-        working-directory: ./apps/avhengighetsanalyse-frontend/src/main/js
+        working-directory: ./apps/applikasjonsanalyse-frontend/src/main/js
       - name: Build js
         run: |
           npm run build
-        working-directory: ./apps/avhengighetsanalyse-frontend/src/main/js
+        working-directory: ./apps/applikasjonsanalyse-frontend/src/main/js
       - name: Move js build
         run: |
           mv build ../resources/static
-        working-directory: ./apps/avhengighetsanalyse-frontend/src/main/js
+        working-directory: ./apps/applikasjonsanalyse-frontend/src/main/js
       - name: Compile
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :avhengighetsanalyse-frontend:build
+        run: ./gradlew :applikasjonsanalyse-frontend:build
       - name: Build and publish Docker image
         working-directory: ./apps/avhengighetsanalyse-frontend/
         env:
@@ -60,4 +60,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
-          RESOURCE: apps/avhengighetsanalyse-frontend/config.yml
+          RESOURCE: apps/applikasjonsanalyse-frontend/config.yml
