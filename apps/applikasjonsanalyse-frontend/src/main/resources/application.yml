@@ -22,4 +22,4 @@ consumers:
   applikasjonsanalyse-service:
     cluster: dev-gcp
     namespace: dolly
-    name: testnav-applikasjonsanalyse-frontend
+    name: applikasjonsanalyse-service

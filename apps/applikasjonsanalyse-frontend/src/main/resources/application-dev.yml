@@ -22,5 +22,5 @@ zuul:
   routes:
     avhengighetsanalyse-service:
       path: /api/**
-      url: https://applikasjonsanalyse-service.dev.intern.nav.no/api
+      url: https://testnav-applikasjonsanalyse-service.dev.intern.nav.no/api
       sensitiveHeaders: Cookie,Set-Cookie
