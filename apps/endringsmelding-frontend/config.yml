@@ -12,6 +12,7 @@ spec:
       enabled: true
       replyURLs:
         - "https://testnav-endringsmelding.dev.intern.nav.no/login/oauth2/code/aad"
+        - "https://endringsmelding.dev.intern.nav.no/login/oauth2/code/aad"
         - "http://localhost:8080/login/oauth2/code/aad"
       claims:
         groups:
