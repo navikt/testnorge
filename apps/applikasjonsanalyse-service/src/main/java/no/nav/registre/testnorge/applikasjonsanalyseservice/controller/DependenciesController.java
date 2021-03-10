@@ -26,7 +26,6 @@ public class DependenciesController {
                 = CacheControl.maxAge(10, TimeUnit.MINUTES)
                 .noTransform()
                 .mustRevalidate();
-
         var applikasjonsanalyseList = service.getApplikasjonsanalyseList(new Properties("navikt", "testnorge"));
 
         return ResponseEntity
