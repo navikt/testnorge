@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.person.consumer.command.GetTagsCommand;
 import no.nav.registre.testnorge.person.consumer.command.OpprettFoedselCommand;
 import no.nav.registre.testnorge.person.consumer.command.OpprettPersonCommand;
@@ -29,7 +28,6 @@ import no.nav.registre.testnorge.person.service.StsOidcTokenService;
 
 @Slf4j
 @Component
-@DependencyOn(value = "pdl-testdata", external = true)
 public class PdlTestdataConsumer {
 
     private final StsOidcTokenService tokenService;

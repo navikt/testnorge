@@ -7,12 +7,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.person.v1.Persondatasystem;
 
 @Slf4j
-@DependencyOn("testnorge-person-api")
 @RequiredArgsConstructor
 public class GetPersonCommand implements Callable<PersonDTO> {
     private final WebClient webClient;

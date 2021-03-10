@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.elasticsearch.config.EnableElasticsearchAuditing;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
-import no.nav.registre.testnorge.libs.core.config.AnalysisGCPAutoConfiguration;
 import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
 import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerConfiguration;
 
@@ -15,8 +14,7 @@ import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerCo
 @Configuration
 @Import(value = {
         ApplicationCoreConfig.class,
-        SecureOAuth2ServerToServerConfiguration.class,
-        AnalysisGCPAutoConfiguration.class
+        SecureOAuth2ServerToServerConfiguration.class
 })
 @EnableElasticsearchRepositories(basePackages = "no.nav.registre.testnorge.oppsummeringsdokumentservice.repository")
 @EnableElasticsearchAuditing

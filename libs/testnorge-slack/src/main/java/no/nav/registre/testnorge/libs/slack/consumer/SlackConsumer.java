@@ -8,14 +8,12 @@ import reactor.netty.tcp.ProxyProvider;
 
 import java.net.URI;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.slack.command.PublishMessageCommand;
 import no.nav.registre.testnorge.libs.slack.command.UploadFileCommand;
 import no.nav.registre.testnorge.libs.slack.dto.Message;
 import no.nav.registre.testnorge.libs.slack.dto.SlackResponse;
 
 @Slf4j
-@DependencyOn(value = "slack", external = true)
 public class SlackConsumer {
     private final String token;
     private final String applicationName;

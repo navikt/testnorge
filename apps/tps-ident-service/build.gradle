@@ -19,7 +19,6 @@ dependencies {
     implementation project(':testnorge-oauth2')
     implementation project(':testnorge-common-command')
     implementation project(':testnorge-data-transfer-objects')
-    implementation project(':testnorge-dependency-analysis')
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'

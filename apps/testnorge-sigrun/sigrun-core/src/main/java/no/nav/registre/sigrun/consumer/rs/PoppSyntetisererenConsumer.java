@@ -14,11 +14,9 @@ import org.springframework.web.util.UriTemplate;
 import java.util.List;
 
 import no.nav.registre.sigrun.PoppSyntetisererenResponse;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
-@DependencyOn("syntrest")
 public class PoppSyntetisererenConsumer {
 
     private static final ParameterizedTypeReference<List<PoppSyntetisererenResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

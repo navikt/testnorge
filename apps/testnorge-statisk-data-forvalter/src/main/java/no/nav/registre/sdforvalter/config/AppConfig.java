@@ -7,13 +7,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.registre.testnorge.libs.autoconfigdependencyanalysis.config.DependencyAnalysisAutoConfiguration;
-import no.nav.registre.testnorge.libs.core.config.AnalysisFSSAutoConfiguration;
 import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
 import no.nav.registre.testnorge.libs.database.config.FlywayConfiguration;
 import no.nav.registre.testnorge.libs.database.config.VaultHikariConfiguration;
 import no.nav.registre.testnorge.libs.oauth2.config.InsecureOAuth2ServerToServerConfiguration;
-import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerConfiguration;
 
 @Configuration
 @EnableJpaAuditing
@@ -22,9 +19,7 @@ import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerCo
         ApplicationCoreConfig.class,
         VaultHikariConfiguration.class,
         FlywayConfiguration.class,
-        InsecureOAuth2ServerToServerConfiguration.class,
-        DependencyAnalysisAutoConfiguration.class,
-        AnalysisFSSAutoConfiguration.class
+        InsecureOAuth2ServerToServerConfiguration.class
 })
 public class AppConfig {
 

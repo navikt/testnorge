@@ -37,11 +37,9 @@ import no.nav.registre.skd.provider.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Service
 @Slf4j
-@DependencyOn("testnorge-hodejegeren")
 public class SyntetiseringService {
 
     static final String FEILMELDING = "Feil på endringskode %s i avspillergruppe %d. Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: %s - Skdmeldinger som ble lagret i TPSF: %s";

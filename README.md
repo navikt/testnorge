@@ -10,8 +10,7 @@
 
 ## Avhenighetsanalyse
 
-**Kan kun brukes fra utviklerimage**
-https://testnorge-avhengighetsanalyse-frontend.dev.adeo.no/
+https://testnav-applikasjonsanalyse.dev.intern.nav.no
 
 ## Kjør lokalt
 

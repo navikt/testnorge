@@ -3,7 +3,6 @@ package no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import no.nav.registre.testnorge.libs.analysis.DependencyOn;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Opprettelsesdokument;
 import no.nav.registre.testnorge.libs.kafkaconfig.config.KafkaProperties;
 import no.nav.registre.testnorge.libs.kafkaconfig.topic.OrganisasjonTopic;
@@ -11,11 +10,6 @@ import no.nav.registre.testnorge.libs.kafkaproducers.KafkaProducer;
 
 @Slf4j
 @Component
-@DependencyOn(
-        name = "organisasjon-orgnummer-service",
-        cluster = "dev-fss",
-        namespace = "dolly"
-)
 public class OpprettelsesdokumentProducer extends KafkaProducer<Opprettelsesdokument> {
     OpprettelsesdokumentProducer(KafkaProperties properties) {
         super(

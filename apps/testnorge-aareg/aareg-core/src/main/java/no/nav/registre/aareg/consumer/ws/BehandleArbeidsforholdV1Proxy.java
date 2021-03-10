@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.aareg.cxf.TimeoutFeature;
 import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.security.sts.StsSamlTokenService;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.BehandleArbeidsforholdPortType;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.ws.addressing.WSAddressingFeature;
@@ -20,7 +19,6 @@ import static java.util.Objects.isNull;
 
 @Component
 @RequiredArgsConstructor
-@DependencyOn(value = "aareg-ws", external = true)
 @Slf4j
 public class BehandleArbeidsforholdV1Proxy {
 

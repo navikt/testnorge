@@ -18,8 +18,6 @@ dependencies {
     implementation project(':kafka-producers')
     implementation project(':local-development')
     implementation project(':testnorge-core')
-    implementation project(':testnorge-dependency-analysis')
-    implementation project(':testnorge-dependency-analysis-auto-configuration')
     implementation project(':testnorge-avro-schema')
     implementation project(':testnorge-common-command')
     implementation project(':testnorge-data-transfer-objects')

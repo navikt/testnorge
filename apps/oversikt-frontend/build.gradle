@@ -17,9 +17,7 @@ dependencyManagement {
 dependencies {
     implementation project(':frontend')
     implementation project(':local-development')
-    implementation project(':testnorge-dependency-analysis')
     implementation project(':testnorge-core')
-    implementation project(':testnorge-dependency-analysis-auto-configuration')
     implementation project(':testnorge-oauth2')
 
     implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'

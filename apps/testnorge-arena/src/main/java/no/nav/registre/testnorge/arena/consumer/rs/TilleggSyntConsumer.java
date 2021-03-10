@@ -2,7 +2,6 @@ package no.nav.registre.testnorge.arena.consumer.rs;
 
 import no.nav.registre.testnorge.arena.consumer.rs.command.synt.PostSyntTilleggRequestCommand;
 import no.nav.registre.testnorge.arena.consumer.rs.request.synt.SyntRequest;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -12,7 +11,6 @@ import java.util.List;
 
 
 @Component
-@DependencyOn(value = "nais-synthdata-arena-tilleggsstonad", external = true)
 public class TilleggSyntConsumer {
 
     private final WebClient webClient;

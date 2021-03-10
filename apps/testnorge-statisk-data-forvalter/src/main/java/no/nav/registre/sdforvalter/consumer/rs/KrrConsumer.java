@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.sdforvalter.consumer.rs.request.KrrRequest;
 import no.nav.registre.sdforvalter.domain.Krr;
 import no.nav.registre.sdforvalter.domain.KrrListe;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -26,7 +25,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-@DependencyOn(value = "krr-stub", external = true)
 public class KrrConsumer {
 
     private static final ParameterizedTypeReference<List<KrrRequest>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

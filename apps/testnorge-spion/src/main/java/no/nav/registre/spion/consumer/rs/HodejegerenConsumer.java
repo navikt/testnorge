@@ -2,7 +2,6 @@ package no.nav.registre.spion.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.spion.consumer.rs.response.HodejegerenResponse;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.RequestEntity;
@@ -14,7 +13,6 @@ import org.springframework.web.util.UriTemplate;
 
 @Slf4j
 @Component
-@DependencyOn("testnorge-hodejegeren")
 public class HodejegerenConsumer {
 
     private final RestTemplate restTemplate;

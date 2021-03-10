@@ -20,9 +20,6 @@ spec:
           cluster: dev-fss
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
-    outbound:
-      rules:
-        - application: applikasjonsanalyse-service
   azure:
     application:
       enabled: true

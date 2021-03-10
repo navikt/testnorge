@@ -18,7 +18,6 @@ spec:
         - application: team-dolly-lokal-app
           cluster: dev-fss
         - application: mn-synt-arbeidsforhold-service
-        - application: arbeidsforhold-frontend
         - application: testnorge-oversikt-frontend
         - application: testnorge-synt-sykemelding-api
   liveness:

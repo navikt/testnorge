@@ -6,7 +6,6 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.organisasjon.consumer.command.GetOrganisasjon;
 import no.nav.registre.testnorge.organisasjon.consumer.dto.OrganisasjonDTO;
 import no.nav.registre.testnorge.organisasjon.domain.Organisasjon;
@@ -14,7 +13,6 @@ import no.nav.registre.testnorge.organisasjon.domain.Organisasjon;
 
 @Slf4j
 @Component
-@DependencyOn(value = "ereg", external = true)
 public class EregConsumer {
     private final RestTemplate restTemplate;
     private final String eregUrl;

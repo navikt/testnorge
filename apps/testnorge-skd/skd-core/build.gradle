@@ -8,7 +8,6 @@ bootJar {
 }
 
 dependencies {
-    implementation project(':testnorge-dependency-analysis')
     implementation project(':testnorge-core')
     implementation project(':testnorge-data-transfer-objects')
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:2.2.5.RELEASE'

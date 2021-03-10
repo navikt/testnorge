@@ -14,13 +14,11 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.List;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.tss.consumer.rs.request.EregMapperRequest;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@DependencyOn(value = "ereg", external = true)
 public class EregConsumer {
 
     private final RestTemplate restTemplate;

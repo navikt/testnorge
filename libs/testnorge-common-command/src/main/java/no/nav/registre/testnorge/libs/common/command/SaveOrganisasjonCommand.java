@@ -7,11 +7,9 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 
 @Slf4j
-@DependencyOn("testnorge-organisasjon-api")
 @RequiredArgsConstructor
 public class SaveOrganisasjonCommand implements Runnable {
     private final WebClient webClient;

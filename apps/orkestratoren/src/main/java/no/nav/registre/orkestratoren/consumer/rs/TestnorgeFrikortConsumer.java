@@ -14,10 +14,8 @@ import java.util.List;
 
 import no.nav.registre.orkestratoren.consumer.rs.response.GenererFrikortResponse;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortRequest;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
-@DependencyOn("testnorge-frikort")
 public class TestnorgeFrikortConsumer {
 
     private RestTemplate restTemplate;

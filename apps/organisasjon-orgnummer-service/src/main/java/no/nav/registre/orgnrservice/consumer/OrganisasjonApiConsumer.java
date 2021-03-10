@@ -3,7 +3,6 @@ package no.nav.registre.orgnrservice.consumer;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.orgnrservice.consumer.exceptions.OrganisasjonApiException;
 import no.nav.registre.testnorge.libs.common.command.GetOrganisasjonCommand;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-@DependencyOn("testnorge-organisasjon-api")
 public class OrganisasjonApiConsumer {
 
     private final WebClient webClient;

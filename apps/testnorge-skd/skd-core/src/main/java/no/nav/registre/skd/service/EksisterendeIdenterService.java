@@ -38,13 +38,11 @@ import no.nav.registre.skd.exceptions.ManglerEksisterendeIdentException;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 import no.nav.registre.testnorge.libs.core.util.IdentUtil;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
 @Slf4j
-@DependencyOn("testnorge-hodejegeren")
 public class EksisterendeIdenterService {
 
     private static final String SKD_MELDINGSNUMMER_FEILMELDING = "Kunne ikke finne ident for SkdMelding med meldingsnummer ";

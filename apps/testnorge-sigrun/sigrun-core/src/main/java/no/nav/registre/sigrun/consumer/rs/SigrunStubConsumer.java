@@ -4,7 +4,6 @@ import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.sigrun.PoppSyntetisererenResponse;
 import no.nav.registre.sigrun.consumer.rs.responses.SigrunSkattegrunnlagResponse;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -21,7 +20,6 @@ import java.util.List;
 
 @Component
 @Slf4j
-@DependencyOn(value = "sigrun-skd-stub", external = true)
 public class SigrunStubConsumer {
 
     private static final String NAV_CALL_ID_STRING = "Nav-Call-Id";

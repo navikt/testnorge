@@ -9,12 +9,10 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
 
 @Slf4j
-@DependencyOn("testnorge-synt-sykemelding-api")
 @RequiredArgsConstructor
 public class CreateSyntSykemeldingCommand implements Callable<Void> {
     private final RestTemplate restTemplate;

@@ -14,7 +14,6 @@ import java.util.Map;
 import static no.nav.registre.tss.domain.Person.MAX_ALDER;
 import static no.nav.registre.tss.domain.Person.MIN_ALDER;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.tss.consumer.rs.TssSyntetisererenConsumer;
 import no.nav.registre.tss.consumer.rs.response.TssMessage;
 import no.nav.registre.tss.domain.Person;
@@ -25,7 +24,6 @@ import no.nav.registre.tss.utils.RutineUtil;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@DependencyOn("testnorge-hodejegeren")
 public class SyntetiseringService {
 
     private final HodejegerenConsumer hodejegerenConsumer;

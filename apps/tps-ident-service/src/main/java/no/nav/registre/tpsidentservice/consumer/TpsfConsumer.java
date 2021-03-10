@@ -7,13 +7,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Set;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.tpsidentservice.consumer.command.GetTpsStatusCommand;
 import no.nav.registre.tpsidentservice.consumer.dto.TpsStatus;
 
 @Slf4j
 @Component
-@DependencyOn(value = "samhandlerregisteret", external = true)
 public class TpsfConsumer {
     private final WebClient webClient;
 

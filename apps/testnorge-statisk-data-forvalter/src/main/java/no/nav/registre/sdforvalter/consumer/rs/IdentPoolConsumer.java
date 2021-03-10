@@ -6,12 +6,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.registre.testnorge.libs.core.config.ApplicationProperties;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.identpool.v1.FiktiveNavnDTO;
 
 @Slf4j
 @Component
-@DependencyOn("ident-pool")
 public class IdentPoolConsumer {
 
     private final WebClient webClient;

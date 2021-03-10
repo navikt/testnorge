@@ -9,11 +9,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 
 @Slf4j
-@DependencyOn("mn-organisasjon-api")
 @RequiredArgsConstructor
 public class GetMNOrganisasjonCommand implements Callable<OrganisasjonDTO> {
     private final WebClient webClient;

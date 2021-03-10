@@ -13,11 +13,9 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.fasit.FasitApiConsumer;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
 @RequiredArgsConstructor
-@DependencyOn(value = "fasit", external = true)
 public class AaregArbeidsforholdFasitConsumer {
 
     private static final String REST_SERVICE = "RestService";

@@ -9,11 +9,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Set;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component
-@DependencyOn("testnorge-populasjoner-api")
 public class PopulasjonerConsumer {
 
     private final RestTemplate restTemplate;

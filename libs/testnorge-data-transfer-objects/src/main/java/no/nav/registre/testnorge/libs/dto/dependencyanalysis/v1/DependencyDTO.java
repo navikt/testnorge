@@ -13,7 +13,7 @@ import lombok.Value;
 public class DependencyDTO {
 
     @JsonProperty(required = true)
-    private final String name;
+    String name;
     @JsonProperty(required = true)
-    private final Boolean external;
+    Boolean external;
 }

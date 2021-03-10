@@ -10,13 +10,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdRequest;
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 import reactor.core.publisher.Mono;
 
 @Slf4j
-@DependencyOn("syntrest")
 @RequiredArgsConstructor
 public class GenerateArbeidsforholdHistorikkCommand implements Callable<List<ArbeidsforholdResponse>> {
     private final WebClient webClient;

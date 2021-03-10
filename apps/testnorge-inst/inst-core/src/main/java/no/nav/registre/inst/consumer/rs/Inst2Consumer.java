@@ -27,11 +27,9 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.exception.UgyldigIdentResponseException;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
-@DependencyOn(value = "inst2",external = true)
 public class Inst2Consumer {
 
     private static final ParameterizedTypeReference<List<Institusjonsopphold>> RESPONSE_TYPE_HENT_INSTITUSJONSOPPHOLD = new ParameterizedTypeReference<>() {

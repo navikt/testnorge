@@ -1,0 +1,25 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    name: testnav-applikasjonsanalyse-frontend
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
+    description: App for visning av avhengigheter i testnorge
+  cloud:
+    vault:
+      enabled: false
+  main:
+    banner-mode: off
+
+zuul:
+  routes:
+    avhengighetsanalyse-service:
+      path: /api/**
+      url: http://applikasjonsanalyse-service.dolly.svc.cluster.local/api
+      sensitiveHeaders: Cookie,Set-Cookie
+
+consumers:
+  applikasjonsanalyse-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: applikasjonsanalyse-service

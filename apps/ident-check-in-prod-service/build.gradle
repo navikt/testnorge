@@ -9,8 +9,6 @@ bootJar {
 
 dependencies {
     implementation project(':local-development')
-    implementation project(':testnorge-dependency-analysis')
-    implementation project(':testnorge-dependency-analysis-auto-configuration')
     implementation project(':testnorge-core')
     implementation project(':testnorge-oauth2')
     implementation project(':testnorge-data-transfer-objects')

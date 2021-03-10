@@ -26,7 +26,6 @@ dependencies {
     compile 'org.glassfish.jaxb:jaxb-runtime'
 
     implementation project(':testnorge-core')
-    implementation project(':testnorge-dependency-analysis')
     implementation project(':testnorge-data-transfer-objects')
     implementation project(':testnorge-common-command')
     implementation project(':testnorge-oauth2')

@@ -3,7 +3,6 @@ package no.nav.registre.aareg.consumer.rs;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.aareg.config.credentials.MiljoeServiceProperties;
 import no.nav.registre.aareg.consumer.rs.response.MiljoerResponse;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.core.ParameterizedTypeReference;
@@ -17,7 +16,6 @@ import java.util.List;
 
 @Component
 @Slf4j
-@DependencyOn(value = "testnorge-miljoer-service")
 public class MiljoerConsumer {
 
     private final WebClient webClient;

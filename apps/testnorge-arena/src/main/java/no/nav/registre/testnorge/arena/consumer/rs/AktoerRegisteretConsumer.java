@@ -3,7 +3,6 @@ package no.nav.registre.testnorge.arena.consumer.rs;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.command.aktoer.GetAktoerIdTilIdenterCommand;
 import no.nav.registre.testnorge.arena.security.TokenService;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -15,7 +14,6 @@ import java.util.Map;
 
 @Slf4j
 @Component
-@DependencyOn(value = "aktoerregister", external = true)
 public class AktoerRegisteretConsumer {
 
     private final WebClient webClient;

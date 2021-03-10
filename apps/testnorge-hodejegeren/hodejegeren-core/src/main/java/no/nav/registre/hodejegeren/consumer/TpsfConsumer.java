@@ -18,11 +18,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
-@DependencyOn(value = "tps-forvalteren", external = true)
 public class TpsfConsumer {
 
     private static final ParameterizedTypeReference<Set<String>> RESPONSE_TYPE_SET = new ParameterizedTypeReference<>() {
