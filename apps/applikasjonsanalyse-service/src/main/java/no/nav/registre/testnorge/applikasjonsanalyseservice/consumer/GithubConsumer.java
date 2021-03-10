@@ -11,7 +11,7 @@ import no.nav.registre.testnorge.applikasjonsanalyseservice.domain.Properties;
 
 @Component
 public class GithubConsumer {
-    public static final String KIND_APPLICATION_SEARCH = "\"kind: \"Application\"\"+in:file+language:yml/yaml+repo:";
+    public static final String KIND_APPLICATION_SEARCH = "\"kind: \"Application\"\"+in:file+language:yml+language:yaml+repo:";
     private final WebClient webClient;
 
     public GithubConsumer(@Value("${consumers.github.url}") String url) {
