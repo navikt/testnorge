@@ -14,7 +14,6 @@ import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerCo
 @Import({
         SecureOAuth2ServerToServerConfiguration.class,
         ApplicationCoreConfig.class,
-        KafkaProperties.class,
         OpprettelsesdokumentProducer.class,
         EndringsdokumentProducer.class
 })
