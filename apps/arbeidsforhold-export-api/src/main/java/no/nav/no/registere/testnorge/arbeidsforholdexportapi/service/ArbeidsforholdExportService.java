@@ -79,7 +79,7 @@ public class ArbeidsforholdExportService {
         if (numberOfPages > 1) {
             log.warn("Deler opp operasjonen i {} deler for å unngå minne problemer.", numberOfPages);
         }
-        var path = Files.createTempFile("prm-" + System.currentTimeMillis() + "-", ".csv");
+        var path = Files.createTempFile("ink-" + System.currentTimeMillis() + "-", ".csv");
 
         var file = path.toFile();
         log.info("Fil opprettet: {}.", path);

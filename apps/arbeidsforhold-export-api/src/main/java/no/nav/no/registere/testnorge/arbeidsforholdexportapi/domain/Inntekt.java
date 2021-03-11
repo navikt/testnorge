@@ -18,10 +18,6 @@ public class Inntekt {
         return toLocalDate(inntekt.getSluttdatoOpptjeningsperiode());
     }
 
-    public String getArbeidsforholdId() {
-        return inntekt.getArbeidsforholdId();
-    }
-
     public Float getAntall() {
         return inntekt.getLoennsinntekt() != null && inntekt.getLoennsinntekt().getAntall() != null
                 ? inntekt.getLoennsinntekt().getAntall().floatValue()
