@@ -94,8 +94,8 @@ public class Ereg extends FasteData {
         internetAdresse = dto.getInternetAdresse();
         naeringskode = dto.getNaeringskode();
         juridiskEnhet = dto.getJuridiskEnhet();
-        forretningsAdresse = new Adresse(dto.getForretningsAdresse());
-        postadresse = new Adresse(dto.getPostadresse());
+        forretningsAdresse = dto.getForretningsAdresse() != null ? new Adresse(dto.getForretningsAdresse()) : null;
+        postadresse = dto.getPostadresse() != null ? new Adresse(dto.getPostadresse()) : null;
         tags = new HashSet<>();
     }
 
