@@ -1,13 +1,13 @@
 import React from 'react';
 import { LoadableComponent } from '@/component';
 import { Applikasjonsanalyse, fetchDependencies } from '@/service/ApplikasjonsanalyseService';
-import AvheninghetsGraph from '@/page/ApplikasjonsanalysePage/AvheninghetsGraph';
+import AvhengighetsGraph from '@/page/ApplikasjonsanalysePage/AvhengighetsGraph';
 
 const ApplikasjonsanalysePage = () => {
   return (
     <LoadableComponent
       onFetch={fetchDependencies}
-      render={(data: Applikasjonsanalyse[]) => <AvheninghetsGraph data={data} />}
+      render={(data: Applikasjonsanalyse[]) => <AvhengighetsGraph data={data} />}
     />
   );
 };
