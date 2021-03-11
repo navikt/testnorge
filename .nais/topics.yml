@@ -1,0 +1,21 @@
+---
+apiVersion: kafka.nais.io/v1
+kind: Topic
+metadata:
+  name: testnav-opprett-organisasjon-1
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  pool: nav-dev
+  config:
+    cleanupPolicy: delete
+    minimumInSyncReplicas: 1
+    partitions: 3
+    replication: 3
+    retentionBytes: -1
+    retentionHours: 72
+  acl:
+    - team: dolly
+      application: organisasjon-mottak-service
+      access: readwrite

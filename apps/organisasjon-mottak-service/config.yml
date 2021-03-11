@@ -43,5 +43,7 @@ spec:
     limits:
       cpu: 500m
       memory: 5000Mi
+  kafka:
+    pool: nav-dev
   ingresses:
     - "https://organisasjon-mottak-service.dev.intern.nav.no"
