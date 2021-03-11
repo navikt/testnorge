@@ -28,6 +28,8 @@ spec:
     paths:
       - kvPath: /serviceuser/data/dev/srvtestnorge
         mountPath: /secret/serviceuser
+  kafka:
+    pool: nav-dev
   resources:
     limits:
       cpu: 500m
