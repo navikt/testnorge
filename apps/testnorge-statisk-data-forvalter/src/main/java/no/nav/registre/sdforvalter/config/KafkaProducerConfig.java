@@ -3,11 +3,10 @@ package no.nav.registre.sdforvalter.config;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import no.nav.registre.testnorge.libs.kafkaconfig.config.KafkaProperties;
-import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.EndringsdokumentProducer;
-import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.OpprettelsesdokumentProducer;
+import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v2.EndringsdokumentV2Producer;
+import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v2.OpprettelsesdokumentV2Producer;
 
 @Configuration
-@Import({KafkaProperties.class, OpprettelsesdokumentProducer.class, EndringsdokumentProducer.class})
+@Import({OpprettelsesdokumentV2Producer.class, EndringsdokumentV2Producer.class})
 public class KafkaProducerConfig {
 }

@@ -39,4 +39,4 @@ spec:
   acl:
     - team: dolly
       application: testnav-organisasjon-mottak-service
-      access: readwrite
+      access: read

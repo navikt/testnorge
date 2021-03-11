@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.libs.kafkaproducers;
+package no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1;
 
 import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;

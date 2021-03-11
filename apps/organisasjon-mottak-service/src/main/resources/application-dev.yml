@@ -1,2 +1,9 @@
 azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
+
+consumers:
+  jenkins-batch-status-service:
+    url: https://testnav-jenkins-batch-status-service.dev.intern.nav.no
+    namespace: dolly
+    name: testnav-jenkins-batch-status-service
+    cluster: dev-gcp

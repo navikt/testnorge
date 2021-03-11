@@ -7,8 +7,8 @@ import no.nav.organisasjonforvalter.jpa.entity.Organisasjon;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Endringsdokument;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Metadata;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Opprettelsesdokument;
-import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.EndringsdokumentProducer;
-import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.OpprettelsesdokumentProducer;
+import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.EndringsdokumentV1Producer;
+import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.OpprettelsesdokumentV1Producer;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OrganisasjonMottakConsumer {
 
-    private final OpprettelsesdokumentProducer opprettelsesdokumentProducer;
-    private final EndringsdokumentProducer endringsdokumentProducer;
+    private final OpprettelsesdokumentV1Producer opprettelsesdokumentProducer;
+    private final EndringsdokumentV1Producer endringsdokumentProducer;
     private final MapperFacade mapperFacade;
 
     private static Metadata getMetadata(String miljoe) {

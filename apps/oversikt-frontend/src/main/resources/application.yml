@@ -37,6 +37,7 @@ applications:
   testnorge-batch-adeo-proxy: dev-fss.dolly.testnorge-batch-adeo-proxy
   testnav-ereg-proxy: dev-fss.dolly.testnav-ereg-proxy
   testnav-organisasjon-mottak-service: dev-gcp.dolly.testnav-organisasjon-mottak-service
+  testnav-jenkins-batch-status-service: dev-gcp.dolly.testnav-jenkins-batch-status-service
 
 zuul:
   routes:

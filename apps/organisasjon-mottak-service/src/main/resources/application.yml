@@ -13,12 +13,12 @@ spring:
 
 consumers:
   jenkins-batch-status-service:
-    url: https://jenkins-batch-status-service.dev.intern.nav.no
+    url: http://testnav-jenkins-batch-status-service.dolly.svc.cluster.local
     namespace: dolly
-    name: jenkins-batch-status-service
-    cluster: dev-fss
+    name: testnav-jenkins-batch-status-service
+    cluster: dev-gcp
   jenkins:
-    url: https://aareg-synt-services-proxy.dev-fss-pub.nais.io
+    url: https://testnorge-batch-adeo-proxy.dev-fss-pub.nais.io
     namespace: dolly
     name: testnorge-batch-adeo-proxy
     cluster: dev-fss
