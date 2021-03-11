@@ -1,10 +1,2 @@
 azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
-
-kafka:
-  bootstrapservers: dummy
-  schemaregistryservers: dummy
-  username: dummy
-  password: dummy
-  truststorepath: dummy
-  credstorepassword: dummy

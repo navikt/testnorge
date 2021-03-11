@@ -2,7 +2,7 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 
 spring:
   application:
-    name: organisasjon-mottak-service
+    name: testnav-organisasjon-mottak-service
     description: Testtjeneste for å vise hvilke tjenester som er tilgjenelig. Skal ikke brukes til noe annet enn for å test lokalt. For integrasjon bruk kafka.
   security:
     oauth2:
@@ -23,14 +23,8 @@ consumers:
     name: testnorge-batch-adeo-proxy
     cluster: dev-fss
 
-kafka:
-  bootstrapservers: ${KAFKA_BROKERS}
-  schemaregistryservers: ${KAFKA_SCHEMA_REGISTRY}
-  groupid: testnav-organisajon-mottak-service-1
-  username: ${KAFKA_SCHEMA_REGISTRY_USER}
-  password: ${KAFKA_SCHEMA_REGISTRY_PASSWORD}
-  truststorepath: ${KAFKA_TRUSTSTORE_PATH}
-  credstorepassword: ${KAFKA_CREDSTORE_PASSWORD}
+kafka.groupid: testnav-organisajon-mottak-service-1
+
 
 JENKINS_SERVER_Q0: q0-ereg@b27jbsl01606.preprod.local
 JENKINS_SERVER_Q1: q1-ereg@b27jbsl01602.preprod.local
