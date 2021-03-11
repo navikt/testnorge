@@ -9,6 +9,7 @@ import java.time.LocalDate;
 public class Inntekt {
     private final no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.Inntekt inntekt;
     private final String typeArbeidsforhold;
+    private final String kalendermaaned;
 
     public LocalDate getStartdatoOpptjeningsperiode() {
         return toLocalDate(inntekt.getStartdatoOpptjeningsperiode());
@@ -28,6 +29,10 @@ public class Inntekt {
         return inntekt.getLoennsinntekt() != null && inntekt.getLoennsinntekt().getSpesifikasjon() != null
                 ? inntekt.getLoennsinntekt().getSpesifikasjon().getOpptjeningsland()
                 : null;
+    }
+
+    public String getKalendermaaned() {
+        return kalendermaaned;
     }
 
     public String getTypeArbeidsforhold() {
