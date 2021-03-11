@@ -16,4 +16,4 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
           VAR: kafka-pool=nav-dev
-          RESOURCE: .nais/topics/topics.yaml
+          RESOURCE: .nais/topics.yaml
