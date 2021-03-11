@@ -33,7 +33,7 @@ public class Opplysningspliktig {
 
     @SuppressWarnings("unchecked")
     private static EDAGM from(String xml, Unmarshaller unmarshaller) throws JAXBException {
-        try(var reader = new StringReader(xml)){
+        try (var reader = new StringReader(xml)) {
             EDAGM edagm = ((JAXBElement<EDAGM>) unmarshaller.unmarshal(reader)).getValue();
             reader.close();
             return edagm;
@@ -60,20 +60,23 @@ public class Opplysningspliktig {
         List<Arbeidsforhold> arbeidsforholds = new ArrayList<>();
         var leveranse = this.edagm.getLeveranse();
         leveranse.getOppgave().getVirksomhet().forEach(virksomhet ->
-                        virksomhet.getInntektsmottaker().forEach(inntektsmottaker ->
-                                inntektsmottaker.getArbeidsforhold().forEach(arbeidsforhold ->
-                                        arbeidsforholds.add(
-                                                new Arbeidsforhold(
-                                                        leveranse,
-                                                        virksomhet,
-                                                        inntektsmottaker,
-                                                        arbeidsforhold
-                                                )
-                                        )
-                                )
-                        )
-                );
+                virksomhet.getInntektsmottaker().forEach(inntektsmottaker -> {
+                    var value = new Inntektsmottaker(leveranse, virksomhet, inntektsmottaker);
+                    arbeidsforholds.addAll(value.getArbeidsforholdList());
+                })
+        );
         return arbeidsforholds;
     }
 
+    public List<Inntekt> toInntekt() {
+        List<Inntekt> inntekts = new ArrayList<>();
+        var leveranse = this.edagm.getLeveranse();
+        leveranse.getOppgave().getVirksomhet().forEach(virksomhet ->
+                virksomhet.getInntektsmottaker().forEach(inntektsmottaker -> {
+                    var value = new Inntektsmottaker(leveranse, virksomhet, inntektsmottaker);
+                    inntekts.addAll(value.getInntektList());
+                })
+        );
+        return inntekts;
+    }
 }

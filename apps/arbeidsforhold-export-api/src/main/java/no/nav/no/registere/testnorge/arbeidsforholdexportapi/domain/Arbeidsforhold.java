@@ -30,13 +30,16 @@ public class Arbeidsforhold {
     private final String fartsomraade;
     private final Permisjoner permisjoner;
     private final String kildereferanse;
+    private final Integer antallInntekter;
 
     public Arbeidsforhold(
             Leveranse leveranse,
             Virksomhet virksomhet,
             Inntektsmottaker inntektsmottaker,
+            Integer antallInntekter,
             no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.Arbeidsforhold arbeidsforhold
     ) {
+        this.antallInntekter = antallInntekter;
         this.virksomhetOrgnummer = virksomhet.getNorskIdentifikator();
         this.kalendermaaned = leveranse.getKalendermaaned().toString();
         this.opplysningspliktigOrgnummer = leveranse.getOpplysningspliktig().getNorskIdentifikator();
@@ -164,6 +167,9 @@ public class Arbeidsforhold {
         return permisjoner.getList();
     }
 
+    public Integer getAntallInntekter() {
+        return antallInntekter;
+    }
 
     private static LocalDate toLocalDate(XMLGregorianCalendar calendar) {
         if (calendar == null) {
