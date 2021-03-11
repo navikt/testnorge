@@ -80,19 +80,21 @@ public class OrganisasjonMottakServiceConsumer {
         UUID uuid = UUID.randomUUID();
         Organisasjon organisasjon = createOrganisasjon(orgTree);
 
-        log.info("Sender organisasjon: {}", organisasjon);
+
         if (update) {
-            endringsdokumentProducer.send(uuid.toString(), Endringsdokument.newBuilder()
+            var endringsdokument = Endringsdokument.newBuilder()
                     .setOrganisasjon(organisasjon)
                     .setMetadata(metadata)
-                    .build()
-            );
+                    .build();
+            log.info("Sender endringsdokument: \n{}", endringsdokument);
+            endringsdokumentProducer.send(uuid.toString(), endringsdokument);
         } else {
-            opprettelsesdokumentProducer.send(uuid.toString(), Opprettelsesdokument.newBuilder()
+            var opprettelsesdokument = Opprettelsesdokument.newBuilder()
                     .setOrganisasjon(organisasjon)
                     .setMetadata(metadata)
-                    .build()
-            );
+                    .build();
+            log.info("Sender opprettelsesdokument: \n{}", opprettelsesdokument);
+            opprettelsesdokumentProducer.send(uuid.toString(), opprettelsesdokument);
         }
     }
 
