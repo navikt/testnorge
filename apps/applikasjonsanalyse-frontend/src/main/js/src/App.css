@@ -1,6 +1,5 @@
 .frame {
-    border-style: dotted;
-    width: 1200px;
+    background: white;
 }
 
 .app {
