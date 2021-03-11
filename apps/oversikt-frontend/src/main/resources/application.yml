@@ -35,6 +35,7 @@ applications:
   mn-original-populasjon: dev-fss.dolly.mn-original-populasjon
   testnav-statistikk-service: dev-gcp.dolly.testnav-statistikk-service
   testnorge-batch-adeo-proxy: dev-fss.dolly.testnorge-batch-adeo-proxy
+  tps-forvateren-proxy: dev-fss.dolly.testnav-ereg-proxy
 
 zuul:
   routes:
