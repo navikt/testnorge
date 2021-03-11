@@ -13,9 +13,7 @@ import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerCo
 @Configuration
 @Import({
         SecureOAuth2ServerToServerConfiguration.class,
-        ApplicationCoreConfig.class,
-        OpprettelsesdokumentProducer.class,
-        EndringsdokumentProducer.class
+        ApplicationCoreConfig.class
 })
 @EnableScheduling
 public class ApplicationConfig {
