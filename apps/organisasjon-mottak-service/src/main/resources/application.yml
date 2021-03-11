@@ -4,6 +4,12 @@ spring:
   application:
     name: organisasjon-mottak-service
     description: Testtjeneste for å vise hvilke tjenester som er tilgjenelig. Skal ikke brukes til noe annet enn for å test lokalt. For integrasjon bruk kafka.
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
 
 consumers:
   jenkins-batch-status-service:
@@ -12,15 +18,19 @@ consumers:
     name: jenkins-batch-status-service
     cluster: dev-fss
   jenkins:
-    url: http://testnorge-batch-adeo-proxy.dolly.svc.nais.local
+    url: https://aareg-synt-services-proxy.dev-fss-pub.nais.io
     namespace: dolly
     name: testnorge-batch-adeo-proxy
     cluster: dev-fss
 
 kafka:
-  bootstrapservers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
-  schemaregistryservers: http://kafka-schema-registry.tpa.svc.nais.local:8081
-  groupid: organisajon-mottak-service-v1
+  bootstrapservers: ${KAFKA_BROKERS}
+  schemaregistryservers: ${KAFKA_SCHEMA_REGISTRY}
+  groupid: testnav-organisajon-mottak-service-1
+  username: ${KAFKA_SCHEMA_REGISTRY_USER}
+  password: ${KAFKA_SCHEMA_REGISTRY_PASSWORD}
+  truststorepath: ${KAFKA_TRUSTSTORE_PATH}
+  credstorepassword: ${KAFKA_CREDSTORE_PASSWORD}
 
 JENKINS_SERVER_Q0: q0-ereg@b27jbsl01606.preprod.local
 JENKINS_SERVER_Q1: q1-ereg@b27jbsl01602.preprod.local

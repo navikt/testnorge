@@ -53,12 +53,12 @@ public class KafkaConfig {
 
         props.put(SaslConfigs.SASL_JAAS_CONFIG, "org.apache.kafka.common.security.plain.PlainLoginModule required username=" + properties.getUsername() + " password=" + properties.getPassword() + ";");
 
-        String navTruststorePath = System.getenv("NAV_TRUSTSTORE_PATH");
+        String navTruststorePath = properties.getTruststorePath();
 
         if (navTruststorePath != null) {
             props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SASL_SSL");
             props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, new File(navTruststorePath).getAbsolutePath());
-            props.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, System.getenv("NAV_TRUSTSTORE_PASSWORD"));
+            props.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, properties.getCredstorePassword());
         }
         return new DefaultKafkaConsumerFactory<>(props);
     }

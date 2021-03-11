@@ -1,4 +1,4 @@
-name: Deploy testnav-ereg-proxy
+name: Deploy ereg-proxy
 
 on:
   push:

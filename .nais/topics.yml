@@ -17,5 +17,5 @@ spec:
     retentionHours: 72
   acl:
     - team: dolly
-      application: organisasjon-mottak-service
+      application: testnav-organisasjon-mottak-service
       access: readwrite
