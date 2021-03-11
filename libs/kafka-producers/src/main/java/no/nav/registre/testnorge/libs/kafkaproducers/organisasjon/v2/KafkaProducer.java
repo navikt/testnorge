@@ -38,22 +38,25 @@ public abstract class KafkaProducer<T extends SpecificRecord> {
 
         props.put("basic.auth.credentials.source", "USER_INFO");
 
-        var schemaRegistry = new URL(System.getenv("KAFKA_SCHEMA_REGISTRY"));
+        var schemaRegistry = System.getenv("KAFKA_SCHEMA_REGISTRY") != null ? new URL(System.getenv("KAFKA_SCHEMA_REGISTRY")) : null;
         var schemausr = System.getenv("KAFKA_SCHEMA_REGISTRY_USER");
         var schemapass = System.getenv("KAFKA_SCHEMA_REGISTRY_PASSWORD");
         var schemaregusrinfo = schemausr + ":" + schemapass;
 
-        props.put("basic.auth.user.info", schemaRegistry.getUserInfo() != null ? schemaRegistry.getUserInfo() : schemaregusrinfo);
+        props.put("basic.auth.user.info", schemaRegistry != null && schemaRegistry.getUserInfo() != null ? schemaRegistry.getUserInfo() : schemaregusrinfo);
 
-        props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, new URI(
-                schemaRegistry.getProtocol(),
-                null,
-                schemaRegistry.getHost(),
-                schemaRegistry.getPort(),
-                schemaRegistry.getPath(),
-                schemaRegistry.getQuery(),
-                schemaRegistry.getRef()
-        ).toString());
+        // TODO: Only set inn production
+        if(schemaRegistry != null) {
+            props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, new URI(
+                    schemaRegistry.getProtocol(),
+                    null,
+                    schemaRegistry.getHost(),
+                    schemaRegistry.getPort(),
+                    schemaRegistry.getPath(),
+                    schemaRegistry.getQuery(),
+                    schemaRegistry.getRef()
+            ).toString());
+        }
 
         this.kafkaTemplate = new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(props));
     }

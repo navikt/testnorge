@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.libs.kafkaconfig.topic;
+package no.nav.registre.testnorge.libs.kafkaconfig.topic.v2;
 
 public class OrganisasjonTopic {
     private OrganisasjonTopic() {

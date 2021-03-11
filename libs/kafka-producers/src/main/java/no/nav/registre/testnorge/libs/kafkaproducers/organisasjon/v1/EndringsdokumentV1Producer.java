@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Endringsdokument;
 import no.nav.registre.testnorge.libs.kafkaconfig.config.KafkaProperties;
-import no.nav.registre.testnorge.libs.kafkaconfig.topic.OrganisasjonTopic;
+import no.nav.registre.testnorge.libs.kafkaconfig.topic.v1.OrganisasjonTopic;
 
 @Slf4j
 @Component

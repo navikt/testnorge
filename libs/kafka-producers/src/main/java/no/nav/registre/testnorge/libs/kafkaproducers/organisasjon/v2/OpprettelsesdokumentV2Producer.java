@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Opprettelsesdokument;
-import no.nav.registre.testnorge.libs.kafkaconfig.topic.OrganisasjonTopic;
+import no.nav.registre.testnorge.libs.kafkaconfig.topic.v2.OrganisasjonTopic;
 
 @Slf4j
 @Component

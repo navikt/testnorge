@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Endringsdokument;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Opprettelsesdokument;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon;
-import no.nav.registre.testnorge.libs.kafkaconfig.topic.OrganisasjonTopic;
+import no.nav.registre.testnorge.libs.kafkaconfig.topic.v1.OrganisasjonTopic;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.JenkinsConsumer;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Ansatte;
 import no.nav.registre.testnorge.organisasjonmottak.domain.DetaljertNavn;
