@@ -1,6 +1,7 @@
 package no.nav.registre.sdforvalter.consumer.rs;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -22,6 +23,7 @@ import no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v2.EndringsdokumentV2Producer;
 import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v2.OpprettelsesdokumentV2Producer;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class OrganisasjonMottakServiceConsumer {
@@ -78,6 +80,7 @@ public class OrganisasjonMottakServiceConsumer {
         UUID uuid = UUID.randomUUID();
         Organisasjon organisasjon = createOrganisasjon(orgTree);
 
+        log.info("Sender organisasjon: {}", organisasjon);
         if (update) {
             endringsdokumentProducer.send(uuid.toString(), Endringsdokument.newBuilder()
                     .setOrganisasjon(organisasjon)
