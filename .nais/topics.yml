@@ -18,7 +18,7 @@ spec:
   acl:
     - team: dolly
       application: testnav-organisasjon-mottak-service
-      access: read
+      access: readwrite
     - team: dolly
       application: testnorge-statisk-data-forvalter
       access: write
@@ -42,7 +42,7 @@ spec:
   acl:
     - team: dolly
       application: testnav-organisasjon-mottak-service
-      access: read
+      access: readwrite
     - team: dolly
       application: testnorge-statisk-data-forvalter
       access: write
