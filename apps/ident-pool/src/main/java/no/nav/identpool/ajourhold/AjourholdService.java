@@ -227,7 +227,7 @@ public class AjourholdService {
                     JsonNode statusFromTps = tpsfConsumer.getProdStatusFromTps(idents).findValue("EFnr");
                     List<Map<String, Object>> identStatus = objectMapper.convertValue(statusFromTps, new TypeReference<>() {
                     });
-                    usedIdents.addAll(nonNull(identGeneratorService) ? identStatus.stream()
+                    usedIdents.addAll(nonNull(identStatus) ? identStatus.stream()
                             .filter(status -> !status.containsKey("svarStatus"))
                             .map(status -> String.valueOf(status.get("fnr")))
                             .collect(Collectors.toList()) : emptyList()
