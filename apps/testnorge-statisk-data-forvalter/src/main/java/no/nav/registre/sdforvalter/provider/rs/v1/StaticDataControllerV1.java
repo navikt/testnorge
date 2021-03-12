@@ -32,7 +32,6 @@ public class StaticDataControllerV1 {
     private final AaregAdapter aaregAdapter;
     private final KrrAdapter krrAdapter;
 
-
     @GetMapping("/tps")
     public ResponseEntity<TpsIdentListe> getTps(@RequestParam(name = "gruppe", required = false) String gruppe) {
         return ResponseEntity.ok(tpsIdenterAdapter.fetchBy(gruppe));
