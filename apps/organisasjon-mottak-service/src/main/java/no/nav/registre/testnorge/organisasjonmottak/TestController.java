@@ -19,6 +19,11 @@ public class TestController {
 
     @GetMapping
     public void test(){
+
+
+        log.info("Sender");
         sendMetadata.send("dummy", Metadata.newBuilder().setMiljo("q2").build());
+        log.info("sendt");
+
     }
 }
