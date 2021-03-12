@@ -9,7 +9,7 @@ import no.nav.dolly.bestilling.udistub.domain.UdiPersonWrapper.Status;
 import no.nav.dolly.bestilling.udistub.util.UdiMergeService;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.stereotype.Service;
 
@@ -27,18 +27,19 @@ public class UdiStubClient implements ClientRegister {
     private final UdiStubConsumer udiStubConsumer;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getUdistub())) {
             StringBuilder status = new StringBuilder();
 
             try {
-                UdiPersonResponse eksisterendeUdiPerson = udiStubConsumer.getUdiPerson(tpsPerson.getHovedperson());
+                UdiPersonResponse eksisterendeUdiPerson = udiStubConsumer.getUdiPerson(dollyPerson.getHovedperson());
 
                 UdiPersonWrapper wrapper = udiMergeService.merge(bestilling.getUdistub(), eksisterendeUdiPerson,
-                        isOpprettEndre, tpsPerson);
+                        isOpprettEndre, dollyPerson);
 
-                wrapper.getUdiPerson().setAliaser(udiMergeService.getAliaser(wrapper.getAliasRequest(), bestilling.getEnvironments()));
+                wrapper.getUdiPerson().setAliaser(udiMergeService.getAliaser(wrapper.getAliasRequest(),
+                        bestilling.getEnvironments(), dollyPerson));
 
                 sendUdiPerson(wrapper);
                 status.append("OK");

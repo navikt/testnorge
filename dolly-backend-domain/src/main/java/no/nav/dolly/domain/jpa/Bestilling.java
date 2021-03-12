@@ -97,6 +97,9 @@ public class Bestilling {
     @Column(name = "TPS_IMPORT")
     private String tpsImport;
 
+    @Column(name = "PDL_IMPORT")
+    private String pdlImport;
+
     @Column(name = "KILDE_MILJOE")
     private String kildeMiljoe;
 

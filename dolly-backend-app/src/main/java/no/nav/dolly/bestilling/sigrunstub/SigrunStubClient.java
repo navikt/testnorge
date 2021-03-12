@@ -12,7 +12,7 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
-import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 
 @Log4j2
@@ -25,16 +25,16 @@ public class SigrunStubClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
 
-    @Override public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    @Override public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!bestilling.getSigrunstub().isEmpty()) {
             try {
                 List<OpprettSkattegrunnlag> skattegrunnlag = mapperFacade.mapAsList(bestilling.getSigrunstub(), OpprettSkattegrunnlag.class);
                 skattegrunnlag.forEach(inntektsaar ->
-                        inntektsaar.setPersonidentifikator(tpsPerson.getHovedperson()));
+                        inntektsaar.setPersonidentifikator(dollyPerson.getHovedperson()));
 
                 if (!isOpprettEndre) {
-                    deleteExistingSkattegrunnlag(tpsPerson.getHovedperson());
+                    deleteExistingSkattegrunnlag(dollyPerson.getHovedperson());
                 }
 
                 progress.setSigrunstubStatus(

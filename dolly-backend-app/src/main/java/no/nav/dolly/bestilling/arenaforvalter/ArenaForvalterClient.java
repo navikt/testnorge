@@ -19,7 +19,7 @@ import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
-import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 
 @Slf4j
 @Service
@@ -30,7 +30,7 @@ public class ArenaForvalterClient implements ClientRegister {
     private final MapperFacade mapperFacade;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getArenaforvalter())) {
 
@@ -46,13 +46,13 @@ public class ArenaForvalterClient implements ClientRegister {
             if (!availEnvironments.isEmpty()) {
 
                 if (!isOpprettEndre) {
-                    deleteServicebruker(tpsPerson.getHovedperson(), availEnvironments);
+                    deleteServicebruker(dollyPerson.getHovedperson(), availEnvironments);
                 }
 
                 ArenaNyeBrukere arenaNyeBrukere = new ArenaNyeBrukere();
                 availEnvironments.forEach(environment -> {
                     ArenaNyBruker arenaNyBruker = mapperFacade.map(bestilling.getArenaforvalter(), ArenaNyBruker.class);
-                    arenaNyBruker.setPersonident(tpsPerson.getHovedperson());
+                    arenaNyBruker.setPersonident(dollyPerson.getHovedperson());
                     arenaNyBruker.setMiljoe(environment);
                     arenaNyeBrukere.getNyeBrukere().add(arenaNyBruker);
                 });

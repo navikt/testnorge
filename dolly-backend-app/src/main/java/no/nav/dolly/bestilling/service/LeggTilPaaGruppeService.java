@@ -1,22 +1,25 @@
 package no.nav.dolly.bestilling.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
+import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse;
-import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
+import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
-import no.nav.dolly.service.TpsfPersonCache;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -34,24 +37,28 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
     private MapperFacade mapperFacade;
     private BestillingService bestillingService;
     private TpsfService tpsfService;
-    private TpsfPersonCache tpsfPersonCache;
+    private DollyPersonCache dollyPersonCache;
     private ErrorStatusDecoder errorStatusDecoder;
     private ExecutorService dollyForkJoinPool;
+    private ObjectMapper objectMapper;
+    private PdlPersonConsumer pdlPersonConsumer;
 
-    public LeggTilPaaGruppeService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService, TpsfPersonCache tpsfPersonCache,
+    public LeggTilPaaGruppeService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService, DollyPersonCache dollyPersonCache,
                                    IdentService identService, BestillingProgressService bestillingProgressService,
                                    BestillingService bestillingService, MapperFacade mapperFacade, CacheManager cacheManager,
                                    ObjectMapper objectMapper, List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
-                                   ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool) {
-        super(tpsfResponseHandler, tpsfService, tpsfPersonCache, identService, bestillingProgressService,
-                bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry);
+                                   ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool, PdlPersonConsumer pdlPersonConsumer) {
+        super(tpsfResponseHandler, tpsfService, dollyPersonCache, identService, bestillingProgressService,
+                bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer);
 
         this.mapperFacade = mapperFacade;
         this.bestillingService = bestillingService;
         this.tpsfService = tpsfService;
-        this.tpsfPersonCache = tpsfPersonCache;
+        this.dollyPersonCache = dollyPersonCache;
         this.errorStatusDecoder = errorStatusDecoder;
         this.dollyForkJoinPool = dollyForkJoinPool;
+        this.objectMapper = objectMapper;
+        this.pdlPersonConsumer = pdlPersonConsumer;
     }
 
     @Async
@@ -69,21 +76,34 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                 bestilling.getGruppe().getTestidenter().parallelStream()
                         .filter(testident -> !bestillingService.isStoppet(bestilling.getId()))
                         .map(testident -> {
-                            BestillingProgress progress = new BestillingProgress(bestilling.getId(), testident.getIdent());
+                            BestillingProgress progress = new BestillingProgress(bestilling.getId(), testident.getIdent(), testident.getMaster());
                             try {
-                                RsOppdaterPersonResponse oppdaterPersonResponse = tpsfService.endreLeggTilPaaPerson(testident.getIdent(), tpsfBestilling);
-                                if (!oppdaterPersonResponse.getIdentTupler().isEmpty()) {
 
-                                    sendIdenterTilTPS(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))),
-                                            oppdaterPersonResponse.getIdentTupler().stream()
-                                                    .map(RsOppdaterPersonResponse.IdentTuple::getIdent).collect(toList()), null, progress);
+                                DollyPerson dollyPerson = null;
+                                if (testident.isTpsf()) {
+                                    RsOppdaterPersonResponse oppdaterPersonResponse = tpsfService.endreLeggTilPaaPerson(testident.getIdent(), tpsfBestilling);
+                                    if (!oppdaterPersonResponse.getIdentTupler().isEmpty()) {
 
-                                    TpsPerson tpsPerson = tpsfPersonCache.prepareTpsPersoner(oppdaterPersonResponse);
-                                    gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, true);
+                                        sendIdenterTilTPS(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))),
+                                                oppdaterPersonResponse.getIdentTupler().stream()
+                                                        .map(RsOppdaterPersonResponse.IdentTuple::getIdent).collect(toList()), null, progress);
+                                        dollyPerson = dollyPersonCache.prepareTpsPersoner(oppdaterPersonResponse);
 
-                                } else {
-                                    progress.setFeil("NA:Feil= Ident finnes ikke i database");
+                                    } else {
+                                        progress.setFeil("NA:Feil= Ident finnes ikke i database");
+                                    }
+
+                                } else  {
+                                    PdlPerson pdlPerson = objectMapper.readValue(
+                                            pdlPersonConsumer.getPdlPerson(testident.getIdent()).toString(), PdlPerson.class);
+                                    dollyPerson = dollyPersonCache.preparePdlPersoner(pdlPerson);
                                 }
+
+                                gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, true);
+
+                            } catch (JsonProcessingException e) {
+
+                                progress.setFeil(errorStatusDecoder.decodeException(e));
 
                             } catch (RuntimeException e) {
                                 progress.setFeil("NA:" + errorStatusDecoder.decodeRuntimeException(e));
@@ -95,8 +115,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                         }).collect(toList());
                 oppdaterBestillingFerdig(bestilling);
             });
-
-        } else {
+        } else  {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
             oppdaterBestillingFerdig(bestilling);
         }

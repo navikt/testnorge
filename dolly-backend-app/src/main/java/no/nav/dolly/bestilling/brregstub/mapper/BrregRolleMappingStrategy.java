@@ -29,11 +29,11 @@ public class BrregRolleMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(RolleUtskriftMapper.BregPerson bregPerson, RolleoversiktTo rolleoversiktTo, MappingContext context) {
 
-                        Person rollePerson = bregPerson.getTpsPerson().getPerson(bregPerson.getTpsPerson().getHovedperson());
+                        Person rollePerson = bregPerson.getDollyPerson().getPerson(bregPerson.getDollyPerson().getHovedperson());
 
                         rolleoversiktTo.setAdresse(mapperFacade.map(rollePerson, AdresseTo.class));
                         rolleoversiktTo.setEnheter(mapperFacade.mapAsList(bregPerson.getBregdata().getEnheter(), RolleTo.class));
-                        rolleoversiktTo.setFnr(bregPerson.getTpsPerson().getHovedperson());
+                        rolleoversiktTo.setFnr(bregPerson.getDollyPerson().getHovedperson());
                         rolleoversiktTo.setFodselsdato(rollePerson.getFoedselsdato().toLocalDate());
                         rolleoversiktTo.setHovedstatus(0);
                         rolleoversiktTo.setNavn(mapperFacade.map(rollePerson, NavnTo.class));

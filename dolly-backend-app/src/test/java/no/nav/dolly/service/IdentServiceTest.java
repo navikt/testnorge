@@ -20,6 +20,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import java.util.Arrays;
 import java.util.List;
 
+import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -85,7 +86,7 @@ public class IdentServiceTest {
     public void saveIdentTilGruppe_saveAvIdentInnholderInputIdentstringOgTestgruppe() {
         when(identRepository.save(any())).thenReturn(new Testident());
 
-        identService.saveIdentTilGruppe(STANDARD_IDENTER_1, standardGruppe);
+        identService.saveIdentTilGruppe(STANDARD_IDENTER_1, standardGruppe, TPSF);
 
         ArgumentCaptor<Testident> cap = ArgumentCaptor.forClass(Testident.class);
         verify(identRepository).save(cap.capture());

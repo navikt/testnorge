@@ -24,7 +24,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
-import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -50,7 +50,7 @@ public class SigrunStubClientTest {
     @Test
     public void gjenopprett_ingendata() {
         BestillingProgress progress = new BestillingProgress();
-        sigrunStubClient.gjenopprett(new RsDollyBestillingRequest(), TpsPerson.builder().hovedperson(IDENT).build(),
+        sigrunStubClient.gjenopprett(new RsDollyBestillingRequest(), DollyPerson.builder().hovedperson(IDENT).build(),
                 new BestillingProgress(), false);
 
         assertThat(progress.getSigrunstubStatus(), is(nullValue()));
@@ -66,7 +66,7 @@ public class SigrunStubClientTest {
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setSigrunstub(singletonList(new OpprettSkattegrunnlag()));
 
-        sigrunStubClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress, false);
+        sigrunStubClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(), progress, false);
 
         assertThat(progress.getSigrunstubStatus(), containsString("Feil:"));
     }
@@ -83,7 +83,7 @@ public class SigrunStubClientTest {
         when(sigrunStubConsumer.createSkattegrunnlag(anyList())).thenReturn(ResponseEntity.ok(""));
         when(sigrunStubResponseHandler.extractResponse(any())).thenReturn("OK");
 
-        sigrunStubClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress, false);
+        sigrunStubClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(), progress, false);
 
         verify(sigrunStubConsumer).createSkattegrunnlag(anyList());
         verify(sigrunStubResponseHandler).extractResponse(any());

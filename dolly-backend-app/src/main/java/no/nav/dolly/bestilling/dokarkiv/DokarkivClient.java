@@ -24,9 +24,9 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.Person;
-import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.service.TpsfPersonCache;
+import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.TransaksjonMappingService;
 
 @Slf4j
@@ -39,25 +39,25 @@ public class DokarkivClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final TransaksjonMappingService transaksjonMappingService;
     private final ObjectMapper objectMapper;
-    private final TpsfPersonCache tpsfPersonCache;
+    private final DollyPersonCache dollyPersonCache;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getDokarkiv())) {
 
             StringBuilder status = new StringBuilder();
             DokarkivRequest dokarkivRequest = mapperFacade.map(bestilling.getDokarkiv(), DokarkivRequest.class);
 
-            tpsfPersonCache.fetchIfEmpty(tpsPerson);
-            dokarkivRequest.getBruker().setId(tpsPerson.getHovedperson());
-            Person avsender = tpsPerson.getPerson(tpsPerson.getHovedperson());
-            dokarkivRequest.getAvsenderMottaker().setId(tpsPerson.getHovedperson());
+            dollyPersonCache.fetchIfEmpty(dollyPerson);
+            dokarkivRequest.getBruker().setId(dollyPerson.getHovedperson());
+            Person avsender = dollyPerson.getPerson(dollyPerson.getHovedperson());
+            dokarkivRequest.getAvsenderMottaker().setId(dollyPerson.getHovedperson());
             dokarkivRequest.getAvsenderMottaker().setNavn(String.format("%s, %s%s", avsender.getFornavn(), avsender.getEtternavn(), isNull(avsender.getMellomnavn()) ? "" : ", " + avsender.getMellomnavn()));
 
             bestilling.getEnvironments().forEach(environment -> {
 
-                if (!transaksjonMappingService.existAlready(DOKARKIV, tpsPerson.getHovedperson(), environment) || isOpprettEndre) {
+                if (!transaksjonMappingService.existAlready(DOKARKIV, dollyPerson.getHovedperson(), environment) || isOpprettEndre) {
                     try {
                         ResponseEntity<DokarkivResponse> response = dokarkivConsumer.postDokarkiv(environment, dokarkivRequest);
                         if (response.hasBody()) {
@@ -65,7 +65,7 @@ public class DokarkivClient implements ClientRegister {
                                     .append(environment)
                                     .append(":OK");
 
-                            saveTransaksjonId(requireNonNull(response.getBody()), tpsPerson.getHovedperson(), progress.getBestillingId(), environment);
+                            saveTransaksjonId(requireNonNull(response.getBody()), dollyPerson.getHovedperson(), progress.getBestillingId(), environment);
                         }
 
                     } catch (RuntimeException e) {

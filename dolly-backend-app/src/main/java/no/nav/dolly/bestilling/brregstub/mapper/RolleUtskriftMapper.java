@@ -9,20 +9,20 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
-import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
-import no.nav.dolly.service.TpsfPersonCache;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import no.nav.dolly.service.DollyPersonCache;
 
 @Service
 @RequiredArgsConstructor
 public class RolleUtskriftMapper {
 
     private final MapperFacade mapperFacade;
-    private final TpsfPersonCache tpsfPersonCache;
+    private final DollyPersonCache dollyPersonCache;
 
-    public RolleoversiktTo map(RsBregdata bregdata, TpsPerson tpsPerson) {
+    public RolleoversiktTo map(RsBregdata bregdata, DollyPerson dollyPerson) {
 
-        tpsfPersonCache.fetchIfEmpty(tpsPerson);
-        return mapperFacade.map(new BregPerson(bregdata, tpsPerson), RolleoversiktTo.class);
+        dollyPersonCache.fetchIfEmpty(dollyPerson);
+        return mapperFacade.map(new BregPerson(bregdata, dollyPerson), RolleoversiktTo.class);
     }
 
     @Getter
@@ -32,6 +32,6 @@ public class RolleUtskriftMapper {
     public static class BregPerson {
 
         private RsBregdata bregdata;
-        private TpsPerson tpsPerson;
+        private DollyPerson dollyPerson;
     }
 }

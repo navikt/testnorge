@@ -1,14 +1,5 @@
 package no.nav.dolly.bestilling.aareg;
 
-import static java.util.Collections.singletonList;
-import static java.util.Collections.singletonMap;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -19,8 +10,17 @@ import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
 import no.nav.dolly.bestilling.aareg.util.AaregMergeUtil;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
 
 @Slf4j
 @Order(3)
@@ -33,7 +33,7 @@ public class AaregClient implements ClientRegister {
     private final MapperFacade mapperFacade;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         StringBuilder result = new StringBuilder();
 
@@ -43,12 +43,12 @@ public class AaregClient implements ClientRegister {
 
                 try {
                     List<Arbeidsforhold> arbeidsforholdRequest = mapperFacade.mapAsList(bestilling.getAareg(), Arbeidsforhold.class);
-                    List<ArbeidsforholdResponse> eksisterendeArbeidsforhold = aaregConsumer.hentArbeidsforhold(tpsPerson.getHovedperson(), env);
+                    List<ArbeidsforholdResponse> eksisterendeArbeidsforhold = aaregConsumer.hentArbeidsforhold(dollyPerson.getHovedperson(), env);
 
                     List<Arbeidsforhold> arbeidsforhold = AaregMergeUtil.merge(
                             arbeidsforholdRequest,
                             eksisterendeArbeidsforhold,
-                            tpsPerson.getHovedperson(), isOpprettEndre);
+                            dollyPerson.getHovedperson(), isOpprettEndre);
 
                     arbeidsforhold.forEach(arbforhold ->
                             appendResult(aaregConsumer.opprettArbeidsforhold(AaregOpprettRequest.builder()

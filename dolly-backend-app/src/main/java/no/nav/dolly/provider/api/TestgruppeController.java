@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.GjenopprettGruppeService;
+import no.nav.dolly.bestilling.service.ImportAvPersonerFraPdlService;
 import no.nav.dolly.bestilling.service.ImportAvPersonerFraTpsService;
 import no.nav.dolly.bestilling.service.LeggTilPaaGruppeService;
 import no.nav.dolly.bestilling.service.OpprettPersonerByKriterierService;
@@ -14,6 +15,7 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingLeggTilPaaGruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.RsDollyImportFraPdlRequest;
 import no.nav.dolly.domain.resultset.RsDollyImportFraTpsRequest;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsLockTestgruppe;
@@ -53,6 +55,7 @@ public class TestgruppeController {
     private final BestillingService bestillingService;
     private final MapperFacade mapperFacade;
     private final ImportAvPersonerFraTpsService importAvPersonerFraTpsService;
+    private final ImportAvPersonerFraPdlService importAvPersonerFraPdlService;
     private final LeggTilPaaGruppeService leggTilPaaGruppeService;
     private final TestgruppeService testgruppeService;
     private final OpprettPersonerByKriterierService opprettPersonerByKriterierService;
@@ -159,6 +162,18 @@ public class TestgruppeController {
         Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request);
 
         importAvPersonerFraTpsService.executeAsync(bestilling);
+        return mapperFacade.map(bestilling, RsBestillingStatus.class);
+    }
+
+    @Operation(description = "Importere testpersoner fra PDL og legg til berikning non-PDL artifacter")
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/{gruppeId}/bestilling/importfrapdl")
+    public RsBestillingStatus importAvIdenterFraPdlBestilling(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyImportFraPdlRequest request) {
+
+        Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request);
+
+        importAvPersonerFraPdlService.executeAsync(bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 

@@ -29,6 +29,7 @@ public enum SystemTyper {
     DOKARKIV("Dokumentarkiv (JOARK)"),
     SYKEMELDING("Testnorge Sykemelding"),
     TPSIMPORT("Import av identer (MINI-NORGE)"),
+    PDLIMPORT("Import av identer (TESTNORGE)"),
     SKJERMINGSREGISTER("NAV-ansatt Skjermingsregister"),
     SAKOGARKIV("Sak og arkivfasade (SAF)"),
     ORGANISASJON_FORVALTER("Forvalter av syntetiske organisasjoner");

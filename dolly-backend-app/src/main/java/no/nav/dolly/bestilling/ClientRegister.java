@@ -1,14 +1,18 @@
 package no.nav.dolly.bestilling;
 
-import java.util.List;
-
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+
+import java.util.List;
 
 public interface ClientRegister {
 
-    void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre);
+    void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre);
 
     void release(List<String> identer);
+
+    default boolean isTestnorgeRelevant() {
+        return true;
+    }
 }

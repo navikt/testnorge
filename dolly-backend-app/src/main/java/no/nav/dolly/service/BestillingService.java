@@ -13,6 +13,7 @@ import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.BestilteKriterier;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingLeggTilPaaGruppe;
+import no.nav.dolly.domain.resultset.RsDollyImportFraPdlRequest;
 import no.nav.dolly.domain.resultset.RsDollyImportFraTpsRequest;
 import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
@@ -237,6 +238,25 @@ public class BestillingService {
                         .antallIdenter(request.getIdenter().size())
                         .bestKriterier(getBestKriterier(request))
                         .tpsImport(join(",", request.getIdenter()))
+                        .build());
+    }
+
+    @Transactional
+    public Bestilling saveBestilling(Long gruppeId, RsDollyImportFraPdlRequest request) {
+
+        Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
+        fixAaregAbstractClassProblem(request.getAareg());
+        fixPdlAbstractClassProblem(request.getPdlforvalter());
+        return saveBestillingToDB(
+                Bestilling.builder()
+                        .gruppe(gruppe)
+                        .kildeMiljoe("PDL")
+                        .miljoer(join(",", request.getEnvironments()))
+                        .sistOppdatert(now())
+                        .bruker(brukerService.fetchOrCreateBruker(getUserId()))
+                        .antallIdenter(request.getIdenter().size())
+                        .bestKriterier(getBestKriterier(request))
+                        .pdlImport(join(",", request.getIdenter()))
                         .build());
     }
 

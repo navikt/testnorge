@@ -17,7 +17,7 @@ import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.inst.Instdata;
-import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 
 @Slf4j
@@ -32,7 +32,7 @@ public class InstdataClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!bestilling.getInstdata().isEmpty()) {
 
@@ -46,7 +46,7 @@ public class InstdataClient implements ClientRegister {
 
                 List<Instdata> instdataListe = mapperFacade.mapAsList(bestilling.getInstdata(), Instdata.class);
                 instdataListe.forEach(instdata ->
-                        instdata.setPersonident(tpsPerson.getHovedperson())
+                        instdata.setPersonident(dollyPerson.getHovedperson())
                 );
 
                 environments.forEach(environment -> {
@@ -61,7 +61,7 @@ public class InstdataClient implements ClientRegister {
                                 .append(':')
                                 .append(errorStatusDecoder.decodeRuntimeException(e));
 
-                        log.error("Feilet å legge til opphold for person: {} til INST miljø: {}", tpsPerson.getHovedperson(), environment, e);
+                        log.error("Feilet å legge til opphold for person: {} til INST miljø: {}", dollyPerson.getHovedperson(), environment, e);
                     }
                 });
             }

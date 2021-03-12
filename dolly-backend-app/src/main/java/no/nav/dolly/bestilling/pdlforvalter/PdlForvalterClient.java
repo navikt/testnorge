@@ -32,11 +32,11 @@ import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.Relasjon;
-import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
-import no.nav.dolly.service.TpsfPersonCache;
+import no.nav.dolly.service.DollyPersonCache;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -63,7 +63,7 @@ public class PdlForvalterClient implements ClientRegister {
     public static final String PDL_FORVALTER = "PdlForvalter";
 
     private final PdlForvalterConsumer pdlForvalterConsumer;
-    private final TpsfPersonCache tpsfPersonCache;
+    private final DollyPersonCache dollyPersonCache;
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
 
@@ -77,7 +77,7 @@ public class PdlForvalterClient implements ClientRegister {
     }
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (containsSynthEnv(bestilling.getEnvironments()) || nonNull(bestilling.getPdlforvalter())) {
 
@@ -85,15 +85,15 @@ public class PdlForvalterClient implements ClientRegister {
 
             if (containsSynthEnv(bestilling.getEnvironments())) {
 
-                hentTpsPersondetaljer(tpsPerson);
-                sendDeleteIdent(tpsPerson);
-                sendPdlPersondetaljer(bestilling, tpsPerson, status);
+                hentTpsPersondetaljer(dollyPerson);
+                sendDeleteIdent(dollyPerson);
+                sendPdlPersondetaljer(bestilling, dollyPerson, status);
 
                 if (nonNull(bestilling.getPdlforvalter())) {
                     Pdldata pdldata = mapperFacade.map(bestilling.getPdlforvalter(), Pdldata.class);
-                    sendUtenlandsid(pdldata, tpsPerson.getHovedperson(), status);
-                    sendDoedsbo(pdldata, tpsPerson.getHovedperson(), status);
-                    sendFalskIdentitet(pdldata, tpsPerson.getHovedperson(), status);
+                    sendUtenlandsid(pdldata, dollyPerson.getHovedperson(), status);
+                    sendDoedsbo(pdldata, dollyPerson.getHovedperson(), status);
+                    sendFalskIdentitet(pdldata, dollyPerson.getHovedperson(), status);
                 }
 
             } else {
@@ -122,22 +122,27 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void hentTpsPersondetaljer(TpsPerson tpsPerson) {
+   @Override
+   public boolean isTestnorgeRelevant() {
+        return false;
+   }
 
-        tpsfPersonCache.fetchIfEmpty(tpsPerson);
+    private void hentTpsPersondetaljer(DollyPerson dollyPerson) {
 
-        tpsPerson.getPersondetaljer()
+        dollyPersonCache.fetchIfEmpty(dollyPerson);
+
+        dollyPerson.getPersondetaljer()
                 .forEach(person -> person.getRelasjoner().forEach(relasjon ->
-                        relasjon.setPersonRelasjonTil(tpsPerson.getPerson(relasjon.getPersonRelasjonMed().getIdent()))));
+                        relasjon.setPersonRelasjonTil(dollyPerson.getPerson(relasjon.getPersonRelasjonMed().getIdent()))));
     }
 
-    private void sendPdlPersondetaljer(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, StringBuilder status) {
+    private void sendPdlPersondetaljer(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, StringBuilder status) {
 
         status.append('$').append(PDL_FORVALTER);
 
         try {
-            tpsPerson.getPersondetaljer().forEach(person -> {
-                sendOpprettPerson(person, tpsPerson);
+            dollyPerson.getPersondetaljer().forEach(person -> {
+                sendOpprettPerson(person, dollyPerson);
                 sendFoedselsmelding(person);
                 sendNavn(person);
                 sendKjoenn(person);
@@ -184,9 +189,9 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void sendOpprettPerson(Person person, TpsPerson tpsPerson) {
+    private void sendOpprettPerson(Person person, DollyPerson dollyPerson) {
 
-        if (tpsPerson.getPerson(tpsPerson.getHovedperson()).getIdentHistorikk().stream()
+        if (dollyPerson.getPerson(dollyPerson.getHovedperson()).getIdentHistorikk().stream()
                 .map(IdentHistorikk::getAliasPerson)
                 .noneMatch(histPerson -> histPerson.getIdent().equals(person.getIdent()))) {
 
@@ -385,10 +390,10 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void sendDeleteIdent(TpsPerson tpsPerson) {
+    private void sendDeleteIdent(DollyPerson dollyPerson) {
 
         try {
-            tpsPerson.getPersondetaljer().forEach(person -> pdlForvalterConsumer.deleteIdent(person.getIdent()));
+            dollyPerson.getPersondetaljer().forEach(person -> pdlForvalterConsumer.deleteIdent(person.getIdent()));
 
         } catch (HttpClientErrorException e) {
 

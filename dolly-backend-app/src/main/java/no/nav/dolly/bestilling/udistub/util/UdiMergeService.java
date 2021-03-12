@@ -11,15 +11,16 @@ import no.nav.dolly.bestilling.udistub.domain.UdiPerson.UdiAlias;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonWrapper;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonWrapper.Status;
-import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiAlias;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.dolly.domain.resultset.udistub.model.UdiPersonNavn;
-import no.nav.dolly.service.TpsfPersonCache;
+import no.nav.dolly.service.DollyPersonCache;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
@@ -30,25 +31,30 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class UdiMergeService {
 
-    private final TpsfPersonCache tpsfPersonCache;
+    private final DollyPersonCache dollyPersonCache;
     private final TpsfService tpsfService;
     private final MapperFacade mapperFacade;
 
     public UdiPersonWrapper merge(RsUdiPerson nyUdiPerson, UdiPersonResponse eksisterendeUdiPerson,
-            boolean isLeggTil, TpsPerson tpsPerson) {
+            boolean isLeggTil, DollyPerson dollyPerson) {
 
         UdiPerson udiPerson = mapperFacade.map(nyUdiPerson, UdiPerson.class);
 
         if (isNull(eksisterendeUdiPerson)) {
-            return appendAttributes(udiPerson, nyUdiPerson.getAliaser(), Status.NEW, tpsPerson);
+            return appendAttributes(udiPerson, nyUdiPerson.getAliaser(), Status.NEW, dollyPerson);
         }
 
-        return appendAttributes(udiPerson, isLeggTil ? nyUdiPerson.getAliaser() : emptyList(), Status.UPDATE, tpsPerson);
+        return appendAttributes(udiPerson, isLeggTil ? nyUdiPerson.getAliaser() : emptyList(), Status.UPDATE, dollyPerson);
     }
 
-    public List<UdiAlias> getAliaser(RsAliasRequest request, List<String> environments) {
+    public List<UdiAlias> getAliaser(RsAliasRequest request, List<String> environments, DollyPerson dollyPerson) {
 
-        if (nonNull(request)) {
+        if (dollyPerson.isPdlMaster() && !dollyPerson.getIdenthistorikk().isEmpty()) {
+            return dollyPerson.getIdenthistorikk().stream()
+                   .map(historikk -> UdiAlias.builder().fnr(historikk).build())
+                    .collect(Collectors.toList());
+        }
+        else if (dollyPerson.isTpsfMaster() && nonNull(request)) {
             request.setEnvironments(environments);
             ResponseEntity<RsAliasResponse> response = tpsfService.createAliases(request);
             return response.hasBody() ?
@@ -59,19 +65,19 @@ public class UdiMergeService {
         }
     }
 
-    private UdiPersonWrapper appendAttributes(UdiPerson udiPerson, List<RsUdiAlias> aliaser, Status status, TpsPerson tpsPerson) {
+    private UdiPersonWrapper appendAttributes(UdiPerson udiPerson, List<RsUdiAlias> aliaser, Status status, DollyPerson dollyPerson) {
 
-        tpsfPersonCache.fetchIfEmpty(tpsPerson);
+        dollyPersonCache.fetchIfEmpty(dollyPerson);
 
-        udiPerson.setIdent(tpsPerson.getHovedperson());
-        udiPerson.setNavn(mapperFacade.map(tpsPerson.getPerson(tpsPerson.getHovedperson()), UdiPersonNavn.class));
-        udiPerson.setFoedselsDato(tpsPerson.getPerson(tpsPerson.getHovedperson()).getFoedselsdato().toLocalDate());
+        udiPerson.setIdent(dollyPerson.getHovedperson());
+        udiPerson.setNavn(mapperFacade.map(dollyPerson.getPerson(dollyPerson.getHovedperson()), UdiPersonNavn.class));
+        udiPerson.setFoedselsDato(dollyPerson.getPerson(dollyPerson.getHovedperson()).getFoedselsdato().toLocalDate());
 
         return UdiPersonWrapper.builder()
                 .udiPerson(udiPerson)
                 .status(status)
                 .aliasRequest(!aliaser.isEmpty() ? RsAliasRequest.builder()
-                        .ident(tpsPerson.getHovedperson())
+                        .ident(dollyPerson.getHovedperson())
                         .aliaser(mapperFacade.mapAsList(aliaser, RsAliasRequest.AliasSpesification.class))
                         .build() : null)
                 .build();

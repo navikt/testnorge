@@ -10,9 +10,9 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
-import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.service.TpsfPersonCache;
+import no.nav.dolly.service.DollyPersonCache;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,12 +33,12 @@ public class PensjonforvalterClient implements ClientRegister {
     public static final String POPP_INNTEKTSREGISTER = "PoppInntekt";
 
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
-    private final TpsfPersonCache tpsfPersonCache;
+    private final DollyPersonCache dollyPersonCache;
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getPensjonforvalter())) {
 
@@ -50,8 +50,8 @@ public class PensjonforvalterClient implements ClientRegister {
 
             if (!bestilteMiljoer.isEmpty()) {
 
-                opprettPerson(tpsPerson, bestilteMiljoer, status);
-                lagreInntekt(bestilling.getPensjonforvalter(), tpsPerson, bestilteMiljoer, status);
+                opprettPerson(dollyPerson, bestilteMiljoer, status);
+                lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, status);
 
             } else {
                 status.append('$')
@@ -72,18 +72,18 @@ public class PensjonforvalterClient implements ClientRegister {
         // Pensjonforvalter / POPP støtter pt ikke sletting
     }
 
-    private void opprettPerson(TpsPerson tpsPerson, Set<String> miljoer, StringBuilder status) {
+    private void opprettPerson(DollyPerson dollyPerson, Set<String> miljoer, StringBuilder status) {
 
         status.append('$').append(PENSJON_FORVALTER).append('#');
 
         try {
-            tpsfPersonCache.fetchIfEmpty(tpsPerson);
-            tpsPerson.getPersondetaljer().forEach(person -> {
+            dollyPersonCache.fetchIfEmpty(dollyPerson);
+            dollyPerson.getPersondetaljer().forEach(person -> {
                 OpprettPersonRequest opprettPersonRequest =
                         mapperFacade.map(person, OpprettPersonRequest.class);
                 opprettPersonRequest.setMiljoer(new ArrayList<>(miljoer));
                 PensjonforvalterResponse response = pensjonforvalterConsumer.opprettPerson(opprettPersonRequest);
-                if (tpsPerson.getHovedperson().equals(person.getIdent())) {
+                if (dollyPerson.getHovedperson().equals(person.getIdent())) {
                     decodeStatus(response, status);
                 }
             });
@@ -93,13 +93,13 @@ public class PensjonforvalterClient implements ClientRegister {
         }
     }
 
-    private void lagreInntekt(PensjonData pensjonData, TpsPerson tpsPerson, Set<String> miljoer, StringBuilder status) {
+    private void lagreInntekt(PensjonData pensjonData, DollyPerson dollyPerson, Set<String> miljoer, StringBuilder status) {
 
         status.append('$').append(POPP_INNTEKTSREGISTER).append('#');
 
         try {
             LagreInntektRequest lagreInntektRequest = mapperFacade.map(pensjonData.getInntekt(), LagreInntektRequest.class);
-            lagreInntektRequest.setFnr(tpsPerson.getHovedperson());
+            lagreInntektRequest.setFnr(dollyPerson.getHovedperson());
             lagreInntektRequest.setMiljoer(new ArrayList<>(miljoer));
 
             decodeStatus(pensjonforvalterConsumer.lagreInntekt(lagreInntektRequest), status);

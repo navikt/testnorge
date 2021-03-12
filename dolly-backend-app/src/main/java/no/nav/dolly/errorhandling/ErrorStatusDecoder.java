@@ -23,13 +23,23 @@ public class ErrorStatusDecoder {
     private static final String ERROR = "error";
     private static final String MESSAGE = "message";
     private static final String DETAILS = "details";
+    private static final String FEIL = "Feil= ";
 
     private final ObjectMapper objectMapper;
+
+    public static String encodeStatus(String toBeEncoded) {
+        return Objects.nonNull(toBeEncoded) ?
+                toBeEncoded.replaceAll("\\[\\s", "")
+                        .replace("[", "")
+                        .replace("]", "")
+                        .replace(',', ';')
+                        .replace(':', '=') : "";
+    }
 
     public String getErrorText(HttpStatus errorStatus, String errorMsg) {
 
         StringBuilder builder = new StringBuilder()
-                .append("Feil= ");
+                .append(FEIL);
 
         if (errorMsg.contains("{")) {
 
@@ -54,10 +64,20 @@ public class ErrorStatusDecoder {
         return builder.toString();
     }
 
+    public String decodeException(Exception e) {
+
+        log.error("Teknisk feil {} mottatt fra system", e.getMessage(), e);
+        return new StringBuilder()
+                .append(FEIL)
+                .append("Teknisk feil. Se logg! ")
+                .append(encodeStatus(e.getMessage()))
+                .toString();
+    }
+
     public String decodeRuntimeException(RuntimeException e) {
 
         StringBuilder builder = new StringBuilder()
-                .append("Feil= ");
+                .append(FEIL);
 
         if (e instanceof HttpClientErrorException || e instanceof WebClientResponseException) {
 
@@ -109,14 +129,5 @@ public class ErrorStatusDecoder {
         } else {
             builder.append(encodeStatus(responseBody));
         }
-    }
-
-    public static String encodeStatus(String toBeEncoded) {
-        return Objects.nonNull(toBeEncoded) ?
-                toBeEncoded.replaceAll("\\[\\s", "")
-                        .replace("[", "")
-                        .replace("]", "")
-                        .replace(',', ';')
-                        .replace(':', '=') : "";
     }
 }

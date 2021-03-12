@@ -1,18 +1,18 @@
 package no.nav.dolly.bestilling.aktoerregister;
 
-import static java.util.Objects.isNull;
-import static no.nav.dolly.domain.CommonKeysAndUtils.containsSynthEnv;
-
-import java.util.List;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+import static java.util.Objects.isNull;
+import static no.nav.dolly.domain.CommonKeysAndUtils.containsSynthEnv;
 
 @Slf4j
 @Service
@@ -25,15 +25,15 @@ public class AktoerregisterClient implements ClientRegister {
 
     private final AktoerregisterConsumer aktoerregisterConsumer;
 
-    @Override public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    @Override public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (containsSynthEnv(bestilling.getEnvironments())) {
             int count = 0;
 
             try {
                 while (count++ < MAX_COUNT &&
-                        isNull(aktoerregisterConsumer.getAktoerId(tpsPerson.getHovedperson())
-                                .get(tpsPerson.getHovedperson()).get("identer"))) {
+                        isNull(aktoerregisterConsumer.getAktoerId(dollyPerson.getHovedperson())
+                                .get(dollyPerson.getHovedperson()).get("identer"))) {
                     Thread.sleep(TIMEOUT);
                 }
 
@@ -42,7 +42,7 @@ public class AktoerregisterClient implements ClientRegister {
                 Thread.currentThread().interrupt();
 
             } catch (RuntimeException e) {
-                log.error("Feilet å lese id fra AKtørregister for ident {}.", tpsPerson.getHovedperson(), e);
+                log.error("Feilet å lese id fra Aktørregister for ident {}.", dollyPerson.getHovedperson(), e);
             }
 
             if (count < MAX_COUNT) {
@@ -55,5 +55,10 @@ public class AktoerregisterClient implements ClientRegister {
 
     @Override public void release(List<String> identer) {
 
+    }
+
+    @Override
+    public boolean isTestnorgeRelevant() {
+        return false;
     }
 }

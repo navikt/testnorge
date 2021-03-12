@@ -21,7 +21,7 @@ import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.TransaksjonMappingService;
 
@@ -37,7 +37,7 @@ public class InntektsmeldingClient implements ClientRegister {
     private final ObjectMapper objectMapper;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getInntektsmelding())) {
 
@@ -45,10 +45,10 @@ public class InntektsmeldingClient implements ClientRegister {
             InntektsmeldingRequest inntektsmeldingRequest = mapperFacade.map(bestilling.getInntektsmelding(), InntektsmeldingRequest.class);
             bestilling.getEnvironments().forEach(environment -> {
 
-                inntektsmeldingRequest.setArbeidstakerFnr(tpsPerson.getHovedperson());
+                inntektsmeldingRequest.setArbeidstakerFnr(dollyPerson.getHovedperson());
                 inntektsmeldingRequest.setMiljoe(environment);
                 postInntektsmelding(isOpprettEndre ||
-                        !transaksjonMappingService.existAlready(INNTKMELD, tpsPerson.getHovedperson(), environment),
+                        !transaksjonMappingService.existAlready(INNTKMELD, dollyPerson.getHovedperson(), environment),
                         inntektsmeldingRequest, progress.getBestillingId(), status);
             });
 

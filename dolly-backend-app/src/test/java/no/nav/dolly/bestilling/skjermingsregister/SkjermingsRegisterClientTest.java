@@ -25,9 +25,9 @@ import no.nav.dolly.domain.resultset.IdentType;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
-import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.service.TpsfPersonCache;
+import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.TransaksjonMappingService;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -36,7 +36,7 @@ public class SkjermingsRegisterClientTest {
     @Mock
     private SkjermingsRegisterConsumer skjermingsRegisterConsumer;
     @Mock
-    private TpsfPersonCache tpsfPersonCache;
+    private DollyPersonCache dollyPersonCache;
     @Mock
     private TransaksjonMappingService transaksjonMappingService;
     @Mock
@@ -49,7 +49,7 @@ public class SkjermingsRegisterClientTest {
     private SkjermingsRegisterClient skjermingsRegisterClient;
     private SkjermingsDataResponse response;
     private RsDollyUtvidetBestilling bestilling;
-    private TpsPerson person;
+    private DollyPerson person;
     private BestillingProgress progress;
     private LocalDateTime yesterday;
 
@@ -72,7 +72,7 @@ public class SkjermingsRegisterClientTest {
         String etternavn = "Syntesen";
         String fornavn = "Synt";
         String ident = "11111123456";
-        person = TpsPerson.builder()
+        person = DollyPerson.builder()
                 .hovedperson(ident)
                 .persondetaljer(Collections.singletonList(Person.builder()
                         .ident(ident)
@@ -82,7 +82,7 @@ public class SkjermingsRegisterClientTest {
                         .build()))
                 .build();
 
-        when(tpsfPersonCache.fetchIfEmpty(any())).thenReturn(TpsPerson.builder()
+        when(dollyPersonCache.fetchIfEmpty(any())).thenReturn(DollyPerson.builder()
                 .hovedperson(ident)
                 .build());
 

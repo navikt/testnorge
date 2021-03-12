@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.dolly.domain.jpa.Testident;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ import static java.util.Objects.isNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TpsPerson {
+public class DollyPerson {
 
     private List<Person> persondetaljer;
 
@@ -27,6 +28,7 @@ public class TpsPerson {
     private List<String> verger;
     private List<String> fullmektige;
     private List<String> identhistorikk;
+    private Testident.Master master;
 
     public List<String> getPartnere() {
         if (isNull(partnere)) {
@@ -77,5 +79,13 @@ public class TpsPerson {
             }
         }
         return null;
+    }
+
+    public boolean isTpsfMaster() {
+        return getMaster() == Testident.Master.TPSF;
+    }
+
+    public boolean isPdlMaster() {
+        return getMaster() == Testident.Master.PDL;
     }
 }

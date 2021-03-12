@@ -6,17 +6,19 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
+import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
+import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
-import no.nav.dolly.service.TpsfPersonCache;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -40,12 +42,16 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
     private ExecutorService dollyForkJoinPool;
 
     public OpprettPersonerByKriterierService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService,
-                                             TpsfPersonCache tpsfPersonCache, IdentService identService, BestillingProgressService bestillingProgressService,
-                                             BestillingService bestillingService, MapperFacade mapperFacade, CacheManager cacheManager,
-                                             ObjectMapper objectMapper, List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
-                                             ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool) {
-        super(tpsfResponseHandler, tpsfService, tpsfPersonCache, identService, bestillingProgressService,
-                bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry);
+                                             DollyPersonCache dollyPersonCache, IdentService identService,
+                                             BestillingProgressService bestillingProgressService,
+                                             BestillingService bestillingService, MapperFacade mapperFacade,
+                                             CacheManager cacheManager, ObjectMapper objectMapper,
+                                             List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
+                                             ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
+                                             PdlPersonConsumer pdlPersonConsumer) {
+        super(tpsfResponseHandler, tpsfService, dollyPersonCache, identService, bestillingProgressService,
+                bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
+                pdlPersonConsumer);
 
         this.bestillingService = bestillingService;
         this.errorStatusDecoder = errorStatusDecoder;
@@ -75,13 +81,16 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                             try {
                                 List<String> leverteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
 
-                                TpsPerson tpsPerson = buildTpsPerson(bestilling, leverteIdenter, null);
-                                progress = new BestillingProgress(bestilling.getId(), tpsPerson.getHovedperson());
+                                DollyPerson dollyPerson = DollyPerson.builder()
+                                        .hovedperson(leverteIdenter.get(0))
+                                        .master(Testident.Master.TPSF)
+                                        .build();
+                                progress = new BestillingProgress(bestilling.getId(), dollyPerson.getHovedperson(), Testident.Master.TPSF);
 
                                 sendIdenterTilTPS(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))),
                                         leverteIdenter, bestilling.getGruppe(), progress);
 
-                                gjenopprettNonTpsf(tpsPerson, bestKriterier, progress, false);
+                                gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, false);
 
                             } catch (RuntimeException e) {
                                 progress = BestillingProgress.builder()

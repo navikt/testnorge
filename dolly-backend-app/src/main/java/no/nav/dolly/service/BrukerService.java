@@ -1,21 +1,5 @@
 package no.nav.dolly.service;
 
-import static java.lang.String.format;
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
-import static no.nav.dolly.util.CurrentAuthentication.getUserId;
-import static org.apache.commons.lang3.BooleanUtils.isFalse;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.NonTransientDataAccessException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -24,6 +8,22 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.NonTransientDataAccessException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static java.lang.String.format;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
+import static no.nav.dolly.util.CurrentAuthentication.getUserId;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 
 @Service
 @RequiredArgsConstructor
@@ -75,13 +75,11 @@ public class BrukerService {
         List<Bruker> brukere = brukerRepository.fetchEidAv(bruker);
         brukere.stream()
                 .filter(bruker1 -> gruppe.getFavorisertAv().stream().anyMatch(bruker2 -> bruker2.equals(bruker1)))
-                .map(bruker1 -> {
+                .forEach(bruker1 -> {
                     gruppe.getFavorisertAv().remove(bruker1);
                     bruker1.getFavoritter().remove(gruppe);
                     brukerRepository.save(bruker1);
-                    return true;
-                })
-                .collect(Collectors.toList());
+                });
 
         bruker.getFavoritter().remove(gruppe);
         saveGruppe(gruppe);

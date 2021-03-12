@@ -1,11 +1,5 @@
 package no.nav.dolly.mapper.strategy;
 
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
-
-import java.util.Comparator;
-import java.util.stream.Collectors;
-import org.springframework.stereotype.Component;
-
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
@@ -13,6 +7,12 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 import no.nav.dolly.mapper.MappingStrategy;
+import org.springframework.stereotype.Component;
+
+import java.util.Comparator;
+import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Component
 public class TestgruppeMedBestillingIdMappingStrategy implements MappingStrategy {
@@ -31,6 +31,7 @@ public class TestgruppeMedBestillingIdMappingStrategy implements MappingStrategy
                                                 .map(BestillingProgress::getBestillingId)
                                                 .sorted(Comparator.reverseOrder())
                                                 .collect(Collectors.toList()))
+                                        .master(testident.getMaster())
                                         .build())
                                 .collect(Collectors.toList()));
                         testgruppeMedBestillingId.setErLaast(isTrue(testgruppe.getErLaast()));

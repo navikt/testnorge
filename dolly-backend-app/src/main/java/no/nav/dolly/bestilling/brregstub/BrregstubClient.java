@@ -14,7 +14,7 @@ import no.nav.dolly.bestilling.brregstub.mapper.RolleUtskriftMapper;
 import no.nav.dolly.bestilling.brregstub.util.BrregstubMergeUtil;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 
 @Service
@@ -28,13 +28,13 @@ public class BrregstubClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getBrregstub())) {
 
-            RolleoversiktTo nyRolleovesikt = rolleUtskriftMapper.map(bestilling.getBrregstub(), tpsPerson);
+            RolleoversiktTo nyRolleovesikt = rolleUtskriftMapper.map(bestilling.getBrregstub(), dollyPerson);
 
-            RolleoversiktTo eksisterendeRoller = brregstubConsumer.getRolleoversikt(tpsPerson.getHovedperson());
+            RolleoversiktTo eksisterendeRoller = brregstubConsumer.getRolleoversikt(dollyPerson.getHovedperson());
             RolleoversiktTo mergetRolleoversikt = BrregstubMergeUtil.merge(nyRolleovesikt, eksisterendeRoller);
 
             progress.setBrregstubStatus(postRolleutskrift(mergetRolleoversikt));

@@ -21,7 +21,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
-import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -47,7 +47,7 @@ public class KrrstubClientTest {
 
     @Test
     public void gjenopprett_ingendata() {
-        krrstubClient.gjenopprett(new RsDollyBestillingRequest(), TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress(), false);
+        krrstubClient.gjenopprett(new RsDollyBestillingRequest(), DollyPerson.builder().hovedperson(IDENT).build(), new BestillingProgress(), false);
 
         verify(krrstubConsumer, times(0)).createDigitalKontaktdata(any(DigitalKontaktdata.class));
     }
@@ -64,7 +64,7 @@ public class KrrstubClientTest {
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setKrrstub(RsDigitalKontaktdata.builder().build());
         krrstubClient.gjenopprett(request,
-                TpsPerson.builder().hovedperson(IDENT).build(),
+                DollyPerson.builder().hovedperson(IDENT).build(),
                 BestillingProgress.builder().bestillingId(BESTILLING_ID).build(), false);
 
         verify(krrstubConsumer).createDigitalKontaktdata(any(DigitalKontaktdata.class));
@@ -83,7 +83,7 @@ public class KrrstubClientTest {
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setKrrstub(RsDigitalKontaktdata.builder().build());
-        krrstubClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress, false);
+        krrstubClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(), progress, false);
 
         verify(krrstubConsumer).createDigitalKontaktdata(any(DigitalKontaktdata.class));
         verify(krrStubResponseHandler, times(0)).extractResponse(any());

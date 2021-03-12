@@ -25,14 +25,14 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
-import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InstdataClientTest {
 
     private static final String IDENT = "11111111111";
-    private static final TpsPerson TPS_IDENT = TpsPerson.builder().hovedperson(IDENT).build();
+    private static final DollyPerson TPS_IDENT = DollyPerson.builder().hovedperson(IDENT).build();
     private static final String ENVIRONMENT = "q2";
 
     @Mock

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.jpa.Testident.Master;
 import no.nav.dolly.domain.resultset.entity.testident.RsTestident;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -40,7 +41,7 @@ public class IdentService {
     }
 
     @Transactional
-    public Testident saveIdentTilGruppe(String ident, Testgruppe testgruppe) {
+    public Testident saveIdentTilGruppe(String ident, Testgruppe testgruppe, Master master) {
 
         Testident testident = identRepository.findByIdent(ident);
         if (isNull(testident)) {
@@ -48,6 +49,7 @@ public class IdentService {
         }
         testident.setIdent(ident);
         testident.setTestgruppe(testgruppe);
+        testident.setMaster(master);
         return identRepository.save(testident);
     }
 
@@ -89,5 +91,10 @@ public class IdentService {
     public List<GruppeBestillingIdent> getBestillingerFromGruppe(Testgruppe gruppe) {
 
         return identRepository.getBestillingerFromGruppe(gruppe);
+    }
+
+    public Testident getTestIdent(String ident) {
+
+        return identRepository.findByIdent(ident);
     }
 }

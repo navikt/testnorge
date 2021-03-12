@@ -8,7 +8,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
-import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -37,7 +37,7 @@ public class KrrstubClient implements ClientRegister {
     }
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, TpsPerson tpsPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getKrrstub()) ||
                 (nonNull(bestilling.getTpsf()) && isKrrMaalform(bestilling.getTpsf().getSprakKode()))) {
@@ -46,12 +46,12 @@ public class KrrstubClient implements ClientRegister {
                 DigitalKontaktdata digitalKontaktdata = mapperFacade.map(
                         nonNull(bestilling.getKrrstub()) ? bestilling.getKrrstub() : new RsDigitalKontaktdata(),
                         DigitalKontaktdata.class);
-                digitalKontaktdata.setPersonident(tpsPerson.getHovedperson());
+                digitalKontaktdata.setPersonident(dollyPerson.getHovedperson());
 
                 kobleMaalformTilSpraak(bestilling, digitalKontaktdata);
 
                 if (!isOpprettEndre) {
-                    deleteIdent(tpsPerson.getHovedperson());
+                    deleteIdent(dollyPerson.getHovedperson());
                 }
 
                 ResponseEntity<Object> krrstubResponse = krrstubConsumer.createDigitalKontaktdata(digitalKontaktdata);

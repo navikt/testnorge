@@ -33,7 +33,7 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAaregArbeidsforhold;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
-import no.nav.dolly.domain.resultset.tpsf.TpsPerson;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AaregClientTest {
@@ -67,7 +67,7 @@ public class AaregClientTest {
         request.setAareg(singletonList(RsAaregArbeidsforhold.builder().build()));
         request.setEnvironments(singletonList("u2"));
         aaregClient.gjenopprett(request,
-                TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress(), false);
+                DollyPerson.builder().hovedperson(IDENT).build(), new BestillingProgress(), false);
 
         verify(aaregConsumer).opprettArbeidsforhold(any(AaregOpprettRequest.class));
     }
@@ -88,7 +88,7 @@ public class AaregClientTest {
         request.setAareg(singletonList(RsAaregArbeidsforhold.builder().build()));
         request.setEnvironments(singletonList("u2"));
         aaregClient.gjenopprett(request,
-                TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress(), false);
+                DollyPerson.builder().hovedperson(IDENT).build(), new BestillingProgress(), false);
 
         verify(aaregConsumer).opprettArbeidsforhold(any(AaregOpprettRequest.class));
     }
@@ -108,7 +108,7 @@ public class AaregClientTest {
                 .arbeidsgiver(RsOrganisasjon.builder().orgnummer(ORGNUMMER).build())
                 .build()));
         request.setEnvironments(singletonList("u2"));
-        aaregClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress(), false);
+        aaregClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(), new BestillingProgress(), false);
     }
 
     @Test
@@ -127,7 +127,7 @@ public class AaregClientTest {
                 .build()));
         request.setEnvironments(singletonList("u2"));
         aaregClient.gjenopprett(request,
-                TpsPerson.builder().hovedperson(IDENT).build(), new BestillingProgress(), false);
+                DollyPerson.builder().hovedperson(IDENT).build(), new BestillingProgress(), false);
     }
 
     @Test
@@ -147,7 +147,7 @@ public class AaregClientTest {
                 .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
                 .build()));
         request.setEnvironments(singletonList("u2"));
-        aaregClient.gjenopprett(request, TpsPerson.builder().hovedperson(IDENT).build(), progress, false);
+        aaregClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(), progress, false);
 
         assertThat(progress.getAaregStatus(), is(equalTo("u2: arbforhold=0$OK")));
     }

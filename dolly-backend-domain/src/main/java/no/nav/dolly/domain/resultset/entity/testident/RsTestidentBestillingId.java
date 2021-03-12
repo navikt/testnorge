@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.dolly.domain.jpa.Testident;
 
 import java.util.List;
 
@@ -16,4 +17,5 @@ public class RsTestidentBestillingId extends RsTestident {
     private boolean ibruk;
     private String beskrivelse;
     private List<Long> bestillingId;
+    private Testident.Master master;
 }
