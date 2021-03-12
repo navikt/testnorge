@@ -13,8 +13,6 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import java.net.InetSocketAddress;
-import java.net.URI;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,6 +44,12 @@ public abstract class KafkaProducer<T extends SpecificRecord> {
 
         var username = System.getenv("KAFKA_SCHEMA_REGISTRY_USER");
         var password = System.getenv("KAFKA_SCHEMA_REGISTRY_PASSWORD");
+
+        props.put("key.converter.basic.auth.credentials.source", "USER_INFO");
+        props.put("key.converter.schema.registry.basic.auth.user.info", username + ":" + password);
+
+        props.put("value.converter.basic.auth.credentials.source", "USER_INFO");
+        props.put("value.converter.schema.registry.basic.auth.user.info", username + ":" + password);
 
         props.put(AbstractKafkaSchemaSerDeConfig.USER_INFO_CONFIG, username + ":" + password);
         props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, System.getenv("KAFKA_SCHEMA_REGISTRY"));
