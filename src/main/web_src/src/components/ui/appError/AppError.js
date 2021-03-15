@@ -44,15 +44,17 @@ export const AppError = ({ error, stackTrace, style }) => (
 			</div>
 		)}
 
-		<h2>Kontakt</h2>
 		<p>
 			Noe gikk galt under visning av elementet. <br />
-			Vennligst kontakt Team Dolly på slack kanalen{' '}
+			Dersom refresh av siden ikke fungerer, forsøk å trykke{' '}
+			<b>
+				<a href="https://dolly.dev.adeo.no/oauth2/authorization/aad">her</a>
+			</b>
+			, eller kontakt Team Dolly på slack{' '}
 			<b>
 				<a href="https://nav-it.slack.com/archives/CA3P9NGA2">#dolly</a>
 			</b>{' '}
-			<br />
-			med detaljene over (bruk kopier ikonet) dersom problemet vedvarer etter en refresh.
+			med detaljene over (bruk kopier-ikonet).
 		</p>
 	</div>
 )
