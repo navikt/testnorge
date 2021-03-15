@@ -7,12 +7,12 @@ import org.springframework.context.annotation.Profile;
 
 import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
 import no.nav.registre.testnorge.libs.kafkaconfig.config.KafkaProperties;
-import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerConfiguration;
+import no.nav.registre.testnorge.libs.oauth2.config.InsecureOAuth2ServerToServerConfiguration;
 
 @Configuration
 @Import({
         ApplicationCoreConfig.class,
-        SecureOAuth2ServerToServerConfiguration.class,
+        InsecureOAuth2ServerToServerConfiguration.class,
         KafkaProperties.class
 })
 @Profile({"dev", "prod"})

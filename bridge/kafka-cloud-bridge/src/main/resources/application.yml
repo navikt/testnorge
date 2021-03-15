@@ -3,7 +3,7 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 spring:
   application:
     name: testnav-kafka-cloud-bridge
-    desciption: Bridge for motta kafka meldinger fra onprem kafka og sende videre til kafka-cloud-brigde
+    desciption: Bridge for motta meldinger fra kafka-cloud-brigde og sende videre til kafka i cloud
   security:
     oauth2:
       resourceserver:
