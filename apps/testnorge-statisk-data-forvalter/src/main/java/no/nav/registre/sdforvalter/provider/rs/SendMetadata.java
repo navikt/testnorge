@@ -8,8 +8,11 @@ import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v2.KafkaProduc
 
 @Component
 public class SendMetadata extends KafkaProducer<Metadata> {
-    public SendMetadata(@Value("${kafka.groupid}") String groupId) {
-        super(groupId);
+    public SendMetadata(
+            @Value("${kafka.groupid}") String groupid,
+            @Value("${http.proxy:#{null}}") String proxyHost
+    ) {
+        super(groupid, proxyHost);
     }
 
     @Override
