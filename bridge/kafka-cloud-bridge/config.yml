@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnav-kafka-onprem-bridge
+  name: testnav-kafka-cloud-bridge
   namespace: dolly
   labels:
     team: dolly
@@ -12,6 +12,15 @@ spec:
   azure:
     application:
       enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: testnav-kafka-onprem-bridge
+          cluster: dev-fss
+        - application: testnorge-oversikt-frontend
+          cluster: dev-fss
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -22,14 +31,6 @@ spec:
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
-  replicas:
-    min: 1
-    max: 3
-  vault:
-    enabled: true
-    paths:
-      - kvPath: /serviceuser/data/dev/srvtestnorge
-        mountPath: /secret/serviceuser
   resources:
     requests:
       cpu: 200m
@@ -37,3 +38,7 @@ spec:
     limits:
       cpu: 500m
       memory: 2048Mi
+  kafka:
+    pool: nav-dev
+  ingresses:
+    - "https://testnav-kafka-cloud-bridge.dev.intern.nav.no"

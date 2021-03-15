@@ -14,3 +14,10 @@ kafka:
   bootstrapservers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
   schemaregistryservers: http://kafka-schema-registry.tpa.svc.nais.local:8081
   groupid: organisajon-mottak-service-v1
+
+consumers:
+  kafka-cloud-bridge:
+    url: https://testnav-kafka-cloud-bridge.dev.intern.nav.no
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-kafka-cloud-bridge
