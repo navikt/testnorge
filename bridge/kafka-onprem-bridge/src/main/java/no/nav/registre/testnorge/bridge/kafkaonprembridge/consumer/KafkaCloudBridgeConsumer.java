@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.registre.testnorge.bridge.kafkaonprembridge.config.credentials.KafkaCloudBridgeServiceProperties;
+import no.nav.registre.testnorge.bridge.kafkaonprembridge.consumer.command.EndringsdokumentBridgeKafkaCommand;
+import no.nav.registre.testnorge.bridge.kafkaonprembridge.consumer.command.OpprettelsesdokumentBridgeKafkaCommand;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Endringsdokument;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Opprettelsesdokument;
 import no.nav.registre.testnorge.libs.dto.bridge.v1.ContentDTO;
@@ -36,15 +38,13 @@ public class KafkaCloudBridgeConsumer {
     public void bridge(String key, Endringsdokument endringsdokument) {
         var content = toContent(key, endringsdokument.toByteBuffer().array());
         var accessToken = accessTokenService.generateToken(serviceProperties);
-        var command = new BridgeKafkaCommand(webClient, content, accessToken.getTokenValue(), "/api/v1/organisajon/endringsdokument");
-        command.run();
+        new EndringsdokumentBridgeKafkaCommand(webClient, content, accessToken.getTokenValue()).run();
     }
 
     @SneakyThrows
     public void bridge(String key, Opprettelsesdokument opprettelsesdokument) {
         var content = toContent(key, opprettelsesdokument.toByteBuffer().array());
         var accessToken = accessTokenService.generateToken(serviceProperties);
-        var command = new BridgeKafkaCommand(webClient, content, accessToken.getTokenValue(), "/api/v1/organisajon/opprettelsesdokument");
-        command.run();
+        new OpprettelsesdokumentBridgeKafkaCommand(webClient, content, accessToken.getTokenValue()).run();
     }
 }

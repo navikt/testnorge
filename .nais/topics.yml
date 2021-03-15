@@ -2,7 +2,7 @@
 apiVersion: kafka.nais.io/v1
 kind: Topic
 metadata:
-  name: testnav-opprett-organisasjon-1
+  name: testnav-opprett-organisasjon-v1-1
   namespace: dolly
   labels:
     team: dolly
@@ -26,7 +26,7 @@ spec:
 apiVersion: kafka.nais.io/v1
 kind: Topic
 metadata:
-  name: testnav-endre-organisasjon-1
+  name: testnav-endre-organisasjon-v1-1
   namespace: dolly
   labels:
     team: dolly

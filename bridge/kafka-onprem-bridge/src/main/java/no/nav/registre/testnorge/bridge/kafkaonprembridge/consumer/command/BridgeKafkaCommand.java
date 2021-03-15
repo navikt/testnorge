@@ -1,6 +1,7 @@
-package no.nav.registre.testnorge.bridge.kafkaonprembridge.consumer;
+package no.nav.registre.testnorge.bridge.kafkaonprembridge.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -8,8 +9,9 @@ import reactor.core.publisher.Mono;
 
 import no.nav.registre.testnorge.libs.dto.bridge.v1.ContentDTO;
 
+@Slf4j
 @RequiredArgsConstructor
-public class BridgeKafkaCommand implements Runnable {
+public abstract class BridgeKafkaCommand implements Runnable {
     private final WebClient webClient;
     private final ContentDTO content;
     private final String token;
@@ -24,5 +26,7 @@ public class BridgeKafkaCommand implements Runnable {
                 .retrieve()
                 .bodyToMono(Void.class)
                 .block();
+
+        log.info("Bridged {}.", content.getKey());
     }
 }

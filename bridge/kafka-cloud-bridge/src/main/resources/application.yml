@@ -10,6 +10,5 @@ spring:
         jwt:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
-
 kafka:
   groupid: testnav-kafka-cloud-bridge-v1
