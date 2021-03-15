@@ -10,8 +10,11 @@ import no.nav.registre.testnorge.libs.kafkaconfig.topic.v2.OrganisasjonTopic;
 @Slf4j
 @Component
 public class EndringsdokumentV2Producer extends KafkaProducer<Endringsdokument> {
-    EndringsdokumentV2Producer(@Value("${kafka.groupid}") String groupid) {
-        super(groupid);
+    EndringsdokumentV2Producer(
+            @Value("${kafka.groupid}") String groupid,
+            @Value("${http.proxy:#{null}}") String proxyHost
+    ) {
+        super(groupid, proxyHost);
     }
 
     @Override

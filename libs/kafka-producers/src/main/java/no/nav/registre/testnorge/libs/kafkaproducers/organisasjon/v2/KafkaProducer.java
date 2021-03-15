@@ -13,6 +13,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import java.net.InetSocketAddress;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +21,7 @@ public abstract class KafkaProducer<T extends SpecificRecord> {
     private final KafkaTemplate<String, T> kafkaTemplate;
 
     @SneakyThrows
-    public KafkaProducer(String groupId) {
+    public KafkaProducer(String groupId, String proxy) {
         InetSocketAddress inetSocketAddress = new InetSocketAddress(0);
         var keystorePassword = System.getenv("KAFKA_CREDSTORE_PASSWORD");
         Map<String, Object> props = new HashMap<>();
@@ -47,6 +48,12 @@ public abstract class KafkaProducer<T extends SpecificRecord> {
 
         props.put(AbstractKafkaSchemaSerDeConfig.USER_INFO_CONFIG, username + ":" + password);
         props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, System.getenv("KAFKA_SCHEMA_REGISTRY"));
+
+        if (proxy != null) {
+            var uri = URI.create(proxy);
+            props.put(AbstractKafkaSchemaSerDeConfig.PROXY_HOST, uri.getHost());
+            props.put(AbstractKafkaSchemaSerDeConfig.PROXY_PORT,uri.getPort());
+        }
 
         this.kafkaTemplate = new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(props));
     }
