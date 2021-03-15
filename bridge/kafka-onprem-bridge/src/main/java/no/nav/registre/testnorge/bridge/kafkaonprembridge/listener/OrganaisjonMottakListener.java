@@ -34,5 +34,4 @@ public class OrganaisjonMottakListener {
         log.info("Bridger {} with uuid {}.", OrganisasjonTopic.ORGANISASJON_ENDRE_ORGANISASJON, record.key());
         endringsdokumentProducer.send(record.key(), record.value());
     }
-
 }
