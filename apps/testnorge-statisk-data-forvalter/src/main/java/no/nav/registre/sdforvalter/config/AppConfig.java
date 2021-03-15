@@ -10,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
 import no.nav.registre.testnorge.libs.database.config.FlywayConfiguration;
 import no.nav.registre.testnorge.libs.database.config.VaultHikariConfiguration;
+import no.nav.registre.testnorge.libs.kafkaconfig.config.KafkaProperties;
 import no.nav.registre.testnorge.libs.oauth2.config.InsecureOAuth2ServerToServerConfiguration;
 
 @Configuration
@@ -19,7 +20,8 @@ import no.nav.registre.testnorge.libs.oauth2.config.InsecureOAuth2ServerToServer
         ApplicationCoreConfig.class,
         VaultHikariConfiguration.class,
         FlywayConfiguration.class,
-        InsecureOAuth2ServerToServerConfiguration.class
+        InsecureOAuth2ServerToServerConfiguration.class,
+        KafkaProperties.class
 })
 public class AppConfig {
 
