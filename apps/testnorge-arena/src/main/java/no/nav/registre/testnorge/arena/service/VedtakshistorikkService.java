@@ -314,8 +314,11 @@ public class VedtakshistorikkService {
             String miljoe
     ) {
         var aap = historikk.getAap();
+        var aap115 = historikk.getAap115();
         if (aap != null && !aap.isEmpty()) {
             return rettighetAapService.opprettetPersonOgInntektIPopp(personident, miljoe, aap.get(0));
+        } else if (aap115 != null && !aap115.isEmpty()){
+            return rettighetAapService.opprettetPersonOgInntektIPopp(personident, miljoe, aap115.get(0));
         }
         return true;
     }
