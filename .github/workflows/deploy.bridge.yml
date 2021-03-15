@@ -4,7 +4,7 @@ name: Deploy kafka-onprem-bridge
 on:
   push:
     paths:
-      - bridge/kafka-cloud-bridge/**
+      - bridge/kafka-onprem-bridge/**
       - libs/testnorge-core/**
 
 env:
