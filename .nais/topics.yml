@@ -20,7 +20,7 @@ spec:
       application: testnav-organisasjon-mottak-service
       access: readwrite
     - team: dolly
-      application: testnav-kafka-onprem-bridge
+      application: testnav-kafka-cloud-bridge
       access: write
 ---
 apiVersion: kafka.nais.io/v1
@@ -44,5 +44,5 @@ spec:
       application: testnav-organisasjon-mottak-service
       access: readwrite
     - team: dolly
-      application: testnav-kafka-onprem-bridge
+      application: testnav-kafka-cloud-bridge
       access: write
