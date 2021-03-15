@@ -36,13 +36,15 @@ public class KafkaCloudBridgeConsumer {
     public void bridge(String key, Endringsdokument endringsdokument) {
         var content = toContent(key, endringsdokument.toByteBuffer().array());
         var accessToken = accessTokenService.generateToken(serviceProperties);
-        new BridgeKafkaCommand(webClient, content, accessToken.getTokenValue(), "/api/v1/organisajon/endringsdokument");
+        var command = new BridgeKafkaCommand(webClient, content, accessToken.getTokenValue(), "/api/v1/organisajon/endringsdokument");
+        command.run();
     }
 
     @SneakyThrows
     public void bridge(String key, Opprettelsesdokument opprettelsesdokument) {
         var content = toContent(key, opprettelsesdokument.toByteBuffer().array());
         var accessToken = accessTokenService.generateToken(serviceProperties);
-        new BridgeKafkaCommand(webClient, content, accessToken.getTokenValue(), "/api/v1/organisajon/opprettelsesdokument");
+        var command = new BridgeKafkaCommand(webClient, content, accessToken.getTokenValue(), "/api/v1/organisajon/opprettelsesdokument");
+        command.run();
     }
 }
