@@ -52,10 +52,8 @@ public abstract class KafkaProducer<T extends SpecificRecord> {
 //        var password = System.getenv("KAFKA_SCHEMA_REGISTRY_PASSWORD");
 //
 //        props.put(AbstractKafkaSchemaSerDeConfig.USER_INFO_CONFIG, username + ":" + password);
-//        var kafka_schema_registry = System.getenv("KAFKA_SCHEMA_REGISTRY");
-//        props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, kafka_schema_registry);
+        props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, System.getenv("KAFKA_SCHEMA_REGISTRY"));
 
-//        log.info("kafka_schema_registry: {}", kafka_schema_registry);
         this.kafkaTemplate = new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(props));
     }
 

@@ -63,5 +63,4 @@ public class StaticDataControllerV1 {
     public ResponseEntity<KrrListe> createKrr(@RequestBody KrrListe liste) {
         return ResponseEntity.ok(krrAdapter.save(liste));
     }
-
 }
