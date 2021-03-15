@@ -11,10 +11,9 @@ import no.nav.registre.testnorge.libs.kafkaconfig.topic.v2.OrganisasjonTopic;
 @Component
 public class OpprettelsesdokumentV2Producer extends KafkaProducer<Opprettelsesdokument> {
     OpprettelsesdokumentV2Producer(
-            @Value("${kafka.groupid}") String groupid,
-            @Value("${http.proxy:#{null}}") String proxyHost
+            @Value("${kafka.groupid}") String groupid
     ) {
-        super(groupid, proxyHost);
+        super(groupid);
     }
 
     @Override

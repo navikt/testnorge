@@ -13,8 +13,6 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import java.net.InetSocketAddress;
-import java.net.URI;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +21,7 @@ public abstract class KafkaProducer<T extends SpecificRecord> {
     private final KafkaTemplate<String, T> kafkaTemplate;
 
     @SneakyThrows
-    public KafkaProducer(String groupId, String proxy) {
+    public KafkaProducer(String groupId) {
         InetSocketAddress inetSocketAddress = new InetSocketAddress(0);
         var keystorePassword = System.getenv("KAFKA_CREDSTORE_PASSWORD");
         Map<String, Object> props = new HashMap<>();
@@ -44,35 +42,12 @@ public abstract class KafkaProducer<T extends SpecificRecord> {
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
 
-//
-//        var kafkaSchemaRegistry = System.getenv("KAFKA_SCHEMA_REGISTRY");
-//
-//        if (kafkaSchemaRegistry != null) {
-//            var schemaRegistry = new URL(kafkaSchemaRegistry);
-//            props.put(AbstractKafkaSchemaSerDeConfig.BASIC_AUTH_CREDENTIALS_SOURCE, "USER_INFO");
-//
-//            var username = System.getenv("KAFKA_SCHEMA_REGISTRY_USER");
-//            var password = System.getenv("KAFKA_SCHEMA_REGISTRY_PASSWORD");
-//
-//            props.put(
-//                    AbstractKafkaSchemaSerDeConfig.USER_INFO_CONFIG,
-//                    schemaRegistry.getUserInfo() != null ? schemaRegistry.getUserInfo() : username + ":" + password
-//            );
-//
-//            var url = new URI(
-//                    schemaRegistry.getProtocol(),
-//                    null,
-//                    schemaRegistry.getHost(),
-//                    schemaRegistry.getPort(),
-//                    schemaRegistry.getPath(),
-//                    schemaRegistry.getQuery(),
-//                    schemaRegistry.getRef()
-//            ).toString();
-//
-//            props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, url);
-//
-//        }
+        props.put(AbstractKafkaSchemaSerDeConfig.BASIC_AUTH_CREDENTIALS_SOURCE, "USER_INFO");
+        var username = System.getenv("KAFKA_SCHEMA_REGISTRY_USER");
+        var password = System.getenv("KAFKA_SCHEMA_REGISTRY_PASSWORD");
 
+        props.put(AbstractKafkaSchemaSerDeConfig.USER_INFO_CONFIG, username + ":" + password);
+        props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, System.getenv("KAFKA_SCHEMA_REGISTRY"));
 
         this.kafkaTemplate = new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(props));
     }
