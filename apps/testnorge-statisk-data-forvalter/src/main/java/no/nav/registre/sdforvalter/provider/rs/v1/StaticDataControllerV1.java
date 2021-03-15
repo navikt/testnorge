@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.registre.sdforvalter.adapter.AaregAdapter;
-import no.nav.registre.sdforvalter.adapter.EregAdapter;
 import no.nav.registre.sdforvalter.adapter.KrrAdapter;
 import no.nav.registre.sdforvalter.adapter.TpsIdenterAdapter;
 import no.nav.registre.sdforvalter.domain.AaregListe;
@@ -28,7 +27,6 @@ public class StaticDataControllerV1 {
 
     private final IdentService identService;
     private final TpsIdenterAdapter tpsIdenterAdapter;
-    private final EregAdapter eregAdapter;
     private final AaregAdapter aaregAdapter;
     private final KrrAdapter krrAdapter;
 
