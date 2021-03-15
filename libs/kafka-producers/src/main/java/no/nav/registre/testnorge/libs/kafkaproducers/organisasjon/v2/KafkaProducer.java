@@ -35,11 +35,11 @@ public abstract class KafkaProducer<T extends SpecificRecord> {
         props.put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, keystorePassword);
         props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, System.getenv("KAFKA_TRUSTSTORE_PATH"));
         props.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, keystorePassword);
-        props.put(SslConfigs.SSL_KEY_PASSWORD_CONFIG, keystorePassword);
         props.put(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, "jks");
         props.put(SslConfigs.SSL_KEYSTORE_TYPE_CONFIG, "PKCS12");
-        props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, SecurityProtocol.SSL.name);
         props.put(SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG, "");
+
+        props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SSL");
 
         props.put(ProducerConfig.CLIENT_ID_CONFIG, groupId + inetSocketAddress.getHostString());
         props.put(ProducerConfig.ACKS_CONFIG, "1");
@@ -47,23 +47,15 @@ public abstract class KafkaProducer<T extends SpecificRecord> {
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class);
 
         props.put(AbstractKafkaSchemaSerDeConfig.BASIC_AUTH_CREDENTIALS_SOURCE, "USER_INFO");
+//
+//        var username = System.getenv("KAFKA_SCHEMA_REGISTRY_USER");
+//        var password = System.getenv("KAFKA_SCHEMA_REGISTRY_PASSWORD");
+//
+//        props.put(AbstractKafkaSchemaSerDeConfig.USER_INFO_CONFIG, username + ":" + password);
+//        var kafka_schema_registry = System.getenv("KAFKA_SCHEMA_REGISTRY");
+//        props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, kafka_schema_registry);
 
-
-        var username = System.getenv("KAFKA_SCHEMA_REGISTRY_USER");
-        var password = System.getenv("KAFKA_SCHEMA_REGISTRY_PASSWORD");
-
-        props.put(AbstractKafkaSchemaSerDeConfig.USER_INFO_CONFIG, username + ":" + password);
-        var kafka_schema_registry = System.getenv("KAFKA_SCHEMA_REGISTRY");
-        props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, kafka_schema_registry);
-
-        log.info("kafka_schema_registry: {}", kafka_schema_registry);
-
-        if (proxy != null) {
-            var uri = URI.create(proxy);
-            props.put(AbstractKafkaSchemaSerDeConfig.PROXY_HOST, uri.getHost());
-            props.put(AbstractKafkaSchemaSerDeConfig.PROXY_PORT,uri.getPort());
-        }
-
+//        log.info("kafka_schema_registry: {}", kafka_schema_registry);
         this.kafkaTemplate = new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(props));
     }
 
