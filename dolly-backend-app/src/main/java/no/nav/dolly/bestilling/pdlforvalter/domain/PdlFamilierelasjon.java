@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.tpsf.Relasjon;
 
+import static java.util.Objects.isNull;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,6 +22,10 @@ public class PdlFamilierelasjon {
     private ROLLE relatertPersonsRolle;
 
     public static ROLLE decode(Relasjon.ROLLE rolle) {
+
+        if (isNull(rolle)) {
+            return null;
+        }
 
         switch (rolle) {
         case MOR:

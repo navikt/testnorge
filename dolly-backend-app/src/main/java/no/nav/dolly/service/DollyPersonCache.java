@@ -58,6 +58,11 @@ public class DollyPersonCache {
                     .map(Relasjon::getPersonRelasjonMed)
                     .map(Person::getIdent)
                     .collect(Collectors.toList()));
+            dollyPerson.setForeldre(person.getRelasjoner().stream()
+                    .filter(Relasjon::isForelder)
+                    .map(Relasjon::getPersonRelasjonMed)
+                    .map(Person::getIdent)
+                    .collect(Collectors.toList()));
             dollyPerson.setIdenthistorikk(person.getIdentHistorikk().stream()
                     .map(IdentHistorikk::getAliasPerson)
                     .map(Person::getIdent)
@@ -74,7 +79,7 @@ public class DollyPersonCache {
 
         Set<String> identer =
                 Stream.of(List.of(dollyPerson.getHovedperson()), dollyPerson.getPartnere(),
-                        dollyPerson.getBarn(), dollyPerson.getIdenthistorikk(),
+                        dollyPerson.getBarn(), dollyPerson.getForeldre(), dollyPerson.getIdenthistorikk(),
                         dollyPerson.getVerger(), dollyPerson.getFullmektige())
                         .flatMap(Collection::stream)
                         .collect(Collectors.toSet());
@@ -120,6 +125,11 @@ public class DollyPersonCache {
                             .map(Relasjon::getPersonRelasjonMed)
                             .map(Person::getIdent)
                             .collect(Collectors.toList()))
+                    .foreldre(person.getRelasjoner().stream()
+                            .filter(Relasjon::isForelder)
+                            .map(Relasjon::getPersonRelasjonMed)
+                            .map(Person::getIdent)
+                            .collect(Collectors.toList()))
                     .nyePartnereOgBarn(identer.getIdentTupler().stream()
                             .filter(IdentTuple::isLagtTil)
                             .map(IdentTuple::getIdent)
@@ -157,6 +167,11 @@ public class DollyPersonCache {
                         .map(Relasjon::getPersonRelasjonMed)
                         .map(Person::getIdent)
                         .collect(Collectors.toList()))
+                .foreldre(person.getRelasjoner().stream()
+                        .filter(Relasjon::isForelder)
+                        .map(Relasjon::getPersonRelasjonMed)
+                        .map(Person::getIdent)
+                        .collect(Collectors.toList()))
                 .verger(person.getVergemaal().stream()
                         .map(RsVergemaal::getVerge)
                         .map(RsSimplePerson::getIdent)
@@ -186,8 +201,11 @@ public class DollyPersonCache {
                         .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
                         .collect(Collectors.toList()))
                 .barn(pdlPerson.getData().getHentPerson().getForelderBarnRelasjon().stream()
-                        .filter(relasjon -> !relasjon.getMetadata().isHistorisk() &&
-                                relasjon.getRelatertPersonsRolle() == PdlPerson.Rolle.BARN)
+                        .filter(relasjon -> !relasjon.getMetadata().isHistorisk() && relasjon.isBarn())
+                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                        .collect(Collectors.toList()))
+                .foreldre(pdlPerson.getData().getHentPerson().getForelderBarnRelasjon().stream()
+                        .filter(relasjon -> !relasjon.getMetadata().isHistorisk() && relasjon.isForelder())
                         .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
                         .collect(Collectors.toList()))
                 .identhistorikk(pdlPerson.getData().getHentPerson().getFolkeregisteridentifikator().stream()

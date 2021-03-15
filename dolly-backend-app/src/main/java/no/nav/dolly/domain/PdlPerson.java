@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
+import static no.nav.dolly.domain.PdlPerson.Rolle.BARN;
+import static no.nav.dolly.domain.PdlPerson.Rolle.FAR;
+import static no.nav.dolly.domain.PdlPerson.Rolle.MEDMOR;
+import static no.nav.dolly.domain.PdlPerson.Rolle.MOR;
 
 @Data
 @NoArgsConstructor
@@ -187,6 +191,16 @@ public class PdlPerson {
         private Rolle relatertPersonsRolle;
         private Rolle minRolleForPerson;
         private Metadata metadata;
+
+        public boolean isForelder() {
+            return MOR == getRelatertPersonsRolle() ||
+                    FAR == getRelatertPersonsRolle() ||
+                    MEDMOR == getRelatertPersonsRolle();
+        }
+
+        public boolean isBarn() {
+            return BARN == getRelatertPersonsRolle();
+        }
     }
 
     @lombok.Data

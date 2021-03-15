@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon.decode;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand.ENKE_ELLER_ENKEMANN;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand.GIFT;
@@ -43,13 +42,10 @@ public class PdlRelasjonerMappingStrategy implements MappingStrategy {
 
                         familierelasjon.setRelatertPerson(relasjon.getPersonRelasjonMed().getIdent());
                         familierelasjon.setRelatertPersonsRolle(decode(relasjon.getRelasjonTypeNavn()));
-                        if (nonNull(relasjon.getPersonRelasjonTil())) {
-                            relasjon.getPersonRelasjonTil().getRelasjoner().forEach(relasjon1 -> {
-                                if (relasjon1.getPersonRelasjonMed().getIdent().equals(relasjon.getPerson().getIdent())) {
-                                    familierelasjon.setMinRolleForPerson(decode(relasjon1.getRelasjonTypeNavn()));
-                                }
-                            });
-                        }
+                        familierelasjon.setMinRolleForPerson(decode(relasjon.getPersonRelasjonTil().getRelasjoner().stream()
+                            .filter(relasjon2 -> relasjon.getPersonRelasjonMed().getIdent().equals(relasjon2.getPerson().getIdent()))
+                                .map(Relasjon::getRelasjonTypeNavn)
+                                .findFirst().orElse(null)));
                         familierelasjon.setKilde(CONSUMER);
                     }
                 })

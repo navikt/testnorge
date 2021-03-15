@@ -24,6 +24,7 @@ public class DollyPerson {
     private String hovedperson;
     private List<String> partnere;
     private List<String> barn;
+    private List<String> foreldre;
     private List<String> nyePartnereOgBarn;
     private List<String> verger;
     private List<String> fullmektige;
@@ -42,6 +43,13 @@ public class DollyPerson {
             barn = new ArrayList<>();
         }
         return barn;
+    }
+
+    public List<String> getForeldre() {
+        if (isNull(foreldre)) {
+            foreldre = new ArrayList<>();
+        }
+        return foreldre;
     }
 
     public List<String> getVerger() {

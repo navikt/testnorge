@@ -7,22 +7,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RsPartnerRelasjonRequest {
+public class RsForeldreRelasjonRequest {
 
     @Schema(required = true,
-            description = "Entydig identifisering av partner")
+            description = "Ident for forelder")
     private String ident;
 
-    @Schema(description = "Liste av sivilstander beskriver forhold mellom hovedperson og partner")
-    private List<RsSivilstandRequest> sivilstander;
+    private RsForeldreRequest.ForeldreType foreldreType;
 
-    @Schema(description = "Når true får partner samme adresse som hovedperson. False innebærer ulik boadresse.")
+    @Schema(description = "Når true får foreldre felles adresse med hverandre.")
     private Boolean harFellesAdresse;
 }
+

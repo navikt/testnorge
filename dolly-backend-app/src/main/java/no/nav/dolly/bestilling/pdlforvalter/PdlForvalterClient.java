@@ -85,7 +85,7 @@ public class PdlForvalterClient implements ClientRegister {
 
             if (containsSynthEnv(bestilling.getEnvironments())) {
 
-                hentTpsPersondetaljer(dollyPerson);
+                hentPersondetaljer(dollyPerson);
                 sendDeleteIdent(dollyPerson);
                 sendPdlPersondetaljer(bestilling, dollyPerson, status);
 
@@ -127,7 +127,7 @@ public class PdlForvalterClient implements ClientRegister {
         return false;
    }
 
-    private void hentTpsPersondetaljer(DollyPerson dollyPerson) {
+    private void hentPersondetaljer(DollyPerson dollyPerson) {
 
         dollyPersonCache.fetchIfEmpty(dollyPerson);
 
@@ -231,9 +231,9 @@ public class PdlForvalterClient implements ClientRegister {
     private void sendForeldreansvar(Person person) {
 
         if (!person.isMyndig()) {
-            boolean fellesAnsvar = person.getRelasjoner().stream().filter(Relasjon::isForeldre).count() == 2;
+            boolean fellesAnsvar = person.getRelasjoner().stream().filter(Relasjon::isForelder).count() == 2;
             person.getRelasjoner().forEach(relasjon -> {
-                if (relasjon.isForeldre()) {
+                if (relasjon.isForelder()) {
                     relasjon.setFellesAnsvar(fellesAnsvar);
                     pdlForvalterConsumer.postForeldreansvar(
                             mapperFacade.map(relasjon, PdlForeldreansvar.class), person.getIdent());

@@ -1,14 +1,14 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import static no.nav.dolly.domain.resultset.tpsf.Relasjon.ROLLE.BARN;
 import static no.nav.dolly.domain.resultset.tpsf.Relasjon.ROLLE.EKTEFELLE;
 import static no.nav.dolly.domain.resultset.tpsf.Relasjon.ROLLE.FAR;
 import static no.nav.dolly.domain.resultset.tpsf.Relasjon.ROLLE.FOEDSEL;
 import static no.nav.dolly.domain.resultset.tpsf.Relasjon.ROLLE.MOR;
 import static no.nav.dolly.domain.resultset.tpsf.Relasjon.ROLLE.PARTNER;
-
-import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 @Setter
@@ -31,7 +31,7 @@ public class Relasjon {
         return FOEDSEL == getRelasjonTypeNavn() || BARN == getRelasjonTypeNavn();
     }
 
-    public boolean isForeldre() {
+    public boolean isForelder() {
         return MOR == getRelasjonTypeNavn() || FAR == getRelasjonTypeNavn();
     }
 }

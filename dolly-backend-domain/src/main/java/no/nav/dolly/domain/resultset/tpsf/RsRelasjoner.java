@@ -1,14 +1,14 @@
 package no.nav.dolly.domain.resultset.tpsf;
 
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,4 +23,7 @@ public class RsRelasjoner {
 
     @Schema(description = "Liste av barn: mine/våre/dine i forhold til hovedperson og angitt partner")
     private List<RsBarnRelasjonRequest> barn;
+
+    @Schema(description = "Liste av foreldre til hovedperson")
+    private List<RsForeldreRelasjonRequest> foreldre;
 }
