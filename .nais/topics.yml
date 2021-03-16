@@ -22,6 +22,9 @@ spec:
     - team: dolly
       application: testnav-kafka-cloud-bridge
       access: write
+    - team: dolly
+      application: testnav-kafka-onprem-bridge
+      access: write
 ---
 apiVersion: kafka.nais.io/v1
 kind: Topic
@@ -45,4 +48,7 @@ spec:
       access: readwrite
     - team: dolly
       application: testnav-kafka-cloud-bridge
+      access: write
+    - team: dolly
+      application: testnav-kafka-onprem-bridge
       access: write

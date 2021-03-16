@@ -12,6 +12,8 @@ import no.nav.registre.testnorge.bridge.kafkaonprembridge.consumer.KafkaCloudBri
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Endringsdokument;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Opprettelsesdokument;
 import no.nav.registre.testnorge.libs.kafkaconfig.topic.v1.OrganisasjonTopic;
+import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v2.EndringsdokumentV2Producer;
+import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v2.OpprettelsesdokumentV2Producer;
 
 @Slf4j
 @Profile("prod")
@@ -20,16 +22,20 @@ import no.nav.registre.testnorge.libs.kafkaconfig.topic.v1.OrganisasjonTopic;
 public class OrganaisjonMottakListener {
 
     private final KafkaCloudBridgeConsumer bridgeConsumer;
+    private final OpprettelsesdokumentV2Producer opprettelsesdokumentProducer;
+    private final EndringsdokumentV2Producer endringsdokumentProducer;
 
     @KafkaListener(topics = OrganisasjonTopic.ORGANISASJON_OPPRETT_ORGANISASJON)
     public void create(ConsumerRecord<String, Opprettelsesdokument> record) {
         log.info("Bridge {} with uuid {}.", OrganisasjonTopic.ORGANISASJON_OPPRETT_ORGANISASJON, record.key());
-        bridgeConsumer.bridge(record.key(), record.value());
+        opprettelsesdokumentProducer.send(record.key(), record.value());
+        //bridgeConsumer.bridge(record.key(), record.value());
     }
 
     @KafkaListener(topics = OrganisasjonTopic.ORGANISASJON_ENDRE_ORGANISASJON)
     public void update(ConsumerRecord<String, Endringsdokument> record) {
         log.info("Bridge {} with uuid {}.", OrganisasjonTopic.ORGANISASJON_ENDRE_ORGANISASJON, record.key());
-        bridgeConsumer.bridge(record.key(), record.value());
+        endringsdokumentProducer.send(record.key(), record.value());
+        //bridgeConsumer.bridge(record.key(), record.value());
     }
 }
