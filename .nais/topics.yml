@@ -18,7 +18,7 @@ spec:
   acl:
     - team: dolly
       application: testnav-organisasjon-mottak-service
-      access: readwrite
+      access: read
     - team: dolly
       application: testnav-kafka-cloud-bridge
       access: write
@@ -48,7 +48,7 @@ spec:
   acl:
     - team: dolly
       application: testnav-organisasjon-mottak-service
-      access: readwrite
+      access: read
     - team: dolly
       application: testnav-kafka-cloud-bridge
       access: write

@@ -269,10 +269,3 @@ project(":frontend").projectDir = file('libs/frontend')
 
 include 'ereg-proxy'
 project(":ereg-proxy").projectDir = file('proxies/ereg-proxy')
-include 'bridge'
-
-include 'kafka-onprem-bridge'
-project(":kafka-onprem-bridge").projectDir = file('bridge/kafka-onprem-bridge')
-
-include 'kafka-cloud-bridge'
-project(":kafka-cloud-bridge").projectDir = file('bridge/kafka-cloud-bridge')
