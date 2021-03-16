@@ -1,4 +1,4 @@
-name: Deploy udi-stub
+name: Deploy tps-identer-vedlikehold
 
 on:
   push:
