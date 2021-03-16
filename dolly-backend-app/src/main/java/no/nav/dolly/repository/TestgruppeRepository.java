@@ -1,12 +1,12 @@
 package no.nav.dolly.repository;
 
-import java.util.List;
-import java.util.Optional;
+import no.nav.dolly.domain.jpa.Testgruppe;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import no.nav.dolly.domain.jpa.Testgruppe;
+import java.util.List;
+import java.util.Optional;
 
 public interface TestgruppeRepository extends PagingAndSortingRepository<Testgruppe, Long> {
 
@@ -20,7 +20,7 @@ public interface TestgruppeRepository extends PagingAndSortingRepository<Testgru
 
     List<Testgruppe> findAllByOrderByNavn();
 
-    Page<Testgruppe> findAllByOrderByNavn(Pageable pageable);
+    Page<Testgruppe> findAllByOrderByIdDesc(Pageable pageable);
 
     int deleteTestgruppeById(Long id);
 }

@@ -32,8 +32,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @RequiredArgsConstructor
 public class TestgruppeService {
 
-    private static final int PAGE_SIZE = 10;
-
     private final TestgruppeRepository testgruppeRepository;
     private final TransaksjonMappingRepository transaksjonMappingRepository;
     private final BrukerService brukerService;
@@ -59,9 +57,9 @@ public class TestgruppeService {
                 new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId)));
     }
 
-    public Page<Testgruppe> getAllTestgrupper(Integer pageNo) {
+    public Page<Testgruppe> getAllTestgrupper(Integer pageNo, Integer pageSize) {
 
-        return testgruppeRepository.findAllByOrderByNavn(PageRequest.of(pageNo, PAGE_SIZE));
+        return testgruppeRepository.findAllByOrderByIdDesc(PageRequest.of(pageNo, pageSize));
     }
 
     public List<Testgruppe> fetchGrupperByIdsIn(Collection<Long> grupperIDer) {
