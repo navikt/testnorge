@@ -21,9 +21,9 @@ public class TpsfConsumer {
                 .build();
     }
 
-    public void deleteIdentInTpsf(String ident) {
+    public Object deleteIdentInTpsf(String ident) {
 
-        Object response = webClient.delete()
+        return webClient.delete()
                 .uri(uriBuilder -> uriBuilder.queryParam("identer", Set.of(ident)).build())
                 .retrieve()
                 .toEntity(Object.class)
