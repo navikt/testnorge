@@ -6,9 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.applikasjonsanalyseservice.domain.yml.topic.v1.KindTopic;
-import no.nav.registre.testnorge.applikasjonsanalyseservice.util.YAMLUtil;
-
 public class TopicAnalyseList {
     private final List<TopicAnalyse> topics;
 
