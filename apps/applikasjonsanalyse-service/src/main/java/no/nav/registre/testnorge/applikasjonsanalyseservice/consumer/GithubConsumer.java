@@ -4,7 +4,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.registre.testnorge.applikasjonsanalyseservice.consumer.command.GetBlobCommand;
+import no.nav.registre.testnorge.applikasjonsanalyseservice.consumer.command.GetBlobFromPathAndRefCommand;
+import no.nav.registre.testnorge.applikasjonsanalyseservice.consumer.command.GetBlobFromShaCommand;
 import no.nav.registre.testnorge.applikasjonsanalyseservice.consumer.command.SearchCodeCommand;
 import no.nav.registre.testnorge.applikasjonsanalyseservice.consumer.dto.SearchDTO;
 import no.nav.registre.testnorge.applikasjonsanalyseservice.domain.Properties;
@@ -26,8 +27,12 @@ public class GithubConsumer {
         return new SearchCodeCommand(webClient, search).call();
     }
 
-    public byte[] getBlob(String sha){
-        return new GetBlobCommand(webClient, sha).call();
+    public byte[] getBlobFromSha(String sha){
+        return new GetBlobFromShaCommand(webClient, sha).call();
     }
 
+
+    public byte[] getBlobFromPathAndRef(String path, String ref){
+        return new GetBlobFromPathAndRefCommand(webClient, path, ref).call();
+    }
 }

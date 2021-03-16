@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.applikasjonsanalyseservice.domain.yml;
+package no.nav.registre.testnorge.applikasjonsanalyseservice.domain.yml.topic.v1;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -7,7 +7,6 @@ import lombok.Value;
 @Value
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-public class AccessPolicy {
-    Inbound inbound;
-    Outbound outbound;
+public class KindTopic {
+    Spec spec;
 }

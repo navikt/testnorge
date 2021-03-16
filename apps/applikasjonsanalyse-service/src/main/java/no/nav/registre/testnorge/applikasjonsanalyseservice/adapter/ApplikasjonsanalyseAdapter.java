@@ -8,8 +8,10 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.applikasjonsanalyseservice.consumer.GithubConsumer;
 import no.nav.registre.testnorge.applikasjonsanalyseservice.consumer.dto.SearchDTO;
-import no.nav.registre.testnorge.applikasjonsanalyseservice.domain.Applikasjonsanalyse;
+import no.nav.registre.testnorge.applikasjonsanalyseservice.domain.ApplicationAnalyse;
+import no.nav.registre.testnorge.applikasjonsanalyseservice.domain.ApplicationAnalyseList;
 import no.nav.registre.testnorge.applikasjonsanalyseservice.domain.Properties;
+import no.nav.registre.testnorge.applikasjonsanalyseservice.domain.TopicAnalyseList;
 import no.nav.registre.testnorge.applikasjonsanalyseservice.repository.ApplicationRepository;
 import no.nav.registre.testnorge.applikasjonsanalyseservice.repository.model.ApplicationModel;
 
@@ -19,11 +21,16 @@ public class ApplikasjonsanalyseAdapter {
     private final GithubConsumer githubConsumer;
     private final ApplicationRepository repository;
 
-    public List<Applikasjonsanalyse> search(Properties properties) {
-        return fetch(githubConsumer.search(properties), properties);
+    public ApplicationAnalyseList search(Properties properties) {
+        return new ApplicationAnalyseList(fetch(githubConsumer.search(properties), properties));
     }
 
-    private List<Applikasjonsanalyse> fetch(SearchDTO searchDTO, Properties properties) {
+    public TopicAnalyseList findTopics(String path) {
+        var blob = githubConsumer.getBlobFromPathAndRef(path, "avien-kafka");
+        return new TopicAnalyseList(new String(blob));
+    }
+
+    private List<ApplicationAnalyse> fetch(SearchDTO searchDTO, Properties properties) {
         return searchDTO
                 .getItems()
                 .stream()
@@ -31,19 +38,19 @@ public class ApplikasjonsanalyseAdapter {
                 .collect(Collectors.toList());
     }
 
-    private Applikasjonsanalyse fetch(String sha, Properties properties) {
+    private ApplicationAnalyse fetch(String sha, Properties properties) {
         var model = repository.findByShaAndRepositoryAndOrganisation(
                 sha,
                 properties.getRepository(),
                 properties.getOrganisation()
         );
         if (model.isPresent()) {
-            return new Applikasjonsanalyse(model.get().getContent());
+            return new ApplicationAnalyse(model.get().getContent());
         }
 
-        var blob = githubConsumer.getBlob(sha);
+        var blob = githubConsumer.getBlobFromSha(sha);
         var content = new String(blob);
-        var applikasjonsanalyse = new Applikasjonsanalyse(content);
+        var applikasjonsanalyse = new ApplicationAnalyse(content);
 
         repository.save(ApplicationModel
                 .builder()

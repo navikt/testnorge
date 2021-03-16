@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.applikasjonsanalyseservice.domain.yml;
+package no.nav.registre.testnorge.applikasjonsanalyseservice.domain.yml.application.v1;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

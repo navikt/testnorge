@@ -13,7 +13,7 @@ import no.nav.registre.testnorge.applikasjonsanalyseservice.consumer.dto.BlobDTO
 
 @Slf4j
 @RequiredArgsConstructor
-public class GetBlobCommand  implements Callable<byte[]> {
+public class GetBlobFromShaCommand implements Callable<byte[]> {
     private final WebClient webClient;
     private final String sha;
 

@@ -5,24 +5,23 @@ import lombok.RequiredArgsConstructor;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.dependencyanalysis.v1.ApplicationDependenciesDTO;
 import no.nav.registre.testnorge.libs.dto.dependencyanalysis.v1.DependencyDTO;
 
 @RequiredArgsConstructor
-public class ApplikasjonsanalyseList {
-    private final List<Applikasjonsanalyse> applikasjonsanalyse;
+public class ApplicationAnalyseList {
+    private final List<ApplicationAnalyse> applikasjonsanalyse;
 
-    public Set<ApplicationDependenciesDTO> toDTO() {
+    public Dependencies getDependencies() {
 
-        var outboundMap = applikasjonsanalyse.stream().filter(Applikasjonsanalyse::hasOutbound)
-                .collect(Collectors.toMap(Applikasjonsanalyse::getName, Applikasjonsanalyse::getOutboundDependencies));
+        var outboundMap = applikasjonsanalyse.stream().filter(ApplicationAnalyse::hasOutbound)
+                .collect(Collectors.toMap(ApplicationAnalyse::getName, ApplicationAnalyse::getOutboundDependencies));
 
 
-        var inboundMap = applikasjonsanalyse.stream().filter(Applikasjonsanalyse::hasInbound)
-                .collect(Collectors.toMap(Applikasjonsanalyse::getName, Applikasjonsanalyse::getInboundDependencies));
+        var inboundMap = applikasjonsanalyse.stream().filter(ApplicationAnalyse::hasInbound)
+                .collect(Collectors.toMap(ApplicationAnalyse::getName, ApplicationAnalyse::getInboundDependencies));
 
 
         inboundMap.forEach((key, value) -> value.forEach(dto -> {
@@ -36,11 +35,12 @@ public class ApplikasjonsanalyseList {
             }
         }));
 
-        return outboundMap.entrySet().stream().map(entry -> ApplicationDependenciesDTO
+        var set = outboundMap.entrySet().stream().map(entry -> ApplicationDependenciesDTO
                 .builder()
                 .applicationName(entry.getKey())
                 .dependencies(entry.getValue())
                 .build()
         ).collect(Collectors.toSet());
+        return new Dependencies(set);
     }
 }

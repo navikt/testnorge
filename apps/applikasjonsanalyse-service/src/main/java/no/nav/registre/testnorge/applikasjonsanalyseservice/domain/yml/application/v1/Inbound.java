@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.applikasjonsanalyseservice.domain.yml;
+package no.nav.registre.testnorge.applikasjonsanalyseservice.domain.yml.application.v1;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -9,7 +9,6 @@ import java.util.List;
 @Value
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-public class Outbound {
+public class Inbound {
     List<Rule> rules;
-    List<External> external;
 }
