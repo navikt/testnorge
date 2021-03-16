@@ -4,7 +4,9 @@ import lombok.SneakyThrows;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import no.nav.registre.testnorge.applikasjonsanalyseservice.domain.yml.topic.v1.KindTopic;
 import no.nav.registre.testnorge.applikasjonsanalyseservice.util.YAMLUtil;
 
 public class TopicAnalyseList {
@@ -14,9 +16,9 @@ public class TopicAnalyseList {
     public TopicAnalyseList(String content) {
         var array = YAMLUtil.Instance().read(
                 content,
-                TopicAnalyse[].class
+                KindTopic[].class
         );
-        topics = Arrays.asList(array.clone());
+        topics = Arrays.stream(array).map(TopicAnalyse::new).collect(Collectors.toList());
     }
 
     public Dependencies getDependencies() {
