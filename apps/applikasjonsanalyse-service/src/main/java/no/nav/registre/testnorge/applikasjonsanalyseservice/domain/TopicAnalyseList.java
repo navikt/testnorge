@@ -14,11 +14,10 @@ public class TopicAnalyseList {
 
     @SneakyThrows
     public TopicAnalyseList(String content) {
-        var array = YAMLUtil.Instance().read(
-                content,
-                KindTopic[].class
-        );
-        topics = Arrays.stream(array).map(TopicAnalyse::new).collect(Collectors.toList());
+        topics = Arrays.stream(content.split("---"))
+                .filter(value -> !value.equals(""))
+                .map(TopicAnalyse::new)
+                .collect(Collectors.toList());
     }
 
     public Dependencies getDependencies() {
