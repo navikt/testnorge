@@ -1,5 +1,6 @@
 package no.nav.tpsidenter.vedlikehold;
 
+import no.nav.registre.testnorge.libs.core.util.VaultUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -7,6 +8,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class TpsIdenterVedlikeholdApplicationStarter {
 
     public static void main(String[] args) {
+
+        if ("prod".equals(System.getProperty("spring.profiles.active"))) {
+            VaultUtil.initCloudVaultToken();
+        }
 
         SpringApplication.run(TpsIdenterVedlikeholdApplicationStarter.class, args);
     }

@@ -1,5 +1,6 @@
 package no.nav.tpsidenter.vedlikehold.provider;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import no.nav.tpsidenter.vedlikehold.service.TpsfService;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +18,7 @@ public class DeleteController {
 
 
     @DeleteMapping
+    @Operation(description = "Start sletting av identer fra forhåndskonfigurert liste")
     public List<String> startDelete() {
 
         return tpsfService.deleteIdents();
