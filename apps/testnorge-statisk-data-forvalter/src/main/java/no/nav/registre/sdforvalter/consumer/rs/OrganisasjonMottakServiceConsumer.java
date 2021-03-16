@@ -20,16 +20,16 @@ import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Metadata;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Opprettelsesdokument;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon;
 import no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO;
-import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.EndringsdokumentV1Producer;
-import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.OpprettelsesdokumentV1Producer;
+import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v2.EndringsdokumentV2Producer;
+import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v2.OpprettelsesdokumentV2Producer;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class OrganisasjonMottakServiceConsumer {
 
-    private final OpprettelsesdokumentV1Producer opprettelsesdokumentProducer;
-    private final EndringsdokumentV1Producer endringsdokumentProducer;
+    private final OpprettelsesdokumentV2Producer opprettelsesdokumentProducer;
+    private final EndringsdokumentV2Producer endringsdokumentProducer;
     private final GenererNavnConsumer genererNavnConsumer;
 
     private String genererNavn(String enhetstype) {

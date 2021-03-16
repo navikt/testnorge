@@ -20,8 +20,7 @@ import no.nav.registre.testnorge.libs.oauth2.config.InsecureOAuth2ServerToServer
         ApplicationCoreConfig.class,
         VaultHikariConfiguration.class,
         FlywayConfiguration.class,
-        InsecureOAuth2ServerToServerConfiguration.class,
-        KafkaProperties.class
+        InsecureOAuth2ServerToServerConfiguration.class
 })
 public class AppConfig {
 
