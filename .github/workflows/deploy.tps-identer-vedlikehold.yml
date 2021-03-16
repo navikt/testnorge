@@ -46,4 +46,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/tps-identer-vedlikehold/nais.yaml
+          RESOURCE: apps/tps-identer-vedlikehold/nais.yml
