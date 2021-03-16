@@ -70,7 +70,7 @@ public class KafkaConfig {
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         factory.setErrorHandler(new SeekToCurrentErrorHandler(
-                (consumer, exception) -> log.error("Klarer ikke å opprette bestilling med uuid: {}", consumer.key()),
+                (consumer, exception) -> log.error("Klarer ikke å opprette bestilling med uuid: {}", consumer.key(), exception),
                 new FixedBackOff(30 * 1000, 3)
         ));
         return factory;
