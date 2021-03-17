@@ -22,9 +22,11 @@ import lombok.Setter;
 public class Inntekt {
 
     @JsonAlias({ "STARTDATO_OPPTJENINGSPERIODE", "startdatoOpptjeningsperiode" })
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private LocalDate startdatoOpptjeningsperiode;
 
     @JsonAlias({ "SLUTTDATO_OPPTJENINGSPERIODE", "sluttdatoOpptjeningsperiode" })
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private LocalDate sluttdatoOpptjeningsperiode;
 
     @JsonAlias({ "LOENNSINNTEKT", "loennsinntekt" })
