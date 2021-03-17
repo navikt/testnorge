@@ -26,6 +26,7 @@ public class ArbeidsforholdModel {
     private LocalDate sisteLoennsendringsdato;
     @Field(type = FieldType.Nested, includeInParent = true)
     private List<PermisjonModel> permisjoner;
-    @Field(type = FieldType.Nested, includeInParent = true)
     private FartoeyModel fartoey;
+    @Field(type = FieldType.Nested, includeInParent = true)
+    private List<InntektModel> inntekter;
 }

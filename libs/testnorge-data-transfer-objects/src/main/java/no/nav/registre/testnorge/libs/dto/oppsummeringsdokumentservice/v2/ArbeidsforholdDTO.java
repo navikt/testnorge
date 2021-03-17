@@ -37,11 +37,20 @@ public class ArbeidsforholdDTO {
     List<PermisjonDTO> permisjoner;
     @JsonProperty
     FartoeyDTO fartoey;
+    @JsonProperty
+    List<InntektDTO> inntekter;
 
     public List<PermisjonDTO> getPermisjoner() {
         if (permisjoner == null) {
             permisjoner = new ArrayList<>();
         }
         return permisjoner;
+    }
+
+    public List<InntektDTO> getInntekter() {
+        if (inntekter == null) {
+            inntekter = new ArrayList<>();
+        }
+        return inntekter;
     }
 }

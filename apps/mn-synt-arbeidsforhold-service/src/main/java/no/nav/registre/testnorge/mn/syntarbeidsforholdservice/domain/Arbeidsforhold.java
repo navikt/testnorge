@@ -5,13 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.FartoeyDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.InntektDTO;
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdRequest;
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.PermisjonDTO;
@@ -53,8 +53,20 @@ public class Arbeidsforhold {
                         .build()
                 ).collect(Collectors.toList());
 
-        if(!permisjoner.isEmpty()){
-            log.info("Permisjoner registert på arbeidsforhold id {}.",arbeidsforholdId);
+        var inntekter = Optional.ofNullable(response.getInntekter())
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(inntekt -> InntektDTO
+                        .builder()
+                        .startdatoOpptjeningsperiode(inntekt.getStartdatoOpptjeningsperiode())
+                        .sluttdatoOpptjeningsperiode(inntekt.getSluttdatoOpptjeningsperiode())
+                        .opptjeningsland(inntekt.getOpptjeningsland())
+                        .antall(inntekt.getAntall())
+                        .build()
+                ).collect(Collectors.toList());
+
+        if (!permisjoner.isEmpty()) {
+            log.info("Permisjoner registert på arbeidsforhold id {}.", arbeidsforholdId);
         }
 
         this.dto = ArbeidsforholdDTO
@@ -75,10 +87,11 @@ public class Arbeidsforhold {
                         .skipstype(response.getFartoey().getSkipstype())
                         .build() : null
                 )
+                .inntekter(inntekter)
                 .build();
     }
 
-    public boolean isForenklet(){
+    public boolean isForenklet() {
         return dto.getTypeArbeidsforhold().equals("forenkletOppgjoersordning");
     }
 
@@ -186,6 +199,15 @@ public class Arbeidsforhold {
                         value.getStartdato(),
                         value.getSluttdato()
                 )).collect(Collectors.toList()))
+                .inntekter(dto.getInntekter().stream().map(value -> no.nav.registre.testnorge.libs.dto.syntrest.v1.InntektDTO
+                        .builder()
+                        .antall(value.getAntall())
+                        .opptjeningsland(value.getOpptjeningsland())
+                        .startdatoOpptjeningsperiode(value.getStartdatoOpptjeningsperiode())
+                        .sluttdatoOpptjeningsperiode(value.getSluttdatoOpptjeningsperiode())
+                        .build()
+                ).collect(Collectors.toList()))
+                .antallInntekter(dto.getInntekter().size())
                 .build();
     }
 
