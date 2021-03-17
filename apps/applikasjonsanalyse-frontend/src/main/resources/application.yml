@@ -17,6 +17,8 @@ zuul:
       path: /api/**
       url: http://applikasjonsanalyse-service.dolly.svc.cluster.local/api
       sensitiveHeaders: Cookie,Set-Cookie
+  host:
+    socket-timeout-millis: 30000
 
 consumers:
   applikasjonsanalyse-service:
