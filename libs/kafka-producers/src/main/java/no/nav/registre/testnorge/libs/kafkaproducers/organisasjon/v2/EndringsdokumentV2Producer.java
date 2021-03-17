@@ -9,16 +9,23 @@ import no.nav.registre.testnorge.libs.kafkaconfig.topic.v2.OrganisasjonTopic;
 
 @Slf4j
 @Component
-public class EndringsdokumentV2Producer extends KafkaProducer<Endringsdokument> {
+public class EndringsdokumentV2Producer extends RecreateKafkaProducer<Endringsdokument> {
+    private final String groupid;
+
     EndringsdokumentV2Producer(
             @Value("${kafka.groupid}") String groupid
     ) {
-        super(groupid);
+        this.groupid = groupid;
     }
 
     @Override
-    public void send(String key, Endringsdokument value) {
-        log.info("Sender endringsdokument {} for organisasjon {}.", key, value.getOrganisasjon().getOrgnummer());
-        super.getKafkaTemplate().send(OrganisasjonTopic.ORGANISASJON_ENDRE_ORGANISASJON, key, value);
+    KafkaProducer<Endringsdokument> create() {
+        return new KafkaProducer<>(groupid) {
+            @Override
+            void send(String key, Endringsdokument value) {
+                log.info("Sender endringsdokument {} for organisasjon {}.", key, value.getOrganisasjon().getOrgnummer());
+                super.getKafkaTemplate().send(OrganisasjonTopic.ORGANISASJON_ENDRE_ORGANISASJON, key, value);
+            }
+        };
     }
 }

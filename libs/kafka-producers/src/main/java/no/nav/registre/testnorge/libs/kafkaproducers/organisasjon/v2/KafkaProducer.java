@@ -17,11 +17,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-public abstract class KafkaProducer<T extends SpecificRecord> {
+abstract class KafkaProducer<T extends SpecificRecord> {
     private final KafkaTemplate<String, T> kafkaTemplate;
 
     @SneakyThrows
-    public KafkaProducer(String groupId) {
+    KafkaProducer(String groupId) {
         InetSocketAddress inetSocketAddress = new InetSocketAddress(0);
         var keystorePassword = System.getenv("KAFKA_CREDSTORE_PASSWORD");
         Map<String, Object> props = new HashMap<>();
@@ -56,5 +56,5 @@ public abstract class KafkaProducer<T extends SpecificRecord> {
         return kafkaTemplate;
     }
 
-    public abstract void send(String key, T value);
+    abstract void send(String key, T value);
 }
