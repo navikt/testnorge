@@ -29,6 +29,9 @@ public class Inntekt {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private LocalDate sluttdatoOpptjeningsperiode;
 
-    @JsonAlias({ "LOENNSINNTEKT", "loennsinntekt" })
-    private Loennsinntekt loennsinntekt;
+    @JsonAlias({ "ANTALL", "antall" })
+    private Integer antall;
+
+    @JsonAlias({ "OPPTJENINGSLAND", "opptjeningsland" })
+    private String opptjeningsland;
 }
