@@ -59,7 +59,6 @@ import static java.util.stream.Collectors.toList;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
-import static no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse.getIdentResponse;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -193,7 +192,7 @@ public class DollyBestillingService {
                         oppdaterPersonResponse.getIdentTupler().stream()
                                 .map(RsOppdaterPersonResponse.IdentTuple::getIdent).collect(toList()), null, progress);
 
-                dollyPerson.set(dollyPersonCache.prepareTpsPersoner(oppdaterPersonResponse));
+                dollyPerson.set(dollyPersonCache.prepareTpsPerson(bestilling.getIdent()));
 
             } else {
                 PdlPerson pdlPerson = objectMapper.readValue(pdlPersonConsumer.getPdlPerson(progress.getIdent()).toString(), PdlPerson.class);
@@ -230,7 +229,7 @@ public class DollyBestillingService {
 
             RsDollyBestillingRequest utvidetBestilling = getDollyBestillingRequest(bestilling);
 
-            DollyPerson dollyPerson = dollyPersonCache.prepareTpsPersoner(getIdentResponse(identer));
+            DollyPerson dollyPerson = dollyPersonCache.prepareTpsPerson(bestilling.getIdent());
             gjenopprettNonTpsf(dollyPerson, utvidetBestilling, progress, true);
 
             oppdaterProgress(bestilling, progress);

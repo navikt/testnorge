@@ -75,49 +75,48 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
             dollyForkJoinPool.submit(() -> {
                 bestilling.getGruppe().getTestidenter().parallelStream()
                         .filter(testident -> !bestillingService.isStoppet(bestilling.getId()))
-                        .map(testident -> {
+                        .forEach(testident -> {
                             BestillingProgress progress = new BestillingProgress(bestilling.getId(), testident.getIdent(), testident.getMaster());
                             try {
-
-                                DollyPerson dollyPerson = null;
-                                if (testident.isTpsf()) {
-                                    RsOppdaterPersonResponse oppdaterPersonResponse = tpsfService.endreLeggTilPaaPerson(testident.getIdent(), tpsfBestilling);
-                                    if (!oppdaterPersonResponse.getIdentTupler().isEmpty()) {
-
-                                        sendIdenterTilTPS(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))),
-                                                oppdaterPersonResponse.getIdentTupler().stream()
-                                                        .map(RsOppdaterPersonResponse.IdentTuple::getIdent).collect(toList()), null, progress);
-                                        dollyPerson = dollyPersonCache.prepareTpsPersoner(oppdaterPersonResponse);
-
-                                    } else {
-                                        progress.setFeil("NA:Feil= Ident finnes ikke i database");
-                                    }
-
-                                } else  {
-                                    PdlPerson pdlPerson = objectMapper.readValue(
-                                            pdlPersonConsumer.getPdlPerson(testident.getIdent()).toString(), PdlPerson.class);
-                                    dollyPerson = dollyPersonCache.preparePdlPersoner(pdlPerson);
-                                }
-
+                                DollyPerson dollyPerson = prepareDollyPerson(bestilling, tpsfBestilling, testident, progress);
                                 gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, true);
 
                             } catch (JsonProcessingException e) {
-
                                 progress.setFeil(errorStatusDecoder.decodeException(e));
-
                             } catch (RuntimeException e) {
                                 progress.setFeil("NA:" + errorStatusDecoder.decodeRuntimeException(e));
-
                             } finally {
                                 oppdaterProgress(bestilling, progress);
                             }
-                            return null;
-                        }).collect(toList());
+                        });
                 oppdaterBestillingFerdig(bestilling);
             });
-        } else  {
+        } else {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
             oppdaterBestillingFerdig(bestilling);
         }
+    }
+
+    private DollyPerson prepareDollyPerson(Bestilling bestilling, TpsfBestilling tpsfBestilling, no.nav.dolly.domain.jpa.Testident testident, BestillingProgress progress) throws JsonProcessingException {
+        DollyPerson dollyPerson = null;
+        if (testident.isTpsf()) {
+            RsOppdaterPersonResponse oppdaterPersonResponse = tpsfService.endreLeggTilPaaPerson(testident.getIdent(), tpsfBestilling);
+            if (!oppdaterPersonResponse.getIdentTupler().isEmpty()) {
+
+                sendIdenterTilTPS(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))),
+                        oppdaterPersonResponse.getIdentTupler().stream()
+                                .map(RsOppdaterPersonResponse.IdentTuple::getIdent).collect(toList()), null, progress);
+                dollyPerson = dollyPersonCache.prepareTpsPerson(bestilling.getIdent());
+
+            } else {
+                progress.setFeil("NA:Feil= Ident finnes ikke i database");
+            }
+
+        } else {
+            PdlPerson pdlPerson = objectMapper.readValue(
+                    pdlPersonConsumer.getPdlPerson(testident.getIdent()).toString(), PdlPerson.class);
+            dollyPerson = dollyPersonCache.preparePdlPersoner(pdlPerson);
+        }
+        return dollyPerson;
     }
 }

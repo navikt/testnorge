@@ -8,13 +8,11 @@ import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
-import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.jpa.Testident.Master;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.Relasjon;
 import no.nav.dolly.domain.resultset.tpsf.RsFullmakt;
-import no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse;
-import no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse.IdentTuple;
 import no.nav.dolly.domain.resultset.tpsf.RsSimplePerson;
 import no.nav.dolly.domain.resultset.tpsf.RsVergemaal;
 import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
@@ -104,53 +102,11 @@ public class DollyPersonCache {
         return dollyPerson;
     }
 
-    public DollyPerson prepareTpsPersoner(RsOppdaterPersonResponse identer) {
-
-        List<Person> personer = tpsfService.hentTestpersoner(identer.getIdentTupler().stream()
-                .map(IdentTuple::getIdent)
-                .collect(Collectors.toList()));
-
-        if (!personer.isEmpty()) {
-            Person person = personer.stream().findFirst().get();
-            return DollyPerson.builder()
-                    .persondetaljer(personer)
-                    .hovedperson(person.getIdent())
-                    .partnere(person.getRelasjoner().stream()
-                            .filter(Relasjon::isPartner)
-                            .map(Relasjon::getPersonRelasjonMed)
-                            .map(Person::getIdent)
-                            .collect(Collectors.toList()))
-                    .barn(person.getRelasjoner().stream()
-                            .filter(Relasjon::isBarn)
-                            .map(Relasjon::getPersonRelasjonMed)
-                            .map(Person::getIdent)
-                            .collect(Collectors.toList()))
-                    .foreldre(person.getRelasjoner().stream()
-                            .filter(Relasjon::isForelder)
-                            .map(Relasjon::getPersonRelasjonMed)
-                            .map(Person::getIdent)
-                            .collect(Collectors.toList()))
-                    .nyePartnereOgBarn(identer.getIdentTupler().stream()
-                            .filter(IdentTuple::isLagtTil)
-                            .map(IdentTuple::getIdent)
-                            .collect(Collectors.toList()))
-                    .verger(person.getVergemaal().stream()
-                            .map(RsVergemaal::getVerge)
-                            .map(RsSimplePerson::getIdent)
-                            .collect(Collectors.toList()))
-                    .fullmektige(person.getFullmakt().stream()
-                            .map(RsFullmakt::getFullmektig)
-                            .map(RsSimplePerson::getIdent)
-                            .collect(Collectors.toList()))
-                    .identhistorikk(person.getIdentHistorikk().stream()
-                            .map(IdentHistorikk::getAliasPerson)
-                            .map(Person::getIdent)
-                            .collect(Collectors.toList()))
-                    .master(Testident.Master.TPSF)
-                    .build();
-        }
-
-        return new DollyPerson();
+    public DollyPerson prepareTpsPerson(String ident) {
+        return DollyPerson.builder()
+                .hovedperson(ident)
+                .master(Master.TPSF)
+                .build();
     }
 
     public DollyPerson prepareTpsPersoner(Person person) {
@@ -184,7 +140,7 @@ public class DollyPersonCache {
                         .map(IdentHistorikk::getAliasPerson)
                         .map(Person::getIdent)
                         .collect(Collectors.toList()))
-                .master(Testident.Master.TPSF)
+                .master(Master.TPSF)
                 .build());
     }
 
@@ -212,7 +168,7 @@ public class DollyPersonCache {
                         .filter(ident -> ident.getMetadata().isHistorisk())
                         .map(PdlPerson.Folkeregisteridentifikator::getIdentifikasjonsnummer)
                         .collect(Collectors.toList()))
-                .master(Testident.Master.PDL)
+                .master(Master.PDL)
                 .build();
     }
 }
