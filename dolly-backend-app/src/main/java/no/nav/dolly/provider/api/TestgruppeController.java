@@ -116,7 +116,7 @@ public class TestgruppeController {
                 .pageNo(page.getNumber())
                 .antallPages(page.getTotalPages())
                 .pageSize(page.getPageable().getPageSize())
-                .antallGrupper(page.getTotalElements())
+                .antallElementer(page.getTotalElements())
                 .contents(mapperFacade.mapAsList(page.getContent(), RsTestgruppe.class))
                 .build();
     }

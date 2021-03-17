@@ -1,14 +1,14 @@
 package no.nav.dolly.domain.resultset.entity.testgruppe;
 
-import static java.util.Objects.isNull;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -19,7 +19,7 @@ public class RsTestgruppePage {
     private Integer antallPages;
     private Integer pageNo;
     private Integer pageSize;
-    private Long antallGrupper;
+    private Long antallElementer;
     private List<RsTestgruppe> contents;
 
     public List<RsTestgruppe> getContents() {
