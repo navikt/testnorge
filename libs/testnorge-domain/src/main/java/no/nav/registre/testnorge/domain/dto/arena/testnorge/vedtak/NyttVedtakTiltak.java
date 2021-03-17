@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -86,4 +87,10 @@ public class NyttVedtakTiltak extends NyttVedtak {
 
     @JsonAlias({ "AVBRUDD_KODE", "avbruddKode" })
     private String avbruddKode;
+
+    @JsonIgnore
+    @Override
+    public RettighetType getRettighetType(){
+        return RettighetType.TILTAK;
+    }
 }
