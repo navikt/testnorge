@@ -60,35 +60,40 @@ public class IkkeOppholdstillatelseIkkeOppholdPaSammeVilkarIkkeVisumWsConverter
         var udiAvslagEllerBortfall = new AvslagEllerBortfallAvPOBOSellerTilbakekallEllerFormeltVedtak();
         var ikkeOppholdAvslagEllerBortfall = ikkeOpphold.getAvslagEllerBortfall();
 
-        var tilbakeKall = new TilbakeKall();
-        tilbakeKall.setVirkningsDato(
-                xmlDateWsConverter.convert(ikkeOppholdAvslagEllerBortfall.getTilbakeKallVirkningsDato()));
-        tilbakeKall.setUtreiseFrist(
-                xmlDateWsConverter.convert(ikkeOppholdAvslagEllerBortfall.getTilbakeKallUtreiseFrist()));
+        if (nonNull(ikkeOppholdAvslagEllerBortfall)) {
 
-        var formeltVedtak = new FormeltVedtak();
-        formeltVedtak.setUtreiseFrist(
-                xmlDateWsConverter.convert(ikkeOppholdAvslagEllerBortfall.getFormeltVedtakUtreiseFrist()));
-        var bortfallAvOPellerBOS = new BortfallAvPOellerBOS();
-        bortfallAvOPellerBOS.setVirkningsDato(
-                xmlDateWsConverter.convert(ikkeOppholdAvslagEllerBortfall.getBortfallAvPOellerBOSDato()));
+            var tilbakeKall = new TilbakeKall();
+            tilbakeKall.setVirkningsDato(
+                    xmlDateWsConverter.convert(ikkeOppholdAvslagEllerBortfall.getTilbakeKallVirkningsDato()));
+            tilbakeKall.setUtreiseFrist(
+                    xmlDateWsConverter.convert(ikkeOppholdAvslagEllerBortfall.getTilbakeKallUtreiseFrist()));
+            udiAvslagEllerBortfall.setTilbakeKall(tilbakeKall);
 
-        var avslagPaSoknadOppholdstillatelse = new AvslagPaSoknadOmOppholdstillatelseRealitetsBehandlet();
-        avslagPaSoknadOppholdstillatelse.setUtreiseFrist(
-                xmlDateWsConverter.convert(ikkeOppholdAvslagEllerBortfall.getAvslagOppholdstillatelseBehandletUtreiseFrist()));
-        avslagPaSoknadOppholdstillatelse.setAvslagsGrunnlagOvrig(ikkeOppholdAvslagEllerBortfall.getAvslagOppholdstillatelseBehandletGrunnlagOvrig());
-        avslagPaSoknadOppholdstillatelse.setAvslagsGrunnlagEOS(ikkeOppholdAvslagEllerBortfall.getAvslagOppholdstillatelseBehandletGrunnlagEOS());
+            var formeltVedtak = new FormeltVedtak();
+            formeltVedtak.setUtreiseFrist(
+                    xmlDateWsConverter.convert(ikkeOppholdAvslagEllerBortfall.getFormeltVedtakUtreiseFrist()));
+            udiAvslagEllerBortfall.setFormeltVedtak(formeltVedtak);
 
-        var avslagPaSoknadOppholdsrett = new AvslagPaSoknadOmOppholdsrettRealitetsBehandlet();
-        avslagPaSoknadOppholdsrett.setAvslagsGrunnlagEOS(ikkeOppholdAvslagEllerBortfall.getAvslagOppholdsrettBehandlet());
+            var bortfallAvOPellerBOS = new BortfallAvPOellerBOS();
+            bortfallAvOPellerBOS.setVirkningsDato(
+                    xmlDateWsConverter.convert(ikkeOppholdAvslagEllerBortfall.getBortfallAvPOellerBOSDato()));
+            udiAvslagEllerBortfall.setBortfallAvPOellerBOS(bortfallAvOPellerBOS);
 
-        udiAvslagEllerBortfall.setTilbakeKall(tilbakeKall);
-        udiAvslagEllerBortfall.setAvgjorelsesDato(
-                xmlDateWsConverter.convert(ikkeOppholdAvslagEllerBortfall.getAvgjorelsesDato()));
-        udiAvslagEllerBortfall.setFormeltVedtak(formeltVedtak);
-        udiAvslagEllerBortfall.setBortfallAvPOellerBOS(bortfallAvOPellerBOS);
-        udiAvslagEllerBortfall.setAvslagPaSoknadOmOppholdstillatelseRealitetsBehandlet(avslagPaSoknadOppholdstillatelse);
-        udiAvslagEllerBortfall.setAvslagPaSoknadOmOppholdsrettRealitetsBehandlet(avslagPaSoknadOppholdsrett);
+            var avslagPaSoknadOppholdstillatelse = new AvslagPaSoknadOmOppholdstillatelseRealitetsBehandlet();
+            avslagPaSoknadOppholdstillatelse.setUtreiseFrist(
+                    xmlDateWsConverter.convert(ikkeOppholdAvslagEllerBortfall.getAvslagOppholdstillatelseBehandletUtreiseFrist()));
+            avslagPaSoknadOppholdstillatelse.setAvslagsGrunnlagOvrig(ikkeOppholdAvslagEllerBortfall.getAvslagOppholdstillatelseBehandletGrunnlagOvrig());
+            avslagPaSoknadOppholdstillatelse.setAvslagsGrunnlagEOS(ikkeOppholdAvslagEllerBortfall.getAvslagOppholdstillatelseBehandletGrunnlagEOS());
+            udiAvslagEllerBortfall.setAvslagPaSoknadOmOppholdstillatelseRealitetsBehandlet(avslagPaSoknadOppholdstillatelse);
+
+
+            var avslagPaSoknadOppholdsrett = new AvslagPaSoknadOmOppholdsrettRealitetsBehandlet();
+            avslagPaSoknadOppholdsrett.setAvslagsGrunnlagEOS(ikkeOppholdAvslagEllerBortfall.getAvslagOppholdsrettBehandlet());
+            udiAvslagEllerBortfall.setAvslagPaSoknadOmOppholdsrettRealitetsBehandlet(avslagPaSoknadOppholdsrett);
+
+            udiAvslagEllerBortfall.setAvgjorelsesDato(
+                    xmlDateWsConverter.convert(ikkeOppholdAvslagEllerBortfall.getAvgjorelsesDato()));
+        }
 
         return udiAvslagEllerBortfall;
     }

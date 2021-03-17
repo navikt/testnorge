@@ -33,6 +33,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.TemporalAdjusters.firstDayOfYear;
+import static java.util.Collections.emptyList;
+import static java.util.Objects.nonNull;
 import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
 
 @Slf4j
@@ -225,10 +227,10 @@ public class AjourholdService {
                     JsonNode statusFromTps = tpsfConsumer.getProdStatusFromTps(idents).findValue("EFnr");
                     List<Map<String, Object>> identStatus = objectMapper.convertValue(statusFromTps, new TypeReference<>() {
                     });
-                    usedIdents.addAll(identStatus.stream()
+                    usedIdents.addAll(nonNull(identStatus) ? identStatus.stream()
                             .filter(status -> !status.containsKey("svarStatus"))
                             .map(status -> String.valueOf(status.get("fnr")))
-                            .collect(Collectors.toList())
+                            .collect(Collectors.toList()) : emptyList()
                     );
                 } catch (IOException e) {
                     log.error("Kunne ikke hente status fra TPS", e);

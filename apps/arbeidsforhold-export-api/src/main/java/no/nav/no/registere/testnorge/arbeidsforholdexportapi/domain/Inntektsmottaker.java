@@ -34,7 +34,11 @@ public class Inntektsmottaker {
 
         this.inntektList = inntektsmottaker.getInntekt()
                 .stream()
-                .map(value -> new Inntekt(value, getTypeArbeidsforholdFraIntekt(value, inntektsmottaker.getArbeidsforhold())))
+                .map(value -> new Inntekt(
+                        value,
+                        getTypeArbeidsforholdFraIntekt(value, inntektsmottaker.getArbeidsforhold()),
+                        leveranse.getKalendermaaned().toString()
+                ))
                 .collect(Collectors.toList());
     }
 
