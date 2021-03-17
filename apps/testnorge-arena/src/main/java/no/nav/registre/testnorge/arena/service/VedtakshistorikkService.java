@@ -49,11 +49,7 @@ import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoRespons
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.*;
 import no.nav.registre.testnorge.libs.core.util.IdentUtil;
 
 import org.springframework.stereotype.Service;
@@ -211,14 +207,14 @@ public class VedtakshistorikkService {
             if (senesteVedtak == null) {
                 log.info("Kunne ikke opprette rettigheter for ident: " + personident);
                 rettighetRequests = new ArrayList<>();
-            } else if (senesteVedtak instanceof NyttVedtakAap) {
+            } else if (senesteVedtak.getRettighetType() == RettighetType.AAP) {
                 rettighetRequests = arbeidsoekerUtils.opprettArbeidssoekerAap(personident, rettigheter, miljoe, ((NyttVedtakAap) senesteVedtak).getAktivitetsfase());
-            } else if (senesteVedtak instanceof NyttVedtakTiltak) {
+            } else if (senesteVedtak.getRettighetType() == RettighetType.TILTAK) {
                 rettighetRequests = arbeidsoekerUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe);
-            } else if (senesteVedtak instanceof NyttVedtakTillegg) {
+            } else if (senesteVedtak.getRettighetType() == RettighetType.TILLEGG) {
                 rettighetRequests = arbeidsoekerUtils.opprettArbeidssoekerTillegg(rettigheter, miljoe);
             } else {
-                throw new VedtakshistorikkException("Ukjent vedtakstype: " + senesteVedtak.getClass());
+                throw new VedtakshistorikkException("Mangler støtte for rettighettype: " + senesteVedtak.getRettighetType());
             }
         }
 
