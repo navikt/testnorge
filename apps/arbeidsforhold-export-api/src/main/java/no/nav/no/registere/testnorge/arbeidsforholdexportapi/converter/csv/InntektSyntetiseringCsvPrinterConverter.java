@@ -17,6 +17,7 @@ public class InntektSyntetiseringCsvPrinterConverter extends CsvPrinterConverter
     }
 
     private enum Headers implements CsvHeader {
+        RAPPORTERINGSMAANED("RAPPORTERINGSMAANED"),
         ARBEIDSFORHOLD_TYPE("ARBEIDSFORHOLD_TYPE"),
         STARTDATO_OPPTJENINGSPERIODE("STARTDATO_OPPTJENINGSPERIODE"),
         SLUTTDATO_OPPTJENINGSPERIODE("SLUTTDATO_OPPTJENINGSPERIODE"),
@@ -39,6 +40,7 @@ public class InntektSyntetiseringCsvPrinterConverter extends CsvPrinterConverter
     protected ObjectConverter<Inntekt> getObjectConverter() {
         return inntekt -> {
             Map<String, Object> map = new HashMap<>();
+            map.put(Headers.RAPPORTERINGSMAANED.getValue(), inntekt.getKalendermaaned());
             map.put(Headers.ARBEIDSFORHOLD_TYPE.getValue(), inntekt.getTypeArbeidsforhold());
             map.put(Headers.STARTDATO_OPPTJENINGSPERIODE.getValue(), inntekt.getStartdatoOpptjeningsperiode());
             map.put(Headers.SLUTTDATO_OPPTJENINGSPERIODE.getValue(), inntekt.getSluttdatoOpptjeningsperiode());
