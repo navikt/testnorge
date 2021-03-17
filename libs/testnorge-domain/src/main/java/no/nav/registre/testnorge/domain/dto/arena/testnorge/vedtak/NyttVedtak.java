@@ -1,6 +1,10 @@
 package no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
