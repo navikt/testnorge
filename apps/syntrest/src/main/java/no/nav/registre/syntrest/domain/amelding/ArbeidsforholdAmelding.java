@@ -87,4 +87,6 @@ public class ArbeidsforholdAmelding {
     @JsonAlias({ "INNTEKTER", "inntekter" })
     private List<Inntekt> inntekter;
 
+    @JsonAlias({"AVVIK", "avvik"})
+    private Avvik avvik;
 }

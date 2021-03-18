@@ -34,4 +34,7 @@ public class Inntekt {
 
     @JsonAlias({ "OPPTJENINGSLAND", "opptjeningsland" })
     private String opptjeningsland;
+
+    @JsonAlias({"AVVIK", "avvik"})
+    private Avvik avvik;
 }

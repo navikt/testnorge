@@ -1,5 +1,6 @@
 package no.nav.registre.syntrest.domain.amelding;
 
+import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -17,21 +18,17 @@ import lombok.Setter;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Permisjon {
+public class Avvik {
 
-    @JsonAlias({"STARTDATO", "startdato"})
-    private String startdato;
+    @JsonAlias({"ID", "id"})
+    private String id;
 
-    @JsonAlias({"SLUTTDATO", "sluttdato"})
-    private String sluttdato;
+    @JsonAlias({"DETALJER", "detaljer"})
+    private String detaljer;
 
-    @JsonAlias({"PERMISJONSPROSENT", "permisjonsprosent"})
-    private float permisjonsprosent;
+    @JsonAlias({"NAVN", "navn"})
+    private String navn;
 
-    @JsonAlias({"BESKRIVELSE", "beskrivelse"})
-    private String beskrivelse;
-
-    @JsonAlias({"AVVIK", "avvik"})
-    private Avvik avvik;
-
+    @JsonAlias({"ALVORLIGHETSGRAD", "alvorlighetsgrad"})
+    private String alvorlighetsgrad;
 }
