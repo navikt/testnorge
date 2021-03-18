@@ -12,6 +12,9 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.config.SslConfigs;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -22,11 +25,14 @@ import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.util.backoff.FixedBackOff;
 
+import javax.ws.rs.core.Application;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import no.nav.registre.testnorge.organisasjonmottak.service.ShutdownService;
 
 @Slf4j
 @EnableKafka
@@ -36,6 +42,7 @@ import java.util.Map;
 public class KafkaConfig {
     @Value("${kafka.groupid}")
     private String groupId;
+    private final ShutdownService shutdownService;
 
     @SneakyThrows
     public ConsumerFactory<String, String> consumerFactory() {
@@ -69,6 +76,7 @@ public class KafkaConfig {
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
+
         ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
         var consumerFactory = consumerFactory();
         consumerFactory.addListener(new ConsumerFactory.Listener<>() {
@@ -79,7 +87,8 @@ public class KafkaConfig {
 
             @Override
             public void consumerRemoved(String id, Consumer<String, String> consumer) {
-                log.warn("Fjerner consumer med id: {}", id);
+                log.warn("Fjerner consumer med id: {}. Restarter app...", id);
+                shutdownService.initiateShutdown(0);
             }
         });
         factory.setConsumerFactory(consumerFactory);
