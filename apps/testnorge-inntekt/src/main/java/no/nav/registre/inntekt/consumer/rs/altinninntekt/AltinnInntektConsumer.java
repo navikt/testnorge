@@ -2,42 +2,41 @@ package no.nav.registre.inntekt.consumer.rs.altinninntekt;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriTemplate;
 
+import no.nav.registre.inntekt.config.credentials.InntektsmeldingGeneratorServiceProperties;
+import no.nav.registre.inntekt.consumer.rs.altinninntekt.command.GenererInntektsmeldingCommand;
 import no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.rs.RsInntektsmelding;
+import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 
 @Slf4j
 @Component
 public class AltinnInntektConsumer {
 
-    private final RestTemplate restTemplate;
-    private final UriTemplate urlMapper201812;
+    private final WebClient webClient;
+    private final AccessTokenService accessTokenService;
+    private final NaisServerProperties properties;
 
     public AltinnInntektConsumer(
-            @Value("${altinnInntekt.rest.api.url}") String altinnInntektUrl,
-            RestTemplate restTemplate
+            InntektsmeldingGeneratorServiceProperties properties,
+            AccessTokenService accessTokenService
     ) {
-        urlMapper201812 = new UriTemplate(altinnInntektUrl + "/v2/inntektsmelding/2018/12/11");
-
-        this.restTemplate = restTemplate;
+        this.accessTokenService = accessTokenService;
+        this.properties = properties;
+        this.webClient = WebClient.builder().baseUrl(properties.getUrl()).build();
     }
 
-    public String getInntektsmeldingXml201812(
-            RsInntektsmelding inntektsmelding
-    ) {
-        var postRequest = RequestEntity.post(urlMapper201812.expand())
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(inntektsmelding);
-        try {
-            return restTemplate.exchange(postRequest, String.class).getBody();
-        } catch (RestClientResponseException e) {
-            log.error("Uventet feil ved mapping til AltinnInntekt.", e);
-            throw e;
-        }
+    public String getInntektsmeldingXml201812(RsInntektsmelding inntektsmelding) {
+        AccessToken accessToken = accessTokenService.generateToken(properties);
+        return new GenererInntektsmeldingCommand(webClient, inntektsmelding, accessToken.getTokenValue()).call();
     }
 }
