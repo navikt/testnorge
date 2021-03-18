@@ -1,17 +1,18 @@
 package no.nav.registre.testnorge.arbeidsforhold.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.arbeidsforhold.consumer.commnad.GetArbeidstakerArbeidsforholdCommand;
+import no.nav.registre.testnorge.arbeidsforhold.domain.Arbeidsforhold;
+import no.nav.registre.testnorge.arbeidsforhold.service.StsOidcTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import no.nav.registre.testnorge.arbeidsforhold.consumer.commnad.GetArbeidstakerArbeidsforholdCommand;
-import no.nav.registre.testnorge.arbeidsforhold.domain.Arbeidsforhold;
-import no.nav.registre.testnorge.arbeidsforhold.service.StsOidcTokenService;
 
 @Slf4j
 @Component
@@ -43,6 +44,6 @@ public class AaregConsumer {
                 .stream()
                 .filter(value -> value.getArbeidsforholdId().equals(arbeidsforholdId))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Klarer ikke aa finne arbeidsforhold for " + ident));
+                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND, "Klarer ikke aa finne arbeidsforhold for " + ident));
     }
 }
