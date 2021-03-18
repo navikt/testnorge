@@ -146,7 +146,6 @@ query($ident: ID!, $historikk: Boolean!) {
                     kvalitet
                 }
             },
-            oppholdsadressedato,
             oppholdAnnetSted,
             coAdressenavn,
             gyldigFraOgMed,

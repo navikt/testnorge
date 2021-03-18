@@ -134,7 +134,6 @@ query($identer: [ID!]!) {
                         kvalitet
                     }
                 },
-                oppholdsadressedato,
                 oppholdAnnetSted,
                 coAdressenavn,
                 gyldigFraOgMed,
