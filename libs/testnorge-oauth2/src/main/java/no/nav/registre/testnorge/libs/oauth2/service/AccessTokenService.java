@@ -160,9 +160,11 @@ public class AccessTokenService {
             log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow");
             return accessToken;
         } catch (WebClientResponseException e) {
+            var secret = clientCredentials.getClientSecret().substring(0, 3) + "******************";
             log.error(
-                    "Feil ved henting av access token for {}. Feilmelding: {}.",
+                    "Feil ved henting av access token for {} med client secret: {}.\nError: \n{}.",
                     String.join(" ", accessScopes.getScopes()),
+                    secret,
                     e.getResponseBodyAsString()
             );
             throw e;
