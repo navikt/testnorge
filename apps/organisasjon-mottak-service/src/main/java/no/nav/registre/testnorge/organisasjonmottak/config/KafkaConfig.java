@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.CommonClientConfigs;
+import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.config.SslConfigs;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -68,9 +69,20 @@ public class KafkaConfig {
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, String> factory =
-                new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        var consumerFactory = consumerFactory();
+        consumerFactory.addListener(new ConsumerFactory.Listener<>() {
+            @Override
+            public void consumerAdded(String id, Consumer<String, String> consumer) {
+                log.info("Legger til consumer med id: {}", id);
+            }
+
+            @Override
+            public void consumerRemoved(String id, Consumer<String, String> consumer) {
+                log.warn("Fjerner consumer med id: {}", id);
+            }
+        });
+        factory.setConsumerFactory(consumerFactory);
         factory.setErrorHandler(new SeekToCurrentErrorHandler(
                 (consumer, exception) -> log.error("Klarer ikke å opprette bestilling med uuid: {}", consumer.key(), exception),
                 new FixedBackOff(30 * 1000, 3)
