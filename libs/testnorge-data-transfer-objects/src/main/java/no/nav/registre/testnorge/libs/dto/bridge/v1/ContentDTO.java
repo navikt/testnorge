@@ -13,18 +13,3 @@ public class ContentDTO {
     String key;
     byte[] content;
 }
-//
-//
-//    var test = Endringsdokument
-//            .newBuilder()
-//            .setOrganisasjonBuilder(Organisasjon
-//                    .newBuilder()
-//                    .setEnhetstype("AS")
-//                    .setOrgnummer("dummy")
-//                    .setUnderenheter(Collections.emptyList())
-//            )
-//            .setMetadata(Metadata.newBuilder().setMiljo("t3").build()).build();
-//
-//    byte[] v2 = test.toByteBuffer().array();
-//
-//return Endringsdokument.fromByteBuffer(ByteBuffer.wrap(v2));

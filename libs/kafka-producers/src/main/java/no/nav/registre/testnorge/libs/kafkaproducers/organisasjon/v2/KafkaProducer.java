@@ -11,6 +11,9 @@ import org.apache.kafka.common.config.SslConfigs;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import java.net.InetSocketAddress;
 import java.util.HashMap;
@@ -56,5 +59,5 @@ abstract class KafkaProducer<T extends SpecificRecord> {
         return kafkaTemplate;
     }
 
-    abstract void send(String key, T value);
+    abstract ListenableFuture<SendResult<String, T>> send(String key, T value);
 }

@@ -23,7 +23,7 @@ consumers:
     name: testnorge-batch-adeo-proxy
     cluster: dev-fss
 
-kafka.groupid: testnav-organisajon-mottak-service-v1
+kafka.groupid: testnav-organisasjon-mottak-service-v1
 
 
 JENKINS_SERVER_Q0: q0-ereg@b27jbsl01606.preprod.local

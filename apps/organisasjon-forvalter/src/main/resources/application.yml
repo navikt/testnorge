@@ -35,4 +35,4 @@ spring:
 kafka:
   bootstrapservers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
   schemaregistryservers: http://kafka-schema-registry.tpa.svc.nais.local:8081
-  groupid: organisajon-forvalter-v1
+  groupid: organisasjon-forvalter-v1
