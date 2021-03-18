@@ -7,6 +7,7 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,4 +18,6 @@ public class InntektModel {
     private LocalDate sluttdatoOpptjeningsperiode;
     private Integer antall;
     private String opptjeningsland;
+    @Field(type = FieldType.Nested, includeInParent = true)
+    private List<AvvikModel> avvik;
 }

@@ -5,11 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.AvvikDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.FartoeyDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.InntektDTO;
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdRequest;
@@ -50,6 +52,7 @@ public class Arbeidsforhold {
                         .permisjonsprosent(Float.parseFloat(dto.getPermisjonsprosent()))
                         .sluttdato(dto.getSluttdato())
                         .startdato(dto.getStartdato())
+                        .avvik(getAvvik(dto.getAvvik()))
                         .build()
                 ).collect(Collectors.toList());
 
@@ -62,6 +65,8 @@ public class Arbeidsforhold {
                         .sluttdatoOpptjeningsperiode(inntekt.getSluttdatoOpptjeningsperiode())
                         .opptjeningsland(inntekt.getOpptjeningsland())
                         .antall(inntekt.getAntall())
+                        .avvik(getAvvik(inntekt.getAvvik())
+                        )
                         .build()
                 ).collect(Collectors.toList());
 
@@ -88,18 +93,24 @@ public class Arbeidsforhold {
                         .build() : null
                 )
                 .inntekter(inntekter)
+                .avvik(getAvvik(response.getAvvik()))
                 .build();
+    }
+
+    private List<AvvikDTO> getAvvik(no.nav.registre.testnorge.libs.dto.syntrest.v1.AvvikDTO avvik) {
+        return avvik != null ? Collections.singletonList(AvvikDTO.builder()
+                .id(avvik.getId())
+                .alvorlighetsgrad(avvik.getAlvorlighetsgrad())
+                .navn(avvik.getNavn())
+                .build()
+        ) : Collections.emptyList();
     }
 
     public boolean isForenklet() {
         return dto.getTypeArbeidsforhold().equals("forenkletOppgjoersordning");
     }
 
-    public Arbeidsforhold(
-            ArbeidsforholdResponse response,
-            String ident,
-            String virksomhetsnummer
-    ) {
+    public Arbeidsforhold(ArbeidsforholdResponse response, String ident, String virksomhetsnummer) {
         this(response, ident, UUID.randomUUID().toString(), virksomhetsnummer);
     }
 
@@ -197,7 +208,8 @@ public class Arbeidsforhold {
                         value.getBeskrivelse(),
                         value.getPermisjonsprosent() != null ? value.getPermisjonsprosent().toString() : null,
                         value.getStartdato(),
-                        value.getSluttdato()
+                        value.getSluttdato(),
+                        getAvvik(value.getAvvik())
                 )).collect(Collectors.toList()))
                 .inntekter(dto.getInntekter().stream().map(value -> no.nav.registre.testnorge.libs.dto.syntrest.v1.InntektDTO
                         .builder()
@@ -205,10 +217,16 @@ public class Arbeidsforhold {
                         .opptjeningsland(value.getOpptjeningsland())
                         .startdatoOpptjeningsperiode(value.getStartdatoOpptjeningsperiode())
                         .sluttdatoOpptjeningsperiode(value.getSluttdatoOpptjeningsperiode())
+                        .avvik(getAvvik(value.getAvvik()))
                         .build()
                 ).collect(Collectors.toList()))
                 .antallInntekter(dto.getInntekter().size())
+                .avvik(getAvvik(dto.getAvvik()))
                 .build();
+    }
+
+    private no.nav.registre.testnorge.libs.dto.syntrest.v1.AvvikDTO getAvvik(List<no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.AvvikDTO> list) {
+        return list.stream().findFirst().map(avvik -> no.nav.registre.testnorge.libs.dto.syntrest.v1.AvvikDTO.builder().alvorlighetsgrad(avvik.getAlvorlighetsgrad()).navn(avvik.getNavn()).id(avvik.getId()).build()).orElse(null);
     }
 
     public ArbeidsforholdHistorikk toHistorikk(String miljo) {

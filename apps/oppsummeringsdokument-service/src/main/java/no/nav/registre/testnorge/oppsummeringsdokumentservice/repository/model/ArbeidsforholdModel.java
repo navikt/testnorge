@@ -29,4 +29,6 @@ public class ArbeidsforholdModel {
     private FartoeyModel fartoey;
     @Field(type = FieldType.Nested, includeInParent = true)
     private List<InntektModel> inntekter;
+    @Field(type = FieldType.Nested, includeInParent = true)
+    private List<AvvikModel> avvik;
 }

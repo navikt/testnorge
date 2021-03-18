@@ -39,6 +39,15 @@ public class ArbeidsforholdDTO {
     FartoeyDTO fartoey;
     @JsonProperty
     List<InntektDTO> inntekter;
+    @JsonProperty
+    List<AvvikDTO> avvik;
+
+    public List<AvvikDTO> getAvvik() {
+        if (avvik == null) {
+            avvik = new ArrayList<>();
+        }
+        return avvik;
+    }
 
     public List<PermisjonDTO> getPermisjoner() {
         if (permisjoner == null) {

@@ -25,6 +25,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.AvvikDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.FartoeyDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.InntektDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
@@ -32,12 +33,15 @@ import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.Permis
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.ArbeidsforholdModel;
+import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.AvvikModel;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.FartoeyModel;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.InntektModel;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.OppsummeringsdokumentModel;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.PermisjonModel;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.PersonModel;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.VirksomhetModel;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Alvorlighetsgrad;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Avvik;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Inntekt;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Arbeidsforhold;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.EDAGM;
@@ -195,6 +199,7 @@ public class Oppsummeringsdokument {
             }
             model.setInntekter(value.getInntekter().stream().map(mapInntektModel()).collect(Collectors.toList()));
             model.setPermisjoner(value.getPermisjoner().stream().map(mapPermisjonModel()).collect(Collectors.toList()));
+            model.setAvvik(value.getAvvik().stream().map(mapAvvikDTOToModel()).collect(Collectors.toList()));
             return model;
         };
     }
@@ -206,6 +211,7 @@ public class Oppsummeringsdokument {
             model.setOpptjeningsland(value.getOpptjeningsland());
             model.setSluttdatoOpptjeningsperiode(value.getSluttdatoOpptjeningsperiode());
             model.setStartdatoOpptjeningsperiode(value.getStartdatoOpptjeningsperiode());
+            model.setAvvik(value.getAvvik().stream().map(mapAvvikDTOToModel()).collect(Collectors.toList()));
             return model;
         };
     }
@@ -218,6 +224,17 @@ public class Oppsummeringsdokument {
             model.setBeskrivelse(value.getBeskrivelse());
             model.setStartdato(value.getStartdato());
             model.setSluttdato(value.getSluttdato());
+            model.setAvvik(value.getAvvik().stream().map(mapAvvikDTOToModel()).collect(Collectors.toList()));
+            return model;
+        };
+    }
+
+    private Function<AvvikDTO, AvvikModel> mapAvvikDTOToModel() {
+        return dto -> {
+            var model = new AvvikModel();
+            model.setNavn(dto.getNavn());
+            model.setId(dto.getId());
+            model.setAlvorlighetsgrad(dto.getAlvorlighetsgrad());
             return model;
         };
     }
@@ -337,8 +354,19 @@ public class Oppsummeringsdokument {
             inntekt.setLoennsinntekt(loennsinntekt);
             inntekt.setSluttdatoOpptjeningsperiode(toXMLGregorianCalendar(value.getSluttdatoOpptjeningsperiode()));
             inntekt.setStartdatoOpptjeningsperiode(toXMLGregorianCalendar(value.getStartdatoOpptjeningsperiode()));
+            inntekt.getAvvik().addAll(value.getAvvik().stream().map(mapDTOToAvvik()).collect(Collectors.toList()));
             return inntekt;
         }).collect(Collectors.toList());
+    }
+
+    private static Function<AvvikDTO, Avvik> mapDTOToAvvik() {
+        return value -> {
+            var avvik = new Avvik();
+            Optional.ofNullable(value.getAlvorlighetsgrad()).ifPresent(Alvorlighetsgrad::fromValue);
+            avvik.setId(value.getId());
+            avvik.setNavn(value.getNavn());
+            return avvik;
+        };
     }
 
     private static Arbeidsforhold create(ArbeidsforholdDTO dto) {
@@ -352,6 +380,7 @@ public class Oppsummeringsdokument {
         arbeidsforhold.setArbeidstidsordning(dto.getArbeidstidsordning());
         arbeidsforhold.setStillingsprosent(dto.getStillingsprosent() != null ? BigDecimal.valueOf(dto.getStillingsprosent()) : null);
         arbeidsforhold.setSisteLoennsendringsdato(toXMLGregorianCalendar(dto.getSisteLoennsendringsdato()));
+        arbeidsforhold.getAvvik().addAll(dto.getAvvik().stream().map(mapDTOToAvvik()).collect(Collectors.toList()));
 
         if (dto.getPermisjoner() != null) {
             var permisjoner = dto.getPermisjoner().stream().map(permisjonDTO -> {
@@ -361,6 +390,7 @@ public class Oppsummeringsdokument {
                 permisjon.setPermisjonsprosent(permisjonDTO.getPermisjonsprosent() != null ? BigDecimal.valueOf(permisjonDTO.getPermisjonsprosent()) : null);
                 permisjon.setSluttdato(toXMLGregorianCalendar(permisjonDTO.getSluttdato()));
                 permisjon.setStartdato(toXMLGregorianCalendar(permisjonDTO.getStartdato()));
+                permisjon.getAvvik().addAll(permisjonDTO.getAvvik().stream().map(mapDTOToAvvik()).collect(Collectors.toList()));
                 return permisjon;
             }).collect(Collectors.toList());
             arbeidsforhold.getPermisjon().addAll(permisjoner);
