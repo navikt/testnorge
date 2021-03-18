@@ -37,10 +37,10 @@ public class ArbeidsforholdController {
 
         @ExceptionHandler(HttpClientErrorException.class)
         public ResponseEntity handleException(HttpClientErrorException e) {
-            log.error("Klarte ikke å hente arbeidsforhold: ", e);
+            log.error("Klarte ikke å finne arbeidsforhold: ", e);
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body("Klarte ikke å hente arbeidsforhold");
+                    .body("Klarte ikke å finne arbeidsforhold");
         }
     }
 }
