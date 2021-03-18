@@ -141,29 +141,17 @@ public class PdlForvalterClient implements ClientRegister {
         status.append('$').append(PDL_FORVALTER);
 
         try {
-            dollyPerson.getPersondetaljer().forEach(person -> {
-                sendOpprettPerson(person, dollyPerson);
-                sendFoedselsmelding(person);
-                sendNavn(person);
-                sendKjoenn(person);
-                sendAdressebeskyttelse(person);
-                sendOppholdsadresse(person);
-                sendKontaktadresse(person);
-                sendBostedadresse(person);
-                sendDeltBosted(person);
-                sendInnflytting(person);
-                sendUtflytting(person);
-                sendFolkeregisterpersonstatus(person);
-                sendStatsborgerskap(person);
-                sendFamilierelasjoner(person);
-                sendForeldreansvar(person);
-                sendSivilstand(person);
-                sendTelefonnummer(person);
-                sendDoedsfall(person);
-                sendOpphold(bestilling, person);
-                sendVergemaal(person);
-                sendFullmakt(person);
-            });
+            // Send historiske personer først
+            dollyPerson.getPersondetaljer().stream()
+                    .filter(person -> dollyPerson.getIdenthistorikk().stream().anyMatch(historisk -> historisk.equals(person.getIdent())))
+                    .forEach(person ->
+                        sendArtifacter(bestilling, dollyPerson, person));
+            // Send øvrige personer
+            dollyPerson.getPersondetaljer().stream()
+                    .filter(person -> dollyPerson.getIdenthistorikk().stream().noneMatch(historisk -> historisk.equals(person.getIdent())))
+                    .forEach(person ->
+                            sendArtifacter(bestilling, dollyPerson, person));
+
             status.append("&OK");
 
         } catch (DollyFunctionalException e) {
@@ -180,6 +168,30 @@ public class PdlForvalterClient implements ClientRegister {
             status.append("&Feil= Teknisk feil, se logg!");
             log.error(e.getMessage(), e);
         }
+    }
+
+    private void sendArtifacter(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, Person person) {
+        sendOpprettPerson(person, dollyPerson);
+        sendFoedselsmelding(person);
+        sendNavn(person);
+        sendKjoenn(person);
+        sendAdressebeskyttelse(person);
+        sendOppholdsadresse(person);
+        sendKontaktadresse(person);
+        sendBostedadresse(person);
+        sendDeltBosted(person);
+        sendInnflytting(person);
+        sendUtflytting(person);
+        sendFolkeregisterpersonstatus(person);
+        sendStatsborgerskap(person);
+        sendFamilierelasjoner(person);
+        sendForeldreansvar(person);
+        sendSivilstand(person);
+        sendTelefonnummer(person);
+        sendDoedsfall(person);
+        sendOpphold(bestilling, person);
+        sendVergemaal(person);
+        sendFullmakt(person);
     }
 
     private void sendOpphold(RsDollyUtvidetBestilling bestilling, Person person) {
