@@ -3,8 +3,6 @@ package no.nav.registre.testnorge.organisasjonmottak.config;
 import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -12,9 +10,6 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.config.SslConfigs;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -25,10 +20,7 @@ import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.util.backoff.FixedBackOff;
 
-import javax.ws.rs.core.Application;
 import java.net.InetSocketAddress;
-import java.net.URI;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,13 +30,16 @@ import no.nav.registre.testnorge.organisasjonmottak.service.ShutdownService;
 @EnableKafka
 @Component
 @Profile("prod")
-@RequiredArgsConstructor
 public class KafkaConfig {
-    @Value("${kafka.groupid}")
-    private String groupId;
+
+    private final String groupId;
     private final ShutdownService shutdownService;
 
-    @SneakyThrows
+    public KafkaConfig(@Value("${kafka.groupid}") String groupId, ShutdownService shutdownService) {
+        this.groupId = groupId;
+        this.shutdownService = shutdownService;
+    }
+
     public ConsumerFactory<String, String> consumerFactory() {
         InetSocketAddress inetSocketAddress = new InetSocketAddress(0);
         Map<String, Object> props = new HashMap<>();
