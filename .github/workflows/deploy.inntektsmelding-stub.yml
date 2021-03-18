@@ -1,14 +1,13 @@
-name: Deploy inntektsmelding-stub
+name: Deploy inntektsmelding-generator-service
 
 on:
   push:
-    branches: master
     paths:
-      - apps/inntektsmelding-stub/**
+      - apps/inntektsmelding-generator-service/**
       - libs/testnorge-core/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/inntektsmelding:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/inntektsmelding-generator-service:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -31,9 +30,9 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :inntektsmelding-stub:build
+        run: ./gradlew :inntektsmelding-generator-service:build
       - name: Build and publish Docker image
-        working-directory: apps/inntektsmelding-stub/
+        working-directory: apps/inntektsmelding-generator-service/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -46,4 +45,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: apps/inntektsmelding-stub/nais.yaml
+          RESOURCE: apps/inntektsmelding-generator-service/config.yml

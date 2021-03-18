@@ -25,7 +25,7 @@ gradleEnterprise {
 }
 
 include(':proxies')
-include(':inntektsmelding-stub')
+include(':inntektsmelding-generator-service')
 include(':testnorge-tss')
 include(':profil-api')
 include(':hodejegeren-core')
@@ -116,7 +116,7 @@ include(':mn-synt-arbeidsforhold-service')
 include(':organisasjon-orgnummer-service')
 include(':organisasjon-forvalter')
 
-project(":inntektsmelding-stub").projectDir = file('apps/inntektsmelding-stub')
+project(":inntektsmelding-generator-service").projectDir = file('apps/inntektsmelding-generator-service')
 project(":testnorge-tss").projectDir = file('apps/testnorge-tss')
 project(":profil-api").projectDir = file('apps/profil-api')
 project(":hodejegeren-core").projectDir = file('apps/testnorge-hodejegeren/hodejegeren-core')
