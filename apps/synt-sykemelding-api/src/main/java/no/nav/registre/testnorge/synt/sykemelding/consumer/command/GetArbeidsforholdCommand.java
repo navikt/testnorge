@@ -30,9 +30,8 @@ public class GetArbeidsforholdCommand implements Callable<ArbeidsforholdDTO> {
                 .uri("/api/v1/arbeidsforhold/" + ident + "/" + orgnummer + "/" + arbeidsforholdId)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, response -> response
-                        .bodyToMono(ArbeidsforholdDTO.class)
-                        .flatMap(error -> Mono.error(new HttpClientErrorException(HttpStatus.NOT_FOUND, String.format("Fant ikke arbeidsforhold for %s i organisasjon %s", ident, orgnummer)))))
+                .onStatus(HttpStatus::is4xxClientError, response -> Mono.error(
+                        new HttpClientErrorException(HttpStatus.NOT_FOUND, "Fant ikke arbeidsforhold")))
                 .bodyToMono(ArbeidsforholdDTO.class)
                 .block();
     }
