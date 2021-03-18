@@ -32,7 +32,7 @@ public class GetArbeidsforholdCommand implements Callable<ArbeidsforholdDTO> {
                 .retrieve()
                 .onStatus(HttpStatus::is4xxClientError, response -> response
                         .bodyToMono(ArbeidsforholdDTO.class)
-                        .flatMap(error -> Mono.error(new HttpClientErrorException(HttpStatus.NOT_FOUND, String.format("Fant ikke arbeidsforhold for %s i organisasjon %s", ident, arbeidsforholdId)))))
+                        .flatMap(error -> Mono.error(new HttpClientErrorException(HttpStatus.NOT_FOUND, String.format("Fant ikke arbeidsforhold for %s i organisasjon %s", ident, orgnummer)))))
                 .bodyToMono(ArbeidsforholdDTO.class)
                 .block();
     }
