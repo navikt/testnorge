@@ -32,7 +32,7 @@ public class SyntSykemeldingController {
 
         @ExceptionHandler(HttpClientErrorException.class)
         public ResponseEntity<String> handleException(HttpClientErrorException e) {
-            log.error("Klarte ikke å finne arbeidsforhold: ", e);
+            log.error("Klarte ikke å finne arbeidsforhold", e);
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("Klarte ikke å finne aktivt arbeidsforhold for personen");
