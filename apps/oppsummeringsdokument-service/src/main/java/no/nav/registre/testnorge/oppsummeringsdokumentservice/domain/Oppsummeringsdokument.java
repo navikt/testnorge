@@ -362,7 +362,7 @@ public class Oppsummeringsdokument {
     private static Function<AvvikDTO, Avvik> mapDTOToAvvik() {
         return value -> {
             var avvik = new Avvik();
-            Optional.ofNullable(value.getAlvorlighetsgrad()).ifPresent(Alvorlighetsgrad::fromValue);
+            avvik.setAlvorlighetsgrad(Alvorlighetsgrad.fromValue(value.getAlvorlighetsgrad()));
             avvik.setId(value.getId());
             avvik.setNavn(value.getNavn());
             return avvik;
