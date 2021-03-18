@@ -36,11 +36,11 @@ public class ArbeidsforholdController {
     public static class ExceptionHandlerAdvice {
 
         @ExceptionHandler(HttpClientErrorException.class)
-        public ResponseEntity handleException(HttpClientErrorException e) {
+        public ResponseEntity<String> handleException(HttpClientErrorException e) {
             log.error("Klarte ikke å finne arbeidsforhold: ", e);
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .body("Klarte ikke å finne arbeidsforhold");
+                    .body("Klarte ikke å finne aktivt arbeidsforhold for personen");
         }
     }
 }
