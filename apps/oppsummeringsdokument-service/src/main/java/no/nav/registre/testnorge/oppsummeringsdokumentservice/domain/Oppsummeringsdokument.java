@@ -15,24 +15,30 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.FartoeyDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.InntektDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.ArbeidsforholdModel;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.FartoeyModel;
+import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.InntektModel;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.OppsummeringsdokumentModel;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.PermisjonModel;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.PersonModel;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.VirksomhetModel;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Inntekt;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Arbeidsforhold;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.EDAGM;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Fartoey;
@@ -41,8 +47,10 @@ import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.JuridiskEntitet;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Kilde;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Leveranse;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Leveranseinformasjon;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Loennsinntekt;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.ObjectFactory;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Permisjon;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Spesifikasjon;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Virksomhet;
 
 @Slf4j
@@ -110,6 +118,17 @@ public class Oppsummeringsdokument {
                         .skipsregister(value.getFartoey().getSkipsregister())
                         .build() : null
                 )
+                .inntekter(value.getInntekter().stream().map(mapInntektDTO()).collect(Collectors.toList()))
+                .build();
+    }
+
+    private Function<InntektModel, InntektDTO> mapInntektDTO() {
+        return value -> InntektDTO
+                .builder()
+                .antall(value.getAntall())
+                .opptjeningsland(value.getOpptjeningsland())
+                .sluttdatoOpptjeningsperiode(value.getSluttdatoOpptjeningsperiode())
+                .startdatoOpptjeningsperiode(value.getStartdatoOpptjeningsperiode())
                 .build();
     }
 
@@ -174,7 +193,19 @@ public class Oppsummeringsdokument {
                 fartoey.setSkipstype(value.getFartoey().getSkipstype());
                 model.setFartoey(fartoey);
             }
+            model.setInntekter(value.getInntekter().stream().map(mapInntektModel()).collect(Collectors.toList()));
             model.setPermisjoner(value.getPermisjoner().stream().map(mapPermisjonModel()).collect(Collectors.toList()));
+            return model;
+        };
+    }
+
+    private Function<InntektDTO, InntektModel> mapInntektModel() {
+        return value -> {
+            var model = new InntektModel();
+            model.setAntall(value.getAntall());
+            model.setOpptjeningsland(value.getOpptjeningsland());
+            model.setSluttdatoOpptjeningsperiode(value.getSluttdatoOpptjeningsperiode());
+            model.setStartdatoOpptjeningsperiode(value.getStartdatoOpptjeningsperiode());
             return model;
         };
     }
@@ -190,7 +221,6 @@ public class Oppsummeringsdokument {
             return model;
         };
     }
-
 
     public OppsummeringsdokumentDTO toDTO() {
         return dto;
@@ -275,11 +305,40 @@ public class Oppsummeringsdokument {
                                     .map(Oppsummeringsdokument::create)
                                     .collect(Collectors.toList())
                     );
+                    inntektsmottaker.getInntekt().addAll(
+                            personDTO.getArbeidsforhold()
+                                    .stream()
+                                    .map(Oppsummeringsdokument::createInntekter)
+                                    .flatMap(Collection::stream)
+                                    .collect(Collectors.toList())
+                    );
                     return inntektsmottaker;
                 }).collect(Collectors.toList())
         );
 
         return virksomhet;
+    }
+
+    private static List<Inntekt> createInntekter(ArbeidsforholdDTO dto){
+        if(dto.getInntekter() == null){
+            return Collections.emptyList();
+        }
+
+        return dto.getInntekter().stream().map(value -> {
+            var inntekt = new Inntekt();
+            inntekt.setArbeidsforholdId(dto.getArbeidsforholdId());
+            var loennsinntekt = new Loennsinntekt();
+            Optional.ofNullable(value.getAntall()).ifPresent(antall -> loennsinntekt.setAntall(BigDecimal.valueOf(antall)));
+            Optional.ofNullable(value.getOpptjeningsland()).ifPresent(opptjeningsland -> {
+                var spesifikasjon = new Spesifikasjon();
+                spesifikasjon.setOpptjeningsland(opptjeningsland);
+                loennsinntekt.setSpesifikasjon(spesifikasjon);
+            });
+            inntekt.setLoennsinntekt(loennsinntekt);
+            inntekt.setSluttdatoOpptjeningsperiode(toXMLGregorianCalendar(value.getSluttdatoOpptjeningsperiode()));
+            inntekt.setStartdatoOpptjeningsperiode(toXMLGregorianCalendar(value.getStartdatoOpptjeningsperiode()));
+            return inntekt;
+        }).collect(Collectors.toList());
     }
 
     private static Arbeidsforhold create(ArbeidsforholdDTO dto) {
@@ -306,6 +365,7 @@ public class Oppsummeringsdokument {
             }).collect(Collectors.toList());
             arbeidsforhold.getPermisjon().addAll(permisjoner);
         }
+
         if(dto.getFartoey() != null) {
             Fartoey fartoey = new Fartoey();
             fartoey.setFartsomraade(dto.getFartoey().getFartsomraade());

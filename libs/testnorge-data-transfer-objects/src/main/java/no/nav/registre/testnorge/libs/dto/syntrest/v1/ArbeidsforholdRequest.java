@@ -33,6 +33,8 @@ public class ArbeidsforholdRequest {
     private final Integer numEndringer;
     private final List<PermisjonDTO> permisjoner;
     private final FartoeyDTO fartoey;
+    private final Integer antallInntekter;
+    private final List<InntektDTO> inntekter;
 
     public ArbeidsforholdRequest(ArbeidsforholdRequest request) {
         this.rapporteringsmaaned = request.rapporteringsmaaned;
@@ -55,5 +57,7 @@ public class ArbeidsforholdRequest {
         this.numEndringer = request.numEndringer;
         this.permisjoner = request.permisjoner;
         this.fartoey = request.fartoey;
+        this.antallInntekter = request.antallInntekter;
+        this.inntekter = request.inntekter;
     }
 }

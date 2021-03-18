@@ -42,4 +42,10 @@ public class ArbeidsforholdExportController {
         var path = service.writeInntekter();
         return ResponseEntity.created(URI.create("/api/v1/files/tmp/" + path.getFileName().toString())).build();
     }
+
+    @GetMapping("/avvik")
+    public ResponseEntity<HttpStatus> getAvvik() throws IOException {
+        var path = service.writeAvvik();
+        return ResponseEntity.created(URI.create("/api/v1/files/tmp/" + path.getFileName().toString())).build();
+    }
 }

@@ -48,15 +48,60 @@ public class Opplysningspliktig {
         }
     }
 
-    public List<Permisjon> toPermisjoner() {
-        return toArbeidsforhold()
+    public List<Avvik> toAvvik() {
+        var avviks = new ArrayList<Avvik>();
+        avviks.addAll(
+                getArbeidsforhold()
+                        .stream()
+                        .filter(Arbeidsforhold::hasAvvik)
+                        .map(Arbeidsforhold::getAvvikList)
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toList())
+        );
+        avviks.addAll(
+                getPermisjoner()
+                        .stream()
+                        .filter(Permisjon::hasAvvik)
+                        .map(Permisjon::getAvvikList)
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toList())
+        );
+
+        avviks.addAll(
+                getInntekter()
+                        .stream()
+                        .filter(Inntekt::hasAvvik)
+                        .map(Inntekt::getAvvikList)
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toList())
+        );
+        return avviks;
+    }
+
+    private List<Permisjon> getPermisjoner() {
+        return getArbeidsforhold()
                 .stream()
                 .map(Arbeidsforhold::getPermisjoner)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
 
+
+    public List<Permisjon> toPermisjoner() {
+        return getPermisjoner()
+                .stream()
+                .filter(value -> !value.hasAvvik())
+                .collect(Collectors.toList());
+    }
+
     public List<Arbeidsforhold> toArbeidsforhold() {
+        return getArbeidsforhold()
+                .stream()
+                .filter(value -> !value.hasAvvik())
+                .collect(Collectors.toList());
+    }
+
+    private List<Arbeidsforhold> getArbeidsforhold() {
         List<Arbeidsforhold> arbeidsforholds = new ArrayList<>();
         var leveranse = this.edagm.getLeveranse();
         leveranse.getOppgave().getVirksomhet().forEach(virksomhet ->
@@ -69,6 +114,13 @@ public class Opplysningspliktig {
     }
 
     public List<Inntekt> toInntekt() {
+        return getInntekter()
+                .stream()
+                .filter(value -> !value.hasAvvik())
+                .collect(Collectors.toList());
+    }
+
+    private List<Inntekt> getInntekter() {
         List<Inntekt> inntekts = new ArrayList<>();
         var leveranse = this.edagm.getLeveranse();
         leveranse.getOppgave().getVirksomhet().forEach(virksomhet ->

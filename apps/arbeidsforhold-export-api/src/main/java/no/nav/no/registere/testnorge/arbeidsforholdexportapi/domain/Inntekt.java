@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class Inntekt {
@@ -44,5 +47,15 @@ public class Inntekt {
             return null;
         }
         return LocalDate.of(calendar.getYear(), calendar.getMonth(), calendar.getDay());
+    }
+
+    public List<Avvik> getAvvikList(){
+        return inntekt.getAvvik() != null
+                ? inntekt.getAvvik().stream().map(value -> new Avvik(value, "INNTEKT", typeArbeidsforhold)).collect(Collectors.toList())
+                : Collections.emptyList();
+    }
+
+    public boolean hasAvvik() {
+        return !getAvvikList().isEmpty();
     }
 }
