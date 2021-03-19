@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: tps-identer-vedlikehold
   cloud:
     vault:
       host: vault.adeo.no

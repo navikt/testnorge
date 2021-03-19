@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/v1/testdata")
 @RequiredArgsConstructor
-public class DeleteController {
+public class VedlikeholdController {
 
     private final TpsfService tpsfService;
 
