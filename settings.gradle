@@ -267,3 +267,9 @@ project(":frontend").projectDir = file('libs/frontend')
 
 include 'ereg-proxy'
 project(":ereg-proxy").projectDir = file('proxies/ereg-proxy')
+
+include 'hodejegeren-proxy'
+project(":hodejegeren-proxy").projectDir = file('proxies/hodejegeren-proxy')
+
+include 'samhandlerregisteret-proxy'
+project(":samhandlerregisteret-proxy").projectDir = file('proxies/samhandlerregisteret-proxy')

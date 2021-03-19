@@ -1,0 +1,22 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    name: testnav-hodejegeren-proxy
+    desciption: Proxy for ereg som legger på sikkerhet og redirecter.
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+
+zuul:
+  ignoredPatterns: /internal/isReady, /internal/isAlive
+  set-content-length: true
+  routes:
+    testnorge-hodejegeren:
+      path: /
+      url: https://testnorge-hodejegeren.dev.intern.nav.no
+  host:
+    socket-timeout-millis: 30000
