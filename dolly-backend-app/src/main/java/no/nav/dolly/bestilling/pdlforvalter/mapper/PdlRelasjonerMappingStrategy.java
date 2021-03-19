@@ -77,12 +77,8 @@ public class PdlRelasjonerMappingStrategy implements MappingStrategy {
                         sivilstand.setType(mapSivilstand(wrapper.getSivilstand().getSivilstand()));
                         sivilstand.setSivilstandsdato(
                                 mapperFacade.map(wrapper.getSivilstand().getSivilstandRegdato(), LocalDate.class));
-                        sivilstand.setRelatertVedSivilstand(wrapper.getPerson().getRelasjoner().stream()
-                                .filter(relasjon -> relasjon.isPartner() && wrapper.getPerson().isSivilstandGift())
-                                .map(Relasjon::getPersonRelasjonMed)
-                                .filter(Person::isSivilstandGift)
-                                .map(Person::getIdent)
-                                .findFirst().orElse(null));
+                        sivilstand.setRelatertVedSivilstand(wrapper.getSivilstand().isGift() ?
+                                wrapper.getSivilstand().getPersonRelasjonMed().getIdent() : null);
                         sivilstand.setKilde(CONSUMER);
                     }
                 })
