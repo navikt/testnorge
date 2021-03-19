@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +72,7 @@ public class AltinnInntektIntegrasjonsTest {
     }
 
     @Test
+    @Ignore
     public void passingCall() throws Exception {
         stubForInntektsmelding();
         stubForAuthorization();
@@ -85,6 +87,7 @@ public class AltinnInntektIntegrasjonsTest {
     }
 
     @Test
+    @Ignore
     public void passingCallNoXml() throws Exception {
         stubForInntektsmelding();
         stubForAuthorization();
