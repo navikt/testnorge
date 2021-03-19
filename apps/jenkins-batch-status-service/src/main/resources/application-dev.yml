@@ -8,7 +8,9 @@ spring:
         jwt:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
-
 consumers:
-  jenkins:
-    url: https://testnorge-batch-adeo-proxy.dev-fss-pub.nais.io
+  organisasjon-bestilling-service:
+    url: https://organisasjon-bestilling-service.dev.intern.nav.no
+    name: organisasjon-bestilling-service
+    cluster: dev-gcp
+    namespace: dolly

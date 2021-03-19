@@ -36,6 +36,8 @@ spec:
       cpu: 200m
       memory: 1024Mi
   webproxy: true
+  kafka:
+    pool: nav-dev
   ingresses:
     - "https://testnorge-statisk-data-forvalter.nais.preprod.local"
     - "https://testnorge-statisk-data-forvalter.dev.adeo.no"

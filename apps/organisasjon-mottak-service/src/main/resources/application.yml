@@ -2,25 +2,29 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 
 spring:
   application:
-    name: organisasjon-mottak-service
+    name: testnav-organisasjon-mottak-service
     description: Testtjeneste for å vise hvilke tjenester som er tilgjenelig. Skal ikke brukes til noe annet enn for å test lokalt. For integrasjon bruk kafka.
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
 
 consumers:
   jenkins-batch-status-service:
-    url: https://jenkins-batch-status-service.dev.intern.nav.no
+    url: http://testnav-jenkins-batch-status-service.dolly.svc.cluster.local
     namespace: dolly
-    name: jenkins-batch-status-service
-    cluster: dev-fss
+    name: testnav-jenkins-batch-status-service
+    cluster: dev-gcp
   jenkins:
-    url: http://testnorge-batch-adeo-proxy.dolly.svc.nais.local
+    url: https://testnorge-batch-adeo-proxy.dev-fss-pub.nais.io
     namespace: dolly
     name: testnorge-batch-adeo-proxy
     cluster: dev-fss
 
-kafka:
-  bootstrapservers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
-  schemaregistryservers: http://kafka-schema-registry.tpa.svc.nais.local:8081
-  groupid: organisajon-mottak-service-v1
+kafka.groupid: testnav-organisasjon-mottak-service-v1
+
 
 JENKINS_SERVER_Q0: q0-ereg@b27jbsl01606.preprod.local
 JENKINS_SERVER_Q1: q1-ereg@b27jbsl01602.preprod.local
@@ -37,21 +41,3 @@ JENKINS_SERVER_T3: t3-ereg@d26jbsl01597.test.local
 JENKINS_SERVER_T4: t4-ereg@d26jbsl01602.test.local
 JENKINS_SERVER_T5: t5-ereg@d26jbsl01599.test.local
 JENKINS_SERVER_T6: t6-ereg@d26jbsl01585.test.local
-
-ereg:
-  envHostMap:
-    q0: https://modapp-q0.adeo.no
-    q1: https://modapp-q1.adeo.no
-    q2: https://modapp-q2.adeo.no
-    q3: https://modapp-q3.adeo.no
-    q4: https://modapp-q4.adeo.no
-    q5: https://modapp-q5.adeo.no
-    q6: https://modapp-q6.adeo.no
-    q8: https://modapp-q8.adeo.no
-    t0: https://modapp-t0.adeo.no
-    t1: https://modapp-t1.adeo.no
-    t2: https://modapp-t2.adeo.no
-    t3: https://modapp-t3.adeo.no
-    t4: https://modapp-t4.adeo.no
-    t5: https://modapp-t5.adeo.no
-    t6: https://modapp-t6.adeo.no

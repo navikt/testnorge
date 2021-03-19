@@ -10,12 +10,12 @@ spring:
 
 consumers:
   jenkins:
-    url: http://testnorge-batch-adeo-proxy.dolly.svc.nais.local
+    url: https://testnorge-batch-adeo-proxy.dev-fss-pub.nais.io
     name: testnorge-batch-adeo-proxy
     cluster: dev-fss
     namespace: dolly
   organisasjon-bestilling-service:
-    url: https://organisasjon-bestilling-service.dev.intern.nav.no
+    url: http://organisasjon-bestilling-service.dolly.svc.cluster.local
     name: organisasjon-bestilling-service
     cluster: dev-gcp
     namespace: dolly
