@@ -14,7 +14,7 @@ public class TpsfConsumer {
     private final WebClient webClient;
 
     public TpsfConsumer(
-            @Value("${tps-forvalteren.rest.api.url}") String serverUrl
+            @Value("${consumers.tps-forvalteren.url}") String serverUrl
     ) {
         this.webClient = WebClient.builder()
                 .baseUrl(serverUrl + TPS_PERSONER)

@@ -34,7 +34,10 @@ spec:
       cpu: 1000m
       memory: 4096Mi
   vault:
-    enabled: false
+    enabled: true
+    paths:
+      - kvPath: /kv/preprod/fss/dolly-backend-dev/dolly
+        mountPath: /var/run/secrets/nais.io/vault
   accessPolicy:
     inbound:
       rules:
