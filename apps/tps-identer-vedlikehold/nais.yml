@@ -36,7 +36,7 @@ spec:
   vault:
     enabled: true
     paths:
-      - kvPath: /kv/preprod/fss/dolly-backend-dev/dolly
+      - kvPath: /kv/preprod/fss/tps-identer-vedlikehold/dolly
         mountPath: /var/run/secrets/nais.io/vault
   accessPolicy:
     inbound:
