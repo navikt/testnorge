@@ -2,10 +2,10 @@ name: Deploy tps-identer-vedlikehold
 
 on:
   push:
-#    branches: feature/tps-identer-vedlikehold
-#    paths:
-#      - apps/tps-identer-vedlikehold/**
-#      - libs/testnorge-core/**
+    branches: master
+    paths:
+      - apps/tps-identer-vedlikehold/**
+      - libs/testnorge-core/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/tps-identer-vedlikehold:${{ github.sha }}
