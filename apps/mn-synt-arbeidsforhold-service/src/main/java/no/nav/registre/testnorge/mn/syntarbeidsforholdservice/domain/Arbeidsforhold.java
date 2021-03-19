@@ -65,8 +65,7 @@ public class Arbeidsforhold {
                         .sluttdatoOpptjeningsperiode(inntekt.getSluttdatoOpptjeningsperiode())
                         .opptjeningsland(inntekt.getOpptjeningsland())
                         .antall(inntekt.getAntall())
-                        .avvik(getAvvik(inntekt.getAvvik())
-                        )
+                        .avvik(getAvvik(inntekt.getAvvik()))
                         .build()
                 ).collect(Collectors.toList());
 
