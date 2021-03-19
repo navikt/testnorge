@@ -7,11 +7,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import lombok.Value;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
-@Value
+@Data
 @Builder
 @ToString
 @AllArgsConstructor
@@ -27,4 +28,13 @@ public class PermisjonDTO {
     LocalDate sluttdato;
     @JsonProperty
     Float permisjonsprosent;
+    @JsonProperty
+    List<AvvikDTO> avvik;
+
+    public List<AvvikDTO> getAvvik() {
+        if (avvik == null) {
+            avvik = new ArrayList<>();
+        }
+        return avvik;
+    }
 }
