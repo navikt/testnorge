@@ -18,8 +18,8 @@ public class VedlikeholdController {
     private final TpsfService tpsfService;
 
     @DeleteMapping(value = "/upload", consumes = "multipart/form-data")
-    @Operation(description = "Start sletting av identer fra opplastet file")
-    public String startDelete(@Parameter(description = "Angi CSV-file for opplasting")
+    @Operation(description = "Sletter identer fra opplastet tekstfil")
+    public String startDelete(@Parameter(description = "Angi tekstfile for opplasting")
                                         @RequestPart("file") MultipartFile identerFile) {
 
         return tpsfService.deleteIdents(identerFile);

@@ -70,8 +70,7 @@ public class TpsfService {
 
         slackAdapter.uploadFile(
                 status.toString().getBytes(StandardCharsets.UTF_8),
-                format("tps-identer-vedlikehold-%s.csv", LocalDateTime.now().toString())
-        );
+                format("%s-%s.txt", file.getOriginalFilename(), LocalDateTime.now().toString()));
 
         return status.toString();
     }
