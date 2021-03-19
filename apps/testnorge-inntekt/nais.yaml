@@ -7,6 +7,9 @@ metadata:
     team: dolly
 spec:
   port: 8080
+  azure:
+    application:
+      enabled: true
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
