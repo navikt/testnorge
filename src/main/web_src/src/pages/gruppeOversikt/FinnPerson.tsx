@@ -108,7 +108,7 @@ export default function FinnPerson({ naviger }: FinnPerson) {
 					onChange={(e: Option) => (e ? navigerTilIdent(e.value) : null)}
 					cacheOptions={true}
 					label="Person"
-					placeholder="Søk etter navn eller FNR/DNR/BOST"
+					placeholder="Søk etter navn eller ident"
 				/>
 			</div>
 			{feilmelding && (
