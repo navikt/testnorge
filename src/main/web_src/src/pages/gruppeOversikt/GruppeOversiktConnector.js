@@ -15,6 +15,7 @@ const mapStateToProps = state => ({
 	isFetching: loadingGrupper(state),
 	mineIds: state.gruppe.mineIds,
 	gruppeListe: _orderBy(sokSelectorGruppeOversikt(state), 'id', 'desc'),
+	gruppeInfo: state.gruppe.gruppeInfo,
 	importerteZIdenter: state.gruppe.importerteZIdenter
 })
 

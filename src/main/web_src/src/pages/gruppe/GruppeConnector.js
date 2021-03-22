@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import { actions, selectGruppeById } from '~/ducks/gruppe'
 import { getBestillinger } from '~/ducks/bestillingStatus'
+import { navigerTilPerson } from '~/ducks/finnPerson'
 import { createLoadingSelector } from '~/ducks/loading'
 import Gruppe from './Gruppe'
 
@@ -22,6 +23,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	const { gruppeId } = ownProps.match.params
 	return {
 		getGruppe: () => dispatch(actions.getById(gruppeId)),
+		navigerTilPerson: ident => dispatch(navigerTilPerson(ident)),
 		deleteGruppe: () => dispatch(actions.remove(gruppeId)),
 		laasGruppe: () =>
 			dispatch(actions.laas(gruppeId, { erLaast: true, laastBeskrivelse: 'Låst gruppe' })),

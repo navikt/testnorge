@@ -7,6 +7,10 @@ export default {
 		return Request.get(Endpoints.gruppe())
 	},
 
+	getGrupperPaginert(page, pageSize) {
+		return Request.get(Endpoints.gruppePaginert(page, pageSize))
+	},
+
 	getGruppeById(gruppeId) {
 		return Request.get(Endpoints.gruppeById(gruppeId))
 	},

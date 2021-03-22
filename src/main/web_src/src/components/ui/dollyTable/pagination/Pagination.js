@@ -10,7 +10,9 @@ const ITEM_PER_PAGE = 10
 export default class Pagination extends Component {
 	state = {
 		currentPage: this.props.visSide ? this.props.visSide : 0,
-		itemCount: ITEM_PER_PAGE
+		pageSize: this.props.gruppeDetaljer?.pageSize
+			? this.props.gruppeDetaljer.pageSize
+			: ITEM_PER_PAGE
 	}
 
 	componentDidUpdate(prevProps) {
@@ -22,16 +24,15 @@ export default class Pagination extends Component {
 		const itemsToRender = this._calculateItemsToRender()
 
 		const startIndex = this._calculateStartIndex() + 1
-		const lastIndex = this._calculateStartIndex() + this.state.itemCount
-		const itemCount = this.props.items.length
-		const renderPagination = itemCount > this.state.itemCount
-		const renderItemCount = ITEM_PER_PAGE < itemCount
+		const lastIndex = this._calculateStartIndex() + this.state.pageSize
+		const itemCount = this.props.gruppeDetaljer?.antallElementer
+			? this.props.gruppeDetaljer.antallElementer
+			: this.props.items.length
+		const renderPagination = itemCount > this.state.pageSize
 
 		const paginationComponent = (
 			<div className="pagination-wrapper">
-				{renderItemCount && (
-					<ItemCountSelect value={this.state.itemCount} onChangeHandler={this._itemCountHandler} />
-				)}
+				<ItemCountSelect value={this.state.pageSize} onChangeHandler={this._itemCountHandler} />
 				{renderPagination && (
 					<Fragment>
 						<span className="pagination-label">
@@ -61,25 +62,37 @@ export default class Pagination extends Component {
 	}
 
 	_pageChangeHandler = e => {
+		if (this.props.setSidetall) this.props.setSidetall(e.selected)
 		this.setState({
 			currentPage: e.selected
 		})
 	}
 
 	_itemCountHandler = e => {
-		this.setState({ currentPage: 0, itemCount: e.value })
+		if (this.props.setSidetall) this.props.setSidetall(0)
+		if (this.props.setSideStoerrelse) this.props.setSideStoerrelse(e.value)
+		this.setState({ currentPage: 0, pageSize: e.value })
 	}
 
 	_calculatePageCount = () => {
-		return Math.ceil(this.props.items.length / this.state.itemCount)
+		if (this.props.gruppeDetaljer?.antallPages) {
+			return this.props.gruppeDetaljer.antallPages
+		}
+		const antallElementer = this.props.gruppeDetaljer?.antallElementer
+			? this.props.gruppeDetaljer.antallElementer
+			: this.props.items.length
+		return Math.ceil(antallElementer / this.state.pageSize)
 	}
 
 	_calculateItemsToRender = () => {
+		if (this.props.gruppeDetaljer?.antallElementer) {
+			return this.props.items.slice(0, this.state.pageSize)
+		}
 		const startIndex = this._calculateStartIndex()
-		return this.props.items.slice(startIndex, startIndex + this.state.itemCount)
+		return this.props.items.slice(startIndex, startIndex + this.state.pageSize)
 	}
 
 	_calculateStartIndex = () => {
-		return this.state.currentPage * this.state.itemCount
+		return this.state.currentPage * this.state.pageSize
 	}
 }

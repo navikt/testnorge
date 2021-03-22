@@ -8,7 +8,16 @@ import Icon from '~/components/ui/icon/Icon'
 import ImporterGrupperConnector from './ImporterGrupperConnector'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
-export default function Liste({ items, history, searchActive, isFetching }) {
+export default function Liste({
+	items,
+	history,
+	searchActive,
+	isFetching,
+	gruppeDetaljer,
+	visSide,
+	setSidetall,
+	setSideStoerrelse
+}) {
 	if (isFetching) return <Loading label="laster grupper" panel />
 
 	if (!items || !items.length) {
@@ -82,6 +91,10 @@ export default function Liste({ items, history, searchActive, isFetching }) {
 				onRowClick={row => () => history.push(`gruppe/${row.id}`)}
 				iconItem={<GruppeIconItem />}
 				pagination
+				gruppeDetaljer={gruppeDetaljer}
+				visSide={visSide}
+				setSidetall={setSidetall}
+				setSideStoerrelse={setSideStoerrelse}
 			/>
 		</ErrorBoundary>
 	)

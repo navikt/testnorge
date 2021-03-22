@@ -8,9 +8,9 @@ import PersonListeConnector from './PersonListe/PersonListeConnector'
 import BestillingListeConnector from './BestillingListe/BestillingListeConnector'
 import GruppeHeader from './GruppeHeader/GruppeHeader'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
-import { SearchField } from '~/components/searchField/SearchField'
 import { BestillingsveilederModal } from '~/components/bestillingsveileder/startModal/StartModal'
 import Icon from '~/components/ui/icon/Icon'
+import FinnPerson from '~/pages/gruppeOversikt/FinnPerson'
 
 const VISNING_PERSONER = 'personer'
 const VISNING_BESTILLING = 'bestilling'
@@ -18,6 +18,7 @@ const VISNING_BESTILLING = 'bestilling'
 export default function Gruppe({
 	getGruppe,
 	deleteGruppe,
+	navigerTilPerson,
 	laasGruppe,
 	getBestillinger,
 	gruppe,
@@ -39,7 +40,11 @@ export default function Gruppe({
 
 	if (isFetching) return <Loading label="Laster personer" panel />
 
-	if (!gruppe) return null
+	if (!gruppe) {
+		getGruppe()
+		getBestillinger()
+		return null
+	}
 
 	const byttVisning = event => setVisning(event.target.value)
 
@@ -49,11 +54,6 @@ export default function Gruppe({
 
 	const startBestilling = values =>
 		history.push(`/gruppe/${match.params.gruppeId}/bestilling`, values)
-
-	const searchfieldPlaceholderSelector = () => {
-		if (visning === VISNING_BESTILLING) return 'Søk i bestillinger'
-		return 'Søk etter personer'
-	}
 
 	const erLaast = gruppe.erLaast
 
@@ -95,7 +95,7 @@ export default function Gruppe({
 					</ToggleKnapp>
 				</ToggleGruppe>
 
-				<SearchField placeholder={searchfieldPlaceholderSelector()} />
+				<FinnPerson naviger={navigerTilPerson} />
 			</div>
 
 			{startBestillingAktiv && (

@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import useBoolean from '~/utils/hooks/useBoolean'
 import Hjelpetekst from '~/components/hjelpetekst'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
-import { SearchField } from '~/components/searchField/SearchField'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import Icon from '~/components/ui/icon/Icon'
@@ -15,18 +14,21 @@ export default function GruppeOversikt({
 	fetchMineGrupper,
 	isFetching,
 	gruppeListe,
+	gruppeInfo,
 	mineIds,
 	history,
 	searchActive,
 	importerteZIdenter
 }) {
 	const [visning, setVisning] = useState('mine')
+	const [sidetall, setSidetall] = useState(0)
+	const [sideStoerrelse, setSideStoerrelse] = useState(10)
 	const [importerte, setImporterte] = useState(importerteZIdenter)
 	const [visNyGruppeState, visNyGruppe, skjulNyGruppe] = useBoolean(false)
 
 	useEffect(() => {
-		visning === 'mine' ? fetchMineGrupper() : getGrupper()
-	}, [visning])
+		visning === 'mine' ? fetchMineGrupper() : getGrupper(sidetall, sideStoerrelse)
+	}, [visning, sidetall, sideStoerrelse])
 
 	const byttVisning = event => setVisning(event.target.value)
 
@@ -46,7 +48,6 @@ export default function GruppeOversikt({
 						Testdatagruppen inneholder alle personene dine (FNR/DNR/BOST).
 					</Hjelpetekst>
 				</div>
-				<FinnPerson naviger={navigerTilPerson} />
 			</div>
 
 			<div className="toolbar">
@@ -55,7 +56,7 @@ export default function GruppeOversikt({
 				</NavButton>
 				<ToggleGruppe onChange={byttVisning} name="toggler">
 					<ToggleKnapp value="mine" checked={visning === 'mine'}>
-						<Icon size={14} kind={visning === 'mine' ? 'man2Light' : 'man2'} />
+						<Icon size={16} kind={visning === 'mine' ? 'man2Light' : 'man2'} />
 						Mine
 					</ToggleKnapp>
 					<ToggleKnapp value="alle" checked={visning === 'alle'}>
@@ -63,12 +64,22 @@ export default function GruppeOversikt({
 						Alle
 					</ToggleKnapp>
 				</ToggleGruppe>
-				<SearchField />
+				<FinnPerson naviger={navigerTilPerson} />
 			</div>
 
 			{visNyGruppeState && <RedigerGruppeConnector onCancel={skjulNyGruppe} />}
 
-			<Liste items={items} history={history} isFetching={isFetching} searchActive={searchActive} />
+			<Liste
+				gruppeDetaljer={visning === 'alle' ? gruppeInfo : { pageSize: sideStoerrelse }}
+				items={items}
+				history={history}
+				isFetching={isFetching}
+				searchActive={searchActive}
+				visSide={sidetall}
+				setSidetall={setSidetall}
+				sideStoerrelse={sideStoerrelse}
+				setSideStoerrelse={setSideStoerrelse}
+			/>
 		</div>
 	)
 }

@@ -1,8 +1,7 @@
 import { LOCATION_CHANGE } from 'connected-react-router'
-import { createActions, combineActions } from 'redux-actions'
+import { createActions } from 'redux-actions'
 import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
-import _find from 'lodash/find'
 import _omit from 'lodash/omit'
 import { DollyApi } from '~/service/Api'
 import { createLoadingSelector } from '~/ducks/loading'
@@ -12,7 +11,7 @@ import { handleActions } from '~/ducks/utils/immerHandleActions'
 export const actions = createActions(
 	{
 		getById: DollyApi.getGruppeById,
-		getAlle: DollyApi.getGrupper,
+		getAlle: DollyApi.getGrupperPaginert,
 		getByUserId: DollyApi.getGruppeByUserId,
 		create: DollyApi.createGruppe,
 		update: DollyApi.updateGruppe,
@@ -35,6 +34,7 @@ export const actions = createActions(
 const initialState = {
 	ident: {},
 	byId: {},
+	gruppeInfo: {},
 	mineIds: [],
 	importerteZIdenter: null
 }
@@ -53,7 +53,9 @@ export default handleActions(
 			state.byId[gruppe.id] = _omit(gruppe, 'identer')
 		},
 		[onSuccess(actions.getAlle)](state, action) {
-			action.payload.data.forEach(gruppe => {
+			state.byId = []
+			state.gruppeInfo = action.payload.data
+			action.payload.data.contents.forEach(gruppe => {
 				state.byId[gruppe.id] = gruppe
 			})
 		},
