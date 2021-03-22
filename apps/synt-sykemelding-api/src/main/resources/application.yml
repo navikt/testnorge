@@ -23,3 +23,8 @@ consumers:
     cluster: dev-fss
     namespace: dolly
     name: testnorge-arbeidsforhold-api
+  testnav-helsepersonell-service:
+    url: https://testnav-helsepersonell-service.dev.intern.nav.no
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-helsepersonell-service
