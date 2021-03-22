@@ -1,26 +1,6 @@
 package no.nav.dolly.bestilling.tpsf;
 
-import static java.lang.String.format;
-import static java.lang.String.join;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Collections.emptyList;
-import static java.util.Objects.nonNull;
-import static java.util.Objects.requireNonNull;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.errorhandling.RestTemplateFailure;
@@ -37,6 +17,25 @@ import no.nav.dolly.domain.resultset.tpsf.TpsfRelasjonRequest;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.properties.ProvidersProps;
+import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.lang.String.format;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.emptyList;
+import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -50,10 +49,11 @@ public class TpsfService {
     private static final String TPSF_CHECK_IDENT_STATUS = "/checkpersoner";
     private static final String TPSF_UPDATE_PERSON_URL = TPSF_BASE_URL + "/leggtilpaaperson?ident=";
     private static final String TPSF_CREATE_ALIASES = TPSF_BASE_URL + "/aliaser";
-    private static final String TPSF_DELETE_PERSONER_URL = TPSF_BASE_URL + "/personer?identer=";
+    private static final String TPSF_DELETE_PERSON_URL = TPSF_BASE_URL + "/person?ident=";
     private static final String TPSF_GET_ENVIRONMENTS = "/api/v1/environments";
     private static final String TPSF_PERSON_RELASJON = TPSF_BASE_URL + "/relasjonperson?ident=";
     private static final String TPSF_IMPORTER_PERSON = TPSF_BASE_URL + "/import/lagre";
+    private static final String CONCAT_VALUES = "%s%s%s";
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
@@ -67,9 +67,9 @@ public class TpsfService {
     }
 
     @Timed(name = "providers", tags = { "operation", "tpsf_deletePersons" })
-    public ResponseEntity deletePersones(List<String> identer) {
+    public ResponseEntity<Object> deletePerson(String ident) {
         return restTemplate.exchange(
-                RequestEntity.delete(URI.create(format("%s%s%s", providersProps.getTpsf().getUrl(), TPSF_DELETE_PERSONER_URL, join(",", identer))))
+                RequestEntity.delete(URI.create(format(CONCAT_VALUES, providersProps.getTpsf().getUrl(), TPSF_DELETE_PERSON_URL, ident)))
                         .build(), Object.class);
     }
 
@@ -112,7 +112,7 @@ public class TpsfService {
     public RsOppdaterPersonResponse endreLeggTilPaaPerson(String ident, TpsfBestilling tpsfBestilling) {
 
         return restTemplate.exchange(RequestEntity.post(
-                URI.create(format("%s%s%s", providersProps.getTpsf().getUrl(), TPSF_UPDATE_PERSON_URL, ident)))
+                URI.create(format(CONCAT_VALUES, providersProps.getTpsf().getUrl(), TPSF_UPDATE_PERSON_URL, ident)))
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(tpsfBestilling), RsOppdaterPersonResponse.class).getBody();
     }
@@ -121,7 +121,7 @@ public class TpsfService {
     public List<String> relasjonPerson(String ident, TpsfRelasjonRequest tpsfBestilling) {
 
         return restTemplate.exchange(RequestEntity.post(
-                URI.create(format("%s%s%s", providersProps.getTpsf().getUrl(), TPSF_PERSON_RELASJON, ident)))
+                URI.create(format(CONCAT_VALUES, providersProps.getTpsf().getUrl(), TPSF_PERSON_RELASJON, ident)))
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(tpsfBestilling), List.class).getBody();
     }
@@ -136,7 +136,7 @@ public class TpsfService {
     }
 
     private ResponseEntity<Object> postToTpsf(String addtionalUrl, Object request) {
-        String url = format("%s%s%s", providersProps.getTpsf().getUrl(), TPSF_BASE_URL, addtionalUrl);
+        String url = format(CONCAT_VALUES, providersProps.getTpsf().getUrl(), TPSF_BASE_URL, addtionalUrl);
 
         try {
             ResponseEntity<Object> response = restTemplate.exchange(
