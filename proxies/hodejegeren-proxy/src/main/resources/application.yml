@@ -16,7 +16,7 @@ zuul:
   set-content-length: true
   routes:
     testnorge-hodejegeren:
-      path: /
-      url: https://testnorge-hodejegeren.dev.intern.nav.no
+      path: /**
+      url: https://testnorge-hodejegeren.dev.intern.nav.no/**
   host:
     socket-timeout-millis: 30000
