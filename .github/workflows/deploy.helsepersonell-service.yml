@@ -32,10 +32,11 @@ jobs:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
         run: ./gradlew :helsepersonell-service:build
       - name: Build and publish Docker image
+        working-directory: apps/helsepersonell-service/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker build --tag $IMAGE . -f ./apps/helsepersonell-service/Dockerfile
+          docker build --tag $IMAGE .
           docker login docker.pkg.github.com -u $GITHUB_REPOSITORY -p $GITHUB_TOKEN
           docker push $IMAGE
       - name: Deploy to nais
