@@ -51,3 +51,5 @@ spec:
   ingresses:
     - "https://organisasjon-forvalter.dev.adeo.no"
     - "https://organisasjon-forvalter.dev.intern.nav.no"
+  kafka:
+    pool: nav-dev

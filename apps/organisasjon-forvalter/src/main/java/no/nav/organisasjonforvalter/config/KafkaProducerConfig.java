@@ -1,12 +1,11 @@
 package no.nav.organisasjonforvalter.config;
 
-import no.nav.registre.testnorge.libs.kafkaconfig.config.KafkaProperties;
-import org.springframework.context.annotation.ComponentScan;
+import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v2.EndringsdokumentV2Producer;
+import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v2.OpprettelsesdokumentV2Producer;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import(KafkaProperties.class)
-@ComponentScan(basePackages = "no.nav.registre.testnorge.libs.kafkaproducers")
+@Import({OpprettelsesdokumentV2Producer.class, EndringsdokumentV2Producer.class})
 public class KafkaProducerConfig {
 }

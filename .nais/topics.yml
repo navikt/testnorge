@@ -22,6 +22,9 @@ spec:
     - team: dolly
       application: testnorge-statisk-data-forvalter
       access: write
+    - team: dolly
+      application: organisasjon-forvalter
+      access: write
 ---
 apiVersion: kafka.nais.io/v1
 kind: Topic
@@ -45,4 +48,7 @@ spec:
       access: read
     - team: dolly
       application: testnorge-statisk-data-forvalter
+      access: write
+    - team: dolly
+      application: organisasjon-forvalter
       access: write
