@@ -47,6 +47,8 @@ public class OrganisasjonMottakServiceConsumer {
         ) {
             return null;
         }
+
+        log.info("Setter adresse: {}.", adresse);
         return Adresse.newBuilder()
                 .setPostadresse1(adresse.getAdresse())
                 .setKommunenummer(adresse.getKommunenr())
