@@ -120,6 +120,13 @@ public class VedtakshistorikkService {
                 continue;
             }
 
+            if (vedtakshistorikken.getAlleTilleggVedtak() == null || vedtakshistorikken.getAlleTilleggVedtak().isEmpty()){
+                log.info("Mangler tilleggsstonad");
+                continue;
+            }else{
+                log.info("Har tilleggsstonad.");
+            }
+
             var minimumAlder = Math.toIntExact(ChronoUnit.YEARS.between(tidligsteDato.minusYears(MIN_ALDER_AAP), LocalDate.now()));
             var maksimumAlder = getMaksimumAlder(vedtakshistorikken, minimumAlder);
 
@@ -596,13 +603,18 @@ public class VedtakshistorikkService {
         var tillegg = oppdaterVedtakTillegg(historikk);
 
         if (tillegg != null && !tillegg.isEmpty() && !rettigheter.isEmpty()) {
-            rettigheter.addAll(rettighetTiltakService.getTiltaksaktivitetRettigheter(personident, miljoe, tillegg));
-            for (var vedtak : tillegg) {
-                vedtak.setBegrunnelse(BEGRUNNELSE);
-                var rettighetRequest = new RettighetTilleggRequest(Collections.singletonList(vedtak));
-                rettighetRequest.setPersonident(personident);
-                rettighetRequest.setMiljoe(miljoe);
-                rettigheter.add(rettighetRequest);
+
+            var tiltaksaktiviteter = rettighetTiltakService.getTiltaksaktivitetRettigheter(personident, miljoe, tillegg);
+            if (tiltaksaktiviteter != null && tiltaksaktiviteter.isEmpty()){
+                rettigheter.addAll(tiltaksaktiviteter);
+
+                for (var vedtak : tillegg) {
+                    vedtak.setBegrunnelse(BEGRUNNELSE);
+                    var rettighetRequest = new RettighetTilleggRequest(Collections.singletonList(vedtak));
+                    rettighetRequest.setPersonident(personident);
+                    rettighetRequest.setMiljoe(miljoe);
+                    rettigheter.add(rettighetRequest);
+                }
             }
         }
     }
