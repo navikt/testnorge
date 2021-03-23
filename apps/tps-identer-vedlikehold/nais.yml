@@ -11,6 +11,7 @@ spec:
   azure:
     application:
       enabled: true
+      tenant: nav.no
   ingresses:
     - "https://tps-identer-vedlikehold.dev.intern.nav.no"
   liveness:

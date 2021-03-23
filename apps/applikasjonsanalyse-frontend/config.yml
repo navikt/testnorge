@@ -10,6 +10,7 @@ spec:
   azure:
     application:
       enabled: true
+      tenant: nav.no
       replyURLs:
         - "https://testnav-applikasjonsanalyse.dev.intern.nav.no/login/oauth2/code/aad"
         - "http://localhost:8080/login/oauth2/code/aad"
