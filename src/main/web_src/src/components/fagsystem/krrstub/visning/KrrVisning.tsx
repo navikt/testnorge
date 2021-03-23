@@ -27,7 +27,8 @@ export const Visning = ({ data }) => {
 							<TitleValue
 								title="Språk"
 								value={
-									data.spraak && Formatters.showLabel('spraaktype', data.spraak.replace(' ', ''))
+									data.spraak &&
+									Formatters.showLabel('spraaktype', data.spraak.toLowerCase().replace(' ', ''))
 								}
 							/>
 							<TitleValue
