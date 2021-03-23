@@ -1,7 +1,6 @@
 package no.nav.registre.testnorge.arena.service;
 
 import static no.nav.registre.testnorge.arena.service.RettighetAapService.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
-import static no.nav.registre.testnorge.arena.service.RettighetTilleggService.ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT;
 import static no.nav.registre.testnorge.arena.service.RettighetAapService.SYKEPENGEERSTATNING_MAKS_PERIODE;
 import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.AKTIVITETSFASE_SYKEPENGEERSTATNING;
 import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.BEGRUNNELSE;
@@ -33,7 +32,6 @@ import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetFritakMeldek
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTilleggRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTilleggsytelseRequest;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTiltaksaktivitetRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTiltaksdeltakelseRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTiltakspengerRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTvungenForvaltningRequest;
@@ -50,7 +48,6 @@ import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoRespons
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
@@ -78,6 +75,7 @@ public class VedtakshistorikkService {
 
     private static final String MAALGRUPPEKODE_TILKNYTTET_AAP = "NEDSARBEVN";
     private static final String MAALGRUPPEKODE_TILKNYTTET_TILTAKSPENGER = "MOTTILTPEN";
+    private static final LocalDate ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT = LocalDate.of(2020, 02, 29);
 
     public Map<String, List<NyttVedtakResponse>> genererVedtakshistorikk(
             Long avspillergruppeId,
@@ -150,7 +148,7 @@ public class VedtakshistorikkService {
     }
 
     private void opprettVedtaksHistorikkResponse(Long avspillergruppeId, String miljoe, Map<String, List<NyttVedtakResponse>> responses, Vedtakshistorikk vedtakshistorikk, LocalDate tidligsteDatoBarnetillegg,
-            int minimumAlder, int maksimumAlder) {
+                                                 int minimumAlder, int maksimumAlder) {
         List<String> identerIAldersgruppe = Collections.emptyList();
         try {
             var maaVaereBosatt = vedtakshistorikk.getAap() != null && !vedtakshistorikk.getAap().isEmpty();
@@ -598,7 +596,7 @@ public class VedtakshistorikkService {
         var tillegg = oppdaterVedtakTillegg(historikk);
 
         if (tillegg != null && !tillegg.isEmpty() && !rettigheter.isEmpty()) {
-            rettigheter.addAll(rettighetTiltakService.getTiltaksaktivitetRettigheter(personident, miljoe, tillegg, true));
+            rettigheter.addAll(rettighetTiltakService.getTiltaksaktivitetRettigheter(personident, miljoe, tillegg));
             for (var vedtak : tillegg) {
                 vedtak.setBegrunnelse(BEGRUNNELSE);
                 var rettighetRequest = new RettighetTilleggRequest(Collections.singletonList(vedtak));
@@ -676,7 +674,6 @@ public class VedtakshistorikkService {
         }
         return false;
     }
-
 
 
 }

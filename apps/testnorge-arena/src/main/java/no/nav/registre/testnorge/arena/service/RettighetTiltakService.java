@@ -239,8 +239,7 @@ public class RettighetTiltakService {
     List<RettighetTiltaksaktivitetRequest> getTiltaksaktivitetRettigheter(
             String personident,
             String miljoe,
-            List<NyttVedtakTillegg> tillegg,
-            Boolean erHistoriskAktivitet
+            List<NyttVedtakTillegg> tillegg
     ) {
         if (tillegg != null && !tillegg.isEmpty()) {
             var rettigheter = new ArrayList<RettighetTiltaksaktivitetRequest>();
@@ -248,7 +247,7 @@ public class RettighetTiltakService {
             var tilleggRequests = getTilleggRequestsForTiltaksaktivitet(personident, miljoe, tillegg);
 
             for (var request : tilleggRequests) {
-                rettigheter.add(opprettRettighetTiltaksaktivitetRequest(request, erHistoriskAktivitet));
+                rettigheter.add(opprettRettighetTiltaksaktivitetRequest(request, true));
             }
 
             return rettigheter;
@@ -265,9 +264,9 @@ public class RettighetTiltakService {
 
         ArrayList<Integer> nyRettighetIndices = new ArrayList<>();
 
-        if (tillegg.size() == 1){
-            nyRettighetIndices = (ArrayList<Integer>) Arrays.asList(0,1);
-        }else{
+        if (tillegg.size() == 1) {
+            nyRettighetIndices = (ArrayList<Integer>) Arrays.asList(0, 1);
+        } else {
             for (int i = 0; i < tillegg.size(); i++) {
                 if (tillegg.get(i).getVedtaktype().equals("O")) {
                     nyRettighetIndices.add(i);
