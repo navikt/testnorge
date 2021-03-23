@@ -23,6 +23,7 @@ import java.util.Set;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 
 @Slf4j
 @Service
@@ -40,8 +41,9 @@ public class PensjonforvalterClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (nonNull(bestilling.getPensjonforvalter())) {
+        if (nonNull(bestilling.getPensjonforvalter()) || isNotTrue(bestilling.getNavSyntetiskIdent())) {
 
+            log.info("Syntetisk ident? {}, sender ident til Pensjon", bestilling.getNavSyntetiskIdent());
             Set<String> bestilteMiljoer = new HashSet<>(bestilling.getEnvironments());
             Set<String> tilgjengeligeMiljoer = pensjonforvalterConsumer.getMiljoer();
             bestilteMiljoer.retainAll(tilgjengeligeMiljoer);
@@ -49,10 +51,11 @@ public class PensjonforvalterClient implements ClientRegister {
             StringBuilder status = new StringBuilder();
 
             if (!bestilteMiljoer.isEmpty()) {
-
                 opprettPerson(dollyPerson, bestilteMiljoer, status);
-                lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, status);
 
+                if (nonNull(bestilling.getPensjonforvalter())) {
+                    lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, status);
+                }
             } else {
                 status.append('$')
                         .append(PENSJON_FORVALTER)
@@ -60,7 +63,6 @@ public class PensjonforvalterClient implements ClientRegister {
                         .append(tilgjengeligeMiljoer.stream().collect(joining(",")))
                         .append("] ikke er valgt");
             }
-
             if (status.length() > 1) {
                 progress.setPensjonforvalterStatus(status.substring(1));
             }
@@ -69,6 +71,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
     @Override
     public void release(List<String> identer) {
+
         // Pensjonforvalter / POPP støtter pt ikke sletting
     }
 
@@ -111,6 +114,7 @@ public class PensjonforvalterClient implements ClientRegister {
     }
 
     private void decodeStatus(PensjonforvalterResponse response, StringBuilder pensjonStatus) {
+
         response.getStatus().forEach(status ->
                 pensjonStatus.append(status.getMiljo()).append(':')
                         .append(status.getResponse().getHttpStatus().getStatus() == 200 ? "OK" :

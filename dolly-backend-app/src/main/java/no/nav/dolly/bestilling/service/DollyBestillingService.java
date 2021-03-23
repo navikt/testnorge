@@ -183,6 +183,7 @@ public class DollyBestillingService {
             TpsfBestilling tpsfBestilling = nonNull(request.getTpsf()) ? mapperFacade.map(request.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
             tpsfBestilling.setAntall(1);
             tpsfBestilling.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());
+            request.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());
 
             AtomicReference<DollyPerson> dollyPerson = new AtomicReference<>(null);
             if (testident.isTpsf()) {
@@ -260,6 +261,7 @@ public class DollyBestillingService {
             if (nonNull(bestilling.getTpsfKriterier())) {
                 bestKriterier.setTpsf(objectMapper.readValue(bestilling.getTpsfKriterier(), RsTpsfUtvidetBestilling.class));
             }
+            bestKriterier.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());
             bestKriterier.setEnvironments(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))));
             return bestKriterier;
 
@@ -276,7 +278,7 @@ public class DollyBestillingService {
         clientRegisters.stream()
                 .filter(clientRegister -> clientRegister.isTestnorgeRelevant() || dollyPerson.isTpsfMaster())
                 .forEach(clientRegister ->
-                    clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre));
+                        clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre));
     }
 
     protected void oppdaterBestillingFerdig(Bestilling bestilling) {
@@ -340,7 +342,7 @@ public class DollyBestillingService {
     }
 
     protected Optional<DollyPerson> prepareDollyPersonTpsf(Bestilling bestilling,
-                                                         BestillingProgress progress) throws JsonProcessingException {
+                                                           BestillingProgress progress) throws JsonProcessingException {
 
         DollyPerson dollyPerson = null;
         if (progress.isTpsf()) {
