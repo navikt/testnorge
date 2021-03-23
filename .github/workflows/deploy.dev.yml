@@ -2,7 +2,7 @@ name: Deploy dev
 
 on:
   push:
-    branches: innsending-pensjon-standard-identtype
+    branches: server-properties-auth
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/dolly-backend:${{ github.sha }}

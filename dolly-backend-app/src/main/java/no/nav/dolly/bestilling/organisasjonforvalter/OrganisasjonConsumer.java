@@ -112,7 +112,7 @@ public class OrganisasjonConsumer {
     private AccessToken getAccessToken(String s) {
         log.info(s, getNavCallId(), CONSUMER);
 
-        return tokenService.getAccessToken(
+        return tokenService.generateToken(
                 new AccessScopes("api://" + organisasjonerClientId + "/.default")
         );
     }

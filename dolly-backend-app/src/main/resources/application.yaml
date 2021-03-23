@@ -13,6 +13,13 @@ UDI_STUB_CLIENT_ID: ${UDI_CLIENT_ID}
 
 CLIENT_SECRET: ${azure.app.client.secret}
 
+consumers:
+  testnav-helsepersonell-service:
+    url: https://testnav-helsepersonell-service.dev.intern.nav.no
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-helsepersonell-service
+
 #### APP DB ####
 ? app.datasource.onsHosts
 

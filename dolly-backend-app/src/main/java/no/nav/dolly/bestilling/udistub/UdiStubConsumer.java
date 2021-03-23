@@ -119,7 +119,7 @@ public class UdiStubConsumer {
     }
 
     private String getBearerToken() {
-        String tokenValue = accessTokenService.getAccessToken(
+        String tokenValue = accessTokenService.generateToken(
                 new AccessScopes("api://" + clientId + "/.default")
         ).getTokenValue();
         return "Bearer " + tokenValue;

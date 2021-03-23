@@ -16,6 +16,7 @@ spec:
   azure:
     application:
       enabled: true
+      tenant: nav.no
   image: {{ image }}
   env:
     - name: UDI_CLIENT_ID

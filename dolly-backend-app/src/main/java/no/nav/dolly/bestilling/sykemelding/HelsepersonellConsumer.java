@@ -1,14 +1,11 @@
 package no.nav.dolly.bestilling.sykemelding;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.sykemelding.domain.dto.HelsepersonellListeDTO;
+import no.nav.dolly.config.credentials.HelsepersonellServiceProperties;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.properties.ProvidersProps;
-import no.nav.dolly.security.oauth2.domain.AccessScopes;
 import no.nav.dolly.security.oauth2.domain.AccessToken;
 import no.nav.dolly.security.oauth2.service.TokenService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,28 +14,34 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class HelsepersonellConsumer {
 
     private static final String HELSEPERSONELL_URL = "/api/v1/helsepersonell";
 
-    private final ProvidersProps providersProps;
     private final TokenService accessTokenService;
-    private final WebClient webclient = WebClient.builder().build();
+    private final HelsepersonellServiceProperties serviceProperties;
+    private final WebClient webClient;
 
-    @Value("${HELSEPERSONELL_CLIENT_ID}")
-    private String helsepersonellClientId;
+    public HelsepersonellConsumer(
+            TokenService accessTokenService,
+            HelsepersonellServiceProperties serviceProperties
+    ) {
+        this.accessTokenService = accessTokenService;
+        this.serviceProperties = serviceProperties;
+        this.webClient = WebClient
+                .builder()
+                .baseUrl(serviceProperties.getUrl())
+                .build();
+    }
 
     @Timed(name = "providers", tags = { "operation", "leger-hent" })
     public ResponseEntity<HelsepersonellListeDTO> getHelsepersonell() {
 
-        AccessToken accessToken = accessTokenService.getAccessToken(
-                new AccessScopes("api://" + helsepersonellClientId + "/.default")
-        );
+        AccessToken accessToken = accessTokenService.generateToken(serviceProperties);
         log.info("Henter helsepersonell...");
-        return webclient
+        return webClient
                 .get()
-                .uri(providersProps.getHelsepersonell().getUrl() + HELSEPERSONELL_URL)
+                .uri(uriBuilder -> uriBuilder.path(HELSEPERSONELL_URL).build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken.getTokenValue())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
