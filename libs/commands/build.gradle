@@ -10,4 +10,4 @@ dependencies {
 }
 
 group = 'no.nav.registre.testnorge.libs'
-description = 'testnorge-common-command'
+description = 'commands'

@@ -12,7 +12,7 @@ dependencies {
     implementation project(':testnorge-core')
     implementation project(':testnorge-oauth2')
     implementation project(':testnorge-data-transfer-objects')
-    implementation project(':testnorge-common-command')
+    implementation project(':commands')
 
     implementation 'org.springframework.security:spring-security-web:5.3.4.RELEASE'
     implementation 'org.springframework.security:spring-security-config:5.3.4.RELEASE'
