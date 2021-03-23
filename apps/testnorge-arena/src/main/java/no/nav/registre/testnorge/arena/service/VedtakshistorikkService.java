@@ -598,7 +598,7 @@ public class VedtakshistorikkService {
         if (tillegg != null && !tillegg.isEmpty() && !rettigheter.isEmpty()) {
 
             var tiltaksaktiviteter = rettighetTiltakService.getTiltaksaktivitetRettigheter(personident, miljoe, tillegg);
-            if (tiltaksaktiviteter != null && tiltaksaktiviteter.isEmpty()){
+            if (tiltaksaktiviteter != null && !tiltaksaktiviteter.isEmpty()){
                 rettigheter.addAll(tiltaksaktiviteter);
 
                 for (var vedtak : tillegg) {
