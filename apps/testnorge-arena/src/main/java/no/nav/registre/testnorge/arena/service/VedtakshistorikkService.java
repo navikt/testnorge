@@ -120,13 +120,6 @@ public class VedtakshistorikkService {
                 continue;
             }
 
-            if (vedtakshistorikken.getAlleTilleggVedtak() == null || vedtakshistorikken.getAlleTilleggVedtak().isEmpty()){
-                log.info("Mangler tilleggsstonad");
-                continue;
-            }else{
-                log.info("Har tilleggsstonad.");
-            }
-
             var minimumAlder = Math.toIntExact(ChronoUnit.YEARS.between(tidligsteDato.minusYears(MIN_ALDER_AAP), LocalDate.now()));
             var maksimumAlder = getMaksimumAlder(vedtakshistorikken, minimumAlder);
 
