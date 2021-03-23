@@ -1,13 +1,13 @@
 package no.nav.dolly.repository;
 
-import java.util.List;
-import java.util.Optional;
+import no.nav.dolly.domain.jpa.BestillingProgress;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 
-import no.nav.dolly.domain.jpa.BestillingProgress;
+import java.util.List;
+import java.util.Optional;
 
 public interface BestillingProgressRepository extends Repository<BestillingProgress, Long> {
 
@@ -22,6 +22,9 @@ public interface BestillingProgressRepository extends Repository<BestillingProgr
     @Modifying
     int deleteByIdent(String ident);
 
-    @Query("")
     List<BestillingProgress> findByIdent(String ident);
+
+    @Modifying
+    @Query(value = "update BestillingProgress bp set bp.ident = :newIdent where bp.ident = :oldIdent")
+    void swapIdent(@Param(value = "oldIdent") String oldIdent, @Param(value = "newIdent") String newIdent);
 }

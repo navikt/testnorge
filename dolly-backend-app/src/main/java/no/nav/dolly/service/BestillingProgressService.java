@@ -1,15 +1,16 @@
 package no.nav.dolly.service;
 
-import static java.util.Collections.emptyList;
-
-import java.util.List;
-import java.util.Optional;
-import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingProgressRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+
+import static java.util.Collections.emptyList;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +33,9 @@ public class BestillingProgressService {
         return bestillingProgressRepository.findByBestillingId(bestillingsId).orElse(emptyList());
     }
 
-    public List<BestillingProgress> fetchBestillingProgressByIdent(String ident) {
-        return bestillingProgressRepository.findByIdent(ident);
+    @Transactional
+    public void swapIdent(String oldIdent, String newIdent) {
+
+        bestillingProgressRepository.swapIdent(oldIdent, newIdent);
     }
 }

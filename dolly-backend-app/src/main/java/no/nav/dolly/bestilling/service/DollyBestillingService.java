@@ -193,7 +193,16 @@ public class DollyBestillingService {
                         oppdaterPersonResponse.getIdentTupler().stream()
                                 .map(RsOppdaterPersonResponse.IdentTuple::getIdent).collect(toList()), null, progress);
 
-                dollyPerson.set(dollyPersonCache.prepareTpsPerson(bestilling.getIdent()));
+                dollyPerson.set(dollyPersonCache.prepareTpsPerson(oppdaterPersonResponse.getIdentTupler().stream()
+                        .map(RsOppdaterPersonResponse.IdentTuple::getIdent)
+                        .findFirst().get()));
+
+                if (!bestilling.getIdent().equals(dollyPerson.get().getHovedperson())) {
+                    progress.setIdent(dollyPerson.get().getHovedperson());
+                    identService.swapIdent(bestilling.getIdent(), dollyPerson.get().getHovedperson());
+                    bestillingProgressService.swapIdent(bestilling.getIdent(), dollyPerson.get().getHovedperson());
+                    bestillingService.swapIdent(bestilling.getIdent(), dollyPerson.get().getHovedperson());
+                }
 
             } else {
                 PdlPerson pdlPerson = objectMapper.readValue(pdlPersonConsumer.getPdlPerson(progress.getIdent()).toString(), PdlPerson.class);

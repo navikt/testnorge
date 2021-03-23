@@ -353,4 +353,9 @@ public class BestillingService {
                 .sykemelding(request.getSykemelding())
                 .build());
     }
+
+    @Transactional
+    public void swapIdent(String oldIdent, String newIdent) {
+        bestillingRepository.swapIdent(oldIdent, newIdent);
+    }
 }

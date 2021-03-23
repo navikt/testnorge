@@ -24,6 +24,10 @@ public interface IdentRepository extends CrudRepository<Testident, String> {
     @Modifying
     int deleteTestidentByTestgruppeId(Long gruppeId);
 
+    @Modifying
+    @Query(value = "update Testident ti set ti.ident = :newIdent where ti.ident = :oldIdent")
+    int swapIdent(@Param(value = "oldIdent") String oldIdent, @Param(value = "newIdent") String newIdent);
+
     @Query(value = "select bp.ident as ident, b.id as bestillingid, " +
             "b.bestKriterier as bestkriterier from Bestilling b " +
             "join BestillingProgress bp on bp.bestillingId = b.id " +
