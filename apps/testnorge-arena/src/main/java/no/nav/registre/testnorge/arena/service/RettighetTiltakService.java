@@ -237,8 +237,7 @@ public class RettighetTiltakService {
             var tilDato = Collections.max(perioder.stream().map(Vedtaksperiode::getTom).collect(Collectors.toList()));
 
             var oppdatertVedtak = new NyttVedtakTillegg();
-            oppdatertVedtak.getVedtaksperiode().setFom(fraDato);
-            oppdatertVedtak.getVedtaksperiode().setTom(tilDato);
+            oppdatertVedtak.setVedtaksperiode(new Vedtaksperiode(fraDato, tilDato));
             oppdatertVedtak.setRettighetKode(subList.get(0).getRettighetKode());
 
             tilleggVedtak.add(oppdatertVedtak);
