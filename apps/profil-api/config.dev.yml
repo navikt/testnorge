@@ -10,6 +10,7 @@ spec:
   azure:
     application:
       enabled: true
+      tenant: nav.no
   port: 8080
   tracing:
     enabled: true

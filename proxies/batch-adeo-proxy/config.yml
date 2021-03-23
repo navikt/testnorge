@@ -11,6 +11,7 @@ spec:
   webproxy: true
   azure:
     application:
+      tenant: nav.no
       enabled: true
   accessPolicy:
     inbound:
