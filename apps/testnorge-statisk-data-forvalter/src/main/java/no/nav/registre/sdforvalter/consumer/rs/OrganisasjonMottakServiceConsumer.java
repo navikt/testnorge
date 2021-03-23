@@ -38,12 +38,7 @@ public class OrganisasjonMottakServiceConsumer {
     }
 
     private Adresse createAdresse(no.nav.registre.sdforvalter.domain.Adresse adresse) {
-        if (adresse == null
-                || adresse.getAdresse() == null
-                && adresse.getKommunenr() == null
-                && adresse.getPoststed() == null
-                && adresse.getPostnr() == null
-                && adresse.getLandkode() == null
+        if (adresse == null ||  adresse.getKommunenr() == null
         ) {
             return null;
         }
